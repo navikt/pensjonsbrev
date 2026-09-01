@@ -8,7 +8,7 @@ import {
   redigerbareVedleggKeys,
   tilbakestillRedigerbartVedlegg,
 } from "~/api/redigerbareVedlegg-endpoints";
-import { hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForAttestering, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { normalizeDocumentForComparison, text } from "~/Brevredigering/LetterEditor/actions/common";
 import { useDocumentAutosave } from "~/Brevredigering/LetterEditor/hooks/useDocumentAutosave";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -51,11 +51,11 @@ type VedleggEditorProps = {
 };
 
 export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
-  const { saksId, brev, vedleggId } = props;
+  const { saksId, brev, vedleggId, redigeringsflate } = props;
 
   const vedleggQuery = useQuery({
-    queryKey: getRedigerbartVedlegg.queryKey(brev.info.id, vedleggId),
-    queryFn: () => getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId),
+    queryKey: getRedigerbartVedlegg.queryKey(brev.info.id, vedleggId, redigeringsflate),
+    queryFn: () => getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId, redigeringsflate),
   });
 
   if (vedleggQuery.isPending) {
@@ -69,7 +69,7 @@ export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
 };
 
 const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachment }) => {
-  const { saksId, brev, vedleggId, vedlegg } = props;
+  const { saksId, brev, vedleggId, vedlegg, redigeringsflate } = props;
   const queryClient = useQueryClient();
   const { registrerVedleggslagring, registrerTilbakestilling } = useAktivtDokument();
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
@@ -83,19 +83,24 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
   });
 
   const settVedleggICache = (oppdatert: EditAttachment) =>
-    queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId), oppdatert);
+    queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId, redigeringsflate), oppdatert);
 
   // The side panel list only carries the title, and fetching it makes the backend re-render every
   // stored vedlegg — far too heavy to repeat on each autosave. Patch the cached title instead.
   const settTittelICache = (oppdatert: EditAttachment) =>
-    queryClient.setQueryData<RedigerbartVedleggInfo[]>(redigerbareVedleggKeys.liste(brev.info.id), (liste) =>
-      liste?.map((v) => (v.vedleggId === vedleggId ? { ...v, tittel: formaterVedleggtittel(oppdatert) } : v)),
+    queryClient.setQueryData<RedigerbartVedleggInfo[]>(
+      redigerbareVedleggKeys.liste(brev.info.id, redigeringsflate),
+      (liste) =>
+        liste?.map((v) => (v.vedleggId === vedleggId ? { ...v, tittel: formaterVedleggtittel(oppdatert) } : v)),
     );
+
+  const pdfQuery = redigeringsflate === "attestant-redigering" ? hentPdfForAttestering : hentPdfForBrev;
 
   const { lagringFeilet, lagreNaa, medLagringPaaPause } = useDocumentAutosave<EditedDocument, EditAttachment>({
     content: editorState.redigertBrev,
     saveStatus: editorState.saveStatus,
-    mutationFn: (dokument) => lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, tilVedlegg(dokument)),
+    mutationFn: (dokument) =>
+      lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, tilVedlegg(dokument), redigeringsflate),
     onSaveStart: () => setEditorState((s) => ({ ...s, saveStatus: "SAVE_PENDING" })),
     onSaveSuccess: (lagretVedlegg) => {
       const lagretDokument: EditedDocument = {
@@ -119,7 +124,7 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
       });
       settVedleggICache(lagretVedlegg);
       settTittelICache(lagretVedlegg);
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
+      queryClient.resetQueries({ queryKey: pdfQuery.queryKey(brev.info.id) });
     },
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });

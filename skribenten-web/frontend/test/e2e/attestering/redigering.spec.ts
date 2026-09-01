@@ -9,6 +9,8 @@ const defaultBrev = brevResponse();
 const VEDLEGG_ID = "vedlegg-om-alderspensjon";
 const VEDLEGG_TITTEL = "Opplysninger om alderspensjon";
 const VEDLEGG_TEKST = "Vedleggsteksten attestanten kan redigere.";
+const VEDLEGGLISTE_URL = "**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigerbareVedlegg";
+const VEDLEGG_URL = `${VEDLEGGLISTE_URL}/${VEDLEGG_ID}`;
 
 const vedlegg = {
   includeSakspart: false,
@@ -29,7 +31,7 @@ const vedlegg = {
 };
 
 const setupVedlegg = async (page: import("@playwright/test").Page) => {
-  await page.route("**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg", (route) =>
+  await page.route(VEDLEGGLISTE_URL, (route) =>
     route.fulfill({ json: [{ vedleggId: VEDLEGG_ID, tittel: VEDLEGG_TITTEL }] }),
   );
 };
@@ -143,7 +145,7 @@ test.describe("attestant redigering", () => {
     await setupVedlegg(page);
     const hendelser: string[] = [];
 
-    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, async (route) => {
+    await page.route(VEDLEGG_URL, async (route) => {
       if (route.request().method() !== "PUT") return route.fulfill({ json: vedlegg });
       hendelser.push("vedlegg-lagring");
       return route.fulfill({ json: route.request().postDataJSON().redigertVedlegg });
@@ -168,9 +170,7 @@ test.describe("attestant redigering", () => {
 
   test("viser manglende underskrift når Fortsett klikkes fra vedlegg", async ({ page }) => {
     await setupVedlegg(page);
-    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>
-      route.fulfill({ json: vedlegg }),
-    );
+    await page.route(VEDLEGG_URL, (route) => route.fulfill({ json: vedlegg }));
 
     await page.goto("/saksnummer/123456/attester/1/redigering");
     await page.getByRole("tab", { name: "Vedlegg" }).click();
@@ -182,9 +182,7 @@ test.describe("attestant redigering", () => {
 
   test("attestanten kan ikke tilbakestille brevet eller vedlegget", async ({ page }) => {
     await setupVedlegg(page);
-    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>
-      route.fulfill({ json: vedlegg }),
-    );
+    await page.route(VEDLEGG_URL, (route) => route.fulfill({ json: vedlegg }));
 
     await page.goto("/saksnummer/123456/attester/1/redigering");
     await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
@@ -199,7 +197,7 @@ test.describe("attestant redigering", () => {
     await setupVedlegg(page);
     let attesteringer = 0;
 
-    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>
+    await page.route(VEDLEGG_URL, (route) =>
       route.request().method() === "PUT"
         ? route.fulfill({ status: 500, json: "Lagring feilet" })
         : route.fulfill({ json: vedlegg }),

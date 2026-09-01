@@ -258,6 +258,7 @@ function RedigerBrev({
     saksId,
     brevId: brev.info.id,
     aktivVedleggId: aktivVedlegg,
+    redigeringsflate: "saksbehandler-redigering",
     navigateToDocument,
   });
 

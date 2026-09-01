@@ -29,8 +29,12 @@ const sidepanelStyle = css`
 `;
 
 export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: number; brevmalPanel: ReactNode }) => {
-  const { aktivtDokument, velgBrev, velgVedlegg } = useAktivtDokument();
-  const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
+  const { aktivtDokument, redigeringsflate, velgBrev, velgVedlegg } = useAktivtDokument();
+  const vedleggQuery = useRedigerbareVedlegg({
+    saksId: props.saksId,
+    brevId: props.brevId,
+    redigeringsflate,
+  });
   const [aktivTab, setAktivTab] = useState(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
 
   // Keep the tab aligned with URL-driven document changes, including normalization of an unknown vedlegg.
