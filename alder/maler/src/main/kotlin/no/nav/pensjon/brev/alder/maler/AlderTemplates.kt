@@ -56,6 +56,7 @@ import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakOmregningGjenlevende
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.AvslagForLiteTrygdetidAP
+import no.nav.pensjon.brev.alder.maler.avslag.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
@@ -69,6 +70,7 @@ import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.alder.maler.endring.EndringAvUttaksgradAuto
 import no.nav.pensjon.brev.alder.maler.endring.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonFordiOpptjeningErEndret
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonInstitusjonsopphold
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
@@ -163,12 +165,15 @@ object AlderTemplates : AllTemplates {
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
+            AvslagPaaGjenlevenderettIAlderspensjon,
             AvslagUttakFoerNormertPensjonsalder,
             AvslagUttakFoerNormertPensjonsalderAP2016,
             BekreftelseAvUtsendtKravTilUtlandet,
             EndringAvAlderspensjonPgaGarantitillegg,
             EndringAvAlderspensjonSivilstand,
             EndringAvAlderspensjonSivilstandSaerskiltSats,
+            ForespoerselOmDokumentasjonAvBotidINorgeAlder,
+            InnhentingInformasjonFraBruker,
             InnvilgelseAvAfp,
             InnvilgelseAvAfpOffentligSektor,
             InnvilgelseAvAlderspensjon,
@@ -186,6 +191,7 @@ object AlderTemplates : AllTemplates {
             VedtakAfpPrivatEndring,
             VedtakEndringAfpOffentligSektor,
             VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
+            VedtakEndringAvAlderspensjonGjenlevenderettigheter,
             VedtakEndringAvAlderspensjonInstitusjonsopphold,
             VedtakEndringAvUttaksgrad,
             VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,

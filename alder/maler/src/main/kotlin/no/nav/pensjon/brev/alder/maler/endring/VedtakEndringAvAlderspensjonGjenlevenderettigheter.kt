@@ -1,38 +1,40 @@
-package no.nav.pensjon.brev.maler.legacy.redigerbar
+package no.nav.pensjon.brev.alder.maler.endring
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.api.model.BeloepEndring.UENDRET
-import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
-import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_RED
-import no.nav.pensjon.brev.api.model.KravInitiertAv
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.felles.BeregnaPaaNytt
+import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
+import no.nav.pensjon.brev.alder.maler.felles.DuFaarHverMaaned
+import no.nav.pensjon.brev.alder.maler.felles.FlereBeregningsperioder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.InformasjonOmAlderspensjon
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
+import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
+import no.nav.pensjon.brev.alder.maler.felles.Vedtak
+import no.nav.pensjon.brev.alder.maler.felles.VedtakAlderspensjon
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegningen.vedleggOpplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP1967
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2011
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.alder.model.BeloepEndring.UENDRET
+import no.nav.pensjon.brev.alder.model.BeloepEndring.ENDR_OKT
+import no.nav.pensjon.brev.alder.model.BeloepEndring.ENDR_RED
+import no.nav.pensjon.brev.alder.model.KravInitiertAv
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.alderspensjonVedVirk.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.avdod.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.beregnetPensjonPerManedVedVirk.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.bruker.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.gjenlevendetilleggKapittel19VedVirk.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.krav.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.ytelseskomponentInformasjon.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.*
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
-import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.alderspensjonVedVirk.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.avdod.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.beregnetPensjonPerManedVedVirk.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.bruker.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.gjenlevendetilleggKapittel19VedVirk.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.krav.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.ytelseskomponentInformasjon.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonGjenlevenderettigheterDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -68,7 +70,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT
+    override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
@@ -480,7 +482,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon, pesysData.alderspensjonVedVirk.totalPensjon))
+            includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon.greaterThan(1), pesysData.alderspensjonVedVirk.totalPensjon))
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967, AP2011, AP2016)) {
                 paragraph {
@@ -774,9 +776,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 )
             }
 
-            includePhrase(Felles.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
-            includePhrase(Felles.HarDuSpoersmaal.alder)
+            includePhrase(RettTilAAKlage)
+            includePhrase(RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(HarDuSpoersmaal.alder)
         }
         includeAttachment(
             vedleggOrienteringOmRettigheterOgPlikter,

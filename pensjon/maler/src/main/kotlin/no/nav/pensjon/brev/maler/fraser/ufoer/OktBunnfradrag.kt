@@ -192,15 +192,15 @@ object OktBunnfradrag {
                                         nynorsk { +"Månadleg reduksjon " },
                                     )
                                 }
-                                showIf(data.barnetillegg.isNull() and data.gjenlevendetillegg.isNull()) {
+                                showIf(data.barnetillegg.isNull()) {
                                     text(
                                         bokmal { +"i uføretrygd ut 2026 " },
                                         nynorsk { +"i uføretrygd ut 2026 " },
                                     )
                                 }.orShow {
                                     text(
-                                        bokmal { +"i uføretrygd og tillegg ut 2026 " },
-                                        nynorsk { +"i uføretrygd og tillegg ut 2026 " },
+                                        bokmal { +"i uføretrygd og barnetillegg ut 2026 " },
+                                        nynorsk { +"i uføretrygd og barnetillegg ut 2026 " },
                                     )
                                 }
                             }

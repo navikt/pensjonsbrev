@@ -1,12 +1,12 @@
-package no.nav.pensjon.brev.fixtures.redigerbar
+package no.nav.pensjon.brev.alder.maler.avslag
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.pensjon.brev.api.model.BeloepEndring
-import no.nav.pensjon.brev.api.model.KravInitiertAv
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDto
-import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
-import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.alder.maler.sivilstand.createMaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.model.BeloepEndring
+import no.nav.pensjon.brev.alder.model.KravInitiertAv
+import no.nav.pensjon.brev.alder.model.avslag.AvslagPaaGjenlevenderettIAlderspensjonDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 
@@ -51,6 +51,6 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
         ),
         dineRettigheterOgMulighetTilAaKlage = createDineRettigheterOgMulighetTilAaKlageDto(),
         maanedligPensjonFoerSkatt = createMaanedligPensjonFoerSkatt(),
-        maanedligPensjonFoerSkattAP2025 = createMaanedligPensjonFoerSkattAP2025()
+        maanedligPensjonFoerSkattAP2025 = createMaanedligPensjonFoerSkattAP2025Dto()
     )
 )
