@@ -226,6 +226,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     saksId: props.saksId,
     brevId: props.brev.info.id,
     aktivVedleggId: aktivVedlegg,
+    redigeringsflate: "attestant-redigering",
     navigateToDocument,
   });
   const showDebug = useSearch({

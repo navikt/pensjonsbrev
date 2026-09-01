@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
+import { type Redigeringsflate } from "~/utils/editorTracking";
 
 /**
  * Handles document switching and ensures the active vedlegg is saved before navigation.
@@ -9,10 +10,11 @@ export const useAktivtDokumentController = (args: {
   saksId: string;
   brevId: number;
   aktivVedleggId: string | undefined;
+  redigeringsflate: Redigeringsflate;
   navigateToDocument: (vedleggId: string | undefined) => Promise<void>;
 }) => {
-  const { saksId, brevId, aktivVedleggId, navigateToDocument } = args;
-  const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId });
+  const { saksId, brevId, aktivVedleggId, redigeringsflate, navigateToDocument } = args;
+  const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const lagreAktivtVedleggRef = useRef<(() => Promise<void>) | null>(null);
   const [lagrerAktivtDokument, setLagrerAktivtDokument] = useState(false);
 

@@ -16,7 +16,11 @@ export const BrevOgVedleggEditor = (props: {
   renderBrev: () => ReactNode;
 }) => {
   const { aktivtDokument, redigeringsflate } = useAktivtDokument();
-  const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brev.info.id });
+  const vedleggQuery = useRedigerbareVedlegg({
+    saksId: props.saksId,
+    brevId: props.brev.info.id,
+    redigeringsflate,
+  });
 
   if (aktivtDokument.type === "brev") {
     return props.renderBrev();

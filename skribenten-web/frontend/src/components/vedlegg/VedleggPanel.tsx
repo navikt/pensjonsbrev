@@ -7,8 +7,13 @@ import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedleg
  * Lists editable vedlegg and switches the editor to the selected one.
  */
 export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
-  const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useAktivtDokument();
-  const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
+  const { aktivtDokument, kanTilbakestille, redigeringsflate, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } =
+    useAktivtDokument();
+  const vedleggQuery = useRedigerbareVedlegg({
+    saksId: props.saksId,
+    brevId: props.brevId,
+    redigeringsflate,
+  });
 
   if (vedleggQuery.isPending) {
     return <Loader size="small" title="Henter vedlegg" />;
