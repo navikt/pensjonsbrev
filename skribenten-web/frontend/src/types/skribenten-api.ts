@@ -3206,10 +3206,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Tar imot toggle-navnet uten prefiks ("featureName"). UnleashService legger på
-         *     pensjonsbrev.skribenten.-prefikset, så frontend skal ikke ha noe forhold til det.
-         */
+        /** UnleashService legger automatisk på "pensjonsbrev.skribenten."-prefikset */
         get: {
             parameters: {
                 query?: never;
@@ -4074,8 +4071,216 @@ export interface components {
             timestamp: string;
             vellykket: boolean;
         };
+        /**
+         * ContentIndexType
+         * @enum {string}
+         */
+        ContentIndexType: "BLOCK" | "BLOCK_CONTENT" | "ITEM" | "ITEM_CONTENT" | "TABLE_ROW" | "TABLE_CELL" | "TABLE_CELL_CONTENT";
+        /** ContentIndexBlockContentIndex */
+        ContentIndexBlockContentIndex: {
+            blockIndex: number;
+            contentIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "BLOCK_CONTENT";
+        };
+        /** ContentIndexBlockIndex */
+        ContentIndexBlockIndex: {
+            blockIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "BLOCK";
+        };
+        /** ContentIndexItemContentIndex */
+        ContentIndexItemContentIndex: {
+            blockIndex: number;
+            contentIndex: number;
+            itemContentIndex: number;
+            itemIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "ITEM_CONTENT";
+        };
+        /** ContentIndexItemIndex */
+        ContentIndexItemIndex: {
+            blockIndex: number;
+            contentIndex: number;
+            itemIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "ITEM";
+        };
+        /** ContentIndexTableCellContentIndex */
+        ContentIndexTableCellContentIndex: {
+            blockIndex: number;
+            cellContentIndex: number;
+            cellIndex: number;
+            contentIndex: number;
+            rowIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE_CELL_CONTENT";
+        };
+        /** ContentIndexTableCellIndex */
+        ContentIndexTableCellIndex: {
+            blockIndex: number;
+            cellIndex: number;
+            contentIndex: number;
+            rowIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE_CELL";
+        };
+        /** ContentIndexTableRowIndex */
+        ContentIndexTableRowIndex: {
+            blockIndex: number;
+            contentIndex: number;
+            rowIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE_ROW";
+        };
+        /** ContentIndex */
+        ContentIndex: components["schemas"]["ContentIndexBlockContentIndex"] | components["schemas"]["ContentIndexBlockIndex"] | components["schemas"]["ContentIndexItemContentIndex"] | components["schemas"]["ContentIndexItemIndex"] | components["schemas"]["ContentIndexTableCellContentIndex"] | components["schemas"]["ContentIndexTableCellIndex"] | components["schemas"]["ContentIndexTableRowIndex"];
+        /** DiffSegment */
+        DiffSegment: {
+            endOffset: number;
+            index: components["schemas"]["ContentIndex"];
+            startOffset: number;
+        };
+        /**
+         * DiffBrevHandlerResponseType
+         * @enum {string}
+         */
+        DiffBrevHandlerResponseType: "UNIFIED" | "SPLIT";
+        /** DiffBrevHandlerResponseSplit */
+        DiffBrevHandlerResponseSplit: {
+            deletes: components["schemas"]["DiffSegment"][];
+            inserts: components["schemas"]["DiffSegment"][];
+            rendretBrev: components["schemas"]["EditLetter"];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "SPLIT";
+        };
+        /** UnifiedDiffDeletedTextSegment */
+        UnifiedDiffDeletedTextSegment: {
+            endOffset: number;
+            startOffset: number;
+            text: string;
+        };
+        /** UnifiedDiffTextSegment */
+        UnifiedDiffTextSegment: {
+            endOffset: number;
+            startOffset: number;
+        };
+        /** UnifiedDiffTextEdit */
+        UnifiedDiffTextEdit: {
+            deletes: components["schemas"]["UnifiedDiffDeletedTextSegment"][];
+            inserts: components["schemas"]["UnifiedDiffTextSegment"][];
+        };
+        /** UnifiedDiffTextOnlyEdit */
+        UnifiedDiffTextOnlyEdit: {
+            deletedContent: {
+                [key: string]: components["schemas"]["EditParagraphContentText"][];
+            };
+            textEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffTextEdit"];
+            };
+        };
+        /**
+         * UnifiedDiffContentEditType
+         * @enum {string}
+         */
+        UnifiedDiffContentEditType: "TEXT" | "ITEM_LIST" | "TABLE";
+        /** UnifiedDiffContentEditItemListEdit */
+        UnifiedDiffContentEditItemListEdit: {
+            deletedItems: {
+                [key: string]: components["schemas"]["EditParagraphContentItemListItem"][];
+            };
+            itemEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffTextOnlyEdit"];
+            };
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "ITEM_LIST";
+        };
+        /** UnifiedDiffRowEdit */
+        UnifiedDiffRowEdit: {
+            cellEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffTextOnlyEdit"];
+            };
+            deletedCells: {
+                [key: string]: components["schemas"]["EditParagraphContentTableCell"][];
+            };
+        };
+        /** UnifiedDiffContentEditTableEdit */
+        UnifiedDiffContentEditTableEdit: {
+            deletedRows: {
+                [key: string]: components["schemas"]["EditParagraphContentTableRow"][];
+            };
+            rowEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffRowEdit"];
+            };
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE";
+        };
+        /** UnifiedDiffContentEditTextContentEdit */
+        UnifiedDiffContentEditTextContentEdit: {
+            edit: components["schemas"]["UnifiedDiffTextEdit"];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TEXT";
+        };
+        /** UnifiedDiffContentEdit */
+        UnifiedDiffContentEdit: components["schemas"]["UnifiedDiffContentEditItemListEdit"] | components["schemas"]["UnifiedDiffContentEditTableEdit"] | components["schemas"]["UnifiedDiffContentEditTextContentEdit"];
+        /** UnifiedDiffBlockEdit */
+        UnifiedDiffBlockEdit: {
+            contentEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffContentEdit"];
+            };
+            deletedContent: {
+                [key: string]: components["schemas"]["EditParagraphContent"][];
+            };
+        };
+        /** DiffBrevHandlerResponseUnified */
+        DiffBrevHandlerResponseUnified: {
+            deletedBlocks: {
+                [key: string]: components["schemas"]["EditBlock"][];
+            };
+            editedBlocks: {
+                [key: string]: components["schemas"]["UnifiedDiffBlockEdit"];
+            };
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "UNIFIED";
+        };
         /** DiffBrevHandlerResponse */
-        DiffBrevHandlerResponse: Record<string, never>;
+        DiffBrevHandlerResponse: components["schemas"]["DiffBrevHandlerResponseSplit"] | components["schemas"]["DiffBrevHandlerResponseUnified"];
         /**
          * SamhandlerTypeCode
          * @enum {string}
@@ -4306,6 +4511,30 @@ export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
 export type ApiOppdaterFoerstesideRequest = components['schemas']['ApiOppdaterFoerstesideRequest'];
 export type Duration = components['schemas']['Duration'];
 export type ApiReservasjonResponse = components['schemas']['ApiReservasjonResponse'];
+export type ContentIndexType = components['schemas']['ContentIndexType'];
+export type ContentIndexBlockContentIndex = components['schemas']['ContentIndexBlockContentIndex'];
+export type ContentIndexBlockIndex = components['schemas']['ContentIndexBlockIndex'];
+export type ContentIndexItemContentIndex = components['schemas']['ContentIndexItemContentIndex'];
+export type ContentIndexItemIndex = components['schemas']['ContentIndexItemIndex'];
+export type ContentIndexTableCellContentIndex = components['schemas']['ContentIndexTableCellContentIndex'];
+export type ContentIndexTableCellIndex = components['schemas']['ContentIndexTableCellIndex'];
+export type ContentIndexTableRowIndex = components['schemas']['ContentIndexTableRowIndex'];
+export type ContentIndex = components['schemas']['ContentIndex'];
+export type DiffSegment = components['schemas']['DiffSegment'];
+export type DiffBrevHandlerResponseType = components['schemas']['DiffBrevHandlerResponseType'];
+export type DiffBrevHandlerResponseSplit = components['schemas']['DiffBrevHandlerResponseSplit'];
+export type UnifiedDiffDeletedTextSegment = components['schemas']['UnifiedDiffDeletedTextSegment'];
+export type UnifiedDiffTextSegment = components['schemas']['UnifiedDiffTextSegment'];
+export type UnifiedDiffTextEdit = components['schemas']['UnifiedDiffTextEdit'];
+export type UnifiedDiffTextOnlyEdit = components['schemas']['UnifiedDiffTextOnlyEdit'];
+export type UnifiedDiffContentEditType = components['schemas']['UnifiedDiffContentEditType'];
+export type UnifiedDiffContentEditItemListEdit = components['schemas']['UnifiedDiffContentEditItemListEdit'];
+export type UnifiedDiffRowEdit = components['schemas']['UnifiedDiffRowEdit'];
+export type UnifiedDiffContentEditTableEdit = components['schemas']['UnifiedDiffContentEditTableEdit'];
+export type UnifiedDiffContentEditTextContentEdit = components['schemas']['UnifiedDiffContentEditTextContentEdit'];
+export type UnifiedDiffContentEdit = components['schemas']['UnifiedDiffContentEdit'];
+export type UnifiedDiffBlockEdit = components['schemas']['UnifiedDiffBlockEdit'];
+export type DiffBrevHandlerResponseUnified = components['schemas']['DiffBrevHandlerResponseUnified'];
 export type DiffBrevHandlerResponse = components['schemas']['DiffBrevHandlerResponse'];
 export type SamhandlerTypeCode = components['schemas']['SamhandlerTypeCode'];
 export type FinnSamhandlerRequestDtoDirekteOppslag = components['schemas']['FinnSamhandlerRequestDtoDirekteOppslag'];
