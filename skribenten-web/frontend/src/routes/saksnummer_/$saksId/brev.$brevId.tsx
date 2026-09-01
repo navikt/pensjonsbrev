@@ -17,6 +17,10 @@ import { InsertedTekstValgHighlightProvider } from "~/Brevredigering/LetterEdito
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
+import { AktivtDokumentProvider } from "~/components/brevOgVedlegg/AktivtDokumentContext";
+import { BrevOgVedleggEditor } from "~/components/brevOgVedlegg/BrevOgVedleggEditor";
+import { BrevOgVedleggEditorSidepanel } from "~/components/brevOgVedlegg/BrevOgVedleggEditorSidepanel";
+import { useAktivtDokumentController } from "~/components/brevOgVedlegg/useAktivtDokumentController";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
@@ -26,10 +30,6 @@ import {
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import { BrevEditorSidepanel } from "~/components/vedlegg/BrevEditorSidepanel";
-import { BrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditor";
-import { BrevOgVedleggEditorProvider } from "~/components/vedlegg/BrevOgVedleggEditorContext";
-import { useVedleggEditorController } from "~/components/vedlegg/useVedleggEditorController";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -254,7 +254,7 @@ function RedigerBrev({
     (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
     [navigate],
   );
-  const dokumentEditor = useVedleggEditorController({
+  const dokumentEditor = useAktivtDokumentController({
     saksId,
     brevId: brev.info.id,
     aktivVedleggId: aktivVedlegg,
@@ -420,7 +420,7 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <BrevOgVedleggEditorProvider
+            <AktivtDokumentProvider
               aktivVedleggId={dokumentEditor.aktivVedleggId}
               onVelgDokument={dokumentEditor.velgDokument}
               redigeringsflate="saksbehandler-redigering"
@@ -451,7 +451,7 @@ function RedigerBrev({
                 }
                 bottomJustify="space-between"
                 left={
-                  <BrevEditorSidepanel
+                  <BrevOgVedleggEditorSidepanel
                     brevId={brev.info.id}
                     brevmalPanel={
                       <VStack gap="space-12">
@@ -490,7 +490,7 @@ function RedigerBrev({
                 }
                 rightColumnWidth="minmax(640px, 694px)"
               />
-            </BrevOgVedleggEditorProvider>
+            </AktivtDokumentProvider>
           </form>
         </VStack>
       </Box>

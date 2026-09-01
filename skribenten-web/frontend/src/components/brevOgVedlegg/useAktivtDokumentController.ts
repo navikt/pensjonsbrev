@@ -5,7 +5,7 @@ import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedleg
 /**
  * Handles document switching and ensures the active vedlegg is saved before navigation.
  */
-export const useVedleggEditorController = (args: {
+export const useAktivtDokumentController = (args: {
   saksId: string;
   brevId: number;
   aktivVedleggId: string | undefined;

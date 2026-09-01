@@ -14,8 +14,8 @@ import { useDocumentAutosave } from "~/Brevredigering/LetterEditor/hooks/useDocu
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
+import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
 import { CenteredLoader } from "~/components/CenteredLoader";
-import { useBrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditorContext";
 import TilbakestillVedleggModal from "~/components/vedlegg/TilbakestillVedleggModal";
 import { type BrevResponse, type EditAttachment, type RedigerbartVedleggInfo } from "~/types/brev";
 import { type EditedDocument } from "~/types/brevbakerTypes";
@@ -71,7 +71,7 @@ export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
 const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachment }) => {
   const { saksId, brev, vedleggId, vedlegg } = props;
   const queryClient = useQueryClient();
-  const { registrerVedleggslagring, registrerTilbakestilling } = useBrevOgVedleggEditor();
+  const { registrerVedleggslagring, registrerTilbakestilling } = useAktivtDokument();
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
   const [vilTilbakestille, setVilTilbakestille] = useState(false);
 

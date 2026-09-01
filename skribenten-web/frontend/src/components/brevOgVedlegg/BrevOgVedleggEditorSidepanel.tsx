@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Tabs } from "@navikt/ds-react";
 import { type ReactNode, useEffect, useState } from "react";
 
-import { useBrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditorContext";
+import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 import { VedleggPanel } from "~/components/vedlegg/VedleggPanel";
 
@@ -28,8 +28,8 @@ const sidepanelStyle = css`
   }
 `;
 
-export const BrevEditorSidepanel = (props: { saksId: string; brevId: number; brevmalPanel: ReactNode }) => {
-  const { aktivtDokument, velgBrev, velgVedlegg } = useBrevOgVedleggEditor();
+export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: number; brevmalPanel: ReactNode }) => {
+  const { aktivtDokument, velgBrev, velgVedlegg } = useAktivtDokument();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
   const [aktivTab, setAktivTab] = useState(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
 

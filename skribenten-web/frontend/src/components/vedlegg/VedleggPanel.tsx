@@ -1,14 +1,13 @@
 import { Alert, BodyShort, Button, ExpansionCard, HStack, Loader, VStack } from "@navikt/ds-react";
 
-import { useBrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditorContext";
+import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 
 /**
  * Lists editable vedlegg and switches the editor to the selected one.
  */
 export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
-  const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } =
-    useBrevOgVedleggEditor();
+  const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useAktivtDokument();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
 
   if (vedleggQuery.isPending) {

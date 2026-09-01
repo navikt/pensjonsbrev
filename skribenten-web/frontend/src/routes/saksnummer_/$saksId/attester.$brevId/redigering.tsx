@@ -21,6 +21,10 @@ import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
+import { AktivtDokumentProvider } from "~/components/brevOgVedlegg/AktivtDokumentContext";
+import { BrevOgVedleggEditor } from "~/components/brevOgVedlegg/BrevOgVedleggEditor";
+import { BrevOgVedleggEditorSidepanel } from "~/components/brevOgVedlegg/BrevOgVedleggEditorSidepanel";
+import { useAktivtDokumentController } from "~/components/brevOgVedlegg/useAktivtDokumentController";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { Divider } from "~/components/Divider";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
@@ -32,10 +36,6 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import { BrevEditorSidepanel } from "~/components/vedlegg/BrevEditorSidepanel";
-import { BrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditor";
-import { BrevOgVedleggEditorProvider } from "~/components/vedlegg/BrevOgVedleggEditorContext";
-import { useVedleggEditorController } from "~/components/vedlegg/useVedleggEditorController";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -206,7 +206,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
     [navigate],
   );
-  const dokumentEditor = useVedleggEditorController({
+  const dokumentEditor = useAktivtDokumentController({
     saksId: props.saksId,
     brevId: props.brev.info.id,
     aktivVedleggId: aktivVedlegg,
@@ -378,7 +378,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
         {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
 
-        <BrevOgVedleggEditorProvider
+        <AktivtDokumentProvider
           aktivVedleggId={dokumentEditor.aktivVedleggId}
           onVelgDokument={dokumentEditor.velgDokument}
           redigeringsflate="attestant-redigering"
@@ -396,7 +396,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               </Button>
             }
             left={
-              <BrevEditorSidepanel
+              <BrevOgVedleggEditorSidepanel
                 brevId={props.brev.info.id}
                 brevmalPanel={
                   <FormProvider {...form}>
@@ -484,7 +484,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             }
             reservasjon={reservasjonQuery.data}
           />
-        </BrevOgVedleggEditorProvider>
+        </AktivtDokumentProvider>
       </form>
     </VStack>
   );
