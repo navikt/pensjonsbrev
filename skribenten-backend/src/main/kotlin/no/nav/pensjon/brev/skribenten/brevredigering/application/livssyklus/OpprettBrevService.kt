@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 
-typealias FagsystemBrevdata = Api.GeneriskBrevdata
+typealias StatiskFagsystemBrevdata = Api.GeneriskBrevdata
 
 fun interface OpprettBrevService {
     suspend operator fun invoke(request: OpprettBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>

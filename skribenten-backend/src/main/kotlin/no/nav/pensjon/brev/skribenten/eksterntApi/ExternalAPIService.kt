@@ -106,7 +106,7 @@ class ExternalAPIService(
                 spraak = request.spraak.toLanguageCode(),
                 avsenderEnhetsId = request.avsenderEnhetsId,
                 saksbehandlerValg = request.saksbehandlerValg ?: SaksbehandlervalgMap(),
-                fagsystemBrevdata = request.fagsystemBrevdata,
+                statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
                 reserverForRedigering = request.reserverForRedigering ?: true
             )
         )
