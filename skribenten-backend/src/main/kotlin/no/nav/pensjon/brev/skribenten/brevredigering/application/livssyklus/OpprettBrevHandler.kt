@@ -86,6 +86,7 @@ class OpprettBrevHandler(
             saksbehandlerValg = request.saksbehandlerValg,
             redigertBrev = rendretBrev.markup.toEdit(),
             brevtype = parametre.brevtype,
+            fagsystemBrevdata = request.fagsystemBrevdata,
         )
 
         if (request.reserverForRedigering) {
