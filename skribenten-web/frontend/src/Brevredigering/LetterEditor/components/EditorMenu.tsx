@@ -5,11 +5,11 @@ import { format, isToday } from "date-fns";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { useRedigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { VerticalDivider } from "~/components/Divider";
 import EditorTableTools from "~/components/EditorTableTools";
 import { ListType } from "~/types/brevbakerTypes";
 import { formatTime } from "~/utils/dateUtils";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
@@ -54,17 +54,10 @@ type EditorMenuProps = {
   canUndo: boolean;
   canRedo: boolean;
   setVilTilbakestilleMal: (state: boolean) => void;
-  redigeringsflate: Redigeringsflate;
 };
 
-export const EditorMenu = ({
-  undo,
-  redo,
-  canUndo,
-  canRedo,
-  setVilTilbakestilleMal,
-  redigeringsflate,
-}: EditorMenuProps) => {
+export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
+  const redigeringsflate = useRedigeringsflate();
   return (
     <Box
       asChild

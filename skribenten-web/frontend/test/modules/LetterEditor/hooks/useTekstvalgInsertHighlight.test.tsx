@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBrev } from "~/api/brev-queries";
 import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
+import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
@@ -109,9 +110,9 @@ function renderHarness() {
 
   const wrapper = (props: { children: ReactNode }) => (
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-      <ManagedLetterEditorContextProvider brev={lagretBrev} redigeringsflate="saksbehandler-redigering">
-        {props.children}
-      </ManagedLetterEditorContextProvider>
+      <RedigeringsflateProvider redigeringsflate="saksbehandler-redigering">
+        <ManagedLetterEditorContextProvider brev={lagretBrev}>{props.children}</ManagedLetterEditorContextProvider>
+      </RedigeringsflateProvider>
     </QueryClientProvider>
   );
 

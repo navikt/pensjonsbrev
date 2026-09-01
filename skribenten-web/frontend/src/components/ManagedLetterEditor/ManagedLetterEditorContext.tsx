@@ -16,8 +16,8 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { normalizeDeletedArrays } from "~/Brevredigering/LetterEditor/actions/common";
 import { addHistoryEntry, type HistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { useRedigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { type BrevResponse } from "~/types/brev";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 type SaveSuccessOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
@@ -51,12 +51,9 @@ const resolveHistoryAfterSave = (
 
 const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue | null>(null);
 
-export const ManagedLetterEditorContextProvider = (props: {
-  brev: BrevResponse;
-  redigeringsflate: Redigeringsflate;
-  children: ReactNode;
-}) => {
+export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; children: ReactNode }) => {
   const queryClient = useQueryClient();
+  const redigeringsflate = useRedigeringsflate();
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
 
   const onSaveSuccess = useCallback(
@@ -65,7 +62,7 @@ export const ManagedLetterEditorContextProvider = (props: {
       queryClient.setQueryData(attesteringBrevKeys.id(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
       //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-      const pdfQuery = props.redigeringsflate === "attestant-redigering" ? hentPdfForAttestering : hentPdfForBrev;
+      const pdfQuery = redigeringsflate === "attestant-redigering" ? hentPdfForAttestering : hentPdfForBrev;
       queryClient.resetQueries({ queryKey: pdfQuery.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
         if (previousState.saveStatus === "DIRTY") {
@@ -85,7 +82,7 @@ export const ManagedLetterEditorContextProvider = (props: {
         };
       });
     },
-    [queryClient, props.brev.info.id, props.redigeringsflate],
+    [queryClient, props.brev.info.id, redigeringsflate],
   );
 
   return (

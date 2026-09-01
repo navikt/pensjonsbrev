@@ -28,6 +28,7 @@ import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmi
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
+import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
@@ -189,9 +190,11 @@ const VedtakWrapper = () => {
         },
       };
       return (
-        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur} redigeringsflate="attestant-redigering">
-          <Vedtak brev={brevUtenAttestantSignatur} doReload={hentBrevQuery.refetch} saksId={saksId} />
-        </ManagedLetterEditorContextProvider>
+        <RedigeringsflateProvider redigeringsflate="attestant-redigering">
+          <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur}>
+            <Vedtak brev={brevUtenAttestantSignatur} doReload={hentBrevQuery.refetch} saksId={saksId} />
+          </ManagedLetterEditorContextProvider>
+        </RedigeringsflateProvider>
       );
     },
   });
@@ -460,7 +463,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   brev={props.brev}
                   error={error}
                   freeze={freeze}
-                  redigeringsflate="attestant-redigering"
                   resetParentSaveError={resetSaveErrors}
                   showDebug={showDebug}
                 />

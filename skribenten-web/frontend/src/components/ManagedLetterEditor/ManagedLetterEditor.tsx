@@ -7,10 +7,10 @@ import { lagreAttestertBrevtekst, oppdaterBrev, oppdaterBrevtekst } from "~/api/
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { useRedigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse } from "~/types/brev";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 import { AUTOSAVE_TIMER } from "./autosave_timer";
 
@@ -25,9 +25,9 @@ const ManagedLetterEditor = (props: {
   error: boolean;
   resetParentSaveError?: () => void;
   showDebug?: boolean;
-  redigeringsflate: Redigeringsflate;
 }) => {
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const redigeringsflate = useRedigeringsflate();
   const { resetParentSaveError } = props;
 
   const { mutate, isError, reset } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
@@ -40,7 +40,7 @@ const ManagedLetterEditor = (props: {
       }));
 
       // Autolagring skal aldri frigi reservasjonen saksbehandler har på brevet.
-      if (props.redigeringsflate === "attestant-redigering") {
+      if (redigeringsflate === "attestant-redigering") {
         return lagreAttestertBrevtekst({
           saksId: String(stateWithCursor.info.saksId),
           brevId: props.brev.info.id,
@@ -105,7 +105,6 @@ const ManagedLetterEditor = (props: {
       editorState={editorState}
       error={props.error || isError}
       freeze={props.freeze}
-      redigeringsflate={props.redigeringsflate}
       setEditorState={setEditorState}
       showDebug={props.showDebug ?? false}
     />
