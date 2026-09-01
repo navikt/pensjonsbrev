@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.avkortetPgaRedusertTrygdetid
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.brukersMinstesats
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.endringBt
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.harGradertUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.nettoBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.nettoGjenlevendetillegg
@@ -24,7 +25,6 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.text
@@ -184,8 +184,8 @@ object ReverseringLavereMinstesats {
                         showIf(lopendeYtelse.avkortetPgaRedusertTrygdetid) {
                             paragraph {
                                 text(
-                                    bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid. Din minstesats er " + lopendeYtelse.brukersMinstesats.format(3) + " G." },
-                                    nynorsk { +"Du har avkorta uføretrygd på grunn av redusert trygdetid. Minstesatsen din er " + lopendeYtelse.brukersMinstesats.format(3) + " G." },
+                                    bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid, og minstesatsen er derfor redusert. " },
+                                    nynorsk { +"Du har avkorta uføretrygd på grunn av redusert trygdetid, og minstesatsen er derfor redusert. " },
                                 )
                             }
                         }
@@ -221,57 +221,59 @@ object ReverseringLavereMinstesats {
 
             ifNotNull(data.lopendeYtelse) { lopendeYtelse ->
                 ifNotNull(lopendeYtelse.nettoBarnetillegg) { bt ->
-                    title1 {
-                        text(
-                            bokmal { +"Endring i barnetillegg" },
-                            nynorsk { +"Endring i barnetillegg" },
-                        )
+                    showIf(lopendeYtelse.endringBt) {
+                        title1 {
+                            text(
+                                bokmal { +"Endring i barnetillegg" },
+                                nynorsk { +"Endring i barnetillegg" },
+                            )
+                        }
+                        paragraph {
+                            text(
+                                bokmal { +"Endring i minstesatsen fører til at du får en høyere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + bt.format() + "." },
+                                nynorsk { +"Endring i minstesatsen fører til at du får ei høgare utbetaling av uføretrygd. Uføretrygda blir rekna med som inntekt når vi reknar ut barnetillegg. Derfor får du ei lågare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + bt.format() + "." },
+                            )
+                        }
                     }
-                    paragraph {
-                        text(
-                            bokmal { +"Endring i minstesatsen fører til at du får en høyere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + bt.format() + "." },
-                            nynorsk { +"Endring i minstesatsen fører til at du får ei høgare utbetaling av uføretrygd. Uføretrygda blir rekna med som inntekt når vi reknar ut barnetillegg. Derfor får du ei lågare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + bt.format() + "." },
-                        )
-                    }
                 }
-
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
-                        nynorsk { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
-                    )
-                }
-
-                title1 {
-                    text(
-                        bokmal { +"Du har rett til å klage" },
-                        nynorsk { +"Du har rett til å klage" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " + "${Constants.KLAGE_URL}."
-                        },
-                        nynorsk {
-                            +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " + "${Constants.KLAGE_URL}."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"I vedlegget " },
-                        nynorsk { +"I vedlegget " },
-                    )
-                    namedReference(vedleggDineRettigheterOgPlikterUfore)
-                    text(
-                        bokmal { +" får du vite mer om hvordan du går fram for å klage." },
-                        nynorsk { +" får du vite meir om korleis du går fram for å klage." },
-                    )
-                }
-                includePhrase(Ufoeretrygd.RettTilInnsyn)
-                includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
             }
+
+            paragraph {
+                text(
+                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
+                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
+                )
+            }
+
+            title1 {
+                text(
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " + "${Constants.KLAGE_URL}."
+                    },
+                    nynorsk {
+                        +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " + "${Constants.KLAGE_URL}."
+                    },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"I vedlegget " },
+                    nynorsk { +"I vedlegget " },
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfore)
+                text(
+                    bokmal { +" får du vite mer om hvordan du går fram for å klage." },
+                    nynorsk { +" får du vite meir om korleis du går fram for å klage." },
+                )
+            }
+            includePhrase(Ufoeretrygd.RettTilInnsyn)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }
 }
