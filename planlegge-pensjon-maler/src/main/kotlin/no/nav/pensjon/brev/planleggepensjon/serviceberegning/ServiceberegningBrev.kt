@@ -8,8 +8,13 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.pesysData
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.saksbehandlerValg
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.*
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.afp
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.forventetFremtidigInntekt
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.uttaksalder
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.uttaksdato
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.aar
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.maaneder
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligTidsbegrensetOpptjeningTabell
@@ -20,6 +25,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -118,25 +124,26 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
 
 
             title1 {
-                text(bokmal { +"Månedlig pensjon før skatt ved " + redigerbarData(saksbehandlerValg.uttaksalder.aar.format()) + " år" })
-                showIf(saksbehandlerValg.uttaksalder.maaneder greaterThan 1) {
-                    text(bokmal { +" og " + redigerbarData(saksbehandlerValg.uttaksalder.maaneder.format()) + " måneder" })
-                }.orShowIf(saksbehandlerValg.uttaksalder.maaneder greaterThan 0) {
+                val uttaksalder = pesysData.uttaksalder.ifNull(saksbehandlerValg.uttaksalder)
+                text(bokmal { +"Månedlig pensjon før skatt ved " + redigerbarData(uttaksalder.aar.format()) + " år" })
+                showIf(uttaksalder.maaneder greaterThan 1) {
+                    text(bokmal { +" og " + redigerbarData(uttaksalder.maaneder.format()) + " måneder" })
+                }.orShowIf(uttaksalder.maaneder greaterThan 0) {
                     text(bokmal { +" og 1 måned" })
                 }
-                text(bokmal { +" (" + redigerbarData(saksbehandlerValg.uttaksdato) + ")" })
+                text(bokmal { +" (" + redigerbarData(pesysData.uttaksdato.ifNull(saksbehandlerValg.uttaksdato)) + ")" })
             }
-            includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(saksbehandlerValg.afp))
+            includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(pesysData.afp.ifNull(saksbehandlerValg.afp)))
 
             title1 {
                 text(bokmal { +"Opptjeningsgrunnlag i folketrygden" })
             }
 
             paragraph {
-                text(bokmal { +"Forventet fremtidig inntekt: " + redigerbarData(saksbehandlerValg.forventetFremtidigInntekt.format()) + "." })
+                text(bokmal { +"Forventet fremtidig inntekt: " + redigerbarData(pesysData.forventetFremtidigInntekt.ifNull(saksbehandlerValg.forventetFremtidigInntekt).format()) + "." })
             }
 
-            includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(saksbehandlerValg.afp))
+            includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(pesysData.afp.ifNull(saksbehandlerValg.afp)))
         }
     }
 }
