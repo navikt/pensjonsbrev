@@ -1,19 +1,20 @@
-package no.nav.pensjon.brev.maler.redigerbar
+package no.nav.pensjon.brev.alder.maler
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
+import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.InnhentingInformasjonFraBrukerDto
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -25,7 +26,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER //MF_000133
+    override val kode = Aldersbrevkoder.Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER //MF_000133
     override val template: LetterTemplate<*, InnhentingInformasjonFraBrukerDto> = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
@@ -620,7 +621,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                             + svarfristDato + " to the address below:" },
                 )
             }
-            includePhrase(Alderspensjon.Returadresse)
+            includePhrase(Returadresse)
             paragraph {
                 text(
                     bokmal { + "Dersom vi ikke mottar nødvendig dokumentasjonen innen fristen, vil saken bli avgjort med de opplysninger som foreligger. Hvis vi ikke har nok opplysninger til å behandle søknaden din, kan saken bli avslått." },
@@ -657,7 +658,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 )
             }
 
-            includePhrase(Felles.MeldeFraEndringer)
+            includePhrase(MeldeFraEndringer)
 
             paragraph {
                 text(
@@ -667,8 +668,60 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 )
             }
 
-            includePhrase(Felles.HarDuSpoersmaal.alder)
+            includePhrase(HarDuSpoersmaal.alder)
         }
     }
 
+}
+
+private object Returadresse : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                bokmal { + "Nav Familie-og pensjonsytelser" },
+                nynorsk { + "Nav Familie-og pensjonsytelser" },
+                english { + "Nav Familie-og pensjonsytelser" },
+            )
+            newline()
+            text(
+                bokmal { + "Postboks 6600 Etterstad" },
+                nynorsk { + "Postboks 6600 Etterstad" },
+                english { + "Postboks 6600 Etterstad" },
+            )
+            newline()
+            text(
+                bokmal { + "0607 Oslo" },
+                nynorsk { + "0607 Oslo" },
+                english { + "0607 Oslo" }
+            )
+            newline()
+            text(
+                bokmal { + "NORGE" },
+                nynorsk { + "NORGE" },
+                english { + "NORGE" },
+            )
+        }
+    }
+}
+
+private object MeldeFraEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                bokmal { + "Meld fra om endringer" },
+                nynorsk { + "Meld frå om endringar" },
+                english { + "Duty to report changes" },
+            )
+        }
+        paragraph {
+            text(
+                bokmal { + "Du må melde fra til oss med en gang hvis det skjer endringer som kan ha betydning for saken din, " +
+                        "for eksempel ved endring av sivilstand eller ved flytting." },
+                nynorsk { + "Du må melde frå til oss med ein gong dersom det skjer endringar som kan ha noko å seie for saka din, " +
+                        "for eksempel ved endring av sivilstand eller ved flytting." },
+                english { + "You must notify us immediately if there are any changes that may affect your case, " +
+                        "such as a change in your marital status or if you move." },
+            )
+        }
+    }
 }

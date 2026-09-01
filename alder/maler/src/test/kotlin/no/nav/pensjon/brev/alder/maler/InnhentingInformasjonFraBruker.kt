@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.alder.model.InnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
 
 fun createInnhentingInformasjonFraBrukerDto() =
     InnhentingInformasjonFraBrukerDto(
