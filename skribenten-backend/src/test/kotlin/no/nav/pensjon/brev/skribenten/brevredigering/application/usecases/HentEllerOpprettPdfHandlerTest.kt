@@ -9,6 +9,7 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevPdfService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.brev.BrevLandmodell.Landkode
@@ -262,21 +263,23 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev(brevkode = Testbrevkoder.P1).resultOrFail()
 
         val handler = HentEllerOpprettPdfHandler(
-            brevdataService = brevdataService,
-            renderService = RenderService(brevbakerService),
-            brevmalService = brevmalService,
-            hentP1DataHandler = hentP1DataHandler,
-            genererFoerstesideHandler = GenererFoerstesideHandler(
-                FoerstesidegeneratorClient(
-                    config = OboClientConfig(url = "http://localhost", scope = "test"),
-                    authService = FakeAuthService,
-                    clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
-                )
+            brevPdfService = BrevPdfService(
+                brevdataService = brevdataService,
+                renderService = RenderService(brevbakerService),
+                brevmalService = brevmalService,
+                hentP1DataHandler = hentP1DataHandler,
+                genererFoerstesideHandler = GenererFoerstesideHandler(
+                    FoerstesidegeneratorClient(
+                        config = OboClientConfig(url = "http://localhost", scope = "test"),
+                        authService = FakeAuthService,
+                        clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
+                    )
+                ),
+                pdfVedleggAppender = object : PDFVedleggAppender {
+                    override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
+                }
             ),
             database = SharedPostgres.database,
-            pdfVedleggAppender = object : PDFVedleggAppender {
-                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
-            }
         )
         assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {
             assertThat(it.document.pdf).isEqualTo(stagetPDF)

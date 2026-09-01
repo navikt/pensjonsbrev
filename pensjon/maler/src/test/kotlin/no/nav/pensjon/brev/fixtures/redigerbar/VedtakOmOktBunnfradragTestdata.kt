@@ -30,6 +30,7 @@ fun createVedtakOmOktBunnfradragData() =
         venteperiodeEtterGradsokning = true,
         vektetFribelop = 0.7,
         vektetFribelopKr = Kroner(95584),
+        normertPensjonsdatoFor2028 = false,
         scenario1_1G = false,
         scenario2_1G_04G = null,/*Scenario2_1G_04G(
             dato04G = LocalDate.of(2026, 6, 1),
