@@ -63,11 +63,12 @@ const withProvider = (
 const diffTouchingFirstLiteral: UnifiedLetterDiff = {
   editedBlocks: {
     0: {
-      contentEdits: { 0: { edit: { inserts: [{ startOffset: 0, endOffset: 6 }], deletes: [] } } },
+      contentEdits: { 0: { type: "TEXT", edit: { inserts: [{ startOffset: 0, endOffset: 6 }], deletes: [] } } },
       deletedContent: {},
     },
   },
   deletedBlocks: {},
+  type: "UNIFIED",
 };
 
 describe("diff-avslått gir uendret redigeringsflate", () => {

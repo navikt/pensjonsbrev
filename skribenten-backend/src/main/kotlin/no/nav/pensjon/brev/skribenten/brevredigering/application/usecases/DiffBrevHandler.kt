@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
@@ -21,17 +23,26 @@ class DiffBrevHandler(
     database: Database,
 ) : TransactionHandler<DiffBrevHandler.Request, DiffBrevHandler.Response, Nothing>(database) {
 
-    sealed class Response {
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(value = Response.Unified::class, name = "UNIFIED"),
+        JsonSubTypes.Type(value = Response.Split::class, name = "SPLIT"),
+    )
+    sealed class Response(val type: Type) {
+        enum class Type {
+            UNIFIED, SPLIT,
+        }
+
         data class Unified(
             val editedBlocks: Map<Int, BlockEdit>,
             val deletedBlocks: Map<Int, List<Edit.Block>>,
-        ) : Response()
+        ): Response(Type.UNIFIED)
 
         data class Split(
             val inserts: List<DiffSegment>,
             val deletes: List<DiffSegment>,
             val rendretBrev: Edit.Letter,
-        ) : Response()
+        ): Response(Type.SPLIT)
     }
 
     data class Request(
