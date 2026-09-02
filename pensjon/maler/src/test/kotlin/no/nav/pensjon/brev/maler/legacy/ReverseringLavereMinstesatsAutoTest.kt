@@ -29,9 +29,7 @@ class ReverseringLavereMinstesatsAutoTest {
     private fun ikkeOpphoerDto() =
         ReverseringLavereMinstesatsAutoDto(
             data = ReverseringLavereMinstesatsDto(
-                opphortYtelse = OpphortYtelse(
-                    opphorsdato = LocalDate.of(2026, 10, 1)
-                ),
+                opphortYtelse = null,
                 lopendeYtelse = LopendeYtelse(
                     nettoTotal = Kroner(32000),
                     nettoUforetrygd = Kroner(26000),
