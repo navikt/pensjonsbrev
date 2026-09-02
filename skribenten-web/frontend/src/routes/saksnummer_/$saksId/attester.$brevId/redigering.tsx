@@ -1,6 +1,19 @@
+import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
+import {
+  BodyShort,
+  Box,
+  Button,
+  Heading,
+  Hide,
+  HStack,
+  Label,
+  Loader,
+  LocalAlert,
+  Switch,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -10,13 +23,11 @@ import { z } from "zod";
 
 import { getBrevAttestering, getBrevReservasjon } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
+import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmit";
-import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
-import { createLetterSnapshot } from "~/Brevredigering/LetterEditor/history";
-import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
-import { InsertedTekstValgHighlightProvider } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
+import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
@@ -32,6 +43,7 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
+import { useAttestantLetterDiff } from "~/hooks/useAttestantLetterDiff";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -55,6 +67,10 @@ const vedtakSidemenySchema = z.object({
 });
 
 type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
+
+const diffAlertTitleStyle = css`
+  font-size: var(--ax-font-size-small);
+`;
 
 const queryRetries = 3;
 const shouldSkipRetry = (status: number | undefined) =>
@@ -173,7 +189,7 @@ const VedtakWrapper = () => {
         },
       };
       return (
-        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur}>
+        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur} redigeringsflate="attestant-redigering">
           <Vedtak brev={brevUtenAttestantSignatur} doReload={hentBrevQuery.refetch} saksId={saksId} />
         </ManagedLetterEditorContextProvider>
       );
@@ -190,16 +206,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
 
-  const { highlightedIds: highlightedInsertedTekstvalgIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
-    lagretRedigertBrev: props.brev.redigertBrev,
-    editorState,
-    setEditorState,
-  });
-
   const showDebug = useSearch({
     strict: false,
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
+
+  const diffFeatureToggle = useQuery(getFeatureToggle("diff"));
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(props.brev.info.id),
@@ -213,6 +225,19 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     currentUserNavIdent: currentUser?.navident,
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
+
+  const attestantDiff = useAttestantLetterDiff({
+    brevId: props.brev.info.id,
+    savedLetter: editorState.redigertBrev,
+    savedHash: editorState.redigertBrevHash,
+    isSaved: editorState.saveStatus === "SAVED",
+  });
+
+  // The diff decorations belong to the latest saved letter and are removed as soon as editing begins.
+  const { disableDiff } = attestantDiff;
+  useEffect(() => {
+    if (editorState.saveStatus === "DIRTY") disableDiff();
+  }, [disableDiff, editorState.saveStatus]);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -232,13 +257,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     form,
     redigertBrev: editorState.redigertBrev,
     propertyUsage: props.brev.propertyUsage ?? undefined,
-  });
-
-  const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
-    saksId: props.saksId,
-    brevId: props.brev.info.id,
-    setEditorState,
-    onSaveSuccess,
   });
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterAttesteringRequest>({
@@ -261,27 +279,22 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     },
   });
 
-  const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
+  const onSubmit = (onSuccess?: () => void) => {
     attesterMutation.reset();
-    oppdaterBrevMutation.reset();
     attesterMutation.mutate(
       {
-        saksbehandlerValg: values.saksbehandlerValg,
         redigertBrev: editorState.redigertBrev,
       },
       { onSuccess: onSuccess },
     );
   };
 
-  const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
-  const error = oppdaterBrevMutation.isError || attesterMutation.isError;
+  const freeze = attesterMutation.isPending;
+  const error = attesterMutation.isError;
 
   const resetSaveErrors = useCallback(() => {
     attesterMutation.reset();
-    oppdaterBrevMutation.reset();
-  }, [attesterMutation.reset, oppdaterBrevMutation.reset]);
-
-  // TODO: disable BrevmalAlternativer during SAVE_PENDING
+  }, [attesterMutation.reset]);
 
   useEffect(() => {
     form.reset({
@@ -323,7 +336,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     });
   };
 
-  const submitAttest = (values: VedtakSidemenyFormData) => onSubmit(values, proceedToForhandsvisning);
+  const submitAttest = () => onSubmit(proceedToForhandsvisning);
 
   const { guardedSubmit, warnModalProps } = useGuardedFormSubmit({
     form,
@@ -372,6 +385,53 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <Hide above="sm" asChild>
                     <Switch size="small">Vis slettet tekst</Switch>
                   </Hide>
+                  {diffFeatureToggle.data?.enabled === true && (
+                    <>
+                      <Switch
+                        checked={attestantDiff.enabled}
+                        onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
+                        size="small"
+                      >
+                        Marker tekst som er lagt til og slettet
+                      </Switch>
+                      {attestantDiff.status === "ready" && (
+                        <VStack gap="space-4">
+                          <BodyShort size="small">
+                            <span className="attestant-diff-inserted">Slik vises ord som er lagt til manuelt</span>
+                          </BodyShort>
+                          <BodyShort size="small">
+                            <span className="attestant-diff-deleted">Slik vises ord som er slettet manuelt</span>
+                          </BodyShort>
+                        </VStack>
+                      )}
+                      {attestantDiff.status === "loading" && (
+                        <HStack align="center" gap="space-8">
+                          <Loader size="small" title="Markerer endringer" />
+                          <BodyShort size="small">Markerer endringer ...</BodyShort>
+                        </HStack>
+                      )}
+                      {attestantDiff.status === "error" && (
+                        <LocalAlert size="small" status="error">
+                          <LocalAlert.Header>
+                            <LocalAlert.Title css={diffAlertTitleStyle}>Endringene kunne ikke vises</LocalAlert.Title>
+                          </LocalAlert.Header>
+                          <LocalAlert.Content>
+                            Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
+                          </LocalAlert.Content>
+                        </LocalAlert>
+                      )}
+                      {attestantDiff.status === "empty" && (
+                        <LocalAlert size="small" status="warning">
+                          <LocalAlert.Header>
+                            <LocalAlert.Title css={diffAlertTitleStyle}>
+                              Ingen endringer fra malen ble funnet
+                            </LocalAlert.Title>
+                          </LocalAlert.Header>
+                        </LocalAlert>
+                      )}
+                    </>
+                  )}
+                  <Divider />
                   <UnderskriftTextField
                     controlled
                     error={form.formState.errors.attestantSignatur?.message}
@@ -383,15 +443,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <BrevmalAlternativer
                     brevkode={props.brev.info.brevkode}
                     propertyUsage={props.brev.propertyUsage ?? undefined}
-                    submitOnChange={() => {
-                      const updatedValg = form.getValues("saksbehandlerValg");
-                      beforeTekstvalgChange(updatedValg, editorState.redigertBrev);
-                      oppdaterBrevMutation.mutate({
-                        redigertBrev: editorState.redigertBrev,
-                        saksbehandlerValg: updatedValg,
-                        historySnapshot: createLetterSnapshot(editorState),
-                      });
-                    }}
+                    readOnly
                   />
                 </VStack>
               </VStack>
@@ -399,7 +451,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           }
           right={
             <>
-              <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
+              <AttestantDiffProvider
+                diff={attestantDiff.activeDiff}
+                diffHash={attestantDiff.diffHash}
+                disableDiff={attestantDiff.disableDiff}
+              >
                 <ManagedLetterEditor
                   brev={props.brev}
                   error={error}
@@ -408,7 +464,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   resetParentSaveError={resetSaveErrors}
                   showDebug={showDebug}
                 />
-              </InsertedTekstValgHighlightProvider>
+              </AttestantDiffProvider>
+
               {/* Modal som ikke tar opp plass i DOM her */}
               <ReservertBrevError
                 doRetry={props.doReload}

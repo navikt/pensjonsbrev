@@ -48,6 +48,7 @@ class SkjermingServiceHttp(
     override suspend fun hentSkjerming(pid: Pid): Boolean? =
         cache.cached(Cacheomraade.SKJERMING, pid, ttl = { 5.minutes }) {
             val response = client.post {
+                metricsRoute("skjerming")
                 contentType(ContentType.Application.Json)
                 setBody(mapOf("personident" to pid.value))
             }

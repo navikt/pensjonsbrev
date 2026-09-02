@@ -45,7 +45,9 @@ class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache, engine: Htt
     override suspend fun getEnhet(enhetId: EnhetId): NavEnhet =
         cache.cached(Cacheomraade.NORG, enhetId) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
-            val response = client.get("api/v1/enhet/${enhetId.value}")
+            val response = client.get("api/v1/enhet/${enhetId.value}") {
+                metricsRoute("api/v1/enhet/{enhetId}")
+            }
 
             if (response.status.isSuccess()) {
                 response.body()

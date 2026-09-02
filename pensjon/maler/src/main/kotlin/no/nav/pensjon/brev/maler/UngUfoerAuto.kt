@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.selectors.ungUfoerAutoDto.barnetillegg.*
 import no.nav.pensjon.brev.api.model.maler.selectors.ungUfoerAutoDto.innvilgetTillegg.*
 import no.nav.pensjon.brev.api.model.maler.selectors.ungUfoerAutoDto.*
-import no.nav.pensjon.brev.maler.fraser.UngUfoer
+import no.nav.pensjon.brev.maler.fraser.ufoer.UngUfoer
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.*

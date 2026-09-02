@@ -4,7 +4,7 @@ services:
     image: pensjonsbrev-pdf-bygger:latest
     build: ./brevbaker/pdf-bygger
     environment:
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Dlog4j2.configurationFile=log4j2-local.xml
+      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Dlog4j2.configurationFile=log4j2-local.xml
     ports:
       - "8081:8080"
       - "5016:5016"
@@ -12,6 +12,7 @@ services:
     environment:
       - NAIS_APP_NAME=brevbaker
       - PDF_BUILDER_URL=http://pdf-bygger:8080
+      - PDF_BYGGER_SCOPE=api://local.pensjonsbrev.pensjon-pdf-bygger/.default
       - AZURE_OPENID_CONFIG_JWKS_URI=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/discovery/v2.0/keys
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
       - AZURE_APP_CLIENT_ID=66a118a6-95db-4a64-be81-3af02048a46e

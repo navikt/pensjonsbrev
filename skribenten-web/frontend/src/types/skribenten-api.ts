@@ -2085,6 +2085,194 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sak/{saksId}/brev/{brevId}/attestering/redigertBrev": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: {
+                    frigiReservasjon?: string;
+                };
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiBrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/{brevId}/attestering/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiPdfResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sak/{saksId}/brev/{brevId}/p1": {
         parameters: {
             query?: never;
@@ -3011,6 +3199,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/features/{featureName}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tar imot toggle-navnet uten prefiks ("featureName"). UnleashService legger på
+         *     pensjonsbrev.skribenten.-prefikset, så frontend skal ikke ha noe forhold til det.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    featureName: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiFeatureToggleResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/metrics": {
         parameters: {
             query?: never;
@@ -3727,9 +3963,6 @@ export interface components {
         /** ApiOppdaterAttesteringRequest */
         ApiOppdaterAttesteringRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
-            saksbehandlerValg: {
-                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
-            };
         };
         /**
          * P1RedigerbarDtoAvslagsbegrunnelse
@@ -3955,6 +4188,10 @@ export interface components {
             id: string;
             navn: string;
         };
+        /** ApiFeatureToggleResponse */
+        ApiFeatureToggleResponse: {
+            enabled: boolean;
+        };
     };
     responses: never;
     parameters: never;
@@ -4088,5 +4325,6 @@ export type HentSamhandlerAdresseResponseDto = components['schemas']['HentSamhan
 export type ApiUserInfo = components['schemas']['ApiUserInfo'];
 export type Unit = components['schemas']['Unit'];
 export type NavAnsattEnhet = components['schemas']['NAVAnsattEnhet'];
+export type ApiFeatureToggleResponse = components['schemas']['ApiFeatureToggleResponse'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

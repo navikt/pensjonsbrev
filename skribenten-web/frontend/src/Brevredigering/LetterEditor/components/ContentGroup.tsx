@@ -12,6 +12,19 @@ import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
+import { useAttestantDiff, useDiffSegmentsForLiteral } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
+import {
+  DeletedContentAt,
+  DeletedItemContentAt,
+  DeletedItemsAt,
+} from "~/Brevredigering/LetterEditor/diff/DeletedMarkup";
+import {
+  diffSegmentSignature,
+  getEditableCharacterOffset,
+  renderDiffSegments,
+  renderPlainText,
+} from "~/Brevredigering/LetterEditor/diff/DiffSegments";
+import { diffKey } from "~/Brevredigering/LetterEditor/diff/diffModel";
 import {
   isTekstValgHighlighted,
   useInsertedTekstValgHighlight,
@@ -87,72 +100,101 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
 export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const { editorState } = useEditor();
   const contents = getContent(editorState.redigertBrev, literalIndex);
+  const isItemContainer = "itemIndex" in literalIndex;
+
+  // A deleted node is keyed by its position among the surviving siblings.
+  // Render it before the survivor at that index, or at the end when no such survivor exists.
+  const deletedAt = (contentIndex: number, trailing = false) =>
+    isItemContainer ? (
+      <DeletedItemContentAt
+        blockIndex={literalIndex.blockIndex}
+        contentIndex={literalIndex.contentIndex}
+        itemContentIndex={contentIndex}
+        itemIndex={literalIndex.itemIndex}
+        trailing={trailing}
+      />
+    ) : (
+      <DeletedContentAt blockIndex={literalIndex.blockIndex} contentIndex={contentIndex} trailing={trailing} />
+    );
 
   return (
     <>
       {contents.map((content, contentIndex) => {
         const needsWordJoiner = contentIndex > 0 && startsWithPunctuation(content);
 
-        switch (content.type) {
-          case "LITERAL": {
-            const updatedLiteralIndex =
-              "itemIndex" in literalIndex
-                ? { ...literalIndex, itemContentIndex: contentIndex }
-                : { ...literalIndex, contentIndex: contentIndex };
-            return needsWordJoiner ? (
-              <React.Fragment key={contentIndex}>
-                {WORD_JOINER}
-                <EditableText content={content} literalIndex={updatedLiteralIndex} />
-              </React.Fragment>
-            ) : (
-              <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
-            );
+        const rendered = (() => {
+          switch (content.type) {
+            case "LITERAL": {
+              const updatedLiteralIndex =
+                "itemIndex" in literalIndex
+                  ? { ...literalIndex, itemContentIndex: contentIndex }
+                  : { ...literalIndex, contentIndex: contentIndex };
+              return (
+                <>
+                  {needsWordJoiner && WORD_JOINER}
+                  <EditableText content={content} literalIndex={updatedLiteralIndex} />
+                </>
+              );
+            }
+            case "NEW_LINE":
+            case "VARIABLE": {
+              return (
+                <Text
+                  content={content}
+                  literalIndex={{
+                    blockIndex: literalIndex.blockIndex,
+                    contentIndex: contentIndex,
+                  }}
+                />
+              );
+            }
+            case "ITEM_LIST": {
+              const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
+              return (
+                <ListTag>
+                  {content.items.map((_item, itemIndex) => (
+                    <React.Fragment key={itemIndex}>
+                      <DeletedItemsAt
+                        blockIndex={literalIndex.blockIndex}
+                        contentIndex={contentIndex}
+                        itemIndex={itemIndex}
+                      />
+                      <li>
+                        <ContentGroup
+                          literalIndex={{
+                            blockIndex: literalIndex.blockIndex,
+                            contentIndex: contentIndex,
+                            itemIndex: itemIndex,
+                          }}
+                        />
+                      </li>
+                    </React.Fragment>
+                  ))}
+                  <DeletedItemsAt
+                    blockIndex={literalIndex.blockIndex}
+                    contentIndex={contentIndex}
+                    itemIndex={content.items.length}
+                    trailing
+                  />
+                </ListTag>
+              );
+            }
+            case "TABLE": {
+              return <TableView blockIndex={literalIndex.blockIndex} contentIndex={contentIndex} node={content} />;
+            }
+            default:
+              return null;
           }
-          case "NEW_LINE":
-          case "VARIABLE": {
-            return (
-              <Text
-                content={content}
-                key={contentIndex}
-                literalIndex={{
-                  blockIndex: literalIndex.blockIndex,
-                  contentIndex: contentIndex,
-                }}
-              />
-            );
-          }
-          case "ITEM_LIST": {
-            const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
-            return (
-              <ListTag key={contentIndex}>
-                {content.items.map((_item, itemIndex) => (
-                  <li key={itemIndex}>
-                    <ContentGroup
-                      literalIndex={{
-                        blockIndex: literalIndex.blockIndex,
-                        contentIndex: contentIndex,
-                        itemIndex: itemIndex,
-                      }}
-                    />
-                  </li>
-                ))}
-              </ListTag>
-            );
-          }
-          case "TABLE": {
-            return (
-              <TableView
-                blockIndex={literalIndex.blockIndex}
-                contentIndex={contentIndex}
-                key={contentIndex}
-                node={content}
-              />
-            );
-          }
-          default:
-            return null;
-        }
+        })();
+
+        return (
+          <React.Fragment key={contentIndex}>
+            {deletedAt(contentIndex)}
+            {rendered}
+          </React.Fragment>
+        );
       })}
+      {deletedAt(contents.length, true)}
     </>
   );
 }
@@ -191,6 +233,12 @@ const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement):
   return r.startOffset === 0 && r.endOffset === fullText.length;
 };
 
+const isTextMutatingKey = (event: React.KeyboardEvent<HTMLSpanElement>): boolean =>
+  !event.ctrlKey &&
+  !event.altKey &&
+  !event.metaKey &&
+  (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete" || event.key === "Enter");
+
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const pasteViaKeyboardRef = useRef(false);
@@ -198,6 +246,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
   const highlightedIds = useInsertedTekstValgHighlight();
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
+
+  const { diffHash, disableDiff } = useAttestantDiff();
+  const diffSegments = useDiffSegmentsForLiteral(literalIndex, textOf(content) || "");
+  const hasDiffDecoration = diffSegments != null;
+  const literalDiffKey = diffKey(literalIndex);
+  const diffVersion =
+    diffHash && diffSegments ? `${diffHash}:${literalDiffKey}:${diffSegmentSignature(diffSegments)}` : undefined;
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -212,7 +267,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const element = contentEditableReference.current;
     if (!element) return;
 
-    if (element.textContent !== text) {
+    if (hasDiffDecoration && diffVersion) {
+      renderDiffSegments(element, diffSegments, diffVersion);
+      return;
+    }
+
+    if (diffHash !== undefined || element.dataset.diffVersion !== undefined) {
+      // Render plain text when this literal has no active decoration, or remove stale decoration after diff mode is disabled.
+      renderPlainText(element, text);
+    } else if (element.textContent !== text) {
+      // Preserve the normal editing path when diff mode is inactive and no stale decoration remains.
       element.textContent = text;
     }
 
@@ -271,7 +335,22 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     freeze,
     setEditorState,
     erFritekst,
+    hasDiffDecoration,
+    diffSegments,
+    diffVersion,
+    diffHash,
   ]);
+
+  // Editing and diff decoration are mutually exclusive. The first edit attempt disables
+  // diff mode without changing the text, preventing decorated DOM content from being saved.
+  const handleEditIntent = () => {
+    const element = contentEditableReference.current;
+    if (!element) return;
+
+    const cursorPosition = getEditableCharacterOffset(element);
+    disableDiff();
+    applyAction(updateFocus, setEditorState, { ...literalIndex, cursorPosition });
+  };
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -553,6 +632,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnPaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
+    if (hasDiffDecoration) {
+      handleEditIntent();
+      return;
+    }
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
@@ -604,6 +687,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnInput = ({ currentTarget }: React.FormEvent<HTMLSpanElement>) => {
+    // A decorated literal contains deleted display-only text that must never be written to the letter state.
+    if (hasDiffDecoration) {
+      handleEditIntent();
+      return;
+    }
+
     const postEditCursorPosition = getCharacterOffset(currentTarget);
     applyAction(
       Actions.updateContentText,
@@ -612,6 +701,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       currentTarget.textContent ?? "",
       postEditCursorPosition,
     );
+  };
+
+  const handleBeforeInput = (event: React.FormEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    handleEditIntent();
   };
 
   const handleOnContextMenu = () => {
@@ -624,6 +718,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
     pasteViaContextMenuRef.current = false;
+
+    if (hasDiffDecoration && isTextMutatingKey(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleEditIntent();
+      return;
+    }
+
     const selection = globalThis.getSelection();
     const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
 
@@ -652,11 +754,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       return;
     }
 
-    const isEditingKey =
-      !e.ctrlKey &&
-      !e.altKey &&
-      !e.metaKey &&
-      (e.key.length === 1 || e.key === "Backspace" || e.key === "Delete" || e.key === "Enter");
+    const isEditingKey = isTextMutatingKey(e);
 
     if (isEditingKey && contentEditableReference.current) {
       const selection = globalThis.getSelection();
@@ -818,6 +916,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
       }}
       data-literal-index={JSON.stringify(literalIndex)}
+      onBeforeInput={hasDiffDecoration ? handleBeforeInput : undefined}
       onClick={handleOnClick}
       onContextMenu={handleOnContextMenu}
       onDoubleClick={handleOnDoubleClick}

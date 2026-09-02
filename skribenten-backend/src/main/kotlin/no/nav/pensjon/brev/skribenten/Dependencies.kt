@@ -21,6 +21,9 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SendBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettPdfHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevPdfService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettAttesteringPdfHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LagreAttestertBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LagreP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerHandler
@@ -148,10 +151,12 @@ fun Application.configureDependencies() {
         provide(HentBrevHandler::class)
         provide(HentBrevInfoHandler::class)
         provide(HentEllerOpprettPdfHandler::class)
+        provide(HentEllerOpprettAttesteringPdfHandler::class)
         provide(HentFavoritterHandler::class)
         provide(HentP1DataHandler::class)
         provide(HentRedigerbareVedleggHandler::class)
         provide(HentRedigertVedleggHandler::class)
+        provide(LagreAttestertBrevHandler::class)
         provide(LagreP1DataHandler::class)
         provide(LeggTilFavorittHandler::class)
         provide(OppdaterBrevHandler::class)
@@ -165,6 +170,7 @@ fun Application.configureDependencies() {
         provide(VeksleKlarStatusHandler::class)
 
         provide<PDFVedleggAppender>(PDFVedleggAppenderImpl::class)
+        provide(BrevPdfService::class)
     }
 
     launch { Features.init(dependencies.resolve()) }

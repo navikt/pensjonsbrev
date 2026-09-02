@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetali
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEtterbetalingOpphor2026RedigerbarDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEtterbetalingOpphor2026RedigerbarDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.VedtakOmEtterbetalingOpphor2026
+import no.nav.pensjon.brev.maler.fraser.ufoer.VedtakOmEtterbetalingOpphor2026
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen

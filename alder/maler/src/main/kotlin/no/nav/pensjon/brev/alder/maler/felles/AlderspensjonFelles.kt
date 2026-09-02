@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -71,13 +70,12 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 class FlereBeregningsperioder(
-    val antallPerioder: Expression<Int>,
+    val harFlerePerioder: Expression<Boolean>,
     val totalPensjon: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     // flereBeregningsperioderVedlegg_001
-    // TODO: Bør vi ikke heller her sjekke om dataene til vedlegget er med?
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(antallPerioder.greaterThan(1) and totalPensjon.greaterThan(0)) {
+        showIf(harFlerePerioder and totalPensjon.greaterThan(0)) {
             paragraph {
                 text(
                     bokmal { +"Du kan lese mer om andre beregningsperioder i vedlegget." },
@@ -207,7 +205,7 @@ data class ArbeidsinntektOgAlderspensjon(
                     },
                 )
             }
-        }.orShowIf(uttaksgrad.lessThan(100) and not(uforeKombinertMedAlder)) {
+        }.orShowIf(uttaksgrad.lessThan(100)) {
             // nyOpptjeningGradertAP
             paragraph {
                 text(

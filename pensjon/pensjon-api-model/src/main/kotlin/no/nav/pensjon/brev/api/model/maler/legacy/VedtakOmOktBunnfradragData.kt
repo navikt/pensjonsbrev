@@ -9,19 +9,24 @@ import java.time.LocalDate
 data class VedtakOmOktBunnfradragData(
     val uforetrygd: Kroner,
     val barnetillegg: Kroner?,
+    val gjenlevendetillegg: Kroner?,
     val fribelop: Kroner,
     val bunnfradrag: Kroner,
     val bunnfradrag2027: Kroner,
     val uforegrad: Int,
-    val manedligOkningUforetrygdUtAret: Kroner?,
+    val manedligOkningUforetrygdInklTilleggUtAret: Kroner,
     val okningUt: Boolean,
     val redusertBtfb: Boolean,
     val redusertBtsb: Boolean,
     val datoOkningBunnfradrag: LocalDate,
-    val nettoHarBlittLikBrutto: Boolean,
+    val nettoUtHarBlittLikBrutto: Boolean,
+    val btHarBlitt0: Boolean,
     val vektetFribelop: Double,
     val vektetFribelopKr: Kroner,
     val fribelopPerioder: List<FribelopPeriode>,
+    val venteperiodeEtterGradsokning: Boolean,
+    val normertPensjonsdatoFor2028: Boolean,
+
 
     val scenario1_1G: Boolean,
     val scenario2_1G_04G: Scenario2_1G_04G?,
@@ -46,6 +51,7 @@ data class Scenario4_04G_1G_04G(
 data class FribelopPeriode(
     val fom: LocalDate,
     val tom: LocalDate,
-    val uforegrad: Int,
-    val faktor: Double
+    val gradsokning: Boolean = false,
+    val faktor: Double,
+    val venteperiodeStartDato: LocalDate = LocalDate.of(1900, 1, 1),
 )

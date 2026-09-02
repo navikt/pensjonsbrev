@@ -22,6 +22,7 @@ import {
   type PreferredLanguage,
   type SakContextDto,
 } from "~/types/apiTypes";
+import { type ApiFeatureToggleResponse } from "~/types/skribenten-api";
 import { type AttestForbiddenReason, parseAttest403 } from "~/utils/parseAttest403";
 
 export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
@@ -57,6 +58,22 @@ export const letterKeys = {
 export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
 };
+
+export const featureToggleKeys = {
+  all: ["FEATURE_TOGGLE"] as const,
+  name: (featureName: string) => [...featureToggleKeys.all, featureName] as const,
+};
+
+export const getFeatureToggle = (featureName: string) => ({
+  queryKey: featureToggleKeys.name(featureName),
+  queryFn: async () =>
+    (
+      await axios.get<ApiFeatureToggleResponse>(
+        `${SKRIBENTEN_API_BASE_PATH}/features/${encodeURIComponent(featureName)}`,
+      )
+    ).data,
+  staleTime: Number.POSITIVE_INFINITY,
+});
 
 export const avtalelandKeys = {
   all: ["AVTALE_LAND"] as const,

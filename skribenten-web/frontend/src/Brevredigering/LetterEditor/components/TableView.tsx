@@ -1,10 +1,11 @@
 import { css } from "@emotion/react";
 import { ArrowRightLeftIcon, PlusIcon, TrashIcon } from "@navikt/aksel-icons";
 import { ActionMenu } from "@navikt/ds-react";
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { useAttestantDiff } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
+import { DeletedCellContentAt, DeletedCellsAt, DeletedRowsAt } from "~/Brevredigering/LetterEditor/diff/DeletedMarkup";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Cell as CellType, type ColumnSpec, type Table } from "~/types/brevbakerTypes";
@@ -53,10 +54,30 @@ const selectedBackgroundStyle = css`
 
 // TODO: render <ContentGroup> once that component
 // can accept TableCellIndex (rowIndex/cellIndex)
-const renderCellText = (cell: CellType, _: number, index: TableCellIndex) =>
-  cell.text.map((txt, i) => (
-    <TableCellContent content={txt} key={i} tableCellIndex={{ ...index, cellContentIndex: i }} />
-  ));
+const CellText = ({ cell, index }: { cell: CellType; index: TableCellIndex }) => (
+  <>
+    {cell.text.map((txt, i) => (
+      <React.Fragment key={i}>
+        <DeletedCellContentAt
+          blockIndex={index.blockIndex}
+          cellContentIndex={i}
+          cellIndex={index.cellIndex}
+          contentIndex={index.contentIndex}
+          rowIndex={index.rowIndex}
+        />
+        <TableCellContent content={txt} tableCellIndex={{ ...index, cellContentIndex: i }} />
+      </React.Fragment>
+    ))}
+    <DeletedCellContentAt
+      blockIndex={index.blockIndex}
+      cellContentIndex={cell.text.length}
+      cellIndex={index.cellIndex}
+      contentIndex={index.contentIndex}
+      rowIndex={index.rowIndex}
+      trailing
+    />
+  </>
+);
 
 const TableView: React.FC<{
   node: Table;
@@ -64,6 +85,7 @@ const TableView: React.FC<{
   contentIndex: number;
 }> = ({ node, blockIndex, contentIndex }) => {
   const { setEditorState } = useEditor();
+  const { diffHash, disableDiff } = useAttestantDiff();
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
   const [highlight, setHighlight] = useState<{ row: number; col: number } | null>(null);
 
@@ -85,6 +107,10 @@ const TableView: React.FC<{
         data-testid="letter-table"
         onContextMenu={(e) => {
           e.preventDefault();
+          if (diffHash !== undefined) {
+            disableDiff();
+            return;
+          }
 
           const cell = (e.target as HTMLElement).closest("td,th") as HTMLTableCellElement | null;
           if (!cell) return;
@@ -115,50 +141,92 @@ const TableView: React.FC<{
               const isHeaderHighlighted =
                 !!highlight && highlight.row === -1 && (highlight.col === -1 || highlight.col === colIndex);
               return (
-                <th
-                  css={isHeaderHighlighted && selectedBackgroundStyle}
-                  data-testid={`table-header-${colIndex}`}
-                  key={colIndex}
-                  scope="col"
-                >
-                  {renderCellText(col.headerContent, colIndex, {
-                    blockIndex,
-                    contentIndex,
-                    rowIndex: -1,
-                    cellIndex: colIndex,
-                    cellContentIndex: 0,
-                  })}
-                </th>
+                <React.Fragment key={colIndex}>
+                  <DeletedCellsAt
+                    asHeader
+                    blockIndex={blockIndex}
+                    cellIndex={colIndex}
+                    contentIndex={contentIndex}
+                    rowIndex={-1}
+                  />
+                  <th
+                    css={isHeaderHighlighted && selectedBackgroundStyle}
+                    data-testid={`table-header-${colIndex}`}
+                    scope="col"
+                  >
+                    <CellText
+                      cell={col.headerContent}
+                      index={{
+                        blockIndex,
+                        contentIndex,
+                        rowIndex: -1,
+                        cellIndex: colIndex,
+                        cellContentIndex: 0,
+                      }}
+                    />
+                  </th>
+                </React.Fragment>
               );
             })}
+            <DeletedCellsAt
+              asHeader
+              blockIndex={blockIndex}
+              cellIndex={node.header.colSpec.length}
+              contentIndex={contentIndex}
+              rowIndex={-1}
+              trailing
+            />
           </tr>
         </thead>
         <tbody>
           {node.rows.map((row, rowIndex) => {
             return (
-              <tr data-testid={`table-row-${rowIndex}`} key={rowIndex}>
-                {row.cells.map((cell, cellIndex) => {
-                  const isHighlighted =
-                    !!highlight && highlight.row === rowIndex && (highlight.col === -1 || highlight.col === cellIndex);
-                  return (
-                    <td
-                      css={isHighlighted && selectedBackgroundStyle}
-                      data-testid={`table-cell-${rowIndex}-${cellIndex}`}
-                      key={cellIndex}
-                    >
-                      {renderCellText(cell, cellIndex, {
-                        blockIndex,
-                        contentIndex,
-                        rowIndex: rowIndex,
-                        cellIndex: cellIndex,
-                        cellContentIndex: 0,
-                      })}
-                    </td>
-                  );
-                })}
-              </tr>
+              <React.Fragment key={rowIndex}>
+                <DeletedRowsAt blockIndex={blockIndex} contentIndex={contentIndex} rowIndex={rowIndex} />
+                <tr data-testid={`table-row-${rowIndex}`}>
+                  {row.cells.map((cell, cellIndex) => {
+                    const isHighlighted =
+                      !!highlight &&
+                      highlight.row === rowIndex &&
+                      (highlight.col === -1 || highlight.col === cellIndex);
+                    return (
+                      <React.Fragment key={cellIndex}>
+                        <DeletedCellsAt
+                          blockIndex={blockIndex}
+                          cellIndex={cellIndex}
+                          contentIndex={contentIndex}
+                          rowIndex={rowIndex}
+                        />
+                        <td
+                          css={isHighlighted && selectedBackgroundStyle}
+                          data-testid={`table-cell-${rowIndex}-${cellIndex}`}
+                        >
+                          <CellText
+                            cell={cell}
+                            index={{
+                              blockIndex,
+                              contentIndex,
+                              rowIndex: rowIndex,
+                              cellIndex: cellIndex,
+                              cellContentIndex: 0,
+                            }}
+                          />
+                        </td>
+                      </React.Fragment>
+                    );
+                  })}
+                  <DeletedCellsAt
+                    blockIndex={blockIndex}
+                    cellIndex={row.cells.length}
+                    contentIndex={contentIndex}
+                    rowIndex={rowIndex}
+                    trailing
+                  />
+                </tr>
+              </React.Fragment>
             );
           })}
+          <DeletedRowsAt blockIndex={blockIndex} contentIndex={contentIndex} rowIndex={node.rows.length} trailing />
         </tbody>
       </table>
 

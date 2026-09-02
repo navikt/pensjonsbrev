@@ -1,5 +1,6 @@
 app-name: "pensjon-brevbaker"
 pdf-bygger-app: "pensjon-pdf-bygger"
+pdf-bygger-scope: "api://prod-gcp.pensjonsbrev.pensjon-pdf-bygger/.default"
 ingresses:
   - "https://pensjon-brevbaker.intern.nav.no"
 

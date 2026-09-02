@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.model.toSaksbehandlerValg
@@ -230,7 +231,14 @@ fun Route.sakBrev() =
                 val brevId = call.parameters.brevId()
                 val sak: Fagsak = call.attributes[SakKey]
 
-                val result = slettBrev(SlettBrevHandler.Request(brevId = brevId, saksId = sak.saksId))
+                val result = slettBrev(
+                    SlettBrevHandler.Request(
+                        brevId = brevId,
+                        saksId = sak.saksId,
+                        pid = sak.pid,
+                        behandlingsnumre = sak.behandlingsnumre
+                    )
+                )
                 apiRespond(dto2ApiService, result)
             }
 
@@ -309,10 +317,39 @@ fun Route.sakBrev() =
                         AttesterBrevHandler.Request(
                             brevId = brevId,
                             saksId = sak.saksId,
-                            nyeSaksbehandlerValg = request.saksbehandlerValg,
                             nyttRedigertbrev = request.redigertBrev,
                             frigiReservasjon = frigiReservasjon,
                         )
+                    )
+
+                    apiRespond(dto2ApiService, resultat)
+                }
+
+                val lagreAttestertBrev: LagreAttestertBrevHandler by app.dependencies
+                put<Edit.Letter>("/redigertBrev") { request ->
+                    val brevId = call.parameters.brevId()
+                    val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
+                    val sak: Fagsak = call.attributes[SakKey]
+
+                    val resultat = lagreAttestertBrev(
+                        LagreAttestertBrevHandler.Request(
+                            brevId = brevId,
+                            saksId = sak.saksId,
+                            nyttRedigertbrev = request,
+                            frigiReservasjon = frigiReservasjon,
+                        )
+                    )
+
+                    apiRespond(dto2ApiService, resultat)
+                }
+
+                val hentEllerOpprettAttesteringPdf: HentEllerOpprettAttesteringPdfHandler by app.dependencies
+                get("/pdf") {
+                    val brevId = call.parameters.brevId()
+                    val sak: Fagsak = call.attributes[SakKey]
+
+                    val resultat = hentEllerOpprettAttesteringPdf(
+                        HentEllerOpprettAttesteringPdfHandler.Request(brevId = brevId, saksId = sak.saksId, fagsak = sak)
                     )
 
                     apiRespond(dto2ApiService, resultat)

@@ -39,13 +39,13 @@ export const getBrevVedlegg = {
     ).data,
 };
 
-export const hentPdfForBrev = {
+const pdfQuery = (keyPrefix: string, path: (saksId: string, brevId: string | number) => string) => ({
   // Når redigertBrevHash er satt, sørger den for at en cachet PDF ikke gjenbrukes for en annen versjon av brevet.
   queryKey: (brevId: number, redigertBrevHash?: string) =>
-    redigertBrevHash === undefined ? ["hentPdfForBrev", brevId] : ["hentPdfForBrev", brevId, redigertBrevHash],
+    redigertBrevHash === undefined ? [keyPrefix, brevId] : [keyPrefix, brevId, redigertBrevHash],
   queryFn: async (saksId: string, brevId: string | number) => {
     const response = await axios
-      .get<PdfResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
+      .get<PdfResponse>(`${SKRIBENTEN_API_BASE_PATH}${path(saksId, brevId)}`, {
         responseType: "json",
         headers: { Accept: "application/json" },
       })
@@ -64,7 +64,14 @@ export const hentPdfForBrev = {
       rendretBrevErEndret: response.data.rendretBrevErEndret,
     };
   },
-};
+});
+
+export const hentPdfForBrev = pdfQuery("hentPdfForBrev", (saksId, brevId) => `/sak/${saksId}/brev/${brevId}/pdf`);
+
+export const hentPdfForAttestering = pdfQuery(
+  "hentPdfForAttestering",
+  (saksId, brevId) => `/sak/${saksId}/brev/${brevId}/attestering/pdf`,
+);
 
 export const veksleKlarStatus = async (saksId: string, brevId: string | number, body: OppdaterKlarStatusRequest) =>
   (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/status`, body)).data;
@@ -111,7 +118,6 @@ export const attesterBrev = async (args: {
     await axios.put<BrevResponse>(
       `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attestering?frigiReservasjon=${frigiReservasjon}`,
       {
-        saksbehandlerValg: args.request.saksbehandlerValg,
         redigertBrev: args.request.redigertBrev,
       },
     )

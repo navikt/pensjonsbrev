@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.legacy.FribelopPeriode
-import no.nav.pensjon.brev.api.model.maler.legacy.Scenario2_1G_04G
 import no.nav.pensjon.brev.api.model.maler.legacy.Scenario4_04G_1G_04G
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragData
@@ -17,18 +16,21 @@ fun createVedtakOmOktBunnfradragData() =
     VedtakOmOktBunnfradragData(
         uforetrygd = Kroner(26000),
         barnetillegg = Kroner(4000),
+        gjenlevendetillegg = Kroner(2000),
         bunnfradrag = Kroner(200000),
         fribelop = Kroner(136549),
-        manedligOkningUforetrygdUtAret = Kroner(3500),
+        manedligOkningUforetrygdInklTilleggUtAret = Kroner(3500),
         uforegrad = 100,
         datoOkningBunnfradrag = LocalDate.of(2026, 6, 1),
         redusertBtfb = true,
         redusertBtsb = true,
         bunnfradrag2027 = Kroner(240000),
-        nettoHarBlittLikBrutto = true,
-
+        nettoUtHarBlittLikBrutto = true,
+        btHarBlitt0 = true,
+        venteperiodeEtterGradsokning = true,
         vektetFribelop = 0.7,
         vektetFribelopKr = Kroner(95584),
+        normertPensjonsdatoFor2028 = false,
         scenario1_1G = false,
         scenario2_1G_04G = null,/*Scenario2_1G_04G(
             dato04G = LocalDate.of(2026, 6, 1),
@@ -44,13 +46,11 @@ fun createVedtakOmOktBunnfradragData() =
             FribelopPeriode(
                 fom = LocalDate.of(2026, 1, 1),
                 tom = LocalDate.of(2026, 5, 31),
-                uforegrad = 80,
                 faktor = 1.0,
             ),
             FribelopPeriode(
                 fom = LocalDate.of(2026, 6, 1),
                 tom = LocalDate.of(2026, 12, 31),
-                uforegrad = 100,
                 faktor = 0.4,
             )
         ),

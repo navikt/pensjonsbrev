@@ -61,6 +61,7 @@ class SamhandlerServiceHttp(
 
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
         val response = samhandlerProxyClient.post("/api/samhandler/finnSamhandler") {
+            metricsRoute("api/samhandler/finnSamhandler")
             contentType(Json)
             accept(Json)
             setBody(lagRequest(requestDto))
@@ -76,6 +77,7 @@ class SamhandlerServiceHttp(
 
     override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto {
         val response = samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
+            metricsRoute("api/samhandler/hentSamhandlerEnkel/{idTSSEkstern}")
             url {
                 appendPathSegments(idTSSEkstern)
             }
@@ -97,6 +99,7 @@ class SamhandlerServiceHttp(
 
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String) = cache.cached(Cacheomraade.SAMHANDLER_ADRESSE, idTSSEkstern) {
         samhandlerProxyClient.get("/api/samhandler/hentSamhandlerPostadresse/") {
+            metricsRoute("api/samhandler/hentSamhandlerPostadresse/{idTSSEkstern}")
             url {
                 appendPathSegments(idTSSEkstern)
             }
@@ -113,7 +116,7 @@ class SamhandlerServiceHttp(
     }
 
     override suspend fun ping() =
-        ping("SamhandlerService") { samhandlerProxyClient.get("/api/samhandler/ping") }
+        ping("SamhandlerService") { samhandlerProxyClient.get("/api/samhandler/ping") { metricsRoute("api/samhandler/ping") } }
 
     private fun lagRequest(requestDto: FinnSamhandlerRequestDto) =
         when (requestDto) {

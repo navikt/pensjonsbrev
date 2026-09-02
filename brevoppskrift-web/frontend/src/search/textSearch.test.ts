@@ -172,23 +172,70 @@ describe("search", () => {
     expect(search(index, "the grey fo", true).content).toHaveLength(1);
   });
 
-  it("ignores Fuse extended-search syntax in exact phrases", () => {
-    const templates = [template({ id: "A1", title: "The grey fox", lines: ["The grey fox jumped over the fence."] })];
+  it("treats Fuse extended-search syntax as literal text in exact phrases", () => {
+    const templates = [
+      template({ id: "A1", title: "The grey fox", lines: ['The "grey" fox | the fence.'] }),
+      template({ id: "A2", title: "Uten spesialtegn", lines: ["The grey fox jumped over the fence."] }),
+    ];
     const index = buildIndex(templates);
 
-    const { content, brev } = search(index, 'the \\"grey\\" \\\\|fox', true);
-
-    expect(content.map((hit) => hit.template.id)).toEqual(["A1"]);
-    expect(brev.map((hit) => hit.template.id)).toEqual(["A1"]);
+    // Quotes and pipes are extended-search syntax, so they must not be parsed
+    // as operators - only the template that literally contains them matches.
+    expect(search(index, '"grey" fox | the', true).content.map((hit) => hit.template.id)).toEqual(["A1"]);
+    expect(search(index, "^fox", true).content).toEqual([]);
+    expect(search(index, "!fence", true).content).toEqual([]);
   });
 
-  it("returns no results when an exact phrase contains only Fuse delimiters", () => {
+  it("returns no results for a query of only whitespace in exact mode", () => {
     const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["Litt tekst her."] })];
     const index = buildIndex(templates);
 
-    const { content, brev } = search(index, ' "\\\\| " ', true);
+    const { content, brev } = search(index, "   ", true);
 
     expect(content).toEqual([]);
     expect(brev).toEqual([]);
+  });
+
+  describe("single-character terms", () => {
+    const templates = [
+      template({ id: "PARA_3", title: "Paragraf tre", lines: ["Dette følger av folketrygdloven paragraf 3."] }),
+      template({ id: "PARA_12", title: "Paragraf tolv", lines: ["Dette følger av folketrygdloven paragraf 12."] }),
+      template({ id: "NO_PARA", title: "Uten paragraf", lines: ["Helt urelatert tekst uten henvisning."] }),
+    ];
+
+    it("finds a line containing a single-digit term", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "paragraf 3");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["PARA_3"]);
+    });
+
+    it("finds a line containing a single-digit term when fuzzy is disabled", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "paragraf 3", true);
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["PARA_3"]);
+    });
+
+    it("requires a single-character term to occur verbatim, without fuzzy noise", () => {
+      const index = buildIndex(templates);
+
+      // "q" occurs in none of the lines; it must not fuzzy-match anything.
+      const { content } = search(index, "paragraf q");
+
+      expect(content).toEqual([]);
+    });
+
+    it("applies the same verbatim rule to brev (title/brevkode) hits", () => {
+      const index = buildIndex(templates);
+
+      const found = search(index, "paragraf 3");
+      const notFound = search(index, "paragraf q");
+
+      expect(found.brev.map((hit) => hit.template.id)).toEqual(["PARA_3"]);
+      expect(notFound.brev).toEqual([]);
+    });
   });
 });

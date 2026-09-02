@@ -12,11 +12,13 @@ export const ScalarEditor = ({
   fieldType,
   field,
   submitOnChange,
+  readOnly,
 }: {
   prependName?: string;
   field: string;
   fieldType: TScalar;
   submitOnChange?: () => void;
+  readOnly?: boolean;
 }) => {
   switch (fieldType.kind) {
     case "NUMBER": {
@@ -26,6 +28,7 @@ export const ScalarEditor = ({
           fieldType={fieldType}
           onSubmit={submitOnChange}
           prependName={prependName}
+          readOnly={readOnly}
           step={1}
           timeoutTimer={2000}
           type="number"
@@ -39,6 +42,7 @@ export const ScalarEditor = ({
           fieldType={fieldType}
           onSubmit={submitOnChange}
           prependName={prependName}
+          readOnly={readOnly}
           step={0.1}
           timeoutTimer={2500}
           type="number"
@@ -52,23 +56,44 @@ export const ScalarEditor = ({
           fieldType={fieldType}
           onSubmit={submitOnChange}
           prependName={prependName}
+          readOnly={readOnly}
           timeoutTimer={2500}
           type="text"
         />
       );
     }
     case "BOOLEAN": {
-      return <SwitchField field={field} fieldType={fieldType} onSubmit={submitOnChange} prependName={prependName} />;
+      return (
+        <SwitchField
+          field={field}
+          fieldType={fieldType}
+          onSubmit={submitOnChange}
+          prependName={prependName}
+          readOnly={readOnly}
+        />
+      );
     }
     case "DATE": {
       return (
-        <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} prependName={prependName} />
+        <ControlledDatePicker
+          field={field}
+          fieldType={fieldType}
+          onSubmit={submitOnChange}
+          prependName={prependName}
+          readOnly={readOnly}
+        />
       );
     }
   }
 };
 
-const SwitchField = (props: { prependName?: string; field: string; fieldType: TScalar; onSubmit?: () => void }) => {
+const SwitchField = (props: {
+  prependName?: string;
+  field: string;
+  fieldType: TScalar;
+  onSubmit?: () => void;
+  readOnly?: boolean;
+}) => {
   const { getFieldState, formState } = useFormContext();
   const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
   const fieldState = getFieldState(fieldName, formState);
@@ -102,6 +127,7 @@ const SwitchField = (props: { prependName?: string; field: string; fieldType: TS
               field.onChange(v.target.checked);
               props.onSubmit?.();
             }}
+            readOnly={props.readOnly}
             size="small"
           >
             {props.fieldType.displayText ?? convertFieldToReadableLabel(props.field)}
@@ -126,6 +152,7 @@ export const AutoSavingTextField = (props: {
   onSubmit?: () => void;
   label?: string;
   autocomplete?: string;
+  readOnly?: boolean;
 }) => {
   const { getFieldState, watch, formState } = useFormContext();
 
@@ -166,6 +193,7 @@ export const AutoSavingTextField = (props: {
           inputMode={props.type === "number" ? "numeric" : undefined}
           label={props.fieldType.displayText ?? props.label ?? convertFieldToReadableLabel(fieldName)}
           onChange={(e) => (e.target.value ? field.onChange(e.target.value) : field.onChange(null))}
+          readOnly={props.readOnly}
           size="small"
           step={props.step}
           value={field.value ?? ""}
@@ -211,6 +239,7 @@ const ControlledDatePicker = (props: {
   field: string;
   fieldType: TScalar;
   onSubmit?: () => void;
+  readOnly?: boolean;
 }) => {
   const {
     control,
@@ -251,6 +280,7 @@ const ControlledDatePicker = (props: {
           error={fieldState.error?.message}
           label={props.fieldType.displayText ?? convertFieldToReadableLabel(fieldName)}
           onChange={field.onChange}
+          readOnly={props.readOnly}
         />
       )}
     />
@@ -265,11 +295,13 @@ function DatePickerEditor({
   defaultValue,
   onChange,
   label,
+  readOnly,
 }: {
   error?: string;
   label: string;
   defaultValue?: string;
   onChange: (newDate: string) => void;
+  readOnly?: boolean;
 }) {
   const datepicker = useDatepicker({
     defaultSelected: defaultValue ? parseDate(defaultValue) : undefined,
@@ -286,6 +318,7 @@ function DatePickerEditor({
           {...datepicker.inputProps}
           error={error}
           label={label}
+          readOnly={readOnly}
           size="small"
         />
       </DatePicker>

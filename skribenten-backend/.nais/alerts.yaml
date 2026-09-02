@@ -49,3 +49,33 @@ spec:
             summary: "Over 10 % av kallene mot skribenten-backend gir uventet 4xx ({{ $value | humanizePercentage }})"
             consequence: "Tyder på brutt API-kontrakt mot skribenten-web, typisk etter en deploy av én av dem."
             action: "Sjekk om skribenten-web eller skribenten-backend nylig ble deployet, og hvilken rute som gir 4xx."
+
+        - alert: SkribentenNedstroemsHoeyFeilrate
+          expr: |
+            (
+              sum by (downstream_host) (rate(skribenten_http_client_requests_seconds_count{app="skribenten-backend", downstream_host!="localhost", outcome=~"server_error|timeout|connection_error|exception"}[10m]))
+              /
+              sum by (downstream_host) (rate(skribenten_http_client_requests_seconds_count{app="skribenten-backend", downstream_host!="localhost"}[10m]))
+            ) > 0.05
+            and
+            sum by (downstream_host) (increase(skribenten_http_client_requests_seconds_count{app="skribenten-backend", downstream_host!="localhost", outcome=~"server_error|timeout|connection_error|exception"}[10m])) >= 3
+          for: 10m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Over 5 % av kallene fra skribenten-backend til {{ $labels.downstream_host }} feiler ({{ $value | humanizePercentage }})"
+            consequence: "Saksbehandlere kan oppleve feil i handlinger som avhenger av {{ $labels.downstream_host }} (f.eks. henting av sak, journalpost eller personopplysninger), uten at det nødvendigvis er en feil i skribenten-backend selv."
+            action: "Sjekk status/logger for tjenesten bak {{ $labels.downstream_host }}. Bruk route-labelen på skribenten_http_client_requests_seconds for å se hvilke(n) rute(r) som rammes, og outcome-labelen for å skille mellom feilsvar (server_error) og manglende svar i det hele tatt (timeout/connection_error)."
+
+        - alert: SkribentenNedstroemsHoeyLatens
+          expr: |
+            histogram_quantile(0.95, sum by (downstream_host, le) (rate(skribenten_http_client_requests_seconds_bucket{app="skribenten-backend", downstream_host!="localhost"}[10m]))) > 10
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "p95-latens mot {{ $labels.downstream_host }} er over 10s ({{ $value | humanizeDuration }})"
+            consequence: "Saksbehandlere opplever trege handlinger. Ved lang nok latens vil kallet ende i timeout og bli en feil (fanges da også av SkribentenNedstroemsHoeyFeilrate)."
+            action: "Sjekk om {{ $labels.downstream_host }} har økt latens eller er under høy last. Bruk route-labelen for å se om det rammer én bestemt rute eller tjenesten generelt."

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.maler.vedlegg
 import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkattAFP.TabellDinMaanedligAFP
 import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkattAFP.TabellMaanedligPensjonAFP
 import no.nav.pensjon.brev.alder.model.BeloepEndring
-import no.nav.pensjon.brev.alder.model.aldersovergang.OpptjeningType
+import no.nav.pensjon.brev.alder.model.afpprivat.OpptjeningType
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDto
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAFPDto.aFPPrivatBeregningListe.*
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAFPDto.aFPPrivatBeregning.*

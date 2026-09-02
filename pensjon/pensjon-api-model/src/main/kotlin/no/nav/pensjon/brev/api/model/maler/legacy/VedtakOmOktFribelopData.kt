@@ -12,6 +12,7 @@ data class VedtakOmOktFribelopData(
     val datoOkningBunnfradrag: LocalDate,
     val vektetFribelop: Double,
     val fribelopPerioder: List<FribelopPeriode>,
+    val normertPensjonsdatoFor2028: Boolean,
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,

@@ -174,7 +174,7 @@ val vedleggOpplysningerOmAvdoedBruktIBeregning =
             }
             paragraph {
                 text(
-                    bokmal { +"Tabellen under viser den avdødes pensjonsgivende inntekten og pensjonspoeng. Det er bare inntekt for ferdiglignede år som vises i tabellen." },
+                    bokmal { +"Tabellen under viser den avdødes pensjonsgivende inntekt og pensjonspoeng. Det er bare inntekt for ferdiglignede år som vises i tabellen." },
                     nynorsk { +"Tabellen under viser den pensjonsgivande inntekta og pensjonspoenga til den avdøde. Det er berre inntekt for ferdiglikna år som viser i tabellen." },
                     english { +"The table below shows the pensionable income and pension points to the deceased. Only income from assessed years are shown in the table." },
                 )

@@ -51,6 +51,7 @@ fun Application.configureRouting() {
             brev()
             samhandlerRoute()
             meRoute()
+            featureToggleRoute()
 
         }
 

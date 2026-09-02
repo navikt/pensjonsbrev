@@ -3,7 +3,7 @@ import { type AxiosError } from "axios";
 import isEqual from "lodash/isEqual";
 import { useEffect } from "react";
 
-import { oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
+import { lagreAttestertBrevtekst, oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -40,6 +40,15 @@ const ManagedLetterEditor = (props: {
       }));
 
       // Autolagring skal aldri frigi reservasjonen saksbehandler har på brevet.
+      if (props.redigeringsflate === "attestant-redigering") {
+        return lagreAttestertBrevtekst({
+          saksId: String(stateWithCursor.info.saksId),
+          brevId: props.brev.info.id,
+          redigertBrev: stateWithCursor.redigertBrev,
+          frigiReservasjon: false,
+        });
+      }
+
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
         return oppdaterBrevtekst({
           brevId: props.brev.info.id,

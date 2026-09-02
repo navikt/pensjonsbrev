@@ -22,10 +22,10 @@ fun createVedtakOmOktFribelopData() =
             FribelopPeriode(
                 fom = LocalDate.of(2026, 1, 1),
                 tom = LocalDate.of(2026, 12, 31),
-                uforegrad = 100,
                 faktor = 1.0
             )
         ),
+        normertPensjonsdatoFor2028 = false,
         maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
     )

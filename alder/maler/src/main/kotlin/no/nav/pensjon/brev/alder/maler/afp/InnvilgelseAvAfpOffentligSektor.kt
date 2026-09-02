@@ -8,6 +8,8 @@ import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.*
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.beregning.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.ektefelletillegg.*
@@ -41,6 +43,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffentligSektorDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AF_INNVILGELSE_OFFENTLIG
+    override val valgbareVedlegg = setOf(UTTAKSSKJEMA, SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val featureToggle = FeatureToggles.innvilgelseAvAfpOffentligSektor.toggle
 
@@ -104,7 +107,7 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
                 )
             )
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
 
             paragraph {
                 text(

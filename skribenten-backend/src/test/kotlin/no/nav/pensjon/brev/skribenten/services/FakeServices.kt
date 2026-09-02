@@ -87,7 +87,7 @@ open class FakeBrevbakerService(
     override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-    override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> = notYetStubbed()
+    override suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode> = notYetStubbed()
 
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? = notYetStubbed()
     override suspend fun renderMarkup(
@@ -158,7 +158,8 @@ open class PenClientStub : PenClient {
 
 open class PdlServiceStub : PdlService {
     override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): List<Pdl.Gradering>? = notYetStubbed()
-    override suspend fun hentBrukerContext(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): Pdl.PersonContext = notYetStubbed()
+    override suspend fun hentBrukerContext(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): Pdl.PersonContext? =
+        notYetStubbed()
 }
 
 open class SafServiceStub : SafService {

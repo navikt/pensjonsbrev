@@ -1,0 +1,50 @@
+package no.nav.pensjon.brev.alder.model.endring
+
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.alder.model.KravInitiertAv
+import no.nav.pensjon.brev.alder.model.endring.OpplysningerBruktIBeregningenEndretUttaksgradDto
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
+import java.time.LocalDate
+
+data class VedtakEndringAvUttaksgradDto(
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+    override val pesysData: PesysData,
+) : BrevdataMedSaksbehandlerValg<VedtakEndringAvUttaksgradDto.PesysData> {
+
+    data class PesysData(
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
+        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+        val krav: Krav,
+        val alderspensjonVedVirk: AlderspensjonVedVirk,
+        val beregnetPensjonPerManed: BeregnetPensjonPerManed,
+        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+        val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?
+    ) : FagsystemBrevdata
+
+    data class Krav(
+        val kravInitiertAv: KravInitiertAv,
+        val virkDatoFom: LocalDate,
+    )
+
+    data class AlderspensjonVedVirk(
+        val uttaksgrad: Percent,
+        val uforeKombinertMedAlder: Boolean,
+        val totalPensjon: Kroner,
+        val privatAFPErBrukt: Boolean,
+        val regelverkType: AlderspensjonRegelverkType,
+        val opphortEktefelletillegg: Boolean,
+        val opphortBarnetillegg: Boolean,
+    )
+
+    data class BeregnetPensjonPerManed(
+        val antallBeregningsperioderPensjon: Int
+    )
+
+}

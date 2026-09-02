@@ -23,6 +23,8 @@ object Api {
 
     data class UserInfo(val name: String, val navident: NavIdent, val erAttestant: Boolean)
 
+    data class FeatureToggleResponse(val enabled: Boolean)
+
     data class OpprettBrevRequest(
         val brevkode: RedigerbarBrevkode,
         val spraak: SpraakKode,
@@ -43,7 +45,6 @@ object Api {
     )
 
     data class OppdaterAttesteringRequest(
-        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val redigertBrev: Edit.Letter,
     )
 

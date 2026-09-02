@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.legacy
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEtterbetalingOpphor2026AutoDto.*
-import no.nav.pensjon.brev.maler.fraser.VedtakOmEtterbetalingOpphor2026
+import no.nav.pensjon.brev.maler.fraser.ufoer.VedtakOmEtterbetalingOpphor2026
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy

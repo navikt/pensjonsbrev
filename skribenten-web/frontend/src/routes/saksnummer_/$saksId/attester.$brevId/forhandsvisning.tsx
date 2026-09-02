@@ -6,7 +6,7 @@ import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { attesteringBrevKeys, getBrevAttestering } from "~/api/brev-queries";
-import { hentPdfForBrev, sendBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForAttestering, sendBrev } from "~/api/sak-api-endpoints";
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
 import { CenteredLoader } from "~/components/CenteredLoader";
@@ -62,8 +62,8 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(props.brev.info.id, props.brev.redigertBrevHash),
-    queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
+    queryKey: hentPdfForAttestering.queryKey(props.brev.info.id, props.brev.redigertBrevHash),
+    queryFn: () => hentPdfForAttestering.queryFn(props.saksId, props.brev.info.id),
     refetchOnWindowFocus: false,
   });
   // "fetching" må sjekkes først: ved en bakgrunns-refetch ligger forrige pdf fortsatt i data.
@@ -144,6 +144,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         right={
           <BrevForhåndsvisning
             brevId={props.brev.info.id}
+            pdfKilde="attestering"
             redigertBrevHash={props.brev.redigertBrevHash}
             saksId={props.saksId}
           />

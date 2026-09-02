@@ -152,7 +152,7 @@ test.describe("attestering", () => {
     });
 
     const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
-    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", (route) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering/pdf", (route) => {
       if (route.request().method() === "GET") {
         return route.fulfill({
           json: { pdf: pdfBase64, rendretBrevErEndret: false },
@@ -161,13 +161,16 @@ test.describe("attestering", () => {
       return route.fallback();
     });
 
-    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
-      if (route.request().method() === "PUT") {
-        const body = route.request().postDataJSON();
-        return route.fulfill({ json: { ...defaultBrev, redigertBrev: body } });
-      }
-      return route.fallback();
-    });
+    await page.route(
+      "**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigertBrev?frigiReservasjon=*",
+      async (route) => {
+        if (route.request().method() === "PUT") {
+          const body = route.request().postDataJSON();
+          return route.fulfill({ json: { ...defaultBrev, redigertBrev: body } });
+        }
+        return route.fallback();
+      },
+    );
 
     let attesterCount = 0;
     let attesteringBody: Record<string, unknown> | null = null;
@@ -181,7 +184,6 @@ test.describe("attestering", () => {
           json: {
             ...defaultBrev,
             redigertBrev: body.redigertBrev,
-            saksbehandlerValg: body.saksbehandlerValg,
             info: { ...defaultBrev.info, status: { type: "Attestering" } },
           },
         });
@@ -226,6 +228,7 @@ test.describe("attestering", () => {
     expect(attesteringBody).not.toBeNull();
     // biome-ignore lint/suspicious/noExplicitAny: asserting on raw route handler body
     const body = attesteringBody as any;
+    expect(body.saksbehandlerValg).toBeUndefined();
     expect(body.redigertBrev.signatur.attesterendeSaksbehandlerNavn).toBe("Dette er det nye attestant navnet mitt");
     expect(body.redigertBrev.blocks.length).toBeGreaterThan(0);
     expect(body.redigertBrev.blocks.at(-1).content.at(-1).editedText.trim()).toContain("Dette er en ny tekstblokk");
@@ -280,7 +283,7 @@ test.describe("attestering", () => {
       releaseSecondPdf = resolve;
     });
 
-    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", async (route) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering/pdf", async (route) => {
       if (route.request().method() !== "GET") {
         return route.fallback();
       }
@@ -304,7 +307,7 @@ test.describe("attestering", () => {
     await expect(page).toHaveURL(/\/saksnummer\/123456\/attester\/1\/redigering/);
 
     const secondPdfRequest = page.waitForRequest(
-      (request) => request.url().includes("/brev/1/pdf") && request.method() === "GET",
+      (request) => request.url().includes("/brev/1/attestering/pdf") && request.method() === "GET",
     );
     await page.goBack();
     await secondPdfRequest;
@@ -329,7 +332,7 @@ test.describe("attestering", () => {
 
     const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
     let pdfRequestCount = 0;
-    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", (route) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering/pdf", (route) => {
       if (route.request().method() !== "GET") {
         return route.fallback();
       }
@@ -366,7 +369,7 @@ test.describe("attestering", () => {
     await expect(page.getByText("Underskrift")).toBeVisible();
 
     const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
-    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", (route) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering/pdf", (route) => {
       if (route.request().method() === "GET") {
         return route.fulfill({
           json: { pdf: pdfBase64, rendretBrevErEndret: false },
@@ -375,13 +378,16 @@ test.describe("attestering", () => {
       return route.fallback();
     });
 
-    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
-      if (route.request().method() === "PUT") {
-        const body = route.request().postDataJSON();
-        return route.fulfill({ json: { ...defaultBrev, redigertBrev: body } });
-      }
-      return route.fallback();
-    });
+    await page.route(
+      "**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigertBrev?frigiReservasjon=*",
+      async (route) => {
+        if (route.request().method() === "PUT") {
+          const body = route.request().postDataJSON();
+          return route.fulfill({ json: { ...defaultBrev, redigertBrev: body } });
+        }
+        return route.fallback();
+      },
+    );
 
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?frigiReservasjon=true", async (route) => {
       if (route.request().method() === "PUT") {
@@ -390,7 +396,6 @@ test.describe("attestering", () => {
           json: {
             ...defaultBrev,
             redigertBrev: body.redigertBrev,
-            saksbehandlerValg: body.saksbehandlerValg,
             info: { ...defaultBrev.info, status: { type: "Attestering" } },
           },
         });
@@ -411,7 +416,7 @@ test.describe("attestering", () => {
     });
     expect(attesterCount).toBe(0);
     const pdfResponsePromise = page.waitForResponse(
-      (r) => r.url().includes("/brev/1/pdf") && r.request().method() === "GET",
+      (r) => r.url().includes("/brev/1/attestering/pdf") && r.request().method() === "GET",
     );
     const attesteringResponsePromise = page.waitForResponse(
       (r) => r.url().includes("/attestering?frigiReservasjon=true") && r.request().method() === "PUT",

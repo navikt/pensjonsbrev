@@ -1,11 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
-import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
@@ -22,39 +19,6 @@ data class KronerText(
             english { + "NOK " + kroner.format(false) },
             fontType,
         )
-}
-
-data class AntallAarText(
-    val aar: Expression<Int>,
-    val fontType: FontType = FontType.PLAIN
-) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-        text(
-            bokmal { + aar.format() + " år" },
-            nynorsk { + aar.format() + " år" },
-            english { + aar.format() + ifElse(aar.greaterThan(1), " years", " year") },
-            fontType,
-        )
-}
-
-data class AntallMaanederText(val maaneder: Expression<Int>, val fontType: FontType = FontType.PLAIN) :
-    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val maanedText = maaneder.format()
-        showIf(maaneder.greaterThan(1)) {
-            text(
-                bokmal { + maanedText + " måneder" },
-                nynorsk { + maanedText + " månadar" },
-                english { + maanedText + " months" },
-            )
-        }.orShow {
-            text(
-                bokmal { + maanedText + " måned" },
-                nynorsk { + maanedText + " månad" },
-                english { + maanedText + " month" },
-            )
-        }
-    }
 }
 
 data class BroekText(
@@ -87,26 +51,3 @@ object Nei : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-data class GarantipensjonSatsTypeText(
-    val satsType: Expression<GarantipensjonSatsType>,
-) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val hoysats = satsType.equalTo(GarantipensjonSatsType.HOY)
-        val ordinaer = satsType.equalTo(GarantipensjonSatsType.ORDINAER)
-        showIf(hoysats) {
-            text(
-                bokmal { + "høy sats" },
-                nynorsk { + "høg sats" },
-                english { + "high rate" },
-            )
-        }.orShowIf(ordinaer) {
-            text(
-                bokmal { + "ordinær sats" },
-                nynorsk { + "ordinær sats" },
-                english { + "ordinary rate" },
-            )
-        }
-
-    }
-
-}
