@@ -40,7 +40,8 @@ class ReverseringLavereMinstesatsAutoTest {
                     reduksjonsprosent = 50.0,
                     brukersMinstesats = 300000.0,
                     avkortetPgaRedusertTrygdetid = true,
-                    harGradertUfoeretrygd = true
+                    harGradertUfoeretrygd = true,
+                    endringBt = true
                 ),
                 etterbetaling = Kroner(10000),
                 hjemmeltekst = "§§ 12-13 til 12-16, 12-18 og 22-12",

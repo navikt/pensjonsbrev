@@ -22,7 +22,9 @@ fun createVedtakOmOktFribelopData() =
             FribelopPeriode(
                 fom = LocalDate.of(2026, 1, 1),
                 tom = LocalDate.of(2026, 12, 31),
-                faktor = 1.0
+                faktor = 1.0,
+                venteperiodeStartDato = LocalDate.of(2026, 1, 1),
+                gradsokning = true
             )
         ),
         normertPensjonsdatoFor2028 = false,

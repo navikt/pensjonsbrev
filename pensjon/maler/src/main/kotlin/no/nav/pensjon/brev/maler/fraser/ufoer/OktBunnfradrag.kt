@@ -501,13 +501,13 @@ class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, 
                                 )
                             }.orShowIf(periode.gradsokning.equalTo(true)) {
                                 text(
-                                    bokmal { +"Gradsøkning " + periode.venteperiodeStartDato.format() },
-                                    nynorsk { +"Gradsøkning " + periode.venteperiodeStartDato.format() }
+                                    bokmal { +"Gradsøkning " + periode.venteperiodeStartDato.format(true) },
+                                    nynorsk { +"Gradsøkning " + periode.venteperiodeStartDato.format(true) }
                                 )
                             }.orShow {
                                 text(
-                                    bokmal { +"Innvilgelse " + periode.venteperiodeStartDato.format() },
-                                    nynorsk { +"Innvilgelse " + periode.venteperiodeStartDato.format() }
+                                    bokmal { +"Innvilgelse " + periode.venteperiodeStartDato.format(true) },
+                                    nynorsk { +"Innvilgelse " + periode.venteperiodeStartDato.format(true) }
                                 )
                             }
                         }
