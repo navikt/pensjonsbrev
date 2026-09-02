@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 
+import { ApiError } from "~/components/ApiError";
 import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { ManagedVedleggEditor } from "~/components/vedlegg/ManagedVedleggEditor";
@@ -31,8 +32,11 @@ export const BrevOgVedleggEditor = (props: {
   if (vedleggQuery.isPending) {
     return <CenteredLoader label="Henter vedlegg..." verticalStrategy="height" />;
   }
+  if (vedleggQuery.isError) {
+    return <ApiError error={vedleggQuery.error} title="Klarte ikke å hente vedlegg" />;
+  }
 
-  const vedlegg = vedleggQuery.data?.find((v) => v.vedleggId === aktivtDokument.vedleggId);
+  const vedlegg = vedleggQuery.data.find((v) => v.vedleggId === aktivtDokument.vedleggId);
   if (!vedlegg) {
     return props.renderBrev();
   }

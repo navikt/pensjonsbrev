@@ -51,10 +51,13 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
       return;
     }
 
-    const foersteVedlegg = vedleggQuery.data?.[0];
-    if (!foersteVedlegg) {
+    if (vedleggQuery.isError) {
       setAktivTab(tab);
-    } else if (await velgVedlegg(foersteVedlegg.vedleggId)) {
+      return;
+    }
+
+    const foersteVedlegg = vedleggQuery.data?.[0];
+    if (foersteVedlegg && (await velgVedlegg(foersteVedlegg.vedleggId))) {
       setAktivTab(tab);
     }
   };
@@ -73,7 +76,7 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
       </Tabs.List>
       <Tabs.Panel value={BREVMAL_TAB}>{props.brevmalPanel}</Tabs.Panel>
       <Tabs.Panel value={VEDLEGG_TAB}>
-        <VedleggPanel brevId={props.brevId} saksId={props.saksId} />
+        <VedleggPanel vedleggQuery={vedleggQuery} />
       </Tabs.Panel>
     </Tabs>
   );
