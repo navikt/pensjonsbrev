@@ -42,6 +42,7 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.brevredigering.application.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -509,6 +510,7 @@ abstract class BrevredigeringHandlerTestBase {
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
+        statiskFagsystemBrevdata: StatiskFagsystemBrevdata? = null,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         opprettBrev.invoke(
             OpprettBrevHandler.Request(
@@ -520,6 +522,7 @@ abstract class BrevredigeringHandlerTestBase {
                 saksbehandlerValg = saksbehandlerValg,
                 reserverForRedigering = reserverForRedigering,
                 mottaker = mottaker,
+                statiskFagsystemBrevdata = statiskFagsystemBrevdata,
             )
         )
     }
