@@ -27,6 +27,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
+import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger(PentHttpClient::class.java)
 
@@ -61,6 +62,9 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
     private val client = lagHttpClient(engine) {
         defaultRequest {
             url(penUrl)
+        }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 15.seconds.inWholeMilliseconds
         }
         installRetry(logger, shouldNotRetry = { method, _, _ -> method != HttpMethod.Get })
         install(ContentNegotiation) {
@@ -173,6 +177,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
     override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto =
         client.get("brev/skribenten/sak/${saksId.id}/p1data") {
             metricsRoute("brev/skribenten/sak/{saksId}/p1data")
+            timeout { requestTimeoutMillis = 40.seconds.inWholeMilliseconds }
             url {
                 parameters.append("spraak", spraak.name)
             }
