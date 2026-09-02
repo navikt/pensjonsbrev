@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
@@ -30,7 +31,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
-data class ApSimuleringBrevDto(override val saksbehandlerValg: ApSimuleringDto, override val pesysData: ApSimuleringDtoData) : RedigerbarBrevdata<ApSimuleringDto, ApSimuleringDtoData>
+data class ApSimuleringBrevDto(override val saksbehandlerValg: ApSimuleringDto, override val pesysData: ApSimuleringDtoData) : RedigerbarBrevdata<ApSimuleringDto, ApSimuleringDtoData>, VedleggData
 
 @TemplateModelHelpers
 object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
@@ -66,10 +67,9 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
             }
         }
 
-        // TODO: endre fra å sende saksbehandlerValg til å sende pesysData når alle brev i databasen har pesysData lagra
         includeAttachment(
             simuleringVedlegg,
-            saksbehandlerValg,
+            argument,
         )
     }
 }
