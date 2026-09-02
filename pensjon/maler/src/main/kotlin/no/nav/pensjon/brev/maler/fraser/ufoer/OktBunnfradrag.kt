@@ -4,8 +4,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.FribelopPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.faktor
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.fom
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.gradsokning
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.tom
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.uforegrad
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.venteperiodeStartDato
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario2_1G_04G.dato04G
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario4_04G_1G_04G.dato04G
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.barnetillegg
@@ -41,7 +42,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
@@ -469,7 +470,7 @@ class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, 
             table(header = {
                 column { text(bokmal { +"Fra" }, nynorsk { +"Frå" }) }
                 column { text(bokmal { +"Til" }, nynorsk { +"Til" }) }
-                column { text(bokmal { +"Uføregrad" }, nynorsk { +"Uføregrad" }) }
+                column { text(bokmal { +"Årsak" }, nynorsk { +"Årsak" }) }
                 column { text(bokmal { +"Fribeløp" }, nynorsk { +"Fribeløp" }) }
             }) {
                 forEach(perioder) { periode ->
@@ -487,10 +488,22 @@ class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, 
                             )
                         }
                         cell {
-                            text(
-                                bokmal { +periode.uforegrad.format() + " prosent" },
-                                nynorsk { +periode.uforegrad.format() + " prosent" }
-                            )
+                            showIf(periode.faktor.equalTo(1.0)) {
+                                text(
+                                    bokmal { +"Venteperiode over" },
+                                    nynorsk { +"Venteperiode over" }
+                                )
+                            }.orShowIf(periode.gradsokning.equalTo(true)) {
+                                text(
+                                    bokmal { +"Gradsøkning " + periode.venteperiodeStartDato.format() },
+                                    nynorsk { +"Gradsøkning " + periode.venteperiodeStartDato.format() }
+                                )
+                            }.orShow {
+                                text(
+                                    bokmal { +"Innvilgelse " + periode.venteperiodeStartDato.format() },
+                                    nynorsk { +"Innvilgelse " + periode.venteperiodeStartDato.format() }
+                                )
+                            }
                         }
                         cell {
                             text(
