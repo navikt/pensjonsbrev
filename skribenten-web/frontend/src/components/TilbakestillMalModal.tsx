@@ -16,8 +16,10 @@ const TilbakestillMalModal = (props: {
     mutationFn: () => tilbakestillBrev(props.brevId),
     onSuccess: (response) => {
       queryClient.setQueryData(getBrev.queryKey(props.brevId), response);
-      // Resetting the letter may also update related vedlegg on the backend, so their cached data must be refreshed.
-      queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.all });
+      // Resetting the letter merges current template changes into stored edited attachments.
+      queryClient.invalidateQueries({
+        queryKey: redigerbareVedleggKeys.brev(props.brevId, "saksbehandler-redigering"),
+      });
       props.resetEditor(response);
       props.onClose();
     },
