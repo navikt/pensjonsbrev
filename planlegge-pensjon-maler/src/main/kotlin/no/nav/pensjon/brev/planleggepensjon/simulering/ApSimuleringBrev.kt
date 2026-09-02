@@ -50,9 +50,9 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
         )
     ) {
         title {
-            showIf(pesysData.simulering.safe { afpPrivat }.ifNull(saksbehandlerValg.simulering.afpPrivat).notNull()) {
+            showIf(pesysData.simulering.safe { afpPrivat.notNull() }.ifNull(saksbehandlerValg.simulering.afpPrivat.notNull())) {
                 text(bokmal { +"Beregning av alderspensjon og AFP i privat sektor" })
-            }.orShowIf(pesysData.simulering.safe { afpOffentligTidsbegrenset }.ifNull(saksbehandlerValg.simulering.afpOffentligTidsbegrenset).notNull() or pesysData.simulering.safe { afpOffentligLivsvarig }.ifNull(saksbehandlerValg.simulering.afpOffentligLivsvarig).notNull()) {
+            }.orShowIf(pesysData.simulering.safe { afpOffentligTidsbegrenset.notNull() }.ifNull(saksbehandlerValg.simulering.afpOffentligTidsbegrenset.notNull()) or pesysData.simulering.safe { afpOffentligLivsvarig.notNull() }.ifNull(saksbehandlerValg.simulering.afpOffentligLivsvarig.notNull())) {
                 text(bokmal { +"Beregning av AFP i offentlig sektor etterfulgt av alderspensjon" })
             }.orShow {
                 text(bokmal { +"Beregning av alderspensjon" })
