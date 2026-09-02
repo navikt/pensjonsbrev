@@ -10,11 +10,7 @@ import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEdito
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
-import {
-  type MissingFromTemplateEventName,
-  type Redigeringsflate,
-  trackMissingFromTemplateAction,
-} from "~/utils/editorTracking";
+import { type MissingFromTemplateEventName, trackMissingFromTemplateAction } from "~/utils/editorTracking";
 
 import Actions from "./actions";
 import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
@@ -25,6 +21,7 @@ import { SignaturView } from "./components/SignaturView";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
+import { useRedigeringsflate } from "./RedigeringsflateContext";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
@@ -35,7 +32,6 @@ export const LetterEditor = ({
   editorState,
   setEditorState,
   showDebug,
-  redigeringsflate,
   renderTilbakestillModal,
 }: {
   freeze: boolean;
@@ -43,10 +39,10 @@ export const LetterEditor = ({
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   showDebug: boolean;
-  redigeringsflate: Redigeringsflate;
   /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
   renderTilbakestillModal?: (args: { open: boolean; onClose: () => void }) => React.ReactNode;
 }) => {
+  const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
@@ -132,7 +128,6 @@ export const LetterEditor = ({
         <EditorMenu
           canRedo={canRedo}
           canUndo={canUndo}
-          redigeringsflate={redigeringsflate}
           redo={redo}
           setVilTilbakestilleMal={renderTilbakestillModal ? setVilTilbakestilleMal : undefined}
           undo={undo}

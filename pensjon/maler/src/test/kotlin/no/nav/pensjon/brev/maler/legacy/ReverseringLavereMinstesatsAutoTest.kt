@@ -29,9 +29,7 @@ class ReverseringLavereMinstesatsAutoTest {
     private fun ikkeOpphoerDto() =
         ReverseringLavereMinstesatsAutoDto(
             data = ReverseringLavereMinstesatsDto(
-                opphortYtelse = OpphortYtelse(
-                    opphorsdato = LocalDate.of(2026, 10, 1)
-                ),
+                opphortYtelse = null,
                 lopendeYtelse = LopendeYtelse(
                     nettoTotal = Kroner(32000),
                     nettoUforetrygd = Kroner(26000),
@@ -40,8 +38,10 @@ class ReverseringLavereMinstesatsAutoTest {
                     reduksjonsprosent = 50.0,
                     brukersMinstesats = 300000.0,
                     avkortetPgaRedusertTrygdetid = true,
-                    harGradertUfoeretrygd = true
+                    harGradertUfoeretrygd = true,
+                    endringBt = true
                 ),
+                haddeEgenopptjening = true,
                 etterbetaling = Kroner(10000),
                 hjemmeltekst = "§§ 12-13 til 12-16, 12-18 og 22-12",
                 pe = createPEgruppe10(),
@@ -61,6 +61,7 @@ class ReverseringLavereMinstesatsAutoTest {
                 opphortYtelse = OpphortYtelse(
                     opphorsdato = LocalDate.of(2026, 8, 15)
                 ),
+                haddeEgenopptjening = true,
                 etterbetaling = Kroner(5000),
                 hjemmeltekst = "§§ 12-13 til 12-16, 12-18 og 22-12",
                 pe = createPEgruppe10(),

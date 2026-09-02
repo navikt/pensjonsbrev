@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import no.nav.pensjon.brev.skribenten.services.onBehalfOfClient
 import no.nav.pensjon.brev.skribenten.services.installRetry
+import no.nav.pensjon.brev.skribenten.services.metricsRoute
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
 
@@ -58,6 +59,7 @@ class FoerstesidegeneratorClient(config: OboClientConfig, authService: AuthServi
 
     suspend fun genererFoersteside(request: GenererFoerstesideRequest): GenererFoerstesideResponse {
         val response = client.post("/api/foerstesidegenerator/v1/foersteside") {
+            metricsRoute("api/foerstesidegenerator/v1/foersteside")
             setBody(request)
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)

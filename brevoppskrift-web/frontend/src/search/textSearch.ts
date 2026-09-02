@@ -65,12 +65,39 @@ type BrevRecord = {
  *  two never drift out of sync on what counts as a "fuzzy" match. Tuned
  *  tighter than Fuse's default threshold (0.6) so short brevkoder/terms don't
  *  match unrelated text. `ignoreLocation` mirrors what Fuse's own per-term
- *  token search uses internally. */
+ *  token search uses internally.
+ *
+ *  `minMatchCharLength` must be 1: token search requires *every* term to match
+ *  (`tokenMatch: "all"`), so a higher value silently discards single-character
+ *  terms and makes the whole query fail - e.g. "paragraf 3" found nothing while
+ *  "paragraf 12" worked. Single-character terms are instead required to be
+ *  exact substrings (see `SHORT_TERM_LENGTH` / `hasShortTermsVerbatim`), which
+ *  keeps them from fuzzily matching almost any text. */
 export const FUZZY_MATCH_OPTIONS = {
   threshold: 0.3,
-  minMatchCharLength: 2,
+  minMatchCharLength: 1,
   ignoreLocation: true,
 } as const;
+
+/** Terms at or below this length are too short to fuzzy-match meaningfully
+ *  (a single character is "within one edit" of almost anything), so they must
+ *  occur verbatim in the matched text. */
+export const SHORT_TERM_LENGTH = 1;
+
+/** Splits a query into its whitespace-separated terms. */
+export function queryTerms(query: string): string[] {
+  return query.split(/\s+/).filter((term) => term.length > 0);
+}
+
+/** True unless some short term (see `SHORT_TERM_LENGTH`) is missing from every
+ *  one of `fields` as a case-insensitive substring. Long terms are left to
+ *  Fuse's own (possibly fuzzy) matching. */
+export function hasShortTermsVerbatim(terms: string[], fields: string[]): boolean {
+  const lowerFields = fields.map((field) => field.toLowerCase());
+  return terms.every(
+    (term) => term.length > SHORT_TERM_LENGTH || lowerFields.some((field) => field.includes(term.toLowerCase())),
+  );
+}
 
 /** Multi-word queries are typo-tolerant per term (token search) and must match
  *  every term (`tokenMatch: "all"`), mirroring the previous AND-of-terms
@@ -134,8 +161,12 @@ export function search(index: SearchIndex, rawQuery: string): SearchResults {
   }
 
   const contentByTemplate = new Map<string, ContentHit>();
+  const terms = queryTerms(query);
   for (const { item, score } of index.contentFuse.search(query)) {
     const { template, lineIndex } = item;
+    if (!hasShortTermsVerbatim(terms, [item.text])) {
+      continue;
+    }
     const key = `${template.malType}/${template.id}/${template.language}`;
     const resolvedScore = score ?? 1;
     const existing = contentByTemplate.get(key);
@@ -154,7 +185,10 @@ export function search(index: SearchIndex, rawQuery: string): SearchResults {
       a.score - b.score || b.matchCount - a.matchCount || a.template.title.localeCompare(b.template.title, "no"),
   );
 
-  const brev = index.brevFuse.search(query).map(({ item }) => ({ template: item.template }));
+  const brev = index.brevFuse
+    .search(query)
+    .filter(({ item }) => hasShortTermsVerbatim(terms, [item.title, item.id]))
+    .map(({ item }) => ({ template: item.template }));
 
   return { content, brev };
 }

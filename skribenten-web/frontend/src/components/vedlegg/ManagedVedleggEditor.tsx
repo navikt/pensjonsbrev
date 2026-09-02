@@ -13,13 +13,13 @@ import { normalizeDocumentForComparison, text } from "~/Brevredigering/LetterEdi
 import { useDocumentAutosave } from "~/Brevredigering/LetterEditor/hooks/useDocumentAutosave";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { ApiError } from "~/components/ApiError";
 import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import TilbakestillVedleggModal from "~/components/vedlegg/TilbakestillVedleggModal";
 import { type BrevResponse, type EditAttachment, type RedigerbartVedleggInfo } from "~/types/brev";
 import { type EditedDocument } from "~/types/brevbakerTypes";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 /** Mirrors how the backend renders the list title, so the cached title matches a refetched one. */
 const formaterVedleggtittel = (vedlegg: EditAttachment): string =>
@@ -156,7 +156,6 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
         editorState={editorState}
         error={lagringFeilet}
         freeze={props.freeze}
-        redigeringsflate={props.redigeringsflate}
         setEditorState={setEditorState}
         showDebug={false}
       />

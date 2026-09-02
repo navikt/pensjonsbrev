@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.ServiceStatus
 import no.nav.pensjon.brev.skribenten.services.ping
+import no.nav.pensjon.brev.skribenten.services.metricsRoute
 import org.slf4j.LoggerFactory
 
 interface BrevmetadataService {
@@ -47,7 +48,7 @@ class BrevmetadataServiceHttp(
     }
 
     override suspend fun getAllBrev(): List<BrevdataDto> {
-        val httpResponse = httpClient.get("/api/brevdata/allBrev")
+        val httpResponse = httpClient.get("/api/brevdata/allBrev") { metricsRoute("api/brevdata/allBrev") }
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
         } else {
@@ -58,6 +59,7 @@ class BrevmetadataServiceHttp(
 
     override suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.kode}?includeXsd=false") {
+            metricsRoute("api/brevdata/brevdataForSaktype/{sakstype}")
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {
@@ -70,6 +72,7 @@ class BrevmetadataServiceHttp(
 
     override suspend fun getEblanketter(): List<BrevdataDto> {
         return httpClient.get("/api/brevdata/eblanketter") {
+            metricsRoute("api/brevdata/eblanketter")
             contentType(ContentType.Application.Json)
         }.body<List<BrevdataDto>>()
             .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
@@ -77,12 +80,13 @@ class BrevmetadataServiceHttp(
 
     override suspend fun getMal(brevkode: String): BrevdataDto {
         return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
+            metricsRoute("api/brevdata/brevForBrevkode/{brevkode}")
             contentType(ContentType.Application.Json)
         }.body<BrevdataDto>()
     }
 
     override suspend fun ping() =
-        ping("Brevmetadata") { httpClient.get("/api/internal/isReady") }
+        ping("Brevmetadata") { httpClient.get("/api/internal/isReady") { metricsRoute("api/internal/isReady") } }
 
     override fun close() { httpClient.close() }
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 
+import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { type EditAttachment, type RedigerbartVedleggInfo, type RedigertVedleggRequest } from "~/types/brev";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 

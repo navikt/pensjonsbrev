@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { getRedigerbareVedlegg } from "~/api/redigerbareVedlegg-endpoints";
-import { type Redigeringsflate } from "~/utils/editorTracking";
+import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 
 /**
  * The letter's redigerbare vedlegg (vedleggId + tittel only). Content is fetched per vedlegg when

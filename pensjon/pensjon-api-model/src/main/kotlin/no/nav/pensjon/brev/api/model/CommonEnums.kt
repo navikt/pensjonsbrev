@@ -2,9 +2,6 @@
 
 package no.nav.pensjon.brev.api.model
 
-import no.nav.pensjon.brev.api.model.ISakstype
-import no.nav.pensjon.brevbaker.api.model.DisplayText
-
 // Brukerens egen sivilstand tolket ut fra om beregningsresultat fra PREG
 enum class Sivilstand {
     ENSLIG,
@@ -39,10 +36,6 @@ enum class Institusjon {
     INGEN,
 }
 
-enum class GarantipensjonSatsType {
-    HOY, ORDINAER
-}
-
 enum class Beregningsmetode {
     AUSTRALIA,
     CANADA,
@@ -58,28 +51,6 @@ enum class Beregningsmetode {
     USA
 }
 
-enum class YtelseForAldersovergangKode {
-    FAM_PL,
-    GJP_AVKORT,
-    GJP_FULL,
-    INGEN_YT,
-    UT,
-    UT_AP_GRAD,
-    UT_GRAD,
-}
-
-enum class AlderspensjonRegelverkType {
-    AP1967,
-    AP2011,
-    AP2016,
-    AP2025,
-}
-
-enum class AlderspensjonBeregnetEtter {
-    EGEN,
-    AVDOD,
-}
-
 // Brukes kun for konverterte brev. For nytt innhold, bruk brukersSivilstand eller bormedSivilstand
 enum class MetaforceSivilstand {
     EKTEFELLE, ENKE, ENSLIG,
@@ -87,8 +58,6 @@ enum class MetaforceSivilstand {
     SAMBOER_1_5,
     SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT
 }
-
-enum class PoengTallsType { FPP, G, H, IFUT, J, K, L, PI }
 
 enum class TilbakekrevingResultat {
     DELVIS_TILBAKEKREV,
@@ -156,55 +125,6 @@ enum class KonteringType {
     UT_TFB,
     UT_TSB,
     VT
-}
-
-enum class KravInitiertAv {
-    BRUKER,
-    NAV,
-    VERGE,
-    SOSIALKONTOR,
-    KONV,
-    ADVOKAT
-}
-enum class KravArsakType{
-    ALDERSOVERGANG,
-    ANNET, // Denne er catch-all for alle de andre typene som fins i pesys, men som ikke trengs her
-    ENDRET_OPPTJENING,
-    EPS_ENDRET_INNTEKT,
-    EPS_NY_YTELSE,
-    EPS_NY_YTELSE_UT,
-    EPS_OPPH_YTELSE_UT,
-    INNVANDRET,
-    INSTOPPHOLD,
-    SIVILSTANDSENDRING,
-    TILSTOT_ENDR_YTELSE,
-    TILSTOT_OPPHORT,
-    TILSTOT_DOD,
-    UTTAKSGRAD,
-    UTVANDRET,
-    VURDER_SERSKILT_SATS
-}
-
-enum class BeloepEndring {
-    @DisplayText("Økning av beløpet")
-    ENDR_OKT,
-    @DisplayText("Reduksjon av beløpet")
-    ENDR_RED,
-    @DisplayText("Uendret beløp")
-    UENDRET
-}
-
-enum class EksportForbudKode {
-    FLYKT_ALDER,
-    TPUNGUFOR_ALDER,
-    UFOR25_ALDER,
-    DOD26_ALDER
-}
-
-enum class InformasjonOmMedlemskap {
-    EOES,
-    UTENFOR_EOES,
-    IKKE_RELEVANT
 }
 
 enum class Sakstype : ISakstype {

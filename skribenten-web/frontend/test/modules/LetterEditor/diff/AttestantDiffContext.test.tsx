@@ -19,13 +19,14 @@ const diff: UnifiedLetterDiff = {
   editedBlocks: {
     0: {
       contentEdits: {
-        0: { edit: { inserts: [{ startOffset: 0, endOffset: 1 }], deletes: [] } },
-        1: { edit: { inserts: [{ startOffset: 0, endOffset: 1 }], deletes: [] } },
+        0: { type: "TEXT", edit: { inserts: [{ startOffset: 0, endOffset: 1 }], deletes: [] } },
+        1: { type: "TEXT", edit: { inserts: [{ startOffset: 0, endOffset: 1 }], deletes: [] } },
       },
       deletedContent: {},
     },
   },
   deletedBlocks: { 1: [deletedBlock] },
+  type: "UNIFIED",
 };
 
 function Probe() {
@@ -73,12 +74,13 @@ describe("AttestantDiffContext", () => {
       editedBlocks: {
         0: {
           contentEdits: {
-            0: { edit: { inserts: [{ startOffset: 0, endOffset: 20 }], deletes: [] } },
+            0: { type: "TEXT", edit: { inserts: [{ startOffset: 0, endOffset: 20 }], deletes: [] } },
           },
           deletedContent: {},
         },
       },
       deletedBlocks: {},
+      type: "UNIFIED",
     };
     const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
 

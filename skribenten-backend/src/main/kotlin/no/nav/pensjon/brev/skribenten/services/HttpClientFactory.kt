@@ -5,6 +5,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.callid.CallId
 import io.ktor.http.HttpHeaders
+import no.nav.pensjon.brev.skribenten.Metrics
 
 object HttpClientFactory {
 
@@ -13,6 +14,9 @@ object HttpClientFactory {
             install(CallId) {
                 addToHeader(HttpHeaders.XRequestId)
                 addToHeader("Nav-Call-Id")
+            }
+            install(HttpClientMetrics) {
+                registry = Metrics.registry
             }
             config()
         }

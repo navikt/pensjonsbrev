@@ -3,7 +3,6 @@ import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { type BrevResponse } from "~/types/brev";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 /**
  * Renders the editor for the letter.
@@ -16,7 +15,6 @@ const ManagedLetterEditor = (props: {
   brev: BrevResponse;
   freeze: boolean;
   error: boolean;
-  redigeringsflate: Redigeringsflate;
   kanTilbakestille?: boolean;
   showDebug?: boolean;
 }) => {
@@ -27,7 +25,6 @@ const ManagedLetterEditor = (props: {
       editorState={editorState}
       error={props.error || lagringFeilet}
       freeze={props.freeze}
-      redigeringsflate={props.redigeringsflate}
       renderTilbakestillModal={
         props.kanTilbakestille
           ? ({ open, onClose }) => (

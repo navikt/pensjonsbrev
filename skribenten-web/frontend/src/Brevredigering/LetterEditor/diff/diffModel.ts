@@ -1,5 +1,6 @@
 import { type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { type AnyBlock, type Cell, type Content, type Item, type Row, type TextContent } from "~/types/brevbakerTypes";
+import type * as generated from "~/types/skribenten-api";
 
 /**
  * Mirrors the backend `UnifiedDiff` (see EditLetterDiff.kt).
@@ -26,54 +27,18 @@ export type DiffDeletedTextSegment = {
 };
 
 /** Word-level edits within a single, still-existing text node (LITERAL/VARIABLE/NEW_LINE). */
-export type TextEdit = {
-  inserts: DiffTextSegment[];
-  deletes: DiffDeletedTextSegment[];
-};
+export type TextEdit = generated.UnifiedDiffTextEdit;
 
-/** Edits within a content list that only ever holds text content (item content, table cell content). */
-export type TextOnlyEdit = {
-  textEdits: Record<string, TextEdit>;
-  deletedContent: Record<string, TextContent[]>;
-};
+export type TextContentEdit = generated.UnifiedDiffContentEditTextContentEdit;
+export type ItemListEdit = generated.UnifiedDiffContentEditItemListEdit;
+export type TableEdit = generated.UnifiedDiffContentEditTableEdit;
 
-/** Edits within a single table row. */
-export type RowEdit = {
-  cellEdits: Record<string, TextOnlyEdit>;
-  deletedCells: Record<string, Cell[]>;
-};
+export type ContentEdit = generated.UnifiedDiffContentEdit;
+export type UnifiedLetterDiff = generated.DiffBrevHandlerResponseUnified;
 
-export type TextContentEdit = { edit: TextEdit };
-
-export type ItemListEdit = {
-  itemEdits: Record<string, TextOnlyEdit>;
-  deletedItems: Record<string, Item[]>;
-};
-
-export type TableEdit = {
-  rowEdits: Record<string, RowEdit>;
-  deletedRows: Record<string, Row[]>;
-};
-
-/**
- * The backend `ContentEdit` is a sealed class serialized without a type discriminator,
- * so the variants are told apart by their shape.
- */
-export type ContentEdit = TextContentEdit | ItemListEdit | TableEdit;
-
-export type BlockEdit = {
-  contentEdits: Record<string, ContentEdit>;
-  deletedContent: Record<string, Content[]>;
-};
-
-export type UnifiedLetterDiff = {
-  editedBlocks: Record<string, BlockEdit>;
-  deletedBlocks: Record<string, AnyBlock[]>;
-};
-
-const isTextContentEdit = (edit: ContentEdit): edit is TextContentEdit => "edit" in edit;
-const isItemListEdit = (edit: ContentEdit): edit is ItemListEdit => "itemEdits" in edit;
-const isTableEdit = (edit: ContentEdit): edit is TableEdit => "rowEdits" in edit;
+const isTextContentEdit = (edit: ContentEdit): edit is TextContentEdit => edit.type === "TEXT";
+const isItemListEdit = (edit: ContentEdit): edit is ItemListEdit => edit.type === "ITEM_LIST";
+const isTableEdit = (edit: ContentEdit): edit is TableEdit => edit.type === "TABLE";
 
 export type DiffSegment =
   | { type: "unchanged"; text: string }

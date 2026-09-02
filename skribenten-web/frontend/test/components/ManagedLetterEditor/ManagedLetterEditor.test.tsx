@@ -2,13 +2,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import { type Redigeringsflate, RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse } from "~/types/brev";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 import { brevInfo, brevResponse } from "../../modules/LetterEditor/utils";
 
@@ -48,10 +48,12 @@ function renderEditor(redigeringsflate: Redigeringsflate) {
 
   render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-      <ManagedLetterEditorContextProvider brev={lagretBrev} redigeringsflate={redigeringsflate}>
-        <Testkomponent />
-        <ManagedLetterEditor brev={lagretBrev} error={false} freeze={false} redigeringsflate={redigeringsflate} />
-      </ManagedLetterEditorContextProvider>
+      <RedigeringsflateProvider redigeringsflate={redigeringsflate}>
+        <ManagedLetterEditorContextProvider brev={lagretBrev}>
+          <Testkomponent />
+          <ManagedLetterEditor brev={lagretBrev} error={false} freeze={false} />
+        </ManagedLetterEditorContextProvider>
+      </RedigeringsflateProvider>
     </QueryClientProvider>,
   );
 

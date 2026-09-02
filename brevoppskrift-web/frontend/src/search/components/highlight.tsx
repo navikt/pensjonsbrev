@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import Fuse from "fuse.js";
 import { Fragment, type ReactNode } from "react";
 
-import { FUZZY_MATCH_OPTIONS, type Line } from "~/search/textSearch";
+import { FUZZY_MATCH_OPTIONS, type Line, SHORT_TERM_LENGTH } from "~/search/textSearch";
 
 type Range = [number, number];
 
@@ -28,8 +28,13 @@ function exactRanges(text: string, term: string): Range[] {
 
 /** The single best fuzzy-match location of `term` in `text`, or none. Uses the
  *  same tuning as the search index (`FUZZY_MATCH_OPTIONS`) so a term only
- *  highlights here if it would also have counted as a match in search. */
+ *  highlights here if it would also have counted as a match in search. Terms
+ *  short enough to require a verbatim match in search (`SHORT_TERM_LENGTH`)
+ *  are never fuzzy-highlighted, for the same reason. */
 function fuzzyRange(text: string, term: string): Range | undefined {
+  if (term.length <= SHORT_TERM_LENGTH) {
+    return undefined;
+  }
   const result = Fuse.match(term, text, { ...FUZZY_MATCH_OPTIONS, includeMatches: true });
   if (!result.isMatch) {
     return undefined;

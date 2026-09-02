@@ -1,19 +1,17 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.RedigerbareVedleggService
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.fagsystem.*
-import no.nav.pensjon.brev.skribenten.letter.*
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentRedigertVedleggHandler(
-    private val brevmalService: BrevmalService,
-    private val brevdataService: BrevdataService,
+    private val redigerbareVedleggService: RedigerbareVedleggService,
     reserverBrevHandler: ReserverBrevHandler,
     database: Database,
 ) : ReservertBrevHandler<HentRedigertVedleggHandler.Request, Edit.Attachment>(database, reserverBrevHandler) {
@@ -27,11 +25,6 @@ class HentRedigertVedleggHandler(
     override suspend fun execute(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
-        val pesysdata = brevdataService.hentBrevdata(brev)
-        val malVedlegg = brevmalService.renderRedigerbartVedlegg(brev, pesysdata, request.vedleggId)
-            ?: return failure(VedleggFinnesIkkeIMal(request.brevId, request.vedleggId))
-
-        val lagretVedlegg = brev.hentRedigertVedlegg(request.vedleggId)
-        return success(lagretVedlegg?.updateEditedAttachment(malVedlegg) ?: malVedlegg.toEdit())
+        return redigerbareVedleggService.hent(brev, request.vedleggId, mergeMotMal = true)
     }
 }

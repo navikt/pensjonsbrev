@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 /**
  * Handles document switching and ensures the active vedlegg is saved before navigation.

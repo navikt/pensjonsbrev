@@ -1,6 +1,6 @@
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useRef } from "react";
 
-import { type Redigeringsflate } from "~/utils/editorTracking";
+import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 
 /**
  * Which document the editor surface is currently showing. The letter is the default;
