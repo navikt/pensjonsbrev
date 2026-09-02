@@ -95,6 +95,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     override var statiskFagsystemBrevdata by BrevredigeringTable.statiskFagsystemBrevdata
+        private set
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
         private set
     override val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
