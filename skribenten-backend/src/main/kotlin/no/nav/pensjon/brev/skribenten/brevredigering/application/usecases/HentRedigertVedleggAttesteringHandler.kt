@@ -10,11 +10,11 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import org.jetbrains.exposed.v1.jdbc.Database
 
-class HentRedigertVedleggHandler(
+class HentRedigertVedleggAttesteringHandler(
     private val redigerbareVedleggService: RedigerbareVedleggService,
     reserverBrevHandler: ReserverBrevHandler,
     database: Database,
-) : ReservertBrevHandler<HentRedigertVedleggHandler.Request, Edit.Attachment>(database, reserverBrevHandler) {
+) : ReservertBrevHandler<HentRedigertVedleggAttesteringHandler.Request, Edit.Attachment>(database, reserverBrevHandler) {
 
     data class Request(
         override val brevId: BrevId,
@@ -25,6 +25,6 @@ class HentRedigertVedleggHandler(
     override suspend fun execute(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
-        return redigerbareVedleggService.hent(brev, request.vedleggId, mergeMotMal = true)
+        return redigerbareVedleggService.hent(brev, request.vedleggId, mergeMotMal = false)
     }
 }

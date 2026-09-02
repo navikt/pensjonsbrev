@@ -22,16 +22,20 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SendBr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettPdfHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevPdfService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.RedigerbareVedleggService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettAttesteringPdfHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LagreAttestertBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LagreAttestertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LagreP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForSakHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggAttesteringHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggAttesteringHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettRedigertVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreValgteVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.GenererFoerstesideHandler
@@ -154,9 +158,12 @@ fun Application.configureDependencies() {
         provide(HentEllerOpprettAttesteringPdfHandler::class)
         provide(HentFavoritterHandler::class)
         provide(HentP1DataHandler::class)
+        provide(HentRedigerbareVedleggAttesteringHandler::class)
         provide(HentRedigerbareVedleggHandler::class)
+        provide(HentRedigertVedleggAttesteringHandler::class)
         provide(HentRedigertVedleggHandler::class)
         provide(LagreAttestertBrevHandler::class)
+        provide(LagreAttestertVedleggHandler::class)
         provide(LagreP1DataHandler::class)
         provide(LeggTilFavorittHandler::class)
         provide(OppdaterBrevHandler::class)
@@ -165,12 +172,13 @@ fun Application.configureDependencies() {
         provide(SendBrevHandler::class)
         provide(LeggVedFoerstesideHandler::class)
         provide(SlettBrevHandler::class)
-        provide(SlettRedigertVedleggHandler::class)
+        provide(TilbakestillRedigertVedleggHandler::class)
         provide(TilbakestillBrevHandler::class)
         provide(VeksleKlarStatusHandler::class)
 
         provide<PDFVedleggAppender>(PDFVedleggAppenderImpl::class)
         provide(BrevPdfService::class)
+        provide(RedigerbareVedleggService::class)
     }
 
     launch { Features.init(dependencies.resolve()) }

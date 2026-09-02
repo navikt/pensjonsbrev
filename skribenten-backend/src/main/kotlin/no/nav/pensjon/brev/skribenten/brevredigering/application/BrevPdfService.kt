@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
+import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -95,6 +96,12 @@ class BrevPdfService(
     private suspend fun rendretBrevErEndret(brev: BrevredigeringEntity, pesysBrevdata: BrevdataResponse.Data): Boolean =
         brevmalService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
             brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
+        } || rendredeVedleggErEndret(brev, pesysBrevdata)
+
+    private suspend fun rendredeVedleggErEndret(brev: BrevredigeringEntity, pesysBrevdata: BrevdataResponse.Data): Boolean =
+        brevmalService.renderRedigerteVedlegg(brev, pesysBrevdata).any { (vedleggId, rendretVedlegg) ->
+            val lagret = brev.hentRedigertVedlegg(vedleggId)
+            lagret != null && lagret.updateEditedAttachment(rendretVedlegg).blocks != lagret.blocks
         }
 
     private fun leggVedPDFVedlegg(

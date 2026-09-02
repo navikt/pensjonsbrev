@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
-import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -83,6 +82,11 @@ class BrevmalService(
             felles = pesysData.felles,
             vedleggId = vedleggId,
         )
+
+    suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, LetterMarkup.Attachment> =
+        brev.redigerteVedlegg.mapNotNull { lagret ->
+            renderRedigerbartVedlegg(brev, pesysData, lagret.vedleggId)?.let { lagret.vedleggId to it }
+        }.toMap()
 
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         brevbakerService.getRedigerbarTemplate(brevkode)

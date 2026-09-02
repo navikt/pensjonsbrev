@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.letter.updateSakspartOgSignatur
 import no.nav.pensjon.brev.skribenten.model.*
@@ -70,6 +71,7 @@ interface Brevredigering {
     fun markerSomKladd()
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
+    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
     fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
@@ -243,6 +245,13 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
         redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
+    }
+
+    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
+        rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
+            hentRedigertVedlegg(vedleggId)
+                ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg)) }
+        }
     }
 
     override fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup) {
