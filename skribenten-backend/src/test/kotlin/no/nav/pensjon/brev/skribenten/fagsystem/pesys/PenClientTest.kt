@@ -5,6 +5,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
@@ -167,5 +168,70 @@ class PenClientTest {
                 penClient(engine).sendbrev(request, distribuer = true)
             }
         }
+    }
+
+    @Test
+    fun `hentP1VedleggData retryer ikke ved timeout`() {
+        var tryCount = 0
+        val engine = MockEngine {
+            tryCount++
+            throw HttpRequestTimeoutException("http://pen.test/brev/skribenten/sak/1234/p1data", 30_000L)
+        }
+
+        httpClientTest(Unit) {
+            assertThrows<PenTimeoutException> {
+                penClient(engine).hentP1VedleggData(SaksId(1234L), LanguageCode.BOKMAL)
+            }
+        }
+
+        assertThat(tryCount).isEqualTo(1)
+    }
+
+    @Test
+    fun `hentP1VedleggData gir gateway timeout ved timeout`() {
+        val engine = MockEngine {
+            throw HttpRequestTimeoutException("http://pen.test/brev/skribenten/sak/1234/p1data", 30_000L)
+        }
+
+        httpClientTest(Unit) {
+            val exception = assertThrows<PenTimeoutException> {
+                penClient(engine).hentP1VedleggData(SaksId(1234L), LanguageCode.BOKMAL)
+            }
+            assertThat(exception.status).isEqualTo(HttpStatusCode.GatewayTimeout)
+        }
+    }
+
+    @Test
+    fun `hentP1VedleggData retryer fortsatt naar PEN svarer med gateway timeout`() {
+        var tryCount = 0
+        val engine = MockEngine {
+            tryCount++
+            respond(content = "", status = HttpStatusCode.GatewayTimeout)
+        }
+
+        httpClientTest(Unit) {
+            assertThrows<PenServiceException> {
+                penClient(engine).hentP1VedleggData(SaksId(1234L), LanguageCode.BOKMAL)
+            }
+        }
+
+        assertThat(tryCount).isEqualTo(4)
+    }
+
+    @Test
+    fun `andre GET-kall mot PEN retryer fortsatt ved timeout`() {
+        var tryCount = 0
+        val engine = MockEngine {
+            tryCount++
+            throw HttpRequestTimeoutException("http://pen.test/brev/skribenten/sak/1234", 15_000L)
+        }
+
+        httpClientTest(Unit) {
+            assertThrows<HttpRequestTimeoutException> {
+                penClient(engine).hentSak(SaksId(1234L))
+            }
+        }
+
+        assertThat(tryCount).isEqualTo(4)
     }
 }

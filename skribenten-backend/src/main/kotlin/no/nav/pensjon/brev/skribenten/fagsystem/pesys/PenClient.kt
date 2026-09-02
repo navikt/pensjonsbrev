@@ -10,6 +10,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.client.utils.unwrapCancellationException
 import io.ktor.utils.io.core.*
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -27,6 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
+import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger(PentHttpClient::class.java)
 
@@ -50,6 +52,10 @@ class PenAdresseManglerException : ServiceException("Adresse mangler", status = 
 class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
+class PenTimeoutException(message: String, cause: Throwable? = null) : ServiceException(message, cause, status = HttpStatusCode.GatewayTimeout)
+
+private const val P1DATA_PATH_SEGMENT = "p1data"
+private fun Url.erP1Data() = segments.lastOrNull() == P1DATA_PATH_SEGMENT
 
 class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : PenClient, ServiceStatus, Closeable {
     private val penUrl = config.url
@@ -62,7 +68,12 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         defaultRequest {
             url(penUrl)
         }
-        installRetry(logger, shouldNotRetry = { method, _, _ -> method != HttpMethod.Get })
+        install(HttpTimeout) {
+            requestTimeoutMillis = 15.seconds.inWholeMilliseconds
+        }
+        installRetry(logger, shouldNotRetry = { method, url, cause ->
+            method != HttpMethod.Get || (url.erP1Data() && cause?.unwrapCancellationException() is HttpRequestTimeoutException)
+        })
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
@@ -171,12 +182,19 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
 
     override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto =
-        client.get("brev/skribenten/sak/${saksId.id}/p1data") {
-            metricsRoute("brev/skribenten/sak/{saksId}/p1data")
-            url {
-                parameters.append("spraak", spraak.name)
-            }
-        }.brevdataOrThrow(saksId = saksId)
+        try {
+            client.get("brev/skribenten/sak/${saksId.id}/$P1DATA_PATH_SEGMENT") {
+                metricsRoute("brev/skribenten/sak/{saksId}/p1data")
+                url {
+                    parameters.append("spraak", spraak.name)
+                }
+                timeout { requestTimeoutMillis = 30.seconds.inWholeMilliseconds }
+            }.brevdataOrThrow(saksId = saksId)
+        } catch (e: Exception) {
+            if (e.unwrapCancellationException() is HttpRequestTimeoutException) {
+                throw PenTimeoutException("Henting av P1-data fra Pesys tok for lang tid. Prøv igjen om litt.", e)
+            } else throw e
+        }
 
     private suspend inline fun <reified Data : Any> HttpResponse.brevdataOrThrow(saksId: SaksId, vedtaksId: VedtaksId? = null): Data =
         when {
