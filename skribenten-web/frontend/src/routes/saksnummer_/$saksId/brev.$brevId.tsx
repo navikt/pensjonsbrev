@@ -14,6 +14,7 @@ import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { createLetterSnapshot } from "~/Brevredigering/LetterEditor/history";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
 import { InsertedTekstValgHighlightProvider } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
+import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
@@ -212,9 +213,11 @@ function RedigerBrevPage() {
       return <ApiError error={error} title="En feil skjedde ved henting av brev" />;
     },
     success: (brev) => (
-      <ManagedLetterEditorContextProvider brev={brev} redigeringsflate="saksbehandler-redigering">
-        <RedigerBrev brev={brev} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={vedtaksId} />
-      </ManagedLetterEditorContextProvider>
+      <RedigeringsflateProvider redigeringsflate="saksbehandler-redigering">
+        <ManagedLetterEditorContextProvider brev={brev}>
+          <RedigerBrev brev={brev} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={vedtaksId} />
+        </ManagedLetterEditorContextProvider>
+      </RedigeringsflateProvider>
     ),
   });
 }
@@ -425,7 +428,6 @@ function RedigerBrev({
                     brev={brev}
                     error={error}
                     freeze={freeze}
-                    redigeringsflate="saksbehandler-redigering"
                     resetParentSaveError={oppdaterBrevMutation.reset}
                     showDebug={showDebug}
                   />
