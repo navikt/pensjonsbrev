@@ -3206,10 +3206,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Tar imot toggle-navnet uten prefiks ("featureName"). UnleashService legger på
-         *     pensjonsbrev.skribenten.-prefikset, så frontend skal ikke ha noe forhold til det.
-         */
+        /** UnleashService legger automatisk på "pensjonsbrev.skribenten."-prefikset */
         get: {
             parameters: {
                 query?: never;
