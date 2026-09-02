@@ -25,7 +25,7 @@ data class LopendeYtelse(
     val brukersMinstesats: Double,
     val avkortetPgaRedusertTrygdetid: Boolean,
     val harGradertUfoeretrygd: Boolean,
-    val endringBt: Boolean = true,
+    val endringBt: Boolean,
 )
 
 data class OpphortYtelse(
