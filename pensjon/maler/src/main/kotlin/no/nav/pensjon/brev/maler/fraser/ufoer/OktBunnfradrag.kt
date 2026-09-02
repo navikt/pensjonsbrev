@@ -470,8 +470,8 @@ class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, 
             table(header = {
                 column { text(bokmal { +"Fra" }, nynorsk { +"Frå" }) }
                 column { text(bokmal { +"Til" }, nynorsk { +"Til" }) }
-                column { text(bokmal { +"Årsak" }, nynorsk { +"Årsak" }) }
                 column { text(bokmal { +"Fribeløp" }, nynorsk { +"Fribeløp" }) }
+                column { text(bokmal { +"Årsak til endring" }, nynorsk { +"Årsak til endring" }) }
             }) {
                 forEach(perioder) { periode ->
                     row {
@@ -485,6 +485,12 @@ class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, 
                             text(
                                 bokmal { +periode.tom.formatMonthYear() },
                                 nynorsk { +"" + periode.tom.formatMonthYear() }
+                            )
+                        }
+                        cell {
+                            text(
+                                bokmal { +periode.faktor.format() + " G" },
+                                nynorsk { +periode.faktor.format() + " G" }
                             )
                         }
                         cell {
@@ -504,12 +510,6 @@ class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, 
                                     nynorsk { +"Innvilgelse " + periode.venteperiodeStartDato.format() }
                                 )
                             }
-                        }
-                        cell {
-                            text(
-                                bokmal { +periode.faktor.format() + " G" },
-                                nynorsk { +periode.faktor.format() + " G" }
-                            )
                         }
                     }
                 }
