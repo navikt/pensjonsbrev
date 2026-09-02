@@ -12,10 +12,12 @@ const vedleggUrl = (saksId: string, brevId: number | string, redigeringsflate: R
 
 export const redigerbareVedleggKeys = {
   all: ["redigerbareVedlegg"] as const,
+  brev: (brevId: number | string, redigeringsflate: Redigeringsflate) =>
+    [...redigerbareVedleggKeys.all, redigeringsflate, brevId] as const,
   liste: (brevId: number | string, redigeringsflate: Redigeringsflate) =>
-    [...redigerbareVedleggKeys.all, redigeringsflate, "liste", brevId] as const,
+    [...redigerbareVedleggKeys.brev(brevId, redigeringsflate), "liste"] as const,
   vedlegg: (brevId: number | string, vedleggId: string, redigeringsflate: Redigeringsflate) =>
-    [...redigerbareVedleggKeys.all, redigeringsflate, "vedlegg", brevId, vedleggId] as const,
+    [...redigerbareVedleggKeys.brev(brevId, redigeringsflate), "vedlegg", vedleggId] as const,
 };
 
 export const getRedigerbareVedlegg = {
