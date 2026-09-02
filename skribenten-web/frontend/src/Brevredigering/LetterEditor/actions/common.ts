@@ -52,8 +52,7 @@ export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
 }
 
-export const isLetterDocument = (doc: EditedDocument): doc is EditedLetter =>
-  "sakspart" in doc && "signatur" in doc && !("includeSakspart" in doc);
+export const isLetterDocument = (doc: EditedDocument): doc is EditedLetter => "sakspart" in doc && "signatur" in doc;
 
 export function isEditableContent(content: Content | undefined | null): boolean {
   return content != null && (content.type === "VARIABLE" || content.type === "ITEM_LIST");
