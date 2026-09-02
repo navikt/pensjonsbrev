@@ -1,19 +1,15 @@
 import { Alert, BodyShort, Button, ExpansionCard, HStack, Loader, VStack } from "@navikt/ds-react";
+import { type UseQueryResult } from "@tanstack/react-query";
 
 import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
-import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
+import { type RedigerbartVedleggInfo } from "~/types/brev";
 
 /**
  * Lists editable vedlegg and switches the editor to the selected one.
  */
-export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
-  const { aktivtDokument, kanTilbakestille, redigeringsflate, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } =
-    useAktivtDokument();
-  const vedleggQuery = useRedigerbareVedlegg({
-    saksId: props.saksId,
-    brevId: props.brevId,
-    redigeringsflate,
-  });
+export const VedleggPanel = (props: { vedleggQuery: UseQueryResult<RedigerbartVedleggInfo[], Error> }) => {
+  const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useAktivtDokument();
+  const { vedleggQuery } = props;
 
   if (vedleggQuery.isPending) {
     return <Loader size="small" title="Henter vedlegg" />;

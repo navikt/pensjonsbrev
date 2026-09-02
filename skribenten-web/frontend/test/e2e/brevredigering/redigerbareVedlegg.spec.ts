@@ -92,6 +92,18 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByRole("tab", { name: "Vedlegg" })).toBeHidden();
   });
 
+  test("viser feil i redigeringsfeltet når vedleggslisten ikke kan hentes", async ({ page }) => {
+    await page.unroute(VEDLEGGLISTE_URL);
+    await page.route(VEDLEGGLISTE_URL, (route) => route.fulfill({ status: 500, json: "Uff" }));
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+
+    await expect(page.getByRole("heading", { name: "Klarte ikke å hente vedlegg" })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeHidden();
+    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    await expect(page.getByRole("tab", { name: "Vedlegg" })).toHaveAttribute("aria-selected", "true");
+  });
+
   test("åpner det første vedlegget i redigeringsfeltet når vedlegg-fanen velges", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
