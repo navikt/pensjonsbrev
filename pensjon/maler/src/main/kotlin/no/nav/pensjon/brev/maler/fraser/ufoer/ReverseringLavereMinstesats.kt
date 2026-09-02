@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
@@ -77,9 +78,11 @@ object ReverseringLavereMinstesats {
                             cell { text(bokmal { +"Din minstesats" }, nynorsk { +"Minstesatsen din" }) }
                             cell { text(bokmal { +lopendeYtelse.brukersMinstesats.format(3) + " G" }, nynorsk { +lopendeYtelse.brukersMinstesats.format(3) + " G" }) }
                         }
-                        row {
-                            cell { text(bokmal { +"Din etterbetaling" }, nynorsk { +"Etterbetalinga di" }) }
-                            cell { text(bokmal { +data.etterbetaling.format() }, nynorsk { +data.etterbetaling.format() }) }
+                        showIf(data.etterbetaling.greaterThan(0)) {
+                            row {
+                                cell { text(bokmal { +"Din etterbetaling" }, nynorsk { +"Etterbetalinga di" }) }
+                                cell { text(bokmal { +data.etterbetaling.format() }, nynorsk { +data.etterbetaling.format() }) }
+                            }
                         }
                     }
                 }
@@ -150,9 +153,15 @@ object ReverseringLavereMinstesats {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Fra 1. juli har vi brukt den lavere minstesatsen i beregning av uføretrygden din. Når reverseringen nå trer i kraft, skal den ha virkning tilbake i tid fra 1. juli i år. Din uføretrygd opphørte " + opphortYtelse.opphorsdato.format() + ", derfor har du rett til en etterbetaling for perioden på " + data.etterbetaling.format() + ", dette vil komme om få dager." },
-                        nynorsk { +"Frå 1. juli har vi brukt den lågare minstesatsen i berekninga av uføretrygda di. Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. Uføretrygda di opphøyrde " + opphortYtelse.opphorsdato.format() + ", derfor har du rett til ei etterbetaling for perioden på " + data.etterbetaling.format() + ", dette vil komme om få dagar." },
+                        bokmal { +"Fra 1. juli har vi brukt den lavere minstesatsen i beregning av uføretrygden din. Når reverseringen nå trer i kraft, skal den ha virkning tilbake i tid fra 1. juli i år. " },
+                        nynorsk { +"Frå 1. juli har vi brukt den lågare minstesatsen i berekninga av uføretrygda di. Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. " },
                     )
+                    showIf(data.etterbetaling.greaterThan(0)) {
+                        text(
+                            bokmal { +"Din uføretrygd opphørte " + opphortYtelse.opphorsdato.format() + ", derfor har du rett til en etterbetaling for perioden på " + data.etterbetaling.format() + ", dette vil komme om få dager." },
+                            nynorsk { +"Uføretrygda di opphøyrde " + opphortYtelse.opphorsdato.format() + ", derfor har du rett til ei etterbetaling for perioden på " + data.etterbetaling.format() + ", dette vil kome om få dagar." },
+                        )
+                    }
                 }
                 title2 {
                     text(
@@ -177,9 +186,15 @@ object ReverseringLavereMinstesats {
                         }
                         paragraph {
                             text(
-                                bokmal { +"Fra 1. juli har vi brukt den lavere minstesatsen i beregningen av uføretrygden din. Når reverseringen nå trer i kraft, skal den ha virkning tilbake i tid fra 1. juli i år. Derfor har du rett til en etterbetaling på " + data.etterbetaling.format() + ". Etterbetalingen får du sammen med neste utbetaling." },
-                                nynorsk { +"Frå 1. juli har vi brukt den lågare minstesatsen i berekninga av uføretrygda di. Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. Derfor har du rett til ei etterbetaling på " + data.etterbetaling.format() + ". Etterbetalinga får du saman med neste utbetaling." },
+                                bokmal { +"Fra 1. juli har vi brukt den lavere minstesatsen i beregningen av uføretrygden din. Når reverseringen nå trer i kraft, skal den ha virkning tilbake i tid fra 1. juli i år. " },
+                                nynorsk { +"Frå 1. juli har vi brukt den lågare minstesatsen i berekninga av uføretrygda di. Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. " },
                             )
+                            showIf(data.etterbetaling.greaterThan(0)) {
+                                text(
+                                    bokmal { +"Derfor har du rett til en etterbetaling på " + data.etterbetaling.format() + ". Etterbetalingen får du sammen med neste utbetaling. " },
+                                    nynorsk { +"Derfor har du rett til ei etterbetaling på " + data.etterbetaling.format() + ". Etterbetalinga får du saman med neste utbetaling. " },
+                                )
+                            }
                         }
                         showIf(lopendeYtelse.avkortetPgaRedusertTrygdetid) {
                             paragraph {
@@ -200,23 +215,25 @@ object ReverseringLavereMinstesats {
                     }
                 }
 
-            title1 {
-                text(
-                    bokmal { +"Informasjon om etterbetalingen" },
-                    nynorsk { +"Informasjon om etterbetalinga" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Du får ikke renter på etterbetalingen. Informasjon om skattetrekk på etterbetalingen finner du hos Skatteetaten." },
-                    nynorsk { +"Du får ikkje renter på etterbetalinga. Informasjon om skattetrekk på etterbetalinga finn du hos Skatteetaten." },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Har du gjeld som Skatteetaten krever inn, kan pengene fra etterbetalingen gå til å dekke gjelden. Eksempler på gjeld kan være bidrags- eller feilutbetalingsgjeld hos Nav, og refusjonskrav hos tjenestepensjonsordning." },
-                    nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Døme på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav, og refusjonskrav hos tenestepensjonsordning." },
-                )
+            showIf(data.etterbetaling.greaterThan(0)) {
+                title1 {
+                    text(
+                        bokmal { +"Informasjon om etterbetalingen" },
+                        nynorsk { +"Informasjon om etterbetalinga" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du får ikke renter på etterbetalingen. Informasjon om skattetrekk på etterbetalingen finner du hos Skatteetaten." },
+                        nynorsk { +"Du får ikkje renter på etterbetalinga. Informasjon om skattetrekk på etterbetalinga finn du hos Skatteetaten." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Har du gjeld som Skatteetaten krever inn, kan pengene fra etterbetalingen gå til å dekke gjelden. Eksempler på gjeld kan være bidrags- eller feilutbetalingsgjeld hos Nav, og refusjonskrav hos tjenestepensjonsordning." },
+                        nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Døme på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav, og refusjonskrav hos tenestepensjonsordning." },
+                    )
+                }
             }
 
             ifNotNull(data.lopendeYtelse) { lopendeYtelse ->
