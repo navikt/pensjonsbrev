@@ -29,6 +29,7 @@ fun createReverseringLavereMinstesatsData() =
             endringBt = true
         ),
         etterbetaling = Kroner(10000),
+        haddeEgenopptjening = true,
         hjemmeltekst = "§§ 12-13 til 12-16, 12-18 og 22-12",
         pe = createPEgruppe10(),
         maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
