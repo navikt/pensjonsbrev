@@ -63,10 +63,10 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         defaultRequest {
             url(penUrl)
         }
-install(HttpTimeout) {
-    requestTimeoutMillis = 15.seconds.inWholeMilliseconds
-}
-installRetry(logger, shouldNotRetry = { method, _, _ -> method != HttpMethod.Get })
+        install(HttpTimeout) {
+            requestTimeoutMillis = 15.seconds.inWholeMilliseconds
+        }
+        installRetry(logger, shouldNotRetry = { method, _, _ -> method != HttpMethod.Get })
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
