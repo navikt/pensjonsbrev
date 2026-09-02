@@ -223,7 +223,10 @@ function exactSearch(index: SearchIndex, query: string): SearchResults {
   return { content: toContentHits(matches), brev };
 }
 
-function normalizeForExactMatch(value: string): string {
+/** Lowercases and collapses whitespace, so a query can be compared verbatim
+ *  against text normalized by `lineText`. Shared with `highlight.tsx`, so
+ *  exact-mode highlighting marks exactly what exact search matched. */
+export function normalizeForExactMatch(value: string): string {
   return value.toLowerCase().replace(/\s+/g, " ").trim();
 }
 
