@@ -28,7 +28,7 @@ data class ApSimuleringDto(
     val forbehold: ForbeholdInnhold,
     @DisplayText("Kortforbehold")
     val kortforbehold: Kortforbehold?,
-) : SaksbehandlerValgBrevdata, VedleggData
+) : SaksbehandlerValgBrevdata
 
 data class ApSimuleringDtoData(
     @DisplayText("Simulering")
