@@ -5,6 +5,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.alleAutobrevmaler
 import no.nav.pensjon.brev.alleRedigerbareMaler
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -200,6 +201,7 @@ class TemplateRoutesTest {
             assertEquals(forventet, body.map { it.brevkode to it.language }.toSet())
         }
 
+        @OptIn(InternKonstruktoer::class)
         @Test
         fun `linjene er de samme som dokumentasjonsendepunktet for malen gir`() = testBrevbakerApp(isIntegrationTest = false) { client ->
             val body = client.get("/templates/autobrev/all").body<List<SearchableContent>>()
