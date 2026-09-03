@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.brevredigering.application.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse

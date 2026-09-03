@@ -4,11 +4,10 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.Oppr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.OpprettBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForAlleSakerHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForAlleSakerService
-import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
-import no.nav.pensjon.brev.skribenten.brevredigering.application.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.common.Outcome
