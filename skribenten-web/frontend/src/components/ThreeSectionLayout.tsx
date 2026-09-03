@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { Box, HGrid, HStack, VStack } from "@navikt/ds-react";
 
 import { VerticalDivider } from "./Divider";
@@ -9,11 +10,17 @@ const ThreeSectionLayout = (props: {
   bottomJustify?: "end" | "space-between";
   rightColumnWidth?: string;
 }) => {
+  const leftColumnStyle = css`
+    &:has(> .brev-og-vedlegg-editor-sidepanel) {
+      padding-top: 0;
+    }
+`;
   return (
     <Box asChild background="default" flexGrow="1" overflowY="hidden">
       <VStack justify="space-between">
         <HGrid columns={`minmax(304px, 384px) 1px ${props.rightColumnWidth ?? "auto"}`} flexGrow="1" overflowY="hidden">
           <Box
+            css={leftColumnStyle}
             overflowY="auto"
             padding={{ xs: "space-12" }}
             paddingBlock={{ lg: "space-16" }}

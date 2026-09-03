@@ -16,6 +16,7 @@ const sidepanelStyle = css`
     top: 0;
     z-index: 1;
     background: var(--ax-bg-default);
+    height: var(--ax-space-48);
   }
 
   /* Aksel sizes tabs by content — with two tabs they split the panel width evenly instead. */
@@ -69,7 +70,13 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
   }
 
   return (
-    <Tabs css={sidepanelStyle} onChange={(tab) => void velgTab(tab)} size="small" value={aktivTab}>
+    <Tabs
+      className="brev-og-vedlegg-editor-sidepanel"
+      css={sidepanelStyle}
+      onChange={(tab) => void velgTab(tab)}
+      size="small"
+      value={aktivTab}
+    >
       <Tabs.List>
         <Tabs.Tab label="Brevmal" value={BREVMAL_TAB} />
         <Tabs.Tab label="Vedlegg" value={VEDLEGG_TAB} />
