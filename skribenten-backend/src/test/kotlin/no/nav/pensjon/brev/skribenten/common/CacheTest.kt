@@ -88,7 +88,6 @@ class CacheTest {
         }
     }
 
-
     companion object {
         @JvmStatic
         @AfterAll

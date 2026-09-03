@@ -88,7 +88,11 @@ class Valkey(config: ValkeyConfig) : Cache() {
     }
 
     private fun setupJedis(config: ValkeyConfig): JedisPool = with(config) {
-        return JedisPool(
+        JedisPool(
+            JedisPoolConfig().apply {
+                testOnBorrow = true
+                testWhileIdle = true
+            },
             HostAndPort(host, port),
             DefaultJedisClientConfig.builder()
                 .ssl(ssl)
