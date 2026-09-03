@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -124,26 +123,25 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
 
 
             title1 {
-                val uttaksalder = pesysData.uttaksalder.ifNull(saksbehandlerValg.uttaksalder)
-                text(bokmal { +"Månedlig pensjon før skatt ved " + redigerbarData(uttaksalder.aar.format()) + " år" })
-                showIf(uttaksalder.maaneder greaterThan 1) {
-                    text(bokmal { +" og " + redigerbarData(uttaksalder.maaneder.format()) + " måneder" })
-                }.orShowIf(uttaksalder.maaneder greaterThan 0) {
+                text(bokmal { +"Månedlig pensjon før skatt ved " + redigerbarData(pesysData.uttaksalder.aar.format()) + " år" })
+                showIf(pesysData.uttaksalder.maaneder greaterThan 1) {
+                    text(bokmal { +" og " + redigerbarData(pesysData.uttaksalder.maaneder.format()) + " måneder" })
+                }.orShowIf(pesysData.uttaksalder.maaneder greaterThan 0) {
                     text(bokmal { +" og 1 måned" })
                 }
-                text(bokmal { +" (" + redigerbarData(pesysData.uttaksdato.ifNull(saksbehandlerValg.uttaksdato)) + ")" })
+                text(bokmal { +" (" + redigerbarData(pesysData.uttaksdato) + ")" })
             }
-            includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(pesysData.afp.ifNull(saksbehandlerValg.afp)))
+            includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(pesysData.afp))
 
             title1 {
                 text(bokmal { +"Opptjeningsgrunnlag i folketrygden" })
             }
 
             paragraph {
-                text(bokmal { +"Forventet fremtidig inntekt: " + redigerbarData(pesysData.forventetFremtidigInntekt.ifNull(saksbehandlerValg.forventetFremtidigInntekt).format()) + "." })
+                text(bokmal { +"Forventet fremtidig inntekt: " + redigerbarData(pesysData.forventetFremtidigInntekt.format()) + "." })
             }
 
-            includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(pesysData.afp.ifNull(saksbehandlerValg.afp)))
+            includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(pesysData.afp))
         }
     }
 }
