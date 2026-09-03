@@ -63,6 +63,10 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm run build
 
+      - name: Prune bff devDependencies
+        working-directory: ${{ inputs.workingDir }}/bff
+        run: npm prune --omit=dev
+
       - name: Build and push Docker container
         uses: nais/docker-build-push@8e41f1f58749b9248e376c25d33bfbdd2b1163c0 # v0
         id: docker-build-push
