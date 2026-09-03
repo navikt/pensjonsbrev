@@ -1,31 +1,5 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.AttesterBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentBrevAttesteringHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentEllerOpprettAttesteringPdfHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentRedigerbareVedleggAttesteringHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentRedigertVedleggAttesteringHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.LagreAttestertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.LagreAttestertVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.OpprettBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SendBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SlettBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForSakHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.LagreP1DataHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.HentEllerOpprettPdfHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.EndreDistribusjonstypeHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.EndreMottakerHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.LeggVedFoerstesideHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.VeksleKlarStatusHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreRedigertVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreValgteVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentAlltidValgbareVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigerbareVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigertVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.TilbakestillRedigertVedleggHandler
 import io.ktor.http.*
 import io.ktor.server.application.Application
 import io.ktor.server.plugins.*
@@ -34,6 +8,14 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
+import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.*
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
@@ -53,7 +35,7 @@ fun Route.sakBrev() =
 
         get {
             val sak: Fagsak = call.attributes[SakKey]
-            respondSuccess(hentBrevForSak(HentBrevForSakHandler.Request(sak.saksId))?.asSuccess()) {
+            respondSuccess(hentBrevForSak(HentBrevForSakHandler.Request(sak.saksId)).asSuccess()) {
                 respond(HttpStatusCode.OK, it.map { brev -> dto2ApiService.toApi(brev) })
             }
         }

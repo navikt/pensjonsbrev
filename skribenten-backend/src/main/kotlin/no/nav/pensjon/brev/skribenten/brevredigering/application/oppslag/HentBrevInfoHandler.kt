@@ -1,21 +1,15 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.TransactionHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import org.jetbrains.exposed.v1.jdbc.Database
 
-class HentBrevInfoHandler(
-    private val brevreservasjonPolicy: BrevreservasjonPolicy,
-    database: Database,
-) : TransactionHandler<HentBrevInfoHandler.Request, Dto.BrevInfo, Nothing>(database) {
+class HentBrevInfoHandler(private val brevtilgang: Brevtilgang) {
 
     data class Request(val brevId: BrevId)
 
-    override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, Nothing>? =
-        BrevredigeringEntity.findById(request.brevId)?.let { success(it.toBrevInfo(brevreservasjonPolicy)) }
+    suspend operator fun invoke(request: Request): Outcome<Dto.BrevInfo, Nothing>? =
+        brevtilgang.forLesing(request.brevId, saksId = null) { success(brev.tilBrevInfo()) }
 }

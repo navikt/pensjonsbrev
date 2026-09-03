@@ -1,38 +1,27 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.ReservertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.model.*
-import org.jetbrains.exposed.v1.jdbc.Database
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Distribusjon
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
-class EndreDistribusjonstypeHandler(
-    private val redigerBrevPolicy: RedigerBrevPolicy,
-    private val brevreservasjonPolicy: BrevreservasjonPolicy,
-    reserverBrevHandler: ReserverBrevHandler,
-    database: Database,
-) : ReservertBrevHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
+class EndreDistribusjonstypeHandler(private val brevtilgang: Brevtilgang) {
 
-    data class Request(override val brevId: BrevId, override val saksId: SaksId, val type: Distribusjon) : BrevredigeringRequest
+    data class Request(val brevId: BrevId, val saksId: SaksId, val type: Distribusjon)
 
-    override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
-        val principal = PrincipalInContext.require()
-
-        // Utfør kun endring om nødvendig
-        if (brev.distribusjonstype != request.type) {
-            redigerBrevPolicy.kanRedigere(brev, principal).onError(ignore = { it is LaastBrev }) { return failure(it) }
-
+    suspend operator fun invoke(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
+        brevtilgang.forStatusendring(
+            request.brevId,
+            request.saksId,
+            trengerEndring = { it.distribusjonstype != request.type },
+        ) {
             brev.distribusjonstype = request.type
-            brev.frigiReservasjon()
-        }
 
-        return success(brev.toBrevInfo(brevreservasjonPolicy))
-    }
+            success(Unit)
+        }
 }

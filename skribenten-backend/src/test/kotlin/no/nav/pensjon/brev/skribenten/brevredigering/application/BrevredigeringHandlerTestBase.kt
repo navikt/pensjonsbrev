@@ -2,37 +2,6 @@
 
 package no.nav.pensjon.brev.skribenten.brevredigering.application
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.AttesterBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentBrevAttesteringHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentEllerOpprettAttesteringPdfHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentRedigerbareVedleggAttesteringHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentRedigertVedleggAttesteringHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.LagreAttestertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.LagreAttestertVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.OpprettBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SendBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SlettBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForAlleSakerHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForSakHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevInfoHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.BrevPdfService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.GenererFoerstesideHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.HentEllerOpprettPdfHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.EndreDistribusjonstypeHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.EndreMottakerHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.LeggVedFoerstesideHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.VeksleKlarStatusHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreRedigertVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreValgteVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigerbareVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigertVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.RedigerbareVedleggService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.TilbakestillRedigertVedleggHandler
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import no.nav.brev.InternKonstruktoer
@@ -42,8 +11,18 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
+import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
@@ -137,237 +116,75 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
     protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
+    protected val opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navAnsattService)
     protected val slettBrevPolicy = SlettBrevPolicy(pdlService)
-    protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
-
-    protected val endreMottaker by lazy {
-        EndreMottakerHandler(
+    protected val transactional by lazy { Transactional(SharedPostgres.database) }
+    protected val brevtilgang by lazy {
+        Brevtilgang(
             redigerBrevPolicy = redigerBrevPolicy,
-            brevdataService = brevdataService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val endreDistribusjonstype by lazy {
-        EndreDistribusjonstypeHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val leggVedFoersteside by lazy {
-        LeggVedFoerstesideHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val veksleKlarStatus by lazy {
-        VeksleKlarStatusHandler(
-            ferdigRedigertPolicy = ferdigRedigertPolicy,
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val hentBrevAttestering by lazy {
-        HentBrevAttesteringHandler(
             attesterBrevPolicy = attesterBrevPolicy,
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
-            navansattService = navAnsattService,
+            sendBrevPolicy = sendBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
+            transactional = transactional,
         )
     }
-    protected val hentBrevInfoHandler by lazy { HentBrevInfoHandler(brevreservasjonPolicy, SharedPostgres.database) }
-    protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(brevreservasjonPolicy, SharedPostgres.database) }
-    protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(brevreservasjonPolicy, SharedPostgres.database) }
+    protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevtilgang) }
 
-    protected val hentBrev by lazy {
-        HentBrevHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val attesterBrev by lazy {
-        AttesterBrevHandler(
-            attesterBrevPolicy = attesterBrevPolicy,
-            ferdigRedigertPolicy = ferdigRedigertPolicy,
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
-            navansattService = navAnsattService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val oppdaterBrev by lazy {
-        OppdaterBrevHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
+    protected val endreMottaker by lazy { EndreMottakerHandler(brevtilgang, brevdataService) }
+    protected val endreDistribusjonstype by lazy { EndreDistribusjonstypeHandler(brevtilgang) }
+    protected val leggVedFoersteside by lazy { LeggVedFoerstesideHandler(brevtilgang) }
+    protected val veksleKlarStatus by lazy { VeksleKlarStatusHandler(brevtilgang, ferdigRedigertPolicy) }
+    protected val hentBrevAttestering by lazy { HentBrevAttesteringHandler(brevtilgang, brevmalService, brevdataService, navAnsattService) }
+    protected val hentBrevInfoHandler by lazy { HentBrevInfoHandler(brevtilgang) }
+    protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(transactional, brevreservasjonPolicy) }
+    protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(transactional, brevreservasjonPolicy) }
+    protected val hentBrev by lazy { HentBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val attesterBrev by lazy { AttesterBrevHandler(brevtilgang, ferdigRedigertPolicy, brevmalService, brevdataService, navAnsattService) }
+    protected val lagreAttestertBrev by lazy { LagreAttestertBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val oppdaterBrev by lazy { OppdaterBrevHandler(brevtilgang, brevmalService, brevdataService) }
     protected val opprettBrev by lazy {
         OpprettBrevHandler(
-            opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navAnsattService),
+            transactional = transactional,
+            opprettBrevPolicy = opprettBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
             brevmalService = brevmalService,
             brevdataService = brevdataService,
             navansattService = navAnsattService,
-            database = SharedPostgres.database
         )
     }
-    protected val tilbakestillBrev by lazy {
-        TilbakestillBrevHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val endreValgteVedlegg by lazy {
-        EndreValgteVedleggHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val redigerbareVedleggService by lazy {
-        RedigerbareVedleggService(
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
-        )
-    }
-    protected val endreRedigertVedlegg by lazy {
-        EndreRedigertVedleggHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            redigerbareVedleggService = redigerbareVedleggService,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val tilbakestillRedigertVedlegg by lazy {
-        TilbakestillRedigertVedleggHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            redigerbareVedleggService = redigerbareVedleggService,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val hentRedigertVedlegg by lazy {
-        HentRedigertVedleggHandler(
-            redigerbareVedleggService = redigerbareVedleggService,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val hentRedigerbareVedlegg by lazy {
-        HentRedigerbareVedleggHandler(
-            redigerbareVedleggService = redigerbareVedleggService,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val hentRedigertVedleggAttestering by lazy {
-        HentRedigertVedleggAttesteringHandler(
-            redigerbareVedleggService = redigerbareVedleggService,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val hentRedigerbareVedleggAttestering by lazy {
-        HentRedigerbareVedleggAttesteringHandler(
-            redigerbareVedleggService = redigerbareVedleggService,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val lagreAttestertVedlegg by lazy {
-        LagreAttestertVedleggHandler(
-            attesterBrevPolicy = attesterBrevPolicy,
-            redigerBrevPolicy = redigerBrevPolicy,
-            redigerbareVedleggService = redigerbareVedleggService,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
+    protected val tilbakestillBrev by lazy { TilbakestillBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val endreValgteVedlegg by lazy { EndreValgteVedleggHandler(brevtilgang) }
+    protected val redigerbareVedleggService by lazy { RedigerbareVedleggService(brevmalService, brevdataService) }
+    protected val endreRedigertVedlegg by lazy { EndreRedigertVedleggHandler(brevtilgang, redigerbareVedleggService) }
+    protected val tilbakestillRedigertVedlegg by lazy { TilbakestillRedigertVedleggHandler(brevtilgang, redigerbareVedleggService) }
+    protected val hentRedigertVedlegg by lazy { HentRedigertVedleggHandler(brevtilgang, redigerbareVedleggService) }
+    protected val hentRedigerbareVedlegg by lazy { HentRedigerbareVedleggHandler(brevtilgang, redigerbareVedleggService) }
+    protected val hentRedigertVedleggAttestering by lazy { HentRedigertVedleggAttesteringHandler(brevtilgang, redigerbareVedleggService) }
+    protected val hentRedigerbareVedleggAttestering by lazy { HentRedigerbareVedleggAttesteringHandler(brevtilgang, redigerbareVedleggService) }
+    protected val lagreAttestertVedlegg by lazy { LagreAttestertVedleggHandler(brevtilgang, redigerbareVedleggService) }
     protected val brevPdfService by lazy {
         BrevPdfService(
             brevdataService = brevdataService,
             renderService = RenderService(brevbakerService),
             brevmalService = brevmalService,
-            hentP1DataHandler = HentP1DataHandler(
-                penClient = PenClientStub(),
-                database = SharedPostgres.database,
-            ),
+            hentP1DataHandler = HentP1DataHandler(brevtilgang, PenClientStub()),
             genererFoerstesideHandler = GenererFoerstesideHandler(
+                brevtilgang,
                 FoerstesidegeneratorClient(
                     config = OboClientConfig(url = "http://localhost", scope = "test"),
                     authService = FakeAuthService,
                     clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
-                )
+                ),
             ),
             pdfVedleggAppender = object : PDFVedleggAppender {
                 override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
-            }
+            },
         )
     }
-    protected val hentEllerOpprettPdf by lazy {
-        HentEllerOpprettPdfHandler(
-            brevPdfService = brevPdfService,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val hentEllerOpprettAttesteringPdf by lazy {
-        HentEllerOpprettAttesteringPdfHandler(
-            brevPdfService = brevPdfService,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val lagreAttestertBrev by lazy {
-        LagreAttestertBrevHandler(
-            attesterBrevPolicy = attesterBrevPolicy,
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val sendBrevHandler by lazy {
-        SendBrevHandler(
-            sendBrevPolicy = sendBrevPolicy,
-            brevService = brevService,
-            brevmalService = brevmalService,
-            reserverBrevHandler = reserverBrevHandler,
-            database = SharedPostgres.database,
-        )
-    }
-    protected val slettBrevHandler by lazy {
-        SlettBrevHandler(
-            reserverBrevHandler = reserverBrevHandler,
-            slettBrevPolicy = slettBrevPolicy,
-            database = SharedPostgres.database,
-        )
-    }
+    protected val hentEllerOpprettPdf by lazy { HentEllerOpprettPdfHandler(brevtilgang, brevPdfService) }
+    protected val hentEllerOpprettAttesteringPdf by lazy { HentEllerOpprettAttesteringPdfHandler(brevtilgang, brevPdfService) }
+    protected val sendBrevHandler by lazy { SendBrevHandler(brevtilgang, brevService, brevmalService) }
+    protected val slettBrevHandler by lazy { SlettBrevHandler(brevtilgang, slettBrevPolicy) }
 
     companion object Fixtures {
         init {

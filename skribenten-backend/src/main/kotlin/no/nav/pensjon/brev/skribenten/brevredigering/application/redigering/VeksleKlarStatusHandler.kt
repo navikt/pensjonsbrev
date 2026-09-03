@@ -1,58 +1,40 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.ReservertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.auth.*
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.model.*
-import org.jetbrains.exposed.v1.jdbc.Database
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
 class VeksleKlarStatusHandler(
+    private val brevtilgang: Brevtilgang,
     private val ferdigRedigertPolicy: FerdigRedigertPolicy,
-    private val redigerBrevPolicy: RedigerBrevPolicy,
-    private val brevreservasjonPolicy: BrevreservasjonPolicy,
-    reserverBrevHandler: ReserverBrevHandler,
-    database: Database,
-) : ReservertBrevHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
+) {
 
-    data class Request(override val brevId: BrevId, override val saksId: SaksId, val klar: Boolean) : BrevredigeringRequest
+    data class Request(val brevId: BrevId, val saksId: SaksId, val klar: Boolean)
 
-    override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
+    suspend operator fun invoke(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
+        fun trengerEndring(brev: Brevredigering) = brev.laastForRedigering != request.klar
 
-        // Om ingen endring, returner vellykket uten å gjøre noe
-        if (brev.laastForRedigering == request.klar) {
-            return success(brev.toBrevInfo(brevreservasjonPolicy))
-        }
-
-        val principal = PrincipalInContext.require()
         return if (request.klar) {
-            settBrevTilKlar(brev, principal)
+            brevtilgang.forStatusendring(request.brevId, request.saksId, trengerEndring = ::trengerEndring) {
+                ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return@forStatusendring failure(it) }
+
+                brev.markerSomKlar()
+
+                success(Unit)
+            }
         } else {
-            settBrevTilKladd(brev, principal)
+            brevtilgang.forStatusendring(request.brevId, request.saksId, trengerEndring = ::trengerEndring) {
+                brev.markerSomKladd()
+
+                success(Unit)
+            }
         }
     }
-
-    private suspend fun settBrevTilKlar(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.BrevInfo, BrevredigeringError> {
-        redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
-        ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return failure(it) }
-
-        brev.markerSomKlar()
-        brev.frigiReservasjon()
-        return success(brev.toBrevInfo(brevreservasjonPolicy))
-    }
-
-    private fun settBrevTilKladd(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.BrevInfo, BrevredigeringError> {
-        redigerBrevPolicy.kanRedigere(brev, principal).onError(ignore = { it is LaastBrev }) { return failure(it) }
-
-        brev.markerSomKladd()
-        brev.frigiReservasjon()
-        return success(brev.toBrevInfo(brevreservasjonPolicy))
-    }
-
 }

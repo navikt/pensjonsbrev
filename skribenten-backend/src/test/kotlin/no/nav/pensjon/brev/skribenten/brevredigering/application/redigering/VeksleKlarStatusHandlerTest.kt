@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
-
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
@@ -40,6 +40,16 @@ class VeksleKlarStatusHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.status).isEqualTo(Dto.BrevStatus.KLAR)
         }
 
+    }
+
+    @Test
+    suspend fun `aa markere et allerede klart brev som klart er en no-op`() {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+
+        assertThat(veksleKlarStatus(brev, true)).isSuccess {
+            assertThat(it.status).isEqualTo(Dto.BrevStatus.KLAR)
+        }
     }
 
     @Test

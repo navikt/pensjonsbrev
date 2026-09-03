@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.ReservertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SlettBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -13,28 +10,25 @@ import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
-import org.jetbrains.exposed.v1.jdbc.Database
 
 class SlettBrevHandler(
-    reserverBrevHandler: ReserverBrevHandler,
+    private val brevtilgang: Brevtilgang,
     private val slettBrevPolicy: SlettBrevPolicy,
-    database: Database,
-) : ReservertBrevHandler<SlettBrevHandler.Request, Unit>(database, reserverBrevHandler) {
+) {
 
     data class Request(
-        override val brevId: BrevId,
-        override val saksId: SaksId,
+        val brevId: BrevId,
+        val saksId: SaksId,
         val pid: BrevbakerType.Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
-    ) : BrevredigeringRequest
+    )
 
-    override suspend fun execute(request: Request): Outcome<Unit, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
+    suspend operator fun invoke(request: Request): Outcome<Unit, BrevredigeringError>? =
+        brevtilgang.forSletting(request.brevId, request.saksId) {
+            slettBrevPolicy.kanSlette(brev, request.pid, request.behandlingsnumre)
+                .onError { return@forSletting failure(it) }
 
-        slettBrevPolicy.kanSlette(brev, request.pid, request.behandlingsnumre).onError { return failure(it) }
-
-        brev.delete()
-        return success(Unit)
-    }
+            brev.delete()
+            success(Unit)
+        }
 }
-

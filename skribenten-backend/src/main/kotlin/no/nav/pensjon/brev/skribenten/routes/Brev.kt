@@ -1,11 +1,5 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevInfoHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.DiffBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.FrigiReservasjonHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
 import io.ktor.http.*
 import io.ktor.server.application.Application
 import io.ktor.server.plugins.di.dependencies
@@ -14,6 +8,12 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.auth.SakKey
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.DiffBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.FrigiReservasjonHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevInfoHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.letter.Edit

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
-
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
@@ -42,6 +42,18 @@ class EndreDistribusjonstypeHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(endreDistribusjonstype(brev.info.id, Distribusjon.LOKALPRINT))
             .isSuccess {
                 assertThat(it.distribusjonstype).isEqualTo(Distribusjon.LOKALPRINT)
+            }
+    }
+
+    @Test
+    suspend fun `endring til samme distribusjonstype paa arkivert brev er en no-op`() {
+        val brev = opprettBrev().resultOrFail()
+        arkiverBrev(brev).resultOrFail()
+
+        assertThat(endreDistribusjonstype(brev.info.id, brev.info.distribusjonstype))
+            .isSuccess {
+                assertThat(it.distribusjonstype).isEqualTo(brev.info.distribusjonstype)
+                assertThat(it.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
             }
     }
 
