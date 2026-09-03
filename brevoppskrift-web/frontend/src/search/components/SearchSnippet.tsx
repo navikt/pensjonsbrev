@@ -7,7 +7,7 @@ import { LineContent, truncateLine } from "~/search/components/highlight";
 import { type ContentHit } from "~/search/textSearch";
 
 const SNIPPET_CHARS = 160;
-export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: string }) {
+export function SearchSnippet({ hit, needle, exact }: { hit: ContentHit; needle?: string; exact?: boolean }) {
   const { template, lineIndex, matchCount } = hit;
   const start = Math.max(0, lineIndex - 1);
   const visibleLines = template.lines.slice(start, lineIndex + 2);
@@ -47,6 +47,7 @@ export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: strin
               truncate
             >
               <LineContent
+                exact={exact}
                 line={isPrimary ? line : truncateLine(line, SNIPPET_CHARS)}
                 needle={isPrimary ? needle : undefined}
               />

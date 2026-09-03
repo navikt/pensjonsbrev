@@ -77,11 +77,10 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   // Depends on data identity (not fetch timestamps), so an unchanged corpus that
   // revalidated to a 304 keeps the same reference and does not rebuild the index.
   const freshnessKey = queries.map((q) => referenceId(q.data)).join("|");
-  // Both the fuzzy and the exact index are built together whenever the corpus
-  // changes, and `exactOnly` (the toggle) is deliberately NOT in this memo's
-  // deps: toggling it below only switches which already-built index we read
-  // from, so it never re-triggers a (synchronous, main-thread-blocking) Fuse
-  // rebuild.
+  // The index is built whenever the corpus changes, and `exactOnly` (the
+  // toggle) is deliberately NOT in this memo's deps: it only changes the
+  // query mode, so it never re-triggers a synchronous, main-thread-blocking
+  // Fuse rebuild.
   // While `isLoading` is true, some malType's corpus hasn't arrived yet, so we
   // skip building entirely rather than repeatedly indexing a partial corpus
   // that no one can search yet (the UI shows a loading spinner instead).
@@ -104,16 +103,15 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
         });
       }
     });
-    return { fuzzy: buildIndex(entries, true), exact: buildIndex(entries, false) };
+    return buildIndex(entries);
   }, [freshnessKey, malTypes, titleByKey, isLoading]);
-  const index = indexes ? (exactOnly ? indexes.exact : indexes.fuzzy) : undefined;
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const trimmedQuery = deferredQuery.trim();
   const isSearching = trimmedQuery.length >= MIN_QUERY_LENGTH;
   const results = useMemo(
-    () => (index && isSearching ? search(index, trimmedQuery) : { content: [], brev: [] }),
-    [index, isSearching, trimmedQuery],
+    () => (indexes && isSearching ? search(indexes, trimmedQuery, exactOnly) : { content: [], brev: [] }),
+    [indexes, isSearching, trimmedQuery, exactOnly],
   );
   const languageTotal = useMemo(() => new Set(templates.flatMap((t) => t.languages)).size, [templates]);
   const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError);

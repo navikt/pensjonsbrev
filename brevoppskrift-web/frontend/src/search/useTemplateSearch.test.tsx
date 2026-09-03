@@ -127,7 +127,7 @@ describe("useTemplateSearch", () => {
     await waitFor(() => expect(result.current.contentHits).toHaveLength(0));
   });
 
-  it("pre-builds both the fuzzy and exact indexes once per corpus, and toggling exactOnly never rebuilds them", async () => {
+  it("pre-builds one index pair per corpus, and toggling exactOnly never rebuilds it", async () => {
     getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
       Promise.resolve(malType === "autobrev" ? autobrevContent : []),
     );
@@ -136,18 +136,16 @@ describe("useTemplateSearch", () => {
     const { result } = renderHook(() => useTemplateSearch(refs), { wrapper: wrapper(queryClient) });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     const constructionsAfterLoad = fuseConstructions.count;
-    // Two Fuse instances (content + brev) built for each of the two variants
-    // (fuzzy, exact) = 4 constructions total, and only once the corpus is
-    // fully loaded (no wasted builds off a partial corpus along the way).
-    expect(constructionsAfterLoad).toBe(4);
+    // One content and one brev index are built only once the corpus is fully
+    // loaded (no wasted builds off a partial corpus along the way).
+    expect(constructionsAfterLoad).toBe(2);
 
     act(() => result.current.setExactOnly(true));
     await waitFor(() => expect(result.current.exactOnly).toBe(true));
     act(() => result.current.setExactOnly(false));
     await waitFor(() => expect(result.current.exactOnly).toBe(false));
 
-    // Toggling back and forth must not trigger any further Fuse construction:
-    // both indexes were already built and cached when the corpus first loaded.
+    // Toggling back and forth only changes the search query mode.
     expect(fuseConstructions.count).toBe(constructionsAfterLoad);
   });
 
@@ -177,6 +175,6 @@ describe("useTemplateSearch", () => {
       await Promise.resolve();
     });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
-    expect(fuseConstructions.count).toBe(4);
+    expect(fuseConstructions.count).toBe(2);
   });
 });
