@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.UseCaseHandler
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
-import no.nav.pensjon.brev.skribenten.brevredigering.application.StatiskFagsystemBrevdata
-import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
