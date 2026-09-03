@@ -50,7 +50,7 @@ val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment<LangBokmalNynor
     },
     includeSakspart = true
 ) {
-    vedlegg(pesysData.returadresse, "_".repeat(5).expr())
+    vedlegg(pesysData.returadresse, ".".repeat(10).expr())
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: Expression<ReturAdresse>, aarEgenerklaering: Expression<String>) {
