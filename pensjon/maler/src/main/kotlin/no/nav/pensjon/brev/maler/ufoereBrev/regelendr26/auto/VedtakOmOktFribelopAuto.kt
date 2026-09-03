@@ -34,8 +34,8 @@ object VedtakOmOktFribelopAuto : AutobrevTemplate<VedtakOmOktFribelopAutoDto> {
 
         title {
             text(
-                bokmal { +"Du kan nå ha høyere inntekt før vi reduserer uføretrygden din" },
-                nynorsk { +"Du kan no ha høgare inntekt før vi reduserer uføretrygda di" }
+                bokmal { +"Du kan ha høyere inntekt før vi reduserer uføretrygden din" },
+                nynorsk { +"Du kan ha høgare inntekt før vi reduserer uføretrygda di" }
             )
         }
         outline {
