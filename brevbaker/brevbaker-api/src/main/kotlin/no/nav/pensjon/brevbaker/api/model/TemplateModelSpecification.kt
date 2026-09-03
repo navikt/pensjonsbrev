@@ -1,10 +1,11 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.brev.InternKonstruktoer
 import java.util.Objects
 
 typealias ObjectTypeSpecification = Map<String, TemplateModelSpecification.FieldType>
 
-class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>, val letterModelTypeName: String?) {
+class TemplateModelSpecification @InternKonstruktoer constructor(val types: Map<String, ObjectTypeSpecification>, val letterModelTypeName: String?) {
     sealed class FieldType {
         abstract val nullable: Boolean
         abstract val type: String
