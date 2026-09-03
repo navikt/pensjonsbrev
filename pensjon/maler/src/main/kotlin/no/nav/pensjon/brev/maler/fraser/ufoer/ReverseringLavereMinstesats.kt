@@ -224,8 +224,8 @@ object ReverseringLavereMinstesats {
                         showIf(lopendeYtelse.avkortetPgaRedusertTrygdetid) {
                             paragraph {
                                 text(
-                                    bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid, og minstesatsen er derfor redusert. " },
-                                    nynorsk { +"Du har avkorta uføretrygd på grunn av redusert trygdetid, og minstesatsen er derfor redusert. " },
+                                    bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid. " },
+                                    nynorsk { +"Du har avkorta uføretrygd på grunn av redusert trygdetid. " },
                                 )
                             }
                         }
