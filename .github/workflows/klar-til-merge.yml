@@ -16,6 +16,8 @@ on:
       - ".github/workflows/.deploy.yaml"
       - ".github/workflows/.salsa.yaml"
       - ".github/workflows/cleanup.yml"
+      - ".github/workflows/deploy-brevoppskrift-web.yaml"
+      - ".github/workflows/deploy-skribenten-web.yaml"
       - ".github/workflows/klar-til-merge.yml"
       - ".github/workflows/label-pr.yml"
       - ".github/labeler.yml"
