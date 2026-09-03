@@ -9,74 +9,34 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
-data class ApSimuleringDto(
-    @DisplayText("Simulering")
-    val simulering: Simulering,
-    @DisplayText("Simuleringsinformasjon")
-    val simuleringsinformasjon: Simuleringsinformasjon,
-    @DisplayText("Vilkårsprøvingsresultat")
-    val vilkaarsproevingsresultat: Vilkaarsproevingsresultat?,
-    @DisplayText("Trygdetid")
-    val trygdetid: Trygdetid?,
-    @DisplayText("Pensjonsgivende inntekt")
-    val pensjonsgivendeInntektListe: List<AarligBeloep>?,
-    @DisplayText("Årlig inntekt og pensjon")
-    val aarligInntektOgPensjonListe: List<AarligInntektOgPensjon>?,
-    @DisplayText("Pensjonsopptjening")
-    val pensjonsopptjeningListe: List<Pensjonsopptjening>?,
-    @DisplayText("Forbehold")
-    val forbehold: ForbeholdInnhold,
-    @DisplayText("Kortforbehold")
-    val kortforbehold: Kortforbehold?,
-) : SaksbehandlerValgBrevdata
-
 data class ApSimuleringDtoData(
-    @DisplayText("Simulering")
-    val simulering: Simulering?,
-    @DisplayText("Simuleringsinformasjon")
-    val simuleringsinformasjon: Simuleringsinformasjon?,
-    @DisplayText("Vilkårsprøvingsresultat")
+    val simulering: Simulering,
+    val simuleringsinformasjon: Simuleringsinformasjon,
     val vilkaarsproevingsresultat: Vilkaarsproevingsresultat?,
-    @DisplayText("Trygdetid")
     val trygdetid: Trygdetid?,
-    @DisplayText("Pensjonsgivende inntekt")
     val pensjonsgivendeInntektListe: List<AarligBeloep>?,
-    @DisplayText("Årlig inntekt og pensjon")
     val aarligInntektOgPensjonListe: List<AarligInntektOgPensjon>?,
-    @DisplayText("Pensjonsopptjening")
     val pensjonsopptjeningListe: List<Pensjonsopptjening>?,
-    @DisplayText("Forbehold")
-    val forbehold: ForbeholdInnhold?,
-    @DisplayText("Kortforbehold")
+    val forbehold: ForbeholdInnhold,
     val kortforbehold: Kortforbehold?,
 ) : FagsystemBrevdata
 
 data class Simulering(
-    @DisplayText("Alderspensjon")
     val alderspensjonListe: List<Alderspensjon>,
-    @DisplayText("Månedlig alderspensjon for knekkpunkter")
     val maanedligAlderspensjonForKnekkpunkter: SimuleringV1MaanedligAlderspensjonForKnekkpunkter?,
-    @DisplayText("AFP privat")
     val afpPrivat: AfpPrivatSimulering?,
-    @DisplayText("AFP offentlig livsvarig")
     val afpOffentligLivsvarig: AfpOffentligLivsvarigSimulering?,
-    @DisplayText("AFP offentlig tidsbegrenset")
     val afpOffentligTidsbegrenset: TidsbegrensetOffentligAfp?,
 )
 
 data class AfpPrivatSimulering(
-    @DisplayText("Ved gradert uttak")
     val vedGradertUttak: PrivatAfp?,
-    @DisplayText("Ved helt uttak")
     val vedHeltUttak: PrivatAfp,
-    @DisplayText("Ved 67 år")
     val vedNormertPensjonsalder: PrivatAfp?,
 )
 
 data class AfpOffentligLivsvarigSimulering(
-    @DisplayText("Ved gradert uttak")
     val vedGradertUttak: LivsvarigOffentligAfp?,
-    @DisplayText("Ved helt uttak")
     val vedHeltUttak: LivsvarigOffentligAfp,
 )
 
@@ -151,9 +111,7 @@ data class Uttaksinformasjon (
 )
 
 data class Simuleringsinformasjon(
-    @DisplayText("Gradert uttaksalder")
     val gradertUttakInformasjon: Uttaksinformasjon?,
-    @DisplayText("Helt uttaksalder")
     val heltUttakInformasjon: Uttaksinformasjon,
     val normertUttakInformasjon: Uttaksinformasjon?,
     val sivilstatus: Sivilstatus,

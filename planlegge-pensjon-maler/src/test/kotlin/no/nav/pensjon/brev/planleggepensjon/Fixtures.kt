@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.planleggepensjon
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDto
@@ -10,7 +11,6 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
@@ -54,7 +54,7 @@ object Fixtures : LetterDataFactory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when (letterDataType) {
-        ApSimuleringDto::class -> createLagreSimuleringDto() as T
+        ApSimuleringBrevDto::class -> createLagreSimuleringDto() as T
         Simuleringsinformasjon::class -> createSimuleringsinformasjon() as T
         ForbeholdInnhold::class -> createForbeholdInnhold() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
@@ -64,6 +64,10 @@ object Fixtures : LetterDataFactory {
 
     fun createServiceberegningBrevDto(): ServiceberegningBrevDto {
         val saksbehandlerValg = ServiceberegningDto(
+            alt1 = true,
+            alt2 = false,
+        )
+        val fagsystemBrevdata = ServiceberegningDtoData(
             uttaksalder = Alder(62, 10),
             uttaksdato = "01.02.2027",
             forventetFremtidigInntekt = Kroner(158000),
@@ -83,27 +87,21 @@ object Fixtures : LetterDataFactory {
                 afpGrad = Percent(100),
                 erAvkortet = true,
             ),
-            alt1 = true,
-            alt2 = false,
         )
         return ServiceberegningBrevDto(
             saksbehandlerValg = saksbehandlerValg,
-            pesysData = ServiceberegningDtoData(
-                uttaksalder = saksbehandlerValg.uttaksalder,
-                uttaksdato = saksbehandlerValg.uttaksdato,
-                forventetFremtidigInntekt = saksbehandlerValg.forventetFremtidigInntekt,
-                afp = saksbehandlerValg.afp,
-            )
+            pesysData = fagsystemBrevdata
         )
     }
 
     fun createBrevDtoMedAfpPrivat() = ApSimuleringBrevDto(
-        saksbehandlerValg = createLagreSimuleringDto(),
-        pesysData = createFagsystemdata(),
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = createLagreSimuleringDto(),
     )
 
     fun createBrevDtoMedAfpOffentligLivsvarig() = ApSimuleringBrevDto(
-        saksbehandlerValg = createLagreSimuleringDto().copy(
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = createLagreSimuleringDto().copy(
             simulering = createSimulering().copy(
                 afpPrivat = null,
                 afpOffentligLivsvarig = AfpOffentligLivsvarigSimulering(
@@ -120,24 +118,20 @@ object Fixtures : LetterDataFactory {
                 ),
             ),
         ),
-        pesysData = createFagsystemdata(),
     )
 
     fun createBrevDtoMedEndringAfpPrivat() = ApSimuleringBrevDto(
-        saksbehandlerValg = createLagreSimuleringDto().copy(
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = createLagreSimuleringDto().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
                 simulererEndringMedAfpPrivat = true,
             ),
         ),
-        pesysData = createFagsystemdata(),
     )
 
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
-        saksbehandlerValg = createLagreSimuleringDto().copy(
-            simuleringsinformasjon = createSimuleringsinformasjon().copy(
-                heltUttakInformasjon = Uttaksinformasjon(alder = Alder(67, 0), uttaksdato = "01.02.2030", grad = 100),
-                gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(63, 2), uttaksdato = "01.04.2026", grad = 40),
-            ),
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = createLagreSimuleringDto().copy(
             simulering = createSimulering().copy(
                 maanedligAlderspensjonForKnekkpunkter = SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
                     vedHeltUttak = createSimuleringV1MaanedligAlderspensjon(),
@@ -162,13 +156,12 @@ object Fixtures : LetterDataFactory {
                         afpGrad = Percent(100),
                         erAvkortet = false,
                     ),
-                ),
             ),
-        pesysData = createFagsystemdata(),
+        ),
     )
 
     private fun createLagreSimuleringDto() =
-        ApSimuleringDto(
+        ApSimuleringDtoData(
             simulering = createSimulering(),
             vilkaarsproevingsresultat = Vilkaarsproevingsresultat(erInnvilget = true, alternativ = null),
             pensjonsgivendeInntektListe = emptyList(),
@@ -217,20 +210,6 @@ object Fixtures : LetterDataFactory {
                 ),
             ),
         )
-
-    private fun createFagsystemdata() = createLagreSimuleringDto().let {
-        ApSimuleringDtoData(
-            simulering = it.simulering,
-            simuleringsinformasjon = it.simuleringsinformasjon,
-            vilkaarsproevingsresultat = it.vilkaarsproevingsresultat,
-            trygdetid = it.trygdetid,
-            pensjonsgivendeInntektListe = it.pensjonsgivendeInntektListe,
-            aarligInntektOgPensjonListe = it.aarligInntektOgPensjonListe,
-            pensjonsopptjeningListe = it.pensjonsopptjeningListe,
-            forbehold = it.forbehold,
-            kortforbehold = it.kortforbehold
-        )
-    }
 
     private fun createForbeholdInnhold() = ForbeholdInnhold(
         seksjoner = listOf(

@@ -14,14 +14,6 @@ data class ServiceberegningBrevDto(
 ) : RedigerbarBrevdata<ServiceberegningDto, ServiceberegningDtoData>
 
 data class ServiceberegningDto(
-    @DisplayText("Uttaksalder")
-    val uttaksalder: Alder,
-    @DisplayText("Uttaksdato")
-    val uttaksdato: String,
-    @DisplayText("Forventet fremtidig inntekt")
-    val forventetFremtidigInntekt: Kroner,
-    @DisplayText("AFP")
-    val afp: TidsbegrensetOffentligAfp,
     @DisplayText("Ingen ytelser")
     val alt1: Boolean = true,
     @DisplayText("Vedtak om alderspensjon")
@@ -35,12 +27,8 @@ data class ServiceberegningDto(
 ) : SaksbehandlerValgBrevdata
 
 data class ServiceberegningDtoData(
-    @DisplayText("Uttaksalder")
-    val uttaksalder: Alder?,
-    @DisplayText("Uttaksdato")
-    val uttaksdato: String?,
-    @DisplayText("Forventet fremtidig inntekt")
-    val forventetFremtidigInntekt: Kroner?,
-    @DisplayText("AFP")
-    val afp: TidsbegrensetOffentligAfp?
+    val uttaksalder: Alder,
+    val uttaksdato: String,
+    val forventetFremtidigInntekt: Kroner,
+    val afp: TidsbegrensetOffentligAfp
 ) : FagsystemBrevdata
