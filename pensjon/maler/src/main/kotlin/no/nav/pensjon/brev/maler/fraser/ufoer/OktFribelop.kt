@@ -50,8 +50,8 @@ object OktFribelop {
             showIf(data.oktFribelopHeleAret) {
                 paragraph {
                     text(
-                        bokmal { +"Du har hatt uføretrygd i 2 år eller lenger før 1. januar 2026, og derfor øker fribeløpet ditt til 1 G for hele 2026. " },
-                        nynorsk { +"Du har hatt uføretrygd i 2 år eller lenger før 1. januar 2026, og derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
+                        bokmal { +"Du har hatt uføretrygd i 2 år eller lenger før 1. januar 2026, og derfor øker fribeløpet ditt til 1 G (136 549 kroner) for hele 2026. " },
+                        nynorsk { +"Du har hatt uføretrygd i 2 år eller lenger før 1. januar 2026, og derfor aukar fribeløpet ditt til 1 G (136 549 kroner) for heile 2026. " },
                     )
                 }
             }
@@ -66,8 +66,8 @@ object OktFribelop {
             showIf(not(data.oktFribelopHeleAret)) {
                 paragraph {
                     text(
-                        bokmal { +"Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal øke til 1G. " },
-                        nynorsk { +"Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal auke til 1G. " },
+                        bokmal { +"Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal øke til 1 G. " },
+                        nynorsk { +"Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal auke til 1 G. " },
                     )
                 }
                 includePhrase(FribelopPerioder(data.fribelopPerioder, data.vektetFribelop, data.bunnfradrag))
@@ -79,8 +79,8 @@ object OktFribelop {
                             FontType.BOLD
                         )
                         text(
-                            bokmal { +"Fra 2027 vil ditt fribeløp være 1G hele året. " },
-                            nynorsk { +"Frå 2027 vil fribeløpet ditt vere 1G heile året. " },
+                            bokmal { +"Fra 2027 vil ditt fribeløp være 1 G hele året. " },
+                            nynorsk { +"Frå 2027 vil fribeløpet ditt vere 1 G heile året. " },
                         )
                     }
                 }
