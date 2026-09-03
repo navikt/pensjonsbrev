@@ -29,7 +29,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.etternavn
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.fornavn
@@ -42,44 +41,6 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
     override val sakstyper: Set<ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.SERVICEBEREGNING_SIMULERINGSBREV
     override val featureToggle = FeatureToggles.apSimulering.toggle
-    override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(
-        types = mapOf(
-            ServiceberegningBrevDto::class.qualifiedName!! to mapOf(
-                "saksbehandlerValg" to TemplateModelSpecification.FieldType.Object(
-                    nullable = false,
-                    typeName = ServiceberegningDto::class.qualifiedName!!,
-                ),
-            ),
-            ServiceberegningDto::class.qualifiedName!! to mapOf(
-                "alt1" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Ingen ytelser",
-                ),
-                "alt2" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Vedtak om alderspensjon",
-                ),
-                "alt3" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Vedtak om uføretrygd",
-                ),
-                "alt4" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "AAP utbetales",
-                ),
-                "alt5" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Mottar / søker om sykepenger",
-                ),
-            ),
-        ),
-        letterModelTypeName = ServiceberegningBrevDto::class.qualifiedName,
-    )
 
     override val template: LetterTemplate<*, ServiceberegningBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
