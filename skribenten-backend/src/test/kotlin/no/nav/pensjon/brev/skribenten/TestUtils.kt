@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten
 
+import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.P1_BREVKODE
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.getAs
 import io.ktor.util.collections.*
@@ -11,7 +12,6 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.P1_BREVKODE
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.model.NavIdent
