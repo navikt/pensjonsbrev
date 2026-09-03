@@ -26,7 +26,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 data class ApSimuleringBrevDto(override val saksbehandlerValg: SaksbehandlervalgIDSL, override val pesysData: ApSimuleringDtoData) : RedigerbarBrevdata<SaksbehandlervalgIDSL, ApSimuleringDtoData>, VedleggData
 
@@ -37,7 +36,6 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
     override val sakstyper: Set<ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.PENSJONSKALKULATOR_AP_SIMULERING
     override val featureToggle = FeatureToggles.apSimulering.toggle
-    override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(emptyMap(), null)
     
     override val template: LetterTemplate<*, ApSimuleringBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
