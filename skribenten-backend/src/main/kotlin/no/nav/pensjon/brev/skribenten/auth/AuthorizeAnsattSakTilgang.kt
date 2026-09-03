@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.skribenten.auth
 
+import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevInfoHandler
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.asSuccess

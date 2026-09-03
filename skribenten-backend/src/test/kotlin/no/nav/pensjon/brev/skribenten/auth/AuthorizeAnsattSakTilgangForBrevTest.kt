@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.auth
 
+import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevInfoHandler
 import io.ktor.client.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
@@ -14,7 +15,6 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.SharedPostgres
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.InMemoryCache
