@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -22,6 +23,7 @@ open class BrevredigeringStub : Brevredigering {
     override val spraak: LanguageCode get() = notYetStubbed()
     override val avsenderEnhetId: EnhetId get() = notYetStubbed()
     override val saksbehandlerValg: SaksbehandlervalgMap get() = notYetStubbed()
+    override val statiskFagsystemBrevdata: StatiskFagsystemBrevdata? get() = notYetStubbed()
     override val redigertBrev: Edit.Letter get() = notYetStubbed()
     override val redigertBrevHash: Hash<Edit.Letter> get() = notYetStubbed()
     override val laastForRedigering: Boolean get() = notYetStubbed()

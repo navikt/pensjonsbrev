@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
@@ -45,6 +46,10 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
     val saksbehandlerValg = json<SaksbehandlervalgMap>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
+    val statiskFagsystemBrevdata: Column<StatiskFagsystemBrevdata?> = encryptedBinary("statiskFagsystemBrevdata")
+        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
+        .transform<ByteArray, StatiskFagsystemBrevdata>(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+        .nullable()
     val redigertBrevKryptert: Column<Edit.Letter> = encryptedBinary("redigertBrevKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
