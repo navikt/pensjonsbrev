@@ -1,10 +1,16 @@
 import { css } from "@emotion/react";
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
+import { BodyLong, Box, Button, Heading, HGrid, Select, ToggleGroup, VStack } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
-import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
+import {
+  getTemplateDescription,
+  getTemplateDocumentation,
+  getTemplateDocumentationV2,
+  type MalType,
+} from "~/api/brevbaker-api-endpoints";
 import {
   type Attachment,
   type Conditional,
@@ -17,7 +23,8 @@ import {
   type ForEach,
   type TemplateDocumentation,
 } from "~/api/brevbakerTypes";
-import { DataClasses, trimClassName } from "~/components/DataClasses";
+import { DataClassesPanel, trimClassName } from "~/components/DataClasses";
+import { DocumentV2 } from "~/components/TemplateDocumentationV2View";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -61,7 +68,9 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     language?: string;
     highlightedDataClass?: string;
     highlightedDataField?: string;
+    highlightedDataFieldOwner?: string;
     index?: number;
+    docVersion?: "v1" | "v2";
   } => {
     const indexRaw = search.index?.toString();
     const index = indexRaw !== undefined && /^\d+$/.test(indexRaw) ? Number(indexRaw) : undefined;
@@ -69,7 +78,9 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
       language: search.language?.toString(),
       highlightedDataClass: search.highlightedDataClass?.toString(),
       highlightedDataField: search.highlightedDataField?.toString(),
+      highlightedDataFieldOwner: search.highlightedDataFieldOwner?.toString(),
       index,
+      docVersion: search.docVersion === "v2" ? "v2" : "v1",
     };
   },
   component: TemplateExplorer,
@@ -78,7 +89,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
-  const { index } = Route.useSearch();
+  const { index, docVersion = "v1" } = Route.useSearch();
   const previewRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
@@ -107,46 +118,105 @@ function TemplateExplorer() {
   }, [index, documentation]);
 
   return (
-    <HGrid columns="minmax(360px, 35%) 1fr" height="100%" overflow="hidden">
-      <Box background="neutral-soft" borderColor="neutral-subtle" borderWidth="0 1 0 0" minHeight="0">
-        <Box asChild marginBlock="space-16 space-0" marginInline="space-16">
-          <Button as={Link} icon={<ArrowLeftIcon />} size="small" to="/templates" variant="secondary">
-            Tilbake til mal-oversikten
-          </Button>
-        </Box>
-        <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
+    <VStack height="100%" overflow="hidden">
+      <Box asChild flexShrink="0" marginBlock="space-16 space-0" marginInline="space-16">
+        <Button as={Link} icon={<ArrowLeftIcon />} size="small" to="/templates" variant="secondary">
+          Tilbake til mal-oversikten
+        </Button>
       </Box>
-      <VStack
-        align="center"
-        gap="space-16"
-        overflow="auto"
-        paddingBlock="space-16"
-        paddingInline="space-16"
-        width="100%"
-      >
-        <Heading size="medium" spacing>
-          Oppskrift for {templateId}
-        </Heading>
-        <SelectLanguage />
-        <div
-          css={css`
-            width: 100%;
-
-            .search-target {
-              outline: 3px solid var(--ax-warning-400);
-              border-radius: var(--ax-radius-4);
-              scroll-margin-top: var(--ax-space-64);
-            }
-          `}
-          ref={previewRef}
+      <HGrid columns="auto 1fr" flexGrow="1" minHeight="0" overflow="hidden">
+        <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
+        <VStack
+          align="center"
+          gap="space-16"
+          overflow="auto"
+          paddingBlock="space-16"
+          paddingInline="space-16"
+          width="100%"
         >
-          <Document templateDocumentation={documentation} />
-          {documentation.attachments.map((attachment, index) => (
-            <Document key={index} templateDocumentation={attachment} />
-          ))}
-        </div>
-      </VStack>
-    </HGrid>
+          <Heading size="medium" spacing>
+            Oppskrift for {templateId}
+          </Heading>
+          <SelectLanguage />
+          <SelectDocVersion />
+          <div
+            css={css`
+              width: 100%;
+
+              .search-target {
+                outline: 3px solid var(--ax-warning-400);
+                border-radius: var(--ax-radius-4);
+                scroll-margin-top: var(--ax-space-64);
+              }
+            `}
+            ref={previewRef}
+          >
+            {docVersion === "v2" ? <TemplateDocumentationV2Section /> : <TemplateDocumentationV1Section />}
+          </div>
+        </VStack>
+      </HGrid>
+    </VStack>
+  );
+}
+
+function TemplateDocumentationV1Section() {
+  const { documentation } = Route.useLoaderData();
+
+  return (
+    <>
+      <Document templateDocumentation={documentation} />
+      {documentation.attachments.map((attachment, index) => (
+        <Document key={index} templateDocumentation={attachment} />
+      ))}
+    </>
+  );
+}
+
+function TemplateDocumentationV2Section() {
+  const { malType, templateId } = Route.useParams();
+  const { language } = Route.useSearch();
+  const { description } = Route.useLoaderData();
+  const resolvedLanguage = language ?? description.languages[0];
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: getTemplateDocumentationV2.queryKey(malType, templateId, resolvedLanguage ?? ""),
+    queryFn: () => getTemplateDocumentationV2.queryFn(malType, templateId, resolvedLanguage ?? ""),
+    enabled: Boolean(resolvedLanguage),
+  });
+
+  if (isLoading) {
+    return <BodyLong>Laster v2-dokumentasjon …</BodyLong>;
+  }
+  if (isError || !data) {
+    return <BodyLong>Kunne ikke laste v2-dokumentasjon for denne malen/språket.</BodyLong>;
+  }
+
+  return (
+    <>
+      <DocumentV2 templateDocumentation={data} />
+      {data.attachments.map((attachment, index) => (
+        <DocumentV2 key={index} templateDocumentation={attachment} />
+      ))}
+    </>
+  );
+}
+
+function SelectDocVersion() {
+  const { docVersion = "v1" } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  return (
+    <ToggleGroup
+      css={css`
+        margin-bottom: var(--ax-space-16);
+      `}
+      onChange={(value) => navigate({ search: (s) => ({ ...s, docVersion: value as "v1" | "v2" }), replace: true })}
+      size="small"
+      value={docVersion}
+    >
+      <ToggleGroup.Item label="v1" value="v1" />
+      <ToggleGroup.Item label="v2" value="v2" />
+    </ToggleGroup>
   );
 }
 
@@ -177,12 +247,12 @@ function SelectLanguage() {
 
 function Document({ templateDocumentation }: { templateDocumentation: TemplateDocumentation | Attachment }) {
   return (
-    <Box background="default" padding="space-48">
-      <div>
+    <Box background="default" className="letter-page" padding="space-48">
+      <Heading level="1" size="large" spacing>
         {templateDocumentation.title.map((cocs, index) => {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
         })}
-      </div>
+      </Heading>
       <div>
         {templateDocumentation.outline.map((cocs, index) => {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
@@ -223,7 +293,7 @@ function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
       return (
-        <Heading data-block-index={content.index} size="medium" spacing>
+        <Heading data-block-index={content.index} level="2" size="medium" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -232,7 +302,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE2: {
       return (
-        <Heading data-block-index={content.index} size="small" spacing>
+        <Heading data-block-index={content.index} level="3" size="small" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -241,7 +311,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE3: {
       return (
-        <Heading data-block-index={content.index} size="xsmall" spacing>
+        <Heading data-block-index={content.index} level="4" size="xsmall" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
