@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg
 
-import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
@@ -31,24 +30,18 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringsinfo
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.uttaksinformasjon.grad
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.uttaksinformasjon.uttaksdato
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.*
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.SimpleSelector
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
-@OptIn(InternKonstruktoer::class)
-private val sivilstatusValueSelector = SimpleSelector<Sivilstatus, String>(
-    className = "no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus",
-    propertyName = "value",
-    propertyType = "String",
-    selector = Sivilstatus::value
-)
-
-private val Expression<Sivilstatus>.value: Expression<String>
-    get() = select(sivilstatusValueSelector)
+object SivilstatusFormatter : LocalizedFormatter<Sivilstatus>() {
+    override fun apply(first: Sivilstatus, second: Language): String = first.value
+    override fun stableHashCode() = "SivilstatusFormatter".hashCode()
+}
 
 @TemplateModelHelpers
 val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringBrevDto>(
@@ -259,7 +252,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringBrevDto>(
     }
 
     title2 {
-        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.value })
+        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.format(formatter = SivilstatusFormatter) })
     }
     paragraph {
         text(
