@@ -9,8 +9,6 @@ import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.pesysData
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.saksbehandlerValg
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.*
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.afp
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.forventetFremtidigInntekt
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.uttaksalder
@@ -28,6 +26,7 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.etternavn
@@ -50,6 +49,12 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
     ) {
+        val ingenYtelser = saksbehandlervalg("ingenYtelser", "Ingen ytelser").bool()
+        val vedtakOmAlderspensjon = saksbehandlervalg("vedtakOmAlderspensjon", "Vedtak om alderspensjon").bool()
+        val vedtakOmUfoeretrygd = saksbehandlervalg("vedtakOmUfoeretrygd", "Vedtak om uføretrygd").bool()
+        val aapUtbetales = saksbehandlervalg("aapUtbetales", "AAP utbetales").bool()
+        val mottarSykepenger = saksbehandlervalg("mottarSoekerOmSykepenger", "Mottar / søker om sykepenger").bool()
+
         title {
             text(bokmal { +"Serviceberegning AFP for " + redigerbarData(felles.bruker.fornavn) })
 
@@ -61,19 +66,19 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         }
 
         outline {
-            showIf(saksbehandlerValg.alt1) {
+            showIf(ingenYtelser) {
                 paragraph { text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." }) }
             }
-            showIf(saksbehandlerValg.alt2) {
+            showIf(vedtakOmAlderspensjon) {
                 paragraph { text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." }) }
             }
-            showIf(saksbehandlerValg.alt3) {
+            showIf(vedtakOmUfoeretrygd) {
                 paragraph { text(bokmal { +"Bruker har " + fritekst("XX") + " % uføretrygd fra folketrygden." }) }
             }
-            showIf(saksbehandlerValg.alt4) {
+            showIf(aapUtbetales) {
                 paragraph { text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." }) }
             }
-            showIf(saksbehandlerValg.alt5) {
+            showIf(mottarSykepenger) {
                 paragraph {
                     text(
                         bokmal {
