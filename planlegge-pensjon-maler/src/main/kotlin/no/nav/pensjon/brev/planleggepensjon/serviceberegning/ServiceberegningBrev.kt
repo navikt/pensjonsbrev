@@ -9,8 +9,6 @@ import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.pesysData
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.saksbehandlerValg
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.*
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.afp
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.forventetFremtidigInntekt
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.uttaksalder
@@ -25,12 +23,11 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.etternavn
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.fornavn
@@ -43,44 +40,6 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
     override val sakstyper: Set<ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.SERVICEBEREGNING_SIMULERINGSBREV
     override val featureToggle = FeatureToggles.apSimulering.toggle
-    override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(
-        types = mapOf(
-            ServiceberegningBrevDto::class.qualifiedName!! to mapOf(
-                "saksbehandlerValg" to TemplateModelSpecification.FieldType.Object(
-                    nullable = false,
-                    typeName = ServiceberegningDto::class.qualifiedName!!,
-                ),
-            ),
-            ServiceberegningDto::class.qualifiedName!! to mapOf(
-                "alt1" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Ingen ytelser",
-                ),
-                "alt2" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Vedtak om alderspensjon",
-                ),
-                "alt3" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Vedtak om uføretrygd",
-                ),
-                "alt4" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "AAP utbetales",
-                ),
-                "alt5" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Mottar / søker om sykepenger",
-                ),
-            ),
-        ),
-        letterModelTypeName = ServiceberegningBrevDto::class.qualifiedName,
-    )
 
     override val template: LetterTemplate<*, ServiceberegningBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
@@ -90,6 +49,12 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
     ) {
+        val ingenYtelser = saksbehandlervalg("ingenYtelser", "Ingen ytelser").bool()
+        val vedtakOmAlderspensjon = saksbehandlervalg("vedtakOmAlderspensjon", "Vedtak om alderspensjon").bool()
+        val vedtakOmUfoeretrygd = saksbehandlervalg("vedtakOmUfoeretrygd", "Vedtak om uføretrygd").bool()
+        val aapUtbetales = saksbehandlervalg("aapUtbetales", "AAP utbetales").bool()
+        val mottarSykepenger = saksbehandlervalg("mottarSoekerOmSykepenger", "Mottar / søker om sykepenger").bool()
+
         title {
             text(bokmal { +"Serviceberegning AFP for " + redigerbarData(felles.bruker.fornavn) })
 
@@ -101,19 +66,19 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         }
 
         outline {
-            showIf(saksbehandlerValg.alt1) {
+            showIf(ingenYtelser) {
                 paragraph { text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." }) }
             }
-            showIf(saksbehandlerValg.alt2) {
+            showIf(vedtakOmAlderspensjon) {
                 paragraph { text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." }) }
             }
-            showIf(saksbehandlerValg.alt3) {
+            showIf(vedtakOmUfoeretrygd) {
                 paragraph { text(bokmal { +"Bruker har " + fritekst("XX") + " % uføretrygd fra folketrygden." }) }
             }
-            showIf(saksbehandlerValg.alt4) {
+            showIf(aapUtbetales) {
                 paragraph { text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." }) }
             }
-            showIf(saksbehandlerValg.alt5) {
+            showIf(mottarSykepenger) {
                 paragraph {
                     text(
                         bokmal {
@@ -124,26 +89,25 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
 
 
             title1 {
-                val uttaksalder = pesysData.uttaksalder.ifNull(saksbehandlerValg.uttaksalder)
-                text(bokmal { +"Månedlig pensjon før skatt ved " + redigerbarData(uttaksalder.aar.format()) + " år" })
-                showIf(uttaksalder.maaneder greaterThan 1) {
-                    text(bokmal { +" og " + redigerbarData(uttaksalder.maaneder.format()) + " måneder" })
-                }.orShowIf(uttaksalder.maaneder greaterThan 0) {
+                text(bokmal { +"Månedlig pensjon før skatt ved " + redigerbarData(pesysData.uttaksalder.aar.format()) + " år" })
+                showIf(pesysData.uttaksalder.maaneder greaterThan 1) {
+                    text(bokmal { +" og " + redigerbarData(pesysData.uttaksalder.maaneder.format()) + " måneder" })
+                }.orShowIf(pesysData.uttaksalder.maaneder greaterThan 0) {
                     text(bokmal { +" og 1 måned" })
                 }
-                text(bokmal { +" (" + redigerbarData(pesysData.uttaksdato.ifNull(saksbehandlerValg.uttaksdato)) + ")" })
+                text(bokmal { +" (" + redigerbarData(pesysData.uttaksdato) + ")" })
             }
-            includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(pesysData.afp.ifNull(saksbehandlerValg.afp)))
+            includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(pesysData.afp))
 
             title1 {
                 text(bokmal { +"Opptjeningsgrunnlag i folketrygden" })
             }
 
             paragraph {
-                text(bokmal { +"Forventet fremtidig inntekt: " + redigerbarData(pesysData.forventetFremtidigInntekt.ifNull(saksbehandlerValg.forventetFremtidigInntekt).format()) + "." })
+                text(bokmal { +"Forventet fremtidig inntekt: " + redigerbarData(pesysData.forventetFremtidigInntekt.format()) + "." })
             }
 
-            includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(pesysData.afp.ifNull(saksbehandlerValg.afp)))
+            includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(pesysData.afp))
         }
     }
 }
