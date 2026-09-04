@@ -42,32 +42,32 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
         val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
 
         title {
-            text (bokmal { + "Nav har avslått søknaden din om endring av inntektsgrensen din"},
-                nynorsk { + "Nav har avslått søknaden din om endring av inntektsgrensa di"})
+            text (bokmal { + "Nav har avslått søknaden din om endring av bunnfradraget ditt"},
+                nynorsk { + "Nav har avslått søknaden din om endring av bunnfradraget ditt"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om å endre inntektsgrensen din, som vi fikk den " + pesysData.kravMottattDato.format() + "." },
-                    nynorsk { +"Vi har avslått søknaden din om å endre inntektsgrensa di, som vi fekk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om å endre bunnfradraget ditt, som vi fikk den " + pesysData.kravMottattDato.format() + "." },
+                    nynorsk { +"Vi har avslått søknaden din om å endre bunnfradraget ditt, som vi fekk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { + "Derfor endrer vi ikke inntektsgrensen din"},
-                    nynorsk { + "Derfor endrar vi ikkje inntektsgrensa di"})
+                text(bokmal { + "Derfor endrer vi ikke bunnfradraget ditt"},
+                    nynorsk { + "Derfor endrar vi ikkje bunnfradraget ditt"})
             }
             paragraph {
-                text(bokmal { + "Du får ikke endring i inntektsgrensen din, fordi du ikke har hatt en varig inntektsøkning i din stilling på " + fritekst("prosentandel") + " prosent."},
-                    nynorsk { + "Du får ikkje endring i inntektsgrensa di, fordi du ikkje har hatt ein varig inntektsauke i stillinga di på " + fritekst("prosentandel") + " prosent."})
+                text(bokmal { + "Du får ikke endring i bunnfradraget ditt, fordi du ikke har hatt en varig inntektsøkning i din stilling på " + fritekst("prosentandel") + " prosent."},
+                    nynorsk { + "Du får ikkje endring i bunnfradraget ditt, fordi du ikkje har hatt ein varig inntektsauke i stillinga di på " + fritekst("prosentandel") + " prosent."})
             }
             paragraph {
-                text(bokmal { +"For å ha rett til en høyere inntektsgrense, må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " },
-                    nynorsk { +"For å ha rett til ei høgare inntektsgrense, må du ha hatt ein varig auke av inntekta di, utan at stillingsprosenten din har auka. " }
+                text(bokmal { +"For å ha rett til et høyere bunnfradrag, må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " },
+                    nynorsk { +"For å ha rett til eit høgare bunnfradrag, må du ha hatt ein varig auke av inntekta di, utan at stillingsprosenten din har auka. " }
                 )
             }
             paragraph {
-                text( bokmal { +"Inntektsgrensen din er beregnet ut fra den inntekten du hadde før du ble ufør. " +
-                        "Når du søker om å endre inntektsgrensen din, må vi se om inntekten i dag er høyere enn inntekten du hadde før du ble ufør." },
-                    nynorsk { +"Inntektsgrensa di er berekna ut frå den inntekta du hadde før du blei ufør. " +
-                        "Når du søkjer om å endre inntektsgrensa di, må vi sjå om inntekta i dag er høgare enn inntekta du hadde før du blei ufør." }
+                text( bokmal { +"Bunnfradraget ditt er beregnet ut fra den inntekten du hadde før du ble ufør. " +
+                        "Når du søker om å endre bunnfradraget ditt, må vi se om inntekten i dag er høyere enn inntekten du hadde før du ble ufør." },
+                    nynorsk { +"Bunnfradraget ditt er berekna ut frå den inntekta du hadde før du blei ufør. " +
+                        "Når du søkjer om å endre bunnfradraget ditt, må vi sjå om inntekta i dag er høgare enn inntekta du hadde før du blei ufør." }
                 )
             }
 
@@ -83,8 +83,8 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkåret for å endre inntektsgrensen, og vi avslår derfor søknaden din."},
-                    nynorsk { + "Du oppfyller ikkje vilkåret for å endre inntektsgrensa, og vi avslår derfor søknaden din." })
+                text(bokmal { + "Du oppfyller ikke vilkåret for å endre bunnfradraget, og vi avslår derfor søknaden din."},
+                    nynorsk { + "Du oppfyller ikkje vilkåret for å endre bunnfradraget, og vi avslår derfor søknaden din." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-9 og forskrift om uføretrygd fra folketrygden § 2-3." },

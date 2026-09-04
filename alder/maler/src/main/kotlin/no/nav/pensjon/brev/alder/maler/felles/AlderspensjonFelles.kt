@@ -543,10 +543,10 @@ object UfoereAlder {
                 paragraph {
                     text(
                         bokmal {
-                            +"Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd."
+                            +"Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om bunnfradraget i vedtak om uføretrygd."
                         },
                         nynorsk {
-                            +"Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd."
+                            +"Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om bunnfradraget i vedtak om uføretrygd."
                         },
                         english {
                             +"Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."

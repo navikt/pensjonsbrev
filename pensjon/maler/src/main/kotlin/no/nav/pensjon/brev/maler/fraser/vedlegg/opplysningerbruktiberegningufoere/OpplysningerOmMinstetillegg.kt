@@ -162,8 +162,8 @@ data class OpplysningerOmMinstetillegg(
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
-                    bokmal { + "Vi fastsetter reduksjonsprosenten ved å sammenligne det du har rett til i 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Reduksjonsprosenten brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen. Reduksjonsprosenten kan ikke være høyere enn 70 prosent." },
-                    nynorsk { + "Vi fastset reduksjonsprosent ved å samanlikna det du har rett til i 100 prosent uføretrygd med di oppjusterte inntekt før du blei ufør. Reduksjonsprosenten vert brukt til å rekna ut kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa. Reduksjonsprosenten kan ikkje vere høgare enn 70 prosent." },
+                    bokmal { + "Vi fastsetter reduksjonsprosenten ved å sammenligne det du har rett til i 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Reduksjonsprosenten brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn bunnfradraget. Reduksjonsprosenten kan ikke være høyere enn 70 prosent." },
+                    nynorsk { + "Vi fastset reduksjonsprosent ved å samanlikna det du har rett til i 100 prosent uføretrygd med di oppjusterte inntekt før du blei ufør. Reduksjonsprosenten vert brukt til å rekna ut kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn bunnfradraget. Reduksjonsprosenten kan ikkje vere høgare enn 70 prosent." },
                     english { + "Your degree of compensation is established by comparing what you are entitled to with a degree of disability of 100 percent, and your recalculated income prior to your disability. The degree of compensation is used to calculate how much your disability benefit will be reduced if your income exceeds the income limit." }
                 )
             }

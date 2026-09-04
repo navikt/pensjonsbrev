@@ -175,15 +175,15 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 showIf(kanSoekeOmNyInntektsgrense) {
                     title1 {
                         text(
-                            bokmal { + "Søke om ny inntektsgrense" },
-                            nynorsk { + "Søkje om ny inntektsgrense" },
+                            bokmal { + "Søke om nytt bunnfradrag" },
+                            nynorsk { + "Søkje om nytt bunnfradrag" },
                             english { + "Applying for a new income threshold" }
                         )
                     }
                     paragraph {
                         text(
-                            bokmal { + "Er du arbeidstaker og har gradert uføretrygd, kan du søke om ny inntektsgrense. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent." },
-                            nynorsk { + "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om ny inntektsgrense. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent." },
+                            bokmal { + "Er du arbeidstaker og har gradert uføretrygd, kan du søke om nytt bunnfradrag. Dette gjelder hvis du har hatt høy lønnsøkning, uten at det skyldes overtidsjobbing, ekstravakter eller høyere stillingsprosent." },
+                            nynorsk { + "Dersom du er arbeidstakar og har gradert uføretrygd, kan du søkje om nytt bunnfradrag. Dette gjeld viss du har hatt høg lønsauke, utan at det skuldast overtidsjobbing, ekstravakter eller høgare stillingsprosent." },
                             english { + "If you are an employee receiving partial disability benefit, you can apply for a new income threshold. This applies if your wage has significantly increased, unrelated to working overtime, extra shifts, or a higher job percentage." },
                         )
                     }
