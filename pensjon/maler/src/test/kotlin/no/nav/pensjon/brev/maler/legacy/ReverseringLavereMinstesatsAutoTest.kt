@@ -41,6 +41,7 @@ class ReverseringLavereMinstesatsAutoTest {
                     harGradertUfoeretrygd = true,
                     endringBt = true
                 ),
+                haddeEgenopptjening = true,
                 etterbetaling = Kroner(10000),
                 hjemmeltekst = "§§ 12-13 til 12-16, 12-18 og 22-12",
                 pe = createPEgruppe10(),
@@ -60,6 +61,7 @@ class ReverseringLavereMinstesatsAutoTest {
                 opphortYtelse = OpphortYtelse(
                     opphorsdato = LocalDate.of(2026, 8, 15)
                 ),
+                haddeEgenopptjening = true,
                 etterbetaling = Kroner(5000),
                 hjemmeltekst = "§§ 12-13 til 12-16, 12-18 og 22-12",
                 pe = createPEgruppe10(),

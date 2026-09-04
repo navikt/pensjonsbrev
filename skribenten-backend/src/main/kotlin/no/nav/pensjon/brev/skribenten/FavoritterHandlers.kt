@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
+import no.nav.pensjon.brev.skribenten.brevredigering.application.TransactionHandler
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TransactionHandler
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.db.Favourites

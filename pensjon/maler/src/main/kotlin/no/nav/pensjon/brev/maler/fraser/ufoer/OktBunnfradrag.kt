@@ -61,9 +61,20 @@ object OktBunnfradrag {
 
             paragraph {
                 text(
-                    bokmal { +"Fra " + data.datoOkningBunnfradrag.format() + " øker fribeløpet ditt til 1 ganger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det fører til at bunnfradraget ditt øker. Du kan ha inntekt på opptil ditt nye bunnfradrag før vi begynner å redusere uføretrygden din. " },
-                    nynorsk { +"Frå " + data.datoOkningBunnfradrag.format() + " aukar fribeløpet ditt til 1 gonger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det fører til at botnfrådraget ditt aukar. Du kan ha inntekt på opptil ditt nye botnfrådrag før vi byrjar å redusere uføretrygda di. " }
+                    bokmal { +"Fra " + data.datoOkningBunnfradrag.format() + " øker fribeløpet ditt til 1 ganger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det fører til at bunnfradraget ditt øker. " },
+                    nynorsk { +"Frå " + data.datoOkningBunnfradrag.format() + " aukar fribeløpet ditt til 1 gonger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det fører til at botnfrådraget ditt aukar. " }
                 )
+                showIf(data.scenario1_1G or data.scenario3_04G_1G) {
+                    text(
+                        bokmal { +"Du kan ha inntekt på opptil ditt nye bunnfradrag før vi begynner å redusere uføretrygden din. " },
+                        nynorsk { +"Du kan ha inntekt på opptil ditt nye botnfrådrag før vi byrjar å redusere uføretrygda di. " }
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"Du har hatt en økning av uføregraden din på et senere tidspunkt i 2026. Fra denne datoen reduseres fribeløpet til 0,4 G igjen. Se mer om beregningen av fribeløp og bunnfradraget ditt nedenfor." },
+                        nynorsk { +"Du har hatt ei auke av uføregraden din på eit seinare tidspunkt i 2026. Frå denne datoen vert fribeløpet redusert til 0,4 G igjen. Sjå meir om berekninga av fribeløp og botnfrådraget ditt nedanfor." }
+                    )
+                }
             }
             paragraph {
                 text(
@@ -314,13 +325,13 @@ object OktBunnfradrag {
                 paragraph {
                     showIf(data.venteperiodeEtterGradsokning) {
                         text(
-                            bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " er det 2 år eller lenger siden din uføregrad økte, og fribeløpet ditt øker til 1G. Siden du igjen har fått økt uføregrad fra " + scenario4.dato04G.format() + ", endres fribeløpet ditt igjen til 0,4G. " },
-                            nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " er det 2 år eller lenger sidan di uføregrad auka, og fribeløpet ditt aukar til 1G. Sidan du igjen har fått auka uføregrad frå " + scenario4.dato04G.format() + ", endrar fribeløpet ditt seg igjen til 0,4G. " },
+                            bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " er det 2 år eller lenger siden din uføregrad økte, og fribeløpet ditt øker til 1 G. Siden du igjen har fått økt uføregrad fra " + scenario4.dato04G.format() + ", endres fribeløpet ditt igjen til 0,4 G. " },
+                            nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " er det 2 år eller lenger sidan di uføregrad auka, og fribeløpet ditt aukar til 1 G. Sidan du igjen har fått auka uføregrad frå " + scenario4.dato04G.format() + ", endrar fribeløpet ditt seg igjen til 0,4 G. " },
                         )
                     }.orShow {
                         text(
-                            bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år eller lenger, og fribeløpet ditt øker til 1G. Siden du igjen har fått økt uføregrad fra " + scenario4.dato04G.format() + ", endres fribeløpet ditt igjen til 0,4G. " },
-                            nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år eller lenger, og fribeløpet ditt aukar til 1G. Sidan du igjen har fått auka uføregrad frå " + scenario4.dato04G.format() + ", endrar fribeløpet ditt seg igjen til 0,4G. " },
+                            bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år eller lenger, og fribeløpet ditt øker til 1 G. Siden du igjen har fått økt uføregrad fra " + scenario4.dato04G.format() + ", endres fribeløpet ditt igjen til 0,4 G. " },
+                            nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år eller lenger, og fribeløpet ditt aukar til 1 G. Sidan du igjen har fått auka uføregrad frå " + scenario4.dato04G.format() + ", endrar fribeløpet ditt seg igjen til 0,4 G. " },
                         )
                     }
                 }

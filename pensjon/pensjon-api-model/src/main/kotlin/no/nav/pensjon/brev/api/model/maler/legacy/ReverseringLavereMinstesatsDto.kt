@@ -10,6 +10,7 @@ data class ReverseringLavereMinstesatsDto(
     val lopendeYtelse: LopendeYtelse?,
     val opphortYtelse: OpphortYtelse?,
     val etterbetaling: Kroner,
+    val haddeEgenopptjening: Boolean,
     val hjemmeltekst: String,
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,

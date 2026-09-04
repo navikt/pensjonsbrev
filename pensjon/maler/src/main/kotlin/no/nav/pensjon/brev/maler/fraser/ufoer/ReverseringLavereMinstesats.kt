@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.nettoU
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.reduksjonsprosent
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.opphortYtelse.opphorsdato
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.etterbetaling
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.haddeEgenopptjening
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.hjemmeltekst
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.lopendeYtelse
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.opphortYtelse
@@ -152,9 +153,21 @@ object ReverseringLavereMinstesats {
                     )
                 }
                 paragraph {
+                    showIf(data.haddeEgenopptjening) {
+                        text(
+                            bokmal { +"Fra 1. juli har vi brukt din egenopptjening i beregningen av uføretrygden din. " },
+                            nynorsk { +"Frå 1. juli har vi brukt di eigaopptening i berekninga av uføretrygda di. " }
+                        )
+
+                    }.orShow {
+                        text(
+                            bokmal { +"Fra 1. juli har vi brukt den lavere minstesatsen i beregningen av uføretrygden din. " },
+                            nynorsk { +"Frå 1. juli har vi brukt den lågare minstesatsen i berekninga av uføretrygda di. " },
+                        )
+                    }
                     text(
-                        bokmal { +"Fra 1. juli har vi brukt den lavere minstesatsen i beregning av uføretrygden din. Når reverseringen nå trer i kraft, skal den ha virkning tilbake i tid fra 1. juli i år. " },
-                        nynorsk { +"Frå 1. juli har vi brukt den lågare minstesatsen i berekninga av uføretrygda di. Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. " },
+                        bokmal { +"Når reverseringen nå trer i kraft, skal den ha virkning tilbake i tid fra 1. juli i år. " },
+                        nynorsk { +"Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. " },
                     )
                     showIf(data.etterbetaling.greaterThan(0)) {
                         text(
@@ -185,9 +198,21 @@ object ReverseringLavereMinstesats {
                             )
                         }
                         paragraph {
+                            showIf(data.haddeEgenopptjening) {
+                                text(
+                                    bokmal { +"Fra 1. juli har vi brukt din egenopptjening i beregningen av uføretrygden din. " },
+                                    nynorsk { +"Frå 1. juli har vi brukt di eigaopptening i berekninga av uføretrygda di. " }
+                                )
+
+                            }.orShow {
+                                text(
+                                    bokmal { +"Fra 1. juli har vi brukt den lavere minstesatsen i beregningen av uføretrygden din. " },
+                                    nynorsk { +"Frå 1. juli har vi brukt den lågare minstesatsen i berekninga av uføretrygda di. " },
+                                )
+                            }
                             text(
-                                bokmal { +"Fra 1. juli har vi brukt den lavere minstesatsen i beregningen av uføretrygden din. Når reverseringen nå trer i kraft, skal den ha virkning tilbake i tid fra 1. juli i år. " },
-                                nynorsk { +"Frå 1. juli har vi brukt den lågare minstesatsen i berekninga av uføretrygda di. Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. " },
+                                bokmal { +"Når reverseringen nå trer i kraft, skal den ha virkning tilbake i tid fra 1. juli i år. " },
+                                nynorsk { +"Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. " },
                             )
                             showIf(data.etterbetaling.greaterThan(0)) {
                                 text(
@@ -199,8 +224,8 @@ object ReverseringLavereMinstesats {
                         showIf(lopendeYtelse.avkortetPgaRedusertTrygdetid) {
                             paragraph {
                                 text(
-                                    bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid, og minstesatsen er derfor redusert. " },
-                                    nynorsk { +"Du har avkorta uføretrygd på grunn av redusert trygdetid, og minstesatsen er derfor redusert. " },
+                                    bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid. " },
+                                    nynorsk { +"Du har avkorta uføretrygd på grunn av redusert trygdetid. " },
                                 )
                             }
                         }

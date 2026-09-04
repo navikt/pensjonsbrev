@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import Fuse from "fuse.js";
 import { Fragment, type ReactNode } from "react";
 
-import { FUZZY_MATCH_OPTIONS, type Line, SHORT_TERM_LENGTH } from "~/search/textSearch";
+import { FUZZY_MATCH_OPTIONS, type Line, normalizeForExactMatch, SHORT_TERM_LENGTH } from "~/search/textSearch";
 
 type Range = [number, number];
 
@@ -42,6 +42,22 @@ function fuzzyRange(text: string, term: string): Range | undefined {
   const range = result.indices?.[0];
   // Fuse indices are inclusive [start, end]; convert to exclusive end.
   return range ? [range[0], range[1] + 1] : undefined;
+}
+
+/** Per-term ranges: all exact occurrences of a term, or else its single best
+ *  fuzzy location. Mirrors how fuzzy search matches each term on its own. */
+function termRanges(text: string, needle: string): Range[] {
+  return needle
+    .split(/\s+/)
+    .filter((term) => term.length > 0)
+    .flatMap((term) => {
+      const exact = exactRanges(text, term);
+      if (exact.length > 0) {
+        return exact;
+      }
+      const fuzzy = fuzzyRange(text, term);
+      return fuzzy ? [fuzzy] : [];
+    });
 }
 
 /** Merges overlapping/adjacent ranges into a minimal non-overlapping set. */
@@ -87,28 +103,18 @@ function VariableChip({ label }: { label: string }) {
 }
 
 /**
- * Renders text with needle terms wrapped in `<mark>`. Per term: if it's an
- * exact (case-insensitive) substring, all its occurrences are highlighted;
- * otherwise, if it only fuzzy-matches (e.g. query "ble" matching "blue"),
- * only its single best-match location is highlighted. Terms with no match at
- * all in this particular text are left unhighlighted.
+ * Renders text with the matched parts of the needle wrapped in `<mark>`.
+ *
+ * In exact mode the needle matched as one continuous phrase, so only whole
+ * occurrences of that phrase are highlighted. Otherwise the needle is split
+ * into terms and each is highlighted on its own: if a term is an exact
+ * (case-insensitive) substring, all its occurrences are highlighted; if it only
+ * fuzzy-matches (e.g. query "ble" matching "blue"), only its single best-match
+ * location is. Terms with no match at all in this particular text are left
+ * unhighlighted.
  */
-function HighlightText({ text, needle }: { text: string; needle: string }) {
-  const terms = needle.split(/\s+/).filter((t) => t.length > 0);
-  if (terms.length === 0) {
-    return <>{text}</>;
-  }
-
-  const ranges = mergeRanges(
-    terms.flatMap((term) => {
-      const exact = exactRanges(text, term);
-      if (exact.length > 0) {
-        return exact;
-      }
-      const fuzzy = fuzzyRange(text, term);
-      return fuzzy ? [fuzzy] : [];
-    }),
-  );
+function HighlightText({ text, needle, exact }: { text: string; needle: string; exact?: boolean }) {
+  const ranges = mergeRanges(exact ? exactRanges(text, normalizeForExactMatch(needle)) : termRanges(text, needle));
   if (ranges.length === 0) {
     return <>{text}</>;
   }
@@ -139,8 +145,10 @@ function HighlightText({ text, needle }: { text: string; needle: string }) {
   return <>{nodes}</>;
 }
 
-/** Renders a line of segments (text + variable chips), with optional needle highlighting. */
-export function LineContent({ line, needle }: { line: Line; needle?: string }) {
+/** Renders a line of segments (text + variable chips), with optional needle
+ *  highlighting. `exact` mirrors the search mode: the needle is highlighted as
+ *  one continuous phrase rather than term by term. */
+export function LineContent({ line, needle, exact }: { line: Line; needle?: string; exact?: boolean }) {
   return (
     <>
       {line.map((segment, index) => {
@@ -148,7 +156,7 @@ export function LineContent({ line, needle }: { line: Line; needle?: string }) {
           return <VariableChip key={index} label={segment.label} />;
         }
         if (needle) {
-          return <HighlightText key={index} needle={needle} text={segment.value} />;
+          return <HighlightText exact={exact} key={index} needle={needle} text={segment.value} />;
         }
         return <Fragment key={index}>{segment.value}</Fragment>;
       })}
