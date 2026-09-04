@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.*
 
 object Api {
-    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
+    class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlervalgIDSL
     class GeneriskSaksbehandlervalg<K, V>(entries: Iterable<Pair<K, V>>? = null) : LinkedHashMap<K, V>(), MutableMap<K, V>, SaksbehandlerValgBrevdata {
         init {
             if (entries != null) putAll(entries)
