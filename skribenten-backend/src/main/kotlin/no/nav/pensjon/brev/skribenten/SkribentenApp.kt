@@ -111,12 +111,15 @@ fun Application.skribentenApp() {
             call.respond(status = cause.status, message = cause.message)
         }
         exception<AzureAdOnBehalfOfAuthorizationException> { call, cause ->
-            if (cause.status == HttpStatusCode.Unauthorized) {
-                logger.info(cause.message, cause)
-            } else {
-                logger.error(cause.message, cause)
-            }
-            call.respond(status = cause.status, cause.message ?: "Feil ved token-utveksling")
+            val responseMessage =
+                if (cause.status == HttpStatusCode.Unauthorized) {
+                    logger.info(cause.message, cause)
+                    "Innloggingen din er utløpt. Logg inn på nytt."
+                } else {
+                    logger.error(cause.message, cause)
+                    "Teknisk feil ved token-utveksling"
+                }
+            call.respond(status = cause.status, message = responseMessage)
         }
         exception<Exception> { call, cause ->
             cleanSensitiveDataAndLog(cause)
