@@ -56,10 +56,10 @@ object AnkeOrienteringOmSaksbehandling : RedigerbarTemplate<EmptyRedigerbarBrevd
             }
             paragraph {
                 text(
-                    bokmal { +"Vi har mottatt anken din av " + fritekst("ankedato") + " over vedtaket av " + fritekst("dato på klagevedtaktet") + "." },
+                    bokmal { +"Vi har mottatt anken din av " + fritekst("ankedato") + " over vedtaket av " + fritekst("dato på klagevedtaket") + "." },
                     english {
                         +"We have received your appeal of " + fritekst("ankedato") + " against the decision of "
-                        +fritekst("dato på klagevedtaktet") + "."
+                        +fritekst("dato på klagevedtaket") + "."
                     }
                 )
             }
