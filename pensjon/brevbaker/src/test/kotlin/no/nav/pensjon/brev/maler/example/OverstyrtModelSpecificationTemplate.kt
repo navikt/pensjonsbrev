@@ -3,8 +3,6 @@ package no.nav.pensjon.brev.maler.example
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.maler.example.selectors.overstyrtModelSpecificationDto.saksbehandlerValg
-import no.nav.pensjon.brev.maler.example.selectors.overstyrtModelSpecificationDto.saksbehandlervalg.pensjonInnvilget
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -19,7 +17,7 @@ enum class OverstyrtModelSpecificationBrevkode : Brevkode.Redigerbart {
 
 @OptIn(InternKonstruktoer::class)
 @TemplateModelHelpers
-object OverstyrtModelSpecificationTemplate : RedigerbarTemplate<OverstyrtModelSpecificationDto> {
+object OverstyrtModelSpecificationTemplate : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 
     override val kode = OverstyrtModelSpecificationBrevkode.OVERSTYRT_MODEL_SPECIFICATION
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
@@ -35,6 +33,7 @@ object OverstyrtModelSpecificationTemplate : RedigerbarTemplate<OverstyrtModelSp
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val pensjonInnvilget = saksbehandlervalg("pensjonInnvilget", "Pensjon innvilget").bool()
         title {
             text(
                 bokmal { +"Redigerbart eksempelbrev" },
@@ -44,7 +43,7 @@ object OverstyrtModelSpecificationTemplate : RedigerbarTemplate<OverstyrtModelSp
 
         // Main letter content
         outline {
-            showIf(saksbehandlerValg.pensjonInnvilget) {
+            showIf(pensjonInnvilget) {
                 title1 {
                     text(bokmal { +"Du har fått innvilget pensjon" }, nynorsk { +"Du har fått innvilget pensjon" })
                 }
@@ -62,16 +61,4 @@ object OverstyrtModelSpecificationTemplate : RedigerbarTemplate<OverstyrtModelSp
 
         }
     }
-}
-
-// This data class should normally be in the api-model. Placed here for test-purposes.
-data class OverstyrtModelSpecificationDto(
-    override val saksbehandlerValg: Saksbehandlervalg,
-    override val pesysData: EmptyFagsystemdata,
-) : RedigerbarBrevdata<OverstyrtModelSpecificationDto.Saksbehandlervalg, EmptyFagsystemdata> {
-    data class Saksbehandlervalg(
-        val pensjonInnvilget: Boolean,
-        val navneliste: List<String>,
-        val pensjonBeloep: Int?,
-    ) : SaksbehandlerValgBrevdata
 }
