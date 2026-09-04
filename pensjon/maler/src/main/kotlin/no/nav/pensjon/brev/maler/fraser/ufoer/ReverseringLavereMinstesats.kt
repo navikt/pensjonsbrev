@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNull
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 
@@ -170,9 +171,20 @@ object ReverseringLavereMinstesats {
                         nynorsk { +"Når reverseringa no trer i kraft, skal ho ha verknad tilbake i tid frå 1. juli i år. " },
                     )
                     showIf(data.etterbetaling.greaterThan(0)) {
+                        showIf(opphortYtelse.opphorsdato.greaterThan(localDateNow)) {
+                            text(
+                                bokmal { +"Din uføretrygd opphører " },
+                                nynorsk { +"Uføretrygda di opphøyrer " },
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { +"Din uføretrygd opphørte " },
+                                nynorsk { +"Uføretrygda di opphøyrde " },
+                            )
+                        }
                         text(
-                            bokmal { +"Din uføretrygd opphørte " + opphortYtelse.opphorsdato.format() + ", derfor har du rett til en etterbetaling for perioden på " + data.etterbetaling.format() + ", dette vil komme om få dager." },
-                            nynorsk { +"Uføretrygda di opphøyrde " + opphortYtelse.opphorsdato.format() + ", derfor har du rett til ei etterbetaling for perioden på " + data.etterbetaling.format() + ", dette vil kome om få dagar." },
+                            bokmal { +opphortYtelse.opphorsdato.format() + ", derfor har du rett til en etterbetaling for perioden på " + data.etterbetaling.format() + ", dette vil komme om få dager." },
+                            nynorsk { +opphortYtelse.opphorsdato.format() + ", derfor har du rett til ei etterbetaling for perioden på " + data.etterbetaling.format() + ", dette vil kome om få dagar." },
                         )
                     }
                 }
