@@ -9,6 +9,7 @@ import { z } from "zod";
 import { orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { type LetterMetadata, type OrderEblankettRequest } from "~/types/apiTypes";
+import { trackEvent } from "~/utils/umami";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
@@ -16,7 +17,6 @@ import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectAvtaleland from "./components/SelectAvtaleland";
 import SelectEnhet from "./components/SelectEnhet";
 import { byggEBlankettOnSubmitRequest } from "./TemplateUtils";
-import { trackEvent } from "~/utils/umami";
 
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
