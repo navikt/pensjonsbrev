@@ -49,7 +49,7 @@ export default function Eblankett({
         brevkode: letterTemplate.id,
         brevtittel: letterTemplate.name,
         brevsystem: "exstream",
-        dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
+        dokumentkategori: letterTemplate.dokumentkategoriCode || "E_BLANKETT",
         enhetsId: variables.enhetsId,
       });
       window.open(callbackUrl);
