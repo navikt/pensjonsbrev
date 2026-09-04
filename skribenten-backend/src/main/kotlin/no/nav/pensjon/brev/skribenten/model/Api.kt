@@ -15,12 +15,6 @@ import java.time.*
 
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlervalgIDSL
-    // TODO: Denne bør arve frå SaksbehandlervalgIDSL, men det feilar per no på grunn av type-generics
-    class GeneriskSaksbehandlervalg<K, V>(entries: Iterable<Pair<K, V>>? = null) : LinkedHashMap<K, V>(), MutableMap<K, V>, SaksbehandlerValgBrevdata {
-        init {
-            if (entries != null) putAll(entries)
-        }
-    }
 
     data class UserInfo(val name: String, val navident: NavIdent, val erAttestant: Boolean)
 
