@@ -60,7 +60,7 @@ object AnkeOrienteringOmSaksbehandling : RedigerbarTemplate<EmptyRedigerbarBrevd
                     }
                 )
             }
-            title1() { text(bokmal { +"Ny prøving" }, english { +"New examination" }) }
+            title1 { text(bokmal { +"Ny prøving" }, english { +"New examination" }) }
             paragraph {
                 text(
                     bokmal {
@@ -68,12 +68,12 @@ object AnkeOrienteringOmSaksbehandling : RedigerbarTemplate<EmptyRedigerbarBrevd
                         +" Hvis dette ikke fører til at vedtaket blir omgjort, blir saken sendt til Trygderetten til avgjørelse."
                         +" Dette følger av lov om anke til Trygderetten paragraf 13."
                     },
-                    english { +"$NAV_KLAGEINSTANS will reconsider the decision that is being appealed." }
+                    english { +"$NAV_KLAGEINSTANS will reconsider the decision that is being appealed."
                             + " If this does not result in the decision being amended, the case will be passed to the National Insurance Court for decision."
-                            + " This is pursuant to Section 13 of the Act governing appeals to the National Insurance Court."
+                            + " This is pursuant to Section 13 of the Act governing appeals to the National Insurance Court." }
                 )
             }
-            title1() { text(bokmal { +"Anledning til nye merknader" }, english { +"Opportunity for further comment" }) }
+            title1 { text(bokmal { +"Anledning til nye merknader" }, english { +"Opportunity for further comment" }) }
             paragraph {
                 text(
                     bokmal {
@@ -90,7 +90,7 @@ object AnkeOrienteringOmSaksbehandling : RedigerbarTemplate<EmptyRedigerbarBrevd
                     }
                 )
             }
-            title1() { text(bokmal { +"Behandlingstid" }, english { +"Processing time" }) }
+            title1 { text(bokmal { +"Behandlingstid" }, english { +"Processing time" }) }
             paragraph {
                 text(
                     bokmal {
@@ -103,7 +103,7 @@ object AnkeOrienteringOmSaksbehandling : RedigerbarTemplate<EmptyRedigerbarBrevd
                     }
                 )
             }
-            title1() { text(bokmal { +"Meld fra om endringer" }, english { +"Please notify us of changes" }) }
+            title1 { text(bokmal { +"Meld fra om endringer" }, english { +"Please notify us of changes" }) }
             paragraph {
                 text(
                     bokmal {
