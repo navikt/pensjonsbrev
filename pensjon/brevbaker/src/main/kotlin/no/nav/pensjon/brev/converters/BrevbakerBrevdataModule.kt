@@ -9,9 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule
 
-    private class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlervalgIDSL {
-        override fun containsValue(value: Any?): Boolean = value != null && super.containsValue(value)
-    }
+    private class GenericBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlervalgIDSL
 
     private data class GenericRedigerbarBrevdata(override val saksbehandlerValg: GenericBrevdata, override val pesysData: GenericBrevdata) : RedigerbarBrevdata<GenericBrevdata, GenericBrevdata>
 

@@ -3848,8 +3848,6 @@ export interface components {
             status: components["schemas"]["ApiBrevStatus"];
             vedtaksId?: number | null;
         };
-        /** SaksbehandlervalgVerdi */
-        SaksbehandlervalgVerdi: boolean | number | string | null;
         /** ApiOpprettBrevRequest */
         ApiOpprettBrevRequest: {
             avsenderEnhetsId: string;
@@ -3857,7 +3855,7 @@ export interface components {
             mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             reserverForRedigering?: boolean | null;
             saksbehandlerValg: {
-                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
+                [key: string]: unknown;
             };
             spraak: components["schemas"]["SpraakKode"];
             vedtaksId?: number | null;
@@ -4113,7 +4111,7 @@ export interface components {
             redigertBrev: components["schemas"]["EditLetter"];
             redigertBrevHash: string;
             saksbehandlerValg: {
-                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
+                [key: string]: unknown;
             };
             valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
@@ -4121,7 +4119,7 @@ export interface components {
         ApiOppdaterBrevRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
-                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
+                [key: string]: unknown;
             };
         };
         /** ApiDelvisOppdaterBrevRequest */
@@ -4667,7 +4665,6 @@ export type ApiBrevStatusKlar = components['schemas']['ApiBrevStatusKlar'];
 export type ApiBrevStatusUnderRedigering = components['schemas']['ApiBrevStatusUnderRedigering'];
 export type ApiBrevStatus = components['schemas']['ApiBrevStatus'];
 export type ApiBrevInfo = components['schemas']['ApiBrevInfo'];
-export type SaksbehandlervalgVerdi = components['schemas']['SaksbehandlervalgVerdi'];
 export type ApiOpprettBrevRequest = components['schemas']['ApiOpprettBrevRequest'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
 export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
