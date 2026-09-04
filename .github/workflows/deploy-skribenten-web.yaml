@@ -5,6 +5,7 @@ name: "deploy: skribenten-web"
       - main
     paths:
       - .github/workflows/deploy-skribenten-web.yaml
+      - .github/workflows/.build-frontend.yaml
       - skribenten-web/**
       - "!skribenten-web/bff/.nais/alerts.yaml"
   workflow_dispatch:
