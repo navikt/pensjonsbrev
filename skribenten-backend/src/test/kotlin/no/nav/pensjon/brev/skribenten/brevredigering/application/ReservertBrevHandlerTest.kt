@@ -45,7 +45,7 @@ class ReservertBrevHandlerTest {
     private val principalEnhet = EnhetId("xxxx")
 
     private val brevbakerService = object : FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to informasjonsbrev)) {
-        override suspend fun renderMarkup(brevkode: Brevkode.Redigerbart, spraak: LanguageCode, brevdata: RedigerbarBrevdata<*, *>, felles: BrevbakerFelles): LetterMarkupWithDataUsage {
+        override suspend fun renderMarkup(brevkode: Brevkode.Redigerbart, spraak: LanguageCode, brevdata: RedigerbarBrevdata<*>, felles: BrevbakerFelles): LetterMarkupWithDataUsage {
             return LetterMarkupWithDataUsageImpl(letter, emptySet(), LetterMetadata.Brevtype.INFORMASJONSBREV)
         }
     }

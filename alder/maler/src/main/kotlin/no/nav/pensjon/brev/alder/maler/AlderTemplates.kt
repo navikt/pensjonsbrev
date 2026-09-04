@@ -156,7 +156,7 @@ object AlderTemplates : AllTemplates {
             VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto,
         )
 
-    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
+    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> =
         setOf(
             AfpPrivatSokerUforeTrygd,
             AvslagAfpGammel,

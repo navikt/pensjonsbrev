@@ -34,14 +34,14 @@ interface BrevbakerService {
     suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage
 
     suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -52,7 +52,7 @@ interface BrevbakerService {
     suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler?
 
@@ -65,7 +65,7 @@ interface BrevbakerService {
     suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment?
@@ -120,7 +120,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage {
         val response = client.post("/letter/redigerbar/markup-usage") {
@@ -149,7 +149,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -187,7 +187,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler? {
         val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
@@ -232,7 +232,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? {

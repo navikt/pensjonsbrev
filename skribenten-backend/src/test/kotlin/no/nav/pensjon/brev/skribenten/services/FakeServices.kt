@@ -93,13 +93,13 @@ open class FakeBrevbakerService(
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage = notYetStubbed()
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -109,14 +109,14 @@ open class FakeBrevbakerService(
     override suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler = notYetStubbed()
     override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean = notYetStubbed()
     override suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? = notYetStubbed()

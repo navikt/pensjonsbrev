@@ -7,4 +7,4 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 data class GeneriskRedigerbarBrevdata(
     override val pesysData: FagsystemBrevdata,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : RedigerbarBrevdata<SaksbehandlervalgIDSL, FagsystemBrevdata>
+) : RedigerbarBrevdata<FagsystemBrevdata>
