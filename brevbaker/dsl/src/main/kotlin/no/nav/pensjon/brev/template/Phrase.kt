@@ -68,4 +68,4 @@ sealed class AbstractOutlinePhrase<Lang : LanguageSupport, LetterData : Any> {
     }
 }
 
-interface RedigerbarPhraseBrevdata : RedigerbarBrevdata<SaksbehandlervalgIDSL, EmptyFagsystemdata>
+interface RedigerbarPhraseBrevdata : RedigerbarBrevdata<EmptyFagsystemdata>

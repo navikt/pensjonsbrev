@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 object PlanleggePensjonTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf()
 
-    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(ApSimuleringBrev, ServiceberegningBrev)
+    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(ApSimuleringBrev, ServiceberegningBrev)
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
 }
