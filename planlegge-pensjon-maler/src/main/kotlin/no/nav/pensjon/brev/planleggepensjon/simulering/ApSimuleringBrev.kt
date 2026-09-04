@@ -27,7 +27,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-data class ApSimuleringBrevDto(override val saksbehandlerValg: SaksbehandlervalgIDSL, override val pesysData: ApSimuleringDtoData) : RedigerbarBrevdata<SaksbehandlervalgIDSL, ApSimuleringDtoData>, VedleggData
+data class ApSimuleringBrevDto(override val saksbehandlerValg: SaksbehandlervalgIDSL, override val pesysData: ApSimuleringDtoData) : RedigerbarBrevdata<SaksbehandlervalgIDSL, ApSimuleringDtoData>
 
 @TemplateModelHelpers
 object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
@@ -64,7 +64,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
 
         includeAttachment(
             simuleringVedlegg,
-            argument,
+            pesysData,
         )
     }
 }

@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLiv
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedGradertUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedHeltUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedNormertPensjonsalder
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.pesysData
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDtoData.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdInnhold.seksjoner
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.avsnitt
@@ -44,19 +43,12 @@ object SivilstatusFormatter : LocalizedFormatter<Sivilstatus>() {
 }
 
 @TemplateModelHelpers
-val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringBrevDto>(
+val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
     title = {
         text(bokmal { +"Pensjonsberegningen din med detaljer og forbehold" })
     },
     includeSakspart = false,
 ) {
-    val simulering = pesysData.simulering
-    val simuleringsinformasjon = pesysData.simuleringsinformasjon
-    val forbehold = pesysData.forbehold
-    val aarligInntektOgPensjonListe = pesysData.aarligInntektOgPensjonListe
-    val pensjonsopptjeningListe = pesysData.pensjonsopptjeningListe
-    val kortforbehold = pesysData.kortforbehold
-
     ifNotNull(kortforbehold) { kortforbeholdVerdi ->
         includePhrase(ForbeholdAvsnittPhrase(kortforbeholdVerdi.avsnitt))
     }

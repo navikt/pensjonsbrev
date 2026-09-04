@@ -19,7 +19,7 @@ data class ApSimuleringDtoData(
     val pensjonsopptjeningListe: List<Pensjonsopptjening>?,
     val forbehold: ForbeholdInnhold,
     val kortforbehold: Kortforbehold?,
-) : FagsystemBrevdata
+) : FagsystemBrevdata, VedleggData
 
 data class Simulering(
     val alderspensjonListe: List<Alderspensjon>,
