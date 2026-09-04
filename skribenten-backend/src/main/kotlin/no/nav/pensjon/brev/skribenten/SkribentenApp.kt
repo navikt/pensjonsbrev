@@ -110,6 +110,14 @@ fun Application.skribentenApp() {
             logger.info(cause.message, cause)
             call.respond(status = cause.status, message = cause.message)
         }
+        exception<AzureAdOnBehalfOfAuthorizationException> { call, cause ->
+            if (cause.status == HttpStatusCode.Unauthorized) {
+                logger.info(cause.message, cause)
+            } else {
+                logger.error(cause.message, cause)
+            }
+            call.respond(status = cause.status, cause.message ?: "Feil ved token-utveksling")
+        }
         exception<Exception> { call, cause ->
             cleanSensitiveDataAndLog(cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
