@@ -50,6 +50,7 @@ export default function BrevmalForExstream({
         brevkode: letterTemplate.id,
         brevtittel: letterTemplate.name,
         brevsystem: "exstream",
+        dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
         enhetsId: variables.enhetsId,
       });
       window.open(callbackUrl);

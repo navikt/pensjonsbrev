@@ -48,7 +48,8 @@ export default function Eblankett({
       trackEvent("brev opprettet", {
         brevkode: letterTemplate.id,
         brevtittel: letterTemplate.name,
-        brevsystem: "e-blankett",
+        brevsystem: "exstream",
+        dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
         enhetsId: variables.enhetsId,
       });
       window.open(callbackUrl);
