@@ -43,6 +43,7 @@ class OpprettBrevHandler(
         val avsenderEnhetsId: EnhetId,
         val saksbehandlerValg: SaksbehandlervalgMap,
         val reserverForRedigering: Boolean = false,
+        val statiskFagsystemBrevdata: StatiskFagsystemBrevdata? = null,
         val mottaker: Dto.Mottaker? = null,
     )
 
@@ -63,6 +64,7 @@ class OpprettBrevHandler(
             avsenderEnhetsId = request.avsenderEnhetsId,
             mottaker = request.mottaker,
             signatur = SignerendeSaksbehandlere(saksbehandler = principal.hentSignatur(navansattService)),
+            statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
         )
 
         val rendretBrev = brevmalService.renderMarkup(
@@ -82,6 +84,7 @@ class OpprettBrevHandler(
             saksbehandlerValg = request.saksbehandlerValg,
             redigertBrev = rendretBrev.markup.toEdit(),
             brevtype = parametre.brevtype,
+            statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
         )
 
         if (request.reserverForRedigering) {

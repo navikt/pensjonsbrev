@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -20,7 +21,8 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
         brevkode: Brevkode.Redigerbart,
         avsenderEnhetsId: EnhetId,
         mottaker: Dto.Mottaker?,
-        signatur: SignerendeSaksbehandlere
+        signatur: SignerendeSaksbehandlere,
+        statiskFagsystemBrevdata: StatiskFagsystemBrevdata?,
     ): BrevdataResponse.Data {
         val pesysData = penClient.hentPesysBrevdata(
             saksId = saksId,
@@ -34,7 +36,8 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
                 .medSignerendeSaksbehandlere(signatur)
                 .let {
                     if (mottaker != null) it.medAnnenMottakerNavn(mottaker.annenMottakerNavn()) else it
-                }
+                },
+            brevdata = statiskFagsystemBrevdata ?: pesysData.brevdata
         )
     }
 
@@ -50,6 +53,7 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
                 saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
                 attesterendeSaksbehandler = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
             ),
+            statiskFagsystemBrevdata = brev.statiskFagsystemBrevdata,
         )
 
     // TODO: Jeg føler ikke helt at denne hører til her.

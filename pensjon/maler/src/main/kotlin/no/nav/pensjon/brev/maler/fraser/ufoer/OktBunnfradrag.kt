@@ -64,15 +64,15 @@ object OktBunnfradrag {
                     bokmal { +"Fra " + data.datoOkningBunnfradrag.format() + " øker fribeløpet ditt til 1 ganger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det fører til at bunnfradraget ditt øker. " },
                     nynorsk { +"Frå " + data.datoOkningBunnfradrag.format() + " aukar fribeløpet ditt til 1 gonger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det fører til at botnfrådraget ditt aukar. " }
                 )
-                showIf(data.scenario1_1G or data.scenario3_04G_1G) {
+                showIf(data.scenario1_1G) {
                     text(
                         bokmal { +"Du kan ha inntekt på opptil ditt nye bunnfradrag før vi begynner å redusere uføretrygden din. " },
                         nynorsk { +"Du kan ha inntekt på opptil ditt nye botnfrådrag før vi byrjar å redusere uføretrygda di. " }
                     )
                 }.orShow {
                     text(
-                        bokmal { +"Du har hatt en økning av uføregraden din på et senere tidspunkt i 2026. Fra denne datoen reduseres fribeløpet til 0,4 G igjen. Se mer om beregningen av fribeløp og bunnfradraget ditt nedenfor." },
-                        nynorsk { +"Du har hatt ei auke av uføregraden din på eit seinare tidspunkt i 2026. Frå denne datoen vert fribeløpet redusert til 0,4 G igjen. Sjå meir om berekninga av fribeløp og botnfrådraget ditt nedanfor." }
+                        bokmal { +"Fordi fribeløpet er endret i løpet av året, beregnes et gjennomsnitt. Se mer om beregningen av fribeløp og bunnfradraget ditt nedenfor. " },
+                        nynorsk { +"Fordi fribeløpet er endra i løpet av året, vert eit gjennomsnitt berekna. Sjå meir om berekninga av fribeløp og botnfrådraget ditt nedanfor. " }
                     )
                 }
             }
