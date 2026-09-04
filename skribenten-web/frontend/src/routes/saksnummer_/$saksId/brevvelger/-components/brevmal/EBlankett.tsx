@@ -16,6 +16,7 @@ import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectAvtaleland from "./components/SelectAvtaleland";
 import SelectEnhet from "./components/SelectEnhet";
 import { byggEBlankettOnSubmitRequest } from "./TemplateUtils";
+import { trackEvent } from "~/utils/umami";
 
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
@@ -43,7 +44,13 @@ export default function Eblankett({
 
   const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
     mutationFn: (payload) => orderEblankett(saksId, payload),
-    onSuccess: (callbackUrl) => {
+    onSuccess: (callbackUrl, variables) => {
+      trackEvent("brev opprettet", {
+        brevkode: letterTemplate.id,
+        brevtittel: letterTemplate.name,
+        brevsystem: "e-blankett",
+        enhetsId: variables.enhetsId,
+      });
       window.open(callbackUrl);
     },
     mutationKey: orderLetterKeys.brevsystem("e-blankett"),

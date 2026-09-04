@@ -49,7 +49,7 @@ export default function BrevmalForExstream({
       trackEvent("brev opprettet", {
         brevkode: letterTemplate.id,
         brevtittel: letterTemplate.name,
-        brevtype: "exstream",
+        brevsystem: "exstream",
         enhetsId: variables.enhetsId,
       });
       window.open(callbackUrl);
