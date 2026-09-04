@@ -44,7 +44,7 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
             }
             paragraph {
                 text(
-                    bokmal { +"Har du barnetillegg, kan inntekt under inntektsgrensen føre til endring i barnetillegget. Bor du sammen med barnets andre forelder, kan både din og den andre forelderens inntekt påvirke barnetillegget. Derfor må du melde fra om både din og den andre forelderens inntekt." }
+                    bokmal { +"Har du barnetillegg, kan inntekt under bunnfradraget føre til endring i barnetillegget. Bor du sammen med barnets andre forelder, kan både din og den andre forelderens inntekt påvirke barnetillegget. Derfor må du melde fra om både din og den andre forelderens inntekt." }
                 )
             }
             paragraph {

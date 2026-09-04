@@ -104,10 +104,10 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
             )))){
             paragraph {
                 text (
-                    bokmal { + "Du har en inntektsgrense på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
+                    bokmal { + "Du har ett bunnfradrag på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
                         .format() + " og den innmeldte inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
                         .format() + ". Dette betyr at overskytende inntekt er " + pe.functions.pe_ut_overskytende.format() + "." },
-                    nynorsk { + "Du har ei inntektsgrense på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
+                    nynorsk { + "Du har eit bunnfradrag på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
                         .format() + ", og den innmelde inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
                         .format() + ". Dette vil seie at overskytande inntekt er " + pe.functions.pe_ut_overskytende.format() + "." },
                 )

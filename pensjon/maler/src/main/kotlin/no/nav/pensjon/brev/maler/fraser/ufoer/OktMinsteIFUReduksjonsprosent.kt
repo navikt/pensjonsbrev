@@ -74,8 +74,8 @@ object OktMinsteIFUReduksjonsprosent {
             }
             paragraph {
                 text(
-                    bokmal { +"Vi endrer uføretrygden din fordi Stortinget har vedtatt lovendringer som trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. Endringene påvirker deg bare hvis du har inntekt over inntektsgrensen ved siden av uføretrygden. Endringene kan føre til at det blir mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
-                    nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. Endringane påverkar deg berre dersom du har inntekt over inntektsgrensa ved sida av uføretrygda. Endringane kan føre til at det blir meir lønsamt for deg å kombinere jobb og uføretrygd. " },
+                    bokmal { +"Vi endrer uføretrygden din fordi Stortinget har vedtatt lovendringer som trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. Endringene påvirker deg bare hvis du har inntekt over bunnfradraget ved siden av uføretrygden. Endringene kan føre til at det blir mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
+                    nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. Endringane påverkar deg berre dersom du har inntekt over bunnfradraget ved sida av uføretrygda. Endringane kan føre til at det blir meir lønsamt for deg å kombinere jobb og uføretrygd. " },
                 )
                 table(header = {
                     column { text(bokmal { +"Ny beregning fra " + data.beregningFomDato.format() }, nynorsk { +"Ny berekning frå " + data.beregningFomDato.format() }) }
@@ -163,8 +163,8 @@ object OktMinsteIFUReduksjonsprosent {
                         row {
                             cell {
                                 text(
-                                    bokmal { +"Ny inntektsgrense" },
-                                    nynorsk { +"Ny inntektsgrense" },
+                                    bokmal { +"Nytt bunnfradrag" },
+                                    nynorsk { +"Nytt bunnfradrag" },
                                 )
                             }
                             cell {
@@ -338,8 +338,8 @@ object OktMinsteIFUReduksjonsprosent {
                         }
                         item {
                             text(
-                                bokmal { +"Vi skal ikke lenger redusere uføretrygden din med mer enn 70 prosent når du har inntekt over inntektsgrensen din. " },
-                                nynorsk { +"Vi skal ikkje lenger redusere uføretrygda di med meir enn 70 prosent når du har inntekt over inntektsgrensa di. " },
+                                bokmal { +"Vi skal ikke lenger redusere uføretrygden din med mer enn 70 prosent når du har inntekt over bunnfradraget ditt. " },
+                                nynorsk { +"Vi skal ikkje lenger redusere uføretrygda di med meir enn 70 prosent når du har inntekt over bunnfradraget ditt. " },
                             )
                         }
                     }
@@ -358,8 +358,8 @@ object OktMinsteIFUReduksjonsprosent {
                         }
                         item {
                             text(
-                                bokmal { +"Reduksjonsprosent har bare betydning for deg som har inntekt over inntektsgrensen ved siden av uføretrygden. " },
-                                nynorsk { +"Reduksjonsprosenten er berre relevant for deg som har inntekt over inntektsgrensa i tillegg til uføretrygda. " },
+                                bokmal { +"Reduksjonsprosent har bare betydning for deg som har inntekt over bunnfradraget ved siden av uføretrygden. " },
+                                nynorsk { +"Reduksjonsprosenten er berre relevant for deg som har inntekt over bunnfradraget i tillegg til uføretrygda. " },
                             )
                         }
                         item {

@@ -10,8 +10,8 @@ object TBU1296_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
 		paragraph {
 			text (
-				bokmal { + "Du kan ha en årlig inntekt på 60 000 kroner uten at uføretrygden din blir redusert. Dette er inntektsgrensen din." },
-				nynorsk { + "Du kan ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Dette er inntektsgrensa di." },
+				bokmal { + "Du kan ha en årlig inntekt på 60 000 kroner uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt." },
+				nynorsk { + "Du kan ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Dette er bunnfradraget ditt." },
 				english { + "You may earn an annual income of up to NOK 60 000 without your disability benefit being reduced. This is your income limit." },
 			)
 		}

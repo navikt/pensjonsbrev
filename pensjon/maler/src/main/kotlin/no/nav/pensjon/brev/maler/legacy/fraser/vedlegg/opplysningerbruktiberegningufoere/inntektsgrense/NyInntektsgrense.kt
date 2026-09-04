@@ -9,15 +9,15 @@ object NyInntektsgrense: OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         title1 {
             text (
-                bokmal { + "Slik har vi fastsatt den nye inntektsgrensen din" },
-                nynorsk { + "Slik har vi fastsett den nye inntektsgrensa di" },
+                bokmal { + "Slik har vi fastsatt det nye bunnfradraget ditt" },
+                nynorsk { + "Slik har vi fastsett det nye bunnfradraget ditt" },
             )
         }
 
         paragraph {
             text (
-                bokmal { + "Vi har økt inntektsgrensen din for at du skal få riktig utbetaling av uføretrygd. Inntektsgrensen din økes ved at den fastsatte inntekten din før du ble ufør blir endret. " },
-                nynorsk { + "Vi har auka inntektsgrensa di for at du skal få riktig utbetaling av uføretrygd. Inntektsgrensa di blir auka ved at den fastsette inntekta di før du blei ufør, blir endra. " },
+                bokmal { + "Vi har økt bunnfradraget ditt for at du skal få riktig utbetaling av uføretrygd. Bunnfradraget ditt økes ved at den fastsatte inntekten din før du ble ufør blir endret. " },
+                nynorsk { + "Vi har auka bunnfradraget ditt for at du skal få riktig utbetaling av uføretrygd. Bunnfradraget ditt blir auka ved at den fastsette inntekta di før du blei ufør, blir endra. " },
             )
         }
 

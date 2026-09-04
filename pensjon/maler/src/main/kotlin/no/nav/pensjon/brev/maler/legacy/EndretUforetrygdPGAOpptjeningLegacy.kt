@@ -523,7 +523,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                 paragraph {
                     text (
-                        bokmal { + "Du mottar uføretrygd med gjenlevendetillegg. Tillegget er beregnet etter ditt eget og din avdøde ektefelles beregningsgrunnlag og trygdetid. Gjenlevendetillegget ditt har samme grad som uføretrygden din. Endringer i opptjeningsgrunnlaget for uføretrygden din vil også ha betydning for beregningen av gjenlevendetillegget ditt. Tjener du mer enn inntektsgrensen din, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med." },
+                        bokmal { + "Du mottar uføretrygd med gjenlevendetillegg. Tillegget er beregnet etter ditt eget og din avdøde ektefelles beregningsgrunnlag og trygdetid. Gjenlevendetillegget ditt har samme grad som uføretrygden din. Endringer i opptjeningsgrunnlaget for uføretrygden din vil også ha betydning for beregningen av gjenlevendetillegget ditt. Tjener du mer enn bunnfradraget ditt, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med." },
                     )
                 }
 

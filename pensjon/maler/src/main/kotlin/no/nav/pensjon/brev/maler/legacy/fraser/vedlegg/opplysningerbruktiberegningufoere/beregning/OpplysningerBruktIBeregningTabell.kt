@@ -149,8 +149,8 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     row {
                         cell {
                             text(
-                                bokmal { + "Inntektsgrense" },
-                                nynorsk { + "Inntektsgrense" },
+                                bokmal { + "bunnfradrag" },
+                                nynorsk { + "bunnfradrag" },
                             )
                         }
                         cell {

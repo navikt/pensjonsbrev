@@ -34,7 +34,7 @@ object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyAutobrevda
                 text(
                     bokmal { + "Du har tidligere fått et brev fra oss med informasjon om hvordan etterbetaling av dagpenger påvirker din uføretrygd. "
                             + "I brevet fikk du informasjon om at etterbetaling av dagpenger er pensjonsgivende inntekt som kan føre til reduksjon av uføretrygden, "
-                            + "dersom den overstiger inntektsgrensen." }
+                            + "dersom den overstiger bunnfradraget." }
                 )
             }
             paragraph {
