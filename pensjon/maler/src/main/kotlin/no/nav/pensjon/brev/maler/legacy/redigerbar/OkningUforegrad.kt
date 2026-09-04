@@ -860,8 +860,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().equalTo(60000) and uforegradFraBeregning.greaterThan(0) and uforegradFraBeregning.lessThan(100))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha en årlig inntekt på 60 000 kroner, uten at uføretrygden din blir redusert. Bunnfradraget din blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Bunnfradraget di blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
+                        bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha en årlig inntekt på 60 000 kroner, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
+                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
                     )
                 }
             }
