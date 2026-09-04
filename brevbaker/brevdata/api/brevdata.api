@@ -102,7 +102,7 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/FagsystemBre
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
 	public abstract fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;
-	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata;
+	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart {
