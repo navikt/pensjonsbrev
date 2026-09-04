@@ -41,3 +41,13 @@ export const P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
 
 export type AlltidValgbartVedlegg = generated.ValgbartVedlegg;
 export type AlltidValgbartVedleggBrevkode = generated.AlltidValgbartVedleggBrevkode;
+
+export type EditAttachment = generated.EditAttachment;
+export type RedigerbartVedleggInfo = generated.RedigerbartVedleggInfo;
+/**
+ * Request body for PUT /redigerbareVedlegg/{vedleggId}.
+ * The generated skribenten-api.ts does not yet expose this body type (the endpoint's
+ * requestBody is not inferred), so it is defined here to mirror the backend DTO
+ * Api.RedigertVedleggRequest(redigertVedlegg: Edit.Attachment).
+ */
+export type RedigertVedleggRequest = { redigertVedlegg: EditAttachment };

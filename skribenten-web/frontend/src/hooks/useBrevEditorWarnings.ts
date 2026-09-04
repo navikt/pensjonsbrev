@@ -11,12 +11,12 @@ import {
   useModelSpecificationForm,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { type SaksbehandlerValg } from "~/types/brev";
-import { type EditedLetter, type PropertyUsage } from "~/types/brevbakerTypes";
+import { type EditedDocument, type PropertyUsage } from "~/types/brevbakerTypes";
 
 interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: SaksbehandlerValg }> {
   brevkode: string;
   form: UseFormReturn<FormSchema>;
-  redigertBrev: EditedLetter;
+  redigertBrev: EditedDocument;
   propertyUsage?: PropertyUsage[];
 }
 
