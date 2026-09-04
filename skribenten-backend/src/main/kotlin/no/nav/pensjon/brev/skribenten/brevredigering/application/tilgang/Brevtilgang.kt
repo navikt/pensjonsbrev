@@ -77,14 +77,11 @@ class Brevtilgang(
      * Endre brevets status — klarmarkering, distribusjonstype og liknende — uten å røre brevteksten.
      * Derfor er et klarmarkert brev greit, i motsetning til [forRedigering].
      *
-     * Endringen er idempotent: er [trengerEndring] usann, er dette en no-op som verken krever
-     * policy eller rører reservasjonen. Ellers frigis reservasjonen, siden en statusendring
-     * avslutter saksbehandlers arbeid med brevet.
+     * Reservasjonen frigis, siden en statusendring avslutter saksbehandlers arbeid med brevet.
      */
     suspend fun forStatusendring(
         brevId: BrevId,
         saksId: SaksId,
-        trengerEndring: (Brevredigering) -> Boolean,
         endre: suspend BrevScope.() -> Outcome<Unit, BrevredigeringError>,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? {
         reserver(brevId, saksId)?.onError { return failure(it) } ?: return null
@@ -93,13 +90,11 @@ class Brevtilgang(
             val brev = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId) ?: return@rollbackOnFailure null
             val scope = BrevScope(brev, brevreservasjonPolicy)
 
-            if (trengerEndring(brev)) {
-                kanRedigere(brev, PrincipalInContext.require(), tillatKlarmarkertBrev = true)
-                    .onError { return@rollbackOnFailure failure(it) }
+            kanRedigere(brev, PrincipalInContext.require(), tillatKlarmarkertBrev = true)
+                .onError { return@rollbackOnFailure failure(it) }
 
-                brev.frigiReservasjon()
-                scope.endre().onError { return@rollbackOnFailure failure(it) }
-            }
+            brev.frigiReservasjon()
+            scope.endre().onError { return@rollbackOnFailure failure(it) }
 
             with(scope) { success(brev.tilBrevInfo()) }
         }

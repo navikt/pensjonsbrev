@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -18,11 +17,9 @@ class VeksleKlarStatusHandler(
 
     data class Request(val brevId: BrevId, val saksId: SaksId, val klar: Boolean)
 
-    suspend operator fun invoke(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
-        fun trengerEndring(brev: Brevredigering) = brev.laastForRedigering != request.klar
-
-        return if (request.klar) {
-            brevtilgang.forStatusendring(request.brevId, request.saksId, trengerEndring = ::trengerEndring) {
+    suspend operator fun invoke(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
+        if (request.klar) {
+            brevtilgang.forStatusendring(request.brevId, request.saksId) {
                 ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return@forStatusendring failure(it) }
 
                 brev.markerSomKlar()
@@ -30,11 +27,10 @@ class VeksleKlarStatusHandler(
                 success(Unit)
             }
         } else {
-            brevtilgang.forStatusendring(request.brevId, request.saksId, trengerEndring = ::trengerEndring) {
+            brevtilgang.forStatusendring(request.brevId, request.saksId) {
                 brev.markerSomKladd()
 
                 success(Unit)
             }
         }
-    }
 }

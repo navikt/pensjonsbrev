@@ -46,18 +46,6 @@ class EndreDistribusjonstypeHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `endring til samme distribusjonstype paa arkivert brev er en no-op`() {
-        val brev = opprettBrev().resultOrFail()
-        arkiverBrev(brev).resultOrFail()
-
-        assertThat(endreDistribusjonstype(brev.info.id, brev.info.distribusjonstype))
-            .isSuccess {
-                assertThat(it.distribusjonstype).isEqualTo(brev.info.distribusjonstype)
-                assertThat(it.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
-            }
-    }
-
-    @Test
     suspend fun `kan ikke endre distribusjonstype på arkivert brev`() {
         val brev = opprettBrev().resultOrFail()
         arkiverBrev(brev).resultOrFail()
