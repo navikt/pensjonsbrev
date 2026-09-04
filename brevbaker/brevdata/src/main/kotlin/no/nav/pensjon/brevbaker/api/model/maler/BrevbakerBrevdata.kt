@@ -6,7 +6,7 @@ package no.nav.pensjon.brev.api.model.maler
  */
 interface BrevbakerBrevdata
 
-interface RedigerbarBrevdata<Valg : SaksbehandlerValgBrevdata, Data : FagsystemBrevdata> : BrevbakerBrevdata {
+interface RedigerbarBrevdata<Valg : SaksbehandlervalgIDSL, Data : FagsystemBrevdata> : BrevbakerBrevdata {
     val saksbehandlerValg: Valg
     val pesysData: Data
 }
