@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDto
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
@@ -63,9 +62,9 @@ object Fixtures : LetterDataFactory {
     private fun createSimuleringBrevDto() = createBrevDtoMedAfpPrivat()
 
     fun createServiceberegningBrevDto(): ServiceberegningBrevDto {
-        val saksbehandlerValg = ServiceberegningDto(
-            alt1 = true,
-            alt2 = false,
+        val saksbehandlerValg = lagSaksbehandlervalg(
+            "ingenYtelser" to true,
+            "vedtakOmAlderspensjon" to false,
         )
         val fagsystemBrevdata = ServiceberegningDtoData(
             uttaksalder = Alder(62, 10),
