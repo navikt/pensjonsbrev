@@ -117,7 +117,7 @@ data class TemplateDocumentationV2(
     sealed class Expr {
         data class Literal(val value: String, val kind: TemplateModelSpecification.FieldType.Scalar.Kind?) : Expr()
 
-        data class FieldPath(val source: DataSource, val segments: List<String>, val leafType: String?) : Expr()
+        data class FieldPath(val source: DataSource, val segments: List<String>, val leafType: String?, val leafOwnerType: String? = null) : Expr()
 
         data class AssociativeOp(val op: AssocOp, val operands: List<Expr>) : Expr()
 
