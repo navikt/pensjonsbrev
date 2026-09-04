@@ -59,7 +59,7 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     nynorsk { + "Du får ikkje endring i bunnfradraget ditt, fordi du ikkje har hatt ein varig inntektsauke i stillinga di på " + fritekst("prosentandel") + " prosent."})
             }
             paragraph {
-                text(bokmal { +"For å ha rett til ett høyere bunnfradrag, må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " },
+                text(bokmal { +"For å ha rett til et høyere bunnfradrag, må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " },
                     nynorsk { +"For å ha rett til eit høgare bunnfradrag, må du ha hatt ein varig auke av inntekta di, utan at stillingsprosenten din har auka. " }
                 )
             }

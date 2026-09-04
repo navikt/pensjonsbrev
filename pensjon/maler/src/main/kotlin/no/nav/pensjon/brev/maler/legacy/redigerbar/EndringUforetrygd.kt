@@ -700,7 +700,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 showIf((kravarsak.equalTo("endring_ifu") and uforegradFraBeregning.greaterThan(0) and uforegradFraBeregning.lessThan(100) and (ifuBegrunnelse).equalTo("stdbegr_12_8_2_9"))) {
                     paragraph {
                         text(
-                            bokmal { +"Inntekten i stillingen din har økt og du får derfor ett høyere bunnfradrag. Dette gjør vi for at du skal få riktig utbetaling av uføretrygd." },
+                            bokmal { +"Inntekten i stillingen din har økt og du får derfor et høyere bunnfradrag. Dette gjør vi for at du skal få riktig utbetaling av uføretrygd." },
                             nynorsk { +"Inntekta i stillinga di har auka, og du får derfor eit høgare bunnfradrag. Dette gjer vi for at du skal få riktig utbetaling av uføretrygd." },
                         )
                     }
