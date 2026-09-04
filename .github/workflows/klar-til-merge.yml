@@ -12,7 +12,6 @@ on:
       - ".github/prompts/**"
       - ".github/regsuitconfig.json"
       - ".github/skills/**/*.md"
-      - ".github/workflows/.build-frontend.yaml"
       - ".github/workflows/.deploy.yaml"
       - ".github/workflows/.salsa.yaml"
       - ".github/workflows/cleanup.yml"
