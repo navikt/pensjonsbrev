@@ -10,7 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 data class ServiceberegningBrevDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: ServiceberegningDtoData,
-) : RedigerbarBrevdata<SaksbehandlervalgIDSL, ServiceberegningDtoData>
+) : RedigerbarBrevdata<ServiceberegningDtoData>
 
 data class ServiceberegningDtoData(
     val uttaksalder: Alder,

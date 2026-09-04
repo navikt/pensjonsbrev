@@ -14,7 +14,7 @@ import java.util.Objects
 @Suppress("unused")
 class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val kode: T,
-    val letterData: RedigerbarBrevdata<*, *>,
+    val letterData: RedigerbarBrevdata<*>,
     val felles: BrevbakerFelles,
     val language: LanguageCode,
     val letterMarkup: LetterMarkup,

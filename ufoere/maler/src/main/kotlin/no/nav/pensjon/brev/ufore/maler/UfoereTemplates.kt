@@ -31,7 +31,7 @@ object UfoereTemplates : AllTemplates {
         InfoOmReverseringAvMinstesats,
     )
 
-    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(
         UforeAvslagTestmal,
         UforeAvslagHensiktsmessigBehandling,
         UforeAvslagHensiktsmessigArbTiltakI1,

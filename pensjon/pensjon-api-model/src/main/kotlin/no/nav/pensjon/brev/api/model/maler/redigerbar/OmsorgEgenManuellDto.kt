@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresse
 data class OmsorgEgenManuellDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : VedleggData, RedigerbarBrevdata<SaksbehandlervalgIDSL, OmsorgEgenManuellDto.PesysData> {
+) : VedleggData, RedigerbarBrevdata<OmsorgEgenManuellDto.PesysData> {
 
     data class PesysData(
         val returadresse: ReturAdresse,

@@ -8,6 +8,6 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 interface AllTemplates {
     fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>>
-    fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>>
+    fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>>
     fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>>
 }

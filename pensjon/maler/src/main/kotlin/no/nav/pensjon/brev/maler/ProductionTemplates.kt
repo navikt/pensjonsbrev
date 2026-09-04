@@ -88,7 +88,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmEndringBTEPSOktoberAuto,
     )
 
-    private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+    private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(
         AnkeTilsvarTilAnkendePart,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
