@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.format
@@ -19,6 +20,8 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foeds
 
 @TemplateModelHelpers
 object AnkeOrienteringOmSaksbehandling : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
+
+    override val featureToggle = FeatureToggles.brevmalAnkeOrienteringOmSaksbehandling.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_ANKE_ORIENTERING_OM_SAKSBEHANDLING
     override val kategori = no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE

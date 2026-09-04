@@ -7,6 +7,7 @@ enum class FeatureToggles(private val key: String) {
     // val minFeature = UnleashToggle("minFeature")
     bekreftelsePaaPensjon("bekreftelsePaaPensjon"),
     bekreftelsePaaUfoeretrygd("bekreftelsePaaUfoeretrygd"),
+    brevmalAnkeOrienteringOmSaksbehandling("brevmalAnkeOrienteringOmSaksbehandling"),
     brevmalAnkeTilsvarTilAnkendePart("brevmalAnkeTilsvarTilAnkendePart"),
     brevmalAvslagGjenlevendepensjon("brevmalAvslagGjenlevendepensjon"),
     brevmalAvslagGjenlevendepensjonUtland("brevmalAvslagGjenlevendepensjonUtland"),
