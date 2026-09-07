@@ -63,8 +63,8 @@ object Fixtures : LetterDataFactory {
 
     fun createServiceberegningBrevDto(): ServiceberegningBrevDto {
         val saksbehandlerValg = lagSaksbehandlervalg(
-            "alt1" to true,
-            "alt2" to false,
+            "ingenYtelser" to true,
+            "vedtakOmAlderspensjon" to false,
         )
         return ServiceberegningBrevDto(
             saksbehandlerValg = saksbehandlerValg,
