@@ -107,7 +107,7 @@ object OktFribelop {
             paragraph {
                 text(
                     bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss  inntekt etter uførhet. Dette ble tidligere omtaltsom inntektsgrense. " },
-                    nynorsk { +"Bunnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Bunnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette vart tidlegare omtalt som inntektsgrense. " },
+                    nynorsk { +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Bunnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette vart tidlegare omtalt som inntektsgrense. " },
                 )
             }
 
