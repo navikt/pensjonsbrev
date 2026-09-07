@@ -64,35 +64,31 @@ object Fixtures : LetterDataFactory {
 
     fun createServiceberegningBrevDto(): ServiceberegningBrevDto {
         val saksbehandlerValg = ServiceberegningDto(
-            uttaksalder = Alder(62, 10),
-            uttaksdato = "01.02.2027",
-            forventetFremtidigInntekt = Kroner(158000),
-            afp = TidsbegrensetOffentligAfp(
-                alderAar = 62,
-                totaltAfpBeloep = Kroner(31353),
-                tidligereArbeidsinntekt = Kroner(550000),
-                grunnbeloep = Kroner(130160),
-                sluttpoengtall = 4.73,
-                trygdetid = 40,
-                poengaarTom1991 = 4,
-                poengaarFom1992 = 36,
-                grunnpensjon = Kroner(10847),
-                tilleggspensjon = Kroner(17667),
-                afpTillegg = Kroner(1700),
-                saertillegg = Kroner(1139),
-                afpGrad = Percent(100),
-                erAvkortet = true,
-            ),
             alt1 = true,
             alt2 = false,
         )
         return ServiceberegningBrevDto(
             saksbehandlerValg = saksbehandlerValg,
             pesysData = ServiceberegningDtoData(
-                uttaksalder = saksbehandlerValg.uttaksalder,
-                uttaksdato = saksbehandlerValg.uttaksdato,
-                forventetFremtidigInntekt = saksbehandlerValg.forventetFremtidigInntekt,
-                afp = saksbehandlerValg.afp,
+                uttaksalder = Alder(62, 10),
+                uttaksdato = "01.02.2027",
+                forventetFremtidigInntekt = Kroner(158000),
+                afp = TidsbegrensetOffentligAfp(
+                    alderAar = 62,
+                    totaltAfpBeloep = Kroner(31353),
+                    tidligereArbeidsinntekt = Kroner(550000),
+                    grunnbeloep = Kroner(130160),
+                    sluttpoengtall = 4.73,
+                    trygdetid = 40,
+                    poengaarTom1991 = 4,
+                    poengaarFom1992 = 36,
+                    grunnpensjon = Kroner(10847),
+                    tilleggspensjon = Kroner(17667),
+                    afpTillegg = Kroner(1700),
+                    saertillegg = Kroner(1139),
+                    afpGrad = Percent(100),
+                    erAvkortet = true,
+                ),
             )
         )
     }
