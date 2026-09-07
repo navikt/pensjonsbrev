@@ -563,6 +563,122 @@ test.describe("Redigerbare vedlegg", () => {
     expect(hendelser).toEqual(["lagring-start", "lagring-slutt", "tilbakestilling"]);
   });
 
+  test("Fortsett stoppes når en pågående autolagring feiler", async ({ page }) => {
+    const saveResponse = Promise.withResolvers<void>();
+    let lagringsforsoek = 0;
+    let brevLagringer = 0;
+    await page.route(vedleggUrl(VEDLEGG_ID), async (route) => {
+      if (route.request().method() !== "PUT") return route.fulfill({ json: vedlegg });
+      lagringsforsoek += 1;
+      await saveResponse.promise;
+      return route.fulfill({ status: 500, json: "Uff" });
+    });
+    await page.route(
+      (url) => url.pathname.endsWith("/sak/123456/brev/1") && !url.search.includes("reserver"),
+      (route) => {
+        if (route.request().method() !== "PUT") return route.fallback();
+        brevLagringer += 1;
+        return route.fulfill({ json: brevResponse });
+      },
+    );
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await endreVedlegg(page, " endret!");
+    await expect.poll(() => lagringsforsoek, { timeout: 15_000 }).toBe(1);
+    await page.getByRole("button", { name: "Fortsett", exact: true }).click();
+    const bekreft = page.getByText("Fortsett til brevbehandler");
+    await bekreft
+      .waitFor({ state: "visible", timeout: 1000 })
+      .then(() => bekreft.click())
+      .catch(() => undefined);
+    saveResponse.resolve();
+
+    await expect(page.getByText("Klarte ikke lagre")).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    expect(brevLagringer).toBe(0);
+    expect(lagringsforsoek).toBe(1);
+
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) =>
+      route.fulfill({ json: route.request().postDataJSON().redigertVedlegg }),
+    );
+    await page.getByRole("button", { name: "Fortsett", exact: true }).click();
+    await bekreft
+      .waitFor({ state: "visible", timeout: 1000 })
+      .then(() => bekreft.click())
+      .catch(() => undefined);
+    await expect(page).toHaveURL(/brevbehandler/);
+    expect(brevLagringer).toBe(1);
+  });
+
+  test("viser oppdatert serverinnhold når et vedlegg åpnes på nytt", async ({ page }) => {
+    const freshText = "Oppdatert innhold fra serveren.";
+    let serverVedlegg = vedlegg;
+    let hentinger = 0;
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
+      hentinger += 1;
+      return route.fulfill({ json: serverVedlegg });
+    });
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+    await page.getByRole("tab", { name: "Brevmal" }).click();
+    await expect(page).not.toHaveURL(/vedlegg=/);
+    serverVedlegg = lagVedlegg(VEDLEGG_TITTEL, freshText, 900);
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await expect.poll(() => hentinger).toBe(2);
+    await expect(page.getByText(freshText)).toBeVisible();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+  });
+
+  for (const savePending of [false, true]) {
+    test(`bevarer lokale endringer ved sen refetch med lagring ${savePending ? "pågående" : "ventende"}`, async ({
+      page,
+    }) => {
+      const refetchResponse = Promise.withResolvers<void>();
+      const saveResponse = Promise.withResolvers<void>();
+      let hentinger = 0;
+      const lagringer: string[] = [];
+      await page.route(vedleggUrl(VEDLEGG_ID), async (route) => {
+        if (route.request().method() === "PUT") {
+          const lagret = route.request().postDataJSON().redigertVedlegg;
+          lagringer.push(JSON.stringify(lagret));
+          await saveResponse.promise;
+          return route.fulfill({ json: lagret });
+        }
+        hentinger += 1;
+        if (hentinger > 1) {
+          await refetchResponse.promise;
+          return route.fulfill({ json: lagVedlegg(VEDLEGG_TITTEL, "Endret servertekst", 900) });
+        }
+        return route.fulfill({ json: vedlegg });
+      });
+
+      await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+      await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+      await page.getByRole("tab", { name: "Brevmal" }).click();
+      await expect(page).not.toHaveURL(/vedlegg=/);
+      await page.getByRole("tab", { name: "Vedlegg" }).click();
+      await expect.poll(() => hentinger).toBe(2);
+      await endreVedlegg(page, " AAA");
+      if (savePending) {
+        await expect.poll(() => lagringer.length, { timeout: 15_000 }).toBe(1);
+      }
+
+      const refetched = page.waitForResponse(
+        (response) =>
+          response.url().endsWith(`/redigerbareVedlegg/${VEDLEGG_ID}`) && response.request().method() === "GET",
+      );
+      refetchResponse.resolve();
+      await refetched;
+      await page.locator("span[contenteditable='true']", { hasText: "AAA" }).pressSequentially("BBB");
+      saveResponse.resolve();
+
+      await expect(page.getByText("Lagret", { exact: true })).toBeVisible({ timeout: 15_000 });
+      expect(lagringer.at(-1)).toContain("AAABBB");
+      await expect(page.getByText("Endret servertekst")).toBeHidden();
+      await expect(page.getByRole("button", { name: "Angre (Undo)" })).toBeEnabled();
+    });
+  }
+
   test("starter ikke en ny lagring mens en lagring fortsatt pågår", async ({ page }) => {
     test.setTimeout(90_000);
     // Lengre enn debouncen, slik at neste autolagring blir klar mens den forrige fortsatt pågår.

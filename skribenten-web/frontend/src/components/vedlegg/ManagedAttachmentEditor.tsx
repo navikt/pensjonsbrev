@@ -75,6 +75,26 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { vedlegg: EditA
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
   const [resetModalOpen, setResetModalOpen] = useState(false);
 
+  useEffect(() => {
+    setEditorState((state) => {
+      if (state.saveStatus !== "SAVED") return state;
+      const document: EditedDocument = {
+        title: vedlegg.title,
+        blocks: vedlegg.blocks,
+        deletedBlocks: vedlegg.deletedBlocks,
+      };
+      if (isEqual(normalizeDocumentForComparison(state.redigertBrev), normalizeDocumentForComparison(document))) {
+        return state;
+      }
+      return {
+        ...state,
+        redigertBrev: document,
+        focus: { blockIndex: 0, contentIndex: 0 },
+        history: { entries: [], entryPointer: -1 },
+      };
+    });
+  }, [vedlegg]);
+
   // `includeSakspart` is metadata the editor never touches, so it is kept out of the editor state
   // and folded back in when saving. That keeps the editor state a plain EditedDocument.
   const toVedlegg = (doc: EditedDocument): EditAttachment => ({

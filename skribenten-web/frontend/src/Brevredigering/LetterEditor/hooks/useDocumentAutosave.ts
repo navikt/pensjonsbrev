@@ -44,18 +44,22 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
 
   // Serialize saves so an older request cannot finish after and overwrite a newer one.
   const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const activeSaveRef = useRef<Promise<TResponse> | null>(null);
 
   const { mutateAsync, isError } = useMutation<TResponse, AxiosError, TDoc>({
     mutationFn: (doc) => {
+      autosaveStateRef.current.saveStatus = "SAVE_PENDING";
       callbacks.current.onSaveStart();
       return callbacks.current.mutationFn(doc);
     },
-    onSuccess: (response) => {
+    onSuccess: (response, savedDocument) => {
       failedDocumentRef.current = null;
+      autosaveStateRef.current.saveStatus = autosaveStateRef.current.document === savedDocument ? "SAVED" : "DIRTY";
       callbacks.current.onSaveSuccess(response);
     },
     onError: (_error, failedDocument) => {
       failedDocumentRef.current = failedDocument;
+      autosaveStateRef.current.saveStatus = "DIRTY";
       callbacks.current.onSaveError();
     },
   });
@@ -76,7 +80,13 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
         ? !pausedRef.current && latestStatus === "DIRTY"
         : shouldSave(latestDocument, latestStatus);
       if (isEligibleForSave) {
-        await performSaveRef.current(latestDocument);
+        const save = performSaveRef.current(latestDocument);
+        activeSaveRef.current = save;
+        try {
+          await save;
+        } finally {
+          activeSaveRef.current = null;
+        }
       }
     });
 
@@ -90,6 +100,7 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
 
   // Explicit saves propagate failures to the caller.
   const saveNow = useCallback(async () => {
+    await activeSaveRef.current;
     await queueSave(true);
     while (autosaveStateRef.current.saveStatus === "DIRTY") {
       await queueSave(true);
