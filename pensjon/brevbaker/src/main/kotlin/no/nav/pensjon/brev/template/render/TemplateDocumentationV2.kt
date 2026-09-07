@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 /**
@@ -82,7 +83,11 @@ data class TemplateDocumentationV2(
                 data class Expression(val expression: Expr) : Text()
             }
 
-            data class ItemList(val items: List<ContentOrControlStructure<Item>>) : ParagraphContent() {
+            /**
+             * [type] skiller punktliste fra nummerert liste, slik at dokumentasjonsvisningen
+             * kan rendre henholdsvis `<ul>` og `<ol>` (DSL-en: `list { }` og `numberedList { }`).
+             */
+            data class ItemList(val items: List<ContentOrControlStructure<Item>>, val type: Listetype) : ParagraphContent() {
                 data class Item(val text: List<ContentOrControlStructure<Text>>) : Element()
             }
 
@@ -117,7 +122,7 @@ data class TemplateDocumentationV2(
     sealed class Expr {
         data class Literal(val value: String, val kind: TemplateModelSpecification.FieldType.Scalar.Kind?) : Expr()
 
-        data class FieldPath(val source: DataSource, val segments: List<String>, val leafType: String?) : Expr()
+        data class FieldPath(val source: DataSource, val segments: List<String>, val leafType: String?, val leafOwnerType: String? = null) : Expr()
 
         data class AssociativeOp(val op: AssocOp, val operands: List<Expr>) : Expr()
 

@@ -124,7 +124,8 @@ object TemplateDocumentationRendererV2 {
             is Element.OutlineContent.ParagraphContent.Form -> listOf(TemplateDocumentationV2.Element.ParagraphContent.Text.Literal("## missing documentation ##"))
             is Element.OutlineContent.ParagraphContent.ItemList -> listOf(
                 TemplateDocumentationV2.Element.ParagraphContent.ItemList(
-                    renderContentOrStructure(element.items, forEachDepth = 0, lang) { listOf(renderItem(it, lang)) }
+                    renderContentOrStructure(element.items, forEachDepth = 0, lang) { listOf(renderItem(it, lang)) },
+                    element.type,
                 )
             )
 

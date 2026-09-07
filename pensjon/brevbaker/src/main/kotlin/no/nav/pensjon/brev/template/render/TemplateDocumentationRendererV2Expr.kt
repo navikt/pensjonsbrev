@@ -127,12 +127,33 @@ private fun renderUnaryInvoke(
             return base
         }
         val segment = selector.propertyName
+            // `propertyType` er som regel en fullt kvalifisert Kotlin-type-streng (f.eks.
+            // "no.nav.pensjon.brevbaker.api.model.SomeDto?" eller "kotlin.String") for
+            // KSP-genererte selectors, men håndskrevne selectors bruker kortnavn (f.eks.
+            // "Int" i `Date.kt`/`Number.kt` eller "LocalDate"). Konsumenter må derfor IKKE
+            // anta at `leafType` er fullt kvalifisert - avgjør heller om typen er en av
+            // modellens egne data-klasser ved oppslag i `templateModelSpecification.types`.
+            // Feltet settes av hver Select i kjeden. Siden feltstien bygges innenfra og ut
+            // (se renderExpr sin rekursjon), er det den siste (ytterste) Select-en som
+            // overskriver leafType/leafOwnerType sist, slik at de til slutt reflekterer
+            // typen og eierklassen til det faktiske siste/leaf-segmentet. `className` er
+            // eierklassen feltet er deklarert i, og brukes av frontend til å skille feltnavn
+            // som finnes i flere datamodell-klasser fra hverandre ved DataClasses-lenking.
         return when (base) {
-            is FieldPath -> base.copy(segments = base.segments + segment)
+            is FieldPath -> base.copy(
+                segments = base.segments + segment,
+                leafType = selector.propertyType,
+                leafOwnerType = selector.className,
+            )
             // Feltaksess på et beregnet uttrykk (f.eks. `getOrNull(...).felt`,
             // `(a ?: b).felt`) — DataSource.Computed lar oss fortsatt bygge en lesbar
             // FieldPath-kjede i stedet for en bakvendt FunctionCall(".felt", [base]).
-            else -> FieldPath(TemplateDocumentationV2.DataSource.Computed(base), listOf(segment), leafType = null)
+            else -> FieldPath(
+                TemplateDocumentationV2.DataSource.Computed(base),
+                listOf(segment),
+                leafType = selector.propertyType,
+                leafOwnerType = selector.className,
+            )
         }
     }
 
