@@ -10,6 +10,7 @@ import io.micrometer.core.instrument.config.MeterFilter
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -74,7 +75,7 @@ object Metrics {
     // Øvre grense er satt til å romme verste fall for retryOgPakkUt i Cache.kt (3 forsøk á 50ms
     // ventetid ved feil, altså opp mot ~150ms i tillegg til selve kallene), med litt margin.
     const val cacheOperationMetricName = "skribenten_cache_operations_seconds"
-    private val cacheForventetLavest = 1.milliseconds
+    private val cacheForventetLavest = 100.microseconds
     private val cacheForventetHoeyest = 1.seconds
     private val cacheDistributionStatisticConfig = DistributionStatisticConfig.Builder()
         .percentilesHistogram(true)
