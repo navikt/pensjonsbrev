@@ -65,7 +65,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
 
         includeAttachment(
             simuleringVedlegg,
-            argument,
+            pesysData,
         )
     }
 }

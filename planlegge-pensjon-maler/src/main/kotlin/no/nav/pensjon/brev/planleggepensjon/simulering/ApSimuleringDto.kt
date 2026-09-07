@@ -49,7 +49,7 @@ data class ApSimuleringDtoData(
     val forbehold: ForbeholdInnhold,
     @DisplayText("Kortforbehold")
     val kortforbehold: Kortforbehold?,
-) : FagsystemBrevdata
+) : FagsystemBrevdata, VedleggData
 
 data class Simulering(
     @DisplayText("Alderspensjon")

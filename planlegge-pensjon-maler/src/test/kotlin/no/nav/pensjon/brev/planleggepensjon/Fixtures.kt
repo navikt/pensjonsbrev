@@ -54,7 +54,7 @@ object Fixtures : LetterDataFactory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when (letterDataType) {
-        ApSimuleringDto::class -> createLagreSimuleringDto() as T
+        ApSimuleringDtoData::class -> createFagsystemdata() as T
         Simuleringsinformasjon::class -> createSimuleringsinformasjon() as T
         ForbeholdInnhold::class -> createForbeholdInnhold() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
