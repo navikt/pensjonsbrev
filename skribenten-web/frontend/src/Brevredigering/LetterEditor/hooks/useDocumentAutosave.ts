@@ -6,123 +6,125 @@ import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer"
 
 export type SaveStatus = "DIRTY" | "SAVE_PENDING" | "SAVED";
 
-export type DokumentLagring = {
-  lagringFeilet: boolean;
+export type DocumentSaver = {
+  saveFailed: boolean;
   /** Saves all pending edits and rejects if saving fails. */
-  lagreNaa: () => Promise<void>;
-  /** Pauses autosave while the provided operation runs(arbeid), after waiting for any active save to finish. */
-  medLagringPaaPause: <T>(arbeid: () => Promise<T>) => Promise<T>;
+  saveNow: () => Promise<void>;
+  /** Pauses autosave while the provided operation runs, after waiting for any active save to finish. */
+  withSavingPaused: <T>(operation: () => Promise<T>) => Promise<T>;
 };
 
 /**
  * Generic autosave, decoupled from any specific document type. The caller owns the editor
  * session state and supplies a TanStack mutationFn plus lifecycle callbacks; this hook watches
- * `saveStatus`/`content`, debounces, and persists DIRTY content. It deliberately knows nothing about
- * any specific document, response shape, or query caches — those belong to the caller.
+ * `saveStatus`/`document`, debounces, and persists DIRTY documents. It deliberately knows nothing
+ * about any specific document, response shape, or query caches — those belong to the caller.
  */
 export function useDocumentAutosave<TDoc, TResponse>(args: {
-  content: TDoc;
+  document: TDoc;
   saveStatus: SaveStatus;
   mutationFn: (doc: TDoc) => Promise<TResponse>;
   onSaveStart: () => void;
   onSaveSuccess: (response: TResponse) => void;
   onSaveError: () => void;
-}): DokumentLagring {
-  const { content, saveStatus, mutationFn, onSaveStart, onSaveSuccess, onSaveError } = args;
+}): DocumentSaver {
+  const { document, saveStatus, mutationFn, onSaveStart, onSaveSuccess, onSaveError } = args;
 
   // Keep the latest callbacks without restarting the debounce effect.
-  const latest = useRef({ mutationFn, onSaveStart, onSaveSuccess, onSaveError });
-  latest.current = { mutationFn, onSaveStart, onSaveSuccess, onSaveError };
+  const callbacks = useRef({ mutationFn, onSaveStart, onSaveSuccess, onSaveError });
+  callbacks.current = { mutationFn, onSaveStart, onSaveSuccess, onSaveError };
 
-  // Keep the latest content/status available to queued saves and unmount cleanup.
-  const stateRef = useRef({ content, saveStatus });
-  stateRef.current = { content, saveStatus };
+  // Keep the latest document/status available to queued saves and unmount cleanup.
+  const autosaveStateRef = useRef({ document, saveStatus });
+  autosaveStateRef.current = { document, saveStatus };
 
-  // Prevent automatic retries of the exact payload that just failed.
-  const feiletInnholdRef = useRef<TDoc | null>(null);
-  const pausetRef = useRef(false);
+  // Prevent automatic retries of the exact document that just failed.
+  const failedDocumentRef = useRef<TDoc | null>(null);
+  const pausedRef = useRef(false);
 
   // Serialize saves so an older request cannot finish after and overwrite a newer one.
-  const koeRef = useRef<Promise<void>>(Promise.resolve());
+  const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
 
   const { mutateAsync, isError } = useMutation<TResponse, AxiosError, TDoc>({
     mutationFn: (doc) => {
-      latest.current.onSaveStart();
-      return latest.current.mutationFn(doc);
+      callbacks.current.onSaveStart();
+      return callbacks.current.mutationFn(doc);
     },
     onSuccess: (response) => {
-      feiletInnholdRef.current = null;
-      latest.current.onSaveSuccess(response);
+      failedDocumentRef.current = null;
+      callbacks.current.onSaveSuccess(response);
     },
-    onError: (_feil, feiletInnhold) => {
-      feiletInnholdRef.current = feiletInnhold;
-      latest.current.onSaveError();
+    onError: (_error, failedDocument) => {
+      failedDocumentRef.current = failedDocument;
+      callbacks.current.onSaveError();
     },
   });
 
-  const mutateAsyncRef = useRef(mutateAsync);
-  mutateAsyncRef.current = mutateAsync;
+  const performSaveRef = useRef(mutateAsync);
+  performSaveRef.current = mutateAsync;
 
-  const skalLagre = (doc: TDoc, status: SaveStatus) =>
-    !pausetRef.current && status === "DIRTY" && doc !== feiletInnholdRef.current;
+  const shouldSave = (doc: TDoc, status: SaveStatus) =>
+    !pausedRef.current && status === "DIRTY" && doc !== failedDocumentRef.current;
 
-  // Queue a save using the latest content when its turn starts.
-  const koeLagring = useCallback((eksplisitt: boolean) => {
-    const tur = koeRef.current.then(async () => {
-      const { content: sisteInnhold, saveStatus: sisteStatus } = stateRef.current;
+  // Queue a save using the latest document when its turn starts.
+  const queueSave = useCallback((explicit: boolean) => {
+    const enqueuedSave = saveQueueRef.current.then(async () => {
+      const { document: latestDocument, saveStatus: latestStatus } = autosaveStateRef.current;
 
-      // Explicit saves may retry content that previously failed.
-      const skal = eksplisitt ? !pausetRef.current && sisteStatus === "DIRTY" : skalLagre(sisteInnhold, sisteStatus);
-      if (skal) {
-        await mutateAsyncRef.current(sisteInnhold);
+      // Explicit saves may retry a document that previously failed.
+      const isEligibleForSave = explicit
+        ? !pausedRef.current && latestStatus === "DIRTY"
+        : shouldSave(latestDocument, latestStatus);
+      if (isEligibleForSave) {
+        await performSaveRef.current(latestDocument);
       }
     });
 
     // Keep the queue usable even if one save fails.
-    koeRef.current = tur.then(
+    saveQueueRef.current = enqueuedSave.then(
       () => undefined,
       () => undefined,
     );
-    return tur;
+    return enqueuedSave;
   }, []);
 
   // Explicit saves propagate failures to the caller.
-  const lagreNaa = useCallback(async () => {
-    await koeLagring(true);
-    while (stateRef.current.saveStatus === "DIRTY") {
-      await koeLagring(true);
+  const saveNow = useCallback(async () => {
+    await queueSave(true);
+    while (autosaveStateRef.current.saveStatus === "DIRTY") {
+      await queueSave(true);
     }
-  }, [koeLagring]);
+  }, [queueSave]);
 
-  const medLagringPaaPause = useCallback(async <T>(arbeid: () => Promise<T>): Promise<T> => {
-    pausetRef.current = true;
+  const withSavingPaused = useCallback(async <T>(operation: () => Promise<T>): Promise<T> => {
+    pausedRef.current = true;
     try {
-      await koeRef.current;
-      return await arbeid();
+      await saveQueueRef.current;
+      return await operation();
     } finally {
-      pausetRef.current = false;
+      pausedRef.current = false;
     }
   }, []);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (skalLagre(content, saveStatus)) {
-        void koeLagring(false).catch(() => undefined);
+      if (shouldSave(document, saveStatus)) {
+        void queueSave(false).catch(() => undefined);
       }
     }, AUTOSAVE_TIMER);
     return () => clearTimeout(timeoutId);
-  }, [saveStatus, content, koeLagring]);
+  }, [saveStatus, document, queueSave]);
 
-  // Save dirty content immediately when this editor session unmounts.
+  // Save dirty document immediately when this editor session unmounts.
   useEffect(
     () => () => {
-      const { content: sisteInnhold, saveStatus: sisteStatus } = stateRef.current;
-      if (skalLagre(sisteInnhold, sisteStatus)) {
-        void koeLagring(false).catch(() => undefined);
+      const { document: latestDocument, saveStatus: latestStatus } = autosaveStateRef.current;
+      if (shouldSave(latestDocument, latestStatus)) {
+        void queueSave(false).catch(() => undefined);
       }
     },
-    [koeLagring],
+    [queueSave],
   );
 
-  return { lagringFeilet: isError, lagreNaa: lagreNaa, medLagringPaaPause: medLagringPaaPause };
+  return { saveFailed: isError, saveNow: saveNow, withSavingPaused: withSavingPaused };
 }

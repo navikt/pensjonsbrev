@@ -8,25 +8,25 @@ import { type BrevResponse } from "~/types/brev";
  * Renders the editor for the letter.
  *
  * Autosave lives in <ManagedLetterEditorContextProvider /> so it stays active when this component
- * unmounts while switching to a vedlegg. If autosave lived here, unmounting could cancel a pending
+ * unmounts while switching to an attachment. If autosave lived here, unmounting could cancel a pending
  * debounced save and leave letter changes unsaved.
  */
 const ManagedLetterEditor = (props: {
   brev: BrevResponse;
   freeze: boolean;
   error: boolean;
-  kanTilbakestille?: boolean;
+  canReset?: boolean;
   showDebug?: boolean;
 }) => {
-  const { editorState, setEditorState, lagringFeilet } = useManagedLetterEditorContext();
+  const { editorState, setEditorState, saveFailed } = useManagedLetterEditorContext();
 
   return (
     <LetterEditor
       editorState={editorState}
-      error={props.error || lagringFeilet}
+      error={props.error || saveFailed}
       freeze={props.freeze}
       renderTilbakestillModal={
-        props.kanTilbakestille
+        props.canReset
           ? ({ open, onClose }) => (
               <TilbakestillMalModal
                 brevId={props.brev.info.id}

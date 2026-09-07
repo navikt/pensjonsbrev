@@ -1,14 +1,14 @@
 import { Alert, BodyShort, Button, ExpansionCard, HStack, Loader, VStack } from "@navikt/ds-react";
 import { type UseQueryResult } from "@tanstack/react-query";
 
-import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
+import { useActiveDocument } from "~/components/brevOgVedlegg/ActiveDocumentContext";
 import { type RedigerbartVedleggInfo } from "~/types/brev";
 
 /**
- * Lists editable vedlegg and switches the editor to the selected one.
+ * Lists editable attachments and switches the editor to the selected one.
  */
 export const VedleggPanel = (props: { vedleggQuery: UseQueryResult<RedigerbartVedleggInfo[], Error> }) => {
-  const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useAktivtDokument();
+  const { activeDocument, canReset, resetActiveVedlegg, selectBrev, selectVedlegg } = useActiveDocument();
   const { vedleggQuery } = props;
 
   if (vedleggQuery.isPending) {
@@ -28,13 +28,13 @@ export const VedleggPanel = (props: { vedleggQuery: UseQueryResult<RedigerbartVe
   return (
     <VStack gap="space-12">
       {vedlegg.map((v) => {
-        const erAktivt = aktivtDokument.type === "vedlegg" && aktivtDokument.vedleggId === v.vedleggId;
+        const isActive = activeDocument.type === "vedlegg" && activeDocument.vedleggId === v.vedleggId;
         return (
           <ExpansionCard
             aria-label={v.tittel}
             key={v.vedleggId}
-            onToggle={(open) => void (open ? velgVedlegg(v.vedleggId) : velgBrev())}
-            open={erAktivt}
+            onToggle={(open) => void (open ? selectVedlegg(v.vedleggId) : selectBrev())}
+            open={isActive}
             size="small"
           >
             <ExpansionCard.Header>
@@ -45,11 +45,11 @@ export const VedleggPanel = (props: { vedleggQuery: UseQueryResult<RedigerbartVe
                 <BodyShort size="small">
                   Dette vedlegget er redigerbart. Innholdet vises i redigeringsflaten og kan redigeres der.
                 </BodyShort>
-                {erAktivt && kanTilbakestille && (
+                {isActive && canReset && (
                   <HStack>
                     <Button
                       data-color="danger"
-                      onClick={tilbakestillAktivtVedlegg}
+                      onClick={resetActiveVedlegg}
                       size="small"
                       type="button"
                       variant="secondary"

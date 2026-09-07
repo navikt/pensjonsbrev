@@ -45,9 +45,10 @@ interface ManagedLetterEditorContextValue {
   onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
 
   /** Whether autosaving the letter has failed. */
-  lagringFeilet: boolean;
+  saveFailed: boolean;
 
-  registrerNullstillLagringsfeil: (nullstill: (() => void) | null) => void;
+  /** The route registers how to clear its own submit-error state so the autosave can reset it before retrying. */
+  registerSaveErrorReset: (reset: (() => void) | null) => void;
 }
 
 const requireLetterDocument = (document: EditedDocument): EditedLetter => {
@@ -78,7 +79,7 @@ const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue
 
 /**
  * Autosave lives in this provider so it survives when `ManagedLetterEditor`
- * unmounts while switching to a vedlegg. If autosave lived in the editor,
+ * unmounts while switching to an attachment. If autosave lived in the editor,
  * unmounting would clean up the autosave effect and cancel a pending debounce,
  * potentially leaving letter changes unsaved.
  */
@@ -86,18 +87,18 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const queryClient = useQueryClient();
   const redigeringsflate = useRedigeringsflate();
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
-  const nullstillLagringsfeilFraRutenRef = useRef<(() => void) | null>(null);
+  const saveErrorResetRef = useRef<(() => void) | null>(null);
 
-  const registrerNullstillLagringsfeil = useCallback((nullstill: (() => void) | null) => {
-    nullstillLagringsfeilFraRutenRef.current = nullstill;
+  const registerSaveErrorReset = useCallback((reset: (() => void) | null) => {
+    saveErrorResetRef.current = reset;
   }, []);
 
   const onSaveSuccess = useCallback(
     (response: BrevResponse, options?: SaveSuccessOptions) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       queryClient.setQueryData(attesteringBrevKeys.id(response.info.id), response);
-      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
-      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
+      // Reset the query so returning to brevbehandler fetches the latest data
+      // instead of silently showing a stale cached version.
       const pdfQuery = redigeringsflate === "attestant-redigering" ? hentPdfForAttestering : hentPdfForBrev;
       queryClient.resetQueries({ queryKey: pdfQuery.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
@@ -124,13 +125,13 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const redigertBrev = requireLetterDocument(editorState.redigertBrev);
 
   const {
-    mutate: lagreBrevtekst,
-    isError: lagringFeilet,
-    reset: nullstillLagringsfeil,
+    mutate: saveLetter,
+    isError: saveFailed,
+    reset: resetSaveError,
   } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
     mutationFn: (state) => {
       const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
-      const redigertBrevMedMarkoer = requireLetterDocument(stateWithCursor.redigertBrev);
+      const letterWithCursor = requireLetterDocument(stateWithCursor.redigertBrev);
 
       setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
 
@@ -139,7 +140,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         return lagreAttestertBrevtekst({
           saksId: String(stateWithCursor.info.saksId),
           brevId: props.brev.info.id,
-          redigertBrev: redigertBrevMedMarkoer,
+          redigertBrev: letterWithCursor,
           frigiReservasjon: false,
         });
       }
@@ -147,7 +148,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
         return oppdaterBrevtekst({
           brevId: props.brev.info.id,
-          redigertBrev: redigertBrevMedMarkoer,
+          redigertBrev: letterWithCursor,
           frigiReservasjon: false,
         });
       }
@@ -158,7 +159,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         brevId: stateWithCursor.info.id,
         frigiReservasjon: false,
         request: {
-          redigertBrev: redigertBrevMedMarkoer,
+          redigertBrev: letterWithCursor,
           saksbehandlerValg: stateWithCursor.saksbehandlerValg,
         },
       });
@@ -170,20 +171,14 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (editorState.saveStatus === "DIRTY") {
-        nullstillLagringsfeil();
-        nullstillLagringsfeilFraRutenRef.current?.();
-        lagreBrevtekst(editorState);
+        resetSaveError();
+        saveErrorResetRef.current?.();
+        saveLetter(editorState);
       }
     }, AUTOSAVE_TIMER);
 
     return () => clearTimeout(timeoutId);
-  }, [
-    editorState.saveStatus,
-    editorState.redigertBrev,
-    editorState.saksbehandlerValg,
-    lagreBrevtekst,
-    nullstillLagringsfeil,
-  ]);
+  }, [editorState.saveStatus, editorState.redigertBrev, editorState.saksbehandlerValg, saveLetter, resetSaveError]);
 
   useEffect(() => {
     if (editorState.saveStatus === "SAVED" && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
@@ -209,8 +204,8 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         redigertBrev: redigertBrev,
         setEditorState: setEditorState,
         onSaveSuccess: onSaveSuccess,
-        lagringFeilet: lagringFeilet,
-        registrerNullstillLagringsfeil: registrerNullstillLagringsfeil,
+        saveFailed: saveFailed,
+        registerSaveErrorReset: registerSaveErrorReset,
       }}
     >
       {props.children}

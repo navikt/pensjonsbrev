@@ -15,19 +15,19 @@ import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { ApiError } from "~/components/ApiError";
-import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
+import { useActiveDocument } from "~/components/brevOgVedlegg/ActiveDocumentContext";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import TilbakestillVedleggModal from "~/components/vedlegg/TilbakestillVedleggModal";
 import { type BrevResponse, type EditAttachment, type RedigerbartVedleggInfo } from "~/types/brev";
 import { type EditedDocument } from "~/types/brevbakerTypes";
 
 /** Mirrors how the backend renders the list title, so the cached title matches a refetched one. */
-const formaterVedleggtittel = (vedlegg: EditAttachment): string =>
-  vedlegg.title.text.map((innhold) => text(innhold) ?? "").join("");
+const formatVedleggTitle = (vedlegg: EditAttachment): string =>
+  vedlegg.title.text.map((item) => text(item) ?? "").join("");
 
 /**
  * Editor session for one editable attachment. It reuses LetterEditorState so the existing
- * LetterEditor and every content action work unchanged: `redigertBrev` holds the vedlegg's editable
+ * LetterEditor and every content action work unchanged: `redigertBrev` holds the attachment's editable
  * body, `info` comes from the parent brev (for spraak), and hash/saksbehandlerValg are unused here
  * because an attachment is saved through its own endpoint.
  */
@@ -41,16 +41,16 @@ const createVedleggState = (brev: BrevResponse, vedlegg: EditAttachment): Letter
   history: { entries: [], entryPointer: -1 },
 });
 
-type VedleggEditorProps = {
+type AttachmentEditorProps = {
   saksId: string;
   brev: BrevResponse;
   vedleggId: string;
-  vedleggtittel: string;
+  vedleggTitle: string;
   freeze: boolean;
   redigeringsflate: Redigeringsflate;
 };
 
-export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
+export const ManagedAttachmentEditor = (props: AttachmentEditorProps) => {
   const { saksId, brev, vedleggId, redigeringsflate } = props;
 
   const vedleggQuery = useQuery({
@@ -65,107 +65,109 @@ export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
     return <ApiError error={vedleggQuery.error} title="Klarte ikke å hente vedlegget" />;
   }
 
-  return <VedleggEditorSession {...props} key={vedleggId} vedlegg={vedleggQuery.data} />;
+  return <AttachmentEditorSession {...props} key={vedleggId} vedlegg={vedleggQuery.data} />;
 };
 
-const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachment }) => {
+const AttachmentEditorSession = (props: AttachmentEditorProps & { vedlegg: EditAttachment }) => {
   const { saksId, brev, vedleggId, vedlegg, redigeringsflate } = props;
   const queryClient = useQueryClient();
-  const { registrerVedleggslagring, registrerTilbakestilling } = useAktivtDokument();
+  const { registerVedleggSave, registerReset } = useActiveDocument();
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
-  const [vilTilbakestille, setVilTilbakestille] = useState(false);
+  const [resetModalOpen, setResetModalOpen] = useState(false);
 
   // `includeSakspart` is metadata the editor never touches, so it is kept out of the editor state
   // and folded back in when saving. That keeps the editor state a plain EditedDocument.
-  const tilVedlegg = (dokument: EditedDocument): EditAttachment => ({
-    ...dokument,
+  const toVedlegg = (doc: EditedDocument): EditAttachment => ({
+    ...doc,
     includeSakspart: vedlegg.includeSakspart,
   });
 
-  const settVedleggICache = (oppdatert: EditAttachment) =>
-    queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId, redigeringsflate), oppdatert);
+  const setVedleggInCache = (vedleggResponse: EditAttachment) =>
+    queryClient.setQueryData(
+      redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId, redigeringsflate),
+      vedleggResponse,
+    );
 
   // The side panel list only carries the title, and fetching it makes the backend re-render every
-  // stored vedlegg — far too heavy to repeat on each autosave. Patch the cached title instead.
-  const settTittelICache = (oppdatert: EditAttachment) =>
+  // stored attachment — far too heavy to repeat on each autosave. Patch the cached title instead.
+  const setTitleInCache = (vedleggResponse: EditAttachment) =>
     queryClient.setQueryData<RedigerbartVedleggInfo[]>(
       redigerbareVedleggKeys.liste(brev.info.id, redigeringsflate),
-      (liste) =>
-        liste?.map((v) => (v.vedleggId === vedleggId ? { ...v, tittel: formaterVedleggtittel(oppdatert) } : v)),
+      (list) =>
+        list?.map((v) => (v.vedleggId === vedleggId ? { ...v, tittel: formatVedleggTitle(vedleggResponse) } : v)),
     );
 
   const pdfQuery = redigeringsflate === "attestant-redigering" ? hentPdfForAttestering : hentPdfForBrev;
 
-  const { lagringFeilet, lagreNaa, medLagringPaaPause } = useDocumentAutosave<EditedDocument, EditAttachment>({
-    content: editorState.redigertBrev,
+  const { saveFailed, saveNow, withSavingPaused } = useDocumentAutosave<EditedDocument, EditAttachment>({
+    document: editorState.redigertBrev,
     saveStatus: editorState.saveStatus,
-    mutationFn: (dokument) =>
-      lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, tilVedlegg(dokument), redigeringsflate),
+    mutationFn: (doc) => lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, toVedlegg(doc), redigeringsflate),
     onSaveStart: () => setEditorState((s) => ({ ...s, saveStatus: "SAVE_PENDING" })),
-    onSaveSuccess: (lagretVedlegg) => {
-      const lagretDokument: EditedDocument = {
-        title: lagretVedlegg.title,
-        blocks: lagretVedlegg.blocks,
-        deletedBlocks: lagretVedlegg.deletedBlocks,
+    onSaveSuccess: (vedleggResponse) => {
+      const savedDocument: EditedDocument = {
+        title: vedleggResponse.title,
+        blocks: vedleggResponse.blocks,
+        deletedBlocks: vedleggResponse.deletedBlocks,
       };
       // Keep it DIRTY when the user typed again while the save was in flight: those edits are not
       // covered by this response, so the autosave must fire again instead of reporting SAVED.
       setEditorState((s) => {
         if (s.saveStatus === "DIRTY") return s;
-        if (isEqual(normalizeDocumentForComparison(s.redigertBrev), normalizeDocumentForComparison(lagretDokument))) {
+        if (isEqual(normalizeDocumentForComparison(s.redigertBrev), normalizeDocumentForComparison(savedDocument))) {
           return { ...s, saveStatus: "SAVED" };
         }
         return {
           ...s,
-          redigertBrev: lagretDokument,
+          redigertBrev: savedDocument,
           saveStatus: "SAVED",
           history: { entries: [], entryPointer: -1 },
         };
       });
-      settVedleggICache(lagretVedlegg);
-      settTittelICache(lagretVedlegg);
+      setVedleggInCache(vedleggResponse);
+      setTitleInCache(vedleggResponse);
       queryClient.resetQueries({ queryKey: pdfQuery.queryKey(brev.info.id) });
     },
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
   useEffect(() => {
-    registrerVedleggslagring(lagreNaa);
-    return () => registrerVedleggslagring(null);
-  }, [registrerVedleggslagring, lagreNaa]);
+    registerVedleggSave(saveNow);
+    return () => registerVedleggSave(null);
+  }, [registerVedleggSave, saveNow]);
 
-  const aapneTilbakestilling = useCallback(() => setVilTilbakestille(true), []);
+  const openResetModal = useCallback(() => setResetModalOpen(true), []);
 
   useEffect(() => {
-    registrerTilbakestilling(aapneTilbakestilling);
-    return () => registrerTilbakestilling(null);
-  }, [aapneTilbakestilling, registrerTilbakestilling]);
+    registerReset(openResetModal);
+    return () => registerReset(null);
+  }, [openResetModal, registerReset]);
 
-  const tilbakestill = () =>
-    medLagringPaaPause(async () => {
-      const tilbakestilt = await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
-      settVedleggICache(tilbakestilt);
-      settTittelICache(tilbakestilt);
+  const resetVedlegg = () =>
+    withSavingPaused(async () => {
+      const freshVedlegg = await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
+      setVedleggInCache(freshVedlegg);
+      setTitleInCache(freshVedlegg);
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
-      return tilbakestilt;
+      return freshVedlegg;
     });
 
   return (
     <>
       <LetterEditor
         editorState={editorState}
-        error={lagringFeilet}
+        error={saveFailed}
         freeze={props.freeze}
         setEditorState={setEditorState}
         showDebug={false}
       />
-      {vilTilbakestille && (
+      {resetModalOpen && (
         <TilbakestillVedleggModal
-          onClose={() => setVilTilbakestille(false)}
-          resetEditor={(tilbakestilt) => setEditorState(createVedleggState(brev, tilbakestilt))}
-          tilbakestill={tilbakestill}
-          vedleggtittel={props.vedleggtittel}
-          åpen
+          onClose={() => setResetModalOpen(false)}
+          open
+          reset={resetVedlegg}
+          resetEditor={(freshVedlegg) => setEditorState(createVedleggState(brev, freshVedlegg))}
+          vedleggTitle={props.vedleggTitle}
         />
       )}
     </>

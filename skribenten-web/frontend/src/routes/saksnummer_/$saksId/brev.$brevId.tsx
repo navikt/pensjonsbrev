@@ -18,10 +18,10 @@ import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/Redigeri
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
-import { AktivtDokumentProvider } from "~/components/brevOgVedlegg/AktivtDokumentContext";
+import { ActiveDocumentProvider } from "~/components/brevOgVedlegg/ActiveDocumentContext";
 import { BrevOgVedleggEditor } from "~/components/brevOgVedlegg/BrevOgVedleggEditor";
 import { BrevOgVedleggEditorSidepanel } from "~/components/brevOgVedlegg/BrevOgVedleggEditorSidepanel";
-import { useAktivtDokumentController } from "~/components/brevOgVedlegg/useAktivtDokumentController";
+import { useActiveDocumentCoordinator } from "~/components/brevOgVedlegg/useActiveDocumentCoordinator";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
@@ -249,7 +249,7 @@ function RedigerBrev({
   vedtaksId: string | undefined;
 }) {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { enhetsId, vedlegg: aktivVedlegg } = Route.useSearch();
+  const { enhetsId, vedlegg: activeVedlegg } = Route.useSearch();
   const editorStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
@@ -257,15 +257,15 @@ function RedigerBrev({
     (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
     [navigate],
   );
-  const dokumentEditor = useAktivtDokumentController({
+  const documentCoordinator = useActiveDocumentCoordinator({
     saksId,
     brevId: brev.info.id,
-    aktivVedleggId: aktivVedlegg,
+    activeVedleggId: activeVedlegg,
     redigeringsflate: "saksbehandler-redigering",
     navigateToDocument,
   });
 
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registrerNullstillLagringsfeil } =
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset } =
     useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
@@ -282,7 +282,7 @@ function RedigerBrev({
     });
 
   const navigateToBrevvelger = async () => {
-    if (!(await dokumentEditor.lagreAktivtDokument())) return;
+    if (!(await documentCoordinator.saveActiveDocument())) return;
 
     await navigate({
       to: "/saksnummer/$saksId/brevvelger",
@@ -347,7 +347,7 @@ function RedigerBrev({
   const onSubmit = async (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
     // An attachment is saved through its own endpoint, so it must be persisted while the reservation is
     // still held. The final submit releases the reservation, so a failed attachment save must stop it.
-    if (!(await dokumentEditor.lagreAktivtDokument())) return;
+    if (!(await documentCoordinator.saveActiveDocument())) return;
 
     oppdaterBrevMutation.reset();
     oppdaterBrevMutation.mutate(
@@ -407,9 +407,9 @@ function RedigerBrev({
   const error = oppdaterBrevMutation.isError;
 
   useEffect(() => {
-    registrerNullstillLagringsfeil(oppdaterBrevMutation.reset);
-    return () => registrerNullstillLagringsfeil(null);
-  }, [oppdaterBrevMutation.reset, registrerNullstillLagringsfeil]);
+    registerSaveErrorReset(oppdaterBrevMutation.reset);
+    return () => registerSaveErrorReset(null);
+  }, [oppdaterBrevMutation.reset, registerSaveErrorReset]);
 
   // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
@@ -424,17 +424,17 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <AktivtDokumentProvider
-              aktivVedleggId={dokumentEditor.aktivVedleggId}
-              onVelgDokument={dokumentEditor.velgDokument}
+            <ActiveDocumentProvider
+              activeVedleggId={documentCoordinator.activeVedleggId}
+              onSelectDocument={documentCoordinator.selectDocument}
               redigeringsflate="saksbehandler-redigering"
-              registrerVedleggslagring={dokumentEditor.registrerVedleggslagring}
+              registerVedleggSave={documentCoordinator.registerVedleggSave}
             >
               <ThreeSectionLayout
                 bottom={
                   <HStack justify="space-between" width="100%">
                     <Button
-                      disabled={dokumentEditor.lagrerAktivtDokument}
+                      disabled={documentCoordinator.savingActiveDocument}
                       onClick={navigateToBrevvelger}
                       size="small"
                       type="button"
@@ -443,7 +443,7 @@ function RedigerBrev({
                       Tilbake til brevvelger
                     </Button>
                     <Button
-                      loading={oppdaterBrevMutation.isPending || dokumentEditor.lagrerAktivtDokument}
+                      loading={oppdaterBrevMutation.isPending || documentCoordinator.savingActiveDocument}
                       size="small"
                       type="submit"
                     >
@@ -479,13 +479,7 @@ function RedigerBrev({
                     freeze={freeze}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                        <ManagedLetterEditor
-                          brev={brev}
-                          error={error}
-                          freeze={freeze}
-                          kanTilbakestille
-                          showDebug={showDebug}
-                        />
+                        <ManagedLetterEditor brev={brev} canReset error={error} freeze={freeze} showDebug={showDebug} />
                       </InsertedTekstValgHighlightProvider>
                     )}
                     saksId={saksId}
@@ -493,7 +487,7 @@ function RedigerBrev({
                 }
                 rightColumnWidth="minmax(640px, 694px)"
               />
-            </AktivtDokumentProvider>
+            </ActiveDocumentProvider>
           </form>
         </VStack>
       </Box>

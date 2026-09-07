@@ -33,10 +33,10 @@ import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
-import { AktivtDokumentProvider } from "~/components/brevOgVedlegg/AktivtDokumentContext";
+import { ActiveDocumentProvider } from "~/components/brevOgVedlegg/ActiveDocumentContext";
 import { BrevOgVedleggEditor } from "~/components/brevOgVedlegg/BrevOgVedleggEditor";
 import { BrevOgVedleggEditorSidepanel } from "~/components/brevOgVedlegg/BrevOgVedleggEditorSidepanel";
-import { useAktivtDokumentController } from "~/components/brevOgVedlegg/useAktivtDokumentController";
+import { useActiveDocumentCoordinator } from "~/components/brevOgVedlegg/useActiveDocumentCoordinator";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { Divider } from "~/components/Divider";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
@@ -212,8 +212,8 @@ const VedtakWrapper = () => {
 
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { vedlegg: aktivVedlegg } = Route.useSearch();
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registrerNullstillLagringsfeil } =
+  const { vedlegg: activeVedlegg } = Route.useSearch();
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset } =
     useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
@@ -225,10 +225,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
     [navigate],
   );
-  const dokumentEditor = useAktivtDokumentController({
+  const documentCoordinator = useActiveDocumentCoordinator({
     saksId: props.saksId,
     brevId: props.brev.info.id,
-    aktivVedleggId: aktivVedlegg,
+    activeVedleggId: activeVedlegg,
     redigeringsflate: "attestant-redigering",
     navigateToDocument,
   });
@@ -306,7 +306,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const onSubmit = async (onSuccess?: () => void) => {
-    if (!(await dokumentEditor.lagreAktivtDokument())) return;
+    if (!(await documentCoordinator.saveActiveDocument())) return;
 
     attesterMutation.reset();
     attesterMutation.mutate(
@@ -325,9 +325,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   }, [attesterMutation.reset]);
 
   useEffect(() => {
-    registrerNullstillLagringsfeil(resetSaveErrors);
-    return () => registrerNullstillLagringsfeil(null);
-  }, [registrerNullstillLagringsfeil, resetSaveErrors]);
+    registerSaveErrorReset(resetSaveErrors);
+    return () => registerSaveErrorReset(null);
+  }, [registerSaveErrorReset, resetSaveErrors]);
 
   useEffect(() => {
     form.reset({
@@ -375,7 +375,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     form,
     getWarning,
     onConfirmedSubmit: submitAttest,
-    onInvalidSubmit: () => void dokumentEditor.velgDokument(undefined),
+    onInvalidSubmit: () => void documentCoordinator.selectDocument(undefined),
     onWarnModalClosed: (warn) => {
       if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
         const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
@@ -394,18 +394,18 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
         {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
 
-        <AktivtDokumentProvider
-          aktivVedleggId={dokumentEditor.aktivVedleggId}
-          onVelgDokument={dokumentEditor.velgDokument}
+        <ActiveDocumentProvider
+          activeVedleggId={documentCoordinator.activeVedleggId}
+          onSelectDocument={documentCoordinator.selectDocument}
           redigeringsflate="attestant-redigering"
-          registrerVedleggslagring={dokumentEditor.registrerVedleggslagring}
+          registerVedleggSave={documentCoordinator.registerVedleggSave}
         >
           <ThreeSectionLayout
             bottom={
               <Button
                 icon={<ArrowRightIcon />}
                 iconPosition="right"
-                loading={freeze || dokumentEditor.lagrerAktivtDokument}
+                loading={freeze || documentCoordinator.savingActiveDocument}
                 size="small"
               >
                 Fortsett
@@ -518,20 +518,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     diffHash={attestantDiff.diffHash}
                     disableDiff={attestantDiff.disableDiff}
                   >
-                    <ManagedLetterEditor
-                      brev={props.brev}
-                      error={error}
-                      freeze={freeze}
-                      kanTilbakestille={false}
-                      showDebug={showDebug}
-                    />
+                    <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
                   </AttestantDiffProvider>
                 )}
                 saksId={props.saksId}
               />
             }
           />
-          {/* Modal som ikke tar opp plass i DOM her */}
+          {/* Modal rendered outside layout flow so it does not take space here. */}
           <ReservertBrevError
             doRetry={props.doReload}
             onNeiClick={() =>
@@ -546,7 +540,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             }
             reservasjon={reservasjonQuery.data}
           />
-        </AktivtDokumentProvider>
+        </ActiveDocumentProvider>
       </form>
     </VStack>
   );

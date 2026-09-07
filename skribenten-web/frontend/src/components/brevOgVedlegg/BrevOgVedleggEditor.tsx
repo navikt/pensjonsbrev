@@ -1,14 +1,14 @@
 import { type ReactNode } from "react";
 
 import { ApiError } from "~/components/ApiError";
-import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
+import { useActiveDocument } from "~/components/brevOgVedlegg/ActiveDocumentContext";
 import { CenteredLoader } from "~/components/CenteredLoader";
-import { ManagedVedleggEditor } from "~/components/vedlegg/ManagedVedleggEditor";
+import { ManagedAttachmentEditor } from "~/components/vedlegg/ManagedAttachmentEditor";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 import { type BrevResponse } from "~/types/brev";
 
 /**
- * Renders either the letter editor or the active vedlegg editor.
+ * Renders either the letter editor or the active attachment editor.
  */
 export const BrevOgVedleggEditor = (props: {
   saksId: string;
@@ -16,14 +16,14 @@ export const BrevOgVedleggEditor = (props: {
   freeze: boolean;
   renderBrev: () => ReactNode;
 }) => {
-  const { aktivtDokument, redigeringsflate } = useAktivtDokument();
+  const { activeDocument, redigeringsflate } = useActiveDocument();
   const vedleggQuery = useRedigerbareVedlegg({
     saksId: props.saksId,
     brevId: props.brev.info.id,
     redigeringsflate,
   });
 
-  if (aktivtDokument.type === "brev") {
+  if (activeDocument.type === "brev") {
     return props.renderBrev();
   }
 
@@ -36,19 +36,19 @@ export const BrevOgVedleggEditor = (props: {
     return <ApiError error={vedleggQuery.error} title="Klarte ikke å hente vedlegg" />;
   }
 
-  const vedlegg = vedleggQuery.data.find((v) => v.vedleggId === aktivtDokument.vedleggId);
+  const vedlegg = vedleggQuery.data.find((v) => v.vedleggId === activeDocument.vedleggId);
   if (!vedlegg) {
     return props.renderBrev();
   }
 
   return (
-    <ManagedVedleggEditor
+    <ManagedAttachmentEditor
       brev={props.brev}
       freeze={props.freeze}
       redigeringsflate={redigeringsflate}
       saksId={props.saksId}
       vedleggId={vedlegg.vedleggId}
-      vedleggtittel={vedlegg.tittel}
+      vedleggTitle={vedlegg.tittel}
     />
   );
 };

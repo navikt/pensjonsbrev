@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Tabs } from "@navikt/ds-react";
 import { type ReactNode, useEffect, useState } from "react";
 
-import { useAktivtDokument } from "~/components/brevOgVedlegg/AktivtDokumentContext";
+import { useActiveDocument } from "~/components/brevOgVedlegg/ActiveDocumentContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 import { VedleggPanel } from "~/components/vedlegg/VedleggPanel";
 
@@ -30,42 +30,42 @@ const sidepanelStyle = css`
 `;
 
 export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: number; brevmalPanel: ReactNode }) => {
-  const { aktivtDokument, redigeringsflate, velgBrev, velgVedlegg } = useAktivtDokument();
+  const { activeDocument, redigeringsflate, selectBrev, selectVedlegg } = useActiveDocument();
   const vedleggQuery = useRedigerbareVedlegg({
     saksId: props.saksId,
     brevId: props.brevId,
     redigeringsflate,
   });
-  const [aktivTab, setAktivTab] = useState(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
+  const [activeTab, setActiveTab] = useState(activeDocument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
 
   // Keep the tab aligned with URL-driven document changes, including normalization of an unknown vedlegg.
   useEffect(() => {
-    setAktivTab(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
-  }, [aktivtDokument.type]);
+    setActiveTab(activeDocument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
+  }, [activeDocument.type]);
 
   // Switching tabs also switches the active document shown in the editor.
-  const velgTab = async (tab: string) => {
+  const handleSelectTab = async (tab: string) => {
     if (tab === BREVMAL_TAB) {
-      if (await velgBrev()) {
-        setAktivTab(tab);
+      if (await selectBrev()) {
+        setActiveTab(tab);
       }
       return;
     }
 
     if (vedleggQuery.isError) {
-      setAktivTab(tab);
+      setActiveTab(tab);
       return;
     }
 
-    const foersteVedlegg = vedleggQuery.data?.[0];
-    if (foersteVedlegg && (await velgVedlegg(foersteVedlegg.vedleggId))) {
-      setAktivTab(tab);
+    const firstVedlegg = vedleggQuery.data?.[0];
+    if (firstVedlegg && (await selectVedlegg(firstVedlegg.vedleggId))) {
+      setActiveTab(tab);
     }
   };
 
   // Show the tabs only when the letter has editable attachments, but keep them visible on error so the issue can be shown.
-  const visFaner = (vedleggQuery.data?.length ?? 0) > 0 || vedleggQuery.isError;
-  if (!visFaner) {
+  const showTabs = (vedleggQuery.data?.length ?? 0) > 0 || vedleggQuery.isError;
+  if (!showTabs) {
     return props.brevmalPanel;
   }
 
@@ -73,9 +73,9 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
     <Tabs
       className="brev-og-vedlegg-editor-sidepanel"
       css={sidepanelStyle}
-      onChange={(tab) => void velgTab(tab)}
+      onChange={(tab) => void handleSelectTab(tab)}
       size="small"
-      value={aktivTab}
+      value={activeTab}
     >
       <Tabs.List>
         <Tabs.Tab label="Brevmal" value={BREVMAL_TAB} />

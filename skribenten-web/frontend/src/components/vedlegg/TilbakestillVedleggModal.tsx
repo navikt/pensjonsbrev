@@ -4,14 +4,14 @@ import { useMutation } from "@tanstack/react-query";
 import { type EditAttachment } from "~/types/brev";
 
 const TilbakestillVedleggModal = (props: {
-  vedleggtittel: string;
-  åpen: boolean;
+  vedleggTitle: string;
+  open: boolean;
   onClose: () => void;
-  tilbakestill: () => Promise<EditAttachment>;
+  reset: () => Promise<EditAttachment>;
   resetEditor: (vedlegg: EditAttachment) => void;
 }) => {
-  const tilbakestillMutation = useMutation<EditAttachment, Error>({
-    mutationFn: () => props.tilbakestill(),
+  const resetMutation = useMutation<EditAttachment, Error>({
+    mutationFn: () => props.reset(),
     onSuccess: (vedlegg) => {
       props.resetEditor(vedlegg);
       props.onClose();
@@ -19,10 +19,10 @@ const TilbakestillVedleggModal = (props: {
   });
 
   return (
-    <Modal header={{ heading: "Vil du tilbakestille vedlegget?" }} onClose={props.onClose} open={props.åpen} portal>
+    <Modal header={{ heading: "Vil du tilbakestille vedlegget?" }} onClose={props.onClose} open={props.open} portal>
       <Modal.Body>
         <BodyLong>
-          Innholdet du har endret eller lagt til i {props.vedleggtittel} vil bli slettet. Vedlegget blir liggende i
+          Innholdet du har endret eller lagt til i {props.vedleggTitle} vil bli slettet. Vedlegget blir liggende i
           brevet. Du kan ikke angre denne handlingen.
         </BodyLong>
       </Modal.Body>
@@ -33,8 +33,8 @@ const TilbakestillVedleggModal = (props: {
           </Button>
           <Button
             data-color="danger"
-            loading={tilbakestillMutation.isPending}
-            onClick={() => tilbakestillMutation.mutate()}
+            loading={resetMutation.isPending}
+            onClick={() => resetMutation.mutate()}
             type="button"
             variant="primary"
           >
