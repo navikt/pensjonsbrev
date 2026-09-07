@@ -9,8 +9,6 @@ import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.pesysData
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.saksbehandlerValg
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.*
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.afp
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.forventetFremtidigInntekt
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.uttaksalder
@@ -28,8 +26,8 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.etternavn
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.fornavn
@@ -42,44 +40,6 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
     override val sakstyper: Set<ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.SERVICEBEREGNING_SIMULERINGSBREV
     override val featureToggle = FeatureToggles.apSimulering.toggle
-    override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(
-        types = mapOf(
-            ServiceberegningBrevDto::class.qualifiedName!! to mapOf(
-                "saksbehandlerValg" to TemplateModelSpecification.FieldType.Object(
-                    nullable = false,
-                    typeName = ServiceberegningDto::class.qualifiedName!!,
-                ),
-            ),
-            ServiceberegningDto::class.qualifiedName!! to mapOf(
-                "alt1" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Ingen ytelser",
-                ),
-                "alt2" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Vedtak om alderspensjon",
-                ),
-                "alt3" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Vedtak om uføretrygd",
-                ),
-                "alt4" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "AAP utbetales",
-                ),
-                "alt5" to TemplateModelSpecification.FieldType.Scalar(
-                    nullable = false,
-                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Mottar / søker om sykepenger",
-                ),
-            ),
-        ),
-        letterModelTypeName = ServiceberegningBrevDto::class.qualifiedName,
-    )
 
     override val template: LetterTemplate<*, ServiceberegningBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
@@ -89,6 +49,12 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
     ) {
+        val alt1 = saksbehandlervalg("ingenYtelser", "Ingen ytelser").bool() // TODO: denne var default true
+        val alt2 = saksbehandlervalg("vedtakOmAlderspensjon", "Vedtak om alderspensjon").bool()
+        val alt3 = saksbehandlervalg("vedtakOmUfoeretrygd", "Vedtak om uføretrygd").bool()
+        val alt4 = saksbehandlervalg("aapUtbetales", "AAP utbetales").bool()
+        val alt5 = saksbehandlervalg("mottarSoekerOmSykepenger", "Mottar / søker om sykepenger").bool()
+
         title {
             text(bokmal { +"Serviceberegning AFP for " + redigerbarData(felles.bruker.fornavn) })
 
@@ -100,19 +66,19 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         }
 
         outline {
-            showIf(saksbehandlerValg.alt1) {
+            showIf(alt1) {
                 paragraph { text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." }) }
             }
-            showIf(saksbehandlerValg.alt2) {
+            showIf(alt2) {
                 paragraph { text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." }) }
             }
-            showIf(saksbehandlerValg.alt3) {
+            showIf(alt3) {
                 paragraph { text(bokmal { +"Bruker har " + fritekst("XX") + " % uføretrygd fra folketrygden." }) }
             }
-            showIf(saksbehandlerValg.alt4) {
+            showIf(alt4) {
                 paragraph { text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." }) }
             }
-            showIf(saksbehandlerValg.alt5) {
+            showIf(alt5) {
                 paragraph {
                     text(
                         bokmal {
