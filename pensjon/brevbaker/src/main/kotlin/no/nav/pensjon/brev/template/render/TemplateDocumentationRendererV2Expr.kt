@@ -127,14 +127,18 @@ private fun renderUnaryInvoke(
             return base
         }
         val segment = selector.propertyName
-            // `propertyType` er en fullt kvalifisert Kotlin-type-streng (f.eks.
-            // "no.nav.pensjon.brevbaker.api.model.SomeDto?" eller "kotlin.String"), satt av
-            // hver Select i kjeden. Siden feltstien bygges innenfra og ut (se renderExpr sin
-            // rekursjon), er det den siste (ytterste) Select-en som overskriver leafType/
-            // leafOwnerType sist, slik at de til slutt reflekterer typen og eierklassen til
-            // det faktiske siste/leaf-segmentet. `className` er eierklassen feltet er
-            // deklarert i, og brukes av frontend til å skille feltnavn som finnes i flere
-            // datamodell-klasser fra hverandre ved DataClasses-lenking.
+            // `propertyType` er som regel en fullt kvalifisert Kotlin-type-streng (f.eks.
+            // "no.nav.pensjon.brevbaker.api.model.SomeDto?" eller "kotlin.String") for
+            // KSP-genererte selectors, men håndskrevne selectors bruker kortnavn (f.eks.
+            // "Int" i `Date.kt`/`Number.kt` eller "LocalDate"). Konsumenter må derfor IKKE
+            // anta at `leafType` er fullt kvalifisert - avgjør heller om typen er en av
+            // modellens egne data-klasser ved oppslag i `templateModelSpecification.types`.
+            // Feltet settes av hver Select i kjeden. Siden feltstien bygges innenfra og ut
+            // (se renderExpr sin rekursjon), er det den siste (ytterste) Select-en som
+            // overskriver leafType/leafOwnerType sist, slik at de til slutt reflekterer
+            // typen og eierklassen til det faktiske siste/leaf-segmentet. `className` er
+            // eierklassen feltet er deklarert i, og brukes av frontend til å skille feltnavn
+            // som finnes i flere datamodell-klasser fra hverandre ved DataClasses-lenking.
         return when (base) {
             is FieldPath -> base.copy(
                 segments = base.segments + segment,

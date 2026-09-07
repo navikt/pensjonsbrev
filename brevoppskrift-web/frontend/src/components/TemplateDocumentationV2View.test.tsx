@@ -10,7 +10,7 @@ import {
   ExprType,
   type OutlineContentV2,
 } from "~/api/brevbakerTypesV2";
-import { DocumentV2, ExprToText } from "~/components/TemplateDocumentationV2View";
+import { DocumentV2, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationV2View";
 
 function render(expr: Expr): string {
   return renderToStaticMarkup(<ExprToText expr={expr} />);
@@ -199,8 +199,10 @@ describe("ExprToText kompakt Conditional-visning for rene literal-grener", () =>
     expect(buttonText(html)).toBe("[med barnetillegg]");
     // Predikatet skal IKKE vises direkte i markøren (kun tilgjengelig via popover).
     expect(buttonText(html)).not.toContain("harBarn");
-    // Popoveren finnes i DOM-en (for tilgjengelighet), men er skjult som standard.
-    expect(html).toContain("aksel-popover--hidden");
+    // Popover-innholdet finnes i DOM-en (for tilgjengelighet), men er skjult som standard -
+    // vi asserter på VÅR egen kontrakt (popover-triggeren og dens aria-label) i stedet for
+    // Aksels interne klassenavn, som kan endre seg ved oppgradering.
+    expect(html).toContain('aria-label="Vis betingelse"');
     expect(html).toContain("Hvis");
     expect(html).toContain("harBarn");
   });
@@ -217,7 +219,8 @@ describe("ExprToText kompakt Conditional-visning for rene literal-grener", () =>
     expect(html).not.toContain("expr-block");
     expect(buttonText(html)).toBe("ja|nei");
     expect(buttonText(html)).not.toContain("erGift");
-    expect(html).toContain("aksel-popover--hidden");
+    expect(html).toContain('aria-label="Vis betingelse"');
+    expect(html).toContain("erGift");
   });
 });
 
@@ -235,7 +238,7 @@ describe("ExprToText Format med eksempeltekst", () => {
     expect(buttonText(html)).toBe("17. mars 2024");
     // Den abstrakte "formatert som"-frasen skal IKKE vises i markøren, kun i popoveren.
     expect(buttonText(html)).not.toContain("fodselsdato");
-    expect(html).toContain("aksel-popover--hidden");
+    expect(html).toContain('aria-label="Vis fullt uttrykk"');
     expect(html).toContain("fodselsdato");
   });
 
@@ -249,7 +252,6 @@ describe("ExprToText Format med eksempeltekst", () => {
 
     const html = render(expr);
     expect(html).not.toContain("expr-popover-trigger");
-    expect(html).not.toContain("aksel-popover--hidden");
     expect(text(html)).toContain("ukjentFelt");
   });
 });
@@ -328,5 +330,87 @@ describe("DocumentV2 block-level Conditional (If/Else If)", () => {
     expect((html.match(/<summary/g) ?? []).length).toBe(2);
     expect(text(html)).toContain("Else If");
     expect(text(html)).toContain("Med ektefelletillegg.");
+  });
+});
+
+describe("isLeafPrimitive", () => {
+  const knownDataClasses = new Set(["UngUfoerAutoDto", "Barnetillegg"]);
+
+  it("behandler kortnavn-typer fra håndskrevne selectors som primitive når de ikke finnes i modellen", () => {
+    // `propertyType` er ikke garantert fullt kvalifisert - Date.kt/Number.kt setter "Int"
+    // og "LocalDate". Den gamle "kotlin"/"java"-heuristikken ville feilaktig klassifisert
+    // disse som data-klasser og lenket til en klasse som ikke finnes i panelet.
+    expect(isLeafPrimitive("LocalDate", knownDataClasses)).toBe(true);
+    expect(isLeafPrimitive("Int", knownDataClasses)).toBe(true);
+  });
+
+  it("gjenkjenner modellens egne data-klasser, både fullt kvalifisert og med nullability-suffiks", () => {
+    expect(isLeafPrimitive("no.nav.pensjon.brevbaker.api.model.UngUfoerAutoDto", knownDataClasses)).toBe(false);
+    expect(isLeafPrimitive("Barnetillegg?", knownDataClasses)).toBe(false);
+  });
+
+  it("faller tilbake til navne-heuristikken når modellspesifikasjonen ikke er kjent", () => {
+    expect(isLeafPrimitive("kotlin.String", undefined)).toBe(true);
+    expect(isLeafPrimitive("no.nav.pensjon.brevbaker.api.model.UngUfoerAutoDto", undefined)).toBe(false);
+  });
+});
+
+describe("DocumentV2 lister", () => {
+  function itemListParagraph(type: "PUNKTLISTE" | "NUMMERERT_LISTE"): ContentOrControlStructureV2<OutlineContentV2> {
+    return {
+      controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+      content: {
+        elementType: ElementTypeV2.PARAGRAPH,
+        paragraph: [
+          {
+            controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+            content: {
+              elementType: ElementTypeV2.PARAGRAPH_ITEMLIST,
+              type,
+              items: [
+                {
+                  controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+                  content: {
+                    elementType: ElementTypeV2.PARAGRAPH_ITEMLIST_ITEM,
+                    text: [
+                      {
+                        controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+                        content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL, text: "Et punkt" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    };
+  }
+
+  function renderList(type: "PUNKTLISTE" | "NUMMERERT_LISTE"): string {
+    return renderToStaticMarkup(
+      <DocumentV2
+        templateDocumentation={{
+          title: [],
+          outline: [itemListParagraph(type)],
+          include: fieldPath("dummy"),
+          attachmentData: fieldPath("dummy"),
+        }}
+      />,
+    );
+  }
+
+  it("rendrer NUMMERERT_LISTE som <ol>", () => {
+    const html = renderList("NUMMERERT_LISTE");
+    expect(html).toContain("<ol>");
+    expect(html).not.toContain("<ul>");
+    expect(text(html)).toContain("Et punkt");
+  });
+
+  it("rendrer PUNKTLISTE som <ul>", () => {
+    const html = renderList("PUNKTLISTE");
+    expect(html).toContain("<ul>");
+    expect(html).not.toContain("<ol>");
   });
 });

@@ -145,12 +145,17 @@ export function DataClasses({ templateModelSpecification }: { templateModelSpeci
   return (
     <VStack css={{ whiteSpace: "nowrap" }} gap="space-16" height="100%" overflow="auto" padding="space-16">
       {Object.entries(templateModelSpecification.types).map(([name, value]) => (
-        <DataPresentation key={name} name={name} objectTypeSpecification={value} />
+        <DataPresentation key={name} name={trimClassName(name)} objectTypeSpecification={value} />
       ))}
     </VStack>
   );
 }
 
+/**
+ * `name` er allerede normalisert med `trimClassName()` av `DataClasses`, og sendes videre
+ * uendret som `ownerClassName` til `DataField` - slik slipper vi å gjenta (og risikere å
+ * glemme) normaliseringen lenger ned.
+ */
 function DataPresentation({
   name,
   objectTypeSpecification,
@@ -161,7 +166,7 @@ function DataPresentation({
   const { highlightedDataClass } = useSearch({ from: "/template/$malType/$templateId" });
   const reference = useRef<HTMLSpanElement>(null);
 
-  const isHighlighted = highlightedDataClass === trimClassName(name);
+  const isHighlighted = highlightedDataClass === name;
 
   useEffect(() => {
     if (isHighlighted && reference.current) {
@@ -180,7 +185,7 @@ function DataPresentation({
           {" "}
           data class
         </span>{" "}
-        {trimClassName(name)}(
+        {name}(
       </span>
       {Object.entries(objectTypeSpecification).map(([key, value]) => (
         <DataField fieldType={value} key={key} name={key} ownerClassName={name} />
@@ -206,10 +211,10 @@ function DataField({
   // tvers av alle data-klasser, som tidligere. Når highlightedDataFieldOwner er satt
   // (v2s FieldPath-lenker, som kjenner feltets eierklasse via leafOwnerType), skal
   // treffet begrenses til akkurat den klassen, slik at felt med samme navn i andre
-  // klasser ikke highlightes ved en feiltakelse.
+  // klasser ikke highlightes ved en feiltakelse. Begge sider er normalisert med
+  // trimClassName() (ownerClassName av DataClasses, highlightedDataFieldOwner av FieldPathLink).
   const isHighlighted =
-    highlightedDataField === name &&
-    (!highlightedDataFieldOwner || highlightedDataFieldOwner === trimClassName(ownerClassName));
+    highlightedDataField === name && (!highlightedDataFieldOwner || highlightedDataFieldOwner === ownerClassName);
 
   useEffect(() => {
     if (isHighlighted && reference.current) {
@@ -265,7 +270,7 @@ function Type({ fieldType }: { fieldType: FieldType }) {
           from="/template/$malType/$templateId"
           preload={false}
           replace
-          search={(s) => ({ ...s, highlightedDataClass: trimClassName(fieldType.typeName).replace("?", "") })}
+          search={(s) => ({ ...s, highlightedDataClass: trimClassName(fieldType.typeName) })}
         >
           {trimClassName(fieldType.typeName)}
         </Link>
@@ -274,6 +279,13 @@ function Type({ fieldType }: { fieldType: FieldType }) {
   }
 }
 
+/**
+ * Normaliserer et Kotlin-typenavn til det korte klassenavnet som vises i data-klasse-panelet:
+ * pakke-/ytre-klasse-prefiks fjernes, og et eventuelt nullability-suffiks (`?`) trimmes bort.
+ * Nullability er ikke en del av klassens identitet, så et `?` skal aldri henge igjen i et
+ * trimmet navn - da ville f.eks. `SomeDto?` og `SomeDto` ikke matchet hverandre ved
+ * highlight-sammenligning.
+ */
 export function trimClassName(className: string) {
-  return className.replace(/(.*)[$.]/, "");
+  return className.replace(/(.*)[$.]/, "").replace("?", "");
 }

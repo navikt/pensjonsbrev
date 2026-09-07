@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
 import { BodyLong, Box, Heading, Popover, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
-import { Fragment, type ReactNode, useCallback, useRef, useState } from "react";
+import { createContext, Fragment, type ReactNode, useCallback, useContext, useMemo, useRef, useState } from "react";
 
+import { type LetterModelSpecification } from "~/api/brevbakerTypes";
 import {
   type AssocOp,
   type AttachmentV2,
@@ -23,6 +24,31 @@ import {
   type TemplateDocumentationV2,
 } from "~/api/brevbakerTypesV2";
 import { trimClassName } from "~/components/DataClasses";
+
+/**
+ * Navnene (normalisert med `trimClassName`) på data-klassene som faktisk finnes i malens
+ * modellspesifikasjon. `FieldPathLink` bruker settet til å avgjøre om en `leafType` skal
+ * lenke til en data-klasse eller til et felt, i stedet for å gjette ut fra typenavnet -
+ * `leafType` er ikke garantert fullt kvalifisert (se `TemplateDocumentationRendererV2Expr.kt`).
+ *
+ * `undefined` betyr at spesifikasjonen ikke er tilgjengelig (f.eks. når `ExprToText` rendres
+ * frittstående i enhetstester); da faller vi tilbake på `isPrimitiveTypeByName`.
+ */
+const KnownDataClassesContext = createContext<Set<string> | undefined>(undefined);
+
+export function KnownDataClassesProvider({
+  templateModelSpecification,
+  children,
+}: {
+  templateModelSpecification: LetterModelSpecification;
+  children: ReactNode;
+}) {
+  const knownDataClasses = useMemo(
+    () => new Set(Object.keys(templateModelSpecification.types).map(trimClassName)),
+    [templateModelSpecification],
+  );
+  return <KnownDataClassesContext.Provider value={knownDataClasses}>{children}</KnownDataClassesContext.Provider>;
+}
 
 /**
  * Sjekker om en tabells rader (rekursivt gjennom FOR_EACH) inneholder minst én CONDITIONAL, som
@@ -80,14 +106,17 @@ function TableRowMarker({
 }) {
   if (!onClick) {
     return (
-      <span className="table-row-marker" style={{ gridRow }} title={label}>
-        <code>?</code>
+      // `role="img"` gjør `?` til et symbol med tilgjengelig navn - uten en eksplisitt rolle
+      // støtter ikke et `<span>` aria-label, og skjermleseren ville lest opp bare "?".
+      <span aria-label={label} className="table-row-marker" role="img" style={{ gridRow }} title={label}>
+        <code aria-hidden="true">?</code>
       </span>
     );
   }
   return (
     <button
       aria-expanded={open}
+      aria-label={label}
       className="table-row-marker"
       onClick={onClick}
       style={{ gridRow }}
@@ -428,12 +457,13 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
       );
     }
     case ElementTypeV2.PARAGRAPH_ITEMLIST: {
+      const ListTag = content.type === "NUMMERERT_LISTE" ? "ol" : "ul";
       return (
-        <ul>
+        <ListTag>
           {content.items.map((cocs, index) => (
             <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
           ))}
-        </ul>
+        </ListTag>
       );
     }
     case ElementTypeV2.PARAGRAPH_ITEMLIST_ITEM: {
@@ -782,15 +812,28 @@ function formatterPhrase(formatterName: string): string {
 }
 
 /**
- * Er den fullt kvalifiserte Kotlin-type-strengen fra `leafType` en primitiv/innebygd
- * type (starter med "kotlin." eller "java.") i stedet for en av modellens egne
- * data-klasser? Samme konvensjon som v1 sin ExpressionToText bruker for postfix-uttrykk.
+ * Navnebasert fallback-heuristikk for om `leafType` er en primitiv/innebygd type
+ * ("kotlin."/"java.") i stedet for en av modellens egne data-klasser. Samme konvensjon som
+ * v1 sin ExpressionToText, men den er upålitelig: håndskrevne selectors setter `propertyType`
+ * til kortnavn som "Int" eller "LocalDate" (se `Date.kt`/`Number.kt`), som denne
+ * heuristikken feilaktig ville klassifisert som en data-klasse. Brukes derfor kun når
+ * modellspesifikasjonen ikke er tilgjengelig (se `KnownDataClassesContext`).
  */
-function isPrimitiveType(leafType: string): boolean {
+function isPrimitiveTypeByName(leafType: string): boolean {
   return leafType.includes("kotlin") || leafType.includes("java");
 }
 
+/**
+ * Skal `leafType` lenke til en data-klasse (false) eller til selve feltet (true)? Når
+ * modellens klassenavn er kjent (`knownDataClasses`) avgjøres det ved oppslag; ellers
+ * brukes navne-heuristikken over.
+ */
+export function isLeafPrimitive(leafType: string, knownDataClasses: Set<string> | undefined): boolean {
+  return knownDataClasses ? !knownDataClasses.has(trimClassName(leafType)) : isPrimitiveTypeByName(leafType);
+}
+
 function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
+  const knownDataClasses = useContext(KnownDataClassesContext);
   // For en Computed-base (feltaksess på et vilkårlig beregnet uttrykk, f.eks.
   // `getOrNull(...)[0].felt`) rendres kilden som selve uttrykket etterfulgt av segmentene som
   // en postfix-kjede (`<uttrykk>.segment1.segment2`), fremfor et prefiks-aktig punktum-join.
@@ -822,11 +865,16 @@ function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
     return path;
   }
 
-  const primitive = isPrimitiveType(expr.leafType);
+  const leafClassName = trimClassName(expr.leafType);
+  // Er leaf-typen en av modellens egne data-klasser (lenk til klassen), eller en
+  // primitiv/innebygd type (lenk til selve feltet)? Slå opp i modellspesifikasjonen når
+  // den er tilgjengelig - `leafType` kan være både fullt kvalifisert ("kotlin.String") og
+  // kortnavn ("Int", "LocalDate"), så navnebasert gjetting alene er ikke til å stole på.
+  const primitive = isLeafPrimitive(expr.leafType, knownDataClasses);
   // `leafOwnerType` er eierklassen feltet er deklarert i. Ved å sende den med som
   // highlightedDataFieldOwner unngår vi at felt med samme navn i andre data-klasser
   // highlightes ved en feiltakelse (se DataClasses.tsx sin DataField).
-  const ownerClassName = expr.leafOwnerType ? trimClassName(expr.leafOwnerType).replace("?", "") : undefined;
+  const ownerClassName = expr.leafOwnerType ? trimClassName(expr.leafOwnerType) : undefined;
   return (
     <Link
       from="/template/$malType/$templateId"
@@ -834,7 +882,7 @@ function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
       replace
       search={(s) => ({
         ...s,
-        highlightedDataClass: primitive ? undefined : trimClassName(expr.leafType ?? "").replace("?", ""),
+        highlightedDataClass: primitive ? undefined : leafClassName,
         highlightedDataField: primitive ? lastSegment : undefined,
         highlightedDataFieldOwner: primitive ? ownerClassName : undefined,
       })}

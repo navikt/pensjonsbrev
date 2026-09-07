@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 /**
@@ -82,7 +83,11 @@ data class TemplateDocumentationV2(
                 data class Expression(val expression: Expr) : Text()
             }
 
-            data class ItemList(val items: List<ContentOrControlStructure<Item>>) : ParagraphContent() {
+            /**
+             * [type] skiller punktliste fra nummerert liste, slik at dokumentasjonsvisningen
+             * kan rendre henholdsvis `<ul>` og `<ol>` (DSL-en: `list { }` og `numberedList { }`).
+             */
+            data class ItemList(val items: List<ContentOrControlStructure<Item>>, val type: Listetype) : ParagraphContent() {
                 data class Item(val text: List<ContentOrControlStructure<Text>>) : Element()
             }
 

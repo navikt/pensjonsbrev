@@ -55,9 +55,12 @@ export type ParagraphContentV2 = TextV2 | ItemListV2 | ItemV2 | TableV2 | RowV2;
 export type TextV2 = TextLiteralV2 | TextExpressionV2;
 export type TextLiteralV2 = { text: string; elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL };
 export type TextExpressionV2 = { expression: Expr; elementType: ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION };
+/** Speiler backends `no.nav.brev.Listetype`. */
+export type ListetypeV2 = "PUNKTLISTE" | "NUMMERERT_LISTE";
 export type ItemListV2 = {
   elementType: ElementTypeV2.PARAGRAPH_ITEMLIST;
   items: ContentOrControlStructureV2<ItemV2>[];
+  type: ListetypeV2;
 };
 export type ItemV2 = {
   elementType: ElementTypeV2.PARAGRAPH_ITEMLIST_ITEM;

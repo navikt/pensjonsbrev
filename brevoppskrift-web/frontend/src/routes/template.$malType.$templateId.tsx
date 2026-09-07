@@ -24,7 +24,7 @@ import {
   type TemplateDocumentation,
 } from "~/api/brevbakerTypes";
 import { DataClassesPanel, trimClassName } from "~/components/DataClasses";
-import { DocumentV2 } from "~/components/TemplateDocumentationV2View";
+import { DocumentV2, KnownDataClassesProvider } from "~/components/TemplateDocumentationV2View";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -119,7 +119,7 @@ function TemplateExplorer() {
 
   return (
     <VStack height="100%" overflow="hidden">
-      <Box asChild flexShrink="0" marginBlock="space-16 space-0" marginInline="space-16">
+      <Box asChild flexShrink="0" marginBlock="space-8" marginInline="space-16 auto">
         <Button as={Link} icon={<ArrowLeftIcon />} size="small" to="/templates" variant="secondary">
           Tilbake til mal-oversikten
         </Button>
@@ -192,12 +192,12 @@ function TemplateDocumentationV2Section() {
   }
 
   return (
-    <>
+    <KnownDataClassesProvider templateModelSpecification={data.templateModelSpecification}>
       <DocumentV2 templateDocumentation={data} />
       {data.attachments.map((attachment, index) => (
         <DocumentV2 key={index} templateDocumentation={attachment} />
       ))}
-    </>
+    </KnownDataClassesProvider>
   );
 }
 
@@ -232,7 +232,7 @@ function SelectLanguage() {
         margin-bottom: var(--ax-space-32);
       `}
       label="Språk"
-      onChange={(event) => navigate({ search: { language: event.target.value }, replace: true })}
+      onChange={(event) => navigate({ replace: true, search: (s) => ({ ...s, language: event.target.value }) })}
       size="medium"
       value={language}
     >
@@ -530,7 +530,7 @@ function ExpressionToText({ expression }: { expression: Expression }) {
             replace
             search={(s) => ({
               ...s,
-              highlightedDataClass: isPrimitive ? undefined : trimClassName(expression.type ?? "").replace("?", ""),
+              highlightedDataClass: isPrimitive ? undefined : trimClassName(expression.type ?? ""),
               highlightedDataField: isPrimitive ? expression.operator.text.replace(".", "") : undefined,
             })}
           >
