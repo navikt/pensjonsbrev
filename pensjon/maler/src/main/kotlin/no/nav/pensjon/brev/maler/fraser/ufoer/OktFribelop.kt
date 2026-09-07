@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
@@ -106,7 +105,7 @@ object OktFribelop {
             }
             paragraph {
                 text(
-                    bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss  inntekt etter uførhet. Dette ble tidligere omtaltsom inntektsgrense. " },
+                    bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss inntekt etter uførhet. Dette ble tidligere omtalt som inntektsgrense. " },
                     nynorsk { +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Bunnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette vart tidlegare omtalt som inntektsgrense. " },
                 )
             }
@@ -157,14 +156,14 @@ object OktFribelop {
                         row {
                             cell {
                                 text(
-                                    bokmal { +periode.fom.formatMonthYear() },
-                                    nynorsk { +"" + periode.fom.formatMonthYear() }
+                                    bokmal { +periode.fom.format(true) },
+                                    nynorsk { +"" + periode.fom.format(true) }
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +periode.tom.formatMonthYear() },
-                                    nynorsk { +"" + periode.tom.formatMonthYear() }
+                                    bokmal { +periode.tom.format(true) },
+                                    nynorsk { +"" + periode.tom.format(true) }
                                 )
                             }
                             cell {
