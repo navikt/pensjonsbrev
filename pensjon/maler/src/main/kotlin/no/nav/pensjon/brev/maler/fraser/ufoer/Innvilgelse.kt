@@ -993,7 +993,7 @@ object Innvilgelse {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                        nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
+                        nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
                     )
                 }
             }
@@ -1002,7 +1002,7 @@ object Innvilgelse {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },
-                        nynorsk { +"Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },
+                        nynorsk { +"Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er botnfrådraget ditt." },
                     )
                 }
             }
@@ -1011,7 +1011,7 @@ object Innvilgelse {
                 paragraph {
                     text(
                         bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
+                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Botnfrådraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
                     )
                 }
             }
@@ -1038,7 +1038,7 @@ object Innvilgelse {
             paragraph {
                 text(
                     bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn bunnfradraget ditt. " },
-                    nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn bunnfradraget ditt. " },
+                    nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn botnfrådraget ditt. " },
                 )
             }
         }
@@ -1604,7 +1604,7 @@ object Innvilgelse {
                 paragraph {
                     text(
                         bokmal { +"Du er innvilget uføretrygd med gjenlevendetillegg. Tillegget er beregnet etter ditt eget og din avdøde ektefelles beregningsgrunnlag og trygdetid. Tjener du mer enn bunnfradraget ditt, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med. " },
-                        nynorsk { +"Du er innvilga uføretrygd med attlevandetillegg. Tillegget er rekna ut etter utrekningsgrunnlaget og trygdetida både for deg og for den avdøde ektefellen din. Tener du meir enn bunnfradraget ditt, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med. " },
+                        nynorsk { +"Du er innvilga uføretrygd med attlevandetillegg. Tillegget er rekna ut etter utrekningsgrunnlaget og trygdetida både for deg og for den avdøde ektefellen din. Tener du meir enn botnfrådraget ditt, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med. " },
                     )
 
                     showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg()) {

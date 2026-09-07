@@ -427,7 +427,7 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUforetryg
             paragraph {
                 text(
                     bokmal { +"Reglene for bunnfradraget og hvordan inntekt reduserer uføretrygd, gjelder bare for den norske uføretrygden din. Har du spørsmål om bunnfradraget i et annet land, må du kontakte trygdemyndighetene i det landet det gjelder." },
-                    nynorsk { +"Reglane for bunnfradraget og korleis inntekt reduserer uføretrygd, gjeld berre for den norske uføretrygda di. Har du spørsmål om bunnfradraget i eit anna land, må du kontakte trygdemyndigheitene i det landet det gjeld." },
+                    nynorsk { +"Reglane for botnfrådraget og korleis inntekt reduserer uføretrygd, gjeld berre for den norske uføretrygda di. Har du spørsmål om botnfrådraget i eit anna land, må du kontakte trygdemyndigheitene i det landet det gjeld." },
                 )
             }
             title1 {
@@ -1141,7 +1141,7 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUforetryg
                 paragraph {
                     text(
                         bokmal { +"Du er innvilget uføretrygd med gjenlevendetillegg. Tillegget er beregnet etter ditt eget og din avdøde ektefelles beregningsgrunnlag og trygdetid. Tjener du mer enn bunnfradraget ditt, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med. " },
-                        nynorsk { +"Du er innvilga uføretrygd med attlevandetillegg. Tillegget er rekna ut etter utrekningsgrunnlaget og trygdetida både for deg og for den avdøde ektefellen din. Tener du meir enn bunnfradraget ditt, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med. " },
+                        nynorsk { +"Du er innvilga uføretrygd med attlevandetillegg. Tillegget er rekna ut etter utrekningsgrunnlaget og trygdetida både for deg og for den avdøde ektefellen din. Tener du meir enn botnfrådraget ditt, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med. " },
                     )
 
                     //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg = true

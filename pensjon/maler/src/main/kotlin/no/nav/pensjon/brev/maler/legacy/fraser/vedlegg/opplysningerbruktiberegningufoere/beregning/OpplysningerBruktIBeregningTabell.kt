@@ -150,7 +150,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                         cell {
                             text(
                                 bokmal { + "Bunnfradrag" },
-                                nynorsk { + "Bunnfradrag" },
+                                nynorsk { + "Botnfrådrag" },
                             )
                         }
                         cell {

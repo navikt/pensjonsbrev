@@ -250,11 +250,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     text(
                         bokmal { +"Vi har innvilget søknaden din om endring av bunnfradrag. " },
-                        nynorsk { +"Vi har innvilga søknaden din om endring av bunnfradrag. " },
+                        nynorsk { +"Vi har innvilga søknaden din om endring av botnfrådrag. " },
                     )
                     text(
                         bokmal { +"Det nye bunnfradraget ditt har økt til " + pe.ut_bunnfradrag_faktisk().format() + " fra " + onsketvirkningsdato.format() + "." },
-                        nynorsk { +"Det nye bunnfradraget ditt har auka til " + pe.ut_bunnfradrag_faktisk().format() + " frå " + onsketvirkningsdato.format() + "." },
+                        nynorsk { +"Det nye botnfrådraget ditt har auka til " + pe.ut_bunnfradrag_faktisk().format() + " frå " + onsketvirkningsdato.format() + "." },
                     )
                 }
             }
@@ -701,7 +701,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     paragraph {
                         text(
                             bokmal { +"Inntekten i stillingen din har økt og du får derfor et høyere bunnfradrag. Dette gjør vi for at du skal få riktig utbetaling av uføretrygd." },
-                            nynorsk { +"Inntekta i stillinga di har auka, og du får derfor eit høgare bunnfradrag. Dette gjer vi for at du skal få riktig utbetaling av uføretrygd." },
+                            nynorsk { +"Inntekta i stillinga di har auka, og du får derfor eit høgare botnfrådrag. Dette gjer vi for at du skal få riktig utbetaling av uføretrygd." },
                         )
                     }
                 }
@@ -1269,7 +1269,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     text(
                         bokmal { +"Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover bunnfradraget. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
-                        nynorsk { +"Utbetalinga av uføretrygda di er redusert fordi du har inntekt utover bunnfradraget. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid er høgare enn uføretrygd åleine." },
+                        nynorsk { +"Utbetalinga av uføretrygda di er redusert fordi du har inntekt utover botnfrådraget. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid er høgare enn uføretrygd åleine." },
                     )
                 }
             }
@@ -1279,7 +1279,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     paragraph {
                         text(
                             bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                            nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
+                            nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
                         )
                     }
                 }
@@ -1288,7 +1288,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     paragraph {
                         text(
                             bokmal { +"Du kan ha en årlig inntekt på 60 000 kroner uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt." },
-                            nynorsk { +"Du kan ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Dette er bunnfradraget ditt." },
+                            nynorsk { +"Du kan ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Dette er botnfrådraget ditt." },
                         )
                     }
                 }
@@ -1298,7 +1298,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },
-                        nynorsk { +"Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },
+                        nynorsk { +"Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er botnfrådraget ditt." },
                     )
                 }
             }
@@ -1307,7 +1307,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     text(
                         bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
+                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Botnfrådraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
                     )
                 }
             }
@@ -1316,7 +1316,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     text(
                         bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha en årlig inntekt på 60 000 kroner, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
+                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Botnfrådraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
                     )
                 }
             }
@@ -1338,7 +1338,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     paragraph {
                         text(
                             bokmal { +"Tjener du mer enn bunnfradraget ditt, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med." },
-                            nynorsk { +"Tener du meir enn bunnfradraget ditt, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med." },
+                            nynorsk { +"Tener du meir enn botnfrådraget ditt, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med." },
                         )
                     }
                 }
@@ -1384,7 +1384,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     text(
                         bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn bunnfradraget ditt." },
-                        nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn bunnfradraget ditt." },
+                        nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn botnfrådraget ditt." },
                     )
                 }
             }

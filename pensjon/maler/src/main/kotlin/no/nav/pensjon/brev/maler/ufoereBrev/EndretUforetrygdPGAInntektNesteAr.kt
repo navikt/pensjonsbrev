@@ -316,8 +316,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 text(
                     bokmal { +"Tjener du mer enn ditt bunnfradrag på " + uforetrygd.inntektsgrense.format(CurrencyFormat) +
                             " kroner per år, reduserer vi utbetalingen av uføretrygd. Det er bare den delen av inntekten din som er høyere enn bunnfradraget som gir lavere utbetaling av uføretrygd. " },
-                    nynorsk { +"Dersom du tener meir enn ditt bunnfradrag på " + uforetrygd.inntektsgrense.format(CurrencyFormat) +
-                            " kroner per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn bunnfradraget, som gir lågare utbetaling av uføretrygd. " }
+                    nynorsk { +"Dersom du tener meir enn ditt botnfrådrag på " + uforetrygd.inntektsgrense.format(CurrencyFormat) +
+                            " kroner per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn botnfrådraget, som gir lågare utbetaling av uføretrygd. " }
                 )
             }
             paragraph {

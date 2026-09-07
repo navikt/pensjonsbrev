@@ -10,14 +10,14 @@ object NyInntektsgrense: OutlinePhrase<LangBokmalNynorsk>() {
         title1 {
             text (
                 bokmal { + "Slik har vi fastsatt det nye bunnfradraget ditt" },
-                nynorsk { + "Slik har vi fastsett det nye bunnfradraget ditt" },
+                nynorsk { + "Slik har vi fastsett det nye botnfrådraget ditt" },
             )
         }
 
         paragraph {
             text (
                 bokmal { + "Vi har økt bunnfradraget ditt for at du skal få riktig utbetaling av uføretrygd. Bunnfradraget ditt økes ved at den fastsatte inntekten din før du ble ufør blir endret. " },
-                nynorsk { + "Vi har auka bunnfradraget ditt for at du skal få riktig utbetaling av uføretrygd. Bunnfradraget ditt blir auka ved at den fastsette inntekta di før du blei ufør, blir endra. " },
+                nynorsk { + "Vi har auka botnfrådraget ditt for at du skal få riktig utbetaling av uføretrygd. Botnfrådraget ditt blir auka ved at den fastsette inntekta di før du blei ufør, blir endra. " },
             )
         }
 

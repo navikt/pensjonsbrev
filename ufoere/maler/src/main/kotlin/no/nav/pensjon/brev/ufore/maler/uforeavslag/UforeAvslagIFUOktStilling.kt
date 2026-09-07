@@ -43,27 +43,27 @@ object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
         title {
             text (bokmal { + "Nav har avslått søknaden din om endring av bunnfradraget ditt"},
-                nynorsk { + "Nav har avslått søknaden din om endring av bunnfradraget ditt"})
+                nynorsk { + "Nav har avslått søknaden din om endring av botnfrådraget ditt"})
         }
         outline {
             paragraph {
                 text(bokmal { +"Vi har avslått søknaden din om å endre bunnfradraget ditt, som vi fikk den " + pesysData.kravMottattDato.format() + "." },
-                    nynorsk { +"Vi har avslått søknaden din om å endre bunnfradraget ditt, som vi fekk den " + pesysData.kravMottattDato.format() + "." })
+                    nynorsk { +"Vi har avslått søknaden din om å endre botnfrådraget ditt, som vi fekk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { + "Derfor endrer vi ikke bunnfradraget ditt"},
-                    nynorsk { + "Derfor endrar vi ikkje bunnfradraget ditt"})
+                    nynorsk { + "Derfor endrar vi ikkje botnfrådraget ditt"})
             }
             paragraph {
                 text(bokmal { + "Du får ikke endret bunnfradraget ditt, fordi økningen du har hatt i inntekt skyldes at du har jobbet mer. " +
                         "Du har hatt en varig inntektsøkning, men det er fordi stillingsprosenten din har økt."},
-                    nynorsk { + "Du får ikkje endra bunnfradraget ditt, fordi auken du har hatt i inntekt kjem av at du har jobba meir. " +
+                    nynorsk { + "Du får ikkje endra botnfrådraget ditt, fordi auken du har hatt i inntekt kjem av at du har jobba meir. " +
                             "Du har hatt ein varig inntektsauke, men det er fordi stillingsprosenten din har auka."})
             }
             paragraph {
                 text(bokmal { +"For å ha rett til høyere bunnfradrag, " +
                         "må du ha hatt en varig inntektsøkning som ikke skyldes at stillingsprosenten din har økt eller at du har jobbet mer. " },
-                    nynorsk { +"For å ha rett til høgare bunnfradrag, " +
+                    nynorsk { +"For å ha rett til høgare botnfrådrag, " +
                             "må du ha hatt ein varig inntektsauke som ikkje kjem av at stillingsprosenten din har auka eller at du har jobba meir. " }
                 )
             }
@@ -81,7 +81,7 @@ object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkåret for å endre bunnfradraget, og vi avslår derfor søknaden din."},
-                    nynorsk { + "Du oppfyller ikkje vilkåret for å endre bunnfradraget, og vi avslår derfor søknaden din."})
+                    nynorsk { + "Du oppfyller ikkje vilkåret for å endre botnfrådraget, og vi avslår derfor søknaden din."})
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-9 og forskrift om uføretrygd fra folketrygden § 2-3." },

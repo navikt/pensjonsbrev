@@ -19,7 +19,7 @@ data class TBU3740_Generated(
 		paragraph {
 			text (
 				bokmal { + "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn bunnfradraget ditt, det vil si " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + " per år. " },
-				nynorsk { + "Vi gjer merksam på at det ikkje blir utbetalt uføretrygd når inntekta di utgjer meir enn bunnfradraget ditt, det vil seie " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + " per år. " },
+				nynorsk { + "Vi gjer merksam på at det ikkje blir utbetalt uføretrygd når inntekta di utgjer meir enn botnfrådraget ditt, det vil seie " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + " per år. " },
 			)
 		}
     }

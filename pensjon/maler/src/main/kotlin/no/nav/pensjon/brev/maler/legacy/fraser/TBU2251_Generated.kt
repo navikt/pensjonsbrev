@@ -11,7 +11,7 @@ object TBU2251_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 		paragraph {
 			text (
 				bokmal { + "Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover bunnfradraget. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
-				nynorsk { + "Utbetalinga av uføretrygda di er redusert fordi du har inntekt utover bunnfradraget. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid er høgare enn uføretrygd åleine." },
+				nynorsk { + "Utbetalinga av uføretrygda di er redusert fordi du har inntekt utover botnfrådraget. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid er høgare enn uføretrygd åleine." },
 				english { + "Your disability benefit payment has been reduced, because your income exceeds the income limit. It pays to work, because an income and disability benefit combined will always be higher than disability benefit alone." },
 			)
 		}

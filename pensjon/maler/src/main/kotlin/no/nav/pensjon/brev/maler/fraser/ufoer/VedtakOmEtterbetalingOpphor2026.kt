@@ -117,13 +117,13 @@ class VedtakOmEtterbetalingOpphor2026 {
                 paragraph {
                     text(
                         bokmal { +"Dersom du har hatt inntekt over bunnfradraget, vil dette være til fordel for deg, fordi du vil få en mindre avkortning av uføretrygden i etteroppgjøret. " },
-                        nynorsk { +"Dersom du har hatt inntekt over bunnfradraget, vil dette vere til fordel for deg, fordi du vil få ei mindre avkorting av uføretrygda i etteroppgjeret. " },
+                        nynorsk { +"Dersom du har hatt inntekt over botnfrådraget, vil dette vere til fordel for deg, fordi du vil få ei mindre avkorting av uføretrygda i etteroppgjeret. " },
                     )
                 }
                 paragraph {
                     text(
                         bokmal { +"Dersom du ikke har hatt inntekt over bunnfradraget, vil ikke endringen ha noen betydning for utbetalingen av uføretrygden din." },
-                        nynorsk { +"Dersom du ikkje har hatt inntekt over bunnfradraget, vil ikkje endringa ha nokon betydning for utbetalinga av uføretrygda di." },
+                        nynorsk { +"Dersom du ikkje har hatt inntekt over botnfrådraget, vil ikkje endringa ha nokon betydning for utbetalinga av uføretrygda di." },
                     )
                 }
             }

@@ -285,7 +285,7 @@ object InnvilgelseUforetrygdUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdUt
             paragraph {
                 text (
                     bokmal { + "Bunnfradraget gjelder bare for den norske uføretrygden din. Har du spørsmål om bunnfradraget i et annet land, må du kontakte trygdemyndighetene i det landet det gjelder." },
-                    nynorsk { + "Bunnfradraget gjeld berre for den norske uføretrygda di. Har du spørsmål om bunnfradraget i eit anna land, må du kontakte trygdestyresmaktene i det landet det gjeld." },
+                    nynorsk { + "Botnfrådraget gjeld berre for den norske uføretrygda di. Har du spørsmål om botnfrådraget i eit anna land, må du kontakte trygdestyresmaktene i det landet det gjeld." },
                 )
             }
 

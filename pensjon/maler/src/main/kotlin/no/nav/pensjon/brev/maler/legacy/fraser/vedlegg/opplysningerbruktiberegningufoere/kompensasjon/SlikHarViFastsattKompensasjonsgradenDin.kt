@@ -43,7 +43,7 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
                 }
                 text(
                     bokmal { + " 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Reduksjonsprosenten brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn bunnfradraget. Reduksjonsprosenten kan ikke være høyere enn 70 prosent." },
-                    nynorsk { + " 100 prosent uføretrygd, med den oppjusterte inntekta di før du blei ufør. Reduksjonsprosenten blir brukt til å berekne kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn bunnfradraget. Reduksjonsprosenten kan ikkje vere høgare enn 70 prosent." },
+                    nynorsk { + " 100 prosent uføretrygd, med den oppjusterte inntekta di før du blei ufør. Reduksjonsprosenten blir brukt til å berekne kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn botnfrådraget. Reduksjonsprosenten kan ikkje vere høgare enn 70 prosent." },
                 )
             }
         }

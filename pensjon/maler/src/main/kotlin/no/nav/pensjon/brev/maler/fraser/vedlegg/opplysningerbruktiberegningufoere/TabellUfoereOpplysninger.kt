@@ -169,7 +169,7 @@ data class TabellUfoereOpplysninger(
                         cell {
                             text(
                                 bokmal { + "Bunnfradrag" },
-                                nynorsk { + "Bunnfradrag" },
+                                nynorsk { + "Botnfrådrag" },
                                 english { + "Income cap" }
                             )
                         }
