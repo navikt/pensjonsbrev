@@ -10,6 +10,7 @@ import io.micrometer.core.instrument.config.MeterFilter
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -69,6 +70,19 @@ object Metrics {
         .serviceLevelObjectives(*latencyBuckets.toDoubleArray())
         .build()
 
+    // Cache-kall mot Valkey er lokale nettverkskall, ikke kall til eksterne tjenester, og ligger
+    // derfor typisk på sub-ms til noen titalls ms - en helt annen skala enn HTTP-klienten over.
+    // Øvre grense er satt til å romme verste fall for retryOgPakkUt i Cache.kt (3 forsøk á 50ms
+    // ventetid ved feil, altså opp mot ~150ms i tillegg til selve kallene), med litt margin.
+    const val cacheOperationMetricName = "skribenten_cache_operations_seconds"
+    private val cacheForventetLavest = 100.microseconds
+    private val cacheForventetHoeyest = 1.seconds
+    private val cacheDistributionStatisticConfig = DistributionStatisticConfig.Builder()
+        .percentilesHistogram(true)
+        .minimumExpectedValue(cacheForventetLavest.inWholeNanoseconds.toDouble())
+        .maximumExpectedValue(cacheForventetHoeyest.inWholeNanoseconds.toDouble())
+        .build()
+
     fun Application.configureMetrics() {
         // Ktor tagger hver request med address=<podnavn>:<port>. Det er redundant med labelene
         // nais legger på ved scraping, og gir nye tidsserier for hver deploy.
@@ -79,7 +93,11 @@ object Metrics {
         // i HttpClientMetrics.kt.
         registry.config().meterFilter(object : MeterFilter {
             override fun configure(id: Meter.Id, config: DistributionStatisticConfig): DistributionStatisticConfig =
-                if (id.name == clientMetricName) clientDistributionStatisticConfig.merge(config) else config
+                when (id.name) {
+                    clientMetricName -> clientDistributionStatisticConfig.merge(config)
+                    cacheOperationMetricName -> cacheDistributionStatisticConfig.merge(config)
+                    else -> config
+                }
         })
 
         install(MicrometerMetrics) {
