@@ -146,7 +146,7 @@ class ExternalAPIServiceTest {
 
     private fun lagExternalAPIService(onOpprettBrev: (OpprettBrevHandler.Request) -> Unit) = ExternalAPIService(
         config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
-        hentBrevForAlleSaker = { null },
+        hentBrevForAlleSaker = { Outcome.success(emptyList()) },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),
             penClient = PenClientStub(),
