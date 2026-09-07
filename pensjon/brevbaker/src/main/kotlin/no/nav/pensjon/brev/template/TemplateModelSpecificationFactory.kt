@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
@@ -23,7 +24,7 @@ class TemplateModelSpecificationError(msg: String) : Error(msg)
 class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
-    @OptIn(BrevbakerDSLInternal::class)
+    @OptIn(BrevbakerDSLInternal::class, InternKonstruktoer::class)
     fun build(saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>>?): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyAutobrevdata, EmptyVedleggData)) {
             TemplateModelSpecification(emptyMap(), null)

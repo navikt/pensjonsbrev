@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.routing
 
 import io.ktor.util.AttributeKey
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
@@ -44,6 +45,7 @@ internal class TemplateDocCache<Kode : Brevkode<Kode>>(private val resource: Tem
 
     /** Renders one template (all languages) into searchable lines. The rendered
      *  objects are intentionally *not* retained; only the fingerprint is cached. */
+    @OptIn(InternKonstruktoer::class)
     private fun render(brevkode: String): List<SearchableContent>? =
         resource.getTemplate(resource.kodeOf(brevkode))?.template?.let { template ->
             template.language.all()

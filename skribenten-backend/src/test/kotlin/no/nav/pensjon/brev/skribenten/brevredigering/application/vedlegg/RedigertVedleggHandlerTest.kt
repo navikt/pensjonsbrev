@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
@@ -401,6 +402,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id }).containsExactly(1, 2)
     }
 
+    @OptIn(InternKonstruktoer::class)
     @Test
     suspend fun `tilbakestilling av brev merger inn malendringer i lagrede vedlegg`() {
         val brev = opprettBrev().resultOrFail()
