@@ -112,9 +112,9 @@ describe("search", () => {
 
   it("does not tolerate typos in content search when fuzzy is disabled", () => {
     const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["Vi har beregnet din alderspensjon"] })];
-    const index = buildIndex(templates, false);
+    const index = buildIndex(templates);
 
-    const { content } = search(index, "alderspenjson"); // transposed letters
+    const { content } = search(index, "alderspenjson", true); // transposed letters
 
     expect(content).toEqual([]);
   });
@@ -124,9 +124,9 @@ describe("search", () => {
       template({ id: "A1", title: "Alderspensjon", lines: ["Vi har beregnet din alderspensjon"] }),
       template({ id: "A2", title: "Uføretrygd", lines: ["Vi har vurdert din søknad om uføretrygd"] }),
     ];
-    const index = buildIndex(templates, false);
+    const index = buildIndex(templates);
 
-    const { content } = search(index, "alderspensjon");
+    const { content } = search(index, "alderspensjon", true);
 
     expect(content).toHaveLength(1);
     expect(content[0].template.id).toBe("A1");
@@ -136,9 +136,9 @@ describe("search", () => {
     const templates = [
       template({ id: "PE_ETTER_01", title: "Etterbetaling av alderspensjon", lines: ["Uinteressant tekst."] }),
     ];
-    const index = buildIndex(templates, false);
+    const index = buildIndex(templates);
 
-    const { brev } = search(index, "etterbetlaing"); // transposed letters
+    const { brev } = search(index, "etterbetlaing", true); // transposed letters
 
     expect(brev).toEqual([]);
   });
@@ -148,13 +148,52 @@ describe("search", () => {
       template({ id: "PE_ETTER_01", title: "Etterbetaling av alderspensjon", lines: ["Uinteressant tekst."] }),
       template({ id: "PE_INNV_01", title: "Innvilgelse av alderspensjon", lines: ["Uinteressant tekst."] }),
     ];
-    const index = buildIndex(templates, false);
+    const index = buildIndex(templates);
 
-    const byTitle = search(index, "etterbetaling");
-    const byBrevkode = search(index, "PE_INNV_01");
+    const byTitle = search(index, "etterbetaling av alderspensjon", true);
+    const byBrevkode = search(index, "PE_INNV_01", true);
 
     expect(byTitle.brev.map((hit) => hit.template.id)).toEqual(["PE_ETTER_01"]);
     expect(byBrevkode.brev.map((hit) => hit.template.id)).toEqual(["PE_INNV_01"]);
+  });
+
+  it("matches ordered exact phrases but not reordered terms", () => {
+    const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["The grey fox jumped over the fence."] })];
+    const index = buildIndex(templates);
+
+    expect(search(index, "the grey fox", true).content).toHaveLength(1);
+    expect(search(index, "fox the grey", true).content).toEqual([]);
+  });
+
+  it("accepts a character-prefix exact phrase", () => {
+    const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["The grey fox jumped over the fence."] })];
+    const index = buildIndex(templates);
+
+    expect(search(index, "the grey fo", true).content).toHaveLength(1);
+  });
+
+  it("treats Fuse extended-search syntax as literal text in exact phrases", () => {
+    const templates = [
+      template({ id: "A1", title: "The grey fox", lines: ['The "grey" fox | the fence.'] }),
+      template({ id: "A2", title: "Uten spesialtegn", lines: ["The grey fox jumped over the fence."] }),
+    ];
+    const index = buildIndex(templates);
+
+    // Quotes and pipes are extended-search syntax, so they must not be parsed
+    // as operators - only the template that literally contains them matches.
+    expect(search(index, '"grey" fox | the', true).content.map((hit) => hit.template.id)).toEqual(["A1"]);
+    expect(search(index, "^fox", true).content).toEqual([]);
+    expect(search(index, "!fence", true).content).toEqual([]);
+  });
+
+  it("returns no results for a query of only whitespace in exact mode", () => {
+    const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["Litt tekst her."] })];
+    const index = buildIndex(templates);
+
+    const { content, brev } = search(index, "   ", true);
+
+    expect(content).toEqual([]);
+    expect(brev).toEqual([]);
   });
 
   describe("single-character terms", () => {
@@ -173,9 +212,9 @@ describe("search", () => {
     });
 
     it("finds a line containing a single-digit term when fuzzy is disabled", () => {
-      const index = buildIndex(templates, false);
+      const index = buildIndex(templates);
 
-      const { content } = search(index, "paragraf 3");
+      const { content } = search(index, "paragraf 3", true);
 
       expect(content.map((hit) => hit.template.id)).toEqual(["PARA_3"]);
     });

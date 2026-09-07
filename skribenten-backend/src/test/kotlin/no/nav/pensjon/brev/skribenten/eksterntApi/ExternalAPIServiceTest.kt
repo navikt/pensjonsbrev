@@ -8,6 +8,8 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.OpprettBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -104,6 +106,71 @@ class ExternalAPIServiceTest {
         }
         assertThat(parameters.size).isEqualTo(brevinfo.size)
     }
+
+    @Test
+    fun `sender statiskFagsystemBrevdata videre til OpprettBrevHandler naar det er oppgitt i requesten`(): Unit = runBlocking {
+        var mottattRequest: OpprettBrevHandler.Request? = null
+        val service = lagExternalAPIService { mottattRequest = it }
+        val statiskFagsystemBrevdata = Api.GeneriskBrevdata().apply { put("fraFagsystem", "ja") }
+
+        service.opprettBrev(
+            lagOpprettBrevRequest(
+                saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) },
+                statiskFagsystemBrevdata = statiskFagsystemBrevdata,
+            )
+        )
+
+        assertThat(mottattRequest?.statiskFagsystemBrevdata).isEqualTo(statiskFagsystemBrevdata)
+    }
+
+    @Test
+    fun `konverterer saksbehandlerValg til statiskFagsystemBrevdata naar statiskFagsystemBrevdata mangler`(): Unit = runBlocking {
+        var mottattRequest: OpprettBrevHandler.Request? = null
+        val service = lagExternalAPIService { mottattRequest = it }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true); put("valg2", "tekst") }
+
+        service.opprettBrev(lagOpprettBrevRequest(saksbehandlerValg = saksbehandlerValg, statiskFagsystemBrevdata = null))
+
+        assertThat(mottattRequest?.statiskFagsystemBrevdata).containsAllEntriesOf(saksbehandlerValg)
+    }
+
+    @Test
+    fun `statiskFagsystemBrevdata blir null naar baade statiskFagsystemBrevdata og saksbehandlerValg mangler`(): Unit = runBlocking {
+        var mottattRequest: OpprettBrevHandler.Request? = null
+        val service = lagExternalAPIService { mottattRequest = it }
+
+        service.opprettBrev(lagOpprettBrevRequest(saksbehandlerValg = null, statiskFagsystemBrevdata = null))
+
+        assertThat(mottattRequest?.statiskFagsystemBrevdata).isNull()
+    }
+
+    private fun lagExternalAPIService(onOpprettBrev: (OpprettBrevHandler.Request) -> Unit) = ExternalAPIService(
+        config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
+        hentBrevForAlleSaker = { null },
+        brevmalService = BrevmalService(
+            brevbakerService = FakeBrevbakerService(),
+            penClient = PenClientStub(),
+            brevmetadataService = FakeBrevmetadataService(),
+        ),
+        opprettBrevHandler = { request ->
+            onOpprettBrev(request)
+            Outcome.failure(BrevmalFinnesIkke(request.brevkode))
+        },
+    )
+
+    private fun lagOpprettBrevRequest(
+        saksbehandlerValg: SaksbehandlervalgMap?,
+        statiskFagsystemBrevdata: Api.GeneriskBrevdata?,
+    ) = ExternalAPI.OpprettBrevRequest(
+        saksId = saksId,
+        brevkode = Testbrevkoder.INFORMASJONSBREV,
+        spraak = SpraakKode.NB,
+        avsenderEnhetsId = EnhetId("0001"),
+        saksbehandlerValg = saksbehandlerValg,
+        statiskFagsystemBrevdata = statiskFagsystemBrevdata,
+        reserverForRedigering = null,
+        vedtaksId = null,
+    )
 
     private fun finnForventaType(parameter: KParameter): Pair<String?, String?> = when (parameter.type.classifier as KClass<*>) {
         Int::class, Long::class -> Pair("number", null)

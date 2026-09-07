@@ -239,6 +239,7 @@ function AllTemplates() {
                     ) : (
                       contentItems.map((hit) => (
                         <SearchSnippet
+                          exact={exactOnly}
                           hit={hit}
                           key={`${hit.template.malType}/${hit.template.id}/${hit.template.language}`}
                           needle={query}
@@ -266,7 +267,7 @@ function AllTemplates() {
                       brevHits.length === 0 ? (
                         <BodyShort>Ingen treff i tittel, navn eller brevkode</BodyShort>
                       ) : (
-                        <BrevResultList hits={brevItems} needle={query} />
+                        <BrevResultList exact={exactOnly} hits={brevItems} needle={query} />
                       )
                     ) : (
                       <VStack gap="space-20">

@@ -6,7 +6,7 @@ import { useMemo } from "react";
 import { languageLabel } from "~/search/components/format";
 import { LineContent } from "~/search/components/highlight";
 import { type BrevHit, type TemplateText } from "~/search/textSearch";
-export function BrevResultList({ hits, needle }: { hits: BrevHit[]; needle?: string }) {
+export function BrevResultList({ hits, needle, exact }: { hits: BrevHit[]; needle?: string; exact?: boolean }) {
   const rows = useMemo(() => {
     const byTemplate = new Map<string, { template: TemplateText; languages: string[] }>();
     for (const { template } of hits) {
@@ -39,7 +39,7 @@ export function BrevResultList({ hits, needle }: { hits: BrevHit[]; needle?: str
             search={{ language: template.language }}
             to="/template/$malType/$templateId"
           >
-            <LineContent line={[{ type: "text", value: template.title }]} needle={needle} />
+            <LineContent exact={exact} line={[{ type: "text", value: template.title }]} needle={needle} />
           </Link>
           <Detail textColor="subtle">
             {template.id} · {languages.map(languageLabel).join(", ")}

@@ -5,6 +5,7 @@ name: "deploy: brevoppskrift-web"
       - main
     paths:
       - .github/workflows/deploy-brevoppskrift-web.yaml
+      - .github/workflows/.build-frontend.yaml
       - brevoppskrift-web/**
   workflow_dispatch:
 

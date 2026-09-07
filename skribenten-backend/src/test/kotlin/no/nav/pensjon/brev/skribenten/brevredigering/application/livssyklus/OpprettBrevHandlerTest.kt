@@ -6,10 +6,12 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy.KanIkkeOppretteBrev.*
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil.ANNEN
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
@@ -18,6 +20,7 @@ import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.Test
 import java.time.Instant
 import kotlin.time.Duration.Companion.minutes
@@ -127,6 +130,28 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `opprettBrev setter redigertBrevHash`() {
         assertThat(opprettBrev(reserverForRedigering = true)).isSuccess {
             assertThat(it.redigertBrevHash).isEqualTo(Hash.read(letter.toEdit()))
+        }
+    }
+
+    @Test
+    suspend fun `lagrer statiskFagsystemBrevdata paa brevet og den rundtripper via databasen`() {
+        val statiskFagsystemBrevdata = Api.GeneriskBrevdata().apply { put("fraFagsystem", "ja") }
+
+        val brev = opprettBrev(statiskFagsystemBrevdata = statiskFagsystemBrevdata)
+
+        assertThat(brev).isSuccess {
+            val lagretPaaBrevet = transaction { BrevredigeringEntity[it.info.id].statiskFagsystemBrevdata }
+            assertThat(lagretPaaBrevet).isEqualTo(statiskFagsystemBrevdata)
+        }
+    }
+
+    @Test
+    suspend fun `statiskFagsystemBrevdata er null paa brevet naar den ikke er oppgitt`() {
+        val brev = opprettBrev()
+
+        assertThat(brev).isSuccess {
+            val lagretPaaBrevet = transaction { BrevredigeringEntity[it.info.id].statiskFagsystemBrevdata }
+            assertThat(lagretPaaBrevet).isNull()
         }
     }
 

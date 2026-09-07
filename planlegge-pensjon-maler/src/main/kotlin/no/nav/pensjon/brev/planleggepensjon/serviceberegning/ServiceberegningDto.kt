@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.planleggepensjon.serviceberegning
 
-import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
@@ -10,8 +10,8 @@ import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 data class ServiceberegningBrevDto(
     override val saksbehandlerValg: ServiceberegningDto,
-    override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata,
-) : RedigerbarBrevdata<ServiceberegningDto, EmptyFagsystemdata>
+    override val pesysData: ServiceberegningDtoData,
+) : RedigerbarBrevdata<ServiceberegningDto, ServiceberegningDtoData>
 
 data class ServiceberegningDto(
     @DisplayText("Uttaksalder")
@@ -33,3 +33,14 @@ data class ServiceberegningDto(
     @DisplayText("Mottar / søker om sykepenger")
     val alt5: Boolean = false,
 ) : SaksbehandlerValgBrevdata
+
+data class ServiceberegningDtoData(
+    @DisplayText("Uttaksalder")
+    val uttaksalder: Alder?,
+    @DisplayText("Uttaksdato")
+    val uttaksdato: String?,
+    @DisplayText("Forventet fremtidig inntekt")
+    val forventetFremtidigInntekt: Kroner?,
+    @DisplayText("AFP")
+    val afp: TidsbegrensetOffentligAfp?
+) : FagsystemBrevdata

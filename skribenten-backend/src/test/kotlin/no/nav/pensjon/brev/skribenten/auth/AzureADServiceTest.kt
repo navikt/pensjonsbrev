@@ -88,6 +88,46 @@ class AzureADServiceTest {
         }
     }
 
+    @Test
+    fun `getOnBehalfOfToken throws error with 401-status when error is invalid_grant`() {
+        val errorResponse = TokenResponse.ErrorResponse("invalid_grant", "token expired", emptyList(), "123", "abc", "call", "abc")
+
+        val service = createService {
+            respond(
+                content = ByteReadChannel(objectMapper.writeValueAsBytes(errorResponse)),
+                status = HttpStatusCode.Unauthorized,
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+            )
+        }
+
+        runBlocking {
+            val exception = assertThrows<AzureAdOnBehalfOfAuthorizationException> {
+                service.getOnBehalfOfToken(principal, "abc")
+            }
+            assertEquals(HttpStatusCode.Unauthorized, exception.status)
+        }
+    }
+
+    @Test
+    fun `getOnBehalfOfToken throws error with 500-status when error is not invalid_grant`() {
+        val errorResponse = TokenResponse.ErrorResponse("invalid_client", "bad client secret", emptyList(), "123", "abc", "call", "abc")
+
+        val service = createService {
+            respond(
+                content = ByteReadChannel(objectMapper.writeValueAsBytes(errorResponse)),
+                status = HttpStatusCode.Unauthorized,
+                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
+            )
+        }
+
+        runBlocking {
+            val exception = assertThrows<AzureAdOnBehalfOfAuthorizationException> {
+                service.getOnBehalfOfToken(principal, "abc")
+            }
+            assertEquals(HttpStatusCode.InternalServerError, exception.status)
+        }
+    }
+
     private fun createService(handler: (suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData) = { respond("") }) =
         AzureADService(
             jwtConfig = jwtConfig,

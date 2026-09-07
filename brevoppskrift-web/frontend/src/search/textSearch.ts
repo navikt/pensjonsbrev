@@ -112,22 +112,18 @@ const TOKEN_SEARCH_OPTIONS = {
   ignoreFieldNorm: true,
 } as const;
 
-/** Same tuning as `TOKEN_SEARCH_OPTIONS`, but with fuzziness disabled
- *  (`threshold: 0`), so each term must occur as an exact (case-insensitive)
- *  substring. Used when the user turns off fuzzy search. */
-const EXACT_TOKEN_SEARCH_OPTIONS = {
-  ...TOKEN_SEARCH_OPTIONS,
-  threshold: 0,
-} as const;
-
-/** Pre-built Fuse indexes: one over every searchable line (content search),
- *  one over template title/brevkode (metadata search). */
+/** Pre-built Fuse indexes for fuzzy search: one over every searchable line
+ *  (content search), one over template title/brevkode (metadata search). The
+ *  underlying records are kept alongside them because exact search matches
+ *  them directly, without Fuse (see `exactSearch`). */
 export type SearchIndex = {
   contentFuse: Fuse<ContentRecord>;
   brevFuse: Fuse<BrevRecord>;
+  contentRecords: ContentRecord[];
+  brevRecords: BrevRecord[];
 };
 
-export function buildIndex(templates: TemplateText[], fuzzy = true): SearchIndex {
+export function buildIndex(templates: TemplateText[]): SearchIndex {
   const contentRecords: ContentRecord[] = [];
   const brevRecords: BrevRecord[] = [];
   for (const template of templates) {
@@ -139,56 +135,106 @@ export function buildIndex(templates: TemplateText[], fuzzy = true): SearchIndex
     });
     brevRecords.push({ template, title: template.title, id: template.id });
   }
-  const tokenSearchOptions = fuzzy ? TOKEN_SEARCH_OPTIONS : EXACT_TOKEN_SEARCH_OPTIONS;
   const contentFuse = new Fuse(contentRecords, {
-    ...tokenSearchOptions,
+    ...TOKEN_SEARCH_OPTIONS,
     keys: ["text"],
   });
   const brevFuse = new Fuse(brevRecords, {
-    ...tokenSearchOptions,
+    ...TOKEN_SEARCH_OPTIONS,
     keys: [
       { name: "title", weight: 2 },
       { name: "id", weight: 1 },
     ],
   });
-  return { contentFuse, brevFuse };
+  return { contentFuse, brevFuse, contentRecords, brevRecords };
 }
 
-export function search(index: SearchIndex, rawQuery: string): SearchResults {
-  const query = rawQuery.trim();
-  if (!query) {
-    return { content: [], brev: [] };
-  }
+/** A matched line, with its Fuse score (0 is perfect, 1 is worst). */
+type ContentMatch = {
+  record: ContentRecord;
+  score: number;
+};
 
-  const contentByTemplate = new Map<string, ContentHit>();
-  const terms = queryTerms(query);
-  for (const { item, score } of index.contentFuse.search(query)) {
-    const { template, lineIndex } = item;
-    if (!hasShortTermsVerbatim(terms, [item.text])) {
-      continue;
-    }
+/** Collapses the matched lines into one hit per template: the best-scoring
+ *  line, plus how many lines matched in total. */
+function toContentHits(matches: ContentMatch[]): ContentHit[] {
+  const byTemplate = new Map<string, ContentHit>();
+  for (const { record, score } of matches) {
+    const { template, lineIndex } = record;
     const key = `${template.malType}/${template.id}/${template.language}`;
-    const resolvedScore = score ?? 1;
-    const existing = contentByTemplate.get(key);
+    const existing = byTemplate.get(key);
     if (existing) {
       existing.matchCount++;
-      if (resolvedScore < existing.score) {
-        existing.score = resolvedScore;
+      if (score < existing.score) {
+        existing.score = score;
         existing.lineIndex = lineIndex;
       }
     } else {
-      contentByTemplate.set(key, { template, lineIndex, matchCount: 1, score: resolvedScore });
+      byTemplate.set(key, { template, lineIndex, matchCount: 1, score });
     }
   }
-  const content = [...contentByTemplate.values()].sort(
+  return [...byTemplate.values()].sort(
     (a, b) =>
       a.score - b.score || b.matchCount - a.matchCount || a.template.title.localeCompare(b.template.title, "no"),
   );
+}
 
+function fuzzySearch(index: SearchIndex, query: string): SearchResults {
+  const terms = queryTerms(query);
+  const matches: ContentMatch[] = [];
+  for (const { item, score } of index.contentFuse.search(query)) {
+    if (hasShortTermsVerbatim(terms, [item.text])) {
+      matches.push({ record: item, score: score ?? 1 });
+    }
+  }
   const brev = index.brevFuse
     .search(query)
     .filter(({ item }) => hasShortTermsVerbatim(terms, [item.title, item.id]))
     .map(({ item }) => ({ template: item.template }));
 
-  return { content, brev };
+  return { content: toContentHits(matches), brev };
+}
+
+/** Every exact hit is a verbatim occurrence, so they are all equally good and
+ *  rank by match count (then title) rather than by score. */
+const EXACT_MATCH_SCORE = 0;
+
+/** Exact search matches the query verbatim (case-insensitively) as a substring,
+ *  deliberately bypassing Fuse. Fuse's exact operators are only reachable via
+ *  its extended-search syntax, which would mean interpolating the raw query
+ *  into a query string (where `"`, `\` and `|` are syntax, not text), and
+ *  enabling that syntax on an index replaces token search - which fuzzy search
+ *  needs - for every query on it. Matching here keeps user input literal and
+ *  leaves the Fuse indexes purely for fuzzy search. */
+function exactSearch(index: SearchIndex, query: string): SearchResults {
+  // Line text is lowercased and whitespace-collapsed by `lineText`; normalize
+  // the query the same way so it can be compared verbatim.
+  const phrase = normalizeForExactMatch(query);
+  const matches = index.contentRecords
+    .filter((record) => record.text.includes(phrase))
+    .map((record) => ({ record, score: EXACT_MATCH_SCORE }));
+  const brev = index.brevRecords
+    .filter(
+      (record) =>
+        normalizeForExactMatch(record.title).includes(phrase) || normalizeForExactMatch(record.id).includes(phrase),
+    )
+    .map((record) => ({ template: record.template }));
+
+  return { content: toContentHits(matches), brev };
+}
+
+/** Lowercases and collapses whitespace, so a query can be compared verbatim
+ *  against text normalized by `lineText`. Shared with `highlight.tsx`, so
+ *  exact-mode highlighting marks exactly what exact search matched. */
+export function normalizeForExactMatch(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+export function search(index: SearchIndex, rawQuery: string, exactOnly = false): SearchResults {
+  const query = rawQuery.trim();
+  if (!query) {
+    return { content: [], brev: [] };
+  }
+
+  return exactOnly ? exactSearch(index, query) : fuzzySearch(index, query);
 }

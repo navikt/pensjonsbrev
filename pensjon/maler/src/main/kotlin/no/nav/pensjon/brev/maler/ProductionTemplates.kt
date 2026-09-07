@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
+import no.nav.pensjon.brev.maler.klageOgAnke.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
@@ -89,6 +90,7 @@ object ProductionTemplates : AllTemplates {
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+        AnkeOrienteringOmSaksbehandling,
         AnkeTilsvarTilAnkendePart,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,

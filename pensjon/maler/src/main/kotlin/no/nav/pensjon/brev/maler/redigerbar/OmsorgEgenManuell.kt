@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.saksbehandlerValg.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.*
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringOutline
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringTittel
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeidManuell
@@ -16,6 +14,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // 00103 i doksys
@@ -35,16 +34,20 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val aarEgenerklaringOmsorgspoeng = saksbehandlervalg("aarEgenerklaringOmsorgspoeng", "År egenerklæring omsorgspoeng").int()
+        val aarInnvilgetOmsorgspoeng = saksbehandlervalg("aarInnvilgetOmsorgspoeng", "År innvilget omsorgspoeng").int()
         title {
             includePhrase(OmsorgEgenerklaeringTittel)
         }
         outline {
-            includePhrase(
-                OmsorgEgenerklaeringOutline(
-                    aarEgenerklaringOmsorgspoeng = saksbehandlerValg.aarEgenerklaringOmsorgspoeng.format(),
-                    aarInnvilgetOmsorgspoeng = saksbehandlerValg.aarInnvilgetOmsorgspoeng.format(),
+            ifNotNull(aarEgenerklaringOmsorgspoeng, aarInnvilgetOmsorgspoeng) { egenerklaering, innvilget ->
+                includePhrase(
+                    OmsorgEgenerklaeringOutline(
+                        aarEgenerklaringOmsorgspoeng = egenerklaering.format(),
+                        aarInnvilgetOmsorgspoeng = innvilget.format(),
+                    )
                 )
-            )
+            }
         }
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeidManuell, argument)
     }

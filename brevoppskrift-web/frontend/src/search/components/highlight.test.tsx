@@ -13,9 +13,21 @@ function render(line: Line, needle: string): string {
   return renderToStaticMarkup(<LineContent line={line} needle={needle} />);
 }
 
-/** Returns the text content of every `<mark>...</mark>` run, in order. */
+function renderExact(line: Line, needle: string): string {
+  return renderToStaticMarkup(<LineContent exact line={line} needle={needle} />);
+}
+
+/** Returns the text content of every `<mark>...</mark>` run, in order, with
+ *  HTML entities decoded so assertions can use the literal characters. */
 function marks(html: string): string[] {
-  return [...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map((m) => m[1]);
+  return [...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map((m) =>
+    m[1]
+      .replaceAll("&quot;", '"')
+      .replaceAll("&#x27;", "'")
+      .replaceAll("&lt;", "<")
+      .replaceAll("&gt;", ">")
+      .replaceAll("&amp;", "&"),
+  );
 }
 
 describe("LineContent highlighting", () => {
@@ -66,5 +78,35 @@ describe("LineContent highlighting", () => {
     // "3" must not smear onto some near-miss character elsewhere in the line.
     const html = render(textLine("etter folketrygdloven paragraf tolv"), "paragraf 3");
     expect(marks(html)).toEqual(["paragraf"]);
+  });
+
+  describe("exact mode", () => {
+    it("highlights every occurrence of the phrase as a whole", () => {
+      const html = renderExact(textLine("The grey fox and the grey fox again"), "the grey fox");
+      expect(marks(html)).toEqual(["The grey fox", "the grey fox"]);
+    });
+
+    it("does not highlight individual terms of a phrase that never occurs", () => {
+      // Both terms occur, but not as one continuous phrase - which is exactly
+      // what exact search requires, so nothing is highlighted.
+      const html = renderExact(textLine("the fence is grey"), "the grey");
+      expect(marks(html)).toEqual([]);
+    });
+
+    it("never fuzzy-highlights, unlike the term-by-term mode", () => {
+      const line = textLine("the color is blue here");
+      expect(marks(render(line, "blie"))).toEqual(["bl"]);
+      expect(marks(renderExact(line, "blie"))).toEqual([]);
+    });
+
+    it("ignores extra whitespace inside the phrase", () => {
+      const html = renderExact(textLine("The grey fox"), "  the   grey fox ");
+      expect(marks(html)).toEqual(["The grey fox"]);
+    });
+
+    it("treats Fuse extended-search characters as literal text", () => {
+      const html = renderExact(textLine('a "grey" | fox'), '"grey" | fox');
+      expect(marks(html)).toEqual(['"grey" | fox']);
+    });
   });
 });

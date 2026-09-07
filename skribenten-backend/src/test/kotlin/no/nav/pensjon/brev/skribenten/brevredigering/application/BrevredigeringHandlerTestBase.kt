@@ -326,6 +326,7 @@ abstract class BrevredigeringHandlerTestBase {
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
+        statiskFagsystemBrevdata: StatiskFagsystemBrevdata? = null,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         opprettBrev.invoke(
             OpprettBrevHandler.Request(
@@ -337,6 +338,7 @@ abstract class BrevredigeringHandlerTestBase {
                 saksbehandlerValg = saksbehandlerValg,
                 reserverForRedigering = reserverForRedigering,
                 mottaker = mottaker,
+                statiskFagsystemBrevdata = statiskFagsystemBrevdata,
             )
         )
     }

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
@@ -10,7 +11,10 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLiv
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedGradertUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedHeltUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedNormertPensjonsalder
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.pesysData
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.saksbehandlerValg
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDtoData.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdInnhold.seksjoner
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.avsnitt
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.tittel
@@ -50,12 +54,19 @@ private val Expression<Sivilstatus>.value: Expression<String>
     get() = select(sivilstatusValueSelector)
 
 @TemplateModelHelpers
-val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
+val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringBrevDto>(
     title = {
         text(bokmal { +"Pensjonsberegningen din med detaljer og forbehold" })
     },
     includeSakspart = false,
 ) {
+    val simulering = pesysData.simulering.ifNull(saksbehandlerValg.simulering)
+    val simuleringsinformasjon = pesysData.simuleringsinformasjon.ifNull(saksbehandlerValg.simuleringsinformasjon)
+    val forbehold = pesysData.forbehold.ifNull(saksbehandlerValg.forbehold)
+    val aarligInntektOgPensjonListe = ifElse(pesysData.aarligInntektOgPensjonListe.notNull(), pesysData.aarligInntektOgPensjonListe, saksbehandlerValg.aarligInntektOgPensjonListe)
+    val pensjonsopptjeningListe = ifElse(pesysData.pensjonsopptjeningListe.notNull(), pesysData.pensjonsopptjeningListe, saksbehandlerValg.pensjonsopptjeningListe)
+    val kortforbehold = ifElse(pesysData.kortforbehold.notNull(), pesysData.kortforbehold, saksbehandlerValg.kortforbehold)
+
     ifNotNull(kortforbehold) { kortforbeholdVerdi ->
         includePhrase(ForbeholdAvsnittPhrase(kortforbeholdVerdi.avsnitt))
     }
