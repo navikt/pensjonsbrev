@@ -32,9 +32,9 @@ data class ApSimuleringDto(
 
 data class ApSimuleringDtoData(
     @DisplayText("Simulering")
-    val simulering: Simulering?,
+    val simulering: Simulering,
     @DisplayText("Simuleringsinformasjon")
-    val simuleringsinformasjon: Simuleringsinformasjon?,
+    val simuleringsinformasjon: Simuleringsinformasjon,
     @DisplayText("Vilkårsprøvingsresultat")
     val vilkaarsproevingsresultat: Vilkaarsproevingsresultat?,
     @DisplayText("Trygdetid")
@@ -46,10 +46,10 @@ data class ApSimuleringDtoData(
     @DisplayText("Pensjonsopptjening")
     val pensjonsopptjeningListe: List<Pensjonsopptjening>?,
     @DisplayText("Forbehold")
-    val forbehold: ForbeholdInnhold?,
+    val forbehold: ForbeholdInnhold,
     @DisplayText("Kortforbehold")
     val kortforbehold: Kortforbehold?,
-) : FagsystemBrevdata
+) : FagsystemBrevdata, VedleggData
 
 data class Simulering(
     @DisplayText("Alderspensjon")

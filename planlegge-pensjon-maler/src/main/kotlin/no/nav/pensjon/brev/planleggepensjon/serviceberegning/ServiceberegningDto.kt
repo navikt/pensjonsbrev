@@ -36,11 +36,11 @@ data class ServiceberegningDto(
 
 data class ServiceberegningDtoData(
     @DisplayText("Uttaksalder")
-    val uttaksalder: Alder?,
+    val uttaksalder: Alder,
     @DisplayText("Uttaksdato")
-    val uttaksdato: String?,
+    val uttaksdato: String,
     @DisplayText("Forventet fremtidig inntekt")
-    val forventetFremtidigInntekt: Kroner?,
+    val forventetFremtidigInntekt: Kroner,
     @DisplayText("AFP")
-    val afp: TidsbegrensetOffentligAfp?
+    val afp: TidsbegrensetOffentligAfp
 ) : FagsystemBrevdata
