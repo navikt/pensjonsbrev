@@ -236,8 +236,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            showIf(kravInitiertAvNav
-                    and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
                     and brukerFoedtEtter1944
                     and virkDatoFomEtter2023
             ) {
