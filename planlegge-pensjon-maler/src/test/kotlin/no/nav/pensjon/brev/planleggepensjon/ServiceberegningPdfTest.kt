@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.planleggepensjon
 import no.nav.brev.brevbaker.FeatureToggleDummy
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.PdfByggerTestService
+import no.nav.brev.brevbaker.TestRedigerbarBrevdata
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -17,7 +18,7 @@ class ServiceberegningPdfTest {
     @Test
     fun `pdf med serviceberegning AFP`() {
         FeatureToggleSingleton.init(FeatureToggleDummy)
-        val brevDto = Fixtures.createServiceberegningBrevDto()
+        val brevDto = TestRedigerbarBrevdata(Fixtures.createServiceberegningBrevDto())
         LetterTestImpl(ServiceberegningBrev.template, brevDto, Language.Bokmal, Fixtures.felles)
             .renderTestPDF("SERVICEBEREGNING_AFP", pdfByggerService = PdfByggerTestService())
     }

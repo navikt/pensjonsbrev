@@ -2,15 +2,12 @@ package no.nav.pensjon.brev.planleggepensjon
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdInnhold
@@ -45,7 +42,7 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
-            ApSimuleringBrevDto::class -> createSimuleringBrevDto() as T
+            ApSimuleringDtoData::class -> createSimuleringBrevDto() as T
             ServiceberegningBrevDto::class -> createServiceberegningBrevDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
@@ -62,13 +59,7 @@ object Fixtures : LetterDataFactory {
     private fun createSimuleringBrevDto() = createBrevDtoMedAfpPrivat()
 
     fun createServiceberegningBrevDto(): ServiceberegningBrevDto {
-        val saksbehandlerValg = lagSaksbehandlervalg(
-            "ingenYtelser" to true,
-            "vedtakOmAlderspensjon" to false,
-        )
         return ServiceberegningBrevDto(
-            saksbehandlerValg = saksbehandlerValg,
-            pesysData = ServiceberegningDtoData(
                 uttaksalder = Alder(62, 10),
                 uttaksdato = "01.02.2027",
                 forventetFremtidigInntekt = Kroner(158000),
@@ -89,17 +80,11 @@ object Fixtures : LetterDataFactory {
                     erAvkortet = true,
                 ),
             )
-        )
     }
 
-    fun createBrevDtoMedAfpPrivat() = ApSimuleringBrevDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = createFagsystemdata(),
-    )
+    fun createBrevDtoMedAfpPrivat() = createFagsystemdata()
 
-    fun createBrevDtoMedAfpOffentligLivsvarig() = ApSimuleringBrevDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = createFagsystemdata().copy(
+    fun createBrevDtoMedAfpOffentligLivsvarig() = createFagsystemdata().copy(
             simulering = createSimulering().copy(
                 afpPrivat = null,
                 afpOffentligLivsvarig = AfpOffentligLivsvarigSimulering(
@@ -115,21 +100,15 @@ object Fixtures : LetterDataFactory {
                     ),
                 ),
             ),
-        ),
     )
 
-    fun createBrevDtoMedEndringAfpPrivat() = ApSimuleringBrevDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = createFagsystemdata().copy(
+    fun createBrevDtoMedEndringAfpPrivat() = createFagsystemdata().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
                 simulererEndringMedAfpPrivat = true,
             ),
-        ),
     )
 
-    fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = createFagsystemdata().copy(
+    fun createBrevDtoMedAfpOffentligTidsbegrenset() = createFagsystemdata().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
                 heltUttakInformasjon = Uttaksinformasjon(alder = Alder(67, 0), uttaksdato = "01.02.2030", grad = 100),
                 gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(63, 2), uttaksdato = "01.04.2026", grad = 40),
@@ -159,7 +138,6 @@ object Fixtures : LetterDataFactory {
                         erAvkortet = false,
                     ),
             ),
-        ),
     )
 
     private fun createFagsystemdata() =

@@ -8,17 +8,15 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.pesysData
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.afp
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.forventetFremtidigInntekt
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.uttaksalder
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDtoData.uttaksdato
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.afp
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.forventetFremtidigInntekt
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.uttaksalder
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.uttaksdato
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.aar
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.maaneder
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligTidsbegrensetOpptjeningTabell
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligTidsbegrensetTabellRedigerbar
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -26,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
@@ -41,7 +40,7 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.SERVICEBEREGNING_SIMULERINGSBREV
     override val featureToggle = FeatureToggles.apSimulering.toggle
 
-    override val template: LetterTemplate<*, ServiceberegningBrevDto> = createTemplate(
+    override val template = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Serviceberegning AFP",

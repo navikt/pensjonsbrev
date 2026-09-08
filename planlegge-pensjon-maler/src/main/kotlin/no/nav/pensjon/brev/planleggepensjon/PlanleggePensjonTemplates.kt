@@ -5,7 +5,7 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrev
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrev
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 object PlanleggePensjonTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf()
 
-    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(ApSimuleringBrev, ServiceberegningBrev)
+    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out FagsystemBrevdata>> = setOf(ApSimuleringBrev, ServiceberegningBrev)
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
 }
