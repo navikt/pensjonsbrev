@@ -9,6 +9,7 @@ import { z } from "zod";
 import { orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { type LetterMetadata, type OrderEblankettRequest } from "~/types/apiTypes";
+import { trackEvent } from "~/utils/umami";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
@@ -43,7 +44,14 @@ export default function Eblankett({
 
   const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
     mutationFn: (payload) => orderEblankett(saksId, payload),
-    onSuccess: (callbackUrl) => {
+    onSuccess: (callbackUrl, variables) => {
+      trackEvent("brev opprettet", {
+        brevkode: letterTemplate.id,
+        brevtittel: letterTemplate.name,
+        brevsystem: "exstream",
+        dokumentkategori: letterTemplate.dokumentkategoriCode || "E_BLANKETT",
+        enhetsId: variables.enhetsId,
+      });
       window.open(callbackUrl);
     },
     mutationKey: orderLetterKeys.brevsystem("e-blankett"),
