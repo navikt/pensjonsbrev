@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import java.time.LocalDate
 
@@ -11,9 +9,11 @@ import java.time.LocalDate
  * Konvertert fra Exstream-malen `PE_AF_04_112`.
  */
 data class AvslagAfpPrivatDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<AvslagAfpPrivatDto.PesysData> {
+    // PE_Vedtaksdata_Kravhode_KravMottatDato
+    val kravMottattDato: LocalDate,
+    // PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse[1]
+    val begrunnelse: Begrunnelse,
+) : FagsystemBrevdata {
 
     /**
      * Begrunnelsene tilsvarer rådata-strenger i originalen
@@ -33,11 +33,4 @@ data class AvslagAfpPrivatDto(
         BRUKER_UT_E_62,
         BRUKER_LOP_UP,
     }
-
-    data class PesysData(
-        // PE_Vedtaksdata_Kravhode_KravMottatDato
-        val kravMottattDato: LocalDate,
-        // PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse[1]
-        val begrunnelse: Begrunnelse,
-    ) : FagsystemBrevdata
 }

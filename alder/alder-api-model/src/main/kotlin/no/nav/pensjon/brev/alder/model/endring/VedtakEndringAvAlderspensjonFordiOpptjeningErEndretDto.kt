@@ -8,29 +8,22 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData> {
-    data class PesysData(
-        val krav: Krav,
-        val alderspensjonVedVirk: AlderspensjonVedVirk,
-        val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
-        val behandlingKontekst: BehandlingKontekst,
-        val etterbetaling: Boolean,
-        val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterOgPlikterDto,
-        val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto?,
-        val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
-        val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
-        val opplysningerBruktIBeregningenAlderAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
-        val opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening: OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto?,
-    ) : FagsystemBrevdata
-
+    val krav: Krav,
+    val alderspensjonVedVirk: AlderspensjonVedVirk,
+    val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
+    val behandlingKontekst: BehandlingKontekst,
+    val etterbetaling: Boolean,
+    val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterOgPlikterDto,
+    val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto?,
+    val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
+    val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
+    val opplysningerBruktIBeregningenAlderAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
+    val opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening: OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto?,
+) : FagsystemBrevdata {
     data class Krav(
         val virkDatoFom: LocalDate,
         val arsakErEndretOpptjening: Boolean,

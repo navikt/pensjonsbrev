@@ -7,9 +7,8 @@ import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdataMedSaksb
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import java.time.Month
@@ -33,7 +32,7 @@ object Fixtures : LetterDataFactory {
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
-            FeilutbetalingSpesifikkVarselDto::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            VarselFeilutbetalingPesysData::class -> lagFeilutbetalingSpesfikkVarsel() as T
             FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
             InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
             InnhentingOpplysningerSamboerDto::class -> lagInnhentingOpplysningerSamboer() as T
@@ -51,7 +50,7 @@ object Fixtures : LetterDataFactory {
     private fun lagEmptyRedigerbarBrevdataMedSaksbehandlerValg() =
         EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
 
-    private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
+    private fun lagFeilutbetalingSpesfikkVarsel() = VarselFeilutbetalingPesysData(
         pesysData = VarselFeilutbetalingPesysData(100),
         saksbehandlerValg = lagSaksbehandlervalg(),
     )

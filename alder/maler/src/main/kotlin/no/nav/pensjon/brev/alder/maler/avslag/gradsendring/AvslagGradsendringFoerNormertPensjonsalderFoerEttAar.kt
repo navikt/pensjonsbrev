@@ -4,10 +4,10 @@ import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.alder.model.avslag.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
+import no.nav.pensjon.brev.alder.model.avslag.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagGradsendringFoerNormertPensjonsalderFoerEttAarDto.*
 import no.nav.pensjon.brev.template.Language.*
@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AvslagGradsendringFoerNormertPensjonsalderFoerEttAar : RedigerbarTemplate<AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto> {
+object AvslagGradsendringFoerNormertPensjonsalderFoerEttAar : RedigerbarTemplate<AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR
     override val valgbareVedlegg = setOf(UTTAKSSKJEMA, SKJEMA_FOR_BANKOPPLYSNINGER)

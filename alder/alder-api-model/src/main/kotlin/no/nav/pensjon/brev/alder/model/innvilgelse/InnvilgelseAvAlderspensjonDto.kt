@@ -10,8 +10,6 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -19,36 +17,31 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class InnvilgelseAvAlderspensjonDto(
-    override val pesysData: PesysData,
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : BrevdataMedSaksbehandlerValg<InnvilgelseAvAlderspensjonDto.PesysData> {
-
-    data class PesysData(
-        val afpPrivatResultatFellesKontoret: Boolean?, // v1.afpPrivat
-        val alderspensjonVedVirk: AlderspensjonVedVirk,
-        val harFlereBeregningsperioder: Boolean, // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
-        val avdodFnr: Foedselsnummer?, // v1.Avdod
-        val avdodNavn: String?, // v1.Avdod
-        val avtalelandNavn: String? = null, // v1.Avdod
-        val borIAvtaleland: Boolean, // v3.Person
-        val borINorge: Boolean, // v3.Person
-        val erEOSLand: Boolean, // v1.Land
-        val erForstegangsbehandletNorgeUtland: Boolean, // v3.Krav
-        val faktiskBostedslandKode: BrevLandmodell.Landkode? = null,
-        val fullTrygdtid: Boolean, // v4.AlderspensjonPerManed
-        val gjenlevendetilleggKap19: Kroner?, // v4.AlderspensjonPerManed
-        val inngangOgEksportVurdering: InngangOgEksportVurdering,
-        val kravVirkDatoFom: LocalDate,
-        val norgeBehandlendeLand: Boolean, // v3.Krav
-        val regelverkType: AlderspensjonRegelverkType,
-        val sakstype: Sakstype,
-        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
-        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val opplysningerBruktIBeregningenAlderspensjon: OpplysningerBruktIBeregningenAlderDto?,
-        val opplysningerBruktIBeregningenAlderspensjonAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
-        val opplysningerOmAvdodBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?,
-    ) : FagsystemBrevdata
+    val afpPrivatResultatFellesKontoret: Boolean?, // v1.afpPrivat
+    val alderspensjonVedVirk: AlderspensjonVedVirk,
+    val harFlereBeregningsperioder: Boolean, // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
+    val avdodFnr: Foedselsnummer?, // v1.Avdod
+    val avdodNavn: String?, // v1.Avdod
+    val avtalelandNavn: String? = null, // v1.Avdod
+    val borIAvtaleland: Boolean, // v3.Person
+    val borINorge: Boolean, // v3.Person
+    val erEOSLand: Boolean, // v1.Land
+    val erForstegangsbehandletNorgeUtland: Boolean, // v3.Krav
+    val faktiskBostedslandKode: BrevLandmodell.Landkode? = null,
+    val fullTrygdtid: Boolean, // v4.AlderspensjonPerManed
+    val gjenlevendetilleggKap19: Kroner?, // v4.AlderspensjonPerManed
+    val inngangOgEksportVurdering: InngangOgEksportVurdering,
+    val kravVirkDatoFom: LocalDate,
+    val norgeBehandlendeLand: Boolean, // v3.Krav
+    val regelverkType: AlderspensjonRegelverkType,
+    val sakstype: Sakstype,
+    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
+    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+    val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+    val opplysningerBruktIBeregningenAlderspensjon: OpplysningerBruktIBeregningenAlderDto?,
+    val opplysningerBruktIBeregningenAlderspensjonAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
+    val opplysningerOmAvdodBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?,
+) : FagsystemBrevdata {
    // v5.Alderspensjon / v1.AlderspensjonKap20
     data class AlderspensjonVedVirk(
         val erEksportberegnet: Boolean,

@@ -1,24 +1,16 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 data class VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto.PesysData> {
-
-    data class PesysData(
-        val oppgjoersAar: Year,
-        val inntektFoerUttak: Kroner,
-        val medlemAvApotekerordningen: Boolean,
-        val toleranseBeloep: Kroner,
-        val scenario: Scenario,
-    ) : FagsystemBrevdata
-
+    val oppgjoersAar: Year,
+    val inntektFoerUttak: Kroner,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
+    val scenario: Scenario,
+) : FagsystemBrevdata {
     /*
      * Tre gjensidig utelukkende scenarier forklarer hvorfor — modellert som
      * [Scenario] (skill-step 7: Exstream-betingelsene avledes hos kalleren slik

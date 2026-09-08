@@ -1,15 +1,26 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 data class VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.PesysData> {
+    val oppgjoersAar: Year,
+    val pensjonsgivendeInntekt: Kroner,
+    val inntektFoerUttak: Kroner,
+    val inntektEtterOpphoer: Kroner,
+    val inntektIAfpPerioden: Kroner,
+    val avvik: Kroner,
+    val fullAfp: Kroner,
+    val fradragBeregnetArbeidsInntekt: Kroner,
+    val korrigertAfp: Kroner,
+    val tidligereArbeidsInntektBeregnet: Kroner,
+    val utbetaltAfp: Kroner,
+    val formyebetalt: Kroner,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
+    val scenario: Scenario,
+) : FagsystemBrevdata {
 
     /**
      * Seks gjensidig utelukkende scenarier for forklaringen om hvilke
@@ -43,22 +54,4 @@ data class VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto(
         // Bare IEO oppjustert — inntekten kom etter at AFP tok slutt.
         KUN_IEO_OVERSTYRT,
     }
-
-    data class PesysData(
-        val oppgjoersAar: Year,
-        val pensjonsgivendeInntekt: Kroner,
-        val inntektFoerUttak: Kroner,
-        val inntektEtterOpphoer: Kroner,
-        val inntektIAfpPerioden: Kroner,
-        val avvik: Kroner,
-        val fullAfp: Kroner,
-        val fradragBeregnetArbeidsInntekt: Kroner,
-        val korrigertAfp: Kroner,
-        val tidligereArbeidsInntektBeregnet: Kroner,
-        val utbetaltAfp: Kroner,
-        val formyebetalt: Kroner,
-        val medlemAvApotekerordningen: Boolean,
-        val toleranseBeloep: Kroner,
-        val scenario: Scenario,
-    ) : FagsystemBrevdata
 }

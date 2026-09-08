@@ -10,9 +10,8 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_VEDTAK_FEILUTBETALING_ETTERGITT_FORELDET
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.pesysData.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.vedtakFeilutbetalingUforeIngenTilbakekrevingDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.oversiktOverFeilutbetalingerPaRadform
@@ -20,7 +19,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetT
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VedtakIngenTilbakekrevingForeldelse : RedigerbarTemplate<VedtakFeilutbetalingUforeIngenTilbakekrevingDto> {
+object VedtakIngenTilbakekrevingForeldelse : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
 
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 

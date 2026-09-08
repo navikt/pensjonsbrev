@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_FEILUTBETALING_VARSEL_DODSBO
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingVarselDodsboDto.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori.FEILUTBETALING
@@ -23,9 +22,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 import no.nav.pensjon.brev.template.saksbehandlervalg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 
 @TemplateModelHelpers
-object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
+object VarselDodsbo: RedigerbarTemplate<VarselFeilutbetalingPesysData> {
     override val featureToggle = FeatureToggles.feilutbetalingNy.toggle
 
     override val kode = UT_FEILUTBETALING_VARSEL_DODSBO

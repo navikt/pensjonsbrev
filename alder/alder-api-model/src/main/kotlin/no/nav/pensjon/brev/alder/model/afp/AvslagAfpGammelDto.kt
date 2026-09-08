@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import java.time.LocalDate
 
@@ -15,12 +13,6 @@ import java.time.LocalDate
  * fylles ut av saksbehandler ved hjelp av [no.nav.pensjon.brev.template.dsl.fritekst].
  */
 data class AvslagAfpGammelDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<AvslagAfpGammelDto.PesysData> {
-
-    data class PesysData(
-        // PE_Kravdata_Kravhode_KravMotattDato
-        val kravMottattDato: LocalDate,
-    ) : FagsystemBrevdata
-}
+    // PE_Kravdata_Kravhode_KravMotattDato
+    val kravMottattDato: LocalDate,
+) : FagsystemBrevdata

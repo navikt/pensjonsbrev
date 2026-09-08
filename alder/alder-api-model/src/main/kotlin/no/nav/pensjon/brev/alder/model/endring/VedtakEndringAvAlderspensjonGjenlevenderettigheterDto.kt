@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.alder.model.endring
 
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BeloepEndring
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import no.nav.pensjon.brev.alder.model.KravInitiertAv
@@ -14,24 +12,18 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 
 data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
-
-    data class PesysData(
-        val avdod: Avdod,
-        val bruker: Bruker,
-        val krav: Krav,
-        val alderspensjonVedVirk: AlderspensjonVedVirk,
-        val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
-        val gjenlevendetilleggKapittel19VedVirk: GjenlevendetilleggKapittel19VedVirk,
-        val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
-        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
-        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
-    ) : FagsystemBrevdata
-
+    val avdod: Avdod,
+    val bruker: Bruker,
+    val krav: Krav,
+    val alderspensjonVedVirk: AlderspensjonVedVirk,
+    val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
+    val gjenlevendetilleggKapittel19VedVirk: GjenlevendetilleggKapittel19VedVirk,
+    val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
+    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
+    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+    val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+    val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
+) : FagsystemBrevdata {
     data class Avdod(
         val navn: String
     )

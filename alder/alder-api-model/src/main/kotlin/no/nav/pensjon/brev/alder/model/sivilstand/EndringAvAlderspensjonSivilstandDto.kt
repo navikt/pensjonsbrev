@@ -8,37 +8,30 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dt
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
 data class EndringAvAlderspensjonSivilstandDto(
-    override val pesysData: PesysData,
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : BrevdataMedSaksbehandlerValg<EndringAvAlderspensjonSivilstandDto.PesysData> {
+    val alderspensjonVedVirk: AlderspensjonVedVirk,
+    val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
+    val epsVedVirk: EpsVedVirk?,
+    val kravAarsak: KravArsakType, //v3.Krav
+    val kravVirkDatoFom: LocalDate, //v3.Krav
+    val regelverkType: AlderspensjonRegelverkType,
+    val sivilstand: MetaforceSivilstand,
+    val beloepEndring: BeloepEndring,
+    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+    val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+    val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
+) : FagsystemBrevdata {
 
     enum class Sivilstandsendringsaarsak(override val displayText: String) : SaksbehandlerValgEnum {
         fraFlyttet("Fraflytting"),
         giftBorIkkeSammen("Inngått ekteskap, men bor ikke sammen"),
         annet("Annet eller ingen")
     }
-
-    data class PesysData(
-        val alderspensjonVedVirk: AlderspensjonVedVirk,
-        val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
-        val epsVedVirk: EpsVedVirk?,
-        val kravAarsak: KravArsakType, //v3.Krav
-        val kravVirkDatoFom: LocalDate, //v3.Krav
-        val regelverkType: AlderspensjonRegelverkType,
-        val sivilstand: MetaforceSivilstand,
-        val beloepEndring: BeloepEndring,
-        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
-        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
-    ) : FagsystemBrevdata
 
     data class EpsVedVirk(
         val borSammenMedBruker: Boolean,

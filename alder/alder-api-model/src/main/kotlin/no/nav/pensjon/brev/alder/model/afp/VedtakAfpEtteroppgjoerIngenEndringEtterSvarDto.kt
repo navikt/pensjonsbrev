@@ -1,29 +1,21 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 data class VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto.PesysData> {
-
-    data class PesysData(
-        val oppgjoersAar: Year,
-        val pensjonsgivendeInntekt: Kroner,
-        val inntektFoerUttak: Kroner,
-        val inntektEtterOpphoer: Kroner,
-        val inntektIAfpPerioden: Kroner,
-        val forventetPensjonsgivendeInntektBeregnet: Kroner,
-        val avvik: Kroner,
-        val medlemAvApotekerordningen: Boolean,
-        val toleranseBeloep: Kroner,
-        val scenario: Scenario,
-    ) : FagsystemBrevdata
-
+    val oppgjoersAar: Year,
+    val pensjonsgivendeInntekt: Kroner,
+    val inntektFoerUttak: Kroner,
+    val inntektEtterOpphoer: Kroner,
+    val inntektIAfpPerioden: Kroner,
+    val forventetPensjonsgivendeInntektBeregnet: Kroner,
+    val avvik: Kroner,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
+    val scenario: Scenario,
+) : FagsystemBrevdata {
     /**
      * Scenarier for forklaringen om hvilke nye opplysninger som er lagt fram.
      * Eksstream brukte fem (overlappende) `showIf`-blokker over rådata for

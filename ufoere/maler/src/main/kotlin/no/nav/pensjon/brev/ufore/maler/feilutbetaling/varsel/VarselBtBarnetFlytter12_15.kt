@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingSpesifikkVarselDto.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori.FEILUTBETALING
@@ -23,7 +23,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBR
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object VarselBtBarnetFlytter12_15: RedigerbarTemplate<FeilutbetalingSpesifikkVarselDto> {
+object VarselBtBarnetFlytter12_15: RedigerbarTemplate<VarselFeilutbetalingPesysData> {
     override val featureToggle = FeatureToggles.feilutbetalingNy.toggle
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_FEILUTBETALING_VARSEL_BARN_FLYTTER

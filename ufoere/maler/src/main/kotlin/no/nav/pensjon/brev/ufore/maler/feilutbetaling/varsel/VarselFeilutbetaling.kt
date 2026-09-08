@@ -19,10 +19,11 @@ import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.template.saksbehandlervalg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
+object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingPesysData> {
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_VARSEL_FEILUTBETALING

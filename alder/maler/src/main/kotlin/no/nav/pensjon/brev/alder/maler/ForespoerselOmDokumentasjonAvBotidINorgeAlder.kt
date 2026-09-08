@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.alder.maler
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
-import no.nav.pensjon.brev.alder.model.ForespoerselOmDokumentasjonAvBotidINorgeAlderDto
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -23,7 +23,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerType.foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<ForespoerselOmDokumentasjonAvBotidINorgeAlderDto> {
+object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyFagsystemdata> {
 
     // PE_IY_03_167 - dette er delen for alder
     override val kode = Aldersbrevkoder.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER

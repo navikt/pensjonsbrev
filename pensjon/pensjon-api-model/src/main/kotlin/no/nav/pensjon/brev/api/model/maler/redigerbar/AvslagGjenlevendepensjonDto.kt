@@ -1,16 +1,13 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import java.time.LocalDate
 
 @Suppress("unused")
 data class AvslagGjenlevendepensjonDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<AvslagGjenlevendepensjonDto.PesysData> {
+    val kravMottattDato: LocalDate,
+) : FagsystemBrevdata {
 
     enum class FolketrygdlovenParagraf(override val displayText: String) : SaksbehandlerValgEnum {
         paragraf17_2_foersteEllerTredje_ledd("$ 17-2 første eller tredjeledd"),
@@ -19,8 +16,4 @@ data class AvslagGjenlevendepensjonDto(
         paragraf17_5("§ 17-5"),
         paragraf17_10("§ 17-10"),
     }
-
-    data class PesysData(
-        val kravMottattDato: LocalDate,
-    ) : FagsystemBrevdata
 }

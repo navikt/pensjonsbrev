@@ -1,37 +1,30 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto.PesysData> {
-    data class PesysData(
-        val oppgjoersAar: Year,
-        val forlitebetalt: Kroner,
-        val pensjonsgivendeInntekt: Kroner,
-        val inntektFoerUttak: Kroner,
-        val inntektEtterOpphoer: Kroner,
-        val inntektIAfpPerioden: Kroner,
-        val avvik: Kroner,
-        val fullAfp: Kroner,
-        val fradragBeregnetArbeidsInntekt: Kroner,
-        val korrigertAfp: Kroner,
-        val tidligereArbeidsInntektBeregnet: Kroner,
-        val utbetaltAfp: Kroner,
-        val uttaksdato: LocalDate,
-        val opphorsdato: LocalDate?,
-        val medlemAvApotekerordningen: Boolean,
-        val toleranseBeloep: Kroner,
-        val scenario: Scenario,
-        val periode: NyPensjonsberegningPeriode,
-    ) : FagsystemBrevdata
-
+    val oppgjoersAar: Year,
+    val forlitebetalt: Kroner,
+    val pensjonsgivendeInntekt: Kroner,
+    val inntektFoerUttak: Kroner,
+    val inntektEtterOpphoer: Kroner,
+    val inntektIAfpPerioden: Kroner,
+    val avvik: Kroner,
+    val fullAfp: Kroner,
+    val fradragBeregnetArbeidsInntekt: Kroner,
+    val korrigertAfp: Kroner,
+    val tidligereArbeidsInntektBeregnet: Kroner,
+    val utbetaltAfp: Kroner,
+    val uttaksdato: LocalDate,
+    val opphorsdato: LocalDate?,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
+    val scenario: Scenario,
+    val periode: NyPensjonsberegningPeriode,
+) : FagsystemBrevdata {
     /**
      * Hvilken inntektsforklaring som skal vises. Fem gjensidig utelukkende
      * varianter.
