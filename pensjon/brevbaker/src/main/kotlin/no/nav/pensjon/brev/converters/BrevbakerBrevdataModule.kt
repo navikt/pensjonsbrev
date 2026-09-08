@@ -10,14 +10,13 @@ object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule
 
     private class GenericBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlervalgIDSL
-
-    private data class GenericRedigerbarBrevdata(override val saksbehandlerValg: GenericBrevdata, override val pesysData: GenericBrevdata) : RedigerbarBrevdata<GenericBrevdata>
+    private data class GenericRedigerbarBrevdata<Data : FagsystemBrevdata>(override val saksbehandlerValg: GenericBrevdata, override val pesysData: Data) : RedigerbarBrevdata<Data>
 
     private class SaksbehandlervalgMap : SaksbehandlervalgIDSL, LinkedHashMap<String, Any?>()
 
     init {
         addAbstractTypeMapping<BrevbakerBrevdata, GenericBrevdata>()
-        addAbstractTypeMapping<RedigerbarBrevdata<*>, GenericRedigerbarBrevdata>()
+        addAbstractTypeMapping<RedigerbarBrevdata<*>, GenericRedigerbarBrevdata<*>>()
         addAbstractTypeMapping<SaksbehandlervalgIDSL, SaksbehandlervalgMap>()
     }
 
