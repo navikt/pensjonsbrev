@@ -9,6 +9,8 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
@@ -19,6 +21,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -39,7 +42,9 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.allSupertypes
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.jvmErasure
 
@@ -165,9 +170,34 @@ abstract class BrevmodulTest(
             .flatMap { spraak ->
                 (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
                     .filter { shouldInclude(it) }
-                    .map { Arguments.of(it.template, it.kode, fixtures.create(it.template.letterDataType), spraak) }
+                    .map { Arguments.of(it.template, it.kode, it.lagFixtureArgument(), spraak) }
             }
     }
+
+    /**
+     * For [RedigerbarTemplate] er `template.letterDataType` alltid `RedigerbarBrevdata::class`: den er
+     * reifisert fra det statiske typeparameteret `RedigerbarBrevdata<FagData>` i [BrevTemplate], og JVM-ens
+     * type erasure lar det kollapse til den rå (generic-løse) grensesnitt-klassen uansett hvilken konkret
+     * `FagData` malen faktisk bruker. Vi finner derfor `FagData` ved å reflektere over den konkrete
+     * malklassens supertyper (der typeargumentet faktisk er substituert), og bygger en generisk
+     * [RedigerbarBrevdata] rundt fixture-dataen for den typen.
+     */
+    private fun BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>.lagFixtureArgument(): Any =
+        if (this is RedigerbarTemplate<*>) {
+            TestRedigerbarBrevdata(pesysData = fixtures.create(fagsystemDataType()))
+        } else {
+            fixtures.create(template.letterDataType)
+        }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun RedigerbarTemplate<*>.fagsystemDataType(): KClass<out FagsystemBrevdata> =
+        this::class.allSupertypes
+            .first { it.classifier == RedigerbarTemplate::class }
+            .arguments
+            .single()
+            .type
+            ?.jvmErasure as? KClass<out FagsystemBrevdata>
+            ?: error("Fant ikke FagData-typen (typeparameteret til RedigerbarTemplate) for ${this::class.simpleName}")
 
     @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")
@@ -344,3 +374,13 @@ object FeatureToggleDummy : FeatureToggleService {
     override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) { }
 
 }
+
+/**
+ * Generisk testimplementasjon av [RedigerbarBrevdata], brukt av [BrevmodulTest.finnMaler] til å pakke inn
+ * fixture-data for en malens [FagsystemBrevdata] i den `RedigerbarBrevdata<FagData>`-formen malen faktisk
+ * forventer.
+ */
+private data class TestRedigerbarBrevdata<Data : FagsystemBrevdata>(
+    override val pesysData: Data,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL = lagSaksbehandlervalg(),
+) : RedigerbarBrevdata<Data>
