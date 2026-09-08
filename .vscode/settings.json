@@ -1,5 +1,7 @@
 {
   "biome.lsp.bin": "./skribenten-web/frontend/node_modules/.bin/biome",
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.action.useSortedKeys.biome": "explicit",
     "source.fixAll.biome": "explicit"
