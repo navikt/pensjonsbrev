@@ -28,9 +28,9 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     fun build(saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>>?): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyAutobrevdata, EmptyVedleggData)) {
             TemplateModelSpecification(emptyMap(), null)
-        } else if (from.primaryConstructor == null) {
+        } else if (from.primaryConstructor == null && !from.java.isInterface) {
             throw TemplateModelSpecificationError("Cannot create specification of class without primary constructor: ${from.qualifiedName}")
-        } else if (!(from.isData || from.isValue)) {
+        } else if (!(from.isData || from.isValue || from.java.isInterface)) {
             throw TemplateModelSpecificationError("Cannot create specification from a regular class: must be data or value class")
         } else {
             val objectTypes = mutableMapOf(from.qualifiedName!! to createObjectTypeSpecification(from))
