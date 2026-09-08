@@ -448,23 +448,17 @@ class PengerTilGode(private val nettoUt: Expression<Kroner>, private val nettoUt
             )
         }
         paragraph {
-            list {
-                item {
-                    text(
-                        bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
-                    )
-                    text(
-                        bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. " },
-                        nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. " },
-                    )
-                    showIf(nettoUtHarBlittLikBrutto) {
+            showIf(nettoUtHarBlittLikBrutto or btHarBlitt0) {
+                list {
+                    item {
                         text(
-                            bokmal { +"Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
-                            nynorsk { +"Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
+                            bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
+                        )
+                        text(
+                            bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
+                            nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
                         )
                     }
-                }
-                showIf(nettoUtHarBlittLikBrutto or btHarBlitt0) {
                     item {
                         text(
                             bokmal { +"Hvis du fortsatt har penger til gode eller har fått for mye utbetalt, vil dette bli justert i etteroppgjøret for 2026. " },
@@ -476,6 +470,11 @@ class PengerTilGode(private val nettoUt: Expression<Kroner>, private val nettoUt
                         )
                     }
                 }
+            }.orShow {
+                text(
+                    bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. " },
+                    nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. " },
+                )
             }
         }
     }
