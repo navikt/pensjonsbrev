@@ -2,12 +2,11 @@ package no.nav.pensjon.brev.ufore.maler
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.Fixtures
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFU
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFUOgLavereReduksjonsprosent
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar
@@ -54,7 +53,7 @@ class VarselbrevLovendringer2026Test {
     fun testHtmlVarselOmLavereReduksjonsprosentS() {
         LetterTestImpl(
             template = VarselOmLavereReduksjonsprosentRedigerbar.template,
-            argument = EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = lagSaksbehandlervalg()),
+            argument = EmptyFagsystemdata,
             language = Language.Bokmal,
             felles = Fixtures.felles
         ).renderTestHtml("VarselOmLavereReduksjonsprosentS")
@@ -64,7 +63,7 @@ class VarselbrevLovendringer2026Test {
     fun testHtmlVarselOmOktMinsteIFUS() {
         LetterTestImpl(
             template = VarselOmOktMinsteIFURedigerbar.template,
-            argument = EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = lagSaksbehandlervalg()),
+            argument = EmptyFagsystemdata,
             language = Language.Bokmal,
             felles = Fixtures.felles
         ).renderTestHtml("VarselOmOktMinsteIFUS")
@@ -74,7 +73,7 @@ class VarselbrevLovendringer2026Test {
     fun testHtmlVarselOmOktMinsteIFUOgLavereReduksjonsprosentS() {
         LetterTestImpl(
             template = VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar.template,
-            argument = EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = lagSaksbehandlervalg()),
+            argument = EmptyFagsystemdata,
             language = Language.Bokmal,
             felles = Fixtures.felles
         ).renderTestHtml("VarselOmOktMinsteIFUOgLavereReduksjonsprosentS")

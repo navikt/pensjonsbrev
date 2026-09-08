@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.ufore.maler
 
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -31,7 +31,7 @@ object UfoereTemplates : AllTemplates {
         InfoOmReverseringAvMinstesats,
     )
 
-    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(
+    override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out FagsystemBrevdata>> = setOf(
         UforeAvslagTestmal,
         UforeAvslagHensiktsmessigBehandling,
         UforeAvslagHensiktsmessigArbTiltakI1,
