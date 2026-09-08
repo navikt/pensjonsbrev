@@ -4,6 +4,8 @@ import no.nav.brev.brevbaker.SaksbehandlervalgEksempelBrev
 import no.nav.brev.brevbaker.SaksbehandlervalgTestDto
 import no.nav.brev.brevbaker.TestValgEnum
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import org.assertj.core.api.Assertions.assertThat
@@ -30,7 +32,7 @@ private class SaksbehandlervalgTest {
 
     @Test
     fun `bool uten satt verdi gir default false`() {
-        with(TemplateRootScope<LangBokmal, SaksbehandlervalgTestDto>()) {
+        with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
             val bool = saksbehandlervalg("bool", "Boolsk valg").bool()
             assertThat(bool.eval(expressionScope(lagSaksbehandlervalg()))).isFalse()
         }
@@ -38,7 +40,7 @@ private class SaksbehandlervalgTest {
 
     @Test
     fun `bool med satt verdi gir satt verdi`() {
-        with(TemplateRootScope<LangBokmal, SaksbehandlervalgTestDto>()) {
+        with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
             val bool = saksbehandlervalg("bool", "Boolsk valg").bool()
             assertThat(bool.eval(expressionScope(lagSaksbehandlervalg("bool" to true)))).isTrue()
         }
@@ -46,7 +48,7 @@ private class SaksbehandlervalgTest {
 
     @Test
     fun `int uten default er null naar ikke satt`() {
-        with(TemplateRootScope<LangBokmal, SaksbehandlervalgTestDto>()) {
+        with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
             val intUtenDefault = saksbehandlervalg("intUtenDefault", "Tall uten default").int()
             assertThat(intUtenDefault.eval(expressionScope(lagSaksbehandlervalg()))).isNull()
         }
@@ -54,7 +56,7 @@ private class SaksbehandlervalgTest {
 
     @Test
     fun `int uten default gir satt verdi`() {
-        with(TemplateRootScope<LangBokmal, SaksbehandlervalgTestDto>()) {
+        with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
             val intUtenDefault = saksbehandlervalg("intUtenDefault", "Tall uten default").int()
             assertThat(intUtenDefault.eval(expressionScope(lagSaksbehandlervalg("intUtenDefault" to 7)))).isEqualTo(7)
         }
@@ -62,7 +64,7 @@ private class SaksbehandlervalgTest {
 
     @Test
     fun `tekst uten default er null naar ikke satt`() {
-        with(TemplateRootScope<LangBokmal, SaksbehandlervalgTestDto>()) {
+        with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
             val tekstUtenDefault = saksbehandlervalg("tekstUtenDefault", "Tekst uten default").text()
             assertThat(tekstUtenDefault.eval(expressionScope(lagSaksbehandlervalg()))).isNull()
         }
@@ -70,7 +72,7 @@ private class SaksbehandlervalgTest {
 
     @Test
     fun `tekst uten default gir satt verdi`() {
-        with(TemplateRootScope<LangBokmal, SaksbehandlervalgTestDto>()) {
+        with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
             val tekstUtenDefault = saksbehandlervalg("tekstUtenDefault", "Tekst uten default").text()
             assertThat(tekstUtenDefault.eval(expressionScope(lagSaksbehandlervalg("tekstUtenDefault" to "hei")))).isEqualTo("hei")
         }
@@ -78,7 +80,7 @@ private class SaksbehandlervalgTest {
 
     @Test
     fun `enum uten default er null naar ikke satt`() {
-        with(TemplateRootScope<LangBokmal, SaksbehandlervalgTestDto>()) {
+        with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
             val enumUtenDefault = saksbehandlervalg("enumUtenDefault", "Enum uten default").enum<TestValgEnum>()
             assertThat(enumUtenDefault.eval(expressionScope(lagSaksbehandlervalg()))).isNull()
         }
@@ -86,7 +88,7 @@ private class SaksbehandlervalgTest {
 
     @Test
     fun `enum uten default gir satt verdi`() {
-        with(TemplateRootScope<LangBokmal, SaksbehandlervalgTestDto>()) {
+        with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
             val enumUtenDefault = saksbehandlervalg("enumUtenDefault", "Enum uten default").enum<TestValgEnum>()
             assertThat(
                 enumUtenDefault.eval(expressionScope(lagSaksbehandlervalg("enumUtenDefault" to TestValgEnum.ALTERNATIV_TO.name)))

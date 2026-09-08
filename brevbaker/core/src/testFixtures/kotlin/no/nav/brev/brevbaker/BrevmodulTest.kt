@@ -380,7 +380,7 @@ object FeatureToggleDummy : FeatureToggleService {
  * fixture-data for en malens [FagsystemBrevdata] i den `RedigerbarBrevdata<FagData>`-formen malen faktisk
  * forventer.
  */
-private data class TestRedigerbarBrevdata<Data : FagsystemBrevdata>(
+data class TestRedigerbarBrevdata<Data : FagsystemBrevdata>(
     override val pesysData: Data,
     override val saksbehandlerValg: SaksbehandlervalgIDSL = lagSaksbehandlervalg(),
 ) : RedigerbarBrevdata<Data>

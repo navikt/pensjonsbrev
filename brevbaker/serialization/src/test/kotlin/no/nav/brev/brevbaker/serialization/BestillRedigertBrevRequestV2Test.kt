@@ -6,7 +6,6 @@ import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
@@ -28,7 +27,7 @@ class BestillRedigertBrevRequestV2Test {
     data class TestBrevdata(
         override val saksbehandlerValg: SaksbehandlervalgIDSL,
         override val pesysData: TestPesysData,
-    ) : BrevdataMedSaksbehandlerValg<TestPesysData>
+    ) : RedigerbarBrevdata<TestPesysData>
 
     private val mapper = internalObjectMapper().registerModule(
         SimpleModule().apply {

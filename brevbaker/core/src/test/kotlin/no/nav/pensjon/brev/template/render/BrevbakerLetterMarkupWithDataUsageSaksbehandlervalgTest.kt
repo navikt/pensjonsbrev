@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.SaksbehandlervalgEksempelBrev
 import no.nav.brev.brevbaker.SaksbehandlervalgTestDto
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Language
 import org.assertj.core.api.Assertions.assertThat
@@ -35,7 +36,7 @@ class BrevbakerLetterMarkupWithDataUsageSaksbehandlervalgTest {
 
         assertThat(result.letterDataUsage.map { it.typeName to it.propertyName })
             .containsExactlyInAnyOrder(
-                SaksbehandlervalgTestDto::class.qualifiedName!! to "saksbehandlerValg",
+                RedigerbarBrevdata::class.qualifiedName!! to "saksbehandlerValg",
                 saksbehandlervalgType to "bool",
                 saksbehandlervalgType to "intUtenDefault",
                 saksbehandlervalgType to "tekstUtenDefault",
