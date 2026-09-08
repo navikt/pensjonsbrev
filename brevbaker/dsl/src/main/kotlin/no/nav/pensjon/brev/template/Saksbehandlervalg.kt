@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import kotlin.reflect.KClass
 
-class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<*>>(private val id: String, private val displayText: String, private val scope: TemplateRootScope<*, LetterData>) {
+class SaksbehandlerValgBuilder(private val id: String, private val displayText: String, private val scope: TemplateRootScope<*, RedigerbarBrevdata<*>>) {
     init {
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
     }
@@ -55,5 +55,4 @@ private class EttSaksbehandlervalgSelector<Type>(
         get() = saksbehandlervalgVerdi.typename
 }
 
-inline fun <reified LetterData : RedigerbarBrevdata<*>> TemplateRootScope<*, LetterData>.saksbehandlervalg(id: String, displayText: String) = SaksbehandlerValgBuilder(id, displayText,
-    this)
+fun TemplateRootScope<*, RedigerbarBrevdata<*>>.saksbehandlervalg(id: String, displayText: String) = SaksbehandlerValgBuilder(id, displayText, this)
