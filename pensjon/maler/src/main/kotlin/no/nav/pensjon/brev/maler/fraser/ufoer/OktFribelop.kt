@@ -4,7 +4,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.FribelopPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.faktor
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.fom
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.gradsokning
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.tom
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.venteperiodeStartDato
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -16,6 +18,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
@@ -106,7 +109,7 @@ object OktFribelop {
             paragraph {
                 text(
                     bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss inntekt etter uførhet. Dette ble tidligere omtalt som inntektsgrense. " },
-                    nynorsk { +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Bunnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette vart tidlegare omtalt som inntektsgrense. " },
+                    nynorsk { +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Botnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette vart tidlegare omtalt som inntektsgrense. " },
                 )
             }
 
@@ -151,19 +154,20 @@ object OktFribelop {
                     column { text(bokmal { +"Fra" }, nynorsk { +"Frå" }) }
                     column { text(bokmal { +"Til" }, nynorsk { +"Til" }) }
                     column { text(bokmal { +"Fribeløp" }, nynorsk { +"Fribeløp" }) }
+                    column { text(bokmal { +"Årsak til endring" }, nynorsk { +"Årsak til endring" }) }
                 }) {
                     forEach(perioder) { periode ->
                         row {
                             cell {
                                 text(
                                     bokmal { +periode.fom.format(true) },
-                                    nynorsk { +"" + periode.fom.format(true) }
+                                    nynorsk { +periode.fom.format(true) }
                                 )
                             }
                             cell {
                                 text(
                                     bokmal { +periode.tom.format(true) },
-                                    nynorsk { +"" + periode.tom.format(true) }
+                                    nynorsk { +periode.tom.format(true) }
                                 )
                             }
                             cell {
@@ -171,6 +175,24 @@ object OktFribelop {
                                     bokmal { +periode.faktor.format() + " G" },
                                     nynorsk { +periode.faktor.format() + " G" }
                                 )
+                            }
+                            cell {
+                                showIf(periode.faktor.equalTo(1.0)) {
+                                    text(
+                                        bokmal { +"Venteperiode over" },
+                                        nynorsk { +"Venteperiode over" }
+                                    )
+                                }.orShowIf(periode.gradsokning.equalTo(true)) {
+                                    text(
+                                        bokmal { +"Gradsøkning " + periode.venteperiodeStartDato.format(true) },
+                                        nynorsk { +"Gradsøkning " + periode.venteperiodeStartDato.format(true) }
+                                    )
+                                }.orShow {
+                                    text(
+                                        bokmal { +"Innvilgelse " + periode.venteperiodeStartDato.format(true) },
+                                        nynorsk { +"Innvilgelse " + periode.venteperiodeStartDato.format(true) }
+                                    )
+                                }
                             }
                         }
                     }
