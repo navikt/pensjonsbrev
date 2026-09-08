@@ -44,7 +44,6 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -386,11 +385,13 @@ object OktBunnfradrag {
                                 nynorsk { +"Regelverksendringane fører til at barnetillegg for fellesbarn endrar seg fordi begge foreldra sine inntekter vert rekna med. Derfor får du ei lågare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + bt.format() + ". " })
                         }
                     }
-                    paragraph {
-                        text(
-                            bokmal { +"Dersom vi i år allerede har utbetalt for mye barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
-                            nynorsk { +"Dersom vi i år allereie har utbetalt for mykje barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
-                        )
+                    showIf(data.btHarBlitt0) {
+                        paragraph {
+                            text(
+                                bokmal { +"Dersom vi i år allerede har utbetalt for mye barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
+                                nynorsk { +"Dersom vi i år allereie har utbetalt for mykje barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
+                            )
+                        }
                     }
                     paragraph {
                         text(bokmal { +"Du kan lese mer om dette i vedlegget " }, nynorsk { +"Du kan lese meir om dette i vedlegget " })
@@ -453,9 +454,15 @@ class PengerTilGode(private val nettoUt: Expression<Kroner>, private val nettoUt
                         bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
                     )
                     text(
-                        bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
-                        nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
+                        bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. " },
+                        nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. " },
                     )
+                    showIf(nettoUtHarBlittLikBrutto) {
+                        text(
+                            bokmal { +"Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
+                            nynorsk { +"Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
+                        )
+                    }
                 }
                 showIf(nettoUtHarBlittLikBrutto or btHarBlitt0) {
                     item {
