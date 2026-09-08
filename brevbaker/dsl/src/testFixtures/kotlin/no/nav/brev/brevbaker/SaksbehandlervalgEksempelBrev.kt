@@ -5,16 +5,15 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**
@@ -37,7 +36,6 @@ object SaksbehandlervalgEksempelBrev : RedigerbarTemplate<EmptyFagsystemdata> {
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
-        letterDataType = SaksbehandlervalgTestDto::class
     ) {
         // Bool har alltid en default-verdi (false om ikke annet er oppgitt), og er derfor aldri nullable.
         val bool = saksbehandlervalg("bool", "Boolsk valg").bool()
@@ -91,8 +89,3 @@ enum class TestValgEnum(override val displayText: String) : SaksbehandlerValgEnu
     ALTERNATIV_EN("Alternativ en"),
     ALTERNATIV_TO("Alternativ to"),
 }
-
-data class SaksbehandlervalgTestDto(
-    override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata,
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : BrevdataMedSaksbehandlerValg<EmptyFagsystemdata>
