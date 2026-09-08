@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
@@ -16,64 +15,57 @@ import java.time.LocalDate
 
 fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
     InnvilgelseAvAlderspensjonTrygdeavtaleDto(
-        saksbehandlerValg = lagSaksbehandlervalg(
-            "nyBeregningAvInnvilgetAP" to false,
-            "medfoererInnvilgelseAvAPellerOektUttaksgrad" to false,
-            "etterbetaling" to true
+        afpPrivatResultatFellesKontoret = false,
+        alderspensjonVedVirk = InnvilgelseAvAlderspensjonTrygdeavtaleDto.AlderspensjonVedVirk(
+            garantipensjonInnvilget = false,
+            garantitilleggInnvilget = false,
+            gjenlevenderettAnvendt = false,
+            gjenlevendetilleggKap19Innvilget = false,
+            godkjentYrkesskade = false,
+            innvilgetFor67 = false,
+            pensjonstilleggInnvilget = false,
+            privatAFPErBrukt = false,
+            skjermingstilleggInnvilget = false,
+            totalPensjon = Kroner(30000),
+            uforeKombinertMedAlder = false,
+            uttaksgrad = 100,
         ),
-        pesysData = InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData(
-            afpPrivatResultatFellesKontoret = false,
-            alderspensjonVedVirk = InnvilgelseAvAlderspensjonTrygdeavtaleDto.AlderspensjonVedVirk(
-                garantipensjonInnvilget = false,
-                garantitilleggInnvilget = false,
-                gjenlevenderettAnvendt = false,
-                gjenlevendetilleggKap19Innvilget = false,
-                godkjentYrkesskade = false,
-                innvilgetFor67 = false,
-                pensjonstilleggInnvilget = false,
-                privatAFPErBrukt = false,
-                skjermingstilleggInnvilget = false,
-                totalPensjon = Kroner(30000),
-                uforeKombinertMedAlder = false,
-                uttaksgrad = 100,
+        avtalelandNavn = null,
+        borIAvtaleland = false,
+        borINorge = false,
+        erEOSLand = false,
+        erMellombehandling = true,
+        erSluttbehandlingNorgeUtland = false,
+        beloepEndring = BeloepEndring.ENDR_OKT,
+        fullTrygdtid = false,
+        harFlereBeregningsperioder = false,
+        inngangOgEksportVurdering = InnvilgelseAvAlderspensjonTrygdeavtaleDto.InngangOgEksportVurdering(
+            eksportTrygdeavtaleAvtaleland = true,
+            eksportTrygdeavtaleEOS = true,
+            harOppfyltVedSammenlegging = false, // If one of these is true: oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20
+        ),
+        kravVirkDatoFom = LocalDate.of(2025, 6, 1),
+        regelverkType = AlderspensjonRegelverkType.AP2025,
+        sakstype = Sakstype.ALDER,
+        vedtaksresultatUtland = InnvilgelseAvAlderspensjonTrygdeavtaleDto.VedtaksresultatUtland(
+            antallLandVilkarsprovd = 2,
+            landNavn = listOf("Sverige", "Finland"),
+        ),
+        maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
+        maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
+            beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
+                inntektspensjon = Kroner(1000),
+                totalPensjon = Kroner(2000),
+                garantipensjon = Kroner(1000),
+                minstenivaIndividuell = Kroner(1000),
+                virkDatoFom = vilkaarligDato,
+                virkDatoTom = null,
             ),
-            avtalelandNavn = null,
-            borIAvtaleland = false,
-            borINorge = false,
-            erEOSLand = false,
-            erMellombehandling = true,
-            erSluttbehandlingNorgeUtland = false,
-            beloepEndring = BeloepEndring.ENDR_OKT,
-            fullTrygdtid = false,
-            harFlereBeregningsperioder = false,
-            inngangOgEksportVurdering = InnvilgelseAvAlderspensjonTrygdeavtaleDto.InngangOgEksportVurdering(
-                eksportTrygdeavtaleAvtaleland = true,
-                eksportTrygdeavtaleEOS = true,
-                harOppfyltVedSammenlegging = false, // If one of these is true: oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20
-            ),
-            kravVirkDatoFom = LocalDate.of(2025, 6, 1),
-            regelverkType = AlderspensjonRegelverkType.AP2025,
-            sakstype = Sakstype.ALDER,
-            vedtaksresultatUtland = InnvilgelseAvAlderspensjonTrygdeavtaleDto.VedtaksresultatUtland(
-                antallLandVilkarsprovd = 2,
-                landNavn = listOf("Sverige", "Finland"),
-            ),
-            maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
-            maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
-                beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
-                    inntektspensjon = Kroner(1000),
-                    totalPensjon = Kroner(2000),
-                    garantipensjon = Kroner(1000),
-                    minstenivaIndividuell = Kroner(1000),
-                    virkDatoFom = vilkaarligDato,
-                    virkDatoTom = null,
-                ),
-                beregnetPensjonperManed = listOf(),
-                kravVirkFom = vilkaarligDato
-            ),
-            opplysningerBruktIBeregningenAlderspensjon = createOpplysningerBruktIBeregningAlderDto(),
-            opplysningerBruktIBeregningenAlderspensjonAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
-            opplysningerOmAvdodBruktIBeregning = null,
-            orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto()
-        )
+            beregnetPensjonperManed = listOf(),
+            kravVirkFom = vilkaarligDato
+        ),
+        opplysningerBruktIBeregningenAlderspensjon = createOpplysningerBruktIBeregningAlderDto(),
+        opplysningerBruktIBeregningenAlderspensjonAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
+        opplysningerOmAvdodBruktIBeregning = null,
+        orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto()
     )

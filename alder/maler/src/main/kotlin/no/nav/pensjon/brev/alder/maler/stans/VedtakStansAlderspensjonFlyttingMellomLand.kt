@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.alder.model.EksportForbudKode
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
-import no.nav.pensjon.brev.alder.model.stans.selectors.vedtakStansAlderspensjonFlyttingMellomLandDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.stans.selectors.vedtakStansAlderspensjonFlyttingMellomLandDto.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -37,6 +36,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //MF_000128 / AP_STANS_FLYTT_MAN

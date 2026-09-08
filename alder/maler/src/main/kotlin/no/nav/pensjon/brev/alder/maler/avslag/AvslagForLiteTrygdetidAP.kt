@@ -18,8 +18,8 @@ import no.nav.pensjon.brev.alder.model.Sakstype.ALDER
 import no.nav.pensjon.brev.alder.model.avslag.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.VedtaksBegrunnelse.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagForLiteTrygdetidAPDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagForLiteTrygdetidAPDto.*
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Doksys redigermal: MF_000066, tvilling autobrev: MF_000177
@@ -477,7 +478,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
         )
     }
 
-    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagForLiteTrygdetidAPDto>.avslagUnder1aar3aar5aarTT() {
+    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, RedigerbarBrevdata<AvslagForLiteTrygdetidAPDto>>.avslagUnder1aar3aar5aarTT() {
         paragraph {
             text(
                 bokmal { + "Våre opplysninger viser at du har bodd eller arbeidet i Norge i "

@@ -2,12 +2,13 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ.*
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
+import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon.FolketrygdlovenAlternativ.*
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -25,7 +26,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 //Brevgruppe 3
 
 @TemplateModelHelpers
-object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonDto> {
+object OpphoerGjenlevendepensjon : RedigerbarTemplate<EmptyFagsystemdata> {
+    enum class FolketrygdlovenAlternativ(override val displayText: String) : SaksbehandlerValgEnum {
+        gifterSeg("Gifter seg"),
+        inngaaPartnerskap("Inngår partnerskap"),
+        blirSamboerOgHarFellesBarn("Blir samboer og har felles barn"),
+        erErSamboerOgFellesBarn("Er samboer og får felles barn"),
+        blirSamboerTidligereGift("Blir samboer med personen han/hun tidligere var gift med"),
+    }
 
     override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.toggle
 
@@ -42,7 +50,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val folketrygdlovenAlternativ = saksbehandlervalg("folketrygdlovenAlternativ", "Velg § 17-11 alternativ:").enum<OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ>()
+        val folketrygdlovenAlternativ = saksbehandlervalg("folketrygdlovenAlternativ", "Velg § 17-11 alternativ:").enum<FolketrygdlovenAlternativ>()
         val opphoerMedTilbakekreving = saksbehandlervalg("opphoerMedTilbakekreving", "Hvis opphør med tilbakekreving").bool()
         title {
             text(

@@ -15,11 +15,10 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonInstitusjonsoppholdDto
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.*
-import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.pesysData.*
-import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.pesysData.alderspensjonVedVirk.*
-import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.pesysData.beregnetPensjonPerManedVedVirk.*
-import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.pesysData.institusjonsoppholdVedVirk.*
-import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.pesysData.krav.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.alderspensjonVedVirk.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.beregnetPensjonPerManedVedVirk.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.institusjonsoppholdVedVirk.*
+import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonInstitusjonsoppholdDto.krav.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -29,6 +28,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 

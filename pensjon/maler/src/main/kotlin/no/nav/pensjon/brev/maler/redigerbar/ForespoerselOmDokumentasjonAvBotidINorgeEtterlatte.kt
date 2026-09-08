@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDto
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -17,7 +17,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 @TemplateModelHelpers
-object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<ForespoerselOmDokumentasjonAvBotidINorgeDto> {
+object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<EmptyFagsystemdata> {
 
     // PE_IY_03_167 - dette er delen for barnep eller gjenlev
     override val kode = Pesysbrevkoder.Redigerbar.PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE

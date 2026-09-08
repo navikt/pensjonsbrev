@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -49,6 +50,6 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
                 )
             }
         }
-        includeAttachment(egenerklaeringPleieOgOmsorgsarbeidManuell, argument)
+        includeAttachment(egenerklaeringPleieOgOmsorgsarbeidManuell, argument.pesysData)
     }
 }

@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmLavereMinstesatsData.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.ufoer.LavereMinstesats
@@ -21,6 +20,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers

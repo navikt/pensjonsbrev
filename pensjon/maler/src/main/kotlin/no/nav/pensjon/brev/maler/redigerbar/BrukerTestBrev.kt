@@ -2,12 +2,13 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.DenBesteKaken.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.UtsiktenFraKontoret.*
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev.DenBesteKaken.*
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev.UtsiktenFraKontoret.*
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.*
@@ -25,7 +26,18 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.saksbehandlervalg
 
 @TemplateModelHelpers
-object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
+object BrukerTestBrev : RedigerbarTemplate<EmptyFagsystemdata> {
+    private enum class UtsiktenFraKontoret(override val displayText: String) : SaksbehandlerValgEnum {
+        MOT_TRAER_OG_NATUR("Trær og natur"),
+        MOT_PARKERINGSPLASSEN("Parkeringsplass"),
+    }
+
+    private enum class DenBesteKaken(override val displayText: String) : SaksbehandlerValgEnum {
+        GULROTKAKE("Gulrotkake"),
+        RULLEKAKE("Rullekake"),
+        OSTEKAKE("Ostekake"),
+        KAKENERLOEGN("Kaken er en løgn"),
+    }
 
     override val featureToggle = FeatureToggles.brukertestbrev2025.toggle
 
@@ -43,8 +55,8 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
         )
     ) {
 
-        val utsiktenFraKontoret = saksbehandlervalg("utsiktenFraKontoret", "Utsikten fra kontoret").enum<BrukerTestBrevDto.UtsiktenFraKontoret>()
-        val denBesteKaken = saksbehandlervalg("denBesteKaken", "Den beste kaken").enum<BrukerTestBrevDto.DenBesteKaken>()
+        val utsiktenFraKontoret = saksbehandlervalg("utsiktenFraKontoret", "Utsikten fra kontoret").enum<UtsiktenFraKontoret>()
+        val denBesteKaken = saksbehandlervalg("denBesteKaken", "Den beste kaken").enum<DenBesteKaken>()
         val kaffemaskinensTilgjengelighet = saksbehandlervalg("kaffemaskinensTilgjengelighet", "Kaffemaskinens tilgjengelighet").bool()
         val kontorplantenTorlill = saksbehandlervalg("kontorplantenTorlill", "Kontorplanten TorLill").bool()
 

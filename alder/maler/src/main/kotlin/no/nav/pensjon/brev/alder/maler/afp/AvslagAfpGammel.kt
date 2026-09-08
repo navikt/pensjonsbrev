@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJ
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDto
-import no.nav.pensjon.brev.alder.model.afp.selectors.avslagAfpGammelDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.avslagAfpGammelDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.ISakstype
@@ -21,6 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata

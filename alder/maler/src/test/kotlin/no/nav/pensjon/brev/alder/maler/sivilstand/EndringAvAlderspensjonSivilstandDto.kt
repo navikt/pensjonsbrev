@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -15,46 +14,38 @@ import java.time.LocalDate
 
 fun createEndringAvAlderspensjonSivilstandDto() =
     EndringAvAlderspensjonSivilstandDto(
-        saksbehandlerValg = lagSaksbehandlervalg(
-            "feilutbetaling" to false,
-            "sivilstandsendringsaarsak" to EndringAvAlderspensjonSivilstandDto.Sivilstandsendringsaarsak.annet.name,
-            "etterbetaling" to true,
-        ),
-        pesysData =
-            EndringAvAlderspensjonSivilstandDto.PesysData(
-                alderspensjonVedVirk =
-                    EndringAvAlderspensjonSivilstandDto.AlderspensjonVedVirk(
-                        garantipensjonInnvilget = false,
-                        innvilgetFor67 = false,
-                        minstenivaaIndividuellInnvilget = true,
-                        minstenivaaPensjonsistParInnvilget = false,
-                        pensjonstilleggInnvilget = false,
-                        saertilleggInnvilget = false,
-                        ufoereKombinertMedAlder = false,
-                        uttaksgrad = 100,
-                    ),
-                beregnetPensjonPerManedVedVirk =
-                    EndringAvAlderspensjonSivilstandDto.BeregnetPensjonPerManedVedVirk(
-                        grunnpensjon = Kroner(320000),
-                        totalPensjon = Kroner(340000),
-                    ),
-                epsVedVirk =
-                    EndringAvAlderspensjonSivilstandDto.EpsVedVirk(
-                        borSammenMedBruker = true,
-                        harInntektOver2G = false,
-                        mottarOmstillingsstonad = false,
-                        mottarPensjon = false,
-                    ),
-                kravAarsak = KravArsakType.SIVILSTANDSENDRING,
-                kravVirkDatoFom = LocalDate.of(2025, 6, 1),
-                regelverkType = AlderspensjonRegelverkType.AP2011,
-                sivilstand = MetaforceSivilstand.GIFT,
-                maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
-                maanedligPensjonFoerSkattAP2025Dto =
-                    createMaanedligPensjonFoerSkattAP2025Dto(),
-                orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
-                beloepEndring = BeloepEndring.UENDRET,
+        alderspensjonVedVirk =
+            EndringAvAlderspensjonSivilstandDto.AlderspensjonVedVirk(
+                garantipensjonInnvilget = false,
+                innvilgetFor67 = false,
+                minstenivaaIndividuellInnvilget = true,
+                minstenivaaPensjonsistParInnvilget = false,
+                pensjonstilleggInnvilget = false,
+                saertilleggInnvilget = false,
+                ufoereKombinertMedAlder = false,
+                uttaksgrad = 100,
             ),
+        beregnetPensjonPerManedVedVirk =
+            EndringAvAlderspensjonSivilstandDto.BeregnetPensjonPerManedVedVirk(
+                grunnpensjon = Kroner(320000),
+                totalPensjon = Kroner(340000),
+            ),
+        epsVedVirk =
+            EndringAvAlderspensjonSivilstandDto.EpsVedVirk(
+                borSammenMedBruker = true,
+                harInntektOver2G = false,
+                mottarOmstillingsstonad = false,
+                mottarPensjon = false,
+            ),
+        kravAarsak = KravArsakType.SIVILSTANDSENDRING,
+        kravVirkDatoFom = LocalDate.of(2025, 6, 1),
+        regelverkType = AlderspensjonRegelverkType.AP2011,
+        sivilstand = MetaforceSivilstand.GIFT,
+        maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
+        maanedligPensjonFoerSkattAP2025Dto =
+            createMaanedligPensjonFoerSkattAP2025Dto(),
+        orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
+        beloepEndring = BeloepEndring.UENDRET,
     )
 
 internal fun createMaanedligPensjonFoerSkattAP2025Dto() = MaanedligPensjonFoerSkattAP2025Dto(

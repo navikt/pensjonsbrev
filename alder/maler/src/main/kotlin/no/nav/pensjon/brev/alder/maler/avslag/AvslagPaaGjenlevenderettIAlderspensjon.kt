@@ -25,16 +25,16 @@ import no.nav.pensjon.brev.alder.model.KravInitiertAv.NAV
 import no.nav.pensjon.brev.alder.model.KravInitiertAv.VERGE
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.alderspensjonVedVirk.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.avdoed.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.avtaleland.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.beregnetPensjonPerManed.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.bruker.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.krav.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.ytelseskomponentInformasjon.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.alderspensjonVedVirk.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.avdoed.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.avtaleland.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.beregnetPensjonPerManed.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.bruker.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.krav.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.ytelseskomponentInformasjon.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.*
 import no.nav.pensjon.brev.alder.model.avslag.AvslagPaaGjenlevenderettIAlderspensjonDto
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.BrevdataEllerFritekst
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -58,6 +58,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -475,7 +476,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025)
     }
 
-    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagPaaGjenlevenderettIAlderspensjonDto>.derforHarDuIkkeGjenlevenderett(
+    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, RedigerbarBrevdata<AvslagPaaGjenlevenderettIAlderspensjonDto>>.derforHarDuIkkeGjenlevenderett(
         initiertAvBrukerEllerVerge: Expression<Boolean>,
         initiertAvNav: Expression<Boolean>,
         avdoedNavn: BrevdataEllerFritekst,
@@ -498,7 +499,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
         }
     }
 
-    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagPaaGjenlevenderettIAlderspensjonDto>.Under3Eller5Aar(
+    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, RedigerbarBrevdata<AvslagPaaGjenlevenderettIAlderspensjonDto>>.Under3Eller5Aar(
         land: PlainTextOnlyPhrase<LangBokmalNynorskEnglish>,
     ) {
         paragraph {

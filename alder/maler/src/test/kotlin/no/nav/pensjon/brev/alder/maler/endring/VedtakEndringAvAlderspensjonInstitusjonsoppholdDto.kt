@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.alder.maler.endring
 
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BeloepEndring
@@ -12,35 +11,23 @@ import java.time.Month
 
 fun createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() =
     VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
-        saksbehandlerValg = lagSaksbehandlervalg(
-            "alderspensjonUnderOppholdIInstitusjon" to true,
-            "alderspensjonUnderSoning" to true,
-            "alderspensjonVedVaretektsfengsling" to true,
-            "alderspensjonRedusert" to true,
-            "alderspensjonStanset" to true,
-            "informasjonOmSivilstandVedInstitusjonsopphold" to true,
-            "hvisReduksjonTilbakeITid" to true,
-            "etterbetaling" to true
+        beregnetPensjonPerManedVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.BeregnetPensjonPerManedVedVirk(
+            totalPensjon = Kroner(1000),
+            antallBeregningsperioderPensjon = 5
         ),
-        pesysData = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData(
-            beregnetPensjonPerManedVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData.BeregnetPensjonPerManedVedVirk(
-                totalPensjon = Kroner(1000),
-                antallBeregningsperioderPensjon = 5
-            ),
-            krav = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData.Krav(
-                virkDatoFom = LocalDate.of(2020, Month.JULY, 1)
-            ),
-            institusjonsoppholdVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData.InstitusjonsoppholdVedVirk(
-                helseinstitusjon = true,
-                fengsel = true
-            ),
-            alderspensjonVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData.AlderspensjonVedVirk(
-                totalPensjon = Kroner(200),
-                uforeKombinertMedAlder = true,
-                regelverkType = AlderspensjonRegelverkType.AP2011
-            ),
-            beloepEndring = BeloepEndring.ENDR_RED,
-            orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
-            maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto(),
-        )
+        krav = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.Krav(
+            virkDatoFom = LocalDate.of(2020, Month.JULY, 1)
+        ),
+        institusjonsoppholdVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.InstitusjonsoppholdVedVirk(
+            helseinstitusjon = true,
+            fengsel = true
+        ),
+        alderspensjonVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.AlderspensjonVedVirk(
+            totalPensjon = Kroner(200),
+            uforeKombinertMedAlder = true,
+            regelverkType = AlderspensjonRegelverkType.AP2011
+        ),
+        beloepEndring = BeloepEndring.ENDR_RED,
+        orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
+        maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto(),
     )

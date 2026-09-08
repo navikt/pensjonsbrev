@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmIFUReduksjonsprosentData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmIFUReduksjonsprosentRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmIFUReduksjonsprosentRedigerbarDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmIFUReduksjonsprosentRedigerbarDto.pesysData.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.ufoer.OktMinsteIFUReduksjonsprosent
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
@@ -27,6 +26,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers

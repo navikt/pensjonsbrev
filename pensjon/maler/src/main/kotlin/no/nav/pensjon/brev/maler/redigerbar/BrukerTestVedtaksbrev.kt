@@ -7,6 +7,8 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestVedtaksbrev.DenBesteKaken.*
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestVedtaksbrev.UtsiktenFraKontoret.*
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.*
@@ -25,12 +27,12 @@ import no.nav.pensjon.brev.template.saksbehandlervalg
 
 @TemplateModelHelpers
 object BrukerTestVedtaksbrev : RedigerbarTemplate<EmptyFagsystemdata> {
-    enum class UtsiktenFraKontoret(override val displayText: String) : SaksbehandlerValgEnum {
+    private enum class UtsiktenFraKontoret(override val displayText: String) : SaksbehandlerValgEnum {
         MOT_TRAER_OG_NATUR("Trær og natur"),
         MOT_PARKERINGSPLASSEN("Parkeringsplass"),
     }
 
-    enum class DenBesteKaken(override val displayText: String) : SaksbehandlerValgEnum {
+    private enum class DenBesteKaken(override val displayText: String) : SaksbehandlerValgEnum {
         GULROTKAKE("Gulrotkake"),
         RULLEKAKE("Rullekake"),
         OSTEKAKE("Ostekake"),

@@ -30,7 +30,6 @@ import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonFordi
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.behandlingKontekst.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.krav.*
-import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.ytelseskomponentInformasjon.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.*
 import no.nav.pensjon.brev.model.format
@@ -53,6 +52,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // 119 i doksys

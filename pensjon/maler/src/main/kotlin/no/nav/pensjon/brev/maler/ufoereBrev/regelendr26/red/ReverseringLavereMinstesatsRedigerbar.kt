@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.ReverseringLavereMinstesatsRedigerbarDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.reverseringLavereMinstesatsRedigerbarDto.pesysData
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.reverseringLavereMinstesatsRedigerbarDto.pesysData.data
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.reverseringLavereMinstesatsRedigerbarDto.data
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.pe
@@ -23,6 +22,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers

@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SAKSBEHANDLINGSTID_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -20,7 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 @TemplateModelHelpers
-object OrienteringOmSaksbehandlingstidV2 : RedigerbarTemplate<OrienteringOmSaksbehandlingstidDto> {
+object OrienteringOmSaksbehandlingstidV2 : RedigerbarTemplate<EmptyFagsystemdata> {
 
     // PE_UP_07_105
     override val kode = Pesysbrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID

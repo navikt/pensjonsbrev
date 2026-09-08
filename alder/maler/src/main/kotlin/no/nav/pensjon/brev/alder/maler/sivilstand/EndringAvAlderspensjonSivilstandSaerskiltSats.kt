@@ -32,7 +32,6 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilsta
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.EPS
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.beregnetPensjonPerManedVedVirk.*
-import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
@@ -46,6 +45,7 @@ import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // MF_000102 Vedtaksbrevet dekker alle regelverkstypene.

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -25,8 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.nav
 
 // Erstatte PE_IY_03_157
 @TemplateModelHelpers
-object KlageOrienteringOmOversendelseTilKlageinstans :
-    RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
+object KlageOrienteringOmOversendelseTilKlageinstans : RedigerbarTemplate<EmptyFagsystemdata> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmOversendelseTilKlageinstans.toggle
 

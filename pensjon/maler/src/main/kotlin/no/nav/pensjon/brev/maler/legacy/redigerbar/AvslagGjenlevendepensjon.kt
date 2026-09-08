@@ -5,8 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto.FolketrygdlovenParagraf.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonDto.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonDto.kravMottattDato
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
@@ -20,6 +19,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 

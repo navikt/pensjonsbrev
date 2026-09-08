@@ -39,7 +39,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.innvilgelse.InnvilgelseAvAlderspensjonTrygdeavtaleDto
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.inngangOgEksportVurdering.*
-import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.vedtaksresultatUtland.*
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.*
 import no.nav.pensjon.brev.model.format
@@ -50,6 +49,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata

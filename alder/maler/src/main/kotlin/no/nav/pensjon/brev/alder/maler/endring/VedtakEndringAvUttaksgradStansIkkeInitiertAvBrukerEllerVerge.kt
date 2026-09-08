@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Aarsak
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.krav.*
-import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.*
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.Language
@@ -28,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers

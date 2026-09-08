@@ -30,7 +30,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradDto.beregnetPensjonPerManed.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradDto.krav.*
-import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -49,6 +48,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent

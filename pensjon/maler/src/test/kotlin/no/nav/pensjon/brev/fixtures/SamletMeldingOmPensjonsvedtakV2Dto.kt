@@ -3,10 +3,8 @@ package no.nav.pensjon.brev.fixtures
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.*
-import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.AvslaattPensjon
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import java.time.LocalDate
@@ -15,11 +13,8 @@ import java.time.Month
 
 fun createSamletMeldingOmPensjonsvedtakV2Dto() =
     SamletMeldingOmPensjonsvedtakV2Dto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
-            sakstype = Sakstype.ALDER,
-            p1Vedlegg = createP1VedleggDto(),
-        ),
+        sakstype = Sakstype.ALDER,
+        p1Vedlegg = createP1VedleggDto(),
     )
 
 private const val ADRESSE_EKSEMPEL = "Lillevik Torgvei 1\n4321\nLillevik Østre\nDanmark"

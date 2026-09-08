@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -19,6 +18,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //PE_GP_04_025 Vedtak innvilgelse av gjenlevendepensjon utland

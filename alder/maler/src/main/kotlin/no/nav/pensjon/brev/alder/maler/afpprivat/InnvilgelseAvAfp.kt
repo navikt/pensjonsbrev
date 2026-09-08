@@ -9,17 +9,16 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJ
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.kompensasjonstilleggBrutto
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.kronetilleggBrutto
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.livsvarigBrutto
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.totalPensjon
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.bosattINorge
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.brukerUnder70Aar
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.kravMottattDato
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.oversiktOverPensjonen
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.virkningFom
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.afpBeregning
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.afpBeregning.kompensasjonstilleggBrutto
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.afpBeregning.kronetilleggBrutto
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.afpBeregning.livsvarigBrutto
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.afpBeregning.totalPensjon
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.bosattINorge
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.brukerUnder70Aar
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.kravMottattDato
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.oversiktOverPensjonen
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.virkningFom
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -30,6 +29,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**

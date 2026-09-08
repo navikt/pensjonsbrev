@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.alder.maler.endring
 
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.alder.Fixtures
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
@@ -16,31 +15,28 @@ import java.time.Month
 
 fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
     VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData(
-            krav = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.Krav(
-                virkDatoFom = LocalDate.of(2024, Month.MAY, 1),
-                arsakErEndretOpptjening = true,
-                erForstegangsbehandling = true
-            ),
-            alderspensjonVedVirk = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.AlderspensjonVedVirk(
-                totalPensjon = Kroner(1000),
-                uforeKombinertMedAlder = true,
-                regelverkType = AlderspensjonRegelverkType.AP2025,
-                fullUttaksgrad = true
-            ),
-            ytelseskomponentInformasjon = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.YtelseskomponentInformasjon(
-                belopEndring = BeloepEndring.ENDR_OKT
-            ),
-            behandlingKontekst = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.BehandlingKontekst(
-                konteksttypeErKorrigeringopptjening = false
-            ),
-            etterbetaling = true,
-            orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterOgPlikterDto(),
-            maanedligPensjonFoerSkatt = Fixtures.createVedlegg(MaanedligPensjonFoerSkattDto::class),
-            maanedligPensjonFoerSkattAP2025 = Fixtures.createVedlegg(MaanedligPensjonFoerSkattAP2025Dto::class),
-            opplysningerBruktIBeregningenAlder = createOpplysningerBruktIBeregningAlderDto(),
-            opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
-            opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening = null,
-        )
+        krav = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.Krav(
+            virkDatoFom = LocalDate.of(2024, Month.MAY, 1),
+            arsakErEndretOpptjening = true,
+            erForstegangsbehandling = true
+        ),
+        alderspensjonVedVirk = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.AlderspensjonVedVirk(
+            totalPensjon = Kroner(1000),
+            uforeKombinertMedAlder = true,
+            regelverkType = AlderspensjonRegelverkType.AP2025,
+            fullUttaksgrad = true
+        ),
+        ytelseskomponentInformasjon = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.YtelseskomponentInformasjon(
+            belopEndring = BeloepEndring.ENDR_OKT
+        ),
+        behandlingKontekst = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.BehandlingKontekst(
+            konteksttypeErKorrigeringopptjening = false
+        ),
+        etterbetaling = true,
+        orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterOgPlikterDto(),
+        maanedligPensjonFoerSkatt = Fixtures.createVedlegg(MaanedligPensjonFoerSkattDto::class),
+        maanedligPensjonFoerSkattAP2025 = Fixtures.createVedlegg(MaanedligPensjonFoerSkattAP2025Dto::class),
+        opplysningerBruktIBeregningenAlder = createOpplysningerBruktIBeregningAlderDto(),
+        opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
+        opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening = null,
     )

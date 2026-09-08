@@ -38,7 +38,6 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilsta
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.beregnetPensjonPerManedVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.epsVedVirk.*
-import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -58,6 +57,7 @@ import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 

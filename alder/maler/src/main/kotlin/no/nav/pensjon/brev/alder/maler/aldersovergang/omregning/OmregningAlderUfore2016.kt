@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.selectors.inngangOgEksportVurdering.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.selectors.omregningAlderUfore2016Dto.*
-import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.selectors.omregningAlderUfore2016RedigerbarDto.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.selectors.persongrunnlagAvdod.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -27,6 +26,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -15,49 +14,39 @@ import java.time.LocalDate
 
 fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
     EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
-        saksbehandlerValg =
-            lagSaksbehandlervalg(
-                "eps" to EndringAvAlderspensjonSivilstandSaerskiltSatsDto.EPS.epsHarInntektOver1G.name,
-                "aarligKontrollEPS" to false,
-                "feilutbetaling" to false,
-                "etterbetaling" to true,
+        alderspensjonVedVirk =
+            EndringAvAlderspensjonSivilstandSaerskiltSatsDto.AlderspensjonVedVirk(
+                innvilgetFor67 = false,
+                minstenivaaIndividuellInnvilget = true,
+                ufoereKombinertMedAlder = false,
+                uttaksgrad = 100,
+                saertilleggInnvilget = true,
             ),
-        pesysData =
-            EndringAvAlderspensjonSivilstandSaerskiltSatsDto.PesysData(
-                alderspensjonVedVirk =
-                    EndringAvAlderspensjonSivilstandSaerskiltSatsDto.AlderspensjonVedVirk(
-                        innvilgetFor67 = false,
-                        minstenivaaIndividuellInnvilget = true,
-                        ufoereKombinertMedAlder = false,
-                        uttaksgrad = 100,
-                        saertilleggInnvilget = true,
-                    ),
-                beregnetPensjonPerManedVedVirk =
-                    EndringAvAlderspensjonSivilstandSaerskiltSatsDto.BeregnetPensjonPerManedVedVirk(
-                        grunnbelop = Kroner(124028),
-                        totalPensjon = Kroner(340000),
-                    ),
-                kravAarsak = KravArsakType.SIVILSTANDSENDRING,
-                kravVirkDatoFom = LocalDate.of(2025, 6, 1),
-                regelverkType = AlderspensjonRegelverkType.AP2011,
-                saerskiltSatsErBrukt = false,
-                sivilstand = MetaforceSivilstand.GIFT,
-                beloepEndring = BeloepEndring.UENDRET,
-                maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
-                maanedligPensjonFoerSkattAP2025Dto =
-                    MaanedligPensjonFoerSkattAP2025Dto(
-                        beregnetPensjonPerManedGjeldende =
-                            MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
-                                inntektspensjon = Kroner(1000),
-                                totalPensjon = Kroner(2000),
-                                garantipensjon = Kroner(1000),
-                                minstenivaIndividuell = Kroner(1000),
-                                virkDatoFom = vilkaarligDato,
-                                virkDatoTom = null,
-                            ),
-                        beregnetPensjonperManed = listOf(),
-                        kravVirkFom = vilkaarligDato,
-                    ),
-                orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
+        beregnetPensjonPerManedVedVirk =
+            EndringAvAlderspensjonSivilstandSaerskiltSatsDto.BeregnetPensjonPerManedVedVirk(
+                grunnbelop = Kroner(124028),
+                totalPensjon = Kroner(340000),
             ),
+        kravAarsak = KravArsakType.SIVILSTANDSENDRING,
+        kravVirkDatoFom = LocalDate.of(2025, 6, 1),
+        regelverkType = AlderspensjonRegelverkType.AP2011,
+        saerskiltSatsErBrukt = false,
+        sivilstand = MetaforceSivilstand.GIFT,
+        beloepEndring = BeloepEndring.UENDRET,
+        maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
+        maanedligPensjonFoerSkattAP2025Dto =
+            MaanedligPensjonFoerSkattAP2025Dto(
+                beregnetPensjonPerManedGjeldende =
+                    MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
+                        inntektspensjon = Kroner(1000),
+                        totalPensjon = Kroner(2000),
+                        garantipensjon = Kroner(1000),
+                        minstenivaIndividuell = Kroner(1000),
+                        virkDatoFom = vilkaarligDato,
+                        virkDatoTom = null,
+                    ),
+                beregnetPensjonperManed = listOf(),
+                kravVirkFom = vilkaarligDato,
+            ),
+        orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
     )

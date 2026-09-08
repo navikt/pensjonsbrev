@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.*
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.api.model.vedlegg.selectors.egenerklaeringOmsorgsarbeidDto.*
@@ -50,7 +49,7 @@ val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment<LangBokmalNynor
     },
     includeSakspart = true
 ) {
-    vedlegg(pesysData.returadresse, ".".repeat(10).expr())
+    vedlegg(returadresse, ".".repeat(10).expr())
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: Expression<ReturAdresse>, aarEgenerklaering: Expression<String>) {

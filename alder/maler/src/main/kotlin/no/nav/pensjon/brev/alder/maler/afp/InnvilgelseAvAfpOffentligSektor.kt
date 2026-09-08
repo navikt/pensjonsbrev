@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.beregning.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.ektefelletillegg.*
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
-import no.nav.pensjon.brev.alder.model.afp.selectors.innvilgelseAvAfpOffentligSektorDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.innvilgelseAvAfpOffentligSektorDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.ISakstype
@@ -28,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**

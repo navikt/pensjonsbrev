@@ -4,63 +4,52 @@ import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 fun createVedtakAfpEtteroppgjoerIngenEndringDto(): VedtakAfpEtteroppgjoerIngenEndringDto =
     VedtakAfpEtteroppgjoerIngenEndringDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakAfpEtteroppgjoerIngenEndringDto.PesysData(
-            oppgjoersAar = Year(2024),
-            pensjonsgivendeInntekt = Kroner(280_000),
-            inntektFoerUttak = Kroner(40_000),
-            inntektEtterOpphoer = Kroner(0),
-            inntektIAfpPerioden = Kroner(240_000),
-            forventetPensjonsgivendeInntektBeregnet = Kroner(250_000),
-            avvik = Kroner(10_000),
-            uttaksdato = LocalDate.of(2024, 3, 1),
-            opphorsdato = null,
-            medlemAvApotekerordningen = true,
-            toleranseBeloep = Kroner(3000),
-            periode = AfpPeriode.UTTAK_I_AARET,
-        ),
+        oppgjoersAar = Year(2024),
+        pensjonsgivendeInntekt = Kroner(280_000),
+        inntektFoerUttak = Kroner(40_000),
+        inntektEtterOpphoer = Kroner(0),
+        inntektIAfpPerioden = Kroner(240_000),
+        forventetPensjonsgivendeInntektBeregnet = Kroner(250_000),
+        avvik = Kroner(10_000),
+        uttaksdato = LocalDate.of(2024, 3, 1),
+        opphorsdato = null,
+        medlemAvApotekerordningen = true,
+        toleranseBeloep = Kroner(3000),
+        periode = AfpPeriode.UTTAK_I_AARET,
     )
 
 fun createVedtakAfpEtteroppgjoerEtterbetalingDto(): VedtakAfpEtteroppgjoerEtterbetalingDto =
     VedtakAfpEtteroppgjoerEtterbetalingDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakAfpEtteroppgjoerEtterbetalingDto.PesysData(
-            oppgjoersAar = Year(2024),
-            forlitebetalt = Kroner(14_000),
-            pensjonsgivendeInntekt = Kroner(220_000),
-            inntektFoerUttak = Kroner(40_000),
-            inntektEtterOpphoer = Kroner(0),
-            inntektIAfpPerioden = Kroner(180_000),
-            forventetPensjonsgivendeInntektBeregnet = Kroner(250_000),
-            fullAfp = Kroner(200_000),
-            fradragBeregnetArbeidsInntekt = Kroner(50_000),
-            tidligereArbeidsInntektBeregnet = Kroner(250_000),
-            korrigertAfp = Kroner(150_000),
-            utbetaltAfp = Kroner(135_000),
-            uttaksdato = LocalDate.of(2024, 3, 1),
-            opphorsdato = null,
-            medlemAvApotekerordningen = true,
-            toleranseBeloep = Kroner(33_240),
-            periode = AfpPeriode.UTTAK_I_AARET,
-
-        ),
+        oppgjoersAar = Year(2024),
+        forlitebetalt = Kroner(14_000),
+        pensjonsgivendeInntekt = Kroner(220_000),
+        inntektFoerUttak = Kroner(40_000),
+        inntektEtterOpphoer = Kroner(0),
+        inntektIAfpPerioden = Kroner(180_000),
+        forventetPensjonsgivendeInntektBeregnet = Kroner(250_000),
+        fullAfp = Kroner(200_000),
+        fradragBeregnetArbeidsInntekt = Kroner(50_000),
+        tidligereArbeidsInntektBeregnet = Kroner(250_000),
+        korrigertAfp = Kroner(150_000),
+        utbetaltAfp = Kroner(135_000),
+        uttaksdato = LocalDate.of(2024, 3, 1),
+        opphorsdato = null,
+        medlemAvApotekerordningen = true,
+        toleranseBeloep = Kroner(33_240),
+        periode = AfpPeriode.UTTAK_I_AARET,
     )
 
 fun createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(): VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto =
     VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.PesysData(
-            oppgjoersAar = Year(2024),
-            pensjonsgivendeInntekt = Kroner(280_000),
-            toleranseBeloep = Kroner(33000),
-            medlemAvApotekerordningen = true,
-            scenario = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.Scenario.IKKE_AFP_FULL_INNTEKT,
-        ),
+        oppgjoersAar = Year(2024),
+        pensjonsgivendeInntekt = Kroner(280_000),
+        toleranseBeloep = Kroner(33000),
+        medlemAvApotekerordningen = true,
+        scenario = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.Scenario.IKKE_AFP_FULL_INNTEKT,
     )
