@@ -43,32 +43,29 @@ fun createVedtakOmIFUReduksjonsprosentAutoDto() =
 
 fun createVedtakOmIFUReduksjonsprosentRedigerbarDto() =
     VedtakOmIFUReduksjonsprosentRedigerbarDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakOmIFUReduksjonsprosentRedigerbarDto.PesysData(
-            vedtakData = VedtakOmIFUReduksjonsprosentData(
-                beregningFomDato = LocalDate.of(2026, Month.JULY, 1),
-                nettoUforetrygdUtenTillegg = Kroner(26000),
-                nettoBarnetillegg = Kroner(4000),
-                nettoGjenlevendetillegg = Kroner(0),
-                totalbelop = Kroner(30000),
-                etterbetalingJuli = Kroner(1500),
-                reduksjonsprosent = 50.0,
-                inntektstak = Kroner(500000),
-                ifu = Kroner(300000),
-                tillegg = listOf(UTTillegg.BT, UTTillegg.GJT),
-                endringNettoUforetrygdUtenTillegg = true,
-                endringNettoBarnetillegg = true,
-                endringNettoGjenlevendetillegg = false,
-                endringInntektstak = true,
-                erInntektsavkortet = true,
-                hjemler = setOf("12-13", "12-16", "12-18", "22-12"),
-                pe = createPEgruppe10(),
-                maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
-                inntektsgrense = Kroner(30000),
-                endringInntektsgrense = true,
-                uforegrad = 100,
-                endringUforegrad = true
-            )
+        vedtakData = VedtakOmIFUReduksjonsprosentData(
+            beregningFomDato = LocalDate.of(2026, Month.JULY, 1),
+            nettoUforetrygdUtenTillegg = Kroner(26000),
+            nettoBarnetillegg = Kroner(4000),
+            nettoGjenlevendetillegg = Kroner(0),
+            totalbelop = Kroner(30000),
+            etterbetalingJuli = Kroner(1500),
+            reduksjonsprosent = 50.0,
+            inntektstak = Kroner(500000),
+            ifu = Kroner(300000),
+            tillegg = listOf(UTTillegg.BT, UTTillegg.GJT),
+            endringNettoUforetrygdUtenTillegg = true,
+            endringNettoBarnetillegg = true,
+            endringNettoGjenlevendetillegg = false,
+            endringInntektstak = true,
+            erInntektsavkortet = true,
+            hjemler = setOf("12-13", "12-16", "12-18", "22-12"),
+            pe = createPEgruppe10(),
+            maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
+            inntektsgrense = Kroner(30000),
+            endringInntektsgrense = true,
+            uforegrad = 100,
+            endringUforegrad = true
         )
     )

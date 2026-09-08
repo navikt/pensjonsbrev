@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 import no.nav.pensjon.brev.api.model.KonteringType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
@@ -13,20 +12,17 @@ import java.time.LocalDate
 
 fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
     TilbakekrevingAvFeilutbetaltBeloepDto(
-        pesysData = TilbakekrevingAvFeilutbetaltBeloepDto.PesysData(
-            feilutbetaltTotalBeloep = Kroner(25000),
-            resultatAvVurderingenForTotalBeloep = TilbakekrevingResultat.FULL_TILBAKEKREV,
+        feilutbetaltTotalBeloep = Kroner(25000),
+        resultatAvVurderingenForTotalBeloep = TilbakekrevingResultat.FULL_TILBAKEKREV,
+        sakstype = Sakstype.ALDER,
+        sluttPeriodeForTilbakekreving = LocalDate.of(2024, 1, 1),
+        startPeriodeForTilbakekreving = LocalDate.of(2024, 12, 31),
+        sumTilInnkrevingTotalBeloep = Kroner(25000),
+        dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
             sakstype = Sakstype.ALDER,
-            sluttPeriodeForTilbakekreving = LocalDate.of(2024, 1, 1),
-            startPeriodeForTilbakekreving = LocalDate.of(2024, 12, 31),
-            sumTilInnkrevingTotalBeloep = Kroner(25000),
-            dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
-                sakstype = Sakstype.ALDER,
-                brukerUnder18Aar = false
-            ),
-            oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto()
+            brukerUnder18Aar = false
         ),
-        saksbehandlerValg = lagSaksbehandlervalg(),
+        oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto()
     )
 
 fun createOversiktOverFeilutbetalingPEDto(): OversiktOverFeilutbetalingPEDto = OversiktOverFeilutbetalingPEDto(

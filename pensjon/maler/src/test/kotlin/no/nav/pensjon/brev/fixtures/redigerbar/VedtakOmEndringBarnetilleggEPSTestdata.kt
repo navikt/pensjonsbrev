@@ -29,8 +29,5 @@ fun createVedtakOmEndringBarnetilleggEPSAutoDto() =
 
 fun createVedtakOmEndringBarnetilleggEPSRedigerbarDto() =
     VedtakOmEndringBarnetilleggEPSRedigerbarDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakOmEndringBarnetilleggEPSRedigerbarDto.PesysData(
-            vedtakData = createVedtakOmEndringBarnetilleggEPSData(),
-        )
+        vedtakData = createVedtakOmEndringBarnetilleggEPSData(),
     )

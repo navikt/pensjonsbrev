@@ -24,17 +24,14 @@ fun createVedtakOmEtterbetalingOpphor2026AutoDto() =
 
 fun createVedtakOmEtterbetalingOpphor2026RedigerbarDto() =
     VedtakOmEtterbetalingOpphor2026RedigerbarDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakOmEtterbetalingOpphor2026RedigerbarDto.PesysData(
-            etterbetaling = Kroner(12345),
-            hjemler = setOf("12-13", "22-12"),
-            reduksjonsprosent = 30.0,
-            uforegrad = 100,
-            ifu = Kroner(400000),
-            endringUforegrad = true,
-            endringIfu = true,
-            pe = createPEgruppe10(),
-            maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
-        )
+        etterbetaling = Kroner(12345),
+        hjemler = setOf("12-13", "22-12"),
+        reduksjonsprosent = 30.0,
+        uforegrad = 100,
+        ifu = Kroner(400000),
+        endringUforegrad = true,
+        endringIfu = true,
+        pe = createPEgruppe10(),
+        maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
+        dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
     )

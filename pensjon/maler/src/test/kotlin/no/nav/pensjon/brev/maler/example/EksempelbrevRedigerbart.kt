@@ -4,9 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
-import no.nav.pensjon.brev.maler.example.selectors.eksempelRedigerbartDto.pesysData.*
 import no.nav.pensjon.brev.maler.example.selectors.eksempelRedigerbartDto.*
 import no.nav.pensjon.brev.maler.example.selectors.exampleTilleggDto.*
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
@@ -27,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.*
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -284,18 +282,13 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
 // This data class should normally be in the api-model. Placed here for test-purposes.
 data class EksempelRedigerbartDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<EksempelRedigerbartDto.PesysData> {
-    data class PesysData(
-        val pensjonInnvilget: Boolean,
-        val datoInnvilget: LocalDate,
-        val navneliste: List<String>,
-        val tilleggEksempel: List<ExampleTilleggDto>,
-        val datoAvslaatt: LocalDate?,
-        val pensjonBeloep: Int?,
-    ) : FagsystemBrevdata
-}
+    val pensjonInnvilget: Boolean,
+    val datoInnvilget: LocalDate,
+    val navneliste: List<String>,
+    val tilleggEksempel: List<ExampleTilleggDto>,
+    val datoAvslaatt: LocalDate?,
+    val pensjonBeloep: Int?,
+) : FagsystemBrevdata
 
 data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase<LangBokmalNynorsk>() {
     override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =

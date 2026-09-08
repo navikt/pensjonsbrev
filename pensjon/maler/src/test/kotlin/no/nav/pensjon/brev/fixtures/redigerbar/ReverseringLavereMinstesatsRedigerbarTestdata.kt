@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.legacy.LopendeYtelse
 import no.nav.pensjon.brev.api.model.maler.legacy.OpphortYtelse
 import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsAutoDto
@@ -38,10 +37,7 @@ fun createReverseringLavereMinstesatsData() =
 
 fun createReverseringLavereMinstesatsRedigerbarDto() =
     ReverseringLavereMinstesatsRedigerbarDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = ReverseringLavereMinstesatsRedigerbarDto.PesysData(
-            data = createReverseringLavereMinstesatsData(),
-        )
+        data = createReverseringLavereMinstesatsData(),
     )
 
 fun createReverseringLavereMinstesatsAutoDto() =

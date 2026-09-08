@@ -10,4 +10,4 @@ fun createOmsorgManuellDto() =
             postNr = "0607",
             postSted = "Oslo",
         )
-    ),
+    )

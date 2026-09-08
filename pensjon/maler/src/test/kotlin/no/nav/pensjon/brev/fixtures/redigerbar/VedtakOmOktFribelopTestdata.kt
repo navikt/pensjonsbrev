@@ -39,8 +39,5 @@ fun createVedtakOmOktFribelopAutoDto() =
 
 fun createVedtakOmOktFribelopRedigerbarDto() =
     VedtakOmOktFribelopRedigerbarDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakOmOktFribelopRedigerbarDto.PesysData(
-            vedtakData = createVedtakOmOktFribelopData(),
-        )
+        vedtakData = createVedtakOmOktFribelopData(),
     )

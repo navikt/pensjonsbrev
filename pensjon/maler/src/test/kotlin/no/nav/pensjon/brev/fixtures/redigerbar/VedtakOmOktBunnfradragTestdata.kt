@@ -70,8 +70,5 @@ fun createVedtakOmOktBunnfradragAutoDto() =
 
 fun createVedtakOmOktBunnfradragRedigerbarDto() =
     VedtakOmOktBunnfradragRedigerbarDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = VedtakOmOktBunnfradragRedigerbarDto.PesysData(
-            vedtakData = createVedtakOmOktBunnfradragData(),
-        )
+        vedtakData = createVedtakOmOktBunnfradragData(),
     )
