@@ -49,7 +49,7 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
     ) {
-        val alt1 = saksbehandlervalg("ingenYtelser", "Ingen ytelser").bool() // TODO: denne var default true
+        val alt1 = saksbehandlervalg("ingenYtelser", "Ingen ytelser").bool()
         val alt2 = saksbehandlervalg("vedtakOmAlderspensjon", "Vedtak om alderspensjon").bool()
         val alt3 = saksbehandlervalg("vedtakOmUfoeretrygd", "Vedtak om uføretrygd").bool()
         val alt4 = saksbehandlervalg("aapUtbetales", "AAP utbetales").bool()
