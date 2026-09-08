@@ -8,6 +8,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
+import no.nav.brev.brevbaker.TestRedigerbarBrevdata
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -41,7 +42,7 @@ class LetterRoutesITest {
     )
     private val bestillMarkupRequest = BestillBrevRequest(
         kode = EksempelbrevRedigerbart.kode,
-        letterData = createEksempelbrevRedigerbartDto(),
+        letterData = TestRedigerbarBrevdata(createEksempelbrevRedigerbartDto()),
         felles = FellesFactory.felles,
         language = LanguageCode.BOKMAL,
     )
@@ -53,7 +54,7 @@ class LetterRoutesITest {
     ).let { LetterTestRenderer.renderLetterOnly(it) }
         .let {
             with(bestillMarkupRequest) {
-                BestillRedigertBrevRequest(kode, letterData as EksempelRedigerbartDto, felles, language, it, listOf(), emptyMap())
+                BestillRedigertBrevRequest(kode, letterData as TestRedigerbarBrevdata<EksempelRedigerbartDto>, felles, language, it, listOf(), emptyMap())
             }
         }
 

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.example
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 @TemplateModelHelpers
-object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
+object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyFagsystemdata> {
 
     override val kode: Brevkode.Redigerbart = EnkeltRedigerbartTestbrevBrevkode.ENKELT_REDIGERBART_TESTBREV
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER

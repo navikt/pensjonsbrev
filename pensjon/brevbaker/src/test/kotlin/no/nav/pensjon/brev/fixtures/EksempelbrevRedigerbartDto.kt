@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -8,8 +7,6 @@ import java.time.LocalDate
 
 fun createEksempelbrevRedigerbartDto() =
     EksempelRedigerbartDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = EksempelRedigerbartDto.PesysData(
             pensjonInnvilget = true,
             datoInnvilget = LocalDate.of(2020, 1, 1),
             navneliste = listOf("test testerson1", "test testerson2", "test testerson3"),
@@ -29,4 +26,3 @@ fun createEksempelbrevRedigerbartDto() =
             ), datoAvslaatt = LocalDate.of(2020, 1, 1),
             pensjonBeloep = 100
         )
-    )

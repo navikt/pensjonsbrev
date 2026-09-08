@@ -4,10 +4,8 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.P1_BREVKODE
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.getAs
 import io.ktor.util.collections.*
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
@@ -42,17 +40,12 @@ object Testbrevkoder {
 }
 
 data class EksempelRedigerbartDto(
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<EksempelRedigerbartDto.PesysData> {
-    data class PesysData(
-        val pensjonInnvilget: Boolean,
-        val datoInnvilget: LocalDate,
-        val navneliste: List<String>,
-        val datoAvslaatt: LocalDate?,
+    val pensjonInnvilget: Boolean,
+    val datoInnvilget: LocalDate,
+    val navneliste: List<String>,
+    val datoAvslaatt: LocalDate?,
         val pensjonBeloep: Int?,
-    ) : FagsystemBrevdata
-}
+) : FagsystemBrevdata
 
 fun BrevbakerFelles.copy(
     dokumentDato: LocalDate = this.dokumentDato,

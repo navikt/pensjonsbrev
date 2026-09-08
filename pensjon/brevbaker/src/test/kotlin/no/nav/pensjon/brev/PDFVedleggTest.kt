@@ -3,8 +3,8 @@ package no.nav.pensjon.brev
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestImpl
+import no.nav.brev.brevbaker.TestRedigerbarBrevdata
 import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -33,7 +33,7 @@ class PDFVedleggTest {
         }
         val letter = LetterTestImpl(
             template,
-            createSamletMeldingOmPensjonsvedtakV2Dto(),
+            TestRedigerbarBrevdata(createSamletMeldingOmPensjonsvedtakV2Dto()),
             spraak,
             FellesFactory.felles
         )
@@ -47,11 +47,8 @@ class PDFVedleggTest {
 
 fun createSamletMeldingOmPensjonsvedtakV2Dto() =
     SamletMeldingOmPensjonsvedtakV2Dto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
-            sakstype = Sakstype.ALDER,
-            p1Vedlegg = createP1VedleggDto(),
-        ),
+        sakstype = Sakstype.ALDER,
+        p1Vedlegg = createP1VedleggDto(),
     )
 
 private val ADRESSE_EKSEMPEL = "Lillevik Torgvei 1\n4321\nLillevik Østre\nDanmark"

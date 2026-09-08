@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Expression
@@ -14,11 +14,11 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.SimpleSelector
 import no.nav.pensjon.brev.template.UnaryOperation
-import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
@@ -29,9 +29,8 @@ import java.time.LocalDate
  * Dekker alle fire typene, både med og uten default-verdi, samt et enkelt fagsystem-Dto (`PesysData`) med to felt.
  *
  */
-object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLTestbrevDto> {
+object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLTestbrevDto.PesysData> {
 
-    @OptIn(InternKonstruktoer::class)
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = Sakstype.all
@@ -44,7 +43,6 @@ object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLT
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
-        letterDataType = SaksbehandlervalgIDSLTestbrevDto::class,
     ) {
         val bool = saksbehandlervalg("bool", "Boolsk valg").bool()
 
@@ -117,24 +115,12 @@ enum class SaksbehandlervalgIDSLTestValg(override val displayText: String) : Sak
 data class SaksbehandlervalgIDSLTestbrevDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : BrevdataMedSaksbehandlerValg<SaksbehandlervalgIDSLTestbrevDto.PesysData> {
+) : RedigerbarBrevdata<SaksbehandlervalgIDSLTestbrevDto.PesysData> {
     data class PesysData(
         val saksnummer: String,
         val opprettet: LocalDate,
     ) : FagsystemBrevdata
 }
-
-// Håndskrevne selectors for pesysData — se merknaden ovenfor for hvorfor KSP (@TemplateModelHelpers) ikke kan brukes her.
-private val pesysDataSelector = SimpleSelector(
-    className = SaksbehandlervalgIDSLTestbrevDto::class.qualifiedName!!,
-    propertyName = "pesysData",
-    propertyType = SaksbehandlervalgIDSLTestbrevDto.PesysData::class.qualifiedName!!,
-    selector = SaksbehandlervalgIDSLTestbrevDto::pesysData,
-)
-
-@OptIn(InternKonstruktoer::class)
-private val TemplateGlobalScope<SaksbehandlervalgIDSLTestbrevDto>.pesysData: Expression<SaksbehandlervalgIDSLTestbrevDto.PesysData>
-    get() = Expression.UnaryInvoke(Expression.FromScope.Argument(), UnaryOperation.Select(pesysDataSelector))
 
 private val saksnummerSelector = SimpleSelector(
     className = SaksbehandlervalgIDSLTestbrevDto.PesysData::class.qualifiedName!!,
