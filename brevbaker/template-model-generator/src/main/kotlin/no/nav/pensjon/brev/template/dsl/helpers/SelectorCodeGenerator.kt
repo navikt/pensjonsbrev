@@ -45,6 +45,12 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 val className = node.decl.simpleName.asString()
                 val properties = node.decl.getAllProperties()
                     .filterNot { it.type.resolve().declaration.qualifiedName?.asString() in SKIPPED_NO_WARN_CLASSES }
+                    // A property whose declared type is still an unresolved generic type parameter of node.decl
+                    // itself (e.g. `pesysData: Data` on `RedigerbarBrevdata<Data>`) can't get a meaningful selector
+                    // generated for it here, since node.decl is always visited "raw" (unsubstituted). Such
+                    // properties are expected to instead be bridged by a hand-written selector (see e.g.
+                    // `saksbehandlerValg` in Saksbehandlervalg.kt and the equivalent for `pesysData`).
+                    .filterNot { it.type.resolve().declaration is KSTypeParameter }
                 if (properties.any()) {
                     createFile(codeGenerator, pkg, className, dependencies) { writer ->
                         properties

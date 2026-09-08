@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Testmal som bruker alle typene saksbehandlervalg som finnes i [SaksbehandlerValgBuilder]:
  * bool, int, tekst og enum, både med og uten default-verdi (dvs. både ikke-nullable og nullable expressions).
  */
-object SaksbehandlervalgEksempelBrev : RedigerbarTemplate<SaksbehandlervalgTestDto> {
+object SaksbehandlervalgEksempelBrev : RedigerbarTemplate<EmptyFagsystemdata> {
     @OptIn(InternKonstruktoer::class)
     override val kategori = TemplateDescription.Redigerbar.Brevkategori("Innhente opplysninger")
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

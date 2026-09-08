@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekst
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -27,7 +28,7 @@ private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
 private class BrevTemplateTest {
     private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
 
-    private object EksempelBrev : RedigerbarTemplate<BrevdataMedSaksbehandlerValgUtenFagsystemdata> {
+    private object EksempelBrev : RedigerbarTemplate<EmptyFagsystemdata> {
         override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
         override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
         override val sakstyper = setOf(object : ISakstype {
