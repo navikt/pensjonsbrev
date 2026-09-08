@@ -441,14 +441,14 @@ object OktBunnfradrag {
 
 class PengerTilGode(private val nettoUt: Expression<Kroner>, private val nettoUtHarBlittLikBrutto: Expression<Boolean>, private val btHarBlitt0: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        paragraph {
-            text(
-                bokmal { +"Dersom du har penger til gode eller har fått for mye utbetalt, gjør vi følgende: " },
-                nynorsk { +"Dersom du har pengar til gode eller har fått for mykje utbetalt, gjer vi følgjande: " },
-            )
-        }
-        paragraph {
-            showIf(nettoUtHarBlittLikBrutto or btHarBlitt0) {
+        showIf(nettoUtHarBlittLikBrutto or btHarBlitt0) {
+            paragraph {
+                text(
+                    bokmal { +"Dersom du har penger til gode eller har fått for mye utbetalt, gjør vi følgende: " },
+                    nynorsk { +"Dersom du har pengar til gode eller har fått for mykje utbetalt, gjer vi følgjande: " },
+                )
+            }
+            paragraph {
                 list {
                     item {
                         text(
@@ -470,7 +470,9 @@ class PengerTilGode(private val nettoUt: Expression<Kroner>, private val nettoUt
                         )
                     }
                 }
-            }.orShow {
+            }
+        }.orShow {
+            paragraph {
                 text(
                     bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. " },
                     nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. " },
