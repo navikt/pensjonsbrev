@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.alder.model
 
 import no.nav.pensjon.brev.api.model.ISakstype
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 enum class AlderspensjonRegelverkType {
     AP1967,
@@ -84,11 +83,8 @@ enum class AlderspensjonBeregnetEtter {
 }
 
 enum class BeloepEndring {
-    @DisplayText("Økning av beløpet")
     ENDR_OKT,
-    @DisplayText("Reduksjon av beløpet")
     ENDR_RED,
-    @DisplayText("Uendret beløp")
     UENDRET
 }
 

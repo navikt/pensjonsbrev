@@ -273,10 +273,6 @@ public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Year : no/na
 	public final synthetic fun unbox-impl ()I
 }
 
-public abstract interface annotation class no/nav/pensjon/brevbaker/api/model/DisplayText : java/lang/annotation/Annotation {
-	public abstract fun text ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/LanguageCode : java/lang/Enum {
 	public static final field BOKMAL Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public static final field ENGLISH Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
