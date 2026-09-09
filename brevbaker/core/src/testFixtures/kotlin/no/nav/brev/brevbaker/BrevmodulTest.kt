@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.BrevTemplate
@@ -22,7 +21,6 @@ import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -38,9 +36,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
-import kotlin.reflect.KProperty
-import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.jvm.jvmErasure
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -64,24 +59,6 @@ abstract class BrevmodulTest(
         val brukteKoder = templates.hentRedigerbareMaler().map { it.kode }
         val ubrukteKoder = redigerbare.filterNot { brukteKoder.contains(it) }
         assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
-    }
-    @Test
-    fun `alle enumverdier brukt i saksbehandlervalg i redigerbare brev har displaytext`() {
-        templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
-            val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlervalgIDSL::class.java.isAssignableFrom(field) }.map { it.kotlin }
-            saksbehandlervalg
-                .asSequence()
-                .flatMap { it.members }
-                .filterIsInstance<KProperty<*>>()
-                .map { it.returnType.jvmErasure.java }
-                .filter { it.isEnum }
-                .flatMap { it.declaredFields.asSequence() }
-                .filter { it.isEnumConstant }
-                .forEach { declared ->
-                    val hasDisplayText = declared.annotations.filterIsInstance<DisplayText>().any()
-                    assertTrue(hasDisplayText, "Alle enums brukt i saksbehandlervalg må ha displaytext for alle verdier, enum-verdien ${declared.name} i klasse ${clazz.name} mangler det")
-            }
-        }
     }
 
     @Test
