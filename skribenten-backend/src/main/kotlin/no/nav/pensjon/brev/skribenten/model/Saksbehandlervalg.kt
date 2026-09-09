@@ -3,9 +3,15 @@ package no.nav.pensjon.brev.skribenten.model
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.skribenten.serialize.SaksbehandlervalgVerdiDeserializer
 
-typealias SaksbehandlervalgMap = Api.GeneriskSaksbehandlervalg<String, Any?>
+class SaksbehandlervalgMap(entries: Iterable<Pair<String, Any?>>? = null) : LinkedHashMap<String, Any?>(), MutableMap<String, Any?>,
+    SaksbehandlervalgIDSL {
+    init {
+        if (entries != null) putAll(entries)
+    }
+}
 
 /**
  * The type used specifically for saksbehandlerValg-values created/edited directly by a saksbehandler in
@@ -18,7 +24,11 @@ typealias SaksbehandlervalgMap = Api.GeneriskSaksbehandlervalg<String, Any?>
  * is merged into the existing, unconstrained [SaksbehandlervalgMap] (see [mergeInn]) rather
  * than replacing it wholesale - that way the non-editable, richer values survive unaffected.
  */
-typealias RedigerbarSaksbehandlervalgMap = Api.GeneriskSaksbehandlervalg<String, SaksbehandlervalgVerdi?>
+class RedigerbarSaksbehandlervalgMap(entries: Iterable<Pair<String, SaksbehandlervalgVerdi?>>? = null) : LinkedHashMap<String, SaksbehandlervalgVerdi?>() {
+    init {
+        if (entries != null) putAll(entries)
+    }
+}
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NONE, include = JsonTypeInfo.As.NOTHING)
 @JsonSubTypes(

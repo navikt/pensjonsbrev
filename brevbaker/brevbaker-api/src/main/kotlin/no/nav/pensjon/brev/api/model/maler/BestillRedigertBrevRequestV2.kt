@@ -13,7 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 data class BestillRedigertBrevRequestV2<T : Brevkode<T>>(
     val kode: T,
-    val letterData: RedigerbarBrevdata<*, *>,
+    val letterData: RedigerbarBrevdata<*>,
     val felles: BrevbakerFelles,
     val language: LanguageCode,
     val letterMarkup: LetterMarkup,

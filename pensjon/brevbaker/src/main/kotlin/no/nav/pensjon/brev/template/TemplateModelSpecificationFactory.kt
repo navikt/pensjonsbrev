@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
@@ -85,7 +84,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     }
 
     private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class), it.name!!) }
+        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlervalgIDSL::class), it.name!!) }
             ?: emptyMap()
 
     private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean, name: String): FieldType {

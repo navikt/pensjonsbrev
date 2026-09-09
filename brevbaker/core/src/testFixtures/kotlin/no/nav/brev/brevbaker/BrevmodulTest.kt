@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
@@ -66,26 +65,10 @@ abstract class BrevmodulTest(
         val ubrukteKoder = redigerbare.filterNot { brukteKoder.contains(it) }
         assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
     }
-
-    @Test
-    fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
-        templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
-            val saksbehandlervalg = clazz.declaredFields.asSequence()
-                .map { it.type.kotlin }
-                .filter { it.isSubclassOf(SaksbehandlerValgBrevdata::class) }
-                .filterNot { it.isSubclassOf(SaksbehandlervalgIDSL::class) }
-                .singleOrNull()
-
-            saksbehandlervalg?.members?.filterIsInstance<KProperty<*>>()?.forEach { field ->
-                val hasDisplayText = field.annotations.filterIsInstance<DisplayText>().any()
-                assertTrue(hasDisplayText, "Alle saksbehandlervalg må ha displaytext, ${field.name} i klasse ${clazz.name} mangler det")
-            }
-        }
-    }
     @Test
     fun `alle enumverdier brukt i saksbehandlervalg i redigerbare brev har displaytext`() {
         templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
-            val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
+            val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlervalgIDSL::class.java.isAssignableFrom(field) }.map { it.kotlin }
             saksbehandlervalg
                 .asSequence()
                 .flatMap { it.members }

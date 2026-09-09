@@ -567,7 +567,7 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderMarkup(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*, *>,
+            brevdata: RedigerbarBrevdata<*>,
             felles: BrevbakerFelles
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
@@ -577,7 +577,7 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*, *>,
+            brevdata: RedigerbarBrevdata<*>,
             felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
             alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -594,7 +594,7 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun hentRedigerbareVedleggTitler(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*, *>,
+            brevdata: RedigerbarBrevdata<*>,
             felles: BrevbakerFelles,
         ): RedigerbareVedleggTitler =
             RedigerbareVedleggTitler(
@@ -609,7 +609,7 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderRedigerbartVedlegg(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*, *>,
+            brevdata: RedigerbarBrevdata<*>,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
         ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]

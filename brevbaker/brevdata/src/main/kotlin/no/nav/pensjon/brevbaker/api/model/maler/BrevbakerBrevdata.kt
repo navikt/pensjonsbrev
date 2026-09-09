@@ -6,12 +6,12 @@ package no.nav.pensjon.brev.api.model.maler
  */
 interface BrevbakerBrevdata
 
-interface RedigerbarBrevdata<Valg : SaksbehandlerValgBrevdata, Data : FagsystemBrevdata> : BrevbakerBrevdata {
-    val saksbehandlerValg: Valg
+interface RedigerbarBrevdata<Data : FagsystemBrevdata> : BrevbakerBrevdata {
+    val saksbehandlerValg: SaksbehandlervalgIDSL
     val pesysData: Data
 }
 
-interface BrevdataMedSaksbehandlerValg<Data : FagsystemBrevdata> : RedigerbarBrevdata<SaksbehandlervalgIDSL, Data>
+interface BrevdataMedSaksbehandlerValg<Data : FagsystemBrevdata> : RedigerbarBrevdata<Data>
 
 interface BrevdataMedSaksbehandlerValgUtenFagsystemdata : BrevdataMedSaksbehandlerValg<EmptyFagsystemdata>
 
@@ -19,6 +19,6 @@ interface AutobrevData : BrevbakerBrevdata, FagsystemBrevdata
 
 interface FagsystemBrevdata
 
-interface SaksbehandlerValgBrevdata
+interface SaksbehandlervalgIDSL : Map<String, Any?>
 
 interface VedleggData
