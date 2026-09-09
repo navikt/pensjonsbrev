@@ -90,47 +90,43 @@ object ReverseringLavereMinstesats {
                     }
                 }
                 paragraph {
-                    list {
-                        item {
-                            text(
-                                bokmal { +"Du får " + lopendeYtelse.nettoTotal.format() + " i " },
-                                nynorsk { +"Du får " + lopendeYtelse.nettoTotal.format() + " i " },
-                            )
-                            showIf(lopendeYtelse.nettoBarnetillegg.isNull()) {
-                                text(
-                                    bokmal { +"uføretrygd " },
-                                    nynorsk { +"uføretrygd " },
-                                )
+                    text(
+                        bokmal { +"Du får " + lopendeYtelse.nettoTotal.format() + " i " },
+                        nynorsk { +"Du får " + lopendeYtelse.nettoTotal.format() + " i " },
+                    )
+                    showIf(lopendeYtelse.nettoBarnetillegg.isNull()) {
+                        text(
+                            bokmal { +"uføretrygd " },
+                            nynorsk { +"uføretrygd " },
+                        )
 
-                            }.orShow {
-                                text(
-                                    bokmal { +"uføretrygd og barnetillegg " },
-                                    nynorsk { +"uføretrygd og barnetillegg " },
-                                )
-                            }
-                            text(
-                                bokmal { +"per måned før skatt fra 1. oktober 2026." },
-                                nynorsk { +"per månad før skatt frå 1. oktober 2026." },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
-                                nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"I vedlegget " },
-                                nynorsk { +"I vedlegget " },
-                            )
-                            namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                            text(
-                                bokmal { +" kan du se hvordan vi har beregnet uføretrygden din." },
-                                nynorsk { +" kan du sjå korleis vi har berekna uføretrygda di." },
-                            )
-                        }
+                    }.orShow {
+                        text(
+                            bokmal { +"uføretrygd og barnetillegg " },
+                            nynorsk { +"uføretrygd og barnetillegg " },
+                        )
                     }
+                    text(
+                        bokmal { +"per måned før skatt fra 1. oktober 2026." },
+                        nynorsk { +"per månad før skatt frå 1. oktober 2026." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                        nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"I vedlegget " },
+                        nynorsk { +"I vedlegget " },
+                    )
+                    namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
+                    text(
+                        bokmal { +" kan du se hvordan vi har beregnet uføretrygden din." },
+                        nynorsk { +" kan du sjå korleis vi har berekna uføretrygda di." },
+                    )
                 }
             }
 
