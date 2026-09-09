@@ -10,8 +10,8 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.RedigerbarSaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.mergeInn
 
 class OppdaterBrevHandler(
@@ -23,7 +23,7 @@ class OppdaterBrevHandler(
     data class Request(
         val brevId: BrevId,
         val saksId: SaksId,
-        val nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
+        val nyeSaksbehandlerValg: SaksbehandlervalgMap? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,
     )

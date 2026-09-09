@@ -9,7 +9,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeParameter
 import kotlin.reflect.KTypeProjection
-import kotlin.reflect.full.allSupertypes
 import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.memberProperties
@@ -127,7 +126,7 @@ class JacksonReflectionJsonSchemaInference(
         // Map -> object with additionalProperties
         if (kClass.isSubclassOf(Map::class)) {
             // key type ignored
-            val valueType = mapValueType(type, kClass)?.takeUnless { it.classifier == Any::class }
+            val valueType = type.arguments.getOrNull(1)?.type?.takeUnless { it.classifier == Any::class }
             val valueTypeName = valueType?.let { adapter.getName(it) }
 
             // JSON object keys are strings; if key isn't String, we still produce an object schema.
@@ -283,21 +282,6 @@ class JacksonReflectionJsonSchemaInference(
             }
         }
     }
-
-    /**
-     * Returns the resolved value type (`V` in `Map<K, V>`) for [type], or `null` if it can't be
-     * determined.
-     *
-     * A property declared directly as `Map<K, V>` (or via a generic typealias expanding to one)
-     * already carries the concrete value type in [type]'s own arguments. But a concrete,
-     * non-generic class that fixes the map's type arguments in its supertype declaration instead -
-     * e.g. `class Foo : LinkedHashMap<String, Bar>()` - has no arguments of its own on [type]; the
-     * value type must then be read off the resolved `Map` supertype, where [allSupertypes] has
-     * already substituted concrete type arguments all the way up the class hierarchy.
-     */
-    private fun mapValueType(type: KType, kClass: KClass<*>): KType? =
-        type.arguments.getOrNull(1)?.type
-            ?: kClass.allSupertypes.firstOrNull { it.classifier == Map::class }?.arguments?.getOrNull(1)?.type
 
     private fun KClass<*>.underlyingValueClassTypeOrNull(ownerType: KType): KType? {
         val ctorParam = primaryConstructor?.parameters?.singleOrNull()

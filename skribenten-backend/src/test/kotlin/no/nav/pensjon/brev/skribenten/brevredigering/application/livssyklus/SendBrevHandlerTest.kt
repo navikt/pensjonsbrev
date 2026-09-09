@@ -15,7 +15,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `kan ikke distribuere vedtaksbrev som ikke er attestert`() {
         val brev = opprettBrev(
-            saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) },
+            saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = VedtaksId(1),
         ).resultOrFail()
@@ -31,7 +31,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
         brevbakerService.renderPdfKall.clear()
 
         val brev = opprettBrev(
-            saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) },
+            saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = VedtaksId(1),
         ).resultOrFail()
