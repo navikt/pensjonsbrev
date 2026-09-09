@@ -22,19 +22,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.sql.Connection
 import java.time.Instant
 
-/**
- * Intensjonsbasert tilgang til et eksisterende brev.
- *
- * I stedet for at hver usecase selv må huske å hente brevet, reservere det og kjøre riktige policies,
- * deklarerer usecasen hva den har til hensikt å gjøre. [Brevtilgang] tar seg av oppslag, reservasjon
- * og policy-sjekk, og kaller blokken kun når alt er i orden.
- *
- * Blokken kalles med et [BrevScope] som gir tilgang til brevet og til DTO-mapping, og kjøres i en
- * [Transactional] som ruller tilbake om blokken feiler. Returnerer null når brevet ikke finnes.
- *
- * Usecases som ikke handler om ett bestemt, eksisterende brev — som å opprette et nytt brev eller
- * å liste brev på tvers av saker — hører ikke hjemme her, og bruker [Transactional] direkte.
- */
 class Brevtilgang(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val attesterBrevPolicy: AttesterBrevPolicy,
@@ -43,9 +30,7 @@ class Brevtilgang(
     private val transactional: Transactional,
 ) {
 
-    /**
-     * Les brevet uten å reservere det. Ingen policy kreves, og brevet skal ikke endres.
-     */
+
     suspend fun <R, E> forLesing(
         brevId: BrevId,
         saksId: SaksId?,
@@ -57,12 +42,6 @@ class Brevtilgang(
             BrevScope(brev, brevreservasjonPolicy).block()
         }
 
-    /**
-     * Rediger innholdet i brevet. Reserverer brevet og krever at [RedigerBrevPolicy] er oppfylt.
-     *
-     * @param frigiReservasjon om saksbehandler er ferdig med brevet etter denne endringen, eller
-     *  fortsatt skal ha det reservert. Uten svar er det lett å bli sittende på en reservasjon.
-     */
     suspend fun <R> forRedigering(
         brevId: BrevId,
         saksId: SaksId,
@@ -73,12 +52,6 @@ class Brevtilgang(
             kanRedigere(brev, principal, tillatKlarmarkertBrev = false)
         }, block = block)
 
-    /**
-     * Endre brevets status — klarmarkering, distribusjonstype og liknende — uten å røre brevteksten.
-     * Derfor er et klarmarkert brev greit, i motsetning til [forRedigering].
-     *
-     * Reservasjonen frigis, siden en statusendring avslutter saksbehandlers arbeid med brevet.
-     */
     suspend fun forStatusendring(
         brevId: BrevId,
         saksId: SaksId,
@@ -100,9 +73,6 @@ class Brevtilgang(
         }
     }
 
-    /**
-     * Attester brevet. Krever både [AttesterBrevPolicy] og [RedigerBrevPolicy].
-     */
     suspend fun <R> forAttestering(
         brevId: BrevId,
         saksId: SaksId,
@@ -113,9 +83,6 @@ class Brevtilgang(
             kanAttestere(brev, principal)
         }, block = block)
 
-    /**
-     * Send brevet til fagsystemet. Krever at brevet har et gjeldende dokument og at [SendBrevPolicy] er oppfylt.
-     */
     suspend fun <R> forSending(
         brevId: BrevId,
         saksId: SaksId,
@@ -133,9 +100,6 @@ class Brevtilgang(
         }
     }
 
-    /**
-     * Slett brevet. Reserverer brevet, men har ingen ytterligere policy.
-     */
     suspend fun <R> forSletting(
         brevId: BrevId,
         saksId: SaksId,
@@ -143,9 +107,6 @@ class Brevtilgang(
     ): Outcome<R, BrevredigeringError>? =
         reservertOgSjekket(brevId, saksId, frigiReservasjon = false, sjekk = { _, _ -> success(Unit) }, block = { block() })
 
-    /**
-     * Reserver brevet uten å gjøre noe mer. Kjører i egen transaksjon.
-     */
     suspend fun reserver(brevId: BrevId, saksId: SaksId): Outcome<Reservasjon, BrevredigeringError>? =
         transactional.rollbackOnFailure(Connection.TRANSACTION_REPEATABLE_READ) {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
