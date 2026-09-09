@@ -91,6 +91,12 @@ spec:
         - alert: PrometheusKlarerIkkeAScrape
           expr: |
             up{namespace="pensjonsbrev", app=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"} == 0
+            unless on (pod, namespace)
+            (
+              kube_pod_info
+              and on (node)
+              (kube_node_status_condition{condition="Ready", status="true"} == 0)
+            )
           for: 10m
           labels:
             severity: warning
@@ -98,7 +104,7 @@ spec:
           annotations:
             summary: "Prometheus får ikke scrapet {{ $labels.app }}"
             consequence: "Vi er blinde på appen. Ingen av de andre metrikkbaserte alarmene vil kunne utløse."
-            action: "Sjekk at poden svarer på metrikkendepunktet, og at prometheus-konfigurasjonen i nais.yaml er intakt."
+            action: "Sjekk at poden svarer på metrikkendepunktet, og at prometheus-konfigurasjonen i nais.yaml er intakt. Poder på en node som ikke er Ready er allerede filtrert bort, så dette er appen selv."
 
         - alert: PodStarterIkke
           expr: |
