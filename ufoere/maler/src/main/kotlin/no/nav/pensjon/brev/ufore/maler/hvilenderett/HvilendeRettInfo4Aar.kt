@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.ufore.maler.hvilenderett
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarRedigerbarBrevdata
+import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object HvilendeRettInfo4Aar : RedigerbarTemplate<EmptyRedigerbarRedigerbarBrevdata> {
+object HvilendeRettInfo4Aar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = UT_S_HVILENDE_RETT_INFO_4_AAR
     override val kategori = Brevkategori.ETTEROPPGJOER

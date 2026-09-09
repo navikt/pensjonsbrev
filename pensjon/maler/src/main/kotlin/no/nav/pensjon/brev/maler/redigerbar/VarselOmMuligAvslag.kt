@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.model.Brevkategori
@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VarselOmMuligAvslag : RedigerbarTemplate<EmptyRedigerbarRedigerbarBrevdata> {
+object VarselOmMuligAvslag : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_03_051
     override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_MULIG_AVSLAG

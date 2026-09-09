@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.klageOgAnke
 
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
 
 @TemplateModelHelpers
-object AnkeOrienteringOmSaksbehandling : RedigerbarTemplate<EmptyRedigerbarRedigerbarBrevdata> {
+object AnkeOrienteringOmSaksbehandling : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.brevmalAnkeOrienteringOmSaksbehandling.toggle
 

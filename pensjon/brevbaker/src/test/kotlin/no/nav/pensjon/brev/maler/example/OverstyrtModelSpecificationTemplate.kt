@@ -17,7 +17,7 @@ enum class OverstyrtModelSpecificationBrevkode : Brevkode.Redigerbart {
 
 @OptIn(InternKonstruktoer::class)
 @TemplateModelHelpers
-object OverstyrtModelSpecificationTemplate : RedigerbarTemplate<EmptyRedigerbarRedigerbarBrevdata> {
+object OverstyrtModelSpecificationTemplate : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = OverstyrtModelSpecificationBrevkode.OVERSTYRT_MODEL_SPECIFICATION
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER

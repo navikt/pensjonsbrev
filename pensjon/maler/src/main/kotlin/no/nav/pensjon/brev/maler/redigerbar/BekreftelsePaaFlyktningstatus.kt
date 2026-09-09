@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarRedigerbarBrevdata> {
+object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_03_049
     override val kode = Pesysbrevkoder.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS

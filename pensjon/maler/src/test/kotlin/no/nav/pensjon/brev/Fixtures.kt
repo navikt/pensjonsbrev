@@ -58,7 +58,7 @@ object Fixtures : LetterDataFactory {
             BrukerTestVedtaksbrevDto::class -> createBrukerTestVedtaksbrevDto() as T
             EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
-            EmptyRedigerbarRedigerbarBrevdata::class -> EmptyRedigerbarRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUTPgaInntektDtoV2::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T

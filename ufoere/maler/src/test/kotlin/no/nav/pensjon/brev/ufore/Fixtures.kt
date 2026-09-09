@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.ufore
 import no.nav.brev.brevbaker.*
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarRedigerbarBrevdata
+import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
@@ -37,7 +37,7 @@ object Fixtures : LetterDataFactory {
             FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
             InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
             InnhentingOpplysningerSamboerDto::class -> lagInnhentingOpplysningerSamboer() as T
-            EmptyRedigerbarRedigerbarBrevdata::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
@@ -49,7 +49,7 @@ object Fixtures : LetterDataFactory {
     }
 
     private fun lagEmptyRedigerbarRedigerbarBrevdata() =
-        EmptyRedigerbarRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
+        EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
 
     private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
         pesysData = VarselFeilutbetalingPesysData(100),
