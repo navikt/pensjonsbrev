@@ -20,7 +20,7 @@ class HentRedigertVedleggHandler(
     )
 
     suspend operator fun invoke(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? =
-        brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = false) {
+        brevtilgang.forReservertLesing(request.brevId, request.saksId) {
             redigerbareVedleggService.hent(brev, request.vedleggId, mergeMotMal = true)
         }
 }

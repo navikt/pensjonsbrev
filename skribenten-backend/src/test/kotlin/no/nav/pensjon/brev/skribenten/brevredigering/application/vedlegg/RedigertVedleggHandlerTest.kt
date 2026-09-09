@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -158,6 +159,58 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
         val hentet = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()
         assertThat(hentet.toMarkup()).isEqualTo(attachment("Mal-innhold").toMarkup())
+    }
+
+    @Test
+    suspend fun `kan hente vedlegg fra klarmarkert brev`() {
+        val brev = opprettBrev().resultOrFail()
+        val vedlegg = attachment("Innhold")
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
+        veksleKlarStatus(brev, klar = true).resultOrFail()
+
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(vedlegg)
+        assertThat(hentBrevInfo(brev.info.id).resultOrFail().redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
+    }
+
+    @Test
+    suspend fun `kan hente vedlegg fra arkivert brev`() {
+        val brev = opprettBrev().resultOrFail()
+        val vedlegg = attachment("Innhold")
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
+        arkiverBrev(brev).resultOrFail()
+
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(vedlegg)
+        assertThat(hentBrevInfo(brev.info.id).resultOrFail().redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
+    }
+
+    @Test
+    suspend fun `kan ikke hente vedlegg fra brev reservert av en annen`() {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
+        answerWithEditedAttachmentResult("vedlegg1" to attachment("Innhold"))
+
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1", principal = saksbehandler2Principal))
+            .isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
+        assertThat(brevbakerService.renderRedigerbartVedleggKall).isEmpty()
+    }
+
+    @Test
+    suspend fun `hent vedlegg returnerer null naar brevet ikke finnes`() {
+        assertThat(hentVedlegg(BrevId(9999), "vedlegg1")).isNull()
+        assertThat(brevbakerService.renderRedigerbartVedleggKall).isEmpty()
+    }
+
+    @Test
+    suspend fun `kan ikke hente vedlegg fra brev paa en annen sak`() {
+        val brev = opprettBrev().resultOrFail()
+        val result = withPrincipal(saksbehandler1Principal) {
+            hentRedigertVedlegg(
+                HentRedigertVedleggHandler.Request(brev.info.id, SaksId(-9999), VedleggId("vedlegg1"))
+            )
+        }
+
+        assertThat(result).isNull()
+        assertThat(hentBrevInfo(brev.info.id).resultOrFail().redigeresAv).isNull()
+        assertThat(brevbakerService.renderRedigerbartVedleggKall).isEmpty()
     }
 
     @Test
