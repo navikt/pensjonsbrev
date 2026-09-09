@@ -80,8 +80,9 @@ instrumenterer HikariCP etter OpenTelemetry semconv i stedet. Bruk disse navnene
 
 ```bash
 # Metning i tilkoblingspoolen (%)
+# `usage` har taggen `state`, som `max` mangler — uten `ignoring(state)` gir divisjonen tomt resultat.
 curl -s -H "User-Agent: nav-pilot/observability-debugging" -H "X-Scope-OrgID: tenant" \
-  "https://mimir.nav.cloud.nais.io/prometheus/api/v1/query?query=db_client_connections_usage{k8s_cluster_name=\"$CLUSTER\",app=\"$APP\",state=\"used\"}/db_client_connections_max{k8s_cluster_name=\"$CLUSTER\",app=\"$APP\"}*100" | jq .
+  "https://mimir.nav.cloud.nais.io/prometheus/api/v1/query?query=db_client_connections_usage{k8s_cluster_name=\"$CLUSTER\",app=\"$APP\",state=\"used\"}/ignoring(state)db_client_connections_max{k8s_cluster_name=\"$CLUSTER\",app=\"$APP\"}*100" | jq .
 ```
 
 Merk at appene kjører **dobbel instrumentering** — både Micrometer og OTel-javaagenten. Derfor finnes

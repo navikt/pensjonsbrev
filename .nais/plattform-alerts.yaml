@@ -93,7 +93,7 @@ spec:
             up{namespace="pensjonsbrev", app=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"} == 0
             unless on (pod, namespace)
             (
-              kube_pod_info
+              kube_pod_info{namespace="pensjonsbrev"}
               and on (node)
               (kube_node_status_condition{condition="Ready", status="true"} == 0)
             )
