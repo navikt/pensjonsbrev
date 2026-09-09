@@ -26,7 +26,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 @TemplateModelHelpers
 object EndretUfoeretrygdPGAInntektRedigerbar : RedigerbarTemplate<EndretUfoeretrygdPGAInntektRedigerbarDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtEndretPgaInntekt.toggle
+    override val featureToggle = FeatureToggles.brevmalUtEndretPgaInntektRedigerbar.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_ENDRET_PGA_INNTEKT_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -66,7 +66,7 @@ object EndretUfoeretrygdPGAInntektRedigerbar : RedigerbarTemplate<EndretUfoeretr
         }
 
         outline {
-            includePhrase(EndretUfoeretrygdPGAInntektFelles.Outline(data))
+            includePhrase(EndretUfoeretrygdPGAInntekt.Outline(data, erRedigerbar = true))
         }
 
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe)

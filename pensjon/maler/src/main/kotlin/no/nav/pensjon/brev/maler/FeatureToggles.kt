@@ -21,6 +21,7 @@ enum class FeatureToggles(private val key: String) {
     brevmalUtDelvisEksport("brevmalUtDelvisEksport"),
     brevmalUtEndring("brevmalUtEndring"),
     brevmalUtEndretPgaInntekt("brevmalUtEndretPgaInntekt"),
+    brevmalUtEndretPgaInntektRedigerbar("brevmalUtEndretPgaInntektRedigerbar"),
     brevmalUtInnvilgelse("brevmalUtInnvilgelse"),
     brevmalUtInnvilgelseMedEndring("brevmalUtInnvilgelseMedEndring"),
     brevmalUtOkningUforegrad("brevmalUtOkningUforegrad"),

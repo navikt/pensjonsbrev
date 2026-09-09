@@ -25,9 +25,9 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 
-object EndretUfoeretrygdPGAInntektFelles {
+object EndretUfoeretrygdPGAInntekt {
 
-    data class Outline(val data: Expression<EndretUTPgaInntektDtoV2>) : OutlinePhrase<LangBokmalNynorsk>() {
+    data class Outline(val data: Expression<EndretUTPgaInntektDtoV2>, val erRedigerbar: Boolean = false) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             val uforetrygd = data.uforetrygd
@@ -161,12 +161,18 @@ object EndretUfoeretrygdPGAInntektFelles {
             }
 
             paragraph {
-                text(
-                    bokmal { + "Vi endrer din utbetaling fordi vi har fått opplysninger om endring i inntekt. Vi har fått opplysningene fra deg eller fra Skatteetaten. " },
-                    nynorsk { + "Vi endrar utbetalinga di fordi vi har fått opplysningar om endring i inntekt. Vi har fått opplysningane frå deg eller frå Skatteetaten. " },
-                )
+                if (erRedigerbar) {
+                    text(
+                        bokmal { + "Vi endrer din utbetaling fordi du har sendt oss nye opplysninger om forventet inntekt. " },
+                        nynorsk { + "Vi endrar utbetalinga di fordi du har sendt oss nye opplysningar om forventa inntekt. " },
+                    )
+                } else {
+                    text(
+                        bokmal { + "Vi endrer din utbetaling fordi vi har fått opplysninger om endring i inntekt. Vi har fått opplysningene fra deg eller fra Skatteetaten. " },
+                        nynorsk { + "Vi endrar utbetalinga di fordi vi har fått opplysningar om endring i inntekt. Vi har fått opplysningane frå deg eller frå Skatteetaten. " },
+                    )
+                }
             }
-
             paragraph {
                 showIf(endretUt and not(btfbEndret)) {
                     ifNotNull(forventetInntekt) { forventetInntekt ->
@@ -440,7 +446,7 @@ object EndretUfoeretrygdPGAInntektFelles {
                     bokmal { + "Har du ingen endring i inntekten din til neste år, bør du likevel melde inn forventet inntekt. Melder du ikke fra om forventet inntekt til neste år, vil vi bruke inntekten du har oppgitt i år og justere den ved årsskiftet. " },
                     nynorsk { + "Har du inga endring i inntekta di til neste år, bør du likevel melde inn forventa inntekt. Meldar du ikkje frå om forventa inntekt til neste år, vil vi bruke inntekta du har oppgitt i år og justere ho ved årsskiftet. " }
                 )
-                ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
+                ifNotNull(barnetilleggFellesbarn) {
                     text(
                         bokmal { + "Dette gjelder også annen foreldres inntekt fordi du får barnetillegg og bor med barnets andre forelder. " },
                         nynorsk { + "Dette gjeld òg inntekta til den andre forelderen fordi du får barnetillegg og bur saman med den andre forelderen til barnet. " }

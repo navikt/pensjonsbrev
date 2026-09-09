@@ -54,7 +54,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
         }
 
         outline {
-            includePhrase(EndretUfoeretrygdPGAInntektFelles.Outline(argument))
+            includePhrase(EndretUfoeretrygdPGAInntekt.Outline(argument))
         }
 
 
