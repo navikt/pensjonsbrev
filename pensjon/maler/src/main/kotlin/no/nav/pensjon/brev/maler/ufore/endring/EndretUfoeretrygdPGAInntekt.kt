@@ -299,7 +299,7 @@ object EndretUfoeretrygdPGAInntekt {
                 paragraph {
                     text(
                         bokmal { + "Inntekten din har betydning for hvor mye du får utbetalt i barnetillegg. Uføretrygden din regnes med som inntekt. For fellesbarn, bruker vi i tillegg den andre forelderens inntekt når vi beregner størrelsen på barnetillegget. " +
-                                "Inntektene og fribeløpet for beregning av barnetillegg er justert slik at det kun gjelder for den perioden du mottar barnetillegg" },
+                                "Inntektene og fribeløpet for beregning av barnetillegg er justert slik at det kun gjelder for den perioden du mottar barnetillegg. " },
                         nynorsk { + "Inntekta di verkar inn på kor mykje du får utbetalt i barnetillegg. Uføretrygda di blir teken med som inntekt. For fellesbarn bruker vi inntekta til begge foreldre når vi reknar ut storleiken på barnetillegget. " +
                                 "Inntektene og fribeløpet for utrekning av barnetillegg er justert slik at det berre gjeld for den perioden du får barnetillegg. " },
                     )
