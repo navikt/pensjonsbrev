@@ -47,11 +47,6 @@ class TemplateModelSpecificationFactoryTest {
     }
 
     @Test
-    fun `handles display text`() {
-        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE, "viktig dato"))
-    }
-
-    @Test
     fun `int is a scalar value with type`() {
         assertThat(aModelSpec["etTall"]).isEqualTo(FieldType.Scalar(false, Kind.NUMBER))
     }
@@ -68,7 +63,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `date is a scalar value with type`() {
-        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE, "viktig dato"))
+        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE))
     }
 
     @Test
@@ -114,14 +109,19 @@ class TemplateModelSpecificationFactoryTest {
     data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
         @Suppress("unused")
         enum class AnEnum(override val displayText: String) : SaksbehandlerValgEnum {
-            FLAG1("Flag 1"), FLAG2("Flag 2");
+            FLAG1("Flag 1"), FLAG2("Flag 2")
         }
     }
 
     @Test
     fun `enum fields have Enum type with all enum-values`() {
         val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build(emptyMap()).types[WithEnumeration::class.qualifiedName!!]!!
-        assertThat(spec["anEnum"]).isEqualTo(FieldType.Enum(false, setOf(FieldType.EnumEntry("FLAG1", "Flag 1"), FieldType.EnumEntry("FLAG2", "Flag 2"))))
+        assertThat(spec["anEnum"]).isEqualTo(
+            FieldType.Enum(
+                false,
+                setOf(FieldType.EnumEntry("FLAG1"), FieldType.EnumEntry("FLAG2"))
+            )
+        )
     }
 
     data class WithValueClass(val navn: String, val aValueClass: TheValue) {
