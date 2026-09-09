@@ -125,7 +125,11 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
           </HStack>
         }
         left={
-          <VStack gap="space-12">
+          <VStack
+            gap="space-12"
+            paddingBlock={{ xs: "space-12", lg: "space-16" }}
+            paddingInline={{ xs: "space-12", lg: "space-24" }}
+          >
             <Heading size="small">{props.brev.info.brevtittel}</Heading>
             <VStack gap="space-16">
               <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />

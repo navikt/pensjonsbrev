@@ -458,7 +458,7 @@ function RedigerBrev({
                   <BrevOgVedleggEditorSidepanel
                     brevId={brev.info.id}
                     brevmalPanel={
-                      <VStack gap="space-12">
+                      <VStack gap="space-12" paddingBlock="space-16 space-0">
                         <Heading size="small" spacing>
                           {brevmal.data?.name}
                         </Heading>

@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { Tabs } from "@navikt/ds-react";
+import { Box, Tabs } from "@navikt/ds-react";
 import { type ReactNode, useEffect, useState } from "react";
 
 import { useActiveDocument } from "~/components/brevOgVedlegg/ActiveDocumentContext";
@@ -8,26 +7,6 @@ import { VedleggPanel } from "~/components/vedlegg/VedleggPanel";
 
 const BREVMAL_TAB = "brevmal";
 const VEDLEGG_TAB = "vedlegg";
-
-const sidepanelStyle = css`
-  /* The side panel scrolls, so the tabs stay put instead of scrolling away with the content. */
-  & > .aksel-tabs__tablist-wrapper {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    background: var(--ax-bg-default);
-    height: var(--ax-space-48);
-  }
-
-  /* Aksel sizes tabs by content — with two tabs they split the panel width evenly instead. */
-  & .aksel-tabs__tab--small {
-    width: 50%;
-  }
-
-  & > .aksel-tabs__tabpanel {
-    padding-top: var(--ax-space-16);
-  }
-`;
 
 export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: number; brevmalPanel: ReactNode }) => {
   const { activeDocument, redigeringsflate, selectBrev, selectVedlegg } = useActiveDocument();
@@ -70,21 +49,37 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
   }
 
   return (
-    <Tabs
-      className="brev-og-vedlegg-editor-sidepanel"
-      css={sidepanelStyle}
-      onChange={(tab) => void handleSelectTab(tab)}
-      size="small"
-      value={activeTab}
+    <Box
+      asChild
+      paddingBlock={{ xs: "space-0 space-12", lg: "space-0 space-16" }}
+      paddingInline={{ xs: "space-12", lg: "space-24" }}
     >
-      <Tabs.List>
-        <Tabs.Tab label="Brevmal" value={BREVMAL_TAB} />
-        <Tabs.Tab label="Vedlegg" value={VEDLEGG_TAB} />
-      </Tabs.List>
-      <Tabs.Panel value={BREVMAL_TAB}>{props.brevmalPanel}</Tabs.Panel>
-      <Tabs.Panel value={VEDLEGG_TAB}>
-        <VedleggPanel vedleggQuery={vedleggQuery} />
-      </Tabs.Panel>
-    </Tabs>
+      <Tabs
+        className="brev-og-vedlegg-editor-sidepanel"
+        css={{
+          "> div:first-child": {
+            position: "sticky",
+            top: 0,
+            zIndex: 1,
+            height: "var(--ax-space-48)",
+            background: "var(--ax-bg-default)",
+          },
+        }}
+        fill
+        onChange={(tab) => void handleSelectTab(tab)}
+        size="small"
+        value={activeTab}
+      >
+        <Tabs.List>
+          <Tabs.Tab label="Brevmal" value={BREVMAL_TAB} />
+          <Tabs.Tab label="Vedlegg" value={VEDLEGG_TAB} />
+        </Tabs.List>
+
+        <Tabs.Panel value={BREVMAL_TAB}>{props.brevmalPanel}</Tabs.Panel>
+        <Tabs.Panel value={VEDLEGG_TAB}>
+          <VedleggPanel vedleggQuery={vedleggQuery} />
+        </Tabs.Panel>
+      </Tabs>
+    </Box>
   );
 };

@@ -26,7 +26,7 @@ export const VedleggPanel = (props: { vedleggQuery: UseQueryResult<RedigerbartVe
   const vedlegg = vedleggQuery.data;
 
   return (
-    <VStack gap="space-12">
+    <VStack gap="space-12" paddingBlock="space-16 space-0">
       {vedlegg.map((v) => {
         const isActive = activeDocument.type === "vedlegg" && activeDocument.vedleggId === v.vedleggId;
         return (
