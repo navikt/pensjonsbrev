@@ -6,7 +6,7 @@ import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
+import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
 

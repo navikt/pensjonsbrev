@@ -6,7 +6,7 @@ package no.nav.pensjon.brev.maler.legacy.vedlegg
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.personsak
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.selectors.personSak.foedselsdato
-import no.nav.pensjon.brev.maler.fraser.ufoer.erUforetidspunktMaanedEtterFoedsel
+import no.nav.pensjon.brev.maler.ufore.fraser.erUforetidspunktMaanedEtterFoedsel
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.barnetillegg.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.OpplysningerBruktIBeregningTabell

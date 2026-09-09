@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe1
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.selectors.personSak.*
 import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
-import no.nav.pensjon.brev.maler.fraser.ufoer.erUforetidspunktMaanedEtterFoedsel
+import no.nav.pensjon.brev.maler.ufore.fraser.erUforetidspunktMaanedEtterFoedsel
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
