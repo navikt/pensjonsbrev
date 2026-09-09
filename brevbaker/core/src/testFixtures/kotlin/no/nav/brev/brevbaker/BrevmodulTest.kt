@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
@@ -72,7 +71,7 @@ abstract class BrevmodulTest(
         templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
             val saksbehandlervalg = clazz.declaredFields.asSequence()
                 .map { it.type.kotlin }
-                .filter { it.isSubclassOf(SaksbehandlerValgBrevdata::class) }
+                .filter { it.isSubclassOf(SaksbehandlervalgIDSL::class) }
                 .filterNot { it.isSubclassOf(SaksbehandlervalgIDSL::class) }
                 .singleOrNull()
 
@@ -85,7 +84,7 @@ abstract class BrevmodulTest(
     @Test
     fun `alle enumverdier brukt i saksbehandlervalg i redigerbare brev har displaytext`() {
         templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
-            val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
+            val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlervalgIDSL::class.java.isAssignableFrom(field) }.map { it.kotlin }
             saksbehandlervalg
                 .asSequence()
                 .flatMap { it.members }

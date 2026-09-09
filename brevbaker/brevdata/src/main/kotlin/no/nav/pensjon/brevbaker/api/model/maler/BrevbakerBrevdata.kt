@@ -19,6 +19,6 @@ interface AutobrevData : BrevbakerBrevdata, FagsystemBrevdata
 
 interface FagsystemBrevdata
 
-interface SaksbehandlerValgBrevdata
+interface SaksbehandlervalgIDSL : Map<String, Any?>
 
 interface VedleggData

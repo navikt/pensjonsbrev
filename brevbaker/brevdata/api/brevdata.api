@@ -120,14 +120,11 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
-}
-
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum {
 	public abstract fun getDisplayText ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker, no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
+public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker {
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData {
