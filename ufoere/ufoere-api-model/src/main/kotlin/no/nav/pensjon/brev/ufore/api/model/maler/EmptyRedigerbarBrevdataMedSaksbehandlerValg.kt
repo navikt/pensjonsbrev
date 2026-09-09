@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.ufore.api.model.maler
 
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 data class EmptyRedigerbarRedigerbarBrevdata(
     override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : BrevdataMedSaksbehandlerValgUtenFagsystemdata
+) : RedigerbarBrevdata<EmptyFagsystemdata>

@@ -11,8 +11,6 @@ interface RedigerbarBrevdata<Data : FagsystemBrevdata> : BrevbakerBrevdata {
     val pesysData: Data
 }
 
-interface BrevdataMedSaksbehandlerValgUtenFagsystemdata : RedigerbarBrevdata<EmptyFagsystemdata>
-
 interface AutobrevData : BrevbakerBrevdata, FagsystemBrevdata
 
 interface FagsystemBrevdata

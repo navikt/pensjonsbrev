@@ -60,9 +60,6 @@ public final class no/nav/pensjon/brev/api/model/maler/AutomatiskBrevkode : no/n
 public abstract interface class no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/BrevdataMedSaksbehandlerValgUtenFagsystemdata : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata {
-}
-
 public abstract interface class no/nav/pensjon/brev/api/model/maler/Brevkode {
 	public abstract fun kode ()Ljava/lang/String;
 }

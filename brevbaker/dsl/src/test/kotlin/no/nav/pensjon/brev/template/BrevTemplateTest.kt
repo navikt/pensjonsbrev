@@ -5,7 +5,8 @@ import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekst
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -27,7 +28,7 @@ private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
 private class BrevTemplateTest {
     private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
 
-    private object EksempelBrev : RedigerbarTemplate<BrevdataMedSaksbehandlerValgUtenFagsystemdata> {
+    private object EksempelBrev : RedigerbarTemplate<RedigerbarBrevdata<EmptyFagsystemdata>> {
         override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
         override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
         override val sakstyper = setOf(object : ISakstype {
@@ -52,7 +53,7 @@ private class BrevTemplateTest {
     @Test
     fun `kan bruke fritekst som ifNull`() {
         with(EksempelBrev.template) {
-            with(TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>()) {
+            with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
                 val text = "fritekst"
                 assertThat(
                     null.expr<String?>().ifNull(fritekst(text))
@@ -65,7 +66,7 @@ private class BrevTemplateTest {
     @Test
     fun `kan ikke ha fritekst uten tekst`() {
         with(EksempelBrev.template) {
-            with(TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>()) {
+            with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
                     assertThrows<IllegalArgumentException> { fritekst("       ") }
             }
         }
@@ -75,7 +76,7 @@ private class BrevTemplateTest {
     @Test
     fun `kan ha fritekst med mellomrom foerst og sist`() {
         with(EksempelBrev.template) {
-            with(TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>()) {
+            with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
                 assertDoesNotThrow{ fritekst(" hei ") }
             }
         }
@@ -84,7 +85,7 @@ private class BrevTemplateTest {
     @Test
     fun `gir ikke fritekst om verdi er satt`() {
         with(EksempelBrev.template) {
-            with(TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>()) {
+            with(TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>()) {
                 val text = "ikkeFriTekst"
                 assertThat(
                     text.expr<String?>().ifNull(fritekst("bla"))
