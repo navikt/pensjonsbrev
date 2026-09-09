@@ -1,40 +1,25 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.ReservertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
-import no.nav.pensjon.brev.skribenten.model.*
-import org.jetbrains.exposed.v1.jdbc.Database
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
 class EndreMottakerHandler(
-    private val redigerBrevPolicy: RedigerBrevPolicy,
+    private val brevtilgang: Brevtilgang,
     private val brevdataService: BrevdataService,
-    private val brevreservasjonPolicy: BrevreservasjonPolicy,
-    reserverBrevHandler: ReserverBrevHandler,
-    database: Database,
-) : ReservertBrevHandler<EndreMottakerHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
+) {
 
-    data class Request(override val brevId: BrevId, override val saksId: SaksId, val mottaker: Dto.Mottaker?) : BrevredigeringRequest
+    data class Request(val brevId: BrevId, val saksId: SaksId, val mottaker: Dto.Mottaker?)
 
-    override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
+    suspend operator fun invoke(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
+        brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = true) {
+            brev.settMottaker(request.mottaker, request.mottaker?.let { brevdataService.hentAnnenMottakerNavn(it) })
 
-        val principal = PrincipalInContext.require()
-        redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
-
-        brev.settMottaker(request.mottaker, request.mottaker?.hentAnnenMottakerNavn())
-        brev.frigiReservasjon()
-
-        return success(brev.toBrevInfo(brevreservasjonPolicy))
-    }
-
-    private suspend fun Dto.Mottaker.hentAnnenMottakerNavn(): String? =
-        brevdataService.hentAnnenMottakerNavn(this)
-
+            success(brev.tilBrevInfo())
+        }
 }

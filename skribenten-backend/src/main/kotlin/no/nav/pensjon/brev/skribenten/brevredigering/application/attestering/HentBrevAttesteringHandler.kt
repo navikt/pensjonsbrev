@@ -1,57 +1,48 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.ReservertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.auth.*
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.auth.hentSignatur
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.fagsystem.*
-import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.letter.*
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
-import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentBrevAttesteringHandler(
-    private val attesterBrevPolicy: AttesterBrevPolicy,
-    private val redigerBrevPolicy: RedigerBrevPolicy,
+    private val brevtilgang: Brevtilgang,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
-    private val brevreservasjonPolicy: BrevreservasjonPolicy,
-    reserverBrevHandler: ReserverBrevHandler,
-    database: Database,
-) : ReservertBrevHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering>(database, reserverBrevHandler) {
+) {
 
     data class Request(
-        override val brevId: BrevId,
-        override val saksId: SaksId,
+        val brevId: BrevId,
+        val saksId: SaksId,
         val reserverForRedigering: Boolean = false,
-    ) : BrevredigeringRequest
+    )
 
-    override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
-
+    suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         if (!request.reserverForRedigering) {
-            return success(brev.toDto(brevreservasjonPolicy, null))
+            brevtilgang.forLesing(request.brevId, request.saksId) { success(brev.tilDto()) }
+        } else {
+            brevtilgang.forAttestering(request.brevId, request.saksId, frigiReservasjon = false) {
+                val principal = PrincipalInContext.require()
+
+                if (brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn == null) {
+                    brev.oppdaterRedigertBrev(brev.redigertBrev.withSignaturAttestant(principal.hentSignatur(navansattService)), principal.navIdent)
+                }
+
+                val pesysdata = brevdataService.hentBrevdata(brev)
+                val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
+                brev.oppdaterSakspartOgSignatur(rendretBrev.markup)
+
+                success(brev.tilDto(rendretBrev.letterDataUsage))
+            }
         }
-
-        val principal = PrincipalInContext.require()
-        attesterBrevPolicy.kanAttestere(brev, principal).onError { return failure(it) }
-        redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
-
-        if (brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn == null) {
-            brev.oppdaterRedigertBrev(brev.redigertBrev.withSignaturAttestant(principal.hentSignatur(navansattService)), principal.navIdent)
-        }
-
-        val pesysdata = brevdataService.hentBrevdata(brev)
-        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-        brev.oppdaterSakspartOgSignatur(rendretBrev.markup)
-
-        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
-    }
-
-    override fun requiresReservasjon(request: Request): Boolean =
-        request.reserverForRedigering
 }

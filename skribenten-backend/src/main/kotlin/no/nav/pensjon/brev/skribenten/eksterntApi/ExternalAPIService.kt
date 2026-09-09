@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBre
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
-import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -38,7 +37,7 @@ class ExternalAPIService(
     }
 
     suspend fun hentAlleBrevForSaker(saksIder: Set<SaksId>): List<ExternalAPI.BrevInfo> {
-        val alleBrev = hentBrevForAlleSaker(HentBrevForAlleSakerHandler.Request(saksIder))?.asSuccess()?.value ?: return emptyList()
+        val alleBrev = hentBrevForAlleSaker(HentBrevForAlleSakerHandler.Request(saksIder)).asSuccess()?.value ?: return emptyList()
         val maler = alleBrev.map { it.brevkode }.toSet().associateWith { brevmalService.getRedigerbarTemplate(it) }
 
         return alleBrev.mapNotNull { it.toExternal(maler[it.brevkode]) }
@@ -106,16 +105,8 @@ class ExternalAPIService(
                 spraak = request.spraak.toLanguageCode(),
                 avsenderEnhetsId = request.avsenderEnhetsId,
                 saksbehandlerValg = request.saksbehandlerValg ?: SaksbehandlervalgMap(),
-                statiskFagsystemBrevdata = request.statiskFagsystemBrevdata ?: tilStatiskFagsystemBrevdata(request.saksbehandlerValg),
+                statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
                 reserverForRedigering = request.reserverForRedigering ?: true
             )
         )
-
-    // TODO: Denne metoden skal bare leve fram til pensjonskalkulator-backend sender inn sin input som statiskFagsystemBrevdata
-    private fun tilStatiskFagsystemBrevdata(saksbehandlerValg: SaksbehandlervalgMap?): StatiskFagsystemBrevdata? {
-        if (saksbehandlerValg == null) return null
-        val statiskFagsystemBrevdata = StatiskFagsystemBrevdata()
-        saksbehandlerValg.entries.forEach { statiskFagsystemBrevdata[it.key] = it.value }
-        return statiskFagsystemBrevdata
-    }
 }

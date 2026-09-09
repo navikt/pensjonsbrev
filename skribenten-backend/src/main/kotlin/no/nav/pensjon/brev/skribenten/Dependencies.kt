@@ -1,5 +1,18 @@
 package no.nav.pensjon.brev.skribenten
 
+import com.zaxxer.hikari.HikariDataSource
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
+import io.ktor.server.application.Application
+import io.ktor.server.config.getAs
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.plugins.di.provide
+import kotlinx.coroutines.launch
+import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
+import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.AttesterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentBrevAttesteringHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.HentEllerOpprettAttesteringPdfHandler
@@ -29,6 +42,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.Tilb
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.VeksleKlarStatusHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreValgteVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentAlltidValgbareVedleggHandler
@@ -36,19 +50,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRed
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.RedigerbareVedleggService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.TilbakestillRedigertVedleggHandler
-import com.zaxxer.hikari.HikariDataSource
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.cio.CIO
-import io.ktor.server.application.Application
-import io.ktor.server.config.getAs
-import io.ktor.server.plugins.di.dependencies
-import io.ktor.server.plugins.di.provide
-import kotlinx.coroutines.launch
-import no.nav.pensjon.brev.skribenten.auth.ADGroups
-import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
-import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
@@ -130,6 +132,9 @@ fun Application.configureDependencies() {
 
         provide(Dto2ApiService::class)
         provide(ExternalAPIService::class)
+
+        provide(Transactional::class)
+        provide(Brevtilgang::class)
 
         provide(AttesterBrevPolicy::class)
         provide(BrevreservasjonPolicy::class)

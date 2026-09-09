@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
+import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
 

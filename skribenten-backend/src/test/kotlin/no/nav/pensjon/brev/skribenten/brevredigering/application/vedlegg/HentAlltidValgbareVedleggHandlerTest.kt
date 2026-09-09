@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
-
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
@@ -9,7 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class HentAlltidValgbareVedleggHandlerTest : BrevredigeringHandlerTestBase() {
-    private val handler by lazy { HentAlltidValgbareVedleggHandler(brevmalService, SharedPostgres.database) }
+    private val handler by lazy { HentAlltidValgbareVedleggHandler(brevtilgang, brevmalService) }
 
     @Test
     suspend fun `henter alltid valgbare vedlegg sortert med spraaktilgjengelighet`() {

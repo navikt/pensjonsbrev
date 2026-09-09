@@ -502,7 +502,7 @@ Fordi filene rulles ut uten variabler (se <<implementasjon, Implementasjon>>), s
 | Varsler *før* OOM-kill, mens vi fortsatt kan handle.
 
 | `PrometheusKlarerIkkeAScrape`
-| `up == 0` i 10 min
+| `up == 0` i 10 min, unntatt poder på en node som ikke er `Ready`
 | `warning`
 | Vi er blinde på appen. Alarmen som beskytter alle de andre alarmene. Den er likevel `warning` og ikke `critical`, jf. <<scrape-nivaa, begrunnelsen under>>.
 

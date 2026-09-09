@@ -10,36 +10,60 @@ import no.nav.pensjon.brev.maler.klageOgAnke.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
-import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
-import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
-import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
-import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
-import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0
-import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettInfo4Aar
-import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettMidlertidigOppHoer
-import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettOppHoer
-import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettVarselOpphoer
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.ReverseringLavereMinstesatsAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmEndringBTEPSOktoberAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmEndringBarnetilleggEPSAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmEndringBarnetilleggEPSRevAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmLavereMinstesatsAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmLavereReduksjonsprosentAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktBunnfradragAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktFribelopAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktMinsteIFUAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.ReverseringLavereMinstesatsRedigerbar
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmEndringBTEPSRedigerbar
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmLavereMinstesatsRedigerbar
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmLavereReduksjonsprosentRedigerbar
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmOktBunnfradragRedigerbar
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmOktFribelopRedigerbar
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmOktMinsteIFURedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektV2
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
+import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
+import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
+import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettInfo4Aar
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettMidlertidigOppHoer
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettOppHoer
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettVarselOpphoer
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.ReverseringLavereMinstesatsAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmEndringBTEPSOktoberAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEndringBarnetilleggEPSAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.VedtakOmEndringBarnetilleggEPSRevAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.VedtakOmLavereMinstesatsAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmLavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmOktBunnfradragAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmOktFribelopAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmOktMinsteIFUAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.ReverseringLavereMinstesatsRedigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmEndringBTEPSRedigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.VedtakOmLavereMinstesatsRedigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmLavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmOktBunnfradragRedigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmOktFribelopRedigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmOktMinsteIFURedigerbar
+import no.nav.pensjon.brev.maler.ufore.etteroppgjor.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
+import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
+import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
+import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoerepensjonRedigerbar
+import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoeretrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertrygdAuto
+import no.nav.pensjon.brev.maler.ufore.diverse.BekreftelsePaaUfoeretrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.diverse.EndretUforetrygdPGAOpptjeningLegacy
+import no.nav.pensjon.brev.maler.ufore.diverse.InformasjonOmSaksbehandlingstidUTRedigerbar
+import no.nav.pensjon.brev.maler.ufore.diverse.OmregningUfoerepensjonTilUfoeretrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.diverse.OrienteringOmSaksbehandlingstidRedigerbar
+import no.nav.pensjon.brev.maler.ufore.diverse.VedtakOmEtterbetalingOpphor2026Redigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMedEndringRedigerbar
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMellombehandlingRedigerbar
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdUtlandRedigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026Auto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026OktIfuAuto
+import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
+import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -56,7 +80,7 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
-        EndretBarnetilleggUfoerertrygd,
+        EndretBarnetilleggUfoerertrygdAuto,
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
@@ -94,36 +118,36 @@ object ProductionTemplates : AllTemplates {
         AnkeTilsvarTilAnkendePart,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
-        AvslagUfoerepensjon,
-        AvslagUfoeretrygd,
+        AvslagUfoerepensjonRedigerbar,
+        AvslagUfoeretrygdRedigerbar,
         BekreftelsePaaFlyktningstatus,
         BekreftelsePaaPensjon,
-        BekreftelsePaaUfoeretrygd,
+        BekreftelsePaaUfoeretrygdRedigerbar,
         BrukerTestBrev,
         BrukerTestVedtaksbrev,
-        DelvisEksportAvUforetrygd,
-        EndringUforetrygd,
+        DelvisEksportAvUforetrygdRedigerbar,
+        EndringUforetrygdRedigerbar,
         VedtakOmEtterbetalingOpphor2026Redigerbar,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,
-        InformasjonOmSaksbehandlingstidUT,
+        InformasjonOmSaksbehandlingstidUTRedigerbar,
         InnhentingDokumentasjonFraBruker,
         InnhentingOpplysningerFraBruker,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
-        InnvilgelseUforetrygd,
-        InnvilgelseUforetrygdUtland,
-        InnvilgelseUforetrygdMellombehandling,
-        InnvilgelseUforetrygdBosattNorgeEtterUtland,
-        InnvilgelseUforetrygdMedEndring,
+        InnvilgelseUforetrygdRedigerbar,
+        InnvilgelseUforetrygdUtlandRedigerbar,
+        InnvilgelseUforetrygdMellombehandlingRedigerbar,
+        InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar,
+        InnvilgelseUforetrygdMedEndringRedigerbar,
         KlageOrienteringOmOversendelseTilKlageinstans,
         KlageOrienteringOmSaksbehandlingstid,
-        OkningUforegrad,
-        OmregningUfoerepensjonTilUfoeretrygd,
+        OkningUforegradRedigerbar,
+        OmregningUfoerepensjonTilUfoeretrygdRedigerbar,
         OmsorgEgenManuell,
         OpphoerGjenlevendepensjon,
         OrienteringOmForlengetSaksbehandlingstid,
-        OrienteringOmSaksbehandlingstid,
+        OrienteringOmSaksbehandlingstidRedigerbar,
         OversettelseAvDokumenter,
         SamletMeldingOmPensjonsvedtakV2,
         TilbakekrevingAvFeilutbetaltBeloep,

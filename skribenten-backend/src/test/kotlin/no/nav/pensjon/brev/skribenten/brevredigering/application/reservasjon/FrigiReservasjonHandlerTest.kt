@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon
-
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
@@ -54,7 +54,7 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(etterFrigi.info.redigeresAv).isNull()
     }
 
-    private val frigiReservasjonHandler by lazy { FrigiReservasjonHandler(brevreservasjonPolicy, SharedPostgres.database) }
+    private val frigiReservasjonHandler by lazy { FrigiReservasjonHandler(brevtilgang, brevreservasjonPolicy) }
 
     private suspend fun frigiReservasjon(
         brevId: BrevId,

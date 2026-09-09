@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.pdf
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +12,7 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.BrevPdfService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.brev.BrevLandmodell.Landkode
@@ -219,6 +221,7 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `kan hente pdf for p1`() {
         val hentP1DataHandler = HentP1DataHandler(
+            brevtilgang = brevtilgang,
             penClient = object : PenClientStub() {
                 override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode) = P1RedigerbarDto(
                     innehaver = P1RedigerbarDto.P1Person(
@@ -257,19 +260,20 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
                     ),
                 )
             },
-            database = SharedPostgres.database,
         )
         brevbakerService.redigerbareMaler[Testbrevkoder.P1] = informasjonsbrev
 
         val brev = opprettBrev(brevkode = Testbrevkoder.P1).resultOrFail()
 
         val handler = HentEllerOpprettPdfHandler(
+            brevtilgang = brevtilgang,
             brevPdfService = BrevPdfService(
                 brevdataService = brevdataService,
                 renderService = RenderService(brevbakerService),
                 brevmalService = brevmalService,
                 hentP1DataHandler = hentP1DataHandler,
                 genererFoerstesideHandler = GenererFoerstesideHandler(
+                    brevtilgang,
                     FoerstesidegeneratorClient(
                         config = OboClientConfig(url = "http://localhost", scope = "test"),
                         authService = FakeAuthService,
@@ -280,7 +284,6 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
                     override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
                 }
             ),
-            database = SharedPostgres.database,
         )
         assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {
             assertThat(it.document.pdf).isEqualTo(stagetPDF)

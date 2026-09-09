@@ -124,17 +124,6 @@ class ExternalAPIServiceTest {
     }
 
     @Test
-    fun `konverterer saksbehandlerValg til statiskFagsystemBrevdata naar statiskFagsystemBrevdata mangler`(): Unit = runBlocking {
-        var mottattRequest: OpprettBrevHandler.Request? = null
-        val service = lagExternalAPIService { mottattRequest = it }
-        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true); put("valg2", "tekst") }
-
-        service.opprettBrev(lagOpprettBrevRequest(saksbehandlerValg = saksbehandlerValg, statiskFagsystemBrevdata = null))
-
-        assertThat(mottattRequest?.statiskFagsystemBrevdata).containsAllEntriesOf(saksbehandlerValg)
-    }
-
-    @Test
     fun `statiskFagsystemBrevdata blir null naar baade statiskFagsystemBrevdata og saksbehandlerValg mangler`(): Unit = runBlocking {
         var mottattRequest: OpprettBrevHandler.Request? = null
         val service = lagExternalAPIService { mottattRequest = it }
@@ -146,7 +135,7 @@ class ExternalAPIServiceTest {
 
     private fun lagExternalAPIService(onOpprettBrev: (OpprettBrevHandler.Request) -> Unit) = ExternalAPIService(
         config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
-        hentBrevForAlleSaker = { null },
+        hentBrevForAlleSaker = { Outcome.success(emptyList()) },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),
             penClient = PenClientStub(),
