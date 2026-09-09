@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
@@ -17,7 +17,7 @@ import java.time.LocalDate
 data class InnvilgelseAvAfpDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<InnvilgelseAvAfpDto.PesysData> {
+) : RedigerbarBrevdata<InnvilgelseAvAfpDto.PesysData> {
     data class PesysData(
         // PE_Vedtaksdata_Kravhode_KravMottatdato
         // (rtv-brev brev Vedtaksdata Kravhode KravMottatdato)

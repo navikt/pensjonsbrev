@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.alder.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.alder.model.vedlegg.Trygdetid
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 @Suppress("unused")
@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 data class AvslagForLiteTrygdetidAPDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : BrevdataMedSaksbehandlerValg<AvslagForLiteTrygdetidAPDto.PesysData> {
+) : RedigerbarBrevdata<AvslagForLiteTrygdetidAPDto.PesysData> {
 
     data class PesysData(
         val avtaleland: String?,
