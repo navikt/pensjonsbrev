@@ -42,13 +42,6 @@ class Brevtilgang(
             BrevScope(brev, brevreservasjonPolicy).block()
         }
 
-    suspend fun <R> forReservertLesing(
-        brevId: BrevId,
-        saksId: SaksId,
-        block: suspend BrevScope.() -> Outcome<R, BrevredigeringError>?,
-    ): Outcome<R, BrevredigeringError>? =
-        reservertOgSjekket(brevId, saksId, frigiReservasjon = false, sjekk = { _, _ -> success(Unit) }, block = block)
-
     suspend fun <R> forRedigering(
         brevId: BrevId,
         saksId: SaksId,
