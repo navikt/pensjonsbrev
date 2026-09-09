@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
+object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.oversettelseAvDokumenter.toggle
 

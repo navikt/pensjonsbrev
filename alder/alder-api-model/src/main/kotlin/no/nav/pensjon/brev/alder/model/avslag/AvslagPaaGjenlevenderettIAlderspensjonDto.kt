@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKla
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
@@ -15,7 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 data class AvslagPaaGjenlevenderettIAlderspensjonDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData> {
+) : RedigerbarBrevdata<AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData> {
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val krav: Krav,

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -26,7 +26,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.nav
 // Erstatte PE_IY_03_151
 
 @TemplateModelHelpers
-object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
+object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.brevmalAnkeTilsvarTilAnkendePart.toggle
 

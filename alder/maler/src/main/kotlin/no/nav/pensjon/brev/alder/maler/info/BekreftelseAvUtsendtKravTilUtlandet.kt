@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.Sakstype
-import no.nav.pensjon.brev.alder.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.alder.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object BekreftelseAvUtsendtKravTilUtlandet : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
+object BekreftelseAvUtsendtKravTilUtlandet : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BEKREFTELSE_UTSENDING_KRAV_TIL_UTLANDET
     override val valgbareVedlegg = setOf(UTTAKSSKJEMA, SKJEMA_FOR_BANKOPPLYSNINGER)
 
