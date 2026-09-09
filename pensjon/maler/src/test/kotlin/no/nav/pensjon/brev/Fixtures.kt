@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUfoeretrygdPGAInntektRedigerbarDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmaktsgiverBprofAutoDto
@@ -61,6 +62,7 @@ object Fixtures : LetterDataFactory {
             EmptyRedigerbarBrevdataMedSaksbehandlerValg::class -> EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUTPgaInntektDtoV2::class -> createEndretUTPgaInntektDtoV2() as T
+            EndretUfoeretrygdPGAInntektRedigerbarDto::class -> createEndretUfoeretrygdPGAInntektRedigerbarDto() as T
             EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
             EndretUforetrygdPGAOpptjeningLegacyDto::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
             EtteroppgjoerEtterbetalingAutoDto::class -> createEtteroppgjoerEtterbetalingAuto() as T
