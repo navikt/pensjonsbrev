@@ -900,10 +900,14 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 }
 
 public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
 	public final fun bool ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun int ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun text ()Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brev/template/SaksbehandlervalgKt {
+	public static final fun saksbehandlervalg (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;
 }
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
