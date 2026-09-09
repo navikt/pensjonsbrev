@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering
 
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -9,7 +8,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
-data class ApSimuleringDto(
+data class ApSimuleringDtoData(
     @DisplayText("Simulering")
     val simulering: Simulering,
     @DisplayText("Simuleringsinformasjon")
@@ -28,28 +27,7 @@ data class ApSimuleringDto(
     val forbehold: ForbeholdInnhold,
     @DisplayText("Kortforbehold")
     val kortforbehold: Kortforbehold?,
-) : SaksbehandlerValgBrevdata
-
-data class ApSimuleringDtoData(
-    @DisplayText("Simulering")
-    val simulering: Simulering?,
-    @DisplayText("Simuleringsinformasjon")
-    val simuleringsinformasjon: Simuleringsinformasjon?,
-    @DisplayText("Vilkårsprøvingsresultat")
-    val vilkaarsproevingsresultat: Vilkaarsproevingsresultat?,
-    @DisplayText("Trygdetid")
-    val trygdetid: Trygdetid?,
-    @DisplayText("Pensjonsgivende inntekt")
-    val pensjonsgivendeInntektListe: List<AarligBeloep>?,
-    @DisplayText("Årlig inntekt og pensjon")
-    val aarligInntektOgPensjonListe: List<AarligInntektOgPensjon>?,
-    @DisplayText("Pensjonsopptjening")
-    val pensjonsopptjeningListe: List<Pensjonsopptjening>?,
-    @DisplayText("Forbehold")
-    val forbehold: ForbeholdInnhold?,
-    @DisplayText("Kortforbehold")
-    val kortforbehold: Kortforbehold?,
-) : FagsystemBrevdata
+) : FagsystemBrevdata, VedleggData
 
 data class Simulering(
     @DisplayText("Alderspensjon")

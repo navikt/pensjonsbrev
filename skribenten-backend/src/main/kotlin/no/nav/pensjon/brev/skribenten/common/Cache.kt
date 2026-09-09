@@ -3,6 +3,9 @@ package no.nav.pensjon.brev.skribenten.common
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.utils.io.*
 import io.ktor.utils.io.core.Closeable
+import io.micrometer.core.instrument.Counter
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
 import io.valkey.*
 import io.valkey.params.SetParams
 import no.nav.pensjon.brev.skribenten.*
@@ -23,9 +26,9 @@ sealed class Cache : Closeable {
 }
 
 private val factoryLogger = LoggerFactory.getLogger(Cache::class.java)
-fun cacheFactory(config: SkribentenConfig): Cache =
+fun cacheFactory(config: SkribentenConfig, registry: MeterRegistry = Metrics.registry): Cache =
     if (config.valkey.enabled) {
-        Valkey(config.valkey)
+        Valkey(config.valkey, registry)
     } else {
         factoryLogger.warn("Valkey is disabled, this is not recommended for production")
         InMemoryCache()
@@ -38,7 +41,7 @@ suspend inline fun <K, reified V> Cache.cached(
     noinline fetch: suspend () -> V,
 ): V {
     val serializedKey = "${omraade.prefix}-${objectMapper.writeValueAsString(key)}"
-    return read(serializedKey)?.let { objectMapper.readValue(it) }
+    return read(serializedKey)?.let { objectMapper.readValue<V>(it) }
         ?: fetch().also {
             if (it == null) {
                 return@also
@@ -54,21 +57,49 @@ suspend inline fun <K, reified V> Cache.cached(
         }
 }
 
-class Valkey(config: ValkeyConfig) : Cache() {
+class Valkey(config: ValkeyConfig, private val registry: MeterRegistry = Metrics.registry) : Cache() {
     private val logger = LoggerFactory.getLogger(Valkey::class.java)
     private val jedisPool = setupJedis(config)
 
-    override suspend fun read(key: String): String? = try {
-        jedisPool.resource.use {
-            retryOgPakkUt(times = 3, ventetid = 50.milliseconds) { it.get(key) }
+    private fun recordOperation(sample: Timer.Sample, operation: String, outcome: String) {
+        sample.stop(
+            Timer.builder(Metrics.cacheOperationMetricName)
+                .description("Varighet og utfall av kall mot Valkey")
+                .tag("operation", operation)
+                .tag("outcome", outcome)
+                .register(registry)
+        )
+    }
+
+    // Cacheomraade sitt prefiks (satt av `cached()`) ligger alltid først i nøkkelen, adskilt med "-".
+    private fun recordLookup(key: String, result: String) {
+        Counter.builder("skribenten_cache_requests")
+            .description("Antall cache-oppslag per cacheområde, fordelt på treff og bom.")
+            .tag("omraade", key.substringBefore("-"))
+            .tag("result", result)
+            .register(registry)
+            .increment()
+    }
+
+    override suspend fun read(key: String): String? {
+        val sample = Timer.start(registry)
+        return try {
+            jedisPool.resource.use {
+                retryOgPakkUt(times = 3, ventetid = 50.milliseconds) { it.get(key) }
+            }.also { value ->
+                recordOperation(sample, "read", "success")
+                recordLookup(key, if (value != null) "hit" else "miss")
+            }
+        } catch (e: Exception) {
+            if (e is CancellationException) throw e
+            recordOperation(sample, "read", "error")
+            logger.info("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
+            null
         }
-    } catch (e: Exception) {
-        if (e is CancellationException) throw e
-        logger.info("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
-        null
     }
 
     override suspend fun update(key: String, value: String, ttl: Duration) {
+        val sample = Timer.start(registry)
         try {
             jedisPool.resource.use {
                 retryOgPakkUt(times = 3, ventetid = 50.milliseconds) {
@@ -81,8 +112,10 @@ class Valkey(config: ValkeyConfig) : Cache() {
                     )
                 }
             }
+            recordOperation(sample, "update", "success")
         } catch (e: Exception) {
             if (e is CancellationException) throw e
+            recordOperation(sample, "update", "error")
             logger.info("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
         }
     }

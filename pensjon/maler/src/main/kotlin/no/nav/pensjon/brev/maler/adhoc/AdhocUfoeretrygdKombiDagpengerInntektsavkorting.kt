@@ -52,7 +52,7 @@ object AdhocUfoeretrygdKombiDagpengerInntektsavkorting : AutobrevTemplate<EmptyA
             }
             paragraph {
                 text(
-                    bokmal { + "Etterbetalingen av dagpenger er pensjonsgivende inntekt som kan føre til reduksjon av uføretrygden, dersom inntekten overstiger inntektsgrensen. "
+                    bokmal { + "Etterbetalingen av dagpenger er pensjonsgivende inntekt som kan føre til reduksjon av uføretrygden, dersom inntekten overstiger bunnfradraget. "
                             + "Eventuell reduksjon av uføretrygden og barnetillegget avhenger av størrelsen på etterbetalingen av dagpenger. "
                             + "Dette gjelder selv om etterbetalingen stammer fra en tidligere periode, da det er tidspunktet for utbetaling som er avgjørende. "
                             + "Du vil få eget vedtak dersom utbetalingen av uføretrygden og barnetillegget reduseres. Dette følger av folketrygdloven §§ 12-14 og 12-16." }
@@ -65,7 +65,7 @@ object AdhocUfoeretrygdKombiDagpengerInntektsavkorting : AutobrevTemplate<EmptyA
             }
             paragraph {
                 text(
-                    bokmal { + "Annen pensjonsgivende inntekt vil som vanlig kunne føre til reduksjon av uføretrygden dersom inntektsgrensen overstiges." }
+                    bokmal { + "Annen pensjonsgivende inntekt vil som vanlig kunne føre til reduksjon av uføretrygden dersom bunnfradraget overstiges." }
                 )
             }
             includePhrase(Felles.HarDuSpoersmaal(Constants.NAV_URL, Constants.NAV_KONTAKTSENTER_TELEFON))

@@ -1,4 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
+
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
@@ -20,6 +22,7 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
+@OptIn(InternKonstruktoer::class)
 class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test

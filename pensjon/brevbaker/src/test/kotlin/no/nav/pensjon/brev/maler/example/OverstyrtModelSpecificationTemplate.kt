@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.template.*
@@ -14,6 +15,7 @@ enum class OverstyrtModelSpecificationBrevkode : Brevkode.Redigerbart {
     override fun kode() = name
 }
 
+@OptIn(InternKonstruktoer::class)
 @TemplateModelHelpers
 object OverstyrtModelSpecificationTemplate : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 

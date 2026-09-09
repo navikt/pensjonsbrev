@@ -354,6 +354,23 @@ Alle nedstrøms HTTP-kall instrumenteres av `services/HttpClientMetrics.kt` og e
 Retries telles separat per forsøk, ikke bare det endelige utfallet. `NaisLeaderService` sitt kall mot nais' lokale leader-election-sidecar (`downstream_host="localhost"`) er ekskludert i PromQL-en under, siden det ikke er en ekte nedstrøms tjeneste.
 ====
 
+[NOTE]
+====
+Valkey-cachen (`common/Cache.kt`) instrumenteres med to metrikker.
+
+* `skribenten_cache_requests_total`, med labels `omraade` (nøkkelens prefiks, satt av `Cacheomraade.prefix`, f.eks. `Norg`, `Samhandler`, `PensjonPersondata`) og `result` (`hit`/`miss`). Gir treffrate per område:
++
+[source]
+----
+sum by (omraade) (rate(skribenten_cache_requests_total{app="skribenten-backend", result="hit"}[1h]))
+/
+sum by (omraade) (rate(skribenten_cache_requests_total{app="skribenten-backend"}[1h]))
+----
+* `skribenten_cache_operations_seconds`, med labels `operation` (`read`/`update`) og `outcome` (`success`/`error`). Måler selve Valkey-kallet, uavhengig av `omraade`, og dekker to ting i én metrikk: latens (`_sum`/`_bucket`) og feilrate mot Valkey (`_count` filtrert på `outcome="error"`).
+
+Et leseforsøk som feiler mot Valkey (f.eks. ved en driftsforstyrrelse) gir `outcome="error"` på `skribenten_cache_operations_seconds`, men telles bevisst *ikke* som `miss` i `skribenten_cache_requests_total` - ellers ville en Valkey-hendelse feilaktig se ut som en for kort TTL.
+====
+
 [cols="2,3,1,3", options="header"]
 |===
 | Alarm | Utløser | Nivå | Begrunnelse

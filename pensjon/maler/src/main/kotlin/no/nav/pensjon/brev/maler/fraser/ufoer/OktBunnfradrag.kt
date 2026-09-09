@@ -44,7 +44,6 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -386,11 +385,13 @@ object OktBunnfradrag {
                                 nynorsk { +"Regelverksendringane fører til at barnetillegg for fellesbarn endrar seg fordi begge foreldra sine inntekter vert rekna med. Derfor får du ei lågare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + bt.format() + ". " })
                         }
                     }
-                    paragraph {
-                        text(
-                            bokmal { +"Dersom vi i år allerede har utbetalt for mye barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
-                            nynorsk { +"Dersom vi i år allereie har utbetalt for mykje barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
-                        )
+                    showIf(data.btHarBlitt0) {
+                        paragraph {
+                            text(
+                                bokmal { +"Dersom vi i år allerede har utbetalt for mye barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
+                                nynorsk { +"Dersom vi i år allereie har utbetalt for mykje barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
+                            )
+                        }
                     }
                     paragraph {
                         text(bokmal { +"Du kan lese mer om dette i vedlegget " }, nynorsk { +"Du kan lese meir om dette i vedlegget " })
@@ -440,24 +441,24 @@ object OktBunnfradrag {
 
 class PengerTilGode(private val nettoUt: Expression<Kroner>, private val nettoUtHarBlittLikBrutto: Expression<Boolean>, private val btHarBlitt0: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        paragraph {
-            text(
-                bokmal { +"Dersom du har penger til gode eller har fått for mye utbetalt, gjør vi følgende: " },
-                nynorsk { +"Dersom du har pengar til gode eller har fått for mykje utbetalt, gjer vi følgjande: " },
-            )
-        }
-        paragraph {
-            list {
-                item {
-                    text(
-                        bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
-                    )
-                    text(
-                        bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
-                        nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
-                    )
-                }
-                showIf(nettoUtHarBlittLikBrutto or btHarBlitt0) {
+        showIf(nettoUtHarBlittLikBrutto or btHarBlitt0) {
+            paragraph {
+                text(
+                    bokmal { +"Dersom du har penger til gode eller har fått for mye utbetalt, gjør vi følgende: " },
+                    nynorsk { +"Dersom du har pengar til gode eller har fått for mykje utbetalt, gjer vi følgjande: " },
+                )
+            }
+            paragraph {
+                list {
+                    item {
+                        text(
+                            bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
+                        )
+                        text(
+                            bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
+                            nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
+                        )
+                    }
                     item {
                         text(
                             bokmal { +"Hvis du fortsatt har penger til gode eller har fått for mye utbetalt, vil dette bli justert i etteroppgjøret for 2026. " },
@@ -469,6 +470,13 @@ class PengerTilGode(private val nettoUt: Expression<Kroner>, private val nettoUt
                         )
                     }
                 }
+            }
+        }.orShow {
+            paragraph {
+                text(
+                    bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. " },
+                    nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. " },
+                )
             }
         }
     }
