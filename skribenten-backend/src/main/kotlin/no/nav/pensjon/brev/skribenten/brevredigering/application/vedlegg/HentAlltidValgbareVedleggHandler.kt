@@ -1,41 +1,38 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.TransactionHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentAlltidValgbareVedleggHandler(
+    private val brevtilgang: Brevtilgang,
     private val brevmalService: BrevmalService,
-    database: Database,
-) : TransactionHandler<HentAlltidValgbareVedleggHandler.Request, List<ValgbartVedlegg>, Nothing>(database) {
+) {
 
     data class Request(
-        override val brevId: BrevId,
-        override val saksId: SaksId,
-    ) : BrevredigeringRequest
+        val brevId: BrevId,
+        val saksId: SaksId,
+    )
 
-    override suspend fun execute(request: Request): Outcome<List<ValgbartVedlegg>, Nothing>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId)
-        val spraakIBrevet = brev?.spraak ?: return null
+    suspend operator fun invoke(request: Request): Outcome<List<ValgbartVedlegg>, Nothing>? =
+        brevtilgang.forLesing(request.brevId, request.saksId) {
+            val spraakIBrevet = brev.spraak
 
-        val vedlegg = brevmalService.getAlltidValgbareVedlegg(brev.brevkode).map {
-            ValgbartVedlegg(
-                kode = it.kode,
-                visningstekst = it.visningstekst,
-                spraak = it.spraak,
-                tilgjengeligForSpraak = it.spraak.contains(spraakIBrevet),
-            )
-        }.sortedBy { it.visningstekst }
+            val vedlegg = brevmalService.getAlltidValgbareVedlegg(brev.brevkode).map {
+                ValgbartVedlegg(
+                    kode = it.kode,
+                    visningstekst = it.visningstekst,
+                    spraak = it.spraak,
+                    tilgjengeligForSpraak = it.spraak.contains(spraakIBrevet),
+                )
+            }.sortedBy { it.visningstekst }
 
-        return success(vedlegg)
-    }
+            success(vedlegg)
+        }
 }
 
 data class ValgbartVedlegg(

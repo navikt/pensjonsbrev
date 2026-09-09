@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.vedlegg
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.HentEllerOpprettPdfHandler
 import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles

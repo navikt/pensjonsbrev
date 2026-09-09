@@ -1,64 +1,55 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.ReservertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.fagsystem.*
-import no.nav.pensjon.brev.skribenten.model.*
-import org.jetbrains.exposed.v1.jdbc.Database
-import java.sql.Connection
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Distribusjon
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.toPen
 
 class SendBrevHandler(
-    private val sendBrevPolicy: SendBrevPolicy,
+    private val brevtilgang: Brevtilgang,
     private val brevService: BrevService,
     private val brevmalService: BrevmalService,
-    reserverBrevHandler: ReserverBrevHandler,
-    database: Database,
-) : ReservertBrevHandler<SendBrevHandler.Request, Dto.SendBrevResult>(database, reserverBrevHandler) {
+) {
 
-    override fun transactionIsolation(): Int = Connection.TRANSACTION_REPEATABLE_READ
+    data class Request(val brevId: BrevId, val saksId: SaksId)
 
-    data class Request(
-        override val brevId: BrevId,
-        override val saksId: SaksId,
-    ) : BrevredigeringRequest
+    suspend operator fun invoke(request: Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
+        brevtilgang.forSending(request.brevId, request.saksId) { document ->
+            val template = brevmalService.getRedigerbarTemplate(brev.brevkode)
+                ?: return@forSending failure(BrevmalFinnesIkke(brev.brevkode))
 
-    override suspend fun execute(request: Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
-        val document = brev.document ?: return null
+            val response = brevService.sendbrev(
+                sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
+                    dokumentDato = document.dokumentDato,
+                    saksId = brev.saksId,
+                    enhetsId = brev.avsenderEnhetId,
+                    templateDescription = template,
+                    brevkode = brev.brevkode,
+                    pdf = document.pdf,
+                    eksternReferanseId = "skribenten:${brev.id.value.id}",
+                    mottaker = brev.mottaker?.toPen(),
+                ),
+                distribuer = brev.distribusjonstype == Distribusjon.SENTRALPRINT,
+            )
 
-        sendBrevPolicy.kanSende(brev, document).onError { return failure(it) }
-        val template = brevmalService.getRedigerbarTemplate(brev.brevkode)
-            ?: return failure(BrevmalFinnesIkke(brev.brevkode))
-
-        val response = brevService.sendbrev(
-            sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
-                dokumentDato = document.dokumentDato,
-                saksId = brev.saksId,
-                enhetsId = brev.avsenderEnhetId,
-                templateDescription = template,
-                brevkode = brev.brevkode,
-                pdf = document.pdf,
-                eksternReferanseId = "skribenten:${brev.id.value.id}",
-                mottaker = brev.mottaker?.toPen(),
-            ),
-            distribuer = brev.distribusjonstype == Distribusjon.SENTRALPRINT,
-        )
-
-        if (response.journalpostId != null) {
-            if (response.error == null) {
-                brev.delete()
-            } else {
-                brev.journalpostId = response.journalpostId
+            if (response.journalpostId != null) {
+                if (response.error == null) {
+                    brev.delete()
+                } else {
+                    brev.journalpostId = response.journalpostId
+                }
             }
+
+            success(Dto.SendBrevResult(journalpostId = response.journalpostId, error = response.error))
         }
-
-        return success(Dto.SendBrevResult(journalpostId = response.journalpostId, error = response.error))
-    }
 }
-
-

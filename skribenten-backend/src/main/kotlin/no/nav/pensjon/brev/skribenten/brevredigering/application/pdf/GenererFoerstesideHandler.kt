@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.pdf
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.UseCaseHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
@@ -23,24 +21,24 @@ import kotlin.collections.listOf
 private const val STANDARD_NETS_POSTBOKS = "1400"
 
 class GenererFoerstesideHandler(
-    private val klient: FoerstesidegeneratorClient
-) : UseCaseHandler<GenererFoerstesideHandler.Request, GenererFoerstesideResponse, Nothing> {
+    private val brevtilgang: Brevtilgang,
+    private val klient: FoerstesidegeneratorClient,
+) {
 
     data class Request(
-        override val brevId: BrevId,
-        override val saksId: SaksId,
+        val brevId: BrevId,
+        val saksId: SaksId,
         val pid: BrevbakerType.Pid,
         val sakstype: Sakstype,
         val tema: Tema,
         val vedlegg: List<Tittel>,
-    ) : BrevredigeringRequest
+    )
 
     @JvmInline
     value class Tittel(val tittel: String)
 
-    override suspend fun invoke(request: Request): Outcome<GenererFoerstesideResponse, Nothing>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
-
+    suspend operator fun invoke(request: Request): Outcome<GenererFoerstesideResponse, Nothing>? =
+        brevtilgang.forLesing(request.brevId, request.saksId) {
         val tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim()
 
         val response = klient.genererFoersteside(GenererFoerstesideRequest(
@@ -66,6 +64,6 @@ class GenererFoerstesideHandler(
                 arkivsaksnummer = brev.saksId,
             )
         ))
-        return success(response)
-    }
+            success(response)
+        }
 }

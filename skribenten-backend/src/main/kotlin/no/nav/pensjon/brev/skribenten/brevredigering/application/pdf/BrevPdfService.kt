@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.pdf
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.IngenFoersteside
 import no.nav.pensjon.brev.skribenten.common.Outcome

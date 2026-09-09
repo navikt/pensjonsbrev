@@ -1,31 +1,25 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.p1
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.TransactionHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import org.jetbrains.exposed.v1.jdbc.Database
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 
 class HentP1DataHandler(
+    private val brevtilgang: Brevtilgang,
     private val penClient: PenClient,
-    database: Database,
-) : TransactionHandler<HentP1DataHandler.Request, P1RedigerbarDto, Nothing>(database) {
+) {
 
     data class Request(
         val brevId: BrevId,
         val saksId: SaksId,
     )
 
-    override suspend fun execute(request: Request): Outcome<P1RedigerbarDto, Nothing>? {
-        val brevredigering = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
-
-        val p1Data = brevredigering.p1Data?.p1data
-            ?: penClient.hentP1VedleggData(request.saksId, brevredigering.spraak)
-
-        return success(p1Data)
-    }
+    suspend operator fun invoke(request: Request): Outcome<P1RedigerbarDto, Nothing>? =
+        brevtilgang.forLesing(request.brevId, request.saksId) {
+            success(brev.p1Data?.p1data ?: penClient.hentP1VedleggData(request.saksId, brev.spraak))
+        }
 }

@@ -1,50 +1,38 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringRequest
-import no.nav.pensjon.brev.skribenten.brevredigering.application.ReservertBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.fagsystem.*
-import no.nav.pensjon.brev.skribenten.model.*
-import org.jetbrains.exposed.v1.jdbc.Database
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
 class HentBrevHandler(
-    private val redigerBrevPolicy: RedigerBrevPolicy,
+    private val brevtilgang: Brevtilgang,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
-    private val brevreservasjonPolicy: BrevreservasjonPolicy,
-    reserverBrevHandler: ReserverBrevHandler,
-    database: Database,
-) : ReservertBrevHandler<HentBrevHandler.Request, Dto.Brevredigering>(database, reserverBrevHandler) {
+) {
 
     data class Request(
-        override val brevId: BrevId,
-        override val saksId: SaksId,
+        val brevId: BrevId,
+        val saksId: SaksId,
         val reserverForRedigering: Boolean = false,
-    ) : BrevredigeringRequest
+    )
 
-    override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
-
+    suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         if (!request.reserverForRedigering) {
-            return success(brev.toDto(brevreservasjonPolicy, null))
+            brevtilgang.forLesing(request.brevId, request.saksId) { success(brev.tilDto()) }
+        } else {
+            brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = false) {
+                val pesysdata = brevdataService.hentBrevdata(brev)
+                val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
+                brev.mergeRendretBrev(rendretBrev.markup)
+                brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+
+                success(brev.tilDto(rendretBrev.letterDataUsage))
+            }
         }
-
-        val principal = PrincipalInContext.require()
-        redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
-
-        val pesysdata = brevdataService.hentBrevdata(brev)
-        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-        brev.mergeRendretBrev(rendretBrev.markup)
-        brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
-
-        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
-    }
-
-    override fun requiresReservasjon(request: Request): Boolean =
-        request.reserverForRedigering
 }

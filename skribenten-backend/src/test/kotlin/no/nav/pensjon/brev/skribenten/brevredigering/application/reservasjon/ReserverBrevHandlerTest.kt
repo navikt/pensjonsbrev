@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon
-
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
