@@ -31,7 +31,7 @@ import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakOmFjerningAvOmsorgsopptjeningDto
-import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev
+import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import kotlin.reflect.KClass
