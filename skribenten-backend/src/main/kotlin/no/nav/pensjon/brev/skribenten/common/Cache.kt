@@ -8,6 +8,8 @@ import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
 import io.valkey.*
 import io.valkey.params.SetParams
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
@@ -91,7 +93,7 @@ class Valkey(config: ValkeyConfig, private val registry: MeterRegistry = Metrics
                 recordLookup(key, if (value != null) "hit" else "miss")
             }
         } catch (e: Exception) {
-            if (e is CancellationException) throw e
+            currentCoroutineContext().ensureActive()
             recordOperation(sample, "read", "error")
             logger.info("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
             null
@@ -114,7 +116,7 @@ class Valkey(config: ValkeyConfig, private val registry: MeterRegistry = Metrics
             }
             recordOperation(sample, "update", "success")
         } catch (e: Exception) {
-            if (e is CancellationException) throw e
+            currentCoroutineContext().ensureActive()
             recordOperation(sample, "update", "error")
             logger.info("Fikk feilmelding fra Valkey under forsøk på å oppdatere verdi", e)
         }
