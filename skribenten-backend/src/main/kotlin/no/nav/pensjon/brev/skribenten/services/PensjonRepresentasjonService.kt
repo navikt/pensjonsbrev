@@ -76,11 +76,11 @@ class PensjonRepresentasjonService(
                 return@cached if (response.status.isSuccess()) {
                     response.body<HasRepresentantResponse>().value
                 } else {
-                    logger.error("Klarte ikke å hente representasjonsforhold Status: ${response.status} Response: ${response.bodyAsText()}")
+                    logger.warn("Klarte ikke å hente representasjonsforhold Status: ${response.status} Response: ${response.bodyAsText()}")
                     null
                 }
             } catch (e: Exception) {
-                logger.error("Klarte ikke å hente representasjonsforhold: ${e.message}")
+                logger.warn("Klarte ikke å hente representasjonsforhold: ${e.message}")
                 null
             }
 
