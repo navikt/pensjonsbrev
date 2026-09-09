@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKl
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
@@ -127,6 +128,7 @@ object ProductionTemplates : AllTemplates {
         BrukerTestVedtaksbrev,
         DelvisEksportAvUforetrygdRedigerbar,
         EndringUforetrygdRedigerbar,
+        EndretUfoeretrygdPGAInntektRedigerbar,
         VedtakOmEtterbetalingOpphor2026Redigerbar,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,
