@@ -5,9 +5,14 @@ import { type EditAttachment, type RedigerbartVedleggInfo, type RedigertVedleggR
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 
-const vedleggUrl = (saksId: string, brevId: number | string, redigeringsflate: Redigeringsflate) => {
+const vedleggUrl = (
+  saksId: string,
+  brevId: number | string,
+  redigeringsflate: Redigeringsflate,
+  vedleggId?: string,
+) => {
   const attestering = redigeringsflate === "attestant-redigering" ? "/attestering" : "";
-  return `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}${attestering}/redigerbareVedlegg`;
+  return `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}${attestering}/redigerbareVedlegg${vedleggId ? `/${vedleggId}` : ""}`;
 };
 
 export const redigerbareVedleggKeys = {
@@ -29,7 +34,7 @@ export const getRedigerbareVedlegg = {
 export const getRedigerbartVedlegg = {
   queryKey: redigerbareVedleggKeys.vedlegg,
   queryFn: async (saksId: string, brevId: number | string, vedleggId: string, redigeringsflate: Redigeringsflate) =>
-    (await axios.get<EditAttachment>(`${vedleggUrl(saksId, brevId, redigeringsflate)}/${vedleggId}`)).data,
+    (await axios.get<EditAttachment>(vedleggUrl(saksId, brevId, redigeringsflate, vedleggId))).data,
 };
 
 export const lagreRedigerbartVedlegg = async (
@@ -40,7 +45,7 @@ export const lagreRedigerbartVedlegg = async (
   redigeringsflate: Redigeringsflate,
 ): Promise<EditAttachment> =>
   (
-    await axios.put<EditAttachment>(`${vedleggUrl(saksId, brevId, redigeringsflate)}/${vedleggId}`, {
+    await axios.put<EditAttachment>(vedleggUrl(saksId, brevId, redigeringsflate, vedleggId), {
       redigertVedlegg,
     } satisfies RedigertVedleggRequest)
   ).data;
@@ -50,4 +55,4 @@ export const tilbakestillRedigerbartVedlegg = async (
   brevId: number | string,
   vedleggId: string,
 ): Promise<EditAttachment> =>
-  (await axios.delete<EditAttachment>(`${vedleggUrl(saksId, brevId, "saksbehandler-redigering")}/${vedleggId}`)).data;
+  (await axios.delete<EditAttachment>(vedleggUrl(saksId, brevId, "saksbehandler-redigering", vedleggId))).data;
