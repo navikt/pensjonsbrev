@@ -65,22 +65,6 @@ abstract class BrevmodulTest(
         val ubrukteKoder = redigerbare.filterNot { brukteKoder.contains(it) }
         assertEquals(ubrukteKoder, listOf<Brevkode.Redigerbart>())
     }
-
-    @Test
-    fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
-        templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
-            val saksbehandlervalg = clazz.declaredFields.asSequence()
-                .map { it.type.kotlin }
-                .filter { it.isSubclassOf(SaksbehandlervalgIDSL::class) }
-                .filterNot { it.isSubclassOf(SaksbehandlervalgIDSL::class) }
-                .singleOrNull()
-
-            saksbehandlervalg?.members?.filterIsInstance<KProperty<*>>()?.forEach { field ->
-                val hasDisplayText = field.annotations.filterIsInstance<DisplayText>().any()
-                assertTrue(hasDisplayText, "Alle saksbehandlervalg må ha displaytext, ${field.name} i klasse ${clazz.name} mangler det")
-            }
-        }
-    }
     @Test
     fun `alle enumverdier brukt i saksbehandlervalg i redigerbare brev har displaytext`() {
         templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
