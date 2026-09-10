@@ -9,9 +9,10 @@ import java.util.Objects
 class BestillBrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: BrevbakerBrevdata,
+    val saksbehandlerValg: SaksbehandlervalgIDSL,
     val felles: BrevbakerFelles,
     val language: LanguageCode,
-    val pdfVedlegg: List<PDFVedleggTittel> = listOf()
+    val pdfVedlegg: List<PDFVedleggTittel> = listOf(),
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillBrevRequest<*>) return false
