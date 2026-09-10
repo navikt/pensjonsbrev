@@ -6,6 +6,14 @@ import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer"
 
 export type SaveStatus = "DIRTY" | "SAVE_PENDING" | "SAVED";
 
+/**
+ * How many times `saveNow` may re-save before giving up and leaving the rest to the debounced
+ * autosave. A re-save only happens when the document actually changed while the previous save ran,
+ * so this cap is a safety net against callers that hand the hook a new document object on every
+ * save rather than a limit on normal editing.
+ */
+const MAX_SAVE_NOW_ATTEMPTS = 5;
+
 export type DocumentSaver = {
   saveFailed: boolean;
   /** Saves all pending edits and rejects if saving fails. */
@@ -19,6 +27,18 @@ export type DocumentSaver = {
  * session state and supplies a TanStack mutationFn plus lifecycle callbacks; this hook watches
  * `saveStatus`/`document`, debounces, and persists DIRTY documents. It deliberately knows nothing
  * about any specific document, response shape, or query caches — those belong to the caller.
+ *
+ * Caller contract: `document` is compared by reference, never by value. The caller must therefore
+ * keep the same object whenever the content is unchanged — i.e. return the previous state object
+ * from its state updates instead of rebuilding an equal one. Two things depend on it:
+ *
+ * - a document that just failed to save is not retried automatically, so a new-but-equal object
+ *   slips past that guard and re-sends a save that is expected to fail again;
+ * - `saveNow` re-saves only while the document keeps changing, so a caller that swaps the object on
+ *   every save would keep saving until {@link MAX_SAVE_NOW_ATTEMPTS} stops it.
+ *
+ * `ManagedAttachmentEditor` satisfies this by comparing with `isEqual(normalizeDocumentForComparison(...))`
+ * before replacing its state, both after a save and when refreshing from the server.
  */
 export function useDocumentAutosave<TDoc, TResponse>(args: {
   document: TDoc;
@@ -44,7 +64,6 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
 
   // Serialize saves so an older request cannot finish after and overwrite a newer one.
   const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
-  const activeSaveRef = useRef<Promise<TResponse> | null>(null);
 
   const { mutateAsync, isError } = useMutation<TResponse, AxiosError, TDoc>({
     mutationFn: (doc) => {
@@ -70,8 +89,9 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
   const shouldSave = (doc: TDoc, status: SaveStatus) =>
     !pausedRef.current && status === "DIRTY" && doc !== failedDocumentRef.current;
 
-  // Queue a save using the latest document when its turn starts.
-  const queueSave = useCallback((explicit: boolean) => {
+  // Queue a save using the latest document when its turn starts. Resolves with the document that
+  // was sent, or null when there was nothing to save by the time the turn came around.
+  const queueSave = useCallback((explicit: boolean): Promise<TDoc | null> => {
     const enqueuedSave = saveQueueRef.current.then(async () => {
       const { document: latestDocument, saveStatus: latestStatus } = autosaveStateRef.current;
 
@@ -79,15 +99,10 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
       const isEligibleForSave = explicit
         ? !pausedRef.current && latestStatus === "DIRTY"
         : shouldSave(latestDocument, latestStatus);
-      if (isEligibleForSave) {
-        const save = performSaveRef.current(latestDocument);
-        activeSaveRef.current = save;
-        try {
-          await save;
-        } finally {
-          activeSaveRef.current = null;
-        }
-      }
+      if (!isEligibleForSave) return null;
+
+      await performSaveRef.current(latestDocument);
+      return latestDocument;
     });
 
     // Keep the queue usable even if one save fails.
@@ -100,10 +115,15 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
 
   // Explicit saves propagate failures to the caller.
   const saveNow = useCallback(async () => {
-    await activeSaveRef.current;
-    await queueSave(true);
-    while (autosaveStateRef.current.saveStatus === "DIRTY") {
-      await queueSave(true);
+    for (let attempt = 0; attempt < MAX_SAVE_NOW_ATTEMPTS; attempt++) {
+      const savedDocument = await queueSave(true);
+      if (savedDocument === null) return;
+
+      // Only re-save when the document actually moved on while the save was running. Looping on
+      // `saveStatus` alone would depend on the caller collapsing to SAVED, and a caller that never
+      // does would keep this loop — and the backend — spinning forever.
+      const { document: latestDocument, saveStatus: latestStatus } = autosaveStateRef.current;
+      if (latestStatus !== "DIRTY" || latestDocument === savedDocument) return;
     }
   }, [queueSave]);
 

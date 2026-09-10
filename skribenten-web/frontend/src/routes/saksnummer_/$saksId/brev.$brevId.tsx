@@ -376,6 +376,9 @@ function RedigerBrev({
     form,
     getWarning,
     onConfirmedSubmit: (values) => onSubmit(values, navigateToBrevbehandler),
+    // Validation errors are rendered in the brevmal panel, which is hidden while the sidepanel shows
+    // the vedlegg tab. Switch back to the letter so the user can see why the submit was rejected.
+    onInvalidSubmit: () => void documentCoordinator.selectDocument(undefined),
     onWarnModalClosed: (warn) => {
       if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
         const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);

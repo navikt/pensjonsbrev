@@ -56,6 +56,10 @@ export const ManagedAttachmentEditor = (props: AttachmentEditorProps) => {
   const vedleggQuery = useQuery({
     queryKey: getRedigerbartVedlegg.queryKey(brev.info.id, vedleggId, redigeringsflate),
     queryFn: () => getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId, redigeringsflate),
+    // Pinned like the brev query: a background refetch (e.g. on window focus) that resolves after an
+    // autosave would put pre-edit content back in the cache, and the freshness effect below would
+    // then revert the editor to it. Fresh content comes from the save response instead.
+    staleTime: Number.POSITIVE_INFINITY,
   });
 
   if (vedleggQuery.isPending) {
