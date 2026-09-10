@@ -6,8 +6,8 @@ import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -18,12 +18,13 @@ import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
 import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupLetterMarkupWithDataUsage
 
-class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out Data : RedigerbarBrevdata<*>, out T : BrevTemplate<Data, Kode>>(
     override val name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
     alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
-) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
+) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>,
+    TemplateLibrary<Kode, Data, T> by TemplateLibraryImpl(templates) {
     private val brevbaker = Brevbaker(pdfByggerService)
     private val letterFactory: LetterFactory<Kode> = LetterFactory(alltidValgbareVedlegg)
 
