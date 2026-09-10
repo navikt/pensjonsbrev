@@ -43,6 +43,7 @@ interface BrevbakerService {
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -155,6 +156,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -169,6 +171,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                 BestillRedigertBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    saksbehandlerValg = saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                     letterMarkup = redigertBrev,

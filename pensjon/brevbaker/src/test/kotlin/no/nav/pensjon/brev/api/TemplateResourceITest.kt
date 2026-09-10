@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
@@ -33,6 +34,7 @@ class TemplateResourceITest {
                     BestillBrevRequest(
                         kode = kode,
                         letterData = argument,
+                        saksbehandlerValg = lagSaksbehandlervalg(),
                         felles = FellesFactory.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = null),
                         language = LanguageCode.BOKMAL
                     )

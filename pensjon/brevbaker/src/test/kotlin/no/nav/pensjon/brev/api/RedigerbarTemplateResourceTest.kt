@@ -7,6 +7,7 @@ import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
@@ -45,6 +46,7 @@ class RedigerbarTemplateResourceTest {
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
         EksempelbrevRedigerbart.kode,
         createEksempelbrevRedigerbartDto(),
+        saksbehandlerValg = lagSaksbehandlervalg(),
         FellesFactory.felles,
         LanguageCode.BOKMAL,
         LetterMarkupImpl(
@@ -71,6 +73,7 @@ class RedigerbarTemplateResourceTest {
     private val validRedigertBrevRequestV2 = BestillRedigertBrevRequestV2(
         EksempelbrevRedigerbart.kode,
         createEksempelbrevRedigerbartDto(),
+        saksbehandlerValg = lagSaksbehandlervalg(),
         FellesFactory.felles,
         LanguageCode.BOKMAL,
         letterMarkup(
