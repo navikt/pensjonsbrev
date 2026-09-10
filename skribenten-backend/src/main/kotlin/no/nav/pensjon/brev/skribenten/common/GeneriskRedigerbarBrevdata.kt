@@ -18,7 +18,7 @@ data class GeneriskRedigerbarBrevdata(
     private class GeneriskSaksbehandlervalg(saksbehandlervalgMap: SaksbehandlervalgMap) : SaksbehandlervalgIDSL,
         LinkedHashMap<String, Any?>() {
         init {
-            putAll(saksbehandlervalgMap)
+            saksbehandlervalgMap.forEach { (k, v) -> put(k, v?.value) }
         }
     }
 }
