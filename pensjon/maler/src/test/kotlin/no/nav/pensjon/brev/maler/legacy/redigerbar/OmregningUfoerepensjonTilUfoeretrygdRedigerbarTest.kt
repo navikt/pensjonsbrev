@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygdDto
 import no.nav.pensjon.brev.maler.ufore.diverse.OmregningUfoerepensjonTilUfoeretrygdRedigerbar
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
@@ -18,7 +17,7 @@ class OmregningUfoerepensjonTilUfoeretrygdRedigerbarTest {
     fun testPdf() {
         LetterTestImpl(
             OmregningUfoerepensjonTilUfoeretrygdRedigerbar.template,
-            Fixtures.create<OmregningUfoerepensjonTilUfoeretrygdDto>(),
+            Fixtures.create(OmregningUfoerepensjonTilUfoeretrygdRedigerbar::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF("UT_OMREGNING_UFOEREPENSJON_TIL_UFOERETRYGD")
@@ -28,7 +27,7 @@ class OmregningUfoerepensjonTilUfoeretrygdRedigerbarTest {
     fun testHtml() {
         LetterTestImpl(
             OmregningUfoerepensjonTilUfoeretrygdRedigerbar.template,
-            Fixtures.create<OmregningUfoerepensjonTilUfoeretrygdDto>(),
+            Fixtures.create(OmregningUfoerepensjonTilUfoeretrygdRedigerbar::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml("UT_OMREGNING_UFOEREPENSJON_TIL_UFOERETRYGD")

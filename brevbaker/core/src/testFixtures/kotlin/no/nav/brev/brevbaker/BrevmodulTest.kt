@@ -125,7 +125,7 @@ abstract class BrevmodulTest(
             .flatMap { spraak ->
                 (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
                     .filter { shouldInclude(it) }
-                    .map { Arguments.of(it.template, it.kode, fixtures.create(it.template.letterDataType), spraak) }
+                    .map { Arguments.of(it.template, it.kode, fixtures.create(it::class), spraak) }
             }
     }
 

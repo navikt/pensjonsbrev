@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
@@ -17,7 +16,7 @@ class UngUfoerAutoITest {
     fun pdftest() {
         LetterTestImpl(
             UngUfoerAuto.template,
-            Fixtures.create<UngUfoerAutoDto>(),
+            Fixtures.create(UngUfoerAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UNG_UFOER_AUTO_BOKMAL")
@@ -27,7 +26,7 @@ class UngUfoerAutoITest {
     fun testHtml() {
         LetterTestImpl(
             UngUfoerAuto.template,
-            Fixtures.create<UngUfoerAutoDto>(),
+            Fixtures.create(UngUfoerAuto::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml("UNG_UFOER_AUTO_BOKMAL")

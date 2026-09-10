@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
@@ -17,7 +16,7 @@ class VarselSaksbehandlingstidTest {
     fun pdftest() {
         LetterTestImpl(
             VarselSaksbehandlingstidAuto.template,
-            Fixtures.create<VarselSaksbehandlingstidAutoDto>(),
+            Fixtures.create(VarselSaksbehandlingstidAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_VARSEL_SAKSBEHANDLINGSTID_AUTO")
@@ -27,7 +26,7 @@ class VarselSaksbehandlingstidTest {
     fun testHtml() {
         LetterTestImpl(
             VarselSaksbehandlingstidAuto.template,
-            Fixtures.create<VarselSaksbehandlingstidAutoDto>(),
+            Fixtures.create(VarselSaksbehandlingstidAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_VARSEL_SAKSBEHANDLINGSTID_AUTO_BOKMAL")

@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -18,7 +17,7 @@ class TilbakekrevingAvFeilutbetaltBeloepTest {
     fun testPdf() {
         LetterTestImpl(
             TilbakekrevingAvFeilutbetaltBeloep.template,
-            Fixtures.create<TilbakekrevingAvFeilutbetaltBeloepDto>(),
+            Fixtures.create(TilbakekrevingAvFeilutbetaltBeloep::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(TilbakekrevingAvFeilutbetaltBeloep.kode.name)
@@ -28,7 +27,7 @@ class TilbakekrevingAvFeilutbetaltBeloepTest {
     fun testHtml() {
         LetterTestImpl(
             TilbakekrevingAvFeilutbetaltBeloep.template,
-            Fixtures.create<TilbakekrevingAvFeilutbetaltBeloepDto>(),
+            Fixtures.create(TilbakekrevingAvFeilutbetaltBeloep::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(TilbakekrevingAvFeilutbetaltBeloep.kode.name)

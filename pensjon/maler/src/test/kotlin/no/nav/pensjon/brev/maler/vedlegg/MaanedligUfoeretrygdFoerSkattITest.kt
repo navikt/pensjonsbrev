@@ -19,7 +19,7 @@ import java.time.LocalDate
 
 @Tag(TestTags.MANUAL_TEST)
 class MaanedligUfoeretrygdFoerSkattITest {
-    val ufoeretrygdPerMaaned = Fixtures.create(UfoeretrygdPerMaaned::class)
+    val ufoeretrygdPerMaaned = Fixtures.createVedlegg(UfoeretrygdPerMaaned::class)
         .copy(
             annetBelop = Kroner(1),
             barnetilleggFellesbarnBrutto = Kroner(2),

@@ -21,7 +21,7 @@ class OrienteringOmRettigheterUfoereTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             vedleggDineRettigheterOgPlikterUfoere,
-            Fixtures.create(OrienteringOmRettigheterUfoereDto::class).expr(),
+            Fixtures.createVedlegg(OrienteringOmRettigheterUfoereDto::class).expr(),
             languages(Bokmal, Nynorsk, English),
         )
         LetterTestImpl(

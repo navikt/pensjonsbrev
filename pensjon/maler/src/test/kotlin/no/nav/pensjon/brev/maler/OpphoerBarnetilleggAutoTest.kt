@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
@@ -17,7 +16,7 @@ class OpphoerBarnetilleggAutoTest {
     fun test() {
         LetterTestImpl(
             OpphoerBarnetilleggAuto.template,
-            Fixtures.create<OpphoerBarnetilleggAutoDto>(),
+            Fixtures.create(OpphoerBarnetilleggAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto,
         ).renderTestPDF("UT_OPPHOERER_BARNETILLEGG")

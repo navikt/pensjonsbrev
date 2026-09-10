@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class MaanedligPensjonFoerSkattITest {
-    private val maanedligPensjonFoerSkattData = Fixtures.create(MaanedligPensjonFoerSkattDto::class)
+    private val maanedligPensjonFoerSkattData = Fixtures.createVedlegg(MaanedligPensjonFoerSkattDto::class)
 
     val template = createVedleggTestTemplate(
         vedleggMaanedligPensjonFoerSkatt,

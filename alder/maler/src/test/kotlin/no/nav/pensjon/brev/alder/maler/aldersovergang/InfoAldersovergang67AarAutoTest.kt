@@ -6,7 +6,6 @@ import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.alder.Fixtures
 import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
-import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -17,7 +16,7 @@ class InfoAldersovergang67AarAutoTest {
     fun testPdfNB() {
         LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
-            Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
+            Fixtures.create(InfoAldersovergang67AarAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL")
@@ -27,7 +26,7 @@ class InfoAldersovergang67AarAutoTest {
     fun testPdfNN() {
         LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
-            Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
+            Fixtures.create(InfoAldersovergang67AarAuto::class),
             Language.Nynorsk,
             Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_NYNORSK")
@@ -37,7 +36,7 @@ class InfoAldersovergang67AarAutoTest {
     fun testPdfEN() {
         LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
-            Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
+            Fixtures.create(InfoAldersovergang67AarAuto::class),
             Language.English,
             Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_ENGLISH")
@@ -47,7 +46,7 @@ class InfoAldersovergang67AarAutoTest {
     fun testHtml() {
         LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
-            Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
+            Fixtures.create(InfoAldersovergang67AarAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto,
         ).renderTestHtml("INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL")

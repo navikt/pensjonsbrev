@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -17,7 +16,7 @@ class BekreftelsePaaPensjonTest {
     fun testPdf() {
         LetterTestImpl(
             BekreftelsePaaPensjon.template,
-            Fixtures.create<BekreftelsePaaPensjonDto>(),
+            Fixtures.create(BekreftelsePaaPensjon::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF(BekreftelsePaaPensjon.kode.name)
@@ -27,7 +26,7 @@ class BekreftelsePaaPensjonTest {
     fun testHtml() {
         LetterTestImpl(
             BekreftelsePaaPensjon.template,
-            Fixtures.create<BekreftelsePaaPensjonDto>(),
+            Fixtures.create(BekreftelsePaaPensjon::class),
             Language.English,
             Fixtures.fellesAuto
         ).renderTestHtml(BekreftelsePaaPensjon.kode.name)

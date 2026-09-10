@@ -20,7 +20,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             vedleggOpplysningerBruktIBeregningUTLegacy,
-            Fixtures.create(PEgruppe10::class).expr(),
+            Fixtures.createVedlegg(PEgruppe10::class).expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
         LetterTestImpl(

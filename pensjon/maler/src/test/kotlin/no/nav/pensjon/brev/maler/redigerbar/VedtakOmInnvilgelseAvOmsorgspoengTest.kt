@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -17,7 +16,7 @@ class VedtakOmInnvilgelseAvOmsorgspoengTest {
     fun testPdf() {
         LetterTestImpl(
             VedtakOmInnvilgelseAvOmsorgspoeng.template,
-            Fixtures.create<VedtakOmInnvilgelseAvOmsorgspoengDto>(),
+            Fixtures.create(VedtakOmInnvilgelseAvOmsorgspoeng::class),
             Language.English,
             Fixtures.felles
         ).renderTestPDF(VedtakOmInnvilgelseAvOmsorgspoeng.kode.name)
@@ -27,7 +26,7 @@ class VedtakOmInnvilgelseAvOmsorgspoengTest {
     fun testHtml() {
         LetterTestImpl(
             VedtakOmInnvilgelseAvOmsorgspoeng.template,
-            Fixtures.create<VedtakOmInnvilgelseAvOmsorgspoengDto>(),
+            Fixtures.create(VedtakOmInnvilgelseAvOmsorgspoeng::class),
             Language.Nynorsk,
             Fixtures.felles
         ).renderTestHtml(VedtakOmInnvilgelseAvOmsorgspoeng.kode.name)

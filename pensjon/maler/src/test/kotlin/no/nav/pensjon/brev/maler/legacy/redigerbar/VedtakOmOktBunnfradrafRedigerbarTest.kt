@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmOktBunnfradragRedigerbarDto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmOktBunnfradragRedigerbar
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
@@ -18,7 +17,7 @@ class VedtakOmOktBunnfradragRedigerbarTest {
     fun testPdf() {
         LetterTestImpl(
             VedtakOmOktBunnfradragRedigerbar.template,
-            Fixtures.create<VedtakOmOktBunnfradragRedigerbarDto>(),
+            Fixtures.create(VedtakOmOktBunnfradragRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("vedtakOktBunnfradragRedigerbar")
@@ -28,7 +27,7 @@ class VedtakOmOktBunnfradragRedigerbarTest {
     fun testHtml() {
         LetterTestImpl(
             VedtakOmOktBunnfradragRedigerbar.template,
-            Fixtures.create<VedtakOmOktBunnfradragRedigerbarDto>(),
+            Fixtures.create(VedtakOmOktBunnfradragRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("vedtakOktBunnfradragRedigerbar")

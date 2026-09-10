@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOkningUforegradDto
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
 import no.nav.pensjon.brev.template.Language
@@ -21,7 +20,7 @@ class OkningUforegradRedigerbarTest {
     fun testPdf() {
         LetterTestImpl(
             OkningUforegradRedigerbar.template,
-            Fixtures.create<OkningUforegradDto>(),
+            Fixtures.create(OkningUforegradRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_OKNING_UFOREGRAD")
@@ -31,7 +30,7 @@ class OkningUforegradRedigerbarTest {
     fun testHtml() {
         LetterTestImpl(
             OkningUforegradRedigerbar.template,
-            Fixtures.create<OkningUforegradDto>(),
+            Fixtures.create(OkningUforegradRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_OKNING_UFOREGRAD")
@@ -41,7 +40,7 @@ class OkningUforegradRedigerbarTest {
     fun `testPdf - nynorsk`() {
         LetterTestImpl(
             OkningUforegradRedigerbar.template,
-            Fixtures.create<OkningUforegradDto>(),
+            Fixtures.create(OkningUforegradRedigerbar::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_OKNING_UFOREGRAD_NYNORSK")

@@ -3,13 +3,14 @@ package no.nav.pensjon.brev.planleggepensjon
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrev
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrev
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
@@ -30,6 +31,8 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
 import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.Uttaksinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.Vilkaarsproevingsresultat
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -40,15 +43,12 @@ object Fixtures : LetterDataFactory {
 
     val felles = FellesFactory.felles
 
-    inline fun <reified T : Any> create(): T = create(T::class)
-
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> create(letterDataType: KClass<T>): T =
-        when (letterDataType) {
-            ApSimuleringBrevDto::class -> createSimuleringBrevDto() as T
-            ServiceberegningBrevDto::class -> createServiceberegningBrevDto() as T
-            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
-            else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
+    override fun <T : BrevbakerBrevdata> create(templateType: KClass<out BrevTemplate<T, *>>): T =
+        when (templateType) {
+            ApSimuleringBrev::class -> createSimuleringBrevDto() as T
+            ServiceberegningBrev::class -> createServiceberegningBrevDto() as T
+            else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
     @Suppress("UNCHECKED_CAST")

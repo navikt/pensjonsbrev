@@ -7,7 +7,6 @@ import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
-import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -18,7 +17,7 @@ internal class TomMalInformasjonsbrevTest {
     fun pdftest() {
         val letter = LetterTestImpl(
             TomMalInformasjonsbrev.template,
-            Fixtures.create<ManueltBrevMedTittelDTO>(),
+            Fixtures.create(TomMalInformasjonsbrev::class),
             Language.Bokmal,
             Fixtures.felles
         )
@@ -29,7 +28,7 @@ internal class TomMalInformasjonsbrevTest {
     fun testHtml() {
         LetterTestImpl(
             TomMalInformasjonsbrev.template,
-            Fixtures.create<ManueltBrevMedTittelDTO>(),
+            Fixtures.create(TomMalInformasjonsbrev::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)

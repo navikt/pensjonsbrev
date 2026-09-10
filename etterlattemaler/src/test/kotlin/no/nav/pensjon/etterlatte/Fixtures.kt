@@ -57,138 +57,105 @@ import no.nav.pensjon.etterlatte.fixtures.lagTilbakekrevingDTO
 import no.nav.pensjon.etterlatte.fixtures.vedlegg.lagBeregningsVedleggData
 import no.nav.pensjon.etterlatte.fixtures.vedlegg.lagInformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedlegg
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTO
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTO
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTO
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselRedigerbartBrevDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakBrevDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakRedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.lagOmstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTO
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggData
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO
 import kotlin.reflect.KClass
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.etterlatte.maler.andre.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.*
+import no.nav.pensjon.etterlatte.maler.klage.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.*
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.*
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.*
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.*
 
 object Fixtures : LetterDataFactory {
 
     val felles = no.nav.brev.brevbaker.FellesFactory.felles
 
-    inline fun <reified T : Any> create(): T = create(T::class)
-
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> create(letterDataType: KClass<T>): T =
-        when (letterDataType) {
-            BarnepensjonInnvilgelseDTO::class -> createBarnepensjonInnvilgelseDTO() as T
-            BarnepensjonInnvilgelseRedigerbartUtfallDTO::class -> createBarnepensjonInnvilgelseRedigerbartUtfallDTO() as T
-            BarnepensjonForeldreloesDTO::class -> createBarnepensjonForeldreloesDTO() as T
-            BarnepensjonForeldreloesRedigerbarDTO::class -> createBarnepensjonForeldreloesRedigerbarDTO() as T
-            BarnepensjonAvslagDTO::class -> createBarnepensjonAvslagDTO() as T
-            BarnepensjonOpphoerDTO::class -> createBarnepensjonOpphoerDTO() as T
-            BarnepensjonAvslagRedigerbartUtfallDTO::class -> createBarnepensjonAvslagRedigerbartUtfallDTO() as T
-            BarnepensjonOpphoerRedigerbartUtfallDTO::class -> createBarnepensjonOpphoerRedigerbartUtfallDTO() as T
-            BarnepensjonRevurderingDTO::class -> createBarnepensjonRevurderingDTO() as T
-            BarnepensjonRevurderingRedigerbartUtfallDTO::class -> createBarnepensjonRevurderingRedigerbartUtfallDTO() as T
-            BarnepensjonOmregnetNyttRegelverkDTO::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
-            BarnepensjonOmregnetNyttRegelverkFerdigDTO::class -> createBarnepensjonOmregnetNyttRegelverkFerdigDTO() as T
-            BarnepensjonInformasjonDoedsfallDTO::class -> createBarnepensjonInformasjonDoedsfallDTO() as T
-            BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO::class -> createBarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO() as T
-            BarnepensjonMottattSoeknadDTO::class -> createBarnepensjonInformasjonMottattSoeknadDTO() as T
-            BarnepensjonInnhentingAvOpplysningerDTO::class -> createBarnepensjonInnhentingAvOpplysningerDTO() as T
-
-            BarnepensjonVarselDTO::class -> createBarnepensjonVarsel() as T
-            BarnepensjonVarselRedigerbartUtfallDTO::class -> createBarnepensjonVarselRedigerbartUtfall() as T
-
-            OmstillingstoenadInformasjonDoedsfallDTO::class -> createOmstillingsstoenadInformasjonDoedsfallDto() as T
-            OmstillingsstoenadMottattSoeknadDTO::class -> createOmstillingsstoenadMotattSoekdnadDTO() as T
-            OmstillingsstoenadInnhentingAvOpplysningerDTO::class -> createOmstillingsstoenadInnhentingAvOpplysningerDTO() as T
-            OmstillingsstoenadInnvilgelseDTO::class -> createOmstillingsstoenadInnvilgelseDTO() as T
-            OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
-            OmstillingstoenadAvslagDTO::class -> createOmstillingsstoenadAvslagDTO() as T
-            OmstillingstoenadAvslagRedigerbartUtfallDTO::class -> createOmstillingsstoenadAvslagRedigerbartUtfallDTO() as T
-            OmstillingsstoenadRevurderingDTO::class -> createOmstillingsstoenadRevurderingDTO() as T
-            OmstillingsstoenadRevurderingRedigerbartUtfallDTO::class -> createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() as T
-            OmstillingsstoenadOpphoerDTO::class -> createOmstillingsstoenadOpphoerDTO() as T
-            OmstillingsstoenadOpphoerRedigerbartUtfallDTO::class -> createOmstillingsstoenadpphoerRedigerbartUtfallDTO() as T
-            OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO() as T
-            OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO() as T
-            OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon6mndDto() as T
-            OmstillingsstoenadVarselAktivitetspliktDTO::class -> createOmstillingsstoenadVarselAktivitetspliktDTO() as T
-            OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T
-            OmstillingsstoenadBeregningRedigerbartVedlegg::class ->
-                createOmstillingsstoenadBeregningRedigerbartVedlegg() as T
-
-            // Inntektsjustering
-            AarligInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
-            OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() as T
-
-            //TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
-            TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
-            TilbakekrevingRedigerbartBrevDTO::class -> createTilbakekrevingRedigerbartBrevDTO() as T
-
-            // Etteroppgjør
-            EtteroppgjoerForhaandsvarselBrevDTO::class -> createEtteroppgjoerForhaandsvarselBrevDTO() as T
-            EtteroppgjoerForhaandsvarselRedigerbartBrevDTO::class -> createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() as T
-            EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO::class -> createEtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO() as T
-            EtteroppgjoerVedtakBrevDTO::class -> createEtteroppgjoerVedtakBrevDTO() as T
-            EtteroppgjoerVedtakRedigerbartUtfallBrevDTO::class -> createEtteroppgjoerVedtakRedigerbartUtfallBrevDTO() as T
-
-            AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
-            KlageSaksbehandlingstidDTO::class -> createKlageSaksbehandlingstidDtoTestI() as T
-            AvvistKlageFerdigDTO::class -> createAvvistKlageFerdigDTO() as T
-            KlageOversendelseBrukerDTO::class -> createKlageOversendelseBrukerDTO() as T
-
-            ManueltBrevDTO::class -> createManueltBrevDTO() as T
-            ManueltBrevMedTittelDTO::class -> createTomMalInformasjonsbrev() as T
+    override fun <T : BrevbakerBrevdata> create(templateType: KClass<out BrevTemplate<T, *>>): T =
+        when (templateType) {
+            BarnepensjonInnvilgelse::class -> createBarnepensjonInnvilgelseDTO() as T
+            BarnepensjonInnvilgelseRedigerbartUfall::class -> createBarnepensjonInnvilgelseRedigerbartUtfallDTO() as T
+            BarnepensjonInnvilgelseForeldreloes::class -> createBarnepensjonForeldreloesDTO() as T
+            BarnepensjonInnvilgelseForeldreloesRedigerbartUfall::class -> createBarnepensjonForeldreloesRedigerbarDTO() as T
+            BarnepensjonAvslag::class -> createBarnepensjonAvslagDTO() as T
+            BarnepensjonOpphoer::class -> createBarnepensjonOpphoerDTO() as T
+            BarnepensjonAvslagRedigerbartUtfall::class -> createBarnepensjonAvslagRedigerbartUtfallDTO() as T
+            BarnepensjonOpphoerRedigerbartUtfall::class -> createBarnepensjonOpphoerRedigerbartUtfallDTO() as T
+            BarnepensjonRevurdering::class -> createBarnepensjonRevurderingDTO() as T
+            BarnepensjonRevurderingRedigerbartUtfall::class -> createBarnepensjonRevurderingRedigerbartUtfallDTO() as T
+            EnkeltVedtakOmregningNyttRegelverk::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
+            ForhaandsvarselOmregningBP::class -> createBarnepensjonOmregnetNyttRegelverkDTO() as T
+            EnkeltVedtakOmregningNyttRegelverkFerdig::class -> createBarnepensjonOmregnetNyttRegelverkFerdigDTO() as T
+            BarnepensjonInformasjonDoedsfall::class -> createBarnepensjonInformasjonDoedsfallDTO() as T
+            BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt::class -> createBarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO() as T
+            BarnepensjonMottattSoeknad::class -> createBarnepensjonInformasjonMottattSoeknadDTO() as T
+            BarnepensjonInnhentingAvOpplysninger::class -> createBarnepensjonInnhentingAvOpplysningerDTO() as T
+            BarnepensjonVarsel::class -> createBarnepensjonVarsel() as T
+            BarnepensjonVarselRedigerbartUtfall::class -> createBarnepensjonVarselRedigerbartUtfall() as T
+            OmstillingsstoenadInformasjonDoedsfall::class -> createOmstillingsstoenadInformasjonDoedsfallDto() as T
+            OmstillingsstoenadMottattSoeknad::class -> createOmstillingsstoenadMotattSoekdnadDTO() as T
+            OmstillingsstoenadInnhentingAvOpplysninger::class -> createOmstillingsstoenadInnhentingAvOpplysningerDTO() as T
+            OmstillingsstoenadInnvilgelse::class -> createOmstillingsstoenadInnvilgelseDTO() as T
+            OmstillingsstoenadInnvilgelseRedigerbartUtfall::class -> createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() as T
+            OmstillingsstoenadAvslag::class -> createOmstillingsstoenadAvslagDTO() as T
+            OmstillingsstoenadAvslagRedigerbartUtfall::class -> createOmstillingsstoenadAvslagRedigerbartUtfallDTO() as T
+            OmstillingsstoenadRevurdering::class -> createOmstillingsstoenadRevurderingDTO() as T
+            OmstillingsstoenadRevurderingRedigerbartUtfall::class -> createOmstillingsstoenadRevurderingRedigerbartUtfallDTO() as T
+            OmstillingsstoenadOpphoer::class -> createOmstillingsstoenadOpphoerDTO() as T
+            OmstillingsstoenadOpphoerRedigerbartUtfall::class -> createOmstillingsstoenadpphoerRedigerbartUtfallDTO() as T
+            OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold::class -> createOmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO() as T
+            OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold::class -> createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO() as T
+            OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold::class -> createOmstillingsstoenadAktivitetspliktInformasjon6mndDto() as T
+            OmstillingsstoenadVarselAktivitetsplikt::class -> createOmstillingsstoenadVarselAktivitetspliktDTO() as T
+            OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T
+            OmstillingsstoenadVedleggBeregningRedigerbartUtfall::class -> createOmstillingsstoenadBeregningRedigerbartVedlegg() as T
+            OmstillingsstoenadInntektsjusteringVarsel::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
+            OmstillingsstoenadInntektsjusteringVedtak::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
+            OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall::class -> createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() as T
+            TilbakekrevingFerdig::class -> createTilbakekrevingFerdigDTO() as T
+            TilbakekrevingInnhold::class -> createTilbakekrevingRedigerbartBrevDTO() as T
+            EtteroppgjoerForhaandsvarsel::class -> createEtteroppgjoerForhaandsvarselBrevDTO() as T
+            EtteroppgjoerForhaandsvarselInnhold::class -> createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() as T
+            EtteroppgjoerBeregningVedleggRedigerbartUtfall::class -> createEtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO() as T
+            EtteroppgjoerVedtak::class -> createEtteroppgjoerVedtakBrevDTO() as T
+            EtteroppgjoerVedtakRedigerbartUtfall::class -> createEtteroppgjoerVedtakRedigerbartUtfallBrevDTO() as T
+            AvvistKlageInnhold::class -> createAvvistKlageInnholdDTO() as T
+            KlageSaksbehandlingstid::class -> createKlageSaksbehandlingstidDtoTestI() as T
+            AvvistKlageFerdigstilling::class -> createAvvistKlageFerdigDTO() as T
+            KlageOversendelsesbrevBruker::class -> createKlageOversendelseBrukerDTO() as T
+            BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall::class -> createManueltBrevDTO() as T
+            BarnepensjonVedleggForhaandsvarselRedigerbartUtfall::class -> createManueltBrevDTO() as T
+            OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall::class -> createManueltBrevDTO() as T
+            OmstillingsstoenadVarselRedigerbartUtfall::class -> createManueltBrevDTO() as T
+            UtsattKlagefrist::class -> createManueltBrevDTO() as T
+            TomDelmal::class -> createManueltBrevDTO() as T
+            OmstillingsstoenadVarsel::class -> createTomMalInformasjonsbrev() as T
+            TomMalInformasjonsbrev::class -> createTomMalInformasjonsbrev() as T
             TomMal::class -> createTomMal() as T
-            Unit::class -> Unit as T
-
-            else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
+            else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
     @Suppress("UNCHECKED_CAST")
