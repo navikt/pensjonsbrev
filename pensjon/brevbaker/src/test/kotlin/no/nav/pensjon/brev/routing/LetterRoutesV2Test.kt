@@ -4,6 +4,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
@@ -20,12 +21,14 @@ class LetterRoutesV2Test {
     private val autoBrevRequest = BestillBrevRequest(
         kode = LetterExample.kode,
         letterData = createLetterExampleDto(),
+        saksbehandlerValg = null,
         felles = FellesFactory.fellesAuto,
         language = LanguageCode.BOKMAL,
     )
     private val bestillMarkupRequest = BestillBrevRequest(
         kode = EksempelbrevRedigerbart.kode,
         letterData = createEksempelbrevRedigerbartDto(),
+        saksbehandlerValg = lagSaksbehandlervalg(),
         felles = FellesFactory.felles,
         language = LanguageCode.BOKMAL,
     )

@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.BREVBAKER_URL
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -80,6 +81,7 @@ class ApplicationITest {
                 BestillBrevRequest(
                     kode = LetterExample.kode,
                     letterData = EmptyAutobrevdata,
+                    saksbehandlerValg = lagSaksbehandlervalg(),
                     felles = FellesFactory.fellesAuto,
                     language = LanguageCode.BOKMAL
                 )

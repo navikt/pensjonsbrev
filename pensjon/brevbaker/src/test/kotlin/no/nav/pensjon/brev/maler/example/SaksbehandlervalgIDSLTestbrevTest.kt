@@ -84,6 +84,7 @@ class SaksbehandlervalgIDSLTestbrevTest {
         val bestillMarkupRequest = BestillBrevRequest(
             kode = SaksbehandlervalgIDSLTestbrev.kode,
             letterData = dto,
+            saksbehandlerValg = dto.saksbehandlerValg,
             felles = FellesFactory.felles,
             language = LanguageCode.NYNORSK,
         )
@@ -106,6 +107,7 @@ class SaksbehandlervalgIDSLTestbrevTest {
                 BestillRedigertBrevRequest(
                     kode = SaksbehandlervalgIDSLTestbrev.kode,
                     letterData = dto,
+                    saksbehandlerValg = dto.saksbehandlerValg,
                     felles = FellesFactory.felles,
                     language = LanguageCode.NYNORSK,
                     letterMarkup = letterMarkup,

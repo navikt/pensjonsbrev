@@ -9,6 +9,7 @@ import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -36,12 +37,14 @@ class LetterRoutesITest {
     private val autoBrevRequest = BestillBrevRequest(
         kode = LetterExample.kode,
         letterData = createLetterExampleDto(),
+        saksbehandlerValg = null,
         felles = FellesFactory.fellesAuto,
         language = LanguageCode.BOKMAL,
     )
     private val bestillMarkupRequest = BestillBrevRequest(
         kode = EksempelbrevRedigerbart.kode,
         letterData = createEksempelbrevRedigerbartDto(),
+        saksbehandlerValg = lagSaksbehandlervalg(),
         felles = FellesFactory.felles,
         language = LanguageCode.BOKMAL,
     )
@@ -53,7 +56,16 @@ class LetterRoutesITest {
     ).let { LetterTestRenderer.renderLetterOnly(it) }
         .let {
             with(bestillMarkupRequest) {
-                BestillRedigertBrevRequest(kode, letterData as EksempelRedigerbartDto, felles, language, it, listOf(), emptyMap())
+                BestillRedigertBrevRequest(
+                    kode,
+                    letterData as EksempelRedigerbartDto,
+                    lagSaksbehandlervalg(),
+                    felles,
+                    language,
+                    it,
+                    listOf(),
+                    emptyMap()
+                )
             }
         }
 
@@ -180,6 +192,7 @@ class LetterRoutesITest {
 private fun <T : Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
     kode = kode,
     letterData = this.letterData,
+    saksbehandlerValg = this.saksbehandlerValg,
     felles = this.felles,
     language = this.language
 )

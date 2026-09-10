@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
@@ -9,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -45,7 +45,7 @@ class Letter2MarkupCommonBehaviorTest {
         path: RenderPath,
         body: OutlineOnlyScope<LangBokmal, EmptyAutobrevdata>.() -> Unit,
     ): List<List<Token>> {
-        val letter = LetterImpl(outlineTestTemplate(body), EmptyAutobrevdata, Bokmal, felles)
+        val letter = LetterTestImpl(outlineTestTemplate(body), EmptyAutobrevdata, Bokmal, felles)
         return when (path) {
             RenderPath.V1 -> Letter2Markup.render(letter).letterMarkup.blocks
                 .filterIsInstance<LetterMarkup.Block.Paragraph>()
@@ -74,7 +74,7 @@ class Letter2MarkupCommonBehaviorTest {
         path: RenderPath,
         body: OutlineOnlyScope<LangBokmal, EmptyAutobrevdata>.() -> Unit,
     ): List<Int> {
-        val letter = LetterImpl(outlineTestTemplate(body), EmptyAutobrevdata, Bokmal, felles)
+        val letter = LetterTestImpl(outlineTestTemplate(body), EmptyAutobrevdata, Bokmal, felles)
         return when (path) {
             RenderPath.V1 -> Letter2Markup.render(letter).letterMarkup.blocks.map { it.id }
             RenderPath.V2 -> Letter2MarkupV2.render(letter).letterMarkup.blocks.map { it.id }
@@ -90,7 +90,7 @@ class Letter2MarkupCommonBehaviorTest {
             title { text(bokmal { +"noe tekst " + Year(2024).expr().format() }) }
             outline { paragraph { } }
         }
-        val letter = LetterImpl(template, EmptyAutobrevdata, Bokmal, felles)
+        val letter = LetterTestImpl(template, EmptyAutobrevdata, Bokmal, felles)
         return when (path) {
             RenderPath.V1 -> Letter2Markup.render(letter).letterMarkup.title.joinToString("") { it.text }
             RenderPath.V2 -> Letter2MarkupV2.render(letter).letterMarkup.title1.joinToString("") { it.text }

@@ -54,6 +54,7 @@ class BrevtekstITest {
                 BestillBrevRequest(
                     kode = EnkeltRedigerbartTestbrev.kode,
                     letterData = EmptyRedigerbarBrevdata(saksbehandlerValg = lagSaksbehandlervalg()),
+                    saksbehandlerValg = lagSaksbehandlervalg(),
                     felles = felles,
                     language = LanguageCode.BOKMAL,
                 )
@@ -66,6 +67,7 @@ class BrevtekstITest {
                 BestillRedigertBrevRequest(
                     kode = EnkeltRedigerbartTestbrev.kode,
                     letterData = EmptyRedigerbarBrevdata(saksbehandlerValg = lagSaksbehandlervalg()),
+                    saksbehandlerValg = lagSaksbehandlervalg(),
                     felles = felles,
                     language = LanguageCode.BOKMAL,
                     letterMarkup = markup,
@@ -96,6 +98,7 @@ class BrevtekstITest {
                 BestillBrevRequest(
                     kode = LetterExample.kode,
                     letterData = createLetterExampleDto(),
+                    saksbehandlerValg = lagSaksbehandlervalg(),
                     felles = felles,
                     language = LanguageCode.BOKMAL,
                 )

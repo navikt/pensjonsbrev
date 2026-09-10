@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.toScope
@@ -8,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.SimpleSelector
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brev.template.createAttachment
@@ -68,9 +68,9 @@ class EditableAttachmentOverrideTest {
     }
 
     private val scopeMedFlereVedlegg =
-        LetterImpl(templateMedFlereVedlegg, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
+        LetterTestImpl(templateMedFlereVedlegg, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
 
-    private val scope = LetterImpl(template, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
+    private val scope = LetterTestImpl(template, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
 
     private val overstyring = run {
         val overrideTemplate = createTemplate(
@@ -82,7 +82,7 @@ class EditableAttachmentOverrideTest {
             outline {}
             includeAttachmentRedigerbar(VedleggId("vedlegg1"), annetVedlegg)
         }
-        val overrideScope = LetterImpl(overrideTemplate, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
+        val overrideScope = LetterTestImpl(overrideTemplate, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
         Letter2Markup.renderAttachmentsOnly(overrideScope, overrideTemplate).first()
     }
 
@@ -108,7 +108,7 @@ class EditableAttachmentOverrideTest {
     }
 
     private fun predikatScope(visVedlegg: Boolean) =
-        LetterImpl(predikatTemplate, PredikatBrev(visVedlegg), Nynorsk, FellesFactory.felles).toScope()
+        LetterTestImpl(predikatTemplate, PredikatBrev(visVedlegg), Nynorsk, FellesFactory.felles).toScope()
 
     @Nested
     inner class RenderAttachmentsOnly {
@@ -175,7 +175,7 @@ class EditableAttachmentOverrideTest {
                 includeAttachment(ikkeRedigerbartVedlegg)
             }
             val utenRedigerbareScope =
-                LetterImpl(utenRedigerbareTemplate, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
+                LetterTestImpl(utenRedigerbareTemplate, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
 
             val titler = Letter2Markup.renderEditableAttachmentTitles(utenRedigerbareScope, utenRedigerbareTemplate)
 

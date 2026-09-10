@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.Letter
@@ -28,24 +29,45 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         brevbestilling: BestillBrevRequest<Kode>,
         template: BrevTemplate<T, out Brevkode<*>>?,
     ) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, listOf()) }
+        with(brevbestilling) { createLetter(template, kode, letterData, saksbehandlerValg, language, felles, listOf()) }
 
     fun <T : BrevbakerBrevdata> createLetter(
         brevbestilling: BestillRedigertBrevRequest<Kode>,
         template: BrevTemplate<T, out Brevkode<*>>?,
     ) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
+        with(brevbestilling) {
+            createLetter(
+                template,
+                kode,
+                letterData,
+                saksbehandlerValg,
+                language,
+                felles,
+                alltidValgbareVedlegg
+            )
+        }
 
     fun <T : BrevbakerBrevdata> createLetter(
         brevbestilling: BestillRedigertBrevRequestV2<Kode>,
         template: BrevTemplate<T, out Brevkode<*>>?,
     ) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
+        with(brevbestilling) {
+            createLetter(
+                template,
+                kode,
+                letterData,
+                saksbehandlerValg,
+                language,
+                felles,
+                alltidValgbareVedlegg
+            )
+        }
 
     private fun <T : BrevbakerBrevdata> createLetter(
         brevTemplate: BrevTemplate<T, out Brevkode<*>>?,
         brevkode: Kode,
         brevdata: T,
+        saksbehandlerValg: SaksbehandlervalgIDSL?,
         spraak: LanguageCode,
         felles: BrevbakerFelles,
         valgteVedlegg: List<AlltidValgbartVedleggKode>,
@@ -69,6 +91,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         return LetterImpl(
             template = template.medEkstraVedlegg(vedlegg.map { it.asIncludeAttachment() }),
             argument = parseArgument(brevdata, template),
+            saksbehandlerValg = saksbehandlerValg,
             language = language,
             felles = felles,
         )

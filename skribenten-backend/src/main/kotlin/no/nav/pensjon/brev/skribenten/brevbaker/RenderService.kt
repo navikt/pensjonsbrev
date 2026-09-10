@@ -18,6 +18,7 @@ class RenderService(private val brevbakerService: BrevbakerService) {
                 pesysData = pesysData.brevdata,
                 saksbehandlerValg = brev.saksbehandlerValg,
             ),
+            saksbehandlerValg = brev.saksbehandlerValg,
             felles = pesysData.felles,
             redigertBrev = brev.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
                 .toMarkup(),
