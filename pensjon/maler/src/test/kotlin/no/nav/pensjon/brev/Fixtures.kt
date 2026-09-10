@@ -4,8 +4,6 @@ import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmaktsgiverBprofAutoDto
@@ -98,14 +96,12 @@ object Fixtures : LetterDataFactory {
             OmsorgEgenManuell::class -> createOmsorgManuellDto() as T
             OpphoerBarnetilleggAuto::class -> createOpphoerBarnetilleggAutoDto() as T
             OpptjeningVedForhoeyetHjelpesats::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
-            OrienteringOmSaksbehandlingstidRedigerbarV2::class -> createOrienteringOmSaksbehandlingstidDto() as T
             OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidDto() as T
             SamletMeldingOmPensjonsvedtakV2::class -> createSamletMeldingOmPensjonsvedtakV2Dto() as T
             TilbakekrevingAvFeilutbetaltBeloep::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
             UfoerOmregningEnslig::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAuto::class -> createUngUfoerAutoDto() as T
             VarselRevurderingAvPensjon::class -> createVarselRevurderingAvPensjonDto() as T
-            VarselSaksbehandlingstidAutoV2::class -> createVarselSaksbehandlingstidAutoDto() as T
             VarselSaksbehandlingstidAuto::class -> createVarselSaksbehandlingstidAutoDto() as T
             VarselTilbakekrevingAvFeilutbetaltBeloep::class -> createVarselTilbakekrevingAvFeilutbetaltBeloep() as T
             VedtakAvslagPaaOmsorgsopptjening::class -> createVedtakAvslagPaaOmsorgsopptjeningDto() as T
