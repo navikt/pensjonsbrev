@@ -63,7 +63,7 @@ class VarselRevurderingAvPensjonTest {
     fun testHtml() {
         LetterTestImpl(
             VarselRevurderingAvPensjon.template,
-            Fixtures.create(),
+            Fixtures.create(VarselRevurderingAvPensjon::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(VarselRevurderingAvPensjon.kode.name)

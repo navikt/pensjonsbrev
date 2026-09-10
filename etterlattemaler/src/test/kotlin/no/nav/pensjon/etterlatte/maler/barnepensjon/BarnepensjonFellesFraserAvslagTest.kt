@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslag
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -19,7 +18,7 @@ class BarnepensjonAvslagTest {
     fun pdftest() {
         val letter = LetterTestImpl(
             BarnepensjonAvslag.template,
-            Fixtures.create<BarnepensjonAvslagDTO>(),
+            Fixtures.create(BarnepensjonAvslag::class),
             Language.Bokmal,
             Fixtures.felles,
         )
@@ -30,7 +29,7 @@ class BarnepensjonAvslagTest {
     fun testHtml() {
         LetterTestImpl(
             BarnepensjonAvslag.template,
-            Fixtures.create<BarnepensjonAvslagDTO>(),
+            Fixtures.create(BarnepensjonAvslag::class),
             Language.Bokmal,
             Fixtures.felles,
         ).renderTestHtml(EtterlatteBrevKode.BARNEPENSJON_AVSLAG.name)

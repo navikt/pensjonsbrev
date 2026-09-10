@@ -17,7 +17,7 @@ class OversettelseAvDokumenterTest {
     fun testPdf() {
         LetterTestImpl(
             OversettelseAvDokumenter.template,
-            Fixtures.create<EmptyAutobrevdata>(),
+            Fixtures.create(OversettelseAvDokumenter::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(OversettelseAvDokumenter.kode.name)
@@ -27,7 +27,7 @@ class OversettelseAvDokumenterTest {
     fun testHtml() {
         LetterTestImpl(
             OversettelseAvDokumenter.template,
-            Fixtures.create<EmptyAutobrevdata>(),
+            Fixtures.create(OversettelseAvDokumenter::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(OversettelseAvDokumenter.kode.name)

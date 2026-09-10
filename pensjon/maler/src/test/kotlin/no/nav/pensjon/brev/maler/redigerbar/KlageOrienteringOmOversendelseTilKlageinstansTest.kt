@@ -18,7 +18,7 @@ class KlageOrienteringOmOversendelseTilKlageinstansTest {
     fun testPdf() {
         LetterTestImpl(
             KlageOrienteringOmOversendelseTilKlageinstans.template,
-            Fixtures.create<EmptyRedigerbarBrevdata>(),
+            Fixtures.create(KlageOrienteringOmOversendelseTilKlageinstans::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(KlageOrienteringOmOversendelseTilKlageinstans.kode.name)
@@ -28,7 +28,7 @@ class KlageOrienteringOmOversendelseTilKlageinstansTest {
     fun testHtml() {
         LetterTestImpl(
             KlageOrienteringOmOversendelseTilKlageinstans.template,
-            Fixtures.create<EmptyRedigerbarBrevdata>(),
+            Fixtures.create(KlageOrienteringOmOversendelseTilKlageinstans::class),
             Language.English,
             Fixtures.felles
         ).renderTestHtml(KlageOrienteringOmOversendelseTilKlageinstans.kode.name)

@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUfoeretrygdPGAInntektRedigerbarDto
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
@@ -18,7 +17,7 @@ class EndretUfoeretrygdPGAInntektRedigerbarTest {
     fun testPdf() {
         LetterTestImpl(
             EndretUfoeretrygdPGAInntektRedigerbar.template,
-            Fixtures.create<EndretUfoeretrygdPGAInntektRedigerbarDto>(),
+            Fixtures.create(EndretUfoeretrygdPGAInntektRedigerbar::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(EndretUfoeretrygdPGAInntektRedigerbar.kode.name)
@@ -28,7 +27,7 @@ class EndretUfoeretrygdPGAInntektRedigerbarTest {
     fun testHtml() {
         LetterTestImpl(
             EndretUfoeretrygdPGAInntektRedigerbar.template,
-            Fixtures.create<EndretUfoeretrygdPGAInntektRedigerbarDto>(),
+            Fixtures.create(EndretUfoeretrygdPGAInntektRedigerbar::class),
             Language.Nynorsk,
             Fixtures.felles
         ).renderTestHtml(EndretUfoeretrygdPGAInntektRedigerbar.kode.name)

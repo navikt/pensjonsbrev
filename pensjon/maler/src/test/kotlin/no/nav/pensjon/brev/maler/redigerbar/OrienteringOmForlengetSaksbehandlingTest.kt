@@ -17,7 +17,7 @@ class OrienteringOmForlengetSaksbehandlingTest {
     fun testPdf() {
         LetterTestImpl(
             OrienteringOmForlengetSaksbehandlingstid.template,
-            Fixtures.create<EmptyAutobrevdata>(),
+            Fixtures.create(OrienteringOmForlengetSaksbehandlingstid::class),
             Language.English,
             Fixtures.felles
         ).renderTestPDF(OrienteringOmForlengetSaksbehandlingstid.kode.name)
@@ -27,7 +27,7 @@ class OrienteringOmForlengetSaksbehandlingTest {
     fun testHtml() {
         LetterTestImpl(
             OrienteringOmForlengetSaksbehandlingstid.template,
-            Fixtures.create<EmptyAutobrevdata>(),
+            Fixtures.create(OrienteringOmForlengetSaksbehandlingstid::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(OrienteringOmForlengetSaksbehandlingstid.kode.name)

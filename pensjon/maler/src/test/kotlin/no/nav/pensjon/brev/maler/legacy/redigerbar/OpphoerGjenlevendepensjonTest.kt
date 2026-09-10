@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -17,7 +16,7 @@ class OpphoerGjenlevendepensjonTest {
     fun testPdf() {
         LetterTestImpl(
             OpphoerGjenlevendepensjon.template,
-            Fixtures.create<OpphoerGjenlevendepensjonDto>(),
+            Fixtures.create(OpphoerGjenlevendepensjon::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF("GP_OPPHOER_GJENLEVENDEPENSJON")
@@ -27,7 +26,7 @@ class OpphoerGjenlevendepensjonTest {
     fun testHtml() {
         LetterTestImpl(
             OpphoerGjenlevendepensjon.template,
-            Fixtures.create<OpphoerGjenlevendepensjonDto>(),
+            Fixtures.create(OpphoerGjenlevendepensjon::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml("GP_OPPHOER_GJENLEVENDEPENSJON")

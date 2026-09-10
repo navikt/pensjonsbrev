@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDto
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdUtlandRedigerbar
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
@@ -17,7 +16,7 @@ class InnvilgelseUforetrygdRedigerbarUtlandRedigerbarTest {
     fun testHtml() {
         LetterTestImpl(
             InnvilgelseUforetrygdUtlandRedigerbar.template,
-            Fixtures.create<InnvilgelseUfoeretrygdUtlandDto>(),
+            Fixtures.create(InnvilgelseUforetrygdUtlandRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_INNVILGELSE_UFOERETRYGD_UTLAND")

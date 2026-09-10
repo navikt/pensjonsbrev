@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -17,7 +16,7 @@ class InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandTest {
     fun testPdf() {
         LetterTestImpl(
             InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland.template,
-            Fixtures.create<InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto>(),
+            Fixtures.create(InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF("GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND")
@@ -27,7 +26,7 @@ class InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandTest {
     fun testHtml() {
         LetterTestImpl(
             InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland.template,
-            Fixtures.create<InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto>(),
+            Fixtures.create(InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland::class),
             Language.English,
             Fixtures.felles
         ).renderTestHtml("GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND")

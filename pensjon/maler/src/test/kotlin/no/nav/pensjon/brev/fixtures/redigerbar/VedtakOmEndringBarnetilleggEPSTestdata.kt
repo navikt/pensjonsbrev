@@ -17,7 +17,7 @@ fun createVedtakOmEndringBarnetilleggEPSData() =
         fribelop = Kroner(50000),
         barnetilleggSB = true,
         opphortUforetrygdEllerBTFB = false,
-        pe = Fixtures.create(),
+        pe = Fixtures.createVedlegg(),
         maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
         dineRettigheterOgPlikterUfore = Fixtures.createVedlegg(),
     )

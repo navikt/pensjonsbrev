@@ -18,7 +18,7 @@ class KlageOrienteringOmSaksbehandlingstidRedigerbarTest {
     fun testPdf() {
         LetterTestImpl(
             KlageOrienteringOmSaksbehandlingstid.template,
-            Fixtures.create<EmptyRedigerbarBrevdata>(),
+            Fixtures.create(KlageOrienteringOmSaksbehandlingstid::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(KlageOrienteringOmSaksbehandlingstid.kode.name)
@@ -28,7 +28,7 @@ class KlageOrienteringOmSaksbehandlingstidRedigerbarTest {
     fun testHtml() {
         LetterTestImpl(
             KlageOrienteringOmSaksbehandlingstid.template,
-            Fixtures.create<EmptyRedigerbarBrevdata>(),
+            Fixtures.create(KlageOrienteringOmSaksbehandlingstid::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(KlageOrienteringOmSaksbehandlingstid.kode.name)

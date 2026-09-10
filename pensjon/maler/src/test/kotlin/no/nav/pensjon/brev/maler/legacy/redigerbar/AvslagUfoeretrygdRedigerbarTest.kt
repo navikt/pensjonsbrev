@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
 import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoeretrygdRedigerbar
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
@@ -18,7 +17,7 @@ class AvslagUfoeretrygdRedigerbarTest {
     fun testPdf() {
         LetterTestImpl(
             AvslagUfoeretrygdRedigerbar.template,
-            Fixtures.create<AvslagUfoeretrygdDto>(),
+            Fixtures.create(AvslagUfoeretrygdRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_AVSLAG_UFOERTRYGD")
@@ -28,7 +27,7 @@ class AvslagUfoeretrygdRedigerbarTest {
     fun testHtml() {
         LetterTestImpl(
             AvslagUfoeretrygdRedigerbar.template,
-            Fixtures.create<AvslagUfoeretrygdDto>(),
+            Fixtures.create(AvslagUfoeretrygdRedigerbar::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_AVSLAG_UFOERTRYGD")

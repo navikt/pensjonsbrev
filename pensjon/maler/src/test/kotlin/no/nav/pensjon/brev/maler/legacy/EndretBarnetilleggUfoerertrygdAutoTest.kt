@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertrygdAuto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
@@ -19,7 +18,7 @@ class EndretBarnetilleggUfoerertrygdAutoTest {
     fun testPdf() {
         LetterTestImpl(
             EndretBarnetilleggUfoerertrygdAuto.template,
-            Fixtures.create<EndretBarnetilleggUfoeretrygdDto>(),
+            Fixtures.create(EndretBarnetilleggUfoerertrygdAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_ENDRET_BARNETILLEGG")
@@ -29,7 +28,7 @@ class EndretBarnetilleggUfoerertrygdAutoTest {
     fun testHtml() {
         LetterTestImpl(
             EndretBarnetilleggUfoerertrygdAuto.template,
-            Fixtures.create<EndretBarnetilleggUfoeretrygdDto>(),
+            Fixtures.create(EndretBarnetilleggUfoerertrygdAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_ENDRET_BARNETILLEGG")

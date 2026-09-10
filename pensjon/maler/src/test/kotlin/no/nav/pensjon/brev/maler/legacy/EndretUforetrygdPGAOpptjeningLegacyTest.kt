@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.maler.ufore.diverse.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
@@ -18,7 +17,7 @@ class EndretUforetrygdPGAOpptjeningLegacyTest {
     fun testPdf() {
         LetterTestImpl(
             EndretUforetrygdPGAOpptjeningLegacy.template,
-            Fixtures.create<EndretUforetrygdPGAOpptjeningLegacyDto>(),
+            Fixtures.create(EndretUforetrygdPGAOpptjeningLegacy::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestPDF(EndretUforetrygdPGAOpptjeningLegacy.kode.name)
@@ -28,7 +27,7 @@ class EndretUforetrygdPGAOpptjeningLegacyTest {
     fun testHtml() {
         LetterTestImpl(
             EndretUforetrygdPGAOpptjeningLegacy.template,
-            Fixtures.create<EndretUforetrygdPGAOpptjeningLegacyDto>(),
+            Fixtures.create(EndretUforetrygdPGAOpptjeningLegacy::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml(EndretUforetrygdPGAOpptjeningLegacy.kode.name)

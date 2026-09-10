@@ -18,7 +18,7 @@ class AnkeTilsvarTilAnkendePartTest {
     fun testPdf() {
         LetterTestImpl(
             AnkeTilsvarTilAnkendePart.template,
-            Fixtures.create<EmptyRedigerbarBrevdata>(),
+            Fixtures.create(AnkeTilsvarTilAnkendePart::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(AnkeTilsvarTilAnkendePart.kode.name)
@@ -28,7 +28,7 @@ class AnkeTilsvarTilAnkendePartTest {
     fun testHtml() {
         LetterTestImpl(
             AnkeTilsvarTilAnkendePart.template,
-            Fixtures.create<EmptyRedigerbarBrevdata>(),
+            Fixtures.create(AnkeTilsvarTilAnkendePart::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(AnkeTilsvarTilAnkendePart.kode.name)

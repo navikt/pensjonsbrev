@@ -3,25 +3,9 @@ package no.nav.pensjon.brev
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDto
-import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
-import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsAutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUfoeretrygdPGAInntektRedigerbarDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmaktsgiverBprofAutoDto
@@ -29,13 +13,34 @@ import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmektigBprofA
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.*
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
-import no.nav.pensjon.brev.maler.example.LetterExampleDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakOmFjerningAvOmsorgsopptjeningDto
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import kotlin.reflect.KClass
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.maler.*
+import no.nav.pensjon.brev.maler.adhoc.*
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.*
+import no.nav.pensjon.brev.maler.example.*
+import no.nav.pensjon.brev.maler.klageOgAnke.*
+import no.nav.pensjon.brev.maler.legacy.redigerbar.*
+import no.nav.pensjon.brev.maler.redigerbar.*
+import no.nav.pensjon.brev.maler.ufore.*
+import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0
+import no.nav.pensjon.brev.maler.ufore.avslag.*
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.*
+import no.nav.pensjon.brev.maler.ufore.diverse.*
+import no.nav.pensjon.brev.maler.ufore.endring.*
+import no.nav.pensjon.brev.maler.ufore.etteroppgjor.*
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.*
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.*
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.*
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.*
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.*
+import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
+import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
+import no.nav.pensjon.brev.template.BrevTemplate
 
 object Fixtures : LetterDataFactory {
 
@@ -43,83 +48,110 @@ object Fixtures : LetterDataFactory {
 
     val fellesAuto = no.nav.brev.brevbaker.FellesFactory.fellesAuto
 
-    inline fun <reified T : Any> create(): T = create(T::class)
     inline fun <reified T : Any> createVedlegg(): T = createVedlegg(T::class)
 
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> create(letterDataType: KClass<T>): T =
-        when (letterDataType) {
-            FullmektigBprofAutoDto::class -> createFullmektigBprofAutoDto() as T
-            FullmaktsgiverBprofAutoDto::class -> createFullmaktsgiverBprofAutoDto() as T
-            AvslagUfoeretrygdDto::class -> createAvslagUfoeretrygdDto() as T
-            BekreftelsePaaPensjonDto::class -> createBekreftelsePaaPensjonDto() as T
-            BekreftelsePaaUfoeretrygdDto::class -> createBekreftelsePaaUfoeretrygdDto() as T
-            BrukerTestBrevDto::class -> createBrukerTestBrevDto() as T
-            BrukerTestVedtaksbrevDto::class -> createBrukerTestVedtaksbrevDto() as T
-            EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
-            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
-            EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
-            EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
-            EndretUTPgaInntektDtoV2::class -> createEndretUTPgaInntektDtoV2() as T
-            EndretUfoeretrygdPGAInntektRedigerbarDto::class -> createEndretUfoeretrygdPGAInntektRedigerbarDto() as T
-            EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
-            EndretUforetrygdPGAOpptjeningLegacyDto::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
-            EtteroppgjoerEtterbetalingAutoDto::class -> createEtteroppgjoerEtterbetalingAuto() as T
+    override fun <T : BrevbakerBrevdata> create(templateType: KClass<out BrevTemplate<T, *>>): T =
+        when (templateType) {
+            AdHocVarselUgyldiggjoringFullmektig::class -> createFullmektigBprofAutoDto() as T
+            AdHocVarselUgyldiggjoringFullmaktsgiver::class -> createFullmaktsgiverBprofAutoDto() as T
+            AvslagUfoeretrygdRedigerbar::class -> createAvslagUfoeretrygdDto() as T
+            BekreftelsePaaPensjon::class -> createBekreftelsePaaPensjonDto() as T
+            BekreftelsePaaUfoeretrygdRedigerbar::class -> createBekreftelsePaaUfoeretrygdDto() as T
+            BrukerTestBrev::class -> createBrukerTestBrevDto() as T
+            BrukerTestVedtaksbrev::class -> createBrukerTestVedtaksbrevDto() as T
+            EksempelbrevRedigerbart::class -> createEksempelbrevRedigerbartDto() as T
             FeilBelopInntekstendringsbrev::class -> EmptyAutobrevdata as T
-            ForespoerselOmDokumentasjonAvBotidINorgeDto::class -> createForespoerselOmDokumentasjonAvBotidINorgeDto() as T
-            ForhaandsvarselEtteroppgjoerUfoeretrygdDto::class -> createForhaandsvarselEtteroppgjoerUfoeretrygdDto() as T
-            InformasjonOmGjenlevenderettigheterDto::class -> createInformasjonOmGjenlevenderettigheterDto() as T
-            InformasjonOmSaksbehandlingstidDto::class -> createInformasjonOmSaksbehandlingstidDto() as T
-            InformasjonOmSaksbehandlingstidUtDto::class -> createInformasjonOmSaksbehandlingstidUtDto() as T
-            LetterExampleDto::class -> createLetterExampleDto() as T
-            OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
-            OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
-            OpphoerBarnetilleggAutoDto::class -> createOpphoerBarnetilleggAutoDto() as T
-            OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
-            OrienteringOmSaksbehandlingstidDto::class -> createOrienteringOmSaksbehandlingstidDto() as T
-            PEgruppe10::class -> createPEgruppe10() as T
-            SamletMeldingOmPensjonsvedtakV2Dto::class -> createSamletMeldingOmPensjonsvedtakV2Dto() as T
-            TilbakekrevingAvFeilutbetaltBeloepDto::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
-            UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
-            UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
-            VarselRevurderingAvPensjonDto::class -> createVarselRevurderingAvPensjonDto() as T
-            VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
-            VarselTilbakekrevingAvFeilutbetaltBeloepDto::class -> createVarselTilbakekrevingAvFeilutbetaltBeloep() as T
-            VedtakAvslagPaaOmsorgsopptjeningDto::class -> createVedtakAvslagPaaOmsorgsopptjeningDto() as T
-            VedtakOmFjerningAvOmsorgsopptjeningDto::class -> createVedtakOmFjerningAvOmsorgsopptjeningDto() as T
-            VedtakOmInnvilgelseAvOmsorgspoengDto::class -> createVedtakOmInnvilgelseAvOmsorgspoengDto() as T
-            InnvilgelseUfoeretrygdDto::class -> createInnvilgelseUfoeretrygdDto() as T
-            InnvilgelseUforetrygdBosattNorgeEtterUtlandDto::class -> createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() as T
-            InnvilgelseUforetrygdMedEndringDto::class -> createInnvilgelseUforetrygdMedEndringDto() as T
-            OkningUforegradDto::class -> createOkningUforegradDto() as T
-            InnvilgelseUfoeretrygdUtlandDto::class -> createInnvilgelseUfoeretrygdUtlandDto() as T
-            InnvilgelseUfoeretrygdMellombehandlingDto::class -> createInnvilgelseUforetrygdMellombehandlingDto() as T
-            EndringUfoeretrygdDto::class -> createEndringUfoeretrygdDto() as T
-            EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
-            OmregningUfoerepensjonTilUfoeretrygdDto::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
-            OpphoerGjenlevendepensjonDto::class -> createOpphoerGjenlevendepensjonDto() as T
-            AvslagGjenlevendepensjonDto::class -> createAvslagGjenlevendepensjonDto() as T
-            AvslagGjenlevendepensjonUtlandDto::class -> createAvslagGjenlevendepensjonUtlandDto() as T
-            VedtakOmLavereMinstesatsAutoDto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
-            VedtakOmOktBunnfradragAutoDto::class -> createVedtakOmOktBunnfradragAutoDto() as T
-            VedtakOmOktFribelopAutoDto::class -> createVedtakOmOktFribelopAutoDto() as T
-            VedtakOmIFUReduksjonsprosentRedigerbarDto::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
-            VedtakOmIFUReduksjonsprosentAutoDto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
-            VedtakOmLavereMinstesatsRedigerbarDto::class -> createVedtakOmLavereMinstesatsRedigerbarDto() as T
-            VedtakOmOktBunnfradragRedigerbarDto::class -> createVedtakOmOktBunnfradragRedigerbarDto() as T
-            VedtakOmOktFribelopRedigerbarDto::class -> createVedtakOmOktFribelopRedigerbarDto() as T
-            InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto::class -> createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto() as T
-            HvilendeRettUforetrygdDto::class -> createHvilendeRettUforetrygdDto() as T
-            AvslagUfoerepensjonDto::class -> createAvslagUfoerepensjonDto() as T
-            VedtakOmEtterbetalingOpphor2026AutoDto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
-            VedtakOmEtterbetalingOpphor2026RedigerbarDto::class -> createVedtakOmEtterbetalingOpphor2026RedigerbarDto() as T
-            VedtakOmEndringBarnetilleggEPSAutoDto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
-            ReverseringLavereMinstesatsRedigerbarDto::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
-            ReverseringLavereMinstesatsAutoDto::class -> createReverseringLavereMinstesatsAutoDto() as T
-            VedtakOmEndringBarnetilleggEPSRedigerbarDto::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
-
-            else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
+            FeilBelopInntekstendringsbrev_AvkortetTil0::class -> EmptyAutobrevdata as T
+            AdhocMidlertidigOpphoerHvilenderett10Aar::class -> EmptyAutobrevdata as T
+            AdhocUfoeretrygdKombiDagpengerInntektsavkorting::class -> EmptyAutobrevdata as T
+            AdhocUfoeretrygdEtterbetalingDagpenger::class -> EmptyAutobrevdata as T
+            AdhocUfoeretrygdKombiDagpenger::class -> EmptyAutobrevdata as T
+            AdhocVarselOpphoerMedHvilendeRett::class -> EmptyAutobrevdata as T
+            AdhocUfoeretrygdVarselOpphoerEktefelletillegg::class -> EmptyAutobrevdata as T
+            AdhocFeilEtteroppgjoer2023::class -> EmptyAutobrevdata as T
+            AdhocInformasjonHvilendeRett4Aar::class -> EmptyAutobrevdata as T
+            InnhentingDokumentasjonFraBruker::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            InnhentingOpplysningerFraBruker::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            VarselOmMuligAvslag::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            BekreftelsePaaFlyktningstatus::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            OrienteringOmForlengetSaksbehandlingstid::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            OversettelseAvDokumenter::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            KlageOrienteringOmSaksbehandlingstid::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            AnkeOrienteringOmSaksbehandling::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            AnkeTilsvarTilAnkendePart::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            KlageOrienteringOmOversendelseTilKlageinstans::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            EndretBarnetilleggUfoerertrygdAuto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
+            EndretUfoeretrygdPGAInntektV2::class -> createEndretUTPgaInntektDtoV2() as T
+            EndretUforetrygdPGAInntektNesteAr::class -> createEndretUTPgaInntektDtoV2() as T
+            EndretUfoeretrygdPGAInntektRedigerbar::class -> createEndretUfoeretrygdPGAInntektRedigerbarDto() as T
+            EndretUforetrygdPGAOpptjeningLegacy::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
+            EtteroppgjoerEtterbetalingAutoLegacy::class -> createEtteroppgjoerEtterbetalingAuto() as T
+            ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte::class -> createForespoerselOmDokumentasjonAvBotidINorgeDto() as T
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto::class -> createForhaandsvarselEtteroppgjoerUfoeretrygdDto() as T
+            InformasjonOmGjenlevenderettigheter::class -> createInformasjonOmGjenlevenderettigheterDto() as T
+            InformasjonOmSaksbehandlingstid::class -> createInformasjonOmSaksbehandlingstidDto() as T
+            InformasjonOmSaksbehandlingstidUTRedigerbar::class -> createInformasjonOmSaksbehandlingstidUtDto() as T
+            LetterExample::class -> createLetterExampleDto() as T
+            OmsorgEgenAuto::class -> createOmsorgEgenAutoDto() as T
+            OmsorgEgenManuell::class -> createOmsorgManuellDto() as T
+            OpphoerBarnetilleggAuto::class -> createOpphoerBarnetilleggAutoDto() as T
+            OpptjeningVedForhoeyetHjelpesats::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
+            OrienteringOmSaksbehandlingstidRedigerbarV2::class -> createOrienteringOmSaksbehandlingstidDto() as T
+            OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidDto() as T
+            SamletMeldingOmPensjonsvedtakV2::class -> createSamletMeldingOmPensjonsvedtakV2Dto() as T
+            TilbakekrevingAvFeilutbetaltBeloep::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
+            UfoerOmregningEnslig::class -> createUfoerOmregningEnsligDto() as T
+            UngUfoerAuto::class -> createUngUfoerAutoDto() as T
+            VarselRevurderingAvPensjon::class -> createVarselRevurderingAvPensjonDto() as T
+            VarselSaksbehandlingstidAutoV2::class -> createVarselSaksbehandlingstidAutoDto() as T
+            VarselSaksbehandlingstidAuto::class -> createVarselSaksbehandlingstidAutoDto() as T
+            VarselTilbakekrevingAvFeilutbetaltBeloep::class -> createVarselTilbakekrevingAvFeilutbetaltBeloep() as T
+            VedtakAvslagPaaOmsorgsopptjening::class -> createVedtakAvslagPaaOmsorgsopptjeningDto() as T
+            VedtakOmFjerningAvOmsorgsopptjening::class -> createVedtakOmFjerningAvOmsorgsopptjeningDto() as T
+            VedtakOmInnvilgelseAvOmsorgspoeng::class -> createVedtakOmInnvilgelseAvOmsorgspoengDto() as T
+            InnvilgelseUforetrygdRedigerbar::class -> createInnvilgelseUfoeretrygdDto() as T
+            InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar::class -> createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() as T
+            InnvilgelseUforetrygdMedEndringRedigerbar::class -> createInnvilgelseUforetrygdMedEndringDto() as T
+            OkningUforegradRedigerbar::class -> createOkningUforegradDto() as T
+            InnvilgelseUforetrygdUtlandRedigerbar::class -> createInnvilgelseUfoeretrygdUtlandDto() as T
+            InnvilgelseUforetrygdMellombehandlingRedigerbar::class -> createInnvilgelseUforetrygdMellombehandlingDto() as T
+            EndringUforetrygdRedigerbar::class -> createEndringUfoeretrygdDto() as T
+            DelvisEksportAvUforetrygdRedigerbar::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
+            OmregningUfoerepensjonTilUfoeretrygdRedigerbar::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
+            OpphoerGjenlevendepensjon::class -> createOpphoerGjenlevendepensjonDto() as T
+            AvslagGjenlevendepensjon::class -> createAvslagGjenlevendepensjonDto() as T
+            AvslagGjenlevendepensjonUtland::class -> createAvslagGjenlevendepensjonUtlandDto() as T
+            VedtakOmLavereMinstesatsAuto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
+            VedtakOmOktBunnfradragAuto::class -> createVedtakOmOktBunnfradragAutoDto() as T
+            VedtakOmOktFribelopAuto::class -> createVedtakOmOktFribelopAutoDto() as T
+            VedtakOmLavereReduksjonsprosentRedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
+            VedtakOmOktMinsteIFURedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
+            VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
+            VedtakOmLavereReduksjonsprosentAuto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
+            VedtakOmOktMinsteIFULavereReduksjonsprosentAuto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
+            VedtakOmOktMinsteIFUAuto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
+            VedtakOmLavereMinstesatsRedigerbar::class -> createVedtakOmLavereMinstesatsRedigerbarDto() as T
+            VedtakOmOktBunnfradragRedigerbar::class -> createVedtakOmOktBunnfradragRedigerbarDto() as T
+            VedtakOmOktFribelopRedigerbar::class -> createVedtakOmOktFribelopRedigerbarDto() as T
+            InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland::class -> createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto() as T
+            HvilendeRettMidlertidigOppHoer::class -> createHvilendeRettUforetrygdDto() as T
+            HvilendeRettOppHoer::class -> createHvilendeRettUforetrygdDto() as T
+            HvilendeRettInfo4Aar::class -> createHvilendeRettUforetrygdDto() as T
+            HvilendeRettVarselOpphoer::class -> createHvilendeRettUforetrygdDto() as T
+            AvslagUfoerepensjonRedigerbar::class -> createAvslagUfoerepensjonDto() as T
+            VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
+            VedtakOmEtterbetalingOpphor2026OktIfuAuto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
+            VedtakOmEtterbetalingOpphor2026Auto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
+            VedtakOmEtterbetalingOpphor2026Redigerbar::class -> createVedtakOmEtterbetalingOpphor2026RedigerbarDto() as T
+            VedtakOmEndringBarnetilleggEPSAuto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
+            VedtakOmEndringBarnetilleggEPSRevAuto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
+            VedtakOmEndringBTEPSOktoberAuto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
+            ReverseringLavereMinstesatsRedigerbar::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
+            ReverseringLavereMinstesatsAuto::class -> createReverseringLavereMinstesatsAutoDto() as T
+            VedtakOmEndringBTEPSRedigerbar::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
+            else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
     @Suppress("UNCHECKED_CAST")

@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
@@ -17,7 +16,7 @@ class UfoerOmregningEnsligITest {
     fun test() {
         LetterTestImpl(
             UfoerOmregningEnslig.template,
-            Fixtures.create<UfoerOmregningEnsligDto>(),
+            Fixtures.create(UfoerOmregningEnslig::class),
             Language.Bokmal,
             Fixtures.fellesAuto,
         ).renderTestPDF("UT_DOD_ENSLIG_AUTO_BOKMAL")
@@ -27,7 +26,7 @@ class UfoerOmregningEnsligITest {
     fun testHtml() {
         LetterTestImpl(
             UfoerOmregningEnslig.template,
-            Fixtures.create<UfoerOmregningEnsligDto>(),
+            Fixtures.create(UfoerOmregningEnslig::class),
             Language.Bokmal,
             Fixtures.fellesAuto,
         ).renderTestHtml("UT_DOD_ENSLIG_AUTO_BOKMAL")
