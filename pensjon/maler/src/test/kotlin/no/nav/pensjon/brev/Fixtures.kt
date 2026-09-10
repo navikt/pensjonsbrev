@@ -62,8 +62,8 @@ object Fixtures : LetterDataFactory {
             BrukerTestBrev::class -> createBrukerTestBrevDto() as T
             BrukerTestVedtaksbrev::class -> createBrukerTestVedtaksbrevDto() as T
             EksempelbrevRedigerbart::class -> createEksempelbrevRedigerbartDto() as T
-            FeilBelopInntekstendringsbrev::class -> EmptyAutobrevdata as T
-            FeilBelopInntekstendringsbrev_AvkortetTil0::class -> EmptyAutobrevdata as T
+            FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev::class -> EmptyAutobrevdata as T
+            FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0::class -> EmptyAutobrevdata as T
             AdhocMidlertidigOpphoerHvilenderett10Aar::class -> EmptyAutobrevdata as T
             AdhocUfoeretrygdKombiDagpengerInntektsavkorting::class -> EmptyAutobrevdata as T
             AdhocUfoeretrygdEtterbetalingDagpenger::class -> EmptyAutobrevdata as T
