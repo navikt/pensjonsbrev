@@ -30,11 +30,6 @@ sealed interface SaksbehandlervalgVerdi {
     value class String(override val value: kotlin.String): SaksbehandlervalgVerdi
 }
 
-/**
- * Merges saksbehandler-provided [input] on top of this (already stored) [SaksbehandlervalgMap], overwriting
- * only the keys present in [input] and leaving everything else - notably any richer, non-editable values
- * originating from the external API - untouched.
- */
 fun SaksbehandlervalgMap.mergeInn(input: SaksbehandlervalgMap): SaksbehandlervalgMap =
     SaksbehandlervalgMap().also { result ->
         result.putAll(this)
