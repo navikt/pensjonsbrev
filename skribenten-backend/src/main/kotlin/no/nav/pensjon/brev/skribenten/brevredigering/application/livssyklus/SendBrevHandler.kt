@@ -19,6 +19,7 @@ class SendBrevHandler(
     private val brevtilgang: Brevtilgang,
     private val brevService: BrevService,
     private val brevmalService: BrevmalService,
+    private val sendtBrevMetrikker: SendtBrevMetrikker,
 ) {
 
     data class Request(val brevId: BrevId, val saksId: SaksId)
@@ -44,6 +45,7 @@ class SendBrevHandler(
 
             if (response.journalpostId != null) {
                 if (response.error == null) {
+                    sendtBrevMetrikker.tellSendtBrev(brev)
                     brev.delete()
                 } else {
                     brev.journalpostId = response.journalpostId

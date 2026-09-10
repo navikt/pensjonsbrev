@@ -10,6 +10,7 @@ import io.micrometer.core.instrument.config.MeterFilter
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SendtBrevMetrikker
 import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -83,10 +84,24 @@ object Metrics {
         .maximumExpectedValue(cacheForventetHoeyest.inWholeNanoseconds.toDouble())
         .build()
 
+
+    // Strukturell brems: avsender_enhet er eneste label med ukjent antall verdier. Mål faktisk
+    // antall med count(count by (avsender_enhet) (skribenten_brev_sendt_total)) og juster.
+    const val maksAntallAvsenderEnheter = 200
+    fun avsenderEnhetFilter(): MeterFilter =
+        MeterFilter.maximumAllowableTags(
+            SendtBrevMetrikker.metricName,
+            "avsender_enhet",
+            maksAntallAvsenderEnheter,
+            MeterFilter.deny(),
+        )
+
     fun Application.configureMetrics() {
         // Ktor tagger hver request med address=<podnavn>:<port>. Det er redundant med labelene
         // nais legger på ved scraping, og gir nye tidsserier for hver deploy.
         registry.config().meterFilter(MeterFilter.ignoreTags("address"))
+
+        registry.config().meterFilter(avsenderEnhetFilter())
 
         // MeterFilter for klientmetrikken (samme mønster som Ktors egen MicrometerMetrics-plugin
         // bruker internt), i stedet for å konfigurere distribusjonsstatistikk per Timer.builder()

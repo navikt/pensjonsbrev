@@ -9,6 +9,7 @@
 * xref:brevbaker-arkitektur.adoc[Brevbaker – arkitektur]
 * xref:brevbaker-pdfbygger-beskrivelse.adoc[PDFbygger – teknisk beskrivelse]
 * xref:alarmstrategi.adoc[Alarmstrategi]
+* xref:sendtbrevmetrikk.adoc[Metrikk for sendte brev]
 * xref:dsl/index.adoc[DSL (WIP)]
 ** xref:dsl/index.adoc[Quickstart]
 ** xref:dsl/stegvis guide nytt brev.adoc[]

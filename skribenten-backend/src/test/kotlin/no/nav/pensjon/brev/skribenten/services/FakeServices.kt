@@ -58,8 +58,9 @@ open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg
     override suspend fun getEnhet(enhetId: EnhetId) = enheter[enhetId.value] ?: throw IllegalStateException("Enhet $enhetId ikke funnet i FakeNorg2Service")
 }
 
-open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
+open class FakeSamhandlerService(val navn: Map<String, String> = mapOf(), val typer: Map<String, String> = mapOf()) : SamhandlerService {
     override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
+    override suspend fun hentSamhandlerType(idTSSEkstern: String) = typer[idTSSEkstern]
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
     override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
