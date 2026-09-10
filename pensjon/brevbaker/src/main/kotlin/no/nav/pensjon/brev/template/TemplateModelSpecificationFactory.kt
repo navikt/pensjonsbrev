@@ -137,5 +137,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     }
 
     private fun enumVerdier(theClassifier: KClass<*>) =
-        theClassifier.java.fields.map { FieldType.EnumEntry(it.name, null) }.toSet()
+        theClassifier.java.enumConstants
+            .map { FieldType.EnumEntry((it as Enum<*>).name) }
+            .toSet()
 }
