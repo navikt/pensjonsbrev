@@ -24,23 +24,32 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
     private val vedleggLibrary = AlltidValgbartVedleggLibrary(alltidValgbareVedlegg)
 
 
-    fun createLetter(brevbestilling: BestillBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
-        with(brevbestilling) { createLetter(template,kode, letterData, language, felles, listOf()) }
+    fun <T : BrevbakerBrevdata> createLetter(
+        brevbestilling: BestillBrevRequest<Kode>,
+        template: BrevTemplate<T, out Brevkode<*>>?,
+    ) =
+        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, listOf()) }
 
-    fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
+    fun <T : BrevbakerBrevdata> createLetter(
+        brevbestilling: BestillRedigertBrevRequest<Kode>,
+        template: BrevTemplate<T, out Brevkode<*>>?,
+    ) =
         with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
 
-    fun createLetter(brevbestilling: BestillRedigertBrevRequestV2<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
+    fun <T : BrevbakerBrevdata> createLetter(
+        brevbestilling: BestillRedigertBrevRequestV2<Kode>,
+        template: BrevTemplate<T, out Brevkode<*>>?,
+    ) =
         with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
 
-    private fun createLetter(
-        brevTemplate: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
+    private fun <T : BrevbakerBrevdata> createLetter(
+        brevTemplate: BrevTemplate<T, out Brevkode<*>>?,
         brevkode: Kode,
-        brevdata: BrevbakerBrevdata,
+        brevdata: T,
         spraak: LanguageCode,
         felles: BrevbakerFelles,
-        valgteVedlegg: List<AlltidValgbartVedleggKode>
-    ): Letter<BrevbakerBrevdata> {
+        valgteVedlegg: List<AlltidValgbartVedleggKode>,
+    ): Letter<T> {
         val template =
             brevTemplate?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
