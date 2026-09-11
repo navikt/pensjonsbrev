@@ -1297,7 +1297,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ApiRedigertVedleggRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -4148,6 +4152,10 @@ export interface components {
             includeSakspart: boolean;
             title: components["schemas"]["EditTitle"];
         };
+        /** ApiRedigertVedleggRequest */
+        ApiRedigertVedleggRequest: {
+            redigertVedlegg: components["schemas"]["EditAttachment"];
+        };
         /** ApiOppdaterKlarStatusRequest */
         ApiOppdaterKlarStatusRequest: {
             klar: boolean;
@@ -4706,6 +4714,7 @@ export type ApiDistribusjonstypeRequest = components['schemas']['ApiDistribusjon
 export type ApiValgteVedleggRequest = components['schemas']['ApiValgteVedleggRequest'];
 export type RedigerbartVedleggInfo = components['schemas']['RedigerbartVedleggInfo'];
 export type EditAttachment = components['schemas']['EditAttachment'];
+export type ApiRedigertVedleggRequest = components['schemas']['ApiRedigertVedleggRequest'];
 export type ApiOppdaterKlarStatusRequest = components['schemas']['ApiOppdaterKlarStatusRequest'];
 export type ApiOppdaterMottakerRequest = components['schemas']['ApiOppdaterMottakerRequest'];
 export type ApiPdfResponse = components['schemas']['ApiPdfResponse'];
