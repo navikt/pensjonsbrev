@@ -4,12 +4,17 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SAKSBEHANDLINGSTID_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.enabled
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -47,26 +52,52 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
         outline {
             //[PE_UP_07_105_TB3018-3021,TB124]
 
-            paragraph {
-                val mottattDato = fritekst("dato")
-                text(
-                    bokmal { + "Vi har " + mottattDato + " mottatt søknaden din om uføretrygd." },
-                    nynorsk { + "Vi har " + mottattDato + " mottatt søknaden din om uførepensjon." },
-                )
-            }
+            showIf(FeatureToggles.pl7231ForventetSvartid.toggle.expr().enabled()) {
+                paragraph {
+                    val mottattDato = fritekst("dato")
+                    text(
+                        bokmal { +"Vi har " + mottattDato + " mottatt søknaden din om uføretrygd." },
+                        nynorsk { +"Vi har " + mottattDato + " mottatt søknaden din om uføretrygd." },
+                    )
+                }
 
-            paragraph {
-                text(
-                    bokmal { + "Søknaden vil bli behandlet så snart som mulig og senest innen 6 måneder. " },
-                    nynorsk { + "Søknaden vil bli behandla så snart som mogleg og seinast innan 6 månader. " },
-                )
-            }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Søknaden vil bli behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på " + quoted(
+                                "Min side"
+                            ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
+                        },
+                        nynorsk {
+                            +"Søknaden vil bli behandla så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på " + quoted(
+                                "Mi side"
+                            ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
+                        },
+                    )
+                }
+            } orShow {
 
-            paragraph {
-                text(
-                    bokmal { + "Hvis søknaden ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss. " },
-                    nynorsk { + "Viss søknaden ikkje vert avgjort i løpet av denne tida, vil du høyre nærmare frå oss. " },
-                )
+                paragraph {
+                    val mottattDato = fritekst("dato")
+                    text(
+                        bokmal { +"Vi har " + mottattDato + " mottatt søknaden din om uføretrygd." },
+                        nynorsk { +"Vi har " + mottattDato + " mottatt søknaden din om uførepensjon." },
+                    )
+                }
+
+                paragraph {
+                    text(
+                        bokmal { +"Søknaden vil bli behandlet så snart som mulig og senest innen 6 måneder. " },
+                        nynorsk { +"Søknaden vil bli behandla så snart som mogleg og seinast innan 6 månader. " },
+                    )
+                }
+
+                paragraph {
+                    text(
+                        bokmal { +"Hvis søknaden ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss. " },
+                        nynorsk { +"Viss søknaden ikkje vert avgjort i løpet av denne tida, vil du høyre nærmare frå oss. " },
+                    )
+                }
             }
 
             showIf(soeknadOversendesTilUtlandet) {

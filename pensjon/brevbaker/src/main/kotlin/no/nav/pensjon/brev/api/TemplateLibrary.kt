@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.maler.hentMuligOverstyrtMal
 import no.nav.pensjon.brev.template.BrevTemplate
 
 interface TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>> {
@@ -22,6 +21,6 @@ class TemplateLibraryImpl<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerB
 
     override fun getTemplate(kode: Kode): BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>? = getTemplate(kode.kode())
 
-    private fun getTemplate(kode: String) = hentMuligOverstyrtMal(kode) ?: templates[kode]
-        ?.takeIf { it.featureToggle?.let { toggle -> FeatureToggleSingleton.isEnabled(toggle) } ?: true }
+    private fun getTemplate(kode: String) =
+        templates[kode]?.takeIf { it.featureToggle?.let { toggle -> FeatureToggleSingleton.isEnabled(toggle) } ?: true }
 }
