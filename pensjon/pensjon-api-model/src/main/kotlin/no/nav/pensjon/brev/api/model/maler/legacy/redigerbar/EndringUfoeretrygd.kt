@@ -35,6 +35,7 @@ data class EndringUfoeretrygdDto(
         val avslagBarnetilleggNye: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val opphorteBarnetilleggNye: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
 
+        val harVTA: Boolean = false,
         val hjemler: Set<String>
     ) : FagsystemBrevdata
 

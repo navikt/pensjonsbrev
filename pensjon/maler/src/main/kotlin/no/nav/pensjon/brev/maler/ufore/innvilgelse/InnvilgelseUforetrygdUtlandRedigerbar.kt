@@ -279,6 +279,7 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
                 uforegrad = uforegrad,
                 ieuInntekt = ieuInntekt,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
+                harVTA = pesysData.harVTA
             ))
 
             paragraph {

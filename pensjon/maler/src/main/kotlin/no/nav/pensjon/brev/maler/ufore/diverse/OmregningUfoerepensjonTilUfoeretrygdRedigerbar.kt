@@ -80,7 +80,6 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufor
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtbrutto
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtnetto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad
@@ -862,16 +861,12 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                         text(bokmal { +"Hvis du har inntekt ved siden av uføretrygden, beholder du uføregraden du har fått innvilget, uansett hvor mye du tjener. Du må likevel melde fra om endringer i inntekten din, slik at du får riktig utbetaling av uføretrygd. En kombinasjon av inntekt og uføretrygd vil alltid gi en høyere utbetaling enn uføretrygd alene." })
                     }
 
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop) THEN      INCLUDE ENDIF
-                    showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop())) {
-                        //[TBU2503]
-                        paragraph { text(bokmal { +"Du kan i tillegg til uføretrygden tjene 60 000 kroner årlig før vi justerer uføretrygden din. Dette beløpet gjelder hvert år fram til 31. desember 2018. Fra 1. januar 2019 kan du årlig tjene 40 prosent av folketrygdens grunnbeløp før vi justerer uføretrygden din." }) }
-                    }
-
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop) THEN      INCLUDE ENDIF
-                    showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().equalTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop())) {
+                    showIf(pesysData.harVTA) {
                         //[TBU2505]
                         paragraph { text(bokmal { +"Du er i varig tilrettelagt arbeid og kan ha en årlig inntekt på folketrygdens grunnbeløp uten at uføretrygden din blir justert ut fra inntekt. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." }) }
+                    }.orShowIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
+                        //[TBU2503]
+                        paragraph { text(bokmal { +"Du kan i tillegg til uføretrygden tjene 60 000 kroner årlig før vi justerer uføretrygden din. Dette beløpet gjelder hvert år fram til 31. desember 2018. Fra 1. januar 2019 kan du årlig tjene 40 prosent av folketrygdens grunnbeløp før vi justerer uføretrygden din." }) }
                     }
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad > 0) THEN      INCLUDE ENDIF
