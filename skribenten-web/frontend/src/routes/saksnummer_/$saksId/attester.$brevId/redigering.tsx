@@ -33,6 +33,10 @@ import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
+import { ActiveDocumentProvider } from "~/components/brevOgVedlegg/ActiveDocumentContext";
+import { BrevOgVedleggEditor } from "~/components/brevOgVedlegg/BrevOgVedleggEditor";
+import { BrevOgVedleggEditorSidepanel } from "~/components/brevOgVedlegg/BrevOgVedleggEditorSidepanel";
+import { useActiveDocumentCoordinator } from "~/components/brevOgVedlegg/useActiveDocumentCoordinator";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { Divider } from "~/components/Divider";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
@@ -48,6 +52,7 @@ import { useAttestantLetterDiff } from "~/hooks/useAttestantLetterDiff";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
+import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
 import {
   type BrevResponse,
   type OppdaterAttesteringRequest,
@@ -58,7 +63,12 @@ import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
+const attesteringSearchSchema = baseSearchSchema.extend({
+  vedlegg: z.coerce.string().optional(),
+});
+
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
+  validateSearch: (search) => attesteringSearchSchema.parse(search),
   component: () => <VedtakWrapper />,
 });
 
@@ -202,13 +212,26 @@ const VedtakWrapper = () => {
 
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { vedlegg: activeVedlegg } = Route.useSearch();
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset } =
+    useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
 
+  const navigateToDocument = useCallback(
+    (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
+    [navigate],
+  );
+  const documentCoordinator = useActiveDocumentCoordinator({
+    saksId: props.saksId,
+    brevId: props.brev.info.id,
+    activeVedleggId: activeVedlegg,
+    redigeringsflate: "attestant-redigering",
+    navigateToDocument,
+  });
   const showDebug = useSearch({
     strict: false,
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
@@ -231,7 +254,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const attestantDiff = useAttestantLetterDiff({
     brevId: props.brev.info.id,
-    savedLetter: editorState.redigertBrev,
+    savedLetter: redigertBrev,
     savedHash: editorState.redigertBrevHash,
     isSaved: editorState.saveStatus === "SAVED",
   });
@@ -258,7 +281,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const { getWarning } = useBrevEditorWarnings({
     brevkode: props.brev.info.brevkode,
     form,
-    redigertBrev: editorState.redigertBrev,
+    redigertBrev: redigertBrev,
     propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
@@ -282,11 +305,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     },
   });
 
-  const onSubmit = (onSuccess?: () => void) => {
+  const onSubmit = async (onSuccess?: () => void) => {
+    if (!(await documentCoordinator.saveActiveDocument())) return;
+
     attesterMutation.reset();
     attesterMutation.mutate(
       {
-        redigertBrev: editorState.redigertBrev,
+        redigertBrev: redigertBrev,
       },
       { onSuccess: onSuccess },
     );
@@ -300,6 +325,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   }, [attesterMutation.reset]);
 
   useEffect(() => {
+    registerSaveErrorReset(resetSaveErrors);
+    return () => registerSaveErrorReset(null);
+  }, [registerSaveErrorReset, resetSaveErrors]);
+
+  useEffect(() => {
     form.reset({
       ...defaultValuesModelEditor,
       attestantSignatur: form.getValues("attestantSignatur"),
@@ -307,10 +337,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   }, [defaultValuesModelEditor, form]);
 
   useEffect(() => {
-    form.setValue("attestantSignatur", editorState.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?? "", {
+    form.setValue("attestantSignatur", redigertBrev.signatur.attesterendeSaksbehandlerNavn ?? "", {
       shouldValidate: form.formState.isSubmitted,
     });
-  }, [editorState.redigertBrev.signatur.attesterendeSaksbehandlerNavn, form]);
+  }, [redigertBrev.signatur.attesterendeSaksbehandlerNavn, form]);
 
   const proceedToForhandsvisning = () => {
     const varighetSekunder = Math.round((Date.now() - attesteringStartTime.current) / 1000);
@@ -345,6 +375,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     form,
     getWarning,
     onConfirmedSubmit: submitAttest,
+    onInvalidSubmit: () => void documentCoordinator.selectDocument(undefined),
     onWarnModalClosed: (warn) => {
       if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
         const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
@@ -363,129 +394,153 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
         {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
 
-        <ThreeSectionLayout
-          bottom={
-            <Button icon={<ArrowRightIcon />} iconPosition="right" loading={freeze} size="small">
-              Fortsett
-            </Button>
-          }
-          left={
-            <FormProvider {...form}>
-              <VStack gap="space-32">
-                <Heading size="small">{props.brev.info.brevtittel}</Heading>
-                <VStack gap="space-16">
-                  <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
-                  <VStack>
-                    <Label size="small">Distribusjonstype</Label>
-                    <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
-                  </VStack>
-                </VStack>
-                <Divider />
-                <VStack gap="space-20">
-                  <Hide above="sm" asChild>
-                    <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
-                  </Hide>
-                  <Hide above="sm" asChild>
-                    <Switch size="small">Vis slettet tekst</Switch>
-                  </Hide>
-                  {diffFeatureToggle.data?.enabled === true && (
-                    <>
-                      <Switch
-                        checked={attestantDiff.enabled}
-                        onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
-                        size="small"
-                      >
-                        Marker tekst som er lagt til og slettet
-                      </Switch>
-                      {attestantDiff.status === "ready" && (
-                        <VStack gap="space-4">
-                          <BodyShort size="small">
-                            <span className="attestant-diff-inserted">Slik vises ord som er lagt til manuelt</span>
-                          </BodyShort>
-                          <BodyShort size="small">
-                            <span className="attestant-diff-deleted">Slik vises ord som er slettet manuelt</span>
-                          </BodyShort>
-                        </VStack>
-                      )}
-                      {attestantDiff.status === "loading" && (
-                        <HStack align="center" gap="space-8">
-                          <Loader size="small" title="Markerer endringer" />
-                          <BodyShort size="small">Markerer endringer ...</BodyShort>
-                        </HStack>
-                      )}
-                      {attestantDiff.status === "error" && (
-                        <LocalAlert size="small" status="error">
-                          <LocalAlert.Header>
-                            <LocalAlert.Title css={diffAlertTitleStyle}>Endringene kunne ikke vises</LocalAlert.Title>
-                          </LocalAlert.Header>
-                          <LocalAlert.Content>
-                            Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
-                          </LocalAlert.Content>
-                        </LocalAlert>
-                      )}
-                      {attestantDiff.status === "empty" && (
-                        <LocalAlert size="small" status="warning">
-                          <LocalAlert.Header>
-                            <LocalAlert.Title css={diffAlertTitleStyle}>
-                              Ingen endringer fra malen ble funnet
-                            </LocalAlert.Title>
-                          </LocalAlert.Header>
-                        </LocalAlert>
-                      )}
-                    </>
-                  )}
-                  <Divider />
-                  <UnderskriftTextField
-                    controlled
-                    error={form.formState.errors.attestantSignatur?.message}
-                    of="Attestant"
-                  />
-                </VStack>
-                <Divider />
-                <VStack>
-                  <BrevmalAlternativer
-                    brevkode={props.brev.info.brevkode}
-                    propertyUsage={props.brev.propertyUsage ?? undefined}
-                    readOnly
-                  />
-                </VStack>
-              </VStack>
-            </FormProvider>
-          }
-          right={
-            <>
-              <AttestantDiffProvider
-                diff={attestantDiff.activeDiff}
-                diffHash={attestantDiff.diffHash}
-                disableDiff={attestantDiff.disableDiff}
+        <ActiveDocumentProvider
+          activeVedleggId={documentCoordinator.activeVedleggId}
+          onSelectDocument={documentCoordinator.selectDocument}
+          redigeringsflate="attestant-redigering"
+          registerVedleggSave={documentCoordinator.registerVedleggSave}
+        >
+          <ThreeSectionLayout
+            bottom={
+              <Button
+                icon={<ArrowRightIcon />}
+                iconPosition="right"
+                loading={freeze || documentCoordinator.savingActiveDocument}
+                size="small"
               >
-                <ManagedLetterEditor
-                  brev={props.brev}
-                  error={error}
-                  freeze={freeze}
-                  resetParentSaveError={resetSaveErrors}
-                  showDebug={showDebug}
-                />
-              </AttestantDiffProvider>
-
-              {/* Modal som ikke tar opp plass i DOM her */}
-              <ReservertBrevError
-                doRetry={props.doReload}
-                onNeiClick={() =>
-                  navigate({
-                    to: "/saksnummer/$saksId/brevbehandler",
-                    params: { saksId: props.saksId },
-                    search: {
-                      vedtaksId: props.brev.info?.vedtaksId?.toString(),
-                      enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
-                    },
-                  })
+                Fortsett
+              </Button>
+            }
+            left={
+              <BrevOgVedleggEditorSidepanel
+                brevId={props.brev.info.id}
+                brevmalPanel={
+                  <FormProvider {...form}>
+                    <VStack gap="space-32" paddingBlock="space-16 space-0">
+                      <Heading size="small">{props.brev.info.brevtittel}</Heading>
+                      <VStack gap="space-16">
+                        <OppsummeringAvMottaker
+                          mottaker={props.brev.info.mottaker ?? null}
+                          saksId={props.saksId}
+                          withTitle
+                        />
+                        <VStack>
+                          <Label size="small">Distribusjonstype</Label>
+                          <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
+                        </VStack>
+                      </VStack>
+                      <Divider />
+                      <VStack gap="space-20">
+                        <Hide above="sm" asChild>
+                          <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
+                        </Hide>
+                        <Hide above="sm" asChild>
+                          <Switch size="small">Vis slettet tekst</Switch>
+                        </Hide>
+                        {diffFeatureToggle.data?.enabled === true && (
+                          <>
+                            <Switch
+                              checked={attestantDiff.enabled}
+                              onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
+                              size="small"
+                            >
+                              Marker tekst som er lagt til og slettet
+                            </Switch>
+                            {attestantDiff.status === "ready" && (
+                              <VStack gap="space-4">
+                                <BodyShort size="small">
+                                  <span className="attestant-diff-inserted">
+                                    Slik vises ord som er lagt til manuelt
+                                  </span>
+                                </BodyShort>
+                                <BodyShort size="small">
+                                  <span className="attestant-diff-deleted">Slik vises ord som er slettet manuelt</span>
+                                </BodyShort>
+                              </VStack>
+                            )}
+                            {attestantDiff.status === "loading" && (
+                              <HStack align="center" gap="space-8">
+                                <Loader size="small" title="Markerer endringer" />
+                                <BodyShort size="small">Markerer endringer ...</BodyShort>
+                              </HStack>
+                            )}
+                            {attestantDiff.status === "error" && (
+                              <LocalAlert size="small" status="error">
+                                <LocalAlert.Header>
+                                  <LocalAlert.Title css={diffAlertTitleStyle}>
+                                    Endringene kunne ikke vises
+                                  </LocalAlert.Title>
+                                </LocalAlert.Header>
+                                <LocalAlert.Content>
+                                  Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
+                                </LocalAlert.Content>
+                              </LocalAlert>
+                            )}
+                            {attestantDiff.status === "empty" && (
+                              <LocalAlert size="small" status="warning">
+                                <LocalAlert.Header>
+                                  <LocalAlert.Title css={diffAlertTitleStyle}>
+                                    Ingen endringer fra malen ble funnet
+                                  </LocalAlert.Title>
+                                </LocalAlert.Header>
+                              </LocalAlert>
+                            )}
+                          </>
+                        )}
+                        <Divider />
+                        <UnderskriftTextField
+                          controlled
+                          error={form.formState.errors.attestantSignatur?.message}
+                          of="Attestant"
+                        />
+                      </VStack>
+                      <Divider />
+                      <VStack>
+                        <BrevmalAlternativer
+                          brevkode={props.brev.info.brevkode}
+                          propertyUsage={props.brev.propertyUsage ?? undefined}
+                          readOnly
+                        />
+                      </VStack>
+                    </VStack>
+                  </FormProvider>
                 }
-                reservasjon={reservasjonQuery.data}
+                saksId={props.saksId}
               />
-            </>
-          }
-        />
+            }
+            right={
+              <BrevOgVedleggEditor
+                brev={props.brev}
+                freeze={freeze}
+                renderBrev={() => (
+                  <AttestantDiffProvider
+                    diff={attestantDiff.activeDiff}
+                    diffHash={attestantDiff.diffHash}
+                    disableDiff={attestantDiff.disableDiff}
+                  >
+                    <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+                  </AttestantDiffProvider>
+                )}
+                saksId={props.saksId}
+              />
+            }
+          />
+          {/* Modal rendered outside layout flow so it does not take space here. */}
+          <ReservertBrevError
+            doRetry={props.doReload}
+            onNeiClick={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brevbehandler",
+                params: { saksId: props.saksId },
+                search: {
+                  vedtaksId: props.brev.info?.vedtaksId?.toString(),
+                  enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
+                },
+              })
+            }
+            reservasjon={reservasjonQuery.data}
+          />
+        </ActiveDocumentProvider>
       </form>
     </VStack>
   );

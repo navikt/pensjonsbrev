@@ -8,7 +8,7 @@ import {
   type AnyBlock,
   type Cell,
   type Content,
-  type EditedLetter,
+  type EditedDocument,
   type Identifiable,
   type Item,
   type TextContent,
@@ -81,14 +81,14 @@ const collectBlockIds = (ids: Set<number>, blocks: readonly AnyBlock[]) => {
   }
 };
 
-export const collectAllIds = (letter: EditedLetter): Set<number> => {
+export const collectAllIds = (letter: EditedDocument): Set<number> => {
   const ids = new Set<number>();
   collectTextContentIds(ids, letter.title.text);
   collectBlockIds(ids, letter.blocks);
   return ids;
 };
 
-export const collectNewIds = (seenIds: ReadonlySet<number>, letter: EditedLetter): Set<number> => {
+export const collectNewIds = (seenIds: ReadonlySet<number>, letter: EditedDocument): Set<number> => {
   const allIds = collectAllIds(letter);
   const newIds = new Set<number>();
   for (const id of allIds) if (!seenIds.has(id)) newIds.add(id);
@@ -141,7 +141,7 @@ const findLastTextFocusInBlock = (
 
 // Returns a focus pointing at the end of the most recently inserted text after a tekstvalg toggle.
 // Prefers the last newly added block; otherwise the last newly added text content in an existing block.
-export const findLastInsertedFocus = (letter: EditedLetter, highlightedIds: ReadonlySet<number>): Focus | null => {
+export const findLastInsertedFocus = (letter: EditedDocument, highlightedIds: ReadonlySet<number>): Focus | null => {
   // 1) Last newly added block.
   for (let blockIndex = letter.blocks.length - 1; blockIndex >= 0; blockIndex--) {
     const block = letter.blocks[blockIndex];

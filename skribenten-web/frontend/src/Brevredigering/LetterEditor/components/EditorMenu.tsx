@@ -53,7 +53,7 @@ type EditorMenuProps = {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  setVilTilbakestilleMal: (state: boolean) => void;
+  setVilTilbakestilleMal?: (state: boolean) => void;
 };
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
@@ -84,7 +84,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
 
         <HStack align="center" gap="space-16">
           <LagringStatus />
-          {redigeringsflate === "saksbehandler-redigering" && (
+          {setVilTilbakestilleMal && redigeringsflate === "saksbehandler-redigering" && (
             <Tooltip content={tooltipText.tilbakestill}>
               <Button
                 aria-label="Tilbakestill mal"

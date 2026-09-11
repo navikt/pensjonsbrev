@@ -42,7 +42,7 @@ import {
 import {
   type AnyBlock,
   type Content,
-  type EditedLetter,
+  type EditedDocument,
   type ItemList,
   type Table,
   type TextContent,
@@ -480,7 +480,7 @@ function removeInTextContentParent(
 }
 
 function deduceValidIndex(
-  redigertBrev: EditedLetter,
+  redigertBrev: EditedDocument,
   start: Focus & { cursorPosition: number },
 ): (Focus & { cursorPosition: number }) | undefined {
   const blockIndex = Math.max(0, Math.min(redigertBrev.blocks.length - 1, start.blockIndex));

@@ -13,14 +13,7 @@ const ThreeSectionLayout = (props: {
     <Box asChild background="default" flexGrow="1" overflowY="hidden">
       <VStack justify="space-between">
         <HGrid columns={`minmax(304px, 384px) 1px ${props.rightColumnWidth ?? "auto"}`} flexGrow="1" overflowY="hidden">
-          <Box
-            overflowY="auto"
-            padding={{ xs: "space-12" }}
-            paddingBlock={{ lg: "space-16" }}
-            paddingInline={{ lg: "space-24" }}
-          >
-            {props.left}
-          </Box>
+          <Box overflowY="auto">{props.left}</Box>
           <VerticalDivider />
           <Box minHeight="0">{props.right}</Box>
         </HGrid>

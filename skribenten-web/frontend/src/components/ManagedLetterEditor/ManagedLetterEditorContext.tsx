@@ -1,4 +1,5 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { type AxiosError } from "axios";
 import isEqual from "lodash/isEqual";
 import {
   createContext,
@@ -7,17 +8,28 @@ import {
   type SetStateAction,
   useCallback,
   useContext,
+  useEffect,
+  useRef,
   useState,
 } from "react";
 
-import { attesteringBrevKeys, getBrev } from "~/api/brev-queries";
+import {
+  attesteringBrevKeys,
+  getBrev,
+  lagreAttestertBrevtekst,
+  oppdaterBrev,
+  oppdaterBrevtekst,
+} from "~/api/brev-queries";
 import { hentPdfForAttestering, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { normalizeDeletedArrays } from "~/Brevredigering/LetterEditor/actions/common";
+import { isLetterDocument, normalizeDocumentForComparison } from "~/Brevredigering/LetterEditor/actions/common";
 import { addHistoryEntry, type HistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { useRedigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
+import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
+import { type EditedDocument, type EditedLetter } from "~/types/brevbakerTypes";
 
 type SaveSuccessOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
@@ -25,12 +37,26 @@ type SaveSuccessOptions = {
 
 interface ManagedLetterEditorContextValue {
   editorState: LetterEditorState;
+
+  /** Letter-specific view of the edited document for consumers that need `sakspart` or `signatur`. */
+  redigertBrev: EditedLetter;
+
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
+
+  /** Whether autosaving the letter has failed. */
+  saveFailed: boolean;
+
+  /** The route registers how to clear its own submit-error state so the autosave can reset it before retrying. */
+  registerSaveErrorReset: (reset: (() => void) | null) => void;
 }
 
-const nullsToUndefined = (obj: unknown) =>
-  JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
+const requireLetterDocument = (document: EditedDocument): EditedLetter => {
+  if (!isLetterDocument(document)) {
+    throw new Error("ManagedLetterEditorContextProvider received a non-letter document");
+  }
+  return document;
+};
 
 const resolveHistoryAfterSave = (
   previousState: LetterEditorState,
@@ -42,8 +68,8 @@ const resolveHistoryAfterSave = (
   }
 
   const redigertBrevUnchanged = isEqual(
-    normalizeDeletedArrays(nullsToUndefined(previousState.redigertBrev)),
-    normalizeDeletedArrays(nullsToUndefined(response.redigertBrev)),
+    normalizeDocumentForComparison(previousState.redigertBrev),
+    normalizeDocumentForComparison(response.redigertBrev),
   );
 
   return redigertBrevUnchanged ? previousState.history : { entries: [], entryPointer: -1 };
@@ -51,17 +77,35 @@ const resolveHistoryAfterSave = (
 
 const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue | null>(null);
 
+/**
+ * Autosave lives in this provider so it survives when `ManagedLetterEditor`
+ * unmounts while switching to an attachment. If autosave lived in the editor,
+ * unmounting would clean up the autosave effect and cancel a pending debounce,
+ * potentially leaving letter changes unsaved.
+ */
 export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; children: ReactNode }) => {
   const queryClient = useQueryClient();
   const redigeringsflate = useRedigeringsflate();
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
+  const saveErrorResetRef = useRef<(() => void) | null>(null);
+
+  // The debounced autosave below must send the state as it is when the timer fires, not as it was
+  // when the timer was scheduled. A pending timer that still closes over a pre-change state would
+  // save a stale `saksbehandlerValg`, and `onSaveSuccess` would then write that stale value back
+  // into the editor as "Lagret" - silently reverting the user's tekstvalg/overstyring change.
+  const editorStateRef = useRef(editorState);
+  editorStateRef.current = editorState;
+
+  const registerSaveErrorReset = useCallback((reset: (() => void) | null) => {
+    saveErrorResetRef.current = reset;
+  }, []);
 
   const onSaveSuccess = useCallback(
     (response: BrevResponse, options?: SaveSuccessOptions) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       queryClient.setQueryData(attesteringBrevKeys.id(response.info.id), response);
-      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
-      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
+      // Reset the query so returning to brevbehandler fetches the latest data
+      // instead of silently showing a stale cached version.
       const pdfQuery = redigeringsflate === "attestant-redigering" ? hentPdfForAttestering : hentPdfForBrev;
       queryClient.resetQueries({ queryKey: pdfQuery.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
@@ -85,9 +129,92 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     [queryClient, props.brev.info.id, redigeringsflate],
   );
 
+  const redigertBrev = requireLetterDocument(editorState.redigertBrev);
+
+  const {
+    mutate: saveLetter,
+    isError: saveFailed,
+    reset: resetSaveError,
+  } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
+    mutationFn: (state) => {
+      const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
+      const letterWithCursor = requireLetterDocument(stateWithCursor.redigertBrev);
+
+      setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
+
+      // Autosave must never release the user's reservation on the letter.
+      if (redigeringsflate === "attestant-redigering") {
+        return lagreAttestertBrevtekst({
+          saksId: String(stateWithCursor.info.saksId),
+          brevId: props.brev.info.id,
+          redigertBrev: letterWithCursor,
+          frigiReservasjon: false,
+        });
+      }
+
+      if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
+        return oppdaterBrevtekst({
+          brevId: props.brev.info.id,
+          redigertBrev: letterWithCursor,
+          frigiReservasjon: false,
+        });
+      }
+
+      // Save the full letter when tekstvalg has changed
+      return oppdaterBrev({
+        saksId: stateWithCursor.info.saksId,
+        brevId: stateWithCursor.info.id,
+        frigiReservasjon: false,
+        request: {
+          redigertBrev: letterWithCursor,
+          saksbehandlerValg: stateWithCursor.saksbehandlerValg,
+        },
+      });
+    },
+    onSuccess: (response) => onSaveSuccess(response),
+    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
+  });
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      const latestState = editorStateRef.current;
+      if (latestState.saveStatus === "DIRTY") {
+        resetSaveError();
+        saveErrorResetRef.current?.();
+        saveLetter(latestState);
+      }
+    }, AUTOSAVE_TIMER);
+
+    return () => clearTimeout(timeoutId);
+  }, [editorState.saveStatus, editorState.redigertBrev, editorState.saksbehandlerValg, saveLetter, resetSaveError]);
+
+  useEffect(() => {
+    if (editorState.saveStatus === "SAVED" && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
+      setEditorState((previousState) => ({
+        ...previousState,
+        redigertBrev: props.brev.redigertBrev,
+        redigertBrevHash: props.brev.redigertBrevHash,
+        saksbehandlerValg: props.brev.saksbehandlerValg,
+      }));
+    }
+  }, [
+    props.brev.redigertBrev,
+    props.brev.redigertBrevHash,
+    props.brev.saksbehandlerValg,
+    editorState.redigertBrevHash,
+    editorState.saveStatus,
+  ]);
+
   return (
     <ManagedLetterEditorContext.Provider
-      value={{ editorState: editorState, setEditorState: setEditorState, onSaveSuccess: onSaveSuccess }}
+      value={{
+        editorState: editorState,
+        redigertBrev: redigertBrev,
+        setEditorState: setEditorState,
+        onSaveSuccess: onSaveSuccess,
+        saveFailed: saveFailed,
+        registerSaveErrorReset: registerSaveErrorReset,
+      }}
     >
       {props.children}
     </ManagedLetterEditorContext.Provider>
