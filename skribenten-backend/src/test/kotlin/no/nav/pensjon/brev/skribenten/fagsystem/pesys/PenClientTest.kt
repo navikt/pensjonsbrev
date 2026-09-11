@@ -168,4 +168,94 @@ class PenClientTest {
             }
         }
     }
+
+    @Test
+    fun `sendbrev tar vare paa journalpostId naar PEN svarer med AdresseMangler`() {
+        val feilrespons = Pen.BestillBrevResponse(
+            journalpostId = JournalpostId(99L),
+            error = Pen.BestillBrevResponse.Error(brevIkkeStoettet = null, tekniskgrunn = "AdresseMangler", beskrivelse = "Adresse mangler"),
+        )
+        val engine = mockEngineMed(feilrespons, HttpStatusCode.UnprocessableEntity)
+
+        httpClientTest(Unit) {
+            val exception = assertThrows<PenAdresseManglerException> {
+                penClient(engine).sendbrev(request, distribuer = true)
+            }
+            assertThat(exception.journalpostId).isEqualTo(JournalpostId(99L))
+        }
+    }
+
+    @Test
+    fun `sendbrev tar vare paa journalpostId ved annen unprocessable entity-feil`() {
+        val feilrespons = Pen.BestillBrevResponse(
+            journalpostId = JournalpostId(100L),
+            error = Pen.BestillBrevResponse.Error(brevIkkeStoettet = null, tekniskgrunn = "AnnenFeil", beskrivelse = "Noe gikk galt"),
+        )
+        val engine = mockEngineMed(feilrespons, HttpStatusCode.UnprocessableEntity)
+
+        httpClientTest(Unit) {
+            val exception = assertThrows<PenServiceException> {
+                penClient(engine).sendbrev(request, distribuer = true)
+            }
+            assertThat(exception.journalpostId).isEqualTo(JournalpostId(100L))
+        }
+    }
+
+    @Test
+    fun `sendbrev tar vare paa journalpostId ved internal server error`() {
+        val feilrespons = Pen.BestillBrevResponse(
+            journalpostId = JournalpostId(101L),
+            error = Pen.BestillBrevResponse.Error(brevIkkeStoettet = null, tekniskgrunn = "Teknisk", beskrivelse = "Noe gikk galt"),
+        )
+        val engine = mockEngineMed(feilrespons, HttpStatusCode.InternalServerError)
+
+        httpClientTest(Unit) {
+            val exception = assertThrows<PenServiceException> {
+                penClient(engine).sendbrev(request, distribuer = true)
+            }
+            assertThat(exception.journalpostId).isEqualTo(JournalpostId(101L))
+        }
+    }
+
+    @Test
+    fun `sendbrev haandterer feilrespons som ikke er json`() {
+        val engine = MockEngine {
+            respond(
+                content = "<html>Gateway timeout</html>",
+                status = HttpStatusCode.GatewayTimeout,
+            )
+        }
+
+        httpClientTest(Unit) {
+            val exception = assertThrows<PenServiceException> {
+                penClient(engine).sendbrev(request, distribuer = true)
+            }
+            assertThat(exception.journalpostId).isNull()
+        }
+    }
+
+    @Test
+    fun `sendbrev kaster PenServiceException uten journalpostId ved 404`() {
+        val engine = MockEngine {
+            respond(content = "", status = HttpStatusCode.NotFound)
+        }
+
+        httpClientTest(Unit) {
+            val exception = assertThrows<PenServiceException> {
+                penClient(engine).sendbrev(request, distribuer = true)
+            }
+            assertThat(exception.journalpostId).isNull()
+        }
+    }
+
+    private fun mockEngineMed(respons: Pen.BestillBrevResponse, status: HttpStatusCode): MockEngine {
+        val objectMapper = jacksonObjectMapper()
+        return MockEngine {
+            respond(
+                content = objectMapper.writeValueAsString(respons),
+                status = status,
+                headers = headersOf("Content-Type", "application/json"),
+            )
+        }
+    }
 }

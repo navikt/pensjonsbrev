@@ -3,11 +3,14 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringH
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenAdresseManglerException
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenServiceException
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
 class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
@@ -155,5 +158,62 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(hentBrev(brev.info.id)).isSuccess {
             assertThat(it.info.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
         }
+    }
+
+    @Test
+    suspend fun `journalpostId fra feilende PEN-kall lagres paa brevet`() {
+        val brev = klartBrev()
+        penService.sendBrevException = PenAdresseManglerException(JournalpostId(456))
+
+        assertThrows<PenAdresseManglerException> { sendBrev(brev) }
+
+        assertThat(hentBrev(brev.info.id)).isSuccess {
+            assertThat(it.info.journalpostId).isEqualTo(JournalpostId(456))
+            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
+        }
+    }
+
+    @Test
+    suspend fun `brev er uendret naar PEN feiler uten journalpostId`() {
+        val brev = klartBrev()
+        penService.sendBrevException = PenServiceException("Noe gikk galt")
+
+        assertThrows<PenServiceException> { sendBrev(brev) }
+
+        assertThat(hentBrev(brev.info.id)).isSuccess {
+            assertThat(it.info.journalpostId).isNull()
+        }
+    }
+
+    @Test
+    suspend fun `eksisterende journalpostId overskrives ikke av feilende PEN-kall`() {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(arkiverBrev(brev)).isSuccess()
+        penService.sendBrevException = PenAdresseManglerException(JournalpostId(999))
+
+        assertThrows<PenAdresseManglerException> { sendBrev(brev) }
+
+        assertThat(hentBrev(brev.info.id)).isSuccess {
+            assertThat(it.info.journalpostId).isEqualTo(bestillBrevresponse.journalpostId)
+        }
+    }
+
+    @Test
+    suspend fun `brev som feilet sending kan slettes naar mottaker har doedsdato`() {
+        val brev = klartBrev()
+        penService.sendBrevException = PenAdresseManglerException(JournalpostId(456))
+
+        assertThrows<PenAdresseManglerException> { sendBrev(brev) }
+
+        pdlService.brukerContext = Pdl.PersonContext(adressebeskyttelse = false, doedsdato = LocalDate.now())
+        assertThat(slettBrev(brev)).isSuccess()
+        assertThat(hentBrev(brev.info.id)).isNull()
+    }
+
+    private suspend fun klartBrev(): Dto.Brevredigering {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+        return brev
     }
 }

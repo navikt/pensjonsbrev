@@ -86,6 +86,8 @@ abstract class BrevredigeringHandlerTestBase {
 
         penService.pesysBrevdata = brevdataResponseData
         penService.sendBrevResponse = bestillBrevresponse
+        penService.sendBrevException = null
+        pdlService.brukerContext = null
     }
 
 
@@ -622,6 +624,7 @@ abstract class BrevredigeringHandlerTestBase {
         var saker: MutableMap<SaksId, Pen.SakSelection> = mutableMapOf(),
         var pesysBrevdata: BrevdataResponse.Data? = null,
         var sendBrevResponse: Pen.BestillBrevResponse? = null,
+        var sendBrevException: Exception? = null,
     ) : PenClientStub() {
         val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
 
@@ -642,7 +645,10 @@ abstract class BrevredigeringHandlerTestBase {
             } ?: notYetStubbed("Mangler pesysBrevdata stub")
 
         override suspend fun sendbrev(sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean) =
-            sendBrevResponse?.also {
+            sendBrevException?.let {
+                utfoerteSendBrevKall.add(Pair(sendRedigerbartBrevRequest, distribuer))
+                throw it
+            } ?: sendBrevResponse?.also {
                 utfoerteSendBrevKall.add(Pair(sendRedigerbartBrevRequest, distribuer))
             } ?: notYetStubbed("Mangler sendBrevResponse stub")
 
@@ -662,11 +668,13 @@ abstract class BrevredigeringHandlerTestBase {
         }
     }
     protected class FakePDLService : PdlServiceStub() {
+        var brukerContext: Pdl.PersonContext? = null
+
         override suspend fun hentBrukerContext(
             ident: Pid,
             behandlingsnumre: List<Behandlingsnummer>,
         ): Pdl.PersonContext? {
-            return null
+            return brukerContext
         }
     }
 }

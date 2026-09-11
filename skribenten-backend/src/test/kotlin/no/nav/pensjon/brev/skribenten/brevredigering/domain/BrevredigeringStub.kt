@@ -52,6 +52,7 @@ open class BrevredigeringStub : Brevredigering {
     override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
     override fun markerSomKlar(): Unit = notYetStubbed()
     override fun markerSomKladd(): Unit = notYetStubbed()
+    override fun markerSomArkivert(journalpostId: JournalpostId): Unit = notYetStubbed()
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String): Unit = notYetStubbed()
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>): Unit = notYetStubbed()
