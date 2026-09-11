@@ -53,7 +53,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
         LetterTestImpl(
             template,
             EmptyAutobrevdata,
-            Language.Nynorsk,
+            Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("OpplysningerBruktIBeregningUfoereLegacyInntektsgrense")
     }
