@@ -10,11 +10,12 @@ import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
 
-class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<AutobrevData, Kode>>(
+class AutobrevTemplateResource<Kode : Brevkode<Kode>, out Data : AutobrevData, out T : BrevTemplate<Data, Kode>>(
     override val name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-    ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
+) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>,
+    TemplateLibrary<Kode, Data, T> by TemplateLibraryImpl(templates) {
     private val brevbaker = Brevbaker(pdfByggerService)
     private val letterFactory: LetterFactory<Kode> = LetterFactory(emptySet())
 
