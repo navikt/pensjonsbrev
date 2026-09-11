@@ -84,6 +84,21 @@ export const FUZZY_MATCH_OPTIONS = {
  *  occur verbatim in the matched text. */
 export const SHORT_TERM_LENGTH = 1;
 
+/** Matches a query consisting *only* of non-alphanumeric characters, e.g.
+ *  "§", "%", or "§§". Fuse's tokenizer (`/[\p{L}\p{M}\p{N}_]+/gu`, used by
+ *  `useTokenSearch`) only recognises letters/digits/underscore, so a query
+ *  made entirely of such characters - regardless of length - produces zero
+ *  query tokens and `contentFuse.search()` returns no candidates at all -
+ *  not merely a fuzzy vs. exact distinction, but no matching attempted
+ *  whatsoever. Multi-term queries that mix ordinary words with special
+ *  characters (e.g. "folketrygdloven §§") are unaffected: Fuse still finds
+ *  candidates via the word token, and `hasShortTermsVerbatim` already
+ *  requires short/symbol terms to occur verbatim. This regex is therefore
+ *  only used to detect the narrower "query has no letters/digits at all"
+ *  case, both to bypass `MIN_QUERY_LENGTH` (see `useTemplateSearch.ts`) and
+ *  to route straight to verbatim substring matching instead of Fuse. */
+export const SPECIAL_CHAR_QUERY = /^[^\p{L}\p{M}\p{N}_\s]+$/u;
+
 /** Splits a query into its whitespace-separated terms. */
 export function queryTerms(query: string): string[] {
   return query.split(/\s+/).filter((term) => term.length > 0);
@@ -234,6 +249,14 @@ export function search(index: SearchIndex, rawQuery: string, exactOnly = false):
   const query = rawQuery.trim();
   if (!query) {
     return { content: [], brev: [] };
+  }
+
+  // A query made entirely of special characters (e.g. "§" or "§§") can't be
+  // tokenized by Fuse at all (see `SPECIAL_CHAR_QUERY`), so fuzzy search
+  // would find no candidates to even check. Always fall back to verbatim
+  // substring matching for it, regardless of `exactOnly`.
+  if (SPECIAL_CHAR_QUERY.test(query)) {
+    return exactSearch(index, query);
   }
 
   return exactOnly ? exactSearch(index, query) : fuzzySearch(index, query);
