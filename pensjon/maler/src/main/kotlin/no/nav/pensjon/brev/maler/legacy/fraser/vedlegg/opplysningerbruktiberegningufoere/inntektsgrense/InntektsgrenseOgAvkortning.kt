@@ -179,6 +179,7 @@ data class InntektsgrenseOgAvkortning(
             }
 
             includePhrase(SlikFastsetterViUfoeregraden)
+            includePhrase(HvaErBunnfradragFribelopOgVenteperiode)
         }
     }
 }
