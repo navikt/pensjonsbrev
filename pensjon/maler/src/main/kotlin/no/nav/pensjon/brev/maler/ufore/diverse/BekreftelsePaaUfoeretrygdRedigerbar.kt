@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.diverse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.bekreftelsePaaUfoeretrygdDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.bekreftelsePaaUfoeretrygdDto.*
@@ -31,6 +32,7 @@ object BekreftelsePaaUfoeretrygdRedigerbar : RedigerbarTemplate<BekreftelsePaaUf
     override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.UFOREP)
+    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
 
     override val template = createTemplate(

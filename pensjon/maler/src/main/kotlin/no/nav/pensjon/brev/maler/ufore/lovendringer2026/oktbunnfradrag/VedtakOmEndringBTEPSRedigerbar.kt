@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEndringBarnetilleggEPSRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEndringBarnetilleggEPSRedigerbarDto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEndringBarnetilleggEPSRedigerbarDto.pesysData.vedtakData
@@ -33,6 +34,7 @@ object VedtakOmEndringBTEPSRedigerbar : RedigerbarTemplate<VedtakOmEndringBarnet
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
+    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
