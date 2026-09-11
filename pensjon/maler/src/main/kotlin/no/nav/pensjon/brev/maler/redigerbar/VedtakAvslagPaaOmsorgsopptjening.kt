@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakAvslagPaaOmsorgsopptjeningDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakAvslagPaaOmsorgsopptjeningDto.*
@@ -35,6 +36,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
     override val kategori = Brevkategori.OMSORGSOPPTJENING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.OMSORG)
+    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages(Bokmal, Nynorsk, English),

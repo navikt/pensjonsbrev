@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselTilbakekrevingAvFeilutbetaltBeloepDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselTilbakekrevingAvFeilutbetaltBeloepDto.*
@@ -30,6 +31,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
     override val brevkontekst: TemplateDescription.Brevkontekst = ALLE
     override val sakstyper: Set<Sakstype> = setOf(FAM_PL, AFP, BARNEP, GJENLEV, ALDER, GENRL, AFP_PRIVAT)
     override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP
+    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

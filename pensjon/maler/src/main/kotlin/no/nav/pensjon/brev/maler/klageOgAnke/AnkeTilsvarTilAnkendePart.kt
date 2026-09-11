@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori.*
@@ -34,6 +35,7 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val kategori = KLAGE_OG_ANKE
     override val brevkontekst = ALLE
     override val sakstyper: Set<Sakstype> = pensjon
+    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, English),

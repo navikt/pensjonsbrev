@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
@@ -65,6 +66,7 @@ import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.Ved
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026OktIfuAuto
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.vedlegg.alltidValgbare.skjemaForBankopplysninger
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -173,5 +175,10 @@ object ProductionTemplates : AllTemplates {
 
     override fun hentRedigerbareMaler() = redigerbare
 
-    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
+    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
+        AlltidValgbartVedlegg(
+            skjemaForBankopplysninger,
+            Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER,
+        ),
+    )
 }
