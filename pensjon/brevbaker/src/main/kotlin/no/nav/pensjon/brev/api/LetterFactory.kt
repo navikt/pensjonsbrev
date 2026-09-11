@@ -65,10 +65,10 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         )
     }
 
-    private fun parseArgument(
-        letterData: BrevbakerBrevdata,
-        template: LetterTemplate<*, BrevbakerBrevdata>,
-    ): BrevbakerBrevdata =
+    private fun <T : BrevbakerBrevdata> parseArgument(
+        letterData: T,
+        template: LetterTemplate<*, T>,
+    ): T =
         try {
             objectMapper.convertValue(letterData, template.letterDataType.java)
         } catch (e: IllegalArgumentException) {
