@@ -6,8 +6,7 @@ import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { type LiteralValue } from "~/types/brevbakerTypes";
-
-import { letter, literal, paragraph } from "../../utils";
+import { letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
 
 const literalIndex = { blockIndex: 0, contentIndex: 0 };
 

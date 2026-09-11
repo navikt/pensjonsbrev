@@ -3,8 +3,19 @@ import { describe, expect, it } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Cell, type ItemList, type LiteralValue, type Row, type Table } from "~/types/brevbakerTypes";
-
-import { cell, item, itemList, letter, literal, paragraph, row, select, table, title1, variable } from "../utils";
+import {
+  cell,
+  item,
+  itemList,
+  letter,
+  literal,
+  paragraph,
+  row,
+  select,
+  table,
+  title1,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 describe("Actions.deleteSelection", () => {
   describe("start and end in TextContent", () => {

@@ -3,8 +3,7 @@ import { describe, expect, it } from "vitest";
 import { isTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { insertTable } from "~/Brevredigering/LetterEditor/actions/table";
 import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
-
-import { letter, literal, paragraph } from "../utils";
+import { letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
 
 function createLetterWithOneParagraph() {
   const singleParagraph = paragraph([literal({ text: "hello" })]);

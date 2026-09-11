@@ -24,8 +24,18 @@ import {
   type TextContent,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
-
-import { cell, editedLetter, item, itemList, letter, literal, paragraph, row, table, title1 } from "../utils";
+import { editedLetter } from "~test/support/brevFixtures";
+import {
+  cell,
+  item,
+  itemList,
+  letter,
+  literal,
+  paragraph,
+  row,
+  table,
+  title1,
+} from "~test/support/letterEditorTestUtils";
 
 describe("findAdjoiningContent", () => {
   describe("entire array matches", () => {

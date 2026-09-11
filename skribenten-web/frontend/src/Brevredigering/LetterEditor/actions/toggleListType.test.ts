@@ -3,8 +3,7 @@ import { describe, expect, test } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Item, type ItemList, ListType, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
-
-import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
+import { item, itemList, letter, literal, paragraph, select, variable } from "~test/support/letterEditorTestUtils";
 
 describe("LetterEditorActions.toggleBulletList", () => {
   describe("has adjoining itemList", () => {
