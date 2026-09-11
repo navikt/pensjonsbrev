@@ -30,4 +30,31 @@ class OpplysningerBruktIBeregningUTLegacyTest {
             Fixtures.fellesAuto
         ).renderTestPDF("OpplysningerBruktIBeregningUfoereLegacy")
     }
+
+    @Test
+    fun testVedleggMedInntektsgrenseOgAvkortning() {
+        val basis = Fixtures.createVedlegg(PEgruppe10::class)
+        val vedtaksdata = basis.vedtaksbrev.vedtaksdata!!
+        val medInntektsdetaljer = basis.copy(
+            pebrevkode = "PE_UT_04_500",
+            vedtaksbrev = basis.vedtaksbrev.copy(
+                vedtaksdata = vedtaksdata.copy(
+                    kravhode = vedtaksdata.kravhode!!.copy(
+                        kravarsaktype = "foerstegangsbehandling"
+                    )
+                )
+            )
+        )
+        val template = createVedleggTestTemplate(
+            vedleggOpplysningerBruktIBeregningUTLegacy,
+            medInntektsdetaljer.expr(),
+            languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        )
+        LetterTestImpl(
+            template,
+            EmptyAutobrevdata,
+            Language.Nynorsk,
+            Fixtures.fellesAuto
+        ).renderTestPDF("OpplysningerBruktIBeregningUfoereLegacyInntektsgrense")
+    }
 }
