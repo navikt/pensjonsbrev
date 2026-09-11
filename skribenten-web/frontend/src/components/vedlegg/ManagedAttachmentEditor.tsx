@@ -55,55 +55,49 @@ export const ManagedAttachmentEditor = (props: AttachmentEditorProps) => {
 
   const vedleggQuery = useQuery({
     queryKey: getRedigerbartVedlegg.queryKey(brev.info.id, vedleggId, redigeringsflate),
-    queryFn: () => getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId, redigeringsflate),
-    // Pinned like the brev query: a background refetch (e.g. on window focus) that resolves after an
-    // autosave would put pre-edit content back in the cache, and the freshness effect below would
-    // then revert the editor to it. Fresh content comes from the save response instead.
+    queryFn: ({ signal }) => getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId, redigeringsflate, signal),
+    // Pinned: only a save or reset response should ever update this query's data once the session
+    // has activated with it — a background refetch (e.g. on window focus) that resolves after an
+    // autosave must not put pre-edit content back in the cache for a later remount to pick up.
     staleTime: Number.POSITIVE_INFINITY,
+    // Every mount of this component is a fresh activation of the attachment (see the key in
+    // BrevOgVedleggEditor), and must read the latest server content rather than a cache entry left
+    // over from — or shared with — a previous activation.
+    refetchOnMount: "always",
   });
 
-  if (vedleggQuery.isPending) {
+  // Require a fetch that completed *for this activation* before handing anything to the editor.
+  // `isFetchedAfterMount` (rather than `isPending`/`isSuccess` alone) is what rules out an editable
+  // fallback built from stale cached data while the mandatory refetch above is still in flight.
+  if (vedleggQuery.isPending || !vedleggQuery.isFetchedAfterMount) {
     return <CenteredLoader label="Henter vedlegg..." verticalStrategy="height" />;
   }
   if (vedleggQuery.isError) {
     return <ApiError error={vedleggQuery.error} title="Klarte ikke å hente vedlegget" />;
   }
 
-  return <AttachmentEditorSession {...props} key={vedleggId} vedlegg={vedleggQuery.data} />;
+  return <AttachmentEditorSession {...props} initialVedlegg={vedleggQuery.data} key={vedleggId} />;
 };
 
-const AttachmentEditorSession = (props: AttachmentEditorProps & { vedlegg: EditAttachment }) => {
-  const { saksId, brev, vedleggId, vedlegg, redigeringsflate } = props;
+const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg: EditAttachment }) => {
+  const { saksId, brev, vedleggId, redigeringsflate } = props;
   const queryClient = useQueryClient();
   const { registerVedleggSave, registerReset } = useActiveDocument();
-  const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
+  // Captured once from the activation fetch above. Later cache writes for this query key (a
+  // window-focus refetch racing a save, for instance) are deliberately not observed here — this
+  // session owns its document from here on, and only local edits, its own save responses, and its
+  // own reset responses are allowed to change it.
+  const [editorState, setEditorState] = useState<LetterEditorState>(() =>
+    createVedleggState(brev, props.initialVedlegg),
+  );
   const [resetModalOpen, setResetModalOpen] = useState(false);
-
-  useEffect(() => {
-    setEditorState((state) => {
-      if (state.saveStatus !== "SAVED") return state;
-      const document: EditedDocument = {
-        title: vedlegg.title,
-        blocks: vedlegg.blocks,
-        deletedBlocks: vedlegg.deletedBlocks,
-      };
-      if (isEqual(normalizeDocumentForComparison(state.redigertBrev), normalizeDocumentForComparison(document))) {
-        return state;
-      }
-      return {
-        ...state,
-        redigertBrev: document,
-        focus: { blockIndex: 0, contentIndex: 0 },
-        history: { entries: [], entryPointer: -1 },
-      };
-    });
-  }, [vedlegg]);
+  const [vedleggMeta, setVedleggMeta] = useState({ includeSakspart: props.initialVedlegg.includeSakspart });
 
   // `includeSakspart` is metadata the editor never touches, so it is kept out of the editor state
   // and folded back in when saving. That keeps the editor state a plain EditedDocument.
   const toVedlegg = (doc: EditedDocument): EditAttachment => ({
     ...doc,
-    includeSakspart: vedlegg.includeSakspart,
+    includeSakspart: vedleggMeta.includeSakspart,
   });
 
   const setVedleggInCache = (vedleggResponse: EditAttachment) =>
@@ -150,6 +144,7 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { vedlegg: EditA
       });
       setVedleggInCache(vedleggResponse);
       setTitleInCache(vedleggResponse);
+      setVedleggMeta({ includeSakspart: vedleggResponse.includeSakspart });
       queryClient.resetQueries({ queryKey: pdfQuery.queryKey(brev.info.id) });
     },
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
@@ -172,6 +167,7 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { vedlegg: EditA
       const freshVedlegg = await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
       setVedleggInCache(freshVedlegg);
       setTitleInCache(freshVedlegg);
+      setVedleggMeta({ includeSakspart: freshVedlegg.includeSakspart });
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
       return freshVedlegg;
     });

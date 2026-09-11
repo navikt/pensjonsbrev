@@ -45,6 +45,11 @@ export const BrevOgVedleggEditor = (props: {
     <ManagedAttachmentEditor
       brev={props.brev}
       freeze={props.freeze}
+      // Keying by the full editing identity forces a fresh query owner and activation lifecycle on
+      // every direct attachment switch (A -> B -> A included), not just a fresh inner editor: without
+      // this key, switching attachments would reuse the mounted query owner and its already-fetched,
+      // now stale, cached data instead of fetching the newly active attachment.
+      key={`${props.saksId}-${props.brev.info.id}-${redigeringsflate}-${vedlegg.vedleggId}`}
       redigeringsflate={redigeringsflate}
       saksId={props.saksId}
       vedleggId={vedlegg.vedleggId}

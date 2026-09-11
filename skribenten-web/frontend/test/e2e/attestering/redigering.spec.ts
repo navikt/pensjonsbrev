@@ -193,6 +193,32 @@ test.describe("attestant redigering", () => {
     await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
   });
 
+  test("henter ferskt innhold når attestanten åpner vedlegget på nytt", async ({ page }) => {
+    await setupVedlegg(page);
+    const freshText = "Oppdatert vedleggstekst fra serveren.";
+    let serverVedlegg = vedlegg;
+    let hentinger = 0;
+    await page.route(VEDLEGG_URL, (route) => {
+      hentinger += 1;
+      return route.fulfill({ json: serverVedlegg });
+    });
+
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await expect(page.getByText(VEDLEGG_TEKST)).toBeVisible();
+
+    await page.getByRole("tab", { name: "Brevmal" }).click();
+    serverVedlegg = {
+      ...vedlegg,
+      blocks: [{ ...vedlegg.blocks[0], content: [{ ...vedlegg.blocks[0].content[0], text: freshText }] }],
+    };
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+
+    await expect.poll(() => hentinger).toBe(2);
+    await expect(page.getByText(freshText)).toBeVisible();
+    await expect(page.getByText(VEDLEGG_TEKST)).toBeHidden();
+  });
+
   test("attesterer ikke når redigert vedlegg ikke kan lagres", async ({ page }) => {
     await setupVedlegg(page);
     let attesteringer = 0;

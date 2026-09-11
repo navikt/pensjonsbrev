@@ -65,6 +65,16 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
   // Serialize saves so an older request cannot finish after and overwrite a newer one.
   const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
 
+  // The document targeted by the send that is currently in flight (already dequeued and calling
+  // the backend). Used by `saveNow` to join a same-document send instead of enqueueing a duplicate.
+  const inFlightSaveRef = useRef<{ document: TDoc; promise: Promise<TDoc | null> } | null>(null);
+
+  // The document targeted by a `saveNow`-initiated send that has been enqueued but may not have
+  // started yet. Needed in addition to `inFlightSaveRef` so two `saveNow` calls issued back to
+  // back for the same document (before either has reached the front of the queue) join each other
+  // rather than both enqueueing a send.
+  const pendingExplicitSaveRef = useRef<{ document: TDoc; promise: Promise<TDoc | null> } | null>(null);
+
   const { mutateAsync, isError } = useMutation<TResponse, AxiosError, TDoc>({
     mutationFn: (doc) => {
       autosaveStateRef.current.saveStatus = "SAVE_PENDING";
@@ -101,7 +111,19 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
         : shouldSave(latestDocument, latestStatus);
       if (!isEligibleForSave) return null;
 
-      await performSaveRef.current(latestDocument);
+      const send = performSaveRef.current(latestDocument);
+      // `inFlight.promise` is only ever consumed by a `saveNow` call that opts in via `outstanding`
+      // above (autosave never reads it). Give it its own rejection handler so an unobserved failure
+      // here doesn't surface as an unhandled rejection when no such call happens to join it.
+      const inFlightPromise = send.then(() => latestDocument);
+      inFlightPromise.catch(() => undefined);
+      const inFlight = { document: latestDocument, promise: inFlightPromise };
+      inFlightSaveRef.current = inFlight;
+      try {
+        await send;
+      } finally {
+        if (inFlightSaveRef.current === inFlight) inFlightSaveRef.current = null;
+      }
       return latestDocument;
     });
 
@@ -116,7 +138,35 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
   // Explicit saves propagate failures to the caller.
   const saveNow = useCallback(async () => {
     for (let attempt = 0; attempt < MAX_SAVE_NOW_ATTEMPTS; attempt++) {
-      const savedDocument = await queueSave(true);
+      const currentDocument = autosaveStateRef.current.document;
+
+      // If a save already in flight or already enqueued by `saveNow` targets the exact document we
+      // would send, join it instead of enqueueing a duplicate: a caller that lands here right after
+      // that send's failure must see the same rejection and must not immediately resend a document
+      // that is expected to fail again. A send that targets an older, superseded document is left
+      // alone — its failure must not block saving the newer document below.
+      const outstanding =
+        pendingExplicitSaveRef.current?.document === currentDocument
+          ? pendingExplicitSaveRef.current.promise
+          : inFlightSaveRef.current?.document === currentDocument
+            ? inFlightSaveRef.current.promise
+            : null;
+
+      let savedDocument: TDoc | null;
+      if (outstanding) {
+        savedDocument = await outstanding;
+      } else {
+        const send = queueSave(true);
+        const pendingExplicit = { document: currentDocument, promise: send };
+        pendingExplicitSaveRef.current = pendingExplicit;
+        // Only used to clear the slot; the real result/rejection is propagated below via `send`.
+        void send
+          .catch(() => undefined)
+          .finally(() => {
+            if (pendingExplicitSaveRef.current === pendingExplicit) pendingExplicitSaveRef.current = null;
+          });
+        savedDocument = await send;
+      }
       if (savedDocument === null) return;
 
       // Only re-save when the document actually moved on while the save was running. Looping on

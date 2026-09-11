@@ -629,55 +629,160 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
   });
 
-  for (const savePending of [false, true]) {
-    test(`bevarer lokale endringer ved sen refetch med lagring ${savePending ? "pågående" : "ventende"}`, async ({
-      page,
-    }) => {
-      const refetchResponse = Promise.withResolvers<void>();
-      const saveResponse = Promise.withResolvers<void>();
-      let hentinger = 0;
-      const lagringer: string[] = [];
-      await page.route(vedleggUrl(VEDLEGG_ID), async (route) => {
-        if (route.request().method() === "PUT") {
-          const lagret = route.request().postDataJSON().redigertVedlegg;
-          lagringer.push(JSON.stringify(lagret));
-          await saveResponse.promise;
-          return route.fulfill({ json: lagret });
-        }
-        hentinger += 1;
-        if (hentinger > 1) {
-          await refetchResponse.promise;
-          return route.fulfill({ json: lagVedlegg(VEDLEGG_TITTEL, "Endret servertekst", 900) });
-        }
-        return route.fulfill({ json: vedlegg });
-      });
-
-      await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
-      await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
-      await page.getByRole("tab", { name: "Brevmal" }).click();
-      await expect(page).not.toHaveURL(/vedlegg=/);
-      await page.getByRole("tab", { name: "Vedlegg" }).click();
-      await expect.poll(() => hentinger).toBe(2);
-      await endreVedlegg(page, " AAA");
-      if (savePending) {
-        await expect.poll(() => lagringer.length, { timeout: 15_000 }).toBe(1);
-      }
-
-      const refetched = page.waitForResponse(
-        (response) =>
-          response.url().endsWith(`/redigerbareVedlegg/${VEDLEGG_ID}`) && response.request().method() === "GET",
-      );
-      refetchResponse.resolve();
-      await refetched;
-      await page.locator("span[contenteditable='true']", { hasText: "AAA" }).pressSequentially("BBB");
-      saveResponse.resolve();
-
-      await expect(page.getByText("Lagret", { exact: true })).toBeVisible({ timeout: 15_000 });
-      expect(lagringer.at(-1)).toContain("AAABBB");
-      await expect(page.getByText("Endret servertekst")).toBeHidden();
-      await expect(page.getByRole("button", { name: "Angre (Undo)" })).toBeEnabled();
+  test("viser oppdatert serverinnhold ved direkte bytte A -> B -> A, uten å gå via Brevmal", async ({ page }) => {
+    const freshText = "Oppdatert innhold fra serveren, ved direkte bytte.";
+    let serverVedlegg = vedlegg;
+    let hentinger = 0;
+    await page.route(VEDLEGGLISTE_URL, (route) =>
+      route.fulfill({
+        json: [
+          { vedleggId: VEDLEGG_ID, tittel: VEDLEGG_TITTEL },
+          { vedleggId: ANNET_VEDLEGG_ID, tittel: ANNET_VEDLEGG_TITTEL },
+        ],
+      }),
+    );
+    await page.route(vedleggUrl(ANNET_VEDLEGG_ID), (route) => route.fulfill({ json: annetVedlegg }));
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
+      hentinger += 1;
+      return route.fulfill({ json: serverVedlegg });
     });
-  }
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+
+    // Bytt direkte til det andre vedlegget, uten å gå via Brevmal.
+    await page.getByRole("region", { name: ANNET_VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }).click();
+    await expect(page.getByText(ANNET_VEDLEGG_BROEDTEKST)).toBeVisible();
+
+    // Innholdet på serveren endres mens det andre vedlegget vises.
+    serverVedlegg = lagVedlegg(VEDLEGG_TITTEL, freshText, 900);
+
+    // Bytt direkte tilbake til det første vedlegget - dette må reaktivere det og hente ferskt innhold,
+    // ikke gjenbruke det som allerede var hentet.
+    await page.getByRole("region", { name: VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }).click();
+    await expect.poll(() => hentinger).toBe(2);
+    await expect(page.getByText(freshText)).toBeVisible();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+  });
+
+  test("blokkerer redigering mens en sen reaktivering av vedlegget venter på ferskt innhold", async ({ page }) => {
+    const refetchResponse = Promise.withResolvers<void>();
+    let hentinger = 0;
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
+      hentinger += 1;
+      if (hentinger === 1) return route.fulfill({ json: vedlegg });
+      // Den andre hentingen (etter Brevmal -> Vedlegg) holdes bevisst åpen for å bekrefte at
+      // brukeren ikke kan redigere det gamle innholdet mens den ferske hentingen pågår.
+      return refetchResponse.promise.then(() =>
+        route.fulfill({ json: lagVedlegg(VEDLEGG_TITTEL, "Endret servertekst", 900) }),
+      );
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+    await page.getByRole("tab", { name: "Brevmal" }).click();
+    await expect(page).not.toHaveURL(/vedlegg=/);
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+
+    // Verken det gamle eller det nye innholdet er redigerbart mens hentingen for denne
+    // reaktiveringen fortsatt pågår - det vises kun en laster.
+    await expect(page.getByRole("heading", { name: "Henter vedlegg..." })).toBeVisible();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+    await expect(page.getByText("Endret servertekst")).toBeHidden();
+
+    refetchResponse.resolve();
+
+    await expect(page.getByText("Endret servertekst")).toBeVisible();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+  });
+
+  test("viser feilmelding når en reaktivering feiler, selv om innholdet ligger i cachen fra før", async ({ page }) => {
+    let hentinger = 0;
+    let slippAndreHenting: () => void = () => {};
+    const andreHentingErSluppet = new Promise<void>((resolve) => {
+      slippAndreHenting = resolve;
+    });
+    await page.route(vedleggUrl(VEDLEGG_ID), async (route) => {
+      hentinger += 1;
+      // Første aktivering lykkes og legger innholdet i cachen. Reaktiveringen henger, og feiler så.
+      if (hentinger === 1) return route.fulfill({ json: vedlegg });
+      await andreHentingErSluppet;
+      return route.fulfill({ status: 500, json: "Uff" });
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+
+    await page.getByRole("tab", { name: "Brevmal" }).click();
+    await expect(page).not.toHaveURL(/vedlegg=/);
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await expect.poll(() => hentinger).toBe(2);
+
+    // Mens reaktiveringen pågår må det cachede innholdet holdes tilbake, ikke vises som redigerbart.
+    await expect(page.getByRole("heading", { name: "Henter vedlegg..." })).toBeVisible();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+
+    // Når hentingen så feiler, ender vi på feilmeldingen - ikke på en evig laster eller cachet innhold.
+    slippAndreHenting();
+    await expect(page.getByRole("heading", { name: "Klarte ikke å hente vedlegget" })).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(page.getByRole("heading", { name: "Henter vedlegg..." })).toBeHidden();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+  });
+
+  test("sender includeSakspart uendret ved gjentatte lagringer og etter en reaktivering", async ({ page }) => {
+    // includeSakspart er metadata editoren aldri rører, men som må følge med på hver lagring.
+    const vedleggMedSakspart = { ...vedlegg, includeSakspart: true };
+    const sendteFlagg: unknown[] = [];
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
+      if (route.request().method() !== "PUT") return route.fulfill({ json: vedleggMedSakspart });
+      const sendt = route.request().postDataJSON().redigertVedlegg;
+      sendteFlagg.push(sendt.includeSakspart);
+      return route.fulfill({ json: sendt });
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await endreVedlegg(page, " AAA");
+    await expect.poll(() => sendteFlagg.length, { timeout: 15_000 }).toBe(1);
+
+    // Andre lagring i samme økt: verdien må komme fra økten, ikke fra et nytt oppslag.
+    await page.locator(":focus").pressSequentially(" BBB");
+    await expect.poll(() => sendteFlagg.length, { timeout: 15_000 }).toBe(2);
+
+    await page.getByRole("tab", { name: "Brevmal" }).click();
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+    await endreVedlegg(page, " CCC");
+    await expect.poll(() => sendteFlagg.length, { timeout: 15_000 }).toBe(3);
+
+    expect(sendteFlagg).toEqual([true, true, true]);
+  });
+
+  test("viser feilmelding når henting av selve vedlegget feiler, og lar brukeren prøve på nytt", async ({ page }) => {
+    let forsok = 0;
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
+      forsok += 1;
+      if (forsok === 1) return route.fulfill({ status: 500, json: "Uff" });
+      return route.fulfill({ json: vedlegg });
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+
+    // Feilen vises, og innholdet fra en tidligere (cachet) aktivering blir ikke gjort redigerbart.
+    await expect(page.getByRole("heading", { name: "Klarte ikke å hente vedlegget" })).toBeVisible({
+      timeout: 15_000,
+    });
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+
+    // Brukeren forlater og går tilbake til vedlegget, som utløser et nytt forsøk og lykkes.
+    await page.getByRole("tab", { name: "Brevmal" }).click();
+    await expect(page).not.toHaveURL(/vedlegg=/);
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+    expect(forsok).toBe(2);
+  });
 
   test("starter ikke en ny lagring mens en lagring fortsatt pågår", async ({ page }) => {
     test.setTimeout(90_000);

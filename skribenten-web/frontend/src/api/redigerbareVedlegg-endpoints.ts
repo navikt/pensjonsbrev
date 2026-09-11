@@ -33,8 +33,13 @@ export const getRedigerbareVedlegg = {
 
 export const getRedigerbartVedlegg = {
   queryKey: redigerbareVedleggKeys.vedlegg,
-  queryFn: async (saksId: string, brevId: number | string, vedleggId: string, redigeringsflate: Redigeringsflate) =>
-    (await axios.get<EditAttachment>(vedleggUrl(saksId, brevId, redigeringsflate, vedleggId))).data,
+  queryFn: async (
+    saksId: string,
+    brevId: number | string,
+    vedleggId: string,
+    redigeringsflate: Redigeringsflate,
+    signal?: AbortSignal,
+  ) => (await axios.get<EditAttachment>(vedleggUrl(saksId, brevId, redigeringsflate, vedleggId), { signal })).data,
 };
 
 export const lagreRedigerbartVedlegg = async (

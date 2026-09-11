@@ -197,6 +197,23 @@ describe("useDocumentAutosave", () => {
     expect(result.current.saveStatus).toBe("SAVED");
   });
 
+  it("starter ikke en ny lagring når en aktiv lagring feiler", async () => {
+    const saver = controlledSaver();
+    const { result } = renderAutosave({ mutationFn: saver.mutationFn });
+
+    act(() => result.current.edit("feiler"));
+    await waitFor(() => expect(saver.saved).toHaveLength(1));
+
+    const saveNowPromise = act(async () => {
+      await expect(result.current.saver.saveNow()).rejects.toThrow("lagring feilet");
+    });
+    await saver.settle(0, new Error("lagring feilet"));
+    await saveNowPromise;
+
+    expect(saver.saved).toHaveLength(1);
+    expect(result.current.saveStatus).toBe("DIRTY");
+  });
+
   it("saveNow resolver selv om kalleren aldri rapporterer SAVED", async () => {
     const saver = immediateSaver();
     const { result } = renderAutosave({ mutationFn: saver.mutationFn, behaviour: "staysDirty" });
@@ -298,5 +315,96 @@ describe("useDocumentAutosave", () => {
     unmount();
 
     await waitFor(() => expect(saver.saved).toEqual([{ text: "ved unmount" }]));
+  });
+
+  it("lagrer et nyere dokument selv om en eldre, forbigått lagring feiler", async () => {
+    const saver = controlledSaver();
+    const { result } = renderAutosave({ mutationFn: saver.mutationFn });
+
+    // Autosaven starter en lagring av "gammel snapshot".
+    act(() => result.current.edit("gammel snapshot"));
+    await waitFor(() => expect(saver.saved).toHaveLength(1));
+
+    // Brukeren skriver videre mens den lagringen fortsatt pågår, og et eksplisitt kall (f.eks.
+    // navigasjon) skjer før den gamle lagringen er avgjort.
+    act(() => result.current.edit("ny snapshot"));
+    const saveNowPromise = act(async () => {
+      await result.current.saver.saveNow();
+    });
+
+    // Den gamle lagringen feiler. Den eksplisitte lagringen må ikke avvises av dette - den skal i
+    // stedet fortsette og lagre det nyeste dokumentet.
+    await saver.settle(0, new Error("gammel lagring feilet"));
+    await waitFor(() => expect(saver.saved).toHaveLength(2));
+    await saver.settle(1, { text: "ny snapshot" });
+    await saveNowPromise;
+
+    expect(saver.saved).toEqual([{ text: "gammel snapshot" }, { text: "ny snapshot" }]);
+    expect(result.current.saveStatus).toBe("SAVED");
+  });
+
+  it("avviser når både den gamle og den nyere lagringen feiler", async () => {
+    const saver = controlledSaver();
+    const { result } = renderAutosave({ mutationFn: saver.mutationFn });
+
+    act(() => result.current.edit("gammel snapshot"));
+    await waitFor(() => expect(saver.saved).toHaveLength(1));
+
+    act(() => result.current.edit("ny snapshot"));
+    const saveNowPromise = act(async () => {
+      await expect(result.current.saver.saveNow()).rejects.toThrow("ny lagring feilet");
+    });
+
+    await saver.settle(0, new Error("gammel lagring feilet"));
+    await waitFor(() => expect(saver.saved).toHaveLength(2));
+    await saver.settle(1, new Error("ny lagring feilet"));
+    await saveNowPromise;
+
+    expect(result.current.saveStatus).toBe("DIRTY");
+  });
+
+  it("lagrer et nyere dokument etter at et eldre lyktes, uten å sende det på nytt", async () => {
+    const saver = controlledSaver();
+    const { result } = renderAutosave({ mutationFn: saver.mutationFn });
+
+    act(() => result.current.edit("gammel snapshot"));
+    await waitFor(() => expect(saver.saved).toHaveLength(1));
+
+    act(() => result.current.edit("ny snapshot"));
+    const saveNowPromise = act(async () => {
+      await result.current.saver.saveNow();
+    });
+
+    await saver.settle(0, { text: "gammel snapshot" });
+    await waitFor(() => expect(saver.saved).toHaveLength(2));
+    await saver.settle(1, { text: "ny snapshot" });
+    await saveNowPromise;
+
+    expect(saver.saved).toEqual([{ text: "gammel snapshot" }, { text: "ny snapshot" }]);
+    expect(result.current.saveStatus).toBe("SAVED");
+  });
+
+  it("flere samtidige eksplisitte kall mot samme feilende dokument slår seg sammen i stedet for å sende på nytt", async () => {
+    const saver = controlledSaver();
+    const { result } = renderAutosave({ mutationFn: saver.mutationFn });
+
+    act(() => result.current.edit("feiler"));
+    await waitFor(() => expect(saver.saved).toHaveLength(1));
+
+    // To eksplisitte kall (f.eks. Fortsett trykket flere ganger) rekker begge å starte før den
+    // pågående lagringen er avgjort. Begge må slå seg sammen med den ene sendingen.
+    const first = result.current.saver.saveNow();
+    const second = result.current.saver.saveNow();
+    await act(async () => {
+      await saver.settle(0, new Error("lagring feilet"));
+      await Promise.allSettled([first, second]);
+    });
+
+    await expect(first).rejects.toThrow("lagring feilet");
+    await expect(second).rejects.toThrow("lagring feilet");
+
+    // Ingen av de eksplisitte kallene skal ha trigget en ny sending av det samme dokumentet.
+    expect(saver.saved).toHaveLength(1);
+    expect(result.current.saveStatus).toBe("DIRTY");
   });
 });
