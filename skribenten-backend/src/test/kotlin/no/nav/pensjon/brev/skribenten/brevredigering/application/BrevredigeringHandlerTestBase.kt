@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.*
@@ -333,7 +334,12 @@ abstract class BrevredigeringHandlerTestBase {
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
-        saksbehandlerValg: SaksbehandlervalgMap = SaksbehandlervalgMap().apply { put("valg", true) },
+        saksbehandlerValg: SaksbehandlervalgMap = SaksbehandlervalgMap().apply {
+            put(
+                "valg",
+                SaksbehandlervalgVerdi.Boolean(true)
+            )
+        },
         brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
@@ -357,7 +363,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun oppdaterBrev(
         brevId: BrevId,
-        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
+        nyeSaksbehandlerValg: SaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,

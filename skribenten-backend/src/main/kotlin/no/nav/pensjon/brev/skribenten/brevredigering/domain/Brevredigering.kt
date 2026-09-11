@@ -278,10 +278,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             putAll(saksbehandlerValg)
             saksbehandlerValgSpec?.entries?.forEach {
                 val fieldType = it.value
-                if (fieldType.nullable) {
+                if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
+                    put(it.key, SaksbehandlervalgVerdi.Boolean(false))
+                } else if (fieldType.nullable) {
                     put(it.key, null)
-                } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
-                    put(it.key, false)
                 }
             }
         }
