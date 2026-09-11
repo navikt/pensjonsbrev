@@ -89,6 +89,13 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
   const saveErrorResetRef = useRef<(() => void) | null>(null);
 
+  // The debounced autosave below must send the state as it is when the timer fires, not as it was
+  // when the timer was scheduled. A pending timer that still closes over a pre-change state would
+  // save a stale `saksbehandlerValg`, and `onSaveSuccess` would then write that stale value back
+  // into the editor as "Lagret" - silently reverting the user's tekstvalg/overstyring change.
+  const editorStateRef = useRef(editorState);
+  editorStateRef.current = editorState;
+
   const registerSaveErrorReset = useCallback((reset: (() => void) | null) => {
     saveErrorResetRef.current = reset;
   }, []);
@@ -170,10 +177,11 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (editorState.saveStatus === "DIRTY") {
+      const latestState = editorStateRef.current;
+      if (latestState.saveStatus === "DIRTY") {
         resetSaveError();
         saveErrorResetRef.current?.();
-        saveLetter(editorState);
+        saveLetter(latestState);
       }
     }, AUTOSAVE_TIMER);
 
