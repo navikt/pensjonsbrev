@@ -284,6 +284,7 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 uforegrad = uforegrad,
                 ieuInntekt = ieuInntekt,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
+                harVTA = pesysData.harVTA
             ))
 
             includePhrase(Innvilgelse.MeldeFraOmInntekt)
