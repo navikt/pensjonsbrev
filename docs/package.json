@@ -7,27 +7,13 @@
     "dev": "onchange -i 'modules/**/*' 'antora-playbook.yml' -- npm run build"
   },
   "devDependencies": {
-    "@antora/cli": "3.1",
-    "@antora/site-generator": "3.1",
+    "@antora/cli": "3.2",
+    "@antora/site-generator": "3.2",
     "http-server": "14.1.0",
     "onchange": "7.1.0"
   },
   "dependencies": {
     "@antora/lunr-extension": "1.0.0-alpha.12",
     "asciidoctor-kroki": "0.18.1"
-  },
-  "overrides": {
-    "@antora/content-aggregator": {
-      "js-yaml": "^4.2.0"
-    },
-    "@antora/playbook-builder": {
-      "js-yaml": "^4.2.0"
-    },
-    "@antora/ui-loader": {
-      "js-yaml": "^4.2.0"
-    },
-    "glob": {
-      "minimatch": "10.2.4"
-    }
   }
 }
