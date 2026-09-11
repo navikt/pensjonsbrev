@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.Stat
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
-import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
@@ -46,13 +45,10 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
     val saksbehandlerValg = json<SaksbehandlervalgMap>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
-    val statiskFagsystemBrevdata: Column<StatiskFagsystemBrevdata?> = encryptedBinary("statiskFagsystemBrevdata")
-        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
-        .transform<ByteArray, StatiskFagsystemBrevdata>(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+    val statiskFagsystemBrevdata: Column<StatiskFagsystemBrevdata?> =
+        kryptertDto<StatiskFagsystemBrevdata>("statiskFagsystemBrevdata")
         .nullable()
-    val redigertBrevKryptert: Column<Edit.Letter> = encryptedBinary("redigertBrevKryptert")
-        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
-        .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+    val redigertBrevKryptert: Column<Edit.Letter> = kryptertDto<Edit.Letter>("redigertBrevKryptert")
     val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjon> = varchar("distribusjonstype", length = 50).transform(Distribusjon::valueOf, Distribusjon::name)
@@ -71,8 +67,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
 object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<BrevId>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
-    val pdfKryptert: Column<ByteArray> = encryptedBinary("pdfKryptert")
-        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
+    val pdfKryptert: Column<ByteArray> = kryptert("pdfKryptert")
     val redigertBrevHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevHash")
     val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
     val vedleggHash: Column<Hash<VedleggSnapshot>> = hashColumn("vedleggHash")
@@ -97,10 +92,7 @@ object MottakerTable : IdTable<BrevId>() {
 
 object P1DataTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
-    val p1data: Column<P1RedigerbarDto> = encryptedBinary("p1data")
-        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
-        .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
-
+    val p1data: Column<P1RedigerbarDto> = kryptertDto<P1RedigerbarDto>("p1data")
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
@@ -110,9 +102,7 @@ object RedigertVedleggTable : CompositeIdTable() {
         reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE)
     val vedleggId: Column<EntityID<VedleggId>> =
         varchar("vedleggId", 50).transform(::VedleggId, VedleggId::id).entityId()
-    val redigertVedleggKryptert: Column<Edit.Attachment> = encryptedBinary("redigertVedleggKryptert")
-        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
-        .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+    val redigertVedleggKryptert: Column<Edit.Attachment> = kryptertDto<Edit.Attachment>("redigertVedleggKryptert")
     val redigertVedleggKryptertHash: Column<Hash<Edit.Attachment>> = hashColumn("redigertVedleggKryptertHash")
 
     override val primaryKey = PrimaryKey(brevredigering, vedleggId)

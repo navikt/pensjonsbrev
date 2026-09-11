@@ -9,6 +9,7 @@ import com.zaxxer.hikari.*
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
@@ -36,10 +37,16 @@ internal inline fun <reified T> IdTable<*>.readJsonString(json: String): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
-internal fun Table.encryptedBinary(name: String): Column<EncryptedByteArray> =
+private fun Table.encryptedBinary(name: String): Column<EncryptedByteArray> =
     binary(name).transform(columnTransformer(unwrap = EncryptedByteArray::bytes, wrap = ::EncryptedByteArray))
 
-internal inline fun <reified T> IdTable<*>.readJsonBinary(json: ByteArray): T =
+internal fun Table.kryptert(name: String): Column<ByteArray> = encryptedBinary(name)
+    .transform(KrypteringService::dekrypter, KrypteringService::krypter)
+
+internal inline fun <reified T : Any> Table.kryptertDto(name: String): Column<T> =
+    kryptert(name).transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+
+internal inline fun <reified T : Any> Table.readJsonBinary(json: ByteArray): T =
     try {
         databaseObjectMapper.readValue<T>(json)
     } catch (e: JacksonException) {
