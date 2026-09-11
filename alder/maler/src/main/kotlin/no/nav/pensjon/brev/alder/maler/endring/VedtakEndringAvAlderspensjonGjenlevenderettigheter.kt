@@ -148,7 +148,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         val fritekst = fritekst("skriv inn aktuell ytelseskomponent")
                         text(
                             bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening. Dette fører til en endring av " + fritekst + ", men vil ikke gi deg en høyere pensjon totalt enn den du har tjent opp selv." },
-                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening. Dette fører til ei endring av " + fritekst + ", men vil ikkje gi deg ein høgare pensjon enn kva du har tent opp sjølv." },
+                            nynorsk { + "Vi har derfor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening. Dette fører til ei endring av " + fritekst + ", men vil ikkje gi deg ein høgare pensjon enn kva du har tent opp sjølv." },
                             english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension. This leads to a change in " + fritekst + ", but will not give you a higher pension than what you have accumulated yourself." }
                         )
                     }
@@ -164,7 +164,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     paragraph {
                         text(
                             bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, men du vil ikke få høyere alderspensjon enn den du har tjent opp selv." },
-                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, men du vil ikkje få høgare alderspensjon enn kva du har tent opp sjølv." },
+                            nynorsk { + "Vi har derfor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, men du vil ikkje få høgare alderspensjon enn kva du har tent opp sjølv." },
                             english { + "We have made a calculation on the basis of your and the deceased’s earned pension and you will not be entitled to a higher retirement pension than what you have accumulated yourself." }
                         )
                     }
@@ -179,7 +179,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     paragraph {
                         text(
                             bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, og det gir deg en høyere alderspensjon enn den du har tjent opp selv." },
-                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, og det gir deg ein høgare alderspensjon enn kva du har tent opp sjølv." },
+                            nynorsk { + "Vi har derfor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, og det gir deg ein høgare alderspensjon enn kva du har tent opp sjølv." },
                             english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension, and you are entitled to a higher retirement pension than what you have accumulated yourself." }
                         )
                     }
@@ -193,7 +193,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     paragraph {
                         text(
                             bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, men du vil ikke få høyere alderspensjon enn den du har tjent opp selv." },
-                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, men du vil ikkje få høgare alderspensjon enn kva du har tent opp sjølv." },
+                            nynorsk { + "Vi har derfor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, men du vil ikkje få høgare alderspensjon enn kva du har tent opp sjølv." },
                             english { + "We have made a calculation on the basis of your and the deceased’s earned pension and you will not be entitled to a higher retirement pension than what you have accumulated yourself." }
                         )
                     }
@@ -206,7 +206,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     paragraph {
                         text(
                             bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, og det gir deg en høyere alderspensjon enn den du har tjent opp selv." },
-                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, og det gir deg ein høgare alderspensjon enn kva du har tent opp sjølv." },
+                            nynorsk { + "Vi har derfor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, og det gir deg ein høgare alderspensjon enn kva du har tent opp sjølv." },
                             english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension, and you are entitled to a higher retirement pension than what you have accumulated yourself." }
                         )
                     }
@@ -218,7 +218,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         val fritekst = fritekst("skriv inn aktuell ytelseskomponent")
                         text(
                             bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening. Dette fører til en endring av " + fritekst + ", men vil ikke gi deg en høyere pensjon totalt enn den du har tjent opp selv." },
-                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening. Dette fører til ei endring av " + fritekst + ", men vil ikkje gi deg ein høgare pensjon enn kva du har tent opp sjølv." },
+                            nynorsk { + "Vi har derfor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening. Dette fører til ei endring av " + fritekst + ", men vil ikkje gi deg ein høgare pensjon enn kva du har tent opp sjølv." },
                             english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension. This leads to a change in " + fritekst + ", but will not give you a higher pension than what you have accumulated yourself." }
                         )
                     }
