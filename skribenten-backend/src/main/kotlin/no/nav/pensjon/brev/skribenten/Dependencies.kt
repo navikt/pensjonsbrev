@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.Lag
 import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.LagreAttestertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SendBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SendtBrevMetrikker
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SlettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForAlleSakerHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForAlleSakerService
@@ -184,6 +185,7 @@ fun Application.configureDependencies() {
         provide<PDFVedleggAppender>(PDFVedleggAppenderImpl::class)
         provide(BrevPdfService::class)
         provide(RedigerbareVedleggService::class)
+        provide(SendtBrevMetrikker::class)
     }
 
     launch { Features.init(dependencies.resolve()) }
