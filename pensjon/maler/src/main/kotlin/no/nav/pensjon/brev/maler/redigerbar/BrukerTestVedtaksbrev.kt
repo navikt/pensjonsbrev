@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestVedtaksbrevDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestVedtaksbrevDto.DenBesteKaken.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestVedtaksbrevDto.UtsiktenFraKontoret.*
@@ -33,6 +34,7 @@ object BrukerTestVedtaksbrev : RedigerbarTemplate<BrukerTestVedtaksbrevDto> {
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.all
+    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal),

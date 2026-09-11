@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.varselFeilutbetalingUforeDto.*
@@ -29,6 +30,7 @@ object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
     override val kategori = Brevkategori.FEILUTBETALING
     override val brevkontekst: TemplateDescription.Brevkontekst = VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.UFOREP)
+    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
