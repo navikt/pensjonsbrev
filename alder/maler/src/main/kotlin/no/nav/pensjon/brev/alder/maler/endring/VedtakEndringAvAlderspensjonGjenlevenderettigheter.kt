@@ -342,23 +342,30 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)) {
                         title1 {
                             text(
-                                bokmal { + "Hvorfor blir ikke gjenlevendetillegget ditt utbetalt?" },
-                                nynorsk { + "Kvifor blir ikkje attlevandetillegget ditt utbetalt?" },
-                                english { + "Why is your survivor’s supplement not being paid out?" }
+                                bokmal { + "Hvorfor blir ikke pensjonen din høyere med gjenlevenderettigheter?" },
+                                nynorsk { + "Kvifor blir ikkje pensjonen din høgare med attlevanderettar?" },
+                                english { + "Why is your retirement pension not higher due to survivor's rights?" }
                             )
                         }
                         paragraph {
                             text(
-                                bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv. Din samlede alderspensjon basert på egen pensjonsopptjening og alderspensjon med opptjening fra den avdøde blir samme beløp. Derfor blir ikke gjenlevendetillegget utbetalt." },
-                                nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening og opptening frå den avdøde. Attlevandetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv. Den samla alderspensjon basert på di eiga pensjonsopptening og alderspensjon med opptening frå den avdøde blir same beløp. Difor blir ikkje attlevandetillegget utbetalt." },
-                                english { + "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself. Your total retirement pension, based on your own pension earnings and the retirement pension with earnings from the deceased, becomes the same amount. Therefore, the survivor’s supplement is not paid out." }
+                                bokmal { + "Vi har beregnet alderspensjonen din ut fra din egen og den avdødes opptjening. Du får bare gjenlevendetillegg hvis denne beregningen gir høyere alderspensjon enn den du har tjent opp selv." },
+                                nynorsk { + "Vi har berekna alderspensjonen din ut frå både di eiga og den avdøde si opptening. Du får berre attlevandetillegg dersom denne berekninga gir høgare alderspensjon enn den du har tent opp sjølv." },
+                                english { + "We have calculated your retirement pension based on both your own pensionable earnings and those of the deceased. You will only receive a survivor's supplement if this calculation results in a higher retirement pension than the one you have earned in your own right." }
                             )
                         }
                         paragraph {
                             text(
-                                bokmal { + "Alderspensjonen som nå er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år." },
-                                nynorsk { + "Alderspensjonen som no er basert på di eiga opptening, blir framleis regulert 1. mai kvart år." },
-                                english { + "The retirement pension, which is now based on your own earnings, continues to be adjusted from 1 May each year." }
+                                bokmal { + "I ditt tilfelle er alderspensjonen du har tjent opp selv høyere. Derfor får du ikke gjenlevendetillegg." },
+                                nynorsk { + "I ditt tilfelle er alderspensjonen du har tent opp sjølv høgare. Derfor får du ikkje attlevandetillegg." },
+                                english { + "In your case, the retirement pension you have earned in your own right is higher. Therefore, you are not entitled to a survivor's supplement." }
+                            )
+                        }
+                        paragraph {
+                            text(
+                                bokmal { + "Alderspensjonen som er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år." },
+                                nynorsk { + "Alderspensjonen som er basert på di eiga opptening, blir framleis regulert 1. mai kvart år." },
+                                english { + "The retirement pension, which is based on your own earnings, continues to be adjusted from 1 May each year." }
                             )
                         }
                     }
