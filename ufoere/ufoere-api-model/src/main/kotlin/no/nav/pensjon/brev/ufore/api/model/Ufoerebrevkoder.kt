@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.ufore.api.model
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 object Ufoerebrevkoder {
     enum class AutoBrev : Automatisk {
@@ -79,5 +81,17 @@ object Ufoerebrevkoder {
         ;
 
         override fun kode(): String = this.name
+    }
+
+    enum class AlltidValgbareVedlegg(
+        override val visningstekst: String,
+        override val spraak: Set<LanguageCode>,
+    ) : AlltidValgbartVedleggKode {
+        SKJEMA_FOR_BANKOPPLYSNINGER(
+            "Skjema for bankopplysninger",
+            setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH),
+        );
+
+        override val kode = name
     }
 }
