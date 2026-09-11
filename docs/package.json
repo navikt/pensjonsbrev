@@ -7,8 +7,8 @@
     "dev": "onchange -i 'modules/**/*' 'antora-playbook.yml' -- npm run build"
   },
   "devDependencies": {
-    "@antora/cli": "3.1",
-    "@antora/site-generator": "3.1",
+    "@antora/cli": "3.2",
+    "@antora/site-generator": "3.2",
     "http-server": "14.1.0",
     "onchange": "7.1.0"
   },
