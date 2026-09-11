@@ -5,8 +5,7 @@ import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 import { type LetterEditorState, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import { type Table } from "~/types/brevbakerTypes";
-
-import { letter, literal, paragraph, select } from "../utils";
+import { letter, literal, paragraph, select } from "~test/support/letterEditorTestUtils";
 
 function createClipboardWithHtml(htmlContent: string): DataTransfer {
   const sanitizedHtml = DOMPurify.sanitize(htmlContent, {

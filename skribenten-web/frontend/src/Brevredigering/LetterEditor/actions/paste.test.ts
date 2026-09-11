@@ -19,8 +19,7 @@ import {
   type ParagraphBlock,
   type VariableValue,
 } from "~/types/brevbakerTypes";
-
-import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
+import { item, itemList, letter, literal, paragraph, select, variable } from "~test/support/letterEditorTestUtils";
 
 describe("LetterEditorActions.paste", () => {
   describe("format: text/plain", () => {

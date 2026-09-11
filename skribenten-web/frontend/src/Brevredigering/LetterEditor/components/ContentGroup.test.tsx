@@ -18,8 +18,7 @@ import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ElementTags, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
-
-import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
+import { item, itemList, letter, literal, paragraph, variable } from "~test/support/letterEditorTestUtils";
 
 const content: LiteralValue[] = [newLiteral({ id: 1, text: "Heisann" }), newLiteral({ id: 2, text: "Velkommen" })];
 

@@ -9,8 +9,7 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse } from "~/types/brev";
-
-import { brevInfo, brevResponse } from "../../modules/LetterEditor/utils";
+import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
 const { lagreAttestertBrevtekstMock, oppdaterBrevtekstMock, oppdaterBrevMock } = vi.hoisted(() => ({
   lagreAttestertBrevtekstMock: vi.fn(),
