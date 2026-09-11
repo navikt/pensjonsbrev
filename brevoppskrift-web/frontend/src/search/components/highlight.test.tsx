@@ -80,6 +80,16 @@ describe("LineContent highlighting", () => {
     expect(marks(html)).toEqual(["paragraf"]);
   });
 
+  it("highlights a lone special character (e.g. §) where it occurs exactly", () => {
+    const html = render(textLine("vedtaket er gjort etter folketrygdloven § 19"), "§");
+    expect(marks(html)).toEqual(["§"]);
+  });
+
+  it("highlights a repeated special character (e.g. §§) where it occurs exactly", () => {
+    const html = render(textLine("jf. folketrygdloven §§ 8-2 og 8-3"), "§§");
+    expect(marks(html)).toEqual(["§§"]);
+  });
+
   describe("exact mode", () => {
     it("highlights every occurrence of the phrase as a whole", () => {
       const html = renderExact(textLine("The grey fox and the grey fox again"), "the grey fox");

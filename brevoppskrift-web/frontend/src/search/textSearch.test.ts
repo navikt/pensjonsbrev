@@ -238,4 +238,93 @@ describe("search", () => {
       expect(notFound.brev).toEqual([]);
     });
   });
+
+  describe("special-character-only queries", () => {
+    // A query that consists *only* of special characters (e.g. "§" or "§§")
+    // can't be tokenized by Fuse at all, so it must be routed to verbatim
+    // substring matching regardless of `exactOnly` - see `SPECIAL_CHAR_QUERY`.
+    const templates = [
+      template({ id: "SECTION_19", title: "Paragraf 19", lines: ["Vedtaket er gjort etter folketrygdloven § 19."] }),
+      template({
+        id: "SECTIONS_8_2_8_3",
+        title: "Paragrafene 8-2 og 8-3",
+        lines: ["Jf. folketrygdloven §§ 8-2 og 8-3 om ytelser."],
+      }),
+      template({ id: "PERCENT_50", title: "Femti prosent", lines: ["Reduksjonen utgjør 50 % av grunnbeløpet."] }),
+      template({ id: "NO_SYMBOL", title: "Uten symbol", lines: ["Helt urelatert tekst uten henvisning."] }),
+    ];
+
+    it("finds every line containing a § in fuzzy mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§");
+
+      // Both SECTION_19 ("§ 19") and SECTIONS_8_2_8_3 ("§§ 8-2...") contain
+      // "§" as a substring, so a lone "§" query matches both.
+      expect(content.map((hit) => hit.template.id).sort()).toEqual(["SECTIONS_8_2_8_3", "SECTION_19"]);
+    });
+
+    it("finds every line containing a § in exact mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§", true);
+
+      expect(content.map((hit) => hit.template.id).sort()).toEqual(["SECTIONS_8_2_8_3", "SECTION_19"]);
+    });
+
+    it("finds only the line containing a double §§ in fuzzy mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§§");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SECTIONS_8_2_8_3"]);
+    });
+
+    it("finds only the line containing a double §§ in exact mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§§", true);
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SECTIONS_8_2_8_3"]);
+    });
+
+    it("finds a line containing a lone % in fuzzy mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "%");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["PERCENT_50"]);
+    });
+
+    it("does not match templates without the special character", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§");
+
+      expect(content.map((hit) => hit.template.id)).not.toContain("NO_SYMBOL");
+      expect(content.map((hit) => hit.template.id)).not.toContain("PERCENT_50");
+    });
+
+    it("does not confuse a double §§ query with a line containing only a single §", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§§");
+
+      // SECTION_19 only contains a single "§", not "§§", so it must not match.
+      expect(content.map((hit) => hit.template.id)).not.toContain("SECTION_19");
+    });
+
+    it("still finds fuzzy matches when a special character is combined with a word term", () => {
+      const index = buildIndex(templates);
+
+      // "folketrygdlovan" is a typo of "folketrygdloven"; this is unaffected
+      // by the special-character-only routing (that only applies to a query
+      // consisting of nothing but special characters). Both templates'
+      // lines contain "folketrygdloven" (fuzzy word match) and "§" as a
+      // verbatim substring (SECTIONS_8_2_8_3 has "§§", which also contains "§").
+      const { content } = search(index, "folketrygdlovan §");
+
+      expect(content.map((hit) => hit.template.id).sort()).toEqual(["SECTIONS_8_2_8_3", "SECTION_19"]);
+    });
+  });
 });
