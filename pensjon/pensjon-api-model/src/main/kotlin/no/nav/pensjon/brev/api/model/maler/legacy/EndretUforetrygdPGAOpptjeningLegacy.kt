@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 @Suppress("unused")
 data class EndretUforetrygdPGAOpptjeningLegacyDto(
     val harVTA: Boolean = false,
+    val vektetFribelop: Double = 0.4,
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
