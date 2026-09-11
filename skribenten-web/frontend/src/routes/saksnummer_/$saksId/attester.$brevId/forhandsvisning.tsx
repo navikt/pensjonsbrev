@@ -26,8 +26,6 @@ const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
   const hentBrevQuery = useQuery(getBrevAttestering(saksId, Number(brevId)));
 
-  // Vi rendrer layout og info til venstre med Aksel Skeleton og BrevForhåndsvisning til høyre med
-  // egen spinner for pdf. Da unngår vi en fullside-loader etterfulgt av pdf-loader.
   if (hentBrevQuery.isError) {
     return <ApiError error={hentBrevQuery.error} title="En feil skjedde ved henting av vedtaksbrev" />;
   }

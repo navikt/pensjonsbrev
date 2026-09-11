@@ -27,8 +27,6 @@ function mapSamhandlerAdresseLinjer(adresse: SamhandlerPostadresse): string[] {
   return [adresse.linje1, `${postLinje}${landSuffix}`].filter((l): l is string => !!l);
 }
 
-// Speiler formen til AdresseVisning, slik at innholdet ikke kollapser til én linje mens adressen
-// hentes og deretter spretter ut igjen når den er på plass.
 const AdresseSkeleton = ({ withTitle }: { withTitle?: boolean }) => (
   <VStack>
     {withTitle && <Skeleton variant="text" width="30%" />}
@@ -41,9 +39,6 @@ const AdresseSkeleton = ({ withTitle }: { withTitle?: boolean }) => (
   </VStack>
 );
 
-/**
-  En basic HentOgVis-komponent som henter og viser adresseinformasjon for en sak eller samhandler.
- */
 const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; showMottakerTitle?: boolean }) => {
   const samhandlerAdresse = useQuery({
     ...hentSamhandlerAdresse(properties.samhandlerId as string),
