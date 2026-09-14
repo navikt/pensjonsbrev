@@ -49,10 +49,6 @@ interface PenClient {
     )
 }
 
-/**
- * Feil fra PEN hvor brevet kan ha blitt journalført selv om kallet feilet (f.eks. journalføring OK, men
- * distribusjon feiler fordi mottaker er død). [journalpostId] må da tas vare på av kalleren.
- */
 interface HarJournalpostId {
     val journalpostId: JournalpostId?
 }
@@ -216,17 +212,11 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
             url { parameters.append("distribuer", distribuer.toString()) }
         }.sendbrevResponseOrThrow()
 
-    /**
-     * PEN kan ha journalført brevet selv om kallet feiler (f.eks. journalføring OK, men distribusjon feiler
-     * fordi mottaker er død). Vi forsøker derfor å lese [Pen.BestillBrevResponse] fra alle feilsvar, slik at
-     * en eventuell journalpostId følger med feilen og kan tas vare på av kalleren.
-     */
     private suspend fun HttpResponse.sendbrevResponseOrThrow(): Pen.BestillBrevResponse {
         if (status.isSuccess()) {
             return body()
         }
 
-        // Body kan bare leses én gang, og kan være tom eller ikke-JSON ved feil.
         val body = bodyAsText()
         val parsed = try {
             feilresponsMapper.readValue(body, Pen.BestillBrevResponse::class.java)
@@ -235,11 +225,11 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         }
         val journalpostId = parsed?.journalpostId
 
-        throw when {
-            status == HttpStatusCode.UnprocessableEntity && parsed?.error?.tekniskgrunn == "AdresseMangler" ->
+        throw when (status) {
+            HttpStatusCode.UnprocessableEntity if parsed?.error?.tekniskgrunn == "AdresseMangler" ->
                 PenAdresseManglerException(journalpostId)
 
-            status == HttpStatusCode.UnprocessableEntity ->
+            HttpStatusCode.UnprocessableEntity ->
                 PenServiceException("Feil ved kall til PEN som ga unprocessable entity: ${parsed ?: body}", journalpostId)
 
             else -> PenServiceException("Feil ved kall til PEN: ${status.value} - $body", journalpostId)

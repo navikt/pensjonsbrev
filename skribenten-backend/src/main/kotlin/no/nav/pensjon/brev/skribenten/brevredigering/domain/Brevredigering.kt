@@ -74,12 +74,6 @@ interface Brevredigering {
     fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
     fun markerSomKlar()
     fun markerSomKladd()
-
-    /**
-     * Registrerer at brevet er journalført i fagsystemet.
-     *
-     * Idempotent: en allerede registrert [journalpostId] beholdes, også om fagsystemet oppgir en annen.
-     */
     fun markerSomArkivert(journalpostId: JournalpostId)
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
@@ -255,13 +249,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     override fun markerSomArkivert(journalpostId: JournalpostId) {
-        when (val eksisterende = this.journalpostId) {
-            null -> this.journalpostId = journalpostId
-            journalpostId -> Unit
-            else -> logger.warn(
-                "Brev ${id.value.id} er allerede arkivert med journalpostId ${eksisterende.id}, beholder den og ignorerer ${journalpostId.id}."
-            )
-        }
+        this.journalpostId = journalpostId
     }
 
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String) {
