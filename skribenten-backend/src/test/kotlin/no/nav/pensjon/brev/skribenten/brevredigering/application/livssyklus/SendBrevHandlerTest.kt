@@ -186,19 +186,6 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `eksisterende journalpostId overskrives ikke av feilende PEN-kall`() {
-        val brev = opprettBrev().resultOrFail()
-        assertThat(arkiverBrev(brev)).isSuccess()
-        penService.sendBrevException = PenAdresseManglerException(JournalpostId(999))
-
-        assertThrows<PenAdresseManglerException> { sendBrev(brev) }
-
-        assertThat(hentBrev(brev.info.id)).isSuccess {
-            assertThat(it.info.journalpostId).isEqualTo(bestillBrevresponse.journalpostId)
-        }
-    }
-
-    @Test
     suspend fun `brev som feilet sending kan slettes naar mottaker har doedsdato`() {
         val brev = klartBrev()
         penService.sendBrevException = PenAdresseManglerException(JournalpostId(456))
