@@ -107,6 +107,26 @@ sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{
       app="skribenten-backend", k8s_cluster_name="prod"}[30d]))
 ----
 
+== Dashboard
+
+Spørringene over er satt sammen til et Grafana-dashbord:
+link:{attachmentsdir}/sendt-brev-dashboard.json[sendt-brev-dashboard.json].
+
+Det har fire nøkkeltall (antall sendt, andel til andre enn bruker, andel lokalprint, antall avsenderenheter mot taket), fordelinger på mottakertype, distribusjon og manuelle adresser, et tidsserieplott, de vanligste samhandlertypene, og en tabell med mottakerfordeling per avsenderenhet.
+Datakilde, cluster og avsenderenhet er variabler, så det samme dashbordet virker for både dev og prod.
+Panelene bruker `$__range` og `$__rate_interval` i stedet for et fast `[30d]`, slik at tallene følger tidsvelgeren.
+
+=== Hvorfor JSON-fila ligger her
+
+NAIS har ingen mekanisme for å deploye dashbord som kode.
+https://docs.nais.io/observability/metrics/how-to/dashboard/[Plattformens egen veiledning] beskriver kun å klikke dashbordet sammen i Grafana-UI-et, og i motsetning til alarmene — som er `PrometheusRule`-manifester deployet fra `.github/workflows/alerts.yml` — finnes det ingen tilsvarende CRD eller action for dashbord.
+
+Fila her er derfor ikke en deploy-artefakt, men et *utgangspunkt*: importer den i Grafana under teamets mappe via *Dashboards → New → Import*.
+
+Konsekvensen er at kopien i repoet og dashbordet i Grafana kan gå fra hverandre, siden endringer gjort i UI-et ikke finner veien tilbake hit av seg selv.
+Vi beholder den likevel, av to grunner: den dokumenterer *hvordan* metrikken er ment å leses sammen med labelene den har, og den gjør dashbordet mulig å gjenskape hvis noen sletter det.
+Endrer du dashbordet i Grafana og vil at det skal overleve, eksporter JSON-en tilbake hit i samme slengen.
+
 == Implementasjon
 
 `SendtBrevMetrikker` (`brevredigering/application/livssyklus/`) eier telleren og slår opp samhandlertypen.
