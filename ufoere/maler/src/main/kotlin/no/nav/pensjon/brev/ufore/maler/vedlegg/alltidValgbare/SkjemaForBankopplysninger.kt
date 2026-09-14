@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler.vedlegg.alltidValgbare
+package no.nav.pensjon.brev.ufore.maler.vedlegg.alltidValgbare
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size

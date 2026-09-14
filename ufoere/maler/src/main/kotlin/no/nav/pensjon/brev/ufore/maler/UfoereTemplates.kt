@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakFeilutbetaling
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekreving
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekrevingForeldelse
@@ -19,6 +20,7 @@ import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
 import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
+import no.nav.pensjon.brev.ufore.maler.vedlegg.alltidValgbare.skjemaForBankopplysninger
 
 object UfoereTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf(
@@ -93,5 +95,10 @@ object UfoereTemplates : AllTemplates {
         VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar,
     )
 
-    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
+    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
+        AlltidValgbartVedlegg(
+            skjemaForBankopplysninger,
+            Ufoerebrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER,
+        ),
+    )
 }
