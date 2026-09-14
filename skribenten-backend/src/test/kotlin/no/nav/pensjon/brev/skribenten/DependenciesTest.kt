@@ -41,7 +41,7 @@ class DependenciesTest {
 
     @BeforeAll
     fun setup() {
-        postgres = PostgreSQLContainer("postgres:17-alpine").also { it.start() }
+        postgres = SharedPostgres.createStandaloneContainer().also { it.start() }
         initADGroups()
     }
 

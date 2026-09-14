@@ -108,10 +108,19 @@ fun Features.override(key: UnleashToggle, value: Boolean) {
 }
 
 object SharedPostgres {
+    private const val POSTGRES_IMAGE = "postgres:18-alpine"
+
+    /**
+     * Oppretter en ny, ustartet container som ikke deler tilstand med den delte databasen under.
+     * For tester som trenger å boote hele appen mot sin egen database. Kalleren eier livssyklusen
+     * og må selv kalle `start()` og `stop()`.
+     */
+    fun createStandaloneContainer(): PostgreSQLContainer = PostgreSQLContainer(POSTGRES_IMAGE)
+
     private val subscriptions = ConcurrentSet<Any>()
 
     private val container by lazy {
-        PostgreSQLContainer("postgres:17-alpine")
+        createStandaloneContainer()
             .apply { start() }
     }
 
