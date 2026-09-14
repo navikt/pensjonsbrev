@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
+import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
@@ -47,8 +49,15 @@ interface PenClient {
     )
 }
 
-class PenAdresseManglerException : ServiceException("Adresse mangler", status = HttpStatusCode.UnprocessableEntity)
-class PenServiceException(message: String) : ServiceException(message)
+interface HarJournalpostId {
+    val journalpostId: JournalpostId?
+}
+
+class PenAdresseManglerException(override val journalpostId: JournalpostId? = null) :
+    ServiceException("Adresse mangler", status = HttpStatusCode.UnprocessableEntity), HarJournalpostId
+
+class PenServiceException(message: String, override val journalpostId: JournalpostId? = null) :
+    ServiceException(message), HarJournalpostId
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
@@ -75,6 +84,10 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         }
         onBehalfOfClient(penScope, authService)
     }
+
+    private val feilresponsMapper = jacksonObjectMapper()
+        .registerModule(JavaTimeModule())
+        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
     private suspend inline fun <reified T> HttpResponse.bodyOrThrow(): T? =
         when {
@@ -197,7 +210,31 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
             setBody(sendRedigerbartBrevRequest)
             contentType(ContentType.Application.Json)
             url { parameters.append("distribuer", distribuer.toString()) }
-        }.bodyOrThrow()!!
+        }.sendbrevResponseOrThrow()
+
+    private suspend fun HttpResponse.sendbrevResponseOrThrow(): Pen.BestillBrevResponse {
+        if (status.isSuccess()) {
+            return body()
+        }
+
+        val body = bodyAsText()
+        val parsed = try {
+            feilresponsMapper.readValue(body, Pen.BestillBrevResponse::class.java)
+        } catch (_: JacksonException) {
+            null
+        }
+        val journalpostId = parsed?.journalpostId
+
+        throw when (status) {
+            HttpStatusCode.UnprocessableEntity if parsed?.error?.tekniskgrunn == "AdresseMangler" ->
+                PenAdresseManglerException(journalpostId)
+
+            HttpStatusCode.UnprocessableEntity ->
+                PenServiceException("Feil ved kall til PEN som ga unprocessable entity: ${parsed ?: body}", journalpostId)
+
+            else -> PenServiceException("Feil ved kall til PEN: ${status.value} - $body", journalpostId)
+        }
+    }
 
     override fun close() { client.close() }
 

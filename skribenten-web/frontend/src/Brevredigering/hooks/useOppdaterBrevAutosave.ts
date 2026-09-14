@@ -40,15 +40,18 @@ export type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
 export function useOppdaterBrevAutosave({
   saksId,
   brevId,
+  saveStatus,
   setEditorState,
   onSaveSuccess,
 }: {
   saksId: string;
   brevId: number;
+  saveStatus: LetterEditorState["saveStatus"];
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
 }) {
-  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
+  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables, boolean>({
+    onMutate: () => saveStatus === "SAVED",
     mutationFn: (values) => {
       // Mark the editor as saving so onSaveSuccess will apply the response
       // (it ignores responses while the editor is DIRTY).
@@ -76,7 +79,12 @@ export function useOppdaterBrevAutosave({
           : undefined,
       );
     },
-    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
+    // The form retries its own unsaved values. A failure must not invent a text edit and start
+    // a competing text-only save, but actual text edits must remain eligible for autosave.
+    onError: (_error, _values, wasSaved) =>
+      setEditorState((state) =>
+        state.saveStatus === "DIRTY" ? state : { ...state, saveStatus: wasSaved ? "SAVED" : "DIRTY" },
+      ),
   });
 
   return { oppdaterBrevMutation };

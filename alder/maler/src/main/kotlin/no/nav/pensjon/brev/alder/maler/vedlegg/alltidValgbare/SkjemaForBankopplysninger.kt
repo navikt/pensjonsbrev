@@ -2,16 +2,17 @@ package no.nav.pensjon.brev.alder.maler.vedlegg.alltidValgbare
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
-import no.nav.pensjon.brev.template.LangBokmalEnglish
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
 @TemplateModelHelpers
-val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedleggData>(
+val skjemaForBankopplysninger = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
     title = {
         text(
             bokmal { +"Skjema for bankopplysninger" },
+            nynorsk { +"Skjema for bankopplysningar" },
             english { +"Bank details" }
         )
     },
@@ -23,6 +24,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
             {
                 text(
                     bokmal { +"Norsk personnummer (11 siffer):" },
+                    nynorsk { +"Norsk personnummer (11 siffer):" },
                     english { +"Norwegian Identity number (11 digits):" }
                 )
             }
@@ -34,6 +36,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
             {
                 text(
                     bokmal { +"Navn:" },
+                    nynorsk { +"Namn:" },
                     english { +"Name:" }
                 )
             }
@@ -45,6 +48,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
             {
                 text(
                     bokmal { +"Adresse:" },
+                    nynorsk { +"Adresse:" },
                     english { +"Address:" }
                 )
             }
@@ -56,6 +60,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
             {
                 text(
                     bokmal { +"IBAN-nummer/ kontonummer:" },
+                    nynorsk { +"IBAN-nummer/ kontonummer:" },
                     english { +"IBAN-number/ account number:" }
                 )
             }
@@ -67,6 +72,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
             {
                 text(
                     bokmal { +"SWIFT/BIC-kode:" },
+                    nynorsk { +"SWIFT/BIC-kode:" },
                     english { +"SWIFT/ BIC-code:" }
                 )
             }
@@ -75,6 +81,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
     paragraph {
         text(
             bokmal { +"Dette er koden man oppgir ved utenlandsbetalinger. Koden finner du som regel på banken sine hjemmesider." },
+            nynorsk { +"Dette er koden ein oppgir ved utanlandsbetalingar. Koden finn du som regel på banken sine heimesider." },
             english { +"This is the code you enter when making international payments. You can usually find the code on your bank's website." }
         )
     }
@@ -84,6 +91,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
             {
                 text(
                     bokmal { +"Bankens navn:" },
+                    nynorsk { +"Bankens namn:" },
                     english { +"Name of your bank:" }
                 )
             }
@@ -95,6 +103,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
             {
                 text(
                     bokmal { +"Bankens adresse:" },
+                    nynorsk { +"Bankens adresse:" },
                     english { +"Bank address:" }
                 )
             }
@@ -106,6 +115,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
             {
                 text(
                     bokmal { +"Underskrift:" },
+                    nynorsk { +"Underskrift:" },
                     english { +"Signature:" }
                 )
             }
@@ -114,6 +124,7 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
     paragraph {
         text(
             bokmal { +"Kopi av legitimasjon (pass, førerkort eller ID-kort med bilde) må vedlegges." },
+            nynorsk { +"Kopi av legitimasjon (pass, førarkort eller ID-kort med bilete) må leggjast ved." },
             english { +"Copy of valid identity document (e.g. passport, driving license, bank card with photo) must be attached." }
         )
     }

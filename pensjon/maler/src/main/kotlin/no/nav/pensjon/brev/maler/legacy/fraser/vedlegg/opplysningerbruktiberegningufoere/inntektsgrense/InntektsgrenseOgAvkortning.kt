@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntektsgrense
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse
@@ -179,6 +180,9 @@ data class InntektsgrenseOgAvkortning(
             }
 
             includePhrase(SlikFastsetterViUfoeregraden)
+            showIf(FeatureToggles.bunnfradragIVedlegg.toggle.expr().enabled()) {
+                includePhrase(HvaErBunnfradragFribelopOgVenteperiode)
+            }
         }
     }
 }
