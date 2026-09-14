@@ -45,7 +45,14 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
   // Show the tabs only when the letter has editable attachments, but keep them visible on error so the issue can be shown.
   const showTabs = (vedleggQuery.data?.length ?? 0) > 0 || vedleggQuery.isError;
   if (!showTabs) {
-    return props.brevmalPanel;
+    return (
+      <Box
+        paddingBlock={{ xs: "space-0 space-12", lg: "space-0 space-16" }}
+        paddingInline={{ xs: "space-12", lg: "space-24" }}
+      >
+        {props.brevmalPanel}
+      </Box>
+    );
   }
 
   return (
