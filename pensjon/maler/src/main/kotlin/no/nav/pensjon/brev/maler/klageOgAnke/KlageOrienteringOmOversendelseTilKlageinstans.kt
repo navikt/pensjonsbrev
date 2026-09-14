@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -35,7 +34,6 @@ object KlageOrienteringOmOversendelseTilKlageinstans :
     override val kategori = KLAGE_OG_ANKE
     override val brevkontekst = ALLE
     override val sakstyper = Sakstype.all
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, English),
