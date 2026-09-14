@@ -304,6 +304,7 @@ function RedigerBrev({
   const oppdaterBrevAutosave = useOppdaterBrevAutosave({
     saksId,
     brevId: brev.info.id,
+    saveStatus: editorState.saveStatus,
     setEditorState,
     onSaveSuccess,
   });
@@ -408,11 +409,13 @@ function RedigerBrev({
 
   const freeze = oppdaterBrevMutation.isPending;
   const error = oppdaterBrevMutation.isError;
+  const hasUnsavedValg = form.formState.isDirty;
 
   useEffect(() => {
-    registerSaveErrorReset(oppdaterBrevMutation.reset);
+    // Saving text cannot resolve a failure to save values that still only exist in the form.
+    registerSaveErrorReset(hasUnsavedValg ? null : oppdaterBrevMutation.reset);
     return () => registerSaveErrorReset(null);
-  }, [oppdaterBrevMutation.reset, registerSaveErrorReset]);
+  }, [hasUnsavedValg, oppdaterBrevMutation.reset, registerSaveErrorReset]);
 
   // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 

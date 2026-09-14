@@ -91,6 +91,7 @@ function renderHarness() {
     const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
       saksId: SAKS_ID,
       brevId: BREV_ID,
+      saveStatus: editorState.saveStatus,
       setEditorState: setEditorState,
       onSaveSuccess: onSaveSuccess,
     });

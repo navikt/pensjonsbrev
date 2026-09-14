@@ -33,6 +33,7 @@ import { type EditedDocument, type EditedLetter } from "~/types/brevbakerTypes";
 
 type SaveSuccessOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
+  preserveUnchangedValg?: boolean;
 };
 
 interface ManagedLetterEditorContextValue {
@@ -89,13 +90,6 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
   const saveErrorResetRef = useRef<(() => void) | null>(null);
 
-  // The debounced autosave below must send the state as it is when the timer fires, not as it was
-  // when the timer was scheduled. A pending timer that still closes over a pre-change state would
-  // save a stale `saksbehandlerValg`, and `onSaveSuccess` would then write that stale value back
-  // into the editor as "Lagret" - silently reverting the user's tekstvalg/overstyring change.
-  const editorStateRef = useRef(editorState);
-  editorStateRef.current = editorState;
-
   const registerSaveErrorReset = useCallback((reset: (() => void) | null) => {
     saveErrorResetRef.current = reset;
   }, []);
@@ -119,7 +113,11 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
           ...previousState,
           redigertBrev: response.redigertBrev,
           redigertBrevHash: response.redigertBrevHash,
-          saksbehandlerValg: response.saksbehandlerValg,
+          // A text save must not reset an unsaved form. A form save must still acknowledge its values.
+          saksbehandlerValg:
+            options?.preserveUnchangedValg && isEqual(previousState.saksbehandlerValg, response.saksbehandlerValg)
+              ? previousState.saksbehandlerValg
+              : response.saksbehandlerValg,
           info: response.info,
           saveStatus: "SAVED",
           history: resolveHistoryAfterSave(previousState, response, historyEntry),
@@ -171,17 +169,16 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         },
       });
     },
-    onSuccess: (response) => onSaveSuccess(response),
+    onSuccess: (response) => onSaveSuccess(response, { preserveUnchangedValg: true }),
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      const latestState = editorStateRef.current;
-      if (latestState.saveStatus === "DIRTY") {
+      if (editorState.saveStatus === "DIRTY") {
         resetSaveError();
         saveErrorResetRef.current?.();
-        saveLetter(latestState);
+        saveLetter(editorState);
       }
     }, AUTOSAVE_TIMER);
 
