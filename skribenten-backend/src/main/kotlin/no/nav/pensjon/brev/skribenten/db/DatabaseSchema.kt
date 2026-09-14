@@ -78,14 +78,23 @@ object MottakerTable : IdTable<BrevId>() {
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
     val navn: Column<String?> = varchar("navn", 128).nullable()
+    val navnKryptert: Column<String?> = kryptertDto<String>("navnKryptert").nullable()
     val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
+    val postnummerKryptert: Column<NorskPostnummer?> = kryptertDto<NorskPostnummer>("postnummerKryptert").nullable()
     val poststed: Column<String?> = varchar("poststed", 50).nullable()
+    val poststedKryptert: Column<String?> = kryptertDto<String>("poststedKryptert").nullable()
     val adresselinje1: Column<String?> = varchar("adresselinje1", 128).nullable()
+    val adresselinje1Kryptert: Column<String?> = kryptertDto<String>("adresselinje1Kryptert").nullable()
     val adresselinje2: Column<String?> = varchar("adresselinje2", 128).nullable()
+    val adresselinje2Kryptert: Column<String?> = kryptertDto<String>("adresselinje2Kryptert").nullable()
     val adresselinje3: Column<String?> = varchar("adresselinje3", 128).nullable()
+    val adresselinje3Kryptert: Column<String?> = kryptertDto<String>("adresselinje3Kryptert").nullable()
     val landkode: Column<Landkode?> = varchar("landkode", 2).transform(::Landkode, Landkode::landkode).nullable()
+    val landkodeKryptert: Column<Landkode?> = kryptertDto<Landkode>("landkodeKryptert").nullable()
     val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
         .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
+    val manueltAdressertTilKryptert: Column<ManueltAdressertTil> =
+        kryptertEnum<ManueltAdressertTil>("manueltAdressertTilKryptert")
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
