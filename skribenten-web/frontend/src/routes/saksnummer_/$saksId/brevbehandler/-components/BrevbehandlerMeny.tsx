@@ -15,7 +15,7 @@ import {
   Tag,
   VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
@@ -28,6 +28,7 @@ import {
   oppdaterFoersteside,
   veksleKlarStatus,
 } from "~/api/sak-api-endpoints";
+import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useEndreMottaker } from "~/hooks/useEndreMottaker";
@@ -185,6 +186,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
+  const foerstesideFeatureToggle = useQuery(getFeatureToggle("foersteside"));
 
   const {
     modalÅpen,
@@ -324,20 +326,25 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         </HStack>
       )}
       <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
-      <Switch
-        checked={props.brev.leggVedFoersteside ?? false}
-        loading={foerstesideMutation.isPending}
-        onChange={(event) => {
-          foerstesideMutation.mutate(event.target.checked);
-        }}
-        size="small"
-      >
-        Førsteside
-      </Switch>
-      {foerstesideMutation.isError && (
-        <Alert size="small" variant="error">
-          {getErrorMessage(foerstesideMutation.error)}
-        </Alert>
+      {foerstesideFeatureToggle.data?.enabled === true && (
+        <>
+          <Switch
+            checked={props.brev.leggVedFoersteside ?? false}
+            disabled={erLaast}
+            loading={foerstesideMutation.isPending}
+            onChange={(event) => {
+              foerstesideMutation.mutate(event.target.checked);
+            }}
+            size="small"
+          >
+            Førsteside
+          </Switch>
+          {foerstesideMutation.isError && (
+            <Alert size="small" variant="error">
+              {getErrorMessage(foerstesideMutation.error)}
+            </Alert>
+          )}
+        </>
       )}
       <Switch
         checked={erLaast}
