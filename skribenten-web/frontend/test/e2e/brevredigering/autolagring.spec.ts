@@ -5,6 +5,7 @@ import { expect, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
+import { type OppdaterBrevRequest } from "~/types/brev";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 
 const fixturesDir = path.resolve("test/e2e/fixtures");
@@ -224,12 +225,14 @@ test.describe("autolagring", () => {
   });
 
   test("nullstiller feilmelding fra forrige lagring når ny autolagring lykkes", async ({ page }) => {
-    let saveCount = 0;
+    const lagringer: OppdaterBrevRequest[] = [];
+    let tekstlagringer = 0;
     const secondSaveGate = Promise.withResolvers<void>();
 
     await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", async (route) => {
       if (route.request().method() !== "PUT") return route.fallback();
 
+      tekstlagringer++;
       return route.fulfill({
         json: {
           ...brev,
@@ -244,8 +247,9 @@ test.describe("autolagring", () => {
       async (route) => {
         if (route.request().method() !== "PUT") return route.fallback();
 
-        saveCount++;
-        if (saveCount === 1) {
+        const body: OppdaterBrevRequest = route.request().postDataJSON();
+        lagringer.push(body);
+        if (lagringer.length === 1) {
           return route.fulfill({
             status: 422,
             json: { reason: "FritekstFelterUredigert" },
@@ -253,7 +257,6 @@ test.describe("autolagring", () => {
         }
 
         await secondSaveGate.promise;
-        const body = route.request().postDataJSON();
         return route.fulfill({
           json: {
             ...brev,
@@ -267,7 +270,8 @@ test.describe("autolagring", () => {
 
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("Lagret")).toBeVisible();
-    await page.clock.install();
+    await page.clock.install({ time: new Date("2026-01-01T12:00:00Z") });
+    await page.clock.pauseAt(new Date("2026-01-01T12:00:01Z"));
 
     await page.getByText("Overstyring").click();
     await expect(page.getByLabel("Ytelse")).toBeVisible();
@@ -279,9 +283,13 @@ test.describe("autolagring", () => {
         resp.request().method() === "PUT",
     );
     await page.getByLabel("Ytelse").fill("Supplerende stønad");
+    await page.clock.runFor(2500);
     await failedSavePromise;
+    await page.clock.runFor(1);
 
     await expect(page.getByText(/Klarte ikke lagre/)).toBeVisible();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("Supplerende stønad");
+    expect(lagringer).toHaveLength(1);
 
     const retrySavePromise = page.waitForResponse(
       (resp) =>
@@ -289,15 +297,92 @@ test.describe("autolagring", () => {
         resp.url().includes("frigiReservasjon") &&
         resp.request().method() === "PUT",
     );
-    await page.clock.fastForward(AUTOSAVE_TIMER);
+    // Feltets egen debounce prøver igjen; brevets femsekunderstimer skal ikke lagre gammel tekst.
+    await page.clock.runFor(2500);
     await expect(page.getByText("Lagrer...")).toBeVisible();
     await expect(page.getByText(/Klarte ikke lagre/)).toBeHidden();
 
     secondSaveGate.resolve();
     await retrySavePromise;
+    await page.clock.runFor(1);
 
     await expect(page.getByText("Lagret")).toBeVisible();
     await expect(page.getByText(/Klarte ikke lagre/)).toBeHidden();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("Supplerende stønad");
+    await page.clock.runFor(AUTOSAVE_TIMER);
+    expect(lagringer).toHaveLength(2);
+    expect(lagringer.map((request) => request.saksbehandlerValg.ytelse)).toEqual([
+      "Supplerende stønad",
+      "Supplerende stønad",
+    ]);
+    expect(tekstlagringer).toBe(0);
+
+    await page.getByRole("button", { name: "Angre (Undo)" }).click();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("alderspensjon");
+    await page.getByRole("button", { name: "Gjør om (Redo)" }).click();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("Supplerende stønad");
+  });
+
+  test("tekstlagring bevarer ulagret overstyring og feilen fra en mislykket skjemalagring", async ({ page }) => {
+    const lagringer: OppdaterBrevRequest[] = [];
+    let tekstlagringer = 0;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=false", (route) => {
+      if (route.request().method() !== "PUT") return route.fallback();
+      const body: OppdaterBrevRequest = route.request().postDataJSON();
+      lagringer.push(body);
+      return lagringer.length === 1
+        ? route.fulfill({ status: 422, json: { reason: "FritekstFelterUredigert" } })
+        : route.fulfill({ json: { ...brev, ...body } });
+    });
+    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", (route) => {
+      if (route.request().method() !== "PUT") return route.fallback();
+      tekstlagringer++;
+      return route.fulfill({ json: { ...brev, redigertBrev: route.request().postDataJSON() } });
+    });
+
+    await page.goto("/saksnummer/123456/brev/1");
+    await expect(page.getByText("Lagret")).toBeVisible();
+    await page.clock.install({ time: new Date("2026-01-01T12:00:00Z") });
+    await page.clock.pauseAt(new Date("2026-01-01T12:00:01Z"));
+    await page.getByRole("tab", { name: "Overstyring" }).click();
+    await page.getByLabel("Ytelse").fill("Supplerende stønad");
+    const failedSave = page.waitForResponse((response) => response.status() === 422);
+    await page.clock.runFor(2500);
+    await failedSave;
+    await page.clock.runFor(1);
+    await expect(page.getByText(/Klarte ikke lagre/)).toBeVisible();
+
+    await page.getByRole("textbox", { name: "Underskrift" }).fill("Ny underskrift");
+    // Nye feltendringer utsetter skjemalagringen, men ikke autolagringen av underskriften.
+    await page.clock.runFor(2000);
+    await page.getByLabel("Ytelse").fill("Supplerende stønad A");
+    await page.clock.runFor(2000);
+    await page.getByLabel("Ytelse").fill("Supplerende stønad B");
+
+    const textSave = page.waitForResponse((response) =>
+      response.url().endsWith("/brev/1/redigertBrev?frigiReservasjon=false"),
+    );
+    await page.clock.runFor(1000);
+    await textSave;
+    await page.clock.runFor(1);
+    expect(tekstlagringer).toBe(1);
+    expect(lagringer).toHaveLength(1);
+    await expect(page.getByLabel("Ytelse")).toHaveValue("Supplerende stønad B");
+    await expect(page.getByText(/Klarte ikke lagre/)).toBeVisible();
+    await expect(page.getByText("Lagret", { exact: true })).toBeHidden();
+
+    const formSave = page.waitForResponse((response) =>
+      response.url().endsWith("/sak/123456/brev/1?frigiReservasjon=false"),
+    );
+    await page.clock.runFor(2500);
+    await formSave;
+    await page.clock.runFor(1);
+    await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("Supplerende stønad B");
+    await expect(page.getByRole("textbox", { name: "Underskrift" })).toHaveValue("Ny underskrift");
+    expect(lagringer).toHaveLength(2);
+    expect(lagringer[1].saksbehandlerValg.ytelse).toBe("Supplerende stønad B");
+    expect(lagringer[1].redigertBrev.signatur.saksbehandlerNavn).toBe("Ny underskrift");
   });
 
   test("autolagrer ikke før alle avhengige felter er utfylt", async ({ page }) => {
