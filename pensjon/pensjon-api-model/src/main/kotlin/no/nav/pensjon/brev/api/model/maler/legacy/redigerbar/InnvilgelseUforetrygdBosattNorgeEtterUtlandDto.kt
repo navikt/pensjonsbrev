@@ -22,8 +22,10 @@ data class InnvilgelseUforetrygdBosattNorgeEtterUtlandDto(
         val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
         val nyeAvslagBarnetillegg: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
-        val hjemler: Set<String>
+        val hjemler: Set<String>,
+        val harVTA: Boolean = false
     ) : FagsystemBrevdata
+    //TODO fjern default
 
     data class Trygdetidsgrunnlag(
         val fom: LocalDate,

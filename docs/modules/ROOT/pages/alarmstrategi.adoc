@@ -358,7 +358,7 @@ Retries telles separat per forsøk, ikke bare det endelige utfallet. `NaisLeader
 ====
 Valkey-cachen (`common/Cache.kt`) instrumenteres med to metrikker.
 
-* `skribenten_cache_requests_total`, med labels `omraade` (nøkkelens prefiks, satt av `Cacheomraade.prefix`, f.eks. `Norg`, `Samhandler`, `PensjonPersondata`) og `result` (`hit`/`miss`). Gir treffrate per område:
+* `skribenten_cache_requests_total`, med labels `omraade` (nøkkelens prefiks, satt av `Cacheomraade.prefix`, f.eks. `Norg`, `SamhandlerEnkel`, `PensjonPersondata`) og `result` (`hit`/`miss`). Gir treffrate per område:
 +
 [source]
 ----

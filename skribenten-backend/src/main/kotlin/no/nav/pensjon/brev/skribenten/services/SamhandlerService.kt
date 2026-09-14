@@ -1,9 +1,8 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
-import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -11,12 +10,14 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
-import io.ktor.utils.io.core.Closeable
+import io.ktor.utils.io.core.*
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.pensjon.brev.skribenten.common.defaultTtl
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
@@ -24,11 +25,13 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdress
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import org.slf4j.LoggerFactory
+import kotlin.time.Duration
 
 interface SamhandlerService {
     suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto
     suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto
     suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
+    suspend fun hentSamhandlerType(idTSSEkstern: String): String?
     suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto
 }
 
@@ -75,27 +78,32 @@ class SamhandlerServiceHttp(
         }
     }
 
-    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto {
-        val response = samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
-            metricsRoute("api/samhandler/hentSamhandlerEnkel/{idTSSEkstern}")
-            url {
-                appendPathSegments(idTSSEkstern)
+    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
+        cache.cached(
+            omraade = Cacheomraade.SAMHANDLER,
+            key = idTSSEkstern,
+            ttl = { if (it.success != null) defaultTtl else Duration.ZERO },
+        ) {
+            val response = samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
+                metricsRoute("api/samhandler/hentSamhandlerEnkel/{idTSSEkstern}")
+                url {
+                    appendPathSegments(idTSSEkstern)
+                }
+                contentType(Json)
+                accept(Json)
             }
-            contentType(Json)
-            accept(Json)
+
+            return@cached if (response.status.isSuccess()) {
+                response.body<SamhandlerEnkel>().toHentSamhandlerResponseDto()
+            } else {
+                logger.error("Feil ved henting av samhandler. Status: ${response.status}. Melding: ${response.bodyAsText()}")
+                HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
+            }
         }
 
-        return if (response.status.isSuccess()) {
-            response.body<SamhandlerEnkel>().toHentSamhandlerResponseDto()
-        } else {
-            logger.error("Feil ved henting av samhandler. Status: ${response.status}. Melding: ${response.bodyAsText()}")
-            HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.GENERISK)
-        }
-    }
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = hentSamhandler(idTSSEkstern).success?.navn
 
-    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = cache.cached(Cacheomraade.SAMHANDLER, idTSSEkstern) {
-        hentSamhandler(idTSSEkstern).success?.navn
-    }
+    override suspend fun hentSamhandlerType(idTSSEkstern: String): String? = hentSamhandler(idTSSEkstern).success?.samhandlerType
 
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String) = cache.cached(Cacheomraade.SAMHANDLER_ADRESSE, idTSSEkstern) {
         samhandlerProxyClient.get("/api/samhandler/hentSamhandlerPostadresse/") {

@@ -1,0 +1,120 @@
+= Metrikk for sendte brev
+
+Denne siden beskriver metrikken `skribenten_brev_sendt_total`, som måler *hvem brev fra Skribenten faktisk sendes til*.
+
+== Bakgrunn
+
+Når en saksbehandler ikke velger mottaker, går brevet til den saken gjelder — bruker.
+Saksbehandleren kan i stedet velge en samhandler (advokat, lege, verge og så videre) eller skrive inn en manuell adresse.
+Vi hadde ingen innsikt i hvor ofte det siste skjer, fordi brevet slettes fra basen ved vellykket sending.
+Målingen må derfor gjøres i selve sendeøyeblikket.
+
+== Metrikken
+
+`skribenten_brev_sendt_total` er en teller som økes én gang per *vellykket sendt brev*.
+Et brev som får journalpost, men feiler under distribusjon, telles ikke — tallet betyr «sendt», ikke «forsøkt sendt».
+
+[cols="1,2,3", options="header"]
+|===
+| Label | Verdier | Merknad
+
+| `mottaker`
+| `BRUKER`, `SAMHANDLER`, `NORSK_ADRESSE`, `UTENLANDSK_ADRESSE`
+| `BRUKER` når saksbehandler ikke har overstyrt mottaker. Skiller også innland fra utland.
+
+| `samhandler_type`
+| Kodeverksverdi (`ADVO`, `LE`, `FULL` …), `IKKE_RELEVANT`, `UKJENT`
+| `UKJENT` når oppslaget mot samhandler-proxy feiler.
+
+| `adressert_til`
+| `BRUKER`, `ANNEN`, `IKKE_RELEVANT`
+| Skiller «bruker på en annen adresse» fra en reelt annen mottaker.
+
+| `distribusjon`
+| `SENTRALPRINT`, `LOKALPRINT`
+| Lokalprint sendes manuelt av saksbehandler.
+
+| `avsender_enhet`
+| Nav enhetsnummer
+| Fra brevets avsenderenhet.
+|===
+
+== Begrensninger
+
+Nullstilling::
+Tellere nullstilles ved pod-restart og deploy.
+Bruk alltid `increase()` eller `rate()`, aldri den rå verdien.
+
+Omfang::
+Metrikken dekker kun *redigerbare Skribenten-brev*.
+Legacy Exstream-bestillinger er ikke med, og et dashboard må merkes tydelig med det — ellers leses tallene som totalen for hele Skribenten.
+
+Kardinalitet::
+`avsender_enhet` er den eneste labelen med ukjent antall verdier.
+`Metrics.kt` setter derfor et tak med `MeterFilter.maximumAllowableTags`.
+Faktisk antall enheter måles med `count(count by (avsender_enhet) (skribenten_brev_sendt_total))`.
+
+Ingen drilldown::
+Prometheus gir aggregerte tall, ikke oppslag per sak eller saksbehandler.
+Trenger vi reell analyse over tid, er riktig verktøy et dataprodukt — ikke denne metrikken.
+
+== Spørringer
+
+Fordeling på mottakertype:
+
+[source]
+----
+sum by (mottaker) (increase(
+  skribenten_brev_sendt_total{app="skribenten-backend", k8s_cluster_name="prod"}[30d]))
+----
+
+Andel brev sendt til andre enn bruker:
+
+[source]
+----
+sum(increase(skribenten_brev_sendt_total{
+      app="skribenten-backend", k8s_cluster_name="prod", mottaker!="BRUKER"}[30d]))
+/
+sum(increase(skribenten_brev_sendt_total{
+      app="skribenten-backend", k8s_cluster_name="prod"}[30d]))
+----
+
+De vanligste samhandlertypene:
+
+[source]
+----
+topk(10, sum by (samhandler_type) (increase(skribenten_brev_sendt_total{
+  app="skribenten-backend", k8s_cluster_name="prod", mottaker="SAMHANDLER"}[30d])))
+----
+
+Manuelle adresser, fordelt på hvem de er adressert til:
+
+[source]
+----
+sum by (adressert_til) (increase(skribenten_brev_sendt_total{
+  app="skribenten-backend", k8s_cluster_name="prod",
+  mottaker=~"NORSK_ADRESSE|UTENLANDSK_ADRESSE"}[30d]))
+----
+
+Andel ikke-bruker-mottakere per avsenderenhet:
+
+[source]
+----
+sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{
+      app="skribenten-backend", k8s_cluster_name="prod", mottaker!="BRUKER"}[30d]))
+/
+sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{
+      app="skribenten-backend", k8s_cluster_name="prod"}[30d]))
+----
+
+== Implementasjon
+
+`SendtBrevMetrikker` (`brevredigering/application/livssyklus/`) eier telleren og slår opp samhandlertypen.
+`SendBrevHandler` starter tellingen der sendingen er bekreftet vellykket, rett før brevet slettes.
+Selve jobben kjører på et eget scope og deltar verken i sendetransaksjonen eller i svartiden på endepunktet.
+En feil i oppslaget gir kun `samhandler_type="UKJENT"` — aldri en feilet sending.
+Saksbehandlerens principal og call-id følger eksplisitt med til den asynkrone jobben, siden oppslaget bruker OBO-token.
+Samhandlertypen caches sammen med navnet i `Cacheomraade.SAMHANDLER`, siden begge kommer fra samme kall.
+
+Konsekvens av at tellingen er asynkron: dør poden mellom sendingen og tellingen, går den ene tellingen tapt.
+Tallene er altså et godt bilde av fordelingen, men ikke en revisjonssikker fasit på antall sendte brev.

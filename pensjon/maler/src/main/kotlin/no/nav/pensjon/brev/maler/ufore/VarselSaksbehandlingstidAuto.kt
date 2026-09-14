@@ -3,12 +3,16 @@ package no.nav.pensjon.brev.maler.ufore
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.selectors.varselSaksbehandlingstidAutoDto.*
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SAKSBEHANDLINGSTID_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_ENDRING_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.enabled
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -49,17 +53,40 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             }
             // TBU3015
             paragraph {
-                text(
-                    bokmal { + "Søknaden din blir behandlet så snart som mulig, og senest innen "
+                showIf(FeatureToggles.pl7231ForventetSvartid.toggle.expr().enabled()) {
+                    text(
+                        bokmal {
+                            +"Søknaden din blir behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på " + quoted(
+                                "Min side"
+                            ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
+                        },
+                        nynorsk {
+                            +"Søknaden din vert handsama så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på " + quoted(
+                                "Mi side"
+                            ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
+                        },
+                        english {
+                            +"Your application will be processed as soon as possible. When your application has been processed, you will receive a response from us on " + quoted(
+                                "My Page"
+                            ) + " at $NAV_URL. You can check the processing times at $SAKSBEHANDLINGSTID_URL."
+                        }
+                    )
+                } orShow {
+                    text(
+                        bokmal {
+                            +"Søknaden din blir behandlet så snart som mulig, og senest innen "
                             + ifElse(utvidetBehandlingstid, ifFalse = "6", ifTrue = "20") + " måneder. "
                             + "Blir ikke saken din ferdigbehandlet innen denne fristen, vil vi gi deg beskjed om ny svartid." },
-                    nynorsk { + "Søknaden din vert handsama så snart som mogleg, og seinast innan "
+                        nynorsk {
+                            +"Søknaden din vert handsama så snart som mogleg, og seinast innan "
                             + ifElse(utvidetBehandlingstid, ifFalse = "6", ifTrue = "20") + " månader. "
                             + "Vert ikkje saka di handsama innan denne fristen, vil vi gje deg melding om ny svartid." },
-                    english { + "Your application will be processed as soon as possible, and no later than within "
+                        english {
+                            +"Your application will be processed as soon as possible, and no later than within "
                             + ifElse(utvidetBehandlingstid, ifFalse = "6", ifTrue = "20") + " months. "
                             + "If your case is not processed within this deadline, we will notify you of a new response time." }
-                )
+                    )
+                }
             }
 
             title1 {

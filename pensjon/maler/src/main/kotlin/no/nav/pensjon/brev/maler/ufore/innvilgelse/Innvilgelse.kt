@@ -965,6 +965,7 @@ object Innvilgelse {
         val uforegrad: Expression<Int>,
         val ieuInntekt: Expression<Kroner>,
         val beregningsvilkarUforegrad: Expression<Int>,
+        val harVTA: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(uforegrad.equalTo(100)) {
@@ -991,7 +992,7 @@ object Innvilgelse {
                 )
             }
 
-            showIf((uforegrad.equalTo(100) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().notEqualTo(60000) and ieuInntekt.equalTo(0))) {
+            showIf((uforegrad.equalTo(100) and !harVTA and ieuInntekt.equalTo(0))) {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
@@ -1000,7 +1001,7 @@ object Innvilgelse {
                 }
             }
 
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().equalTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()))) {
+            showIf(harVTA) {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },

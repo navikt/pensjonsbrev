@@ -6,6 +6,7 @@ import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.config.mergeWith
 import io.ktor.server.testing.*
+import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.initADGroups
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -25,7 +26,7 @@ class OpenApiSpecTest {
 
     @BeforeAll
     fun setup() {
-        postgres = PostgreSQLContainer("postgres:17-alpine").also { it.start() }
+        postgres = SharedPostgres.createStandaloneContainer().also { it.start() }
         initADGroups()
     }
 

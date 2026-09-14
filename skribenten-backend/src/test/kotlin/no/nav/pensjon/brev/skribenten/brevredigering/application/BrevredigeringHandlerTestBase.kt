@@ -4,6 +4,10 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application
 
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
@@ -107,7 +111,10 @@ abstract class BrevredigeringHandlerTestBase {
     protected val brevbakerService = BrevredigeringFakeBrevbakerService()
     protected val penService = FakePenClient()
     protected val pdlService = FakePDLService()
-    protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
+    protected val samhandlerService = FakeSamhandlerService(
+        navn = mapOf("samhandler1" to "Sam Handler AS", SAMHANDLER_TSS_ID to "Advokat Handler AS"),
+        typer = mapOf(SAMHANDLER_TSS_ID to SAMHANDLER_TYPE),
+    )
     protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
     protected val brevdataService = BrevdataService(penService, samhandlerService)
     protected val brevService = BrevService(penService, LegacyBrevServiceStub())
@@ -183,7 +190,10 @@ abstract class BrevredigeringHandlerTestBase {
     }
     protected val hentEllerOpprettPdf by lazy { HentEllerOpprettPdfHandler(brevtilgang, brevPdfService) }
     protected val hentEllerOpprettAttesteringPdf by lazy { HentEllerOpprettAttesteringPdfHandler(brevtilgang, brevPdfService) }
-    protected val sendBrevHandler by lazy { SendBrevHandler(brevtilgang, brevService, brevmalService) }
+    protected val metrikkRegistry = SimpleMeterRegistry()
+    protected val metrikkScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    protected val sendtBrevMetrikker by lazy { SendtBrevMetrikker(samhandlerService, metrikkRegistry, metrikkScope) }
+    protected val sendBrevHandler by lazy { SendBrevHandler(brevtilgang, brevService, brevmalService, sendtBrevMetrikker) }
     protected val slettBrevHandler by lazy { SlettBrevHandler(brevtilgang, slettBrevPolicy) }
 
     companion object Fixtures {
@@ -194,6 +204,8 @@ abstract class BrevredigeringHandlerTestBase {
         }
 
         val PRINCIPAL_NAVENHET_ID = EnhetId("1234")
+        const val SAMHANDLER_TSS_ID = "80000123456"
+        const val SAMHANDLER_TYPE = "ADVO"
         val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
         val saksbehandler2Principal = MockPrincipal(NavIdent("Morpheus"), "Laurence Fishburne", setOf(ADGroups.pensjonSaksbehandler))
         val attestant1Principal = MockPrincipal(NavIdent("Key Maker"), "Randall Kim", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))

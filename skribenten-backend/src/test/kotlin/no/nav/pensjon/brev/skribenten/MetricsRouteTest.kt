@@ -6,7 +6,11 @@ import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.SendtBrevMetrikker
+import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.routes.healthRoute
+import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.skribenten.services.FakeSamhandlerService
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -100,4 +104,26 @@ class MetricsRouteTest {
                 "Forventet ingen address-tag, fant:\n${metrikker.filter { it.contains("address=") }.joinToString("\n")}"
             }
         }
+
+    @Test
+    fun `mottakermetrikken eksponeres paa metrics-endepunktet`() = testApplication {
+        environment { config = MapApplicationConfig() }
+        application { configureMetrics() }
+
+        SendtBrevMetrikker(FakeSamhandlerService(), Metrics.registry).tellSendtBrev(
+            SendtBrevMetrikker.SendtBrevMaaling(
+                mottakerType = null,
+                tssId = null,
+                manueltAdressertTil = null,
+                distribusjonstype = Distribusjon.SENTRALPRINT,
+                avsenderEnhet = EnhetId("4321"),
+            )
+        ).join()
+
+        val linjer = client.get("/metrics").bodyAsText().lines()
+            .filter { it.startsWith("${SendtBrevMetrikker.metricName}_total") }
+        assertTrue(linjer.any { it.contains("mottaker=\"BRUKER\"") && it.contains("avsender_enhet=\"4321\"") }) {
+            "Fant ikke mottakermetrikken i scrapen:\n${linjer.joinToString("\n")}"
+        }
+    }
 }
