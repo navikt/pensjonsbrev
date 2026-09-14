@@ -5,7 +5,9 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -135,27 +137,16 @@ fun JobConfig.updateMottaker() {
 
 fun JobConfig.updateBrevredigeringJson() {
     transaction {
-        val alleBrev = BrevredigeringTable.select(
-            BrevredigeringTable.id,
-            BrevredigeringTable.sistReservert,
-            BrevredigeringTable.saksbehandlerValg,
-            BrevredigeringTable.saksbehandlerValgKryptert,
-        ).toList()
         val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-        val kanOppdateres = alleBrev
-            .filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
-
-        kanOppdateres.forEach {
-            val brevId = it[BrevredigeringTable.id]
-            logger.debug("Oppdaterer {}", brevId)
-            val saksbehandlervalg = it[BrevredigeringTable.saksbehandlerValg]
-            BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                update[BrevredigeringTable.saksbehandlerValgKryptert] = saksbehandlervalg
-            }
+        val alleBrev = BrevredigeringTable.selectAll().count().toInt()
+        val oppdaterteBrev = BrevredigeringTable.update({
+            BrevredigeringTable.sistReservert.isNotNull() and (BrevredigeringTable.sistReservert less ikkeAktivtReservertTidspunkt)
+        }) { update ->
+            update[BrevredigeringTable.saksbehandlerValgKryptert] = BrevredigeringTable.saksbehandlerValg
         }
 
-        if (alleBrev.size != kanOppdateres.size) {
-            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
+        if (alleBrev != oppdaterteBrev) {
+            logger.info("Oppdaterte $oppdaterteBrev av $alleBrev brevredigeringer med ikke-aktive reservasjoner.")
             completed = false
         }
     }
