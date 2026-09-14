@@ -94,8 +94,8 @@ object MottakerTable : IdTable<BrevId>() {
     val landkodeKryptert: Column<Landkode?> = kryptertDto<Landkode>("landkodeKryptert").nullable()
     val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
         .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
-    val manueltAdressertTilKryptert: Column<ManueltAdressertTil> =
-        kryptertEnum<ManueltAdressertTil>("manueltAdressertTilKryptert")
+    val manueltAdressertTilKryptert: Column<ManueltAdressertTil?> =
+        kryptertEnum<ManueltAdressertTil>("manueltAdressertTilKryptert").nullable()
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
