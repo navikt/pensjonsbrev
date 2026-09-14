@@ -138,8 +138,6 @@ fun JobConfig.updateBrevredigeringJson() {
         val alleBrev = BrevredigeringTable.select(
             BrevredigeringTable.id,
             BrevredigeringTable.sistReservert,
-            BrevredigeringTable.redigertBrevKryptert,
-            BrevredigeringTable.redigertBrevKryptertHash,
             BrevredigeringTable.saksbehandlerValg,
             BrevredigeringTable.saksbehandlerValgKryptert,
         ).toList()
@@ -150,11 +148,8 @@ fun JobConfig.updateBrevredigeringJson() {
         kanOppdateres.forEach {
             val brevId = it[BrevredigeringTable.id]
             logger.debug("Oppdaterer {}", brevId)
-            val redigertBrev = it[BrevredigeringTable.redigertBrevKryptert]
             val saksbehandlervalg = it[BrevredigeringTable.saksbehandlerValg]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
-                update[BrevredigeringTable.redigertBrevKryptertHash] = Hash.read(redigertBrev)
                 update[BrevredigeringTable.saksbehandlerValgKryptert] = saksbehandlervalg
             }
         }
