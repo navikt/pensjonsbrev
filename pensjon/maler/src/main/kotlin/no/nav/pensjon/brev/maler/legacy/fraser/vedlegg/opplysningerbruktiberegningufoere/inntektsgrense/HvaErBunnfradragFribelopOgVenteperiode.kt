@@ -21,14 +21,14 @@ object HvaErBunnfradragFribelopOgVenteperiode : OutlinePhrase<LangBokmalNynorsk>
         }
         paragraph {
             text (
-                bokmal { + "Fribeløpet er 0,4 G de første 24 månedene du har uføretrygd, disse 24 månedene er venteperiode. " },
-                nynorsk { + "Fribeløpet er 0,4 G dei første 24 månadene du har uføretrygd, desse 24 månadene er venteperiode. " }
+                bokmal { + "Fribeløpet er 0,4 G de første 24 månedene du har uføretrygd, disse 24 månedene kalles venteperiode. " },
+                nynorsk { + "Fribeløpet er 0,4 G dei første 24 månadene du har uføretrygd, desse 24 månadene kalles venteperiode. " }
             )
         }
         paragraph {
             text (
-                bokmal { + "Fribeløpet er 1 G når du har hatt uføretrygd i 24 måneder, forutsatt at uføregraden ikke har blitt endret til en høyere grad. " },
-                nynorsk { + "Fribeløpet er 1 G når du har hatt uføretrygd i 24 månader, forutsatt at uføregraden ikkje har blitt endra til ein høgare grad. " }
+                bokmal { + "Fribeløpet er 1 G når du har hatt uføretrygd i 24 måneder. " },
+                nynorsk { + "Fribeløpet er 1 G når du har hatt uføretrygd i 24 månader. " }
             )
         }
         paragraph {
