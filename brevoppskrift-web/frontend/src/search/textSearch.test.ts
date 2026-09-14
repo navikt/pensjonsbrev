@@ -326,5 +326,67 @@ describe("search", () => {
 
       expect(content.map((hit) => hit.template.id).sort()).toEqual(["SECTIONS_8_2_8_3", "SECTION_19"]);
     });
+
+    it("does not confuse a fuzzy word match with a §§ symbol term that isn't actually present", () => {
+      const index = buildIndex(templates);
+
+      // Regression test (PR #3861 review comment): "§§" (length 2) must
+      // still be required to occur verbatim even though it's longer than
+      // SHORT_TERM_LENGTH, because Fuse can't tokenize it at all and would
+      // otherwise silently skip checking it, matching any line with a fuzzy
+      // hit on "folketrygdloven" regardless of whether "§§" is present.
+      const { content } = search(index, "folketrygdlovan §§");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SECTIONS_8_2_8_3"]);
+    });
+
+    it("finds a line containing separated symbols (e.g. § §) in fuzzy mode", () => {
+      const separated = [
+        template({ id: "SEPARATED", title: "To paragraftegn", lines: ["Jf. § § i loven om ytelser."] }),
+        template({ id: "OTHER", title: "Uten symbol", lines: ["Helt urelatert tekst."] }),
+      ];
+      const index = buildIndex(separated);
+
+      // Regression test (PR #3861 review comment): SPECIAL_CHAR_QUERY must
+      // allow internal whitespace (since both callers trim the query first),
+      // otherwise "§ §" falls through to fuzzySearch, which finds no
+      // candidates at all for a query Fuse can't tokenize.
+      const { content } = search(index, "§ §");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SEPARATED"]);
+    });
+
+    it("finds a line containing separated symbols (e.g. § §) in exact mode", () => {
+      const separated = [template({ id: "SEPARATED", title: "To paragraftegn", lines: ["Jf. § § i loven."] })];
+      const index = buildIndex(separated);
+
+      const { content } = search(index, "§ §", true);
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SEPARATED"]);
+    });
+
+    it("does not fuzzy-match a term mixing junk characters with a single word character", () => {
+      const variableLike = [
+        template({
+          id: "VEDTAK_OMREGNING_GJP_TIL_ALDER_AUTO",
+          title: "Vedtak omregning",
+          lines: ["Det er viktig at du kontakter [_Value NAV_]. Vi vil deretter"],
+        }),
+      ];
+      const index = buildIndex(variableLike);
+
+      // Regression test: a term like "{{[[{{{_" is not classified as
+      // special-character-only (it contains "_", one of Fuse's own "word"
+      // characters), so it used to be treated as an ordinary long term left
+      // to Fuse's fuzzy matching. But Fuse's tokenizer discards all the
+      // junk and extracts only "_" as the real query token, which then
+      // fuzzy-matches any text containing an underscore (such as the
+      // variable placeholder "[_Value NAV_]" above) - a false positive.
+      // The line does not contain the literal string "{{[[{{{_" anywhere,
+      // so it must not match.
+      const { content } = search(index, "{{[[{{{_");
+
+      expect(content).toEqual([]);
+    });
   });
 });
