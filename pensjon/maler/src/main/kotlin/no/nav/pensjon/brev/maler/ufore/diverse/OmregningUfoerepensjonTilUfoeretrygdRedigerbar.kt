@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.ufore.diverse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.omregningUfoerepensjonTilUfoeretrygdDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.omregningUfoerepensjonTilUfoeretrygdDto.*
@@ -128,7 +127,6 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
     override val kategori = Brevkategori.UFOEREPENSJON
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal),

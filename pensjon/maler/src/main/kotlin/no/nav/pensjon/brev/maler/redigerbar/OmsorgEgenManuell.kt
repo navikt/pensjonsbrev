@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringOutline
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringTittel
@@ -27,7 +26,6 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
     override val kategori = Brevkategori.OMSORGSOPPTJENING
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.OMSORG)
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(

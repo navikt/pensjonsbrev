@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
 import no.nav.pensjon.brev.api.model.maler.selectors.samletMeldingOmPensjonsvedtakV2Dto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.selectors.samletMeldingOmPensjonsvedtakV2Dto.*
@@ -27,7 +26,6 @@ object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensj
     override val kategori = Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, English),

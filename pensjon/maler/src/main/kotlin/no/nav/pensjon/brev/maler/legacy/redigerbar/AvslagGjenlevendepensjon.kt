@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto.FolketrygdlovenParagraf.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonDto.pesysData.*
@@ -36,7 +35,6 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.GJENLEV)
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
