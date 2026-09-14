@@ -51,6 +51,43 @@ test.describe("Brevbehandler", () => {
     await expect(page.getByText("Fant ingen brev som er under behandling")).toBeVisible();
   });
 
+  test("kan velge å legge ved førsteside", async ({ page }) => {
+    const brevMedFoersteside = { ...kladdBrev, leggVedFoersteside: true };
+
+    await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({ json: [kladdBrev] });
+      }
+      return route.fallback();
+    });
+
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/foersteside", async (route) => {
+      if (route.request().method() === "PUT") {
+        expect(route.request().postDataJSON()).toEqual({ leggVedFoersteside: true });
+        return route.fulfill({ json: brevMedFoersteside });
+      }
+      return route.fallback();
+    });
+
+    await page.goto("/saksnummer/123456/brevbehandler");
+    const initialPdf = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/bff/skribenten-backend/sak/123456/brev/1/pdf") &&
+        response.request().method() === "GET",
+    );
+    await openBrevCard(page, kladdBrev.brevtittel);
+    await initialPdf;
+    const pdfRefresh = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/bff/skribenten-backend/sak/123456/brev/1/pdf") &&
+        response.request().method() === "GET",
+    );
+    await page.getByText("Førsteside").click();
+
+    await pdfRefresh;
+    await expect(page.getByRole("checkbox", { name: "Førsteside" })).toBeChecked();
+  });
+
   test("kan ferdigstille og sende brev med sentralprint", async ({ page }) => {
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (route) => {
       if (route.request().method() === "POST") {

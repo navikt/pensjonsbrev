@@ -21,7 +21,13 @@ import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
-import { endreDistribusjonstype, hentAlleBrevInfoForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
+import {
+  endreDistribusjonstype,
+  hentAlleBrevInfoForSak,
+  hentPdfForBrev,
+  oppdaterFoersteside,
+  veksleKlarStatus,
+} from "~/api/sak-api-endpoints";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useEndreMottaker } from "~/hooks/useEndreMottaker";
@@ -220,6 +226,21 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
     },
   });
 
+  const foerstesideMutation = useMutation<BrevInfo, Error, boolean, unknown>({
+    mutationFn: (leggVedFoersteside) =>
+      oppdaterFoersteside(props.saksId, props.brev.id, {
+        leggVedFoersteside,
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
+      );
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(props.brev.id),
+      });
+    },
+  });
+
   const distribusjonstypeMutation = useMutation<BrevInfo, Error, Distribusjonstype, unknown>({
     mutationFn: (distribusjonstype) =>
       endreDistribusjonstype(props.saksId, props.brev.id, {
@@ -303,6 +324,21 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         </HStack>
       )}
       <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
+      <Switch
+        checked={props.brev.leggVedFoersteside ?? false}
+        loading={foerstesideMutation.isPending}
+        onChange={(event) => {
+          foerstesideMutation.mutate(event.target.checked);
+        }}
+        size="small"
+      >
+        Førsteside
+      </Switch>
+      {foerstesideMutation.isError && (
+        <Alert size="small" variant="error">
+          {getErrorMessage(foerstesideMutation.error)}
+        </Alert>
+      )}
       <Switch
         checked={erLaast}
         loading={laasForRedigeringMutation.isPending}
