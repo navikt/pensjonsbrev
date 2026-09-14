@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.common
 
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Hash
+import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import org.jetbrains.exposed.v1.core.eq
@@ -85,6 +86,52 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
     }
 }
 
+fun JobConfig.updateMottaker() {
+    transaction {
+        val alleMottakere = MottakerTable.select(
+            MottakerTable.id,
+            MottakerTable.navn,
+            MottakerTable.postnummer,
+            MottakerTable.poststed,
+            MottakerTable.adresselinje1,
+            MottakerTable.adresselinje2,
+            MottakerTable.adresselinje3,
+            MottakerTable.landkode,
+            MottakerTable.manueltAdressertTil,
+            MottakerTable.navnKryptert,
+            MottakerTable.postnummerKryptert,
+            MottakerTable.poststedKryptert,
+            MottakerTable.adresselinje1Kryptert,
+            MottakerTable.adresselinje2Kryptert,
+            MottakerTable.adresselinje3Kryptert,
+            MottakerTable.landkodeKryptert,
+            MottakerTable.manueltAdressertTilKryptert
+        ).toList()
+
+        alleMottakere.forEach {
+            val mottakerId = it[MottakerTable.id]
+            logger.debug("Oppdaterer {}", mottakerId)
+            val navn = it[MottakerTable.navn]
+            val postnummer = it[MottakerTable.postnummer]
+            val poststed = it[MottakerTable.poststed]
+            val adresselinje1 = it[MottakerTable.adresselinje1]
+            val adresselinje2 = it[MottakerTable.adresselinje2]
+            val adresselinje3 = it[MottakerTable.adresselinje3]
+            val landkode = it[MottakerTable.landkode]
+            val manueltAdressertTil = it[MottakerTable.manueltAdressertTil]
+            MottakerTable.update({ MottakerTable.id eq mottakerId }) { update ->
+                update[MottakerTable.navnKryptert] = navn
+                update[MottakerTable.postnummerKryptert] = postnummer
+                update[MottakerTable.poststedKryptert] = poststed
+                update[MottakerTable.adresselinje1Kryptert] = adresselinje1
+                update[MottakerTable.adresselinje2Kryptert] = adresselinje2
+                update[MottakerTable.adresselinje3Kryptert] = adresselinje3
+                update[MottakerTable.landkodeKryptert] = landkode
+                update[MottakerTable.manueltAdressertTilKryptert] = manueltAdressertTil
+            }
+        }
+    }
+}
 
 fun JobConfig.updateBrevredigeringJson() {
     transaction {

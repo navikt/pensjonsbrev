@@ -23,6 +23,7 @@ import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
+import no.nav.pensjon.brev.skribenten.common.updateMottaker
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
@@ -153,6 +154,9 @@ fun Application.skribentenApp() {
 
             val leaderService: NaisLeaderService by dependencies
             oneShotJobs(leaderService) {
+                job("2026-09-14-update-mottaker") {
+                    updateMottaker()
+                }
                 // Sett opp evt. jobber her
             }
         }
