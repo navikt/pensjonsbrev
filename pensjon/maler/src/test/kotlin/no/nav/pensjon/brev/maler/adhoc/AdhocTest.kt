@@ -6,8 +6,6 @@ import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDto
-import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.template.Language
@@ -106,7 +104,7 @@ class AdhocTest {
     fun `testAdHocVarselUgyldiggjoringFullmaktsgiver pdf`() {
         LetterTestImpl(
             AdHocVarselUgyldiggjoringFullmaktsgiver.template,
-            Fixtures.create<FullmaktsgiverBprofAutoDto>(),
+            Fixtures.create(AdHocVarselUgyldiggjoringFullmaktsgiver::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF(AdHocVarselUgyldiggjoringFullmaktsgiver.kode.name)
@@ -118,7 +116,7 @@ class AdhocTest {
     fun `testAdHocVarselUgyldiggjoringFullmektig pdf`() {
         LetterTestImpl(
             AdHocVarselUgyldiggjoringFullmektig.template,
-            Fixtures.create<FullmektigBprofAutoDto>(),
+            Fixtures.create(AdHocVarselUgyldiggjoringFullmektig::class),
             Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF(AdHocVarselUgyldiggjoringFullmektig.kode.name)

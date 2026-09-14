@@ -26,7 +26,7 @@ import java.time.Month
 class BlockTilSlateKonvertererTest {
     @Test
     fun `kan lese inn letter markup fra brevbakeren`() {
-        val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create())
+        val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create(ForhaandsvarselOmregningBP::class))
         val letterMarkup = Brevbaker(object : PDFByggerService {
             override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput = PDFCompilationOutput(ByteArray(0))
             override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput = PDFCompilationOutput(ByteArray(0))

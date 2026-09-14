@@ -4,9 +4,11 @@ import io.ktor.server.application.*
 import io.ktor.util.*
 import io.ktor.util.pipeline.*
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.currentCoroutineContext
 import no.nav.pensjon.brev.skribenten.context.*
 import no.nav.pensjon.brev.skribenten.principal
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import io.ktor.server.application.Hook as KtorHook
 
 private val PrincipalInContextPhase: PipelinePhase = PipelinePhase("PrincipalInContext")
@@ -55,3 +57,7 @@ suspend fun <T> withPrincipal(principal: UserPrincipal, block: suspend () -> T):
     withContext(ContextElement(principal)) {
         block()
     }
+
+// Til arbeid som fortsetter etter at requesten er besvart, og som fortsatt trenger OBO-token.
+suspend fun currentPrincipalContext(): CoroutineContext =
+    currentCoroutineContext()[ContextElement] ?: EmptyCoroutineContext

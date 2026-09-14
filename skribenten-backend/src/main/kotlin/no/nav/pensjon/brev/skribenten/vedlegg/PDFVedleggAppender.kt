@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.vedlegg
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.P1_BREVKODE
+import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.P1_BREVKODE
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brevbaker.api.model.LanguageCode

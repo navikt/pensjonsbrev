@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg
 
-import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
@@ -10,7 +9,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLiv
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedGradertUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedHeltUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedNormertPensjonsalder
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDtoData.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdInnhold.seksjoner
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.avsnitt
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.tittel
@@ -30,32 +29,27 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringsinfo
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.uttaksinformasjon.grad
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.uttaksinformasjon.uttaksdato
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.*
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.SimpleSelector
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
-@OptIn(InternKonstruktoer::class)
-private val sivilstatusValueSelector = SimpleSelector<Sivilstatus, String>(
-    className = "no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus",
-    propertyName = "value",
-    propertyType = "String",
-    selector = Sivilstatus::value
-)
-
-private val Expression<Sivilstatus>.value: Expression<String>
-    get() = select(sivilstatusValueSelector)
+object SivilstatusFormatter : LocalizedFormatter<Sivilstatus>() {
+    override fun apply(first: Sivilstatus, second: Language): String = first.value
+    override fun stableHashCode() = "SivilstatusFormatter".hashCode()
+}
 
 @TemplateModelHelpers
-val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
+val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
     title = {
         text(bokmal { +"Pensjonsberegningen din med detaljer og forbehold" })
     },
     includeSakspart = false,
 ) {
+
     ifNotNull(kortforbehold) { kortforbeholdVerdi ->
         includePhrase(ForbeholdAvsnittPhrase(kortforbeholdVerdi.avsnitt))
     }
@@ -251,7 +245,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
     }
 
     title2 {
-        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.value })
+        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.format(formatter = SivilstatusFormatter) })
     }
     paragraph {
         text(

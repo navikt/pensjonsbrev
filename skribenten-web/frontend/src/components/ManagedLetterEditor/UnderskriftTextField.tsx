@@ -14,9 +14,9 @@ export const UnderskriftTextField = ({
   error?: string;
   controlled?: boolean;
 }) => {
-  const { editorState, setEditorState } = useManagedLetterEditorContext();
+  const { redigertBrev, setEditorState } = useManagedLetterEditorContext();
 
-  const signatur = editorState.redigertBrev.signatur;
+  const signatur = redigertBrev.signatur;
   const value = of === "Saksbehandler" ? signatur.saksbehandlerNavn : signatur.attesterendeSaksbehandlerNavn;
   const update = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => applyAction(Actions.updateSignatur, setEditorState, of, e.target.value),

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.getAs
 import io.ktor.util.collections.*
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.P1_BREVKODE
+import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.P1_BREVKODE
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.model.NavIdent
@@ -44,7 +44,7 @@ object Testbrevkoder {
 data class EksempelRedigerbartDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<EksempelRedigerbartDto.PesysData> {
+) : RedigerbarBrevdata<EksempelRedigerbartDto.PesysData> {
     data class PesysData(
         val pensjonInnvilget: Boolean,
         val datoInnvilget: LocalDate,
@@ -108,10 +108,19 @@ fun Features.override(key: UnleashToggle, value: Boolean) {
 }
 
 object SharedPostgres {
+    private const val POSTGRES_IMAGE = "postgres:18-alpine"
+
+    /**
+     * Oppretter en ny, ustartet container som ikke deler tilstand med den delte databasen under.
+     * For tester som trenger å boote hele appen mot sin egen database. Kalleren eier livssyklusen
+     * og må selv kalle `start()` og `stop()`.
+     */
+    fun createStandaloneContainer(): PostgreSQLContainer = PostgreSQLContainer(POSTGRES_IMAGE)
+
     private val subscriptions = ConcurrentSet<Any>()
 
     private val container by lazy {
-        PostgreSQLContainer("postgres:17-alpine")
+        createStandaloneContainer()
             .apply { start() }
     }
 

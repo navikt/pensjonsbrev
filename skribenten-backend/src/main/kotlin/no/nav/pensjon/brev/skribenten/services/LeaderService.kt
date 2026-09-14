@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.databind.DeserializationFeature
 import io.ktor.client.call.*
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.jackson.*
@@ -40,7 +39,7 @@ class NaisLeaderService(
 
     private suspend fun fetchLeader(): LeaderResponse? =
         if (!url.isNullOrEmpty()) {
-            client.get(url).body<LeaderResponse>()
+            client.get(url) { metricsRoute("leader") }.body<LeaderResponse>()
         } else {
             null
         }

@@ -2,16 +2,17 @@ package no.nav.pensjon.brev.planleggepensjon
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrev
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDto
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrev
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdInnhold
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdSeksjon
@@ -30,6 +31,8 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
 import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.Uttaksinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.Vilkaarsproevingsresultat
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -40,20 +43,17 @@ object Fixtures : LetterDataFactory {
 
     val felles = FellesFactory.felles
 
-    inline fun <reified T : Any> create(): T = create(T::class)
-
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> create(letterDataType: KClass<T>): T =
-        when (letterDataType) {
-            ApSimuleringBrevDto::class -> createSimuleringBrevDto() as T
-            ServiceberegningBrevDto::class -> createServiceberegningBrevDto() as T
-            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
-            else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
+    override fun <T : BrevbakerBrevdata> create(templateType: KClass<out BrevTemplate<T, *>>): T =
+        when (templateType) {
+            ApSimuleringBrev::class -> createSimuleringBrevDto() as T
+            ServiceberegningBrev::class -> createServiceberegningBrevDto() as T
+            else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when (letterDataType) {
-        ApSimuleringDto::class -> createLagreSimuleringDto() as T
+        ApSimuleringDtoData::class -> createFagsystemdata() as T
         Simuleringsinformasjon::class -> createSimuleringsinformasjon() as T
         ForbeholdInnhold::class -> createForbeholdInnhold() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
@@ -61,39 +61,45 @@ object Fixtures : LetterDataFactory {
 
     private fun createSimuleringBrevDto() = createBrevDtoMedAfpPrivat()
 
-    fun createServiceberegningBrevDto() = ServiceberegningBrevDto(
-        saksbehandlerValg = ServiceberegningDto(
-            uttaksalder = Alder(62, 10),
-            uttaksdato = "01.02.2027",
-            forventetFremtidigInntekt = Kroner(158000),
-            afp = TidsbegrensetOffentligAfp(
-                alderAar = 62,
-                totaltAfpBeloep = Kroner(31353),
-                tidligereArbeidsinntekt = Kroner(550000),
-                grunnbeloep = Kroner(130160),
-                sluttpoengtall = 4.73,
-                trygdetid = 40,
-                poengaarTom1991 = 4,
-                poengaarFom1992 = 36,
-                grunnpensjon = Kroner(10847),
-                tilleggspensjon = Kroner(17667),
-                afpTillegg = Kroner(1700),
-                saertillegg = Kroner(1139),
-                afpGrad = Percent(100),
-                erAvkortet = true,
-            ),
-            alt1 = true,
-            alt2 = false,
+    fun createServiceberegningBrevDto(): ServiceberegningBrevDto {
+        val saksbehandlerValg = lagSaksbehandlervalg(
+            "ingenYtelser" to true,
+            "vedtakOmAlderspensjon" to false,
         )
-    )
+        return ServiceberegningBrevDto(
+            saksbehandlerValg = saksbehandlerValg,
+            pesysData = ServiceberegningDtoData(
+                uttaksalder = Alder(62, 10),
+                uttaksdato = "01.02.2027",
+                forventetFremtidigInntekt = Kroner(158000),
+                afp = TidsbegrensetOffentligAfp(
+                    alderAar = 62,
+                    totaltAfpBeloep = Kroner(31353),
+                    tidligereArbeidsinntekt = Kroner(550000),
+                    grunnbeloep = Kroner(130160),
+                    sluttpoengtall = 4.73,
+                    trygdetid = 40,
+                    poengaarTom1991 = 4,
+                    poengaarFom1992 = 36,
+                    grunnpensjon = Kroner(10847),
+                    tilleggspensjon = Kroner(17667),
+                    afpTillegg = Kroner(1700),
+                    saertillegg = Kroner(1139),
+                    afpGrad = Percent(100),
+                    erAvkortet = true,
+                ),
+            )
+        )
+    }
 
     fun createBrevDtoMedAfpPrivat() = ApSimuleringBrevDto(
-        saksbehandlerValg = createLagreSimuleringDto(),
-        pesysData = EmptyFagsystemdata,
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = createFagsystemdata(),
     )
 
     fun createBrevDtoMedAfpOffentligLivsvarig() = ApSimuleringBrevDto(
-        saksbehandlerValg = createLagreSimuleringDto().copy(
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = createFagsystemdata().copy(
             simulering = createSimulering().copy(
                 afpPrivat = null,
                 afpOffentligLivsvarig = AfpOffentligLivsvarigSimulering(
@@ -110,20 +116,20 @@ object Fixtures : LetterDataFactory {
                 ),
             ),
         ),
-        pesysData = EmptyFagsystemdata,
     )
 
     fun createBrevDtoMedEndringAfpPrivat() = ApSimuleringBrevDto(
-        saksbehandlerValg = createLagreSimuleringDto().copy(
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = createFagsystemdata().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
                 simulererEndringMedAfpPrivat = true,
             ),
         ),
-        pesysData = EmptyFagsystemdata,
     )
 
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
-        saksbehandlerValg = createLagreSimuleringDto().copy(
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = createFagsystemdata().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
                 heltUttakInformasjon = Uttaksinformasjon(alder = Alder(67, 0), uttaksdato = "01.02.2030", grad = 100),
                 gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(63, 2), uttaksdato = "01.04.2026", grad = 40),
@@ -152,13 +158,12 @@ object Fixtures : LetterDataFactory {
                         afpGrad = Percent(100),
                         erAvkortet = false,
                     ),
-                ),
             ),
-        pesysData = EmptyFagsystemdata,
+        ),
     )
 
-    private fun createLagreSimuleringDto() =
-        ApSimuleringDto(
+    private fun createFagsystemdata() =
+        ApSimuleringDtoData(
             simulering = createSimulering(),
             vilkaarsproevingsresultat = Vilkaarsproevingsresultat(erInnvilget = true, alternativ = null),
             pensjonsgivendeInntektListe = emptyList(),

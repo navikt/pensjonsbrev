@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.letter
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.skribenten.common.diff.EditScript
 
 interface EditLetterTokenizer<Token : Any> {
@@ -7,26 +9,40 @@ interface EditLetterTokenizer<Token : Any> {
     fun <R> parseTokens(editScript: EditScript<Token>, producer: DiffProducer<R>): R
 }
 
-sealed class ContentIndex {
-    data class BlockIndex(val blockIndex: Int) : ContentIndex() {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(value = ContentIndex.BlockIndex::class, name = "BLOCK"),
+    JsonSubTypes.Type(value = ContentIndex.BlockContentIndex::class, name = "BLOCK_CONTENT"),
+    JsonSubTypes.Type(value = ContentIndex.ItemIndex::class, name = "ITEM"),
+    JsonSubTypes.Type(value = ContentIndex.ItemContentIndex::class, name = "ITEM_CONTENT"),
+    JsonSubTypes.Type(value = ContentIndex.TableRowIndex::class, name = "TABLE_ROW"),
+    JsonSubTypes.Type(value = ContentIndex.TableCellIndex::class, name = "TABLE_CELL"),
+    JsonSubTypes.Type(value = ContentIndex.TableCellContentIndex::class, name = "TABLE_CELL_CONTENT"),
+)
+sealed class ContentIndex(val type: Type) {
+    enum class Type {
+        BLOCK, BLOCK_CONTENT, ITEM, ITEM_CONTENT, TABLE_ROW, TABLE_CELL, TABLE_CELL_CONTENT,
+    }
+
+    data class BlockIndex(val blockIndex: Int) : ContentIndex(Type.BLOCK) {
         fun withContentIndex(contentIndex: Int) = BlockContentIndex(blockIndex, contentIndex)
     }
-    data class BlockContentIndex(val blockIndex: Int, val contentIndex: Int) : ContentIndex() {
+    data class BlockContentIndex(val blockIndex: Int, val contentIndex: Int) : ContentIndex(Type.BLOCK_CONTENT) {
         fun withItemIndex(itemIndex: Int) = ItemIndex(blockIndex, contentIndex, itemIndex)
         fun withRowIndex(rowIndex: Int) = TableRowIndex(blockIndex, contentIndex, rowIndex)
     }
-    data class ItemIndex(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int) : ContentIndex() {
+    data class ItemIndex(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int) : ContentIndex(Type.ITEM) {
         fun withTextContentIndex(idx: Int) = ItemContentIndex(blockIndex, contentIndex, itemIndex, idx)
     }
-    data class ItemContentIndex(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int, val itemContentIndex: Int) : ContentIndex()
+    data class ItemContentIndex(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int, val itemContentIndex: Int) : ContentIndex(Type.ITEM_CONTENT)
     // rowIndex = -1 addresses the header row
-    data class TableRowIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int) : ContentIndex() {
+    data class TableRowIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int) : ContentIndex(Type.TABLE_ROW) {
         fun withCellIndex(cellIndex: Int) = TableCellIndex(blockIndex, contentIndex, rowIndex, cellIndex)
     }
-    data class TableCellIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int) : ContentIndex() {
+    data class TableCellIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int) : ContentIndex(Type.TABLE_CELL) {
         fun withTextContentIndex(idx: Int) = TableCellContentIndex(blockIndex, contentIndex, rowIndex, cellIndex, idx)
     }
-    data class TableCellContentIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int, val cellContentIndex: Int) : ContentIndex()
+    data class TableCellContentIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int, val cellContentIndex: Int) : ContentIndex(Type.TABLE_CELL_CONTENT)
 
     /** The ContentIndex of the immediate containing element, or null if this is a top-level BlockIndex. */
     fun parent(): ContentIndex? = when (this) {
@@ -67,12 +83,22 @@ data class UnifiedDiff(val editedBlocks: Map<Int, BlockEdit>, val deletedBlocks:
     data class BlockEdit(val contentEdits: Map<Int, ContentEdit>, val deletedContent: Map<Int, List<Edit.ParagraphContent>>)
 
     /** Represents an edit to a single piece of ParagraphContent within a block. */
-    sealed class ContentEdit {
-        data class TextContentEdit(val edit: TextEdit) : ContentEdit()
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(value = ContentEdit.TextContentEdit::class, name = "TEXT"),
+        JsonSubTypes.Type(value = ContentEdit.ItemListEdit::class, name = "ITEM_LIST"),
+        JsonSubTypes.Type(value = ContentEdit.TableEdit::class, name = "TABLE"),
+    )
+    sealed class ContentEdit(val type: Type) {
+        enum class Type {
+            TEXT, ITEM_LIST, TABLE,
+        }
 
-        data class ItemListEdit(val itemEdits: Map<Int, TextOnlyEdit>, val deletedItems: Map<Int, List<Edit.ParagraphContent.ItemList.Item>>) : ContentEdit()
+        data class TextContentEdit(val edit: TextEdit) : ContentEdit(Type.TEXT)
 
-        data class TableEdit(val rowEdits: Map<Int, RowEdit>, val deletedRows: Map<Int, List<Edit.ParagraphContent.Table.Row>>) : ContentEdit()
+        data class ItemListEdit(val itemEdits: Map<Int, TextOnlyEdit>, val deletedItems: Map<Int, List<Edit.ParagraphContent.ItemList.Item>>) : ContentEdit(Type.ITEM_LIST)
+
+        data class TableEdit(val rowEdits: Map<Int, RowEdit>, val deletedRows: Map<Int, List<Edit.ParagraphContent.Table.Row>>) : ContentEdit(Type.TABLE)
     }
 
     /** A single word-level range within a still-existing piece of text. */

@@ -1,0 +1,206 @@
+package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
+import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenAdresseManglerException
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenServiceException
+import no.nav.pensjon.brev.skribenten.isFailure
+import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.model.*
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import java.time.LocalDate
+
+class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
+
+    @Test
+    suspend fun `kan ikke distribuere vedtaksbrev som ikke er attestert`() {
+        val brev = opprettBrev(
+            saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) },
+            brevkode = Testbrevkoder.VEDTAKSBREV,
+            vedtaksId = VedtaksId(1),
+        ).resultOrFail()
+
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+        
+        assertThat(sendBrev(brev)).isFailure<SendBrevPolicy.KanIkkeSende.VedtaksbrevIkkeAttestert, _, _>()
+    }
+
+    @Test
+    suspend fun `kan distribuere vedtaksbrev som er attestert`() {
+        brevbakerService.renderPdfKall.clear()
+
+        val brev = opprettBrev(
+            saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) },
+            brevkode = Testbrevkoder.VEDTAKSBREV,
+            vedtaksId = VedtaksId(1),
+        ).resultOrFail()
+
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+        assertThat(attester(brev)).isSuccess()
+        assertThat(hentEllerOpprettPdf(brev, principal = attestant1Principal)).isSuccess()
+
+        assertThat(sendBrev(brev, principal = attestant1Principal)).isSuccess {
+            assertThat(it.journalpostId?.id).isEqualTo(bestillBrevresponse.journalpostId?.id)
+        }
+    }
+
+    @Test
+    suspend fun `distribuerer sentralprint brev`() {
+        val brev = opprettBrev().resultOrFail()
+
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(sendBrev(brev)).isSuccess()
+
+        penService.verifyHentPesysBrevdata(sak1.saksId, null, Testbrevkoder.INFORMASJONSBREV, PRINCIPAL_NAVENHET_ID)
+        penService.verifySendBrev(
+            Pen.SendRedigerbartBrevRequest(
+                templateDescription = informasjonsbrev,
+                dokumentDato = LocalDate.now(),
+                saksId = sak1.saksId,
+                brevkode = Testbrevkoder.INFORMASJONSBREV,
+                enhetsId = PRINCIPAL_NAVENHET_ID,
+                pdf = stagetPDF,
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
+                mottaker = null,
+            ), true
+        )
+    }
+
+    @Test
+    suspend fun `distribuerer ikke lokalprint brev`() {
+        val brev = opprettBrev().resultOrFail()
+
+        assertThat(endreDistribusjonstype(brev.info.id, Distribusjon.LOKALPRINT)).isSuccess()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(sendBrev(brev)).isSuccess()
+
+        penService.verifyHentPesysBrevdata(sak1.saksId, null, Testbrevkoder.INFORMASJONSBREV, PRINCIPAL_NAVENHET_ID)
+        penService.verifySendBrev(
+            Pen.SendRedigerbartBrevRequest(
+                templateDescription = informasjonsbrev,
+                dokumentDato = LocalDate.now(),
+                saksId = sak1.saksId,
+                brevkode = Testbrevkoder.INFORMASJONSBREV,
+                enhetsId = PRINCIPAL_NAVENHET_ID,
+                pdf = stagetPDF,
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
+                mottaker = null,
+            ), false
+        )
+    }
+
+    @Test
+    suspend fun `kan ikke sende brev som ikke er markert klar til sending`() {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+
+        assertThat(sendBrev(brev)).isFailure<SendBrevPolicy.KanIkkeSende.IkkeLaastForRedigering, _, _>()
+    }
+
+    @Test
+    suspend fun `kan ikke sende brev hvor pdf har annen hash enn siste brevredigering`() {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(oppdaterBrev(brevId = brev.info.id, nyttRedigertbrev = brev.redigertBrev.withSignaturSaksbehandler("en ny signatur"))).isSuccess()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+
+        assertThat(sendBrev(brev)).isFailure<SendBrevPolicy.KanIkkeSende.DocumentIkkeForGjeldendeRedigertBrev, _, _>()
+    }
+
+    @Test
+    suspend fun `arkivert brev men ikke distribuert kan sendes`() {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(arkiverBrev(brev)).isSuccess()
+        assertThat(hentBrev(brev.info.id)).isNotNull()
+
+        assertThat(sendBrev(brev)).isSuccess()
+        assertThat(hentBrev(brev.info.id)).isNull()
+    }
+
+    @Test
+    suspend fun `brev distribueres til annen mottaker`() {
+        val mottaker = Dto.Mottaker.samhandler("987")
+        val brev = opprettBrev(mottaker = mottaker).resultOrFail()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+        assertThat(sendBrev(brev)).isSuccess()
+
+        penService.verifySendBrev(
+            Pen.SendRedigerbartBrevRequest(
+                templateDescription = informasjonsbrev,
+                dokumentDato = LocalDate.now(),
+                saksId = sak1.saksId,
+                brevkode = Testbrevkoder.INFORMASJONSBREV,
+                enhetsId = PRINCIPAL_NAVENHET_ID,
+                pdf = stagetPDF,
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
+                mottaker = Pen.SendRedigerbartBrevRequest.Mottaker(
+                    Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
+                    mottaker.tssId,
+                    null,
+                    null
+                )
+            ), true
+        )
+    }
+
+    @Test
+    suspend fun `status er ARKIVERT om brev har journalpost`() {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(arkiverBrev(brev)).isSuccess()
+
+        assertThat(hentBrev(brev.info.id)).isSuccess {
+            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
+        }
+    }
+
+    @Test
+    suspend fun `journalpostId fra feilende PEN-kall lagres paa brevet`() {
+        val brev = klartBrev()
+        penService.sendBrevException = PenAdresseManglerException(JournalpostId(456))
+
+        assertThrows<PenAdresseManglerException> { sendBrev(brev) }
+
+        assertThat(hentBrev(brev.info.id)).isSuccess {
+            assertThat(it.info.journalpostId).isEqualTo(JournalpostId(456))
+            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
+        }
+    }
+
+    @Test
+    suspend fun `brev er uendret naar PEN feiler uten journalpostId`() {
+        val brev = klartBrev()
+        penService.sendBrevException = PenServiceException("Noe gikk galt")
+
+        assertThrows<PenServiceException> { sendBrev(brev) }
+
+        assertThat(hentBrev(brev.info.id)).isSuccess {
+            assertThat(it.info.journalpostId).isNull()
+        }
+    }
+
+    @Test
+    suspend fun `brev som feilet sending kan slettes naar mottaker har doedsdato`() {
+        val brev = klartBrev()
+        penService.sendBrevException = PenAdresseManglerException(JournalpostId(456))
+
+        assertThrows<PenAdresseManglerException> { sendBrev(brev) }
+
+        pdlService.brukerContext = Pdl.PersonContext(adressebeskyttelse = false, doedsdato = LocalDate.now())
+        assertThat(slettBrev(brev)).isSuccess()
+        assertThat(hentBrev(brev.info.id)).isNull()
+    }
+
+    private suspend fun klartBrev(): Dto.Brevredigering {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+        return brev
+    }
+}

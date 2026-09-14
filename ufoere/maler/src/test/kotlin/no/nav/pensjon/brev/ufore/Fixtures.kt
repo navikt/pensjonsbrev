@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.ufore
 import no.nav.brev.brevbaker.*
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
@@ -14,32 +14,90 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.brev.ufore.maler.feilutbetaling.*
+import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.*
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.*
+import no.nav.pensjon.brev.ufore.maler.info.*
+import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
+import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 
 object Fixtures : LetterDataFactory {
 
     val felles = FellesFactory.felles
 
-    inline fun <reified T : Any> create(): T = create(T::class)
-
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> create(letterDataType: KClass<T>): T =
-        when (letterDataType) {
-            InfoEndretUTPgaInntektDto::class -> lagInfoEndretUTPgaInntektDto() as T
-            UforeAvslagTestmalDto::class -> lagUforeAvslagTestmalDto() as T
-            UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
-            UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
-            UforeAvslagUtlandDto::class -> lagUforeAvslagUtlandDto() as T
-            UforeAvslagDto::class -> lagUforeAvslagDto() as T
-            VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
-            VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
-            VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
-            FeilutbetalingSpesifikkVarselDto::class -> lagFeilutbetalingSpesfikkVarsel() as T
-            FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
-            InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
-            InnhentingOpplysningerSamboerDto::class -> lagInnhentingOpplysningerSamboer() as T
-            EmptyRedigerbarBrevdataMedSaksbehandlerValg::class -> lagEmptyRedigerbarBrevdataMedSaksbehandlerValg() as T
-            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
-            else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
+    override fun <T : BrevbakerBrevdata> create(templateType: KClass<out BrevTemplate<T, *>>): T =
+        when (templateType) {
+            InfoEndretUforetrygdPgaInntekt::class -> lagInfoEndretUTPgaInntektDto() as T
+            UforeAvslagTestmal::class -> lagUforeAvslagTestmalDto() as T
+            UforeAvslagHensiktsmessigBehandling::class -> lagUforeAvslagEnkelDto() as T
+            UforegradAvslagManglendeDok::class -> lagUforeAvslagEnkelDto() as T
+            UforegradAvslagHensiktsmessigArbTiltakI2::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagManglendeDok::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagHensiktsmessigArbTiltakI1::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagSykdom::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagUngUforVarig::class -> lagUforeAvslagEnkelDto() as T
+            UforegradAvslagHensiktsmessigArbTiltakI1::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagHensiktsmessigArbTiltakI2::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagIFUIkkeVarig::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagIFUOktStilling::class -> lagUforeAvslagEnkelDto() as T
+            UforegradAvslagSykdom::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagUngUfor36::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagYrkesskadeGodkjent::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagAlder::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagUngUfor26::class -> lagUforeAvslagEnkelDto() as T
+            UforegradAvslagHensiktsmessigBehandling::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagMedlemskap::class -> lagUforeAvslagEnkelDto() as T
+            UforeAvslagInntektsevne40::class -> lagUforeAvslagInntektDto() as T
+            UforeAvslagInntektsevne50::class -> lagUforeAvslagInntektDto() as T
+            UforeAvslagInntektsevne30::class -> lagUforeAvslagInntektDto() as T
+            UforegradAvslagInntektsevne::class -> lagUforeAvslagInntektDto() as T
+            UforeAvslagMedlemskapUtland::class -> lagUforeAvslagUtlandDto() as T
+            UforeAvslagMedlemskapMindre12Mnd::class -> lagUforeAvslagDto() as T
+            VarselFeilutbetaling::class -> lagVarselFeilutbetalingUforeDto() as T
+            VedtakFeilutbetaling::class -> lagVedtakFeilutbetalingUforeDto() as T
+            VedtakIngenTilbakekreving::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
+            VedtakIngenTilbakekrevingForeldelse::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
+            VarselFeilutbetalingSivilstand12_13_2::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            VarselBtBarnUtland12_15::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            VarselSoning12_20::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            VarselFeilutbetalingSivilstandUngUfor12_13_3::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            VarselInstitusjon12_19::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            VarselBtBarnetFlytter12_15::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            VarselDodsbo::class -> lagFeilutbetalingVarselDodsbo() as T
+            Naeringsinntekter::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
+            OppgittSamboer::class -> lagInnhentingOpplysningerSamboer() as T
+            VarselOmLavereReduksjonsprosentRedigerbar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            VarselOmOktMinsteIFURedigerbar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            VarselOmLavereMinstesatsS::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            SoknadBarnetilleggFosterForelder::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            FlereOpplysningerGenerell::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            SoknadBarnetillegg::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            TrukketKlage::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            FlereOpplysningerFirmaInntekt::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            NySivilstand::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            EktefelleUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            UtsattKlagefrist::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            AntattDod::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            SoknadBarnetilleggUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            BrukerLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            LegeLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            HvilendeRettMidlertidigOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            HvilendeRettOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            HvilendeRettInfo4Aar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            HvilendeRettVarselOpphoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            UforeAvslagYrkesskadeIkkeGodkjent::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            InfoOmReverseringAvMinstesats::class -> EmptyAutobrevdata as T
+            VarselOmOktMinsteIFUOgLavereReduksjonsprosent::class -> EmptyAutobrevdata as T
+            VarselOmLavereMinstesats::class -> EmptyAutobrevdata as T
+            VarselOmLavereReduksjonsprosent::class -> EmptyAutobrevdata as T
+            VarselOmOktMinsteIFU::class -> EmptyAutobrevdata as T
+            InfobrevLovendringer2026::class -> EmptyAutobrevdata as T
+            else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
     @Suppress("UNCHECKED_CAST")
@@ -48,8 +106,8 @@ object Fixtures : LetterDataFactory {
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
 
-    private fun lagEmptyRedigerbarBrevdataMedSaksbehandlerValg() =
-        EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
+    private fun lagEmptyRedigerbarRedigerbarBrevdata() =
+        EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
 
     private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
         pesysData = VarselFeilutbetalingPesysData(100),

@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
+import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -18,7 +19,7 @@ import java.time.LocalDate
 
 @Tag(TestTags.MANUAL_TEST)
 class MaanedligUfoeretrygdFoerSkattITest {
-    val ufoeretrygdPerMaaned = Fixtures.create(UfoeretrygdPerMaaned::class)
+    val ufoeretrygdPerMaaned = Fixtures.createVedlegg(UfoeretrygdPerMaaned::class)
         .copy(
             annetBelop = Kroner(1),
             barnetilleggFellesbarnBrutto = Kroner(2),

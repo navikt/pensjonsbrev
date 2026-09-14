@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
-import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -84,14 +83,19 @@ class BrevmalService(
             vedleggId = vedleggId,
         )
 
+    suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, LetterMarkup.Attachment> =
+        brev.redigerteVedlegg.mapNotNull { lagret ->
+            renderRedigerbartVedlegg(brev, pesysData, lagret.vedleggId)?.let { lagret.vedleggId to it }
+        }.toMap()
+
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         brevbakerService.getRedigerbarTemplate(brevkode)
 
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
         brevbakerService.getModelSpecification(brevkode)
 
-    suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
-        brevbakerService.getAlltidValgbareVedlegg()
+    suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode> =
+        brevbakerService.getAlltidValgbareVedlegg(brevkode)
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
         brevbakerService.getTemplates()

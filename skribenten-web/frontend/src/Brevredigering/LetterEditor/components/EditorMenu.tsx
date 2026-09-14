@@ -5,11 +5,11 @@ import { format, isToday } from "date-fns";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { useRedigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { VerticalDivider } from "~/components/Divider";
 import EditorTableTools from "~/components/EditorTableTools";
 import { ListType } from "~/types/brevbakerTypes";
 import { formatTime } from "~/utils/dateUtils";
-import { type Redigeringsflate } from "~/utils/editorTracking";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
@@ -53,18 +53,11 @@ type EditorMenuProps = {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  setVilTilbakestilleMal: (state: boolean) => void;
-  redigeringsflate: Redigeringsflate;
+  setVilTilbakestilleMal?: (state: boolean) => void;
 };
 
-export const EditorMenu = ({
-  undo,
-  redo,
-  canUndo,
-  canRedo,
-  setVilTilbakestilleMal,
-  redigeringsflate,
-}: EditorMenuProps) => {
+export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
+  const redigeringsflate = useRedigeringsflate();
   return (
     <Box
       asChild
@@ -91,7 +84,7 @@ export const EditorMenu = ({
 
         <HStack align="center" gap="space-16">
           <LagringStatus />
-          {redigeringsflate !== "attestant-redigering" && (
+          {setVilTilbakestilleMal && redigeringsflate === "saksbehandler-redigering" && (
             <Tooltip content={tooltipText.tilbakestill}>
               <Button
                 aria-label="Tilbakestill mal"

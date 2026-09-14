@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.*
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.http.*
 import io.ktor.serialization.*
 import io.ktor.serialization.jackson.*
@@ -21,16 +22,13 @@ import no.nav.brev.brevbaker.serialization.internalJacksonConfig
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts
-import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
@@ -112,6 +110,17 @@ fun Application.skribentenApp() {
             logger.info(cause.message, cause)
             call.respond(status = cause.status, message = cause.message)
         }
+        exception<AzureAdOnBehalfOfAuthorizationException> { call, cause ->
+            val responseMessage =
+                if (cause.status == HttpStatusCode.Unauthorized) {
+                    logger.info(cause.message, cause)
+                    "Innloggingen din er utløpt. Logg inn på nytt."
+                } else {
+                    logger.error(cause.message, cause)
+                    "Teknisk feil ved token-utveksling"
+                }
+            call.respond(status = cause.status, message = responseMessage)
+        }
         exception<Exception> { call, cause ->
             cleanSensitiveDataAndLog(cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
@@ -186,10 +195,15 @@ private fun cleanSensitiveDataAndLog(cause: Exception) {
             stackTrace = cause.stackTrace
         }
         logger.error(cleansedException.message, cleansedException)
+    } else if (cause.isInfoLogLevel()) {
+        logger.info(cause.message, cause)
     } else {
         logger.error(cause.message, cause)
     }
 }
+
+private fun Throwable.isInfoLogLevel(): Boolean =
+    this is HttpRequestTimeoutException
 
 private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.let { msg ->
     msg.startsWith("Unexpected value") && msg.endsWith("of type ${Edit.Letter::class.qualifiedName}")

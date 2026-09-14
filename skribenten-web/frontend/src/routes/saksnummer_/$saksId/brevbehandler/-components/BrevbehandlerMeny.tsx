@@ -196,7 +196,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
     mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
     onSuccess: (response, isKlar) => {
-      const brevType = erVedtaksbrev(response) ? "vedtaksbrev" : "informasjonsbrev";
+      const brevtype = erVedtaksbrev(response) ? "vedtaksbrev" : "informasjonsbrev";
       const klarStatus = isKlar
         ? erVedtaksbrev(response)
           ? "klart for attestering"
@@ -205,7 +205,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       trackEvent("brev klar status endret", {
         brevId: response.id,
         brevkode: response.brevkode,
-        brevType,
+        brevtype,
         klarStatus,
         erKlar: isKlar,
         enhetsId,

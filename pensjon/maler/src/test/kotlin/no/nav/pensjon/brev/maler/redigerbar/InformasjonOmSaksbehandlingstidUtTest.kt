@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDto
 import no.nav.pensjon.brev.api.toLanguage
+import no.nav.pensjon.brev.maler.ufore.diverse.InformasjonOmSaksbehandlingstidUTRedigerbar
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -38,7 +39,7 @@ class InformasjonOmSaksbehandlingstidUtTest {
     private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidUtDto) {
         listOf(BOKMAL, NYNORSK, ENGLISH).forEach { lang ->
             LetterTestImpl(
-                InformasjonOmSaksbehandlingstidUT.template,
+                InformasjonOmSaksbehandlingstidUTRedigerbar.template,
                 data,
                 lang.toLanguage(),
                 Fixtures.felles

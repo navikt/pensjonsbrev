@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdD
 
 fun createEndretBarnetilleggUfoeretrygdDto() =
     EndretBarnetilleggUfoeretrygdDto(
-        pe = Fixtures.create(),
+        pe = Fixtures.createVedlegg(),
         maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
         orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
     )

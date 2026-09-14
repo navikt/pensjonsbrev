@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
+import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
@@ -27,6 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
+import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger(PentHttpClient::class.java)
 
@@ -46,8 +49,15 @@ interface PenClient {
     )
 }
 
-class PenAdresseManglerException : ServiceException("Adresse mangler", status = HttpStatusCode.UnprocessableEntity)
-class PenServiceException(message: String) : ServiceException(message)
+interface HarJournalpostId {
+    val journalpostId: JournalpostId?
+}
+
+class PenAdresseManglerException(override val journalpostId: JournalpostId? = null) :
+    ServiceException("Adresse mangler", status = HttpStatusCode.UnprocessableEntity), HarJournalpostId
+
+class PenServiceException(message: String, override val journalpostId: JournalpostId? = null) :
+    ServiceException(message), HarJournalpostId
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
@@ -62,6 +72,9 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         defaultRequest {
             url(penUrl)
         }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 15.seconds.inWholeMilliseconds
+        }
         installRetry(logger, shouldNotRetry = { method, _, _ -> method != HttpMethod.Get })
         install(ContentNegotiation) {
             jackson {
@@ -71,6 +84,10 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         }
         onBehalfOfClient(penScope, authService)
     }
+
+    private val feilresponsMapper = jacksonObjectMapper()
+        .registerModule(JavaTimeModule())
+        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
     private suspend inline fun <reified T> HttpResponse.bodyOrThrow(): T? =
         when {
@@ -88,7 +105,9 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         }
 
     override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? =
-        client.get("brev/skribenten/sak/${saksId.id}").bodyOrThrow<SakResponseDto>()?.let {
+        client.get("brev/skribenten/sak/${saksId.id}") {
+            metricsRoute("brev/skribenten/sak/{saksId}")
+        }.bodyOrThrow<SakResponseDto>()?.let {
             Pen.SakSelection(
                 saksId = it.saksId,
                 foedselsdato = it.foedselsdato,
@@ -102,6 +121,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
 
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse {
         val response = client.post("brev/pjoark030/bestillbrev") {
+            metricsRoute("brev/pjoark030/bestillbrev")
             setBody(bestillExstreamBrevRequest)
             contentType(ContentType.Application.Json)
         }
@@ -124,21 +144,27 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
     }
 
     override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse? =
-        client.get("brev/dokument/exstream/${journalpostId.id}")
-            .bodyOrThrow()
+        client.get("brev/dokument/exstream/${journalpostId.id}") {
+            metricsRoute("brev/dokument/exstream/{journalpostId}")
+        }.bodyOrThrow()
 
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
-        client.get("brev/skribenten/avtaleland").bodyOrThrow() ?: emptyList()
+        client.get("brev/skribenten/avtaleland") {
+            metricsRoute("brev/skribenten/avtaleland")
+        }.bodyOrThrow() ?: emptyList()
 
     override suspend fun ping() =
-        ping("PEN") { client.get("/pen/actuator/health/readiness") }
+        ping("PEN") { client.get("/pen/actuator/health/readiness") { metricsRoute("/pen/actuator/health/readiness") } }
 
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean? =
-        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravPaaGammeltRegelverk")
-            .bodyOrThrow()
+        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravPaaGammeltRegelverk") {
+            metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravPaaGammeltRegelverk")
+        }.bodyOrThrow()
 
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): PenClient.KravStoettetAvDatabyggerResult? =
-        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravStoettetAvDatabygger").bodyOrThrow()
+        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravStoettetAvDatabygger") {
+            metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravStoettetAvDatabygger")
+        }.bodyOrThrow()
 
     override suspend fun hentPesysBrevdata(
         saksId: SaksId,
@@ -147,6 +173,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         avsenderEnhetsId: EnhetId
     ): BrevdataResponse.Data =
         client.get("brev/skribenten/sak/${saksId.id}/brevdata/${brevkode.kode()}") {
+            metricsRoute("brev/skribenten/sak/{saksId}/brevdata/{brevkode}")
             mapOf(
                 "enhetsId" to avsenderEnhetsId.value,
                 "vedtaksId" to vedtaksId?.id?.toString(),
@@ -162,6 +189,8 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
 
     override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto =
         client.get("brev/skribenten/sak/${saksId.id}/p1data") {
+            metricsRoute("brev/skribenten/sak/{saksId}/p1data")
+            timeout { requestTimeoutMillis = 40.seconds.inWholeMilliseconds }
             url {
                 parameters.append("spraak", spraak.name)
             }
@@ -177,10 +206,35 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
 
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse =
         client.post("brev/skribenten/sendbrev") {
+            metricsRoute("brev/skribenten/sendbrev")
             setBody(sendRedigerbartBrevRequest)
             contentType(ContentType.Application.Json)
             url { parameters.append("distribuer", distribuer.toString()) }
-        }.bodyOrThrow()!!
+        }.sendbrevResponseOrThrow()
+
+    private suspend fun HttpResponse.sendbrevResponseOrThrow(): Pen.BestillBrevResponse {
+        if (status.isSuccess()) {
+            return body()
+        }
+
+        val body = bodyAsText()
+        val parsed = try {
+            feilresponsMapper.readValue(body, Pen.BestillBrevResponse::class.java)
+        } catch (_: JacksonException) {
+            null
+        }
+        val journalpostId = parsed?.journalpostId
+
+        throw when (status) {
+            HttpStatusCode.UnprocessableEntity if parsed?.error?.tekniskgrunn == "AdresseMangler" ->
+                PenAdresseManglerException(journalpostId)
+
+            HttpStatusCode.UnprocessableEntity ->
+                PenServiceException("Feil ved kall til PEN som ga unprocessable entity: ${parsed ?: body}", journalpostId)
+
+            else -> PenServiceException("Feil ved kall til PEN: ${status.value} - $body", journalpostId)
+        }
+    }
 
     override fun close() { client.close() }
 

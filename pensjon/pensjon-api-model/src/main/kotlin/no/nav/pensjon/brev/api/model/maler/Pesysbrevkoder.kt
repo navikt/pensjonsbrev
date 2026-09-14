@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 object Pesysbrevkoder {
     enum class AutoBrev : Automatisk {
@@ -55,15 +57,12 @@ object Pesysbrevkoder {
         BRUKERTEST_VEDTAKSBREV_PENSJON_2025,
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
         P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2,
+        PE_ANKE_ORIENTERING_OM_SAKSBEHANDLING,
         PE_ANKE_TILSVAR_TIL_ANKENDE_PART,
-        PE_AP_AVSLAG_GJENLEVENDERETT,
-        PE_AP_ENDRING_GJENLEVENDERETT,
         PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
-        PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER,
         PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER,
         PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS,
         PE_BEKREFTELSE_PAA_PENSJON,
-        PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
         PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE,
         PE_INFORMASJON_OM_GJENLEVENDERETTIGHETER,
         PE_KLAGE_ORIENTERING_OM_OVERSENDELSE_KLAGEINSTANS,
@@ -104,8 +103,21 @@ object Pesysbrevkoder {
         UT_VEDTAK_ETTERBETALING_OPPHOR_2026_RED,
         UT_VEDTAK_OKT_BUNNFRADRAG_2026_RED,
         UT_VEDTAK_OKT_FRIBELOP_2026_RED,
-        UT_VEDTAK_ENDRING_BT_EPS_2026_RED;
+        UT_VEDTAK_ENDRING_BT_EPS_2026_RED,
+        UT_ENDRET_PGA_INNTEKT_RED;
 
         override fun kode(): String = this.name
+    }
+
+    enum class AlltidValgbareVedlegg(
+        override val visningstekst: String,
+        override val spraak: Set<LanguageCode>,
+    ) : AlltidValgbartVedleggKode {
+        SKJEMA_FOR_BANKOPPLYSNINGER(
+            "Skjema for bankopplysninger",
+            setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH),
+        );
+
+        override val kode = name
     }
 }

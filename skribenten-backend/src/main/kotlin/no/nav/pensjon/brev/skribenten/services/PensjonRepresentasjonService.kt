@@ -10,6 +10,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
@@ -69,17 +71,19 @@ class PensjonRepresentasjonService(
         ){
             try {
                 val response = client.post("/representasjon/hasRepresentant") {
+                    metricsRoute("representasjon/hasRepresentant")
                     contentType(ContentType.Application.Json)
                     setBody(HasRepresentantRequest(pid, RelevanteRepresentasjonstyper.entries))
                 }
                 return@cached if (response.status.isSuccess()) {
                     response.body<HasRepresentantResponse>().value
                 } else {
-                    logger.error("Klarte ikke å hente representasjonsforhold Status: ${response.status} Response: ${response.bodyAsText()}")
+                    logger.warn("Klarte ikke å hente representasjonsforhold Status: ${response.status} Response: ${response.bodyAsText()}")
                     null
                 }
             } catch (e: Exception) {
-                logger.error("Klarte ikke å hente representasjonsforhold: ${e.message}")
+                currentCoroutineContext().ensureActive()
+                logger.warn("Klarte ikke å hente representasjonsforhold: ${e.message}", e)
                 null
             }
 
@@ -87,3 +91,5 @@ class PensjonRepresentasjonService(
 
     override fun close() { client.close() }
 }
+
+

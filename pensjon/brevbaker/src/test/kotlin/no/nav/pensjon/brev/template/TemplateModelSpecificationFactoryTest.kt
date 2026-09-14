@@ -6,7 +6,6 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
 import org.assertj.core.api.Assertions.assertThat
@@ -20,7 +19,6 @@ class TemplateModelSpecificationFactoryTest {
         val etTall: Int,
         val etDesimal: Double,
         val enBool: Boolean,
-        @DisplayText("viktig dato")
         val dato: LocalDate,
         val tall: List<Int>,
         val strenger: List<String>,
@@ -49,11 +47,6 @@ class TemplateModelSpecificationFactoryTest {
     }
 
     @Test
-    fun `handles display text`() {
-        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE, "viktig dato"))
-    }
-
-    @Test
     fun `int is a scalar value with type`() {
         assertThat(aModelSpec["etTall"]).isEqualTo(FieldType.Scalar(false, Kind.NUMBER))
     }
@@ -70,7 +63,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `date is a scalar value with type`() {
-        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE, "viktig dato"))
+        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE))
     }
 
     @Test
@@ -115,15 +108,20 @@ class TemplateModelSpecificationFactoryTest {
 
     data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
         @Suppress("unused")
-        enum class AnEnum {
-            @DisplayText("Flag 1") FLAG1, @DisplayText("Flag 2") FLAG2
+        enum class AnEnum(override val displayText: String) : SaksbehandlerValgEnum {
+            FLAG1("Flag 1"), FLAG2("Flag 2")
         }
     }
 
     @Test
     fun `enum fields have Enum type with all enum-values`() {
         val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build(emptyMap()).types[WithEnumeration::class.qualifiedName!!]!!
-        assertThat(spec["anEnum"]).isEqualTo(FieldType.Enum(false, setOf(FieldType.EnumEntry("FLAG1", "Flag 1"), FieldType.EnumEntry("FLAG2", "Flag 2"))))
+        assertThat(spec["anEnum"]).isEqualTo(
+            FieldType.Enum(
+                false,
+                setOf(FieldType.EnumEntry("FLAG1"), FieldType.EnumEntry("FLAG2"))
+            )
+        )
     }
 
     data class WithValueClass(val navn: String, val aValueClass: TheValue) {

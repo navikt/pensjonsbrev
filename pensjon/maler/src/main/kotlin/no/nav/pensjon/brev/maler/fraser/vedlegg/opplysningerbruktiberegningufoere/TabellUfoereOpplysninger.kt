@@ -168,8 +168,8 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { + "Inntektsgrense" },
-                                nynorsk { + "Inntektsgrense" },
+                                bokmal { + "Bunnfradrag" },
+                                nynorsk { + "Botnfrådrag" },
                                 english { + "Income cap" }
                             )
                         }

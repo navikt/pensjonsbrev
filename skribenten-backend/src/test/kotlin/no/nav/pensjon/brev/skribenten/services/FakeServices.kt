@@ -58,8 +58,9 @@ open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg
     override suspend fun getEnhet(enhetId: EnhetId) = enheter[enhetId.value] ?: throw IllegalStateException("Enhet $enhetId ikke funnet i FakeNorg2Service")
 }
 
-open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
+open class FakeSamhandlerService(val navn: Map<String, String> = mapOf(), val typer: Map<String, String> = mapOf()) : SamhandlerService {
     override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
+    override suspend fun hentSamhandlerType(idTSSEkstern: String) = typer[idTSSEkstern]
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
     override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
@@ -87,19 +88,19 @@ open class FakeBrevbakerService(
     override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-    override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> = notYetStubbed()
+    override suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode> = notYetStubbed()
 
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? = notYetStubbed()
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage = notYetStubbed()
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -109,14 +110,14 @@ open class FakeBrevbakerService(
     override suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler = notYetStubbed()
     override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean = notYetStubbed()
     override suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
+        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? = notYetStubbed()

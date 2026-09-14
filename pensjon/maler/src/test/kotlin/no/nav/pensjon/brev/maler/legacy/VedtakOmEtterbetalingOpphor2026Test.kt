@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.maler.legacy
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
-import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDto
-import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026Redigerbar
+import no.nav.pensjon.brev.maler.ufore.diverse.VedtakOmEtterbetalingOpphor2026Redigerbar
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026Auto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026OktIfuAuto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -19,7 +19,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
     fun `VedtakOmEtterbetalingOpphor2026Auto - bokmål - HTML`() {
         LetterTestImpl(
             VedtakOmEtterbetalingOpphor2026Auto.template,
-            Fixtures.create<VedtakOmEtterbetalingOpphor2026AutoDto>(),
+            Fixtures.create(VedtakOmEtterbetalingOpphor2026Auto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_AUTO_BM")
@@ -29,7 +29,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
     fun `VedtakOmEtterbetalingOpphor2026Auto - nynorsk - HTML`() {
         LetterTestImpl(
             VedtakOmEtterbetalingOpphor2026Auto.template,
-            Fixtures.create<VedtakOmEtterbetalingOpphor2026AutoDto>(),
+            Fixtures.create(VedtakOmEtterbetalingOpphor2026Auto::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_AUTO_NN")
@@ -39,7 +39,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
     fun `VedtakOmEtterbetalingOpphor2026Redigerbar - bokmål - HTML`() {
         LetterTestImpl(
             VedtakOmEtterbetalingOpphor2026Redigerbar.template,
-            Fixtures.create<VedtakOmEtterbetalingOpphor2026RedigerbarDto>(),
+            Fixtures.create(VedtakOmEtterbetalingOpphor2026Redigerbar::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_REDIGERBAR_BM")
@@ -49,7 +49,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
     fun `VedtakOmEtterbetalingOpphor2026Redigerbar - nynorsk - HTML`() {
         LetterTestImpl(
             VedtakOmEtterbetalingOpphor2026Redigerbar.template,
-            Fixtures.create<VedtakOmEtterbetalingOpphor2026RedigerbarDto>(),
+            Fixtures.create(VedtakOmEtterbetalingOpphor2026Redigerbar::class),
             Language.Nynorsk,
             Fixtures.felles
         ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_REDIGERBAR_NN")
@@ -59,7 +59,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
     fun `VedtakOmEtterbetalingOpphor2026OktIfuAuto - bokmål - HTML`() {
         LetterTestImpl(
             VedtakOmEtterbetalingOpphor2026OktIfuAuto.template,
-            Fixtures.create<VedtakOmEtterbetalingOpphor2026AutoDto>(),
+            Fixtures.create(VedtakOmEtterbetalingOpphor2026OktIfuAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_OKT_IFU_AUTO_BM")
@@ -69,7 +69,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
     fun `VedtakOmEtterbetalingOpphor2026OktIfuAuto - nynorsk - HTML`() {
         LetterTestImpl(
             VedtakOmEtterbetalingOpphor2026OktIfuAuto.template,
-            Fixtures.create<VedtakOmEtterbetalingOpphor2026AutoDto>(),
+            Fixtures.create(VedtakOmEtterbetalingOpphor2026OktIfuAuto::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_OKT_IFU_AUTO_NN")
@@ -79,7 +79,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
     fun `VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto - bokmål - HTML`() {
         LetterTestImpl(
             VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto.template,
-            Fixtures.create<VedtakOmEtterbetalingOpphor2026AutoDto>(),
+            Fixtures.create(VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_REDPROS_AUTO_BM")
@@ -89,7 +89,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
     fun `VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto - nynorsk - HTML`() {
         LetterTestImpl(
             VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto.template,
-            Fixtures.create<VedtakOmEtterbetalingOpphor2026AutoDto>(),
+            Fixtures.create(VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_REDPROS_AUTO_NN")

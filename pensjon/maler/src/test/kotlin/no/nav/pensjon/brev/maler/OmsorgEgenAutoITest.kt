@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.*
 
@@ -16,7 +15,7 @@ class OmsorgEgenAutoITest {
     fun testPdf() {
         LetterTestImpl(
             OmsorgEgenAuto.template,
-            Fixtures.create<OmsorgEgenAutoDto>(),
+            Fixtures.create(OmsorgEgenAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("OMSORG_EGEN_AUTO_BOKMAL")
@@ -26,7 +25,7 @@ class OmsorgEgenAutoITest {
     fun testHtml() {
         LetterTestImpl(
             OmsorgEgenAuto.template,
-            Fixtures.create<OmsorgEgenAutoDto>(),
+            Fixtures.create(OmsorgEgenAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("OMSORG_EGEN_AUTO_BOKMAL")

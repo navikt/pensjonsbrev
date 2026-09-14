@@ -22,13 +22,53 @@ body {
   white-space: break-spaces;
 }
 
+/* Ingen vertikal margin på selve blokken lenger - en Conditional skal ikke tvinge frem ekstra
+   luft rundt seg (se .conditional-predicate under for hvordan If/Else If/Else-predikatet i seg
+   selv unngår å legge til en egen linje). Bakgrunnsfargen beholdes som et visuelt
+   grupperingshint. IKKE nullstill font-size/vekt her: .conditional/.show-if omslutter selve
+   INNHOLDET (f.eks. tittel-teksten når Conditional er nøstet inni en <Heading>, se
+   TITLE1/TITLE2/TITLE3), som skal arve og beholde tittelens font-size/vekt uendret - kun selve
+   BETINGELSEN (se .conditional-predicate under) skal tvinges til normal brødtekst-størrelse.
+   position: relative er kun til stede for `.conditional-multi-branch::before` (se under). */
 .conditional {
+  position: relative;
   background: var(--ax-accent-100);
-  margin: 1rem 0;
+}
+
+/* Når en Conditional har flere enn én synlig gren (If + minst én Else If/Else) tegnes en tynn
+   loddrett linje mellom markørene i BREVETS marg, slik at det er visuelt tydelig at flere
+   ▸/▾-markører hører sammen til SAMME Conditional (i stedet for å se ut som separate,
+   ubeslektede betingelser som tilfeldigvis står rett under hverandre). Linjen sin
+   horisontale posisjon regnes ut til å treffe MIDTEN av markør-ikonet (se
+   `.conditional-predicate > summary` sin `transform` under - samme `calc`-uttrykk, men for
+   senter av det 1em brede ikonet i stedet for hele boksen): ikonets boks strekker seg fra
+   `-1em - 0.5rem` til `-0.5rem` (relativt til `.show-if`/`.show-else` sin venstrekant, som er
+   lik `.conditional` sin venstrekant siden ingen padding/innrykk er lagt til i mellom), så
+   senter er `-0.5em - 0.5rem`. Linjen strekker seg over HELE `.conditional` sin høyde - fra
+   toppen av "If"-grenen til bunnen av siste Else If/Else-gren, som stemmer overens med hvor
+   markørene faktisk er plassert siden hver gren sin `<summary>` er ankret til toppen av sin
+   egen `.show-if`/`.show-else`. Nøstede Conditionals (inni en gren) får sin EGEN uavhengige
+   linje for sine egne grener, siden `::before` alltid regnes relativt til sin nærmeste
+   `.conditional`-forelder. */
+.conditional-multi-branch::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(-0.5em - 0.5rem);
+  width: 2px;
+  background: var(--ax-border-subtle);
+  transform: translateX(-50%);
 }
 
 .show-if,
 .show-else {
+  /* .conditional-predicate plasseres i selve BREVETS marg (venstre padding på
+     .letter-page/.preview-boksen) via CSS-transform, IKKE i en egen reservert gutter inni
+     innholdet - position: relative her er kun for å gi dem et Y-ankerpunkt (samme vertikale
+     posisjon som starten av den betingede teksten). */
+  position: relative;
+
   .conditional {
     margin-left: 1rem;
   }
@@ -41,16 +81,170 @@ body {
 @keyframes highlight-animation {
   0% {
     background-color: var(--ax-warning-500);
-    box-shadow: 0 0 0 1rem var(--ax-warning-500);
+    box-shadow: 0 0 0 0.2rem var(--ax-warning-500);
   }
   100% {
     background-color: var(--ax-warning-300);
-    box-shadow: 0 0 0 1rem var(--ax-warning-300);
+    box-shadow: 0 0 0 0.2rem var(--ax-warning-300);
   }
 }
 
+/* Spredningen på box-shadow må holdes liten: elementet som highlightes (f.eks. et
+   enkelt felt i data-klasse-panelet) kan ha svært lite mellomrom (4px) til nabolinjer,
+   så en stor spredning (som tidligere 1rem) dekker over teksten over/under i stedet
+   for å bare fremheve selve elementet. */
 .highlight {
   background: var(--ax-warning-300);
-  box-shadow: 0 0 0 1rem var(--ax-warning-300);
+  box-shadow: 0 0 0 0.2rem var(--ax-warning-300);
   animation: highlight-animation 0.5s ease-out;
+}
+
+/* Syntax highlighting for v2-uttrykk (TemplateDocumentationV2View sin ExprToText), for å
+   skille visuelt mellom variabler/feltstier, literaler, operatorer/nøkkelord og funksjonskall.
+   Fargene er valgt fra Aksel sine semantiske tekst-tokens (kontrasttestet mot både lys/mørk
+   tema) for å følge temaet automatisk. Kun tekstfarge (og fet skrift for operatorer) endres -
+   ingen layout-endringer. Unngår meta-purple siden .expression allerede har lilla bakgrunn. */
+.expr-variable {
+  color: var(--ax-text-accent);
+}
+
+.expr-literal {
+  color: var(--ax-text-success);
+}
+
+.expr-operator {
+  color: var(--ax-text-danger);
+  font-weight: 600;
+}
+
+.expr-function {
+  color: var(--ax-text-warning);
+}
+
+/* Linjeskift + innrykk for uttrykk med flere underuttrykk (f.eks. lange AND/OR-kjeder i
+   showIf-predikater eller if/then/else), slik at hvert ledd får sin egen linje på samme
+   innrykksnivå i stedet for én lang, vanskelig lesbar linje. Selve `.expression`-raden ("If ",
+   "Else If ", "For hver X i:", tekstuttrykk) får ingen border/innrykk - kun blokken(e) den
+   inneholder gjøres det, slik at f.eks. et flerlinjers AND/OR-predikat rykkes inn under selve
+   "If"-teksten. NØSTEDE kjeder (f.eks. en OR inni en AND) får samme border-left + innrykk som
+   et visuelt grupperingshint. Innrykket forsterkes automatisk for hvert ekstra nøstingsnivå,
+   siden hver .expr-block sin padding-left legges til INNENFOR forelderens allerede tilførte
+   padding - ingen eksplisitt dybde-telling trengs, selve HTML-blokkmodellen gir kumulativt
+   innrykk. */
+.expr-block {
+  display: block;
+}
+
+.expr-block-row {
+  display: block;
+}
+
+.expression .expr-block,
+.expr-block .expr-block {
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--ax-border-subtle);
+}
+
+/* Kompakt visning med "skjult struktur bak popover" - brukes for både Conditional
+   (`[tekst]` / `tekst1|tekst2` for `ifElse(pred, ...)`-uttrykk der begge grener bare er
+   literaler, se `isCompactLiteralConditional`) og Format (eksempeltekst i stedet for
+   `<uttrykk> formatert som <formatterer>`, se `ExprType.FORMAT`-casen) i
+   TemplateDocumentationV2View.tsx. Rendres som en <button> (for tastatur-/skjermleser-tilgang),
+   men nullstilt til å se ut og oppføre seg som vanlig inline tekst i flyten. Understreken (i
+   stedet for f.eks. bakgrunnsfarge) signaliserer "her er det skjult informasjon å hente" uten å
+   konkurrere med den eksisterende syntax highlighting-fargen (`.expr-literal`) på selve teksten.
+   `cursor: help` + popover på hover/fokus avslører den fulle strukturen uten å måtte vise den
+   hele tiden. */
+.expr-popover-trigger {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px dotted var(--ax-text-success);
+  color: inherit;
+  cursor: help;
+  display: inline;
+  font: inherit;
+  margin: 0;
+  padding: 0 0 1px;
+}
+
+/* If/Else If sin betingelse (predikat) er kollapset som standard bak en native
+   <details>/<summary>-disclosure (se ConditionalPredicateDisclosure) for å spare plass -
+   predikatet er som regel mindre interessant enn den betingede teksten under. <summary> vises
+   KUN som en liten ▸/▾-ikon-markør (selve "If"/"Else If"-teksten er tilgjengelig via
+   `title`-attributtet på <details>, og vises i sin helhet inni predikat-blokken når
+   ekspandert) - holder markøren smal nok til å få plass i brevets egen marg (se under) uten å
+   dekke over teksten. */
+.conditional-predicate > summary {
+  /* Absolutt-posisjonert (relativt til .show-if, se lenger ned) UANSETT åpen/lukket-tilstand,
+     slik at selve ▸/▾-ikonet ALLTID blir liggende i brevets marg og ikke hopper til
+     innholdskolonnen når disclosure-en ekspanderes - kun .expression (predikat-teksten under)
+     skal flyte normalt og ta plass når den vises. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(calc(-100% - 0.5rem));
+  cursor: pointer;
+  list-style: none;
+  width: 1em;
+}
+
+.conditional-predicate > summary::-webkit-details-marker {
+  display: none;
+}
+
+.conditional-predicate > summary::before {
+  color: var(--ax-text-danger);
+  content: "▸";
+  font-weight: 600;
+}
+
+.conditional-predicate[open] > summary::before {
+  content: "▾";
+}
+
+.conditional-predicate > summary:hover {
+  text-decoration: underline;
+}
+
+/* Selve <details>-elementet er ALLTID i normal flyt (ikke absolutt) - det er kun `summary` sitt
+   ▸/▾-ikon (se over) som escaper til brevets marg. Når lukket er `.expression` skjult
+   (native <details>-oppførsel for ikke-summary-barn), så <details> tar da ingen synlig
+   plass selv i normal flyt. Når EKSPANDERT flyter `.expression` normalt og tar plass, som
+   forventet siden brukeren eksplisitt har bedt om å se predikatet - dette gjelder også "Else"
+   (se ConditionalPredicateDisclosure i TemplateDocumentationV2View.tsx: "Else" bruker samme
+   disclosure-mønster som If/Else If, bare uten noe predikat-uttrykk å vise når ekspandert, siden
+   Else per definisjon er "alt som ikke traff If/Else If over"). Dermed unngås at "Else"-teksten
+   dekker over den betingede teksten ved siden av, slik en tidligere statisk/absolutt-posisjonert
+   "Else"-etikett gjorde.
+   font-size/vekt/line-height nullstilles her (ikke på .conditional/.show-if, se over) til normal
+   brødtekst-størrelse: `.conditional-predicate` er kun BETINGELSEN selv (markør + evt.
+   predikat-tekst når ekspandert) - en SØSKEN-node til selve det betingede INNHOLDET (som
+   fortsatt skal arve f.eks. tittel-font-størrelse uendret når Conditional er nøstet inni en
+   <Heading>), ikke en forelder til det. `line-height` MÅ nullstilles eksplisitt her i tillegg
+   til font-size/vekt: Aksel sine heading-varianter setter `line-height` som en ABSOLUTT rem-verdi
+   (f.eks. 2.25rem for h1), ikke et enhetsløst forhold - en slik verdi arves UENDRET av barn
+   uansett barnets EGEN (mindre) font-size, så uten denne nullstillingen ville predikat-teksten
+   rendret ved normal font-størrelse (16px) men med h1 sin 36px linjehøyde, og sett unormalt
+   "strukket" ut vertikalt når disclosure-en ekspanderes inni en tittel. */
+.conditional-predicate {
+  font-size: var(--ax-font-size-medium);
+  font-weight: var(--ax-font-weight-regular);
+  line-height: var(--ax-font-line-height-medium);
+  margin: 0;
+}
+
+.conditional-predicate[open] {
+  margin: 0 0 0.5rem;
+}
+
+/* Brevets "side" i forhåndsvisningen - kapper bredden til A4 sin bredde (210mm ≈ 793px ved
+   96dpi), slik at tekstbredde og linjebrekk i forhåndsvisningen stemmer bedre overens med det
+   faktiske utskrevne brevet enn en ubegrenset full-bredde visning på brede skjermer ville gjort.
+   Brukes på samme <Box>-element (v1 sin Document, v2 sin DocumentV2) som allerede har den hvite
+   bakgrunnen og paddingen som etterligner sidemargene. */
+.letter-page {
+  margin-inline: auto;
+  max-width: 793px;
+  width: 100%;
 }

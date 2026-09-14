@@ -60,7 +60,9 @@ class NavansattServiceHttp(
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: NavIdent): List<NAVAnsattEnhet> {
         return cache.cached(Cacheomraade.NAVANSATTENHET, ansattId.id) {
-            val response = client.get("navansatt/${ansattId.id}/enheter")
+            val response = client.get("navansatt/${ansattId.id}/enheter") {
+                metricsRoute("navansatt/{ansattId}/enheter")
+            }
 
             if (response.status.isSuccess()) {
                 response.body()
@@ -75,7 +77,9 @@ class NavansattServiceHttp(
 
     override suspend fun hentNavansatt(ansattId: NavIdent): Navansatt? = try {
         cache.cached(Cacheomraade.NAVANSATT, ansattId.id) {
-            val response = client.get("/navansatt/${ansattId.id}")
+            val response = client.get("/navansatt/${ansattId.id}") {
+                metricsRoute("navansatt/{ansattId}")
+            }
 
             return@cached if (response.status.isSuccess()) {
                 response.body()
@@ -93,7 +97,7 @@ class NavansattServiceHttp(
     }
 
     override suspend fun ping() =
-        ping("NAV Ansatt") { client.get("ping-authenticated") }
+        ping("NAV Ansatt") { client.get("ping-authenticated") { metricsRoute("ping-authenticated") } }
 
     override fun close() { client.close() }
 }

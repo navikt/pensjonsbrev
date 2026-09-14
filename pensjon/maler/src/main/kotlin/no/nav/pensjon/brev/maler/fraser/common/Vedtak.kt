@@ -4,9 +4,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.firstDayOfYear
@@ -74,16 +72,4 @@ object Vedtak {
         }
     }
 
-    object TrygdetidOverskrift: OutlinePhrase<LangBokmalNynorskEnglish>(){
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 { includePhrase(TrygdetidText) }
-        }
-    }
-
-    object TrygdetidText: PlainTextOnlyPhrase<LangBokmalNynorskEnglish> (){
-        override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            text(bokmal { + "Trygdetid" }, nynorsk { + "Trygdetid" }, english { + "Period of national insurance coverage" })
-        }
-
-    }
 }

@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.ufore.Fixtures
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakFeilutbetaling
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekreving
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -18,7 +17,7 @@ class VedtakIngenTilbakekrevingTest {
     fun testHtmlBokmal() {
         LetterTestImpl(
             VedtakIngenTilbakekreving.template,
-            Fixtures.create<VedtakFeilutbetalingUforeIngenTilbakekrevingDto>(),
+            Fixtures.create(VedtakIngenTilbakekreving::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(VedtakIngenTilbakekreving.kode.name)
@@ -27,7 +26,7 @@ class VedtakIngenTilbakekrevingTest {
     fun testHtmlNynorsk() {
         LetterTestImpl(
             VedtakIngenTilbakekreving.template,
-            Fixtures.create<VedtakFeilutbetalingUforeIngenTilbakekrevingDto>(),
+            Fixtures.create(VedtakIngenTilbakekreving::class),
             Language.Nynorsk,
             Fixtures.felles
         ).renderTestHtml(VedtakIngenTilbakekreving.kode.name)

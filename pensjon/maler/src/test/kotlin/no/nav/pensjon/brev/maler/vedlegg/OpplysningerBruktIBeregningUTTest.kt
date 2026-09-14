@@ -20,7 +20,7 @@ class OpplysningerBruktIBeregningUTTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse = true, skalViseBarnetillegg = true),
-            Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr(),
+            Fixtures.createVedlegg(OpplysningerBruktIBeregningUTDto::class).expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
         LetterTestImpl(

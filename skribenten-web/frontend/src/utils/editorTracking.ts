@@ -1,7 +1,5 @@
+import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { trackEvent, type UmamiEventData } from "~/utils/umami";
-
-/** Hvilken redigeringsflate saksbehandleren står i når en handling utføres. */
-export type Redigeringsflate = "saksbehandler-redigering" | "attestant-redigering";
 
 export type MissingFromTemplateEventName = "blokk beholdt" | "blokk slettet";
 

@@ -5,7 +5,7 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
+import no.nav.pensjon.brev.maler.ufore.etteroppgjor.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -16,7 +16,7 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
     fun testPdf() {
         LetterTestImpl(
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
-            Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
+            Fixtures.create(ForhaandsvarselEtteroppgjoerUfoeretrygdAuto::class),
             Language.English,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")
@@ -26,7 +26,7 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
     fun testHtml() {
         LetterTestImpl(
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
-            Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
+            Fixtures.create(ForhaandsvarselEtteroppgjoerUfoeretrygdAuto::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")

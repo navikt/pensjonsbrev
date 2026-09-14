@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { getBrev } from "~/api/brev-queries";
 import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
+import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
@@ -71,7 +72,7 @@ function renderHarness() {
   const harness = { current: null as Harness | null };
 
   const Testkomponent = () => {
-    const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+    const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
     // Rutene leser brevet fra query-cachen, som `onSaveSuccess` skriver til. Abonnementet her
     // gjør at `lagretRedigertBrev` oppdateres på samme måte som i produksjon.
@@ -87,10 +88,10 @@ function renderHarness() {
       editorState: editorState,
       setEditorState: setEditorState,
     });
-
     const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
       saksId: SAKS_ID,
       brevId: BREV_ID,
+      saveStatus: editorState.saveStatus,
       setEditorState: setEditorState,
       onSaveSuccess: onSaveSuccess,
     });
@@ -98,9 +99,12 @@ function renderHarness() {
     harness.current = {
       highlightedIds: highlightedIds,
       focus: editorState.focus,
-      beforeTekstvalgChange: (valg) => beforeTekstvalgChange(valg, editorState.redigertBrev),
+      beforeTekstvalgChange: (valg) => beforeTekstvalgChange(valg, redigertBrev),
       lagreTekstvalg: () =>
-        oppdaterBrevMutation.mutate({ redigertBrev: editorState.redigertBrev, saksbehandlerValg: nyeValg }),
+        oppdaterBrevMutation.mutate({
+          redigertBrev: redigertBrev,
+          saksbehandlerValg: nyeValg,
+        }),
       simulerTasting: () => setEditorState((state) => ({ ...state, saveStatus: "DIRTY" })),
     };
 
@@ -109,9 +113,9 @@ function renderHarness() {
 
   const wrapper = (props: { children: ReactNode }) => (
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-      <ManagedLetterEditorContextProvider brev={lagretBrev} redigeringsflate="saksbehandler-redigering">
-        {props.children}
-      </ManagedLetterEditorContextProvider>
+      <RedigeringsflateProvider redigeringsflate="saksbehandler-redigering">
+        <ManagedLetterEditorContextProvider brev={lagretBrev}>{props.children}</ManagedLetterEditorContextProvider>
+      </RedigeringsflateProvider>
     </QueryClientProvider>
   );
 

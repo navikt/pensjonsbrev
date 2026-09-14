@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.Fixtures
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -16,7 +15,7 @@ class UforeAvslagAlderTest {
     fun testHtml() {
         LetterTestImpl(
             UforeAvslagAlder.template,
-            Fixtures.create<UforeAvslagEnkelDto>(),
+            Fixtures.create(UforeAvslagAlder::class),
             Language.Nynorsk,
             Fixtures.felles
         ).renderTestHtml("UTAvslagAlder")

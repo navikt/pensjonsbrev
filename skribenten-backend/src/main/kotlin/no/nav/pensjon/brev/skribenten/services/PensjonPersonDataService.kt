@@ -82,6 +82,7 @@ class PensjonPersonDataServiceImpl(
         ttl = { 10.minutes }
     ) {
         val response = client.get("/api/adresse/kontaktadresse") {
+            metricsRoute("/api/adresse/kontaktadresse")
             parameter("checkForVerge", true)
             headers {
                 header("pid", pid.value)

@@ -51,6 +51,7 @@ data class Scenario4_04G_1G_04G(
 data class FribelopPeriode(
     val fom: LocalDate,
     val tom: LocalDate,
-    val uforegrad: Int,
+    val gradsokning: Boolean,
     val faktor: Double,
+    val venteperiodeStartDato: LocalDate,
 )

@@ -5,9 +5,8 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdRedigerbar
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -18,8 +17,8 @@ class InnvilgelseUfoeretrygdTest {
     @Test
     fun testPdf() {
         LetterTestImpl(
-            InnvilgelseUforetrygd.template,
-            Fixtures.create<InnvilgelseUfoeretrygdDto>(),
+            InnvilgelseUforetrygdRedigerbar.template,
+            Fixtures.create(InnvilgelseUforetrygdRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_INNVILGELSE_UFOERTRYGD")
@@ -28,8 +27,8 @@ class InnvilgelseUfoeretrygdTest {
     @Test
     fun testHtml() {
         LetterTestImpl(
-            InnvilgelseUforetrygd.template,
-            Fixtures.create<InnvilgelseUfoeretrygdDto>(),
+            InnvilgelseUforetrygdRedigerbar.template,
+            Fixtures.create(InnvilgelseUforetrygdRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_INNVILGELSE_UFOERTRYGD")
@@ -87,7 +86,7 @@ class InnvilgelseUfoeretrygdTest {
         }
 
         LetterTestImpl(
-            InnvilgelseUforetrygd.template,
+            InnvilgelseUforetrygdRedigerbar.template,
             dto,
             Language.Bokmal,
             Fixtures.fellesAuto

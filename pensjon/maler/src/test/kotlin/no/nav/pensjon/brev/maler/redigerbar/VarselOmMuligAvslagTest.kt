@@ -17,7 +17,7 @@ class VarselOmMuligAvslagTest {
     fun testPdf() {
         LetterTestImpl(
             VarselOmMuligAvslag.template,
-            Fixtures.create<EmptyAutobrevdata>(),
+            Fixtures.create(VarselOmMuligAvslag::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF(VarselOmMuligAvslag.kode.name)
@@ -27,7 +27,7 @@ class VarselOmMuligAvslagTest {
     fun testHtml() {
         LetterTestImpl(
             VarselOmMuligAvslag.template,
-            Fixtures.create<EmptyAutobrevdata>(),
+            Fixtures.create(VarselOmMuligAvslag::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml(VarselOmMuligAvslag.kode.name)

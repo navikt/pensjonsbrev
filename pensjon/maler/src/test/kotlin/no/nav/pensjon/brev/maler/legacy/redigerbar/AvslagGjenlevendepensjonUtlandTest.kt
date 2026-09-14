@@ -5,7 +5,6 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonUtlandDto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -17,7 +16,7 @@ class AvslagGjenlevendepensjonUtlandTest {
     fun testPdf() {
         LetterTestImpl(
             AvslagGjenlevendepensjonUtland.template,
-            Fixtures.create< AvslagGjenlevendepensjonUtlandDto>(),
+            Fixtures.create(AvslagGjenlevendepensjonUtland::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF("GP_AVSLAG_GJENLEVENDEPENSJON_UTLAND")
@@ -27,7 +26,7 @@ class AvslagGjenlevendepensjonUtlandTest {
     fun testHtml() {
         LetterTestImpl(
             AvslagGjenlevendepensjonUtland.template,
-            Fixtures.create< AvslagGjenlevendepensjonUtlandDto>(),
+            Fixtures.create(AvslagGjenlevendepensjonUtland::class),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml("GP_AVSLAG_GJENLEVENDEPENSJON_UTLAND")

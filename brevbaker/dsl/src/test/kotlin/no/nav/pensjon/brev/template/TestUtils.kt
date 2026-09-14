@@ -5,7 +5,8 @@ import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -23,8 +24,8 @@ class SimpleSelector<Model : Any, Property>(override val className: String, prop
     }
 }
 
-fun redigerbarMal(init: TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>.() -> Unit) =
-    object : RedigerbarTemplate<BrevdataMedSaksbehandlerValgUtenFagsystemdata> {
+fun redigerbarMal(init: TemplateRootScope<LangBokmal, RedigerbarBrevdata<EmptyFagsystemdata>>.() -> Unit) =
+    object : RedigerbarTemplate<RedigerbarBrevdata<EmptyFagsystemdata>> {
         override val kategori: IBrevkategori get() = TODO("Not yet implemented")
         override val brevkontekst: TemplateDescription.Brevkontekst get() = TODO("Not yet implemented")
         override val sakstyper: Set<ISakstype> get() = TODO("Not yet implemented")

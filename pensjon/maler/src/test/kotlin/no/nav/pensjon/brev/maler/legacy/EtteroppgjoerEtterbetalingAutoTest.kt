@@ -5,7 +5,7 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
+import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -17,7 +17,7 @@ class EtteroppgjoerEtterbetalingAutoTest {
     fun testPdf() {
         LetterTestImpl(
             EtteroppgjoerEtterbetalingAutoLegacy.template,
-            Fixtures.create<EtteroppgjoerEtterbetalingAutoDto>(),
+            Fixtures.create(EtteroppgjoerEtterbetalingAutoLegacy::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_ENDRET_PGA_INNTEKT")
@@ -27,7 +27,7 @@ class EtteroppgjoerEtterbetalingAutoTest {
     fun testHtml() {
         LetterTestImpl(
             EtteroppgjoerEtterbetalingAutoLegacy.template,
-            Fixtures.create<EtteroppgjoerEtterbetalingAutoDto>(),
+            Fixtures.create(EtteroppgjoerEtterbetalingAutoLegacy::class),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_ENDRET_PGA_INNTEKT")

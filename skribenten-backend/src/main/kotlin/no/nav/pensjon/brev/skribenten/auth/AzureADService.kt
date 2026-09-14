@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.common.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.installRetry
+import no.nav.pensjon.brev.skribenten.services.metricsRoute
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -71,6 +72,7 @@ class AzureADService(private val jwtConfig: AzureADConfig, private val cache: Ca
                     append("requested_token_use", "on_behalf_of")
                 }
             ) {
+                metricsRoute("oauth2/v2.0/token")
                 headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
             }
             if (!response.status.isSuccess()) {

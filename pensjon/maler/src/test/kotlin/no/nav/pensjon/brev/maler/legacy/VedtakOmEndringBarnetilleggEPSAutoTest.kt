@@ -5,8 +5,7 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
-import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmEndringBarnetilleggEPSAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEndringBarnetilleggEPSAuto
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -18,7 +17,7 @@ class VedtakOmEndringBarnetilleggEPSAutoTest {
     fun testPdf() {
         LetterTestImpl(
             VedtakOmEndringBarnetilleggEPSAuto.template,
-            Fixtures.create<VedtakOmEndringBarnetilleggEPSAutoDto>(),
+            Fixtures.create(VedtakOmEndringBarnetilleggEPSAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("vedtak")
@@ -28,7 +27,7 @@ class VedtakOmEndringBarnetilleggEPSAutoTest {
     fun testHtml() {
         LetterTestImpl(
             VedtakOmEndringBarnetilleggEPSAuto.template,
-            Fixtures.create<VedtakOmEndringBarnetilleggEPSAutoDto>(),
+            Fixtures.create(VedtakOmEndringBarnetilleggEPSAuto::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("vedtak")

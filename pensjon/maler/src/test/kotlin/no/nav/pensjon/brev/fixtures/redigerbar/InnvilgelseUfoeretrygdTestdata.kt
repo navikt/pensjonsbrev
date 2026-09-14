@@ -343,6 +343,17 @@ fun createOkningUforegradDto() =
                             barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
             ),
             sisteTrygdetidsgrunnlag = OkningUforegradDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14"),
+            fribelopsperioder = listOf(
+                OkningUforegradDto.Fribelopsperiode(
+                    fom = LocalDate.of(2026, 1, 1),
+                    tom = LocalDate.of(2026, 12, 31),
+                    faktor = 1.0,
+                    venteperiodeStartDato = LocalDate.of(2026, 1, 1),
+                    gradsokning = true
+                )
+            ),
+            harVTA = false,
+
             ),
     )

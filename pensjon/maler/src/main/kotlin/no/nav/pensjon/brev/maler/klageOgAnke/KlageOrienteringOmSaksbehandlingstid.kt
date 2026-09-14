@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
@@ -29,7 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.nav
 // Erstatte PE_IY_03_153 Klage - orientering om saksbehandlingstid, og PE_IY_03_162 Klage - orientering om saksbehandlingstid ved Nav Klageinstans.
 
 @TemplateModelHelpers
-object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
+object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmSaksbehandlingstid.toggle
 
@@ -48,7 +48,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
 
 
     ) {
-        val saksbehandlingstid = saksbehandlervalg("saksbehandlingstid", "Saksbehandlingstid").enum<Saksbehandlingstid>()
+        val saksbehandlingstid = saksbehandlervalg("saksbehandlingstid", "Velg saksbehandlingstid ved:").enum<Saksbehandlingstid>()
 
         title {
             text(
@@ -105,7 +105,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
         }
     }
     enum class Saksbehandlingstid(override val displayText: String): SaksbehandlerValgEnum {
-        SaksbehandlingstidVedNFPellerNAY("Saksbehandlingstid ved NFP eller NAY"),
-        SaksbehandlingstidVedNavKlageinstans("Saksbehandlingstid ved Nav Klageinstans")
+        SaksbehandlingstidVedNFPellerNAY("NFP eller NAY"),
+        SaksbehandlingstidVedNavKlageinstans("Nav Klageinstans")
     }
 }

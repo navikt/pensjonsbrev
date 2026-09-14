@@ -133,7 +133,13 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; i
           // Aksel-Skeleton setter aria-hidden internt, så venstre kolonne er usynlig for skjermlesere
           // mens den laster. aria-busy + status-regionen under gir den en stemme. Regionen må rendres
           // i begge tilstander, ellers finnes den ikke i DOM-en når teksten endres og annonseres ikke.
-          <Box aria-busy={!isBrevReady}>
+          // Paddingen ligger på ytre Box og deles av skeleton- og innholds-grenen, slik at den ikke
+          // hopper når brevet blir klart.
+          <Box
+            aria-busy={!isBrevReady}
+            paddingBlock={{ xs: "space-12", lg: "space-16" }}
+            paddingInline={{ xs: "space-12", lg: "space-24" }}
+          >
             <span className="aksel-sr-only" role="status">
               {isBrevReady ? "Brevinformasjon lastet" : "Henter brevinformasjon…"}
             </span>

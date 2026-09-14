@@ -5,7 +5,7 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
+import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -16,8 +16,8 @@ class EndringUfoeretrygdTest {
     @Test
     fun testPdf() {
         LetterTestImpl(
-            EndringUforetrygd.template,
-            Fixtures.create<EndringUfoeretrygdDto>(),
+            EndringUforetrygdRedigerbar.template,
+            Fixtures.create(EndringUforetrygdRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_ENDRING_UFOERETRYGD")
@@ -26,8 +26,8 @@ class EndringUfoeretrygdTest {
     @Test
     fun testHtml() {
         LetterTestImpl(
-            EndringUforetrygd.template,
-            Fixtures.create<EndringUfoeretrygdDto>(),
+            EndringUforetrygdRedigerbar.template,
+            Fixtures.create(EndringUforetrygdRedigerbar::class),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_ENDRING_UFOERETRYGD")

@@ -5,16 +5,12 @@ import { Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
+import { isLetterDocument } from "~/Brevredigering/LetterEditor/actions/common";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
-import {
-  type MissingFromTemplateEventName,
-  type Redigeringsflate,
-  trackMissingFromTemplateAction,
-} from "~/utils/editorTracking";
+import { type MissingFromTemplateEventName, trackMissingFromTemplateAction } from "~/utils/editorTracking";
 
 import Actions from "./actions";
 import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
@@ -25,6 +21,7 @@ import { SignaturView } from "./components/SignaturView";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
+import { useRedigeringsflate } from "./RedigeringsflateContext";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
@@ -35,15 +32,17 @@ export const LetterEditor = ({
   editorState,
   setEditorState,
   showDebug,
-  redigeringsflate,
+  renderTilbakestillModal,
 }: {
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   showDebug: boolean;
-  redigeringsflate: Redigeringsflate;
+  /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
+  renderTilbakestillModal?: (args: { open: boolean; onClose: () => void }) => React.ReactNode;
 }) => {
+  const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
@@ -129,14 +128,13 @@ export const LetterEditor = ({
         <EditorMenu
           canRedo={canRedo}
           canUndo={canUndo}
-          redigeringsflate={redigeringsflate}
           redo={redo}
-          setVilTilbakestilleMal={setVilTilbakestilleMal}
+          setVilTilbakestilleMal={renderTilbakestillModal ? setVilTilbakestilleMal : undefined}
           undo={undo}
         />
         <VStack align="center" flexGrow="1" minHeight="0" overflowY="auto">
           <Box className="editor" css={freeze ? { cursor: "wait" } : {}} height="100%">
-            <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
+            {isLetterDocument(letter) && <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />}
             <Heading
               className="letter-title"
               level="1"
@@ -204,19 +202,11 @@ export const LetterEditor = ({
               ))}
               <DeletedBlocksAt blockIndex={blocks.length} trailing />
             </div>
-            <SignaturView signatur={letter.signatur} />
+            {isLetterDocument(letter) && <SignaturView signatur={letter.signatur} />}
           </Box>
         </VStack>
         {showDebug && <DebugPanel />}
-        {/* Åpner modal, tar ikke plass i DOM her */}
-        {vilTilbakestilleMal && (
-          <TilbakestillMalModal
-            brevId={editorState.info.id}
-            onClose={() => setVilTilbakestilleMal(false)}
-            resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
-            åpen={vilTilbakestilleMal}
-          />
-        )}
+        {vilTilbakestilleMal && renderTilbakestillModal?.({ open: true, onClose: () => setVilTilbakestilleMal(false) })}
       </EditorStateContext.Provider>
     </VStack>
   );

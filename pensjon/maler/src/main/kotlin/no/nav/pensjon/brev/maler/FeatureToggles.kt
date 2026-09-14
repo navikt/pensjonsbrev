@@ -7,6 +7,7 @@ enum class FeatureToggles(private val key: String) {
     // val minFeature = UnleashToggle("minFeature")
     bekreftelsePaaPensjon("bekreftelsePaaPensjon"),
     bekreftelsePaaUfoeretrygd("bekreftelsePaaUfoeretrygd"),
+    brevmalAnkeOrienteringOmSaksbehandling("brevmalAnkeOrienteringOmSaksbehandling"),
     brevmalAnkeTilsvarTilAnkendePart("brevmalAnkeTilsvarTilAnkendePart"),
     brevmalAvslagGjenlevendepensjon("brevmalAvslagGjenlevendepensjon"),
     brevmalAvslagGjenlevendepensjonUtland("brevmalAvslagGjenlevendepensjonUtland"),
@@ -19,6 +20,8 @@ enum class FeatureToggles(private val key: String) {
     brevmalUtBosattNorgeEtterUtland("brevmalUtBosattNorgeEtterUtland"),
     brevmalUtDelvisEksport("brevmalUtDelvisEksport"),
     brevmalUtEndring("brevmalUtEndring"),
+    brevmalUtEndretPgaInntekt("brevmalUtEndretPgaInntekt"),
+    brevmalUtEndretPgaInntektRedigerbar("brevmalUtEndretPgaInntektRedigerbar"),
     brevmalUtInnvilgelse("brevmalUtInnvilgelse"),
     brevmalUtInnvilgelseMedEndring("brevmalUtInnvilgelseMedEndring"),
     brevmalUtOkningUforegrad("brevmalUtOkningUforegrad"),
@@ -34,7 +37,8 @@ enum class FeatureToggles(private val key: String) {
     vedtakOmLavereMinstesats("vedtakOmLavereMinstesats"),
     reverseringLavereMinstesats("reverseringLavereMinstesats"),
     vedtakOmOktBunnfradrag("vedtakOmOktBunnfradrag"),
-    vedtakOmOktMinsteIFUOgReduksjonsprosent("vedtakOmOktMinsteIFUOgReduksjonsprosent");
+    vedtakOmOktMinsteIFUOgReduksjonsprosent("vedtakOmOktMinsteIFUOgReduksjonsprosent"),
+    bunnfradragIVedlegg("opplbruktiberufore_bunnfradrag");
 
     val toggle = FeatureToggle(key)
 }
