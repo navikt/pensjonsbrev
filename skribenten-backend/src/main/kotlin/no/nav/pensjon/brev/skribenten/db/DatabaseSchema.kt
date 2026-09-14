@@ -45,6 +45,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
     val saksbehandlerValg = json<SaksbehandlervalgMap>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
+    val saksbehandlerValgKryptert = kryptertDto<SaksbehandlervalgMap>("saksbehandlerValgKryptert").nullable()
     val statiskFagsystemBrevdata: Column<StatiskFagsystemBrevdata?> =
         kryptertDto<StatiskFagsystemBrevdata>("statiskFagsystemBrevdata")
         .nullable()
