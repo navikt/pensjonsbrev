@@ -66,7 +66,6 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
         val utbetalingsgrad = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
         val mottarMinsteytelse = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()
-        val belopsgrense = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense()
         val grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
 
         val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
@@ -1275,7 +1274,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
             //TODO: en del felles nedover som not bt and not inst
             showIf((uforegradFraBeregning.equalTo(100) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
-                showIf((belopsgrense.notEqualTo(grunnbelop) and belopsgrense.notEqualTo(60000) and ieuInntekt.equalTo(0))) {
+                showIf(!pesysData.harVTA and ieuInntekt.equalTo(0)) {
                     paragraph {
                         text(
                             bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
@@ -1283,18 +1282,9 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         )
                     }
                 }
-
-                showIf(belopsgrense.equalTo(60000)) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du kan ha en årlig inntekt på 60 000 kroner uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt." },
-                            nynorsk { +"Du kan ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Dette er botnfrådraget ditt." },
-                        )
-                    }
-                }
             }
 
-            showIf((grunnbelop.equalTo(belopsgrense) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
+            showIf((pesysData.harVTA and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },
@@ -1303,20 +1293,11 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((belopsgrense.notEqualTo(60000) and belopsgrense.notEqualTo(grunnbelop) and (uforegradFraBeregning.lessThan(100) and uforegradFraBeregning.greaterThan(0)) or ((ieuInntekt).greaterThan(0) and uforegradFraBeregning.equalTo(100)) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
+            showIf((!pesysData.harVTA and (uforegradFraBeregning.lessThan(100) and uforegradFraBeregning.greaterThan(0)) or ((ieuInntekt).greaterThan(0) and uforegradFraBeregning.equalTo(100)) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
                         nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Botnfrådraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                    )
-                }
-            }
-
-            showIf((belopsgrense.equalTo(60000) and uforegradFraBeregning.greaterThan(0) and uforegradFraBeregning.lessThan(100) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha en årlig inntekt på 60 000 kroner, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Botnfrådraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
                     )
                 }
             }
