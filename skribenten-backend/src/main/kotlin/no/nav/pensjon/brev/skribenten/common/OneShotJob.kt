@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.skribenten.common
 
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -87,47 +87,43 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
 }
 
 fun JobConfig.updateMottaker() {
-    transaction {
-        val alleMottakere = MottakerTable.select(
-            MottakerTable.id,
-            MottakerTable.navn,
-            MottakerTable.postnummer,
-            MottakerTable.poststed,
-            MottakerTable.adresselinje1,
-            MottakerTable.adresselinje2,
-            MottakerTable.adresselinje3,
-            MottakerTable.landkode,
-            MottakerTable.manueltAdressertTil,
-            MottakerTable.navnKryptert,
-            MottakerTable.postnummerKryptert,
-            MottakerTable.poststedKryptert,
-            MottakerTable.adresselinje1Kryptert,
-            MottakerTable.adresselinje2Kryptert,
-            MottakerTable.adresselinje3Kryptert,
-            MottakerTable.landkodeKryptert,
-            MottakerTable.manueltAdressertTilKryptert
-        ).toList()
+    val alleMottakerIder = transaction {
+        MottakerTable.select(MottakerTable.id).map { it[MottakerTable.id] }
+    }
 
-        alleMottakere.forEach {
-            val mottakerId = it[MottakerTable.id]
+    alleMottakerIder.forEach { mottakerId ->
+        // Leser og oppdaterer én og én rad, låst med SELECT ... FOR UPDATE innenfor samme
+        // transaksjon. Uten låsen kan EndreMottakerHandler committe en endring av begge
+        // kolonnesettene mellom vår lesing og skriving, og vi ville da overskrevet de krypterte
+        // kolonnene med utdaterte klartekstverdier fra før endringen. Låsen sikrer at vi alltid
+        // backfiller fra raden slik den er akkurat nå, og at en samtidig skriving enten er ferdig
+        // før vi leser, eller må vente til vi har commitet.
+        transaction {
             logger.debug("Oppdaterer {}", mottakerId)
-            val navn = it[MottakerTable.navn]
-            val postnummer = it[MottakerTable.postnummer]
-            val poststed = it[MottakerTable.poststed]
-            val adresselinje1 = it[MottakerTable.adresselinje1]
-            val adresselinje2 = it[MottakerTable.adresselinje2]
-            val adresselinje3 = it[MottakerTable.adresselinje3]
-            val landkode = it[MottakerTable.landkode]
-            val manueltAdressertTil = it[MottakerTable.manueltAdressertTil]
+            val rad = MottakerTable
+                .select(
+                    MottakerTable.navn,
+                    MottakerTable.postnummer,
+                    MottakerTable.poststed,
+                    MottakerTable.adresselinje1,
+                    MottakerTable.adresselinje2,
+                    MottakerTable.adresselinje3,
+                    MottakerTable.landkode,
+                    MottakerTable.manueltAdressertTil,
+                )
+                .where { MottakerTable.id eq mottakerId }
+                .forUpdate(ForUpdateOption.ForUpdate)
+                .singleOrNull() ?: return@transaction
+
             MottakerTable.update({ MottakerTable.id eq mottakerId }) { update ->
-                update[MottakerTable.navnKryptert] = navn
-                update[MottakerTable.postnummerKryptert] = postnummer
-                update[MottakerTable.poststedKryptert] = poststed
-                update[MottakerTable.adresselinje1Kryptert] = adresselinje1
-                update[MottakerTable.adresselinje2Kryptert] = adresselinje2
-                update[MottakerTable.adresselinje3Kryptert] = adresselinje3
-                update[MottakerTable.landkodeKryptert] = landkode
-                update[MottakerTable.manueltAdressertTilKryptert] = manueltAdressertTil
+                update[navnKryptert] = rad[MottakerTable.navn]
+                update[postnummerKryptert] = rad[MottakerTable.postnummer]
+                update[poststedKryptert] = rad[MottakerTable.poststed]
+                update[adresselinje1Kryptert] = rad[MottakerTable.adresselinje1]
+                update[adresselinje2Kryptert] = rad[MottakerTable.adresselinje2]
+                update[adresselinje3Kryptert] = rad[MottakerTable.adresselinje3]
+                update[landkodeKryptert] = rad[MottakerTable.landkode]
+                update[manueltAdressertTilKryptert] = rad[MottakerTable.manueltAdressertTil]
             }
         }
     }
