@@ -46,6 +46,9 @@ internal fun Table.kryptert(name: String): Column<ByteArray> = encryptedBinary(n
 internal inline fun <reified T : Any> Table.kryptertDto(name: String): Column<T> =
     kryptert(name).transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
 
+internal inline fun <reified T : Enum<T>> Table.kryptertEnum(name: String): Column<T> =
+    kryptertDto<String>(name).transform({ enumValueOf<T>(it) }, { it.name })
+
 internal inline fun <reified T : Any> Table.readJsonBinary(json: ByteArray): T =
     try {
         databaseObjectMapper.readValue<T>(json)
