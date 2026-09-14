@@ -100,6 +100,28 @@ class Brevtilgang(
         }
     }
 
+    /**
+     * Gir skrivetilgang til brevet uten saksbehandlertilgangssjekk eller reservasjon, i en egen transaksjon.
+     *
+     * Ment for tekniske/administrative oppdateringer som utføres av systemet selv og ikke på vegne av en
+     * saksbehandlers handling — f.eks. å registrere utfallet av et kall mot fagsystemet i etterkant av at
+     * den opprinnelige transaksjonen er rullet tilbake.
+     *
+     * Returnerer null om brevet ikke finnes (kan f.eks. være slettet).
+     *
+     * MERK: Skal ikke brukes til endringer en saksbehandler har initiert — de må gå gjennom [forRedigering],
+     * [forAttestering], [forSending] eller [forStatusendring] slik at tilgang og reservasjon blir sjekket.
+     */
+    suspend fun <R> forSystemendring(
+        brevId: BrevId,
+        saksId: SaksId,
+        block: suspend BrevScope.() -> Outcome<R, BrevredigeringError>?,
+    ): Outcome<R, BrevredigeringError>? =
+        transactional.rollbackOnFailure(Connection.TRANSACTION_REPEATABLE_READ) {
+            val brev = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId) ?: return@rollbackOnFailure null
+            BrevScope(brev, brevreservasjonPolicy).block()
+        }
+
     suspend fun <R> forSletting(
         brevId: BrevId,
         saksId: SaksId,

@@ -19,9 +19,12 @@ import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
+import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
+
+private val logger = LoggerFactory.getLogger(BrevredigeringEntity::class.java)
 
 interface Brevredigering {
     val id: EntityID<BrevId>
@@ -71,6 +74,7 @@ interface Brevredigering {
     fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
     fun markerSomKlar()
     fun markerSomKladd()
+    fun markerSomArkivert(journalpostId: JournalpostId)
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
@@ -115,6 +119,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistReservert by BrevredigeringTable.sistReservert
         private set
     override var journalpostId by BrevredigeringTable.journalpostId
+        private set
 
     override var leggVedFoersteside by BrevredigeringTable.leggVedFoersteside
 
@@ -241,6 +246,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         laastForRedigering = false
         attestertAvNavIdent = null
         redigertBrev = redigertBrev.withSignaturAttestant(null)
+    }
+
+    override fun markerSomArkivert(journalpostId: JournalpostId) {
+        this.journalpostId = journalpostId
     }
 
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String) {
