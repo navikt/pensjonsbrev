@@ -13,7 +13,7 @@ class JacksonReflectionJsonSchemaInferenceTest {
     private val inference = JacksonReflectionJsonSchemaInference(JacksonSchemaReflectionAdapter(null))
 
     /**
-     * [RedigerbarSaksbehandlervalgMap] is a concrete class that fixes its `Map` value type
+     * [SaksbehandlervalgMap] is a concrete class that fixes its `Map` value type
      * (`SaksbehandlervalgVerdi?`) in its supertype declaration (`: LinkedHashMap<String, SaksbehandlervalgVerdi?>()`)
      * rather than declaring its own type parameters. Schema inference must resolve the value type
      * via the resolved `Map` supertype in that case - not just the property's own (empty) type
