@@ -224,6 +224,78 @@ describe("ExprToText kompakt Conditional-visning for rene literal-grener", () =>
   });
 });
 
+describe("ExprToText kompakt Conditional-visning for formatterte grener", () => {
+  it("rendrer eksempeltekst1|eksempeltekst2 når begge grener er Format med exampleText", () => {
+    // Strukturen fra OpplysningerBruktIBeregningTabell sin Uføretidspunkt-rad:
+    // ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.format())
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("erMndEtterFoedsel"),
+      ifTrue: {
+        exprType: ExprType.FORMAT,
+        value: fieldPath("foedselsdato"),
+        formatterName: "MonthYearFormatter",
+        exampleText: "mars 2024",
+      },
+      ifElse: {
+        exprType: ExprType.FORMAT,
+        value: fieldPath("uforetidspunkt"),
+        formatterName: "ShortDateFormat",
+        exampleText: "17.03.2024",
+      },
+    };
+
+    const html = render(expr);
+    expect(buttonText(html)).toBe("mars 2024|17.03.2024");
+    // Verken predikatet eller feltstiene skal ta plass i selve raden.
+    expect(buttonText(html)).not.toContain("erMndEtterFoedsel");
+    expect(buttonText(html)).not.toContain("foedselsdato");
+    expect(html).toContain('aria-label="Vis betingelse"');
+    // Med uttrykks-grener må popoveren vise HELE if/then/else-strukturen, slik at leseren ser
+    // hvilket felt hver eksempelverdi stammer fra - ikke bare predikatet.
+    expect(html).toContain("expr-block");
+    expect(text(html)).toContain("erMndEtterFoedsel");
+    expect(text(html)).toContain("foedselsdato");
+    expect(text(html)).toContain("formatert som måned og år");
+    // Format-grenene inni popoveren skal rendres i full form, ikke som nye popover-markører.
+    expect((html.match(/expr-popover-trigger/g) ?? []).length).toBe(1);
+  });
+
+  it("rendrer [eksempeltekst] når else-grenen er tom streng", () => {
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("harUforetidspunkt"),
+      ifTrue: {
+        exprType: ExprType.FORMAT,
+        value: fieldPath("uforetidspunkt"),
+        formatterName: "ShortDateFormat",
+        exampleText: "17.03.2024",
+      },
+      ifElse: { exprType: ExprType.LITERAL, value: "", kind: "STRING" },
+    };
+
+    expect(buttonText(render(expr))).toBe("[17.03.2024]");
+  });
+
+  it("faller tilbake til if/then/else-blokk når en gren mangler kompakt tekst", () => {
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("erGift"),
+      ifTrue: {
+        exprType: ExprType.FORMAT,
+        value: fieldPath("ukjentFelt"),
+        formatterName: "UkjentFormatter",
+        exampleText: null,
+      },
+      ifElse: { exprType: ExprType.LITERAL, value: "nei", kind: "STRING" },
+    };
+
+    const html = render(expr);
+    expect(html).not.toContain("expr-popover-trigger");
+    expect((html.match(/class="expr-block-row"/g) ?? []).length).toBe(3);
+  });
+});
+
 describe("ExprToText Format med eksempeltekst", () => {
   it("viser exampleText kompakt med full uttrykk+formatterer tilgjengelig via popover", () => {
     const expr: Expr = {
