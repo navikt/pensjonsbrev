@@ -48,7 +48,7 @@ function Probe() {
 describe("AttestantDiffContext", () => {
   it("exposes entirely deleted blocks at their unified position", () => {
     render(
-      <AttestantDiffProvider diff={diff} diffHash="hash-1" disableDiff={() => {}}>
+      <AttestantDiffProvider diff={diff} diffHash="hash-1" disableDiffMode={() => {}}>
         <Probe />
       </AttestantDiffProvider>,
     );
@@ -59,7 +59,7 @@ describe("AttestantDiffContext", () => {
 
   it("hides all decorations, literal and structural, when the diff is turned off", () => {
     render(
-      <AttestantDiffProvider diff={undefined} diffHash={undefined} disableDiff={() => {}}>
+      <AttestantDiffProvider diff={undefined} diffHash={undefined} disableDiffMode={() => {}}>
         <Probe />
       </AttestantDiffProvider>,
     );
@@ -85,7 +85,7 @@ describe("AttestantDiffContext", () => {
     const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     render(
-      <AttestantDiffProvider diff={malformedDiff} diffHash="hash-1" disableDiff={() => {}}>
+      <AttestantDiffProvider diff={malformedDiff} diffHash="hash-1" disableDiffMode={() => {}}>
         <Probe />
       </AttestantDiffProvider>,
     );
