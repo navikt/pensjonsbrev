@@ -42,6 +42,10 @@ node {
     npmInstallCommand.set("ci")
 }
 
+tasks.npmInstall {
+    outputs.cacheIf { true }
+}
+
 val generateOpenApiSpec = tasks.register<Test>("generateOpenApiSpec") {
     description = "Generates build/openapi-spec.json by booting the application via OpenApiSpecTest"
     group = "build"
@@ -72,6 +76,7 @@ val generateApiTypes = tasks.register<NpxTask>("generateApiTypes") {
     )
     inputs.file(specFile)
     outputs.file(outputFile)
+    outputs.cacheIf { true }
 }
 
 val typeCheckFrontend = tasks.register<NpmTask>("typeCheckFrontend") {
@@ -80,6 +85,7 @@ val typeCheckFrontend = tasks.register<NpmTask>("typeCheckFrontend") {
     npmCommand.set(listOf("run", "check-types"))
     inputs.files(rootProject.fileTree("skribenten-web/frontend/src"))
     outputs.upToDateWhen { true }
+    outputs.cacheIf { true }
 }
 
 group = "no.nav.pensjon.brev.skribenten"
