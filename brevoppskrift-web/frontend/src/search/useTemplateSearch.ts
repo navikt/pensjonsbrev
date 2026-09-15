@@ -2,7 +2,14 @@ import { useQueries } from "@tanstack/react-query";
 import { useDeferredValue, useMemo, useState } from "react";
 
 import { getAllTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
-import { type BrevHit, buildIndex, type ContentHit, search, type TemplateText } from "~/search/textSearch";
+import {
+  type BrevHit,
+  buildIndex,
+  type ContentHit,
+  SPECIAL_CHAR_QUERY,
+  search,
+  type TemplateText,
+} from "~/search/textSearch";
 export const MIN_QUERY_LENGTH = 2;
 /** The batch payload carries an ETag, so periodic refetches revalidate cheaply
  *  (304 Not Modified) and only transfer the corpus when its content changes. */
@@ -108,7 +115,10 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const trimmedQuery = deferredQuery.trim();
-  const isSearching = trimmedQuery.length >= MIN_QUERY_LENGTH;
+  // A query made entirely of special characters (e.g. "§" or "§§") is
+  // allowed to search despite being shorter than MIN_QUERY_LENGTH - see
+  // SPECIAL_CHAR_QUERY in textSearch.ts.
+  const isSearching = trimmedQuery.length >= MIN_QUERY_LENGTH || SPECIAL_CHAR_QUERY.test(trimmedQuery);
   const results = useMemo(
     () => (indexes && isSearching ? search(indexes, trimmedQuery, exactOnly) : { content: [], brev: [] }),
     [indexes, isSearching, trimmedQuery, exactOnly],
