@@ -12,8 +12,8 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse, type SaksbehandlerValg } from "~/types/brev";
-
-import { brevInfo, brevResponse, editedLetter, literal, paragraph, withParent } from "../utils";
+import { brevInfo, brevResponse, editedLetter } from "~test/support/brevFixtures";
+import { literal, paragraph, withParent } from "~test/support/letterEditorTestUtils";
 
 const { oppdaterBrevMock } = vi.hoisted(() => ({ oppdaterBrevMock: vi.fn() }));
 

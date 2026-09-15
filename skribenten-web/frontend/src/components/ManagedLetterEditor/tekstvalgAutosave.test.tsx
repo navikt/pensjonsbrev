@@ -11,8 +11,7 @@ import {
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
-
-import { brevInfo, brevResponse } from "../../modules/LetterEditor/utils";
+import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
 const { oppdaterBrevMock, oppdaterBrevtekstMock } = vi.hoisted(() => ({
   oppdaterBrevMock: vi.fn(),

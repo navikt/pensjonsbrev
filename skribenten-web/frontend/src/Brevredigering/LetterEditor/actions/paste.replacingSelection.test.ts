@@ -4,8 +4,18 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
 import { type SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { type ItemList, type LiteralValue, type Table } from "~/types/brevbakerTypes";
-
-import { cell, item, itemList, letter, literal, paragraph, row, select, table, variable } from "../utils";
+import {
+  cell,
+  item,
+  itemList,
+  letter,
+  literal,
+  paragraph,
+  row,
+  select,
+  table,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 describe("Actions.pasteReplacingSelection", () => {
   describe("paste plain text replacing selection in a single literal", () => {

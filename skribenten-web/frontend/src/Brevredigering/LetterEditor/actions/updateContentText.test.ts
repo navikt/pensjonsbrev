@@ -2,8 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
-
-import { item, itemList, letter, literal, paragraph, select } from "../utils";
+import { item, itemList, letter, literal, paragraph, select } from "~test/support/letterEditorTestUtils";
 
 const state = letter(
   paragraph([literal({ text: "heisann" }), itemList({ items: [item(literal({ text: "punkt 1" }))] })]),

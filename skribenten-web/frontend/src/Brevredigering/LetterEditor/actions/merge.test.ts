@@ -13,8 +13,18 @@ import {
   type TextContent,
   type VariableValue,
 } from "~/types/brevbakerTypes";
-
-import { asNew, item, itemList, letter, literal, newLine, paragraph, select, variable, withDeleted } from "../utils";
+import {
+  asNew,
+  item,
+  itemList,
+  letter,
+  literal,
+  newLine,
+  paragraph,
+  select,
+  variable,
+  withDeleted,
+} from "~test/support/letterEditorTestUtils";
 
 describe("LetterEditorActions.merge", () => {
   describe("at literal", () => {

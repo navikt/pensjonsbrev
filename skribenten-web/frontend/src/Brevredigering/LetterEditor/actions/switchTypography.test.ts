@@ -3,8 +3,18 @@ import { describe, expect, test } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { type ParagraphBlock, type Title1Block, type Title2Block } from "~/types/brevbakerTypes";
-
-import { asNew, item, itemList, letter, literal, paragraph, select, title1, title2, variable } from "../utils";
+import {
+  asNew,
+  item,
+  itemList,
+  letter,
+  literal,
+  paragraph,
+  select,
+  title1,
+  title2,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 function switchTypography(state: LetterEditorState, index: Focus, typography: "PARAGRAPH" | "TITLE1" | "TITLE2") {
   return Actions.switchTypography({ ...state, focus: index }, typography);

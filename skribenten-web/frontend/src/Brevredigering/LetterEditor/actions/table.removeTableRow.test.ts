@@ -4,8 +4,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { type LiteralValue, type Row, type TextContent } from "~/types/brevbakerTypes";
-
-import { brevResponse, editedLetter } from "../utils";
+import { brevResponse, editedLetter } from "~test/support/brevFixtures";
 
 function asLiteral(content: TextContent): LiteralValue {
   if (content.type !== "LITERAL") throw new Error(`Expected LITERAL, got ${content.type}`);

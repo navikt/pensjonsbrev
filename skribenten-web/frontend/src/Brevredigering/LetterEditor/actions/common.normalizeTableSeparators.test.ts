@@ -2,8 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { isTable, normalizeTableSeparators } from "~/Brevredigering/LetterEditor/actions/common";
 import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
-
-import { cell, letter, literal, paragraph, row, table } from "../utils";
+import { cell, letter, literal, paragraph, row, table } from "~test/support/letterEditorTestUtils";
 
 function makeTable() {
   return table(

@@ -1,8 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import { countMissingFromTemplateBlocks } from "~/Brevredigering/LetterEditor/actions/common";
-
-import { letter, paragraph, withMissingFromTemplate } from "../utils";
+import { letter, paragraph, withMissingFromTemplate } from "~test/support/letterEditorTestUtils";
 
 describe("countMissingFromTemplateBlocks", () => {
   test("returns 0 when no blocks are missing from template", () => {

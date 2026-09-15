@@ -6,8 +6,18 @@ import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGr
 import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
 import { type UnifiedLetterDiff } from "~/Brevredigering/LetterEditor/diff/diffModel";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
-
-import { cell, item, itemList, letter, literal, newLine, paragraph, row, table, variable } from "../utils";
+import {
+  cell,
+  item,
+  itemList,
+  letter,
+  literal,
+  newLine,
+  paragraph,
+  row,
+  table,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 const DIFF_ARTIFACT_SELECTOR =
   "[data-diff-deleted],[data-diff-deleted-block],[data-diff-insertion],[data-diff-deletion],[data-diff-version]";

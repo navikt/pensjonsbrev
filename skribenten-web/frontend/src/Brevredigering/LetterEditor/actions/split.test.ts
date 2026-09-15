@@ -12,8 +12,16 @@ import {
   type ParagraphBlock,
   type TextContent,
 } from "~/types/brevbakerTypes";
-
-import { asNew, item, itemList, letter, literal, paragraph, select, variable } from "../utils";
+import {
+  asNew,
+  item,
+  itemList,
+  letter,
+  literal,
+  paragraph,
+  select,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 describe("LetterEditorActions.split", () => {
   describe("at literal", () => {

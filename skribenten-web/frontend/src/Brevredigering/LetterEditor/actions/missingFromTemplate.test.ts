@@ -1,8 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-
-import { letter, literal, paragraph, withMissingFromTemplate } from "../utils";
+import { letter, literal, paragraph, withMissingFromTemplate } from "~test/support/letterEditorTestUtils";
 
 describe("LetterEditorActions.removeMissingFromTemplateBlock", () => {
   test("removes the block and records its id in deletedBlocks", () => {

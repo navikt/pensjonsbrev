@@ -3,8 +3,17 @@ import { describe, expect, test } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
 import { ListType, type LiteralValue, type ParagraphBlock, type TextContent } from "~/types/brevbakerTypes";
-
-import { item, itemList, letter, literal, newLine, paragraph, select, title1, title2 } from "../utils";
+import {
+  item,
+  itemList,
+  letter,
+  literal,
+  newLine,
+  paragraph,
+  select,
+  title1,
+  title2,
+} from "~test/support/letterEditorTestUtils";
 
 describe("Actions.addNewLine", () => {
   test("does not add new line to title1", () => {
