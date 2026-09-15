@@ -809,69 +809,70 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                     )
                 }
             }
-
-            ifNotNull(pesysData.fribelopsperioder) { fribelopsperioder ->
-                paragraph {
-                    text(
-                        bokmal { +"Du har mulighet til å ha inntekt ved siden av uføretrygden din. " },
-                        nynorsk { +"Det er mogleg for deg å ha inntekt ved sida av uføretrygda di. " },
-                    )
-                }
-                showIf(!pesysData.harVTA) {
+            showIf(FeatureToggles.bunnfradragIVedlegg.toggle.expr().enabled()) {
+                ifNotNull(pesysData.fribelopsperioder) { fribelopsperioder ->
                     paragraph {
                         text(
-                            bokmal { +"Når uføregraden øker, vil du få ny venteperiode på 2 år med et fribeløp på 0,4 G, før fribeløpet igjen vil øke til 1 G. Du kan ha en årlig inntekt på 0,4 G, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt. " },
-                            nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit fribeløp på 0,4 G, før fribeløpet igjen vil auke til 1 G. Du kan ha ei årleg inntekt på 0,4 G utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt. " },
+                            bokmal { +"Du har mulighet til å ha inntekt ved siden av uføretrygden din. " },
+                            nynorsk { +"Det er mogleg for deg å ha inntekt ved sida av uføretrygda di. " },
                         )
                     }
-                    paragraph {
-                        text(
-                            bokmal { +"Slik beregner vi fribeløpet ditt i år: " },
-                            nynorsk { +"Slik reknar vi ut fribeløpet ditt i år: " },
-                        )
-                    }
-                    includePhrase(OkningUforegradFraser(fribelopsperioder, pesysData.vektetFribelop, pesysData.vektetFribelopKr))
-                }.orShow {
-                    showIf(pesysData.harVTA) {
+                    showIf(!pesysData.harVTA) {
                         paragraph {
                             text(
-                                bokmal { +"Fordi du er i varig tilrettelagt arbeid kan du ha en årlig inntekt på folketrygdens grunnbeløp uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },
-                                nynorsk { +"Fordi du er i varig tilrettelagt arbeid kan du ha ei årleg inntekt på folketrygdens grunnbeløp utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er botnfrådraget ditt." },
+                                bokmal { +"Når uføregraden øker, vil du få ny venteperiode på 2 år med et fribeløp på 0,4 G, før fribeløpet igjen vil øke til 1 G. Du kan ha en årlig inntekt på 0,4 G, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt. " },
+                                nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit fribeløp på 0,4 G, før fribeløpet igjen vil auke til 1 G. Du kan ha ei årleg inntekt på 0,4 G utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt. " },
                             )
                         }
+                        paragraph {
+                            text(
+                                bokmal { +"Slik beregner vi fribeløpet ditt i år: " },
+                                nynorsk { +"Slik reknar vi ut fribeløpet ditt i år: " },
+                            )
+                        }
+                        includePhrase(OkningUforegradFraser(fribelopsperioder, pesysData.vektetFribelop, pesysData.vektetFribelopKr))
+                    }.orShow {
+                        showIf(pesysData.harVTA) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Fordi du er i varig tilrettelagt arbeid kan du ha en årlig inntekt på folketrygdens grunnbeløp uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },
+                                    nynorsk { +"Fordi du er i varig tilrettelagt arbeid kan du ha ei årleg inntekt på folketrygdens grunnbeløp utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er botnfrådraget ditt." },
+                                )
+                            }
+                        }
                     }
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi reduksjonsprosent." },
-                        nynorsk { +"Vi bruker ein fastsett prosentdel når vi justerer uføretrygda di ut frå inntekt. Denne prosentdelen kallar vi reduksjonsprosent. " },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"For deg utgjør reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_bunnfradrag_faktisk().format()
-                            +", som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_bunnfradrag_faktisk().format() + " trekkes fra uføretrygden din."
-                        },
-                        nynorsk {
-                            +"For deg utgjer reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_bunnfradrag_faktisk().format()
-                            +", som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_bunnfradrag_faktisk().format() + " blir trekt frå uføretrygda di."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn bunnfradraget ditt." },
-                        nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn botnfrådraget ditt." },
-                    )
-                }
-
-                showIf(bostedutland) {
                     paragraph {
                         text(
-                            bokmal { +"Bunnfradraget gjelder bare for den norske uføretrygden din. Har du spørsmål om bunnfradraget i et annet land, må du kontakte trygdemyndighetene i det landet det gjelder." },
-                            nynorsk { +"Botnfrådraget gjeld berre for den norske uføretrygda di. Har du spørsmål om botnfrådraget i eit anna land, må du kontakte trygdestyresmaktene i det landet det gjeld." },
+                            bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi reduksjonsprosent." },
+                            nynorsk { +"Vi bruker ein fastsett prosentdel når vi justerer uføretrygda di ut frå inntekt. Denne prosentdelen kallar vi reduksjonsprosent. " },
                         )
+                    }
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"For deg utgjør reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_bunnfradrag_faktisk().format()
+                                +", som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_bunnfradrag_faktisk().format() + " trekkes fra uføretrygden din."
+                            },
+                            nynorsk {
+                                +"For deg utgjer reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_bunnfradrag_faktisk().format()
+                                +", som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_bunnfradrag_faktisk().format() + " blir trekt frå uføretrygda di."
+                            },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn bunnfradraget ditt." },
+                            nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn botnfrådraget ditt." },
+                        )
+                    }
+
+                    showIf(bostedutland) {
+                        paragraph {
+                            text(
+                                bokmal { +"Bunnfradraget gjelder bare for den norske uføretrygden din. Har du spørsmål om bunnfradraget i et annet land, må du kontakte trygdemyndighetene i det landet det gjelder." },
+                                nynorsk { +"Botnfrådraget gjeld berre for den norske uføretrygda di. Har du spørsmål om botnfrådraget i eit anna land, må du kontakte trygdestyresmaktene i det landet det gjeld." },
+                            )
+                        }
                     }
                 }
             }
