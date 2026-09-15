@@ -57,7 +57,7 @@ jobs:
           for target in $GRADLE_TARGETS; do tasks="$tasks :$target:publish"; done
           ./gradlew $tasks -Dorg.gradle.configuration-cache=false
       - name: "Release maven manually"
-        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main' && inputs.changes == 'true'
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           GRADLE_TARGETS: ${{ inputs.gradleTarget }}
