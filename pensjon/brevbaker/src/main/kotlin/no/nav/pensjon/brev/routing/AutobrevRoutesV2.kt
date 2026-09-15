@@ -4,12 +4,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.api.countLetter
+import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AutobrevTemplate
 
 fun Route.autobrevRoutesV2(
-    autobrev: AutobrevTemplateResource<Brevkode.Automatisk, AutobrevTemplate<*>>,
+    autobrev: AutobrevTemplateResource<Brevkode.Automatisk, AutobrevData, AutobrevTemplate<*>>,
 ) {
     route("/${autobrev.name}") {
         post<BestillBrevRequest<Brevkode.Automatisk>>("/pdf") { brevbestilling ->

@@ -9,10 +9,11 @@ import no.nav.pensjon.brev.api.countLetter
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 fun Route.redigerbarRoutesV2(
-    redigerbareBrev: RedigerbarTemplateResource<Brevkode.Redigerbart, RedigerbarTemplate<*>>,
+    redigerbareBrev: RedigerbarTemplateResource<Brevkode.Redigerbart, RedigerbarBrevdata<*>, RedigerbarTemplate<*>>,
 ) {
     route("/${redigerbareBrev.name}") {
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/markup") { brevbestilling ->
