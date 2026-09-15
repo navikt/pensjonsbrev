@@ -7,6 +7,12 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.expression.SelectorUsage
 
 
-internal fun <LetterData : Any> Letter<LetterData>.toScope(selectorUsage: SelectorUsage? = null) = ExpressionScope(argument, felles, language, selectorUsage)
+internal fun <LetterData : Any> Letter<LetterData>.toScope(selectorUsage: SelectorUsage? = null) =
+    ExpressionScope(argument, felles, language, selectorUsage, saksbehandlerValg)
 internal fun <LetterData : Any, AttachmentData : VedleggData> IncludeAttachment<*, AttachmentData>.toScope(letterScope: ExpressionScope<LetterData>) =
-    ExpressionScope(data.eval(letterScope), letterScope.felles, letterScope.language)
+    ExpressionScope(
+        data.eval(letterScope),
+        letterScope.felles,
+        letterScope.language,
+        saksbehandlerValg = letterScope.saksbehandlerValg
+    )
