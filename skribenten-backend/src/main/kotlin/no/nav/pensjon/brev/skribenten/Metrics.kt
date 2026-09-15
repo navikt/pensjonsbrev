@@ -85,8 +85,13 @@ object Metrics {
         .build()
 
 
-    // Strukturell brems: avsender_enhet er eneste label med ukjent antall verdier. Mål faktisk
-    // antall med count(count by (avsender_enhet) (skribenten_brev_sendt_total)) og juster.
+    // Strukturell brems: avsender_enhet er eneste label med ukjent antall verdier. Taket gjelder
+    // dette registeret, altså per pod - ikke på tvers av poder. Mål derfor den poden som har sett
+    // flest enheter, og juster:
+    //   max(count by (pod) (count by (avsender_enhet, pod)
+    //     (count_over_time(skribenten_brev_sendt_total[30d]))))
+    // count_over_time og ikke et instant-oppslag: sistnevnte ser bare serier som er rapportert de
+    // siste minuttene, og underteller enhetene tilsvarende.
     const val maksAntallAvsenderEnheter = 200
     fun avsenderEnhetFilter(): MeterFilter =
         MeterFilter.maximumAllowableTags(
