@@ -26,7 +26,8 @@ export type UmamiEventName =
   | "tid brukt i editor"
   | "tilbakestill mottaker klikket"
   | "blokk beholdt"
-  | "blokk slettet";
+  | "blokk slettet"
+  | "diff modus endret";
 
 export interface UmamiEventData {
   [key: string]: string | number | boolean | undefined;

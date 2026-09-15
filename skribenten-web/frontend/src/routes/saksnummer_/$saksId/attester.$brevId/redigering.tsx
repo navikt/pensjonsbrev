@@ -260,10 +260,19 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   // The diff decorations belong to the latest saved letter and are removed as soon as editing begins.
-  const { disableDiff } = attestantDiff;
+  const { disableDiffMode, isDiffMode, defaultDiffMode } = attestantDiff;
   useEffect(() => {
-    if (editorState.saveStatus === "DIRTY") disableDiff();
-  }, [disableDiff, editorState.saveStatus]);
+    if (editorState.saveStatus === "DIRTY" && isDiffMode) {
+      disableDiffMode();
+      trackEvent("diff modus endret", {
+        brevId: props.brev.info.id,
+        brevkode: props.brev.info.brevkode,
+        kilde: "automatisk",
+        diffModus: false,
+        defaultDiffModus: defaultDiffMode,
+      });
+    }
+  }, [isDiffMode, defaultDiffMode, disableDiffMode, editorState.saveStatus, props.brev.info.id]);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -440,8 +449,18 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                         {diffFeatureToggle.data?.enabled === true && (
                           <>
                             <Switch
-                              checked={attestantDiff.enabled}
-                              onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
+                              checked={attestantDiff.isDiffMode}
+                              onChange={(event) => {
+                                const checked = event.target.checked;
+                                attestantDiff.setDiffMode(checked);
+                                trackEvent("diff modus endret", {
+                                  brevId: props.brev.info.id,
+                                  brevkode: props.brev.info.brevkode,
+                                  kilde: "manuell",
+                                  diffModus: checked,
+                                  defaultDiffModus: attestantDiff.defaultDiffMode,
+                                });
+                              }}
                               size="small"
                             >
                               Marker tekst som er lagt til og slettet
@@ -516,7 +535,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <AttestantDiffProvider
                     diff={attestantDiff.activeDiff}
                     diffHash={attestantDiff.diffHash}
-                    disableDiff={attestantDiff.disableDiff}
+                    disableDiffMode={attestantDiff.disableDiffMode}
                   >
                     <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
                   </AttestantDiffProvider>

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { getBrevDiff } from "~/api/brev-queries";
 import { pickValueForCurrentHash } from "~/Brevredigering/LetterEditor/diff/diffQueryState";
@@ -18,10 +18,12 @@ export function useAttestantLetterDiff({
   savedHash: string;
   isSaved: boolean;
 }) {
-  const [enabled, setEnabled] = useState(false);
+  const [isDiffMode, setDiffMode] = useState(false);
+  // Captures the diff state as it was when the page first loaded, for tracking purposes.
+  const defaultDiffMode = useRef(isDiffMode).current;
 
   // Diff decorations and editing are mutually exclusive, so editing disables diff mode.
-  const disableDiff = useCallback(() => setEnabled(false), []);
+  const disableDiffMode = useCallback(() => setDiffMode(false), []);
 
   const diffQuery = useQuery({
     queryKey: getBrevDiff.queryKey(brevId, savedHash),
@@ -31,7 +33,7 @@ export function useAttestantLetterDiff({
     }),
     // `redigertBrev` and `redigertBrevHash` are updated together from the same save response,
     // so they only represent the same letter version while the editor is in a saved state.
-    enabled: enabled && isSaved,
+    enabled: isDiffMode && isSaved,
   });
 
   const activeDiff = pickValueForCurrentHash(diffQuery.isSuccess ? diffQuery.data : undefined, savedHash);
@@ -42,19 +44,20 @@ export function useAttestantLetterDiff({
     Object.keys(activeDiff.deletedBlocks).length === 0;
 
   let status: AttestantLetterDiffStatus = "disabled";
-  if (enabled) {
+  if (isDiffMode) {
     if (diffQuery.isError) status = "error";
     else if (diffIsEmpty) status = "empty";
     else if (activeDiff) status = "ready";
     else status = "loading";
   }
 
-  const renderMarkers = enabled && activeDiff !== undefined;
+  const renderMarkers = isDiffMode && activeDiff !== undefined;
 
   return {
-    enabled,
-    setEnabled,
-    disableDiff,
+    isDiffMode,
+    setDiffMode,
+    defaultDiffMode,
+    disableDiffMode,
     status,
     activeDiff: renderMarkers ? activeDiff : undefined,
     diffHash: renderMarkers ? savedHash : undefined,
