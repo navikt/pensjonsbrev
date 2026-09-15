@@ -985,26 +985,72 @@ function isSimpleLiteral(expr: Expr): expr is ExprLiteral {
 }
 
 /**
- * Et `Conditional` der begge grener bare er tekst-/verdiliteraler (svært vanlig - malforfattere
- * bruker ofte `ifElse(pred, "en tekst", "")` eller `ifElse(pred, "ja", "nei")` for kortfattede
- * setningsvarianter) trenger ikke den fulle if/then/else-blokkvisningen: selve predikatet er
- * ofte bare "hvorfor akkurat denne varianten", ikke noe leseren trenger foran seg hele tiden.
- * Vi viser i stedet kun de(n) faktiske teksten(e), med predikatet tilgjengelig i en popover.
+ * Den kompakte teksten en `Conditional`-gren kan reduseres til, eller `null` om grenen ikke har
+ * noen selvforklarende korttekst og derfor må vises i full if/then/else-blokk:
+ *
+ * - LITERAL: rå literal-tekst UTEN anførselstegn - `[`/`]`/`|`-markørene i den kompakte
+ *   visningen avgrenser allerede verdien tydelig nok, og verdien er som regel brevtekst som
+ *   skal se ut som brevtekst (ikke en generisk kodeverdi som trenger kvotering).
+ * - FORMAT med `exampleText`: den ferdig formatterte eksempelteksten backend har produsert
+ *   (f.eks. `mars 2024` for `foedselsdato.formatMonthYear()`). En slik gren vises uansett som
+ *   sin eksempeltekst når den står alene (se `ExprType.FORMAT`), så et `ifElse` mellom to
+ *   formatterte verdier fortjener nøyaktig samme kompakte behandling som to rene literaler -
+ *   i stedet for at et langt predikat får dominere raden (typisk i tabeller).
+ *
+ * Bevisst IKKE inkludert: FIELD_PATH og andre uttrykk. De har ingen konkret eksempelverdi å
+ * vise, så en kompakt visning ville skjult predikatet uten å gi leseren noe konkret igjen.
  */
-function isCompactLiteralConditional(
-  expr: Expr,
-): expr is { exprType: ExprType.CONDITIONAL_EXPR; predicate: Expr; ifTrue: ExprLiteral; ifElse: ExprLiteral } {
-  return expr.exprType === ExprType.CONDITIONAL_EXPR && isSimpleLiteral(expr.ifTrue) && isSimpleLiteral(expr.ifElse);
+function compactBranchText(expr: Expr): string | null {
+  if (expr.exprType === ExprType.LITERAL) {
+    return expr.value;
+  }
+  if (expr.exprType === ExprType.FORMAT) {
+    return expr.exampleText;
+  }
+  return null;
 }
 
 /**
- * Rå literal-tekst (uten anførselstegn) - brukes KUN i den kompakte Conditional-visningen, der
- * `[`/`]`/`|`-markørene allerede avgrenser verdien tydelig nok, og selve verdien som regel er
- * brevtekst som skal se ut som brevtekst (ikke en generisk kodeverdi som trenger kvotering).
+ * Er begge grenene i et `Conditional` rene literaler? Da er selve grenene fullt ut synlige i
+ * den kompakte markøren, og popoveren trenger kun å avsløre predikatet. Er minst én gren et
+ * uttrykk (f.eks. en formattert verdi) viser vi i stedet HELE if/then/else-strukturen i
+ * popoveren, ellers ville leseren ikke kunne se hvilket felt hver eksempelverdi kommer fra.
  */
-function compactLiteralText(literal: ExprLiteral): string {
-  return literal.value;
+function isLiteralOnlyConditional(ifTrue: Expr, ifElse: Expr): boolean {
+  return isSimpleLiteral(ifTrue) && isSimpleLiteral(ifElse);
 }
+
+/**
+ * if/then/else har naturlig tre "ledd" og drar samme nytte av linjeskift+innrykk som en
+ * AND/OR-kjede - se `.expr-block` i appStyles.css. Predikatet parentetiseres fortsatt
+ * eksplisitt (i motsetning til AND/OR-ledd) siden det ikke er et likestilt ledd i samme
+ * kjede, men selve betingelsen for grenene under.
+ */
+function ConditionalExprBlock({ predicate, ifTrue, ifElse }: { predicate: Expr; ifTrue: Expr; ifElse: Expr }) {
+  return (
+    <div className="expr-block">
+      <div className="expr-block-row">
+        <span className="expr-operator">if</span> (<ExprToText expr={predicate} />)
+      </div>
+      <div className="expr-block-row">
+        <span className="expr-operator">then</span> <MaybeParens expr={ifTrue} />
+      </div>
+      <div className="expr-block-row">
+        <span className="expr-operator">else</span> <MaybeParens expr={ifElse} />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Er vi allerede INNI et popover-innhold? En popover er selve stedet der den fulle strukturen
+ * skal avsløres, så nye, nøstede popover-markører der ville vært både utilgjengelige (den ytre
+ * triggerens `onMouseLeave` lukker popoveren før musen rekker frem til innholdet) og
+ * meningsløse (de ville skjult nettopp det man åpnet popoveren for å se). Uttrykk som ellers
+ * rendres kompakt bak en popover - i praksis `FORMAT` med eksempeltekst - rendres derfor i
+ * sin fulle form her.
+ */
+const InsideExprPopoverContext = createContext(false);
 
 /**
  * Viser `children` (en kompakt tekst-markør, f.eks. Conditional sin `[tekst]`/`tekst1|tekst2`
@@ -1032,7 +1078,9 @@ function ExprPopover({ ariaLabel, content, children }: { ariaLabel: string; cont
       </button>
       <Popover anchorEl={anchorRef.current} onClose={() => setOpen(false)} open={open} placement="top">
         <Popover.Content>
-          <span className="expression">{content}</span>
+          <InsideExprPopoverContext.Provider value={true}>
+            <span className="expression">{content}</span>
+          </InsideExprPopoverContext.Provider>
         </Popover.Content>
       </Popover>
     </>
@@ -1040,6 +1088,7 @@ function ExprPopover({ ariaLabel, content, children }: { ariaLabel: string; cont
 }
 
 export function ExprToText({ expr }: { expr: Expr }) {
+  const insidePopover = useContext(InsideExprPopoverContext);
   switch (expr.exprType) {
     case ExprType.LITERAL: {
       // Strengliteraler vises med anførselstegn, slik at f.eks. en tom streng-fallback i
@@ -1135,7 +1184,7 @@ export function ExprToText({ expr }: { expr: Expr }) {
       // faktiske `LocalizedFormatter`), vis det i stedet for den abstrakte
       // "<uttrykk> formatert som <formatterer>"-frasen - eksempelet ligner det leseren faktisk
       // vil se i et ferdig brev. Full struktur er fortsatt tilgjengelig via popover.
-      if (expr.exampleText !== null) {
+      if (expr.exampleText !== null && !insidePopover) {
         return (
           <ExprPopover ariaLabel="Vis fullt uttrykk" content={fullExpr}>
             <span className="expr-literal">{expr.exampleText}</span>
@@ -1145,46 +1194,34 @@ export function ExprToText({ expr }: { expr: Expr }) {
       return fullExpr;
     }
     case ExprType.CONDITIONAL_EXPR: {
-      // Svært vanlig mønster: begge grener er bare literaler (`ifElse(pred, "tekst", "")` eller
-      // `ifElse(pred, "ja", "nei")`), der predikatet er mindre interessant enn selve teksten(e)
-      // som faktisk vises. Vis da en kompakt markør (`[tekst]` når den ene grenen er tom
-      // streng, ellers `tekst1|tekst2`) med predikatet tilgjengelig via popover i stedet for
-      // den fulle if/then/else-blokken.
-      if (isCompactLiteralConditional(expr)) {
-        const ifTrueText = compactLiteralText(expr.ifTrue);
-        const ifElseText = compactLiteralText(expr.ifElse);
+      // Svært vanlig mønster: begge grener kan reduseres til en kort, selvforklarende tekst -
+      // enten rene literaler (`ifElse(pred, "tekst", "")`, `ifElse(pred, "ja", "nei")`) eller
+      // formatterte verdier med eksempeltekst (`ifElse(pred, a.formatMonthYear(), b.format())`)
+      // - der predikatet er mindre interessant enn selve verdien(e) som faktisk vises. Vis da en
+      // kompakt markør (`[tekst]` når else-grenen er tom streng, ellers `tekst1|tekst2`) med den
+      // fulle strukturen tilgjengelig via popover i stedet for den fulle if/then/else-blokken.
+      const ifTrueText = compactBranchText(expr.ifTrue);
+      const ifElseText = compactBranchText(expr.ifElse);
+      if (ifTrueText !== null && ifElseText !== null && !insidePopover) {
         const compact = ifElseText === "" ? `[${ifTrueText}]` : `${ifTrueText}|${ifElseText}`;
+        // Er begge grenene literaler, er de fullt ut synlige i markøren og popoveren trenger kun
+        // å avsløre predikatet. Er minst én gren et uttrykk, viser vi hele if/then/else-blokken,
+        // ellers ville leseren ikke kunne se hvilket felt hver eksempelverdi stammer fra.
+        const content = isLiteralOnlyConditional(expr.ifTrue, expr.ifElse) ? (
+          <>
+            <code>Hvis </code>
+            <ExprToText expr={expr.predicate} />
+          </>
+        ) : (
+          <ConditionalExprBlock ifElse={expr.ifElse} ifTrue={expr.ifTrue} predicate={expr.predicate} />
+        );
         return (
-          <ExprPopover
-            ariaLabel="Vis betingelse"
-            content={
-              <>
-                <code>Hvis </code>
-                <ExprToText expr={expr.predicate} />
-              </>
-            }
-          >
+          <ExprPopover ariaLabel="Vis betingelse" content={content}>
             <span className="expr-literal">{compact}</span>
           </ExprPopover>
         );
       }
-      // if/then/else har naturlig tre "ledd" og drar samme nytte av linjeskift+innrykk som en
-      // AND/OR-kjede - se `.expr-block` i appStyles.css. Prediktatet parentetiseres fortsatt
-      // eksplisitt (i motsetning til AND/OR-ledd) siden det ikke er et likestilt ledd i samme
-      // kjede, men selve betingelsen for grenene under.
-      return (
-        <div className="expr-block">
-          <div className="expr-block-row">
-            <span className="expr-operator">if</span> (<ExprToText expr={expr.predicate} />)
-          </div>
-          <div className="expr-block-row">
-            <span className="expr-operator">then</span> <MaybeParens expr={expr.ifTrue} />
-          </div>
-          <div className="expr-block-row">
-            <span className="expr-operator">else</span> <MaybeParens expr={expr.ifElse} />
-          </div>
-        </div>
-      );
+      return <ConditionalExprBlock ifElse={expr.ifElse} ifTrue={expr.ifTrue} predicate={expr.predicate} />;
     }
     case ExprType.NULL_COALESCE: {
       return (
