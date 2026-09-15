@@ -71,6 +71,7 @@ kotlin {
 
 dependencies {
     implementation(platform(libs.log4j.bom))
+    implementation(platform(libs.netty.bom)) // Vi opplever ofte at netty har sårbarheter, så vi ønssker å enkelt kunne patche denne separat
     implementation(libs.bundles.logging)
     implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.call.id)

@@ -128,6 +128,7 @@ sourceSets {
 dependencies {
     // Ktor
     implementation(platform(libs.ktor.bom))
+    implementation(platform(libs.netty.bom)) // Vi opplever ofte at netty har sårbarheter, så vi ønssker å enkelt kunne patche denne separat
     implementation(libs.ktor.client.auth)
     implementation(libs.ktor.client.call.id)
     implementation(libs.ktor.client.cio)
