@@ -17,6 +17,7 @@ const BrevForhåndsvisning = (properties: {
   saksId: string;
   brevId: number;
   redigertBrevHash?: string;
+  waitingForFreshBrev?: boolean;
   pdfKilde?: "saksbehandler" | "attestering";
 }) => {
   const [showBrevDataEndringAlert, setShowBrevDataEndringAlert] = useState(true);
@@ -28,6 +29,7 @@ const BrevForhåndsvisning = (properties: {
   const hentPdfQuery = useQuery({
     queryKey: pdfQuery.queryKey(properties.brevId, properties.redigertBrevHash),
     queryFn: () => pdfQuery.queryFn(properties.saksId, properties.brevId),
+    enabled: !properties.waitingForFreshBrev,
     refetchOnWindowFocus: false,
   });
 
@@ -68,10 +70,17 @@ const BrevForhåndsvisning = (properties: {
     setShowBrevDataEndringAlert(false);
   };
 
+  // Må komme før queryFold: med enabled: false er isLoading false, så queryFold ville falt gjennom til
+  // isSuccess og vist en pdf som allerede lå i cachen på denne nøkkelen - potensielt for en utdatert
+  // versjon av brevet. Loaderen er identisk med pending-grenen, så overgangen gir ingen synlig hopp.
+  if (properties.waitingForFreshBrev) {
+    return <CenteredLoader label="Henter brev..." verticalStrategy="height" />;
+  }
+
   return queryFold({
     query: hentPdfQuery,
     initial: () => <></>,
-    pending: () => <CenteredLoader label="Henter brev..." />,
+    pending: () => <CenteredLoader label="Henter brev..." verticalStrategy="height" />,
     error: (error) => {
       const is422 = error?.response?.status === 422;
       const errorTitle = is422 ? getErrorTitle(error) : undefined;
