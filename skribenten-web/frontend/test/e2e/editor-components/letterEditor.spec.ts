@@ -230,6 +230,56 @@ async function move(page: Page, key: string, times: number) {
   if (process.env.E2E_UI_MODE) console.info(`${key} x${times}`, "\nbefore", before, "\nafter", after);
 }
 
+async function insertManualLineBreak(page: Page, text: string, offset: number) {
+  await page.getByText(text, { exact: true }).evaluate((element, caretOffset) => {
+    const textNode = element.firstChild;
+    if (!textNode) throw new Error("Could not find text node");
+
+    element.focus({ preventScroll: true });
+    const range = document.createRange();
+    range.setStart(textNode, caretOffset);
+    range.collapse(true);
+    const selection = globalThis.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  }, offset);
+  await page.keyboard.press("Shift+Enter");
+  await expect(page.locator("br[data-literal-index]")).toHaveCount(1);
+}
+
+async function setEditorFocus(page: Page, focus: { blockIndex: number; contentIndex: number; cursorPosition: number }) {
+  await page.evaluate((focusArg) => {
+    const editorEl = document.querySelector(".editor");
+    if (!editorEl) throw new Error("Editor element not found");
+
+    const fiberKey = Object.keys(editorEl).find((key) => key.startsWith("__reactFiber$"));
+    if (!fiberKey) throw new Error("React fiber not found on editor element");
+
+    let fiber = (editorEl as unknown as Record<string, unknown>)[fiberKey] as Record<string, unknown> | null;
+    let setEditorState: ((fn: (prev: unknown) => unknown) => void) | null = null;
+
+    while (fiber) {
+      const memoizedProps = fiber.memoizedProps as Record<string, unknown> | undefined;
+      if (
+        memoizedProps?.value &&
+        typeof (memoizedProps.value as Record<string, unknown>).setEditorState === "function"
+      ) {
+        setEditorState = (memoizedProps.value as Record<string, unknown>).setEditorState as (
+          fn: (prev: unknown) => unknown,
+        ) => void;
+        break;
+      }
+      fiber = fiber.return as Record<string, unknown> | null;
+    }
+
+    if (!setEditorState) throw new Error("setEditorState not found in React fiber tree");
+    setEditorState((prev: unknown) => ({
+      ...(prev as Record<string, unknown>),
+      focus: focusArg,
+    }));
+  }, focus);
+}
+
 async function assertCaret(
   page: Page,
   expectedContent: string,
@@ -409,42 +459,8 @@ test.describe("LetterEditor", () => {
       const validCursorPosition = 5;
       const invalidCursorPosition = targetText.length + 10;
 
-      // Helper: inject a focus via React fiber internals
-      const setFocus = async (focus: { blockIndex: number; contentIndex: number; cursorPosition: number }) => {
-        await page.evaluate((focusArg) => {
-          const editorEl = document.querySelector(".editor");
-          if (!editorEl) throw new Error("Editor element not found");
-
-          const fiberKey = Object.keys(editorEl).find((key) => key.startsWith("__reactFiber$"));
-          if (!fiberKey) throw new Error("React fiber not found on editor element");
-
-          let fiber = (editorEl as unknown as Record<string, unknown>)[fiberKey] as Record<string, unknown> | null;
-          let setEditorState: ((fn: (prev: unknown) => unknown) => void) | null = null;
-
-          while (fiber) {
-            const memoizedProps = fiber.memoizedProps as Record<string, unknown> | undefined;
-            if (
-              memoizedProps?.value &&
-              typeof (memoizedProps.value as Record<string, unknown>).setEditorState === "function"
-            ) {
-              setEditorState = (memoizedProps.value as Record<string, unknown>).setEditorState as (
-                fn: (prev: unknown) => unknown,
-              ) => void;
-              break;
-            }
-            fiber = fiber.return as Record<string, unknown> | null;
-          }
-
-          if (!setEditorState) throw new Error("setEditorState not found in React fiber tree");
-          setEditorState((prev: unknown) => ({
-            ...(prev as Record<string, unknown>),
-            focus: focusArg,
-          }));
-        }, focus);
-      };
-
       // First, set a valid cursor position and verify it takes effect
-      await setFocus({ blockIndex: 0, contentIndex: 2, cursorPosition: validCursorPosition });
+      await setEditorFocus(page, { blockIndex: 0, contentIndex: 2, cursorPosition: validCursorPosition });
 
       // Wait for React to re-render and place the cursor
       await expect
@@ -461,7 +477,7 @@ test.describe("LetterEditor", () => {
         .toEqual({ offset: validCursorPosition, text: "true" });
 
       // Now set an invalid cursor position (beyond text length) — should not crash
-      await setFocus({ blockIndex: 0, contentIndex: 2, cursorPosition: invalidCursorPosition });
+      await setEditorFocus(page, { blockIndex: 0, contentIndex: 2, cursorPosition: invalidCursorPosition });
       await expect(page.getByText("Informasjon om saksbehandlingstiden vår")).toBeVisible();
       await expect(page.getByText("CP1-2")).toBeVisible();
 
@@ -523,6 +539,12 @@ test.describe("LetterEditor", () => {
 test.describe("LetterEditor scrolling navigation", () => {
   const padded = (n: number) => String(n).padStart(2, "0");
   const paragraphText = (n: number) => `Avsnitt nummer ${n} [P${padded(n)}]`;
+  // The literal that follows the manual line break must wrap over many lines. The reported jump
+  // only happens when the caret enters a tall multi-line element at the edge of the visible area;
+  // with a single-line literal the container never scrolls more than one line height.
+  const beforeNewLine = `FOER-START ${"Tekst foran linjeskiftet som fyller ut linjen. ".repeat(4)}FOER-SLUTT`;
+  const afterNewLine = `ETTER-START ${"Tekst etter linjeskiftet som fyller ut mange linjer. ".repeat(24)}ETTER-SLUTT`;
+  const textWithManualLineBreak = `${beforeNewLine}${afterNewLine}`;
 
   const longLetter = editedLetter({
     title: {
@@ -530,12 +552,24 @@ test.describe("LetterEditor scrolling navigation", () => {
       deletedContent: [],
     },
     sakspart: baseSakspart(),
-    blocks: Array.from({ length: 40 }, (_, i) =>
+    blocks: [
+      ...Array.from({ length: 40 }, (_, i) =>
+        paragraph({
+          id: 100 + i,
+          content: [makeLiteral(1000 + i, 100 + i, paragraphText(i + 1))],
+        }),
+      ),
       paragraph({
-        id: 100 + i,
-        content: [makeLiteral(1000 + i, 100 + i, paragraphText(i + 1))],
+        id: 160,
+        content: [makeLiteral(1060, 160, textWithManualLineBreak)],
       }),
-    ),
+      ...Array.from({ length: 5 }, (_, i) =>
+        paragraph({
+          id: 161 + i,
+          content: [makeLiteral(2000 + i, 161 + i, paragraphText(i + 41))],
+        }),
+      ),
+    ],
     signatur: baseSignatur(),
   }) as EditedLetter;
 
@@ -566,4 +600,52 @@ test.describe("LetterEditor scrolling navigation", () => {
 
     await assertCaret(page, "[P05]", 0);
   });
+
+  /**
+   * Walks the caret one line at a time and returns the largest single-step scroll movement,
+   * together with the height of the visible area it happened in.
+   */
+  async function largestScrollJumpWhileWalking(page: Page, key: "ArrowDown" | "ArrowUp", steps: number) {
+    const scrollTop = () => page.locator(".editor").evaluate((element) => element.parentElement?.scrollTop ?? -1);
+    const containerHeight = await page
+      .locator(".editor")
+      .evaluate((element) => element.parentElement?.clientHeight ?? -1);
+
+    let largestJump = 0;
+    let largestJumpStep = -1;
+    for (let step = 0; step < steps; step++) {
+      const before = await scrollTop();
+      await page.keyboard.press(key);
+      await page.waitForTimeout(50);
+      const jump = Math.abs((await scrollTop()) - before);
+
+      if (jump > largestJump) {
+        largestJump = jump;
+        largestJumpStep = step;
+      }
+    }
+    return { largestJump, largestJumpStep, containerHeight };
+  }
+
+  // Moving the caret one line must never scroll more than a small fraction of the visible area.
+  // The reported bug scrolls roughly half the visible height when the caret crosses the <br>,
+  // because the browser re-centres the caret instead of following the edge line by line.
+  for (const { key, startParagraph, steps } of [
+    { key: "ArrowDown" as const, startParagraph: 37, steps: 20 },
+    { key: "ArrowUp" as const, startParagraph: 44, steps: 20 },
+  ]) {
+    test(`${key} past a manual line break must not jump half a page`, async ({ page }) => {
+      await page.setViewportSize({ width: 1200, height: 600 });
+      await insertManualLineBreak(page, textWithManualLineBreak, beforeNewLine.length);
+
+      await page.getByText(paragraphText(startParagraph), { exact: true }).click();
+
+      const { largestJump, largestJumpStep, containerHeight } = await largestScrollJumpWhileWalking(page, key, steps);
+
+      expect(
+        largestJump,
+        `largest ${key} scroll jump was ${largestJump}px at step ${largestJumpStep} of a ${containerHeight}px tall viewport`,
+      ).toBeLessThan(containerHeight / 4);
+    });
+  }
 });

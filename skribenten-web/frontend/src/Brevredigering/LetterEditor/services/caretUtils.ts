@@ -232,22 +232,56 @@ function getVerticalScrollContainer(element: Element): HTMLElement | undefined {
   return undefined;
 }
 
-// Scrolls the nearest vertical scroll container just enough to fully show the element.
-// Does nothing if the element is already visible or no scroll container exists.
-export function ensureVisibleInScrollContainer(element: Element) {
+// Scrolls the nearest vertical scroll container just enough to show the outermost line of the
+// element on the given edge: first for "top", last for "bottom". Only the line the caret is about
+// to enter matters. Revealing the whole element would scroll a tall, multi-line element entirely
+// into view. Does nothing if the line is already visible or no scroll container exists.
+export function ensureLineVisibleInScrollContainer(element: Element, edge: "top" | "bottom") {
   const scrollContainer = getVerticalScrollContainer(element);
   if (!scrollContainer) return;
 
   const elementRect = element.getBoundingClientRect();
   const containerRect = scrollContainer.getBoundingClientRect();
+  const lineHeight = Math.min(
+    Number.parseFloat(getComputedStyle(element).lineHeight) || elementRect.height,
+    elementRect.height,
+  );
 
-  const distanceAbove = containerRect.top - elementRect.top;
-  const distanceBelow = elementRect.bottom - containerRect.bottom;
+  const lineTop = edge === "top" ? elementRect.top : elementRect.bottom - lineHeight;
+  const lineBottom = edge === "top" ? elementRect.top + lineHeight : elementRect.bottom;
+
+  const distanceAbove = containerRect.top - lineTop;
+  const distanceBelow = lineBottom - containerRect.bottom;
 
   if (distanceAbove > 0) {
     scrollContainer.scrollTop -= distanceAbove;
   } else if (distanceBelow > 0) {
     scrollContainer.scrollTop += distanceBelow;
+  }
+}
+
+// When the browser handles the caret move itself, and is about to move the caret outside the
+// visible area, Chrome reveals it with "center if needed" alignment. That recentring looks like a
+// half-page jump. By first scrolling into view the line the caret is about to enter, the browser
+// has nothing to reveal, so the caret keeps following the edge one line at a time.
+export function ensureAdjacentLineVisible(element: Element, direction: "up" | "down") {
+  const scrollContainer = getVerticalScrollContainer(element);
+  const caretRect = getCaretRect();
+  if (!scrollContainer || caretRect === undefined) return;
+
+  const containerRect = scrollContainer.getBoundingClientRect();
+  const lineHeight = caretRect.height || Number.parseFloat(getComputedStyle(element).lineHeight) || 0;
+
+  if (direction === "down") {
+    const distanceBelow = caretRect.bottom + lineHeight - containerRect.bottom;
+    if (distanceBelow > 0) {
+      scrollContainer.scrollTop += distanceBelow;
+    }
+  } else {
+    const distanceAbove = containerRect.top - (caretRect.top - lineHeight);
+    if (distanceAbove > 0) {
+      scrollContainer.scrollTop -= distanceAbove;
+    }
   }
 }
 
