@@ -18,6 +18,7 @@ ktlintVersion = "14.2.0"
 ktlintEngineVersion = "1.8.0"
 log4j2Version = "2.26.1"
 micrometerVersion = "1.17.1"
+nettyVersion = "4.2.17.Final"
 pdfboxVersion = "3.0.8"
 postgresqlVersion = "42.7.13"
 testcontainersVersion = "2.0.5"
@@ -88,6 +89,7 @@ ktor-server-netty = { module = "io.ktor:ktor-server-netty" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
 ktor-server-swagger = { module = "io.ktor:ktor-server-swagger" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host" }
+netty-bom = { module = "io.netty:netty-bom", version.ref = "nettyVersion" }
 
 # Exposed
 exposed-bom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "exposedVersion" }
