@@ -35,6 +35,7 @@ interface BrevbakerService {
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage
 
@@ -42,6 +43,7 @@ interface BrevbakerService {
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -53,6 +55,7 @@ interface BrevbakerService {
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler?
 
@@ -66,6 +69,7 @@ interface BrevbakerService {
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment?
@@ -121,6 +125,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage {
         val response = client.post("/letter/redigerbar/markup-usage") {
@@ -130,6 +135,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                 BestillBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    saksbehandlerValg = saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                 )
@@ -150,6 +156,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -164,6 +171,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                 BestillRedigertBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    saksbehandlerValg = saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                     letterMarkup = redigertBrev,
@@ -188,6 +196,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler? {
         val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
@@ -197,6 +206,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                 BestillBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    saksbehandlerValg = saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                 )
@@ -233,6 +243,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*>,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? {
@@ -243,6 +254,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                 BestillBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    saksbehandlerValg = saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                 )

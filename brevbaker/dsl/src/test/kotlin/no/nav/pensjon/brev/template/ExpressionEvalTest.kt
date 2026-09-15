@@ -21,7 +21,12 @@ class ExpressionEvalTest {
     private val Expression<BrevbakerFelles>.saksnummer
         get() = UnaryOperation.Select(saksnummerSelector).invoke(this)
 
-    private val scope = ExpressionScope(SomeDto("Ole", null), FellesFactory.felles, Language.Bokmal)
+    private val scope = ExpressionScope(
+        SomeDto("Ole", null),
+        FellesFactory.felles,
+        Language.Bokmal,
+        saksbehandlerValg = EmptySaksbehandlervalgIDSL
+    )
     private val argumentExpr = Expression.FromScope.Argument<SomeDto>()
     private val fellesExpr = Expression.FromScope.Felles
 
@@ -41,7 +46,14 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval optional argument field returns argument value`() {
-        val evaluated: String? = argumentExpr.kortNavn.eval(ExpressionScope(scope.argument.copy(kortNavn = "O"), scope.felles, scope.language))
+        val evaluated: String? = argumentExpr.kortNavn.eval(
+            ExpressionScope(
+                scope.argument.copy(kortNavn = "O"),
+                scope.felles,
+                scope.language,
+                saksbehandlerValg = EmptySaksbehandlervalgIDSL
+            )
+        )
 
         assertEquals("O", evaluated)
     }
@@ -95,7 +107,12 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval SafeApplication can be used for null-safe calls when value is non-null`() {
-        val scope = ExpressionScope(SomeDto("Ole", "KortNavn"), FellesFactory.felles, Language.Bokmal)
+        val scope = ExpressionScope(
+            SomeDto("Ole", "KortNavn"),
+            FellesFactory.felles,
+            Language.Bokmal,
+            saksbehandlerValg = EmptySaksbehandlervalgIDSL
+        )
         val evaluated: String? = argumentExpr.kortNavn.safe { plus("hei") }.eval(scope)
         assertEquals("KortNavnhei", evaluated)
     }
@@ -107,7 +124,12 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval SafeApplication can be nested when value is null`() {
-        val scope = ExpressionScope(NestedDto(), FellesFactory.felles, Language.Bokmal)
+        val scope = ExpressionScope(
+            NestedDto(),
+            FellesFactory.felles,
+            Language.Bokmal,
+            saksbehandlerValg = EmptySaksbehandlervalgIDSL
+        )
         val argumentExpr = Expression.FromScope.Argument<NestedDto>()
 
         val evaluated: String? = argumentExpr.nested.safe { kortNavn.safe { plus("hei") } }.eval(scope)
@@ -116,7 +138,12 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval SafeApplication can be nested when value is non-null`() {
-        val scope = ExpressionScope(NestedDto(SomeDto("Ole", "KortNavn")), FellesFactory.felles, Language.Bokmal)
+        val scope = ExpressionScope(
+            NestedDto(SomeDto("Ole", "KortNavn")),
+            FellesFactory.felles,
+            Language.Bokmal,
+            saksbehandlerValg = EmptySaksbehandlervalgIDSL
+        )
         val argumentExpr = Expression.FromScope.Argument<NestedDto>()
 
         val evaluated: String? = argumentExpr.nested.safe { kortNavn.safe { plus("hei") } }.eval(scope)

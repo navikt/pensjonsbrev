@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.brev.Listetype
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.StableHash.Companion.with
 import no.nav.pensjon.brev.template.validation.InvalidListDeclarationException
@@ -106,6 +107,13 @@ sealed class Expression<out Out> : StableHash {
             override fun equals(other: Any?): Boolean = other is Argument<*>
             override fun hashCode(): Int = javaClass.hashCode()
             override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
+        }
+
+        class Saksbehandlervalg @InternKonstruktoer constructor() : FromScope<SaksbehandlervalgIDSL>() {
+            override fun eval(scope: ExpressionScope<*>) = scope.saksbehandlerValg
+            override fun equals(other: Any?): Boolean = other is SaksbehandlervalgIDSL
+            override fun hashCode(): Int = javaClass.hashCode()
+            override fun stableHashCode(): Int = "FromScope.Saksbehandlervalg".hashCode()
         }
 
         class Assigned<out Out> internal constructor(val id: Int) : FromScope<Out>() {

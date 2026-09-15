@@ -12,7 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-private val scope = ExpressionScope(Unit, FellesFactory.felles, Bokmal)
+private val scope = ExpressionScope(Unit, FellesFactory.felles, Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
 class EqualsOperationTest {
 

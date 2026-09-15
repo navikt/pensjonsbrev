@@ -26,6 +26,7 @@ private class SaksbehandlervalgTest {
             SaksbehandlervalgTestDto(saksbehandlerValg = saksbehandlerValg),
             FellesFactory.felles,
             Language.Bokmal,
+            saksbehandlerValg = saksbehandlerValg,
         )
 
     @Test

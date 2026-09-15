@@ -10,7 +10,11 @@ import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import kotlin.reflect.KClass
 
-class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<*>>(private val id: String, private val displayText: String, private val clazz: KClass<LetterData>, private val scope: TemplateRootScope<*, LetterData>) {
+class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<*>>(
+    private val id: String,
+    private val displayText: String,
+    private val scope: TemplateRootScope<*, LetterData>,
+) {
     init {
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
     }
@@ -30,19 +34,10 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<*>>(private val i
     private fun <T> createSaksbehandlervalg(saksbehandlervalgVerdi: SaksbehandlervalgVerdi<T>): UnaryInvoke<SaksbehandlervalgIDSL, T> {
         scope.lagreSaksbehandlervalg(id, saksbehandlervalgVerdi)
         return UnaryInvoke(
-            UnaryInvoke(scope.argument, Select(SaksbehandlervalgIDSLSelector(clazz))),
+            scope.deklarerteSaksbehandlervalg,
             Select(EttSaksbehandlervalgSelector(id, saksbehandlervalgVerdi))
         )
     }
-}
-
-private class SaksbehandlervalgIDSLSelector<LetterData : RedigerbarBrevdata<*>>(
-    clazz: KClass<LetterData>
-) : TemplateModelSelector<LetterData, SaksbehandlervalgIDSL> {
-    override val className = clazz.qualifiedName!!
-    override val propertyName: String = "saksbehandlerValg"
-    override val propertyType: String = SaksbehandlervalgIDSL::class.qualifiedName!!
-    override val selector: LetterData.() -> SaksbehandlervalgIDSL = { saksbehandlerValg }
 }
 
 private class EttSaksbehandlervalgSelector<Type>(
@@ -55,4 +50,8 @@ private class EttSaksbehandlervalgSelector<Type>(
         get() = saksbehandlervalgVerdi.typename
 }
 
-inline fun <reified LetterData : RedigerbarBrevdata<*>> TemplateRootScope<*, LetterData>.saksbehandlervalg(id: String, displayText: String) = SaksbehandlerValgBuilder(id, displayText, LetterData::class, this)
+@Suppress("UNCHECKED_CAST")
+inline fun <reified LetterData : RedigerbarBrevdata<*>> TemplateRootScope<*, LetterData>.saksbehandlervalg(
+    id: String,
+    displayText: String,
+) = SaksbehandlerValgBuilder(id, displayText, this)

@@ -46,6 +46,7 @@ class BrevmalService(
                 pesysData = pesysData.brevdata,
                 saksbehandlerValg = saksbehandlerValg,
             ),
+            saksbehandlerValg = saksbehandlerValg,
             felles = pesysData.felles
         )
 
@@ -65,6 +66,7 @@ class BrevmalService(
                 pesysData = pesysData.brevdata,
                 saksbehandlerValg = brev.saksbehandlerValg,
             ),
+            saksbehandlerValg = brev.saksbehandlerValg,
             felles = pesysData.felles,
         )
 
@@ -79,6 +81,7 @@ class BrevmalService(
                 pesysData = pesysData.brevdata,
                 saksbehandlerValg = brev.saksbehandlerValg,
             ),
+            saksbehandlerValg = brev.saksbehandlerValg,
             felles = pesysData.felles,
             vedleggId = vedleggId,
         )

@@ -40,13 +40,13 @@ object SaksbehandlervalgEksempelBrev : RedigerbarTemplate<SaksbehandlervalgTestD
         letterDataType = SaksbehandlervalgTestDto::class
     ) {
         // Bool har alltid en default-verdi (false om ikke annet er oppgitt), og er derfor aldri nullable.
-        val bool = saksbehandlervalg("bool", "Boolsk valg").bool()
+        val bool = saksbehandlervalg<_>("bool", "Boolsk valg").bool()
 
-        val intUtenDefault = saksbehandlervalg("intUtenDefault", "Tall uten default").int()
+        val intUtenDefault = saksbehandlervalg<_>("intUtenDefault", "Tall uten default").int()
 
-        val tekstUtenDefault = saksbehandlervalg("tekstUtenDefault", "Tekst uten default").text()
+        val tekstUtenDefault = saksbehandlervalg<_>("tekstUtenDefault", "Tekst uten default").text()
 
-        val enumUtenDefault = saksbehandlervalg("enumUtenDefault", "Enum uten default").enum<TestValgEnum>()
+        val enumUtenDefault = saksbehandlervalg<_>("enumUtenDefault", "Enum uten default").enum<TestValgEnum>()
 
         title { text(bokmal { +"Test-tittel" }) }
         outline {
