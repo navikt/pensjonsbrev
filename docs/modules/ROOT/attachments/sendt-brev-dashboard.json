@@ -1,0 +1,1726 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Hvem brev fra Skribenten faktisk sendes til. Bygger på metrikken skribenten_brev_sendt_total. Dekker kun redigerbare Skribenten-brev - ikke legacy Exstream-bestillinger.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "type": "text",
+      "title": "Om tallene",
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "mode": "markdown",
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "### Omfang: kun redigerbare Skribenten-brev\n\nTallene dekker **ikke** legacy Exstream-bestillinger, og er derfor *ikke* totalen for alle brev fra Skribenten.\n\n- **«Sendt», ikke «forsøkt sendt».** Brev som får journalpost, men feiler under distribusjon, telles ikke.\n- **Tellingen er asynkron.** Dør poden mellom sending og telling, går den ene tellingen tapt. Tallene er et godt bilde av *fordelingen*, men ikke en revisjonssikker fasit på *antall*.\n- **Antallene er avrundede anslag.** Tellerne nullstilles ved deploy, så panelene måler økning over tidsrommet; utregningen ekstrapolerer og kan avvike med ±1.\n\nDokumentasjon: `docs/modules/ROOT/pages/sendtbrevmetrikk.adoc` i `navikt/pensjonsbrev`."
+      },
+      "transparent": false
+    },
+    {
+      "type": "stat",
+      "title": "Sendte brev i perioden",
+      "description": "Antall vellykket sendte redigerbare brev i valgt tidsrom.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 5
+      },
+      "id": 2,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum(increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range])))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "Sendte brev",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Andel til andre enn bruker",
+      "description": "Andel av sendte brev der saksbehandler har overstyrt mottaker - samhandler eller manuell adresse.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 5
+      },
+      "id": 3,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * sum(increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", mottaker!=\"BRUKER\"}[$__range]))\n/\nsum(increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range]))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "Andel",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Andel lokalprint",
+      "description": "Lokalprint skrives ut og sendes manuelt av saksbehandler, i stedet for gjennom sentralprint.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 5
+      },
+      "id": 4,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * sum(increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", distribusjon=\"LOKALPRINT\"}[$__range]))\n/\nsum(increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range]))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "Andel",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Maks avsenderenheter per pod (tak 200)",
+      "description": "Poden som har sett flest avsenderenheter. Taket i Metrics.kt (maksAntallAvsenderEnheter = 200) håndheves i hver pods eget meter-register, ikke på tvers av poder. Nås taket, blir brev fra nye enheter ikke talt i det hele tatt, og alle tall på dette dashbordet undervurderer volumet. Velg minst 30 dager for et representativt tall.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 5
+      },
+      "id": 5,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 200,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 150
+              },
+              {
+                "color": "red",
+                "value": 190
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "max(count by (pod, k8s_cluster_name) (count by (avsender_enhet, pod, k8s_cluster_name) (count_over_time(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}[$__range]))))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "Enheter",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Fordeling på mottakertype",
+      "description": "BRUKER betyr at saksbehandler ikke har overstyrt mottaker - brevet gikk til den saken gjelder.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 9
+      },
+      "id": 6,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (mottaker) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range])))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "{{mottaker}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Fordeling på distribusjon",
+      "description": "SENTRALPRINT går til maskinell utsending. LOKALPRINT skrives ut og sendes manuelt av saksbehandler.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 9
+      },
+      "id": 7,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (distribusjon) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range])))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "{{distribusjon}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Manuelle adresser - adressert til",
+      "description": "Kun brev med mottaker NORSK_ADRESSE eller UTENLANDSK_ADRESSE. Skiller 'bruker på en annen adresse' (BRUKER) fra en reelt annen mottaker (ANNEN).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 9
+      },
+      "id": 8,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (adressert_til) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", mottaker=~\"NORSK_ADRESSE|UTENLANDSK_ADRESSE\"}[$__range])))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "{{adressert_til}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Sendte brev over tid, per mottakertype",
+      "description": "Antall sendte brev per tidsbøtte. Bøtta følger $__interval, med et gulv på 1 time, slik at søylene flislegger tidsrommet uten å overlappe - summen over søylene stemmer da med \"Sendte brev i perioden\". Bøttestørrelsen vokser når du zoomer ut, så sammenlign form og fordeling over tid, ikke absoluttverdien i en enkelt søyle.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 9,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "brev per bøtte",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (mottaker) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__interval])))",
+          "instant": false,
+          "range": true,
+          "legendFormat": "{{mottaker}}",
+          "refId": "A",
+          "interval": "1h"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "id": 10,
+      "title": "Vanligste samhandlertyper",
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "description": "Topp 10 samhandlertyper blant brev sendt til en samhandler. Kodeverksverdien fra metrikken vises med klartekst fra SAMHANDLER_ENUM_TO_TEXT i skribenten-web/frontend/src/types/nameMappings.ts. Koden står i parentes, slik at raden kan kobles tilbake til en PromQL-spørring. Koder som mangler i mappingen vises som den rene kodeverksverdien - da er dashbordet ute av synk med nameMappings.ts.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "ADVO": {
+                  "text": "Advokat / Jurist (ADVO)",
+                  "index": 0
+                },
+                "AFPO": {
+                  "text": "AFP-ordning (AFPO)",
+                  "index": 1
+                },
+                "AA": {
+                  "text": "Ambulansearbeider (AA)",
+                  "index": 2
+                },
+                "AN": {
+                  "text": "Ankenemnda for sykepenger (AN)",
+                  "index": 3
+                },
+                "APOP": {
+                  "text": "Apotek - privat (APOP)",
+                  "index": 4
+                },
+                "APOS": {
+                  "text": "Apotek - sykehus (APOS)",
+                  "index": 5
+                },
+                "AT": {
+                  "text": "Apotektekniker (AT)",
+                  "index": 6
+                },
+                "AK": {
+                  "text": "Arbeidskontor (AK)",
+                  "index": 7
+                },
+                "ASEN": {
+                  "text": "Arbeidslivssenter (ASEN)",
+                  "index": 8
+                },
+                "AMI": {
+                  "text": "Arbeidsmarkedsinstitutt (AMI)",
+                  "index": 9
+                },
+                "ART": {
+                  "text": "Arbeidstilsynet (ART)",
+                  "index": 10
+                },
+                "ATU": {
+                  "text": "Attføringsutvalg (ATU)",
+                  "index": 11
+                },
+                "AU": {
+                  "text": "Audiograf (AU)",
+                  "index": 12
+                },
+                "AP": {
+                  "text": "Audiopedagog (AP)",
+                  "index": 13
+                },
+                "BAND": {
+                  "text": "Bandasjist (BAND)",
+                  "index": 14
+                },
+                "BH": {
+                  "text": "Barnehage (BH)",
+                  "index": 15
+                },
+                "BHT": {
+                  "text": "Bedriftshelsetjeneste (BHT)",
+                  "index": 16
+                },
+                "LEBE": {
+                  "text": "Bedriftslege (LEBE)",
+                  "index": 17
+                },
+                "BB": {
+                  "text": "Begravelsesbyrå (BB)",
+                  "index": 18
+                },
+                "BEH": {
+                  "text": "Behandler (BEH)",
+                  "index": 19
+                },
+                "BF": {
+                  "text": "Bidragsfogden (BF)",
+                  "index": 20
+                },
+                "BU": {
+                  "text": "Bilutvalget (BU)",
+                  "index": 21
+                },
+                "BI": {
+                  "text": "Bioingeniør (BI)",
+                  "index": 22
+                },
+                "BBE": {
+                  "text": "Bobestyrer (BBE)",
+                  "index": 23
+                },
+                "X": {
+                  "text": "Diverse (X)",
+                  "index": 24
+                },
+                "EOS": {
+                  "text": "EØS-Land (EOS)",
+                  "index": 25
+                },
+                "ET": {
+                  "text": "Ergoterapeut (ET)",
+                  "index": 26
+                },
+                "FA": {
+                  "text": "Farmasøyt (FA)",
+                  "index": 27
+                },
+                "LEFA": {
+                  "text": "Fastlege (LEFA)",
+                  "index": 28
+                },
+                "FKL": {
+                  "text": "Fellesordningen LO/NHO (FKL)",
+                  "index": 29
+                },
+                "FB": {
+                  "text": "Fiskehelsebiolog (FB)",
+                  "index": 30
+                },
+                "FFU": {
+                  "text": "Folketrygdkontoret for utenlandssaker (FFU)",
+                  "index": 31
+                },
+                "FS": {
+                  "text": "Forsikringsselskap (FS)",
+                  "index": 32
+                },
+                "FO": {
+                  "text": "Fotterapeut (FO)",
+                  "index": 33
+                },
+                "FULL": {
+                  "text": "Fullmektig (FULL)",
+                  "index": 34
+                },
+                "FL": {
+                  "text": "Fylkeslegen (FL)",
+                  "index": 35
+                },
+                "FTK": {
+                  "text": "Fylkestrygdekontor (FTK)",
+                  "index": 36
+                },
+                "FT": {
+                  "text": "Fysioterapeut (FT)",
+                  "index": 37
+                },
+                "GVS": {
+                  "text": "Grunn- og videregående skole (GVS)",
+                  "index": 38
+                },
+                "HF": {
+                  "text": "Helsefagarbeider (HF)",
+                  "index": 39
+                },
+                "HFO": {
+                  "text": "Helseforetak (HFO)",
+                  "index": 40
+                },
+                "HE": {
+                  "text": "Helsesekretær (HE)",
+                  "index": 41
+                },
+                "HS": {
+                  "text": "Helsesøster (HS)",
+                  "index": 42
+                },
+                "HSTA": {
+                  "text": "Helsestasjon (HSTA)",
+                  "index": 43
+                },
+                "HTF": {
+                  "text": "Helsetjeneste forvaltning (HTF)",
+                  "index": 44
+                },
+                "HMS": {
+                  "text": "Hjelpemiddelsentral (HMS)",
+                  "index": 45
+                },
+                "HP": {
+                  "text": "Hjelpepleier (HP)",
+                  "index": 46
+                },
+                "HJS": {
+                  "text": "Hjemmesykepleien (HJS)",
+                  "index": 47
+                },
+                "HSV": {
+                  "text": "Hovedstevnevitnet (HSV)",
+                  "index": 48
+                },
+                "HU": {
+                  "text": "Høyskole/universitet (HU)",
+                  "index": 49
+                },
+                "HPRD": {
+                  "text": "HPR-dummy (HPRD)",
+                  "index": 50
+                },
+                "IS": {
+                  "text": "Innkrevingssentralen (IS)",
+                  "index": 51
+                },
+                "INST": {
+                  "text": "Institusjon (INST)",
+                  "index": 52
+                },
+                "JO": {
+                  "text": "Jordmor (JO)",
+                  "index": 53
+                },
+                "KEMN": {
+                  "text": "Kemner (KEMN)",
+                  "index": 54
+                },
+                "KI": {
+                  "text": "Kiropraktor (KI)",
+                  "index": 55
+                },
+                "KA": {
+                  "text": "Klage- og Ankeenhet (KA)",
+                  "index": 56
+                },
+                "KRU": {
+                  "text": "Klageinstans reiseutgift (KRU)",
+                  "index": 57
+                },
+                "KE": {
+                  "text": "Klinisk ernæringsfysiolog (KE)",
+                  "index": 58
+                },
+                "KOMM": {
+                  "text": "Kommune (KOMM)",
+                  "index": 59
+                },
+                "LEKO": {
+                  "text": "Kommunelege (LEKO)",
+                  "index": 60
+                },
+                "KON": {
+                  "text": "Konvensjonsland (KON)",
+                  "index": 61
+                },
+                "KRED": {
+                  "text": "Kreditor (KRED)",
+                  "index": 62
+                },
+                "LARO": {
+                  "text": "Lab/røntgen - privat (LARO)",
+                  "index": 63
+                },
+                "LABO": {
+                  "text": "Laboratorium - offentlig (LABO)",
+                  "index": 64
+                },
+                "LABP": {
+                  "text": "Laboratorium - privat (LABP)",
+                  "index": 65
+                },
+                "LBS": {
+                  "text": "Landsdekkende bilsenter (LBS)",
+                  "index": 66
+                },
+                "LE": {
+                  "text": "Lege (LE)",
+                  "index": 67
+                },
+                "LFK": {
+                  "text": "Legemiddel fagkontor (LFK)",
+                  "index": 68
+                },
+                "LS": {
+                  "text": "Legesenter (LS)",
+                  "index": 69
+                },
+                "LHK": {
+                  "text": "Leverandør helsetrygdkort (LHK)",
+                  "index": 70
+                },
+                "LM": {
+                  "text": "Leverandør Motorkjøretøy (LM)",
+                  "index": 71
+                },
+                "LK": {
+                  "text": "Ligningskontor (LK)",
+                  "index": 72
+                },
+                "LOGO": {
+                  "text": "Logoped (LOGO)",
+                  "index": 73
+                },
+                "LRB": {
+                  "text": "Løsøreregister Brønnøysund (LRB)",
+                  "index": 74
+                },
+                "MT": {
+                  "text": "Manuellterapeut (MT)",
+                  "index": 75
+                },
+                "NB": {
+                  "text": "Namsmannen (NB)",
+                  "index": 76
+                },
+                "OM": {
+                  "text": "Ombygger bil (OM)",
+                  "index": 77
+                },
+                "OA": {
+                  "text": "Omsorgsarbeider (OA)",
+                  "index": 78
+                },
+                "OP": {
+                  "text": "Optiker (OP)",
+                  "index": 79
+                },
+                "OI": {
+                  "text": "Ortopediingeniør (OI)",
+                  "index": 80
+                },
+                "ORVE": {
+                  "text": "Ortopedisk verksted (ORVE)",
+                  "index": 81
+                },
+                "OR": {
+                  "text": "Ortoptist (OR)",
+                  "index": 82
+                },
+                "PE": {
+                  "text": "Perfusjonist (PE)",
+                  "index": 83
+                },
+                "POLI": {
+                  "text": "Poliklinikk (POLI)",
+                  "index": 84
+                },
+                "PF": {
+                  "text": "Provisorfarmasøyt (PF)",
+                  "index": 85
+                },
+                "PS": {
+                  "text": "Psykolog (PS)",
+                  "index": 86
+                },
+                "PPT": {
+                  "text": "Psykologisk pedagogisk tjeneste (PPT)",
+                  "index": 87
+                },
+                "LERA": {
+                  "text": "Rådgivende lege (LERA)",
+                  "index": 88
+                },
+                "ROL": {
+                  "text": "Rådgivende overlege (ROL)",
+                  "index": 89
+                },
+                "RT": {
+                  "text": "Rådgivende tannlege (RT)",
+                  "index": 90
+                },
+                "RA": {
+                  "text": "Radiograf (RA)",
+                  "index": 91
+                },
+                "REGO": {
+                  "text": "Regional oppgjørsenhet (REGO)",
+                  "index": 92
+                },
+                "RHFO": {
+                  "text": "Regionalt helseforetak (RHFO)",
+                  "index": 93
+                },
+                "RKK": {
+                  "text": "Regionklagekontor (RKK)",
+                  "index": 94
+                },
+                "RTK": {
+                  "text": "Regionstrygdekontor (RTK)",
+                  "index": 95
+                },
+                "RF": {
+                  "text": "Reseptarfarmasøyt (RF)",
+                  "index": 96
+                },
+                "RTV": {
+                  "text": "Rikstrygdeverket (RTV)",
+                  "index": 97
+                },
+                "RFK": {
+                  "text": "Rogaland fylkestrygdekontor (RFK)",
+                  "index": 98
+                },
+                "RONO": {
+                  "text": "Røntgeninstitutt - offentlig (RONO)",
+                  "index": 99
+                },
+                "RONP": {
+                  "text": "Røntgeninstitutt - privat (RONP)",
+                  "index": 100
+                },
+                "KYND": {
+                  "text": "Sakkyndig (KYND)",
+                  "index": 101
+                },
+                "SAD": {
+                  "text": "Samleadressat (SAD)",
+                  "index": 102
+                },
+                "SFK": {
+                  "text": "Sentralfylkestrygdekontor (SFK)",
+                  "index": 103
+                },
+                "SR": {
+                  "text": "Skifteretten (SR)",
+                  "index": 104
+                },
+                "SK": {
+                  "text": "Sosialkontor (SK)",
+                  "index": 105
+                },
+                "SUD": {
+                  "text": "Statens utlendingsdirektorat (SUD)",
+                  "index": 106
+                },
+                "STKO": {
+                  "text": "Støttekontakt (STKO)",
+                  "index": 107
+                },
+                "SYKH": {
+                  "text": "Sykehus (SYKH)",
+                  "index": 108
+                },
+                "SP": {
+                  "text": "Sykepleier (SP)",
+                  "index": 109
+                },
+                "TI": {
+                  "text": "Takseringsinstanser (TI)",
+                  "index": 110
+                },
+                "TH": {
+                  "text": "Tannhelsesekretær (TH)",
+                  "index": 111
+                },
+                "TL": {
+                  "text": "Tannlege (TL)",
+                  "index": 112
+                },
+                "TLO": {
+                  "text": "Tannlege offentlig (TLO)",
+                  "index": 113
+                },
+                "TP": {
+                  "text": "Tannpleier (TP)",
+                  "index": 114
+                },
+                "TT": {
+                  "text": "Tanntekniker (TT)",
+                  "index": 115
+                },
+                "TEPE": {
+                  "text": "Tjenestepensjonsordningar (TEPE)",
+                  "index": 116
+                },
+                "TOLK": {
+                  "text": "Tolk (TOLK)",
+                  "index": 117
+                },
+                "TRAN": {
+                  "text": "Transportør (TRAN)",
+                  "index": 118
+                },
+                "TK": {
+                  "text": "Trygdekontor (TK)",
+                  "index": 119
+                },
+                "TR": {
+                  "text": "Trygderetten (TR)",
+                  "index": 120
+                },
+                "UTL": {
+                  "text": "Utenlandske samhandler (UTL)",
+                  "index": 121
+                },
+                "VP": {
+                  "text": "Vernepleier (VP)",
+                  "index": 122
+                },
+                "VE": {
+                  "text": "Veterinær (VE)",
+                  "index": 123
+                },
+                "VIRT": {
+                  "text": "Virtuelt trygdekontor (VIRT)",
+                  "index": 124
+                },
+                "YH": {
+                  "text": "Yrkeshygieniker (YH)",
+                  "index": 125
+                },
+                "YM": {
+                  "text": "Yrkesmedisiner (YM)",
+                  "index": 126
+                },
+                "UKJENT": {
+                  "text": "Ukjent - oppslag mot samhandler-proxy feilet (UKJENT)",
+                  "index": 127
+                },
+                "IKKE_RELEVANT": {
+                  "text": "Ikke relevant - brevet gikk ikke til samhandler (IKKE_RELEVANT)",
+                  "index": 128
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Samhandlertype"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "string"
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Antall"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "custom.align",
+                "value": "right"
+              },
+              {
+                "id": "custom.width",
+                "value": 140
+              },
+              {
+                "id": "mappings",
+                "value": []
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "gradient"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "countRows": false,
+          "fields": [
+            "Antall"
+          ],
+          "enablePagination": false,
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Antall"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "topk(10, round(sum by (samhandler_type) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", mottaker=\"SAMHANDLER\"}[$__range]))))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "samhandler_type": "Samhandlertype",
+              "Value": "Antall"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "bargauge",
+      "title": "Sendte brev per avsenderenhet",
+      "description": "Topp 20 avsenderenheter etter antall sendte brev i perioden.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "id": 11,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlPu"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "topk(20, round(sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range]))))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "{{avsender_enhet}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Mottakerfordeling per avsenderenhet",
+      "description": "Per enhet: totalt sendt, antall til andre enn bruker, og andelen. Enheter med få brev gir en støyete andel - sorter på totalt for å se hvilke tall som har volum bak seg.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "id": 12,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Avsenderenhet"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "string"
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Totalt sendt"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Til andre enn bruker"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Andel ikke-bruker"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "gradient"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": [
+            "Totalt sendt",
+            "Til andre enn bruker"
+          ],
+          "enablePagination": false,
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Totalt sendt"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", mottaker!=\"BRUKER\"}[$__range])) or 0 * sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * (\n  round(sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", mottaker!=\"BRUKER\"}[$__range])))\n  or 0 * round(sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range])))\n)\n/\n(round(sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\"}[$__range]))) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "C"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "avsender_enhet",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "avsender_enhet",
+                "destinationType": "string"
+              }
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Time 1": true,
+              "Time 2": true,
+              "Time 3": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "avsender_enhet": "Avsenderenhet",
+              "Value #A": "Totalt sendt",
+              "Value #B": "Til andre enn bruker",
+              "Value #C": "Andel ikke-bruker"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [
+    "pensjonsbrev",
+    "skribenten",
+    "brev"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "description": "Prometheus/Mimir-datakilde. NAIS har én datakilde per miljø.",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Datakilde",
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(skribenten_brev_sendt_total, app)",
+        "hide": 2,
+        "includeAll": false,
+        "label": "App",
+        "multi": false,
+        "name": "app",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(skribenten_brev_sendt_total, app)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(skribenten_brev_sendt_total{app=\"$app\"}, k8s_cluster_name)",
+        "description": "Kortform - prod / dev - ikke prod-gcp / dev-gcp.",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Cluster",
+        "multi": true,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(skribenten_brev_sendt_total{app=\"$app\"}, k8s_cluster_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}, avsender_enhet)",
+        "description": "Nav enhetsnummer for brevets avsenderenhet.",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Avsenderenhet",
+        "multi": true,
+        "name": "avsender_enhet",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}, avsender_enhet)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Skribenten - sendte brev (mottakerfordeling)",
+  "uid": "skribenten-sendt-brev",
+  "version": 1,
+  "weekStart": ""
+}
