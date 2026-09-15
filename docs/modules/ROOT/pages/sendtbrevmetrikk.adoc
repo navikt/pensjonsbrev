@@ -58,7 +58,7 @@ Mål derfor den poden som har sett flest enheter:
 
 [source]
 ----
-max(count by (pod) (count by (avsender_enhet, pod) (count_over_time(
+max(count by (pod, k8s_cluster_name) (count by (avsender_enhet, pod, k8s_cluster_name) (count_over_time(
   skribenten_brev_sendt_total{app="skribenten-backend", k8s_cluster_name="prod"}[30d]))))
 ----
 

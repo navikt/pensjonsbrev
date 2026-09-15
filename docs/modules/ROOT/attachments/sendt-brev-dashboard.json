@@ -247,7 +247,7 @@
     {
       "type": "stat",
       "title": "Maks avsenderenheter per pod (tak 200)",
-      "description": "avsender_enhet er den eneste labelen med ukjent antall verdier, og er begrenset av MeterFilter.maximumAllowableTags(..., maksAntallAvsenderEnheter = 200, deny()) i Metrics.kt. Nås taket, blir brev fra nye enheter ikke talt i det hele tatt, og alle tall på dette dashbordet undervurderer det faktiske volumet. Taket håndheves i hver pods eget meter-register, ikke på tvers av poder, så panelet viser poden som har sett flest enheter - ikke antallet for clusteret under ett. Tallet er et anslag: det teller enheter sett innenfor valgt tidsrom, så en pod som er eldre enn tidsrommet kan ha sett flere. Med hyppige deployer er pod-levetiden som regel kortere enn tidsrommet, og avviket lite. Velg minst 30 dager for et representativt tall. Filteret for avsenderenhet er bevisst ikke med her: det er den totale kardinaliteten i poden som styrer taket.",
+      "description": "avsender_enhet er den eneste labelen med ukjent antall verdier, og er begrenset av MeterFilter.maximumAllowableTags(..., maksAntallAvsenderEnheter = 200, deny()) i Metrics.kt. Nås taket, blir brev fra nye enheter ikke talt i det hele tatt, og alle tall på dette dashbordet undervurderer det faktiske volumet. Taket håndheves i hver pods eget meter-register, ikke på tvers av poder, så panelet viser poden som har sett flest enheter - ikke antallet for clusteret under ett. Podnavn er unike innenfor ett cluster, men ikke på tvers, så cluster-labelen er med i grupperingen: uten den ville like podnavn fra dev og prod blitt slått sammen når begge er valgt. Tallet er et anslag: det teller enheter sett innenfor valgt tidsrom, så en pod som er eldre enn tidsrommet kan ha sett flere. Med hyppige deployer er pod-levetiden som regel kortere enn tidsrommet, og avviket lite. Velg minst 30 dager for et representativt tall. Filteret for avsenderenhet er bevisst ikke med her: det er den totale kardinaliteten i poden som styrer taket.",
       "datasource": {
         "type": "prometheus",
         "uid": "${datasource}"
@@ -312,7 +312,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "max(count by (pod) (count by (avsender_enhet, pod) (count_over_time(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}[$__range]))))",
+          "expr": "max(count by (pod, k8s_cluster_name) (count by (avsender_enhet, pod, k8s_cluster_name) (count_over_time(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}[$__range]))))",
           "instant": true,
           "range": false,
           "legendFormat": "Enheter",
