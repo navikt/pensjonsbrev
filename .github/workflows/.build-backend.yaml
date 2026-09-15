@@ -87,7 +87,7 @@ jobs:
           ./gradlew ${{ inputs.extraModulesToBuild }}
       - name: "compile and run tests"
         run: |
-          ./gradlew :${{ inputs.gradleTarget }}:buildNeeded
+          ./gradlew :${{ inputs.gradleTarget }}:buildNeeded -Dorg.gradle.caching.debug=true
         env:
           NODE_AUTH_TOKEN: ${{ github.token }}
       - name: "Build and publish container image to GAR"

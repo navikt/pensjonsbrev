@@ -46,7 +46,7 @@ jobs:
         run: |
           tasks=""
           for target in $GRADLE_TARGETS; do tasks="$tasks :$target:build"; done
-          ./gradlew $tasks
+          ./gradlew $tasks -Dorg.gradle.caching.debug=true
       - name: "Release maven artifact"
         if: ${{ github.ref == 'refs/heads/main' && inputs.changes == 'true' }}
         env:
