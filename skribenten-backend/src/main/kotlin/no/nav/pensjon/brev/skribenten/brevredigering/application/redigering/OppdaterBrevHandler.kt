@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
-import no.nav.pensjon.brev.skribenten.model.mergeInn
 
 class OppdaterBrevHandler(
     private val brevtilgang: Brevtilgang,
@@ -31,7 +30,7 @@ class OppdaterBrevHandler(
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
             if (request.nyeSaksbehandlerValg != null) {
-                brev.saksbehandlerValg = brev.saksbehandlerValg.mergeInn(request.nyeSaksbehandlerValg)
+                brev.saksbehandlerValg = request.nyeSaksbehandlerValg
             }
             if (request.nyttRedigertbrev != null) {
                 brev.oppdaterRedigertBrev(request.nyttRedigertbrev, PrincipalInContext.require().navIdent)

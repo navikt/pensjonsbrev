@@ -29,9 +29,3 @@ sealed interface SaksbehandlervalgVerdi {
     @JvmInline
     value class String(override val value: kotlin.String): SaksbehandlervalgVerdi
 }
-
-fun SaksbehandlervalgMap.mergeInn(input: SaksbehandlervalgMap): SaksbehandlervalgMap =
-    SaksbehandlervalgMap().also { result ->
-        result.putAll(this)
-        result.putAll(input)
-    }
