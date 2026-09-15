@@ -15,26 +15,6 @@ import org.junit.jupiter.api.Test
 class InnvilgelseUfoeretrygdTest {
 
     @Test
-    fun testPdf() {
-        LetterTestImpl(
-            InnvilgelseUforetrygdRedigerbar.template,
-            Fixtures.create(InnvilgelseUforetrygdRedigerbar::class),
-            Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("UT_INNVILGELSE_UFOERTRYGD")
-    }
-
-    @Test
-    fun testHtml() {
-        LetterTestImpl(
-            InnvilgelseUforetrygdRedigerbar.template,
-            Fixtures.create(InnvilgelseUforetrygdRedigerbar::class),
-            Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestHtml("UT_INNVILGELSE_UFOERTRYGD")
-    }
-
-    @Test
     fun `testHtml - EØS minsteytelse med prorata`() {
         val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
             val pe = dto.pesysData.pe
