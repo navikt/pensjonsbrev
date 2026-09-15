@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.expression.SelectorUsage
 import no.nav.pensjon.brev.template.validation.MissingScopeForNextItemEvaluationException
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
@@ -8,6 +9,7 @@ sealed interface ExpressionScope<Argument : Any> {
     val argument: Argument
     val felles: BrevbakerFelles
     val language: Language
+    val saksbehandlerValg: SaksbehandlervalgIDSL?
 
     fun <Var> assign(value: Var, to: Expression.FromScope.Assigned<Var>): ExpressionScope<Argument> =
         AssignmentExpressionScope(value, to, this)
@@ -15,8 +17,14 @@ sealed interface ExpressionScope<Argument : Any> {
     fun markUsage(selector: TemplateModelSelector<*, *>)
 
     companion object {
-        operator fun <Argument : Any> invoke(argument: Argument, felles: BrevbakerFelles, language: Language, selectorUsage: SelectorUsage? = null): ExpressionScope<Argument > =
-            RootExpressionScope(argument, felles, language, selectorUsage)
+        operator fun <Argument : Any> invoke(
+            argument: Argument,
+            felles: BrevbakerFelles,
+            language: Language,
+            selectorUsage: SelectorUsage? = null,
+            saksbehandlerValg: SaksbehandlervalgIDSL? = null,
+        ): ExpressionScope<Argument> =
+            RootExpressionScope(argument, felles, language, selectorUsage, saksbehandlerValg)
     }
 }
 
@@ -24,7 +32,8 @@ internal class RootExpressionScope<Argument : Any>(
     override val argument: Argument,
     override val felles: BrevbakerFelles,
     override val language: Language,
-    val selectorUsage: SelectorUsage? = null
+    val selectorUsage: SelectorUsage? = null,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL? = null,
 ) : ExpressionScope<Argument> {
 
     override fun markUsage(selector: TemplateModelSelector<*, *>) {
@@ -43,6 +52,7 @@ internal class AssignmentExpressionScope<Argument: Any, Var>(
     override val argument: Argument get() = parent.argument
     override val felles: BrevbakerFelles get() = parent.felles
     override val language: Language get() = parent.language
+    override val saksbehandlerValg: SaksbehandlervalgIDSL? get() = parent.saksbehandlerValg
 
     fun lookup(expr: Expression.FromScope.Assigned<Var>): Var =
         // Uses referential equality since nested ForEach over the same collection-expression will be equal.
