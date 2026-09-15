@@ -168,7 +168,7 @@ export const LetterEditor = ({
                 <React.Fragment key={blockIndex}>
                   <DeletedBlocksAt blockIndex={blockIndex} />
                   <div className={getBlockClassName(block, isTekstValgHighlighted(highlightedIds, block))}>
-                    {block.missingFromTemplate && (
+                    {block.missingFromTemplate && redigeringsflate !== "attestant-redigering" && (
                       <HStack className="missing-from-template-actions" gap="space-4" justify="end">
                         <Button
                           icon={<CheckmarkIcon aria-hidden />}

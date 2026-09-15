@@ -18,6 +18,8 @@ interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: Sa
   form: UseFormReturn<FormSchema>;
   redigertBrev: EditedDocument;
   propertyUsage?: PropertyUsage[];
+  warnAboutMissingFromTemplate?: boolean;
+  missingFromTemplateVedleggCount?: number;
 }
 
 type WarningResult = { kind: WarnModalKind; count?: number } | null;
@@ -27,6 +29,8 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
   form,
   redigertBrev,
   propertyUsage,
+  warnAboutMissingFromTemplate = true,
+  missingFromTemplateVedleggCount = 0,
 }: UseBrevEditorWarningsParams<FormSchema>) {
   const { status, specification, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
 
@@ -63,7 +67,7 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
   const getWarning = useCallback((): WarningResult => {
     const unedited = numberOfUneditedFritekstPlaceholders();
     const missingRequired = hasMissingRequiredSaksbehandlerValg();
-    const missingFromTemplate = numberOfMissingFromTemplateBlocks();
+    const missingFromTemplate = numberOfMissingFromTemplateBlocks() + missingFromTemplateVedleggCount;
 
     if (unedited > 0 && missingRequired) {
       return { kind: "fritekstOgTekstValg", count: unedited };
@@ -74,11 +78,17 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     if (missingRequired) {
       return { kind: "tekstValg" };
     }
-    if (missingFromTemplate > 0) {
+    if (warnAboutMissingFromTemplate && missingFromTemplate > 0) {
       return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
     }
     return null;
-  }, [hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders, numberOfMissingFromTemplateBlocks]);
+  }, [
+    hasMissingRequiredSaksbehandlerValg,
+    numberOfUneditedFritekstPlaceholders,
+    numberOfMissingFromTemplateBlocks,
+    warnAboutMissingFromTemplate,
+    missingFromTemplateVedleggCount,
+  ]);
 
   return { getWarning, hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders };
 }

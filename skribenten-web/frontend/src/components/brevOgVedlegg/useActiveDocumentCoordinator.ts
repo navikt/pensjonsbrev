@@ -17,6 +17,13 @@ export const useActiveDocumentCoordinator = (args: {
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const activeVedleggSaveRef = useRef<(() => Promise<void>) | null>(null);
   const [savingActiveDocument, setSavingActiveDocument] = useState(false);
+  const [missingFromTemplateCounts, setMissingFromTemplateCounts] = useState<Record<string, number>>({});
+
+  const registerVedleggMissingFromTemplate = useCallback((vedleggId: string, count: number) => {
+    setMissingFromTemplateCounts((counts) =>
+      counts[vedleggId] === count ? counts : { ...counts, [vedleggId]: count },
+    );
+  }, []);
 
   const registerVedleggSave = useCallback((saveNow: (() => Promise<void>) | null) => {
     activeVedleggSaveRef.current = saveNow;
@@ -55,11 +62,20 @@ export const useActiveDocumentCoordinator = (args: {
     }
   }, [vedleggExists, selectDocument]);
 
+  let missingFromTemplateCount = 0;
+  if (redigeringsflate === "saksbehandler-redigering") {
+    for (const vedlegg of redigerbareVedleggQuery.data ?? []) {
+      missingFromTemplateCount += missingFromTemplateCounts[vedlegg.vedleggId] ?? 0;
+    }
+  }
+
   return {
     activeVedleggId: vedleggExists ? activeVedleggId : undefined,
     saveActiveDocument,
     savingActiveDocument,
     registerVedleggSave,
+    registerVedleggMissingFromTemplate,
+    missingFromTemplateCount,
     selectDocument,
   };
 };

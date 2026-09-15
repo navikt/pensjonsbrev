@@ -9,7 +9,11 @@ import {
   tilbakestillRedigerbartVedlegg,
 } from "~/api/redigerbareVedlegg-endpoints";
 import { hentPdfForAttestering, hentPdfForBrev } from "~/api/sak-api-endpoints";
-import { normalizeDocumentForComparison, text } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  countMissingFromTemplateBlocks,
+  normalizeDocumentForComparison,
+  text,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import { useDocumentAutosave } from "~/Brevredigering/LetterEditor/hooks/useDocumentAutosave";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -82,7 +86,7 @@ export const ManagedAttachmentEditor = (props: AttachmentEditorProps) => {
 const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg: EditAttachment }) => {
   const { saksId, brev, vedleggId, redigeringsflate } = props;
   const queryClient = useQueryClient();
-  const { registerVedleggSave, registerReset } = useActiveDocument();
+  const { registerVedleggSave, registerReset, registerVedleggMissingFromTemplate } = useActiveDocument();
   // Captured once from the activation fetch above. Later cache writes for this query key (a
   // window-focus refetch racing a save, for instance) are deliberately not observed here — this
   // session owns its document from here on, and only local edits, its own save responses, and its
@@ -92,6 +96,11 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg
   );
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [vedleggMeta, setVedleggMeta] = useState({ includeSakspart: props.initialVedlegg.includeSakspart });
+
+  const missingFromTemplateCount = countMissingFromTemplateBlocks(editorState.redigertBrev);
+  useEffect(() => {
+    registerVedleggMissingFromTemplate(vedleggId, missingFromTemplateCount);
+  }, [registerVedleggMissingFromTemplate, vedleggId, missingFromTemplateCount]);
 
   // `includeSakspart` is metadata the editor never touches, so it is kept out of the editor state
   // and folded back in when saving. That keeps the editor state a plain EditedDocument.

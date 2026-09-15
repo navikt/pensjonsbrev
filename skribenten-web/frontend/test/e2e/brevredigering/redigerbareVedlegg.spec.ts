@@ -74,6 +74,114 @@ test.describe("Redigerbare vedlegg", () => {
     );
   });
 
+  test.describe("avsnitt som ikke finnes i malen", () => {
+    const utfyltBrev = {
+      ...brevResponse,
+      saksbehandlerValg: {
+        ...brevResponse.saksbehandlerValg,
+        ettEllerIngenAvMangeAlternativer: "RULLEKAKE",
+      },
+    };
+    const markertVedlegg = {
+      ...vedlegg,
+      blocks: vedlegg.blocks.map((block) => ({ ...block, missingFromTemplate: true })),
+    };
+
+    test.beforeEach(async ({ page }) => {
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
+        route.fulfill({ json: utfyltBrev }),
+      );
+      await page.route(vedleggUrl(VEDLEGG_ID), (route) =>
+        route.fulfill({
+          json: route.request().method() === "PUT" ? route.request().postDataJSON().redigertVedlegg : markertVedlegg,
+        }),
+      );
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=true", (route) =>
+        route.fulfill({ json: utfyltBrev }),
+      );
+    });
+
+    test("varsler saksbehandler om duplikate avsnitt i vedlegg ved klikk på Fortsett", async ({ page }) => {
+      await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+      await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeVisible();
+
+      await page.getByRole("button", { name: "Fortsett", exact: true }).click();
+      await expect(page.getByRole("dialog")).toContainText("Du må velge om du vil beholde eller slette 1 avsnitt");
+      await page.getByRole("button", { name: "Bli her" }).click();
+
+      await page.getByRole("tab", { name: "Brevmal" }).click();
+      await page.getByRole("button", { name: "Fortsett", exact: true }).click();
+      await expect(page.getByRole("dialog")).toContainText("Du må velge om du vil beholde eller slette 1 avsnitt");
+      await page.getByRole("button", { name: "Fortsett til brevbehandler" }).click();
+      await expect(page).toHaveURL(/brevbehandler/);
+    });
+
+    test("teller avsnitt i både brev og vedlegg", async ({ page }) => {
+      const markertBrev = structuredClone(utfyltBrev);
+      markertBrev.redigertBrev.blocks[0].missingFromTemplate = true;
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
+        route.fulfill({ json: markertBrev }),
+      );
+
+      await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+      await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeVisible();
+      await page.getByRole("button", { name: "Fortsett", exact: true }).click();
+      await expect(page.getByRole("dialog")).toContainText("Du må velge om du vil beholde eller slette 2 avsnitt");
+    });
+
+    for (const handling of ["Behold", "Slett"]) {
+      test(`${handling} fjerner vedleggsvarselet uten å vente på autolagring`, async ({ page }) => {
+        await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+        await page.getByRole("button", { name: handling, exact: true }).click();
+        await expect(page.locator(".missing-from-template-block")).toHaveCount(0);
+        await page.getByRole("button", { name: "Fortsett", exact: true }).click();
+
+        await expect(page).toHaveURL(/brevbehandler/);
+        await expect(page.getByRole("dialog")).toBeHidden();
+      });
+    }
+
+    test("attestant ser verken Behold, Slett eller avsnittsvarsel", async ({ page }) => {
+      const attestantBrev = structuredClone(utfyltBrev);
+      attestantBrev.redigertBrev.blocks[0].missingFromTemplate = true;
+      attestantBrev.redigertBrev.signatur.attesterendeSaksbehandlerNavn = "Attestant";
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) =>
+        route.fulfill({ json: attestantBrev }),
+      );
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigerbareVedlegg", (route) =>
+        route.fulfill({ json: [{ vedleggId: VEDLEGG_ID, tittel: VEDLEGG_TITTEL }] }),
+      );
+      await page.route(
+        `**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigerbareVedlegg/${VEDLEGG_ID}`,
+        (route) => route.fulfill({ json: markertVedlegg }),
+      );
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?frigiReservasjon=true", (route) =>
+        route.fulfill({ json: attestantBrev }),
+      );
+      await page.route(
+        "**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigertBrev?frigiReservasjon=*",
+        (route) => route.fulfill({ json: { ...attestantBrev, redigertBrev: route.request().postDataJSON() } }),
+      );
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering/pdf", (route) =>
+        route.fulfill({ path: "test/e2e/fixtures/helloWorldPdf.txt", contentType: "application/json" }),
+      );
+
+      await page.goto(`/saksnummer/123456/attester/1/redigering?vedlegg=${VEDLEGG_ID}`);
+      await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+      await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeHidden();
+      await expect(page.getByRole("button", { name: "Slett", exact: true })).toBeHidden();
+      await page.getByRole("tab", { name: "Brevmal" }).click();
+      await expect(page.locator(".missing-from-template-block")).toBeVisible();
+      await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeHidden();
+      await expect(page.getByRole("button", { name: "Slett", exact: true })).toBeHidden();
+      await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant");
+      await page.getByRole("button", { name: "Fortsett", exact: true }).click();
+
+      await expect(page).toHaveURL(/attester\/1\/forhandsvisning/);
+      await expect(page.getByRole("dialog")).toBeHidden();
+    });
+  });
+
   test("åpner brevet på brevmal-fanen", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1");
 

@@ -279,6 +279,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const { getWarning } = useBrevEditorWarnings({
+    warnAboutMissingFromTemplate: false,
     brevkode: props.brev.info.brevkode,
     form,
     redigertBrev: redigertBrev,

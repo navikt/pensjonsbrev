@@ -324,6 +324,7 @@ function RedigerBrev({
   });
 
   const { getWarning } = useBrevEditorWarnings({
+    missingFromTemplateVedleggCount: documentCoordinator.missingFromTemplateCount,
     brevkode: brev.info.brevkode,
     form,
     redigertBrev: editorState.redigertBrev,
@@ -434,6 +435,7 @@ function RedigerBrev({
               activeVedleggId={documentCoordinator.activeVedleggId}
               onSelectDocument={documentCoordinator.selectDocument}
               redigeringsflate="saksbehandler-redigering"
+              registerVedleggMissingFromTemplate={documentCoordinator.registerVedleggMissingFromTemplate}
               registerVedleggSave={documentCoordinator.registerVedleggSave}
             >
               <ThreeSectionLayout
