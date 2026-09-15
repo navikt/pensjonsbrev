@@ -85,14 +85,8 @@ object Metrics {
         .build()
 
 
-    // Strukturell brems: avsender_enhet er eneste label med ukjent antall verdier. Taket gjelder
-    // dette registeret, altså per pod - ikke på tvers av poder. Mål derfor den poden som har sett
-    // flest enheter, og juster:
-    //   max(count by (pod, k8s_cluster_name) (count by (avsender_enhet, pod, k8s_cluster_name)
-    //     (count_over_time(skribenten_brev_sendt_total[30d]))))
-    // count_over_time og ikke et instant-oppslag: sistnevnte ser bare serier som er rapportert de
-    // siste minuttene, og underteller enhetene tilsvarende. Cluster-labelen må være med i begge
-    // grupperingene: podnavn er unike innenfor ett cluster, men ikke på tvers.
+    // Strukturell brems: avsender_enhet er eneste label med ukjent antall verdier, og taket gjelder
+    // dette registeret - altså per pod. Se sendtbrevmetrikk.adoc for hvordan faktisk bruk måles.
     const val maksAntallAvsenderEnheter = 200
     fun avsenderEnhetFilter(): MeterFilter =
         MeterFilter.maximumAllowableTags(

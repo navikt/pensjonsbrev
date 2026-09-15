@@ -38,7 +38,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "### Omfang: kun redigerbare Skribenten-brev\n\nTallene dekker **ikke** legacy Exstream-bestillinger, og er derfor *ikke* totalen for alle brev fra Skribenten.\n\n- **«Sendt», ikke «forsøkt sendt».** Brev som får journalpost, men feiler under distribusjon, telles ikke.\n- **Tellingen er asynkron.** Dør poden mellom sending og telling, går den ene tellingen tapt. Tallene er et godt bilde av *fordelingen*, men ikke en revisjonssikker fasit på *antall*.\n- **Tellere nullstilles ved deploy og pod-restart.** Panelene som teller brev bruker derfor `increase()` over valgt tidsrom, aldri rå verdi. `increase()` ekstrapolerer, så antallene er avrundede anslag som kan avvike med ±1 fra en eksakt opptelling. Panelet «Maks avsenderenheter per pod» teller ikke brev, men distinkte labelverdier, og bruker derfor `count_over_time()`.\n- **`samhandler_type=UKJENT`** betyr at oppslaget mot samhandler-proxy feilet, ikke at typen mangler.\n\nDokumentasjon: `docs/modules/ROOT/pages/sendtbrevmetrikk.adoc` i `navikt/pensjonsbrev`."
+        "content": "### Omfang: kun redigerbare Skribenten-brev\n\nTallene dekker **ikke** legacy Exstream-bestillinger, og er derfor *ikke* totalen for alle brev fra Skribenten.\n\n- **«Sendt», ikke «forsøkt sendt».** Brev som får journalpost, men feiler under distribusjon, telles ikke.\n- **Tellingen er asynkron.** Dør poden mellom sending og telling, går den ene tellingen tapt. Tallene er et godt bilde av *fordelingen*, men ikke en revisjonssikker fasit på *antall*.\n- **Antallene er avrundede anslag.** Tellerne nullstilles ved deploy, så panelene måler økning over tidsrommet; utregningen ekstrapolerer og kan avvike med ±1.\n\nDokumentasjon: `docs/modules/ROOT/pages/sendtbrevmetrikk.adoc` i `navikt/pensjonsbrev`."
       },
       "transparent": false
     },
@@ -247,7 +247,7 @@
     {
       "type": "stat",
       "title": "Maks avsenderenheter per pod (tak 200)",
-      "description": "avsender_enhet er den eneste labelen med ukjent antall verdier, og er begrenset av MeterFilter.maximumAllowableTags(..., maksAntallAvsenderEnheter = 200, deny()) i Metrics.kt. Nås taket, blir brev fra nye enheter ikke talt i det hele tatt, og alle tall på dette dashbordet undervurderer det faktiske volumet. Taket håndheves i hver pods eget meter-register, ikke på tvers av poder, så panelet viser poden som har sett flest enheter - ikke antallet for clusteret under ett. Podnavn er unike innenfor ett cluster, men ikke på tvers, så cluster-labelen er med i grupperingen: uten den ville like podnavn fra dev og prod blitt slått sammen når begge er valgt. Tallet er et anslag: det teller enheter sett innenfor valgt tidsrom, så en pod som er eldre enn tidsrommet kan ha sett flere. Med hyppige deployer er pod-levetiden som regel kortere enn tidsrommet, og avviket lite. Velg minst 30 dager for et representativt tall. Filteret for avsenderenhet er bevisst ikke med her: det er den totale kardinaliteten i poden som styrer taket.",
+      "description": "Poden som har sett flest avsenderenheter. Taket i Metrics.kt (maksAntallAvsenderEnheter = 200) håndheves i hver pods eget meter-register, ikke på tvers av poder. Nås taket, blir brev fra nye enheter ikke talt i det hele tatt, og alle tall på dette dashbordet undervurderer volumet. Velg minst 30 dager for et representativt tall.",
       "datasource": {
         "type": "prometheus",
         "uid": "${datasource}"

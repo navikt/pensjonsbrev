@@ -135,9 +135,8 @@ https://docs.nais.io/observability/metrics/how-to/dashboard/[Plattformens egen v
 
 Fila her er derfor ikke en deploy-artefakt, men et *utgangspunkt*: importer den i Grafana under teamets mappe via *Dashboards → New → Import*.
 
-Konsekvensen er at kopien i repoet og dashbordet i Grafana kan gå fra hverandre, siden endringer gjort i UI-et ikke finner veien tilbake hit av seg selv.
-Vi beholder den likevel, av to grunner: den dokumenterer *hvordan* metrikken er ment å leses sammen med labelene den har, og den gjør dashbordet mulig å gjenskape hvis noen sletter det.
-Endrer du dashbordet i Grafana og vil at det skal overleve, eksporter JSON-en tilbake hit i samme slengen.
+Kopien her og dashbordet i Grafana kan derfor gå fra hverandre: endringer gjort i UI-et finner ikke veien tilbake hit av seg selv.
+Endrer du dashbordet, eksporter JSON-en tilbake hit i samme slengen.
 
 == Implementasjon
 
