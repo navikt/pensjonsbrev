@@ -109,8 +109,7 @@ sealed class Expression<out Out> : StableHash {
             override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
         }
 
-        class Saksbehandlervalg @InternKonstruktoer constructor() : FromScope<SaksbehandlervalgIDSL?>() {
-            @Suppress("UNCHECKED_CAST")
+        class Saksbehandlervalg @InternKonstruktoer constructor() : FromScope<SaksbehandlervalgIDSL>() {
             override fun eval(scope: ExpressionScope<*>) = scope.saksbehandlerValg
             override fun equals(other: Any?): Boolean = other is SaksbehandlervalgIDSL
             override fun hashCode(): Int = javaClass.hashCode()

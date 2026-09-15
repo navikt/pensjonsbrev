@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 class CollectionTest {
 
     private val emptyScope: ExpressionScope<Unit> =
-        ExpressionScope(Unit, FellesFactory.felles, Language.Bokmal)
+        ExpressionScope(Unit, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
     private val selector = SimpleSelector(Foedselsnummer::value)
 
@@ -31,7 +31,7 @@ class CollectionTest {
         val fnrs = listOf(1, 5, 6, 2, 4, 7).map { Foedselsnummer(it.toString()) }
 
         listOf(Language.Bokmal, Language.Nynorsk, Language.English).forEach {
-            val scope = ExpressionScope(Unit, FellesFactory.felles, it)
+            val scope = ExpressionScope(Unit, FellesFactory.felles, it, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
             assertEquals(
                 LocalizedFormatter.CollectionFormat.apply(fnrs.map { it.value }, it),
                 fnrs.expr().map(selector).format().eval(scope)
@@ -42,7 +42,8 @@ class CollectionTest {
     @Test
     fun `size operator returns correct size`() {
         val fnrs = listOf(1, 5, 6, 2, 4, 7)
-        val scope = ExpressionScope(Unit, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(Unit, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
         assertEquals(fnrs.size, fnrs.expr().size().eval(scope))
         assertEquals(0, emptyList<Int>().expr().size().eval(scope))
     }
