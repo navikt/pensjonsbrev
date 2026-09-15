@@ -57,12 +57,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     @Target(AnnotationTarget.FUNCTION)
     annotation class RedigerbartVedlegg
 
-    /**
-     * Opt-in: gjør et vedlegg redigerbart. Saksbehandler kan overstyre innholdet i Skribenten,
-     * og overstyringen identifiseres med [vedleggId]. Skal kun brukes for vedlegg som bevisst
-     * gjøres redigerbare (de aller fleste vedlegg skal ikke være det). [vedleggId] må være
-     * stabil og unik innenfor brevet.
-     */
     @RedigerbartVedlegg
     fun <AttachmentData : VedleggData> includeAttachmentRedigerbar(
         vedleggId: VedleggId,
@@ -70,8 +64,29 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
+        attachments.add(IncludeAttachment(
+            data = attachmentData,
+            template = template,
+            predicate = predicate,
+            editableId = vedleggId
+        ))
     }
+
+    @RedigerbartVedlegg
+    fun <AttachmentData : VedleggData> includeAttachmentRedigerbarIfNotNull(
+        vedleggId: VedleggId,
+        template: AttachmentTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData?>,
+    ) {
+        @Suppress("UNCHECKED_CAST")
+        attachments.add(IncludeAttachment(
+            data = attachmentData as Expression<AttachmentData>,
+            template = template,
+            predicate = attachmentData.notNull(),
+            editableId = vedleggId
+        ))
+    }
+
 
     @RedigerbartVedlegg
     fun includeAttachmentRedigerbar(
