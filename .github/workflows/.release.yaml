@@ -65,5 +65,5 @@ jobs:
           tasks=""
           for target in $GRADLE_TARGETS; do tasks="$tasks :$target:publish"; done
           version="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)"
-          echo "Released version: \`$version\`" >> "$GITHUB_STEP_SUMMARY"
           ./gradlew -Pversion=$version $tasks -Dorg.gradle.configuration-cache=false
+          echo "Released version: \`$version\`" >> "$GITHUB_STEP_SUMMARY"
