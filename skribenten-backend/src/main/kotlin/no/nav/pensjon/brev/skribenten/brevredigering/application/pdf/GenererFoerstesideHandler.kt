@@ -52,7 +52,13 @@ class GenererFoerstesideHandler(
             arkivtittel = tittel,
             vedleggsliste = listOf(),
             overskriftstittel = tittel,
-            dokumentlisteFoersteside = listOf("Se brev for detaljer"),
+            dokumentlisteFoersteside = listOf(
+                when (brev.spraak) {
+                    LanguageCode.BOKMAL -> "Se brev for detaljer"
+                    LanguageCode.NYNORSK -> "Sjå brev for detaljar"
+                    LanguageCode.ENGLISH -> "See letter for details"
+                }
+            ),
             foerstesidetype = Foerstesidetype.SKJEMA,
             enhetsnummer = brev.avsenderEnhetId,
             arkivsak = Arkivsak(
