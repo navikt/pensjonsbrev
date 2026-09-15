@@ -15,7 +15,7 @@ object BrevLandmodell {
         }
 
         override fun toString() = landkode
-    }
+    } // kommentar her
 
     class Land(
         val kode: Landkode,
