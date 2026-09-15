@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.model
 
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.template.EmptySaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.FellesFactory
 import no.nav.pensjon.brev.template.Language
@@ -12,7 +13,12 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class GenerellFormattingTest {
-    private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
+    private val testExpressionScope = ExpressionScope(
+        EmptyAutobrevdata,
+        FellesFactory.felles,
+        Language.Bokmal,
+        saksbehandlerValg = EmptySaksbehandlervalgIDSL
+    )
 
     @Test
     fun `kan formattere nullable kroneverdi som er satt`(){

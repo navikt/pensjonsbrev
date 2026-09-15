@@ -22,10 +22,14 @@ class BaseTest {
     fun `ifElse expression evaluates to correct branch`() {
         val expr = ifElse(Expression.FromScope.Argument<Int>() equalTo 2, "hei", "hade bra")
 
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
         assertEquals("hei", expr.eval(scope))
-        assertEquals("hade bra", expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertEquals(
+            "hade bra",
+            expr.eval(ExpressionScope(3, scope.felles, scope.language, saksbehandlerValg = EmptySaksbehandlervalgIDSL))
+        )
     }
 
     enum class TestEnum{
@@ -35,106 +39,235 @@ class BaseTest {
     @Test
     fun `isOneOf positive match`() {
         val expr = TestEnum.YES.expr().isOneOf(TestEnum.YES)
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertTrue(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isOneOf positive match with multiple values`() {
         val expr = TestEnum.YES.expr().isOneOf(TestEnum.NO, TestEnum.YES, TestEnum.MAYBE)
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertTrue(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isOneOf negative match`() {
         val expr = TestEnum.YES.expr().isOneOf(TestEnum.NO)
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertFalse(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isNotAnyOf positive match`() {
         val expr = TestEnum.YES.expr().isNotAnyOf(TestEnum.NO)
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertTrue(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isNotAnyOf positive match with multiple values`() {
         val expr = TestEnum.YES.expr().isNotAnyOf(TestEnum.NO, TestEnum.MAYBE)
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertTrue(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isNotAnyOf negative match`() {
         val expr = TestEnum.YES.expr().isNotAnyOf(TestEnum.YES)
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertFalse(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isNull returnerer false hvis verdi`() {
         val expr: Expression<TestEnum?> = TestEnum.MAYBE.expr()
-        assertFalse(expr.isNull().eval(ExpressionScope(2, FellesFactory.felles, Language.Nynorsk)))
+        assertFalse(
+            expr.isNull().eval(
+                ExpressionScope(
+                    2,
+                    FellesFactory.felles,
+                    Language.Nynorsk,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isNull returnerer true hvis ingen verdi`() {
         val expr: Expression<TestEnum?> = null.expr()
-        assertTrue(expr.isNull().eval(ExpressionScope(2, FellesFactory.felles, Language.Nynorsk)))
+        assertTrue(
+            expr.isNull().eval(
+                ExpressionScope(
+                    2,
+                    FellesFactory.felles,
+                    Language.Nynorsk,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isOneOf string positive match`() {
         val expr = "tekst".expr().isOneOf("tekst")
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertTrue(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isOneOf string positive match with multiple values`() {
         val expr = "tekst".expr().isOneOf("tekst", "tekst2")
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertTrue(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isOneOf string negative match`() {
         val expr = "tekst".expr().isOneOf("tekst2")
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertFalse(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isNotAnyOf string positive match with multiple values`() {
         val expr = "tekst".expr().isNotAnyOf("tekst1", "tekst2", "tekst3")
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertTrue(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Test
     fun `isNotAnyOf string negative match`() {
         val expr = "tekst".expr().isNotAnyOf("tekst")
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
-        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+        assertFalse(
+            expr.eval(
+                ExpressionScope(
+                    3,
+                    scope.felles,
+                    scope.language,
+                    saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                )
+            )
+        )
     }
 
     @Nested
     inner class EqualTo{
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
         @Test
         fun `EqualTo positive match for expression`() = assertTrue(55.expr().equalTo(55.expr()).eval(scope))
@@ -151,7 +284,8 @@ class BaseTest {
 
     @Nested
     inner class NotEqualTo{
-        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
         @Test
         fun `NotEqualTo positive match for expression`() = assertTrue(55.expr().notEqualTo(44.expr()).eval(scope))

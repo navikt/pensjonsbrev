@@ -1,9 +1,8 @@
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.RedigerbarData
-import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 
@@ -14,9 +13,8 @@ interface TemplateGlobalScope<LetterData : Any> {
     val felles: Expression<BrevbakerFelles>
         get() = Expression.FromScope.Felles
 
-    fun redigerbarData(
-        variabel: StringExpression,
-    ): RedigerbarData = RedigerbarData(variabel)
+    val deklarerteSaksbehandlervalg: Expression<SaksbehandlervalgIDSL>
+        get() = Expression.FromScope.Saksbehandlervalg()
 
     fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
         no.nav.pensjon.brev.template.dsl.bokmal(block)

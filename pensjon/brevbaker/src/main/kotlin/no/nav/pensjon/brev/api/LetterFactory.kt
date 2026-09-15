@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.brev.template.EmptySaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -91,7 +92,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         return LetterImpl(
             template = template.medEkstraVedlegg(vedlegg.map { it.asIncludeAttachment() }),
             argument = parseArgument(brevdata, template),
-            saksbehandlerValg = saksbehandlerValg,
+            saksbehandlerValg = saksbehandlerValg ?: EmptySaksbehandlervalgIDSL,
             language = language,
             felles = felles,
         )

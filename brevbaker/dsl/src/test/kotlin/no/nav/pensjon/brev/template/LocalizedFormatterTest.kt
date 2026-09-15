@@ -12,7 +12,12 @@ import org.junit.jupiter.api.Test
 
 class LocalizedFormatterTest {
 
-    private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
+    private val testExpressionScope = ExpressionScope(
+        EmptyAutobrevdata,
+        FellesFactory.felles,
+        Language.Bokmal,
+        saksbehandlerValg = EmptySaksbehandlervalgIDSL
+    )
 
     @Test
     fun `double formatteres som standard til 2 desimaler`() {
@@ -71,9 +76,39 @@ class LocalizedFormatterTest {
         fun `format() på Landkode-expression brukar språket frå scope`() {
             val landkodeSverige = BrevLandmodell.Landkode("SE")
             val expr = landkodeSverige.expr().format()
-            assertEquals("Sverige", expr.eval(ExpressionScope(landkodeSverige, FellesFactory.felles, Language.Bokmal)))
-            assertEquals("Sverige", expr.eval(ExpressionScope(landkodeSverige, FellesFactory.felles, Language.Nynorsk)))
-            assertEquals("Sweden", expr.eval(ExpressionScope(landkodeSverige, FellesFactory.felles, Language.English)))
+            assertEquals(
+                "Sverige",
+                expr.eval(
+                    ExpressionScope(
+                        landkodeSverige,
+                        FellesFactory.felles,
+                        Language.Bokmal,
+                        saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                    )
+                )
+            )
+            assertEquals(
+                "Sverige",
+                expr.eval(
+                    ExpressionScope(
+                        landkodeSverige,
+                        FellesFactory.felles,
+                        Language.Nynorsk,
+                        saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                    )
+                )
+            )
+            assertEquals(
+                "Sweden",
+                expr.eval(
+                    ExpressionScope(
+                        landkodeSverige,
+                        FellesFactory.felles,
+                        Language.English,
+                        saksbehandlerValg = EmptySaksbehandlervalgIDSL
+                    )
+                )
+            )
         }
     }
 }

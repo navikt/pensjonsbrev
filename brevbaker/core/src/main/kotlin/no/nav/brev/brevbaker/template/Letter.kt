@@ -14,7 +14,7 @@ data class LetterImpl<ParameterType : Any>(
     override val argument: ParameterType,
     override val language: Language,
     override val felles: BrevbakerFelles,
-    override val saksbehandlerValg: SaksbehandlervalgIDSL? = null,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL = EmptySaksbehandlervalgIDSL,
 ) : Letter<ParameterType> {
 
     init {
@@ -29,5 +29,5 @@ interface Letter<ParameterType : Any> {
     val argument: ParameterType
     val language: Language
     val felles: BrevbakerFelles
-    val saksbehandlerValg: SaksbehandlervalgIDSL?
+    val saksbehandlerValg: SaksbehandlervalgIDSL
 }

@@ -99,7 +99,14 @@ class RedigerbarTemplateResourceTest {
         val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
         val letterTitle = validRedigertBrevRequest.letterMarkup.title.joinToString("") { it.text }
         val anAttachmentTitle = LetterTestRenderer.renderAttachmentsOnly(
-            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
+            validRedigertBrevRequest.let {
+                ExpressionScope(
+                    it.letterData,
+                    it.felles,
+                    Language.Bokmal,
+                    saksbehandlerValg = it.saksbehandlerValg
+                )
+            },
             EksempelbrevRedigerbart.template
         ).first().title.joinToString { it.text }
 

@@ -62,7 +62,8 @@ class OperationsTest {
     @Nested
     @DisplayName("Absolute value operators")
     inner class AbsoluteValue {
-        private val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+        private val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
         @Test
         fun `absoluteKronerValue returns positive value if negative value`() {
@@ -93,7 +94,8 @@ class OperationsTest {
     @DisplayName("Feature-toggling")
     @Isolated
     inner class FunksjonsbryterEnabled {
-        private val scope = ExpressionScope(2, FellesFactory.felles, Language.Nynorsk)
+        private val scope =
+            ExpressionScope(2, FellesFactory.felles, Language.Nynorsk, saksbehandlerValg = EmptySaksbehandlervalgIDSL)
 
         @Test
         fun `enabled gir true viss funksjonen returnerer true`() {

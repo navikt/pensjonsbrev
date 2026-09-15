@@ -26,7 +26,12 @@ private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
 }
 
 private class BrevTemplateTest {
-    private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
+    private val testExpressionScope = ExpressionScope(
+        EmptyAutobrevdata,
+        FellesFactory.felles,
+        Language.Bokmal,
+        saksbehandlerValg = EmptySaksbehandlervalgIDSL
+    )
 
     private object EksempelBrev : RedigerbarTemplate<RedigerbarBrevdata<EmptyFagsystemdata>> {
         override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
