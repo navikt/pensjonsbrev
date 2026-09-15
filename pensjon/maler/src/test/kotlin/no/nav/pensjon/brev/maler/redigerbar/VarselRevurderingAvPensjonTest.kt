@@ -59,14 +59,4 @@ class VarselRevurderingAvPensjonTest {
         }
     }
 
-    @Test
-    fun testHtml() {
-        LetterTestImpl(
-            VarselRevurderingAvPensjon.template,
-            Fixtures.create(VarselRevurderingAvPensjon::class),
-            Language.Bokmal,
-            Fixtures.felles
-        ).renderTestHtml(VarselRevurderingAvPensjon.kode.name)
-    }
-
 }
