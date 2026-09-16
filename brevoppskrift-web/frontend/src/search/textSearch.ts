@@ -84,18 +84,49 @@ export const FUZZY_MATCH_OPTIONS = {
  *  occur verbatim in the matched text. */
 export const SHORT_TERM_LENGTH = 1;
 
+/** Matches a query consisting *only* of non-alphanumeric characters, e.g.
+ *  "§", "%", "§§", or "§ §" (internal whitespace is allowed - both callers
+ *  trim the query first, so this can only match if there's at least one
+ *  non-whitespace character in it). Fuse's tokenizer
+ *  (`/[\p{L}\p{M}\p{N}_]+/gu`, used by `useTokenSearch`) only recognises
+ *  letters/digits/underscore, so a query made entirely of such characters -
+ *  regardless of length or internal whitespace - produces zero query tokens
+ *  and `contentFuse.search()` returns no candidates at all - not merely a
+ *  fuzzy vs. exact distinction, but no matching attempted whatsoever. This
+ *  regex is therefore used to detect that "query has no letters/digits at
+ *  all" case, both to bypass `MIN_QUERY_LENGTH` (see `useTemplateSearch.ts`)
+ *  and to route straight to verbatim substring matching instead of Fuse. */
+export const SPECIAL_CHAR_QUERY = /^[^\p{L}\p{M}\p{N}_]+$/u;
+
 /** Splits a query into its whitespace-separated terms. */
 export function queryTerms(query: string): string[] {
   return query.split(/\s+/).filter((term) => term.length > 0);
 }
 
-/** True unless some short term (see `SHORT_TERM_LENGTH`) is missing from every
- *  one of `fields` as a case-insensitive substring. Long terms are left to
- *  Fuse's own (possibly fuzzy) matching. */
+/** A term Fuse can safely fuzzy-match on its own: composed only of the same
+ *  "word" characters as Fuse's own tokenizer (letters/marks/digits/
+ *  underscore, see `SPECIAL_CHAR_QUERY`). Any other character in the term -
+ *  even just one, mixed in anywhere - means Fuse's tokenizer will silently
+ *  extract only a fragment of it as the real query token (e.g. the query
+ *  term "{{[[{{{_" is tokenized down to just "_", which then fuzzy-matches
+ *  any text containing an underscore, such as a variable placeholder like
+ *  "[_Value NAV_]" - a false positive verified empirically). Such a term
+ *  must instead be required to occur verbatim, in full, as typed. */
+function isPureWordTerm(term: string): boolean {
+  return /^[\p{L}\p{M}\p{N}_]+$/u.test(term);
+}
+
+/** True unless some non-fuzzy-safe term (too short, or containing any
+ *  character outside Fuse's own "word" charset - see `isPureWordTerm` and
+ *  `SHORT_TERM_LENGTH`) is missing from every one of `fields` as a
+ *  case-insensitive substring. Pure, longer-than-`SHORT_TERM_LENGTH` word
+ *  terms are left to Fuse's own (possibly fuzzy) matching. */
 export function hasShortTermsVerbatim(terms: string[], fields: string[]): boolean {
   const lowerFields = fields.map((field) => field.toLowerCase());
   return terms.every(
-    (term) => term.length > SHORT_TERM_LENGTH || lowerFields.some((field) => field.includes(term.toLowerCase())),
+    (term) =>
+      (term.length > SHORT_TERM_LENGTH && isPureWordTerm(term)) ||
+      lowerFields.some((field) => field.includes(term.toLowerCase())),
   );
 }
 
@@ -234,6 +265,14 @@ export function search(index: SearchIndex, rawQuery: string, exactOnly = false):
   const query = rawQuery.trim();
   if (!query) {
     return { content: [], brev: [] };
+  }
+
+  // A query made entirely of special characters (e.g. "§" or "§§") can't be
+  // tokenized by Fuse at all (see `SPECIAL_CHAR_QUERY`), so fuzzy search
+  // would find no candidates to even check. Always fall back to verbatim
+  // substring matching for it, regardless of `exactOnly`.
+  if (SPECIAL_CHAR_QUERY.test(query)) {
+    return exactSearch(index, query);
   }
 
   return exactOnly ? exactSearch(index, query) : fuzzySearch(index, query);

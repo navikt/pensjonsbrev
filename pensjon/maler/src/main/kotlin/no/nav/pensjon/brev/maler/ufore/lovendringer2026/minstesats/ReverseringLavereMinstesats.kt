@@ -185,7 +185,7 @@ object ReverseringLavereMinstesats {
                         )
                     }
                 }
-                title2 {
+                title1 {
                     text(
                         bokmal { +"Etteroppgjør" },
                         nynorsk { +"Etteroppgjer" },

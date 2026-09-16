@@ -31,11 +31,7 @@ class GenererFoerstesideHandler(
         val pid: BrevbakerType.Pid,
         val sakstype: Sakstype,
         val tema: Tema,
-        val vedlegg: List<Tittel>,
     )
-
-    @JvmInline
-    value class Tittel(val tittel: String)
 
     suspend operator fun invoke(request: Request): Outcome<GenererFoerstesideResponse, Nothing>? =
         brevtilgang.forLesing(request.brevId, request.saksId) {
@@ -54,9 +50,15 @@ class GenererFoerstesideHandler(
             ),
             tema = request.tema,
             arkivtittel = tittel,
-            vedleggsliste = request.vedlegg.map { it.tittel },
+            vedleggsliste = listOf(),
             overskriftstittel = tittel,
-            dokumentlisteFoersteside = listOf(tittel) + request.vedlegg.map { it.tittel },
+            dokumentlisteFoersteside = listOf(
+                when (brev.spraak) {
+                    LanguageCode.BOKMAL -> "Se brev for detaljer"
+                    LanguageCode.NYNORSK -> "Sjå brev for detaljar"
+                    LanguageCode.ENGLISH -> "See letter for details"
+                }
+            ),
             foerstesidetype = Foerstesidetype.SKJEMA,
             enhetsnummer = brev.avsenderEnhetId,
             arkivsak = Arkivsak(

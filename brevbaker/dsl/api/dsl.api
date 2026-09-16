@@ -321,14 +321,12 @@ public abstract interface class no/nav/pensjon/brev/template/DslExtensionForRedi
 	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public fun includePhrase (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public fun includePhrase (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
-	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev$DefaultImpls {
 	public static fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev;Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev;Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
-	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract class no/nav/pensjon/brev/template/Element : no/nav/pensjon/brev/template/StableHash {
@@ -864,7 +862,6 @@ public abstract class no/nav/pensjon/brev/template/RedigerbarOutlinePhrase : no/
 	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public fun includePhrase (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public fun includePhrase (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
-	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract class no/nav/pensjon/brev/template/RedigerbarParagraphPhrase : no/nav/pensjon/brev/template/AbstractParagraphPhrase, no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev {
@@ -872,7 +869,6 @@ public abstract class no/nav/pensjon/brev/template/RedigerbarParagraphPhrase : n
 	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public fun includePhrase (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public fun includePhrase (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
-	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/RedigerbarPhraseBrevdata : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata {
@@ -896,7 +892,6 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 	public static fun getValgbareVedlegg (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Ljava/util/Set;
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
-	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
@@ -1081,6 +1076,7 @@ public final class no/nav/pensjon/brev/template/dsl/ControlStructureScope$Defaul
 	public static fun ifNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public static fun ifNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public static fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun showIf (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
 
@@ -1094,6 +1090,7 @@ public final class no/nav/pensjon/brev/template/dsl/ListScope : no/nav/pensjon/b
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun item (Lkotlin/jvm/functions/Function1;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
 
@@ -1134,6 +1131,7 @@ public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pe
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/OutlinePhrase;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun paragraph (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun title1 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public fun title2 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
@@ -1180,6 +1178,7 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/
 	public fun newline ()V
 	public fun numberedList (Lkotlin/jvm/functions/Function1;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun table (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
@@ -1208,6 +1207,7 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphScope$DefaultImpls 
 	public static fun list (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)V
 	public static fun numberedList (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)V
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public static fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun table (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
 
@@ -1222,6 +1222,7 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextOnlyScope : no/nav/
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/PlainTextOnlyPhrase;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
 
@@ -1236,6 +1237,7 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextScope$DefaultImpls 
 	public static fun getArgument (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun getFelles (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public static fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/QuotationMarks {
@@ -1269,6 +1271,7 @@ public final class no/nav/pensjon/brev/template/dsl/TableHeaderScope : no/nav/pe
 	public fun getArgument ()Lno/nav/pensjon/brev/template/Expression;
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TableRowScope : no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
@@ -1278,6 +1281,7 @@ public final class no/nav/pensjon/brev/template/dsl/TableRowScope : no/nav/pensj
 	public fun getArgument ()Lno/nav/pensjon/brev/template/Expression;
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TableScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope {
@@ -1289,6 +1293,7 @@ public final class no/nav/pensjon/brev/template/dsl/TableScope : no/nav/pensjon/
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun row (Lkotlin/jvm/functions/Function1;)V
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
@@ -1300,6 +1305,7 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateFormChoiceScope : no
 	public final fun getChoices ()Ljava/util/List;
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
@@ -1308,6 +1314,7 @@ public abstract interface class no/nav/pensjon/brev/template/dsl/TemplateGlobalS
 	public fun getArgument ()Lno/nav/pensjon/brev/template/Expression;
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateGlobalScope$DefaultImpls {
@@ -1316,6 +1323,7 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateGlobalScope$DefaultI
 	public static fun getArgument (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun getFelles (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public static fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateKt {
@@ -1341,8 +1349,10 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public static synthetic fun includeAttachmentRedigerbar-RWxTZKQ$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public final fun includeAttachmentRedigerbar-sE91ttY (Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public static synthetic fun includeAttachmentRedigerbar-sE91ttY$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
+	public final fun includeAttachmentRedigerbarIfNotNull-sE91ttY (Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun title (Lkotlin/jvm/functions/Function1;)V
 }
 
@@ -1374,6 +1384,7 @@ public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensj
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/TextOnlyPhrase;)V
 	public fun newline ()V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
 
@@ -1391,6 +1402,7 @@ public final class no/nav/pensjon/brev/template/dsl/TextScope$DefaultImpls {
 	public static fun getArgument (Lno/nav/pensjon/brev/template/dsl/TextScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun getFelles (Lno/nav/pensjon/brev/template/dsl/TextScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/TextScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
+	public static fun redigerbarData-ah6Wbbg (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/UtilsKt {

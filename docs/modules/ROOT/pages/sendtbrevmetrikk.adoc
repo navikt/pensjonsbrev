@@ -52,7 +52,17 @@ Legacy Exstream-bestillinger er ikke med, og et dashboard må merkes tydelig med
 Kardinalitet::
 `avsender_enhet` er den eneste labelen med ukjent antall verdier.
 `Metrics.kt` setter derfor et tak med `MeterFilter.maximumAllowableTags`.
-Faktisk antall enheter måles med `count(count by (avsender_enhet) (skribenten_brev_sendt_total))`.
+
+Taket håndheves i hver pods eget meter-register, ikke på tvers av poder, så det er den enkelte poden som eventuelt når 200 — ikke clusteret under ett.
+Mål derfor den poden som har sett flest enheter:
+
+[source]
+----
+max(count by (pod, k8s_cluster_name) (count by (avsender_enhet, pod, k8s_cluster_name) (count_over_time(
+  skribenten_brev_sendt_total{app="skribenten-backend", k8s_cluster_name="prod"}[30d]))))
+----
+
+`count_over_time` over et tidsrom, og ikke et instant-oppslag på `skribenten_brev_sendt_total`: et instant-oppslag ser bare serier som er rapportert de siste minuttene, og underteller enhetene tilsvarende.
 
 Ingen drilldown::
 Prometheus gir aggregerte tall, ikke oppslag per sak eller saksbehandler.
@@ -106,6 +116,27 @@ sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{
 sum by (avsender_enhet) (increase(skribenten_brev_sendt_total{
       app="skribenten-backend", k8s_cluster_name="prod"}[30d]))
 ----
+
+== Dashboard
+
+Spørringene over er satt sammen til et Grafana-dashbord:
+link:{attachmentsdir}/sendt-brev-dashboard.json[sendt-brev-dashboard.json].
+
+Det har fire nøkkeltall (antall sendt, andel til andre enn bruker, andel lokalprint, og hvor nær taket den poden med flest avsenderenheter ligger), fordelinger på mottakertype, distribusjon og manuelle adresser, et tidsserieplott, de vanligste samhandlertypene, og en tabell med mottakerfordeling per avsenderenhet.
+Datakilde, cluster og avsenderenhet er variabler, så det samme dashbordet virker for både dev og prod.
+
+Panelene bruker `$__range` i stedet for et fast `[30d]`, slik at tallene følger tidsvelgeren.
+Tidsserien bruker `$__interval` — som flislegger tidsrommet eksakt — og ikke `$__rate_interval`, som er lengre enn steget og ville lagt samme brev i flere søyler.
+
+=== Hvorfor JSON-fila ligger her
+
+NAIS har ingen mekanisme for å deploye dashbord som kode.
+https://docs.nais.io/observability/metrics/how-to/dashboard/[Plattformens egen veiledning] beskriver kun å klikke dashbordet sammen i Grafana-UI-et, og i motsetning til alarmene — som er `PrometheusRule`-manifester deployet fra `.github/workflows/alerts.yml` — finnes det ingen tilsvarende CRD eller action for dashbord.
+
+Fila her er derfor ikke en deploy-artefakt, men et *utgangspunkt*: importer den i Grafana under teamets mappe via *Dashboards → New → Import*.
+
+Kopien her og dashbordet i Grafana kan derfor gå fra hverandre: endringer gjort i UI-et finner ikke veien tilbake hit av seg selv.
+Endrer du dashbordet, eksporter JSON-en tilbake hit i samme slengen.
 
 == Implementasjon
 
