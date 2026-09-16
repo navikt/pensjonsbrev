@@ -261,9 +261,18 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   // The diff decorations belong to the latest saved letter and are removed as soon as editing begins.
   const { disableDiffMode, isDiffMode, defaultDiffMode } = attestantDiff;
-  useEffect(() => {
-    if (editorState.saveStatus === "DIRTY" && isDiffMode) {
-      disableDiffMode();
+
+  // Read via a ref so trackedDisableDiffMode can see the latest isDiffMode at call time without
+  // being recreated on every toggle.
+  const isDiffModeReference = useRef(isDiffMode);
+  isDiffModeReference.current = isDiffMode;
+
+  // Direct editor/table edits (e.g. ContentGroup's handleEditIntent, TableView's context menu) call
+  // disableDiffMode straight from AttestantDiffContext, turning off diff mode before saveStatus becomes
+  // DIRTY. Wrapping disableDiffMode here — rather than tracking from the saveStatus effect below — is
+  // what actually observes those disables, since by the time the effect runs isDiffMode is already false.
+  const trackedDisableDiffMode = useCallback(() => {
+    if (isDiffModeReference.current) {
       trackEvent("diff modus endret", {
         brevId: props.brev.info.id,
         brevkode: props.brev.info.brevkode,
@@ -272,7 +281,16 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         defaultDiffModus: defaultDiffMode,
       });
     }
-  }, [isDiffMode, defaultDiffMode, disableDiffMode, editorState.saveStatus, props.brev.info.id]);
+    disableDiffMode();
+  }, [disableDiffMode, defaultDiffMode, props.brev.info.id, props.brev.info.brevkode]);
+
+  // Safety net for saveStatus transitions to DIRTY that don't go through an explicit disableDiffMode
+  // call first (e.g. editing the underskrift field).
+  useEffect(() => {
+    if (editorState.saveStatus === "DIRTY" && isDiffMode) {
+      trackedDisableDiffMode();
+    }
+  }, [isDiffMode, editorState.saveStatus, trackedDisableDiffMode]);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -535,7 +553,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <AttestantDiffProvider
                     diff={attestantDiff.activeDiff}
                     diffHash={attestantDiff.diffHash}
-                    disableDiffMode={attestantDiff.disableDiffMode}
+                    disableDiffMode={trackedDisableDiffMode}
                   >
                     <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
                   </AttestantDiffProvider>
