@@ -3,10 +3,10 @@ import { describe, expect, test, vi } from "vitest";
 
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 
-// Aksel's <Modal> opens the underlying <dialog> (and starts observing its "open" attribute)
-// from a useEffect, so the resulting state update lands outside the synchronous act() that
-// render() wraps. Awaiting waitFor right after render lets that update settle before we assert,
-// which avoids "not wrapped in act(...)" warnings without changing what we assert.
+// Aksel's <Modal> opens the underlying <dialog> (and starts observing its "open" attribute) from a
+// useEffect, so the resulting state update lands outside the synchronous act() that render() wraps.
+// Waiting for the dialog to actually be open lets that update settle before we assert, which avoids
+// "not wrapped in act(...)" warnings while asserting the condition we're actually waiting on.
 describe("WarnModal", () => {
   test("renders nothing when closed", () => {
     const { container } = render(
@@ -17,7 +17,7 @@ describe("WarnModal", () => {
 
   test("renders fritekst heading and body", async () => {
     render(<WarnModal count={2} kind="fritekst" onClose={vi.fn()} onFortsett={vi.fn()} open />);
-    await waitFor(() => {});
+    await waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
 
     expect(screen.queryByText("Du må fylle ut 2 fritekstfelt")).not.toBeNull();
     expect(
@@ -27,7 +27,7 @@ describe("WarnModal", () => {
 
   test("renders tekstValg heading and body", async () => {
     render(<WarnModal kind="tekstValg" onClose={vi.fn()} onFortsett={vi.fn()} open />);
-    await waitFor(() => {});
+    await waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
 
     expect(screen.queryByText("Du må velge tekst")).not.toBeNull();
     expect(
@@ -39,14 +39,14 @@ describe("WarnModal", () => {
 
   test("renders fritekstOgTekstValg heading and body", async () => {
     render(<WarnModal count={3} kind="fritekstOgTekstValg" onClose={vi.fn()} onFortsett={vi.fn()} open />);
-    await waitFor(() => {});
+    await waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
 
     expect(screen.queryByText("Du må fylle ut 3 fritekstfelt og velge tekst")).not.toBeNull();
   });
 
   test("renders avsnittIkkeIMal as its own heading and body, separate from fritekst/tekstValg", async () => {
     render(<WarnModal count={2} kind="avsnittIkkeIMal" onClose={vi.fn()} onFortsett={vi.fn()} open />);
-    await waitFor(() => {});
+    await waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
 
     expect(screen.queryByText("Du må velge om du vil beholde eller slette 2 avsnitt")).not.toBeNull();
     expect(
@@ -58,7 +58,7 @@ describe("WarnModal", () => {
 
   test("renders avsnittIkkeIMal body in singular when count is 1", async () => {
     render(<WarnModal count={1} kind="avsnittIkkeIMal" onClose={vi.fn()} onFortsett={vi.fn()} open />);
-    await waitFor(() => {});
+    await waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
 
     expect(screen.queryByText("Du må velge om du vil beholde eller slette 1 avsnitt")).not.toBeNull();
     expect(
@@ -70,7 +70,7 @@ describe("WarnModal", () => {
 
   test("uses the default fortsett label when none is provided", async () => {
     render(<WarnModal kind="tekstValg" onClose={vi.fn()} onFortsett={vi.fn()} open />);
-    await waitFor(() => {});
+    await waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
 
     expect(screen.queryByText("Fortsett til brevbehandler")).not.toBeNull();
   });
@@ -85,7 +85,7 @@ describe("WarnModal", () => {
         open
       />,
     );
-    await waitFor(() => {});
+    await waitFor(() => expect(document.querySelector("dialog")?.open).toBe(true));
 
     expect(screen.queryByText("Fortsett til forhåndsvisning")).not.toBeNull();
     expect(screen.queryByText("Fortsett til brevbehandler")).toBeNull();
