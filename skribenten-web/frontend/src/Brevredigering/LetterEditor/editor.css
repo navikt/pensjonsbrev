@@ -29,14 +29,6 @@
   user-select: text;
 }
 
-.editor-surface td [data-literal-index],
-.editor-surface th [data-literal-index] {
-  display: block;
-  width: 100%;
-  min-height: 1.4rem;
-  white-space: pre-wrap;
-}
-
 .editor-surface.is-drag-selecting [data-literal-index] {
   caret-color: transparent;
 }
@@ -44,6 +36,21 @@
 .editor-surface.is-drag-selecting [data-literal-index]:where(:focus, :focus-visible) {
   outline: 0;
   box-shadow: none;
+}
+
+.editor-surface td [data-literal-index]:is([contenteditable], [data-ce-orig]),
+.editor-surface th [data-literal-index]:is([contenteditable], [data-ce-orig]) {
+  display: inline;
+  white-space: pre-wrap;
+}
+
+/* En tom literal (kun zero-width space) skal fortsatt ha et klikkbart/redigerbart område,
+   men uten å tvinge hele cellens bredde og bryte inline-flyten med variabler. */
+.editor-surface td [data-literal-index]:is([contenteditable], [data-ce-orig])[data-empty],
+.editor-surface th [data-literal-index]:is([contenteditable], [data-ce-orig])[data-empty] {
+  display: inline-block;
+  min-width: 1ch;
+  min-height: 1.4rem;
 }
 
 .attestant-diff-inserted,
