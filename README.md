@@ -277,3 +277,5 @@ Have you remembered to connect naisdevice? (see https://doc.nais.io/basics/acces
 #### Får ikke kjørt jq etter å ha lastet den ned
 
 - Prøv `brew install jq`.
+
+test
