@@ -213,7 +213,7 @@ const VedtakWrapper = () => {
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const { vedlegg: activeVedlegg } = Route.useSearch();
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset } =
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset, saveNow } =
     useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
@@ -285,12 +285,37 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   }, [disableDiffMode, defaultDiffMode, props.brev.info.id, props.brev.info.brevkode]);
 
   // Safety net for saveStatus transitions to DIRTY that don't go through an explicit disableDiffMode
-  // call first (e.g. editing the underskrift field).
+  // call first (e.g. editing the underskrift field, or keeping/deleting a block missing from the mal).
+  // Deliberately keyed on saveStatus only: reacting to isDiffMode too would turn the switch straight
+  // back off when the attestant enables diff mode on a letter that is still saving.
   useEffect(() => {
-    if (editorState.saveStatus === "DIRTY" && isDiffMode) {
+    if (editorState.saveStatus === "DIRTY" && isDiffModeReference.current) {
       trackedDisableDiffMode();
     }
-  }, [isDiffMode, editorState.saveStatus, trackedDisableDiffMode]);
+  }, [editorState.saveStatus, trackedDisableDiffMode]);
+
+  // Diffing needs a saved letter to compare against, so enabling diff mode flushes pending edits
+  // instead of leaving the attestant waiting for the autosave debounce.
+  const handleDiffModeChange = async (checked: boolean) => {
+    attestantDiff.setDiffMode(checked);
+    trackEvent("diff modus endret", {
+      brevId: props.brev.info.id,
+      brevkode: props.brev.info.brevkode,
+      kilde: "manuell",
+      diffModus: checked,
+      defaultDiffModus: defaultDiffMode,
+    });
+
+    if (!checked) return;
+
+    try {
+      await saveNow();
+    } catch {
+      // Without a successful save there is no fresh letter version to diff against. The autosave
+      // error UI reports the failure; here we only undo the diff mode it was meant to enable.
+      trackedDisableDiffMode();
+    }
+  };
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -468,17 +493,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                           <>
                             <Switch
                               checked={attestantDiff.isDiffMode}
-                              onChange={(event) => {
-                                const checked = event.target.checked;
-                                attestantDiff.setDiffMode(checked);
-                                trackEvent("diff modus endret", {
-                                  brevId: props.brev.info.id,
-                                  brevkode: props.brev.info.brevkode,
-                                  kilde: "manuell",
-                                  diffModus: checked,
-                                  defaultDiffModus: attestantDiff.defaultDiffMode,
-                                });
-                              }}
+                              onChange={(event) => void handleDiffModeChange(event.target.checked)}
                               size="small"
                             >
                               Marker tekst som er lagt til og slettet

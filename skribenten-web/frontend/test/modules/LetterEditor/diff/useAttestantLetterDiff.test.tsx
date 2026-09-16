@@ -111,4 +111,31 @@ describe("useAttestantLetterDiff", () => {
     act(() => result.current.disableDiffMode());
     expect(result.current.defaultDiffMode).toBe(false);
   });
+
+  it("hides the cached markers once the letter goes dirty at the hash they were fetched for", async () => {
+    vi.spyOn(getBrevDiff, "queryFn").mockResolvedValue(diffWithEdit);
+    const initialProps = {
+      brevId: 1,
+      savedLetter: letterFor("original"),
+      savedHash: "hash-1",
+      isSaved: true,
+    };
+
+    const { result, rerender } = renderHook((props: typeof initialProps) => useAttestantLetterDiff(props), {
+      initialProps,
+      wrapper,
+    });
+
+    act(() => result.current.setDiffMode(true));
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+    expect(result.current.activeDiff).toBeDefined();
+
+    // Editing does not move `savedHash` until a save responds, so the cached diff still matches the
+    // key. Rendering it anyway would decorate text the attestant has already edited past.
+    rerender({ ...initialProps, isSaved: false });
+
+    expect(result.current.activeDiff).toBeUndefined();
+    expect(result.current.diffHash).toBeUndefined();
+    expect(result.current.status).toBe("loading");
+  });
 });

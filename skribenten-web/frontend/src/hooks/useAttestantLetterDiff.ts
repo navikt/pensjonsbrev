@@ -45,13 +45,18 @@ export function useAttestantLetterDiff({
 
   let status: AttestantLetterDiffStatus = "disabled";
   if (isDiffMode) {
-    if (diffQuery.isError) status = "error";
+    // An unsaved letter has no backend version to diff against yet, so the caller is expected to be
+    // saving; report progress rather than a stale error or an already-superseded diff.
+    if (!isSaved) status = "loading";
+    else if (diffQuery.isError) status = "error";
     else if (diffIsEmpty) status = "empty";
     else if (activeDiff) status = "ready";
     else status = "loading";
   }
 
-  const renderMarkers = isDiffMode && activeDiff !== undefined;
+  // The cached diff belongs to `savedHash`, which does not change until a save responds. Rendering it
+  // while the letter is dirty would decorate text the attestant has already edited past.
+  const renderMarkers = isDiffMode && isSaved && activeDiff !== undefined;
 
   return {
     isDiffMode,

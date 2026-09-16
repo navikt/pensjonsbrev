@@ -48,6 +48,13 @@ interface ManagedLetterEditorContextValue {
   /** Whether autosaving the letter has failed. */
   saveFailed: boolean;
 
+  /**
+   * Saves pending letter edits immediately instead of waiting for the autosave debounce, and
+   * rejects if saving fails. Resolves right away when there is nothing to save. Concurrent calls
+   * join the save already in flight rather than sending a second one.
+   */
+  saveNow: () => Promise<void>;
+
   /** The route registers how to clear its own submit-error state so the autosave can reset it before retrying. */
   registerSaveErrorReset: (reset: (() => void) | null) => void;
 }
@@ -131,6 +138,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
 
   const {
     mutate: saveLetter,
+    mutateAsync: saveLetterAsync,
     isError: saveFailed,
     reset: resetSaveError,
   } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
@@ -173,6 +181,32 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
+  // Keep the latest state available to `saveNow` without rebuilding it on every keystroke.
+  const editorStateRef = useRef(editorState);
+  editorStateRef.current = editorState;
+
+  // Lets concurrent `saveNow` callers await the same send instead of queueing a duplicate.
+  const saveNowRef = useRef<Promise<void> | null>(null);
+
+  const saveNow = useCallback((): Promise<void> => {
+    if (saveNowRef.current) return saveNowRef.current;
+    // Anything other than DIRTY is either already persisted or has a save in flight that the
+    // caller can simply wait out via `saveStatus`.
+    if (editorStateRef.current.saveStatus !== "DIRTY") return Promise.resolve();
+
+    resetSaveError();
+    saveErrorResetRef.current?.();
+
+    const save = saveLetterAsync(editorStateRef.current)
+      .then(() => undefined)
+      .finally(() => {
+        saveNowRef.current = null;
+      });
+
+    saveNowRef.current = save;
+    return save;
+  }, [saveLetterAsync, resetSaveError]);
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (editorState.saveStatus === "DIRTY") {
@@ -210,6 +244,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         setEditorState: setEditorState,
         onSaveSuccess: onSaveSuccess,
         saveFailed: saveFailed,
+        saveNow: saveNow,
         registerSaveErrorReset: registerSaveErrorReset,
       }}
     >
