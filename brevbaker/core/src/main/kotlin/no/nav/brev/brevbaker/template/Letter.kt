@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.template.expression.SelectorUsage
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 
 // TODO: Look at * projections for LetterTemplate, we have to have it for the API endpoint, but perhaps not for internal usage.
@@ -15,13 +16,15 @@ data class AutoLetterImpl<ParameterType : Any>(
     override val language: Language,
     override val felles: BrevbakerFelles,
 ) : Letter<ParameterType> {
-    override val saksbehandlerValg: SaksbehandlervalgIDSL = EmptySaksbehandlervalgIDSL
 
     init {
         if (!template.language.supports(language)) {
             throw IllegalArgumentException("Language not supported by template: $language")
         }
     }
+
+    override fun toScope(selectorUsage: SelectorUsage?): ExpressionScope<ParameterType> =
+        ExpressionScope(argument, felles, language, selectorUsage, EmptySaksbehandlervalgIDSL)
 }
 
 @InterneDataklasser
@@ -30,13 +33,16 @@ data class RedigerbarLetterImpl<ParameterType : Any>(
     override val argument: ParameterType,
     override val language: Language,
     override val felles: BrevbakerFelles,
-    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+    val saksbehandlerValg: SaksbehandlervalgIDSL,
 ) : Letter<ParameterType> {
     init {
         if (!template.language.supports(language)) {
             throw IllegalArgumentException("Language not supported by template: $language")
         }
     }
+
+    override fun toScope(selectorUsage: SelectorUsage?) =
+        ExpressionScope(argument, felles, language, selectorUsage, saksbehandlerValg)
 }
 
 interface Letter<ParameterType : Any> {
@@ -44,5 +50,6 @@ interface Letter<ParameterType : Any> {
     val argument: ParameterType
     val language: Language
     val felles: BrevbakerFelles
-    val saksbehandlerValg: SaksbehandlervalgIDSL
+
+    fun toScope(selectorUsage: SelectorUsage? = null): ExpressionScope<ParameterType>
 }

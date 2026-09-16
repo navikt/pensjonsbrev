@@ -81,8 +81,13 @@ public abstract interface class no/nav/pensjon/brev/template/Letter {
 	public abstract fun getArgument ()Ljava/lang/Object;
 	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;
 	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
-	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;
 	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;
+	public abstract fun toScope (Lno/nav/pensjon/brev/template/expression/SelectorUsage;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public static synthetic fun toScope$default (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
+}
+
+public final class no/nav/pensjon/brev/template/Letter$DefaultImpls {
+	public static synthetic fun toScope$default (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
 }
 
 public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pensjon/brev/template/render/Document {
