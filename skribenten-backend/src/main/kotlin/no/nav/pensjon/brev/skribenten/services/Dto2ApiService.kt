@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -91,7 +92,7 @@ class Dto2ApiService(
     private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
         MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(
             tssId = tssId!!,
-            navn = samhandlerService.hentSamhandlerNavn(tssId)
+            navn = samhandlerService.hentSamhandlerNavn(tssId)?.let { Navn(it) }
         )
 
         MottakerType.NORSK_ADRESSE -> Api.OverstyrtMottaker.NorskAdresse(

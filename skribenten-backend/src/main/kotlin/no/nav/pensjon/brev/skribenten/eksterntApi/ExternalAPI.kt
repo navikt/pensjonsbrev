@@ -6,6 +6,7 @@ import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
@@ -64,7 +65,7 @@ object ExternalAPI {
     sealed class OverstyrtMottaker {
         data class Samhandler(val tssId: String) : OverstyrtMottaker()
         data class NorskAdresse(
-            val navn: String,
+            val navn: Navn,
             val postnummer: NorskPostnummer,
             val poststed: String,
             val adresselinje1: Adresselinje?,
@@ -74,7 +75,7 @@ object ExternalAPI {
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
-            val navn: String,
+            val navn: Navn,
             val adresselinje1: Adresselinje,
             val adresselinje2: Adresselinje?,
             val adresselinje3: Adresselinje?,

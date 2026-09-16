@@ -10,6 +10,8 @@ import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -162,10 +164,10 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
         sendKlartBrev(
             maalinger,
             Dto.Mottaker.norskAdresse(
-                navn = "Anon Y. Mouse",
+                navn = Navn("Anon Y. Mouse"),
                 postnummer = NorskPostnummer("0001"),
                 poststed = "Andeby",
-                adresselinje1 = "Andebyveien 1",
+                adresselinje1 = Adresselinje("Andebyveien 1"),
                 adresselinje2 = null,
                 adresselinje3 = null,
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.ANNEN,
@@ -182,8 +184,8 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
         sendKlartBrev(
             maalinger,
             Dto.Mottaker.utenlandskAdresse(
-                navn = "Reci Pient",
-                adresselinje1 = "Nikosiaveien 1",
+                navn = Navn("Reci Pient"),
+                adresselinje1 = Adresselinje("Nikosiaveien 1"),
                 adresselinje2 = null,
                 adresselinje3 = null,
                 landkode = Landkode("CY"),

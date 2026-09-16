@@ -124,7 +124,7 @@ class MottakerTest {
     fun `gir feilmelding for norsk adresse med femsifra postnummer`() {
         assertThrows<IllegalArgumentException> {
             Dto.Mottaker.norskAdresse(
-                navn = "Peder Ås",
+                navn = Navn("Peder Ås"),
                 postnummer = NorskPostnummer("12345"),
                 poststed = "Lillevik",
                 adresselinje1 = null,
@@ -139,7 +139,7 @@ class MottakerTest {
     fun `gir feilmelding for norsk adresse med tresifra postnummer`() {
         assertThrows<IllegalArgumentException> {
             Dto.Mottaker.norskAdresse(
-                navn = "Peder Ås",
+                navn = Navn("Peder Ås"),
                 postnummer = NorskPostnummer("123"),
                 poststed = "Lillevik",
                 adresselinje1 = null,
@@ -153,7 +153,7 @@ class MottakerTest {
     @Test
     fun `takler norsk adresse med firesifra postnummer`() {
         Dto.Mottaker.norskAdresse(
-            navn = "Peder Ås",
+            navn = Navn("Peder Ås"),
             postnummer = NorskPostnummer("1234"),
             poststed = "Lillevik",
             adresselinje1 = null,
