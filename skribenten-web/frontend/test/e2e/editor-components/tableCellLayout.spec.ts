@@ -148,4 +148,26 @@ test.describe("Table cell layout", () => {
     await page.keyboard.type("Ny tekst");
     await expect(emptySpan).toHaveText("Ny tekst");
   });
+
+  test("literal and variable flow on the same line inside a header cell", async ({ page }) => {
+    const table = newTable([{ id: null, parentId: null, deletedCells: [], cells: [newCell()] }]);
+    table.header.colSpec[0].headerContent.text = [
+      newLiteral({ editedText: "Overskrift: " }),
+      newVariable({ text: "en testverdi" }),
+    ];
+    await setupEditor(page, [newParagraph({ content: [table] })]);
+
+    const header = page.getByTestId("table-header-0");
+    const literal = header.locator("span[contenteditable=true]").first();
+    const variable = header.locator("span:not([contenteditable])").first();
+
+    const headerBox = await header.boundingBox();
+    const literalBox = await literal.boundingBox();
+    const variableBox = await variable.boundingBox();
+    expect(headerBox && literalBox && variableBox).toBeTruthy();
+
+    await expectSameVisualLine(literalBox!, variableBox!);
+    expect(variableBox!.x).toBeGreaterThanOrEqual(literalBox!.x + literalBox!.width - 1);
+    expect(variableBox!.x + variableBox!.width).toBeLessThanOrEqual(headerBox!.x + headerBox!.width);
+  });
 });
