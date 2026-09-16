@@ -3,6 +3,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringH
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenAdresseManglerException
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenServiceException
 import no.nav.pensjon.brev.skribenten.isFailure
@@ -125,7 +126,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `brev distribueres til annen mottaker`() {
-        val mottaker = Dto.Mottaker.samhandler("987")
+        val mottaker = Dto.Mottaker.samhandler(TssId("987"))
         val brev = opprettBrev(mottaker = mottaker).resultOrFail()
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         assertThat(veksleKlarStatus(brev, true)).isSuccess()

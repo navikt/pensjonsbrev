@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.Stat
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
@@ -64,7 +65,7 @@ object ExternalAPI {
         JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
     )
     sealed class OverstyrtMottaker {
-        data class Samhandler(val tssId: String) : OverstyrtMottaker()
+        data class Samhandler(val tssId: TssId) : OverstyrtMottaker()
         data class NorskAdresse(
             val navn: Navn,
             val postnummer: NorskPostnummer,

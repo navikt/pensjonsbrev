@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringH
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -104,7 +105,7 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
     suspend fun `samhandler uten kjent type telles som ukjent`() {
         val maalinger = nyeMaalinger()
 
-        sendKlartBrev(maalinger, Dto.Mottaker.samhandler("ukjent-tssid"))
+        sendKlartBrev(maalinger, Dto.Mottaker.samhandler(TssId("ukjent-tssid")))
 
         assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SendtBrevMetrikker.UKJENT)).isEqualTo(1.0)
     }
@@ -112,11 +113,12 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `feil ved oppslag av samhandlertype stopper ikke sendingen`() {
         val feilendeSamhandlerService = object : SamhandlerService {
-            override suspend fun hentSamhandlerType(idTSSEkstern: String): String = throw RuntimeException("TSS er nede")
-            override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = null
+            override suspend fun hentSamhandlerType(idTSSEkstern: TssId): String = throw RuntimeException("TSS er nede")
+            override suspend fun hentSamhandlerNavn(idTSSEkstern: TssId): String? = null
             override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
+            override suspend fun hentSamhandler(idTSSEkstern: TssId): HentSamhandlerResponseDto = notYetStubbed()
+            override suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId): HentSamhandlerAdresseResponseDto =
+                notYetStubbed()
         }
         val maalinger = nyeMaalinger(feilendeSamhandlerService)
 
@@ -203,15 +205,16 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
     suspend fun `samhandleroppslaget beholder saksbehandlerens principal etter at requesten er besvart`() {
         var identIOppslag: String? = null
         val principalKrevendeSamhandlerService = object : SamhandlerService {
-            override suspend fun hentSamhandlerType(idTSSEkstern: String): String {
+            override suspend fun hentSamhandlerType(idTSSEkstern: TssId): String {
                 identIOppslag = PrincipalInContext.require().navIdent.id
                 return SAMHANDLER_TYPE
             }
 
-            override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = null
+            override suspend fun hentSamhandlerNavn(idTSSEkstern: TssId): String? = null
             override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
+            override suspend fun hentSamhandler(idTSSEkstern: TssId): HentSamhandlerResponseDto = notYetStubbed()
+            override suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId): HentSamhandlerAdresseResponseDto =
+                notYetStubbed()
         }
         val maalinger = nyeMaalinger(principalKrevendeSamhandlerService)
 

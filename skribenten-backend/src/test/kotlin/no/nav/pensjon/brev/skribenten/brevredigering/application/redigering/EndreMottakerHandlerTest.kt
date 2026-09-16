@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolic
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -26,7 +27,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan fjerne overstyrt mottaker av brev`() {
-        val mottaker = Dto.Mottaker.samhandler("samhandlerId")
+        val mottaker = Dto.Mottaker.samhandler(TssId("samhandlerId"))
         val brev = opprettBrev(mottaker = mottaker).resultOrFail()
         assertThat(brev.info.mottaker).isEqualTo(mottaker)
 
@@ -38,7 +39,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan oppdatere mottaker av brev`() {
-        val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrFail()
+        val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler(TssId("1"))).resultOrFail()
         val nyMottaker = Dto.Mottaker.norskAdresse(
             navn = Navn("a"),
             postnummer = NorskPostnummer("1234"),
@@ -102,7 +103,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan ikke endre mottaker når brevet er reservert av annen bruker`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        val resultat = endreMottaker(brev.info.id, Dto.Mottaker.samhandler("2"), saksbehandler2Principal)
+        val resultat = endreMottaker(brev.info.id, Dto.Mottaker.samhandler(TssId("2")), saksbehandler2Principal)
         assertThat(resultat).isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
     }
 
@@ -131,7 +132,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         arkiverBrev(brev)
 
-        val resultat = endreMottaker(brev.info.id, Dto.Mottaker.samhandler("2"))
+        val resultat = endreMottaker(brev.info.id, Dto.Mottaker.samhandler(TssId("2")))
         assertThat(resultat).isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()
     }
 

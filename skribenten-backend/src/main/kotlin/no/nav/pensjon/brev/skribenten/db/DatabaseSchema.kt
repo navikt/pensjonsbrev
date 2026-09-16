@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -84,7 +85,7 @@ object DocumentTable : LongIdTable() {
 object MottakerTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
-    val tssId: Column<String?> = varchar("tssId", 50).nullable()
+    val tssId: Column<TssId?> = varchar("tssId", 50).transform(::TssId, TssId::value).nullable()
     val navn: Column<Navn?> = varchar("navn", 128).transform(::Navn, Navn::value).nullable()
     val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
     val poststed: Column<Poststed?> = varchar("poststed", 50).transform(::Poststed, Poststed::value).nullable()
