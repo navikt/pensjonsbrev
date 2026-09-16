@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
@@ -59,11 +60,12 @@ open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg
 }
 
 open class FakeSamhandlerService(
-    val navn: Map<String, String> = mapOf(),
-    val typer: Map<String, String> = mapOf(),
+    val navn: Map<TssId, String> = mapOf(),
+    val typer: Map<TssId, String> = mapOf(),
     val idTyper: Map<String, String> = mapOf(),
     val offentligIder: Map<String, String> = mapOf(),
-) : SamhandlerService {
+) :
+    SamhandlerService {
     override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
         if (listOf(navn, typer, idTyper, offentligIder).none { idTSSEkstern in it }) {
             HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.IKKE_FUNNET)
@@ -79,10 +81,10 @@ open class FakeSamhandlerService(
             )
         }
 
-    override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
-    override suspend fun hentSamhandlerType(idTSSEkstern: String) = typer[idTSSEkstern]
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: TssId) = navn[idTSSEkstern]
+    override suspend fun hentSamhandlerType(idTSSEkstern: TssId) = typer[idTSSEkstern]
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
-    override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
+    override suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId): HentSamhandlerAdresseResponseDto = notYetStubbed()
 }
 
 open class FakeBrevmetadataService(

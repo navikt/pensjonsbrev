@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
@@ -95,7 +96,7 @@ object Api {
         JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
     )
     sealed interface OverstyrtMottaker {
-        data class Samhandler(val tssId: String, val navn: Navn?) : OverstyrtMottaker
+        data class Samhandler(val tssId: TssId, val navn: Navn?) : OverstyrtMottaker
         data class NorskAdresse(
             val navn: Navn,
             val postnummer: NorskPostnummer,

@@ -42,12 +42,12 @@ class MottakerTest {
         transaction {
             Mottaker.new(brevredigering.id.value) {
                 type = MottakerType.SAMHANDLER
-                tssId = "12345"
+                tssId = TssId("12345")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         val mottaker = transaction { Mottaker[brevredigering.id] }
-        assertEquals("12345", mottaker.tssId)
+        assertEquals(TssId("12345"), mottaker.tssId)
         assertEquals(MottakerType.SAMHANDLER, mottaker.type)
     }
 
@@ -58,12 +58,12 @@ class MottakerTest {
             transaction {
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
-                    tssId = "12345"
+                    tssId = TssId("12345")
                     manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
-                    tssId = "123456"
+                    tssId = TssId("123456")
                     manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
             }
@@ -76,15 +76,20 @@ class MottakerTest {
         transaction {
             Mottaker.new(brevredigeringId) {
                 type = MottakerType.SAMHANDLER
-                tssId = "12345"
+                tssId = TssId("12345")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
-        transaction { BrevredigeringEntity[brevredigeringId].settMottaker(Dto.Mottaker.samhandler("abc"),"ABC") }
+        transaction {
+            BrevredigeringEntity[brevredigeringId].settMottaker(
+                Dto.Mottaker.samhandler(TssId("abc")),
+                "ABC"
+            )
+        }
         val mottaker = transaction { Mottaker[brevredigeringId] }
 
         assertEquals(MottakerType.SAMHANDLER, mottaker.type)
-        assertEquals("abc", mottaker.tssId)
+        assertEquals(TssId("abc"), mottaker.tssId)
     }
 
     private fun createBrevredigering() = transaction {

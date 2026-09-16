@@ -90,3 +90,10 @@ value class Poststed(val value: String) {
         require(value.length <= 50) { "Poststed kan ikke være lengre enn 50 tegn" }
     }
 }
+
+@JvmInline
+value class TssId(val value: String) {
+    init {
+        require(value.length <= 50) { "TSS-ID kan ikke være lengre enn 50 tegn" }
+    }
+}

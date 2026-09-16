@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
@@ -117,7 +118,12 @@ object Pen {
             return result
         }
 
-        data class Mottaker(val type: Type, val tssId: String? = null, val norskAdresse: NorskAdresse? = null, val utenlandskAdresse: UtenlandsAdresse? = null) {
+        data class Mottaker(
+            val type: Type,
+            val tssId: TssId? = null,
+            val norskAdresse: NorskAdresse? = null,
+            val utenlandskAdresse: UtenlandsAdresse? = null,
+        ) {
             enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
             data class NorskAdresse(
                 val navn: Navn,

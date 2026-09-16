@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.EksempelRedigerbartDto
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -88,11 +89,12 @@ class Dto2ApiServiceTest {
 
     @Test
     fun `henter navn paa samhandler mottaker`(): Unit = runBlocking {
-        val brev = createBrev(mottaker = Dto.Mottaker.samhandler("tss123"))
-        val samhandlerService = FakeSamhandlerService(mapOf("tss123" to "Verdens kuleste samhandler"))
+        val tssId = TssId("tss123")
+        val brev = createBrev(mottaker = Dto.Mottaker.samhandler(tssId))
+        val samhandlerService = FakeSamhandlerService(mapOf(tssId to "Verdens kuleste samhandler"))
         assertThat(lagDto2ApiService(samhandlerService = samhandlerService).toApi(brev).mottaker).isEqualTo(
             Api.OverstyrtMottaker.Samhandler(
-                "tss123",
+                tssId,
                 Navn("Verdens kuleste samhandler")
             )
         )

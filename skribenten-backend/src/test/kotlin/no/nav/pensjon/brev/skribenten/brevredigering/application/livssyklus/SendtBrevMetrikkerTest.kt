@@ -8,6 +8,7 @@ import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.skribenten.Metrics
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
@@ -18,9 +19,10 @@ import org.junit.jupiter.api.Test
 
 class SendtBrevMetrikkerTest {
 
-    private val samhandlerService = FakeSamhandlerService(
+    private val samhandlerService =
+        FakeSamhandlerService(
         navn = mapOf("80000000003" to "Samhandler uten identtype"),
-        typer = mapOf("80000123456" to "ADVO", "80000999999" to "LE"),
+        typer = mapOf(TssId("80000123456") to "ADVO", TssId("80000999999") to "LE"),
         idTyper = mapOf(
             "80000123456" to "ORG",
             "80000999999" to "FNR",
@@ -39,7 +41,7 @@ class SendtBrevMetrikkerTest {
 
     private fun maaling(
         mottakerType: MottakerType? = null,
-        tssId: String? = null,
+        tssId: TssId? = null,
         manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil? = null,
         avsenderEnhet: String = "1234",
     ) = SendtBrevMetrikker.SendtBrevMaaling(
@@ -54,7 +56,8 @@ class SendtBrevMetrikkerTest {
     suspend fun `eksponeres i prometheus-format med alle labels`() {
         val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
-        metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
+        metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = TssId("80000123456")))
+            .join()
 
         assertThat(registry.scrape()).contains(
             """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="ORG",mottaker="SAMHANDLER",samhandler_type="ADVO"} 1.0"""
@@ -65,7 +68,8 @@ class SendtBrevMetrikkerTest {
     suspend fun `samhandlerens id havner aldri i metrikken`() {
         val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
-        metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
+        metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = TssId("80000123456")))
+            .join()
 
         assertThat(registry.scrape())
             .doesNotContain("80000123456")
