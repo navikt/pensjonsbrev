@@ -10,21 +10,20 @@ import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.LetterMarkupV2Asserter.Companion.assertThat
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Letter2MarkupV2Test {
 
     private inline fun <reified LetterData : AutobrevData> renderTemplate(data: LetterData, noinline template: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
-        Letter2MarkupV2.render(LetterImpl(outlineTestTemplate(template), data, Bokmal, felles)).letterMarkup
+        Letter2MarkupV2.render(AutoLetterImpl(outlineTestTemplate(template), data, Bokmal, felles)).letterMarkup
 
     @Test
     fun `outline title1 becomes block Title2`() {
@@ -271,7 +270,7 @@ class Letter2MarkupV2Test {
             includeAttachment(vedlegg)
         }
 
-        val result = Letter2MarkupV2.render(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
+        val result = Letter2MarkupV2.render(AutoLetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
 
         LetterWithAttachmentsMarkupV2Asserter.assertThat(result).hasAttachments {
             attachment {

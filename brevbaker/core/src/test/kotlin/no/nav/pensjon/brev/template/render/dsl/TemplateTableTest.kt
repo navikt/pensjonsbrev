@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.render.dsl
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
@@ -40,7 +40,14 @@ class TemplateTableTest {
             }
         }
 
-        val actual = Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup
+        val actual = Letter2Markup.render(
+            AutoLetterImpl(
+                doc,
+                EmptyAutobrevdata,
+                Language.Bokmal,
+                FellesFactory.felles
+            )
+        ).letterMarkup
         assertThat(actual).hasBlocks {
             title1 { literal("THIS TEXT SHOULD RENDER") }
             paragraph { }
@@ -73,7 +80,16 @@ class TemplateTableTest {
             }
         }
 
-        assertThat(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup).hasBlocks {
+        assertThat(
+            Letter2Markup.render(
+                AutoLetterImpl(
+                    doc,
+                    EmptyAutobrevdata,
+                    Language.Bokmal,
+                    FellesFactory.felles
+                )
+            ).letterMarkup
+        ).hasBlocks {
             paragraph {
                 table {
                     header { column { literal("This text should render 1") } }

@@ -9,14 +9,29 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 //        when passing it to Letter you can pass any value as argument, and a new upper bound of Any will be chosen.
 
 @InterneDataklasser
-data class LetterImpl<ParameterType : Any>(
+data class AutoLetterImpl<ParameterType : Any>(
     override val template: LetterTemplate<*, ParameterType>,
     override val argument: ParameterType,
     override val language: Language,
     override val felles: BrevbakerFelles,
-    override val saksbehandlerValg: SaksbehandlervalgIDSL = EmptySaksbehandlervalgIDSL,
 ) : Letter<ParameterType> {
+    override val saksbehandlerValg: SaksbehandlervalgIDSL = EmptySaksbehandlervalgIDSL
 
+    init {
+        if (!template.language.supports(language)) {
+            throw IllegalArgumentException("Language not supported by template: $language")
+        }
+    }
+}
+
+@InterneDataklasser
+data class RedigerbarLetterImpl<ParameterType : Any>(
+    override val template: LetterTemplate<*, ParameterType>,
+    override val argument: ParameterType,
+    override val language: Language,
+    override val felles: BrevbakerFelles,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+) : Letter<ParameterType> {
     init {
         if (!template.language.supports(language)) {
             throw IllegalArgumentException("Language not supported by template: $language")

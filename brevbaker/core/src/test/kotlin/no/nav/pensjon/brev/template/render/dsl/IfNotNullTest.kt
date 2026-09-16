@@ -4,13 +4,12 @@ import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
-import no.nav.pensjon.brev.template.EmptySaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
 import no.nav.pensjon.brev.template.render.dsl.selectors.nullBrevDto.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -58,12 +57,11 @@ class IfNotNullTest {
     fun `ifNotNull renders successfully for non-null value`() {
         assertThat(
             Letter2Markup.render(
-                LetterImpl(
+                AutoLetterImpl(
                     template,
                     NullBrevDto("Ole", null),
                     Bokmal,
-                    felles,
-                    EmptySaksbehandlervalgIDSL
+                    felles
                 )
             ).letterMarkup
         ).hasBlocks {
@@ -79,12 +77,11 @@ class IfNotNullTest {
     fun `ifNotNull renders successfully but without null-block`() {
         assertThat(
             Letter2Markup.render(
-                LetterImpl(
+                AutoLetterImpl(
                     template,
                     NullBrevDto(null, null),
                     Bokmal,
                     felles,
-                    EmptySaksbehandlervalgIDSL
                 )
             ).letterMarkup
         ).hasBlocks {
@@ -101,12 +98,11 @@ class IfNotNullTest {
         fun `renders when preceding condition is not met and orShowIf condition is met`() {
             assertThat(
                 Letter2Markup.render(
-                    LetterImpl(
+                    AutoLetterImpl(
                         template,
                         NullBrevDto(null, "138513"),
                         Bokmal,
                         felles,
-                        EmptySaksbehandlervalgIDSL
                     )
                 ).letterMarkup
             ).hasBlocks {
@@ -122,12 +118,11 @@ class IfNotNullTest {
         fun `does not render when preceding condition met`() {
             assertThat(
                 Letter2Markup.render(
-                    LetterImpl(
+                    AutoLetterImpl(
                         template,
                         NullBrevDto("Ole", "138513"),
                         Bokmal,
                         felles,
-                        EmptySaksbehandlervalgIDSL
                     )
                 ).letterMarkup
             ).hasBlocks {
@@ -143,12 +138,11 @@ class IfNotNullTest {
         fun `does not render when preceding condition is not met and orShowIf condition is not met`() {
             assertThat(
                 Letter2Markup.render(
-                    LetterImpl(
+                    AutoLetterImpl(
                         template,
                         NullBrevDto(null, null),
                         Bokmal,
                         felles,
-                        EmptySaksbehandlervalgIDSL
                     )
                 ).letterMarkup
             ).hasBlocks {

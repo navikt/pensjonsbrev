@@ -34,7 +34,16 @@ class ForEachViewTest {
             }
         }
 
-        assertThat(Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup).hasBlocks {
+        assertThat(
+            Letter2Markup.render(
+                AutoLetterImpl(
+                    actual,
+                    EmptyAutobrevdata,
+                    Language.Bokmal,
+                    felles
+                )
+            ).letterMarkup
+        ).hasBlocks {
             paragraph {
                 listen.forEach { variable(it) }
             }
@@ -59,7 +68,16 @@ class ForEachViewTest {
             }
         }
 
-        assertThat(Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup).hasBlocks {
+        assertThat(
+            Letter2Markup.render(
+                AutoLetterImpl(
+                    actual,
+                    EmptyAutobrevdata,
+                    Language.Bokmal,
+                    felles
+                )
+            ).letterMarkup
+        ).hasBlocks {
             paragraph {
                 listen.forEach { nestedList ->
                     nestedList.forEach { str ->
@@ -92,7 +110,7 @@ class ForEachViewTest {
             }
         }
 
-        val render = Letter2Markup.render(LetterImpl(actual, Argument("Tja:"), Language.Bokmal, felles))
+        val render = Letter2Markup.render(AutoLetterImpl(actual, Argument("Tja:"), Language.Bokmal, felles))
 
         assertThat(render.letterMarkup).hasBlocks {
             paragraph {
@@ -119,7 +137,16 @@ class ForEachViewTest {
         }
         val expected = "1,1;1,2;2,1;2,2;"
 
-        assertThat(Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup).hasBlocks {
+        assertThat(
+            Letter2Markup.render(
+                AutoLetterImpl(
+                    template,
+                    EmptyAutobrevdata,
+                    Language.Bokmal,
+                    felles
+                )
+            ).letterMarkup
+        ).hasBlocks {
             paragraph {
                 list.forEach { outer ->
                     list.forEach { inner ->

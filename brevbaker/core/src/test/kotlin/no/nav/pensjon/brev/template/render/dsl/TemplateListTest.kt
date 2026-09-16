@@ -4,7 +4,7 @@ import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
@@ -27,7 +27,16 @@ class TemplateListTest {
             }
         }
 
-        assertThat(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup).hasBlocks {
+        assertThat(
+            Letter2Markup.render(
+                AutoLetterImpl(
+                    doc,
+                    EmptyAutobrevdata,
+                    Language.Bokmal,
+                    FellesFactory.felles
+                )
+            ).letterMarkup
+        ).hasBlocks {
             title1 { literal("this text should render") }
             paragraph { }
         }
@@ -43,7 +52,16 @@ class TemplateListTest {
             }
         }
 
-        assertThat(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup).hasBlocks {
+        assertThat(
+            Letter2Markup.render(
+                AutoLetterImpl(
+                    doc,
+                    EmptyAutobrevdata,
+                    Language.Bokmal,
+                    FellesFactory.felles
+                )
+            ).letterMarkup
+        ).hasBlocks {
             paragraph {
                 list {
                     listType(Listetype.NUMMERERT_LISTE)

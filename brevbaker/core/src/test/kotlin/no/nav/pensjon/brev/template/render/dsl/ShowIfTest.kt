@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.render.dsl
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
@@ -16,7 +16,7 @@ class ShowIfTest {
     @Test
     fun `showIf renders when condition evaluates to true`() {
         assertThat(Letter2Markup.render(
-            LetterImpl(
+            AutoLetterImpl(
                 showIfTemplate,
                 SomeDto("showIf", false),
                 Language.Bokmal,
@@ -32,7 +32,7 @@ class ShowIfTest {
     @Test
     fun `orShowIf renders when condition evaluates to true`() {
         assertThat(Letter2Markup.render(
-            LetterImpl(
+            AutoLetterImpl(
                 showIfTemplate,
                 SomeDto("orShowIf", false),
                 Language.Bokmal,
@@ -48,7 +48,7 @@ class ShowIfTest {
     @Test
     fun `orShow renders when condition evaluates to true`() {
         assertThat(Letter2Markup.render(
-            LetterImpl(
+            AutoLetterImpl(
                 showIfTemplate,
                 SomeDto("orShow", false),
                 Language.Bokmal,

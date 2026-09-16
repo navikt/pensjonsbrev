@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
@@ -43,7 +43,7 @@ class LetterRoutesV2ITest {
         felles = FellesFactory.felles,
         language = LanguageCode.BOKMAL,
     )
-    private val redigertBestillingV2 = LetterImpl(
+    private val redigertBestillingV2 = AutoLetterImpl(
         template = EksempelbrevRedigerbart.template,
         argument = bestillMarkupRequest.letterData,
         language = Language.Bokmal,

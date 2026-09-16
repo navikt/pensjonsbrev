@@ -13,7 +13,7 @@ class HTMLDocumentRendererTest {
     @Test
     fun renderDesignReference() {
         FeatureToggleSingleton.init(FeatureToggleDummy)
-        LetterImpl(
+        AutoLetterImpl(
             LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,

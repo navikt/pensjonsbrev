@@ -4,7 +4,7 @@ import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -32,12 +32,12 @@ class LetterTest {
     @Test
     fun `constructor validates that template supports language`() {
         assertThrows<IllegalArgumentException> {
-            LetterImpl(template, TestData("jada"), Language.Nynorsk, felles)
+            AutoLetterImpl(template, TestData("jada"), Language.Nynorsk, felles)
         }
     }
 
     @Test
     fun `can construct letter with supported language`() {
-        LetterImpl(template, TestData("jada"), Language.Bokmal, felles)
+        AutoLetterImpl(template, TestData("jada"), Language.Bokmal, felles)
     }
 }

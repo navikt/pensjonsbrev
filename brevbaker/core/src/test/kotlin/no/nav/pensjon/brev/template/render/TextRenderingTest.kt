@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test
 class TextRenderingTest {
 
     private fun firstParagraphTexts(body: OutlineOnlyScope<LangBokmal, EmptyAutobrevdata>.() -> Unit): List<Text> {
-        val letter = LetterImpl(outlineTestTemplate(body), EmptyAutobrevdata, Bokmal, felles)
+        val letter = AutoLetterImpl(outlineTestTemplate(body), EmptyAutobrevdata, Bokmal, felles)
         return Letter2MarkupV2.render(letter).letterMarkup.blocks
             .filterIsInstance<Block.Paragraph>()
             .first()

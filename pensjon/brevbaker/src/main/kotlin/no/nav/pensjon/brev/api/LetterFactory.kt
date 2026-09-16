@@ -10,11 +10,12 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.EmptySaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.RedigerbarLetterImpl
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
@@ -88,14 +89,26 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             }
         }
 
-        @OptIn(InterneDataklasser::class)
-        return LetterImpl(
-            template = template.medEkstraVedlegg(vedlegg.map { it.asIncludeAttachment() }),
-            argument = parseArgument(brevdata, template),
-            saksbehandlerValg = saksbehandlerValg ?: EmptySaksbehandlervalgIDSL,
-            language = language,
-            felles = felles,
-        )
+        if (brevTemplate is AutobrevTemplate<*>) {
+            @OptIn(InterneDataklasser::class)
+            return AutoLetterImpl(
+                template = template.medEkstraVedlegg(vedlegg.map { it.asIncludeAttachment() }),
+                argument = parseArgument(brevdata, template),
+                language = language,
+                felles = felles,
+            )
+        } else {
+            @OptIn(InterneDataklasser::class)
+            return RedigerbarLetterImpl(
+                template = template.medEkstraVedlegg(vedlegg.map { it.asIncludeAttachment() }),
+                argument = parseArgument(brevdata, template),
+                language = language,
+                felles = felles,
+                saksbehandlerValg = saksbehandlerValg
+                    ?: throw IllegalArgumentException("For redigerbare brev må saksbehandlerValg være satt, men var null")
+            )
+
+        }
     }
 
     private fun <T : BrevbakerBrevdata> parseArgument(
