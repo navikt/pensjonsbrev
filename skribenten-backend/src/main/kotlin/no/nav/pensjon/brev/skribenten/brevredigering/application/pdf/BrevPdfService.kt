@@ -131,7 +131,6 @@ class BrevPdfService(
             pid = fagsak.pid,
             sakstype = fagsak.sakType,
             tema = fagsak.tema,
-            vedlegg = brev.valgteVedlegg.map { GenererFoerstesideHandler.Tittel(it.visningstekst) }
         )
     )?.asSuccess()?.value?.let { foersteside ->
         PDFMerger.merge(rendretBrev, foersteside.foersteside)

@@ -219,6 +219,21 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
+    suspend fun `hentPdf rendrer ny pdf naar foersteside endres`() {
+        val brev = opprettBrev().resultOrFail()
+
+        stagePdf("pdf uten foersteside".encodeToByteArray())
+        hentEllerOpprettPdf(brev).resultOrFail()
+
+        leggVedFoersteside(brev.info.id, leggVedFoersteside = true).resultOrFail()
+        stagePdf("pdf med foersteside".encodeToByteArray())
+
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess {
+            assertThat(it.document.pdf).isEqualTo("pdf med foersteside".encodeToByteArray())
+        }
+    }
+
+    @Test
     suspend fun `kan hente pdf for p1`() {
         val hentP1DataHandler = HentP1DataHandler(
             brevtilgang = brevtilgang,

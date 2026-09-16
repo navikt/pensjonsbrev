@@ -8,6 +8,7 @@ import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
 import { useSendtBrev } from "../kvittering/-components/SendtBrevContext";
+import { Route as SakRoute } from "../route";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/kvittering")({
   component: () => <Kvittering />,
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/kvit
 const Kvittering = () => {
   const { saksId, brevId } = Route.useParams();
   const { vedtaksId, enhetsId } = Route.useSearch();
+  const sakContext = SakRoute.useLoaderData();
 
   const { sendteBrev } = useSendtBrev();
   const { data: baseUrls, isLoading, error } = useQuery(getBaseUrls);
@@ -55,7 +57,7 @@ const Kvittering = () => {
             <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="space-0">
               <VStack gap="space-8" marginInline="auto">
                 <Heading size="medium">Hva vil du gjøre nå?</Heading>
-                <NavButtons psak={psak} saksId={saksId} />
+                <NavButtons pid={sakContext.sak.pid} psak={psak} saksId={saksId} />
               </VStack>
             </HStack>
           )}
@@ -78,7 +80,7 @@ const Kvittering = () => {
           <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="space-0">
             <VStack gap="space-8" marginInline="auto">
               <Heading size="medium">Hva vil du gjøre nå?</Heading>
-              <NavButtons psak={psak} saksId={saksId} />
+              <NavButtons pid={sakContext.sak.pid} psak={psak} saksId={saksId} />
             </VStack>
           </HStack>
         )}
@@ -87,11 +89,11 @@ const Kvittering = () => {
   );
 };
 
-const NavButtons = ({ psak, saksId }: { psak?: string; saksId: string }) => {
+const NavButtons = ({ pid, psak, saksId }: { pid: string; psak?: string; saksId: string }) => {
   if (!psak) return null;
 
   const urls = {
-    bruker: `${psak}/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`,
+    bruker: `${psak}/psak/brukeroversikt/fnr=${pid}`,
     dokument: `${psak}/psak/dokument/saksoversikt.jsf?sakId=${saksId}`,
   };
 
