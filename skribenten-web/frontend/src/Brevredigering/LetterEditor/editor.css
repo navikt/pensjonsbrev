@@ -53,6 +53,14 @@
   min-height: 1.4rem;
 }
 
+/* Begrens variabel-bokser (inline-block) til cellens bredde slik at lange verdier brytes. */
+.editor-surface td [data-literal-index]:not([contenteditable], [data-ce-orig], br),
+.editor-surface th [data-literal-index]:not([contenteditable], [data-ce-orig], br) {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
 .attestant-diff-inserted,
 .attestant-diff-deleted {
   border-radius: var(--ax-radius-2);
