@@ -115,7 +115,7 @@ class ExternalAPIServiceTest {
 
         service.opprettBrev(
             lagOpprettBrevRequest(
-                saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) },
+                saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) },
                 statiskFagsystemBrevdata = statiskFagsystemBrevdata,
             )
         )
