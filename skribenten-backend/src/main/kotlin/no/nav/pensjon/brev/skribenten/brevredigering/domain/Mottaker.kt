@@ -83,3 +83,10 @@ value class Navn(val value: String) {
         require(value.length <= 128) { "Navn kan ikke være lengre enn 128 tegn" }
     }
 }
+
+@JvmInline
+value class Poststed(val value: String) {
+    init {
+        require(value.length <= 50) { "Poststed kan ikke være lengre enn 50 tegn" }
+    }
+}

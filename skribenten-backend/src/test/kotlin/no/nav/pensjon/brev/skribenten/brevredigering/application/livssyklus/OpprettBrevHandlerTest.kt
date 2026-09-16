@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy.KanIkkeOppretteBrev.*
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -114,7 +115,7 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val mottaker = Dto.Mottaker.norskAdresse(
             navn = Navn("Anon Y. Mouse"),
             postnummer = NorskPostnummer("0001"),
-            poststed = "Andeby",
+            poststed = Poststed("Andeby"),
             adresselinje1 = Adresselinje("Andebyveien 1"),
             adresselinje2 = null,
             adresselinje3 = null,

@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.pensjon.brev.api.model.IBrevkategori
-import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
@@ -122,7 +122,7 @@ object Pen {
             data class NorskAdresse(
                 val navn: Navn,
                 val postnummer: NorskPostnummer,
-                val poststed: String,
+                val poststed: Poststed,
                 val adresselinje1: Adresselinje?,
                 val adresselinje2: Adresselinje?,
                 val adresselinje3: Adresselinje?,

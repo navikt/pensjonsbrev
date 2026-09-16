@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -133,7 +134,7 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
             Dto.Mottaker.norskAdresse(
                 navn = Navn("Anon Y. Mouse"),
                 postnummer = NorskPostnummer("0001"),
-                poststed = "Andeby",
+                poststed = Poststed("Andeby"),
                 adresselinje1 = Adresselinje("Andebyveien 1"),
                 adresselinje2 = null,
                 adresselinje3 = null,
