@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
@@ -38,7 +39,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan hente brev uten reservasjon`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = VedtaksId(1234),
@@ -60,7 +61,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `attestant kan hente brev for attestering`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = VedtaksId(1234),

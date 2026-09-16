@@ -325,8 +325,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         )
                         showIf(
                             pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
-                                    and pesysData.safe { beregnetPensjonPerManedVedVirk.inntektspensjon }.ifNull(Kroner(0))
+                                    and (pesysData.safe { beregnetPensjonPerManedVedVirk.inntektspensjon }.ifNull(Kroner(0))
                                 .greaterThan(0)
+                                    or pesysData.beregnetPensjonPerManedVedVirk.tilleggspensjonOver0)
                         ) {
                             text(
                                 bokmal { + " Alderspensjonen som er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år." },

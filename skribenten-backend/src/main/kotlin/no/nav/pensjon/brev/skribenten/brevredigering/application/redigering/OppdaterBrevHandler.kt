@@ -10,9 +10,8 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.RedigerbarSaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.model.mergeInn
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 
 class OppdaterBrevHandler(
     private val brevtilgang: Brevtilgang,
@@ -23,7 +22,7 @@ class OppdaterBrevHandler(
     data class Request(
         val brevId: BrevId,
         val saksId: SaksId,
-        val nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
+        val nyeSaksbehandlerValg: SaksbehandlervalgMap? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,
     )
@@ -31,9 +30,8 @@ class OppdaterBrevHandler(
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
             if (request.nyeSaksbehandlerValg != null) {
-                val saksbehandlervalgMap = brev.saksbehandlerValg.mergeInn(request.nyeSaksbehandlerValg)
-                brev.saksbehandlerValg = saksbehandlervalgMap
-                brev.saksbehandlerValgKryptert = saksbehandlervalgMap
+                brev.saksbehandlerValg = request.nyeSaksbehandlerValg
+                brev.saksbehandlerValgKryptert = request.nyeSaksbehandlerValg
             }
             if (request.nyttRedigertbrev != null) {
                 brev.oppdaterRedigertBrev(request.nyttRedigertbrev, PrincipalInContext.require().navIdent)
