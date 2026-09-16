@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.Stat
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -86,7 +87,7 @@ object MottakerTable : IdTable<BrevId>() {
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
     val navn: Column<Navn?> = varchar("navn", 128).transform(::Navn, Navn::value).nullable()
     val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
-    val poststed: Column<String?> = varchar("poststed", 50).nullable()
+    val poststed: Column<Poststed?> = varchar("poststed", 50).transform(::Poststed, Poststed::value).nullable()
     val adresselinje1: Column<Adresselinje?> =
         varchar("adresselinje1", 128).transform(::Adresselinje, Adresselinje::value).nullable()
     val adresselinje2: Column<Adresselinje?> =

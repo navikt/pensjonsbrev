@@ -126,7 +126,7 @@ class MottakerTest {
             Dto.Mottaker.norskAdresse(
                 navn = Navn("Peder Ås"),
                 postnummer = NorskPostnummer("12345"),
-                poststed = "Lillevik",
+                poststed = Poststed("Lillevik"),
                 adresselinje1 = null,
                 adresselinje2 = null,
                 adresselinje3 = null,
@@ -141,7 +141,7 @@ class MottakerTest {
             Dto.Mottaker.norskAdresse(
                 navn = Navn("Peder Ås"),
                 postnummer = NorskPostnummer("123"),
-                poststed = "Lillevik",
+                poststed = Poststed("Lillevik"),
                 adresselinje1 = null,
                 adresselinje2 = null,
                 adresselinje3 = null,
@@ -155,7 +155,7 @@ class MottakerTest {
         Dto.Mottaker.norskAdresse(
             navn = Navn("Peder Ås"),
             postnummer = NorskPostnummer("1234"),
-            poststed = "Lillevik",
+            poststed = Poststed("Lillevik"),
             adresselinje1 = null,
             adresselinje2 = null,
             adresselinje3 = null,

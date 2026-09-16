@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
@@ -67,7 +68,7 @@ object ExternalAPI {
         data class NorskAdresse(
             val navn: Navn,
             val postnummer: NorskPostnummer,
-            val poststed: String,
+            val poststed: Poststed,
             val adresselinje1: Adresselinje?,
             val adresselinje2: Adresselinje?,
             val adresselinje3: Adresselinje?,

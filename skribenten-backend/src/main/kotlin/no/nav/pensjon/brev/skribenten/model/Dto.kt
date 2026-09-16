@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -109,7 +110,7 @@ object Dto {
         val tssId: String? = null,
         val navn: Navn? = null,
         val postnummer: NorskPostnummer? = null,
-        val poststed: String? = null,
+        val poststed: Poststed? = null,
         val adresselinje1: Adresselinje? = null,
         val adresselinje2: Adresselinje? = null,
         val adresselinje3: Adresselinje? = null,
@@ -126,7 +127,7 @@ object Dto {
             fun norskAdresse(
                 navn: Navn,
                 postnummer: NorskPostnummer,
-                poststed: String,
+                poststed: Poststed,
                 adresselinje1: Adresselinje?,
                 adresselinje2: Adresselinje?,
                 adresselinje3: Adresselinje?,

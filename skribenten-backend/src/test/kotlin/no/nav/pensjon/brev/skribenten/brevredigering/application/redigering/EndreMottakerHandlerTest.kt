@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
@@ -41,7 +42,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
         val nyMottaker = Dto.Mottaker.norskAdresse(
             navn = Navn("a"),
             postnummer = NorskPostnummer("1234"),
-            poststed = "c",
+            poststed = Poststed("c"),
             adresselinje1 = Adresselinje("d"),
             adresselinje2 = Adresselinje("e"),
             adresselinje3 = Adresselinje("f"),
@@ -139,7 +140,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
         val mottaker = Dto.Mottaker.norskAdresse(
             navn = Navn("Anon Y. Mouse"),
             postnummer = NorskPostnummer("0001"),
-            poststed = "Andeby",
+            poststed = Poststed("Andeby"),
             adresselinje1 = Adresselinje("Andebyveien 1"),
             adresselinje2 = null,
             adresselinje3 = null,

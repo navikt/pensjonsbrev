@@ -5,6 +5,7 @@ import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
@@ -98,7 +99,7 @@ object Api {
         data class NorskAdresse(
             val navn: Navn,
             val postnummer: NorskPostnummer,
-            val poststed: String,
+            val poststed: Poststed,
             val adresselinje1: Adresselinje?,
             val adresselinje2: Adresselinje?,
             val adresselinje3: Adresselinje?,
