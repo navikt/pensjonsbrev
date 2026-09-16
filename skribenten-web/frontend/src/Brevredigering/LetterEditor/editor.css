@@ -44,8 +44,7 @@
   white-space: pre-wrap;
 }
 
-/* En tom literal (kun zero-width space) skal fortsatt ha et klikkbart/redigerbart område,
-   men uten å tvinge hele cellens bredde og bryte inline-flyten med variabler. */
+/* En tom literal (kun zero-width space) må ha et klikkbart område, uten å fylle hele cellen. */
 .editor-surface td [data-literal-index]:is([contenteditable], [data-ce-orig])[data-empty],
 .editor-surface th [data-literal-index]:is([contenteditable], [data-ce-orig])[data-empty] {
   display: inline-block;

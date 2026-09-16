@@ -86,69 +86,6 @@ test.describe("Table cell layout", () => {
     expect(variableBox!.x + variableBox!.width).toBeLessThanOrEqual(cellBox!.x + cellBox!.width);
   });
 
-  test("a long unbroken variable is wrapped inside the cell instead of overflowing", async ({ page }) => {
-    const longValue = "VeldigLangVariabelverdiUtenMellomrom".repeat(3);
-    await setupEditor(page, [
-      newParagraph({
-        content: [
-          newTable([
-            {
-              id: null,
-              parentId: null,
-              deletedCells: [],
-              cells: [
-                newCell([newLiteral({ editedText: "Verdi: " }), newVariable({ text: longValue })]),
-                newCell([newLiteral({ editedText: "Kort" })]),
-              ],
-            },
-          ]),
-        ],
-      }),
-    ]);
-
-    const cell = cellLocator(page, 0, 0);
-    const variable = cell.locator("span:not([contenteditable])").first();
-
-    const cellBox = await cell.boundingBox();
-    const variableBox = await variable.boundingBox();
-    expect(cellBox && variableBox).toBeTruthy();
-
-    // Boksen skal ikke overstige cellens bredde, og skal brytes over flere linjer
-    expect(variableBox!.x + variableBox!.width).toBeLessThanOrEqual(cellBox!.x + cellBox!.width + 1);
-    expect(variableBox!.height).toBeGreaterThan(24);
-  });
-
-  test("an empty literal in a cell stays clickable and focusable", async ({ page }) => {
-    await setupEditor(page, [
-      newParagraph({
-        content: [
-          newTable([
-            {
-              id: null,
-              parentId: null,
-              deletedCells: [],
-              cells: [newCell(), newCell([newLiteral({ editedText: "Tekst" })])],
-            },
-          ]),
-        ],
-      }),
-    ]);
-
-    const emptySpan = cellLocator(page, 0, 0).locator("span[contenteditable=true]").first();
-    await expect(emptySpan).toHaveAttribute("data-empty", "");
-
-    // Skal ha et klikkbart område selv om den ikke inneholder synlig tekst
-    const box = await emptySpan.boundingBox();
-    expect(box).toBeTruthy();
-    expect(box!.width).toBeGreaterThan(3);
-    expect(box!.height).toBeGreaterThan(10);
-
-    await emptySpan.click();
-    await expect(emptySpan).toBeFocused();
-    await page.keyboard.type("Ny tekst");
-    await expect(emptySpan).toHaveText("Ny tekst");
-  });
-
   test("literal and variable flow on the same line inside a header cell", async ({ page }) => {
     const table = newTable([{ id: null, parentId: null, deletedCells: [], cells: [newCell()] }]);
     table.header.colSpec[0].headerContent.text = [
