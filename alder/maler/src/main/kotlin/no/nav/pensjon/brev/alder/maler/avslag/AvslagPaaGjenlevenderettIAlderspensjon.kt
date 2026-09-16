@@ -49,6 +49,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
@@ -82,6 +83,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
         val initiertAvBrukerEllerVerge = pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)
         val initiertAvNav = pesysData.krav.kravInitiertAv.equalTo(NAV)
 
+        val avdodeDodsdato = pesysData.avdoed.dodsfallDato
+
+        val skiltOver5Aar = saksbehandlervalg("SkiltOver5Aar", "Skilt for mer enn 5 år siden").bool()
         val samboerUtenFellesBarn = saksbehandlervalg("samboerUtenFellesBarn", "Samboer uten felles barn").bool()
         val avdoedNavn = saksbehandlervalg("avdoedNavn", "Avdød navn").text().ifNull(fritekst("Avdød navn"))
         val underEttAarsMedlemstidEOESEllerAvtaleland = saksbehandlervalg("underEttAarsMedlemstidEOESEllerAvtaleland", "Under ett års medlemstid EØS eller avtaleland").bool()
@@ -132,6 +136,18 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         bokmal { + "Vi har fått beskjed om at " + avdoedNavn + " døde " + dato + "." },
                         nynorsk { + "Vi har fått beskjed om at " + avdoedNavn + " døydde " + dato + "." },
                         english { + "We have received notice that " + avdoedNavn + " died " + dato + "." }
+                    )
+                }
+            }
+
+            showIf(skiltOver5Aar) {
+                val skiltDato = fritekst("Skilsmissedato")
+                paragraph {
+                    text(
+                        bokmal { +"For å ha rettigheter etter en fraskilt ektefelle, kan det ikke ha gått mer enn fem år mellom skilsmissen og dødsfallet. Dette går fram av folketrygdloven § 19-16 andre ledd." +
+                                "Du og " + avdoedNavn + " ble skilt " + skiltDato + ". Dødsfallet skjedde " + avdodeDodsdato.format() + ". Siden det er mer enn fem år mellom skilsmissen og dødsfallet, fyller du ikke vilkårene for gjenlevenderett etter " + avdoedNavn + "." },
+                        nynorsk { +"" },
+                        english { +"" }
                     )
                 }
             }
