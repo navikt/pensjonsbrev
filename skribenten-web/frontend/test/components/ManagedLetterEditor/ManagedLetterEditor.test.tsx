@@ -151,4 +151,30 @@ describe("saveNow", () => {
 
     expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
   });
+
+  test("sender ikke en konkurrerende lagring mens autolagringen er underveis", async () => {
+    // Endepunktene for brev har ingen versjon, så to samtidige PUT-er kan lande i feil rekkefølge
+    // og lagre det eldste brevet. Autolagringen som allerede er underveis får fullføre alene.
+    let fullførAutolagring = () => {};
+    lagreAttestertBrevtekstMock.mockReturnValueOnce(
+      new Promise<BrevResponse>((resolve) => {
+        fullførAutolagring = () => resolve(lagretBrev);
+      }),
+    );
+
+    const { autolagre, markerSomEndret, lagreNa } = renderEditor("attestant-redigering");
+    await autolagre();
+    expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
+
+    act(() => markerSomEndret.current?.());
+    await act(async () => {
+      await lagreNa.current?.();
+    });
+
+    expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      fullførAutolagring();
+    });
+  });
 });
