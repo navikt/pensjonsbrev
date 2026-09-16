@@ -75,3 +75,11 @@ value class Adresselinje(val value: String) {
         require(value.length <= 128) { "Adresselinje kan ikke være lengre enn 128 tegn" }
     }
 }
+
+@JvmInline
+value class Navn(val value: String) {
+    init {
+        // Er ikke helt sikker på hvorfor akkurat 128, men det er det vi per no har i databasetabellen, så viderefører det
+        require(value.length <= 128) { "Navn kan ikke være lengre enn 128 tegn" }
+    }
+}

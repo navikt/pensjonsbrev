@@ -4,6 +4,7 @@ import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -106,7 +107,7 @@ object Dto {
     data class Mottaker private constructor(
         val type: MottakerType,
         val tssId: String? = null,
-        val navn: String? = null,
+        val navn: Navn? = null,
         val postnummer: NorskPostnummer? = null,
         val poststed: String? = null,
         val adresselinje1: Adresselinje? = null,
@@ -123,7 +124,7 @@ object Dto {
             )
 
             fun norskAdresse(
-                navn: String,
+                navn: Navn,
                 postnummer: NorskPostnummer,
                 poststed: String,
                 adresselinje1: Adresselinje?,
@@ -142,7 +143,7 @@ object Dto {
             )
 
             fun utenlandskAdresse(
-                navn: String,
+                navn: Navn,
                 adresselinje1: Adresselinje,
                 adresselinje2: Adresselinje?,
                 adresselinje3: Adresselinje?,

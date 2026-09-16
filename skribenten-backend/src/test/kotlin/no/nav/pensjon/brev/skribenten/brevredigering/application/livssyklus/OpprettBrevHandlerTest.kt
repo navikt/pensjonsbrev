@@ -4,9 +4,11 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringH
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy.KanIkkeOppretteBrev.*
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
@@ -110,10 +112,10 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `kan overstyre mottaker av brev`() {
         val mottaker = Dto.Mottaker.norskAdresse(
-            navn = "Anon Y. Mouse",
+            navn = Navn("Anon Y. Mouse"),
             postnummer = NorskPostnummer("0001"),
             poststed = "Andeby",
-            adresselinje1 = "Andebyveien 1",
+            adresselinje1 = Adresselinje("Andebyveien 1"),
             adresselinje2 = null,
             adresselinje3 = null,
             manueltAdressertTil = ANNEN
@@ -122,7 +124,7 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(brev).isSuccess {
             assertThat(it.info.mottaker).isEqualTo(mottaker)
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn)
+            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
         }
     }
 
