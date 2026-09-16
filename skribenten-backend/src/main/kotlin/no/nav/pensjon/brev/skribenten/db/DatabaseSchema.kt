@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
@@ -85,9 +86,12 @@ object MottakerTable : IdTable<BrevId>() {
     val navn: Column<String?> = varchar("navn", 128).nullable()
     val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
     val poststed: Column<String?> = varchar("poststed", 50).nullable()
-    val adresselinje1: Column<String?> = varchar("adresselinje1", 128).nullable()
-    val adresselinje2: Column<String?> = varchar("adresselinje2", 128).nullable()
-    val adresselinje3: Column<String?> = varchar("adresselinje3", 128).nullable()
+    val adresselinje1: Column<Adresselinje?> =
+        varchar("adresselinje1", 128).transform(::Adresselinje, Adresselinje::value).nullable()
+    val adresselinje2: Column<Adresselinje?> =
+        varchar("adresselinje2", 128).transform(::Adresselinje, Adresselinje::value).nullable()
+    val adresselinje3: Column<Adresselinje?> =
+        varchar("adresselinje3", 128).transform(::Adresselinje, Adresselinje::value).nullable()
     val landkode: Column<Landkode?> = varchar("landkode", 2).transform(::Landkode, Landkode::landkode).nullable()
     val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
         .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)

@@ -68,3 +68,10 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
             )
         }
 }
+
+@JvmInline
+value class Adresselinje(val value: String) {
+    init {
+        require(value.length <= 128) { "Adresselinje kan ikke være lengre enn 128 tegn" }
+    }
+}

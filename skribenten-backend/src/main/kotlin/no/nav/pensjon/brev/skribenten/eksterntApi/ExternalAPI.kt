@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
@@ -66,17 +67,17 @@ object ExternalAPI {
             val navn: String,
             val postnummer: NorskPostnummer,
             val poststed: String,
-            val adresselinje1: String?,
-            val adresselinje2: String?,
-            val adresselinje3: String?
+            val adresselinje1: Adresselinje?,
+            val adresselinje2: Adresselinje?,
+            val adresselinje3: Adresselinje?,
         ) : OverstyrtMottaker()
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
             val navn: String,
-            val adresselinje1: String,
-            val adresselinje2: String?,
-            val adresselinje3: String?,
+            val adresselinje1: Adresselinje,
+            val adresselinje2: Adresselinje?,
+            val adresselinje3: Adresselinje?,
             val landkode: BrevLandmodell.Landkode,
         ) : OverstyrtMottaker()
     }

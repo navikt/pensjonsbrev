@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.Hash
@@ -108,9 +109,9 @@ object Dto {
         val navn: String? = null,
         val postnummer: NorskPostnummer? = null,
         val poststed: String? = null,
-        val adresselinje1: String? = null,
-        val adresselinje2: String? = null,
-        val adresselinje3: String? = null,
+        val adresselinje1: Adresselinje? = null,
+        val adresselinje2: Adresselinje? = null,
+        val adresselinje3: Adresselinje? = null,
         val landkode: Landkode? = null,
         val manueltAdressertTil: ManueltAdressertTil,
     ) {
@@ -125,10 +126,10 @@ object Dto {
                 navn: String,
                 postnummer: NorskPostnummer,
                 poststed: String,
-                adresselinje1: String?,
-                adresselinje2: String?,
-                adresselinje3: String?,
-                manueltAdressertTil: ManueltAdressertTil
+                adresselinje1: Adresselinje?,
+                adresselinje2: Adresselinje?,
+                adresselinje3: Adresselinje?,
+                manueltAdressertTil: ManueltAdressertTil,
             ) = Mottaker(
                 type = MottakerType.NORSK_ADRESSE,
                 navn = navn,
@@ -142,9 +143,9 @@ object Dto {
 
             fun utenlandskAdresse(
                 navn: String,
-                adresselinje1: String,
-                adresselinje2: String?,
-                adresselinje3: String?,
+                adresselinje1: Adresselinje,
+                adresselinje2: Adresselinje?,
+                adresselinje3: Adresselinje?,
                 landkode: Landkode,
                 manueltAdressertTil: ManueltAdressertTil,
             ) = Mottaker(
