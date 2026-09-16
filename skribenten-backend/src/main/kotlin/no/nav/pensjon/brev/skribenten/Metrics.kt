@@ -85,8 +85,8 @@ object Metrics {
         .build()
 
 
-    // Strukturell brems: avsender_enhet er eneste label med ukjent antall verdier. Mål faktisk
-    // antall med count(count by (avsender_enhet) (skribenten_brev_sendt_total)) og juster.
+    // Strukturell brems: avsender_enhet er eneste label med ukjent antall verdier, og taket gjelder
+    // dette registeret - altså per pod. Se sendtbrevmetrikk.adoc for hvordan faktisk bruk måles.
     const val maksAntallAvsenderEnheter = 200
     fun avsenderEnhetFilter(): MeterFilter =
         MeterFilter.maximumAllowableTags(
