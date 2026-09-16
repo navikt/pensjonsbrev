@@ -603,17 +603,23 @@ test.describe("LetterEditor scrolling navigation", () => {
 
   /**
    * Walks the caret one line at a time and returns the largest single-step scroll movement,
-   * together with the height of the visible area it happened in.
+   * together with the height of the visible area it happened in. Stops as soon as the caret has
+   * entered `until`, so the walk is guaranteed to have covered the line break.
    */
-  async function largestScrollJumpWhileWalking(page: Page, key: "ArrowDown" | "ArrowUp", steps: number) {
+  async function largestScrollJumpWhileWalking(page: Page, key: "ArrowDown" | "ArrowUp", until: string) {
     const scrollTop = () => page.locator(".editor").evaluate((element) => element.parentElement?.scrollTop ?? -1);
+    const focusedText = () => page.evaluate(() => document.activeElement?.textContent ?? "");
     const containerHeight = await page
       .locator(".editor")
       .evaluate((element) => element.parentElement?.clientHeight ?? -1);
 
     let largestJump = 0;
     let largestJumpStep = -1;
-    for (let step = 0; step < steps; step++) {
+    let reachedTarget = false;
+    // Generous upper bound; the walk normally ends much earlier, when the caret reaches `until`.
+    const maxSteps = 60;
+
+    for (let step = 0; step < maxSteps && !reachedTarget; step++) {
       const before = await scrollTop();
       await page.keyboard.press(key);
       await page.waitForTimeout(50);
@@ -623,16 +629,17 @@ test.describe("LetterEditor scrolling navigation", () => {
         largestJump = jump;
         largestJumpStep = step;
       }
+      reachedTarget = (await focusedText()) === until;
     }
-    return { largestJump, largestJumpStep, containerHeight };
+    return { largestJump, largestJumpStep, containerHeight, reachedTarget };
   }
 
   // Moving the caret one line must never scroll more than a small fraction of the visible area.
   // The reported bug scrolls roughly half the visible height when the caret crosses the <br>,
   // because the browser re-centres the caret instead of following the edge line by line.
-  for (const { key, startParagraph, steps } of [
-    { key: "ArrowDown" as const, startParagraph: 37, steps: 20 },
-    { key: "ArrowUp" as const, startParagraph: 44, steps: 20 },
+  for (const { key, startParagraph, until } of [
+    { key: "ArrowDown" as const, startParagraph: 37, until: afterNewLine },
+    { key: "ArrowUp" as const, startParagraph: 44, until: beforeNewLine },
   ]) {
     test(`${key} past a manual line break must not jump half a page`, async ({ page }) => {
       await page.setViewportSize({ width: 1200, height: 600 });
@@ -640,7 +647,14 @@ test.describe("LetterEditor scrolling navigation", () => {
 
       await page.getByText(paragraphText(startParagraph), { exact: true }).click();
 
-      const { largestJump, largestJumpStep, containerHeight } = await largestScrollJumpWhileWalking(page, key, steps);
+      const { largestJump, largestJumpStep, containerHeight, reachedTarget } = await largestScrollJumpWhileWalking(
+        page,
+        key,
+        until,
+      );
+
+      // Without this the test could pass by never reaching the line break at all.
+      expect(reachedTarget, `the ${key} walk never crossed the line break`).toBe(true);
 
       expect(
         largestJump,

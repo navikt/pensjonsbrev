@@ -208,6 +208,19 @@ export function getCaretRect() {
   return getRange()?.getBoundingClientRect();
 }
 
+// The rect of the caret endpoint that leads the way when moving in the given direction.
+// getCaretRect() returns the bounding box of the whole range, which spans every selected line
+// when the selection is not collapsed. Collapsing a copy of the range onto the endpoint the caret
+// moves away from gives a box that is always exactly one line tall.
+function getLeadingCaretRect(direction: "up" | "down") {
+  const range = getRange();
+  if (range === undefined) return undefined;
+
+  const leadingEdge = range.cloneRange();
+  leadingEdge.collapse(direction === "up");
+  return leadingEdge.getBoundingClientRect();
+}
+
 export function getRange() {
   const selection = globalThis.getSelection();
   return (selection?.rangeCount ?? 0) > 0 ? selection?.getRangeAt(0) : undefined;
@@ -266,7 +279,7 @@ export function ensureLineVisibleInScrollContainer(element: Element, edge: "top"
 // has nothing to reveal, so the caret keeps following the edge one line at a time.
 export function ensureAdjacentLineVisible(element: Element, direction: "up" | "down") {
   const scrollContainer = getVerticalScrollContainer(element);
-  const caretRect = getCaretRect();
+  const caretRect = getLeadingCaretRect(direction);
   if (!scrollContainer || caretRect === undefined) return;
 
   const containerRect = scrollContainer.getBoundingClientRect();
