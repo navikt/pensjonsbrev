@@ -140,7 +140,6 @@ class SendtBrevMetrikkerTest {
         assertThat(registry.orgBoetter()).isEmpty()
     }
 
-    // Tom labelverdi leses som fraværende i Prometheus, og serien ville da falt ut av `sum by (samhandler_type)`.
     @Test
     suspend fun `samhandler uten identtype eller type gir UKJENT paa begge labelene`() {
         val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
@@ -154,7 +153,8 @@ class SendtBrevMetrikkerTest {
     }
 
     @Test
-    suspend fun `ukjent samhandler gir UKJENT uten boettetelling`() {        val registry = SimpleMeterRegistry()
+    suspend fun `ukjent samhandler gir UKJENT uten boettetelling`() {
+        val registry = SimpleMeterRegistry()
 
         tellSamhandler(registry, "finnes-ikke")
 
@@ -186,8 +186,8 @@ class SendtBrevMetrikkerTest {
         assertThat(registry.orgBoetter()).isEmpty()
     }
 
-    // UKJENT (oppslaget feilet) og IKKE_RELEVANT (ikke en samhandler) må kunne skilles i Prometheus.
-    @Test    suspend fun `feilet oppslag er UKJENT paa begge samhandlerlabelene og ikke IKKE_RELEVANT`() {
+    @Test
+    suspend fun `feilet oppslag er UKJENT paa begge samhandlerlabelene og ikke IKKE_RELEVANT`() {
         val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
         val feilende = object : FakeSamhandlerService() {
             override suspend fun hentSamhandler(idTSSEkstern: String) = throw RuntimeException("TSS er nede")

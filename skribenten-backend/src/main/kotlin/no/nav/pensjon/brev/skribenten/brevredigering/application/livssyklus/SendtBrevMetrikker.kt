@@ -83,7 +83,7 @@ class SendtBrevMetrikker(
 
     // Tom labelverdi leses som fraværende i Prometheus, og serien ville da falt ut av `sum by (samhandler_type)`.
     private fun Result<String?>.getOrUkjent(): String =
-        this.map { it?.takeIf(String::isNotBlank) ?: UKJENT }.getOrDefault(UKJENT)
+        getOrNull()?.takeIf(String::isNotBlank) ?: UKJENT
 
     private fun HentSamhandlerResponseDto.Success.idType(): SamhandlerIdType =
         when (idType.takeIf(String::isNotBlank)) {
