@@ -35,7 +35,7 @@ class ApplicationITest {
         }
     }
 
-    @Tag(TestTags.MANUAL_TEST)
+    @Tag(TestTags.INTEGRATION_TEST)
     @Test
     fun `deserialiser value class`() = testBrevbakerApp { client ->
         val response = client.post("/letter/autobrev/pdf") {
@@ -46,7 +46,7 @@ class ApplicationITest {
         assertThat(response.status).isEqualTo(HttpStatusCode.OK)
     }
 
-    @Tag(TestTags.MANUAL_TEST)
+    @Tag(TestTags.INTEGRATION_TEST)
     @Test
     fun `deserialiser wrapped`() = testBrevbakerApp { client ->
         val response = client.post("/letter/autobrev/pdf") {
