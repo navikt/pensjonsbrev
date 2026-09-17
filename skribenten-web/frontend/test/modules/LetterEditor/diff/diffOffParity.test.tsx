@@ -54,7 +54,7 @@ const withProvider = (
   overrides: Partial<ComponentProps<typeof AttestantDiffProvider>> = {},
 ): ReturnType<typeof render> =>
   renderEditor((children) => (
-    <AttestantDiffProvider diff={undefined} diffHash={undefined} disableDiff={vi.fn()} {...overrides}>
+    <AttestantDiffProvider diff={undefined} diffHash={undefined} disableDiffMode={vi.fn()} {...overrides}>
       {children}
     </AttestantDiffProvider>
   ));

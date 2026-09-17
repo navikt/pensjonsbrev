@@ -247,7 +247,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const highlightedIds = useInsertedTekstValgHighlight();
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
-  const { diffHash, disableDiff } = useAttestantDiff();
+  const { diffHash, disableDiffMode } = useAttestantDiff();
   const diffSegments = useDiffSegmentsForLiteral(literalIndex, textOf(content) || "");
   const hasDiffDecoration = diffSegments != null;
   const literalDiffKey = diffKey(literalIndex);
@@ -348,7 +348,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (!element) return;
 
     const cursorPosition = getEditableCharacterOffset(element);
-    disableDiff();
+    disableDiffMode();
     applyAction(updateFocus, setEditorState, { ...literalIndex, cursorPosition });
   };
 

@@ -85,7 +85,7 @@ const TableView: React.FC<{
   contentIndex: number;
 }> = ({ node, blockIndex, contentIndex }) => {
   const { setEditorState } = useEditor();
-  const { diffHash, disableDiff } = useAttestantDiff();
+  const { diffHash, disableDiffMode } = useAttestantDiff();
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
   const [highlight, setHighlight] = useState<{ row: number; col: number } | null>(null);
 
@@ -108,7 +108,7 @@ const TableView: React.FC<{
         onContextMenu={(e) => {
           e.preventDefault();
           if (diffHash !== undefined) {
-            disableDiff();
+            disableDiffMode();
             return;
           }
 
