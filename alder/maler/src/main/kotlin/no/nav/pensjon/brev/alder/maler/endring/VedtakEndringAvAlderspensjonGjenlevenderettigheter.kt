@@ -339,7 +339,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
 
                     // referansebeløpGjtKap19ErNull_001
-                    showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)) {
+                    showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt)) {
                         title1 {
                             text(
                                 bokmal { + "Hvorfor blir ikke pensjonen din høyere med gjenlevenderettigheter?" },
@@ -372,7 +372,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // forklaringutfasingGjtKap20_001
-            // Denne er nok ikke relvant for noen lengre, men lar det stå for sikkerhets skyld.
+            // Denne er nok ikke relvant for noen lengre, men lar det stå for sikkerhets skyld. TODO: KAn vi?
             showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget) {
                 title1 {
                     text(

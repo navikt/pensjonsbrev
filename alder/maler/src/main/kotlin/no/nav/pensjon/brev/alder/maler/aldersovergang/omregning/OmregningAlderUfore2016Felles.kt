@@ -137,7 +137,7 @@ data class OmregningAlderUfore2016Felles(
         }
 
         ifNotNull(avdodNavn) { avdodNavn ->
-            showIf(gjenlevendetilleggKap19Innvilget) {
+            showIf(gjenlevendetilleggKap19Innvilget) { //TODO Her bør det kanskje være gjtkap19 utbetalt?
                 title2(uniqueness = "kap19") {
                     text(
                         bokmal { +"Gjenlevenderett i alderspensjon" },

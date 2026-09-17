@@ -182,7 +182,7 @@ data class GjenlevendetilleggKap19Hjemmel(
     val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(gjenlevendetilleggKap19Innvilget and regelverkType.notEqualTo(AP1967)) {
+        showIf(gjenlevendetilleggKap19Innvilget and regelverkType.notEqualTo(AP1967)) { //TODO Skal dette også gjelde 1967?
             paragraph {
                 text(
                     bokmal { + "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024." },
@@ -201,7 +201,7 @@ data class InnvilgetGjRettKap19For2024(
     val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)) {
+        showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)) { //TODO denne ser rar ut men
             paragraph {
                 text(
                     bokmal { + "Gjenlevenderett er innvilget etter § 19-16 i folketrygdloven." },

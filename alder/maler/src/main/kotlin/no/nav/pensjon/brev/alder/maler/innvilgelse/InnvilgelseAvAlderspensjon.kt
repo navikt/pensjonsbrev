@@ -230,7 +230,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
 
-                showIf(gjenlevendetilleggKap19Innvilget) {
+                showIf(gjenlevendetilleggKap19Innvilget and gjenlevendetilleggKap19.greaterThan(0)) {
                     // beregningAPGjtKap19
                     paragraph {
                         text(
