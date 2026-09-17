@@ -89,7 +89,7 @@ class SendtBrevMetrikkerTest {
         assertThat(antallEnheter).isEqualTo(Metrics.maksAntallAvsenderEnheter)
     }
 
-    private fun MeterRegistry.idTypeFor(tssId: String?): String? =
+    private fun MeterRegistry.idTypeFor(tssId: String?): String =
         find(SendtBrevMetrikker.metricName).counters().singleOrNull()?.id?.getTag("id_type")
             ?: error("Fant ikke én teller for tssId $tssId")
 
