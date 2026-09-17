@@ -129,9 +129,8 @@ class SendtBrevMetrikker(
         // SHA-256 og ikke String.hashCode(): sistnevnte er svakt fordelt for numeriske strenger av lik lengde, altså nøyaktig det et orgnr er.
         internal fun orgBoette(orgNr: String): Int {
             val hash = MessageDigest.getInstance("SHA-256").digest(orgNr.toByteArray(Charsets.UTF_8))
-            // ByteBuffer.getInt har fortegn (signed int), og % på et negativt tall gir negativt bøttenummer.
-            val usignert = ByteBuffer.wrap(hash).int.toLong() and 0xFFFFFFFFL
-            return (usignert % ANTALL_ORG_BOETTER).toInt()
+            val usignert = ByteBuffer.wrap(hash).int.toUInt()
+            return (usignert % ANTALL_ORG_BOETTER.toUInt()).toInt()
         }
     }
 }

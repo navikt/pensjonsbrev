@@ -211,7 +211,7 @@ class SendtBrevMetrikkerTest {
         assertThat(registry.orgBoetter()).containsExactly(entry(SendtBrevMetrikker.orgBoette(ORGNR).toString(), 2.0))
     }
 
-    // Uten maskeringen til usignert ville annethvert organisasjonsnummer gitt et negativt boettenummer.
+    // Uten usignert tolkning ville annethvert organisasjonsnummer gitt et negativt boettenummer.
     @Test
     fun `boettenummeret er alltid innenfor antall boetter`() {
         val boetter = (0 until 10_000).map { SendtBrevMetrikker.orgBoette("9${it.toString().padStart(8, '0')}") }
