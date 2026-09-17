@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.Metrics
 import no.nav.pensjon.brev.skribenten.auth.currentPrincipalContext
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
@@ -34,7 +35,7 @@ class SendtBrevMetrikker(
 
     data class SendtBrevMaaling(
         val mottakerType: MottakerType?,
-        val tssId: String?,
+        val tssId: TssId?,
         val manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil?,
         val distribusjonstype: Distribusjon,
         val avsenderEnhet: EnhetId,
@@ -74,7 +75,7 @@ class SendtBrevMetrikker(
         if (maaling.mottakerType == MottakerType.SAMHANDLER) samhandlerType(maaling.tssId) ?: UKJENT else IKKE_RELEVANT
 
     // Brevet er allerede sendt, så en feil her skal kun gi en mindre presis metrikk.
-    private suspend fun samhandlerType(tssId: String?): String? =
+    private suspend fun samhandlerType(tssId: TssId?): String? =
         tssId?.let {
             try {
                 samhandlerService.hentSamhandlerType(it)

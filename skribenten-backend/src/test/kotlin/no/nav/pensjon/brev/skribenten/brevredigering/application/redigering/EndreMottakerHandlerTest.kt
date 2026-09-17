@@ -4,8 +4,12 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringH
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -23,7 +27,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan fjerne overstyrt mottaker av brev`() {
-        val mottaker = Dto.Mottaker.samhandler("samhandlerId")
+        val mottaker = Dto.Mottaker.samhandler(TssId("samhandlerId"))
         val brev = opprettBrev(mottaker = mottaker).resultOrFail()
         assertThat(brev.info.mottaker).isEqualTo(mottaker)
 
@@ -35,14 +39,14 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan oppdatere mottaker av brev`() {
-        val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrFail()
+        val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler(TssId("1"))).resultOrFail()
         val nyMottaker = Dto.Mottaker.norskAdresse(
-            navn = "a",
+            navn = Navn("a"),
             postnummer = NorskPostnummer("1234"),
-            poststed = "c",
-            adresselinje1 = "d",
-            adresselinje2 = "e",
-            adresselinje3 = "f",
+            poststed = Poststed("c"),
+            adresselinje1 = Adresselinje("d"),
+            adresselinje2 = Adresselinje("e"),
+            adresselinje3 = Adresselinje("f"),
             manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.BRUKER
         )
 
@@ -99,7 +103,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan ikke endre mottaker når brevet er reservert av annen bruker`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        val resultat = endreMottaker(brev.info.id, Dto.Mottaker.samhandler("2"), saksbehandler2Principal)
+        val resultat = endreMottaker(brev.info.id, Dto.Mottaker.samhandler(TssId("2")), saksbehandler2Principal)
         assertThat(resultat).isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
     }
 
@@ -109,17 +113,17 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isNull()
 
         val nyMottaker = Dto.Mottaker.utenlandskAdresse(
-            navn = "Reci Pient",
-            adresselinje1 = "b",
-            adresselinje2 = "c",
-            adresselinje3 = "d",
+            navn = Navn("Reci Pient"),
+            adresselinje1 = Adresselinje("b"),
+            adresselinje2 = Adresselinje("c"),
+            adresselinje3 = Adresselinje("d"),
             landkode = Landkode("CY"),
             manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.ANNEN
         )
 
         assertThat(endreMottaker(brev.info.id, nyMottaker)).isSuccess()
         assertThat(hentBrev(brev.info.id)).isSuccess {
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(nyMottaker.navn)
+            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(nyMottaker.navn?.value)
         }
     }
 
@@ -128,23 +132,23 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         arkiverBrev(brev)
 
-        val resultat = endreMottaker(brev.info.id, Dto.Mottaker.samhandler("2"))
+        val resultat = endreMottaker(brev.info.id, Dto.Mottaker.samhandler(TssId("2")))
         assertThat(resultat).isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()
     }
 
     @Test
     suspend fun `fjerning av mottaker setter også annenMottakerNavn til null`() {
         val mottaker = Dto.Mottaker.norskAdresse(
-            navn = "Anon Y. Mouse",
+            navn = Navn("Anon Y. Mouse"),
             postnummer = NorskPostnummer("0001"),
-            poststed = "Andeby",
-            adresselinje1 = "Andebyveien 1",
+            poststed = Poststed("Andeby"),
+            adresselinje1 = Adresselinje("Andebyveien 1"),
             adresselinje2 = null,
             adresselinje3 = null,
             manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.ANNEN
         )
         val brev = opprettBrev(mottaker = mottaker).resultOrFail()
-        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn)
+        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
 
         assertThat(endreMottaker(brev.info.id, null)).isSuccess {
             assertThat(it.mottaker).isNull()
