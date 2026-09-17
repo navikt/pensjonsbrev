@@ -50,6 +50,7 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val regelverkType: AlderspensjonRegelverkType,
         val uttaksgrad: Int,
         val gjenlevendetilleggKap19Innvilget: Boolean,
+        val gjenlevendetilleggKap19Utbetalt: Boolean,
         val gjenlevenderettAnvendt: Boolean,
         val gjenlevendetilleggInnvilget: Boolean,
         val saertilleggInnvilget: Boolean,
