@@ -1893,7 +1893,8 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
 
-        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
+        @OptIn(RedigerbartVedlegg::class)
+        includeAttachmentRedigerbarIfNotNull(VedleggId("endringUTMaanedligVedlegg"),vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         @OptIn(RedigerbartVedlegg::class)
         includeAttachmentRedigerbar(VedleggId("endringUTBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)

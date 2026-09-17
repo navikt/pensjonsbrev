@@ -70,6 +70,7 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
 
     data class BeregnetPensjonPerManedVedVirk(
         val inntektspensjon: Kroner?,
+        val tilleggspensjonOver0: Boolean = false,
         val gjenlevendetilleggKap19: Kroner?,
         val gjenlevendetillegg: Kroner?,
         val antallBeregningsperioderPensjon: Int,
