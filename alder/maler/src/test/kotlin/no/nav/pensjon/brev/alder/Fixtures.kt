@@ -67,7 +67,6 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAl
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerOmAvdoedBruktIBeregningDto
-import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.*
 import no.nav.pensjon.brev.alder.model.avslag.*
 import no.nav.pensjon.brev.alder.model.endring.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
@@ -115,6 +114,7 @@ import no.nav.pensjon.brev.alder.maler.innvilgelse.*
 import no.nav.pensjon.brev.alder.maler.sivilstand.*
 import no.nav.pensjon.brev.alder.maler.stans.VedtakStansAlderspensjonFlyttingMellomLand
 import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 
 object Fixtures : LetterDataFactory {
     val fellesAuto = FellesFactory.fellesAuto
