@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
+import { useVedleggEditorWarnings } from "~/hooks/useVedleggEditorWarnings";
 
 /**
  * Handles document switching and ensures the active vedlegg is saved before navigation.
@@ -17,6 +18,12 @@ export const useActiveDocumentCoordinator = (args: {
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const activeVedleggSaveRef = useRef<(() => Promise<void>) | null>(null);
   const [savingActiveDocument, setSavingActiveDocument] = useState(false);
+  const { registerVedleggMissingFromTemplate, getMissingFromTemplateCount } = useVedleggEditorWarnings({
+    saksId,
+    brevId,
+    redigeringsflate,
+    vedlegg: redigerbareVedleggQuery.data,
+  });
 
   const registerVedleggSave = useCallback((saveNow: (() => Promise<void>) | null) => {
     activeVedleggSaveRef.current = saveNow;
@@ -60,6 +67,8 @@ export const useActiveDocumentCoordinator = (args: {
     saveActiveDocument,
     savingActiveDocument,
     registerVedleggSave,
+    registerVedleggMissingFromTemplate,
+    getMissingFromTemplateCount,
     selectDocument,
   };
 };
