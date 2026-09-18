@@ -12,7 +12,7 @@ Sommeren og starten på høsten har vært preget av videre arbeid med redigerbar
 * Redigerbare vedlegg kan nå brukes i flere brevtyper [#3789] [#3875] [#3887]
 * Det er lagt til målinger for hvem brev fra Skribenten sendes til, hvilken distribusjon som brukes og hvilken avsenderenhet som sender brevet [#3848]
 
-== Ting vi har forbedret
+=== Ting vi har forbedret
 
 * Bedre støtte for vedlegg
 Flere brevmaler tilbyr nå relevante, valgfrie vedlegg. Endringer i redigerbare vedlegg blir tatt vare på frem til brevet går til attestering.  
