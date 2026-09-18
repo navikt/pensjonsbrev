@@ -324,7 +324,7 @@ function RedigerBrev({
   });
 
   const { getWarning } = useBrevEditorWarnings({
-    missingFromTemplateVedleggCount: documentCoordinator.missingFromTemplateCount,
+    getMissingFromTemplateVedleggCount: documentCoordinator.getMissingFromTemplateCount,
     brevkode: brev.info.brevkode,
     form,
     redigertBrev: editorState.redigertBrev,
@@ -450,11 +450,7 @@ function RedigerBrev({
                     >
                       Tilbake til brevvelger
                     </Button>
-                    <Button
-                      loading={oppdaterBrevMutation.isPending || documentCoordinator.savingActiveDocument}
-                      size="small"
-                      type="submit"
-                    >
+                    <Button loading={freeze || documentCoordinator.savingActiveDocument} size="small" type="submit">
                       <HStack align="center" gap="space-8">
                         <Label size="small">Fortsett</Label>
                       </HStack>
