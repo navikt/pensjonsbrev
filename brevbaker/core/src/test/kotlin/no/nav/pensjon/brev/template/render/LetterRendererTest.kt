@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.brev.brevbaker.template.render.LetterRenderer
 import no.nav.brev.brevbaker.template.render.RenderContext
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.render.selectors.testVedleggDto.*
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.EmptySaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -37,7 +38,7 @@ import org.junit.jupiter.api.Test
 
 class LetterRendererTest {
 
-    val letter = LetterImpl(
+    val letter = AutoLetterImpl(
         LetterExample.template,
         createLetterExampleDto(),
         Bokmal,
@@ -134,7 +135,7 @@ class LetterRendererTest {
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
         val actualContexts = mutableListOf<RenderContext>()
         MockRenderer().publicRender(
-            RenderContext(ExpressionScope(Unit, felles, Bokmal)),
+            RenderContext(ExpressionScope(Unit, felles, Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)),
             content.elements,
         ) { context, element ->
             actualElements.add(element)
@@ -159,7 +160,8 @@ class LetterRendererTest {
             }
         }
 
-        val expectedContext = RenderContext(ExpressionScope(Unit, felles, Bokmal))
+        val expectedContext =
+            RenderContext(ExpressionScope(Unit, felles, Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL))
         val expectedElements = listOf(
             createText(Bokmal to "hei "),
             createText(Bokmal to "person"),
@@ -189,7 +191,8 @@ class LetterRendererTest {
             }
         }
 
-        val expectedContext = RenderContext(ExpressionScope(Unit, felles, Bokmal))
+        val expectedContext =
+            RenderContext(ExpressionScope(Unit, felles, Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL))
         val expectedElements = listOf(
             createText(Bokmal to "hei "),
             createText(Bokmal to "person"),
@@ -223,7 +226,7 @@ class LetterRendererTest {
 
         val actualAttachments = mutableListOf<AttachmentTemplate<*, *>>()
         MockRenderer().publicRenderAttachments(
-            RenderContext(ExpressionScope(Unit, felles,Bokmal)),
+            RenderContext(ExpressionScope(Unit, felles, Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)),
             attachments,
         ) { _, _, attachment ->
             actualAttachments.add(attachment)
@@ -253,7 +256,7 @@ class LetterRendererTest {
 
         var evaluatedAttachmentScopedExpr: String? = null
         MockRenderer().publicRenderAttachments(
-            RenderContext(ExpressionScope(letterData, felles, Bokmal)),
+            RenderContext(ExpressionScope(letterData, felles, Bokmal, saksbehandlerValg = EmptySaksbehandlervalgIDSL)),
             listOf(createIncludeAttachment(vedleggDataExpr, attachment1, true.expr()))
         ) { context, _, _ ->
             evaluatedAttachmentScopedExpr = attachmentScopedExpr?.eval(context.scope)

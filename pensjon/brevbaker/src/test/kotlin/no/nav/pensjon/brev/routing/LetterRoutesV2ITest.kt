@@ -7,6 +7,7 @@ import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -16,7 +17,7 @@ import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
@@ -31,16 +32,18 @@ class LetterRoutesV2ITest {
     private val autoBrevRequest = BestillBrevRequest(
         kode = LetterExample.kode,
         letterData = createLetterExampleDto(),
+        saksbehandlerValg = null,
         felles = FellesFactory.fellesAuto,
         language = LanguageCode.BOKMAL,
     )
     private val bestillMarkupRequest = BestillBrevRequest(
         kode = EksempelbrevRedigerbart.kode,
         letterData = createEksempelbrevRedigerbartDto(),
+        saksbehandlerValg = lagSaksbehandlervalg(),
         felles = FellesFactory.felles,
         language = LanguageCode.BOKMAL,
     )
-    private val redigertBestillingV2 = LetterImpl(
+    private val redigertBestillingV2 = AutoLetterImpl(
         template = EksempelbrevRedigerbart.template,
         argument = bestillMarkupRequest.letterData,
         language = Language.Bokmal,
@@ -48,7 +51,16 @@ class LetterRoutesV2ITest {
     ).let { LetterTestRenderer.renderLetterOnlyV2(it) }
         .let { markup ->
             with(bestillMarkupRequest) {
-                BestillRedigertBrevRequestV2(kode, letterData as EksempelRedigerbartDto, felles, language, markup, listOf(), emptyMap())
+                BestillRedigertBrevRequestV2(
+                    kode,
+                    letterData as EksempelRedigerbartDto,
+                    (letterData as EksempelRedigerbartDto).saksbehandlerValg,
+                    felles,
+                    language,
+                    markup,
+                    listOf(),
+                    emptyMap()
+                )
             }
         }
 

@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.template.expression.SelectorUsage
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 
 // TODO: Look at * projections for LetterTemplate, we have to have it for the API endpoint, but perhaps not for internal usage.
@@ -8,7 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 //        when passing it to Letter you can pass any value as argument, and a new upper bound of Any will be chosen.
 
 @InterneDataklasser
-data class LetterImpl<ParameterType : Any>(
+data class AutoLetterImpl<ParameterType : Any>(
     override val template: LetterTemplate<*, ParameterType>,
     override val argument: ParameterType,
     override val language: Language,
@@ -20,6 +22,27 @@ data class LetterImpl<ParameterType : Any>(
             throw IllegalArgumentException("Language not supported by template: $language")
         }
     }
+
+    override fun toScope(selectorUsage: SelectorUsage?): ExpressionScope<ParameterType> =
+        ExpressionScope(argument, felles, language, selectorUsage, EmptySaksbehandlervalgIDSL)
+}
+
+@InterneDataklasser
+data class RedigerbarLetterImpl<ParameterType : Any>(
+    override val template: LetterTemplate<*, ParameterType>,
+    override val argument: ParameterType,
+    override val language: Language,
+    override val felles: BrevbakerFelles,
+    val saksbehandlerValg: SaksbehandlervalgIDSL,
+) : Letter<ParameterType> {
+    init {
+        if (!template.language.supports(language)) {
+            throw IllegalArgumentException("Language not supported by template: $language")
+        }
+    }
+
+    override fun toScope(selectorUsage: SelectorUsage?) =
+        ExpressionScope(argument, felles, language, selectorUsage, saksbehandlerValg)
 }
 
 interface Letter<ParameterType : Any> {
@@ -27,4 +50,6 @@ interface Letter<ParameterType : Any> {
     val argument: ParameterType
     val language: Language
     val felles: BrevbakerFelles
+
+    fun toScope(selectorUsage: SelectorUsage? = null): ExpressionScope<ParameterType>
 }

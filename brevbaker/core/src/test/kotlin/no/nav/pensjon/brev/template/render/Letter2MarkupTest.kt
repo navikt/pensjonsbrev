@@ -8,21 +8,20 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Letter2MarkupTest {
 
     private inline fun <reified LetterData : AutobrevData> renderTemplate(data: LetterData, noinline template: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
-        Letter2Markup.render(LetterImpl(outlineTestTemplate(template), data, Bokmal, felles))
+        Letter2Markup.render(AutoLetterImpl(outlineTestTemplate(template), data, Bokmal, felles))
 
     @Test
     fun `outline root elements are rendered in same order`() {

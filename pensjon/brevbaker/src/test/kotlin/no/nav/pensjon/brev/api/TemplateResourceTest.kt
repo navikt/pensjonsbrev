@@ -40,6 +40,7 @@ class TemplateResourceTest {
     private val validAutobrevRequest = BestillBrevRequest(
         LetterExample.kode,
         createLetterExampleDto(),
+        saksbehandlerValg = null,
         FellesFactory.fellesAuto,
         LanguageCode.BOKMAL
     )
@@ -111,6 +112,7 @@ private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: SampleLetter
     BestillBrevRequest(
         kode = this.kode,
         letterData = letterData,
+        saksbehandlerValg = null,
         felles = this.felles,
         language = this.language
     )

@@ -8,11 +8,14 @@ import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.RedigerbarLetterImpl
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
@@ -24,22 +27,52 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
     private val vedleggLibrary = AlltidValgbartVedleggLibrary(alltidValgbareVedlegg)
 
 
-    fun createLetter(brevbestilling: BestillBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
-        with(brevbestilling) { createLetter(template,kode, letterData, language, felles, listOf()) }
+    fun createLetter(
+        brevbestilling: BestillBrevRequest<Kode>,
+        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
+    ) =
+        with(brevbestilling) { createLetter(template, kode, letterData, saksbehandlerValg, language, felles, listOf()) }
 
-    fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
+    fun createLetter(
+        brevbestilling: BestillRedigertBrevRequest<Kode>,
+        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
+    ) =
+        with(brevbestilling) {
+            createLetter(
+                template,
+                kode,
+                letterData,
+                saksbehandlerValg,
+                language,
+                felles,
+                alltidValgbareVedlegg
+            )
+        }
 
-    fun createLetter(brevbestilling: BestillRedigertBrevRequestV2<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
+    fun createLetter(
+        brevbestilling: BestillRedigertBrevRequestV2<Kode>,
+        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
+    ) =
+        with(brevbestilling) {
+            createLetter(
+                template,
+                kode,
+                letterData,
+                saksbehandlerValg,
+                language,
+                felles,
+                alltidValgbareVedlegg
+            )
+        }
 
     private fun createLetter(
         brevTemplate: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
         brevkode: Kode,
         brevdata: BrevbakerBrevdata,
+        saksbehandlerValg: SaksbehandlervalgIDSL?,
         spraak: LanguageCode,
         felles: BrevbakerFelles,
-        valgteVedlegg: List<AlltidValgbartVedleggKode>
+        valgteVedlegg: List<AlltidValgbartVedleggKode>,
     ): Letter<BrevbakerBrevdata> {
         val template =
             brevTemplate?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
@@ -56,13 +89,26 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             }
         }
 
-        @OptIn(InterneDataklasser::class)
-        return LetterImpl(
-            template = template.medEkstraVedlegg(vedlegg.map { it.asIncludeAttachment() }),
-            argument = parseArgument(brevdata, template),
-            language = language,
-            felles = felles,
-        )
+        if (brevTemplate is AutobrevTemplate<*>) {
+            @OptIn(InterneDataklasser::class)
+            return AutoLetterImpl(
+                template = template.medEkstraVedlegg(vedlegg.map { it.asIncludeAttachment() }),
+                argument = parseArgument(brevdata, template),
+                language = language,
+                felles = felles,
+            )
+        } else {
+            @OptIn(InterneDataklasser::class)
+            return RedigerbarLetterImpl(
+                template = template.medEkstraVedlegg(vedlegg.map { it.asIncludeAttachment() }),
+                argument = parseArgument(brevdata, template),
+                language = language,
+                felles = felles,
+                saksbehandlerValg = saksbehandlerValg
+                    ?: throw IllegalArgumentException("For redigerbare brev må saksbehandlerValg være satt, men var null")
+            )
+
+        }
     }
 
     private fun parseArgument(

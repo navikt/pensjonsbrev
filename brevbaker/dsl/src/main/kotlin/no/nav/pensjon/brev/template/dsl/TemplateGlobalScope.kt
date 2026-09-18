@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarData
@@ -13,6 +14,9 @@ interface TemplateGlobalScope<LetterData : Any> {
 
     val felles: Expression<BrevbakerFelles>
         get() = Expression.FromScope.Felles
+
+    val deklarerteSaksbehandlervalg: Expression<SaksbehandlervalgIDSL>
+        get() = Expression.FromScope.Saksbehandlervalg()
 
     fun redigerbarData(
         variabel: StringExpression,

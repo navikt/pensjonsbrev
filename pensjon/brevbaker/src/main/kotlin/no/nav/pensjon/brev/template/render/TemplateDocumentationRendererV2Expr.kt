@@ -31,6 +31,11 @@ internal fun renderExpr(
         is Expression.FromScope.Language -> FieldPath(TemplateDocumentationV2.DataSource.Scope("language"), emptyList(), leafType = null)
         is Expression.FromScope.Felles -> FieldPath(TemplateDocumentationV2.DataSource.Scope("felles"), emptyList(), leafType = null)
         is Expression.FromScope.Argument -> FieldPath(TemplateDocumentationV2.DataSource.Scope("argument"), emptyList(), leafType = null)
+        is Expression.FromScope.Saksbehandlervalg -> FieldPath(
+            TemplateDocumentationV2.DataSource.Scope("saksbehandlervalg"),
+            emptyList(),
+            leafType = null
+        )
         is Expression.FromScope.Assigned ->
             assignments[expr]
                 ?.let { renderExpr(it, assignments, forEachDepth, lang) }

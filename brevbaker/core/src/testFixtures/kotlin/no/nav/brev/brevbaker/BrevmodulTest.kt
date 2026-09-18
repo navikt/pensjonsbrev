@@ -9,7 +9,9 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.BrevTemplate
@@ -99,20 +101,28 @@ abstract class BrevmodulTest(
                         (((vedlegg.data as? Expression.UnaryInvoke<*, *>)?.operation as? UnaryOperation.Select<*, *>)?.selector?.propertyType)?.let {
                             Class.forName(it.removeSuffix("?"))
                         }
-                    dto?.let { Arguments.of(vedlegg.template, fixtures.createVedlegg(dto.kotlin), spraak, dto.simpleName) }
+                    dto?.let {
+                        Arguments.of(
+                            vedlegg.template,
+                            fixtures.createVedlegg(dto.kotlin),
+                            lagSaksbehandlervalg(),
+                            spraak,
+                            dto.simpleName
+                        )
+                    }
                 }
             }
         }
         .filterNotNull()
-        .distinctBy { it.get()[2].toString() + it.get()[3] }
+        .distinctBy { it.get()[2].toString() + it.get()[4] }
 
     @Suppress("unused") // Brukt i MethodSource
     private fun filtrerAlltidValgbareVedlegg() =
         listOf(Language.Bokmal, Language.English)
             .flatMap { spraak ->
                 templates.hentAlltidValgbareVedlegg()
-                    .map { Arguments.of(it.vedlegg, EmptyVedleggData, spraak, it.kode.kode) }
-                    .distinctBy { it.get()[2].toString() + it.get()[3] }
+                    .map { Arguments.of(it.vedlegg, EmptyVedleggData, lagSaksbehandlervalg(), spraak, it.kode.kode) }
+                    .distinctBy { it.get()[2].toString() + it.get()[4] }
             }
 
 
@@ -125,7 +135,15 @@ abstract class BrevmodulTest(
             .flatMap { spraak ->
                 (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
                     .filter { shouldInclude(it) }
-                    .map { Arguments.of(it.template, it.kode, fixtures.create(it::class), spraak) }
+                    .map {
+                        val arguments = fixtures.create(it::class)
+                        val saksbehandlerValg = if (arguments is RedigerbarBrevdata<*>) {
+                            arguments.saksbehandlerValg
+                        } else {
+                            lagSaksbehandlervalg()
+                        }
+                        Arguments.of(it.template, it.kode, arguments, saksbehandlerValg, spraak)
+                    }
             }
     }
 
@@ -136,13 +154,14 @@ abstract class BrevmodulTest(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
+        val letter = LetterTestImpl(template, fixtures, saksbehandlerValg, spraak, FellesFactory.felles)
 
         letter.renderTestPDF(
             filnavn(brevkode, spraak),
@@ -157,6 +176,7 @@ abstract class BrevmodulTest(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
@@ -170,7 +190,7 @@ abstract class BrevmodulTest(
             FellesFactory.fellesAuto
         }
 
-        val letter = LetterTestImpl(template, fixtures, spraak, felles)
+        val letter = LetterTestImpl(template, fixtures, saksbehandlerValg, spraak, felles)
 
         letter.renderTestPDF(
             filnavn(brevkode, spraak),
@@ -185,6 +205,7 @@ abstract class BrevmodulTest(
         template: LetterTemplate<LanguageSupport, T>,
         brevkode: Brevkode<*>,
         fixtures: T,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
@@ -194,6 +215,7 @@ abstract class BrevmodulTest(
         LetterTestImpl(
             template,
             fixtures,
+            saksbehandlerValg,
             spraak,
             FellesFactory.felles,
         ).renderTestHtml(filnavn(brevkode, spraak))
@@ -204,6 +226,7 @@ abstract class BrevmodulTest(
     fun <T : VedleggData> testVedlegg(
         template: AttachmentTemplate<LanguageSupport, T>,
         fixtures: T,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         spraak: Language,
         clazzName: String,
     ) {
@@ -212,6 +235,7 @@ abstract class BrevmodulTest(
                 LetterTestImpl(
                     it,
                     fixtures,
+                    saksbehandlerValg,
                     spraak,
                     FellesFactory.felles,
                 ).renderTestHtml("${clazzName}_${spraak.javaClass.simpleName}", "test_vedlegg")
@@ -223,6 +247,7 @@ abstract class BrevmodulTest(
     fun <T : VedleggData> testAlltidValgbareVedlegg(
         template: AttachmentTemplate<LanguageSupport, T>,
         fixtures: T,
+        saksbehandlerValg: SaksbehandlervalgIDSL,
         spraak: Language,
         clazzName: String,
     ) {
@@ -231,6 +256,7 @@ abstract class BrevmodulTest(
                 LetterTestImpl(
                     it,
                     fixtures,
+                    saksbehandlerValg,
                     spraak,
                     FellesFactory.felles,
                 ).renderTestHtml("${clazzName}_${spraak.javaClass.simpleName}", "test_alltid_valgbare_vedlegg")

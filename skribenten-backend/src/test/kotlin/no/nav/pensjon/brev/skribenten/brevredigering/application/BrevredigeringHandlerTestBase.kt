@@ -591,7 +591,8 @@ abstract class BrevredigeringHandlerTestBase {
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*>,
-            felles: BrevbakerFelles
+            saksbehandlerValg: SaksbehandlervalgIDSL,
+            felles: BrevbakerFelles,
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
@@ -601,6 +602,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*>,
+            saksbehandlerValg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
             alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -618,6 +620,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*>,
+            saksbehandlerValg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
         ): RedigerbareVedleggTitler =
             RedigerbareVedleggTitler(
@@ -633,6 +636,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*>,
+            saksbehandlerValg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
         ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]

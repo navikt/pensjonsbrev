@@ -9,6 +9,7 @@ import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -20,7 +21,7 @@ import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.AutoLetterImpl
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -36,16 +37,18 @@ class LetterRoutesITest {
     private val autoBrevRequest = BestillBrevRequest(
         kode = LetterExample.kode,
         letterData = createLetterExampleDto(),
+        saksbehandlerValg = null,
         felles = FellesFactory.fellesAuto,
         language = LanguageCode.BOKMAL,
     )
     private val bestillMarkupRequest = BestillBrevRequest(
         kode = EksempelbrevRedigerbart.kode,
         letterData = createEksempelbrevRedigerbartDto(),
+        saksbehandlerValg = lagSaksbehandlervalg(),
         felles = FellesFactory.felles,
         language = LanguageCode.BOKMAL,
     )
-    private val redigertBestilling = LetterImpl(
+    private val redigertBestilling = AutoLetterImpl(
         template = EksempelbrevRedigerbart.template,
         argument = bestillMarkupRequest.letterData,
         language = Language.Bokmal,
@@ -53,7 +56,16 @@ class LetterRoutesITest {
     ).let { LetterTestRenderer.renderLetterOnly(it) }
         .let {
             with(bestillMarkupRequest) {
-                BestillRedigertBrevRequest(kode, letterData as EksempelRedigerbartDto, felles, language, it, listOf(), emptyMap())
+                BestillRedigertBrevRequest(
+                    kode,
+                    letterData as EksempelRedigerbartDto,
+                    lagSaksbehandlervalg(),
+                    felles,
+                    language,
+                    it,
+                    listOf(),
+                    emptyMap()
+                )
             }
         }
 
@@ -180,6 +192,7 @@ class LetterRoutesITest {
 private fun <T : Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
     kode = kode,
     letterData = this.letterData,
+    saksbehandlerValg = this.saksbehandlerValg,
     felles = this.felles,
     language = this.language
 )

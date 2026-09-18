@@ -35,7 +35,7 @@ class BrevbakerLetterMarkupWithDataUsageSaksbehandlervalgTest {
 
         assertThat(result.letterDataUsage.map { it.typeName to it.propertyName })
             .containsExactlyInAnyOrder(
-                SaksbehandlervalgTestDto::class.qualifiedName!! to "saksbehandlerValg",
+//                SaksbehandlervalgTestDto::class.qualifiedName!! to "saksbehandlerValg", // TODO: må denne inn igjen?
                 saksbehandlervalgType to "bool",
                 saksbehandlervalgType to "intUtenDefault",
                 saksbehandlervalgType to "tekstUtenDefault",

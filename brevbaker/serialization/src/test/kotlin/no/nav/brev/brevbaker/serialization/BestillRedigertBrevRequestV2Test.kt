@@ -41,6 +41,7 @@ class BestillRedigertBrevRequestV2Test {
     private fun request() = BestillRedigertBrevRequestV2(
         kode = RedigerbarBrevkode("TEST_BREV"),
         letterData = TestBrevdata(lagSaksbehandlervalg("begrunnelse" to "fordi"), TestPesysData(1234)),
+        saksbehandlerValg = lagSaksbehandlervalg("begrunnelse" to "fordi"),
         felles = felles(),
         language = LanguageCode.BOKMAL,
         letterMarkup = MarkupGoldenFixture.letter(),

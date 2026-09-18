@@ -9,22 +9,25 @@ import java.util.Objects
 class BestillBrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: BrevbakerBrevdata,
+    val saksbehandlerValg: SaksbehandlervalgIDSL? = (letterData as? RedigerbarBrevdata<*>)?.saksbehandlerValg,
     val felles: BrevbakerFelles,
     val language: LanguageCode,
-    val pdfVedlegg: List<PDFVedleggTittel> = listOf()
+    val pdfVedlegg: List<PDFVedleggTittel> = listOf(),
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillBrevRequest<*>) return false
         return kode == other.kode
                 && letterData == other.letterData
+                && saksbehandlerValg == other.saksbehandlerValg
                 && felles == other.felles
                 && language == other.language
                 && pdfVedlegg == other.pdfVedlegg
     }
 
-    override fun hashCode() = Objects.hash(kode, letterData, felles, language, pdfVedlegg)
+    override fun hashCode() = Objects.hash(kode, letterData, saksbehandlerValg, felles, language, pdfVedlegg)
 
-    override fun toString() = "BestillBrevRequest(kode=$kode, letterData=$letterData, felles=$felles, language=$language, pdfVedlegg=$pdfVedlegg)"
+    override fun toString() =
+        "BestillBrevRequest(kode=$kode, letterData=$letterData, saksbehandlerValg=$saksbehandlerValg, felles=$felles, language=$language, pdfVedlegg=$pdfVedlegg)"
 }
 
 interface BrevRequest<T : Brevkode<T>>

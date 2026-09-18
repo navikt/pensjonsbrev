@@ -12,7 +12,8 @@ interface TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerB
     fun getTemplate(kode: Kode): BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>? // TODO: Endre til å returnere T etter overstyrings-mekanisme er fjerna
 }
 
-class TemplateLibraryImpl<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(templates: Set<T>) : TemplateLibrary<Kode, T> {
+class TemplateLibraryImpl<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(templates: Set<T>) :
+    TemplateLibrary<Kode, T> {
     private val templates: Map<String, T> = templates.associateBy { it.kode.kode() }
 
     override fun listTemplatesWithMetadata() = templates.mapNotNull { getTemplate(it.key) }.map { it.description() }

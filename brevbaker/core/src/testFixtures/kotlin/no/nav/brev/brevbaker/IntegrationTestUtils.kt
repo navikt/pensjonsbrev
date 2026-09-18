@@ -179,10 +179,16 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
     }
 
 fun LetterTemplate<LangBokmal, EmptyAutobrevdata>.renderTestPDF(fileName: String, felles: BrevbakerFelles = FellesFactory.felles, pdfByggerService: PDFByggerService) =
-    LetterImpl(this, EmptyAutobrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
+    AutoLetterImpl(this, EmptyAutobrevdata, Bokmal, felles).renderTestPDF(
+        fileName,
+        pdfByggerService = pdfByggerService
+    )
 
 fun LetterTemplate<LangBokmal, EmptyAutobrevdata>.renderTestPDFV2(fileName: String, felles: BrevbakerFelles = FellesFactory.felles, pdfByggerService: PDFByggerService) =
-    LetterImpl(this, EmptyAutobrevdata, Bokmal, felles).renderTestPDFV2(fileName, pdfByggerService = pdfByggerService)
+    AutoLetterImpl(this, EmptyAutobrevdata, Bokmal, felles).renderTestPDFV2(
+        fileName,
+        pdfByggerService = pdfByggerService
+    )
 
 val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",
