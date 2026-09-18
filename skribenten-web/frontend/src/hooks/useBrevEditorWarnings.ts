@@ -19,7 +19,7 @@ interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: Sa
   redigertBrev: EditedDocument;
   propertyUsage?: PropertyUsage[];
   warnAboutMissingFromTemplate?: boolean;
-  getMissingFromTemplateVedleggCount?: () => number;
+  getMissingFromTemplateVedleggCount?: () => Promise<number>;
 }
 
 type WarningResult = { kind: WarnModalKind; count?: number } | null;
@@ -64,7 +64,7 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     [redigertBrev],
   );
 
-  const getWarning = useCallback((): WarningResult => {
+  const getWarning = useCallback(async (): Promise<WarningResult> => {
     const unedited = numberOfUneditedFritekstPlaceholders();
     const missingRequired = hasMissingRequiredSaksbehandlerValg();
 
@@ -78,7 +78,8 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
       return { kind: "tekstValg" };
     }
     if (warnAboutMissingFromTemplate) {
-      const missingFromTemplate = numberOfMissingFromTemplateBlocks() + (getMissingFromTemplateVedleggCount?.() ?? 0);
+      const missingFromTemplate =
+        numberOfMissingFromTemplateBlocks() + ((await getMissingFromTemplateVedleggCount?.()) ?? 0);
       if (missingFromTemplate > 0) {
         return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
       }

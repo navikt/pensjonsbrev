@@ -103,7 +103,7 @@ test.describe("Redigerbare vedlegg", () => {
       );
     });
 
-    test("henter ikke og varsler ikke om vedlegg som ikke er åpnet", async ({ page }) => {
+    test("henter og varsler om duplikate avsnitt i vedlegg som ikke er åpnet", async ({ page }) => {
       let hentinger = 0;
       await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
         hentinger += 1;
@@ -113,9 +113,8 @@ test.describe("Redigerbare vedlegg", () => {
       await expect(page.getByRole("tab", { name: "Brevmal" })).toHaveAttribute("aria-selected", "true");
       await page.getByRole("button", { name: "Fortsett", exact: true }).click();
 
-      await expect(page).toHaveURL(/brevbehandler/);
-      await expect(page.getByRole("dialog")).toBeHidden();
-      expect(hentinger).toBe(0);
+      await expect(page.getByRole("dialog")).toContainText("Du må velge om du vil beholde eller slette 1 avsnitt");
+      expect(hentinger).toBe(1);
     });
 
     test("teller duplikate avsnitt i flere vedlegg som er åpnet", async ({ page }) => {
