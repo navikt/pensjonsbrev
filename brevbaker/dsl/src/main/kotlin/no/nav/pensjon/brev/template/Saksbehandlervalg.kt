@@ -50,7 +50,6 @@ private class EttSaksbehandlervalgSelector<Type>(
         get() = saksbehandlervalgVerdi.typename
 }
 
-@Suppress("UNCHECKED_CAST")
 inline fun <reified LetterData : RedigerbarBrevdata<*>> TemplateRootScope<*, LetterData>.saksbehandlervalg(
     id: String,
     displayText: String,
