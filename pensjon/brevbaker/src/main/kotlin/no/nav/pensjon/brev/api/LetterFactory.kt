@@ -27,15 +27,15 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
     private val vedleggLibrary = AlltidValgbartVedleggLibrary(alltidValgbareVedlegg)
 
 
-    fun <T : BrevbakerBrevdata> createLetter(
+    fun createLetter(
         brevbestilling: BestillBrevRequest<Kode>,
-        template: BrevTemplate<T, out Brevkode<*>>?,
+        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
     ) =
         with(brevbestilling) { createLetter(template, kode, letterData, saksbehandlerValg, language, felles, listOf()) }
 
-    fun <T : BrevbakerBrevdata> createLetter(
+    fun createLetter(
         brevbestilling: BestillRedigertBrevRequest<Kode>,
-        template: BrevTemplate<T, out Brevkode<*>>?,
+        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
     ) =
         with(brevbestilling) {
             createLetter(
@@ -49,9 +49,9 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             )
         }
 
-    fun <T : BrevbakerBrevdata> createLetter(
+    fun createLetter(
         brevbestilling: BestillRedigertBrevRequestV2<Kode>,
-        template: BrevTemplate<T, out Brevkode<*>>?,
+        template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
     ) =
         with(brevbestilling) {
             createLetter(
@@ -65,15 +65,15 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             )
         }
 
-    private fun <T : BrevbakerBrevdata> createLetter(
-        brevTemplate: BrevTemplate<T, out Brevkode<*>>?,
+    private fun createLetter(
+        brevTemplate: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,
         brevkode: Kode,
-        brevdata: T,
+        brevdata: BrevbakerBrevdata,
         saksbehandlerValg: SaksbehandlervalgIDSL?,
         spraak: LanguageCode,
         felles: BrevbakerFelles,
         valgteVedlegg: List<AlltidValgbartVedleggKode>,
-    ): Letter<T> {
+    ): Letter<BrevbakerBrevdata> {
         val template =
             brevTemplate?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
@@ -111,10 +111,10 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         }
     }
 
-    private fun <T : BrevbakerBrevdata> parseArgument(
-        letterData: T,
-        template: LetterTemplate<*, T>,
-    ): T =
+    private fun parseArgument(
+        letterData: BrevbakerBrevdata,
+        template: LetterTemplate<*, BrevbakerBrevdata>,
+    ): BrevbakerBrevdata =
         try {
             objectMapper.convertValue(letterData, template.letterDataType.java)
         } catch (e: IllegalArgumentException) {

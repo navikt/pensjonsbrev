@@ -6,7 +6,6 @@ import io.ktor.server.routing.*
 import io.ktor.util.AttributeKey
 import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.api.countLetter
-import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -19,7 +18,7 @@ fun <T : Brevkode<T>> RoutingContext.installBrevkodeInCallContext(kode: Brevkode
 fun ApplicationCall.useBrevkodeFromCallContext(): String? = attributes.getOrNull(BREV_KODE)
 
 fun Route.autobrevRoutes(
-    autobrev: AutobrevTemplateResource<Brevkode.Automatisk, AutobrevData, AutobrevTemplate<*>>,
+    autobrev: AutobrevTemplateResource<Brevkode.Automatisk, AutobrevTemplate<*>>,
 ) {
     route("/${autobrev.name}") {
         post<BestillBrevRequest<Brevkode.Automatisk>>("/pdf") { brevbestilling ->
