@@ -21,6 +21,11 @@ export default defineConfig({
   server: {
     origin: "http://localhost:5173",
   },
+  // The search worker imports fuse.js, so its bundle gets code-split. Vite's
+  // build default for workers is "iife", which cannot import chunks.
+  worker: {
+    format: "es",
+  },
   test: {
     environment: "jsdom",
     globals: true, // Enables Vitest to automatically cleanup after each test
