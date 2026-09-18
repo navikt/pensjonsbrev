@@ -83,7 +83,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
         val initiertAvBrukerEllerVerge = pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)
         val initiertAvNav = pesysData.krav.kravInitiertAv.equalTo(NAV)
         val avdoedNavn = pesysData.avdoed.navn.ifNull(fritekst("Avdød navn"))
-        val skiltOver5Aar = saksbehandlervalg("SkiltOver5Aar", "Skilt for mer enn 5 år siden").bool()
+        val skiltOver5Aar = saksbehandlervalg("skiltOver5Aar", "Skilt for mer enn 5 år siden").bool()
         val samboerUtenFellesBarn = saksbehandlervalg("samboerUtenFellesBarn", "Samboer uten felles barn").bool()
         val underEttAarsMedlemstidEOESEllerAvtaleland = saksbehandlervalg("underEttAarsMedlemstidEOESEllerAvtaleland", "Under ett års medlemstid EØS eller avtaleland").bool()
         val underTreFemAarsMedlemstidNasjonalSak = saksbehandlervalg("underTreFemAarsMedlemstidNasjonalSak", "Under tre/fem års medlemstid nasjonal sak").bool()
@@ -147,7 +147,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         nynorsk { +"For å ha rettar etter ein fråskild ektefelle, kan det ikkje ha gått meir enn fem år mellom skilsmissa og dødsfallet. Dette går fram av folketrygdlova § 19-16 andre ledd. " +
                                 "Du og " + avdoedNavn + " vart skilde " + skiltDato + ". " + avdoedNavn + " døydde " + avdodeDodsdato + ". Sidan det gjekk meir enn fem år mellom skilsmissa og dødsfallet, oppfyller du ikkje vilkåra for gjenlevanderett etter " + avdoedNavn + "." },
                         english { +"To qualify for survivor’s rights based on a divorced spouse, no more than five years may have elapsed between the divorce and the death. This follows from Section 19-16, second paragraph, of the National Insurance Act. " +
-                                "You and " + avdoedNavn + " were divorced on " + skiltDato + ". " + avdoedNavn + " died on " + skiltDato + ". As more than five years elapsed between the divorce and the death, you do not meet the conditions for survivor’s rights based on " + avdoedNavn + ". " }
+                                "You and " + avdoedNavn + " were divorced on " + skiltDato + ". " + avdoedNavn + " died on " + avdodeDodsdato + ". As more than five years elapsed between the divorce and the death, you do not meet the conditions for survivor’s rights based on " + avdoedNavn + ". " }
                     )
                 }
             }
