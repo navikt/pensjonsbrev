@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val alderApiModelVersion = "0-2026.09.18-13.29-c814e4f267fd"
+val alderApiModelVersion = "0-2026.09.18-15.49-5b825fd054fe"
 
 val apiModelJavaTarget: String by System.getProperties()
 
