@@ -31,7 +31,7 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
     ) : FagsystemBrevdata {
         data class AlderspensjonVedVirk(val totalPensjon: Kroner, val uttaksgrad: Percent)
         data class Krav(val kravInitiertAv: KravInitiertAv)
-        data class Avdoed(val harTrygdetidNorge: Boolean, val harTrygdetidEOS: Boolean, val harTrygdetidAvtaleland: Boolean, val dodsfallDato: LocalDate)
+        data class Avdoed(val harTrygdetidNorge: Boolean, val harTrygdetidEOS: Boolean, val harTrygdetidAvtaleland: Boolean, val dodsfallDato: LocalDate, val navn: String)
         data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring)
         data class BeregnetPensjonPerManed(val antallBeregningsperioderPensjon: Int)
         data class Avtaleland(val erEOSLand: Boolean, val navn: String?)
