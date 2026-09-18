@@ -124,10 +124,12 @@ function AllTemplates() {
   const {
     query,
     setQuery,
+    needle,
     exactOnly,
     setExactOnly,
     isSearching,
     isLoading,
+    isPending,
     failedCount,
     failedMalTypes,
     retryFailed,
@@ -142,7 +144,7 @@ function AllTemplates() {
   const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
   const [page, setPage] = useState(1);
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset pagination whenever the query or tab changes.
-  useEffect(() => setPage(1), [query, activeTab]);
+  useEffect(() => setPage(1), [needle, activeTab]);
   const activeHits = activeTab === "innhold" ? contentHits : brevHits;
   const pageCount = Math.max(
     1,
@@ -150,8 +152,35 @@ function AllTemplates() {
   );
   const safePage = Math.min(page, pageCount);
   const pageStart = (safePage - 1) * (activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE);
-  const contentItems = contentHits.slice(pageStart, pageStart + CONTENT_PAGE_SIZE);
-  const brevItems = brevHits.slice(pageStart, pageStart + LETTER_PAGE_SIZE);
+  // Sliced inside a memo so the arrays keep their identity across renders that
+  // changed neither the hits nor the page - without that, the memoised lists
+  // below would be invalidated on every single render.
+  const contentItems = useMemo(
+    () => contentHits.slice(pageStart, pageStart + CONTENT_PAGE_SIZE),
+    [contentHits, pageStart],
+  );
+  const brevItems = useMemo(() => brevHits.slice(pageStart, pageStart + LETTER_PAGE_SIZE), [brevHits, pageStart]);
+  // The result lists are by far the most expensive thing on this page, and they
+  // depend only on the hits, the page and the needle - never on `isPending`.
+  // Memoising the elements lets React bail out of the whole subtree when the
+  // only thing that changed is the dimming, so toggling "Søker …" twice per
+  // search costs nothing while the user is typing.
+  const contentList = useMemo(
+    () =>
+      contentItems.map((hit) => (
+        <SearchSnippet
+          exact={exactOnly}
+          hit={hit}
+          key={`${hit.template.malType}/${hit.template.id}/${hit.template.language}`}
+          needle={needle}
+        />
+      )),
+    [contentItems, exactOnly, needle],
+  );
+  const brevList = useMemo(
+    () => <BrevResultList exact={exactOnly} hits={brevItems} needle={needle} />,
+    [brevItems, exactOnly, needle],
+  );
   return (
     <Box asChild background="default" height="100vh" overflow="hidden">
       <VStack flexGrow="1" gap="space-16" paddingBlock="space-16 space-0" paddingInline="space-16">
@@ -175,9 +204,11 @@ function AllTemplates() {
         <Detail aria-live="polite" textColor="subtle">
           {isLoading
             ? "Indekserer innhold …"
-            : `Søker i innholdet til ${templateTotal} maler på ${languageTotal} språk${
-                failedCount > 0 ? ` (${failedCount} feilet)` : ""
-              }`}
+            : isPending
+              ? "Søker …"
+              : `Søker i innholdet til ${templateTotal} maler på ${languageTotal} språk${
+                  failedCount > 0 ? ` (${failedCount} feilet)` : ""
+                }`}
         </Detail>
         {failedCount > 0 ? (
           <Alert size="small" variant="warning">
@@ -213,6 +244,7 @@ function AllTemplates() {
               <Box asChild flexGrow="1" overflow="hidden">
                 <Tabs.Panel value="innhold">
                   <SearchResultsPanel
+                    isPending={isPending}
                     page={safePage}
                     pageCount={Math.max(1, Math.ceil(contentHits.length / CONTENT_PAGE_SIZE))}
                     setPage={setPage}
@@ -237,14 +269,7 @@ function AllTemplates() {
                     ) : contentHits.length === 0 ? (
                       <BodyShort>Ingen treff i innholdet</BodyShort>
                     ) : (
-                      contentItems.map((hit) => (
-                        <SearchSnippet
-                          exact={exactOnly}
-                          hit={hit}
-                          key={`${hit.template.malType}/${hit.template.id}/${hit.template.language}`}
-                          needle={query}
-                        />
-                      ))
+                      contentList
                     )}
                   </SearchResultsPanel>
                 </Tabs.Panel>
@@ -252,6 +277,7 @@ function AllTemplates() {
               <Box asChild flexGrow="1" overflow="hidden">
                 <Tabs.Panel value="brev">
                   <SearchResultsPanel
+                    isPending={isPending}
                     page={safePage}
                     pageCount={Math.max(1, Math.ceil(brevHits.length / LETTER_PAGE_SIZE))}
                     setPage={setPage}
@@ -267,7 +293,7 @@ function AllTemplates() {
                       brevHits.length === 0 ? (
                         <BodyShort>Ingen treff i tittel, navn eller brevkode</BodyShort>
                       ) : (
-                        <BrevResultList exact={exactOnly} hits={brevItems} needle={query} />
+                        brevList
                       )
                     ) : (
                       <VStack gap="space-20">
