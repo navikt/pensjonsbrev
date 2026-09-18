@@ -37,18 +37,20 @@ class BrevmalService(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         saksbehandlerValg: SaksbehandlervalgMap,
-        pesysData: BrevdataResponse.Data
-    ): LetterMarkupWithDataUsage =
-        brevbakerService.renderMarkup(
+        pesysData: BrevdataResponse.Data,
+    ): LetterMarkupWithDataUsage {
+        val brevdata = GeneriskRedigerbarBrevdata(
+            pesysData = pesysData.brevdata,
+            saksbehandlerValg = saksbehandlerValg,
+        )
+        return brevbakerService.renderMarkup(
             brevkode = brevkode,
             spraak = spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = saksbehandlerValg,
-            ),
-            saksbehandlerValg = saksbehandlerValg,
+            brevdata = brevdata,
+            saksbehandlerValg = brevdata.saksbehandlerValg,
             felles = pesysData.felles
         )
+    }
 
     suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): LetterMarkupWithDataUsage =
         renderMarkup(
@@ -58,33 +60,44 @@ class BrevmalService(
             pesysData = pesysData,
         )
 
-    suspend fun hentRedigerbareVedleggTitler(brev: Brevredigering, pesysData: BrevdataResponse.Data): RedigerbareVedleggTitler? =
-        brevbakerService.hentRedigerbareVedleggTitler(
+    suspend fun hentRedigerbareVedleggTitler(
+        brev: Brevredigering,
+        pesysData: BrevdataResponse.Data,
+    ): RedigerbareVedleggTitler? {
+        val brevdata = GeneriskRedigerbarBrevdata(
+            pesysData = pesysData.brevdata,
+            saksbehandlerValg = brev.saksbehandlerValg,
+        )
+        return brevbakerService.hentRedigerbareVedleggTitler(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = brev.saksbehandlerValg,
-            ),
-            saksbehandlerValg = brev.saksbehandlerValg,
+            brevdata = brevdata,
+            saksbehandlerValg = brevdata.saksbehandlerValg,
             felles = pesysData.felles,
         )
+    }
 
     suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
         brevbakerService.harRedigerbareVedlegg(brevkode)
 
-    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: VedleggId): LetterMarkup.Attachment? =
-        brevbakerService.renderRedigerbartVedlegg(
+    suspend fun renderRedigerbartVedlegg(
+        brev: Brevredigering,
+        pesysData: BrevdataResponse.Data,
+        vedleggId: VedleggId,
+    ): LetterMarkup.Attachment? {
+        val brevdata = GeneriskRedigerbarBrevdata(
+            pesysData = pesysData.brevdata,
+            saksbehandlerValg = brev.saksbehandlerValg,
+        )
+        return brevbakerService.renderRedigerbartVedlegg(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = brev.saksbehandlerValg,
-            ),
-            saksbehandlerValg = brev.saksbehandlerValg,
+            brevdata = brevdata,
+            saksbehandlerValg = brevdata.saksbehandlerValg,
             felles = pesysData.felles,
             vedleggId = vedleggId,
         )
+    }
 
     suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, LetterMarkup.Attachment> =
         brev.redigerteVedlegg.mapNotNull { lagret ->

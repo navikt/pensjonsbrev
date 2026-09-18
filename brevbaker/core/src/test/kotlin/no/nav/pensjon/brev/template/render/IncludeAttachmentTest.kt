@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
-import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.LangNynorsk
@@ -109,7 +108,7 @@ class IncludeAttachmentTest {
 
         @Test
         fun `editable attachment is not included when attachmentData is null`() {
-            val letter = LetterImpl(testTemplate, NullData(null), Nynorsk, FellesFactory.felles)
+            val letter = LetterTestImpl(testTemplate, NullData(null), Nynorsk, FellesFactory.felles)
 
             assertThat(Letter2Markup.render(letter).attachments).isEmpty()
             assertThat(Letter2Markup.renderEditableAttachmentTitles(letter.toScope(), testTemplate)).isEmpty()
@@ -117,7 +116,7 @@ class IncludeAttachmentTest {
 
         @Test
         fun `editable attachment is included with data and editable id when attachmentData is not null`() {
-            val letter = LetterImpl(testTemplate, NullData(VedleggData("testtekst")), Nynorsk, FellesFactory.felles)
+            val letter = LetterTestImpl(testTemplate, NullData(VedleggData("testtekst")), Nynorsk, FellesFactory.felles)
 
             assertThat(Letter2Markup.render(letter)).hasAttachments {
                 attachment {
