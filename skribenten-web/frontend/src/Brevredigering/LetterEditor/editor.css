@@ -29,6 +29,11 @@
   user-select: text;
 }
 
+.editor-surface td,
+.editor-surface th {
+  cursor: text;
+}
+
 .editor-surface.is-drag-selecting [data-literal-index] {
   caret-color: transparent;
 }
