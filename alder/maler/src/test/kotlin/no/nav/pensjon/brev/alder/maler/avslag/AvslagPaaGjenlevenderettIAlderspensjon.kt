@@ -36,7 +36,8 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
             harTrygdetidNorge = false,
             harTrygdetidEOS = false,
             harTrygdetidAvtaleland = true,
-            dodsfallDato = LocalDate.of(2020, 2, 4)
+            dodsfallDato = LocalDate.of(2020, 2, 4),
+            navn = "Kari Nordmann"
         ),
         ytelseskomponentInformasjon = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.YtelseskomponentInformasjon(
             beloepEndring = BeloepEndring.ENDR_OKT
