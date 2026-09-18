@@ -36,7 +36,7 @@ Et arkivert brev kan nå slettes når mottakeren er registrert som død. Andre a
 
 === Ting vi jobber med
 
-* Videre arbeid med førstesider og hvordan disse velges og vises. Vi skal avklare behovet med brukerne før vi førsteside blir aktivert i produksjon
+* Videre arbeid med førstesider og hvordan disse velges og vises. Vi skal avklare behovet med brukerne før førstesiden blir aktivert i produksjon
 * Videre arbeid med datadrevet innsikt og måling av brevproduksjon
 
 === Kjente problemer og behov vi tenker på
