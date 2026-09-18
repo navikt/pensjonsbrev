@@ -9,7 +9,7 @@ import java.util.Objects
 class BestillBrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: BrevbakerBrevdata,
-    val saksbehandlerValg: SaksbehandlervalgIDSL?,
+    val saksbehandlerValg: SaksbehandlervalgIDSL? = (letterData as? RedigerbarBrevdata<*>)?.saksbehandlerValg,
     val felles: BrevbakerFelles,
     val language: LanguageCode,
     val pdfVedlegg: List<PDFVedleggTittel> = listOf(),
