@@ -104,7 +104,7 @@ class RedigerbarTemplateResourceTest {
                     it.letterData,
                     it.felles,
                     Language.Bokmal,
-                    saksbehandlerValg = it.saksbehandlerValg
+                    saksbehandlerValg = it.saksbehandlerValg!!
                 )
             },
             EksempelbrevRedigerbart.template
