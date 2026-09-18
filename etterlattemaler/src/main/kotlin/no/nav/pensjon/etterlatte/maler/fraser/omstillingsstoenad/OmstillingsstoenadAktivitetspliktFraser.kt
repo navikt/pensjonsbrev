@@ -60,6 +60,13 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         text(
+                            bokmal { +"du blir innvilget full uføretrygd (omstillingsstønaden skal stoppe)" },
+                            nynorsk { +"du blir innvilga full uføretrygd (omstillingsstønaden skal stoppe)" },
+                            english { +"you will be granted full disability benefit (the adjustment allowance will stop)" },
+                        )
+                    }
+                    item {
+                        text(
                             bokmal { +"du ikke lenger er arbeidssøker" },
                             nynorsk { +"du er ikkje lenger arbeidssøkjar" },
                             english { +"you are no longer a job seeker" },
