@@ -119,7 +119,7 @@ object BarnepensjonFellesFraser {
                                 "på kvardagar mellom klokka 09.00 og 15.00. Dersom du oppgjev fødselsnummeret til barnet, kan vi lettare gi deg rask og god hjelp."
                         },
                         english {
-                            +"You can find more information at ${Constants.Engelsk.BARNEPENSJON_URL}. At ${Constants.KONTAKT_URL}, you can chat with us or send us a message. " +
+                            +"You can find more information at ${Constants.Engelsk.BARNEPENSJON_URL}. At ${Constants.Engelsk.KONTAKT_URL}, you can chat with us or send us a message. " +
                                 "If you cannot find the answer you’re looking for on ${Constants.NAV_URL}, you can call us on ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE} " +
                                 "on weekdays between 9:00 AM and 3:00 PM. If you provide your child's national identity number, we can more easily provide you with quick and good help."
                         }
@@ -139,9 +139,9 @@ object BarnepensjonFellesFraser {
                                 "på kvardagar mellom klokka 09.00 og 15.00. Dersom du oppgjev fødselsnummeret ditt, kan vi lettare gi deg rask og god hjelp."
                         },
                         english {
-                            +"You can find more information at ${Constants.Engelsk.BARNEPENSJON_URL}. At ${Constants.KONTAKT_URL}, you can chat with us or send us a message. " +
+                            +"You can find more information at ${Constants.Engelsk.BARNEPENSJON_URL}. At ${Constants.Engelsk.KONTAKT_URL}, you can chat with us or send us a message. " +
                                 "If you cannot find the answer you’re looking for on ${Constants.NAV_URL}, you can call us on ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE} " +
-                                "on weekdays between 9:00 AM and 3:00 PM. If you provide your national insurance number, we can help you more quickly and effectively."
+                                "on weekdays between 9:00 AM and 3:00 PM. If you provide your national identity number, we can help you more quickly and effectively."
                         }
                     )
                 }
