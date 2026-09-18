@@ -111,7 +111,7 @@ sealed class Expression<out Out> : StableHash {
 
         class Saksbehandlervalg @InternKonstruktoer constructor() : FromScope<SaksbehandlervalgIDSL>() {
             override fun eval(scope: ExpressionScope<*>) = scope.saksbehandlerValg
-            override fun equals(other: Any?): Boolean = other is SaksbehandlervalgIDSL
+            override fun equals(other: Any?): Boolean = other is Saksbehandlervalg
             override fun hashCode(): Int = javaClass.hashCode()
             override fun stableHashCode(): Int = "FromScope.Saksbehandlervalg".hashCode()
         }

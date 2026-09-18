@@ -114,7 +114,7 @@ abstract class BrevmodulTest(
             }
         }
         .filterNotNull()
-        .distinctBy { it.get()[2].toString() + it.get()[3] }
+        .distinctBy { it.get()[2].toString() + it.get()[4] }
 
     @Suppress("unused") // Brukt i MethodSource
     private fun filtrerAlltidValgbareVedlegg() =
@@ -122,7 +122,7 @@ abstract class BrevmodulTest(
             .flatMap { spraak ->
                 templates.hentAlltidValgbareVedlegg()
                     .map { Arguments.of(it.vedlegg, EmptyVedleggData, lagSaksbehandlervalg(), spraak, it.kode.kode) }
-                    .distinctBy { it.get()[2].toString() + it.get()[3] }
+                    .distinctBy { it.get()[2].toString() + it.get()[4] }
             }
 
 

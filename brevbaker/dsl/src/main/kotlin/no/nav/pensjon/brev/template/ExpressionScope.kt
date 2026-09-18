@@ -73,7 +73,7 @@ data object EmptySaksbehandlervalgIDSL : SaksbehandlervalgIDSL {
     override val values: Collection<Any?> = emptySet()
     override val entries: Set<Map.Entry<String, Any?>> = emptySet()
     override fun isEmpty() = true
-    override fun containsKey(key: String) = true
+    override fun containsKey(key: String) = false
     override fun containsValue(value: Any?) = false
     override fun get(key: String): Any? = null
 }
