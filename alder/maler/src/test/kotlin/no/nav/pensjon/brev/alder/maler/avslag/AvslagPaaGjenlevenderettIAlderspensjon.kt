@@ -16,6 +16,7 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
         "samboerUtenFellesBarn" to false,
         "avdoedNavn" to "Peder Ås",
         "underEttAarsMedlemstidEOESEllerAvtaleland" to true,
+        "skiltOver5Aar" to true,
         "underTreFemAarsMedlemstidNasjonalSak" to false,
         "underTreFemAarsMedlemstidEOESSak" to false,
         "underTrefemAarsMedlemstidAvtalesak" to true,
