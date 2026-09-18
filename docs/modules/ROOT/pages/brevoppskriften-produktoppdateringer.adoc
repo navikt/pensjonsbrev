@@ -1,0 +1,11 @@
+= Produktoppdateringer
+
+Her publiserer Team Pensjonsbrev månedlige oppdateringer om hva som er nytt i Brevoppskriften.
+Du finner informasjon om nye funksjoner, forbedringer og feilrettinger.
+
+== September 2026
+Søk +
+Det er nå mulig å søke etter innhold, brevtittel og brevkode i både automatiske og redigerbare brev.
+Søket tåler mindre skrivefeil, men kan også avgrenses til nøyaktige treff. Treff på korte søkeord er forbedret, slik at man f.eks. kan søke etter '§'.
+Mal-visning +
+En ny versjon av visningen av malene gjør det lettere å se brevteksten. Logikken kan fortsatt hentes frem der man ønsker. Navigerer man via søk til malvisningen får man også uthevet søketreffene i malen.
