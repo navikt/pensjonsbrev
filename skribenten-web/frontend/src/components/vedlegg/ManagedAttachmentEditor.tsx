@@ -58,8 +58,7 @@ export const ManagedAttachmentEditor = (props: AttachmentEditorProps) => {
   const { saksId, brev, vedleggId, redigeringsflate } = props;
 
   const vedleggQuery = useQuery({
-    queryKey: getRedigerbartVedlegg.queryKey(brev.info.id, vedleggId, redigeringsflate),
-    queryFn: ({ signal }) => getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId, redigeringsflate, signal),
+    ...getRedigerbartVedlegg(saksId, brev.info.id, vedleggId, redigeringsflate),
     // Pinned: only a save or reset response should ever update this query's data once the session
     // has activated with it — a background refetch (e.g. on window focus) that resolves after an
     // autosave must not put pre-edit content back in the cache for a later remount to pick up.

@@ -1,11 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { getRedigerbartVedlegg } from "~/api/redigerbareVedlegg-endpoints";
-import { countMissingFromTemplateBlocks } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
-import { logError } from "~/utils/logger";
+import { useVedleggEditorWarnings } from "~/hooks/useVedleggEditorWarnings";
 
 /**
  * Handles document switching and ensures the active vedlegg is saved before navigation.
@@ -18,15 +15,15 @@ export const useActiveDocumentCoordinator = (args: {
   navigateToDocument: (vedleggId: string | undefined) => Promise<void>;
 }) => {
   const { saksId, brevId, activeVedleggId, redigeringsflate, navigateToDocument } = args;
-  const queryClient = useQueryClient();
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const activeVedleggSaveRef = useRef<(() => Promise<void>) | null>(null);
   const [savingActiveDocument, setSavingActiveDocument] = useState(false);
-  const missingFromTemplateCounts = useRef<Record<string, number>>({});
-
-  const registerVedleggMissingFromTemplate = useCallback((vedleggId: string, count: number) => {
-    missingFromTemplateCounts.current[vedleggId] = count;
-  }, []);
+  const { registerVedleggMissingFromTemplate, getMissingFromTemplateCount } = useVedleggEditorWarnings({
+    saksId,
+    brevId,
+    redigeringsflate,
+    vedlegg: redigerbareVedleggQuery.data,
+  });
 
   const registerVedleggSave = useCallback((saveNow: (() => Promise<void>) | null) => {
     activeVedleggSaveRef.current = saveNow;
@@ -64,35 +61,6 @@ export const useActiveDocumentCoordinator = (args: {
       void selectDocument(undefined);
     }
   }, [vedleggExists, selectDocument]);
-
-  const getMissingFromTemplateCount = async (): Promise<number> => {
-    if (redigeringsflate !== "saksbehandler-redigering") return 0;
-
-    let total = 0;
-    for (const vedlegg of redigerbareVedleggQuery.data ?? []) {
-      const localCount = missingFromTemplateCounts.current[vedlegg.vedleggId];
-      if (localCount !== undefined) {
-        // The attachment is (or has been) opened in this session: the local count is freshest.
-        total += localCount;
-        continue;
-      }
-      // Attachments never opened must be counted from the server content. The fetch is cached,
-      // so it only happens for attachments whose content we do not already have.
-      try {
-        const content = await queryClient.fetchQuery({
-          queryKey: getRedigerbartVedlegg.queryKey(brevId, vedlegg.vedleggId, redigeringsflate),
-          queryFn: ({ signal }) =>
-            getRedigerbartVedlegg.queryFn(saksId, brevId, vedlegg.vedleggId, redigeringsflate, signal),
-          staleTime: Number.POSITIVE_INFINITY,
-        });
-        total += countMissingFromTemplateBlocks(content);
-      } catch (error) {
-        // A failed fetch must not block submission — the warning is only a help feature.
-        logError(error, undefined).catch(() => console.error("Unable to log error message"));
-      }
-    }
-    return total;
-  };
 
   return {
     activeVedleggId: vedleggExists ? activeVedleggId : undefined,
