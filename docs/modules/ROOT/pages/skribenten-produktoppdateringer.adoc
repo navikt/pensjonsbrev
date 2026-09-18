@@ -2,6 +2,48 @@
 
 Her publiserer Team Pensjonsbrev månedlige oppdateringer om hva som er nytt i Skribenten. Du finner informasjon om nye funksjoner, forbedringer og feilrettinger.
 
+== Juli–september 2026
+
+Sommeren og starten på høsten har vært preget av videre arbeid med redigerbare vedlegg. Vi har også gjort Skribenten mer robust, fått bedre innsikt i bruken og flyttet flere brev over på en felles løsning for saksbehandlervalg.
+
+=== Nye ting vi har laget
+
+* Nummererte lister vises og kan redigeres [#2910]
+* Redigerbare vedlegg kan nå brukes i flere brevtyper [#3789] [#3875] [#3887]
+* Det er lagt til målinger for hvem brev fra Skribenten sendes til, hvilken distribusjon som brukes og hvilken avsenderenhet som sender brevet [#3848]
+
+== Ting vi har forbedret
+
+* Bedre støtte for vedlegg
+Flere brevmaler tilbyr nå relevante, valgfrie vedlegg. Endringer i redigerbare vedlegg blir tatt vare på frem til brevet går til attestering.  
+* Tydeligere endringer ved attestering
+Attestanten får bedre oversikt over tekst som saksbehandleren har lagt til eller slettet. Endringer i blant annet lister og tabeller vises også tydeligere.  
+* Tryggere sending av brev 
+Brevet kan ikke sendes før riktig og oppdatert PDF er klar. Dette reduserer risikoen for at attestanten sender en eldre versjon etter redigering.  
+* Enklere registrering av manuell adresse
+Arbeidsflyten for manuell adresse er tydeligere. Land velges før adressen fylles ut, og det går klarere frem om brevet skal sendes til brukeren eller en annen mottaker.
+* Enklere brevredigering
+Nummererte lister kan vises og redigeres. Ved tastaturnavigering følger visningen markøren gjennom lange brev, og manglende fritekstfelt er enklere å finne og rette. Angre og gjør om kan brukes mens brevet lagres automatisk.  
+* Arkiverte brev kan slettes for avdøde mottakere 
+Et arkivert brev kan nå slettes når mottakeren er registrert som død. Andre arkiverte brev er fortsatt beskyttet mot sletting.
+
+
+=== Ting vi har fikset
+
+* Feilen med duplikate avsnitt er fikset
+* Brev beholder nå journalpostId selv om sendingen feiler etter at brevet er journalført [#3858]
+* Oppdatert flere avhengigheter med sikkerhetsfikser og forbedret sikkerhet i bygg- og deployløypa [#3793] [#3852] [#3854] [#3855]
+
+=== Ting vi jobber med
+
+* Videre arbeid med førstesider og hvordan disse velges og vises. Vi skal avklare behovet med brukerne før vi førsteside blir aktivert i produksjon
+* Videre arbeid med datadrevet innsikt og måling av brevproduksjon
+
+=== Kjente problemer og behov vi tenker på
+
+* Redigerbare vedlegg gjør redigeringsmodellen mer kompleks, og vi må fortsatt sikre god sammenheng mellom brev, vedlegg og PDF
+
+
 == Juni 2026
 Juni har vært preget av bedre feilhåndtering og en del arbeid med attestering og reservasjon av brev, i tillegg til at vi har lagt grunnlaget for redigerbare vedlegg!
 
