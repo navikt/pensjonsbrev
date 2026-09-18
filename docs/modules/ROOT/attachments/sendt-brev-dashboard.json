@@ -38,7 +38,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "### Omfang: kun redigerbare Skribenten-brev\n\nTallene dekker **ikke** legacy Exstream-bestillinger, og er derfor *ikke* totalen for alle brev fra Skribenten.\n\n- **«Sendt», ikke «forsøkt sendt».** Brev som får journalpost, men feiler under distribusjon, telles ikke.\n- **Tellingen er asynkron.** Dør poden mellom sending og telling, går den ene tellingen tapt. Tallene er et godt bilde av *fordelingen*, men ikke en revisjonssikker fasit på *antall*.\n- **Antallene er avrundede anslag.** Tellerne nullstilles ved deploy, så panelene måler økning over tidsrommet; utregningen ekstrapolerer og kan avvike med ±1.\n\nDokumentasjon: `docs/modules/ROOT/pages/sendtbrevmetrikk.adoc` i `navikt/pensjonsbrev`."
+        "content": "### Omfang: kun redigerbare Skribenten-brev\n\nTallene dekker **ikke** legacy Exstream-bestillinger, og er derfor *ikke* totalen for alle brev fra Skribenten.\n\n- **«Sendt», ikke «forsøkt sendt».** Brev som får journalpost, men feiler under distribusjon, telles ikke.\n- **Tellingen er asynkron.** Dør poden mellom sending og telling, går den ene tellingen tapt. Tallene er et godt bilde av *fordelingen*, men ikke en revisjonssikker fasit på *antall*.\n- **Antallene er avrundede anslag.** Tellerne nullstilles ved deploy, så panelene måler økning over tidsrommet; utregningen ekstrapolerer og kan avvike med ±1.\n- **Organisasjonstallene er anslag.** Organisasjonsnumre måles via hash-bøtter, ikke direkte, og panelene nederst er derfor omtrentlige. Samhandlervolumet er foreløpig lavt, så tallene er små.\n\nDokumentasjon: `docs/modules/ROOT/pages/sendtbrevmetrikk.adoc` i `navikt/pensjonsbrev`."
       },
       "transparent": false
     },
@@ -1608,6 +1608,236 @@
               "Value #C": "Andel ikke-bruker"
             }
           }
+        }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Identtype for samhandlere",
+      "description": "Hva samhandleren er registrert med i TSS. ORG dekker både kodene ORG og ORGNR. ANNEN er alt annet (UTOR, DNR, EOS, INST ...), og UKJENT betyr at oppslaget mot samhandler-proxy feilet.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 47
+      },
+      "id": 13,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "value",
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (id_type) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", mottaker=\"SAMHANDLER\"}[$__range])))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "{{id_type}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Organisasjoner bak samhandlerbrevene",
+      "description": "Anslag på hvor mange forskjellige organisasjoner som har mottatt brev, utledet av hvor mange av de 128 hash-bøttene som er i bruk: -128*ln(1 - bøtter/128). Les alltid anslaget mot antall brev under - antall organisasjoner kan aldri overstige det. Under ~30 er tallet nesten eksakt, over ~150 er det et reelt anslag, og ved 128 bøtter i bruk er metrikken mettet og anslaget ubrukelig. Merk at denne metrikken ikke har avsender_enhet som label, så panelet ignorerer variabelen Avsenderenhet og viser alltid tallet for hele utvalget.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 47
+      },
+      "id": 14,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "-128 * ln(1 - (count(sum by (org_bucket) (increase(skribenten_brev_sendt_samhandler_org_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}[$__range])) > 0) / 128))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "Anslag distinkte organisasjoner",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "count(sum by (org_bucket) (increase(skribenten_brev_sendt_samhandler_org_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}[$__range])) > 0)",
+          "instant": true,
+          "range": false,
+          "legendFormat": "Bøtter i bruk (av 128)",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum(increase(skribenten_brev_sendt_samhandler_org_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}[$__range])))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "Brev med organisasjonsnummer",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Andel til de 5 største bøttene",
+      "description": "Konsentrasjonsmål: hvor stor andel av brevene med organisasjonsnummer som treffer de fem mest brukte hash-bøttene. Høy andel betyr at brevene stort sett går til et lite utvalg organisasjoner. Er få bøtter i bruk, utgjør fem bøtter mye uansett - les tallet sammen med «Bøtter i bruk» i panelet ved siden av. Merk at denne metrikken ikke har avsender_enhet som label, så panelet ignorerer variabelen Avsenderenhet og viser alltid tallet for hele utvalget.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 47
+      },
+      "id": 15,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value_and_name",
+        "wideLayout": true,
+        "showPercentChange": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * sum(topk(5, sum by (org_bucket) (increase(skribenten_brev_sendt_samhandler_org_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}[$__range]))))\n/\nsum(increase(skribenten_brev_sendt_samhandler_org_total{app=\"$app\", k8s_cluster_name=~\"$cluster\"}[$__range]))",
+          "instant": true,
+          "range": false,
+          "legendFormat": "Andel",
+          "refId": "A"
         }
       ]
     }

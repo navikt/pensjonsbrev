@@ -24,7 +24,11 @@ Et brev som får journalpost, men feiler under distribusjon, telles ikke — tal
 
 | `samhandler_type`
 | Kodeverksverdi (`ADVO`, `LE`, `FULL` …), `IKKE_RELEVANT`, `UKJENT`
-| `UKJENT` når oppslaget mot samhandler-proxy feiler.
+| `UKJENT` når oppslaget mot samhandler-proxy feiler, eller når TSS svarer uten samhandlertype.
+
+| `id_type`
+| `FNR`, `ORG`, `ANNEN`, `IKKE_RELEVANT`, `UKJENT`
+| Hva samhandleren er identifisert med. `ORG` dekker både kodene `ORG` og `ORGNR`, siden vi ikke har fått bekreftet hvilken TSS bruker. `ANNEN` er alt annet (`UTOR`, `DNR`, `EOS`, `INST` …), mens `UKJENT` betyr at oppslaget feilet eller at identtypen manglet i svaret.
 
 | `adressert_til`
 | `BRUKER`, `ANNEN`, `IKKE_RELEVANT`
@@ -39,11 +43,89 @@ Et brev som får journalpost, men feiler under distribusjon, telles ikke — tal
 | Fra brevets avsenderenhet.
 |===
 
+== Organisasjonsnumre
+
+`skribenten_brev_sendt_samhandler_org_total` svarer på et annet spørsmål enn labelene over: *går samhandlerbrevene stort sett til de samme organisasjonene, eller til mange forskjellige?*
+
+Organisasjonsnummeret kan ikke være label — det har ingen øvre grense, og `avsender_enhet` har allerede måttet få et kardinalitetstak.
+I stedet plasseres hvert nummer i én av 128 hash-bøtter:
+
+[source]
+----
+org_bucket = (de fire første bytene av SHA-256(orgnr) som usignert 32-bit) mod 128
+----
+
+Telleren økes kun når `id_type` er `ORG`.
+Fødselsnumre bøttes bevisst ikke: en hash av et fødselsnummer regnes som en pseudonymisert personopplysning, og vi trenger den ikke.
+
+SHA-256 og ikke `String.hashCode()`: sistnevnte er svakt fordelt for numeriske strenger av lik lengde, altså nøyaktig det et organisasjonsnummer er.
+SHA-256 er dessuten stabil per definisjon, så ingen JDK-oppgradering kan flytte bøttene.
+
+Orgnummeret kan ikke leses ut av metrikken.
+128 bøtter mot ~1 million mulige organisasjonsnumre gir så massiv kollisjon at et bøttenummer ikke peker på noen bestemt organisasjon.
+
+=== Å lese antall organisasjoner ut av bøttene
+
+Antall bøtter *i bruk* gir et anslag på antall distinkte organisasjoner:
+
+[source]
+----
+n̂ = -128 * ln(1 - bøtterIBruk/128)
+----
+
+[cols="1,1,1", options="header"]
+|===
+| Distinkte orgnr | Bøtter i bruk (av 128) | Standardavvik
+
+| 5   | 4,9   | 0,3
+| 10  | 9,7   | 0,6
+| 20  | 18,6  | 1,1
+| 50  | 41,5  | 2,3
+| 100 | 69,6  | 3,3
+| 200 | 101,3 | 3,5
+| 300 | 115,8 | 2,9
+| 500 | 125,5 | 1,5
+|===
+
+Under ~30 distinkte organisasjoner er kollisjoner så sjeldne at «bøtter i bruk» i praksis *er* antallet.
+Over ~150 er tallet et reelt anslag.
+Ved ~600 er alle bøttene i bruk og metrikken slutter å skille.
+
+Konsentrasjonsmålet — hvor stor andel av brevene som treffer de største bøttene — virker uansett antall, og er det som direkte besvarer «stort sett et lite utvalg?».
+
+=== Forbehold ved orgnr-anslaget
+
+Taket er antall brev::
+Antall distinkte organisasjoner kan aldri overstige antall orgnr-brev i vinduet.
+Les derfor alltid anslaget sammen med `sum(increase(...))` for samme metrikk.
+Med ~130 samhandlerbrev per 30 dager er et anslag på «over 500» ikke mulig — det er ikke nok brev.
+
+Bøttene er frosset::
+Både antall bøtter og hashfunksjonen er låst ved deploy.
+Endres én av dem, flyttes alle organisasjonsnumre til nye bøtter og historikken blir verdiløs.
+Testen `hashen er frosset` i `SendtBrevMetrikkerTest` låser dette med hardkodede forventninger.
++
+Blir metrikken for trang — samhandlerbrev over ~1 000 per 30 dager, eller over 100 bøtter i bruk — er svaret *en ny metrikk med nytt navn*, ikke en endring av de eksisterende konstantene.
+
+Telleren er per brev, ikke per organisasjon::
+En organisasjon som får ti brev, gir verdien 10 i én bøtte — ikke 1.
+Det er «bøtter i bruk» som sier noe om antall organisasjoner, mens selve verdiene sier noe om konsentrasjonen.
+
+Avdelinger slås sammen::
+Én organisasjon kan ha flere TSS-avdelinger med hvert sitt `idTSSEkstern`, men samme organisasjonsnummer.
+De havner i samme bøtte, så målingen teller organisasjoner — ikke samhandleroppføringer.
+
 == Begrensninger
 
 Nullstilling::
 Tellere nullstilles ved pod-restart og deploy.
 Bruk alltid `increase()` eller `rate()`, aldri den rå verdien.
+
+Nye labels bryter serien::
+En ny label på en eksisterende teller gir nye tidsserier.
+Et vindu som spenner over en slik deploy — `increase(skribenten_brev_sendt_total[30d])` rett etterpå — leser den gamle og den nye serien som to separate tellere som begge starter på null.
+Summér over labelen (`sum(increase(...))`), eller legg vinduet helt etter deployen.
+Dette gjelder `id_type`, som er nyere enn de øvrige labelene.
 
 Omfang::
 Metrikken dekker kun *redigerbare Skribenten-brev*.
@@ -106,6 +188,43 @@ sum by (adressert_til) (increase(skribenten_brev_sendt_total{
   mottaker=~"NORSK_ADRESSE|UTENLANDSK_ADRESSE"}[30d]))
 ----
 
+Hva samhandlerne er identifisert med:
+
+[source]
+----
+sum by (id_type) (increase(skribenten_brev_sendt_total{
+  app="skribenten-backend", k8s_cluster_name="prod", mottaker="SAMHANDLER"}[30d]))
+----
+
+Bøtter i bruk, og anslaget på antall distinkte organisasjoner:
+
+[source]
+----
+count(sum by (org_bucket) (increase(skribenten_brev_sendt_samhandler_org_total{
+  app="skribenten-backend", k8s_cluster_name="prod"}[30d])) > 0)
+----
+
+[source]
+----
+-128 * ln(1 -
+  count(sum by (org_bucket) (increase(skribenten_brev_sendt_samhandler_org_total{
+    app="skribenten-backend", k8s_cluster_name="prod"}[30d])) > 0) / 128)
+----
+
+Konsentrasjon — andelen av orgnr-brevene som treffer de fem største bøttene:
+
+[source]
+----
+sum(topk(5, sum by (org_bucket) (increase(skribenten_brev_sendt_samhandler_org_total{
+      app="skribenten-backend", k8s_cluster_name="prod"}[30d]))))
+/
+sum(increase(skribenten_brev_sendt_samhandler_org_total{
+      app="skribenten-backend", k8s_cluster_name="prod"}[30d]))
+----
+
+Er andelen høy, går brevene stort sett til et lite utvalg organisasjoner.
+Med få bøtter i bruk er fem bøtter en stor del av totalen uansett, så les alltid dette tallet sammen med antall bøtter i bruk.
+
 Andel ikke-bruker-mottakere per avsenderenhet:
 
 [source]
@@ -123,7 +242,11 @@ Spørringene over er satt sammen til et Grafana-dashbord:
 link:{attachmentsdir}/sendt-brev-dashboard.json[sendt-brev-dashboard.json].
 
 Det har fire nøkkeltall (antall sendt, andel til andre enn bruker, andel lokalprint, og hvor nær taket den poden med flest avsenderenheter ligger), fordelinger på mottakertype, distribusjon og manuelle adresser, et tidsserieplott, de vanligste samhandlertypene, og en tabell med mottakerfordeling per avsenderenhet.
+Nederst ligger tre paneler for samhandlere: fordelingen på identtype, et anslag på antall organisasjoner bak brevene, og hvor konsentrert bruken av organisasjonsnumre er.
 Datakilde, cluster og avsenderenhet er variabler, så det samme dashbordet virker for både dev og prod.
+
+De to nederste panelene leser `skribenten_brev_sendt_samhandler_org_total`, som ikke har `avsender_enhet` som label.
+De ignorerer derfor variabelen Avsenderenhet og viser alltid tallet for hele utvalget.
 
 Panelene bruker `$__range` i stedet for et fast `[30d]`, slik at tallene følger tidsvelgeren.
 Tidsserien bruker `$__interval` — som flislegger tidsrommet eksakt — og ikke `$__rate_interval`, som er lengre enn steget og ville lagt samme brev i flere søyler.
@@ -140,12 +263,12 @@ Endrer du dashbordet, eksporter JSON-en tilbake hit i samme slengen.
 
 == Implementasjon
 
-`SendtBrevMetrikker` (`brevredigering/application/livssyklus/`) eier telleren og slår opp samhandlertypen.
+`SendtBrevMetrikker` (`brevredigering/application/livssyklus/`) eier tellerne og slår opp samhandleren.
 `SendBrevHandler` starter tellingen der sendingen er bekreftet vellykket, rett før brevet slettes.
 Selve jobben kjører på et eget scope og deltar verken i sendetransaksjonen eller i svartiden på endepunktet.
-En feil i oppslaget gir kun `samhandler_type="UKJENT"` — aldri en feilet sending.
+En feil i oppslaget gir kun `samhandler_type="UKJENT"` og `id_type="UKJENT"` — aldri en feilet sending.
 Saksbehandlerens principal og call-id følger eksplisitt med til den asynkrone jobben, siden oppslaget bruker OBO-token.
-Samhandlertypen caches sammen med navnet i `Cacheomraade.SAMHANDLER`, siden begge kommer fra samme kall.
+Oppslaget gjøres med `hentSamhandler`, som gir samhandlertype, identtype og offentlig id i samme svar, og som caches sammen med navnet i `Cacheomraade.SAMHANDLER`.
 
 Konsekvens av at tellingen er asynkron: dør poden mellom sendingen og tellingen, går den ene tellingen tapt.
 Tallene er altså et godt bilde av fordelingen, men ikke en revisjonssikker fasit på antall sendte brev.

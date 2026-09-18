@@ -82,12 +82,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
     ) {
         val initiertAvBrukerEllerVerge = pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)
         val initiertAvNav = pesysData.krav.kravInitiertAv.equalTo(NAV)
-
-        val avdodeDodsdato = pesysData.avdoed.dodsfallDato
-
+        val avdoedNavn = pesysData.avdoed.navn.ifNull(fritekst("Avdød navn"))
         val skiltOver5Aar = saksbehandlervalg("SkiltOver5Aar", "Skilt for mer enn 5 år siden").bool()
         val samboerUtenFellesBarn = saksbehandlervalg("samboerUtenFellesBarn", "Samboer uten felles barn").bool()
-        val avdoedNavn = saksbehandlervalg("avdoedNavn", "Avdød navn").text().ifNull(fritekst("Avdød navn"))
         val underEttAarsMedlemstidEOESEllerAvtaleland = saksbehandlervalg("underEttAarsMedlemstidEOESEllerAvtaleland", "Under ett års medlemstid EØS eller avtaleland").bool()
         val underTreFemAarsMedlemstidNasjonalSak = saksbehandlervalg("underTreFemAarsMedlemstidNasjonalSak", "Under tre/fem års medlemstid nasjonal sak").bool()
         val underTreFemAarsMedlemstidEOESSak = saksbehandlervalg("underTreFemAarsMedlemstidEOESSak", "Under tre/fem års medlemstid EØS-sak").bool()
@@ -142,12 +139,15 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
 
             showIf(skiltOver5Aar) {
                 val skiltDato = fritekst("Skilsmissedato")
+                val avdodeDodsdato = pesysData.avdoed.dodsfallDato.format().ifNull(fritekst("Dødsdato"))
                 paragraph {
                     text(
-                        bokmal { +"For å ha rettigheter etter en fraskilt ektefelle, kan det ikke ha gått mer enn fem år mellom skilsmissen og dødsfallet. Dette går fram av folketrygdloven § 19-16 andre ledd." +
-                                "Du og " + avdoedNavn + " ble skilt " + skiltDato + ". Dødsfallet skjedde " + avdodeDodsdato.format() + ". Siden det er mer enn fem år mellom skilsmissen og dødsfallet, fyller du ikke vilkårene for gjenlevenderett etter " + avdoedNavn + "." },
-                        nynorsk { +"" },
-                        english { +"" }
+                        bokmal { +"For å ha rettigheter etter en fraskilt ektefelle, kan det ikke ha gått mer enn fem år mellom skilsmissen og dødsfallet. Dette går frem av folketrygdloven § 19-16 andre ledd." +
+                                "Du og " + avdoedNavn + " ble skilt " + skiltDato + "." + avdoedNavn + " døde " + avdodeDodsdato + ". Siden det har gått mer enn fem år mellom skilsmissen og dødsfallet, fyller du ikke vilkårene for gjenlevenderett etter " + avdoedNavn + "." },
+                        nynorsk { +"For å ha rettar etter ein fråskild ektefelle, kan det ikkje ha gått meir enn fem år mellom skilsmissa og dødsfallet. Dette går fram av folketrygdlova § 19-16 andre ledd." +
+                                "Du og " + avdoedNavn + " vart skilde " + skiltDato + ". " + avdoedNavn + " døydde " + avdodeDodsdato + ". Sidan det gjekk meir enn fem år mellom skilsmissa og dødsfallet, oppfyller du ikkje vilkåra for gjenlevanderett etter " + avdoedNavn + "." },
+                        english { +"To qualify for survivor’s rights based on a divorced spouse, no more than five years may have elapsed between the divorce and the death. This follows from Section 19-16, second paragraph, of the National Insurance Act." +
+                                "You and " + avdoedNavn + " were divorced on " + skiltDato + ". " + avdoedNavn + " died on " + skiltDato + ". As more than five years elapsed between the divorce and the death, you do not meet the conditions for survivor’s rights based on " + avdoedNavn + ". " }
                     )
                 }
             }

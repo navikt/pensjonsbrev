@@ -40,8 +40,8 @@ object ReverseringLavereMinstesats {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
-                    bokmal { +"Vi viser til varselbrev av 2. juli 2026 om reversering av reduksjon i minstesats, og tidligere vedtak om reduksjon i minstesats den 25. mai 2026." },
-                    nynorsk { +"Vi viser til varselbrev av 2. juli 2026 om reversering av reduksjon i minstesats, og tidlegare vedtak om reduksjon i minstesats den 25. mai 2026." },
+                    bokmal { +"Vi viser til varselbrev om reversering av reduksjon i minstesats, og tidligere vedtak om reduksjon i minstesats." },
+                    nynorsk { +"Vi viser til varselbrev om reversering av reduksjon i minstesats, og tidlegare vedtak om reduksjon i minstesats." },
                 )
             }
 
@@ -111,11 +111,13 @@ object ReverseringLavereMinstesats {
                         nynorsk { +"per månad før skatt frå 1. oktober 2026." },
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
-                        nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
-                    )
+                showIf(lopendeYtelse.nettoTotal.greaterThan(0)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                            nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
+                        )
+                    }
                 }
                 paragraph {
                     text(
