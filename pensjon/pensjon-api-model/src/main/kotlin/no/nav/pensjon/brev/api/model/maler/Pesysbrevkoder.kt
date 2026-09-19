@@ -47,6 +47,7 @@ object Pesysbrevkoder {
         UT_VEDTAK_ENDRING_BT_EPS_2026_REV_AUTO,
         UT_VEDTAK_ENDRING_BT_EPS_2026_OKT_AUTO,
         UT_VEDTAK_OKT_BUNNFRADRAG_2026,
+        UT_VEDTAK_OKT_BUNNFRADRAG_INST_2026,
         UT_VEDTAK_OKT_FRIBELOP_2026;
 
         override fun kode(): String = this.name
