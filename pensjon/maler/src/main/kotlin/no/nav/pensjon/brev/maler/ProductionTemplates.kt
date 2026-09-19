@@ -64,6 +64,7 @@ import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdUtlandRe
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026Auto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026OktIfuAuto
+import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmOktBunnfradragInstAuto
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.vedlegg.alltidValgbare.skjemaForBankopplysninger
@@ -106,6 +107,7 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettVarselOpphoer,
         VedtakOmLavereMinstesatsAuto,
         VedtakOmOktBunnfradragAuto,
+        VedtakOmOktBunnfradragInstAuto,
         VedtakOmOktFribelopAuto,
         VedtakOmOktMinsteIFUAuto,
         VedtakOmLavereReduksjonsprosentAuto,
