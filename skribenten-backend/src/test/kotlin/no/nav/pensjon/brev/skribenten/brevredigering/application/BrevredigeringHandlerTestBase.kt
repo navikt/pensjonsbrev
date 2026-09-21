@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.*
@@ -116,6 +117,8 @@ abstract class BrevredigeringHandlerTestBase {
     protected val samhandlerService = FakeSamhandlerService(
         navn = mapOf("samhandler1" to "Sam Handler AS", SAMHANDLER_TSS_ID to "Advokat Handler AS"),
         typer = mapOf(SAMHANDLER_TSS_ID to SAMHANDLER_TYPE),
+        idTyper = mapOf(SAMHANDLER_TSS_ID to "ORG"),
+        offentligIder = mapOf(SAMHANDLER_TSS_ID to SAMHANDLER_ORGNR),
     )
     protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
     protected val brevdataService = BrevdataService(penService, samhandlerService)
@@ -208,6 +211,7 @@ abstract class BrevredigeringHandlerTestBase {
         val PRINCIPAL_NAVENHET_ID = EnhetId("1234")
         const val SAMHANDLER_TSS_ID = "80000123456"
         const val SAMHANDLER_TYPE = "ADVO"
+        const val SAMHANDLER_ORGNR = "987654321"
         val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
         val saksbehandler2Principal = MockPrincipal(NavIdent("Morpheus"), "Laurence Fishburne", setOf(ADGroups.pensjonSaksbehandler))
         val attestant1Principal = MockPrincipal(NavIdent("Key Maker"), "Randall Kim", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
@@ -335,7 +339,12 @@ abstract class BrevredigeringHandlerTestBase {
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
-        saksbehandlerValg: SaksbehandlervalgMap = SaksbehandlervalgMap().apply { put("valg", true) },
+        saksbehandlerValg: SaksbehandlervalgMap = SaksbehandlervalgMap().apply {
+            put(
+                "valg",
+                SaksbehandlervalgVerdi.Boolean(true)
+            )
+        },
         brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
@@ -359,7 +368,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun oppdaterBrev(
         brevId: BrevId,
-        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
+        nyeSaksbehandlerValg: SaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,

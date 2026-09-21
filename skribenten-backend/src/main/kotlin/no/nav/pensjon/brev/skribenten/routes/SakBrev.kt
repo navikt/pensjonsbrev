@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.toDto
-import no.nav.pensjon.brev.skribenten.model.toSaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
@@ -54,7 +53,7 @@ fun Route.sakBrev() =
                     brevkode = request.brevkode,
                     spraak = spraak,
                     avsenderEnhetsId = avsenderEnhetsId,
-                    saksbehandlerValg = request.saksbehandlerValg.toSaksbehandlerValg(),
+                    saksbehandlerValg = request.saksbehandlerValg,
                     reserverForRedigering = true,
                     mottaker = request.mottaker?.toDto(),
                 )

@@ -325,8 +325,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         )
                         showIf(
                             pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
-                                    and pesysData.safe { beregnetPensjonPerManedVedVirk.inntektspensjon }.ifNull(Kroner(0))
+                                    and (pesysData.safe { beregnetPensjonPerManedVedVirk.inntektspensjon }.ifNull(Kroner(0))
                                 .greaterThan(0)
+                                    or pesysData.beregnetPensjonPerManedVedVirk.tilleggspensjonOver0)
                         ) {
                             text(
                                 bokmal { + " Alderspensjonen som er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år." },
@@ -359,13 +360,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 bokmal { + "I ditt tilfelle er alderspensjonen du har tjent opp selv høyere. Derfor får du ikke gjenlevendetillegg." },
                                 nynorsk { + "I ditt tilfelle er alderspensjonen du har tent opp sjølv høgare. Derfor får du ikkje attlevandetillegg." },
                                 english { + "In your case, the retirement pension you have earned in your own right is higher. Therefore, you are not entitled to a survivor's supplement." }
-                            )
-                        }
-                        paragraph {
-                            text(
-                                bokmal { + "Alderspensjonen som er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år." },
-                                nynorsk { + "Alderspensjonen som er basert på di eiga opptening, blir framleis regulert 1. mai kvart år." },
-                                english { + "The retirement pension, which is based on your own earnings, continues to be adjusted from 1 May each year." }
                             )
                         }
                     }
