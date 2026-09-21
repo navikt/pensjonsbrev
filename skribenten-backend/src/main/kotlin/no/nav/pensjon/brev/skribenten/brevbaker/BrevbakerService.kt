@@ -127,9 +127,11 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             metricsRoute("letter/redigerbar/markup-usage")
             contentType(ContentType.Application.Json)
             setBody(
-                BestillBrevRequest(
+                BestillRedigerbartBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    fagsystemBrevdata = brevdata.pesysData,
+                    saksbehandlervalg = brevdata.saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                 )
@@ -164,6 +166,8 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                 BestillRedigertBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    fagsystemBrevdata = brevdata.pesysData,
+                    saksbehandlervalg = brevdata.saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                     letterMarkup = redigertBrev,
@@ -194,9 +198,11 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             metricsRoute("letter/redigerbar/redigerbare-vedlegg/titler")
             contentType(ContentType.Application.Json)
             setBody(
-                BestillBrevRequest(
+                BestillRedigerbartBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    fagsystemBrevdata = brevdata.pesysData,
+                    saksbehandlervalg = brevdata.saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                 )
@@ -240,9 +246,11 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             metricsRoute("letter/redigerbar/redigerbare-vedlegg/{vedleggId}")
             contentType(ContentType.Application.Json)
             setBody(
-                BestillBrevRequest(
+                BestillRedigerbartBrevRequest(
                     kode = brevkode,
                     letterData = brevdata,
+                    fagsystemBrevdata = brevdata.pesysData,
+                    saksbehandlervalg = brevdata.saksbehandlerValg,
                     felles = felles,
                     language = spraak,
                 )
