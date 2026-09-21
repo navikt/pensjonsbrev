@@ -4,17 +4,12 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragAutoDto.vedtakData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.pe
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -44,28 +39,6 @@ object VedtakOmOktBunnfradragInstAuto : AutobrevTemplate<VedtakOmOktBunnfradragA
         }
         outline {
             includePhrase(OktBunnfradragInst.Outline(data))
-
-            title1 {
-                text(
-                    bokmal { + "Opplysninger vi har brukt i beregningen fra " },
-                    nynorsk { + "Opplysningar vi har brukt i berekninga frå " },
-                )
-                ifNotNull(data.pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) { beregningVirkFom ->
-                    text(
-                        bokmal { + beregningVirkFom.format() },
-                        nynorsk { + beregningVirkFom.format() },
-                    )
-                }
-            }
-            paragraph {
-                text(
-                    bokmal { + " Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
-                            data.pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
-                    nynorsk { + " Folketrygdas grunnbeløp (G) nytta i berekninga er " +
-                            data.pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
-                )
-            }
-            includePhrase(OpplysningerBruktIBeregningTabell(data.pe))
 
             title1 {
                 text(
