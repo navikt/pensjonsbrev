@@ -251,7 +251,7 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
                 )
             }
 
-            override suspend fun hentSamhandlerType(idTSSEkstern: String): String = notYetStubbed()
+            override suspend fun hentSamhandlerType(idTSSEkstern: TssId): String = notYetStubbed()
             override suspend fun hentSamhandlerNavn(idTSSEkstern: TssId): String? = null
             override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
             override suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId): HentSamhandlerAdresseResponseDto = notYetStubbed()

@@ -62,11 +62,11 @@ open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg
 open class FakeSamhandlerService(
     val navn: Map<TssId, String> = mapOf(),
     val typer: Map<TssId, String> = mapOf(),
-    val idTyper: Map<String, String> = mapOf(),
-    val offentligIder: Map<String, String> = mapOf(),
+    val idTyper: Map<TssId, String> = mapOf(),
+    val offentligIder: Map<TssId, String> = mapOf(),
 ) :
     SamhandlerService {
-    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
+    override suspend fun hentSamhandler(idTSSEkstern: TssId): HentSamhandlerResponseDto =
         if (listOf(navn, typer, idTyper, offentligIder).none { idTSSEkstern in it }) {
             HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.IKKE_FUNNET)
         } else {
