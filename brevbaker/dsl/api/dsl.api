@@ -620,6 +620,7 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Language : 
 }
 
 public final class no/nav/pensjon/brev/template/Expression$FromScope$Saksbehandlervalg : no/nav/pensjon/brev/template/Expression$FromScope {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/Expression$FromScope$Saksbehandlervalg;
 	public fun equals (Ljava/lang/Object;)Z
 	public synthetic fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;

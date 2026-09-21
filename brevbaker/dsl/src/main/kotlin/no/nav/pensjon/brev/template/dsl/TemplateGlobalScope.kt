@@ -16,7 +16,7 @@ interface TemplateGlobalScope<LetterData : Any> {
         get() = Expression.FromScope.Felles
 
     val deklarerteSaksbehandlervalg: Expression<SaksbehandlervalgIDSL>
-        get() = Expression.FromScope.Saksbehandlervalg()
+        get() = Expression.FromScope.Saksbehandlervalg
 
     fun redigerbarData(
         variabel: StringExpression,
