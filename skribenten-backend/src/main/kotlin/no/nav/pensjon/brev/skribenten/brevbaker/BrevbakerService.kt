@@ -34,14 +34,16 @@ interface BrevbakerService {
     suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
     ): LetterMarkupWithDataUsage
 
     suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -52,7 +54,8 @@ interface BrevbakerService {
     suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler?
 
@@ -65,7 +68,8 @@ interface BrevbakerService {
     suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment?
@@ -120,8 +124,9 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
     ): LetterMarkupWithDataUsage {
         val response = client.post("/letter/redigerbar/markup-usage") {
             metricsRoute("letter/redigerbar/markup-usage")
@@ -129,9 +134,12 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             setBody(
                 BestillRedigerbartBrevRequest(
                     kode = brevkode,
-                    letterData = brevdata,
-                    fagsystemBrevdata = brevdata.pesysData,
-                    saksbehandlervalg = brevdata.saksbehandlerValg,
+                    letterData = GeneriskRedigerbarBrevdata(
+                        pesysData = fagsystemBrevdata,
+                        saksbehandlerValg = saksbehandlervalg,
+                    ),
+                    fagsystemBrevdata = fagsystemBrevdata,
+                    saksbehandlervalg = saksbehandlervalg,
                     felles = felles,
                     language = spraak,
                 )
@@ -151,7 +159,8 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -165,9 +174,12 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             setBody(
                 BestillRedigertBrevRequest(
                     kode = brevkode,
-                    letterData = brevdata,
-                    fagsystemBrevdata = brevdata.pesysData,
-                    saksbehandlervalg = brevdata.saksbehandlerValg,
+                    letterData = GeneriskRedigerbarBrevdata(
+                        pesysData = fagsystemBrevdata,
+                        saksbehandlerValg = saksbehandlervalg,
+                    ),
+                    fagsystemBrevdata = fagsystemBrevdata,
+                    saksbehandlervalg = saksbehandlervalg,
                     felles = felles,
                     language = spraak,
                     letterMarkup = redigertBrev,
@@ -191,7 +203,8 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler? {
         val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
@@ -200,9 +213,12 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             setBody(
                 BestillRedigerbartBrevRequest(
                     kode = brevkode,
-                    letterData = brevdata,
-                    fagsystemBrevdata = brevdata.pesysData,
-                    saksbehandlervalg = brevdata.saksbehandlerValg,
+                    letterData = GeneriskRedigerbarBrevdata(
+                        pesysData = fagsystemBrevdata,
+                        saksbehandlerValg = saksbehandlervalg,
+                    ),
+                    fagsystemBrevdata = fagsystemBrevdata,
+                    saksbehandlervalg = saksbehandlervalg,
                     felles = felles,
                     language = spraak,
                 )
@@ -238,7 +254,8 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? {
@@ -248,9 +265,12 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             setBody(
                 BestillRedigerbartBrevRequest(
                     kode = brevkode,
-                    letterData = brevdata,
-                    fagsystemBrevdata = brevdata.pesysData,
-                    saksbehandlervalg = brevdata.saksbehandlerValg,
+                    letterData = GeneriskRedigerbarBrevdata(
+                        pesysData = fagsystemBrevdata,
+                        saksbehandlerValg = saksbehandlervalg,
+                    ),
+                    fagsystemBrevdata = fagsystemBrevdata,
+                    saksbehandlervalg = saksbehandlervalg,
                     felles = felles,
                     language = spraak,
                 )

@@ -48,7 +48,17 @@ class LetterRoutesV2ITest {
     ).let { LetterTestRenderer.renderLetterOnlyV2(it) }
         .let { markup ->
             with(bestillMarkupRequest) {
-                BestillRedigertBrevRequestV2(kode, letterData as EksempelRedigerbartDto, felles, language, markup, listOf(), emptyMap())
+                BestillRedigertBrevRequestV2(
+                    kode,
+                    letterData as EksempelRedigerbartDto,
+                    null,
+                    null,
+                    felles,
+                    language,
+                    markup,
+                    listOf(),
+                    emptyMap()
+                )
             }
         }
 

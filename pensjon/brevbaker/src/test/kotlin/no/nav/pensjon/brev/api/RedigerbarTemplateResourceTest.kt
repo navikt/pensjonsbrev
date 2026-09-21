@@ -45,6 +45,8 @@ class RedigerbarTemplateResourceTest {
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
         EksempelbrevRedigerbart.kode,
         createEksempelbrevRedigerbartDto(),
+        fagsystemBrevdata = null,
+        saksbehandlervalg = null,
         FellesFactory.felles,
         LanguageCode.BOKMAL,
         LetterMarkupImpl(
@@ -71,6 +73,8 @@ class RedigerbarTemplateResourceTest {
     private val validRedigertBrevRequestV2 = BestillRedigertBrevRequestV2(
         EksempelbrevRedigerbart.kode,
         createEksempelbrevRedigerbartDto(),
+        fagsystemBrevdata = null,
+        saksbehandlervalg = null,
         FellesFactory.felles,
         LanguageCode.BOKMAL,
         letterMarkup(
