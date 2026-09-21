@@ -1,25 +1,24 @@
 import { fileURLToPath, URL } from "node:url";
 
-import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react({
       jsxImportSource: "@emotion/react",
     }),
-    tanstackRouter({
-      routeFileIgnorePattern: "\\.test\\.",
-    }),
   ],
   resolve: {
     alias: {
       "~": fileURLToPath(new URL("src", import.meta.url)),
+      "~test": fileURLToPath(new URL("test", import.meta.url)),
     },
   },
-  server: {
-    origin: "http://localhost:5173",
+  test: {
+    environment: "jsdom",
+    globals: true,
+    include: ["src/**/*.test.{ts,tsx}"],
+    setupFiles: "./test/support/setupTests.ts",
   },
 });
