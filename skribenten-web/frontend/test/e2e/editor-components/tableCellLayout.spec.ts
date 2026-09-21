@@ -1,0 +1,110 @@
+import { expect, type Page, test } from "@playwright/test";
+
+import { newCell, newLiteral, newParagraph, newTable, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
+import { setupSakStubs } from "~test/e2e/support/helpers";
+import { brevResponse, editedLetter } from "~test/support/brevFixtures";
+
+async function setupEditor(page: Page, blocks: ReturnType<typeof newParagraph>[]) {
+  await setupSakStubs(page);
+
+  await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
+    route.fulfill({
+      json: brevResponse({
+        redigertBrev: editedLetter({ blocks }),
+      }),
+    }),
+  );
+  await page.route("**/bff/skribenten-backend/brev/1/reservasjon", (route) =>
+    route.fulfill({ path: "test/e2e/fixtures/brevreservasjon.json", contentType: "application/json" }),
+  );
+  await page.route("**/bff/skribenten-backend/brevmal/*/modelSpecification", (route) =>
+    route.fulfill({ path: "test/e2e/fixtures/modelSpecification.json", contentType: "application/json" }),
+  );
+  await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
+    if (route.request().method() === "PUT") {
+      await route.fulfill({ status: 200, json: { ok: true } });
+    } else {
+      await route.fallback();
+    }
+  });
+
+  await page.goto("/saksnummer/123456/brev/1");
+  await expect(page.getByTestId("letter-table").first()).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+}
+
+function cellLocator(page: Page, rowIndex: number, cellIndex: number) {
+  return page.getByTestId(`table-cell-${rowIndex}-${cellIndex}`);
+}
+
+async function expectSameVisualLine(...boxes: { y: number }[]) {
+  const firstY = boxes[0].y;
+  for (const box of boxes) {
+    expect(Math.abs(box.y - firstY)).toBeLessThan(2);
+  }
+}
+
+test.describe("Table cell layout", () => {
+  test("literal, variable and literal flow on the same line inside a cell", async ({ page }) => {
+    await setupEditor(page, [
+      newParagraph({
+        content: [
+          newTable([
+            {
+              id: null,
+              parentId: null,
+              deletedCells: [],
+              cells: [
+                newCell([
+                  newLiteral({ editedText: "Tekst: " }),
+                  newVariable({ text: "en testverdi" }),
+                  newLiteral({ editedText: " etter." }),
+                ]),
+              ],
+            },
+          ]),
+        ],
+      }),
+    ]);
+
+    const cell = cellLocator(page, 0, 0);
+    const literalBefore = cell.locator("span[contenteditable=true]").nth(0);
+    const variable = cell.locator("span:not([contenteditable])").first();
+    const literalAfter = cell.locator("span[contenteditable=true]").nth(1);
+
+    const cellBox = await cell.boundingBox();
+    const beforeBox = await literalBefore.boundingBox();
+    const variableBox = await variable.boundingBox();
+    const afterBox = await literalAfter.boundingBox();
+    expect(cellBox && beforeBox && variableBox && afterBox).toBeTruthy();
+
+    // Alt skal ligge på samme visuelle linje
+    await expectSameVisualLine(beforeBox!, variableBox!, afterBox!);
+
+    // Variabel-boksen skal ligge mellom tekstene, ikke utenfor cellen
+    expect(variableBox!.x).toBeGreaterThanOrEqual(beforeBox!.x + beforeBox!.width - 1);
+    expect(variableBox!.x + variableBox!.width).toBeLessThanOrEqual(cellBox!.x + cellBox!.width);
+  });
+
+  test("literal and variable flow on the same line inside a header cell", async ({ page }) => {
+    const table = newTable([{ id: null, parentId: null, deletedCells: [], cells: [newCell()] }]);
+    table.header.colSpec[0].headerContent.text = [
+      newLiteral({ editedText: "Overskrift: " }),
+      newVariable({ text: "en testverdi" }),
+    ];
+    await setupEditor(page, [newParagraph({ content: [table] })]);
+
+    const header = page.getByTestId("table-header-0");
+    const literal = header.locator("span[contenteditable=true]").first();
+    const variable = header.locator("span:not([contenteditable])").first();
+
+    const headerBox = await header.boundingBox();
+    const literalBox = await literal.boundingBox();
+    const variableBox = await variable.boundingBox();
+    expect(headerBox && literalBox && variableBox).toBeTruthy();
+
+    await expectSameVisualLine(literalBox!, variableBox!);
+    expect(variableBox!.x).toBeGreaterThanOrEqual(literalBox!.x + literalBox!.width - 1);
+    expect(variableBox!.x + variableBox!.width).toBeLessThanOrEqual(headerBox!.x + headerBox!.width);
+  });
+});
