@@ -5,6 +5,10 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 import java.util.Objects
 
+@Deprecated(
+    "Bruk heller klassane under for å bestille henholdsvis autobrev eller redigerbart brev." +
+            "Håper å få fjerna denne i løpet av saksbehandlervalg-omskrivinga"
+)
 class BestillBrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: BrevbakerBrevdata,
