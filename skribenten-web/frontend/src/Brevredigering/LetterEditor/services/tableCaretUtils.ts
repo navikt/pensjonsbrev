@@ -217,7 +217,19 @@ export function getTableArrowNavigationFocus(
   const x = Math.max(rect.left, Math.min(caret.x, rect.right));
   const y = (rect.top + rect.bottom) / 2;
   const range = getCaretRangeAtCoordinates({ x, y });
-  if (!range || !target.element.contains(range.startContainer)) return fallback;
+  if (!range) return fallback;
+
+  // At an inline edge, the browser can return the parent boundary instead of a position inside the span.
+  if (range.startContainer === target.element.parentNode) {
+    const siblings = range.startContainer.childNodes;
+    const beforeTarget = siblings[range.startOffset] === target.element;
+    const afterTarget = siblings[range.startOffset - 1] === target.element;
+    if (beforeTarget || afterTarget) {
+      range.selectNodeContents(target.element);
+      range.collapse(beforeTarget);
+    }
+  }
+  if (!target.element.contains(range.startContainer)) return fallback;
 
   // Convert the DOM position to the character offset stored in editor focus.
   targetRange.setEnd(range.startContainer, range.startOffset);

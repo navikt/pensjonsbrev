@@ -6,6 +6,7 @@ import {
   newLiteral,
   newParagraph,
   newTable,
+  newVariable,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Row } from "~/types/brevbakerTypes";
 import { setupSakStubs } from "~test/e2e/support/helpers";
@@ -95,6 +96,57 @@ async function caretPosition(page: Page) {
     return { x, top, offset: range.startOffset };
   });
 }
+
+test.describe("Table fallback caret boundaries", () => {
+  for (const boundary of ["before", "after"] as const) {
+    test(`normalizes a parent position ${boundary} the target span`, async ({ page }) => {
+      const destination = tableRow("short");
+      destination.cells[0].text.unshift(newVariable({ text: "VARIABLE" }));
+      await setupEditor(page, [
+        newParagraph({ content: [newTable([tableRow("a much longer source cell"), destination])] }),
+      ]);
+      const target = bodyCell(page, 1, 0);
+      await placeCaret(bodyCell(page, 0, 0), 20);
+      await target.evaluate((element, edge) => {
+        Object.defineProperty(document, "caretPositionFromPoint", { configurable: true, value: undefined });
+        document.caretRangeFromPoint = () => {
+          const range = document.createRange();
+          if (edge === "before") range.setStartBefore(element);
+          else range.setStartAfter(element);
+          range.collapse(true);
+          return range;
+        };
+      }, boundary);
+
+      await page.keyboard.press("ArrowDown");
+
+      await expect(target).toBeFocused();
+      expect((await caretPosition(page)).offset).toBe(boundary === "before" ? 0 : 5);
+      await page.keyboard.type("!");
+      await expect(target).toHaveText(boundary === "before" ? "!short" : "short!");
+      await expect(page.getByText("VARIABLE", { exact: true })).toHaveText("VARIABLE");
+    });
+  }
+
+  test("rejects a caret position outside the target cell", async ({ page }) => {
+    await setupEditor(page, [newParagraph({ content: [newTable([tableRow("long source text"), tableRow("short")])] })]);
+    await placeCaret(bodyCell(page, 0, 0), 15);
+    await page.evaluate(() => {
+      Object.defineProperty(document, "caretPositionFromPoint", { configurable: true, value: undefined });
+      document.caretRangeFromPoint = () => {
+        const range = document.createRange();
+        range.setStart(document.body, 0);
+        range.collapse(true);
+        return range;
+      };
+    });
+
+    await page.keyboard.press("ArrowDown");
+
+    await expect(bodyCell(page, 1, 0)).toBeFocused();
+    expect((await caretPosition(page)).offset).toBe(0);
+  });
+});
 
 test.describe("Table visual-line navigation", () => {
   for (const direction of ["up", "down"] as const) {
