@@ -338,3 +338,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
     override fun close() { client.close() }
 }
 
+private data class GeneriskRedigerbarBrevdata(
+    override val pesysData: FagsystemBrevdata,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+) : RedigerbarBrevdata<FagsystemBrevdata>
