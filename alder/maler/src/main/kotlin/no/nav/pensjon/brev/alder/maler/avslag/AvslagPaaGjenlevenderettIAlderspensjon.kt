@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJ
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.alder.model.BeloepEndring.ENDR_RED
-import no.nav.pensjon.brev.alder.model.BeloepEndring.UENDRET
 import no.nav.pensjon.brev.alder.model.KravInitiertAv.BRUKER
 import no.nav.pensjon.brev.alder.model.KravInitiertAv.NAV
 import no.nav.pensjon.brev.alder.model.KravInitiertAv.VERGE
@@ -316,38 +315,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     includePhrase(DerforHar(initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge, initiertAvNav = initiertAvNav))
                 }
             }
-            // omregnetEnsligAP_002
-            paragraph {
-                text(
-                    bokmal { + "Vi har regnet om pensjonen din fordi du har blitt enslig pensjonist. Dette er gjort etter folketrygdloven § 3-2." },
-                    nynorsk { + "Vi har rekna om pensjonen din fordi du har blitt einsleg pensjonist. Dette er gjort etter folketrygdlova § 3-2." },
-                    english { + "We have recalculated your pension because you have become a single pensioner. This decision was made pursuant to the provisions of § 3-2 of the National Insurance Act." }
-                )
-            }
 
-            showIf(
-                pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(UENDRET) and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(
-                    0
-                )
-            ) {
-                // ingenEndringBelop_002
-                paragraph {
-                    text(
-                        bokmal { + "Dette får derfor ingen betydning for utbetalingen din." },
-                        nynorsk { + "Dette får derfor ingen følgjer for utbetalinga di." },
-                        english { + "Therefore, this does not affect the amount you will receive." }
-                    )
-                }
-            }.orShowIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)) {
-                // nyBeregningAPØkning_001
-                paragraph {
-                    text(
-                        bokmal { + "Dette fører til at pensjonen din øker." },
-                        nynorsk { + "Dette fører til at pensjonen din aukar." },
-                        english { + "This leads to an increase in your retirement pension." }
-                    )
-                }
-            }
             includePhrase(DuFaarHverMaaned(pesysData.alderspensjonVedVirk.totalPensjon))
 
             showIf(
