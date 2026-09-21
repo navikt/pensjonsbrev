@@ -116,6 +116,21 @@ export function verticalTableStep(focus: TableCellIndex, table: Table, direction
   return "exit";
 }
 
+// Looks up a DOM caret without changing focus or selection, preferring the standard browser API.
+function getCaretRangeAtCoordinates({ x, y }: { x: number; y: number }): Range | null {
+  if (document.caretPositionFromPoint) {
+    const position = document.caretPositionFromPoint(x, y);
+    if (!position) return null;
+    const range = document.createRange();
+    range.setStart(position.offsetNode, position.offset);
+    range.collapse(true);
+    return range;
+  }
+
+  // Compatibility fallback for browsers without caretPositionFromPoint, as in MDN's example.
+  return document.caretRangeFromPoint?.(x, y) ?? null;
+}
+
 /**
  * Collects the rendered line fragments of editable text in a cell, excluding VARIABLE elements.
  * Keeps each fragment's element and rectangle index so it can be measured again after scrolling.
@@ -201,18 +216,7 @@ export function getTableArrowNavigationFocus(
   // Clamp to the editable fragment when the destination line is shorter or contains non-editable text.
   const x = Math.max(rect.left, Math.min(caret.x, rect.right));
   const y = (rect.top + rect.bottom) / 2;
-  let range: Range | null = null;
-  if (document.caretPositionFromPoint) {
-    const position = document.caretPositionFromPoint(x, y);
-    if (position) {
-      range = document.createRange();
-      range.setStart(position.offsetNode, position.offset);
-      range.collapse(true);
-    }
-  } else if (document.caretRangeFromPoint) {
-    // Compatibility fallback for browsers without caretPositionFromPoint, as in MDN's example.
-    range = document.caretRangeFromPoint(x, y);
-  }
+  const range = getCaretRangeAtCoordinates({ x, y });
   if (!range || !target.element.contains(range.startContainer)) return fallback;
 
   // Convert the DOM position to the character offset stored in editor focus.
