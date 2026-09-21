@@ -51,7 +51,7 @@ class BestillAutobrevRequest<T : Brevkode<T>>(
     override fun hashCode() = Objects.hash(kode, letterData, fagsystemBrevdata, felles, language, pdfVedlegg)
 
     override fun toString() =
-        "BestillBrevRequest(kode=$kode, letterData=$letterData, fagsystemBrevdata=$fagsystemBrevdata, felles=$felles, language=$language, pdfVedlegg=$pdfVedlegg)"
+        "BestillAutobrevRequest(kode=$kode, letterData=$letterData, fagsystemBrevdata=$fagsystemBrevdata, felles=$felles, language=$language, pdfVedlegg=$pdfVedlegg)"
 }
 
 class BestillRedigerbartBrevRequest<T : Brevkode<T>>(
@@ -78,7 +78,7 @@ class BestillRedigerbartBrevRequest<T : Brevkode<T>>(
         Objects.hash(kode, letterData, fagsystemBrevdata, saksbehandlervalg, felles, language, pdfVedlegg)
 
     override fun toString() =
-        "BestillBrevRequest(kode=$kode, letterData=$letterData, fagsystemBrevdata=$fagsystemBrevdata, saksbehandlervalg=$saksbehandlervalg felles=$felles, language=$language, pdfVedlegg=$pdfVedlegg)"
+        "BestillRedigerbartBrevRequest(kode=$kode, letterData=$letterData, fagsystemBrevdata=$fagsystemBrevdata, saksbehandlervalg=$saksbehandlervalg felles=$felles, language=$language, pdfVedlegg=$pdfVedlegg)"
 }
 
 
