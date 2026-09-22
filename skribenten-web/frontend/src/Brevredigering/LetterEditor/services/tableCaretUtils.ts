@@ -213,6 +213,10 @@ export function getTableArrowNavigationFocus(
   }
   if (withinCell && target.element === element) return undefined;
 
+  // Diff-decorated literals contain display-only deleted text outside the caret model;
+  // use cell-level navigation until the attestant diff is dismissed.
+  if (target.element.dataset.diffVersion !== undefined) return fallback;
+
   // Point-based caret lookup requires a visible target. Scrolling changes viewport coordinates,
   // so measure the target line again before looking up its text position.
   // Up enters the last line of the target, Down the first — reveal exactly that line.
