@@ -8,4 +8,6 @@ fun createEndretUforetrygdPGAOpptjeningLegacyDto() =
         pe = Fixtures.createVedlegg(),
         maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
         orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
+        harVTA = false,
+        vektetFribelop = 0.5
     )

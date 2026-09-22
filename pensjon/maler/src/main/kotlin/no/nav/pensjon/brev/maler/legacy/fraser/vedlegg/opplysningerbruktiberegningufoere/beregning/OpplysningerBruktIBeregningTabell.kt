@@ -193,10 +193,10 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                         }
                         cell {
                             text(
-                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                                    .format() + " %" },
-                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                                    .format() + " %" },
+                                bokmal { + redigerbarData(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                                    .format()) + " %" },
+                                nynorsk { + redigerbarData(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                                    .format()) + " %" },
                             )
                         }
 
