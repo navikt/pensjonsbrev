@@ -22,27 +22,27 @@ type AttestantDiffContextValue = {
   diff: UnifiedLetterDiff | undefined;
   diffHash: string | undefined;
   /** Disables diff rendering when the attestant begins editing the letter. */
-  disableDiff: () => void;
+  disableDiffMode: () => void;
 };
 
 const EMPTY_DELETED: never[] = [];
 
-const NO_DIFF: AttestantDiffContextValue = { diff: undefined, diffHash: undefined, disableDiff: () => {} };
+const NO_DIFF: AttestantDiffContextValue = { diff: undefined, diffHash: undefined, disableDiffMode: () => {} };
 
 const AttestantDiffContext = createContext<AttestantDiffContextValue>(NO_DIFF);
 
 export const AttestantDiffProvider = ({
   diff,
   diffHash,
-  disableDiff,
+  disableDiffMode,
   children,
 }: {
   diff: UnifiedLetterDiff | undefined;
   diffHash: string | undefined;
-  disableDiff: () => void;
+  disableDiffMode: () => void;
   children: ReactNode;
 }) => {
-  const value = useMemo(() => ({ diff, diffHash, disableDiff }), [diff, diffHash, disableDiff]);
+  const value = useMemo(() => ({ diff, diffHash, disableDiffMode }), [diff, diffHash, disableDiffMode]);
 
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
 };

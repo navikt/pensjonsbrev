@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "check-types": "tsc --noemit && tsc --noemit -p tsconfig.test.json && tsc --noemit -p tsconfig.e2e.json",
-    "check-unit-test-location": "test -z \"$(find . -path './node_modules' -prune -o -path './src' -prune -o \\( -name '*.test.ts' -o -name '*.test.tsx' \\) -print -quit)\"",
+    "check-unit-test-location": "files=$(find . -path './node_modules' -prune -o -path './src' -prune -o \\( -name '*.test.ts' -o -name '*.test.tsx' \\) -print); if [ -n \"$files\" ]; then echo 'Feilplasserte testfiler (må ligge under src/):'; echo \"$files\"; exit 1; fi",
     "dev": "vite --host",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",

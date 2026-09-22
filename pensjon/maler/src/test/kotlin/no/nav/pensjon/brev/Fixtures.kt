@@ -121,6 +121,7 @@ object Fixtures : LetterDataFactory {
             AvslagGjenlevendepensjonUtland::class -> createAvslagGjenlevendepensjonUtlandDto() as T
             VedtakOmLavereMinstesatsAuto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
             VedtakOmOktBunnfradragAuto::class -> createVedtakOmOktBunnfradragAutoDto() as T
+            VedtakOmOktBunnfradragInstAuto::class -> createVedtakOmOktBunnfradragAutoDto() as T
             VedtakOmOktFribelopAuto::class -> createVedtakOmOktFribelopAutoDto() as T
             VedtakOmLavereReduksjonsprosentRedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
             VedtakOmOktMinsteIFURedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
