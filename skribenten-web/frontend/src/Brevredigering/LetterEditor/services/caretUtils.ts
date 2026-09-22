@@ -297,7 +297,7 @@ function getTextLengthExcludingZWSP(el: HTMLElement): number {
   return text.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, text.length - 1) : text.length;
 }
 
-function parseLiteralIndex(el: HTMLElement): LiteralIndex | undefined {
+export function parseLiteralIndex(el: HTMLElement): LiteralIndex | undefined {
   const dataLiteralIndex = el.getAttribute("data-literal-index");
   if (!dataLiteralIndex) return undefined;
   try {
@@ -312,7 +312,7 @@ function parseLiteralIndex(el: HTMLElement): LiteralIndex | undefined {
   }
 }
 
-function charOffsetWithinLiteral(literalEl: HTMLElement, container: Node, offset: number): number {
+export function charOffsetWithinLiteral(literalEl: HTMLElement, container: Node, offset: number): number {
   const range = document.createRange();
   range.setStart(literalEl, 0);
   range.setEnd(container, offset);

@@ -12,8 +12,14 @@ import {
 
 import { addElements, isTable, newLiteral, newRow } from "../actions/common";
 import { type Focus, type LetterEditorState, type TableCellIndex } from "../model/state";
-import { isEmptyContentList, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
-import { ensureVisibleInScrollContainer, getCaretRect, getCursorOffset } from "./caretUtils";
+import { isEmptyContentList, isTableCellIndex } from "../model/utils";
+import {
+  charOffsetWithinLiteral,
+  ensureVisibleInScrollContainer,
+  getCaretRect,
+  getCursorOffset,
+  parseLiteralIndex,
+} from "./caretUtils";
 
 export type MoveResult = Focus;
 
@@ -177,8 +183,8 @@ export function getTableArrowNavigationFocus(
     fallback = next;
     const target = Array.from(cell.closest("table")!.querySelectorAll<HTMLElement>("[data-literal-index]")).find(
       (candidate) => {
-        const index = JSON.parse(candidate.dataset.literalIndex!) as TableCellIndex;
-        return index.rowIndex === next.rowIndex && index.cellIndex === next.cellIndex;
+        const index = parseLiteralIndex(candidate);
+        return isTableCellIndex(index) && index.rowIndex === next.rowIndex && index.cellIndex === next.cellIndex;
       },
     );
     const targetCell = target?.closest("td, th");
@@ -232,10 +238,11 @@ export function getTableArrowNavigationFocus(
   if (!target.element.contains(range.startContainer)) return fallback;
 
   // Convert the DOM position to the character offset stored in editor focus.
-  targetRange.setEnd(range.startContainer, range.startOffset);
+  const literalIndex = parseLiteralIndex(target.element);
+  if (!literalIndex) return fallback;
   return {
-    ...JSON.parse(target.element.dataset.literalIndex!),
-    cursorPosition: target.element.textContent === ZERO_WIDTH_SPACE ? 0 : targetRange.toString().length,
+    ...literalIndex,
+    cursorPosition: charOffsetWithinLiteral(target.element, range.startContainer, range.startOffset),
   };
 }
 
