@@ -41,11 +41,14 @@ class BestillRedigertBrevRequestV2Test {
     private fun request() = BestillRedigertBrevRequestV2(
         kode = RedigerbarBrevkode("TEST_BREV"),
         letterData = TestBrevdata(lagSaksbehandlervalg("begrunnelse" to "fordi"), TestPesysData(1234)),
+        fagsystemBrevdata = TestPesysData(1234),
+        saksbehandlervalg = lagSaksbehandlervalg("begrunnelse" to "fordi"),
         felles = felles(),
         language = LanguageCode.BOKMAL,
         letterMarkup = MarkupGoldenFixture.letter(),
         alltidValgbareVedlegg = emptyList(),
         redigerteVedlegg = mapOf(BrevbakerType.VedleggId("vedlegg-1") to vedlegg()),
+        redigerbartBrev = null,
     )
 
     @Test

@@ -13,6 +13,7 @@ import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.maler.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -106,11 +107,21 @@ class SaksbehandlervalgIDSLTestbrevTest {
                 BestillRedigertBrevRequest(
                     kode = SaksbehandlervalgIDSLTestbrev.kode,
                     letterData = dto,
+                    fagsystemBrevdata = dto.pesysData,
+                    saksbehandlervalg = dto.saksbehandlerValg,
                     felles = FellesFactory.felles,
                     language = LanguageCode.NYNORSK,
                     letterMarkup = letterMarkup,
                     alltidValgbareVedlegg = emptyList(),
-                    redigerteVedlegg = emptyMap()
+                    redigerteVedlegg = emptyMap(),
+                    redigerbartBrev = BestillRedigerbartBrevRequest(
+                        kode = SaksbehandlervalgIDSLTestbrev.kode,
+                        letterData = dto,
+                        fagsystemBrevdata = dto.pesysData,
+                        saksbehandlervalg = dto.saksbehandlerValg,
+                        felles = FellesFactory.felles,
+                        language = LanguageCode.NYNORSK
+                    )
                 )
             )
         }
