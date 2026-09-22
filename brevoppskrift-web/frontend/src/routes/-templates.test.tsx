@@ -119,4 +119,45 @@ describe("<AllTemplates /> (route: /templates)", () => {
       expect(screen.queryByText(/Kunne ikke hente innhold for/i)).toBeNull();
     });
   });
+
+  // The status line is the only "search is running" signal now that the results
+  // are no longer dimmed, so it has to appear for a search and hand its place
+  // over to the hit summary once that search completes. An empty search box has
+  // nothing in flight and nothing to summarise, so it gets no status at all.
+  it("shows no status until a query is typed, then replaces the scope with the hit summary", async () => {
+    getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevDescriptions : redigerbarDescriptions),
+    );
+    getAllTemplateDocumentation.queryFn.mockResolvedValue(autobrevContent);
+
+    const { user } = await renderTemplatesRoute();
+    const scope = /Søker i innholdet til \d+ maler på \d+ språk/;
+    await waitFor(() => {
+      expect(screen.queryByText(/Indekserer innhold/)).toBeNull();
+    });
+    expect(screen.queryByText(scope)).toBeNull();
+    expect(screen.queryByTitle("Søket er fullført")).toBeNull();
+
+    await user.type(screen.getByRole("searchbox"), "Hei");
+
+    await waitFor(() => {
+      expect(screen.getByText(/Frasen du søker på er brukt i/i)).toBeTruthy();
+    });
+    expect(screen.getByTitle("Søket er fullført")).toBeTruthy();
+    expect(screen.queryByText(scope)).toBeNull();
+  });
+
+  // The min-length hint and the full-page loader are gone: the status line's
+  // single spinner covers indexing, and an empty box simply shows nothing.
+  it("does not render a min-length hint or a second loader", async () => {
+    getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevDescriptions : redigerbarDescriptions),
+    );
+    getAllTemplateDocumentation.queryFn.mockResolvedValue(autobrevContent);
+
+    await renderTemplatesRoute();
+
+    expect(screen.queryByText(/Skriv minst/i)).toBeNull();
+    expect(screen.queryByTitle("Henter maler")).toBeNull();
+  });
 });

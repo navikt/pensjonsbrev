@@ -6,10 +6,8 @@ import {
   Box,
   Button,
   Checkbox,
-  Detail,
   Heading,
   HStack,
-  Loader,
   Search,
   Tabs,
   Tag,
@@ -17,7 +15,7 @@ import {
 } from "@navikt/ds-react";
 import { type QueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 
 import { getBrevkoderMedMetadata, getTemplateDescription, type MalType } from "~/api/brevbaker-api-endpoints";
 import { type TemplateDescription } from "~/api/brevbakerTypes";
@@ -25,9 +23,9 @@ import {
   BrevResultList,
   CONTENT_PAGE_SIZE,
   LETTER_PAGE_SIZE,
-  MIN_QUERY_LENGTH,
   SearchResultsPanel,
   SearchSnippet,
+  SearchStatus,
   type TemplateRef,
   useTemplateSearch,
 } from "~/search";
@@ -141,30 +139,62 @@ function AllTemplates() {
     templateTotal,
     languageTotal,
   } = useTemplateSearch(refs);
+  const isWorking = isLoading || isPending;
+  // A search has finished and the results below are up to date. Each tab then
+  // swaps the scope message for its own hit summary.
+  const isDone = isSearching && !isWorking;
+  // Driven by the live query rather than the deferred one so the status appears
+  // on the first keystroke instead of a render later.
+  const hasQuery = query.trim().length > 0;
+  const searchScope = `Søker i innholdet til ${templateTotal} maler på ${languageTotal} språk`;
+  // Fallback for every state that has no hit summary to show: while a search is
+  // running, while the query is still too short, and when a finished search
+  // found nothing. Indexing outranks all of it - until the corpus is here there
+  // is nothing to say about scope.
+  const scopeText = isLoading
+    ? "Indekserer innhold …"
+    : isWorking
+      ? `${searchScope} …`
+      : `${searchScope}${failedCount > 0 ? ` (${failedCount} feilet)` : ""}`;
+  // An empty search box gets no status at all - there is nothing in flight and
+  // nothing to summarise. Indexing is the exception: it starts on mount, before
+  // the user has typed anything, and its spinner is the only sign the page is
+  // not yet ready.
+  const showStatus = hasQuery || isLoading;
+  /** The status line for a tab: its own hit summary when it has one, the shared
+   *  scope message otherwise. */
+  const statusFor = (summary: ReactNode) =>
+    showStatus ? (
+      <SearchStatus isDone={isDone} isWorking={isWorking}>
+        {summary ?? scopeText}
+      </SearchStatus>
+    ) : undefined;
   const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
   const [page, setPage] = useState(1);
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset pagination whenever the query or tab changes.
   useEffect(() => setPage(1), [needle, activeTab]);
   const activeHits = activeTab === "innhold" ? contentHits : brevHits;
-  const pageCount = Math.max(
-    1,
-    Math.ceil(activeHits.length / (activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE)),
-  );
+  const pageSize = activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE;
+  // Only the active tab's panel is mounted, so both panels can share the page
+  // state; each still slices with its own page size.
+  const pageCount = Math.max(1, Math.ceil(activeHits.length / pageSize));
   const safePage = Math.min(page, pageCount);
-  const pageStart = (safePage - 1) * (activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE);
   // Sliced inside a memo so the arrays keep their identity across renders that
   // changed neither the hits nor the page - without that, the memoised lists
   // below would be invalidated on every single render.
-  const contentItems = useMemo(
-    () => contentHits.slice(pageStart, pageStart + CONTENT_PAGE_SIZE),
-    [contentHits, pageStart],
-  );
-  const brevItems = useMemo(() => brevHits.slice(pageStart, pageStart + LETTER_PAGE_SIZE), [brevHits, pageStart]);
+  const contentItems = useMemo(() => {
+    const start = (safePage - 1) * CONTENT_PAGE_SIZE;
+    return contentHits.slice(start, start + CONTENT_PAGE_SIZE);
+  }, [contentHits, safePage]);
+  const brevItems = useMemo(() => {
+    const start = (safePage - 1) * LETTER_PAGE_SIZE;
+    return brevHits.slice(start, start + LETTER_PAGE_SIZE);
+  }, [brevHits, safePage]);
   // The result lists are by far the most expensive thing on this page, and they
   // depend only on the hits, the page and the needle - never on `isPending`.
   // Memoising the elements lets React bail out of the whole subtree when the
-  // only thing that changed is the dimming, so toggling "Søker …" twice per
-  // search costs nothing while the user is typing.
+  // only thing that changed is the status line, so toggling the spinner twice
+  // per search costs nothing while the user is typing.
   const contentList = useMemo(
     () =>
       contentItems.map((hit) => (
@@ -189,10 +219,11 @@ function AllTemplates() {
         </Heading>
         <Box maxWidth="480px" width="100%">
           <Search
-            hideLabel={false}
-            label="Søk i innholdet i alle maler"
+            autoFocus
+            label="Søk etter innholdet eller brevmal"
             onChange={setQuery}
             onClear={() => setQuery("")}
+            placeholder="Søk etter innholdet eller brevmal"
             size="small"
             value={query}
             variant="simple"
@@ -201,15 +232,6 @@ function AllTemplates() {
         <Checkbox checked={exactOnly} onChange={(e) => setExactOnly(e.target.checked)} size="small">
           Vis kun nøyaktige treff
         </Checkbox>
-        <Detail aria-live="polite" textColor="subtle">
-          {isLoading
-            ? "Indekserer innhold …"
-            : isPending
-              ? "Søker …"
-              : `Søker i innholdet til ${templateTotal} maler på ${languageTotal} språk${
-                  failedCount > 0 ? ` (${failedCount} feilet)` : ""
-                }`}
-        </Detail>
         {failedCount > 0 ? (
           <Alert size="small" variant="warning">
             <HStack align="center" gap="space-16" justify="space-between">
@@ -246,27 +268,19 @@ function AllTemplates() {
                   <SearchResultsPanel
                     isPending={isPending}
                     page={safePage}
-                    pageCount={Math.max(1, Math.ceil(contentHits.length / CONTENT_PAGE_SIZE))}
+                    pageCount={pageCount}
                     setPage={setPage}
-                    summary={
-                      isSearching && contentHits.length > 0 ? (
+                    status={statusFor(
+                      isDone && contentHits.length > 0 ? (
                         <>
                           Frasen du søker på er brukt i <b>{contentTemplateCount} maler</b> i {contentLineCount} avsnitt
                         </>
-                      ) : undefined
-                    }
+                      ) : undefined,
+                    )}
                   >
-                    {isLoading ? (
-                      <HStack flexGrow="1" justify="center">
-                        <BodyShort>
-                          <Loader size="3xlarge" title={"Henter maler"} />
-                        </BodyShort>
-                      </HStack>
-                    ) : !isSearching ? (
-                      <BodyShort textColor="subtle">
-                        Skriv minst {MIN_QUERY_LENGTH} tegn for å søke i innholdet i malene.
-                      </BodyShort>
-                    ) : contentHits.length === 0 ? (
+                    {/* Nothing to show until the corpus is here or the query is
+                        long enough - the status line above carries both. */}
+                    {isLoading || !isSearching ? null : contentHits.length === 0 ? (
                       <BodyShort>Ingen treff i innholdet</BodyShort>
                     ) : (
                       contentList
@@ -279,23 +293,27 @@ function AllTemplates() {
                   <SearchResultsPanel
                     isPending={isPending}
                     page={safePage}
-                    pageCount={Math.max(1, Math.ceil(brevHits.length / LETTER_PAGE_SIZE))}
+                    pageCount={pageCount}
                     setPage={setPage}
-                    summary={
-                      isSearching && brevHits.length > 0 ? (
+                    status={statusFor(
+                      isDone && brevHits.length > 0 ? (
                         <>
                           Søket traff tittel, navn eller brevkode i <b>{brevTemplateCount} maler</b>
                         </>
-                      ) : undefined
-                    }
+                      ) : undefined,
+                    )}
                   >
                     {isSearching ? (
-                      brevHits.length === 0 ? (
+                      // While the corpus is still indexing there are no hits to
+                      // report yet, so "Ingen treff" would be a lie.
+                      isLoading ? null : brevHits.length === 0 ? (
                         <BodyShort>Ingen treff i tittel, navn eller brevkode</BodyShort>
                       ) : (
                         brevList
                       )
                     ) : (
+                      // The full index is browsable without searching: it comes
+                      // from the route loader, not the search corpus.
                       <VStack gap="space-20">
                         <VStack gap="space-8">
                           <Heading level="2" size="xsmall">
