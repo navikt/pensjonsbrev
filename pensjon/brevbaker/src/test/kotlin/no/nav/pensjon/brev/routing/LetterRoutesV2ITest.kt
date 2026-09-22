@@ -57,7 +57,8 @@ class LetterRoutesV2ITest {
                     language,
                     markup,
                     listOf(),
-                    emptyMap()
+                    emptyMap(),
+                    redigerbartBrev = null,
                 )
             }
         }

@@ -35,8 +35,8 @@ public final class no/nav/brev/brevbaker/PDFRequest {
 }
 
 public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no/nav/pensjon/brev/api/model/maler/BrevRequest {
-	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Ljava/util/Map;Ljava/util/List;)V
-	public synthetic fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Ljava/util/Map;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Ljava/util/Map;Ljava/util/List;Lno/nav/pensjon/brev/api/model/maler/BestillRedigerbartBrevRequest;)V
+	public synthetic fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Ljava/util/Map;Ljava/util/List;Lno/nav/pensjon/brev/api/model/maler/BestillRedigerbartBrevRequest;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlltidValgbareVedlegg ()Ljava/util/List;
 	public final fun getFagsystemBrevdata ()Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;
@@ -46,6 +46,7 @@ public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no
 	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;
 	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
 	public final fun getPdfVedlegg ()Ljava/util/List;
+	public final fun getRedigerbartBrev ()Lno/nav/pensjon/brev/api/model/maler/BestillRedigerbartBrevRequest;
 	public final fun getRedigerteVedlegg ()Ljava/util/Map;
 	public final fun getSaksbehandlervalg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;
 	public fun hashCode ()I
@@ -53,8 +54,8 @@ public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no
 }
 
 public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequestV2 : no/nav/pensjon/brev/api/model/maler/BrevRequest {
-	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;Ljava/util/Map;Ljava/util/List;)V
-	public synthetic fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;Ljava/util/Map;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;Ljava/util/Map;Ljava/util/List;Lno/nav/pensjon/brev/api/model/maler/BestillRedigerbartBrevRequest;)V
+	public synthetic fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;Ljava/util/Map;Ljava/util/List;Lno/nav/pensjon/brev/api/model/maler/BestillRedigerbartBrevRequest;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlltidValgbareVedlegg ()Ljava/util/List;
 	public final fun getFagsystemBrevdata ()Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;
@@ -64,6 +65,7 @@ public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequestV2 : 
 	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;
 	public final fun getLetterMarkup ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public final fun getPdfVedlegg ()Ljava/util/List;
+	public final fun getRedigerbartBrev ()Lno/nav/pensjon/brev/api/model/maler/BestillRedigerbartBrevRequest;
 	public final fun getRedigerteVedlegg ()Ljava/util/Map;
 	public final fun getSaksbehandlervalg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;
 	public fun hashCode ()I

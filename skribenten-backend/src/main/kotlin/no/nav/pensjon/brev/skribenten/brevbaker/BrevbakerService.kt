@@ -185,7 +185,19 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
                     redigerteVedlegg = redigerteVedlegg,
-                    pdfVedlegg = pdfVedlegg
+                    pdfVedlegg = pdfVedlegg,
+                    redigerbartBrev = BestillRedigerbartBrevRequest(
+                        kode = brevkode,
+                        letterData = GeneriskRedigerbarBrevdata(
+                            pesysData = fagsystemBrevdata,
+                            saksbehandlerValg = saksbehandlervalg,
+                        ),
+                        fagsystemBrevdata = fagsystemBrevdata,
+                        saksbehandlervalg = saksbehandlervalg,
+                        felles = felles,
+                        language = spraak,
+                        pdfVedlegg = pdfVedlegg,
+                    )
                 )
             )
         }

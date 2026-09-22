@@ -17,6 +17,7 @@ class BestillRedigertBrevRequestV2<T : Brevkode<T>>(
     val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     val redigerteVedlegg: Map<BrevbakerType.VedleggId, Attachment>,
     val pdfVedlegg: List<PDFVedleggTittel> = listOf(),
+    val redigerbartBrev: BestillRedigerbartBrevRequest<T>?,
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillRedigertBrevRequestV2<*>) return false
@@ -30,6 +31,7 @@ class BestillRedigertBrevRequestV2<T : Brevkode<T>>(
                 && alltidValgbareVedlegg == other.alltidValgbareVedlegg
                 && redigerteVedlegg == other.redigerteVedlegg
                 && pdfVedlegg == other.pdfVedlegg
+                && redigerbartBrev == other.redigerbartBrev
     }
 
     override fun hashCode() = Objects.hash(
@@ -42,9 +44,10 @@ class BestillRedigertBrevRequestV2<T : Brevkode<T>>(
         letterMarkup,
         alltidValgbareVedlegg,
         redigerteVedlegg,
-        pdfVedlegg
+        pdfVedlegg,
+        redigerbartBrev
     )
 
     override fun toString() =
-        "BestillRedigertBrevRequestV2(kode=$kode, letterData=$letterData, fagsystemBrevdata=$fagsystemBrevdata, saksbehandlervalg=$saksbehandlervalg, felles=$felles, language=$language, letterMarkup=$letterMarkup, alltidValgbareVedlegg=$alltidValgbareVedlegg, redigerteVedlegg=$redigerteVedlegg, pdfVedlegg=$pdfVedlegg)"
+        "BestillRedigertBrevRequestV2(kode=$kode, letterData=$letterData, fagsystemBrevdata=$fagsystemBrevdata, saksbehandlervalg=$saksbehandlervalg, felles=$felles, language=$language, letterMarkup=$letterMarkup, alltidValgbareVedlegg=$alltidValgbareVedlegg, redigerteVedlegg=$redigerteVedlegg, pdfVedlegg=$pdfVedlegg, redigerbartBrev=$redigerbartBrev)"
 }

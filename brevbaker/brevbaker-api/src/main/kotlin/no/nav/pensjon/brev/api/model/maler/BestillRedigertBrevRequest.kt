@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model
 
+import no.nav.pensjon.brev.api.model.maler.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.api.model.maler.BrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -25,6 +26,7 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     val redigerteVedlegg: Map<BrevbakerType.VedleggId, LetterMarkup.Attachment>,
     val pdfVedlegg: List<PDFVedleggTittel> = listOf(),
+    val redigerbartBrev: BestillRedigerbartBrevRequest<T>?,
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillRedigertBrevRequest<*>) return false
@@ -38,6 +40,7 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
                 && redigerteVedlegg == other.redigerteVedlegg
                 && alltidValgbareVedlegg == other.alltidValgbareVedlegg
                 && pdfVedlegg == other.pdfVedlegg
+                && redigerbartBrev == other.redigerbartBrev
     }
 
     override fun hashCode() = Objects.hash(
@@ -50,9 +53,10 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
         letterMarkup,
         redigerteVedlegg,
         alltidValgbareVedlegg,
-        pdfVedlegg
+        pdfVedlegg,
+        redigerbartBrev
     )
 
     override fun toString() =
-        "BestillRedigertBrevRequest(kode=$kode, letterData=$letterData, fagsystemBrevdata=$fagsystemBrevdata, saksbehandlervalg=$saksbehandlervalg, felles=$felles, language=$language, letterMarkup=$letterMarkup, redigerteVedlegg=$redigerteVedlegg), alltidValgbareVedlegg= $alltidValgbareVedlegg, pdfVedlegg=$pdfVedlegg)"
+        "BestillRedigertBrevRequest(kode=$kode, letterData=$letterData, fagsystemBrevdata=$fagsystemBrevdata, saksbehandlervalg=$saksbehandlervalg, felles=$felles, language=$language, letterMarkup=$letterMarkup, redigerteVedlegg=$redigerteVedlegg), alltidValgbareVedlegg= $alltidValgbareVedlegg, pdfVedlegg=$pdfVedlegg, redigerbartBrev=$redigerbartBrev)"
 }

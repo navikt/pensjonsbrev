@@ -48,6 +48,7 @@ class BestillRedigertBrevRequestV2Test {
         letterMarkup = MarkupGoldenFixture.letter(),
         alltidValgbareVedlegg = emptyList(),
         redigerteVedlegg = mapOf(BrevbakerType.VedleggId("vedlegg-1") to vedlegg()),
+        redigerbartBrev = null,
     )
 
     @Test
