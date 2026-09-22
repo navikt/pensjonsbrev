@@ -370,13 +370,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 english { + "In your case, the retirement pension you have earned in your own right is higher. Therefore, you are not entitled to a survivor's supplement." }
                             )
                         }
-                        paragraph {
-                            text(
-                                bokmal { + "Alderspensjonen som er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år." },
-                                nynorsk { + "Alderspensjonen som er basert på di eiga opptening, blir framleis regulert 1. mai kvart år." },
-                                english { + "The retirement pension, which is based on your own earnings, continues to be adjusted from 1 May each year." }
-                            )
-                        }
                     }
             }
 

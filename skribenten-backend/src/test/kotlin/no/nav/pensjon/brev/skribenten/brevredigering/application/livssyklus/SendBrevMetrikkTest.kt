@@ -44,12 +44,14 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
     private fun SimpleMeterRegistry.antallSendt(
         mottaker: String,
         samhandlerType: String = SendtBrevMetrikker.IKKE_RELEVANT,
+        idType: String = SendtBrevMetrikker.IKKE_RELEVANT,
         adressertTil: String = SendtBrevMetrikker.IKKE_RELEVANT,
         distribusjon: Distribusjon = Distribusjon.SENTRALPRINT,
     ): Double =
         find(SendtBrevMetrikker.metricName)
             .tag("mottaker", mottaker)
             .tag("samhandler_type", samhandlerType)
+            .tag("id_type", idType)
             .tag("adressert_til", adressertTil)
             .tag("distribusjon", distribusjon.name)
             .tag("avsender_enhet", PRINCIPAL_NAVENHET_ID.value)
@@ -94,7 +96,26 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
 
         sendKlartBrev(maalinger, Dto.Mottaker.samhandler(SAMHANDLER_TSS_ID))
 
-        assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SAMHANDLER_TYPE)).isEqualTo(1.0)
+        assertThat(
+            maalinger.registry.antallSendt(
+                mottaker = "SAMHANDLER",
+                samhandlerType = SAMHANDLER_TYPE,
+                idType = SendtBrevMetrikker.SamhandlerIdType.ORG.name,
+            )
+        ).isEqualTo(1.0)
+    }
+
+    @Test
+    suspend fun `brev til samhandler med organisasjonsnummer havner i en hash-boette`() {
+        val maalinger = nyeMaalinger()
+
+        sendKlartBrev(maalinger, Dto.Mottaker.samhandler(SAMHANDLER_TSS_ID))
+
+        assertThat(
+            maalinger.registry.find(SendtBrevMetrikker.orgMetricName)
+                .tag("org_bucket", SendtBrevMetrikker.orgBoette(SAMHANDLER_ORGNR).toString())
+                .counter()?.count()
+        ).isEqualTo(1.0)
     }
 
     @Test
@@ -103,7 +124,13 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
 
         sendKlartBrev(maalinger, Dto.Mottaker.samhandler("ukjent-tssid"))
 
-        assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SendtBrevMetrikker.UKJENT)).isEqualTo(1.0)
+        assertThat(
+            maalinger.registry.antallSendt(
+                mottaker = "SAMHANDLER",
+                samhandlerType = SendtBrevMetrikker.UKJENT,
+                idType = SendtBrevMetrikker.UKJENT,
+            )
+        ).isEqualTo(1.0)
     }
 
     @Test
@@ -112,14 +139,20 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
             override suspend fun hentSamhandlerType(idTSSEkstern: String): String = throw RuntimeException("TSS er nede")
             override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = null
             override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
+            override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = throw RuntimeException("TSS er nede")
             override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
         }
         val maalinger = nyeMaalinger(feilendeSamhandlerService)
 
         sendKlartBrev(maalinger, Dto.Mottaker.samhandler(SAMHANDLER_TSS_ID))
 
-        assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SendtBrevMetrikker.UKJENT)).isEqualTo(1.0)
+        assertThat(
+            maalinger.registry.antallSendt(
+                mottaker = "SAMHANDLER",
+                samhandlerType = SendtBrevMetrikker.UKJENT,
+                idType = SendtBrevMetrikker.UKJENT,
+            )
+        ).isEqualTo(1.0)
     }
 
     @Test
@@ -200,14 +233,22 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
     suspend fun `samhandleroppslaget beholder saksbehandlerens principal etter at requesten er besvart`() {
         var identIOppslag: String? = null
         val principalKrevendeSamhandlerService = object : SamhandlerService {
-            override suspend fun hentSamhandlerType(idTSSEkstern: String): String {
+            override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto {
                 identIOppslag = PrincipalInContext.require().navIdent.id
-                return SAMHANDLER_TYPE
+                return HentSamhandlerResponseDto(
+                    success = HentSamhandlerResponseDto.Success(
+                        navn = "Advokat Handler AS",
+                        samhandlerType = SAMHANDLER_TYPE,
+                        offentligId = SAMHANDLER_ORGNR,
+                        idType = "ORG",
+                    ),
+                    failure = null,
+                )
             }
 
+            override suspend fun hentSamhandlerType(idTSSEkstern: String): String = notYetStubbed()
             override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = null
             override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
             override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
         }
         val maalinger = nyeMaalinger(principalKrevendeSamhandlerService)
@@ -215,6 +256,12 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
         sendKlartBrev(maalinger, Dto.Mottaker.samhandler(SAMHANDLER_TSS_ID))
 
         assertThat(identIOppslag).isEqualTo(saksbehandler1Principal.navIdent.id)
-        assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SAMHANDLER_TYPE)).isEqualTo(1.0)
+        assertThat(
+            maalinger.registry.antallSendt(
+                mottaker = "SAMHANDLER",
+                samhandlerType = SAMHANDLER_TYPE,
+                idType = SendtBrevMetrikker.SamhandlerIdType.ORG.name,
+            )
+        ).isEqualTo(1.0)
     }
 }

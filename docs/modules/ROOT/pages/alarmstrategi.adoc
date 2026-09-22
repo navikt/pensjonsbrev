@@ -369,6 +369,8 @@ sum by (omraade) (rate(skribenten_cache_requests_total{app="skribenten-backend"}
 * `skribenten_cache_operations_seconds`, med labels `operation` (`read`/`update`) og `outcome` (`success`/`error`). Måler selve Valkey-kallet, uavhengig av `omraade`, og dekker to ting i én metrikk: latens (`_sum`/`_bucket`) og feilrate mot Valkey (`_count` filtrert på `outcome="error"`).
 
 Et leseforsøk som feiler mot Valkey (f.eks. ved en driftsforstyrrelse) gir `outcome="error"` på `skribenten_cache_operations_seconds`, men telles bevisst *ikke* som `miss` i `skribenten_cache_requests_total` - ellers ville en Valkey-hendelse feilaktig se ut som en for kort TTL.
+
+Begge metrikkene er satt sammen til et dashbord for å vurdere TTL-valgene per cacheområde: link:{attachmentsdir}/cache-ttl-dashboard.json[cache-ttl-dashboard.json].
 ====
 
 [cols="2,3,1,3", options="header"]

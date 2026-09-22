@@ -48,6 +48,20 @@ interface ManagedLetterEditorContextValue {
   /** Whether autosaving the letter has failed. */
   saveFailed: boolean;
 
+  /**
+   * Saves pending letter edits immediately instead of waiting for the autosave debounce, and
+   * rejects if saving fails. Concurrent calls join the save already in flight rather than sending
+   * a second one.
+   *
+   * Resolving means "no save is outstanding from this call", not "every edit is persisted": when
+   * nothing is dirty, and when a save is already on the wire, this resolves without sending
+   * anything. The letter endpoints carry no version, so a second concurrent PUT could land out of
+   * order and persist the older letter; those edits are left to the debounced autosave. Observe
+   * `saveStatus` to know when the letter is actually saved. Routing both paths through a single
+   * queue — as `useDocumentAutosave` already does for vedlegg — would lift the restriction.
+   */
+  saveNow: () => Promise<void>;
+
   /** The route registers how to clear its own submit-error state so the autosave can reset it before retrying. */
   registerSaveErrorReset: (reset: (() => void) | null) => void;
 }
@@ -129,8 +143,12 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
 
   const redigertBrev = requireLetterDocument(editorState.redigertBrev);
 
+  // Set for every save, whether started by the debounced autosave or by `saveNow`.
+  const saveInFlightRef = useRef(false);
+
   const {
     mutate: saveLetter,
+    mutateAsync: saveLetterAsync,
     isError: saveFailed,
     reset: resetSaveError,
   } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
@@ -138,6 +156,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
       const letterWithCursor = requireLetterDocument(stateWithCursor.redigertBrev);
 
+      saveInFlightRef.current = true;
       setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
 
       // Autosave must never release the user's reservation on the letter.
@@ -171,7 +190,43 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     },
     onSuccess: (response) => onSaveSuccess(response, { preserveUnchangedValg: true }),
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
+    onSettled: () => {
+      saveInFlightRef.current = false;
+    },
   });
+
+  // Keep the latest state available to `saveNow` without rebuilding it on every keystroke.
+  const editorStateRef = useRef(editorState);
+  editorStateRef.current = editorState;
+
+  // Lets concurrent `saveNow` callers await the same send instead of queueing a duplicate.
+  const saveNowRef = useRef<Promise<void> | null>(null);
+
+  const saveNow = useCallback((): Promise<void> => {
+    // Join our own explicit save rather than sending a duplicate.
+    if (saveNowRef.current) return saveNowRef.current;
+
+    // A save is already on the wire. The letter endpoints carry no version, so adding a second
+    // concurrent PUT risks the two landing out of order and persisting the older letter. Leave
+    // these edits to the debounced autosave instead.
+    if (saveInFlightRef.current) return Promise.resolve();
+
+    // Anything other than DIRTY is either already persisted or has a save in flight that the
+    // caller can simply wait out via `saveStatus`.
+    if (editorStateRef.current.saveStatus !== "DIRTY") return Promise.resolve();
+
+    resetSaveError();
+    saveErrorResetRef.current?.();
+
+    const save = saveLetterAsync(editorStateRef.current)
+      .then(() => undefined)
+      .finally(() => {
+        saveNowRef.current = null;
+      });
+
+    saveNowRef.current = save;
+    return save;
+  }, [saveLetterAsync, resetSaveError]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -210,6 +265,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         setEditorState: setEditorState,
         onSaveSuccess: onSaveSuccess,
         saveFailed: saveFailed,
+        saveNow: saveNow,
         registerSaveErrorReset: registerSaveErrorReset,
       }}
     >
