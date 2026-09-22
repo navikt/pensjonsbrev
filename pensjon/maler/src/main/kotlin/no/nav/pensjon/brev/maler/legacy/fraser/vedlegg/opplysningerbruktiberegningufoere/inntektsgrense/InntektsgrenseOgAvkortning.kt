@@ -180,9 +180,7 @@ data class InntektsgrenseOgAvkortning(
             }
 
             includePhrase(SlikFastsetterViUfoeregraden)
-            showIf(FeatureToggles.bunnfradragIVedlegg.toggle.expr().enabled()) {
-                includePhrase(HvaErBunnfradragFribelopOgVenteperiode)
-            }
+            includePhrase(HvaErBunnfradragFribelopOgVenteperiode)
         }
     }
 }
