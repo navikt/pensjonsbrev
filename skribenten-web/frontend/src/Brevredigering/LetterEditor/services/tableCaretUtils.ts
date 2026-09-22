@@ -15,7 +15,7 @@ import { type Focus, type LetterEditorState, type TableCellIndex } from "../mode
 import { isEmptyContentList, isTableCellIndex } from "../model/utils";
 import {
   charOffsetWithinLiteral,
-  ensureVisibleInScrollContainer,
+  ensureLineVisibleInScrollContainer,
   getCaretRect,
   getCursorOffset,
   parseLiteralIndex,
@@ -215,7 +215,8 @@ export function getTableArrowNavigationFocus(
 
   // Point-based caret lookup requires a visible target. Scrolling changes viewport coordinates,
   // so measure the target line again before looking up its text position.
-  ensureVisibleInScrollContainer(target.element);
+  // Up enters the last line of the target, Down the first — reveal exactly that line.
+  ensureLineVisibleInScrollContainer(target.element, direction === "up" ? "bottom" : "top");
   const targetRange = document.createRange();
   targetRange.selectNodeContents(target.element);
   const rect = targetRange.getClientRects()[target.rectIndex];
