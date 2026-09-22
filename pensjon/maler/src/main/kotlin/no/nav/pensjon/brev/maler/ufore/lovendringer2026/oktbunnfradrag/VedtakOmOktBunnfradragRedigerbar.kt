@@ -4,10 +4,11 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmOktBunnfradragRedigerbarDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmOktBunnfradragRedigerbarDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmOktBunnfradragRedigerbarDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.*
-import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmOktBunnfradragRedigerbarDto.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmOktBunnfradragRedigerbarDto.pesysData.vedtakData
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.pe
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -24,8 +25,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VedtakOmOktBunnfradragRedigerbar : RedigerbarTemplate<VedtakOmOktBunnfradragRedigerbarDto> {
-
-    override val featureToggle = FeatureToggles.vedtakOmOktBunnfradrag.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_OKT_BUNNFRADRAG_2026_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

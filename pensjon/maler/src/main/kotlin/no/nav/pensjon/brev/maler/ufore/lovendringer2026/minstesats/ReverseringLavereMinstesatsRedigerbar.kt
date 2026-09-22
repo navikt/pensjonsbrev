@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.reverseri
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.pe
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -26,8 +25,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object ReverseringLavereMinstesatsRedigerbar : RedigerbarTemplate<ReverseringLavereMinstesatsRedigerbarDto> {
-
-    override val featureToggle = FeatureToggles.reverseringLavereMinstesats.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_REVERSERING_LAVERE_MINSTESATS_2026_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
