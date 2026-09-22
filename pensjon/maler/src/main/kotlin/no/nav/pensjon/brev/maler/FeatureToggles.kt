@@ -37,8 +37,7 @@ enum class FeatureToggles(private val key: String) {
     vedtakOmLavereMinstesats("vedtakOmLavereMinstesats"),
     reverseringLavereMinstesats("reverseringLavereMinstesats"),
     vedtakOmOktBunnfradrag("vedtakOmOktBunnfradrag"),
-    vedtakOmOktMinsteIFUOgReduksjonsprosent("vedtakOmOktMinsteIFUOgReduksjonsprosent"),
-    bunnfradragIVedlegg("opplbruktiberufore_bunnfradrag");
+    vedtakOmOktMinsteIFUOgReduksjonsprosent("vedtakOmOktMinsteIFUOgReduksjonsprosent");
 
     val toggle = FeatureToggle(key)
 }
