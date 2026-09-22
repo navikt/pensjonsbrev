@@ -166,8 +166,8 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // SPECIAL_CHAR_QUERY in textSearch.ts.
   const isSearching = trimmedQuery.length >= MIN_QUERY_LENGTH || SPECIAL_CHAR_QUERY.test(trimmedQuery);
   // The results currently rendered. They are replaced only when new results
-  // arrive, so the previous query's hits stay on screen (dimmed) while the
-  // worker answers - rather than the list emptying on every keystroke.
+  // arrive, so the previous query's hits stay on screen while the worker
+  // answers - rather than the list emptying on every keystroke.
   const [results, setResults] = useState<SearchResults>(NO_RESULTS);
   // The corpus the rendered results were produced from, so hits are always
   // resolved against the corpus that produced them.
@@ -219,7 +219,7 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // Pending covers the whole round trip: the deferred render that hasn't caught
   // up with the input yet, waiting for the worker, and the low-priority render
   // of what it returned. All three mean "what you see is older than what you
-  // typed", which is exactly what the dimming tells the user.
+  // typed", which is what the status line's spinner tells the user.
   const isPending = query !== deferredQuery || isAwaitingHits || isRenderingHits;
   // Results hydrated from a corpus that has since been replaced would render
   // stale content, so drop them until the new corpus' results arrive.
