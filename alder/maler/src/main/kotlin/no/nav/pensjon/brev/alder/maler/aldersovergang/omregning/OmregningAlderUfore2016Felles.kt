@@ -32,6 +32,7 @@ data class OmregningAlderUfore2016Felles(
     val totalPensjon: Expression<Kroner>,
     val antallBeregningsperioder: Expression<Int>,
     val gjenlevendetilleggKap19Innvilget: Expression<Boolean>,
+    val gjenlevendetilleggKap19Utbetalt: Expression<Boolean>,
     val avdodNavn: Expression<String?>,
     val avdodFnr: Expression<String?>,
     val gjenlevenderettAnvendt: Expression<Boolean>,
@@ -137,7 +138,7 @@ data class OmregningAlderUfore2016Felles(
         }
 
         ifNotNull(avdodNavn) { avdodNavn ->
-            showIf(gjenlevendetilleggKap19Innvilget) { //TODO Her bør det kanskje være gjtkap19 utbetalt?
+            showIf(gjenlevendetilleggKap19Innvilget and gjenlevendetilleggKap19Utbetalt) {
                 title2(uniqueness = "kap19") {
                     text(
                         bokmal { +"Gjenlevenderett i alderspensjon" },
@@ -544,7 +545,7 @@ data class OmregningAlderUfore2016Felles(
             )
         }
 
-        showIf(gjenlevendetilleggKap19Innvilget) {
+        showIf(gjenlevendetilleggKap19Innvilget and gjenlevendetilleggKap19Utbetalt) {
             paragraph {
                 text(
                     bokmal { +"Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år." },
