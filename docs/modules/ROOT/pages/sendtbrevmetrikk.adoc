@@ -193,7 +193,7 @@ Hva samhandlerne er identifisert med:
 [source]
 ----
 sum by (id_type) (increase(skribenten_brev_sendt_total{
-  app="skribenten-backend", k8s_cluster_name="prod", mottaker="SAMHANDLER"}[30d]))
+  app="skribenten-backend", k8s_cluster_name="prod", mottaker="SAMHANDLER", id_type=~".+"}[30d]))
 ----
 
 Bøtter i bruk, og anslaget på antall distinkte organisasjoner:

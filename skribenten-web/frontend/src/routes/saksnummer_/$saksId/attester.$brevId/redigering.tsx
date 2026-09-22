@@ -213,7 +213,7 @@ const VedtakWrapper = () => {
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const { vedlegg: activeVedlegg } = Route.useSearch();
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset } =
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset, saveNow } =
     useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
@@ -260,10 +260,62 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   // The diff decorations belong to the latest saved letter and are removed as soon as editing begins.
-  const { disableDiff } = attestantDiff;
+  const { disableDiffMode, isDiffMode, defaultDiffMode } = attestantDiff;
+
+  // Read via a ref so trackedDisableDiffMode can see the latest isDiffMode at call time without
+  // being recreated on every toggle.
+  const isDiffModeReference = useRef(isDiffMode);
+  isDiffModeReference.current = isDiffMode;
+
+  // Direct editor/table edits (e.g. ContentGroup's handleEditIntent, TableView's context menu) call
+  // disableDiffMode straight from AttestantDiffContext, turning off diff mode before saveStatus becomes
+  // DIRTY. Wrapping disableDiffMode here — rather than tracking from the saveStatus effect below — is
+  // what actually observes those disables, since by the time the effect runs isDiffMode is already false.
+  const trackedDisableDiffMode = useCallback(() => {
+    if (isDiffModeReference.current) {
+      trackEvent("diff modus endret", {
+        brevId: props.brev.info.id,
+        brevkode: props.brev.info.brevkode,
+        kilde: "automatisk",
+        diffModus: false,
+        defaultDiffModus: defaultDiffMode,
+      });
+    }
+    disableDiffMode();
+  }, [disableDiffMode, defaultDiffMode, props.brev.info.id, props.brev.info.brevkode]);
+
+  // Safety net for saveStatus transitions to DIRTY that don't go through an explicit disableDiffMode
+  // call first (e.g. editing the underskrift field, or keeping/deleting a block missing from the mal).
+  // Deliberately keyed on saveStatus only: reacting to isDiffMode too would turn the switch straight
+  // back off when the attestant enables diff mode on a letter that is still saving.
   useEffect(() => {
-    if (editorState.saveStatus === "DIRTY") disableDiff();
-  }, [disableDiff, editorState.saveStatus]);
+    if (editorState.saveStatus === "DIRTY" && isDiffModeReference.current) {
+      trackedDisableDiffMode();
+    }
+  }, [editorState.saveStatus, trackedDisableDiffMode]);
+
+  // Diffing needs a saved letter to compare against, so enabling diff mode flushes pending edits
+  // instead of leaving the attestant waiting for the autosave debounce.
+  const handleDiffModeChange = async (checked: boolean) => {
+    attestantDiff.setDiffMode(checked);
+    trackEvent("diff modus endret", {
+      brevId: props.brev.info.id,
+      brevkode: props.brev.info.brevkode,
+      kilde: "manuell",
+      diffModus: checked,
+      defaultDiffModus: defaultDiffMode,
+    });
+
+    if (!checked) return;
+
+    try {
+      await saveNow();
+    } catch {
+      // Without a successful save there is no fresh letter version to diff against. The autosave
+      // error UI reports the failure; here we only undo the diff mode it was meant to enable.
+      trackedDisableDiffMode();
+    }
+  };
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -440,8 +492,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                         {diffFeatureToggle.data?.enabled === true && (
                           <>
                             <Switch
-                              checked={attestantDiff.enabled}
-                              onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
+                              checked={attestantDiff.isDiffMode}
+                              onChange={(event) => void handleDiffModeChange(event.target.checked)}
                               size="small"
                             >
                               Marker tekst som er lagt til og slettet
@@ -516,7 +568,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <AttestantDiffProvider
                     diff={attestantDiff.activeDiff}
                     diffHash={attestantDiff.diffHash}
-                    disableDiff={attestantDiff.disableDiff}
+                    disableDiffMode={trackedDisableDiffMode}
                   >
                     <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
                   </AttestantDiffProvider>

@@ -25,6 +25,11 @@ public final class no/nav/pensjon/brev/api/model/FeatureToggleSingleton {
 	public final fun verifiserAtAlleBrytereErDefinert (Ljava/util/List;)V
 }
 
+public final class no/nav/pensjon/brev/api/model/maler/selectors/redigerbarBrevdata/RedigerbarBrevdataSelectorsKt {
+	public static final fun getPesysData (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun getPesysData (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+}
+
 public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
 	public static final fun format (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatFoedselsnummer (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
