@@ -211,11 +211,14 @@ export function getTableArrowNavigationFocus(
       target = line;
     }
   }
-  if (withinCell && target.element === element) return undefined;
 
   // Diff-decorated literals contain display-only deleted text outside the caret model;
   // use cell-level navigation until the attestant diff is dismissed.
-  if (target.element.dataset.diffVersion !== undefined) return fallback;
+  if (target.element.dataset.diffVersion !== undefined) {
+    return verticalTableStep(focus, table, direction);
+  }
+
+  if (withinCell && target.element === element) return undefined;
 
   // Point-based caret lookup requires a visible target. Scrolling changes viewport coordinates,
   // so measure the target line again before looking up its text position.
