@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.planleggepensjon
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrev
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDtoData
@@ -52,7 +53,7 @@ object Fixtures : LetterDataFactory {
         }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when (letterDataType) {
+    override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when (letterDataType) {
         ApSimuleringDtoData::class -> createFagsystemdata() as T
         Simuleringsinformasjon::class -> createSimuleringsinformasjon() as T
         ForbeholdInnhold::class -> createForbeholdInnhold() as T

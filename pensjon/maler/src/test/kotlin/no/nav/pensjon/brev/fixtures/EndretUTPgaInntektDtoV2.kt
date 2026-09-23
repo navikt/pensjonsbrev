@@ -52,7 +52,7 @@ fun createEndretUTPgaInntektDtoV2() =
         btfbEndret = false,
         btsbEndret = false,
         brukerBorINorge = true,
-        pe = Fixtures.createVedlegg(),
-        orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
+        pe = createPEgruppe10(),
+        orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
         gjtEndret = false
     )

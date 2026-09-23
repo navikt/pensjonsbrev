@@ -5,7 +5,9 @@ import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDto
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
@@ -13,14 +15,15 @@ import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmaktsgiverBp
 import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmektigBprofAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.*
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.OpptjeningVedForhoeyetHjelpesats
-import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtakV2
+import no.nav.pensjon.brev.maler.redigerbar.createVedtakOmFjerningAvOmsorgsopptjeningDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
+import no.nav.pensjon.brev.maler.*
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.maler.example.TestVedleggDto
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
@@ -66,9 +69,6 @@ object Fixtures : LetterDataFactory {
     val felles = no.nav.brev.brevbaker.FellesFactory.felles
 
     val fellesAuto = no.nav.brev.brevbaker.FellesFactory.fellesAuto
-
-    inline fun <reified T : Any> createVedlegg(): T = createVedlegg(T::class)
-
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : BrevbakerBrevdata> create(templateType: KClass<out BrevTemplate<T, *>>): T =
@@ -172,28 +172,20 @@ object Fixtures : LetterDataFactory {
         }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+    override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when (letterDataType) {
         DineRettigheterOgMulighetTilAaKlageDto::class -> createDineRettigheterOgMulighetTilAaKlageDto() as T
         DineRettigheterOgPlikterUforeDto::class -> createDineRettigheterOgPlikterUforeDto() as T
         EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
-        MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned::class -> createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned() as T
+        EmptyVedleggData::class -> EmptyVedleggData as T
         MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T
-        OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() as T
-        OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() as T
-        OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() as T
-        OpplysningerBruktIBeregningUTDto.BeregnetUTPerManedGjeldende::class -> createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende() as T
-        OpplysningerBruktIBeregningUTDto.InntektFoerUfoereGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende() as T
-        OpplysningerBruktIBeregningUTDto.InntektsAvkortingGjeldende::class -> createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende() as T
-        OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende.UtenforEOSogNorden::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden() as T
-        OpplysningerBruktIBeregningUTDto.TrygdetidsdetaljerGjeldende::class -> createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() as T
-        OpplysningerBruktIBeregningUTDto.UfoeretrygdGjeldende::class -> createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende() as T
-        OpplysningerBruktIBeregningUTDto.YrkesskadeGjeldende::class -> createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende() as T
+        OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
         OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T
         OpplysningerOmEtteroppgjoeretDto::class -> createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret() as T
         OrienteringOmRettigheterOgPlikterDto::class -> createOrienteringOmRettigheterOgPlikterDto() as T
         OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
         OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
         PEgruppe10::class -> createPEgruppe10() as T
+        TestVedleggDto::class -> TestVedleggDto("a", "b") as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
 }
