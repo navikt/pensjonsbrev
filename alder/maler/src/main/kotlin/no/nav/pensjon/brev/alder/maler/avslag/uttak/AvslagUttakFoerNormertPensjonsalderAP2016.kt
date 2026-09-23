@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderAP2016AutoDto.*
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016Dto
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderAP2016Dto.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.opplysningerBruktIBeregningen.*
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder

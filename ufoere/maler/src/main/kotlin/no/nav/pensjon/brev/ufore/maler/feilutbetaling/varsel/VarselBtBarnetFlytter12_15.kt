@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.dsl.pesysData
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingSpesifikkVarselDto.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles

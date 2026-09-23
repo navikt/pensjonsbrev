@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto.*
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagGradsendringFoerNormertPensjonsalderFoerEttAarDto.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate

@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.selectors.inngangOgEksportVurdering.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.selectors.omregningAlderUfore2016Dto.*
-import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.selectors.omregningAlderUfore2016RedigerbarDto.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.selectors.persongrunnlagAvdod.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate

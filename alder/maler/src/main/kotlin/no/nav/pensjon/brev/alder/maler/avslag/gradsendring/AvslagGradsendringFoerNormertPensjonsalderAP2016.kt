@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.opp
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderAP2016Dto.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.opplysningerBruktIBeregningen.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
