@@ -271,7 +271,11 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                         text(
                             bokmal { + "Dette barnetillegget er derfor " }
                         )
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_ikke(pe))
+                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto())) {
+                            text(
+                                bokmal { + "ikke " },
+                            )
+                        }
                         text(
                             bokmal { + "redusert ut fra inntekt. " }
                         )
