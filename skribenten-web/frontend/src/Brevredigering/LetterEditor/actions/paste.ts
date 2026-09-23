@@ -3,7 +3,6 @@ import { type Draft } from "immer";
 
 import {
   addElements,
-  cleanseText,
   findAdjoiningContent,
   fontTypeOf,
   isAtStartOfBlock,
@@ -24,6 +23,21 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
+import {
+  cleansePastedText,
+  type ItemElement,
+  mergeNeighbouringText,
+  type ParagraphElement,
+  type Table,
+  type TableCell,
+  type TableRow,
+  type Text,
+  type Title1Element,
+  type Title2Element,
+  type Title3Element,
+  type TraversedElement,
+} from "~/Brevredigering/LetterEditor/actions/paste-elements";
+import { parseRtfToTraversedElements } from "~/Brevredigering/LetterEditor/actions/paste-rtf";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -62,6 +76,8 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
 
     if (clipboard.types.includes("text/html")) {
       insertHtmlClipboardInLetter(draft, clipboard);
+    } else if (getRtfClipboardText(clipboard) !== undefined) {
+      insertRtfClipboardInLetter(draft, clipboard);
     } else if (clipboard.types.includes("text/plain")) {
       insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
     } else {
@@ -83,6 +99,8 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
     // Now paste at that position.
     if (clipboard.types.includes("text/html")) {
       insertHtmlClipboardInLetter(draft, clipboard);
+    } else if (getRtfClipboardText(clipboard) !== undefined) {
+      insertRtfClipboardInLetter(draft, clipboard);
     } else if (clipboard.types.includes("text/plain")) {
       insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
     } else {
@@ -93,6 +111,7 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
 export function logPastedClipboard(clipboardData: DataTransfer) {
   log("available paste types - ", clipboardData.types);
   log(`pasted html content - ${clipboardData.getData("text/html")}`);
+  log(`pasted rtf content - ${getRtfClipboardText(clipboardData) ?? ""}`);
   log(`pasted plain content - ${clipboardData.getData("text/plain")}`);
 }
 
@@ -248,6 +267,41 @@ function shouldModifyExistingLiteral(
 }
 
 /**
+ * Rich text format (RTF) is exposed under either "text/rtf" or "application/rtf" depending on the
+ * OS/browser combination that produced the clipboard content.
+ */
+function getRtfClipboardText(clipboard: DataTransfer): string | undefined {
+  if (clipboard.types.includes("text/rtf")) {
+    return clipboard.getData("text/rtf");
+  } else if (clipboard.types.includes("application/rtf")) {
+    return clipboard.getData("application/rtf");
+  } else {
+    return undefined;
+  }
+}
+
+function insertRtfClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
+  const rtf = getRtfClipboardText(clipboard);
+  if (rtf === undefined) {
+    return;
+  }
+
+  const parsedRtf = parseRtfToTraversedElements(rtf);
+
+  if (parsedRtf.length === 0) {
+    //trenger ikke å lime inn tomt innhold
+    return;
+  } else if (parsedRtf.every((element) => element.type === "TEXT")) {
+    for (const element of parsedRtf) {
+      insertTextInLetter(draft, element.text, element.font, false);
+    }
+  } else {
+    insertTraversedElements(draft, parsedRtf);
+  }
+  draft.saveStatus = "DIRTY";
+}
+
+/**
  * Pasting funksjonalitet skal etterligne hvordan det fungerer i microsoft word.
  * Merk da at det er forskjellige regler hvis man limer inn i start/midten/slutt, på en literal, eller punktliste,
  * og om det kopierte innholdet er bare literal eller punktliste, eller begge.
@@ -370,7 +424,7 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
   }
 }
 
-function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
+export function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
   for (const element of elements) {
     switch (element.type) {
       case "TEXT": {
@@ -536,53 +590,6 @@ function toggleItemListAndSplitAtCursor(
     };
   }
 }
-
-interface Text {
-  type: "TEXT";
-  font: FontType;
-  text: string;
-}
-
-interface ItemElement {
-  type: "ITEM";
-  content: Text[];
-  listType?: ListType;
-}
-
-interface ParagraphElement {
-  type: "P";
-  content: Text[];
-}
-interface Title1Element {
-  type: "H1";
-  content: Text[];
-}
-
-interface Title2Element {
-  type: "H2";
-  content: Text[];
-}
-
-interface Title3Element {
-  type: "H3";
-  content: Text[];
-}
-
-interface TableCell {
-  content: Text[];
-}
-
-interface TableRow {
-  cells: TableCell[];
-}
-
-interface Table {
-  type: "TABLE";
-  rows: TableRow[];
-  headerCells?: TableCell[];
-}
-
-type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Title3Element | Table;
 
 /** Return clipboard HTML or plain text, sanitised through DOMPurify. */
 function getCleanClipboardMarkup(dt: DataTransfer): string {
@@ -935,22 +942,6 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): Paragrap
 
   flushBuffer();
   return result;
-}
-
-function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
-  return elements.reduce<T[]>((acc, curr) => {
-    const previous = acc.at(-1);
-
-    if (previous?.type === "TEXT" && curr.type === "TEXT" && previous?.font === curr.font) {
-      return [...acc.slice(0, -1), { ...previous, text: cleansePastedText(previous.text + curr.text) }];
-    } else {
-      return acc.concat(curr);
-    }
-  }, []);
-}
-
-function cleansePastedText(str: string): string {
-  return cleanseText(str).replaceAll(/\s+/g, " ");
 }
 
 function log(message: string, ...obj: unknown[]) {
