@@ -220,7 +220,7 @@ test.describe("Redigerbare vedlegg", () => {
       });
     }
 
-    test("attestant ser verken Behold, Slett eller avsnittsvarsel", async ({ page }) => {
+    test("attestant ser verken markering, Behold, Slett eller avsnittsvarsel", async ({ page }) => {
       const attestantBrev = structuredClone(utfyltBrev);
       attestantBrev.redigertBrev.blocks[0].missingFromTemplate = true;
       attestantBrev.redigertBrev.signatur.attesterendeSaksbehandlerNavn = "Attestant";
@@ -247,10 +247,11 @@ test.describe("Redigerbare vedlegg", () => {
 
       await page.goto(`/saksnummer/123456/attester/1/redigering?vedlegg=${VEDLEGG_ID}`);
       await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+      await expect(page.locator(".missing-from-template-block")).toHaveCount(0);
       await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeHidden();
       await expect(page.getByRole("button", { name: "Slett", exact: true })).toBeHidden();
       await page.getByRole("tab", { name: "Brevmal" }).click();
-      await expect(page.locator(".missing-from-template-block")).toBeVisible();
+      await expect(page.locator(".missing-from-template-block")).toHaveCount(0);
       await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeHidden();
       await expect(page.getByRole("button", { name: "Slett", exact: true })).toBeHidden();
       await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant");
