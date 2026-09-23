@@ -70,9 +70,6 @@ object Fixtures : LetterDataFactory {
 
     val fellesAuto = no.nav.brev.brevbaker.FellesFactory.fellesAuto
 
-    inline fun <reified T : VedleggData> createVedlegg(): T = createVedlegg(T::class)
-
-
     @Suppress("UNCHECKED_CAST")
     override fun <T : BrevbakerBrevdata> create(templateType: KClass<out BrevTemplate<T, *>>): T =
         when (templateType) {
