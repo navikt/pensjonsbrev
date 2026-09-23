@@ -482,7 +482,12 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
 
             showIf((not(endringIBelopUt) and ((pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("nor") or (pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("")))) {
-                includePhrase(TBU2223_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                        nynorsk { + "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad." },
+                    )
+                }
             }
 
             title1 {
@@ -1343,11 +1348,21 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
-                includePhrase(TBU2362_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret." },
+                        nynorsk { + "Vi har derfor redusert utbetaling av uføretrygda di for resten av kalenderåret." },
+                    )
+                }
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
-                includePhrase(TBU2363_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret." },
+                        nynorsk { + "Vi har derfor auka utbetaling av uføretrygda di for resten av kalenderåret." },
+                    )
+                }
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
