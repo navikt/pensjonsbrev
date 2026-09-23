@@ -46,7 +46,6 @@ import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
 import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
 import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoerepensjonRedigerbar
-import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoeretrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertrygdAuto
 import no.nav.pensjon.brev.maler.ufore.diverse.BekreftelsePaaUfoeretrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.EndretUforetrygdPGAOpptjeningLegacy
@@ -124,7 +123,6 @@ object ProductionTemplates : AllTemplates {
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
         AvslagUfoerepensjonRedigerbar,
-        AvslagUfoeretrygdRedigerbar,
         BekreftelsePaaFlyktningstatus,
         BekreftelsePaaPensjon,
         BekreftelsePaaUfoeretrygdRedigerbar,

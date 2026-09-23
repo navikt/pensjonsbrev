@@ -184,7 +184,6 @@ class TemplateRoutesTest {
         assertEquals(HttpStatusCode.OK, response.status)
         val navn = response.body<List<LinkedHashMap<*, *>>>().map { it["name"] }
         assertNull(navn.firstOrNull { it == "PE_OVERSETTELSE_AV_DOKUMENTER" })
-        assertNull(navn.firstOrNull { it == "UT_AVSLAG_UFOERETRYGD" })
     }
 
     /** Dokumentasjon for alle autobrevmaler på alle språk, i ett kall. */
