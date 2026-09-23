@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
+import { useVedleggEditorWarnings } from "~/components/brevOgVedlegg/useVedleggEditorWarnings";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 
 /**
@@ -17,6 +18,12 @@ export const useActiveDocumentCoordinator = (args: {
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const activeVedleggSaveRef = useRef<(() => Promise<void>) | null>(null);
   const [savingActiveDocument, setSavingActiveDocument] = useState(false);
+  const { getMissingFromTemplateCount, registerVedleggMissingFromTemplate } = useVedleggEditorWarnings({
+    saksId,
+    brevId,
+    redigeringsflate,
+    vedlegg: redigerbareVedleggQuery.data,
+  });
 
   const registerVedleggSave = useCallback((saveNow: (() => Promise<void>) | null) => {
     activeVedleggSaveRef.current = saveNow;
@@ -60,6 +67,8 @@ export const useActiveDocumentCoordinator = (args: {
     saveActiveDocument,
     savingActiveDocument,
     registerVedleggSave,
+    getMissingFromTemplateCount,
+    registerVedleggMissingFromTemplate,
     selectDocument,
   };
 };
