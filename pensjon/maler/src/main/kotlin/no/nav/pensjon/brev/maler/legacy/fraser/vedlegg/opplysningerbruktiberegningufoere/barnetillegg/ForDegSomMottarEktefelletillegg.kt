@@ -24,7 +24,6 @@ data class ForDegSomMottarEktefelletillegg(
                 and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
                 and pe.pebrevkode().notEqualTo("PE_UT_04_108")
                 and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                and pe.pebrevkode().notEqualTo("PE_UT_04_500")
                 and pe.pebrevkode().notEqualTo("PE_UT_07_200")
                 and pe.pebrevkode().notEqualTo("PE_UT_06_300")
                 and (pe.pebrevkode()
@@ -50,7 +49,6 @@ data class ForDegSomMottarEktefelletillegg(
             .equalTo("PE_UT_14_300")) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.pebrevkode()
             .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode()
             .notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode()
-            .notEqualTo("PE_UT_04_500") and pe.pebrevkode()
             .notEqualTo("PE_UT_06_300") and (pe.pebrevkode()
             .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
             "tilst_dod"
@@ -67,11 +65,11 @@ data class ForDegSomMottarEktefelletillegg(
                     .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype()
                     .notEqualTo(
                         "soknad_bt"
-                    ) and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode()
-                    .notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode()
-                    .notEqualTo("PE_UT_07_200") and pe.pebrevkode()
-                    .notEqualTo("PE_UT_06_300") and (pe.pebrevkode()
-                    .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
+                    ) and pe.pebrevkode().notEqualTo("PE_UT_04_108")
+                        and pe.pebrevkode().notEqualTo("PE_UT_04_109")
+                        and pe.pebrevkode().notEqualTo("PE_UT_07_200")
+                        and pe.pebrevkode().notEqualTo("PE_UT_06_300")
+                        and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
                     "tilst_dod"
                 ))))){
                     text (
@@ -86,10 +84,11 @@ data class ForDegSomMottarEktefelletillegg(
             .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype()
             .notEqualTo(
                 "soknad_bt"
-            ) and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode()
-            .notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode()
-            .notEqualTo("PE_UT_06_300") and (pe.pebrevkode()
-            .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
+            ) and pe.pebrevkode().notEqualTo("PE_UT_04_108")
+                and pe.pebrevkode().notEqualTo("PE_UT_04_109")
+                and pe.pebrevkode().notEqualTo("PE_UT_07_200")
+                and pe.pebrevkode().notEqualTo("PE_UT_06_300")
+                and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
             "tilst_dod"
         ))))){
             paragraph {
