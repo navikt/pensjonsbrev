@@ -81,7 +81,7 @@ data class InntektsgrenseOgAvkortning(
                 .equalTo("stdbegr_12_8_2_3") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
                 .equalTo("stdbegr_12_8_2_4") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo(
                 "stdbegr_12_8_2_5"
-            ) or pe.pebrevkode().equalTo("PE_UT_04_500"))){
+            ))){
             paragraph {
                 text (
                     bokmal { + "Minstenivå på inntekt før uførhet" },
@@ -95,7 +95,7 @@ data class InntektsgrenseOgAvkortning(
                 .equalTo("stdbegr_12_8_2_3") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
                 .equalTo("stdbegr_12_8_2_4") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo(
                 "stdbegr_12_8_2_5"
-            ) or pe.pebrevkode().equalTo("PE_UT_04_500"))){
+            ))){
             paragraph {
                 text (
                     bokmal { + "Før 1. januar 2026 skal inntekten din før du ble ufør ikke settes lavere enn:" },

@@ -36,7 +36,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
         val basis = Fixtures.createVedlegg(PEgruppe10::class)
         val vedtaksdata = basis.vedtaksbrev.vedtaksdata!!
         val medInntektsdetaljer = basis.copy(
-            pebrevkode = "PE_UT_04_500",
+            pebrevkode = "PE_UT_04_100",
             vedtaksbrev = basis.vedtaksbrev.copy(
                 vedtaksdata = vedtaksdata.copy(
                     kravhode = vedtaksdata.kravhode!!.copy(
