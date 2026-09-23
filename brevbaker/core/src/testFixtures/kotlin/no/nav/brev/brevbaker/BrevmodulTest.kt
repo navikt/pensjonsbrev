@@ -13,11 +13,9 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -95,17 +93,11 @@ abstract class BrevmodulTest(
         .flatMap { template ->
             template.language.all().flatMap { spraak ->
                 template.attachments.map { vedlegg ->
-                    val dto =
-                        (((vedlegg.data as? Expression.UnaryInvoke<*, *>)?.operation as? UnaryOperation.Select<*, *>)?.selector?.propertyType)?.let {
-                            Class.forName(it.removeSuffix("?"))
-                                .asSubclass(VedleggData::class.java)
-                                .kotlin
-                        }
-                    dto?.let { Arguments.of(vedlegg.template, fixtures.createVedlegg(dto), spraak, dto.simpleName) }
+                    val dto = vedlegg.template.dataType
+                    Arguments.of(vedlegg.template, fixtures.createVedlegg(dto), spraak, dto.simpleName)
                 }
             }
         }
-        .filterNotNull()
         .distinctBy { it.get()[2].toString() + it.get()[3] }
 
     @Suppress("unused") // Brukt i MethodSource
