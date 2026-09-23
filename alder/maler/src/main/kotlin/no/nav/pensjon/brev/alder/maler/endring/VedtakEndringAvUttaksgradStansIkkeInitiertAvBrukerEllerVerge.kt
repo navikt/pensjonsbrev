@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgr
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.krav.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.endring.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.*
+import no.nav.pensjon.brev.template.dsl.pesysData
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate

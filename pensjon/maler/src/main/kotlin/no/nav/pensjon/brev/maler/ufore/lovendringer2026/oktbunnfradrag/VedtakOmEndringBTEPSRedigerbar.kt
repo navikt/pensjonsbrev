@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEndringBarnetilleggEPSRedigerbarDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEndringBarnetilleggEPSRedigerbarDto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEndringBarnetilleggEPSRedigerbarDto.pesysData.vedtakData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSData.*
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
@@ -19,6 +18,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.pesysData
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata

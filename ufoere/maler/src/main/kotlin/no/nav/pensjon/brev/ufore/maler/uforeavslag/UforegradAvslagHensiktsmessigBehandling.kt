@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
+import no.nav.pensjon.brev.template.dsl.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
