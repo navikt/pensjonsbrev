@@ -568,12 +568,17 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                 )
             }
 
-
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_nedsattinntektsevneresultat()).equalTo("oppfylt") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_1"))) {
                 paragraph {
                     text(
                         bokmal { +"Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Fram til dette vil du få arbeidsavklaringspenger." },
                         nynorsk { +"Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Fram til dette kjem du til å få arbeidsavklaringspengar." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du må huske å sende meldekort ut inneværende måned." },
+                        nynorsk { +"Du må hugse å sende meldekort ut inneverande månad." },
                     )
                 }
             }
