@@ -2,43 +2,64 @@ package no.nav.pensjon.brev
 
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
-import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDto
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.*
 import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmaktsgiverBprofAutoDto
 import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmektigBprofAutoDto
-import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.*
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.maler.redigerbar.createVedtakOmFjerningAvOmsorgsopptjeningDto
-import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev
-import no.nav.pensjon.brev.maler.vedlegg.*
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
-import kotlin.reflect.KClass
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.maler.*
+import no.nav.pensjon.brev.maler.OmsorgEgenAuto
+import no.nav.pensjon.brev.maler.OpptjeningVedForhoeyetHjelpesats
+import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtakV2
 import no.nav.pensjon.brev.maler.adhoc.*
-import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.*
-import no.nav.pensjon.brev.maler.example.*
-import no.nav.pensjon.brev.maler.klageOgAnke.*
-import no.nav.pensjon.brev.maler.legacy.redigerbar.*
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
+import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
+import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
+import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.maler.klageOgAnke.AnkeOrienteringOmSaksbehandling
+import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
+import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
+import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
+import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
+import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.redigerbar.*
-import no.nav.pensjon.brev.maler.ufore.*
+import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
+import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
+import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
+import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0
-import no.nav.pensjon.brev.maler.ufore.avslag.*
-import no.nav.pensjon.brev.maler.ufore.barnetillegg.*
+import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoerepensjonRedigerbar
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertrygdAuto
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ufore.diverse.*
-import no.nav.pensjon.brev.maler.ufore.endring.*
-import no.nav.pensjon.brev.maler.ufore.etteroppgjor.*
-import no.nav.pensjon.brev.maler.ufore.hvilenderett.*
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektV2
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
+import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.ufore.etteroppgjor.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettInfo4Aar
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettMidlertidigOppHoer
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettOppHoer
+import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettVarselOpphoer
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.*
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.*
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.*
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.*
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
+import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
 
@@ -54,7 +75,6 @@ object Fixtures : LetterDataFactory {
         when (templateType) {
             AdHocVarselUgyldiggjoringFullmektig::class -> createFullmektigBprofAutoDto() as T
             AdHocVarselUgyldiggjoringFullmaktsgiver::class -> createFullmaktsgiverBprofAutoDto() as T
-            AvslagUfoeretrygdRedigerbar::class -> createAvslagUfoeretrygdDto() as T
             BekreftelsePaaPensjon::class -> createBekreftelsePaaPensjonDto() as T
             BekreftelsePaaUfoeretrygdRedigerbar::class -> createBekreftelsePaaUfoeretrygdDto() as T
             BrukerTestBrev::class -> createBrukerTestBrevDto() as T
