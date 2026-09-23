@@ -8,13 +8,17 @@ import com.google.devtools.ksp.visitor.KSDefaultVisitor
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time", "kotlin.collections", "kotlin.ranges")
+
 internal val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
     EmptyAutobrevdata::class,
     EmptyFagsystemdata::class,
     EmptyVedleggData::class,
+    // Generisk, så selectorene er håndskrevet i no.nav.pensjon.brev.api.model.maler.selectors.redigerbarBrevdata
+    RedigerbarBrevdata::class,
     SaksbehandlervalgIDSL::class
 ).map { it.qualifiedName!! }.toSet()
 

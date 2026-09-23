@@ -14,6 +14,7 @@ import no.nav.brev.brevbaker.markup.dsl.signatur
 import no.nav.brev.brevbaker.markup.dsl.title1
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
+import no.nav.pensjon.brev.api.model.maler.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.Testmaler
@@ -42,9 +43,12 @@ class RedigerbarTemplateResourceTest {
     private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger,
         Testmaler.hentAlltidValgbareVedlegg())
 
+    val letterData = createEksempelbrevRedigerbartDto()
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
         EksempelbrevRedigerbart.kode,
-        createEksempelbrevRedigerbartDto(),
+        letterData,
+        fagsystemBrevdata = null,
+        saksbehandlervalg = null,
         FellesFactory.felles,
         LanguageCode.BOKMAL,
         LetterMarkupImpl(
@@ -66,11 +70,21 @@ class RedigerbarTemplateResourceTest {
         ),
         alltidValgbareVedlegg = listOf(),
         redigerteVedlegg = emptyMap(),
+        redigerbartBrev = BestillRedigerbartBrevRequest(
+            kode = EksempelbrevRedigerbart.kode,
+            letterData = letterData,
+            fagsystemBrevdata = letterData.pesysData,
+            saksbehandlervalg = letterData.saksbehandlerValg,
+            felles = FellesFactory.felles,
+            language = LanguageCode.BOKMAL
+        )
     )
 
     private val validRedigertBrevRequestV2 = BestillRedigertBrevRequestV2(
         EksempelbrevRedigerbart.kode,
         createEksempelbrevRedigerbartDto(),
+        fagsystemBrevdata = null,
+        saksbehandlervalg = null,
         FellesFactory.felles,
         LanguageCode.BOKMAL,
         letterMarkup(
@@ -89,6 +103,7 @@ class RedigerbarTemplateResourceTest {
         },
         alltidValgbareVedlegg = listOf(),
         redigerteVedlegg = emptyMap(),
+        redigerbartBrev = null,
     )
 
     @Test

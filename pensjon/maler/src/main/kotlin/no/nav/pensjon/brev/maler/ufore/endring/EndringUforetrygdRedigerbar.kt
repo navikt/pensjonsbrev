@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope.RedigerbartVedlegg
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -31,6 +32,7 @@ import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.dsl.expression.localDateNow
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 
 @TemplateModelHelpers
 object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
@@ -1276,22 +1278,15 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((uforegradFraBeregning.equalTo(100) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
                 showIf(!pesysData.harVTA and ieuInntekt.equalTo(0)) {
                     paragraph {
-                        showIf(FeatureToggles.bunnfradragIVedlegg.toggle.expr().enabled()) {
-                            showIf(pesysData.vektetFribelop.equalTo(1.0)) {
-                                text(
-                                    bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                                    nynorsk { +"Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
-                                )
-                            }.orShow {
-                                text(
-                                    bokmal { +"Du kan tjene " + pe.ut_bunnfradrag_faktisk().format() + " uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt. " },
-                                    nynorsk { +"Du kan tene " + pe.ut_bunnfradrag_faktisk().format() + " utan at uføretrygda di blir redusert. Dette er botnfrådraget ditt. " },
-                                )
-                            }
+                        showIf(pesysData.vektetFribelop.equalTo(1.0)) {
+                            text(
+                                bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
+                                nynorsk { +"Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
+                            )
                         }.orShow {
                             text(
-                                bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                                nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
+                                bokmal { +"Du kan tjene " + pe.ut_bunnfradrag_faktisk().format() + " uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt. " },
+                                nynorsk { +"Du kan tene " + pe.ut_bunnfradrag_faktisk().format() + " utan at uføretrygda di blir redusert. Dette er botnfrådraget ditt. " },
                             )
                         }
                     }
@@ -1889,8 +1884,10 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
 
-        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
+        @OptIn(RedigerbartVedlegg::class)
+        includeAttachmentRedigerbarIfNotNull(VedleggId("endringUTMaanedligVedlegg"), vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
+        @OptIn(RedigerbartVedlegg::class)
+        includeAttachmentRedigerbar(VedleggId("endringUTBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)
     }
 }

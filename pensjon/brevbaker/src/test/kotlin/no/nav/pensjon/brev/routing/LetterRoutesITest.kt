@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
+import no.nav.pensjon.brev.api.model.maler.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
@@ -53,7 +54,26 @@ class LetterRoutesITest {
     ).let { LetterTestRenderer.renderLetterOnly(it) }
         .let {
             with(bestillMarkupRequest) {
-                BestillRedigertBrevRequest(kode, letterData as EksempelRedigerbartDto, felles, language, it, listOf(), emptyMap())
+                val brevdata = letterData as EksempelRedigerbartDto
+                BestillRedigertBrevRequest(
+                    kode = kode,
+                    letterData = brevdata,
+                    fagsystemBrevdata = brevdata.pesysData,
+                    saksbehandlervalg = brevdata.saksbehandlerValg,
+                    felles = felles,
+                    language = language,
+                    letterMarkup = it,
+                    alltidValgbareVedlegg = listOf(),
+                    redigerteVedlegg = emptyMap(),
+                    redigerbartBrev = BestillRedigerbartBrevRequest(
+                        kode = kode,
+                        letterData = brevdata,
+                        fagsystemBrevdata = brevdata.pesysData,
+                        saksbehandlervalg = brevdata.saksbehandlerValg,
+                        felles = felles,
+                        language = language
+                    )
+                )
             }
         }
 

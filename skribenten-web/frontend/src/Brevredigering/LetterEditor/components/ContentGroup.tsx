@@ -35,7 +35,8 @@ import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/mod
 import {
   areAnyContentEditableSiblingsPlacedHigher,
   areAnyContentEditableSiblingsPlacedLower,
-  ensureVisibleInScrollContainer,
+  ensureAdjacentLineVisible,
+  ensureLineVisibleInScrollContainer,
   findOnLineAbove,
   findOnLineBelow,
   focusAtOffset,
@@ -247,7 +248,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const highlightedIds = useInsertedTekstValgHighlight();
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
-  const { diffHash, disableDiff } = useAttestantDiff();
+  const { diffHash, disableDiffMode } = useAttestantDiff();
   const diffSegments = useDiffSegmentsForLiteral(literalIndex, textOf(content) || "");
   const hasDiffDecoration = diffSegments != null;
   const literalDiffKey = diffKey(literalIndex);
@@ -348,7 +349,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (!element) return;
 
     const cursorPosition = getEditableCharacterOffset(element);
-    disableDiff();
+    disableDiffMode();
     applyAction(updateFocus, setEditorState, { ...literalIndex, cursorPosition });
   };
 
@@ -521,13 +522,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       if (next) {
         // The line above may be outside the visible scroll area. Coordinate-based caret placement
         // only hits elements inside the scroll area, so scroll it into view first.
-        ensureVisibleInScrollContainer(next);
+        ensureLineVisibleInScrollContainer(next, "bottom");
         gotoCoordinates({
           x: caretCoordinates.x,
           y: next.getBoundingClientRect().bottom - Y_COORD_SAFETY_MARGIN,
         });
         event.preventDefault();
       }
+    } else {
+      // The browser moves the caret itself here, so reveal the line above before it does.
+      ensureAdjacentLineVisible(element, "up");
     }
   };
 
@@ -581,13 +585,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       if (next) {
         // The line below may be outside the visible scroll area. Coordinate-based caret placement
         // only hits elements inside the scroll area, so scroll it into view first.
-        ensureVisibleInScrollContainer(next);
+        ensureLineVisibleInScrollContainer(next, "top");
         gotoCoordinates({
           x: caretCoordinates.x,
           y: next.getBoundingClientRect().top + Y_COORD_SAFETY_MARGIN,
         });
         event.preventDefault();
       }
+    } else {
+      // The browser moves the caret itself here, so reveal the line below before it does.
+      ensureAdjacentLineVisible(element, "down");
     }
   };
 
@@ -655,6 +662,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         const pasteMetadata = getPasteMetadata(event.clipboardData);
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
+          enhetsId: editorState.info.avsenderEnhet.enhetNr,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
           limInnMetode,
@@ -673,6 +681,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           const pasteMetadata = getPasteMetadata(event.clipboardData);
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,
+            enhetsId: editorState.info.avsenderEnhet.enhetNr,
             antallTegn: pasteLength,
             merEnn200: pasteLength > 200,
             limInnMetode,
@@ -915,6 +924,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ...(fontTypeOf(content) === FontType.BOLD && { fontWeight: "bold" }),
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
       }}
+      data-empty={text === ZERO_WIDTH_SPACE ? "" : undefined}
       data-literal-index={JSON.stringify(literalIndex)}
       onBeforeInput={hasDiffDecoration ? handleBeforeInput : undefined}
       onClick={handleOnClick}
