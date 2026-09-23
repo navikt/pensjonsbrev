@@ -122,7 +122,7 @@ function AllTemplates() {
   const {
     query,
     setQuery,
-    needle,
+    highlight,
     exactOnly,
     setExactOnly,
     isSearching,
@@ -171,8 +171,11 @@ function AllTemplates() {
     ) : undefined;
   const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
   const [page, setPage] = useState(1);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset pagination whenever the query or tab changes.
-  useEffect(() => setPage(1), [needle, activeTab]);
+  // `highlight` is a fresh object on every results commit, so this resets
+  // pagination exactly when a new result set lands - not a render earlier,
+  // which would have jumped the user to page 1 of the results still on screen.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `setPage` is a setter; the deps are the triggers, not values read.
+  useEffect(() => setPage(1), [highlight, activeTab]);
   const activeHits = activeTab === "innhold" ? contentHits : brevHits;
   const pageSize = activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE;
   // Only the active tab's panel is mounted, so both panels can share the page
@@ -191,25 +194,25 @@ function AllTemplates() {
     return brevHits.slice(start, start + LETTER_PAGE_SIZE);
   }, [brevHits, safePage]);
   // The result lists are by far the most expensive thing on this page, and they
-  // depend only on the hits, the page and the needle - never on `isPending`.
-  // Memoising the elements lets React bail out of the whole subtree when the
-  // only thing that changed is the status line, so toggling the spinner twice
-  // per search costs nothing while the user is typing.
+  // depend only on the hits and the highlight they were produced with - never on
+  // `isPending`. Memoising the elements lets React bail out of the whole subtree
+  // when the only thing that changed is the status line, so toggling the spinner
+  // twice per search costs nothing while the user is typing.
   const contentList = useMemo(
     () =>
       contentItems.map((hit) => (
         <SearchSnippet
-          exact={exactOnly}
+          exact={highlight.exactOnly}
           hit={hit}
           key={`${hit.template.malType}/${hit.template.id}/${hit.template.language}`}
-          needle={needle}
+          needle={highlight.needle}
         />
       )),
-    [contentItems, exactOnly, needle],
+    [contentItems, highlight],
   );
   const brevList = useMemo(
-    () => <BrevResultList exact={exactOnly} hits={brevItems} needle={needle} />,
-    [brevItems, exactOnly, needle],
+    () => <BrevResultList exact={highlight.exactOnly} hits={brevItems} needle={highlight.needle} />,
+    [brevItems, highlight],
   );
   return (
     <Box asChild background="default" height="100vh" overflow="hidden">
