@@ -98,8 +98,10 @@ abstract class BrevmodulTest(
                     val dto =
                         (((vedlegg.data as? Expression.UnaryInvoke<*, *>)?.operation as? UnaryOperation.Select<*, *>)?.selector?.propertyType)?.let {
                             Class.forName(it.removeSuffix("?"))
+                                .asSubclass(VedleggData::class.java)
+                                .kotlin
                         }
-                    dto?.let { Arguments.of(vedlegg.template, fixtures.createVedlegg(dto.kotlin), spraak, dto.simpleName) }
+                    dto?.let { Arguments.of(vedlegg.template, fixtures.createVedlegg(dto), spraak, dto.simpleName) }
                 }
             }
         }

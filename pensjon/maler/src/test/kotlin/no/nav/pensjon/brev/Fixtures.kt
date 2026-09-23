@@ -67,7 +67,7 @@ object Fixtures : LetterDataFactory {
 
     val fellesAuto = no.nav.brev.brevbaker.FellesFactory.fellesAuto
 
-    inline fun <reified T : Any> createVedlegg(): T = createVedlegg(T::class)
+    inline fun <reified T : Any> createVedlegg(): T = createFixture(T::class)
 
 
     @Suppress("UNCHECKED_CAST")
@@ -171,8 +171,11 @@ object Fixtures : LetterDataFactory {
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
+    override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = createFixture(letterDataType)
+
+    @PublishedApi
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+    internal fun <T : Any> createFixture(letterDataType: KClass<T>): T = when(letterDataType) {
         DineRettigheterOgMulighetTilAaKlageDto::class -> createDineRettigheterOgMulighetTilAaKlageDto() as T
         DineRettigheterOgPlikterUforeDto::class -> createDineRettigheterOgPlikterUforeDto() as T
         EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T

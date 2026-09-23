@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.alder
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.alder.maler.adhoc.createAdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.maler.afpprivat.createAvslagAfpPrivatDto
 import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpGammelDto
@@ -218,7 +219,7 @@ object Fixtures : LetterDataFactory {
         }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+    override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
         DineRettigheterOgMulighetTilAaKlageDto::class -> createDineRettigheterOgMulighetTilAaKlageDto() as T
         AFpPrivatSokerUforeTrygdVedleggDto::class -> createAfpPrivatSokerUforeTrygdVedleggDto() as T
         MaanedligPensjonFoerSkattDto::class -> createMaanedligPensjonFoerSkatt() as T

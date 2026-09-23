@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte
 
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
@@ -159,7 +160,7 @@ object Fixtures : LetterDataFactory {
         }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+    override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
         BarnepensjonBeregning::class -> lagBeregning() as T
         BeregningsVedleggData::class -> lagBeregningsVedleggData() as T
         OmstillingsstoenadBeregning::class -> lagOmstillingsstoenadBeregning() as T
@@ -170,4 +171,3 @@ object Fixtures : LetterDataFactory {
 
 
 }
-
