@@ -26,12 +26,16 @@ export type TemplateRef = {
 export type TemplateSearch = {
   query: string;
   setQuery: (query: string) => void;
-  /** The query the hits on screen were produced from - lags `query` while the
-   *  user is still typing. Highlighting must use this, not `query`, so the
-   *  emphasis matches the hits being shown and re-highlighting does not run on
-   *  the keystroke's critical path. */
-  needle: string;
-  /** Whether the user wants exact matches only (no typo tolerance). Off by default. */
+  /** The query and match mode the hits on screen were produced from. Lags the
+   *  input while the user is still typing, and lags the checkbox while a
+   *  re-search runs. Highlighting must use these rather than the live `query`
+   *  and `exactOnly`: emphasising a needle the retained hits were never matched
+   *  against would mark the wrong words (or none at all), and re-highlighting
+   *  would run on the keystroke's critical path. */
+  highlight: Highlight;
+  /** Whether the user wants exact matches only (no typo tolerance). Off by
+   *  default. This is the live checkbox state - see `highlight` for the mode the
+   *  hits on screen actually ran in. */
   exactOnly: boolean;
   setExactOnly: (exactOnly: boolean) => void;
   isSearching: boolean;
@@ -62,7 +66,29 @@ type Corpus = {
   templates: TemplateText[];
   byKey: Map<TemplateKey, TemplateText>;
 };
+/** The query and match mode a set of results was produced by. Kept as one value
+ *  so the two can never be read from different searches. */
+export type Highlight = {
+  needle: string;
+  exactOnly: boolean;
+};
+/** Everything that describes the results currently on screen, committed as a
+ *  single unit. Splitting these across separate states let the needle and the
+ *  match mode update ahead of the hits they belong to, which highlighted the
+ *  retained results against a query they were never matched against. */
+type Rendered = {
+  results: SearchResults;
+  /** The corpus the results were hydrated from, so hits are always resolved
+   *  against the corpus that produced them. */
+  corpus: Corpus | undefined;
+  highlight: Highlight;
+};
 const NO_RESULTS: SearchResults = { content: [], brev: [] };
+const NOTHING_RENDERED: Rendered = {
+  results: NO_RESULTS,
+  corpus: undefined,
+  highlight: { needle: "", exactOnly: false },
+};
 /** Resolves the worker's template keys back to templates, preserving order:
  *  content hits arrive already ranked and brev hits carry Fuse's ranking. A key
  *  with no template belongs to a corpus that has since been replaced, and is
@@ -165,13 +191,11 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // allowed to search despite being shorter than MIN_QUERY_LENGTH - see
   // SPECIAL_CHAR_QUERY in textSearch.ts.
   const isSearching = trimmedQuery.length >= MIN_QUERY_LENGTH || SPECIAL_CHAR_QUERY.test(trimmedQuery);
-  // The results currently rendered. They are replaced only when new results
-  // arrive, so the previous query's hits stay on screen while the worker
-  // answers - rather than the list emptying on every keystroke.
-  const [results, setResults] = useState<SearchResults>(NO_RESULTS);
-  // The corpus the rendered results were produced from, so hits are always
-  // resolved against the corpus that produced them.
-  const [resultsCorpus, setResultsCorpus] = useState<Corpus | undefined>();
+  // The results currently rendered, together with the query and match mode that
+  // produced them. Replaced only when new results arrive, so the previous
+  // query's hits stay on screen - and stay highlighted for their own query -
+  // while the worker answers, rather than the list emptying on every keystroke.
+  const [rendered, setRendered] = useState<Rendered>(NOTHING_RENDERED);
   const [isAwaitingHits, setIsAwaitingHits] = useState(false);
   // Rendering a result list is hundreds of React elements, and at default
   // priority that render blocks the keystroke that caused it - which is the
@@ -188,8 +212,7 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
     if (!corpus || !isSearching) {
       setIsAwaitingHits(false);
       startHitsTransition(() => {
-        setResults(NO_RESULTS);
-        setResultsCorpus(corpus);
+        setRendered({ results: NO_RESULTS, corpus, highlight: { needle: "", exactOnly } });
       });
       return;
     }
@@ -208,8 +231,13 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
       // true until the new results are actually on screen.
       startHitsTransition(() => {
         setIsAwaitingHits(false);
-        setResults(hydrate(hits, corpus.byKey));
-        setResultsCorpus(corpus);
+        // One state, one commit: the hits and the needle and mode they were
+        // produced by can never be rendered out of step with each other.
+        setRendered({
+          results: hydrate(hits, corpus.byKey),
+          corpus,
+          highlight: { needle: trimmedQuery, exactOnly },
+        });
       });
     });
     return () => {
@@ -222,8 +250,10 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // typed", which is what the status line's spinner tells the user.
   const isPending = query !== deferredQuery || isAwaitingHits || isRenderingHits;
   // Results hydrated from a corpus that has since been replaced would render
-  // stale content, so drop them until the new corpus' results arrive.
-  const visibleResults = resultsCorpus === corpus ? results : NO_RESULTS;
+  // stale content, so drop them - and the highlight that belongs to them -
+  // until the new corpus' results arrive.
+  const visible = rendered.corpus === corpus ? rendered : NOTHING_RENDERED;
+  const visibleResults = visible.results;
   const languageTotal = useMemo(() => new Set(templates.flatMap((t) => t.languages)).size, [templates]);
   const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError);
   const retryFailed = () => {
@@ -236,7 +266,7 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   return {
     query,
     setQuery,
-    needle: trimmedQuery,
+    highlight: visible.highlight,
     exactOnly,
     setExactOnly,
     isSearching,

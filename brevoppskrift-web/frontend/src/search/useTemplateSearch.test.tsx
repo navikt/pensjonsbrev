@@ -276,6 +276,73 @@ describe("useTemplateSearch", () => {
     expect(result.current.contentHits[0].lineIndex).toBe(1);
   });
 
+  // The retained results belong to the previous query, so the needle and match
+  // mode handed to the highlighter must belong to it too. Highlighting the old
+  // hits with the query still being typed marks words those hits were never
+  // matched on - or, more often, nothing at all, so the emphasis flickers off
+  // and back on with every keystroke.
+  it("pins the highlight to the query that produced the results on screen", async () => {
+    const content: SearchableContent[] = [
+      {
+        brevkode: "A1",
+        language: "BOKMAL",
+        lines: [
+          { index: 0, segments: [{ type: "text", value: "Vi har beregnet din alderspensjon" }] },
+          { index: 1, segments: [{ type: "text", value: "Beløpet utbetales den 20. hver måned" }] },
+        ],
+      },
+    ];
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? content : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const client = deferrableClient();
+
+    const { result } = renderSearch(queryClient, client);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    act(() => result.current.setQuery("beregnet"));
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.isPending).toBe(false));
+    expect(result.current.highlight.needle).toBe("beregnet");
+
+    // Second query in flight: the first query's hits are still on screen, so
+    // the highlight must still be the first query's too.
+    act(() => result.current.setQuery("utbetales"));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    expect(result.current.highlight.needle).toBe("beregnet");
+
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.isPending).toBe(false));
+    expect(result.current.highlight.needle).toBe("utbetales");
+  });
+
+  // Same argument for the match mode: the checkbox has to respond immediately,
+  // but re-highlighting the retained results in the new mode would change which
+  // words are emphasised in hits that were matched under the old one.
+  it("keeps the checkbox live while the highlight's match mode waits for the re-search", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const client = deferrableClient();
+
+    const { result } = renderSearch(queryClient, client);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    act(() => result.current.setQuery("hei"));
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.isPending).toBe(false));
+    expect(result.current.highlight.exactOnly).toBe(false);
+
+    act(() => result.current.setExactOnly(true));
+    await waitFor(() => expect(result.current.exactOnly).toBe(true));
+    expect(result.current.highlight.exactOnly).toBe(false);
+
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.highlight.exactOnly).toBe(true));
+  });
+
   it("clears results and pending state when the query drops below MIN_QUERY_LENGTH", async () => {
     getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
       Promise.resolve(malType === "autobrev" ? autobrevContent : []),
