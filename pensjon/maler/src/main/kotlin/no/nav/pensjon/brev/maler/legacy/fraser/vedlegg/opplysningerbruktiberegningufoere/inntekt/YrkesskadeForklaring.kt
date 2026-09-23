@@ -1,36 +1,19 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntekt
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.text
 
-data class GrunnbeloepOgYrkesskadeForklaring(
+data class YrkesskadeForklaring(
     val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        showIf(
-            pe.pebrevkode().notEqualTo("PE_UT_05_100")
-                    and pe.pebrevkode().notEqualTo("PE_UT_07_100")
-                    and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense()
-                .notEqualTo(
-                    60000
-                )
-
-        ) {
-            paragraph {
-                text(
-                    bokmal { + "Folketrygdens grunnbeløp endres hvert år, og uføretrygden din blir justert ut fra dette." },
-                    nynorsk { + "Grunnbeløpet i folketrygda blir endra kvart år, og uføretrygda di blir justert ut frå dette." },
-                )
-            }
-        }
-
-        showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300"))) {
+        showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) ) {
             title1 {
                 text(
                     bokmal { + "Beregning av uføretrygd som skyldes yrkesskade eller yrkessykdom" },
