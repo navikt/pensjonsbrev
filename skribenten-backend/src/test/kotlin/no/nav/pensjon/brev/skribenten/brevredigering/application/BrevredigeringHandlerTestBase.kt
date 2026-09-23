@@ -590,8 +590,9 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderMarkup(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*>,
-            felles: BrevbakerFelles
+            felles: BrevbakerFelles,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
@@ -600,7 +601,8 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*>,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
             alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -617,7 +619,8 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun hentRedigerbareVedleggTitler(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*>,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
         ): RedigerbareVedleggTitler =
             RedigerbareVedleggTitler(
@@ -632,7 +635,8 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderRedigerbartVedlegg(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*>,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
         ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]
