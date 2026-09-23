@@ -115,6 +115,7 @@ import no.nav.pensjon.brev.alder.maler.innvilgelse.*
 import no.nav.pensjon.brev.alder.maler.sivilstand.*
 import no.nav.pensjon.brev.alder.maler.stans.VedtakStansAlderspensjonFlyttingMellomLand
 import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 
 object Fixtures : LetterDataFactory {
@@ -221,6 +222,7 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
         DineRettigheterOgMulighetTilAaKlageDto::class -> createDineRettigheterOgMulighetTilAaKlageDto() as T
+        EmptyVedleggData::class -> EmptyVedleggData as T
         AFpPrivatSokerUforeTrygdVedleggDto::class -> createAfpPrivatSokerUforeTrygdVedleggDto() as T
         MaanedligPensjonFoerSkattDto::class -> createMaanedligPensjonFoerSkatt() as T
         MaanedligPensjonFoerSkattAFPDto::class -> createMaanedligPensjonFoerSkattAFPDto() as T

@@ -16,6 +16,7 @@ import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.*
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.*
@@ -103,6 +104,7 @@ object Fixtures : LetterDataFactory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when (letterDataType) {
+        EmptyVedleggData::class -> EmptyVedleggData as T
         OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
