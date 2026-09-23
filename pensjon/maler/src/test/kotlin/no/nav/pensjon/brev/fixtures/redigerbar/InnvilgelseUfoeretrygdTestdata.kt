@@ -71,7 +71,8 @@ fun createInnvilgelseUfoeretrygdDto() =
                     barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUfoeretrygdDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14"),
+            harVTA = false
             ),
     )
 
@@ -128,7 +129,8 @@ fun createInnvilgelseUfoeretrygdUtlandDto() =
                     barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUfoeretrygdUtlandDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14"),
+            harVTA = false
         ),
     )
 fun createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() =
@@ -178,7 +180,8 @@ fun createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() =
                     barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3), ))),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUforetrygdBosattNorgeEtterUtlandDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14"),
+            harVTA = false
         ),
     )
 fun createInnvilgelseUforetrygdMellombehandlingDto() =
@@ -233,7 +236,8 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
                     barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUfoeretrygdMellombehandlingDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14"),
+            harVTA = false
         ),
     )
 
@@ -286,7 +290,9 @@ fun createInnvilgelseUforetrygdMedEndringDto() =
                     barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUforetrygdMedEndringDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14"),
+            harVTA = false,
+            vektetFribelop = 0.5
             ),
     )
 
@@ -354,6 +360,8 @@ fun createOkningUforegradDto() =
                 )
             ),
             harVTA = false,
+            vektetFribelop = 0.5,
+            vektetFribelopKr = Kroner(5000)
 
             ),
     )
