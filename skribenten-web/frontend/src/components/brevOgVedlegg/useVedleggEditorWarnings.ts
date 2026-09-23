@@ -48,5 +48,5 @@ export function useVedleggEditorWarnings({
     return total;
   };
 
-  return { registerVedleggMissingFromTemplate, getMissingFromTemplateCount };
+  return { getMissingFromTemplateCount, registerVedleggMissingFromTemplate };
 }

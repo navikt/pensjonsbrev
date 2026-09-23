@@ -18,7 +18,7 @@ export const useActiveDocumentCoordinator = (args: {
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const activeVedleggSaveRef = useRef<(() => Promise<void>) | null>(null);
   const [savingActiveDocument, setSavingActiveDocument] = useState(false);
-  const { registerVedleggMissingFromTemplate, getMissingFromTemplateCount } = useVedleggEditorWarnings({
+  const { getMissingFromTemplateCount, registerVedleggMissingFromTemplate } = useVedleggEditorWarnings({
     saksId,
     brevId,
     redigeringsflate,
@@ -67,8 +67,8 @@ export const useActiveDocumentCoordinator = (args: {
     saveActiveDocument,
     savingActiveDocument,
     registerVedleggSave,
-    registerVedleggMissingFromTemplate,
     getMissingFromTemplateCount,
+    registerVedleggMissingFromTemplate,
     selectDocument,
   };
 };
