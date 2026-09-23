@@ -37,6 +37,7 @@ private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
 
 internal class TemplateModelVisitor(
     private val iterableDeclaration: KSType,
+    private val redigerbarBrevdataDeclaration: KSType,
     private val logger: KSPLogger,
     private val dependency: KSFile?,
 ) : KSDefaultVisitor<SelectorModels, SelectorModels>() {
@@ -61,7 +62,12 @@ internal class TemplateModelVisitor(
         if (data.isVisited(classDeclaration)) {
             data.withDependency(classDeclaration, dependency)
         } else if (classDeclaration.classKind in setOf(CLASS, INTERFACE) && classDeclaration.shouldGenerateSelectors()) {
-            classDeclaration.getAllProperties().toList().foldAccept(data.withNeeded(classDeclaration, dependency), this)
+            if (redigerbarBrevdataDeclaration.isAssignableFrom(classDeclaration.asStarProjectedType())) {
+                classDeclaration.getAllProperties().toList().foldAccept(data.withVisited(classDeclaration), this)
+            } else {
+                classDeclaration.getAllProperties().toList()
+                    .foldAccept(data.withNeeded(classDeclaration, dependency), this)
+            }
         } else {
             logger.logSkipped(classDeclaration)
             data.withVisited(classDeclaration)

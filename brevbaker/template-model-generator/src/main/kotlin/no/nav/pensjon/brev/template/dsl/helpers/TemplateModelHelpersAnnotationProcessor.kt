@@ -4,6 +4,7 @@ import com.google.devtools.ksp.*
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.HasModel
 
 val ANNOTATION_NAME = TemplateModelHelpers::class.qualifiedName ?: throw InitializationError("Couldn't find qualified name of: ${TemplateModelHelpers::class.simpleName}")
@@ -29,13 +30,24 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
         val iterableDeclaration = resolver.getClassDeclarationByName<Iterable<*>>()?.asStarProjectedType()
             ?: throw InitializationError("Couldn't resove Iterable<*>")
 
+        val redigerbarBrevdataDeclaration =
+            resolver.getClassDeclarationByName<RedigerbarBrevdata<*>>()?.asStarProjectedType()
+                ?: throw InitializationError("Couldn't resove RedigerbarBrevdata<*>")
+
+
 
         return try {
             val (validSymbols, invalidSymbols) = resolver.getSymbolsWithAnnotation(ANNOTATION_NAME).toList()
                 .also { logger.info("Processing annotated symbols: $it") }
                 .partition { it.validate() }
 
-            val selectors = validSymbols.foldAccept(SelectorModels(), TemplateModelHelpersTargetVisitor(hasModelDeclaration, iterableDeclaration))
+            val selectors = validSymbols.foldAccept(
+                SelectorModels(), TemplateModelHelpersTargetVisitor(
+                    hasModelType = hasModelDeclaration,
+                    iterableDeclaration = iterableDeclaration,
+                    redigerbarBrevdataDeclaration = redigerbarBrevdataDeclaration
+                )
+            )
 
             SelectorCodeGenerator(selectors.needed).generateCode(codeGenerator)
 
@@ -53,6 +65,7 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
     inner class TemplateModelHelpersTargetVisitor(
         private val hasModelType: KSType,
         private val iterableDeclaration: KSType,
+        private val redigerbarBrevdataDeclaration: KSType,
     ) : KSDefaultVisitor<SelectorModels, SelectorModels>() {
         private val hasModelTypeParameter = hasModelType.declaration.typeParameters.first { it.simpleName.asString() == HAS_MODEL_TYPE_PARAMETER_NAME }
 
@@ -65,7 +78,12 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
                 logger.warn("Cannot determine source file for @$ANNOTATION_NAME annotated class: generated selectors will not have dependencies", classDeclaration)
             }
 
-            val modelVisitor = TemplateModelVisitor(iterableDeclaration, logger, classDeclaration.containingFile)
+            val modelVisitor = TemplateModelVisitor(
+                iterableDeclaration = iterableDeclaration,
+                redigerbarBrevdataDeclaration = redigerbarBrevdataDeclaration,
+                logger = logger,
+                dependency = classDeclaration.containingFile
+            )
 
             val className = classDeclaration.simpleName.asString()
             val additionalModels = classDeclaration.getAdditionalModelsFromAnnotation().toList()
@@ -102,7 +120,14 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
             return searchTypeHierarchyForModelType(propertyType.toString(), property.type)
                 .resolve()
                 .declaration
-                .accept(TemplateModelVisitor(iterableDeclaration, logger, property.containingFile), data)
+                .accept(
+                    TemplateModelVisitor(
+                        iterableDeclaration = iterableDeclaration,
+                        redigerbarBrevdataDeclaration = redigerbarBrevdataDeclaration,
+                        logger = logger,
+                        dependency = property.containingFile
+                    ), data
+                )
         }
 
         private fun KSAnnotated.getAdditionalModelsFromAnnotation(): Sequence<KSClassDeclaration> {
