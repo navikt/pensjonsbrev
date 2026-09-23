@@ -24,7 +24,20 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
+import { parseRtfClipboard, stripRtfToPlainText } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
+import {
+  type ItemElement,
+  type ParagraphElement,
+  type Table,
+  type TableCell,
+  type TableRow,
+  type Text,
+  type Title1Element,
+  type Title2Element,
+  type Title3Element,
+  type TraversedElement,
+} from "~/Brevredigering/LetterEditor/actions/traversedElement";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import {
@@ -60,13 +73,7 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };
 
-    if (clipboard.types.includes("text/html")) {
-      insertHtmlClipboardInLetter(draft, clipboard);
-    } else if (clipboard.types.includes("text/plain")) {
-      insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
-    } else {
-      log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
-    }
+    insertClipboardInLetter(draft, clipboard);
   });
 
 export const pasteReplacingSelection: Action<LetterEditorState, [selection: SelectionIndex, clipboard: DataTransfer]> =
@@ -81,19 +88,32 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
 
     // After deletion, draft.focus is set to the collapsed position where the selection was.
     // Now paste at that position.
-    if (clipboard.types.includes("text/html")) {
-      insertHtmlClipboardInLetter(draft, clipboard);
-    } else if (clipboard.types.includes("text/plain")) {
-      insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
-    } else {
-      log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
-    }
+    insertClipboardInLetter(draft, clipboard);
   });
+
+// Clipboard type priority: text/html > text/rtf (both native Word RTF and
+// Outlook/Exchange RTF-encapsulated HTML/text, see actions/rtf/) > text/plain.
+// text/html is preferred over text/rtf when both are present since it needs
+// no RTF interpretation and is what most non-Office sources (browsers, other
+// editors) actually populate; genuine Word/Outlook paste events, in
+// practice, typically only advertise one of the two anyway.
+function insertClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
+  if (clipboard.types.includes("text/html")) {
+    insertHtmlClipboardInLetter(draft, clipboard);
+  } else if (clipboard.types.includes("text/rtf") || clipboard.types.includes("text/richtext")) {
+    insertRtfClipboardInLetter(draft, clipboard);
+  } else if (clipboard.types.includes("text/plain")) {
+    insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
+  } else {
+    log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
+  }
+}
 
 export function logPastedClipboard(clipboardData: DataTransfer) {
   log("available paste types - ", clipboardData.types);
   log(`pasted html content - ${clipboardData.getData("text/html")}`);
   log(`pasted plain content - ${clipboardData.getData("text/plain")}`);
+  log(`pasted rtf content - ${clipboardData.getData("text/rtf")}`);
 }
 
 /**
@@ -254,17 +274,61 @@ function shouldModifyExistingLiteral(
  *
  */
 function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
-  const parsedAndCombinedHtml = parseAndCombineHTML(clipboard);
+  insertTraversedOrTextElements(draft, parseAndCombineHTML(clipboard));
+}
 
-  if (parsedAndCombinedHtml.length === 0) {
+/**
+ * Handles a `text/rtf` (or legacy `text/richtext`) clipboard payload,
+ * dispatching on `parseRtfClipboard`'s result:
+ * - Recovered encapsulated HTML is fed through the existing HTML parsing
+ *   pipeline (`parseAndCombineHtmlString`) unchanged.
+ * - Recovered encapsulated plain text, or a native-RTF interpretation
+ *   result, is inserted directly.
+ * - If RTF interpretation didn't yield anything usable, falls back to
+ *   `text/plain` if present, else a best-effort plain-text extraction from
+ *   the raw RTF payload - paste should never silently no-op.
+ */
+function insertRtfClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
+  const rtf = clipboard.types.includes("text/rtf") ? clipboard.getData("text/rtf") : clipboard.getData("text/richtext");
+  const parsed = parseRtfClipboard(rtf);
+
+  switch (parsed.mode) {
+    case "html": {
+      insertTraversedOrTextElements(draft, parseAndCombineHtmlString(parsed.html));
+      return;
+    }
+    case "elements": {
+      insertTraversedOrTextElements(draft, parsed.elements);
+      return;
+    }
+    case "text": {
+      insertTextInLetter(draft, parsed.text, FontType.PLAIN, false);
+      draft.saveStatus = "DIRTY";
+      return;
+    }
+    case "unsupported": {
+      if (clipboard.types.includes("text/plain")) {
+        insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
+      } else {
+        log("unable to interpret RTF clipboard content, falling back to a stripped plain-text extraction");
+        insertTextInLetter(draft, stripRtfToPlainText(rtf), FontType.PLAIN, false);
+      }
+      draft.saveStatus = "DIRTY";
+      return;
+    }
+  }
+}
+
+function insertTraversedOrTextElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
+  if (elements.length === 0) {
     //trenger ikke å lime inn tomt innhold
     return;
-  } else if (parsedAndCombinedHtml.every((element) => element.type === "TEXT")) {
-    for (const element of parsedAndCombinedHtml) {
+  } else if (elements.every((element) => element.type === "TEXT")) {
+    for (const element of elements) {
       insertTextInLetter(draft, element.text, element.font, false);
     }
   } else {
-    insertTraversedElements(draft, parsedAndCombinedHtml);
+    insertTraversedElements(draft, elements);
   }
   draft.saveStatus = "DIRTY";
 }
@@ -537,57 +601,8 @@ function toggleItemListAndSplitAtCursor(
   }
 }
 
-interface Text {
-  type: "TEXT";
-  font: FontType;
-  text: string;
-}
-
-interface ItemElement {
-  type: "ITEM";
-  content: Text[];
-  listType?: ListType;
-}
-
-interface ParagraphElement {
-  type: "P";
-  content: Text[];
-}
-interface Title1Element {
-  type: "H1";
-  content: Text[];
-}
-
-interface Title2Element {
-  type: "H2";
-  content: Text[];
-}
-
-interface Title3Element {
-  type: "H3";
-  content: Text[];
-}
-
-interface TableCell {
-  content: Text[];
-}
-
-interface TableRow {
-  cells: TableCell[];
-}
-
-interface Table {
-  type: "TABLE";
-  rows: TableRow[];
-  headerCells?: TableCell[];
-}
-
-type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Title3Element | Table;
-
-/** Return clipboard HTML or plain text, sanitised through DOMPurify. */
-function getCleanClipboardMarkup(dt: DataTransfer): string {
-  const raw = dt.types.includes("text/html") ? dt.getData("text/html") : dt.getData("text/plain");
-
+/** Sanitise raw HTML markup through DOMPurify, restricted to the tags/attrs we support. */
+function sanitiseHtmlMarkup(raw: string): string {
   return DOMPurify.sanitize(raw, {
     ALLOWED_TAGS: [
       "p",
@@ -614,8 +629,25 @@ function getCleanClipboardMarkup(dt: DataTransfer): string {
   });
 }
 
+/** Return clipboard HTML or plain text, sanitised through DOMPurify. */
+function getCleanClipboardMarkup(dt: DataTransfer): string {
+  const raw = dt.types.includes("text/html") ? dt.getData("text/html") : dt.getData("text/plain");
+  return sanitiseHtmlMarkup(raw);
+}
+
 function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
-  const cleanHtml = getCleanClipboardMarkup(clipboard);
+  return parseAndCombineHtmlString(getCleanClipboardMarkup(clipboard));
+}
+
+/**
+ * Parses a raw HTML string (already produced by whatever clipboard format we
+ * de-encapsulated it from - `text/html` directly, or HTML recovered from an
+ * RTF payload) into our internal `TraversedElement[]` model. Sanitises the
+ * markup through DOMPurify first, so this is safe to call with untrusted
+ * HTML recovered from RTF as well as clipboard HTML.
+ */
+function parseAndCombineHtmlString(rawHtml: string): TraversedElement[] {
+  const cleanHtml = sanitiseHtmlMarkup(rawHtml);
   const document = new DOMParser().parseFromString(cleanHtml, "text/html");
 
   const elements = traverseChildren(document.body, FontType.PLAIN);
