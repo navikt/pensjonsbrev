@@ -180,6 +180,26 @@ test.describe("Redigerbare vedlegg", () => {
       });
     }
 
+    test("varsler om nye duplikate avsnitt i vedlegg etter tilbakestilling av brevmalen", async ({ page }) => {
+      let serverVedlegg = vedlegg;
+      await page.route(vedleggUrl(VEDLEGG_ID), (route) => route.fulfill({ json: serverVedlegg }));
+      await page.route("**/bff/skribenten-backend/brev/1/tilbakestill", (route) => {
+        serverVedlegg = markertVedlegg;
+        return route.fulfill({ json: utfyltBrev });
+      });
+
+      await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+      await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+      await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeHidden();
+      await page.getByRole("tab", { name: "Brevmal" }).click();
+      await page.getByTestId("tilbakestill-mal-button").click();
+      await page.getByRole("button", { name: "Ja, tilbakestill malen" }).click();
+      await expect(page.getByRole("dialog")).toBeHidden();
+      await page.getByRole("button", { name: "Fortsett", exact: true }).click();
+
+      await expect(page.getByRole("dialog")).toContainText("Du må velge om du vil beholde eller slette 1 avsnitt");
+    });
+
     test("varsler saksbehandler om duplikate avsnitt i vedlegg ved klikk på Fortsett", async ({ page }) => {
       await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
       await expect(page.getByRole("button", { name: "Behold", exact: true })).toBeVisible();

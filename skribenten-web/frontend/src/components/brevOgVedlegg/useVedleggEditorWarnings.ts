@@ -21,8 +21,12 @@ export function useVedleggEditorWarnings({
   const queryClient = useQueryClient();
   const missingFromTemplateCounts = useRef<Record<string, number>>({});
 
-  const registerVedleggMissingFromTemplate = useCallback((vedleggId: string, count: number) => {
-    missingFromTemplateCounts.current[vedleggId] = count;
+  const registerVedleggMissingFromTemplate = useCallback((vedleggId: string, count: number | null) => {
+    if (count === null) {
+      delete missingFromTemplateCounts.current[vedleggId];
+    } else {
+      missingFromTemplateCounts.current[vedleggId] = count;
+    }
   }, []);
 
   const getSavedMissingFromTemplateCount = async (vedleggId: string): Promise<number> => {

@@ -99,6 +99,8 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg
   const missingFromTemplateCount = countMissingFromTemplateBlocks(editorState.redigertBrev);
   useEffect(() => {
     registerVedleggMissingFromTemplate(vedleggId, missingFromTemplateCount);
+    // Once this session is gone its saved content in the query cache is authoritative again.
+    return () => registerVedleggMissingFromTemplate(vedleggId, null);
   }, [registerVedleggMissingFromTemplate, vedleggId, missingFromTemplateCount]);
 
   // `includeSakspart` is metadata the editor never touches, so it is kept out of the editor state
