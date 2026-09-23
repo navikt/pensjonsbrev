@@ -17,7 +17,7 @@ describe("getPasteMetadata", () => {
       }),
     );
 
-    expect(metadata).toEqual({ innholdsformat: "HTML", htmlTagger: "br,p,strong" });
+    expect(metadata).toEqual({ innholdsformat: "HTML", htmlTagger: "br,p,strong", rtfDokumentSpraak: undefined });
   });
 
   test("hopper over tagguttrekk for svært stor HTML", () => {
@@ -27,7 +27,7 @@ describe("getPasteMetadata", () => {
       }),
     );
 
-    expect(metadata).toEqual({ innholdsformat: "HTML", htmlTagger: undefined });
+    expect(metadata).toEqual({ innholdsformat: "HTML", htmlTagger: undefined, rtfDokumentSpraak: undefined });
   });
 
   test("feiler stille dersom DOM-parsingen kaster", () => {
@@ -38,6 +38,7 @@ describe("getPasteMetadata", () => {
     expect(getPasteMetadata(clipboard(["text/html"], { "text/html": "<p>Hei</p>" }))).toEqual({
       innholdsformat: "HTML",
       htmlTagger: undefined,
+      rtfDokumentSpraak: undefined,
     });
   });
 
@@ -45,6 +46,7 @@ describe("getPasteMetadata", () => {
     expect(getPasteMetadata(clipboard(["text/plain", "text/rtf"]))).toEqual({
       innholdsformat: "RTF",
       htmlTagger: undefined,
+      rtfDokumentSpraak: undefined,
     });
   });
 
@@ -52,6 +54,29 @@ describe("getPasteMetadata", () => {
     expect(getPasteMetadata(clipboard(["text/plain"]))).toEqual({
       innholdsformat: "ren tekst",
       htmlTagger: undefined,
+      rtfDokumentSpraak: undefined,
     });
+  });
+
+  test("henter dokumentspråk fra RTF-innholdet (telemetri)", () => {
+    const metadata = getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": "{\\rtf1\\ansi\\deflang1044 Hei\\par}" }));
+
+    expect(metadata).toEqual({ innholdsformat: "RTF", htmlTagger: undefined, rtfDokumentSpraak: "nb-NO" });
+  });
+
+  test("leser RTF fra application/rtf når text/rtf mangler", () => {
+    const metadata = getPasteMetadata(
+      clipboard(["application/rtf"], { "application/rtf": "{\\rtf1\\ansi\\deflang1033 Hi\\par}" }),
+    );
+
+    expect(metadata).toEqual({ innholdsformat: "RTF", htmlTagger: undefined, rtfDokumentSpraak: "en-US" });
+  });
+
+  test("hopper over språkgjenkjenning for svært stor RTF", () => {
+    const metadata = getPasteMetadata(
+      clipboard(["text/rtf"], { "text/rtf": `{\\rtf1\\ansi\\deflang1033 ${"a".repeat(100_000)}\\par}` }),
+    );
+
+    expect(metadata).toEqual({ innholdsformat: "RTF", htmlTagger: undefined, rtfDokumentSpraak: undefined });
   });
 });

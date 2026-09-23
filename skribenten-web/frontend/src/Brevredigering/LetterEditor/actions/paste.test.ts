@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
+  fontTypeOf,
   newItem,
   newLiteral,
   newParagraph,
@@ -3766,6 +3767,82 @@ describe("LetterEditorActions.paste - nested list flattening", () => {
     expect(
       text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 })),
     ).toBe("B");
+  });
+});
+
+describe("LetterEditorActions.paste - RTF", () => {
+  const HEADER = "{\\rtf1\\ansi\\ansicpg1252\\deflang1033";
+
+  test("inserts a paragraph, replacing the matched text", () => {
+    const index = { blockIndex: 0, contentIndex: 0 };
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
+    const clipboard = new MockDataTransfer({ "text/rtf": `${HEADER} Ny tekst\\par}` });
+
+    const result = Actions.paste(state, index, 0, clipboard);
+
+    expect(text(select<LiteralValue>(result, index))).toEqual("Ny tekst");
+    expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual("Teksten min");
+  });
+
+  test("preserves bold and italic runs", () => {
+    const index = { blockIndex: 0, contentIndex: 0 };
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "tekst" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/rtf": `${HEADER} Vanlig \\b fet\\b0  \\i kursiv\\i0 \\par}`,
+    });
+
+    const result = Actions.paste(state, index, 0, clipboard);
+
+    const paragraphBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
+    const contents = paragraphBlock.content as LiteralValue[];
+    expect(contents.map((c) => ({ text: text(c), font: fontTypeOf(c) }))).toEqual([
+      { text: "Vanlig ", font: FontType.PLAIN },
+      { text: "fet", font: FontType.BOLD },
+      { text: " ", font: FontType.PLAIN },
+      { text: "kursiv", font: FontType.ITALIC },
+    ]);
+  });
+
+  test("inserts a bullet list", () => {
+    const index = { blockIndex: 0, contentIndex: 0 };
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "tekst" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/rtf": `${HEADER} {\\pntext\\'B7\\tab}Punkt en\\par{\\pntext\\'B7\\tab}Punkt to\\par}`,
+    });
+
+    const result = Actions.paste(state, index, 0, clipboard);
+
+    const list = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+    expect(list.listType).toBe(ListType.PUNKTLISTE);
+    expect(
+      text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 })),
+    ).toBe("Punkt en");
+    expect(
+      text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 })),
+    ).toBe("Punkt to");
+  });
+
+  test("HTML on the clipboard takes priority over RTF when both are present", () => {
+    const index = { blockIndex: 0, contentIndex: 0 };
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "tekst" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/html": "<p>Fra HTML</p>",
+      "text/rtf": `${HEADER} Fra RTF\\par}`,
+    });
+
+    const result = Actions.paste(state, index, 0, clipboard);
+
+    expect(text(select<LiteralValue>(result, index))).toEqual("Fra HTML");
+  });
+
+  test("falls back from text/rtf to application/rtf", () => {
+    const index = { blockIndex: 0, contentIndex: 0 };
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "tekst" })] }));
+    const clipboard = new MockDataTransfer({ "application/rtf": `${HEADER} Fra application/rtf\\par}` });
+
+    const result = Actions.paste(state, index, 0, clipboard);
+
+    expect(text(select<LiteralValue>(result, index))).toEqual("Fra application/rtf");
   });
 });
 
