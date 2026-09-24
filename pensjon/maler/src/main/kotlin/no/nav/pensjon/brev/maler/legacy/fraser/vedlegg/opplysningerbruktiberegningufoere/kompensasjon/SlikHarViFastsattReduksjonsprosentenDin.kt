@@ -11,12 +11,13 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeEndringEllerOekningBrevkode
 import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeInntektsendringBrevkode
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseReduksjonsprosentavsnitt
 
 data class SlikHarViFastsattReduksjonsprosentenDin(
     val pe: Expression<PEgruppe10>
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        showIf(pe.ut_tbu056v()) {
+        showIf(pe.skalViseReduksjonsprosentavsnitt()) {
             title1 {
                 text(
                     bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },

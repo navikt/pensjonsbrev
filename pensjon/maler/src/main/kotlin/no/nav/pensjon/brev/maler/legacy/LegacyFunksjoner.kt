@@ -53,31 +53,6 @@ import no.nav.pensjon.brev.maler.legacy.vedlegg.harIkkeBarnetilleggBrevkode
 import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeInntektsendringBrevkode
 
 
-fun Expression<PEgruppe10>.ut_tbu056v() = (
-        pebrevkode().equalTo("PE_UT_04_102")
-                or pebrevkode().equalTo("PE_UT_04_116")
-                or pebrevkode().equalTo("PE_UT_04_101")
-                or pebrevkode().equalTo("PE_UT_04_114")
-                or pebrevkode().equalTo("PE_UT_04_300")
-                or pebrevkode().equalTo("PE_UT_14_300")
-                or (vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")
-                and vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(
-            vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-        )
-                )
-        ) and vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().lessThan(
-    vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-)
-
-
-
-fun Expression<PEgruppe10>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {
-    val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
-    return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
-            (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb.ifNull(Kroner(0)) }) or
-                    belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb.ifNull(Kroner(0)) }))
-}
-
 fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
     date.ifNull(LocalDate.of(2020, 2, 2)).month.equalTo(1) and
             date.ifNull(LocalDate.of(2020, 2, 2)).day.equalTo(1)

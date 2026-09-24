@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.maler.legacy.barnetilleggserkull_justeringsbelopperar
 import no.nav.pensjon.brev.maler.legacy.foedselsdatoTilBarnTilleggErInnvilgetFor
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_personbostedsland
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
-import no.nav.pensjon.brev.maler.legacy.pe_ut_tbu601v_tbu604v
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erInntektsendringMedEndretBarnetillegg
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles
@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.maler.legacy.ut_btfbinntektbruktiavkortningminusbtfbf
 import no.nav.pensjon.brev.maler.legacy.ut_btsbinntektbruktiavkortningminusbtsbfribelop
 import no.nav.pensjon.brev.maler.legacy.ut_etteroppgjor_bt_utbetalt
 import no.nav.pensjon.brev.maler.legacy.ut_nettoakk_pluss_nettorestar
-import no.nav.pensjon.brev.maler.legacy.ut_tbu056v
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseReduksjonsprosentavsnitt
 import no.nav.pensjon.brev.maler.legacy.ut_tbu069v
 import no.nav.pensjon.brev.maler.legacy.ut_tbu501v
 import no.nav.pensjon.brev.maler.legacy.ut_tbu605
@@ -196,7 +196,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(pe.ut_tbu056v()) {
+        showIf(pe.skalViseReduksjonsprosentavsnitt()) {
             title1 {
                 text (
                     bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },
@@ -434,7 +434,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(pe.pe_ut_tbu601v_tbu604v()) {
+        showIf(pe.erInntektsendringMedEndretBarnetillegg()) {
             title1 {
                 text(
                     bokmal { +"Slik reduserer vi barnetillegget ut fra inntekt" },
