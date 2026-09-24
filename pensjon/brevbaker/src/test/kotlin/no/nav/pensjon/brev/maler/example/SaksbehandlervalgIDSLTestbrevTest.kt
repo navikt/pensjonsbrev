@@ -105,12 +105,6 @@ class SaksbehandlervalgIDSLTestbrevTest {
             accept(ContentType.Application.Json)
             setBody(
                 BestillRedigertBrevRequest(
-                    kode = SaksbehandlervalgIDSLTestbrev.kode,
-                    letterData = dto,
-                    fagsystemBrevdata = dto.pesysData,
-                    saksbehandlervalg = dto.saksbehandlerValg,
-                    felles = FellesFactory.felles,
-                    language = LanguageCode.NYNORSK,
                     letterMarkup = letterMarkup,
                     alltidValgbareVedlegg = emptyList(),
                     redigerteVedlegg = emptyMap(),
