@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
-data class SlikHarViFastsattKompensasjonsgradenDin(
+data class SlikHarViFastsattReduksjonsprosentenDin(
     val pe: Expression<PEgruppe10>
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
