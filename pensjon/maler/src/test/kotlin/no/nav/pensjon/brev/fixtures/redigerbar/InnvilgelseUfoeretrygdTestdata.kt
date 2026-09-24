@@ -354,8 +354,9 @@ fun createOkningUforegradDto() =
                 OkningUforegradDto.Fribelopsperiode(
                     fom = LocalDate.of(2026, 1, 1),
                     tom = LocalDate.of(2026, 12, 31),
-                    faktor = 1.0,
-                    venteperiodeStartDato = LocalDate.of(2026, 1, 1),
+                    faktor = 0.4,
+                    grunnbelop = Kroner(136000),
+                    venteperiodeStartDato = LocalDate.of(2026, 7, 1),
                     gradsokning = true
                 )
             ),
