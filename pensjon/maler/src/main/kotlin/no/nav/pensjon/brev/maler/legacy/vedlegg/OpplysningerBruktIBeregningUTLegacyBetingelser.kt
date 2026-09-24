@@ -75,6 +75,45 @@ fun Expression<PEgruppe10>.erIkkeSoknadOmBarnetillegg(): Expression<Boolean> =
 fun Expression<PEgruppe10>.harIkkeBarnetilleggBrevkode(): Expression<Boolean> =
     pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")
 
+/**
+ * DATASTYRT gate: anvendt trygdetid er lavere enn full opptjening (40 år), slik at trygdetiden må
+ * forklares i brevet. Ekte vedtaksdata – skal overleve porten til `vedtaksdata` (i motsetning til
+ * brevkode-gatene i `ut_trygdetid`, som forsvinner ved variant-splitting).
+ */
+fun Expression<PEgruppe10>.harIkkeFullTrygdetid(): Expression<Boolean> =
+    vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40)
+
+/**
+ * BREVKODE-STYRT gate: 04_101 (innvilgelse) og 04_114 (økning uføregrad) viser alltid
+ * trygdetidsseksjonen, uavhengig av trygdetidslengde. Ren brevkode-routing – forsvinner ved
+ * variant-splitting (disse variantene inkluderer seksjonen eksplisitt).
+ */
+fun Expression<PEgruppe10>.harTrygdetidBrevkodeUansett(): Expression<Boolean> =
+    pebrevkode().equalTo("PE_UT_04_101") or pebrevkode().equalTo("PE_UT_04_114")
+
+/**
+ * BREVKODE-STYRT gate: brevet er ikke et inntektsendringsbrev (05_100/07_100). Ren brevkode-routing
+ * – forsvinner ved variant-splitting. Holdt adskilt fra datagaten `harIkkeFullTrygdetid` med vilje,
+ * slik at brevkode-halvdelen er lett å fjerne mekanisk når variantene lages.
+ */
+fun Expression<PEgruppe10>.erIkkeInntektsendringBrevkode(): Expression<Boolean> =
+    pebrevkode().isNotAnyOf("PE_UT_05_100", "PE_UT_07_100")
+
+/**
+ * Gate for trygdetidsseksjonen ("Dette er trygdetiden din" + "redusert framtidig trygdetid").
+ * Vises hvis kravårsaken ikke er søknad om barnetillegg, brevet ikke er et barnetillegg-brev, og
+ * enten brevkoden alltid viser trygdetid (04_101/04_114) eller brevet ikke er et inntektsendringsbrev
+ * og trygdetiden er lavere enn full opptjening. Data- og brevkode-leddene er skilt ut i egne
+ * navngitte betingelser over, slik at brevkode-halvdelen kan fjernes mekanisk ved variant-splitting.
+ */
+fun Expression<PEgruppe10>.ut_trygdetid(): Expression<Boolean> =
+    erIkkeSoknadOmBarnetillegg() and
+            harIkkeBarnetilleggBrevkode() and
+            (
+                    harTrygdetidBrevkodeUansett() or
+                            (erIkkeInntektsendringBrevkode() and harIkkeFullTrygdetid())
+                    )
+
 /** Gate for TBU034V-036V (rett før inntektsseksjonen). */
 fun Expression<PEgruppe10>.skalViseGrunnbeloepOgYrkesskadeForklaring(): Expression<Boolean> =
     erIkkeSoknadOmBarnetillegg() and harIkkeBarnetilleggBrevkode()

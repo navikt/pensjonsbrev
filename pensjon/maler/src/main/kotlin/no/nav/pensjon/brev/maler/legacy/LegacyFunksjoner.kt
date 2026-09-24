@@ -52,17 +52,6 @@ import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeSoknadOmBarnetillegg
 import no.nav.pensjon.brev.maler.legacy.vedlegg.harIkkeBarnetilleggBrevkode
 
 
-fun Expression<PEgruppe10>.ut_trygdetid(): Expression<Boolean> =
-    erIkkeSoknadOmBarnetillegg() and
-            harIkkeBarnetilleggBrevkode() and
-            (
-                    (pebrevkode().equalTo("PE_UT_04_101") or pebrevkode().equalTo("PE_UT_04_114")) or
-                            (pebrevkode().notEqualTo("PE_UT_05_100") and pebrevkode().notEqualTo("PE_UT_07_100")
-                                    and vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40))
-                    )
-
-
-
 fun Expression<PEgruppe10>.ut_tbu056v() = (
         pebrevkode().equalTo("PE_UT_04_102")
                 or pebrevkode().equalTo("PE_UT_04_116")
