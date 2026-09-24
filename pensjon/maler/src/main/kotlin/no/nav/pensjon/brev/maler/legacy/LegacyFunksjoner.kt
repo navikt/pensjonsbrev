@@ -50,6 +50,7 @@ import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeSoknadOmBarnetillegg
 import no.nav.pensjon.brev.maler.legacy.vedlegg.harIkkeBarnetilleggBrevkode
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeInntektsendringBrevkode
 
 
 fun Expression<PEgruppe10>.ut_tbu056v() = (
@@ -88,7 +89,13 @@ fun FUNKSJON_Year(date: Expression<LocalDate?>): Expression<Int> =
 fun FUNKSJON_Month(date: Expression<LocalDate?>): Expression<Int> =
     date.ifNull(LocalDate.of(1000,1,1)).month
 
-fun Expression<PEgruppe10>.ut_trygdetid_avdod() = (vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and erIkkeSoknadOmBarnetillegg() and pebrevkode().notEqualTo("PE_UT_07_100") and vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and pebrevkode().notEqualTo("PE_UT_05_100") and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and harIkkeBarnetilleggBrevkode())
+fun Expression<PEgruppe10>.ut_trygdetid_avdod() =
+    vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and
+            erIkkeSoknadOmBarnetillegg() and
+            erIkkeInntektsendringBrevkode() and
+            vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and
+            vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and
+            harIkkeBarnetilleggBrevkode()
 
 fun Expression<PEgruppe10>.ut_barnet_barna_felles(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
