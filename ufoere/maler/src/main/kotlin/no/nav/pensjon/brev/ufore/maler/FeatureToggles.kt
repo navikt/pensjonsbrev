@@ -9,8 +9,6 @@ enum class FeatureToggles(private val key: String) {
     avslagMedlemskapUtland12mnd("ut.avslagmedlemskaputland12mnd"),
     feilutbetalingNy("ut.feilutbetaling.ny"),
     innhentingOpplysninger("ut.innhentingopplysninger"),
-    varsellavereminstesats("ut.varsellavereminstesats"),
-    varseloktminsteifuoglaverereduksjonsprosent("ut.varselhoyereminstesatsifuoglaverereduksjonsprosent"),
     testmal("ut.testmal"),
     ;
 
