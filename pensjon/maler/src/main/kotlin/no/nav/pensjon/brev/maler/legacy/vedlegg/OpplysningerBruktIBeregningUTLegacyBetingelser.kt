@@ -46,6 +46,21 @@ fun Expression<PEgruppe10>.trygdetidBilateralListe() =
 fun Expression<PEgruppe10>.skalViseOmregningUPtilUT(): Expression<Boolean> =
     pebrevkode().equalTo("PE_UT_04_300") or pebrevkode().equalTo("PE_UT_14_300")
 
+/**
+ * Gate for generell ektefelletillegg-tekst (tittel, "faller bort" og "behold ut vedtaksperioden").
+ * Ordrett kopi av betingelsen som lå duplisert 3× i ForDegSomMottarEktefelletillegg (kun `pe.`-prefiks
+ * fjernet) – strukturelt identisk, så rendret output er uendret.
+ */
+fun Expression<PEgruppe10>.skalViseEktefelletilleggGenerell(): Expression<Boolean> =
+    pebrevkode().notEqualTo("PE_UT_04_101") and
+        vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and
+        vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
+        pebrevkode().notEqualTo("PE_UT_04_108") and
+        pebrevkode().notEqualTo("PE_UT_04_109") and
+        pebrevkode().notEqualTo("PE_UT_07_200") and
+        pebrevkode().notEqualTo("PE_UT_06_300") and
+        (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
+
 /** Gate for TBU034V-036V (rett før inntektsseksjonen). */
 fun Expression<PEgruppe10>.skalViseGrunnbeloepOgYrkesskadeForklaring(): Expression<Boolean> =
     vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and

@@ -5,6 +5,8 @@ import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravarsaktype
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseEktefelletilleggGenerell
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseOmregningUPtilUT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -19,17 +21,7 @@ data class ForDegSomMottarEktefelletillegg(
     val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        showIf((pe.pebrevkode().notEqualTo("PE_UT_04_101")
-                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
-                and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                and pe.pebrevkode().notEqualTo("PE_UT_06_300")
-                and (pe.pebrevkode()
-            .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
-            "tilst_dod"
-        ))))){
+        showIf(pe.skalViseEktefelletilleggGenerell()){
             title1 {
                 text (
                     bokmal { + "For deg som mottar ektefelletillegg" },
@@ -54,24 +46,14 @@ data class ForDegSomMottarEktefelletillegg(
             "tilst_dod"
         )))))){
             paragraph {
-                showIf((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode().equalTo("PE_UT_14_300"))){
+                showIf(pe.skalViseOmregningUPtilUT()){
                     text (
                         bokmal { + "Når vi beregner ektefelletillegget tar vi utgangspunkt i den årlige uførepensjonen du har rett til i desember 2014. Deretter regner vi ut tillegget ut fra fastsatte overgangsregler. " },
                         nynorsk { + "Når vi bereknar ektefelletillegget, tek vi utgangspunkt i den årlege uførepensjonen du har rett til i desember 2014. Deretter reknar vi ut tillegget ut frå fastsette overgangsreglar. " },
                     )
                 }
 
-                showIf((pe.pebrevkode()
-                    .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype()
-                    .notEqualTo(
-                        "soknad_bt"
-                    ) and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                        and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                        and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                        and pe.pebrevkode().notEqualTo("PE_UT_06_300")
-                        and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
-                    "tilst_dod"
-                ))))){
+                showIf(pe.skalViseEktefelletilleggGenerell()){
                     text (
                         bokmal { + "Du kan beholde ektefelletillegget ut vedtaksperioden, men det opphører senest 31. desember 2024." },
                         nynorsk { + "Du kan behalde ektefelletillegget ut vedtaksperioden, men det tek slutt seinast 31. desember 2024." },
@@ -80,17 +62,7 @@ data class ForDegSomMottarEktefelletillegg(
             }
         }
 
-        showIf((pe.pebrevkode()
-            .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype()
-            .notEqualTo(
-                "soknad_bt"
-            ) and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                and pe.pebrevkode().notEqualTo("PE_UT_06_300")
-                and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
-            "tilst_dod"
-        ))))){
+        showIf(pe.skalViseEktefelletilleggGenerell()){
             paragraph {
                 text (
                     bokmal { + "Ektefelletillegget vil falle bort hvis du skiller deg, uføretrygden opphører eller hvis ektefellen din dør." },
