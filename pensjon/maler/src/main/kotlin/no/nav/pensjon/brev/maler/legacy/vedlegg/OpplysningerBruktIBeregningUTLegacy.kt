@@ -89,8 +89,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // Minsteytelse
         includePhrase(ForDegSomHarRettTilMinsteytelse(pe))
 
-        showIf((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode().equalTo("PE_UT_14_300"))){
-            // Vedtak - omregning av uførepensjon til uføretrygd auto & manuell
+        showIf(pe.skalViseOmregningUPtilUT()){
             includePhrase(SlikBeregnerViUPTilUT(pe))
         }
 
@@ -174,8 +173,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // ============================================================
         // Reduksjonsprosent og utbetaling
         // ============================================================
-        showIf((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode().equalTo("PE_UT_14_300"))) {
-            // Vedtak - omregning av uførepensjon til uføretrygd auto & manuell
+        showIf(pe.skalViseOmregningUPtilUT()) {
             includePhrase(ReduksjonsprosentOgUtbetalingUPTilUT(pe))
         }
 
