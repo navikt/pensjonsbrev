@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
-class OkningUforegradFraser(private val perioder: Expression<List<OkningUforegradDto.Fribelopsperiode>>, private val vektetFribelop: Expression<Double>, private val vektetFribelopKr: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
+class OkningUforegradFraser(private val perioder: Expression<List<OkningUforegradDto.Fribelopsperiode>>, private val fribelop: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(header = {
@@ -77,8 +77,8 @@ class OkningUforegradFraser(private val perioder: Expression<List<OkningUforegra
         }
         paragraph {
             text(
-                bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Gjennomsnittlig fribeløp i år blir " + vektetFribelop.format() + " G, som er " + vektetFribelopKr.format() + "." },
-                nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Gjennomsnittleg fribeløp i år vert " + vektetFribelop.format() + " G, som er " + vektetFribelopKr.format() + "." },
+                bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + fribelop.format() + "." },
+                nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + fribelop.format() + "." },
             )
         }
     }
