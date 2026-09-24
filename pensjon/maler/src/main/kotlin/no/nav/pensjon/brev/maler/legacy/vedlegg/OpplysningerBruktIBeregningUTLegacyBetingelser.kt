@@ -155,3 +155,41 @@ fun Expression<PEgruppe10>.skalViseInntektsgrenseOgAvkortning(): Expression<Bool
 /** Gate for "Etteroppgjør av uføretrygd og barnetillegg" (TBU052V-TBU073V). */
 fun Expression<PEgruppe10>.skalViseEtteroppgjoer(): Expression<Boolean> =
     (vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pebrevkode().notEqualTo("PE_UT_04_108") and pebrevkode().notEqualTo("PE_UT_04_109") and pebrevkode().notEqualTo("PE_UT_07_200") and (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))) or pebrevkode().equalTo("PE_UT_06_300")
+
+// --- Seksjon: "Slik beregner vi utbetaling av uføretrygden når inntekten din endres" ---
+
+/** DATASTYRT: kravårsaken er inntektsendring og det utbetalte uførebeløpet er faktisk endret. */
+fun Expression<PEgruppe10>.erInntektsendringMedEndretUtbetaling(): Expression<Boolean> =
+    vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") and
+        vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
+            .notEqualTo(vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())
+
+/**
+ * BREVKODE-STYRT gate for inntektsendrings-seksjonen: ikke barnetillegg-brev (04_108/04_109/07_200)
+ * og 04_102 kun når kravårsaken ikke er dødsfall. NB: 06_300 er bevisst IKKE ekskludert her (i
+ * motsetning til `harIkkeBarnetilleggBrevkode` som ekskluderer hele 4-settet) – avviket er bevart
+ * ordrett fra legacy. `tilst_dod`-leddet er egentlig data, men beholdes inline for å være strukturelt
+ * identisk med originalen. Forsvinner/reduseres ved variant-splitting.
+ */
+fun Expression<PEgruppe10>.harInntektsendringBrevkodeUtenBarnetillegg(): Expression<Boolean> =
+    pebrevkode().notEqualTo("PE_UT_04_108") and
+        pebrevkode().notEqualTo("PE_UT_04_109") and
+        pebrevkode().notEqualTo("PE_UT_07_200") and
+        (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
+
+/** Gate for tittel + intro i inntektsendrings-utbetalingsseksjonen. */
+fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringTittel(): Expression<Boolean> =
+    erInntektsendringMedEndretUtbetaling() and
+        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
+            .lessThan(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and
+        harInntektsendringBrevkodeUtenBarnetillegg()
+
+/** Gate for detalj-avsnittene (reduksjon + bunnfradrag) i samme seksjon (identisk gate for begge). */
+fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringDetaljer(): Expression<Boolean> =
+    erInntektsendringMedEndretUtbetaling() and
+        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
+            .greaterThanOrEqual(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()) and
+        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
+            .lessThan(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and
+        vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0) and
+        harInntektsendringBrevkodeUtenBarnetillegg()
