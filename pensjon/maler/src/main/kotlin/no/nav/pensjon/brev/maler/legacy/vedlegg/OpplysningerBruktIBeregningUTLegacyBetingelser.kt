@@ -42,6 +42,10 @@ fun Expression<PEgruppe10>.trygdetidBilateralListe() =
 
 // --- Seksjonsbetingelser ---
 
+/** Gate for omregning av uførepensjon til uføretrygd (auto & manuell) – kun PE_UT_04_300 og PE_UT_14_300. */
+fun Expression<PEgruppe10>.skalViseOmregningUPtilUT(): Expression<Boolean> =
+    pebrevkode().equalTo("PE_UT_04_300") or pebrevkode().equalTo("PE_UT_14_300")
+
 /** Gate for TBU034V-036V (rett før inntektsseksjonen). */
 fun Expression<PEgruppe10>.skalViseGrunnbeloepOgYrkesskadeForklaring(): Expression<Boolean> =
     vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
