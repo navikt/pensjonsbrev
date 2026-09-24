@@ -40,7 +40,7 @@ data class OkningUforegradDto(
         val tom: LocalDate,
         val gradsokning: Boolean,
         val faktor: Double,
-        val grunnbelop: Kroner? = null,
+        val grunnbelop: Kroner,
         val venteperiodeStartDato: LocalDate,
     )
 }
