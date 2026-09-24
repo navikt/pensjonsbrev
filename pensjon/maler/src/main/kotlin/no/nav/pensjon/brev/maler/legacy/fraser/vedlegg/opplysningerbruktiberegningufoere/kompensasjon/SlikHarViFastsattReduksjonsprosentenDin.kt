@@ -9,6 +9,8 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeEndringEllerOekningBrevkode
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeInntektsendringBrevkode
 
 data class SlikHarViFastsattReduksjonsprosentenDin(
     val pe: Expression<PEgruppe10>
@@ -46,75 +48,69 @@ data class SlikHarViFastsattReduksjonsprosentenDin(
                     nynorsk { + " 100 prosent uføretrygd, med den oppjusterte inntekta di før du blei ufør. Reduksjonsprosenten blir brukt til å berekne kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn botnfrådraget. Reduksjonsprosenten kan ikkje vere høgare enn 70 prosent." },
                 )
             }
-        }
 
-        showIf(
-            (pe.ut_tbu056v() and (pe.pebrevkode()
-                .notEqualTo("PE_UT_04_114") and pe.pebrevkode().notEqualTo("PE_UT_04_102") and pe.pebrevkode().notEqualTo(
-                "PE_UT_05_100"
-            ) and pe.pebrevkode().notEqualTo("PE_UT_07_100")))) {
-            paragraph {
-                text(
-                    bokmal {
-                        +"Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                            .format() + ". For å kunne fastsette reduksjonsprosenten din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                            .format() + "."
-                    },
-                    nynorsk {
-                        +"Inntekta di før du blei ufør er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                            .format() + ". For å kunne fastsetje reduksjonsprosenten din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                            .format() + "."
-                    },
-                )
-            }
-
-            showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
+            showIf(pe.erIkkeEndringEllerOekningBrevkode() and pe.erIkkeInntektsendringBrevkode()) {
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har rett til 100 prosent uføretrygd, som utgjør " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per år."
+                            +"Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                                .format() + ". For å kunne fastsette reduksjonsprosenten din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                                .format() + "."
                         },
                         nynorsk {
-                            +"Du har rett til 100 prosent uføretrygd, som utgjer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per år."
+                            +"Inntekta di før du blei ufør er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                                .format() + ". For å kunne fastsetje reduksjonsprosenten din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                                .format() + "."
                         },
+                    )
+                }
+    
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Du har rett til 100 prosent uføretrygd, som utgjør " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                                    .format() + " per år."
+                            },
+                            nynorsk {
+                                +"Du har rett til 100 prosent uføretrygd, som utgjer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                                    .format() + " per år."
+                            },
+                        )
+                    }
+                }
+    
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100)) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Du har rett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                                    .format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                                    .format() + " per år."
+                            },
+                            nynorsk {
+                                +"Du har rett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                                    .format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                                    .format() + " per år."
+                            },
+                        )
+                    }
+                }
+    
+                paragraph {
+                    text (
+                        bokmal { + "Vi beregner reduksjonsprosenten din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                            .format() + " prosent." },
+                        nynorsk { + "Vi bereknar reduksjonsprosenten din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                            .format() + " prosent." },
                     )
                 }
             }
 
-            showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har rett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                .format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per år."
-                        },
-                        nynorsk {
-                            +"Du har rett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                .format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per år."
-                        },
-                    )
-                }
-            }
-
-            paragraph {
-                text (
-                    bokmal { + "Vi beregner reduksjonsprosenten din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " prosent." },
-                    nynorsk { + "Vi bereknar reduksjonsprosenten din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " prosent." },
-                )
-            }
-        }
-
-        showIf(pe.ut_tbu056v()) {
             paragraph {
                 text(
                     bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },
