@@ -239,3 +239,18 @@ fun Expression<PEgruppe10>.harGenereltGjenlevendetilleggKrav(): Expression<Boole
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and
         erIkkeInntektsendringBrevkode() and
         pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200")
+
+// --- Seksjon: "Slik beregner vi uføretrygden din" (fullt beregningsbrev, A-klyngen) ---
+
+/**
+ * Felles ytre gate for de to "Slik beregner vi uføretrygden din"-avsnittene (ordinær og konvertert).
+ * Dette er A-klyngen "fullt beregningsbrev": ikke omregning (04_300/14_300), ikke inntektsendring
+ * (05_100/07_100), ikke søknad om barnetillegg (DATA) og ikke barnetillegg-brevkode
+ * (04_108/04_109/07_200/06_300). Brevkode-leddene forsvinner ved variant-splitting; `erIkkeSoknadOmBarnetillegg`
+ * er datastyrt og overlever porten.
+ */
+fun Expression<PEgruppe10>.erFulltBeregningsbrev(): Expression<Boolean> =
+    not(skalViseOmregningUPtilUT()) and
+        erIkkeInntektsendringBrevkode() and
+        erIkkeSoknadOmBarnetillegg() and
+        harIkkeBarnetilleggBrevkode()
