@@ -341,6 +341,36 @@ object OktBunnfradragInst {
                     }
                 }
             }
+
+            showIf((data.redusertBtfb or data.redusertBtsb) and data.endringGjt) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12. " },
+                        nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12. " },
+                    )
+                }
+            }.orShowIf(data.redusertBtfb or data.redusertBtsb) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14 til 12-16 og 22-12. " },
+                        nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14 til 12-16 og 22-12. " },
+                    )
+                }
+            }.orShowIf(data.endringGjt) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14, 12-18 og 22-12. " },
+                        nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14, 12-18 og 22-12. " },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14 og 22-12. " },
+                        nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14 og 22-12. " },
+                    )
+                }
+            }
         }
     }
 }
