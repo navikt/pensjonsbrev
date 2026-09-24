@@ -193,3 +193,29 @@ fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringDetaljer(): Expre
             .lessThan(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and
         vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0) and
         harInntektsendringBrevkodeUtenBarnetillegg()
+
+// --- Seksjon: "For deg som mottar ektefelletillegg" (midtre avsnitt + minstepensjon) ---
+
+/**
+ * BREVKODE-STYRT: barnetillegg-brevkodene 04_108/04_109/06_300 (som `harIkkeBarnetilleggBrevkode`,
+ * men UTEN 07_200). Midtavsnittet i ForDegSomMottarEktefelletillegg viser bevisst ektefelletillegg-
+ * teksten også for 07_200 (opphør av barnetillegg, auto) – avviket er bevart ordrett fra legacy.
+ * Forsvinner/reduseres ved variant-splitting.
+ */
+fun Expression<PEgruppe10>.harIkkeBarnetilleggBrevkodeUtenOpphoer(): Expression<Boolean> =
+    pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_06_300")
+
+/** Gate for det midtre avsnittet i "For deg som mottar ektefelletillegg" (omregnings-/behold-tekst). */
+fun Expression<PEgruppe10>.skalViseEktefelletilleggMidtreAvsnitt(): Expression<Boolean> =
+    (skalViseOmregningUPtilUT() and vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) or
+        (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and
+            pebrevkode().notEqualTo("PE_UT_04_101") and
+            erIkkeSoknadOmBarnetillegg() and
+            harIkkeBarnetilleggBrevkodeUtenOpphoer() and
+            (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))))
+
+/** Gate for minstepensjons-avsnittet (3,76 G) i "For deg som mottar ektefelletillegg". */
+fun Expression<PEgruppe10>.skalViseEktefelletilleggMinstepensjon(): Expression<Boolean> =
+    pebrevkode().equalTo("PE_UT_04_300") and
+        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().equalTo(3.76) and
+        vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
