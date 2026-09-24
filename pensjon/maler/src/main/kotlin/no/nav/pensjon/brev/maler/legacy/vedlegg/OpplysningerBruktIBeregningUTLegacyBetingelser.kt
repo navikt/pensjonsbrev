@@ -254,3 +254,11 @@ fun Expression<PEgruppe10>.erFulltBeregningsbrev(): Expression<Boolean> =
         erIkkeInntektsendringBrevkode() and
         erIkkeSoknadOmBarnetillegg() and
         harIkkeBarnetilleggBrevkode()
+
+/**
+ * BREVKODE-STYRT: brevet er verken en endring (04_102) eller en økning av uføregrad (04_114).
+ * Brukes til å skjule ifu-/reduksjonsberegnings-avsnittet for disse brevtypene. Forsvinner ved
+ * variant-splitting.
+ */
+fun Expression<PEgruppe10>.erIkkeEndringEllerOekningBrevkode(): Expression<Boolean> =
+    pebrevkode().isNotAnyOf("PE_UT_04_102", "PE_UT_04_114")
