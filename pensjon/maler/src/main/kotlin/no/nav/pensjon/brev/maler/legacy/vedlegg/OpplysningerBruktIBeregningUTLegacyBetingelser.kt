@@ -10,9 +10,17 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetids
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlageos.selectors.trygdetidsgrunnlagListeEOS.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlagnorge.selectors.trygdetidsgrunnlagListeNor.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.selectors.vedtaksbrev.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.selectors.vedtaksdata.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.selectors.beregningsData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.beregningUfore.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.belopsendring.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.barnetilleggFellesYK.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.barnetilleggSerkullYK.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.kravhode.selectors.kravhode.*
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 /*
  * Navngitte betingelser og navigasjonskjeder for vedleggOpplysningerBruktIBeregningUTLegacy.
@@ -180,8 +188,7 @@ fun Expression<PEgruppe10>.harInntektsendringBrevkodeUtenBarnetillegg(): Express
 /** Gate for tittel + intro i inntektsendrings-utbetalingsseksjonen. */
 fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringTittel(): Expression<Boolean> =
     erInntektsendringMedEndretUtbetaling() and
-        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
-            .lessThan(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and
+        bunnfradragUnderInntektstak() and
         harInntektsendringBrevkodeUtenBarnetillegg()
 
 /** Gate for detalj-avsnittene (reduksjon + bunnfradrag) i samme seksjon (identisk gate for begge). */
@@ -189,8 +196,7 @@ fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringDetaljer(): Expre
     erInntektsendringMedEndretUtbetaling() and
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
             .greaterThanOrEqual(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()) and
-        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
-            .lessThan(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and
+        bunnfradragUnderInntektstak() and
         vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0) and
         harInntektsendringBrevkodeUtenBarnetillegg()
 
@@ -262,3 +268,41 @@ fun Expression<PEgruppe10>.erFulltBeregningsbrev(): Expression<Boolean> =
  */
 fun Expression<PEgruppe10>.erIkkeEndringEllerOekningBrevkode(): Expression<Boolean> =
     pebrevkode().isNotAnyOf("PE_UT_04_102", "PE_UT_04_114")
+
+// --- skalViseReduksjonsprosentavsnitt (tidl. Exstream TBU056V; flyttet hit fra LegacyFunksjoner, brukes kun i dette vedlegget) ---
+
+/**
+ * BREVKODE-STYRT: brevkoder som representerer en (re)beregning der reduksjonsprosent-/inntektsavsnitt
+ * er aktuelt (innvilgelse 04_101, endring 04_102, full eksport 04_116, økning uføregrad 04_114,
+ * omregning up→ut 04_300/14_300). Forsvinner ved variant-splitting.
+ */
+fun Expression<PEgruppe10>.erBeregningsendringsBrevkode(): Expression<Boolean> =
+    pebrevkode().isOneOf("PE_UT_04_102", "PE_UT_04_116", "PE_UT_04_101", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300")
+
+/** DATASTYRT: inntektstaket ligger over bunnfradraget (avkortning er aktuell). Overlever porten. */
+fun Expression<PEgruppe10>.bunnfradragUnderInntektstak(): Expression<Boolean> =
+    vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
+        .lessThan(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak())
+
+/**
+ * TBU056V (Exstream): gate for reduksjonsprosent-/inntektsavsnittene. Dekomponert til navngitte deler
+ * (identisk output): enten er dette en beregningsendrings-brevkode, ELLER en reell inntektsendring med
+ * endret utbetaling (DATA) – og brevet er ikke en søknad om barnetillegg (DATA), og inntektstaket er
+ * over bunnfradraget (DATA). Kun `erBeregningsendringsBrevkode()` er brevkode-styrt og forsvinner ved
+ * variant-splitting; resten er datastyrt og overlever porten.
+ */
+fun Expression<PEgruppe10>.skalViseReduksjonsprosentavsnitt(): Expression<Boolean> =
+    (erBeregningsendringsBrevkode() or erInntektsendringMedEndretUtbetaling()) and
+        erIkkeSoknadOmBarnetillegg() and
+        bunnfradragUnderInntektstak()
+
+/**
+ * DATASTYRT (tidl. Exstream TBU601V/TBU604V): kravårsaken er inntektsendring og barnetilleggsbeløpet
+ * (felles- eller særkullsbarn) er faktisk endret. Brukes kun i dette vedlegget.
+ */
+fun Expression<PEgruppe10>.erInntektsendringMedEndretBarnetillegg(): Expression<Boolean> {
+    val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
+    return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
+            (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb.ifNull(Kroner(0)) }) or
+                    belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb.ifNull(Kroner(0)) }))
+}

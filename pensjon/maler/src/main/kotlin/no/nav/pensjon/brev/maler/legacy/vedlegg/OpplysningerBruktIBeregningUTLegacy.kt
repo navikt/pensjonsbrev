@@ -188,7 +188,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // ============================================================
         // Barnetillegg og andre tillegg
         // ============================================================
-        showIf(pe.pe_ut_tbu601v_tbu604v()) {
+        showIf(pe.erInntektsendringMedEndretBarnetillegg()) {
             includePhrase(SlikRedusererViBarnetilleggetUtFraInntekt(pe))
         }
         includePhrase(ForDegSomHarRettTilBarnetillegg(pe))
