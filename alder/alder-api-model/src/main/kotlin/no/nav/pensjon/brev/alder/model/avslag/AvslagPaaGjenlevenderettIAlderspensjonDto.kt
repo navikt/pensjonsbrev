@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
+import java.time.LocalDate
 
 @Suppress("unused")
 data class AvslagPaaGjenlevenderettIAlderspensjonDto(
@@ -30,7 +31,7 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
     ) : FagsystemBrevdata {
         data class AlderspensjonVedVirk(val totalPensjon: Kroner, val uttaksgrad: Percent)
         data class Krav(val kravInitiertAv: KravInitiertAv)
-        data class Avdoed(val harTrygdetidNorge: Boolean, val harTrygdetidEOS: Boolean, val harTrygdetidAvtaleland: Boolean)
+        data class Avdoed(val harTrygdetidNorge: Boolean, val harTrygdetidEOS: Boolean, val harTrygdetidAvtaleland: Boolean, val dodsfallDato: LocalDate?, val navn: String?)
         data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring)
         data class BeregnetPensjonPerManed(val antallBeregningsperioderPensjon: Int)
         data class Avtaleland(val erEOSLand: Boolean, val navn: String?)

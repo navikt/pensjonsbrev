@@ -1,16 +1,16 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Institusjon
+import no.nav.pensjon.brev.api.model.SivilstandAvdoed
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 fun createUfoerOmregningEnsligDto() =
     UfoerOmregningEnsligDto(
-        opplysningerBruktIBeregningUT = Fixtures.createVedlegg(),
-        orienteringOmRettigheterOgPlikter = Fixtures.createVedlegg(),
-        maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
+        opplysningerBruktIBeregningUT = createOpplysningerBruktIBeregningUTDto(),
+        orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterUfoereDto(),
+        maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
         minsteytelseVedvirk_sats = 0.0,
         avdoed = UfoerOmregningEnsligDto.Avdoed(
             navn = "Avdod Person",

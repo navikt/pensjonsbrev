@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -8,18 +7,18 @@ import java.time.LocalDate
 
 fun createOpplysningerBruktIBeregningUTDto() =
     OpplysningerBruktIBeregningUTDto(
-        barnetilleggGjeldende = Fixtures.createVedlegg(),
-        beregnetUTPerManedGjeldende = Fixtures.createVedlegg(),
+        barnetilleggGjeldende = createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende(),
+        beregnetUTPerManedGjeldende = createOpplysningerBruktIBeregningUTDtoBeregnetUTPerManedGjeldende(),
         grunnbeloep = Kroner(90000),
         inntektEtterUfoereGjeldende_beloepIEU = Kroner(0),
-        inntektFoerUfoereGjeldende = Fixtures.createVedlegg(),
-        inntektsAvkortingGjeldende = Fixtures.createVedlegg(),
+        inntektFoerUfoereGjeldende = createOpplysningerBruktIBeregningUTDtoInntektFoerUfoereGjeldende(),
+        inntektsAvkortingGjeldende = createOpplysningerBruktIBeregningUTDtoInntektsAvkortingGjeldende(),
         minsteytelseGjeldende_sats = 0.0,
         sivilstand = Sivilstand.PARTNER,
-        trygdetidsdetaljerGjeldende = Fixtures.createVedlegg(),
-        ufoeretrygdGjeldende = Fixtures.createVedlegg(),
+        trygdetidsdetaljerGjeldende = createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende(),
+        ufoeretrygdGjeldende = createOpplysningerBruktIBeregningUTDtoUfoeretrygdGjeldende(),
         ungUfoerGjeldende_erUnder20Aar = false,
-        yrkesskadeGjeldende = Fixtures.createVedlegg(),
+        yrkesskadeGjeldende = createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende(),
         harKravaarsakEndringInntekt = true,
         fraOgMedDatoErNesteAar = false,
         borMedSivilstand = BorMedSivilstand.PARTNER,
@@ -27,8 +26,8 @@ fun createOpplysningerBruktIBeregningUTDto() =
 
 fun createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende() =
     OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende(
-        saerkullsbarn = Fixtures.createVedlegg(),
-        fellesbarn = Fixtures.createVedlegg(),
+        saerkullsbarn = createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn(),
+        fellesbarn = createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn(),
         foedselsdatoPaaBarnTilleggetGjelder = listOf(
             LocalDate.of(2000,1,1),
             LocalDate.of(2000,2,2),
@@ -109,7 +108,7 @@ fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldende() =
         samletTTNordiskKonv = 0,
         tellerTTEOS = 0,
         tellerTTNordiskKonv = 0,
-        utenforEOSogNorden = Fixtures.createVedlegg(),
+        utenforEOSogNorden = createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden(),
     )
 
 fun createOpplysningerBruktIBeregningUTDtoTrygdetidsdetaljerGjeldendeUtenforEOSogNorden() =

@@ -16,7 +16,6 @@ enum class FeatureToggles(private val key: String) {
     brevmalKlageOrienteringOmOversendelseTilKlageinstans("klageOrienteringOmOversendelseTilKlageinstans"),
     brevmalKlageOrienteringOmSaksbehandlingstid("brevmalKlageOrienteringOmSaksbehandlingstid"),
     brevmalOpphoerGjenlevendepensjon("brevmalOpphoerGjenlevendepensjon"),
-    brevmalUtAvslag("brevmalUtAvslag"),
     brevmalUtBosattNorgeEtterUtland("brevmalUtBosattNorgeEtterUtland"),
     brevmalUtDelvisEksport("brevmalUtDelvisEksport"),
     brevmalUtEndring("brevmalUtEndring"),
@@ -33,12 +32,7 @@ enum class FeatureToggles(private val key: String) {
     samletMeldingOmPensjonsvedtak("samletMeldingOmPensjonsvedtak"),
     vedtakAvslagPaaOmsorgsopptjening("vedtakAvslagPaaOmsorgsopptjening"),
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
-    vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng"),
-    vedtakOmLavereMinstesats("vedtakOmLavereMinstesats"),
-    reverseringLavereMinstesats("reverseringLavereMinstesats"),
-    vedtakOmOktBunnfradrag("vedtakOmOktBunnfradrag"),
-    vedtakOmOktMinsteIFUOgReduksjonsprosent("vedtakOmOktMinsteIFUOgReduksjonsprosent"),
-    bunnfradragIVedlegg("opplbruktiberufore_bunnfradrag");
+    vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng");
 
     val toggle = FeatureToggle(key)
 }
