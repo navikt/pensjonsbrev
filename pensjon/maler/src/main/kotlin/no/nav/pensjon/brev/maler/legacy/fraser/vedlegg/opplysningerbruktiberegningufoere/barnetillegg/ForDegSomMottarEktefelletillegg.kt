@@ -1,22 +1,15 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.barnetillegg
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.pebrevkode
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravarsaktype
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseEktefelletilleggGenerell
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseEktefelletilleggMidtreAvsnitt
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseEktefelletilleggMinstepensjon
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseOmregningUPtilUT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeSoknadOmBarnetillegg
 
 data class ForDegSomMottarEktefelletillegg(
     val pe: Expression<PEgruppe10>,
@@ -38,14 +31,7 @@ data class ForDegSomMottarEktefelletillegg(
             }
         }
 
-        showIf((((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode()
-            .equalTo("PE_UT_14_300")) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.pebrevkode()
-            .notEqualTo("PE_UT_04_101") and pe.erIkkeSoknadOmBarnetillegg() and pe.pebrevkode()
-            .notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode()
-            .notEqualTo("PE_UT_06_300") and (pe.pebrevkode()
-            .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
-            "tilst_dod"
-        )))))){
+        showIf(pe.skalViseEktefelletilleggMidtreAvsnitt()){
             paragraph {
                 showIf(pe.skalViseOmregningUPtilUT()){
                     text (
@@ -72,12 +58,7 @@ data class ForDegSomMottarEktefelletillegg(
             }
         }
 
-        showIf(
-            (pe.pebrevkode()
-                .equalTo("PE_UT_04_300") and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats()
-                .equalTo(
-                    3.76
-                ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())){
+        showIf(pe.skalViseEktefelletilleggMinstepensjon()){
             paragraph {
                 text (
                     bokmal { + "Du har minstepensjon og tillegg for ektefelle som har fylt 60 år. Du har derfor rett til å motta uføretrygd som minst tilsvarer 3,76 ganger folketrygdens grunnbeløp. Dette grunnlaget justeres ut fra uføregraden og trygdetiden din, og du beholder dette ut vedtaksperioden for ektefelletillegget. Etter dette vil vi beregne uføretrygden etter ordinære regler." },
