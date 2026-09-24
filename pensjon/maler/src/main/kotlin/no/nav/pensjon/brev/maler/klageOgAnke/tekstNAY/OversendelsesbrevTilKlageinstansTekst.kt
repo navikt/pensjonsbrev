@@ -8,12 +8,32 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
+
 @TemplateModelHelpers
 object OversendelsesbrevTilKlageinstansTekst {
 
-    object HvaKlagesakenGjelder : RedigerbarOutlinePhrase<LangBokmal>() {
+    //START FELLESTEKSTER
+    object HvaKlagesakenGjelderOverskrift : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
             title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
+        }
+    }
+
+    object InnvilgetUfoeretrygd : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+            title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på vedtak av "
+                        +fritekst("dato") + " der klager ble innvilget "
+                        +fritekst("X prosent") + " uføretrygd fra "
+                        +fritekst("dato") + ". "
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
         }
     }
 
@@ -48,10 +68,44 @@ object OversendelsesbrevTilKlageinstansTekst {
         }
     }
 
+    object NedsattInntektsevneHvaKlagesakenGjelder : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på vedtak av "
+                        +fritekst("dato") +
+                                +" der klager fikk avslag på søknad om uføretrygd fordi inntektsevnen ikke var nedsatt med minst 30/40/50 prosent. "
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
+        }
+    }
+
+    object NedsattInntektsevneVurderingAvKlagen : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Uføregraden fastsettes ved å sammenligne inntektsevne før og etter uførhet. "
+                        +"Som hovedregel må inntektsevnen være varig nedsatt med minst 50 prosent. "
+                        +"For personer som mottar arbeidsavklaringspenger når søknaden om uføretrygd blir fremsatt, er det tilstrekkelig at inntektsevnen er varig nedsatt med minst 40 prosent. "
+                    }
+                )
+                text(bokmal { +"Hvis uførheten skyldes en godkjent yrkesskade er det tilstrekkelig at inntektsevnen er varig nedsatt med minst 30 prosent." }, ITALIC)
+            }
+        }
+    }
+//SLUTT FELLESTEKSTER
+
+    //START BREVMALER
     object Generisk : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelder)
+            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(
                     bokmal {
@@ -90,7 +144,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     object Medlemskap : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelder)
+            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(
                     bokmal {
@@ -155,7 +209,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     object HensiktsmessigBehandlingOgTiltak : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelder)
+            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(
                     bokmal {
@@ -213,7 +267,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     object KunArbeidsrettedeTiltak : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelder)
+            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(
                     bokmal {
@@ -253,9 +307,274 @@ object OversendelsesbrevTilKlageinstansTekst {
     object HovedAarakTilSykdom : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelder)
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på vedtak av "
+                        +fritekst("dato") +
+                                +" der klager fikk avslag på søknad om uføretrygd fordi sykdom ikke er hovedårsaken til arbeidsuførheten. "
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-6 - sykdom og årsakssammenheng." }) }
 
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
 
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Det er et vilkår at den medisinske lidelsen må ha medført en varig funksjonsnedsettelse av en slik art og grad at den utgjør hovedårsaken til nedsettelsen av inntektsevnen. "
+                        +"Kravet til årsakssammenheng medfører at det aktuelle sykdomsforholdet må utgjøre minst 50 prosent av det samlede årsaksbildet. "
+                        +"Dersom utenforliggende forhold (ikke sykdom) er den dominerende årsaken til at personen ikke er i arbeid, vil kravet til årsakssammenheng ikke være oppfylt."
+                    }
+                )
+            }
+            includePhrase(KlippInnFraVedtak)
+
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi vurderer at klagers helseplager er en medvirkende årsak til at klager ikke er i arbeid, men at sykdom ikke er hovedårsaken. "
+                        +"Det legges avgjørende vekt på at andre årsaker enn de rent medisinske synes å utgjøre vesentlige begrensninger med hensyn til at klager ikke fungerer i inntektsgivende arbeid."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-7 Nedsatt innteksevne
+    object NedsattInntektsevne : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            includePhrase(NedsattInntektsevneHvaKlagesakenGjelder)
+
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-7 – nedsatt inntektsevne." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            includePhrase(NedsattInntektsevneVurderingAvKlagen)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Inntekt etter uførhet skal fastsettes til den inntekten personen forutsettes å kunne skaffe seg ved å utnytte restinntektsevnen. "
+                        +"Inntekten skal dermed angi det inntektsnivået personen forutsettes å kunne ha etter uførhet. "
+                        +"Dette vil ikke nødvendigvis tilsvare den faktiske inntekten på virkningstidspunktet. "
+                        +"Hvis vedkommende har inntektsmuligheter som ikke utnyttes, skal disse medregnes ved fastsettelsen av inntekt etter uførhet. "
+                        +"Dette betyr at inntekt etter uførhet kan settes til et høyere nivå enn den faktiske inntekten. "
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-7 Kombinasjon nedsatt inntektsevne
+    object KombinasjonNedsattInntektsevne : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            includePhrase(NedsattInntektsevneHvaKlagesakenGjelder)
+
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-7, 12-9 og 12-10 – nedsatt inntektsevne." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            includePhrase(NedsattInntektsevneVurderingAvKlagen)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Uføretidspunktet skal som hovedregel fastsettes til det tidspunktet da personens inntektsevne ble varig nedsatt med minst halvparten på grunn av sykdom, skade eller lyte. "
+                        +"Uføretidspunktet er fastsatt til XXX. "
+                    }
+                )
+                text(bokmal { +"Hvis uføretidspunktet er påklaget, hent mal fra §12-8." }, ITALIC)
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Inntekt før uførhet (IFU) skal fastsettes til vedkommende sin normale inntektssituasjon før uføretidspunktet i full stilling. "
+                        +"IFU er fastsatt til XXX. Oppjustert til i dag utgjør dette XXX kroner."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Inntekt etter uførhet (IEU) skal fastsettes til den inntekten som vedkommende forutsetter å kunne skaffe seg ved å utnytte restinntektsevnen. "
+                        +"Inntekten skal dermed angi det inntektsnivået personen forutsettes å kunne ha etter uførhet. "
+                        +"Dette vil ikke nødvendigvis tilsvare den faktiske inntekten på virkningstidspunktet. "
+                        +"Hvis vedkommende har inntektsmuligheter som ikke utnyttes, skal disse medregnes ved fastsettelsen av IEU. "
+                        +"Dette betyr at IEU kan settes til et høyere nivå enn den faktiske inntekten. "
+                        +"IEU er fastsatt til XXX"
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-8 Uføretidspunkt
+    object Ufoeretidspunkt : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på vedtak av "
+                        +fritekst("dato") + " der klager ble innvilget uføretrygd. "
+                        +"Klagen gjelder uføretidspunktet. "
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-8 – uføretidspunkt." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Uføretidspunktet skal som hovedregel fastsettes til det tidspunktet da personens inntektsevne ble varig nedsatt med minst halvparten på grunn av sykdom, skade eller lyte. "
+                        +"Det er ikke tilstrekkelig at vedkommende en kortere periode har vært helt eller delvis arbeidsufør. "
+                        +"For personer som var i arbeid frem til sykmelding, vil uføretidspunktet ofte settes til sykmeldingstidspunktet. "
+                        +"Det er ikke noe krav om at nedsettelsen av inntektsevnen må gjelde samme sykdommen som senere gir grunnlag for uføretrygd så lenge inntektsevnen er varig nedsatt."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"I vurderingen av uføretidspunktet legges det stor vekt på om det foreligger et klart skjæringstidspunkt, ofte et sykmeldingstidspunkt, som gir uttrykk for når arbeidsuførheten inntrådte. "
+                        +"I fravær av et klart skjæringstidspunkt, for eksempel på grunn av arbeidsløshet eller flere sykmeldingstidspunkter, blir vurderingen mer skjønnsmessig."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU
+    object FastsettelseIFU : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(InnvilgetUfoeretrygd)
+
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-9 – fastsettelse av inntekt før uføhet." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Inntekt før uførhet skal være et uttrykk for personens normale inntektssituasjon før uføretidspunktet. "
+                        +"Hva som skal anses som normal årsinntekt må vurderes konkret i hvert tilfelle. "
+                        +"Utgangspunktet er at inntekt før uførhet skal fastsettes til det vedkommende hadde i inntekt umiddelbart før uføretidspunktet. "
+                        +"Dette kan være inntekten på uføretidspunktet eller året før."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-9 Fastsettelse av Inntekt Etter Uførehet IEU
+    object FastsettelseIEU : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(InnvilgetUfoeretrygd)
+
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-9 – fastsettelse av inntekt før uføhet." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Inntekt etter uførhet skal fastsettes til den inntekten som personen forutsetter å kunne skaffe seg ved å utnytte restinntektsevnen. "
+                        +"Utgangspunktet for fastsettelsen av inntekt etter uførhet (IEU) er personens fremtidige pensjonsgivende inntekt. "
+                        +"Hvis vedkommende har inntektsmuligheter som ikke utnyttes skal disse medregnes. "
+                        +"Inntekten etter uførhet kan derfor settes høyere enn faktisk pensjonsgivende inntekt."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-10 Fastsettelse av Uføregrad
+    object FastsettelseUfoeregrad : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(InnvilgetUfoeretrygd)
+
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-10 – fastsettelse av uføregrad." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Uføregraden skal fastsettes ved å sammenligne inntektsevne før og etter uførhet. "
+                        +"Dersom vedkommende har tapt hele inntektsevnen, skal uføregraden settes til 100 prosent. "
+                        +"Dersom deler av inntektsevnen er tapt, skal uføregraden svare til den delen som er tapt. "
+                        +"Det skal alltid vurderes om uføregraden kan settes lavere enn 100 prosent."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Inntekt før uførhet (IFU) skal fastsettes til vedkommende sin normale inntektssituasjon før uføretidspunktet i full stilling" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Inntekt etter uførhet (IEU) skal fastsettes til den inntekten som vedkommende forutsetter å kunne skaffe seg ved å utnytte restinntektsevnen. "
+                        +"Inntekten skal dermed angi det inntektsnivået personen forutsettes å kunne ha etter uførhet. "
+                        +"Dette vil ikke nødvendigvis tilsvare den faktiske inntekten på virkningstidspunktet. "
+                        +"Hvis vedkommende har inntektsmuligheter som ikke utnyttes, skal disse medregnes ved fastsettelsen av IEU. "
+                        +"Dette betyr at IEU kan settes til et høyere nivå enn den faktiske inntekten."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
         }
     }
 }
+
