@@ -145,6 +145,11 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
         val avkortingsbelopSerkullPerAr = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
         val erFribelopFellesPeriodisert = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()
         val erFribelopSerkullPeriodisert = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()
+        val erEndretInntekt = kravarsaktype.equalTo("endret_inntekt")
+        val erIkkeSoknadBarnetillegg = kravarsaktype.notEqualTo("soknad_bt")
+        val harEktefelletillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+        val skalViseFellesBarnetillegg = pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()
+        val skalViseSerkullBarnetillegg = pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v()
         val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
         val erMinsteIfu = ifuBegrunnelse.equalTo("stdbegr_12_8_2_3") or ifuBegrunnelse.equalTo("stdbegr_12_8_2_5")
         val erMinsteIfu35G = ifuBegrunnelse.equalTo("stdbegr_12_8_2_5")
@@ -259,7 +264,6 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
         showIf((pe.ut_tbu056v())){
             paragraph {
 
-                //IF(PE_UT_TBU056V_51() = true) THEN      INCLUDE ENDIF
                 showIf(kompensasjonsgrad.equalTo(70.0)){
                     text (
                         bokmal { + "Reduksjonsprosenten skal ved beregningen ikke settes høyere enn 70 prosent. " },
@@ -273,7 +277,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((kravarsaktype.equalTo("endret_inntekt") and gammelUforetrygd.notEqualTo(nyUforetrygd) and inntektsgrense.lessThan(inntektstak))){
+        showIf((erEndretInntekt and gammelUforetrygd.notEqualTo(nyUforetrygd) and inntektsgrense.lessThan(inntektstak))){
             title1 {
                 text (
                     bokmal { + "Slik beregner vi utbetaling av uføretrygden når inntekten din endres" },
@@ -289,7 +293,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((kravarsaktype.equalTo("endret_inntekt") and gammelUforetrygd.notEqualTo(nyUforetrygd) and forventetInntekt.greaterThanOrEqual(inntektsgrense) and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((erEndretInntekt and gammelUforetrygd.notEqualTo(nyUforetrygd) and forventetInntekt.greaterThanOrEqual(inntektsgrense) and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + "Uføretrygden reduseres med " + kompensasjonsgrad.format() + " prosent av inntekten over " + inntektsgrense.format() + " kroner fordi du har en reduksjonsprosent som er " + kompensasjonsgrad.format() + " prosent." },
@@ -298,7 +302,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((kravarsaktype.equalTo("endret_inntekt") and gammelUforetrygd.notEqualTo(nyUforetrygd) and forventetInntekt.greaterThanOrEqual(inntektsgrense) and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((erEndretInntekt and gammelUforetrygd.notEqualTo(nyUforetrygd) and forventetInntekt.greaterThanOrEqual(inntektsgrense) and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + "Du har en inntektsgrense på " + inntektsgrense.format() + " kroner og den innmeldte inntekten din er " + forventetInntekt.format() + " kroner. Dette betyr at overskytende inntekt er " + pe.functions.pe_ut_overskytende.format() + " kroner." },
@@ -308,7 +312,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
         }
 
 
-        showIf((kravarsaktype.equalTo("endret_inntekt") and gammelUforetrygd.notEqualTo(nyUforetrygd) and forventetInntekt.greaterThanOrEqual(inntektsgrense) and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((erEndretInntekt and gammelUforetrygd.notEqualTo(nyUforetrygd) and forventetInntekt.greaterThanOrEqual(inntektsgrense) and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             title1 {
                 text (
                     bokmal { + "Slik beregner vi reduksjonen av uføretrygden" },
@@ -317,7 +321,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((kravarsaktype.equalTo("endret_inntekt") and gammelUforetrygd.notEqualTo(nyUforetrygd) and forventetInntekt.greaterThanOrEqual(inntektsgrense) and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((erEndretInntekt and gammelUforetrygd.notEqualTo(nyUforetrygd) and forventetInntekt.greaterThanOrEqual(inntektsgrense) and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + pe.functions.pe_ut_overskytende.format() + " kr" },
@@ -346,7 +350,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((utbetalingsgrad.lessThan((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad())) and kravarsaktype.notEqualTo("soknad_bt"))){
+        showIf((utbetalingsgrad.lessThan((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad())) and erIkkeSoknadBarnetillegg)){
             title1 {
                 text (
                     bokmal { + "Slik blir din utbetaling før skatt" },
@@ -355,7 +359,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((utbetalingsgrad.lessThan(uforegrad) and kravarsaktype.notEqualTo("soknad_bt") and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((utbetalingsgrad.lessThan(uforegrad) and erIkkeSoknadBarnetillegg and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + "Brutto beregnet uføretrygd som følge av innmeldt inntekt: " },
@@ -368,7 +372,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((utbetalingsgrad.lessThan(uforegrad) and kravarsaktype.notEqualTo("soknad_bt") and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((utbetalingsgrad.lessThan(uforegrad) and erIkkeSoknadBarnetillegg and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + "- Utbetalt uføretrygd hittil i år:" },
@@ -381,7 +385,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((utbetalingsgrad.lessThan(uforegrad) and kravarsaktype.notEqualTo("soknad_bt") and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((utbetalingsgrad.lessThan(uforegrad) and erIkkeSoknadBarnetillegg and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + "= Utbetaling av uføretrygd for resterende måneder i året:" },
@@ -395,7 +399,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
         }
 
 
-        showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().greaterThan(0) and utbetalingsgrad.lessThan(uforegrad) and kravarsaktype.notEqualTo("soknad_bt") and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().greaterThan(0) and utbetalingsgrad.lessThan(uforegrad) and erIkkeSoknadBarnetillegg and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + "Du vil få en månedlig reduksjon i uføretrygden din på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag().format() + " kroner i resterende måneder i kalenderåret." },
@@ -404,7 +408,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((utbetalingsgrad.lessThan(uforegrad) and pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().greaterThan(0) and kravarsaktype.notEqualTo("soknad_bt") and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
+        showIf((utbetalingsgrad.lessThan(uforegrad) and pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().greaterThan(0) and erIkkeSoknadBarnetillegg and inntektsgrense.lessThan(inntektstak) and nyUforetrygd.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + "Uføretrygden og inntekten din vil ut fra dette til sammen utgjøre " + pe.functions.pe_ut_nettoakk_pluss_nettorestar_pluss_forventetinntekt.format() + " kroner for dette året." },
@@ -413,7 +417,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((inntektsgrense.greaterThanOrEqual(inntektstak) and utbetalingsgrad.lessThan(uforegrad) and kravarsaktype.notEqualTo("soknad_bt") and nyUforetrygd.equalTo(0))){
+        showIf((inntektsgrense.greaterThanOrEqual(inntektstak) and utbetalingsgrad.lessThan(uforegrad) and erIkkeSoknadBarnetillegg and nyUforetrygd.equalTo(0))){
             paragraph {
                 text (
                     bokmal { + "Utbetalingen av uføretrygden din er redusert, fordi du har inntekt. Den innmeldte inntekten er høyere enn inntektsgrensen din på " + inntektsgrense.format() + " kroner og uføretrygden blir derfor ikke utbetalt. " },
@@ -431,7 +435,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((utbetalingsgrad.lessThan(uforegrad) and kravarsaktype.notEqualTo("soknad_bt"))){
+        showIf((utbetalingsgrad.lessThan(uforegrad) and erIkkeSoknadBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Du vil få tilbake " + uforegrad.format() + " prosent uføretrygd uten søknad, dersom du tjener mindre enn inntektsgrensen din. Hvis du allerede har fått utbetalt det du har rett til i uføretrygd for kalenderåret, vil du ikke få utbetalt uføretrygd med den opprinnelige uføregraden din før neste kalenderår." },
@@ -540,7 +544,6 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                 )
             }
 
-            //IF( PE_UT_TBU501V() = true AND (PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarKravlinjeKode(SYS_TableRow) = "bt" AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVedtakResultat(SYS_TableRow) = "innv")  ) THEN      INCLUDE ENDIF
             forEach(pe.foedselsdatoTilBarnTilleggErInnvilgetFor()) { foedselsdato ->
                 paragraph {
                     text(
@@ -555,7 +558,6 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     nynorsk { + "Barnetillegget kan utgjere opptil 40 prosent av grunnbeløpet i folketrygda for kvart barn du forsørgjer. Du har rett til barnetillegg så lenge du forsørgjer barn som er under 18 år. Barnetillegget opphøyrer når barnet fyller 18 år. " },
                 )
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") THEN      INCLUDE ENDIF
                 showIf((anvendtTrygdetid.lessThan(40) and yrkesskaderesultat.notEqualTo("oppfylt"))){
                     text (
                         bokmal { + "Hvor mye du får i barnetillegg er også avhengig av trygdetiden din. Fordi trygdetiden din er kortere enn 40 år, blir barnetillegget ditt redusert. " },
@@ -583,7 +585,6 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     nynorsk { + " og barnetillegg kan ikkje utgjere meir enn 95 prosent av inntekta di før du blei ufør. 95 prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Fordi uføretrygda og barnetillegget til saman er høgare enn dette beløpet," },
                 )
 
-                //IF( PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU > 95 AND ( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBnettoPerAr > 0 OR PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBnettoPerAr > 0 ) ) THEN      INCLUDE ENDIF
                 showIf((andelYtelseAvOifu.greaterThan(95.0) and (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().greaterThan(0) or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().greaterThan(0)))){
                     text (
                         bokmal { + " blir barnetillegget ditt redusert." },
@@ -742,7 +743,6 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     nynorsk { + "Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn er 4,6 gonger grunnbeløpet i folketrygda, og det aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. " },
                 )
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") THEN      INCLUDE ENDIF
                 showIf((anvendtTrygdetid.lessThan(40) and yrkesskaderesultat.notEqualTo("oppfylt"))){
                     text (
                         bokmal { + "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har. " },
@@ -777,7 +777,6 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     nynorsk { + "Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn er 3,1 gonger grunnbeløpet i folketrygda, og det aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. " },
                 )
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") THEN      INCLUDE ENDIF
                 showIf((anvendtTrygdetid.lessThan(40) and yrkesskaderesultat.notEqualTo("oppfylt"))){
                     text (
                         bokmal { + "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har. " },
@@ -846,21 +845,21 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     )
                 }
 
-                showIf((kravarsaktype.equalTo("endret_inntekt"))){
+                showIf((erEndretInntekt)){
                     text (
                         bokmal { + "Når inntekten din " },
                         nynorsk { + "Når inntekta di " },
                     )
                 }
 
-                showIf(((kravarsaktype.equalTo("endret_inntekt") and harBarnetilleggFelles and (sivilstand.equalTo("bormed ektefelle") or sivilstand.equalTo("bormed registrert partner") or sivilstand.equalTo("bormed 1-5") or sivilstand.equalTo("bormed 1_5") or sivilstand.equalTo("bormed 3-2"))))){
+                showIf(((erEndretInntekt and harBarnetilleggFelles and (sivilstand.equalTo("bormed ektefelle") or sivilstand.equalTo("bormed registrert partner") or sivilstand.equalTo("bormed 1-5") or sivilstand.equalTo("bormed 1_5") or sivilstand.equalTo("bormed 3-2"))))){
                     text (
                         bokmal { + "eller til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
                         nynorsk { + "eller til di " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
                     )
                 }
 
-                showIf((kravarsaktype.equalTo("endret_inntekt"))){
+                showIf((erEndretInntekt)){
                     text (
                         bokmal { + "endrer seg," },
                         nynorsk { + "endrar seg," },
@@ -981,21 +980,21 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     )
                 }
 
-                showIf((kravarsaktype.equalTo("endret_inntekt"))){
+                showIf((erEndretInntekt)){
                     text (
                         bokmal { + "Når inntekten din " },
                         nynorsk { + "Når inntekta di " }
                     )
                 }
 
-                showIf((kravarsaktype.equalTo("endret_inntekt") and (sivilstand.equalTo("bormed ektefelle") or sivilstand.equalTo("bormed registrert") or sivilstand.equalTo("bormed 1-5") or sivilstand.equalTo("bormed 1_5") or sivilstand.equalTo("bormed 3-2")))){
+                showIf((erEndretInntekt and (sivilstand.equalTo("bormed ektefelle") or sivilstand.equalTo("bormed registrert") or sivilstand.equalTo("bormed 1-5") or sivilstand.equalTo("bormed 1_5") or sivilstand.equalTo("bormed 3-2")))){
                     text (
                         bokmal { + "eller til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
                         nynorsk { + "eller til di " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
                     )
                 }
 
-                showIf((kravarsaktype.equalTo("endret_inntekt"))){
+                showIf((erEndretInntekt)){
                     text (
                         bokmal { + "endrer seg," },
                         nynorsk { + "endrar seg," },
@@ -1130,14 +1129,13 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
+        showIf((skalViseFellesBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Reduksjon av barnetillegg for fellesbarn før skatt " },
                     nynorsk { + "Reduksjon av barnetillegg for fellesbarn før skatt " },
                 )
 
-                //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
                 showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(virkningstidspunkt))){
                     text (
                         bokmal { + "i år" },
@@ -1145,7 +1143,6 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     )
                 }
 
-                //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = true) THEN      INCLUDE ENDIF
                 showIf(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(virkningstidspunkt)){
                     text (
                         bokmal { + "for neste år" },
@@ -1159,7 +1156,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
+        showIf((skalViseFellesBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Årlig barnetillegg før reduksjon ut fra inntekt" },
@@ -1172,7 +1169,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
+        showIf((skalViseFellesBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Samlet inntekt brukt i fastsettelse av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning().format() + " kr" },
@@ -1181,7 +1178,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (barnetilleggFellesNetto.greaterThan(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
+        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.greaterThan(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
             paragraph {
                 text (
                     bokmal { + "Fribeløp brukt i fastsettelsen av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kr" },
@@ -1190,7 +1187,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
+        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
             paragraph {
                 text (
                     bokmal { + "Inntekt over fribeløpet er " + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop().format() + " kr" },
@@ -1199,7 +1196,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))) and avkortingsbelopFellesPerAr.greaterThan(0))){
+        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))) and avkortingsbelopFellesPerAr.greaterThan(0))){
             paragraph {
                 text (
                     bokmal { + "- 50 prosent av inntekt som overstiger fribeløpet" },
@@ -1219,7 +1216,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()) and justeringsbelopFellesPerAr.notEqualTo(0))){
+        showIf(((skalViseFellesBarnetillegg) and justeringsbelopFellesPerAr.notEqualTo(0))){
             paragraph {
                 showIf((justeringsbelopFellesPerAr.greaterThan(0))){
                     text (
@@ -1245,7 +1242,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
+        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
             paragraph {
                 text (
                     bokmal { + "= Årlig barnetillegg etter reduksjon ut fra inntekt" },
@@ -1258,7 +1255,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
+        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
             paragraph {
                 text (
                     bokmal { + "Utbetaling av barnetillegg per måned " },
@@ -1271,7 +1268,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.equalTo(0))){
+        showIf((skalViseFellesBarnetillegg and barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.equalTo(0))){
             paragraph {
                 text (
                     bokmal { + "Grensen for å få utbetalt barnetillegg" },
@@ -1284,7 +1281,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((harBarnetilleggFelles and barnetilleggFellesNetto.greaterThan(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
+        showIf((harBarnetilleggFelles and barnetilleggFellesNetto.greaterThan(0) and skalViseFellesBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Du vil få utbetalt " + barnetilleggFellesNetto.format() + " kroner i måneden før skatt i barnetillegg" },
@@ -1304,7 +1301,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((barnetilleggFellesNetto.equalTo(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
+        showIf((barnetilleggFellesNetto.equalTo(0) and skalViseFellesBarnetillegg)){
             paragraph {
                 showIf((pe.ut_tbu608_far_ikke())){
                     text (
@@ -1336,7 +1333,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+        showIf((skalViseSerkullBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Reduksjon av barnetillegg for særkullsbarn før skatt " },
@@ -1359,7 +1356,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+        showIf((skalViseSerkullBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Årlig barnetillegg før reduksjon ut fra inntekt" },
@@ -1372,7 +1369,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+        showIf((skalViseSerkullBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Samlet inntekt brukt i fastsettelse av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " kr" },
@@ -1381,7 +1378,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (barnetilleggSerkullNetto.greaterThan(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
+        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.greaterThan(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
             paragraph {
                 text (
                     bokmal { + "Fribeløp brukt i fastsettelsen av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kr" },
@@ -1390,7 +1387,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
+        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
             paragraph {
                 text (
                     bokmal { + "Inntekt over fribeløpet er " + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format() + " kr" },
@@ -1399,7 +1396,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0)) and avkortingsbelopSerkullPerAr.greaterThan(0)))){
+        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0)) and avkortingsbelopSerkullPerAr.greaterThan(0)))){
             paragraph {
                 text (
                     bokmal { + "- 50 prosent av inntekt som overstiger fribeløpet" },
@@ -1419,7 +1416,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v()) and justeringsbelopSerkullPerAr.notEqualTo(0))){
+        showIf(((skalViseSerkullBarnetillegg) and justeringsbelopSerkullPerAr.notEqualTo(0))){
             paragraph {
                 showIf((justeringsbelopSerkullPerAr.greaterThan(0))){
                     text (
@@ -1445,7 +1442,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
+        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
             paragraph {
                 text (
                     bokmal { + "= Årlig barnetillegg etter reduksjon ut fra inntekt" },
@@ -1458,7 +1455,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
+        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
             paragraph {
                 text (
                     bokmal { + "Utbetaling av barnetillegg per måned " },
@@ -1471,7 +1468,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.equalTo(0))){
+        showIf((skalViseSerkullBarnetillegg and barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.equalTo(0))){
             paragraph {
                 text (
                     bokmal { + "Grensen for å få utbetalt barnetillegg" },
@@ -1484,7 +1481,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((harBarnetilleggSerkull and barnetilleggSerkullNetto.greaterThan(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+        showIf((harBarnetilleggSerkull and barnetilleggSerkullNetto.greaterThan(0) and skalViseSerkullBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Du vil få utbetalt " + barnetilleggSerkullNetto.format() + " kroner i måneden før skatt i barnetillegg" },
@@ -1504,7 +1501,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((barnetilleggSerkullNetto.equalTo(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+        showIf((barnetilleggSerkullNetto.equalTo(0) and skalViseSerkullBarnetillegg)){
             paragraph {
                 showIf((pe.ut_tbu611_far_ikke())){
                     text (
@@ -1557,7 +1554,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and kravarsaktype.notEqualTo("soknad_bt"))){
+        showIf((harEktefelletillegg and erIkkeSoknadBarnetillegg)){
             title1 {
                 text (
                     bokmal { + "For deg som mottar ektefelletillegg" },
@@ -1566,7 +1563,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and kravarsaktype.notEqualTo("soknad_bt"))){
+        showIf((harEktefelletillegg and erIkkeSoknadBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Ektefelletillegget blir utbetalt som et fast tillegg ved siden av uføretrygden. Tillegget blir ikke endret i perioden ektefelletillegget er innvilget." },
@@ -1575,14 +1572,14 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()){
+        showIf(harEktefelletillegg){
             paragraph {
                 text (
                     bokmal { + "Når vi beregner ektefelletillegget tar vi utgangspunkt i den årlige uførepensjonen du har rett til i desember 2014. Deretter regner vi ut tillegget ut fra fastsatte overgangsregler. " },
                     nynorsk { + "Når vi bereknar ektefelletillegget, tek vi utgangspunkt i den årlege uførepensjonen du har rett til i desember 2014. Deretter reknar vi ut tillegget ut frå fastsette overgangsreglar. " },
                 )
 
-                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and kravarsaktype.notEqualTo("soknad_bt"))){
+                showIf((harEktefelletillegg and erIkkeSoknadBarnetillegg)){
                     text (
                         bokmal { + "Du kan beholde ektefelletillegget ut vedtaksperioden, men det opphører senest 31. desember 2024." },
                         nynorsk { + "Du kan behalde ektefelletillegget ut vedtaksperioden, men det tek slutt seinast 31. desember 2024." },
@@ -1591,7 +1588,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and kravarsaktype.notEqualTo("soknad_bt"))){
+        showIf((harEktefelletillegg and erIkkeSoknadBarnetillegg)){
             paragraph {
                 text (
                     bokmal { + "Ektefelletillegget vil falle bort hvis du skiller deg, uføretrygden opphører eller hvis ektefellen din dør." },
@@ -1600,7 +1597,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((brevkode.equalTo("PE_UT_04_300") and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().equalTo(3.76) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())){
+        showIf((brevkode.equalTo("PE_UT_04_300") and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().equalTo(3.76) and harEktefelletillegg)){
             paragraph {
                 text (
                     bokmal { + "Du har minstepensjon og tillegg for ektefelle som har fylt 60 år. Du har derfor rett til å motta uføretrygd som minst tilsvarer 3,76 ganger folketrygdens grunnbeløp. Dette grunnlaget justeres ut fra uføregraden og trygdetiden din, og du beholder dette ut vedtaksperioden for ektefelletillegget. Etter dette vil vi beregne uføretrygden etter ordinære regler." },
@@ -1609,7 +1606,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(((kravarsaktype.notEqualTo("soknad_bt")))){
+        showIf(((erIkkeSoknadBarnetillegg))){
             paragraph {
                 text (
                     bokmal { + "Etteroppgjør av uføretrygd" },
@@ -1625,7 +1622,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(((kravarsaktype.notEqualTo("soknad_bt")))){
+        showIf(((erIkkeSoknadBarnetillegg))){
             paragraph {
                 text (
                     bokmal { + "Hvert år når likningen er klar mottar vi opplysninger om inntekten" },
