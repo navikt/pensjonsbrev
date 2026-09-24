@@ -102,13 +102,12 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
-import kotlin.or
-import kotlin.text.format
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 
@@ -148,8 +147,14 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
         val erEndretInntekt = kravarsaktype.equalTo("endret_inntekt")
         val erIkkeSoknadBarnetillegg = kravarsaktype.notEqualTo("soknad_bt")
         val harEktefelletillegg = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+        val harBarnetillegg = harBarnetilleggFelles or harBarnetilleggSerkull
+        val tekstMedBarnetillegg = ifElse(harBarnetillegg, " og barnetillegg", "")
+        val tekstMedBarnetilleggetBokmal = ifElse(harBarnetillegg, " og barnetillegget", "")
+        val tekstMedBarnetilleggetNynorsk = ifElse(harBarnetillegg, " og barnetillegg", "")
         val skalViseFellesBarnetillegg = pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()
         val skalViseSerkullBarnetillegg = pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v()
+        val harFellesBarnetilleggEtterReduksjon = barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))
+        val harSerkullBarnetilleggEtterReduksjon = barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))
         val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
         val erMinsteIfu = ifuBegrunnelse.equalTo("stdbegr_12_8_2_3") or ifuBegrunnelse.equalTo("stdbegr_12_8_2_5")
         val erMinsteIfu35G = ifuBegrunnelse.equalTo("stdbegr_12_8_2_5")
@@ -191,7 +196,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu056v())){
+        showIf(pe.ut_tbu056v()) {
             title1 {
                 text (
                     bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },
@@ -205,14 +210,12 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     nynorsk { + "Vi fastset reduksjonsprosenten ved å samanlikne det du " },
                 )
 
-                showIf((uforegrad.equalTo(100))){
+                showIf(uforegrad.equalTo(100)) {
                     text (
                         bokmal { + "har rett til i" },
                         nynorsk { + "har rett til i" },
                     )
-                }
-
-                showIf((uforegrad.lessThan(100))){
+                }.orShow {
                     text (
                         bokmal { + "ville hatt rett til i" },
                         nynorsk { + "ville hatt rett til i" },
@@ -223,47 +226,34 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     nynorsk { + " 100 prosent uføretrygd, med den oppjusterte inntekta di før du blei ufør. Reduksjonsprosenten blir brukt til å berekne kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa." },
                 )
             }
-        }
-
-        showIf(pe.ut_tbu056v()){
             paragraph {
                 text (
                     bokmal { + "Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner. For å kunne fastsette reduksjonsprosenten din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + oifu.format() + " kroner." },
                     nynorsk { + "Inntekta di før du blei ufør er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner. For å kunne fastsetje reduksjonsprosenten din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + oifu.format() + " kroner." },
                 )
             }
-        }
-
-        showIf(pe.ut_tbu056v() and uforegrad.equalTo(100)){
-            paragraph {
-                text (
-                    bokmal { + "Du har rett til 100 prosent uføretrygd, som utgjør " + ugradertBruttoPerAr.format() + " kroner per år." },
-                    nynorsk { + "Du har rett til 100 prosent uføretrygd, som utgjer " + ugradertBruttoPerAr.format() + " kroner per år." },
-                )
+            showIf(uforegrad.equalTo(100)) {
+                paragraph {
+                    text (
+                        bokmal { + "Du har rett til 100 prosent uføretrygd, som utgjør " + ugradertBruttoPerAr.format() + " kroner per år." },
+                        nynorsk { + "Du har rett til 100 prosent uføretrygd, som utgjer " + ugradertBruttoPerAr.format() + " kroner per år." },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text (
+                        bokmal { + "Du har rett til " + uforegrad.format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + ugradertBruttoPerAr.format() + " kroner per år." },
+                        nynorsk { + "Du har rett til " + uforegrad.format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + ugradertBruttoPerAr.format() + " kroner per år." },
+                    )
+                }
             }
-        }
-
-        showIf(pe.ut_tbu056v() and uforegrad.lessThan(100)){
-            paragraph {
-                text (
-                    bokmal { + "Du har rett til " + uforegrad.format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + ugradertBruttoPerAr.format() + " kroner per år." },
-                    nynorsk { + "Du har rett til " + uforegrad.format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + ugradertBruttoPerAr.format() + " kroner per år." },
-                )
-            }
-        }
-
-        showIf(pe.ut_tbu056v()){
             paragraph {
                 text (
                     bokmal { + "Vi beregner reduksjonsprosenten din slik:(" + ugradertBruttoPerAr.format() + " / " + oifu.format() + ") * 100 = " + kompensasjonsgrad.format() + " prosent." },
                     nynorsk { + "Vi bereknar reduksjonsprosenten din slik:(" + ugradertBruttoPerAr.format() + " / " + oifu.format() + ") * 100 = " + kompensasjonsgrad.format() + " prosent." },
                 )
             }
-        }
-
-        showIf((pe.ut_tbu056v())){
             paragraph {
-
                 showIf(kompensasjonsgrad.equalTo(70.0)){
                     text (
                         bokmal { + "Reduksjonsprosenten skal ved beregningen ikke settes høyere enn 70 prosent. " },
@@ -1019,9 +1009,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                         bokmal { + "blir omregnet til et årlig beløp som tilsvarer " },
                         nynorsk { + "blir omrekna til eit årleg beløp som tilsvarar " }
                     )
-                }
-
-                showIf((not(erFribelopFellesPeriodisert))){
+                }.orShowIf(not(erFribelopFellesPeriodisert)) {
                     text (
                         bokmal { + "er " },
                         nynorsk { + "er " }
@@ -1053,9 +1041,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                         bokmal { + "lagt til" },
                         nynorsk { + "lagt til" },
                     )
-                }
-
-                showIf((justeringsbelopFellesPerAr.lessThan(0))){
+                }.orShowIf(justeringsbelopFellesPerAr.lessThan(0)) {
                     text (
                         bokmal { + "trukket fra" },
                         nynorsk { + "trekt frå" },
@@ -1080,9 +1066,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                         bokmal { + "er 50 prosent av den inntekten som overstiger fribeløpet " },
                         nynorsk { + "er 50 prosent av den inntekten som overstiger fribeløpet " },
                     )
-                }
-
-                showIf((erFribelopSerkullPeriodisert)){
+                }.orShowIf(erFribelopSerkullPeriodisert) {
                     text (
                         bokmal { + "blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer " },
                         nynorsk { + "blir 50 prosent av den inntekten som overstiger fribeløpet omrekna til eit årleg beløp som tilsvarar " },
@@ -1114,9 +1098,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                         bokmal { + "lagt til" },
                         nynorsk { + "lagt til" },
                     )
-                }
-
-                showIf((justeringsbelopSerkullPerAr.lessThan(0))){
+                }.orShowIf(justeringsbelopSerkullPerAr.lessThan(0)) {
                     text (
                         bokmal { + "trukket fra" },
                         nynorsk { + "trekt frå" },
@@ -1136,14 +1118,12 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     nynorsk { + "Reduksjon av barnetillegg for fellesbarn før skatt " },
                 )
 
-                showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(virkningstidspunkt))){
+                showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(virkningstidspunkt))) {
                     text (
                         bokmal { + "i år" },
                         nynorsk { + "i år" },
                     )
-                }
-
-                showIf(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(virkningstidspunkt)){
+                }.orShow {
                     text (
                         bokmal { + "for neste år" },
                         nynorsk { + "for neste år" },
@@ -1178,7 +1158,8 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.greaterThan(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
+        showIf(skalViseFellesBarnetillegg) {
+            showIf(barnetilleggFellesNetto.greaterThan(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))) {
             paragraph {
                 text (
                     bokmal { + "Fribeløp brukt i fastsettelsen av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kr" },
@@ -1187,7 +1168,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
+        showIf(harFellesBarnetilleggEtterReduksjon) {
             paragraph {
                 text (
                     bokmal { + "Inntekt over fribeløpet er " + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop().format() + " kr" },
@@ -1196,7 +1177,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))) and avkortingsbelopFellesPerAr.greaterThan(0))){
+        showIf(harFellesBarnetilleggEtterReduksjon and avkortingsbelopFellesPerAr.greaterThan(0)) {
             paragraph {
                 text (
                     bokmal { + "- 50 prosent av inntekt som overstiger fribeløpet" },
@@ -1216,16 +1197,14 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(((skalViseFellesBarnetillegg) and justeringsbelopFellesPerAr.notEqualTo(0))){
+        showIf(justeringsbelopFellesPerAr.notEqualTo(0)) {
             paragraph {
                 showIf((justeringsbelopFellesPerAr.greaterThan(0))){
                     text (
                         bokmal { + "-" },
                         nynorsk { + "-" },
                     )
-                }
-
-                showIf((justeringsbelopFellesPerAr.lessThan(0))){
+                }.orShowIf(justeringsbelopFellesPerAr.lessThan(0)) {
                     text (
                         bokmal { + "+" },
                         nynorsk { + "+" },
@@ -1242,7 +1221,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
+        showIf(harFellesBarnetilleggEtterReduksjon) {
             paragraph {
                 text (
                     bokmal { + "= Årlig barnetillegg etter reduksjon ut fra inntekt" },
@@ -1255,7 +1234,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseFellesBarnetillegg and (barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))))){
+        showIf(harFellesBarnetilleggEtterReduksjon) {
             paragraph {
                 text (
                     bokmal { + "Utbetaling av barnetillegg per måned " },
@@ -1268,7 +1247,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseFellesBarnetillegg and barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.equalTo(0))){
+        showIf(barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.equalTo(0)) {
             paragraph {
                 text (
                     bokmal { + "Grensen for å få utbetalt barnetillegg" },
@@ -1281,7 +1260,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((harBarnetilleggFelles and barnetilleggFellesNetto.greaterThan(0) and skalViseFellesBarnetillegg)){
+        showIf(harBarnetilleggFelles and barnetilleggFellesNetto.greaterThan(0)) {
             paragraph {
                 text (
                     bokmal { + "Du vil få utbetalt " + barnetilleggFellesNetto.format() + " kroner i måneden før skatt i barnetillegg" },
@@ -1301,7 +1280,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((barnetilleggFellesNetto.equalTo(0) and skalViseFellesBarnetillegg)){
+        showIf(barnetilleggFellesNetto.equalTo(0)) {
             paragraph {
                 showIf((pe.ut_tbu608_far_ikke())){
                     text (
@@ -1333,6 +1312,8 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
+        }
+
         showIf((skalViseSerkullBarnetillegg)){
             paragraph {
                 text (
@@ -1340,14 +1321,12 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     nynorsk { + "Reduksjon av barnetillegg for særkullsbarn før skatt " },
                 )
 
-                showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(virkningstidspunkt))){
+                showIf(not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(virkningstidspunkt))) {
                     text (
                         bokmal { + "i år" },
                         nynorsk { + "i år" },
                     )
-                }
-
-                showIf(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(virkningstidspunkt)){
+                }.orShow {
                     text (
                         bokmal { + "for neste år" },
                         nynorsk { + "for neste år" },
@@ -1378,7 +1357,8 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.greaterThan(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
+        showIf(skalViseSerkullBarnetillegg) {
+            showIf(barnetilleggSerkullNetto.greaterThan(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))) {
             paragraph {
                 text (
                     bokmal { + "Fribeløp brukt i fastsettelsen av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kr" },
@@ -1387,7 +1367,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
+        showIf(harSerkullBarnetilleggEtterReduksjon) {
             paragraph {
                 text (
                     bokmal { + "Inntekt over fribeløpet er " + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format() + " kr" },
@@ -1396,7 +1376,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0)) and avkortingsbelopSerkullPerAr.greaterThan(0)))){
+        showIf(harSerkullBarnetilleggEtterReduksjon and avkortingsbelopSerkullPerAr.greaterThan(0)) {
             paragraph {
                 text (
                     bokmal { + "- 50 prosent av inntekt som overstiger fribeløpet" },
@@ -1416,16 +1396,14 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(((skalViseSerkullBarnetillegg) and justeringsbelopSerkullPerAr.notEqualTo(0))){
+        showIf(justeringsbelopSerkullPerAr.notEqualTo(0)) {
             paragraph {
                 showIf((justeringsbelopSerkullPerAr.greaterThan(0))){
                     text (
                         bokmal { + "-" },
                         nynorsk { + "-" },
                     )
-                }
-
-                showIf((justeringsbelopSerkullPerAr.lessThan(0))){
+                }.orShowIf(justeringsbelopSerkullPerAr.lessThan(0)) {
                     text (
                         bokmal { + "+" },
                         nynorsk { + "+" },
@@ -1442,7 +1420,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
+        showIf(harSerkullBarnetilleggEtterReduksjon) {
             paragraph {
                 text (
                     bokmal { + "= Årlig barnetillegg etter reduksjon ut fra inntekt" },
@@ -1455,7 +1433,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseSerkullBarnetillegg and (barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))))){
+        showIf(harSerkullBarnetilleggEtterReduksjon) {
             paragraph {
                 text (
                     bokmal { + "Utbetaling av barnetillegg per måned " },
@@ -1468,7 +1446,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((skalViseSerkullBarnetillegg and barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.equalTo(0))){
+        showIf(barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.equalTo(0)) {
             paragraph {
                 text (
                     bokmal { + "Grensen for å få utbetalt barnetillegg" },
@@ -1481,7 +1459,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((harBarnetilleggSerkull and barnetilleggSerkullNetto.greaterThan(0) and skalViseSerkullBarnetillegg)){
+        showIf(harBarnetilleggSerkull and barnetilleggSerkullNetto.greaterThan(0)) {
             paragraph {
                 text (
                     bokmal { + "Du vil få utbetalt " + barnetilleggSerkullNetto.format() + " kroner i måneden før skatt i barnetillegg" },
@@ -1501,7 +1479,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((barnetilleggSerkullNetto.equalTo(0) and skalViseSerkullBarnetillegg)){
+        showIf(barnetilleggSerkullNetto.equalTo(0)) {
             paragraph {
                 showIf((pe.ut_tbu611_far_ikke())){
                     text (
@@ -1531,6 +1509,8 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     )
                 }
             }
+        }
+
         }
 
         showIf((harGjenlevendetillegg)){
@@ -1606,88 +1586,42 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(((erIkkeSoknadBarnetillegg))){
+        showIf(erIkkeSoknadBarnetillegg) {
             paragraph {
                 text (
-                    bokmal { + "Etteroppgjør av uføretrygd" },
-                    nynorsk { + "Etteroppgjer av uføretrygd" },
+                    bokmal { + "Etteroppgjør av uføretrygd" + tekstMedBarnetillegg },
+                    nynorsk { + "Etteroppgjer av uføretrygd" + tekstMedBarnetillegg },
                 )
-
-                showIf(((harBarnetilleggFelles or harBarnetilleggSerkull))){
-                    text (
-                        bokmal { + " og barnetillegg" },
-                        nynorsk { + " og barnetillegg" },
-                    )
-                }
             }
         }
 
-        showIf(((erIkkeSoknadBarnetillegg))){
+        showIf(erIkkeSoknadBarnetillegg) {
             paragraph {
                 text (
-                    bokmal { + "Hvert år når likningen er klar mottar vi opplysninger om inntekten" },
-                    nynorsk { + "Kvart år når likninga er klar får vi opplysningar om inntekta" },
-                )
-
-                showIf(((harBarnetilleggFelles))){
-                    text (
-                        bokmal { + " til deg og din " },
-                        nynorsk { + " til deg og din " },
-                    )
-                }
-
-                showIf(((harBarnetilleggFelles and (sivilstand.equalTo("bormed ektefelle"))))){
-                    text (
-                        bokmal { + "ektefelle" },
-                        nynorsk { + "ektefelle" },
-                    )
-                }
-
-                showIf(((harBarnetilleggFelles and (sivilstand.equalTo("bormed registrert partner"))))){
-                    text (
-                        bokmal { + "partner" },
-                        nynorsk { + "partnaren" },
-                    )
-                }
-
-                showIf(((harBarnetilleggFelles and (sivilstand.equalTo("bormed 1-5") or sivilstand.equalTo("bormed 3-2"))))){
-                    text (
-                        bokmal { + "samboer" },
-                        nynorsk { + "sambuar" },
-                    )
-                }
-
-                showIf(not(harBarnetilleggFelles)){
-                    text (
-                        bokmal { + " din" },
-                        nynorsk { + " di" },
-                    )
-                }
-                text (
-                    bokmal { + " fra Skatteetaten. Vi bruker likningsopplysningene til å beregne riktig utbetaling av uføretrygd" },
-                    nynorsk { + " frå Skatteetaten. Vi brukar likningsopplysningane til å berekne riktig utbetaling av uføretrygd" },
-                )
-
-                showIf(((harBarnetilleggFelles or harBarnetilleggSerkull))){
-                    text (
-                        bokmal { + " og barnetillegg" },
-                        nynorsk { + " og barnetillegg" },
-                    )
-                }
-                text (
-                    bokmal { + " for året likningen gjelder for. Har du fått for mye eller for lite utbetalt i uføretrygd" },
-                    nynorsk { + " for året likninga gjeld for. Har du fått for mykje eller for lite utbetalt i uføretrygd" },
-                )
-
-                showIf(((harBarnetilleggFelles or harBarnetilleggSerkull))){
-                    text (
-                        bokmal { + " og barnetillegg" },
-                        nynorsk { + " og barnetillegg" },
-                    )
-                }
-                text (
-                    bokmal { + ", vil vi foreta et etteroppgjør. " },
-                    nynorsk { + ", vil vi foreta eit etteroppgjer. " },
+                    bokmal {
+                        + "Hvert år når likningen er klar mottar vi opplysninger om inntekten" +
+                            ifElse(harBarnetilleggFelles, " til deg og din ", " din") +
+                            ifElse(harBarnetilleggFelles and sivilstand.equalTo("bormed ektefelle"), "ektefelle", "") +
+                            ifElse(harBarnetilleggFelles and sivilstand.equalTo("bormed registrert partner"), "partner", "") +
+                            ifElse(harBarnetilleggFelles and (sivilstand.equalTo("bormed 1-5") or sivilstand.equalTo("bormed 3-2")), "samboer", "") +
+                            " fra Skatteetaten. Vi bruker likningsopplysningene til å beregne riktig utbetaling av uføretrygd" +
+                            tekstMedBarnetillegg +
+                            " for året likningen gjelder for. Har du fått for mye eller for lite utbetalt i uføretrygd" +
+                            tekstMedBarnetillegg +
+                            ", vil vi foreta et etteroppgjør. "
+                    },
+                    nynorsk {
+                        + "Kvart år når likninga er klar får vi opplysningar om inntekta" +
+                            ifElse(harBarnetilleggFelles, " til deg og din ", " di") +
+                            ifElse(harBarnetilleggFelles and sivilstand.equalTo("bormed ektefelle"), "ektefelle", "") +
+                            ifElse(harBarnetilleggFelles and sivilstand.equalTo("bormed registrert partner"), "partnaren", "") +
+                            ifElse(harBarnetilleggFelles and (sivilstand.equalTo("bormed 1-5") or sivilstand.equalTo("bormed 3-2")), "sambuar", "") +
+                            " frå Skatteetaten. Vi brukar likningsopplysningane til å berekne riktig utbetaling av uføretrygd" +
+                            tekstMedBarnetillegg +
+                            " for året likninga gjeld for. Har du fått for mykje eller for lite utbetalt i uføretrygd" +
+                            tekstMedBarnetillegg +
+                            ", vil vi foreta eit etteroppgjer. "
+                    },
                 )
 
                 showIf(pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("")){
@@ -1697,19 +1631,8 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     )
                 }
                 text (
-                    bokmal { + "Har du fått utbetalt for lite, vil vi utbetale dette beløpet til deg. Har du fått utbetalt for mye, må du betale dette tilbake. Det er viktig at du melder fra om inntektsendringer slik at uføretrygden" },
-                    nynorsk { + "Har du fått utbetalt for lite, vil vi utbetale dette beløpet til deg. Har du fått utbetalt for mye, må du betale dette tilbake. Det er viktig at du melder frå om inntektsendringar slik at uføretrygda" },
-                )
-
-                showIf(harBarnetilleggFelles or harBarnetilleggSerkull){
-                    text (
-                        bokmal { + " og barnetillegget" },
-                        nynorsk { + " og barnetillegg" },
-                    )
-                }
-                text (
-                    bokmal { + " blir så riktig som mulig. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på $NAV_URL." },
-                    nynorsk { + " blir så riktig som mogleg. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» når du loggar deg inn på $NAV_URL." },
+                    bokmal { + "Har du fått utbetalt for lite, vil vi utbetale dette beløpet til deg. Har du fått utbetalt for mye, må du betale dette tilbake. Det er viktig at du melder fra om inntektsendringer slik at uføretrygden" + tekstMedBarnetilleggetBokmal + " blir så riktig som mulig. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på $NAV_URL." },
+                    nynorsk { + "Har du fått utbetalt for lite, vil vi utbetale dette beløpet til deg. Har du fått utbetalt for mye, må du betale dette tilbake. Det er viktig at du melder frå om inntektsendringar slik at uføretrygda" + tekstMedBarnetilleggetNynorsk + " blir så riktig som mogleg. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» når du loggar deg inn på $NAV_URL." },
                 )
             }
         }
