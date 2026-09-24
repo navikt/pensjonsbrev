@@ -4,11 +4,10 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUfoeretrygdPGAInntektRedigerbarDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUfoeretrygdPGAInntektRedigerbarDto.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUfoeretrygdPGAInntektRedigerbarDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUTPgaInntektDtoV2.uforetrygd.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUTPgaInntektDtoV2.*
-import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUTPgaInntektDtoV2.uforetrygd.endringsbelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUfoeretrygdPGAInntektRedigerbarDto.pesysData
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUfoeretrygdPGAInntektRedigerbarDto.pesysData.data
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.Brevkategori
@@ -16,7 +15,10 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -25,8 +27,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object EndretUfoeretrygdPGAInntektRedigerbar : RedigerbarTemplate<EndretUfoeretrygdPGAInntektRedigerbarDto> {
-
-    override val featureToggle = FeatureToggles.brevmalUtEndretPgaInntektRedigerbar.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_ENDRET_PGA_INNTEKT_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
