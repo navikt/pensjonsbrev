@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeSoknadOmBarnetillegg
 
 data class ForDegSomMottarEktefelletillegg(
     val pe: Expression<PEgruppe10>,
@@ -39,7 +40,7 @@ data class ForDegSomMottarEktefelletillegg(
 
         showIf((((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode()
             .equalTo("PE_UT_14_300")) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.pebrevkode()
-            .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode()
+            .notEqualTo("PE_UT_04_101") and pe.erIkkeSoknadOmBarnetillegg() and pe.pebrevkode()
             .notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode()
             .notEqualTo("PE_UT_06_300") and (pe.pebrevkode()
             .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(

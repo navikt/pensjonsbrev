@@ -54,23 +54,36 @@ fun Expression<PEgruppe10>.skalViseOmregningUPtilUT(): Expression<Boolean> =
 fun Expression<PEgruppe10>.skalViseEktefelletilleggGenerell(): Expression<Boolean> =
     pebrevkode().notEqualTo("PE_UT_04_101") and
         vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and
-        vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
-        pebrevkode().notEqualTo("PE_UT_04_108") and
-        pebrevkode().notEqualTo("PE_UT_04_109") and
-        pebrevkode().notEqualTo("PE_UT_07_200") and
-        pebrevkode().notEqualTo("PE_UT_06_300") and
+        erIkkeSoknadOmBarnetillegg() and
+        harIkkeBarnetilleggBrevkode() and
         (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
+
+/**
+ * DATASTYRT gate: kravårsaken er ikke "søknad om barnetillegg". Dette er ekte vedtaksdata og
+ * skal overleve porten til `vedtaksdata` (i motsetning til brevkode-gatene som forsvinner ved
+ * variant-splitting).
+ */
+fun Expression<PEgruppe10>.erIkkeSoknadOmBarnetillegg(): Expression<Boolean> =
+    vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
+
+/**
+ * BREVKODE-STYRT gate: brevet er ikke et barnetillegg-brev (04_108/04_109/07_200/06_300).
+ * Ren brevkode-routing – forsvinner ved variant-splitting (barnetillegg-variantene inkluderer/
+ * utelater seksjonene eksplisitt i stedet). Holdt adskilt fra den datastyrte kravårsak-sjekken
+ * med vilje, slik at brevkode-halvdelen er lett å fjerne mekanisk når variantene lages.
+ */
+fun Expression<PEgruppe10>.harIkkeBarnetilleggBrevkode(): Expression<Boolean> =
+    pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")
 
 /** Gate for TBU034V-036V (rett før inntektsseksjonen). */
 fun Expression<PEgruppe10>.skalViseGrunnbeloepOgYrkesskadeForklaring(): Expression<Boolean> =
-    vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
-        pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")
+    erIkkeSoknadOmBarnetillegg() and harIkkeBarnetilleggBrevkode()
 
 /** Gate for seksjonen "Dette er inntektene vi har brukt i beregningen din" (TBU037V/038V). */
 fun Expression<PEgruppe10>.skalViseInntekterBruktIBeregning(): Expression<Boolean> =
     not(ut_uforetidspunkt_foer_17()) and
         not(vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) and
-        vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
+        erIkkeSoknadOmBarnetillegg() and
         pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300", "PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300") and
         (pebrevkode().notEqualTo("PE_UT_04_102") or vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))
 
@@ -87,7 +100,7 @@ fun Expression<PEgruppe10>.skalViseTrygdetidEOSTabell(erMndEtterFoedsel: Express
 /** Gate for tabellen med bilateral trygdetid (TBU046V). */
 fun Expression<PEgruppe10>.skalViseTrygdetidBilateralTabell(erMndEtterFoedsel: Expression<Boolean>): Expression<Boolean> =
     not(erMndEtterFoedsel) and
-        vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
+        erIkkeSoknadOmBarnetillegg() and
         ((pebrevkode().equalTo("PE_UT_04_101") or pebrevkode().equalTo("PE_UT_04_114")) or
             (pebrevkode().notEqualTo("PE_UT_05_100") and
                 pebrevkode().notEqualTo("PE_UT_07_100") and
