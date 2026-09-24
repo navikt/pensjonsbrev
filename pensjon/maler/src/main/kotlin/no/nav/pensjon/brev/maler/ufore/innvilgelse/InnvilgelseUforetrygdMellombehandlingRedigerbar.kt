@@ -38,8 +38,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 @TemplateModelHelpers
 object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretrygdMellombehandlingDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
-
     override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MELLOMBEHANDLING
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
