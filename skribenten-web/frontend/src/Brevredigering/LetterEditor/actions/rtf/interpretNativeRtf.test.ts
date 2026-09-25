@@ -491,6 +491,28 @@ describe("interpretNativeRtf - tables", () => {
       { type: "TABLE", rows: [{ cells: [{ content: [plain("A")] }, { content: [plain("B")] }] }] },
     ]);
   });
+
+  test("keeps rows without \\intbl in one table, also across whitespace between rows", () => {
+    const row = (a: string, b: string) => `\\trowd\\cellx2000\\cellx4000 ${a}\\cell ${b}\\cell\\row`;
+    const rtf = `${HEADER}${row("A", "B")}\r\n  ${row("C", "D")}\\pard Etter\\par}`;
+
+    expect(interpret(rtf)).toEqual([
+      {
+        type: "TABLE",
+        rows: [
+          { cells: [{ content: [plain("A")] }, { content: [plain("B")] }] },
+          { cells: [{ content: [plain("C")] }, { content: [plain("D")] }] },
+        ],
+      },
+      paragraph("Etter"),
+    ]);
+  });
+
+  test("keeps an unterminated last row without \\intbl", () => {
+    expect(interpret(`${HEADER}\\trowd\\cellx2000\\cellx4000 A\\cell B}`)).toEqual([
+      { type: "TABLE", rows: [{ cells: [{ content: [plain("A")] }, { content: [plain("B")] }] }] },
+    ]);
+  });
 });
 
 describe("interpretNativeRtf - structure and formatting", () => {
@@ -590,8 +612,7 @@ describe("interpretNativeRtf - structure and formatting", () => {
     ]);
   });
 
-  // G2: cells without `\intbl` should stay in the same table until the row ends.
-  test.fails("simple table with two rows", () => {
+  test("simple table with two rows", () => {
     const rtf =
       "{\\rtf1\\ansi" +
       "\\trowd\\cellx2000\\cellx4000 A\\cell B\\cell\\row" +

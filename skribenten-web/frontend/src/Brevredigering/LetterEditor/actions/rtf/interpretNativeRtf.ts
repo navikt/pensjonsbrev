@@ -56,6 +56,8 @@ interface TableBuilder {
   headerCells?: TableCell[];
   cells: TableCell[];
   rowIsHeader: boolean;
+  /** Between `\trowd` or a `\cell` and the `\row` that ends the row. */
+  rowOpen: boolean;
 }
 
 interface ParseContext {
@@ -71,7 +73,7 @@ interface ParseContext {
 
 const defaultParagraphProps = (): ParagraphProps => ({ listId: 0, inTable: false });
 
-const newTable = (): TableBuilder => ({ rows: [], cells: [], rowIsHeader: false });
+const newTable = (): TableBuilder => ({ rows: [], cells: [], rowIsHeader: false, rowOpen: false });
 
 function initialGroupState(): GroupState {
   return {
@@ -142,9 +144,14 @@ function flushTable(ctx: ParseContext) {
   ctx.table = undefined;
 }
 
-/** RTF has no "end of table" word: the table ends at the first paragraph without `\intbl`. */
+/** Inside a `\intbl` paragraph, or in a row that hasn't ended yet (some writers leave out `\intbl`). */
+function isInTable(ctx: ParseContext): boolean {
+  return currentGroup(ctx).paragraph.inTable || ctx.table?.rowOpen === true;
+}
+
+/** RTF has no "end of table" word: the table ends at the first paragraph without `\intbl` outside an open row. */
 function endTableIfLeft(ctx: ParseContext) {
-  if (ctx.table && !currentGroup(ctx).paragraph.inTable) flushTable(ctx);
+  if (ctx.table && !isInTable(ctx)) flushTable(ctx);
 }
 
 function flushParagraph(ctx: ParseContext) {
@@ -174,13 +181,16 @@ function flushParagraph(ctx: ParseContext) {
 
 function flushCell(ctx: ParseContext) {
   ctx.table ??= newTable();
+  ctx.table.rowOpen = true;
   ctx.table.cells.push({ content: finalizeTextRun(ctx.text) });
   resetParagraphMarkers(ctx);
 }
 
 function flushRow(ctx: ParseContext) {
   const table = ctx.table;
-  if (!table || table.cells.length === 0) return;
+  if (!table) return;
+  table.rowOpen = false;
+  if (table.cells.length === 0) return;
   if (table.rowIsHeader && table.rows.length === 0 && !table.headerCells) {
     table.headerCells = table.cells;
   } else {
@@ -198,7 +208,7 @@ function appendText(ctx: ParseContext, value: string, destination: RtfDestinatio
     ctx.listMarker = (ctx.listMarker ?? "") + value;
   } else if (destination === "body" && !group.hidden && !group.deleted) {
     const isWhitespace = value.trim().length === 0;
-    if (isWhitespace && ctx.table && !group.paragraph.inTable) return;
+    if (isWhitespace && ctx.table && !isInTable(ctx)) return;
     endTableIfLeft(ctx);
     ctx.text.push({ type: "TEXT", font: fontOf(group), text: value });
   }
@@ -270,7 +280,7 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
       break;
     }
     case "par": {
-      if (props.inTable) {
+      if (isInTable(ctx)) {
         // Paragraphs inside a cell are joined with a space.
         ctx.table ??= newTable();
         appendText(ctx, " ", "body");
@@ -285,6 +295,7 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
       // Word repeats `\trowd` before every `\row`, so this must not discard the row's cells.
       if (ctx.table) ctx.table.rowIsHeader = false;
       else ctx.table = newTable();
+      ctx.table.rowOpen = true;
       break;
     }
     case "trhdr": {
@@ -313,7 +324,7 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
 function finish(ctx: ParseContext) {
   const props = currentGroup(ctx).paragraph;
 
-  if (ctx.table && props.inTable) {
+  if (ctx.table && isInTable(ctx)) {
     if (ctx.text.some((item) => item.text.trim().length > 0)) flushCell(ctx);
     flushTable(ctx);
   } else {
