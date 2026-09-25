@@ -960,16 +960,7 @@
           "text": "A"
          }
         ]
-       }
-      ]
-     }
-    ]
-   },
-   {
-    "type": "TABLE",
-    "rows": [
-     {
-      "cells": [
+       },
        {
         "content": [
          {
@@ -980,12 +971,7 @@
         ]
        }
       ]
-     }
-    ]
-   },
-   {
-    "type": "TABLE",
-    "rows": [
+     },
      {
       "cells": [
        {
@@ -996,16 +982,7 @@
           "text": "C"
          }
         ]
-       }
-      ]
-     }
-    ]
-   },
-   {
-    "type": "TABLE",
-    "rows": [
-     {
-      "cells": [
+       },
        {
         "content": [
          {
