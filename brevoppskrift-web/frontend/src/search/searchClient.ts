@@ -1,16 +1,26 @@
-import { type HitRefs, NO_HITS, type WorkerRequest, type WorkerResponse } from "~/search/searchProtocol";
+import { type HitRefs, type WorkerRequest, type WorkerResponse } from "~/search/searchProtocol";
 import { createSearchWorkerCore } from "~/search/searchWorkerCore";
 import { type TemplateText } from "~/search/textSearch";
 
 export type SearchClient = {
-  /** Hands the corpus over for indexing. Resolves once it is searchable. */
-  setCorpus: (corpus: TemplateText[]) => Promise<void>;
+  /** Hands the corpus over for indexing. Every search issued afterwards runs
+   *  against it - the worker handles messages in order, so there is nothing to
+   *  wait for. */
+  setCorpus: (corpus: TemplateText[]) => void;
   /** Resolves with the hits, or with `undefined` if a newer query superseded
    *  this one before it was ever run - the caller should then simply keep
-   *  waiting for that newer query instead. */
+   *  waiting for that newer query instead. Rejects when the search itself
+   *  failed, so the failure can be shown rather than read as "no hits". */
   search: (query: string, exactOnly: boolean) => Promise<HitRefs | undefined>;
   dispose: () => void;
 };
+
+function settle(response: WorkerResponse | undefined): Promise<HitRefs> {
+  if (response?.type === "results") {
+    return Promise.resolve(response.hits);
+  }
+  return Promise.reject(new Error(response?.message ?? "Søket ga ikke noe svar"));
+}
 
 /** Runs the search core in-process, on the main thread. Used as the fallback
  *  when `Worker` is unavailable (jsdom, so also every unit test) or when the
@@ -18,7 +28,6 @@ export type SearchClient = {
  *  environment sniffing below. */
 export function createLocalSearchClient(): SearchClient {
   const core = createSearchWorkerCore();
-  let corpusVersion = 0;
   let currentCorpus: TemplateText[] | undefined;
 
   return {
@@ -28,14 +37,11 @@ export function createLocalSearchClient(): SearchClient {
       // posting effect - neither should pay for a full reindex.
       if (corpus !== currentCorpus) {
         currentCorpus = corpus;
-        corpusVersion++;
-        core.handle({ type: "setCorpus", corpusVersion, corpus });
+        core.handle({ type: "setCorpus", corpus });
       }
-      return Promise.resolve();
     },
     search(query, exactOnly) {
-      const response = core.handle({ type: "search", requestId: 0, query, exactOnly });
-      return Promise.resolve(response.type === "results" ? response.hits : NO_HITS);
+      return settle(core.handle({ type: "search", requestId: 0, query, exactOnly }));
     },
     dispose() {
       // Nothing to release: the core is plain in-process state, collected with
@@ -48,16 +54,14 @@ type PendingSearch = {
   query: string;
   exactOnly: boolean;
   resolve: (hits: HitRefs | undefined) => void;
+  reject: (error: Error) => void;
 };
 
 export function createWorkerSearchClient(): SearchClient {
   const worker = new Worker(new URL("./searchWorker.ts", import.meta.url), { type: "module" });
 
   let nextRequestId = 1;
-  let corpusVersion = 0;
   let currentCorpus: TemplateText[] | undefined;
-  let corpusPromise: Promise<void> = Promise.resolve();
-  let awaitingCorpus: { version: number; resolve: () => void } | undefined;
 
   // At most one search is in the worker at a time, with at most one waiting
   // behind it: while a search runs, later queries replace each other instead
@@ -66,7 +70,8 @@ export function createWorkerSearchClient(): SearchClient {
   let inFlight: { requestId: number; pending: PendingSearch } | undefined;
   let queued: PendingSearch | undefined;
 
-  /** Set once the worker has failed; from then on everything runs in-process. */
+  /** Set once the worker itself has died; from then on everything runs
+   *  in-process. */
   let fallback: SearchClient | undefined;
 
   function sendSearch(pending: PendingSearch) {
@@ -76,10 +81,12 @@ export function createWorkerSearchClient(): SearchClient {
     worker.postMessage(request);
   }
 
-  /** A worker that fails (most likely failing to load at all) must not leave
-   *  search permanently stuck on "indexing": fall back to running the same
-   *  core on the main thread, replaying the corpus and the newest outstanding
-   *  query so no caller is left with an unresolved promise. */
+  /** The worker reports a failing search as an `error` reply, so this only
+   *  fires when the worker itself is gone - most likely because it failed to
+   *  load at all. Search must not stay stuck on that: fall back to running the
+   *  same core on the main thread, replaying the corpus and the newest
+   *  outstanding query. The local core never throws, so this cannot stop
+   *  halfway, and every caller's promise is settled one way or the other. */
   function activateFallback() {
     if (fallback) {
       return;
@@ -87,12 +94,8 @@ export function createWorkerSearchClient(): SearchClient {
     const local = createLocalSearchClient();
     fallback = local;
     worker.terminate();
-
-    const corpusWaiter = awaitingCorpus;
-    awaitingCorpus = undefined;
-    corpusPromise = currentCorpus ? local.setCorpus(currentCorpus) : Promise.resolve();
-    if (corpusWaiter) {
-      void corpusPromise.then(() => corpusWaiter.resolve());
+    if (currentCorpus) {
+      local.setCorpus(currentCorpus);
     }
 
     const outstanding = [inFlight?.pending, queued].filter((pending) => pending !== undefined);
@@ -103,25 +106,22 @@ export function createWorkerSearchClient(): SearchClient {
     }
     const newest = outstanding.at(-1);
     if (newest) {
-      void corpusPromise.then(() => local.search(newest.query, newest.exactOnly)).then((hits) => newest.resolve(hits));
+      local.search(newest.query, newest.exactOnly).then(newest.resolve, newest.reject);
     }
   }
 
   worker.addEventListener("message", (event) => {
     const response = event.data as WorkerResponse;
-    if (response.type === "corpusReady") {
-      if (awaitingCorpus?.version === response.corpusVersion) {
-        awaitingCorpus.resolve();
-        awaitingCorpus = undefined;
-      }
-      return;
-    }
     if (inFlight?.requestId !== response.requestId) {
       return;
     }
     const { pending } = inFlight;
     inFlight = undefined;
-    pending.resolve(response.hits);
+    if (response.type === "results") {
+      pending.resolve(response.hits);
+    } else {
+      pending.reject(new Error(response.message));
+    }
     if (queued) {
       const next = queued;
       queued = undefined;
@@ -133,36 +133,26 @@ export function createWorkerSearchClient(): SearchClient {
 
   return {
     setCorpus(corpus) {
-      if (fallback) {
-        currentCorpus = corpus;
-        corpusPromise = fallback.setCorpus(corpus);
-        return corpusPromise;
-      }
       // Identity, not equality: React Query's structural sharing keeps the same
       // reference for an unchanged corpus, and a StrictMode remount re-runs the
       // posting effect - neither should pay for a full reindex.
       if (corpus === currentCorpus) {
-        return corpusPromise;
+        return;
       }
       currentCorpus = corpus;
-      corpusVersion++;
-      const version = corpusVersion;
-      // Anyone waiting on the previous corpus is waiting on a corpus that no
-      // longer exists; release them rather than leaving the promise dangling.
-      awaitingCorpus?.resolve();
-      corpusPromise = new Promise<void>((resolve) => {
-        awaitingCorpus = { version, resolve };
-      });
-      const request: WorkerRequest = { type: "setCorpus", corpusVersion: version, corpus };
+      if (fallback) {
+        fallback.setCorpus(corpus);
+        return;
+      }
+      const request: WorkerRequest = { type: "setCorpus", corpus };
       worker.postMessage(request);
-      return corpusPromise;
     },
     search(query, exactOnly) {
       if (fallback) {
         return fallback.search(query, exactOnly);
       }
-      return new Promise<HitRefs | undefined>((resolve) => {
-        const pending: PendingSearch = { query, exactOnly, resolve };
+      return new Promise<HitRefs | undefined>((resolve, reject) => {
+        const pending: PendingSearch = { query, exactOnly, resolve, reject };
         if (inFlight) {
           queued?.resolve(undefined);
           queued = pending;
@@ -172,8 +162,6 @@ export function createWorkerSearchClient(): SearchClient {
       });
     },
     dispose() {
-      awaitingCorpus?.resolve();
-      awaitingCorpus = undefined;
       inFlight?.pending.resolve(undefined);
       inFlight = undefined;
       queued?.resolve(undefined);
@@ -200,7 +188,11 @@ let sharedClient: SearchClient | undefined;
 /** One worker for the whole page, created on first use. Deliberately not tied
  *  to a component's lifetime: React StrictMode double-invokes effects in dev,
  *  so an effect-owned worker would be torn down and forced to reindex the
- *  entire corpus on every mount. */
+ *  entire corpus on every mount.
+ *
+ *  It serves one `useTemplateSearch` at a time. Only the newest query is ever
+ *  kept waiting, so a second, concurrently mounted search would cancel the
+ *  first one's queries (they resolve as superseded) and replace its corpus. */
 export function sharedSearchClient(): SearchClient {
   sharedClient ??= createSearchClient();
   return sharedClient;

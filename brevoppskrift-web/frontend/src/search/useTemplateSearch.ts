@@ -23,39 +23,63 @@ export type TemplateRef = {
   title: string;
   languages: string[];
 };
-export type TemplateSearch = {
-  query: string;
-  setQuery: (query: string) => void;
-  /** The query and match mode the hits on screen were produced from. Lags the
-   *  input while the user is still typing, and lags the checkbox while a
-   *  re-search runs. Highlighting must use these rather than the live `query`
-   *  and `exactOnly`: emphasising a needle the retained hits were never matched
-   *  against would mark the wrong words (or none at all), and re-highlighting
-   *  would run on the keystroke's critical path. */
-  highlight: Highlight;
-  /** Whether the user wants exact matches only (no typo tolerance). Off by
-   *  default. This is the live checkbox state - see `highlight` for the mode the
-   *  hits on screen actually ran in. */
+/** The query and match mode a set of results was produced by. Kept as one value
+ *  so the two can never be read from different searches. */
+export type Highlight = {
+  needle: string;
   exactOnly: boolean;
-  setExactOnly: (exactOnly: boolean) => void;
-  isSearching: boolean;
-  isLoading: boolean;
-  /** True while a query is out with the worker and the results shown are still
-   *  the previous query's. */
-  isPending: boolean;
-  failedCount: number;
-  /** malType(s) whose corpus fetch failed; search results may be incomplete. */
-  failedMalTypes: MalType[];
-  /** Refetches every malType whose corpus fetch is currently failing. */
-  retryFailed: () => void;
+};
+/** A completed search, as it is on screen. Committed as one value, so the hits,
+ *  their counts and the query they were matched against can never be rendered
+ *  out of step with each other. */
+export type DisplayedSearch = {
+  /** The query and match mode these hits were produced by. Lags the input
+   *  while the user is still typing, and lags the checkbox while a re-search
+   *  runs. Highlighting must use this rather than the live `query` and
+   *  `exactOnly`: emphasising a needle the hits were never matched against
+   *  would mark the wrong words (or none at all). */
+  highlight: Highlight;
   contentHits: ContentHit[];
   brevHits: BrevHit[];
   contentTemplateCount: number;
   contentLineCount: number;
   brevTemplateCount: number;
-  templateTotal: number;
-  languageTotal: number;
 };
+export type TemplateSearch = {
+  query: string;
+  setQuery: (query: string) => void;
+  /** Whether the user wants exact matches only (no typo tolerance). Off by
+   *  default. This is the live checkbox state - see `displayed.highlight` for
+   *  the mode the hits on screen actually ran in. */
+  exactOnly: boolean;
+  setExactOnly: (exactOnly: boolean) => void;
+  /** True until every malType's corpus has either arrived or failed. */
+  isLoading: boolean;
+  /** True while a search is catching up with the input: the query or match
+   *  mode has changed and the hits on screen don't reflect it yet. Never true
+   *  for input that neither starts a search nor replaces hits on screen, such
+   *  as the first character typed into an empty box. */
+  isPending: boolean;
+  /** The latest completed search, kept on screen while the next one runs.
+   *  `undefined` until a search has completed, when the query is too short to
+   *  search, and when the latest search failed - so "nothing searched yet" and
+   *  "searched, found nothing" (empty hit lists) are never confused. */
+  displayed: DisplayedSearch | undefined;
+  /** The latest search failed. Reset by the next successful search, or by
+   *  clearing the query. */
+  searchFailed: boolean;
+  /** malType(s) whose corpus fetch failed; search results may be incomplete. */
+  failedMalTypes: MalType[];
+  /** Refetches every malType whose corpus fetch is currently failing. */
+  retryFailed: () => void;
+};
+/** Whether a trimmed query is worth sending to the worker. A query made
+ *  entirely of special characters (e.g. "§" or "§§") is allowed to search
+ *  despite being shorter than MIN_QUERY_LENGTH - see SPECIAL_CHAR_QUERY in
+ *  textSearch.ts. */
+function isSearchQuery(trimmed: string): boolean {
+  return trimmed.length >= MIN_QUERY_LENGTH || SPECIAL_CHAR_QUERY.test(trimmed);
+}
 function templateCount(hits: { template: TemplateText }[]): number {
   return new Set(hits.map((hit) => `${hit.template.malType}/${hit.template.id}`)).size;
 }
@@ -66,33 +90,17 @@ type Corpus = {
   templates: TemplateText[];
   byKey: Map<TemplateKey, TemplateText>;
 };
-/** The query and match mode a set of results was produced by. Kept as one value
- *  so the two can never be read from different searches. */
-export type Highlight = {
-  needle: string;
-  exactOnly: boolean;
+/** What the result area shows: the latest completed search, or that it failed. */
+type Shown = {
+  displayed: DisplayedSearch | undefined;
+  searchFailed: boolean;
 };
-/** Everything that describes the results currently on screen, committed as a
- *  single unit. Splitting these across separate states let the needle and the
- *  match mode update ahead of the hits they belong to, which highlighted the
- *  retained results against a query they were never matched against. */
-type Rendered = {
-  results: SearchResults;
-  /** The corpus the results were hydrated from, so hits are always resolved
-   *  against the corpus that produced them. */
-  corpus: Corpus | undefined;
-  highlight: Highlight;
-};
-const NO_RESULTS: SearchResults = { content: [], brev: [] };
-const NOTHING_RENDERED: Rendered = {
-  results: NO_RESULTS,
-  corpus: undefined,
-  highlight: { needle: "", exactOnly: false },
-};
+const NOTHING_SHOWN: Shown = { displayed: undefined, searchFailed: false };
+const SEARCH_FAILED: Shown = { displayed: undefined, searchFailed: true };
 /** Resolves the worker's template keys back to templates, preserving order:
- *  content hits arrive already ranked and brev hits carry Fuse's ranking. A key
- *  with no template belongs to a corpus that has since been replaced, and is
- *  dropped rather than rendered against stale content. */
+ *  content hits arrive already ranked and brev hits carry Fuse's ranking. The
+ *  search ran against this very corpus, so every key should resolve; one that
+ *  doesn't is dropped rather than rendered as a broken hit. */
 function hydrate(hits: HitRefs, byKey: Map<TemplateKey, TemplateText>): SearchResults {
   const content: ContentHit[] = [];
   for (const ref of hits.content) {
@@ -109,6 +117,18 @@ function hydrate(hits: HitRefs, byKey: Map<TemplateKey, TemplateText>): SearchRe
     }
   }
   return { content, brev };
+}
+/** Everything the result area needs from one search, counted once when the
+ *  search completes rather than on every render. */
+function toDisplayed({ content, brev }: SearchResults, highlight: Highlight): DisplayedSearch {
+  return {
+    highlight,
+    contentHits: content,
+    brevHits: brev,
+    contentTemplateCount: templateCount(content),
+    contentLineCount: content.reduce((sum, hit) => sum + hit.matchCount, 0),
+    brevTemplateCount: templateCount(brev),
+  };
 }
 /** Stable id per object reference. React Query's structural sharing keeps the
  *  same `data` reference across refetches when the content is unchanged, so this
@@ -187,15 +207,13 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // query the user has already typed past.
   const deferredQuery = useDeferredValue(query);
   const trimmedQuery = deferredQuery.trim();
-  // A query made entirely of special characters (e.g. "§" or "§§") is
-  // allowed to search despite being shorter than MIN_QUERY_LENGTH - see
-  // SPECIAL_CHAR_QUERY in textSearch.ts.
-  const isSearching = trimmedQuery.length >= MIN_QUERY_LENGTH || SPECIAL_CHAR_QUERY.test(trimmedQuery);
-  // The results currently rendered, together with the query and match mode that
-  // produced them. Replaced only when new results arrive, so the previous
-  // query's hits stay on screen - and stay highlighted for their own query -
-  // while the worker answers, rather than the list emptying on every keystroke.
-  const [rendered, setRendered] = useState<Rendered>(NOTHING_RENDERED);
+  const isSearching = isSearchQuery(trimmedQuery);
+  // Replaced only when a search completes, so the previous search stays on
+  // screen - and stays highlighted for its own query - while the worker
+  // answers, rather than the list emptying on every keystroke. That includes a
+  // background corpus refresh: the old hits reference the old corpus' objects,
+  // so they stay self-consistent until the re-search replaces them.
+  const [shown, setShown] = useState<Shown>(NOTHING_SHOWN);
   const [isAwaitingHits, setIsAwaitingHits] = useState(false);
   // Rendering a result list is hundreds of React elements, and at default
   // priority that render blocks the keystroke that caused it - which is the
@@ -205,41 +223,49 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   const [isRenderingHits, startHitsTransition] = useTransition();
   useEffect(() => {
     if (corpus) {
-      void client.setCorpus(corpus.templates);
+      client.setCorpus(corpus.templates);
     }
   }, [client, corpus]);
   useEffect(() => {
-    if (!corpus || !isSearching) {
+    if (!isSearching) {
       setIsAwaitingHits(false);
-      startHitsTransition(() => {
-        setRendered({ results: NO_RESULTS, corpus, highlight: { needle: "", exactOnly } });
-      });
+      startHitsTransition(() => setShown(NOTHING_SHOWN));
+      return;
+    }
+    if (!corpus) {
       return;
     }
     let active = true;
     setIsAwaitingHits(true);
-    void client.search(trimmedQuery, exactOnly).then((hits) => {
-      // `undefined` means a newer query replaced this one before it ran, so
-      // that query's own effect owns both the results and the pending state.
-      if (!active || !hits) {
-        return;
-      }
-      // Batched into the transition rather than set urgently: an urgent
-      // `false` here would commit a render with the *old* results before the
-      // transition renders the new ones, so every search cost two renders of
-      // the result list instead of one. `isRenderingHits` keeps `isPending`
-      // true until the new results are actually on screen.
-      startHitsTransition(() => {
-        setIsAwaitingHits(false);
-        // One state, one commit: the hits and the needle and mode they were
-        // produced by can never be rendered out of step with each other.
-        setRendered({
-          results: hydrate(hits, corpus.byKey),
-          corpus,
-          highlight: { needle: trimmedQuery, exactOnly },
+    // Both outcomes are committed the same way: batched into the transition
+    // rather than set urgently. An urgent `false` here would commit a render
+    // with the *old* results before the transition renders the new ones, so
+    // every search would cost two renders of the result list instead of one.
+    // `isRenderingHits` keeps `isPending` true until the outcome is on screen.
+    client.search(trimmedQuery, exactOnly).then(
+      (hits) => {
+        // `undefined` means a newer query replaced this one before it ran, so
+        // that query's own effect owns both the results and the pending state.
+        if (!active || !hits) {
+          return;
+        }
+        const displayed = toDisplayed(hydrate(hits, corpus.byKey), { needle: trimmedQuery, exactOnly });
+        startHitsTransition(() => {
+          setIsAwaitingHits(false);
+          setShown({ displayed, searchFailed: false });
         });
-      });
-    });
+      },
+      () => {
+        if (!active) {
+          return;
+        }
+        // Old hits are not left under the error: they answer a different query.
+        startHitsTransition(() => {
+          setIsAwaitingHits(false);
+          setShown(SEARCH_FAILED);
+        });
+      },
+    );
     return () => {
       active = false;
     };
@@ -247,14 +273,11 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // Pending covers the whole round trip: the deferred render that hasn't caught
   // up with the input yet, waiting for the worker, and the low-priority render
   // of what it returned. All three mean "what you see is older than what you
-  // typed", which is what the status line's spinner tells the user.
-  const isPending = query !== deferredQuery || isAwaitingHits || isRenderingHits;
-  // Results hydrated from a corpus that has since been replaced would render
-  // stale content, so drop them - and the highlight that belongs to them -
-  // until the new corpus' results arrive.
-  const visible = rendered.corpus === corpus ? rendered : NOTHING_RENDERED;
-  const visibleResults = visible.results;
-  const languageTotal = useMemo(() => new Set(templates.flatMap((t) => t.languages)).size, [templates]);
+  // typed". Only counted when a search is involved, though: typing the first
+  // character into an empty box also defers a render, but nothing is searched
+  // and nothing on screen changes, so it should not flash a spinner.
+  const involvesSearch = isSearchQuery(query.trim()) || shown.displayed !== undefined;
+  const isPending = involvesSearch && (query !== deferredQuery || isAwaitingHits || isRenderingHits);
   const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError);
   const retryFailed = () => {
     for (const q of queries) {
@@ -266,21 +289,13 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   return {
     query,
     setQuery,
-    highlight: visible.highlight,
     exactOnly,
     setExactOnly,
-    isSearching,
     isLoading,
     isPending,
-    failedCount: failedMalTypes.length,
+    displayed: shown.displayed,
+    searchFailed: shown.searchFailed,
     failedMalTypes,
     retryFailed,
-    contentHits: visibleResults.content,
-    brevHits: visibleResults.brev,
-    contentTemplateCount: templateCount(visibleResults.content),
-    contentLineCount: visibleResults.content.reduce((sum, hit) => sum + hit.matchCount, 0),
-    brevTemplateCount: templateCount(visibleResults.brev),
-    templateTotal: templates.length,
-    languageTotal,
   };
 }

@@ -12,5 +12,8 @@ const ctx = globalThis as unknown as {
 const core = createSearchWorkerCore();
 
 ctx.addEventListener("message", (event) => {
-  ctx.postMessage(core.handle(event.data));
+  const response = core.handle(event.data);
+  if (response) {
+    ctx.postMessage(response);
+  }
 });
