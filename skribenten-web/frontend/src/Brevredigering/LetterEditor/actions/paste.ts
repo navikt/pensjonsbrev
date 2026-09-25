@@ -23,10 +23,7 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
-import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
-import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
-import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
-import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
+import { parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import {
   cleansePastedText,
@@ -284,23 +281,28 @@ function shouldModifyExistingLiteral(
   return (isNew(literal) || offset > 0 || !multipartPaste) && fontType === fontTypeOf(literal);
 }
 
-/** Returns false if the RTF has no content, so the caller can fall back to plain text. */
+/** Returns false if the RTF yields nothing to insert, so the caller can fall back to plain text. */
 function insertRtfInLetter(draft: Draft<LetterEditorState>, rtf: string): boolean {
-  const tokens = tokenizeRtf(rtf);
-  const decodeBytes = createByteDecoder(rtf);
-  const encapsulated = extractEncapsulatedContent(tokens, decodeBytes);
-
-  if (encapsulated?.format === "text") {
-    if (encapsulated.text.trim().length === 0) return false;
-    insertTextInLetter(draft, encapsulated.text, FontType.PLAIN, false);
-    return true;
+  const parsed = parseRtfClipboard(rtf);
+  switch (parsed.mode) {
+    case "html": {
+      return insertParsedElements(draft, parseHtmlToTraversedElements(parsed.html));
+    }
+    case "elements": {
+      return insertParsedElements(draft, parsed.elements);
+    }
+    case "text": {
+      insertTextInLetter(draft, parsed.text, FontType.PLAIN, false);
+      return true;
+    }
+    case "empty": {
+      return false;
+    }
+    case "unsupported": {
+      log("unable to interpret rtf clipboard content", parsed.error);
+      return false;
+    }
   }
-
-  const elements =
-    encapsulated?.format === "html"
-      ? parseHtmlToTraversedElements(encapsulated.html)
-      : interpretNativeRtf(tokens, decodeBytes);
-  return insertParsedElements(draft, elements);
 }
 
 /**
