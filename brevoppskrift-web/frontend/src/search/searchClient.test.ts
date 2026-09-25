@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createWorkerSearchClient } from "~/search/searchClient";
+import { createLocalSearchClient, createWorkerSearchClient } from "~/search/searchClient";
 import { type WorkerRequest, type WorkerResponse } from "~/search/searchProtocol";
 import { createSearchWorkerCore } from "~/search/searchWorkerCore";
 import { type TemplateText } from "~/search/textSearch";
@@ -15,6 +15,9 @@ const corpus: TemplateText[] = [
     indexes: [0],
   },
 ];
+
+/** A corpus that `buildIndex` cannot index: a template without lines. */
+const unindexableCorpus = [{ ...corpus[0], lines: null }] as unknown as TemplateText[];
 
 /** A `Worker` stand-in that only answers when the test tells it to, so the
  *  client's queueing can be inspected at a point where a real worker would
@@ -37,7 +40,10 @@ class ControllableWorker {
 
   postMessage(request: WorkerRequest) {
     this.received.push(request);
-    this.replies.push(this.core.handle(request));
+    const reply = this.core.handle(request);
+    if (reply) {
+      this.replies.push(reply);
+    }
   }
 
   terminate() {
@@ -73,21 +79,19 @@ function searchRequests(worker: ControllableWorker) {
 describe("createWorkerSearchClient", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    vi.restoreAllMocks();
   });
 
-  it("reindexes only when the corpus reference actually changes", async () => {
+  it("reindexes only when the corpus reference actually changes", () => {
     installWorkerStub();
     const client = createWorkerSearchClient();
     const worker = ControllableWorker.instances[0];
 
-    const first = client.setCorpus(corpus);
-    worker.flush();
-    await first;
-    const again = client.setCorpus(corpus);
-    worker.flush();
-    await again;
+    client.setCorpus(corpus);
+    client.setCorpus(corpus);
+    client.setCorpus([...corpus]);
 
-    expect(worker.received.filter((request) => request.type === "setCorpus")).toHaveLength(1);
+    expect(worker.received.filter((request) => request.type === "setCorpus")).toHaveLength(2);
     client.dispose();
   });
 
@@ -95,7 +99,7 @@ describe("createWorkerSearchClient", () => {
     installWorkerStub();
     const client = createWorkerSearchClient();
     const worker = ControllableWorker.instances[0];
-    void client.setCorpus(corpus);
+    client.setCorpus(corpus);
     worker.flush();
 
     const inFlight = client.search("alderspensjon", false);
@@ -124,7 +128,7 @@ describe("createWorkerSearchClient", () => {
     installWorkerStub();
     const client = createWorkerSearchClient();
     const worker = ControllableWorker.instances[0];
-    void client.setCorpus(corpus);
+    client.setCorpus(corpus);
     worker.flush();
 
     const pending = client.search("alderspensjon", false);
@@ -143,7 +147,7 @@ describe("createWorkerSearchClient", () => {
     installWorkerStub();
     const client = createWorkerSearchClient();
     const worker = ControllableWorker.instances[0];
-    void client.setCorpus(corpus);
+    client.setCorpus(corpus);
     worker.flush();
 
     const pending = client.search("alderspensjon", false);
@@ -151,5 +155,63 @@ describe("createWorkerSearchClient", () => {
 
     await expect(pending).resolves.toBeUndefined();
     expect(worker.terminated).toBe(true);
+  });
+
+  it("rejects a search the worker answers with an error, so the failure is not mistaken for no hits", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    installWorkerStub();
+    const client = createWorkerSearchClient();
+    const worker = ControllableWorker.instances[0];
+    client.setCorpus(unindexableCorpus);
+
+    const pending = client.search("alderspensjon", false);
+    worker.flush();
+
+    await expect(pending).rejects.toThrow();
+    // The worker is still usable: a failed search is not a dead worker.
+    expect(worker.terminated).toBe(false);
+    client.dispose();
+  });
+
+  it("still sends the queued query after the in-flight one fails", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    installWorkerStub();
+    const client = createWorkerSearchClient();
+    const worker = ControllableWorker.instances[0];
+    client.setCorpus(unindexableCorpus);
+
+    const failing = client.search("alderspensjon", false);
+    const queued = client.search("beregnet", false);
+    client.setCorpus(corpus);
+    worker.flush();
+
+    await expect(failing).rejects.toThrow();
+    worker.flush();
+    expect((await queued)?.content).toHaveLength(1);
+    client.dispose();
+  });
+
+  it("forwards a failure from the main-thread fallback, so a waiting search still settles", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    installWorkerStub();
+    const client = createWorkerSearchClient();
+    const worker = ControllableWorker.instances[0];
+    client.setCorpus(unindexableCorpus);
+
+    const pending = client.search("alderspensjon", false);
+    worker.fail();
+
+    await expect(pending).rejects.toThrow();
+    client.dispose();
+  });
+});
+
+describe("createLocalSearchClient", () => {
+  it("rejects a failed search rather than resolving it with no hits", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const client = createLocalSearchClient();
+    client.setCorpus(unindexableCorpus);
+
+    await expect(client.search("alderspensjon", false)).rejects.toThrow();
   });
 });

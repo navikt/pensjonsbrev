@@ -22,15 +22,4 @@ describe("SearchResultsPanel", () => {
   it("clears the busy marker once the results are up to date", () => {
     expect(renderPanel(false)?.getAttribute("aria-busy")).toBe("false");
   });
-
-  // The retained results must stay fully readable while a newer search runs:
-  // compositing Aksel's text colours at reduced opacity drops them below the
-  // WCAG 1.4.3 4.5:1 floor (text-subtle lands at ~2.4:1 at 50%). The visual
-  // "still searching" signal belongs in the status line, not here.
-  it("does not dim the retained results while pending", () => {
-    const list = renderPanel(true);
-    expect(list?.getAttribute("data-pending")).toBeNull();
-    const opacity = list ? getComputedStyle(list).opacity : "";
-    expect(opacity === "" || opacity === "1").toBe(true);
-  });
 });

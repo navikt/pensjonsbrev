@@ -4,8 +4,9 @@ import { type ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { type SearchableContent } from "~/api/brevbaker-api-endpoints";
+import { deferrableClient } from "~/search/deferrableClient.testutil";
 import { createLocalSearchClient, type SearchClient } from "~/search/searchClient";
-import { type TemplateRef, useTemplateSearch } from "~/search/useTemplateSearch";
+import { type TemplateRef, type TemplateSearch, useTemplateSearch } from "~/search/useTemplateSearch";
 
 const { getAllTemplateDocumentation } = vi.hoisted(() => ({
   getAllTemplateDocumentation: {
@@ -43,35 +44,23 @@ function wrapper(queryClient: QueryClient) {
  *  client. It runs the exact same `searchWorkerCore` the real worker does, so
  *  the `fuse.js` construction counting above still observes every index build -
  *  it just observes it synchronously. A fresh client per test keeps one test's
- *  corpus from leaking into the next. */
+ *  corpus from leaking into the next. `history` records every render, for
+ *  asserting on states that only last a single render. */
 function renderSearch(queryClient: QueryClient, client: SearchClient = createLocalSearchClient()) {
   clients.push(client);
-  return renderHook(() => useTemplateSearch(refs, client), { wrapper: wrapper(queryClient) });
+  const history: TemplateSearch[] = [];
+  const rendered = renderHook(
+    () => {
+      const search = useTemplateSearch(refs, client);
+      history.push(search);
+      return search;
+    },
+    { wrapper: wrapper(queryClient) },
+  );
+  return { ...rendered, history };
 }
 
 const clients: SearchClient[] = [];
-
-/** Wraps the in-process client so tests can hold a search open and inspect what
- *  the UI shows while the worker would still be busy. */
-function deferrableClient(): SearchClient & { release: () => void } {
-  const local = createLocalSearchClient();
-  let pending: (() => void)[] = [];
-  return {
-    setCorpus: (corpus) => local.setCorpus(corpus),
-    search: (query, exactOnly) =>
-      new Promise((resolve) => {
-        pending.push(() => void local.search(query, exactOnly).then(resolve));
-      }),
-    dispose: () => local.dispose(),
-    release() {
-      const released = pending;
-      pending = [];
-      for (const run of released) {
-        run();
-      }
-    },
-  };
-}
 
 const refs: TemplateRef[] = [
   { malType: "autobrev", brevkode: "A1", title: "Alderspensjon", languages: ["BOKMAL"] },
@@ -91,7 +80,7 @@ describe("useTemplateSearch", () => {
     }
   });
 
-  it("reports failedCount/failedMalTypes when one malType's corpus fetch fails, without leaving isLoading stuck", async () => {
+  it("reports failedMalTypes when one malType's corpus fetch fails, without leaving isLoading stuck", async () => {
     getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
       malType === "redigerbar" ? Promise.reject(new Error("boom")) : Promise.resolve(autobrevContent),
     );
@@ -101,7 +90,7 @@ describe("useTemplateSearch", () => {
 
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
-      expect(result.current.failedCount).toBe(1);
+      expect(result.current.failedMalTypes).toHaveLength(1);
     });
     expect(result.current.failedMalTypes).toEqual(["redigerbar"]);
   });
@@ -115,25 +104,25 @@ describe("useTemplateSearch", () => {
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
-    expect(result.current.failedCount).toBe(0);
+    expect(result.current.failedMalTypes).toHaveLength(0);
     expect(result.current.failedMalTypes).toEqual([]);
   });
 
-  it("retryFailed() re-fetches only the failing malType, clearing failedCount once it succeeds", async () => {
+  it("retryFailed() re-fetches only the failing malType, clearing failedMalTypes once it succeeds", async () => {
     getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
       malType === "redigerbar" ? Promise.reject(new Error("boom")) : Promise.resolve(autobrevContent),
     );
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
     const { result } = renderSearch(queryClient);
-    await waitFor(() => expect(result.current.failedCount).toBe(1));
+    await waitFor(() => expect(result.current.failedMalTypes).toHaveLength(1));
 
     const callsBeforeRetry = getAllTemplateDocumentation.queryFn.mock.calls.length;
     getAllTemplateDocumentation.queryFn.mockImplementation(() => Promise.resolve(autobrevContent));
     result.current.retryFailed();
 
     await waitFor(() => {
-      expect(result.current.failedCount).toBe(0);
+      expect(result.current.failedMalTypes).toHaveLength(0);
     });
     expect(getAllTemplateDocumentation.queryFn.mock.calls.length).toBeGreaterThan(callsBeforeRetry);
   });
@@ -157,12 +146,11 @@ describe("useTemplateSearch", () => {
     expect(result.current.exactOnly).toBe(false);
 
     act(() => result.current.setQuery("alderspenjson")); // transposed letters
-    await waitFor(() => expect(result.current.isSearching).toBe(true));
-    await waitFor(() => expect(result.current.contentHits).toHaveLength(1));
+    await waitFor(() => expect(result.current.displayed?.contentHits).toHaveLength(1));
 
     act(() => result.current.setExactOnly(true));
     await waitFor(() => expect(result.current.exactOnly).toBe(true));
-    await waitFor(() => expect(result.current.contentHits).toHaveLength(0));
+    await waitFor(() => expect(result.current.displayed?.contentHits).toHaveLength(0));
   });
 
   it("pre-builds one index pair per corpus, and toggling exactOnly never rebuilds it", async () => {
@@ -216,7 +204,7 @@ describe("useTemplateSearch", () => {
     expect(fuseConstructions.count).toBe(2);
   });
 
-  it("treats a lone special-character query (e.g. §) as searching despite being shorter than MIN_QUERY_LENGTH", async () => {
+  it("searches for a lone special-character query (e.g. §) despite being shorter than MIN_QUERY_LENGTH", async () => {
     const sectionContent: SearchableContent[] = [
       {
         brevkode: "A1",
@@ -233,9 +221,7 @@ describe("useTemplateSearch", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     act(() => result.current.setQuery("§"));
-
-    await waitFor(() => expect(result.current.isSearching).toBe(true));
-    await waitFor(() => expect(result.current.contentHits).toHaveLength(1));
+    await waitFor(() => expect(result.current.displayed?.contentHits).toHaveLength(1));
   });
 
   it("keeps the previous results visible, flagged as pending, while a newer query is being searched for", async () => {
@@ -262,18 +248,18 @@ describe("useTemplateSearch", () => {
     await waitFor(() => expect(result.current.isPending).toBe(true));
     await act(async () => client.release());
     await waitFor(() => expect(result.current.isPending).toBe(false));
-    expect(result.current.contentHits).toHaveLength(1);
-    const firstHits = result.current.contentHits;
+    expect(result.current.displayed?.contentHits).toHaveLength(1);
+    const firstHits = result.current.displayed?.contentHits;
 
     // A second query is in flight: the first query's hits must still be the
     // ones on screen, only marked as pending.
     act(() => result.current.setQuery("utbetales"));
     await waitFor(() => expect(result.current.isPending).toBe(true));
-    expect(result.current.contentHits).toBe(firstHits);
+    expect(result.current.displayed?.contentHits).toBe(firstHits);
 
     await act(async () => client.release());
     await waitFor(() => expect(result.current.isPending).toBe(false));
-    expect(result.current.contentHits[0].lineIndex).toBe(1);
+    expect(result.current.displayed?.contentHits[0]?.lineIndex).toBe(1);
   });
 
   // The retained results belong to the previous query, so the needle and match
@@ -304,17 +290,17 @@ describe("useTemplateSearch", () => {
     act(() => result.current.setQuery("beregnet"));
     await act(async () => client.release());
     await waitFor(() => expect(result.current.isPending).toBe(false));
-    expect(result.current.highlight.needle).toBe("beregnet");
+    expect(result.current.displayed?.highlight.needle).toBe("beregnet");
 
     // Second query in flight: the first query's hits are still on screen, so
     // the highlight must still be the first query's too.
     act(() => result.current.setQuery("utbetales"));
     await waitFor(() => expect(result.current.isPending).toBe(true));
-    expect(result.current.highlight.needle).toBe("beregnet");
+    expect(result.current.displayed?.highlight.needle).toBe("beregnet");
 
     await act(async () => client.release());
     await waitFor(() => expect(result.current.isPending).toBe(false));
-    expect(result.current.highlight.needle).toBe("utbetales");
+    expect(result.current.displayed?.highlight.needle).toBe("utbetales");
   });
 
   // Same argument for the match mode: the checkbox has to respond immediately,
@@ -333,14 +319,14 @@ describe("useTemplateSearch", () => {
     act(() => result.current.setQuery("hei"));
     await act(async () => client.release());
     await waitFor(() => expect(result.current.isPending).toBe(false));
-    expect(result.current.highlight.exactOnly).toBe(false);
+    expect(result.current.displayed?.highlight.exactOnly).toBe(false);
 
     act(() => result.current.setExactOnly(true));
     await waitFor(() => expect(result.current.exactOnly).toBe(true));
-    expect(result.current.highlight.exactOnly).toBe(false);
+    expect(result.current.displayed?.highlight.exactOnly).toBe(false);
 
     await act(async () => client.release());
-    await waitFor(() => expect(result.current.highlight.exactOnly).toBe(true));
+    await waitFor(() => expect(result.current.displayed?.highlight.exactOnly).toBe(true));
   });
 
   it("clears results and pending state when the query drops below MIN_QUERY_LENGTH", async () => {
@@ -353,11 +339,10 @@ describe("useTemplateSearch", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     act(() => result.current.setQuery("hei"));
-    await waitFor(() => expect(result.current.contentHits).toHaveLength(1));
+    await waitFor(() => expect(result.current.displayed?.contentHits).toHaveLength(1));
 
     act(() => result.current.setQuery("h"));
-    await waitFor(() => expect(result.current.isSearching).toBe(false));
-    expect(result.current.contentHits).toEqual([]);
+    await waitFor(() => expect(result.current.displayed).toBeUndefined());
     expect(result.current.isPending).toBe(false);
   });
 
@@ -371,14 +356,128 @@ describe("useTemplateSearch", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
     act(() => result.current.setQuery("hei"));
-    await waitFor(() => expect(result.current.contentHits).toHaveLength(1));
+    await waitFor(() => expect(result.current.displayed?.contentHits).toHaveLength(1));
 
     // The title comes from the TemplateRef metadata, and the lines/indexes from
     // the fetched corpus - none of which the worker sends back.
-    const { template } = result.current.contentHits[0];
-    expect(template.title).toBe("Alderspensjon");
-    expect(template.malType).toBe("autobrev");
-    expect(template.lines).toEqual([[{ type: "text", value: "Hei" }]]);
-    expect(template.indexes).toEqual([0]);
+    const template = result.current.displayed?.contentHits[0]?.template;
+    expect(template?.title).toBe("Alderspensjon");
+    expect(template?.malType).toBe("autobrev");
+    expect(template?.lines).toEqual([[{ type: "text", value: "Hei" }]]);
+    expect(template?.indexes).toEqual([0]);
+  });
+
+  // "Nothing searched yet" and "searched, found nothing" must be different
+  // values, or the page renders "Ingen treff" for a search that hasn't returned.
+  it("shows nothing as displayed while the first search is still running, rather than zero hits", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const client = deferrableClient();
+
+    const { result } = renderSearch(queryClient, client);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    act(() => result.current.setQuery("hei"));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    expect(result.current.displayed).toBeUndefined();
+
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.displayed?.contentHits).toHaveLength(1));
+  });
+
+  // The 60 s refetch can hand over a new corpus at any time. Blanking the
+  // results until the re-search lands would make the list flash empty, and
+  // reset the page, under a user who is just reading it.
+  it("keeps the previous search on screen across a corpus refresh, until its re-search completes", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const client = deferrableClient();
+
+    const { result } = renderSearch(queryClient, client);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    act(() => result.current.setQuery("hei"));
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.displayed?.contentHits).toHaveLength(1));
+    const before = result.current.displayed;
+
+    const refreshed: SearchableContent[] = [
+      { brevkode: "A1", language: "BOKMAL", lines: [{ index: 0, segments: [{ type: "text", value: "Hei igjen" }] }] },
+    ];
+    act(() => queryClient.setQueryData(["TEMPLATE_DOCUMENTATION", "autobrev", "BATCH"], refreshed));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    expect(result.current.displayed).toBe(before);
+
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.isPending).toBe(false));
+    expect(result.current.displayed).not.toBe(before);
+    expect(result.current.displayed?.contentHits[0]?.template.lines).toEqual([[{ type: "text", value: "Hei igjen" }]]);
+  });
+
+  // The first character defers a render like any keystroke, but nothing is
+  // searched and nothing on screen changes, so the spinner must not flash.
+  it("is never pending while typing the first character into an empty box", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    const { result, history } = renderSearch(queryClient);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    const rendersBefore = history.length;
+
+    act(() => result.current.setQuery("h"));
+
+    const renders = history.slice(rendersBefore);
+    expect(renders.some((search) => search.query === "h")).toBe(true);
+    expect(renders.filter((search) => search.isPending)).toEqual([]);
+  });
+
+  it("reports a failed search instead of results, and recovers on the next search", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const client = deferrableClient();
+
+    const { result } = renderSearch(queryClient, client);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    act(() => result.current.setQuery("hei"));
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.displayed?.contentHits).toHaveLength(1));
+
+    act(() => result.current.setQuery("heia"));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    await act(async () => client.fail());
+    await waitFor(() => expect(result.current.searchFailed).toBe(true));
+    // The old hits answer a different query, so they are not left under the error.
+    expect(result.current.displayed).toBeUndefined();
+    expect(result.current.isPending).toBe(false);
+
+    act(() => result.current.setQuery("hei"));
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.searchFailed).toBe(false));
+    expect(result.current.displayed?.contentHits).toHaveLength(1);
+  });
+
+  it("clears a search failure when the query is cleared", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const client = deferrableClient();
+
+    const { result } = renderSearch(queryClient, client);
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    act(() => result.current.setQuery("hei"));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    await act(async () => client.fail());
+    await waitFor(() => expect(result.current.searchFailed).toBe(true));
+
+    act(() => result.current.setQuery(""));
+    await waitFor(() => expect(result.current.searchFailed).toBe(false));
   });
 });

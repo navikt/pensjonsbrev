@@ -35,10 +35,15 @@ export type HitRefs = {
 
 export const NO_HITS: HitRefs = { content: [], brev: [] };
 
+/** Messages to the worker. `setCorpus` has no reply: the worker handles
+ *  messages in order, so a search posted after it always runs against it. */
 export type WorkerRequest =
-  | { type: "setCorpus"; corpusVersion: number; corpus: TemplateText[] }
+  | { type: "setCorpus"; corpus: TemplateText[] }
   | { type: "search"; requestId: number; query: string; exactOnly: boolean };
 
+/** Replies to `search`. A failure is a reply like any other, so the caller
+ *  always hears back and can tell the user, rather than waiting forever or
+ *  reading a crash as "no hits". */
 export type WorkerResponse =
-  | { type: "corpusReady"; corpusVersion: number }
-  | { type: "results"; requestId: number; hits: HitRefs };
+  | { type: "results"; requestId: number; hits: HitRefs }
+  | { type: "error"; requestId: number; message: string };
