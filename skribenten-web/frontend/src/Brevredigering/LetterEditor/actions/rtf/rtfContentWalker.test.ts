@@ -3,8 +3,8 @@ import { describe, expect, test } from "vitest";
 import { walkRtfContent } from "~/Brevredigering/LetterEditor/actions/rtf/rtfContentWalker";
 import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 
-function walk(rtf: string, options?: Parameters<typeof walkRtfContent>[1]) {
-  return walkRtfContent(tokenizeRtf(rtf), options);
+function walk(rtf: string, passThroughDestinations?: ReadonlySet<string>) {
+  return walkRtfContent(tokenizeRtf(rtf), passThroughDestinations);
 }
 
 describe("walkRtfContent", () => {
@@ -38,7 +38,7 @@ describe("walkRtfContent", () => {
   });
 
   test("passes through a designated destination's content as raw text", () => {
-    const result = walk("{\\rtf1{\\*\\htmltag <p>}Hello}", { passThroughDestinations: new Set(["htmltag"]) });
+    const result = walk("{\\rtf1{\\*\\htmltag <p>}Hello}", new Set(["htmltag"]));
     expect(result).toEqual([
       { kind: "groupStart" },
       { kind: "control", name: "rtf", param: 1 },
@@ -88,6 +88,11 @@ describe("walkRtfContent", () => {
   test("maps control symbols to their literal characters", () => {
     const result = walk("a\\~b\\_c\\\\d\\{e\\}f");
     expect(result.map((e) => (e.kind === "text" ? e.value : null)).join("")).toBe("a\u00A0b-c\\d{e}f");
+  });
+
+  test("maps typographic control words to their characters", () => {
+    const result = walk("don\\rquote t \\ldblquote x\\rdblquote  a\\endash b\\emdash c \\bullet");
+    expect(result.map((e) => (e.kind === "text" ? e.value : null)).join("")).toBe("don’t “x” a–b—c •");
   });
 
   test("drops the optional-hyphen control symbol", () => {

@@ -1,229 +1,199 @@
 import { walkRtfContent } from "~/Brevredigering/LetterEditor/actions/rtf/rtfContentWalker";
 import {
-  classifyListMarkerText,
   extractStylesheetHeadingLevels,
+  type HeadingLevel,
+  headingLevelFromOutlineLevel,
 } from "~/Brevredigering/LetterEditor/actions/rtf/rtfStylesheet";
 import { type RtfToken } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import {
-  type Table,
   type TableCell,
   type TableRow,
   type Text,
   type TraversedElement,
 } from "~/Brevredigering/LetterEditor/actions/traversedElement";
-import { FontType } from "~/types/brevbakerTypes";
+import { FontType, ListType } from "~/types/brevbakerTypes";
 
-// Paragraph/character-level state, inherited by nested groups and reset by
-// `\pard` (paragraph properties) or `\plain` (character properties)
-// respectively, mirroring the corresponding RTF control words' semantics.
-interface RtfFrame {
+// Character properties are reset by `\plain`, paragraph properties by `\pard`.
+interface RtfState {
   bold: boolean;
   italic: boolean;
-  styleIndex?: number;
+  styleNumber?: number;
   outlineLevel?: number;
   listId?: number;
+  inTable: boolean;
 }
 
-function childFrame(parent: RtfFrame): RtfFrame {
-  return { ...parent };
-}
+const HEADING_TYPES = { 1: "H1", 2: "H2", 3: "H3" } as const;
 
 /**
- * Interprets genuine/native RTF (e.g. pasted directly from Word - no
- * `\fromhtml1`/`\fromtext1` encapsulation marker; see
- * `extractEncapsulation.ts` for that case) into the same `TraversedElement[]`
- * model produced by the HTML clipboard traversal in `paste.ts`, so it can be
- * inserted via the existing `insertTraversedElements` machinery unchanged.
- *
- * Supported: paragraphs, bold, italic, headings (via `\outlinelevel` or a
- * heading-named paragraph style), bulleted/numbered lists, and simple
- * tables. Deliberately unsupported (silently ignored rather than crashing):
- * images/embedded objects, revision marks, footnotes, hyperlink field
- * codes, and character formatting beyond bold/italic (colors, underline,
- * strikethrough, fonts).
+ * Interprets RTF written by a word processor (e.g. Word) into the same elements as the HTML paste
+ * path. Supports paragraphs, bold, italic, headings, lists and simple tables; other formatting,
+ * images and objects are ignored.
  */
 export function interpretNativeRtf(tokens: RtfToken[]): TraversedElement[] {
   const headingLevelsByStyle = extractStylesheetHeadingLevels(tokens);
-  const events = walkRtfContent(tokens);
+  const headingLevelOf = (state: RtfState): HeadingLevel | undefined =>
+    headingLevelFromOutlineLevel(state.outlineLevel) ??
+    (state.styleNumber === undefined ? undefined : headingLevelsByStyle.get(state.styleNumber));
 
   const elements: TraversedElement[] = [];
+  const stack: RtfState[] = [{ bold: false, italic: false, inTable: false }];
+  const state = () => stack.at(-1)!;
 
-  const stack: RtfFrame[] = [{ bold: false, italic: false }];
-  const current = () => stack.at(-1)!;
-
-  let paragraphBuffer: Text[] = [];
-  // Paragraph properties captured at the latest text run, so they survive
-  // the group that set them being closed before the paragraph is flushed.
-  let paragraphFrame: RtfFrame | undefined;
-  let pendingListMarkerText: string | undefined;
-
-  let pendingRows: TableRow[] = [];
-  let inTableRow = false;
+  let paragraph: Text[] = [];
+  // The paragraph's properties when its text was written. The group that set them may be closed
+  // before the paragraph ends.
+  let paragraphState: RtfState | undefined;
+  let listMarker: string | undefined;
   let rowCells: TableCell[] = [];
-  let cellBuffer: Text[] = [];
+  let tableRows: TableRow[] = [];
 
-  const currentFont = (): FontType => {
-    const frame = current();
-    if (frame.bold) return FontType.BOLD;
-    if (frame.italic) return FontType.ITALIC;
-    return FontType.PLAIN;
-  };
-
-  // Merges consecutive text runs sharing the same font into a single `Text`
-  // element rather than emitting one per underlying RTF token/escape (e.g.
-  // a `\'hh` hex-escaped letter surrounded by plain text runs) - this keeps
-  // output shape aligned with what the HTML traversal path produces.
-  const pushText = (value: string) => {
+  const appendText = (value: string) => {
     if (value.length === 0) return;
-    const font = currentFont();
-    if (!inTableRow) paragraphFrame = { ...current() };
-    const buffer = inTableRow ? cellBuffer : paragraphBuffer;
-    const last = buffer.at(-1);
-    if (last && last.font === font) {
+    const { bold, italic } = state();
+    const font = bold ? FontType.BOLD : italic ? FontType.ITALIC : FontType.PLAIN;
+    const last = paragraph.at(-1);
+    if (last?.font === font) {
       last.text += value;
     } else {
-      buffer.push({ type: "TEXT", font, text: value });
+      paragraph.push({ type: "TEXT", font, text: value });
     }
+    paragraphState = { ...state() };
   };
 
-  const flushTable = () => {
-    if (pendingRows.length > 0) {
-      const table: Table = { type: "TABLE", rows: pendingRows };
-      elements.push(table);
-    }
-    pendingRows = [];
+  const takeParagraph = (): Text[] => {
+    const content = paragraph;
+    paragraph = [];
+    paragraphState = undefined;
+    listMarker = undefined;
+    return content;
   };
 
-  const headingLevelOf = (frame: RtfFrame): 0 | 1 | 2 | undefined => {
-    if (frame.outlineLevel === 0 || frame.outlineLevel === 1 || frame.outlineLevel === 2) return frame.outlineLevel;
-    return frame.styleIndex === undefined ? undefined : headingLevelsByStyle.get(frame.styleIndex);
-  };
+  const endParagraph = () => {
+    if (paragraph.length === 0 || paragraphState === undefined) return;
+    const { listId } = paragraphState;
+    const headingLevel = headingLevelOf(paragraphState);
+    const marker = listMarker;
+    const content = takeParagraph();
 
-  const flushParagraph = () => {
-    if (paragraphBuffer.length === 0) {
-      pendingListMarkerText = undefined;
-      return;
-    }
-    const frame = paragraphFrame ?? current();
-    const headingLevel = headingLevelOf(frame);
-
-    if (frame.listId !== undefined) {
-      const listType = classifyListMarkerText(pendingListMarkerText);
-      elements.push({ type: "ITEM", content: paragraphBuffer, listType });
-    } else if (headingLevel === 0) {
-      elements.push({ type: "H1", content: paragraphBuffer });
-    } else if (headingLevel === 1) {
-      elements.push({ type: "H2", content: paragraphBuffer });
-    } else if (headingLevel === 2) {
-      elements.push({ type: "H3", content: paragraphBuffer });
+    if (listId !== undefined) {
+      elements.push({ type: "ITEM", content, listType: listTypeOfMarker(marker) });
+    } else if (headingLevel === undefined) {
+      elements.push({ type: "P", content });
     } else {
-      elements.push({ type: "P", content: paragraphBuffer });
+      elements.push({ type: HEADING_TYPES[headingLevel], content });
     }
-    paragraphBuffer = [];
-    paragraphFrame = undefined;
-    pendingListMarkerText = undefined;
   };
 
-  for (const event of events) {
-    if (event.kind === "groupStart") {
-      stack.push(childFrame(current()));
-      continue;
-    }
-    if (event.kind === "groupEnd") {
-      if (stack.length > 1) stack.pop();
-      continue;
-    }
-    if (event.kind === "listMarkerText") {
-      pendingListMarkerText = (pendingListMarkerText ?? "") + event.value;
-      continue;
-    }
-    if (event.kind === "text") {
-      pushText(event.value);
-      continue;
-    }
+  const endTable = () => {
+    if (tableRows.length > 0) elements.push({ type: "TABLE", rows: tableRows });
+    tableRows = [];
+  };
 
-    // event.kind === "control"
-    switch (event.name) {
-      case "par": {
-        if (!inTableRow) {
-          if (pendingRows.length > 0) flushTable();
-          flushParagraph();
+  for (const event of walkRtfContent(tokens)) {
+    switch (event.kind) {
+      case "groupStart": {
+        stack.push({ ...state() });
+        break;
+      }
+      case "groupEnd": {
+        if (stack.length > 1) stack.pop();
+        break;
+      }
+      case "listMarkerText": {
+        listMarker = event.value;
+        break;
+      }
+      case "text": {
+        appendText(event.value);
+        break;
+      }
+      case "control": {
+        const current = state();
+        switch (event.name) {
+          case "par": {
+            if (current.inTable) {
+              if (paragraph.length > 0) appendText(" ");
+            } else {
+              endTable();
+              endParagraph();
+            }
+            break;
+          }
+          case "line":
+          case "tab": {
+            appendText(" ");
+            break;
+          }
+          case "pard": {
+            Object.assign(current, {
+              styleNumber: undefined,
+              outlineLevel: undefined,
+              listId: undefined,
+              inTable: false,
+            });
+            break;
+          }
+          case "plain": {
+            Object.assign(current, { bold: false, italic: false });
+            break;
+          }
+          case "b": {
+            current.bold = event.param !== 0;
+            break;
+          }
+          case "i": {
+            current.italic = event.param !== 0;
+            break;
+          }
+          case "s": {
+            current.styleNumber = event.param;
+            break;
+          }
+          case "outlinelevel": {
+            current.outlineLevel = event.param;
+            break;
+          }
+          case "ls": {
+            current.listId = event.param;
+            break;
+          }
+          case "intbl": {
+            current.inTable = true;
+            break;
+          }
+          case "cell": {
+            rowCells.push({ content: takeParagraph() });
+            break;
+          }
+          case "row": {
+            tableRows.push({ cells: rowCells });
+            rowCells = [];
+            break;
+          }
         }
-        break;
-      }
-      case "pard": {
-        current().styleIndex = undefined;
-        current().outlineLevel = undefined;
-        current().listId = undefined;
-        break;
-      }
-      case "plain": {
-        current().bold = false;
-        current().italic = false;
-        break;
-      }
-      case "b": {
-        current().bold = event.param !== 0;
-        break;
-      }
-      case "i": {
-        current().italic = event.param !== 0;
-        break;
-      }
-      case "s": {
-        if (event.param !== undefined) current().styleIndex = event.param;
-        break;
-      }
-      case "outlinelevel": {
-        if (event.param !== undefined) current().outlineLevel = event.param;
-        break;
-      }
-      case "ls": {
-        if (event.param !== undefined) current().listId = event.param;
-        break;
-      }
-      case "tab": {
-        pushText("\t");
-        break;
-      }
-      case "trowd": {
-        if (!inTableRow) {
-          inTableRow = true;
-          rowCells = [];
-          cellBuffer = [];
-        }
-        break;
-      }
-      case "cell": {
-        rowCells.push({ content: cellBuffer });
-        cellBuffer = [];
-        break;
-      }
-      case "row": {
-        pendingRows.push({ cells: rowCells });
-        rowCells = [];
-        cellBuffer = [];
-        inTableRow = false;
-        break;
-      }
-      default: {
         break;
       }
     }
   }
 
-  if (pendingRows.length > 0) flushTable();
+  endTable();
 
-  // A document consisting only of text with no terminating `\par` is what
-  // Word produces when copying a fragment within a single paragraph. Emit it
-  // as loose text (like inline HTML) so it merges into the current literal
-  // instead of splitting the target paragraph.
-  const frame = paragraphFrame ?? current();
-  const isPlainOpenParagraph = frame.listId === undefined && headingLevelOf(frame) === undefined;
-  if (elements.length === 0 && isPlainOpenParagraph) {
-    return paragraphBuffer;
-  }
+  // Copying part of a single paragraph gives RTF without a closing `\par`. Return it as loose text,
+  // like inline HTML, so it is inserted into the current paragraph instead of splitting it.
+  const isFragment =
+    elements.length === 0 &&
+    paragraphState !== undefined &&
+    paragraphState.listId === undefined &&
+    headingLevelOf(paragraphState) === undefined;
+  if (isFragment) return paragraph;
 
-  flushParagraph();
+  endParagraph();
   return elements;
+}
+
+// Heuristic based on the rendered marker, e.g. "1.", "a)" or "iv." versus "•".
+function listTypeOfMarker(marker: string | undefined): ListType {
+  const isNumbered = /^(?:\d+[.)]?|[a-z][.)]|[ivxlcdm]+[.)])$/i.test(marker?.trim() ?? "");
+  return isNumbered ? ListType.NUMMERERT_LISTE : ListType.PUNKTLISTE;
 }

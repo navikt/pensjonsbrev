@@ -140,6 +140,50 @@ describe("interpretNativeRtf", () => {
     ]);
   });
 
+  test("Word table: cell paragraphs marked with \\intbl and row properties repeated before \\row", () => {
+    const rowProperties = "\\trowd\\trgaph108\\cellx2000\\cellx4000";
+    const rtf =
+      "{\\rtf1\\ansi" +
+      `${rowProperties}\\pard\\intbl A\\cell\\pard\\intbl B\\cell{${rowProperties}\\row}` +
+      `\\pard\\intbl C\\cell\\pard\\intbl D\\cell{${rowProperties}\\row}` +
+      "\\pard Etter\\par}";
+    expect(interpret(rtf)).toEqual([
+      {
+        type: "TABLE",
+        rows: [
+          {
+            cells: [
+              { content: [{ type: "TEXT", font: FontType.PLAIN, text: "A" }] },
+              { content: [{ type: "TEXT", font: FontType.PLAIN, text: "B" }] },
+            ],
+          },
+          {
+            cells: [
+              { content: [{ type: "TEXT", font: FontType.PLAIN, text: "C" }] },
+              { content: [{ type: "TEXT", font: FontType.PLAIN, text: "D" }] },
+            ],
+          },
+        ],
+      },
+      { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Etter" }] },
+    ]);
+  });
+
+  test("joins the paragraphs of a multi-paragraph table cell with a space", () => {
+    const rtf = "{\\rtf1\\ansi\\pard\\intbl Linje 1\\par Linje 2\\cell\\row}";
+    expect(interpret(rtf)).toEqual([
+      {
+        type: "TABLE",
+        rows: [{ cells: [{ content: [{ type: "TEXT", font: FontType.PLAIN, text: "Linje 1 Linje 2" }] }] }],
+      },
+    ]);
+  });
+
+  test("tabs and line breaks become spaces", () => {
+    const rtf = "{\\rtf1\\ansi\\pard a\\tab b\\line c\\par}";
+    expect(interpret(rtf)).toEqual([{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "a b c" }] }]);
+  });
+
   test("decodes non-ASCII text via the ansi codepage within a paragraph", () => {
     const rtf = "{\\rtf1\\ansi\\pard Bj\\'f8rn og \\'e5se\\par}";
     expect(interpret(rtf)).toEqual([

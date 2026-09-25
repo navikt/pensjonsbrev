@@ -1,11 +1,6 @@
 import { type FontType, type ListType } from "~/types/brevbakerTypes";
 
-// Shared intermediate representation produced by both the HTML clipboard
-// traversal (see `paste.ts`) and the RTF clipboard interpreter (see
-// `rtf/parseRtf.ts`) before being inserted into the letter draft. Keeping a
-// single shared model means the insertion logic in `paste.ts`
-// (`insertTraversedElements`, `insertTable`, `insertItem`, etc.) does not need
-// to know which clipboard format produced its input.
+// Produced by both the HTML and the RTF clipboard parsers, and inserted into the letter by `paste.ts`.
 
 export interface Text {
   type: "TEXT";

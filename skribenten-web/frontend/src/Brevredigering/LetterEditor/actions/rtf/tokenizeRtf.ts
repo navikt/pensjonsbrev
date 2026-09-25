@@ -7,20 +7,11 @@ export type RtfToken =
   | { type: "text"; text: string };
 
 /**
- * Tokenizes an RTF document into a flat stream of low-level tokens: group
- * boundaries (`{`/`}`), control words (`\word`, optionally with a signed
- * numeric parameter, e.g. `\b1`, `\ilvl2`), control symbols (single
- * non-letter escapes such as `\~`, `\_`, `\-`, `\\`, `\{`, `\}`), `\'hh`
- * hex-escaped bytes, and literal text runs.
- *
- * This only performs lexical tokenization. Grouping/destination semantics,
- * unicode-escape fallback skipping, and codepage decoding of hex-escaped
- * bytes are handled by the higher-level RTF interpreters that consume this
- * token stream (see `parseRtf.ts`).
+ * Splits an RTF document into lexical tokens. Destinations, unicode escapes and
+ * code pages are interpreted later, in `walkRtfContent`.
  */
 export function tokenizeRtf(input: string): RtfToken[] {
   const tokens: RtfToken[] = [];
-  const { length } = input;
   let index = 0;
   let textBuffer = "";
 
@@ -31,41 +22,30 @@ export function tokenizeRtf(input: string): RtfToken[] {
     }
   };
 
-  while (index < length) {
+  while (index < input.length) {
     const char = input[index];
 
-    if (char === "{") {
+    if (char === "{" || char === "}") {
       flushText();
-      tokens.push({ type: "groupStart" });
-      index++;
-    } else if (char === "}") {
-      flushText();
-      tokens.push({ type: "groupEnd" });
+      tokens.push({ type: char === "{" ? "groupStart" : "groupEnd" });
       index++;
     } else if (char === "\\") {
       flushText();
-      index++;
-      if (index >= length) break;
-      const next = input[index];
+      const next = input[index + 1];
+      if (next === undefined) break;
 
       if (/[a-zA-Z]/.test(next)) {
-        index = consumeControlWord(input, index, tokens);
+        index = consumeControlWord(input, index + 1, tokens);
       } else if (next === "'") {
-        // \'hh - a single hex-escaped byte in the current codepage.
-        const hex = input.slice(index + 1, index + 3);
-        index += 3;
-        const byte = Number.parseInt(hex, 16);
-        if (!Number.isNaN(byte)) {
-          tokens.push({ type: "hexEscape", byte });
-        }
+        const byte = Number.parseInt(input.slice(index + 2, index + 4), 16);
+        if (!Number.isNaN(byte)) tokens.push({ type: "hexEscape", byte });
+        index += 4;
       } else {
-        // Control symbol: a single non-letter character. No numeric
-        // parameter or space delimiter applies to these.
         tokens.push({ type: "controlSymbol", symbol: next });
-        index++;
+        index += 2;
       }
     } else if (char === "\r" || char === "\n") {
-      // Raw newlines in the RTF source are insignificant whitespace.
+      // Line breaks in the RTF source carry no meaning.
       index++;
     } else {
       textBuffer += char;
@@ -77,36 +57,17 @@ export function tokenizeRtf(input: string): RtfToken[] {
   return tokens;
 }
 
-// Parses a control word starting at `index` (the first letter after the
-// backslash), pushes the resulting token (unless it's `\binN`, in which case
-// the following N bytes of binary payload are skipped instead), and returns
-// the index just past the consumed input.
-function consumeControlWord(input: string, index: number, tokens: RtfToken[]): number {
-  const { length } = input;
-  const nameStart = index;
-  while (index < length && /[a-zA-Z]/.test(input[index])) index++;
-  const name = input.slice(nameStart, index);
-
-  let param: number | undefined;
-  const numStart = index;
-  let numIndex = index;
-  if (input[numIndex] === "-") numIndex++;
-  while (numIndex < length && /[0-9]/.test(input[numIndex])) numIndex++;
-  if (numIndex > numStart) {
-    param = Number.parseInt(input.slice(numStart, numIndex), 10);
-    index = numIndex;
-  }
+// Reads a control word starting at its first letter and returns the index after it.
+function consumeControlWord(input: string, start: number, tokens: RtfToken[]): number {
+  const [, name, rawParam, delimiter] = /^([a-zA-Z]+)(-?\d+)?( ?)/.exec(input.slice(start, start + 64))!;
+  const param = rawParam === undefined ? undefined : Number.parseInt(rawParam, 10);
+  const end = start + name.length + (rawParam?.length ?? 0);
 
   if (name === "bin" && param !== undefined && param > 0) {
-    // \binN is immediately followed by N raw bytes of binary data - no space
-    // delimiter is consumed, since the very next byte begins the payload.
-    return index + param;
-  }
-
-  if (input[index] === " ") {
-    index++; // consume a single trailing space delimiter, per the RTF spec
+    // \binN is followed directly by N bytes of binary data, with no delimiter.
+    return end + param;
   }
 
   tokens.push({ type: "controlWord", name, param });
-  return index;
+  return end + delimiter.length;
 }
