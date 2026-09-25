@@ -576,5 +576,333 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(VedtaketOpprettholdes)
         }
     }
-}
 
+    //§ 12-11 Beregning av uføretrygd
+    object BeregningAvUfoeretrygd : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på vedtak av "
+                        +fritekst("dato") + " der "
+                        +fritekst("kort om resultatet i vedtaket") + ". "
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-11 – beregning av uføretrygd." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Uføretrygden beregnes på grunnlag av pensjonsgivende inntekt i de fem siste kalenderårene før uføretidspunktet. "
+                        +"Gjennomsnittlig inntekt i de tre beste inntektsårene legges til grunn. "
+                        +" Pensjonsgivende inntekt over 6 ganger grunnbeløpet regnes ikke med i grunnlaget. "
+                        +" Inntekten i de aktuelle årene oppjusteres til virkningstidspunktet på bakgrunn av grunnbeløpet."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-12 Trygdetid
+    object Trygdetid : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på vedtak av "
+                        +fritekst("dato") + " der "
+                        +fritekst("beskriv kort hva avslaget gjelder/vedtaket gjelder. Eks.. der klager fikk avslag på sitt krav om uføretrygd") + ". "
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-12 og 12-13 – trygdetid og uføretrygdens størrelse." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Trygdetid regnes fra fylte 16 år, eller fra en ble medlem av folketrygden til og med året en fyller 66 år, for at det skal innvilges full uføretrygd må samlet trygdetid tilsvare 40 år. "
+                        +"Uføretrygdens størrelse skal imidlertid avkortes dersom trygdetiden er kortere enn 40 år. "
+                        +"Ved fastsettelse av trygdetid skille det mellom faktisk trygdetid som er perioden før uføretidspunktet, og fremtidig trygdetid som er fra uføretidspunktet og frem til fylte 66 år."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Dersom mindre enn 4/5 av opptjeningstiden kan regnes som trygdetid reduseres den fremtidige trygdetiden." }) }
+            paragraph { text(bokmal { +"Faktisk trygdetid beregnes i antall hele år, måneder og dager, dager avrundes opp til hel måned." }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"I det påklagde vedtaket er klager gitt en trygdetid på "
+                        +fritekst("xxxx år") + "."
+                        +"Dersom den fastsatte trygdetiden er mindre enn 40 år reduseres uføretrygden størrelse. "
+                        +"Det vil si at klager som har en trygdetid på "
+                        +fritekst("xxxx år") + ", vil får en uføretrygd med en uføregrad på 100 prosent som tilsvarer "
+                        +fritekst("xx/40") + "."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"<Ved bruk av unntaksreglene, se verktøykassen>" }, ITALIC) }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-13 Ung ufør
+    object UngUfoer : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på vedtak av "
+                        +fritekst("dato") + " der klager fikk avslag på søknad om ung ufør. "
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-13 tredje ledd – ung ufør." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(bokmal { +"For å ha rett til å få uføretrygden beregnet etter reglene for unge uføre må:" })
+                list {
+                    item { bokmal { +"du ha blitt ufør før du ble 26 år." } }
+                    item { bokmal { +"uførheten skyldes alvorlig og varig sykdom." } }
+                    item { bokmal { +"sykdommen være klart dokumentert." } }
+                }
+            }
+            paragraph { text(bokmal { +"Dette går fram av folketrygdloven § 12-13 tredje ledd. " }) }
+
+            title1 { text(bokmal { +"Uføretidspunkt før fylte 26 år" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
+                        +fritekst("xxxx") + ". Fra dette tidspunktet er det vurdert at klagers inntektsevne er varig nedsatt med minst 50 prosent grunnet sykdom. "
+                        +"Uføretidspunktet er fastsatt til før fylte 26 år, forutsetningen for å vurdere om klager har rettigheter som ung ufør er altså oppfylt."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Klager fylte 26 år den "
+                        +fritekst("xxxx") + ", dokumentasjon som er tidsnær til tidspunktet klager fylte 26 år vil være avgjørende i vurderingen av hvorvidt klagers helseplager kvalifiserer til rettigheter som ung ufør."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"I nyere rettspraksis fra Høyesterett er det lagt til grunn at det skal tas utgangspunkt i den medisinske lidelsen og dens alvorlighet. "
+                        +"Det faktiske funksjonsnivået som selvstendig moment får bare betydning der det er noe tvil om den medisinske lidelsen i seg selv er alvorlig nok. "
+                        +"Da kan et ekstraordinært lavt fungeringsnivå likevel tilsi at vilkåret er oppfylt."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"I retningslinjene til folketrygdloven § 12-13 er det angitt en liste over diagnoser som kan anses som alvorlige. "
+                        +"Selv om denne listen ikke er uttømmende gir den klare holdepunkter for hva som kan anses som alvorlig sykdom."
+                    }
+                )
+            }
+
+            title1 { text(bokmal { +"Uføretidspunkt etter fylte 26 år" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
+                        +fritekst("xxxx") + ". Uføretidspunktet skal fastsettes til det tidspunktet da inntektsevnene ble varig nedsatt med minst 50 prosent. "
+                        +"Det er altså ikke avgjørende når man er diagnostiert med sykdom. "
+                        +"For at klager skal kunne vurderes mot rettigheter som ung ufør etter folketrygdlovens § 12-13 tredje ledd må uføretidspunktet være satt til før "
+                        +fritekst("xxxx") + " da klager fylte 26 år."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-14 Reduksjon på grunn av inntekt
+    object AutomatiskInntektsreduksjon : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på vedtak av "
+                        +fritekst("dato") + " der uføretrygden ble redusert mot arbeidsinntekt. "
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Det framgår av folketrygdloven § 12-14 at utbetalingen av uføretrygden skal reduseres dersom inntektsgrensen overskrides. "
+                        +"Mottakere av uføretrygd skal i utgangspunktet selv melde fra om pensjonsgivende inntekt som har betydning for størrelsen på uføretrygden."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Nav kan imidlertid legge til grunn inntektsopplysninger fra A-ordningen for reduksjon av uføretrygd. "
+                        +"Dette gjelder i tilfeller hvor opplysninger om inntekt hittil i år som er mottatt fra A-ordningen er høyere enn inntektsgrensen eller en forventet inntekt personen selv har meldt inn. "
+                        +"A-ordningen er en samordnet måte for arbeidsgivere å rapportere opplysninger om inntekt til Nav, Statistisk sentralbyrå og Skatteetaten."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-14 Reduksjon på grunn av inntekt
+    object Etteroppgjoer : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på varsel/vedtak av "
+                        +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
+                        +fritekst("antall kr") + " kroner for mye i uføretrygd i "
+                        +fritekst("år") + "."
+                        +"Klagefristen er overholdt."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt etter kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
+            paragraph { text(bokmal { +"<Husk å bruke ny hjemmel § 12-14 EO - arbeidsforsøk, der det er aktuelt!>" }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Det skal foretas et etteroppgjør når den uføretrygdede i løpet av et kalenderår har fått utbetalt for lite eller for mye uføretrygd. "
+                        +"Dette gjøres etter at inntekten er skattefastsatt. "
+                        +"Uføretrygd i kalenderåret sammenlignes da med ny fastsatt årlig uføretrygd basert på den fastsatte inntekten fra Skatteetaten."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Dersom det er oppgitt feil inntekt til Skatteetaten, eller en er uenig i den fastsatte inntekten må Skatteetaten kontaktes. "
+                        +"Dersom den pensjonsgivende inntekten blir endret, vil Nav revurdere saken og eventuelle beløp som er krevd inn bli etterbetalt. "
+                        +"Utgangspunktet er at all pensjonsgivende inntekt medfører reduksjon av uføretrygd. "
+                        +"Det er gjort noen unntak som gjelder blant annet erstatning for påført inntektstap og etterslepsinntekter som for eksempel feriepenger eller salg av produksjonsmidler i forbindelse med avslutning av arbeid."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Det kan også gjøres et unntak i etteroppgjøret dersom arbeidsinntekten i løpet av året har oversteget 80 prosent av oppjustert inntekt før uførhet, og dette kan vurderes som et arbeidsforsøk. "
+                        +"Vi har vurdert om klager kommer inn under bestemmelsen for arbeidsforsøk, men vi kan ikke se at dette er mulig."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-14 Reduksjon på grunn av inntekt
+    object EtteroppgjoerBarnetillegg : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            includePhrase(HvaKlagesakenGjelderOverskrift)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på varsel/vedtak av "
+                        +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
+                        +fritekst("antall kr") + " kroner for mye i barnetillegg i "
+                        +fritekst("år") + ". Vedtaket ble iverksatt "
+                        +fritekst("dato") + ". Klagefristen er overholdt."
+                    }
+                )
+            }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-14 og 12-16, samt etter kapittel 3 og 4 i forskrift om uføretrygd fra folketrygden." }) }
+
+            includePhrase(ViHarVurdertKlagen)
+            includePhrase(KlagersAnfoersler)
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Det skal foretas et etteroppgjør når den uføretrygdede i løpet av et kalenderår har fått utbetalt for lite eller for mye uføretrygd og barnetillegg. "
+                        +"Dette gjøres etter at personinntekten er skattefastsatt."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Det er personinntekten til klager og annen forelder etter skattelovens § 12-2 som har betydning for størrelsen på barnetillegget. "
+                        +"Utbetalt barnetillegg i kalenderåret sammenlignes med ny fastsatt årlig personinntekt basert på den skattefastsatte inntekten."
+                    }
+                )
+            }
+
+            includePhrase(KlippInnFraVedtak)
+            includePhrase(VedtaketBlirIkkeEndret)
+            includePhrase(VedtaketOpprettholdes)
+        }
+    }
+
+    //§ 12-15 Barnetillegg
+}
