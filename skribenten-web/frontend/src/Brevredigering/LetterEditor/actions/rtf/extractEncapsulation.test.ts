@@ -8,7 +8,10 @@
  */
 import { describe, expect, test } from "vitest";
 
-import { extractEncapsulatedContent as extractFromTokens } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
+import {
+  detectEncapsulationFormat,
+  extractEncapsulatedContent as extractFromTokens,
+} from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
 import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
 import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import specExpectedHtml from "~test/fixtures/rtf/outlook-encapsulated-html.html?raw";
@@ -20,6 +23,11 @@ const extractEncapsulatedContent = (rtf: string) => extractFromTokens(tokenizeRt
 const html = (rtf: string) => {
   const result = extractEncapsulatedContent(rtf);
   return result?.format === "html" ? result.html : undefined;
+};
+
+const text = (rtf: string) => {
+  const result = extractEncapsulatedContent(rtf);
+  return result?.format === "text" ? result.text : undefined;
 };
 
 describe("extractEncapsulatedContent", () => {
@@ -132,5 +140,82 @@ describe("extractEncapsulatedContent", () => {
     expect(html(rtf)).toBe(
       "<html><head></head><body>hello</body></html>******\r\nOnly the individual sender is responsible for the content of the\r\nmessage.",
     );
+  });
+});
+
+describe("detectEncapsulationFormat", () => {
+  test("detects \\fromhtml1", () => {
+    expect(detectEncapsulationFormat(tokenizeRtf("{\\rtf1\\ansi\\fromhtml1}"))).toBe("html");
+  });
+
+  test("detects \\fromtext1", () => {
+    expect(detectEncapsulationFormat(tokenizeRtf("{\\rtf1\\ansi\\fromtext1}"))).toBe("text");
+  });
+
+  test("treats \\fromhtml0 as not encapsulated", () => {
+    expect(detectEncapsulationFormat(tokenizeRtf("{\\rtf1\\ansi\\fromhtml0}"))).toBeUndefined();
+  });
+
+  test("returns undefined for genuine/native RTF with no encapsulation marker", () => {
+    expect(detectEncapsulationFormat(tokenizeRtf("{\\rtf1\\ansi\\b Bold text\\b0}"))).toBeUndefined();
+  });
+});
+
+describe("extractEncapsulatedContent - html", () => {
+  test("recovers a simple Outlook-style encapsulated HTML body", () => {
+    const rtf =
+      "{\\rtf1\\ansi\\fromhtml1" +
+      "{\\*\\htmltag64 <html>}" +
+      "{\\*\\htmltag <body>}" +
+      "{\\*\\htmltag <p>}" +
+      "Hello " +
+      "{\\*\\htmltag <b>}" +
+      "world" +
+      "{\\*\\htmltag </b>}" +
+      "{\\*\\htmltag </p>}" +
+      "{\\*\\htmltag </body>}" +
+      "{\\*\\htmltag </html>}" +
+      "}";
+
+    expect(html(rtf)).toBe("<html><body><p>Hello <b>world</b></p></body></html>");
+  });
+
+  test("escapes markup characters in document text", () => {
+    const rtf = "{\\rtf1\\ansi\\fromhtml1{\\*\\htmltag <p>}a < b & c{\\*\\htmltag </p>}}";
+    expect(html(rtf)).toBe("<p>a &lt; b &amp; c</p>");
+  });
+
+  test("decodes non-ASCII visible text via the ansi codepage", () => {
+    const rtf = "{\\rtf1\\ansi\\fromhtml1{\\*\\htmltag <p>}Bj\\'f8rn og \\'e5se{\\*\\htmltag </p>}}";
+    expect(html(rtf)).toBe("<p>Bjørn og åse</p>");
+  });
+
+  test("ignores font table content that may appear alongside the encapsulated body", () => {
+    const rtf = "{\\rtf1\\ansi\\fromhtml1{\\fonttbl{\\f0 Arial;}}{\\*\\htmltag <p>}Hi{\\*\\htmltag </p>}}";
+    expect(html(rtf)).toBe("<p>Hi</p>");
+  });
+
+  test("drops content between \\htmlrtf and \\htmlrtf0, which is only for RTF readers", () => {
+    const rtf =
+      "{\\rtf1\\ansi\\fromhtml1{\\*\\htmltag <p>}\\htmlrtf {\\b RTF only}\\htmlrtf0 Hi{\\*\\htmltag <br>\\htmlrtf \\line\\htmlrtf0}}";
+    expect(html(rtf)).toBe("<p>Hi<br>");
+  });
+
+  test("\\htmlrtf is scoped to its group", () => {
+    const rtf = "{\\rtf1\\ansi\\fromhtml1{\\htmlrtf hidden}shown}";
+    expect(html(rtf)).toBe("shown");
+  });
+});
+
+describe("extractEncapsulatedContent - text", () => {
+  // MS-OXRTFEX uses CRLF; cleanseText makes it the same as LF in the letter.
+  test("recovers plain text with paragraph breaks converted to CRLF", () => {
+    const rtf = "{\\rtf1\\ansi\\fromtext1 Line one\\par Line two}";
+    expect(text(rtf)).toBe("Line one\r\nLine two");
+  });
+
+  test("decodes non-ASCII text via the ansi codepage", () => {
+    const rtf = "{\\rtf1\\ansi\\fromtext1 Bj\\'f8rn og \\'e5se}";
+    expect(text(rtf)).toBe("Bjørn og åse");
   });
 });
