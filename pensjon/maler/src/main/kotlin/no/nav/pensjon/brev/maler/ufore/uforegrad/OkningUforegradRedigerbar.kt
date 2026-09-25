@@ -836,7 +836,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                             nynorsk { +"Slik reknar vi ut fribeløpet ditt i år: " },
                         )
                     }
-                    includePhrase(OkningUforegradFraser(pesysData.fribelopsperioder, pesysData.vektetFribelop, pesysData.vektetFribelopKr))
+                    includePhrase(OkningUforegradFraser(pesysData.fribelopsperioder, pesysData.vektetFribelopKr))
                 }
             }.orShow {
                 showIf(pesysData.harVTA) {

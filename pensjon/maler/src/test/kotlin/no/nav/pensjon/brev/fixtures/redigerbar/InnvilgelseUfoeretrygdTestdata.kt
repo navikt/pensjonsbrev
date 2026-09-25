@@ -292,7 +292,6 @@ fun createInnvilgelseUforetrygdMedEndringDto() =
             sisteTrygdetidsgrunnlag = InnvilgelseUforetrygdMedEndringDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
             hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14"),
             harVTA = false,
-            vektetFribelop = 0.5
             ),
     )
 
@@ -361,7 +360,6 @@ fun createOkningUforegradDto() =
                 )
             ),
             harVTA = false,
-            vektetFribelop = 0.5,
             vektetFribelopKr = Kroner(5000)
 
             ),
