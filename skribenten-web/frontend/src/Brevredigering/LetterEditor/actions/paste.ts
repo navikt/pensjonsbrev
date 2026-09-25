@@ -25,6 +25,8 @@ import {
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
 import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
 import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
+import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
+import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import {
   cleansePastedText,
@@ -284,7 +286,9 @@ function shouldModifyExistingLiteral(
 
 /** Returns false if the RTF has no content, so the caller can fall back to plain text. */
 function insertRtfInLetter(draft: Draft<LetterEditorState>, rtf: string): boolean {
-  const encapsulated = extractEncapsulatedContent(rtf);
+  const tokens = tokenizeRtf(rtf);
+  const decodeBytes = createByteDecoder(rtf);
+  const encapsulated = extractEncapsulatedContent(tokens, decodeBytes);
 
   if (encapsulated?.format === "text") {
     if (encapsulated.text.trim().length === 0) return false;
@@ -293,7 +297,9 @@ function insertRtfInLetter(draft: Draft<LetterEditorState>, rtf: string): boolea
   }
 
   const elements =
-    encapsulated?.format === "html" ? parseHtmlToTraversedElements(encapsulated.html) : interpretNativeRtf(rtf);
+    encapsulated?.format === "html"
+      ? parseHtmlToTraversedElements(encapsulated.html)
+      : interpretNativeRtf(tokens, decodeBytes);
   return insertParsedElements(draft, elements);
 }
 

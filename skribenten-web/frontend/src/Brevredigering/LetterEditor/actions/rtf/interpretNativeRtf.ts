@@ -1,24 +1,15 @@
+import { type ByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
 import {
-  type ByteDecoder,
-  createByteDecoder,
-  decodeUnicodeParam,
-  RTF_SYMBOL_WORDS,
-  skipUnicodeFallback,
-} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
-import {
-  LIST_MARKER_DESTINATIONS,
-  NATIVE_SKIPPED_DESTINATIONS,
+  NATIVE_DESTINATIONS,
+  NATIVE_IGNORABLE_DESTINATIONS,
 } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
 import {
   HEADING_BY_OUTLINE_LEVEL,
   type HeadingType,
   parseHeadingStyles,
 } from "~/Brevredigering/LetterEditor/actions/rtf/rtfStylesheet";
-import {
-  type RtfControlToken,
-  type RtfToken,
-  tokenizeRtf,
-} from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
+import { type RtfControlToken, type RtfToken } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
+import { type RtfDestination, walkRtf } from "~/Brevredigering/LetterEditor/actions/rtf/walkRtf";
 import {
   cleansePastedText,
   mergeNeighbouringText,
@@ -47,14 +38,6 @@ const NUMBERED_PN_WORDS: ReadonlySet<string> = new Set([
 /** "1.", "1.2", "a)", "(iv)", "IV." etc. Anything else (·, o, §, –) is a bullet. */
 const NUMBERED_MARKER = /^\(?(\d+(\.\d+)*[.)]?|[a-zA-Z][.)]|[ivxlcdm]+[.)]|[IVXLCDM]+[.)])$/;
 
-/**
- * - `body`: document content
- * - `skip`: no text or formatting is read
- * - `listMarker`: `\listtext`/`\pntext`, the rendered bullet or number of a list item
- * - `pn`: old-style `\pn` list properties of the current paragraph
- */
-type Destination = "body" | "skip" | "listMarker" | "pn";
-
 interface ParagraphProps {
   styleIndex?: number;
   outlineLevel?: number;
@@ -64,14 +47,10 @@ interface ParagraphProps {
 
 /** RTF formatting is group scoped: `{` saves and `}` restores it. */
 interface GroupState {
-  destination: Destination;
-  /** Set by `\*`: the destination word that follows is skipped unless we know it. */
-  ignorableIfUnknown: boolean;
   bold: boolean;
   italic: boolean;
   hidden: boolean;
   deleted: boolean;
-  ucSkip: number;
   paragraph: ParagraphProps;
 }
 
@@ -83,15 +62,11 @@ interface TableBuilder {
 }
 
 interface ParseContext {
-  decodeBytes: ByteDecoder;
   headingStyles: ReadonlyMap<number, HeadingType>;
   elements: TraversedElement[];
   groups: GroupState[];
   /** Text of the current paragraph or table cell. */
   text: Text[];
-  pendingBytes: number[];
-  /** Fallback units left to skip after `\uN`. */
-  unicodeSkip: number;
   listMarker?: string;
   pnListType?: ListType;
   table?: TableBuilder;
@@ -103,13 +78,10 @@ const newTable = (): TableBuilder => ({ rows: [], cells: [], rowIsHeader: false 
 
 function initialGroupState(): GroupState {
   return {
-    destination: "body",
-    ignorableIfUnknown: false,
     bold: false,
     italic: false,
     hidden: false,
     deleted: false,
-    ucSkip: 1,
     paragraph: defaultParagraphProps(),
   };
 }
@@ -221,13 +193,13 @@ function flushRow(ctx: ParseContext) {
   table.rowIsHeader = false;
 }
 
-function appendText(ctx: ParseContext, value: string) {
+function appendText(ctx: ParseContext, value: string, destination: RtfDestination) {
   if (value.length === 0) return;
   const group = currentGroup(ctx);
 
-  if (group.destination === "listMarker") {
+  if (destination === "listMarker") {
     ctx.listMarker = (ctx.listMarker ?? "") + value;
-  } else if (group.destination === "body" && !group.hidden && !group.deleted) {
+  } else if (destination === "body" && !group.hidden && !group.deleted) {
     const isWhitespace = value.trim().length === 0;
     if (isWhitespace && ctx.table && !group.paragraph.inTable) return;
     endTableIfLeft(ctx);
@@ -235,66 +207,22 @@ function appendText(ctx: ParseContext, value: string) {
   }
 }
 
-function flushPendingBytes(ctx: ParseContext) {
-  if (ctx.pendingBytes.length === 0) return;
-  const decoded = ctx.decodeBytes(ctx.pendingBytes);
-  ctx.pendingBytes = [];
-  appendText(ctx, decoded);
-}
-
-/** Handles the word right after `\*`, and destination words that open a new destination. */
-function enterDestination(group: GroupState, word: string): boolean {
-  if (group.ignorableIfUnknown) {
-    group.ignorableIfUnknown = false;
-    group.destination = word === "pn" ? "pn" : "skip";
-    return true;
-  }
-  if (NATIVE_SKIPPED_DESTINATIONS.has(word)) {
-    group.destination = "skip";
-    return true;
-  }
-  if (LIST_MARKER_DESTINATIONS.has(word)) {
-    group.destination = "listMarker";
-    return true;
-  }
-  if (word === "pn") {
-    group.destination = "pn";
-    return true;
-  }
-  return false;
-}
-
 const isOn = (token: RtfControlToken) => !token.hasParam || token.param !== 0;
 
-function handleControlWord(ctx: ParseContext, token: RtfControlToken) {
-  const group = currentGroup(ctx);
-  if (group.destination === "skip") return;
-
-  if (token.word === "*") {
-    group.ignorableIfUnknown = true;
+function handleControlWord(ctx: ParseContext, token: RtfControlToken, destination: RtfDestination) {
+  // Soft line breaks are not supported, so `\line` becomes a space.
+  if (token.word === "line") {
+    appendText(ctx, " ", destination);
     return;
   }
-  if (enterDestination(group, token.word)) return;
-
-  if (token.word === "u") {
-    appendText(ctx, decodeUnicodeParam(token.param));
-    ctx.unicodeSkip = group.ucSkip;
-    return;
-  }
-  const symbol = RTF_SYMBOL_WORDS.get(token.word);
-  if (symbol !== undefined) {
-    appendText(ctx, symbol);
-    return;
-  }
-
-  if (group.destination === "pn") {
+  if (destination === "pn") {
     if (token.word === "pnlvlblt") ctx.pnListType = ListType.PUNKTLISTE;
     else if (NUMBERED_PN_WORDS.has(token.word)) ctx.pnListType = ListType.NUMMERERT_LISTE;
     return;
   }
-  if (group.destination !== "body") return;
+  if (destination !== "body") return;
 
-  handleBodyControlWord(ctx, group, token);
+  handleBodyControlWord(ctx, currentGroup(ctx), token);
 }
 
 function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfControlToken) {
@@ -324,10 +252,6 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
       group.deleted = false;
       break;
     }
-    case "uc": {
-      group.ucSkip = Math.max(0, token.param);
-      break;
-    }
     case "pard": {
       group.paragraph = defaultParagraphProps();
       break;
@@ -352,7 +276,7 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
       if (props.inTable) {
         // Paragraphs inside a cell are joined with a space.
         ctx.table ??= newTable();
-        appendText(ctx, " ");
+        appendText(ctx, " ", "body");
         ctx.listMarker = undefined;
         ctx.pnListType = undefined;
       } else {
@@ -375,7 +299,7 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
       break;
     }
     case "nestcell": {
-      appendText(ctx, " ");
+      appendText(ctx, " ", "body");
       break;
     }
     case "row": {
@@ -390,7 +314,6 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
 
 /** Ends the document. An unterminated plain paragraph is returned as inline text, like a partial selection. */
 function finish(ctx: ParseContext) {
-  flushPendingBytes(ctx);
   const props = currentGroup(ctx).paragraph;
 
   if (ctx.table && props.inTable) {
@@ -411,61 +334,44 @@ function finish(ctx: ParseContext) {
   while (ctx.elements.length > 0 && isBlank(ctx.elements.at(-1)!)) ctx.elements.pop();
 }
 
-/** Parses RTF into the `TraversedElement[]` used by the HTML paste path. Never throws on unknown input. */
-export function interpretNativeRtf(rtf: string): TraversedElement[] {
-  const tokens = tokenizeRtf(rtf);
+/** Interprets native RTF into the `TraversedElement[]` used by the HTML paste path. Never throws on unknown input. */
+export function interpretNativeRtf(tokens: readonly RtfToken[], decodeBytes: ByteDecoder): TraversedElement[] {
   const ctx: ParseContext = {
-    decodeBytes: createByteDecoder(rtf),
     headingStyles: parseHeadingStyles(tokens),
     elements: [],
     groups: [initialGroupState()],
     text: [],
-    pendingBytes: [],
-    unicodeSkip: 0,
   };
 
-  for (const rawToken of tokens) {
-    if (rawToken.type !== "hexByte") flushPendingBytes(ctx);
-
-    let token: RtfToken | undefined = rawToken;
-    if (ctx.unicodeSkip > 0) {
-      const skip = skipUnicodeFallback(ctx.unicodeSkip, rawToken);
-      ctx.unicodeSkip = skip.remaining;
-      token = skip.rest;
-    }
-    if (!token) continue;
-
-    switch (token.type) {
+  const events = walkRtf(tokens, {
+    destinations: NATIVE_DESTINATIONS,
+    ignorableDestinations: NATIVE_IGNORABLE_DESTINATIONS,
+    decodeBytes,
+  });
+  for (const event of events) {
+    switch (event.kind) {
       case "groupStart": {
         const parent = currentGroup(ctx);
-        ctx.groups.push({ ...parent, ignorableIfUnknown: false, paragraph: { ...parent.paragraph } });
+        ctx.groups.push({ ...parent, paragraph: { ...parent.paragraph } });
         break;
       }
       case "groupEnd": {
-        // Closing the `{\rtf1 …}` group ends the document; trailing bytes are ignored.
-        if (ctx.groups.length === 2) {
-          finish(ctx);
-          return ctx.elements;
-        }
-        if (ctx.groups.length > 1) ctx.groups.pop();
-        break;
-      }
-      case "hexByte": {
-        ctx.pendingBytes.push(token.byte);
+        ctx.groups.pop();
         break;
       }
       case "text": {
-        if (currentGroup(ctx).ignorableIfUnknown) currentGroup(ctx).destination = "skip";
-        appendText(ctx, token.value);
+        appendText(ctx, event.value, event.destination);
         break;
       }
       case "control": {
-        handleControlWord(ctx, token);
+        handleControlWord(ctx, event.token, event.destination);
         break;
+      }
+      case "documentEnd": {
+        finish(ctx);
+        return ctx.elements;
       }
     }
   }
-
-  finish(ctx);
   return ctx.elements;
 }

@@ -16,12 +16,16 @@
 import { describe, expect, test } from "vitest";
 
 import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
+import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
+import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import { type Text, type TraversedElement } from "~/Brevredigering/LetterEditor/actions/traversedElement";
 import { FontType, ListType } from "~/types/brevbakerTypes";
 import wordpad from "~test/fixtures/rtf/richedit-wordpad.rtf?raw";
 import wordNumberedLists from "~test/fixtures/rtf/word-numbered-lists.rtf?raw";
 import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
 import word2003Sample from "~test/fixtures/rtf/word2003-sample.rtf?raw";
+
+const interpret = (rtf: string) => interpretNativeRtf(tokenizeRtf(rtf), createByteDecoder(rtf));
 
 function runs(content: Text[]): string {
   return content
@@ -59,7 +63,7 @@ function project(elements: TraversedElement[]): string[] {
 
 describe("RTF from Word 365 (syntetisk, norsk bokmål)", () => {
   test("keeps headings, formatting, lists and the table", () => {
-    expect(project(interpretNativeRtf(word365))).toEqual([
+    expect(project(interpret(word365))).toEqual([
       "H1: Vedtak om alderspensjon",
       "P: Vi har **innvilget** søknaden din om _alderspensjon_ fra 1. mai 2026.",
       "P: ",
@@ -79,7 +83,7 @@ describe("RTF from Word 365 (syntetisk, norsk bokmål)", () => {
   });
 
   test("drops tracked deletions and hidden text", () => {
-    const text = project(interpretNativeRtf(word365)).join("\n");
+    const text = project(interpret(word365)).join("\n");
 
     expect(text).not.toContain("Slettet tekst");
     expect(text).not.toContain("Skjult tekst");
@@ -88,7 +92,7 @@ describe("RTF from Word 365 (syntetisk, norsk bokmål)", () => {
 
 describe("RTF from Word 2003 (rtf.js sample)", () => {
   test("keeps the heading, list and table, and drops hidden text and footnotes", () => {
-    expect(project(interpretNativeRtf(word2003Sample))).toEqual([
+    expect(project(interpret(word2003Sample))).toEqual([
       "H1: **This is a test RTF**",
       "P: Hi! I’m a test file. This is some **bold** text, and some _italic_ text, as well as some underline text. And a bit of text. So we’re going to end this paragraph here and go on to a nice little list:",
       "P: ",
@@ -115,7 +119,7 @@ describe("RTF from Word with {\\listtext} numbered lists (rtf.js wmf-and-emf exc
   test("reads numbered lists from the marker text and keeps the table", () => {
     const items = (...texts: string[]) => texts.map((text) => `1. ${text}`);
 
-    expect(project(interpretNativeRtf(wordNumberedLists))).toEqual([
+    expect(project(interpret(wordNumberedLists))).toEqual([
       "P: **Technology Solution System Integration Test Process**",
       "P: ",
       "P: The Technology Solution System Integration Testing (SIT) process validates that the technology solution and its features conform to the Technology Solution Design document specifications and the Technology Solution Requirements, prior to the customer testing.",
@@ -147,7 +151,7 @@ describe("RTF from Word with {\\listtext} numbered lists (rtf.js wmf-and-emf exc
 
 describe("RTF from WordPad (rtf.js simple5)", () => {
   test("keeps formatting toggled mid-paragraph and joins \\line breaks", () => {
-    expect(project(interpretNativeRtf(wordpad))).toEqual([
+    expect(project(interpret(wordpad))).toEqual([
       "P: This is a **simple five paragraph **_document_.",
       "P: This is the second paragraph with a line break and it is centered.",
       "P: This is the third paragraph.",
