@@ -9,7 +9,8 @@ import { type RtfControlToken, type RtfToken } from "~/Brevredigering/LetterEdit
 /**
  * The RTF mechanics shared by the native interpreter and the Outlook de-encapsulator: group scoping,
  * destinations (incl. `\*`), `\'hh` and `\uN` decoding with `\ucN` fallback skipping, nested `\rtf`
- * documents and the end of the document. Formatting and paragraph structure are left to the consumer.
+ * documents and the end of the document. Formatting, paragraph structure and the meaning of control
+ * words such as `\par` and `\line` are left to the consumer, and so is the code page (`decodeBytes`).
  *
  * - `body`: document content
  * - `skip`: nothing inside is emitted
