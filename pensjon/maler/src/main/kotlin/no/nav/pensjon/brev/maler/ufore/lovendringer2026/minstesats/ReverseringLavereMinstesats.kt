@@ -293,8 +293,8 @@ object ReverseringLavereMinstesats {
 
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
-                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
+                    bokmal { +"Vedtaket har vi gjort etter Folketrygdloven " + data.hjemmeltekst + "." },
+                    nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova " + data.hjemmeltekst + "." },
                 )
             }
 

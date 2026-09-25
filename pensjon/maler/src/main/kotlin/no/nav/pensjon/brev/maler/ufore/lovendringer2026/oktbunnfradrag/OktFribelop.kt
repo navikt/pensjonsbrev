@@ -111,6 +111,13 @@ object OktFribelop {
                 )
             }
 
+            paragraph {
+                text(
+                    bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14 og 22-12. " },
+                    nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14 og 22-12. " },
+                )
+            }
+
             title1 {
                 text(
                     bokmal { +"Du har rett til å klage" },
