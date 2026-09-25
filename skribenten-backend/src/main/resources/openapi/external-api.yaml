@@ -34,6 +34,18 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/brevinfo"
+        400:
+          description: Mangler saksId
+          content:
+            application/json:
+              schema:
+                type: string
+        404:
+          description: Minst én av sakene ble ikke funnet, eller bruker har ikke tilgang
+          content:
+            application/json:
+              schema:
+                type: string
 
     post:
       description: "Opprette brev"
@@ -47,7 +59,7 @@ paths:
               $ref: "#/components/schemas/opprettBrevRequest"
       responses:
         "400":
-          description: "Bad Request"
+          description: "Bad Request. F.eks. ugyldig request, brevmal krever vedtaksId eller ikke tilgang til enhet."
           content:
             application/json:
               schema:
@@ -58,6 +70,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/opprettetBrev"
+        "404":
+          description: "Saken ble ikke funnet, eller bruker har ikke tilgang"
+          content:
+            application/json:
+              schema:
+                type: "string"
         "500":
           description: "Internal Server Error. Samlerespons for alle feil som skyldes feil på vår side."
           content:
@@ -76,8 +94,8 @@ components:
         - brevkode
         - tittel
         - brevtype
-        - distribusjonstype
-        - språk
+        - avsenderEnhetsId
+        - spraak
         - opprettetAv
         - sistRedigertAv
         - opprettet
@@ -89,21 +107,21 @@ components:
           format: uri
           description: URL for å åpne brevet i Skribenten
         id:
-          type: number
+          type: integer
           format: int64
           description: BrevId
         saksId:
-          type: number
+          type: integer
           format: int64
           description: Saksnummer i PESYS
         vedtaksId:
-          type: number
+          type: [ integer, "null" ]
           format: int64
-          description: Inkluderes kun om brevet er et vedtaksbrev
+          description: VedtaksId. Er `null` om brevet ikke er et vedtaksbrev.
         journalpostId:
-          type: number
+          type: [ integer, "null" ]
           format: int64
-          description: JournalpostId om brevet er arkivert (alltid ferdigstilt). Vil kun være inkludert om distribusjon må forsøkes nytt.
+          description: JournalpostId om brevet er arkivert (alltid ferdigstilt). Er kun satt om distribusjon må forsøkes på nytt, ellers `null`.
         brevkode:
           type: string
           description: Brevkode for brevmalen til brevet
@@ -141,8 +159,8 @@ components:
           type: string
           description: NavIdent på saksbehandler som sist redigerte brevet
         redigeresAv:
-          type: string
-          description: NavIdent på saksbehandler som redigerer brevet nå og kan ikke åpnes av andre
+          type: [ string, "null" ]
+          description: NavIdent på saksbehandler som redigerer brevet nå og kan ikke åpnes av andre. `null` om ingen redigerer brevet.
         opprettet:
           type: string
           format: date-time
@@ -152,8 +170,10 @@ components:
           format: date-time
           description: ISO-8601 formattert tidspunkt for når brevet sist ble lagret
         overstyrtMottaker:
-          description: Brevet skal distribueres til annen adresse eller mottaker
-          $ref: "#/components/schemas/mottaker"
+          description: Brevet skal distribueres til annen adresse eller mottaker. `null` om brevet sendes til bruker.
+          oneOf:
+            - $ref: "#/components/schemas/mottaker"
+            - type: "null"
         status:
           type: string
           enum:
@@ -203,13 +223,13 @@ components:
               type: string
               description: Poststed
             adresselinje1:
-              type: string
+              type: [ string, "null" ]
               description: Adresselinje 1
             adresselinje2:
-              type: string
+              type: [ string, "null" ]
               description: Adresselinje 2
             adresselinje3:
-              type: string
+              type: [ string, "null" ]
               description: Adresselinje 3
         - type: object
           description: Utenlandsk adresse
@@ -225,20 +245,14 @@ components:
             navn:
               type: string
               description: Navn på mottaker
-            postnummer:
-              type: string
-              description: Postnummer
-            poststed:
-              type: string
-              description: Poststed
             adresselinje1:
               type: string
               description: Adresselinje 1
             adresselinje2:
-              type: string
+              type: [ string, "null" ]
               description: Adresselinje 2
             adresselinje3:
-              type: string
+              type: [ string, "null" ]
               description: Adresselinje 3
             landkode:
               type: string
@@ -285,13 +299,20 @@ components:
 
         avsenderEnhetsId:
           type: string
-          description: Enhetsid for avdelinga som skal sende brevet.
+          minLength: 4
+          maxLength: 4
+          description: Enhetsid (Norg2, fire tegn) for avdelinga som skal sende brevet.
         saksbehandlerValg:
           type: object
           additionalProperties: {}
           description: Saksbehandlervalg, map. Nøkkel er string, verdi kan være hva som helst (any)
+        statiskFagsystemBrevdata:
+          type: object
+          additionalProperties: { }
+          description: Statiske brevdata fra fagsystemet, map. Nøkkel er string, verdi kan være hva som helst (any). Brukes for maler som henter brevdata fra fagsystemet ved opprettelse.
         reserverForRedigering:
           type: boolean
+          default: true
           description: Om brevet skal reserveres for redigering.
         vedtaksId:
           type: integer
