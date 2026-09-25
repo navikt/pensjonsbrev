@@ -3,17 +3,8 @@ package no.nav.brev.brevbaker.markup
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 
-/**
- * Rydder opp i markup-en før den rendres: fjerner tomme blokker og ugyldige linjeskift.
- */
-fun LetterMarkup.clean(): LetterMarkup =
-    copy(blocks = blocks.cleanBlocks())
-
 fun List<Attachment>.clean(): List<Attachment> =
     map { it.clean() }
-
-fun Attachment.clean(): Attachment =
-    copy(blocks = blocks.cleanBlocks())
 
 internal fun List<Block>.cleanBlocks(): List<Block> =
     mapNotNull { clean(it) }.removeEmptyBlocks()
