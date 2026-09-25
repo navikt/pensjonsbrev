@@ -1051,14 +1051,15 @@
     "listType": "PUNKTLISTE"
    },
    {
-    "type": "P",
+    "type": "ITEM",
     "content": [
      {
       "type": "TEXT",
       "font": "PLAIN",
       "text": ""
      }
-    ]
+    ],
+    "listType": "PUNKTLISTE"
    },
    {
     "type": "ITEM",

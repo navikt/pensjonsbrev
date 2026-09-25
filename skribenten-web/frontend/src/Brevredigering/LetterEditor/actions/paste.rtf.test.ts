@@ -243,6 +243,23 @@ describe("LetterEditorActions.paste - format: text/rtf", () => {
       expectRtfEquivalentToHtml("{\\rtf1\\ansi\\pard First\\par\\pard No trailing par}", "<p>First</p>No trailing par");
     });
 
+    test("an empty list item in the middle of a list keeps the list together", () => {
+      expectRtfEquivalentToHtml(
+        WORD_HEADER +
+          "\\pard\\ls1{\\listtext\\'b7\\tab}a\\par" +
+          "\\pard\\ls1{\\listtext\\'b7\\tab}\\par" +
+          "\\pard\\ls1{\\listtext\\'b7\\tab}b\\par}",
+        "<ul><li>a</li><li></li><li>b</li></ul>",
+      );
+    });
+
+    test("a trailing empty list item is trimmed", () => {
+      expectRtfEquivalentToHtml(
+        `${WORD_HEADER}\\pard\\ls1{\\listtext\\'b7\\tab}a\\par\\pard\\ls1{\\listtext\\'b7\\tab}\\par}`,
+        "<ul><li>a</li></ul>",
+      );
+    });
+
     test("empty paragraphs are kept as line breaks", () => {
       expectRtfEquivalentToHtml(
         `${WORD_HEADER}\\pard Første\\par\\pard\\par\\pard Andre\\par}`,
