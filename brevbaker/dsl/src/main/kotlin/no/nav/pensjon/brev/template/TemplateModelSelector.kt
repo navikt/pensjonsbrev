@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import java.util.Objects
+
 interface TemplateModelSelector<Model : Any, Property> : StableHash {
     val className: String
     val propertyName: String
@@ -14,9 +16,18 @@ interface TemplateModelSelector<Model : Any, Property> : StableHash {
     }
 }
 
-data class SimpleSelector<Model : Any, Property>(
+class SimpleSelector<Model : Any, Property>(
     override val className: String,
     override val propertyName: String,
     override val propertyType: String,
-    override val selector: Model.() -> Property
-) : TemplateModelSelector<Model, Property>
+    override val selector: Model.() -> Property,
+) : TemplateModelSelector<Model, Property> {
+    override fun equals(other: Any?) = other is SimpleSelector<*, *> &&
+            className == other.className &&
+            propertyName == other.propertyName &&
+            propertyType == other.propertyType &&
+            selector == other.selector
+
+    override fun hashCode() = Objects.hash(className, propertyName, propertyType, selector)
+    override fun toString(): String = "Vedlegg($className, $propertyName, $propertyType, $selector)"
+}

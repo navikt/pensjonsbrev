@@ -908,12 +908,6 @@ public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Lkotlin/jvm/functions/Function1;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/SimpleSelector;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/SimpleSelector;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/SimpleSelector;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getClassName ()Ljava/lang/String;
 	public fun getPropertyName ()Ljava/lang/String;
