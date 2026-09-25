@@ -8,6 +8,7 @@ import {
   newTable,
   newVariable,
 } from "~/Brevredigering/LetterEditor/actions/common";
+import { ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
 import { type Row } from "~/types/brevbakerTypes";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse, editedLetter } from "~test/support/brevFixtures";
@@ -150,6 +151,31 @@ test.describe("Table fallback caret boundaries", () => {
 
 test.describe("Table visual-line navigation", () => {
   for (const direction of ["up", "down"] as const) {
+    test(`${direction} preserves the caret column with a leading zero-width space`, async ({ page }) => {
+      const text = "Content 1";
+      const table = newTable([tableRow(direction === "down" ? ZERO_WIDTH_SPACE + text : text)]);
+      table.header.colSpec[0].headerContent = newCell([
+        newLiteral({ editedText: direction === "up" ? ZERO_WIDTH_SPACE + text : text }),
+      ]);
+      await setupEditor(page, [newParagraph({ content: [table] })]);
+      await page.getByTestId("table-header-0").evaluate((header) => {
+        header.style.fontWeight = "normal";
+      });
+      const source = direction === "down" ? headerCell(page, 0) : bodyCell(page, 0, 0);
+      const target = direction === "down" ? bodyCell(page, 0, 0) : headerCell(page, 0);
+      await placeCaret(source, 3);
+      const before = await caretPosition(page);
+
+      await page.keyboard.press(direction === "down" ? "ArrowDown" : "ArrowUp");
+
+      await expect(target).toBeFocused();
+      const after = await caretPosition(page);
+      expect(after.offset).toBe(4);
+      expect(after.x).toBeCloseTo(before.x, 0);
+      await page.keyboard.type("!");
+      await expect(target).toHaveText(`${ZERO_WIDTH_SPACE}Con!tent 1`);
+    });
+
     for (const targetText of ["short", ""]) {
       test(`${direction} clamps the caret in a ${targetText ? "short" : "empty"} cell`, async ({ page }) => {
         const sourceText = "a much longer source cell";

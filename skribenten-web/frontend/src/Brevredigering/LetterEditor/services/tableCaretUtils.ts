@@ -12,14 +12,8 @@ import {
 
 import { addElements, isTable, newLiteral, newRow } from "../actions/common";
 import { type Focus, type LetterEditorState, type TableCellIndex } from "../model/state";
-import { isEmptyContentList, isTableCellIndex } from "../model/utils";
-import {
-  charOffsetWithinLiteral,
-  ensureLineVisibleInScrollContainer,
-  getCaretRect,
-  getCursorOffset,
-  parseLiteralIndex,
-} from "./caretUtils";
+import { isEmptyContentList, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
+import { ensureLineVisibleInScrollContainer, getCaretRect, getCursorOffset, parseLiteralIndex } from "./caretUtils";
 
 export type MoveResult = Focus;
 
@@ -245,12 +239,13 @@ export function getTableArrowNavigationFocus(
   }
   if (!target.element.contains(range.startContainer)) return fallback;
 
-  // Convert the DOM position to the character offset stored in editor focus.
+  // Focus restoration uses DOM offsets, including a leading zero-width space in non-empty text.
   const literalIndex = parseLiteralIndex(target.element);
   if (!literalIndex) return fallback;
+  targetRange.setEnd(range.startContainer, range.startOffset);
   return {
     ...literalIndex,
-    cursorPosition: charOffsetWithinLiteral(target.element, range.startContainer, range.startOffset),
+    cursorPosition: target.element.textContent === ZERO_WIDTH_SPACE ? 0 : targetRange.toString().length,
   };
 }
 
