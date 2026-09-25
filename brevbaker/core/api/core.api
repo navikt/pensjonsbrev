@@ -64,19 +64,6 @@ public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMa
 	public fun hashCode ()I
 }
 
-public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkupV2 {
-	public fun <init> (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;)V
-	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
-	public final fun component2 ()Ljava/util/List;
-	public final fun copy (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;)Lno/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkupV2;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkupV2;Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkupV2;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAttachments ()Ljava/util/List;
-	public final fun getLetterMarkup ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract interface class no/nav/pensjon/brev/template/Letter {
 	public abstract fun getArgument ()Ljava/lang/Object;
 	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;

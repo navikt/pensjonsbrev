@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
-data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
+internal data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
 internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkupV2 =

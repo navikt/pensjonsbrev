@@ -8,7 +8,7 @@ import no.nav.brev.brevbaker.markup.outline.Text
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions.assertThat
 
-class LetterWithAttachmentsMarkupV2Asserter(actual: LetterWithAttachmentsMarkupV2) :
+internal class LetterWithAttachmentsMarkupV2Asserter(actual: LetterWithAttachmentsMarkupV2) :
     AbstractAssert<LetterWithAttachmentsMarkupV2Asserter, LetterWithAttachmentsMarkupV2>(actual, LetterWithAttachmentsMarkupV2Asserter::class.java) {
 
     fun hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssertV2.() -> Unit) =
