@@ -867,7 +867,7 @@
       "text": "First"
      }
     ],
-    "listType": "PUNKTLISTE"
+    "listType": "NUMMERERT_LISTE"
    },
    {
     "type": "ITEM",
@@ -878,7 +878,7 @@
       "text": "Second"
      }
     ],
-    "listType": "PUNKTLISTE"
+    "listType": "NUMMERERT_LISTE"
    }
   ]
  },

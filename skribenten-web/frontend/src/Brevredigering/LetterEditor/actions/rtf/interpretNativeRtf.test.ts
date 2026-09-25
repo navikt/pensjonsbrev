@@ -573,8 +573,7 @@ describe("interpretNativeRtf - structure and formatting", () => {
     ]);
   });
 
-  // G1: a known destination after `\*` should be honoured.
-  test.fails("numbered list item classified from a numeric listtext marker", () => {
+  test("numbered list item classified from a numeric listtext marker", () => {
     const rtf =
       "{\\rtf1\\ansi\\pard\\ls2{\\*\\listtext 1.\\tab}First\\par\\pard\\ls2{\\*\\listtext 2.\\tab}Second\\par}";
     expect(interpret(rtf)).toEqual([

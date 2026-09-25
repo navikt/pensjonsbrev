@@ -3,22 +3,18 @@ import { describe, expect, test } from "vitest";
 import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
 import {
   ENCAPSULATION_DESTINATIONS,
-  ENCAPSULATION_IGNORABLE_DESTINATIONS,
   NATIVE_DESTINATIONS,
-  NATIVE_IGNORABLE_DESTINATIONS,
 } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
 import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import { type RtfEvent, type WalkRtfOptions, walkRtf } from "~/Brevredigering/LetterEditor/actions/rtf/walkRtf";
 
 const NATIVE: WalkRtfOptions = {
   destinations: NATIVE_DESTINATIONS,
-  ignorableDestinations: NATIVE_IGNORABLE_DESTINATIONS,
   decodeBytes: createByteDecoder(""),
 };
 
 const ENCAPSULATION: WalkRtfOptions = {
   destinations: ENCAPSULATION_DESTINATIONS,
-  ignorableDestinations: ENCAPSULATION_IGNORABLE_DESTINATIONS,
   decodeBytes: createByteDecoder(""),
 };
 
@@ -100,10 +96,15 @@ describe("walkRtf", () => {
     ]);
   });
 
-  // G1: a known destination after `\*` should be honoured.
-  test.fails("captures \\*\\listtext content in the listMarker destination", () => {
+  test("captures \\*\\listtext content in the listMarker destination", () => {
     const events = walk("{\\rtf1{\\*\\listtext\\'b7\\tab}Hello}");
     expect(events).toContainEqual({ kind: "text", value: "\u00b7", destination: "listMarker" });
+  });
+
+  test("still skips skip-listed destinations after \\*", () => {
+    expect(
+      textOf(walk("{\\rtf1{\\*\\bkmkstart b}{\\*\\fldinst HYPERLINK}{\\*\\pnseclvl1\\pnucrm{\\pntxta .}}Hei}")),
+    ).toBe("Hei");
   });
 
   test("decodes hex escapes via windows-1252", () => {

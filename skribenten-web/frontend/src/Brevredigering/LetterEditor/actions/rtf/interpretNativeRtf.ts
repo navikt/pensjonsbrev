@@ -1,8 +1,5 @@
 import { type ByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
-import {
-  NATIVE_DESTINATIONS,
-  NATIVE_IGNORABLE_DESTINATIONS,
-} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
+import { NATIVE_DESTINATIONS } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
 import {
   HEADING_BY_OUTLINE_LEVEL,
   type HeadingType,
@@ -345,7 +342,6 @@ export function interpretNativeRtf(tokens: readonly RtfToken[], decodeBytes: Byt
 
   const events = walkRtf(tokens, {
     destinations: NATIVE_DESTINATIONS,
-    ignorableDestinations: NATIVE_IGNORABLE_DESTINATIONS,
     decodeBytes,
   });
   for (const event of events) {

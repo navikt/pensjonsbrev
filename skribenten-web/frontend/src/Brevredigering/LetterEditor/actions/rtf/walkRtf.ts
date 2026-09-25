@@ -34,8 +34,6 @@ export interface WalkRtfOptions {
   /** Destination words and what they open, e.g. fonttbl → "skip", listtext → "listMarker". */
   destinations: ReadonlyMap<string, RtfDestination>;
   decodeBytes: ByteDecoder;
-  /** When set, a word after `\*` only opens its destination if it's in this set; any other is skipped. */
-  ignorableDestinations?: ReadonlySet<string>;
 }
 
 interface WalkerGroup {
@@ -72,7 +70,6 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
     const known = options.destinations.get(word);
     if (!group.ignorable) return known;
     group.ignorable = false;
-    if (options.ignorableDestinations && !options.ignorableDestinations.has(word)) return "skip";
     return known ?? "skip";
   }
 

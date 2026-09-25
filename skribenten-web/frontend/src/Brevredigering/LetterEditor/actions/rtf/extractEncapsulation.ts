@@ -1,8 +1,5 @@
 import { type ByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
-import {
-  ENCAPSULATION_DESTINATIONS,
-  ENCAPSULATION_IGNORABLE_DESTINATIONS,
-} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
+import { ENCAPSULATION_DESTINATIONS } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
 import { type RtfToken } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import { type RtfDestination, walkRtf } from "~/Brevredigering/LetterEditor/actions/rtf/walkRtf";
 
@@ -59,7 +56,6 @@ export function extractEncapsulatedContent(
 
   const events = walkRtf(tokens, {
     destinations: ENCAPSULATION_DESTINATIONS,
-    ignorableDestinations: ENCAPSULATION_IGNORABLE_DESTINATIONS,
     decodeBytes,
   });
   for (const event of events) {
