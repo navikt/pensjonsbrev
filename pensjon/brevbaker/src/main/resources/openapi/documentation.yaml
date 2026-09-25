@@ -46,7 +46,7 @@ paths:
       summary: TODO
       responses:
         '200':
-          description: Strukturert dokumentasjon av brevmal. Se data klasse `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
+          description: Strukturert dokumentasjon av brevmal. Se `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
 
   /templates/redigerbar/{kode}/modelSpecification:
     parameters:
@@ -108,7 +108,7 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
@@ -126,7 +126,7 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
@@ -144,14 +144,14 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/BestillBrevRequest"
       responses:
         '200':
-          description: Brev i redigerbart LetterMarkup format. Se data klasse `no.nav.pensjon.brevbaker.api.model.LetterMarkup`.
+          description: Brev i redigerbart LetterMarkup format. Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup`.
           content:
             application/json:
               schema:
@@ -166,7 +166,7 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`.
         content:
           application/json:
             schema:
@@ -184,7 +184,7 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`.
         content:
           application/json:
             schema:
@@ -202,14 +202,14 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/BestillBrevRequest"
       responses:
         '200':
-          description: Brev i redigerbart LetterMarkup (v2) format. Se data klasse `no.nav.brev.brevbaker.markup.LetterMarkup`.
+          description: Brev i redigerbart LetterMarkup (v2) format. Se `no.nav.brev.brevbaker.markup.LetterMarkup`.
           content:
             application/json:
               schema:
@@ -224,7 +224,7 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
@@ -242,14 +242,14 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/BestillBrevRequest"
       responses:
         '200':
-          description: Brev i redigerbart LetterMarkup (v2) format. Se data klasse `no.nav.brev.brevbaker.markup.LetterMarkup`.
+          description: Brev i redigerbart LetterMarkup (v2) format. Se `no.nav.brev.brevbaker.markup.LetterMarkup`.
           content:
             application/json:
               schema:
@@ -264,38 +264,38 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/BestillBrevRequest"
       responses:
         '200':
-          description: Se data klasse `no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage`.
+          description: Se `no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage`.
         '404':
           description: Malen eksisterer ikke
 
   /v2/letter/redigerbar/redigerbare-vedlegg/titler:
     post:
-      summary: Hent titler for alltid-valgbare vedlegg (v2) som kan legges til i brevet
+      summary: Hent titler for redigerbare vedlegg (v2) i brevet
       security:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/BestillBrevRequest"
       responses:
         '200':
-          description: Se data klasse `no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler`.
+          description: Se `no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler`.
         '404':
           description: Malen eksisterer ikke
 
   /v2/letter/redigerbar/redigerbare-vedlegg/{vedleggId}:
     post:
-      summary: Hent LetterMarkup (v2) for et alltid-valgbart vedlegg
+      summary: Hent LetterMarkup (v2) for et redigerbart vedlegg
       security:
         - BearerAuth: [ ]
       parameters:
@@ -306,14 +306,14 @@ paths:
             type: string
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`.
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/BestillBrevRequest"
       responses:
         '200':
-          description: Se data klasse `no.nav.brev.brevbaker.markup.Attachment`.
+          description: Se `no.nav.brev.brevbaker.markup.Attachment`.
         '404':
           description: Malen eller vedlegget eksisterer ikke
 
@@ -324,7 +324,7 @@ paths:
         - BearerAuth: [ ]
       requestBody:
         required: true
-        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2`.
+        description: Se `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2`.
         content:
           application/json:
             schema:
@@ -342,7 +342,7 @@ components:
       scheme: bearer
   responses:
     LetterResponse_PDF:
-      description: Ferdig produsert brev i PDF format. Se data klasse `no.nav.pensjon.brev.api.model.LetterResponse.V2`.
+      description: Ferdig produsert brev i PDF format. Se `no.nav.pensjon.brev.api.model.LetterResponse`.
       content:
         application/json:
           schema:
@@ -352,7 +352,7 @@ components:
             type: string
             format: binary
     LetterResponse_HTML:
-      description: Ferdig produsert brev i HTML format. Se data klasse `no.nav.pensjon.brev.api.model.LetterResponse.V2`.
+      description: Ferdig produsert brev i HTML format. Se `no.nav.pensjon.brev.api.model.LetterResponse`.
       content:
         application/json:
           schema:
@@ -373,13 +373,13 @@ components:
                 items:
                   $ref: "#/components/schemas/TemplateDescription"
     GetTemplate:
-      description: Beskrivelse av brevmal. Se data klasse `no.nav.pensjon.brevbaker.api.model.TemplateDescription`
+      description: Beskrivelse av brevmal. Se `no.nav.pensjon.brevbaker.api.model.TemplateDescription`
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/TemplateDescription"
     GetTemplateModelSpec:
-      description: Skjema for brevdata til brevmalen. Se data klasse `no.nav.pensjon.brev.template.TemplateModelSpecification`.
+      description: Skjema for brevdata til brevmalen. Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification`.
       content:
         application/json:
           schema:
@@ -410,7 +410,7 @@ components:
   schemas:
     BestillBrevRequest:
       type: object
-      description: Se `no.nav.pensjon.brev.api.model.BestillBrevRequest`
+      description: Se `no.nav.pensjon.brev.api.model.maler.BestillBrevRequest`
       required:
         - kode
         - letterData
@@ -428,6 +428,11 @@ components:
           description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:pensjon-api-model)
         language:
           $ref: "#/components/schemas/LanguageCode"
+        pdfVedlegg:
+          type: array
+          description: Tittel på PDF-vedlegg. Se `no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel`.
+          items:
+            type: string
     BestillRedigertBrevRequest:
       type: object
       description: Se `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`
@@ -472,11 +477,6 @@ components:
           description: Redigerte vedlegg per vedleggId. Se `no.nav.brev.brevbaker.markup.Attachment`.
           additionalProperties:
             $ref: "#/components/schemas/AttachmentV2"
-        pdfVedlegg:
-          type: array
-          description: Tittel på PDF-vedlegg. Se `no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel`.
-          items:
-            type: string
         redigerbartBrev:
           $ref: "#/components/schemas/BestillRedigerbartBrevRequest"
     BestillRedigerbartBrevRequest:
@@ -523,7 +523,7 @@ components:
         title:
           type: array
           items:
-            type: object
+            $ref: "#/components/schemas/LetterMarkup_TextContent"
         blocks:
           type: array
           items:
@@ -548,12 +548,12 @@ components:
             $ref: "#/components/schemas/LanguageCode"
     LetterResponse:
       type: object
-      description: Se data klasse `no.nav.pensjon.brev.api.model.LetterResponse.V2`
+      description: Se `no.nav.pensjon.brev.api.model.LetterResponse`
       properties:
         file:
           type: string
           description: Base64 encoded file
-          format: binary
+          format: byte
         contentType:
           type: string
           description: ContentType of file
@@ -622,7 +622,7 @@ components:
               - "GRBL"
               - "KRIGSP"
               - "OMSORG"
-              - "UFOEREP"
+              - "UFOREP"
     LanguageCode:
       type: string
       description: Se `no.nav.pensjon.brevbaker.api.model.LanguageCode`
@@ -651,7 +651,7 @@ components:
       enum: [ "VEDTAKSBREV", "INFORMASJONSBREV" ]
     TemplateModelSpecification:
       type: object
-      description: Se `no.nav.pensjon.brev.template.TemplateModelSpecification`
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification`
       required:
         - types
       properties:
@@ -667,15 +667,22 @@ components:
       additionalProperties:
         $ref: "#/components/schemas/FieldType"
     FieldType:
-      description: Se `no.nav.pensjon.brev.template.FieldType`
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType`
       oneOf:
         - $ref: "#/components/schemas/FieldType_Scalar"
         - $ref: "#/components/schemas/FieldType_Enum"
         - $ref: "#/components/schemas/FieldType_Array"
         - $ref: "#/components/schemas/FieldType_Object"
+      discriminator:
+        propertyName: type
+        mapping:
+          scalar: "#/components/schemas/FieldType_Scalar"
+          enum: "#/components/schemas/FieldType_Enum"
+          array: "#/components/schemas/FieldType_Array"
+          object: "#/components/schemas/FieldType_Object"
     FieldType_Scalar:
       type: object
-      description: Se `no.nav.pensjon.brev.template.FieldType.Scalar`
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar`
       required:
         - type
         - nullable
@@ -688,45 +695,80 @@ components:
           type: boolean
         kind:
           $ref: "#/components/schemas/FieldType_ScalarKind"
+        displayText:
+          type: string
+          nullable: true
     FieldType_ScalarKind:
       type: string
-      description: Se `no.nav.pensjon.brev.template.FieldType.Scalar.Kind`
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind`
       enum: [ "NUMBER", "DOUBLE", "STRING", "BOOLEAN", "DATE" ]
     FieldType_Enum:
       type: object
-      description: Se `no.nav.pensjon.brev.template.FieldType.Enum`
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Enum`
       required:
+        - type
         - nullable
         - values
       properties:
+        type:
+          type: string
+          enum: [ "enum" ]
         nullable:
           type: boolean
         values:
           type: array
           items:
-            type: string
+            $ref: "#/components/schemas/FieldType_EnumEntry"
+        displayText:
+          type: string
+          nullable: true
+    FieldType_EnumEntry:
+      type: object
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.EnumEntry`
+      required:
+        - value
+      properties:
+        value:
+          type: string
+        displayText:
+          type: string
+          nullable: true
     FieldType_Array:
       type: object
-      description: Se `no.nav.pensjon.brev.template.FieldType.Array`
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Array`
       required:
+        - type
         - nullable
         - items
       properties:
+        type:
+          type: string
+          enum: [ "array" ]
         nullable:
           type: boolean
         items:
           $ref: "#/components/schemas/FieldType"
+        displayText:
+          type: string
+          nullable: true
     FieldType_Object:
       type: object
-      description: Se `no.nav.pensjon.brev.template.FieldType.Object`
+      description: Se `no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Object`
       required:
+        - type
         - nullable
         - typeName
       properties:
+        type:
+          type: string
+          enum: [ "object" ]
         nullable:
           type: boolean
         typeName:
           type: string
+        displayText:
+          type: string
+          nullable: true
 
     LetterMarkup:
       type: object
@@ -738,8 +780,10 @@ components:
         - signatur
       properties:
         title:
-          type: string
+          type: array
           readOnly: true
+          items:
+            $ref: "#/components/schemas/LetterMarkup_TextContent"
         sakspart:
           $ref: "#/components/schemas/LetterMarkup_Sakspart"
         blocks:
@@ -763,10 +807,14 @@ components:
           type: string
         gjelderFoedselsnummer:
           type: string
+        annenMottakerNavn:
+          type: string
+          nullable: true
         saksnummer:
           type: string
         dokumentDato:
           type: string
+          format: date
 
     LetterMarkup_Signatur:
       type: object
@@ -781,8 +829,10 @@ components:
           type: string
         saksbehandlerNavn:
           type: string
+          nullable: true
         attesterendeSaksbehandlerNavn:
           type: string
+          nullable: true
         navAvsenderEnhet:
           type: string
 
@@ -808,7 +858,7 @@ components:
           type: boolean
 
     LetterMarkup_Title:
-      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1` og `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title2`
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1`, `Title2` og `Title3`
       allOf:
         - $ref: "#/components/schemas/LetterMarkup_BlockBase"
         - type: object
@@ -818,7 +868,7 @@ components:
           properties:
             type:
               type: string
-              enum: [ "TITLE1", "TITLE2" ]
+              enum: [ "TITLE1", "TITLE2", "TITLE3" ]
             content:
               type: array
               items:
@@ -868,6 +918,17 @@ components:
           enum: [ "PLAIN", "BOLD", "ITALIC" ]
         text:
           type: string
+        tags:
+          type: array
+          description: Se `no.nav.pensjon.brevbaker.api.model.ElementTags`
+          items:
+            type: string
+            enum: [ "FRITEKST", "REDIGERBAR_DATA" ]
+
+    LetterMarkup_TextContent:
+      oneOf:
+        - $ref: "#/components/schemas/LetterMarkup_Text"
+        - $ref: "#/components/schemas/LetterMarkup_NewLine"
 
     LetterMarkup_NewLine:
       type: object
@@ -889,12 +950,17 @@ components:
         - id
         - type
         - items
+        - listType
       properties:
         id:
           $ref: "#/components/schemas/LetterMarkup_ID"
         type:
           type: string
           enum: [ "ITEM_LIST" ]
+        listType:
+          type: string
+          description: Se `no.nav.brev.Listetype`
+          enum: [ "PUNKTLISTE", "NUMMERERT_LISTE" ]
         items:
           type: array
           items:
@@ -972,7 +1038,7 @@ components:
       description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Header`
       required:
         - id
-        - colspec
+        - colSpec
       properties:
         id:
           $ref: "#/components/schemas/LetterMarkup_ID"
@@ -1024,7 +1090,7 @@ components:
               - $ref: "#/components/schemas/LetterMarkup_NewLine"
         size:
           type: string
-          enum: [ "NONE", "SHORT", "LONG" ]
+          enum: [ "NONE", "SHORT", "LONG", "FILL" ]
         vspace:
           type: boolean
 
@@ -1122,4 +1188,4 @@ components:
 
     TemplateDoc:
       type: object
-      description: Se data klasse `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
+      description: Se `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
