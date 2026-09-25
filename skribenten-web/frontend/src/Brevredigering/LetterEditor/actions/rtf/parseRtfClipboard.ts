@@ -4,6 +4,18 @@ import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtf
 import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import { type TraversedElement } from "~/Brevredigering/LetterEditor/actions/traversedElement";
 
+/**
+ * Entry point for pasted RTF (`text/rtf`). The pipeline:
+ *
+ * 1. `tokenizeRtf` splits the clipboard into tokens, once.
+ * 2. `createByteDecoder` picks the code page from the header's `\ansicpgN`.
+ * 3. If the header marks the RTF as encapsulated by Outlook (`\fromhtml1` / `\fromtext`),
+ *    `extractEncapsulatedContent` restores the original HTML or text.
+ * 4. Otherwise `interpretNativeRtf` turns Word/WordPad RTF into `TraversedElement`s.
+ *
+ * Both 3 and 4 read the tokens through `walkRtf`. The result tells `paste.ts` which insertion path to use.
+ */
+
 export type ParsedRtfClipboard =
   | { mode: "html"; html: string }
   | { mode: "text"; text: string }

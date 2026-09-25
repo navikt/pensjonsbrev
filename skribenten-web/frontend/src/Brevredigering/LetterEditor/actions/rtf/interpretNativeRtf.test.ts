@@ -309,6 +309,21 @@ describe("interpretNativeRtf", () => {
   test("keeps the edge spaces of inline text", () => {
     expect(interpret(`${HEADER}\\b  ikke }`)).toEqual([{ type: "TEXT", font: FontType.BOLD, text: " ikke " }]);
   });
+
+  test("collapses runs of spaces and tabs into one space", () => {
+    expect(interpret(`${HEADER}\\pard Hei  \\tab  der\\par}`)).toEqual([paragraph("Hei der")]);
+  });
+
+  test("reads a document truncated inside an open group", () => {
+    expect(interpret(`${HEADER}\\pard Hei {\\b der`)).toEqual([
+      plain("Hei "),
+      { type: "TEXT", font: FontType.BOLD, text: "der" },
+    ]);
+  });
+
+  test("reads input that is not RTF as plain text without throwing", () => {
+    expect(interpret("hello {world")).toEqual([plain("hello world")]);
+  });
 });
 
 describe("interpretNativeRtf - paragraph properties", () => {
