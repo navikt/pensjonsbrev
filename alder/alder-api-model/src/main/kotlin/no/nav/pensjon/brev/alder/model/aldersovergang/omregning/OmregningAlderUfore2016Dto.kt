@@ -19,6 +19,7 @@ data class OmregningAlderUfore2016Dto(
     val totalPensjon: Kroner,
     val antallBeregningsperioder: Int,
     val gjenlevendetilleggKap19Innvilget: Boolean,
+    val gjenlevendetilleggKap19Utbetalt: Boolean = true,
     val gjenlevenderettAnvendt: Boolean,
     val gjenlevenderettInnvilget: Boolean,
     val inngangOgEksportVurdering: InngangOgEksportVurdering,

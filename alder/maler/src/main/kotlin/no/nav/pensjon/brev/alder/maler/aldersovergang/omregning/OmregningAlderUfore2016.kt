@@ -61,6 +61,7 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
                     totalPensjon = pesysData.totalPensjon,
                     antallBeregningsperioder = pesysData.antallBeregningsperioder,
                     gjenlevendetilleggKap19Innvilget = pesysData.gjenlevendetilleggKap19Innvilget,
+                    gjenlevendetilleggKap19Utbetalt = pesysData.gjenlevendetilleggKap19Utbetalt,
                     avdodNavn = pesysData.persongrunnlagAvdod.avdodNavn,
                     avdodFnr = pesysData.persongrunnlagAvdod.avdodFnr,
                     gjenlevenderettAnvendt = pesysData.gjenlevenderettAnvendt,

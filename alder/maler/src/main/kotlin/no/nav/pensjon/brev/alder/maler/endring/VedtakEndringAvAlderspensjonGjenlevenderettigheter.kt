@@ -251,13 +251,21 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             english { + "You receive a survivor’s supplement in the retirement pension because you have pension rights after " + pesysData.avdod.navn + "." }
                         )
                     }
-                    showIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)) {
+                    showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt) {
                         // nyBeregningAPØkning_001
                         paragraph {
                             text(
                                 bokmal { + "Dette fører til at pensjonen din øker." },
                                 nynorsk { + "Dette fører til at pensjonen din aukar." },
                                 english { + "This leads to an increase in your retirement pension." }
+                            )
+                        }
+                    }.orShow {
+                        paragraph {
+                            text(
+                                bokmal { + "Dette fører ikke til at pensjonen din øker." },
+                                nynorsk { + "Dette fører ikkje til at pensjonen din aukar." },
+                                english { + "This does not lead to an increase in your retirement pension." }
                             )
                         }
                     }
@@ -316,7 +324,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
 
                 // forklaringberegningGjtKap19_148_13
-                showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
+                showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt) {
                     paragraph {
                         text(
                             bokmal { + "Dette gjenlevendetillegget skal ikke reguleres når pensjonene øker 1. mai hvert år." },
@@ -340,7 +348,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
 
                     // referansebeløpGjtKap19ErNull_001
-                    showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)) {
+                    showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt)) {
                         title1 {
                             text(
                                 bokmal { + "Hvorfor blir ikke pensjonen din høyere med gjenlevenderettigheter?" },
@@ -424,6 +432,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             showIf(
                 pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
                         and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+                        and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt
                         and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget)
             ) {
                 paragraph {
@@ -445,6 +454,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             showIf(
                 pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
                         and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+                        and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt
                         and pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget
             ) {
                 paragraph {

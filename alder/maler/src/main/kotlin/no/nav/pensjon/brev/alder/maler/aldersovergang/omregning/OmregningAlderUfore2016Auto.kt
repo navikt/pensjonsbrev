@@ -51,6 +51,7 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
                     totalPensjon = totalPensjon,
                     antallBeregningsperioder = antallBeregningsperioder,
                     gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget,
+                    gjenlevendetilleggKap19Utbetalt = gjenlevendetilleggKap19Utbetalt,
                     avdodNavn = persongrunnlagAvdod.avdodNavn,
                     avdodFnr = persongrunnlagAvdod.avdodFnr,
                     gjenlevenderettAnvendt = gjenlevenderettAnvendt,
