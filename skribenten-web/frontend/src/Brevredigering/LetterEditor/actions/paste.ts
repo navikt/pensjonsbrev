@@ -38,6 +38,7 @@ import {
   type TraversedElement,
 } from "~/Brevredigering/LetterEditor/actions/paste-elements";
 import { parseRtfToTraversedElements } from "~/Brevredigering/LetterEditor/actions/paste-rtf";
+import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/paste-rtf-html";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -62,8 +63,19 @@ import {
   type TextContent,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
+import { getRtfClipboardData } from "~/utils/pasteTracking";
 
-import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTableCellIndex, isTextContent } from "../model/utils";
+import {
+  isEmptyBlock,
+  isEmptyItem,
+  isItemList,
+  isLiteral,
+  isParagraph,
+  isTableCellIndex,
+  isTextContent,
+} from "../model/utils";
+
+const MAX_LOGGED_RTF_LENGTH = 2000;
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   withPatches((draft, literalIndex, offset, clipboard) => {
@@ -74,15 +86,7 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };
 
-    if (clipboard.types.includes("text/html")) {
-      insertHtmlClipboardInLetter(draft, clipboard);
-    } else if (getRtfClipboardText(clipboard) !== undefined) {
-      insertRtfClipboardInLetter(draft, clipboard);
-    } else if (clipboard.types.includes("text/plain")) {
-      insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
-    } else {
-      log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
-    }
+    insertClipboardInLetter(draft, clipboard);
   });
 
 export const pasteReplacingSelection: Action<LetterEditorState, [selection: SelectionIndex, clipboard: DataTransfer]> =
@@ -97,21 +101,33 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
 
     // After deletion, draft.focus is set to the collapsed position where the selection was.
     // Now paste at that position.
-    if (clipboard.types.includes("text/html")) {
-      insertHtmlClipboardInLetter(draft, clipboard);
-    } else if (getRtfClipboardText(clipboard) !== undefined) {
-      insertRtfClipboardInLetter(draft, clipboard);
-    } else if (clipboard.types.includes("text/plain")) {
-      insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
-    } else {
-      log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
-    }
+    insertClipboardInLetter(draft, clipboard);
   });
 
+/** Prefers HTML, then RTF, then plain text. RTF that yields no content falls back to plain text. */
+function insertClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
+  if (clipboard.types.includes("text/html")) {
+    insertParsedElements(draft, parseHtmlToTraversedElements(clipboard.getData("text/html")));
+    return;
+  }
+
+  const rtf = getRtfClipboardData(clipboard);
+  if (rtf !== undefined && insertRtfInLetter(draft, rtf)) {
+    return;
+  }
+
+  if (clipboard.types.includes("text/plain")) {
+    insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
+  } else if (rtf === undefined) {
+    log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
+  }
+}
+
 export function logPastedClipboard(clipboardData: DataTransfer) {
+  const rtf = getRtfClipboardData(clipboardData) ?? "";
   log("available paste types - ", clipboardData.types);
   log(`pasted html content - ${clipboardData.getData("text/html")}`);
-  log(`pasted rtf content - ${getRtfClipboardText(clipboardData) ?? ""}`);
+  log(`pasted rtf content (${rtf.length} tegn) - ${rtf.slice(0, MAX_LOGGED_RTF_LENGTH)}`);
   log(`pasted plain content - ${clipboardData.getData("text/plain")}`);
 }
 
@@ -266,39 +282,21 @@ function shouldModifyExistingLiteral(
   return (isNew(literal) || offset > 0 || !multipartPaste) && fontType === fontTypeOf(literal);
 }
 
-/**
- * Rich text format (RTF) is exposed under either "text/rtf" or "application/rtf" depending on the
- * OS/browser combination that produced the clipboard content.
- */
-function getRtfClipboardText(clipboard: DataTransfer): string | undefined {
-  if (clipboard.types.includes("text/rtf")) {
-    return clipboard.getData("text/rtf");
-  } else if (clipboard.types.includes("application/rtf")) {
-    return clipboard.getData("application/rtf");
-  } else {
-    return undefined;
-  }
-}
+/** Returns false if the RTF has no content, so the caller can fall back to plain text. */
+function insertRtfInLetter(draft: Draft<LetterEditorState>, rtf: string): boolean {
+  const encapsulated = extractEncapsulatedContent(rtf);
 
-function insertRtfClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
-  const rtf = getRtfClipboardText(clipboard);
-  if (rtf === undefined) {
-    return;
+  if (encapsulated?.format === "text") {
+    if (encapsulated.text.trim().length === 0) return false;
+    insertTextInLetter(draft, encapsulated.text, FontType.PLAIN, false);
+    return true;
   }
 
-  const parsedRtf = parseRtfToTraversedElements(rtf);
-
-  if (parsedRtf.length === 0) {
-    //trenger ikke å lime inn tomt innhold
-    return;
-  } else if (parsedRtf.every((element) => element.type === "TEXT")) {
-    for (const element of parsedRtf) {
-      insertTextInLetter(draft, element.text, element.font, false);
-    }
-  } else {
-    insertTraversedElements(draft, parsedRtf);
-  }
-  draft.saveStatus = "DIRTY";
+  const elements =
+    encapsulated?.format === "html"
+      ? parseHtmlToTraversedElements(encapsulated.html)
+      : parseRtfToTraversedElements(rtf);
+  return insertParsedElements(draft, elements);
 }
 
 /**
@@ -306,21 +304,21 @@ function insertRtfClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: 
  * Merk da at det er forskjellige regler hvis man limer inn i start/midten/slutt, på en literal, eller punktliste,
  * og om det kopierte innholdet er bare literal eller punktliste, eller begge.
  *
+ * Returns false if there was nothing to insert.
  */
-function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
-  const parsedAndCombinedHtml = parseAndCombineHTML(clipboard);
-
-  if (parsedAndCombinedHtml.length === 0) {
+function insertParsedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]): boolean {
+  if (elements.length === 0) {
     //trenger ikke å lime inn tomt innhold
-    return;
-  } else if (parsedAndCombinedHtml.every((element) => element.type === "TEXT")) {
-    for (const element of parsedAndCombinedHtml) {
+    return false;
+  } else if (elements.every((element) => element.type === "TEXT")) {
+    for (const element of elements) {
       insertTextInLetter(draft, element.text, element.font, false);
     }
   } else {
-    insertTraversedElements(draft, parsedAndCombinedHtml);
+    insertTraversedElements(draft, elements);
   }
   draft.saveStatus = "DIRTY";
+  return true;
 }
 
 // Ensure that every table row has exactly the same number of cells (colCount)
@@ -424,8 +422,15 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
   }
 }
 
-export function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
-  for (const element of elements) {
+function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
+  for (const [index, element] of elements.entries()) {
+    const previous = index > 0 ? elements[index - 1] : undefined;
+    if (previous?.type === "ITEM" && element.type !== "TEXT" && !continuesPastedList(draft, element)) {
+      breakOutOfPastedList(draft);
+    } else if (previous?.type === "TABLE") {
+      moveFocusAfterPastedTable(draft);
+    }
+
     switch (element.type) {
       case "TEXT": {
         insertTextInLetter(draft, element.text, element.font);
@@ -456,6 +461,63 @@ export function insertTraversedElements(draft: Draft<LetterEditorState>, element
         break;
       }
     }
+  }
+}
+
+/** Et innlimt punkt fortsetter lista vi står i, med mindre det er et punkt av en annen listetype. */
+function continuesPastedList(draft: Draft<LetterEditorState>, element: TraversedElement): boolean {
+  if (element.type !== "ITEM") return false;
+  if (element.nested || element.listType === undefined || !isItemContentIndex(draft.focus)) return true;
+
+  const itemList = draft.redigertBrev.blocks[draft.focus.blockIndex]?.content[draft.focus.contentIndex];
+  return !isItemList(itemList) || (itemList.editedListType ?? itemList.listType) === element.listType;
+}
+
+/**
+ * Etter et innlimt punkt står fokus i et nytt, tomt punkt. Skal neste element være en blokk, en
+ * tabell eller et punkt i en ny liste, fjerner vi det tomme punktet og fortsetter i en egen blokk etter lista.
+ */
+function breakOutOfPastedList(draft: Draft<LetterEditorState>) {
+  const focus = draft.focus;
+  if (!isItemContentIndex(focus)) return;
+
+  const itemList = draft.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex];
+  if (!isItemList(itemList) || focus.itemIndex !== itemList.items.length - 1 || focus.itemIndex === 0) return;
+  if (!isEmptyItem(itemList.items[focus.itemIndex])) return;
+
+  removeElements(focus.itemIndex, 1, {
+    content: itemList.items,
+    deletedContent: itemList.deletedItems,
+    id: itemList.id,
+  });
+  focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
+}
+
+/** Etter en innlimt tabell står fokus i tabellen; flytt det til en egen blokk etter tabellen. */
+function moveFocusAfterPastedTable(draft: Draft<LetterEditorState>) {
+  const focus = draft.focus;
+  if (!isTableCellIndex(focus) || !isTable(draft.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex]))
+    return;
+
+  focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
+}
+
+/** Splitter blokka etter `contentIndex` (eller legger til et tomt avsnitt) og setter fokus i starten av den nye blokka. */
+function focusNewBlockAfter(draft: Draft<LetterEditorState>, blockIndex: number, contentIndex: number) {
+  const blocks = draft.redigertBrev.blocks;
+  const afterIndex = { blockIndex, contentIndex: contentIndex + 1 };
+
+  if (isLiteral(blocks[blockIndex].content[afterIndex.contentIndex])) {
+    draft.focus = { ...afterIndex, cursorPosition: 0 };
+    splitRecipe(draft, afterIndex, 0);
+  } else {
+    addElements(
+      [newParagraph({ content: [newLiteral({ editedText: "" })] })],
+      blockIndex + 1,
+      blocks,
+      draft.redigertBrev.deletedBlocks,
+    );
+    draft.focus = { blockIndex: blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
   }
 }
 
@@ -591,11 +653,9 @@ function toggleItemListAndSplitAtCursor(
   }
 }
 
-/** Return clipboard HTML or plain text, sanitised through DOMPurify. */
-function getCleanClipboardMarkup(dt: DataTransfer): string {
-  const raw = dt.types.includes("text/html") ? dt.getData("text/html") : dt.getData("text/plain");
-
-  return DOMPurify.sanitize(raw, {
+/** Sanitises pasted HTML through DOMPurify. */
+function sanitizePastedHtml(html: string): string {
+  return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
       "p",
       "br",
@@ -621,9 +681,8 @@ function getCleanClipboardMarkup(dt: DataTransfer): string {
   });
 }
 
-function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
-  const cleanHtml = getCleanClipboardMarkup(clipboard);
-  const document = new DOMParser().parseFromString(cleanHtml, "text/html");
+function parseHtmlToTraversedElements(html: string): TraversedElement[] {
+  const document = new DOMParser().parseFromString(sanitizePastedHtml(html), "text/html");
 
   const elements = traverseChildren(document.body, FontType.PLAIN);
   return moveOuterTextIntoNeighbouringParagraphs(elements);
@@ -876,7 +935,7 @@ function traverseLiChildren(li: Element, font: FontType): ItemElement[] {
       case "ITEM": {
         // Nested list item — flush any accumulated direct text as the parent item first.
         flushDirectText();
-        result.push(child);
+        result.push({ ...child, nested: true });
         break;
       }
       case "P":
