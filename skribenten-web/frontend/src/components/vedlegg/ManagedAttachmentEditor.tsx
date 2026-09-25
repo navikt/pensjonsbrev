@@ -113,28 +113,31 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg
 
   const pdfQuery = redigeringsflate === "attestant-redigering" ? hentPdfForAttestering : hentPdfForBrev;
 
-  const { editorState, setEditorState, saveFailed, flush, reset, resetting } = useEditorAutosave<EditAttachment>({
-    initialState: createVedleggState(brev, props.initialVedlegg),
-    save: (state) =>
-      lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, toVedlegg(state.redigertBrev), redigeringsflate),
-    applyResponse: (state, vedleggResponse) => {
-      const savedDocument: EditedDocument = {
-        title: vedleggResponse.title,
-        blocks: vedleggResponse.blocks,
-        deletedBlocks: vedleggResponse.deletedBlocks,
-      };
-      if (isEqual(normalizeDocumentForComparison(state.redigertBrev), normalizeDocumentForComparison(savedDocument))) {
-        return state;
-      }
-      return { ...state, redigertBrev: savedDocument, history: { entries: [], entryPointer: -1 } };
-    },
-    onSaved: (vedleggResponse) => {
-      setVedleggInCache(vedleggResponse);
-      setTitleInCache(vedleggResponse);
-      setVedleggMeta({ includeSakspart: vedleggResponse.includeSakspart });
-      queryClient.resetQueries({ queryKey: pdfQuery.queryKey(brev.info.id) });
-    },
-  });
+  const { editorState, setEditorState, saveFailed, savePendingChanges, reset, resetting } =
+    useEditorAutosave<EditAttachment>({
+      initialState: createVedleggState(brev, props.initialVedlegg),
+      save: (state) =>
+        lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, toVedlegg(state.redigertBrev), redigeringsflate),
+      applyResponse: (state, vedleggResponse) => {
+        const savedDocument: EditedDocument = {
+          title: vedleggResponse.title,
+          blocks: vedleggResponse.blocks,
+          deletedBlocks: vedleggResponse.deletedBlocks,
+        };
+        if (
+          isEqual(normalizeDocumentForComparison(state.redigertBrev), normalizeDocumentForComparison(savedDocument))
+        ) {
+          return state;
+        }
+        return { ...state, redigertBrev: savedDocument, history: { entries: [], entryPointer: -1 } };
+      },
+      onSaved: (vedleggResponse) => {
+        setVedleggInCache(vedleggResponse);
+        setTitleInCache(vedleggResponse);
+        setVedleggMeta({ includeSakspart: vedleggResponse.includeSakspart });
+        queryClient.resetQueries({ queryKey: pdfQuery.queryKey(brev.info.id) });
+      },
+    });
 
   const missingFromTemplateCount = countMissingFromTemplateBlocks(editorState.redigertBrev);
   useEffect(() => {
@@ -143,9 +146,9 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg
   }, [registerVedleggMissingFromTemplate, vedleggId, missingFromTemplateCount]);
 
   useEffect(() => {
-    registerVedleggSave(flush);
+    registerVedleggSave(savePendingChanges);
     return () => registerVedleggSave(null);
-  }, [registerVedleggSave, flush]);
+  }, [registerVedleggSave, savePendingChanges]);
 
   const openResetModal = useCallback(() => setResetModalOpen(true), []);
 

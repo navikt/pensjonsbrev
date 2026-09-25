@@ -51,10 +51,10 @@ describe("useEditorAutosave", () => {
     expect(save).toHaveBeenCalledTimes(1);
   });
 
-  it("flushes immediately without waiting for the debounce", async () => {
+  it("saves pending changes immediately without waiting for the debounce", async () => {
     const { result, save } = setup();
     act(() => result.current.setEditorState(edit));
-    await act(() => result.current.flush());
+    await act(() => result.current.savePendingChanges());
     expect(save).toHaveBeenCalledTimes(1);
     expect(result.current.editorState.saveStatus).toBe("SAVED");
   });

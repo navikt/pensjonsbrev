@@ -22,14 +22,14 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (controller.canAutosave()) void controller.flush().catch(() => undefined);
+      if (controller.canAutosave()) void controller.savePendingChanges().catch(() => undefined);
     }, AUTOSAVE_TIMER);
     return () => clearTimeout(timeout);
   }, [controller, snapshot.revision, snapshot.resetting, snapshot.saveFailed, snapshot.editorState.saveStatus]);
 
   useEffect(
     () => () => {
-      if (controller.canAutosave()) void controller.flush().catch(() => undefined);
+      if (controller.canAutosave()) void controller.savePendingChanges().catch(() => undefined);
     },
     [controller],
   );
@@ -39,7 +39,7 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
     setEditorState: controller.update,
     saveFailed: snapshot.saveFailed,
     resetting: snapshot.resetting,
-    flush: controller.flush,
+    savePendingChanges: controller.savePendingChanges,
     reset: controller.reset,
   };
 }

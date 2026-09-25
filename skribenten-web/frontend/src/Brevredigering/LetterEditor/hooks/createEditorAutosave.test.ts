@@ -34,121 +34,120 @@ const setup = () => {
       redigertBrev: { ...state.redigertBrev },
       saveStatus: "DIRTY",
     }));
-  return { controller, edit, save, requests, applyResponse, onSaved };
+  const request = async (index: number) => {
+    await vi.waitFor(() => expect(requests.length).toBeGreaterThan(index));
+    return requests[index];
+  };
+  return { controller, edit, save, request, applyResponse, onSaved };
 };
 
 describe("createEditorAutosave", () => {
   it("acknowledges only the sent revision and then saves the latest draft", async () => {
-    const { controller, edit, save, requests, applyResponse } = setup();
+    const { controller, edit, save, request, applyResponse } = setup();
     edit();
     const firstDraft = controller.getSnapshot().editorState.redigertBrev;
-    const flushed = controller.flush();
-    await Promise.resolve();
+    const saving = controller.savePendingChanges();
+    const firstRequest = await request(0);
     edit();
     edit();
     const latestDraft = controller.getSnapshot().editorState.redigertBrev;
     expect(save).toHaveBeenCalledTimes(1);
-    requests[0].resolve(initialState);
-    await Promise.resolve();
+    firstRequest.resolve(initialState);
+    const secondRequest = await request(1);
     expect(applyResponse).not.toHaveBeenCalled();
     expect(controller.getSnapshot().editorState.redigertBrev).toBe(latestDraft);
     expect(controller.getSnapshot().editorState.saveStatus).not.toBe("SAVED");
-    expect(save.mock.calls).toHaveLength(2);
     expect(firstDraft).not.toBe(latestDraft);
-    requests[1].resolve({ ...initialState, redigertBrev: latestDraft });
-    await flushed;
+    secondRequest.resolve({ ...initialState, redigertBrev: latestDraft });
+    await saving;
     expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
     expect(applyResponse).toHaveBeenCalledTimes(1);
   });
 
   it("shares one save process and propagates its failure without retrying", async () => {
-    const { controller, edit, save, requests } = setup();
+    const { controller, edit, save, request } = setup();
     edit();
-    const first = controller.flush();
-    const second = controller.flush();
-    await Promise.resolve();
-    requests[0].reject(new Error("save failed"));
+    const first = controller.savePendingChanges();
+    const second = controller.savePendingChanges();
+    (await request(0)).reject(new Error("save failed"));
     await Promise.all([expect(first).rejects.toThrow("save failed"), expect(second).rejects.toThrow("save failed")]);
     expect(save).toHaveBeenCalledTimes(1);
     expect(controller.canAutosave()).toBe(false);
     expect(controller.getSnapshot().saveFailed).toBe(true);
     expect(controller.getSnapshot().editorState.saveStatus).toBe("DIRTY");
-    const retry = controller.flush();
-    await Promise.resolve();
-    requests[1].resolve(initialState);
+    const retry = controller.savePendingChanges();
+    (await request(1)).resolve(initialState);
     await retry;
     expect(controller.getSnapshot().saveFailed).toBe(false);
   });
 
   it("can save a newer draft after an older request fails", async () => {
-    const { controller, edit, requests } = setup();
+    const { controller, edit, request } = setup();
     edit();
-    const flushed = controller.flush();
-    await Promise.resolve();
+    const saving = controller.savePendingChanges();
+    const firstRequest = await request(0);
     edit();
-    requests[0].reject(new Error("old save failed"));
-    await Promise.resolve();
-    requests[1].resolve(initialState);
-    await flushed;
+    firstRequest.reject(new Error("old save failed"));
+    (await request(1)).resolve(initialState);
+    await saving;
     expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
   });
 
   it("does not save focus-only changes or save responses again", async () => {
     const { controller, save } = setup();
     controller.update((state) => ({ ...state, focus: { blockIndex: 1, contentIndex: 0 } }));
-    await controller.flush();
+    await controller.savePendingChanges();
     expect(save).not.toHaveBeenCalled();
     expect(controller.getSnapshot().revision).toBe(0);
   });
 
   it("waits for a running save before resetting and discards pending edits only after reset succeeds", async () => {
-    const { controller, edit, requests, save } = setup();
+    const { controller, edit, request, save } = setup();
     edit();
-    const flushed = controller.flush();
-    const joined = controller.flush();
+    const saving = controller.savePendingChanges();
+    const joined = controller.savePendingChanges();
     const finished = vi.fn();
-    void flushed.then(finished);
+    void saving.then(finished);
     void joined.then(finished);
-    await Promise.resolve();
+    const firstRequest = await request(0);
     edit();
     const operation = deferred<LetterEditorState>();
     const resetOperation = vi.fn(() => operation.promise);
     const reset = controller.reset(resetOperation);
-    const flushDuringReset = controller.flush();
-    void flushDuringReset.then(finished);
-    await Promise.resolve();
+    const savedDuringReset = controller.savePendingChanges();
+    void savedDuringReset.then(finished);
     expect(resetOperation).not.toHaveBeenCalled();
-    requests[0].resolve(initialState);
+    firstRequest.resolve(initialState);
     await vi.waitFor(() => expect(resetOperation).toHaveBeenCalledTimes(1));
     expect(finished).not.toHaveBeenCalled();
     expect(save).toHaveBeenCalledTimes(1);
     operation.resolve(initialState);
     await reset;
-    await flushDuringReset;
-    await flushed;
+    await savedDuringReset;
+    await saving;
     await joined;
     expect(finished).toHaveBeenCalledTimes(3);
     expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
     expect(controller.getSnapshot().resetting).toBe(false);
   });
 
-  it("propagates reset failure to callers that started, joined, or flushed during reset", async () => {
-    const { controller, edit, requests, save } = setup();
+  it("propagates reset failure to callers that started, joined, or saved during reset", async () => {
+    const { controller, edit, request, save } = setup();
     edit();
-    const flushed = controller.flush();
-    const joined = controller.flush();
-    await Promise.resolve();
+    const saving = controller.savePendingChanges();
+    const joined = controller.savePendingChanges();
+    const firstRequest = await request(0);
     edit();
     const draft = controller.getSnapshot().editorState.redigertBrev;
     const operation = deferred<LetterEditorState>();
     const resetOperation = vi.fn(() => operation.promise);
     const reset = controller.reset(resetOperation);
-    const flushDuringReset = controller.flush();
+    const savedDuringReset = controller.savePendingChanges();
     const failures = Promise.all(
-      [flushed, joined, reset, flushDuringReset].map((result) => expect(result).rejects.toThrow("reset failed")),
+      [saving, joined, reset, savedDuringReset].map((result) => expect(result).rejects.toThrow("reset failed")),
     );
 
-    requests[0].resolve(initialState);
+    firstRequest.resolve(initialState);
     await vi.waitFor(() => expect(resetOperation).toHaveBeenCalledTimes(1));
     operation.reject(new Error("reset failed"));
     await failures;
@@ -174,32 +173,83 @@ describe("createEditorAutosave", () => {
   });
 
   it("propagates failure of the latest draft even when an older save also failed", async () => {
-    const { controller, edit, requests } = setup();
+    const { controller, edit, request } = setup();
     edit();
-    const flushed = controller.flush();
-    await Promise.resolve();
+    const saving = controller.savePendingChanges();
+    const firstRequest = await request(0);
     edit();
-    requests[0].reject(new Error("old save failed"));
-    await Promise.resolve();
-    requests[1].reject(new Error("latest save failed"));
-    await expect(flushed).rejects.toThrow("latest save failed");
+    firstRequest.reject(new Error("old save failed"));
+    (await request(1)).reject(new Error("latest save failed"));
+    await expect(saving).rejects.toThrow("latest save failed");
     expect(controller.canAutosave()).toBe(false);
     expect(controller.getSnapshot().editorState.saveStatus).toBe("DIRTY");
   });
 
-  it("keeps draining actual edits without an arbitrary attempt limit", async () => {
-    const { controller, edit, requests, save } = setup();
+  it("recovers when save throws synchronously", async () => {
+    const save = vi.fn((): Promise<LetterEditorState> => {
+      throw new Error("sync failure");
+    });
+    const controller = createEditorAutosave({ initialState, save, applyResponse: (state) => state, onSaved: vi.fn() });
+    controller.update((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" }));
+    await expect(controller.savePendingChanges()).rejects.toThrow("sync failure");
+    await expect(controller.savePendingChanges()).rejects.toThrow("sync failure");
+    expect(save).toHaveBeenCalledTimes(2);
+  });
+
+  it("lets a subscriber that saves during save startup wait for the real save", async () => {
+    const { controller, edit, request } = setup();
     edit();
-    const flushed = controller.flush();
-    await Promise.resolve();
+    const nestedFinished = vi.fn();
+    const unsubscribe = controller.subscribe(() => {
+      unsubscribe();
+      void controller.savePendingChanges().then(nestedFinished);
+    });
+    const saving = controller.savePendingChanges();
+    const firstRequest = await request(0);
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(nestedFinished).not.toHaveBeenCalled();
+    firstRequest.resolve(initialState);
+    await saving;
+    await vi.waitFor(() => expect(nestedFinished).toHaveBeenCalledTimes(1));
+  });
+
+  it("does not send a save when a subscriber resets during save startup", async () => {
+    const { controller, edit, save } = setup();
+    edit();
+    let nestedReset: Promise<void> | undefined;
+    const unsubscribe = controller.subscribe(() => {
+      unsubscribe();
+      nestedReset = controller.reset(async () => initialState);
+    });
+    await controller.savePendingChanges();
+    await nestedReset;
+    expect(save).not.toHaveBeenCalled();
+  });
+
+  it("returns the running reset to a subscriber that resets during reset startup", () => {
+    const { controller } = setup();
+    let nestedReset: Promise<void> | undefined;
+    const unsubscribe = controller.subscribe(() => {
+      unsubscribe();
+      nestedReset = controller.reset(async () => initialState);
+    });
+    const reset = controller.reset(() => deferred<LetterEditorState>().promise);
+    expect(nestedReset).toBe(reset);
+  });
+
+  it("keeps draining actual edits without an arbitrary attempt limit", async () => {
+    const { controller, edit, request, save } = setup();
+    edit();
+    const saving = controller.savePendingChanges();
     for (let requestIndex = 0; requestIndex < 7; requestIndex++) {
+      const pending = await request(requestIndex);
       edit();
-      requests[requestIndex].resolve(initialState);
-      await Promise.resolve();
+      pending.resolve(initialState);
+      await request(requestIndex + 1);
       expect(controller.getSnapshot().editorState.saveStatus).not.toBe("SAVED");
     }
-    requests[7].resolve(initialState);
-    await flushed;
+    (await request(7)).resolve(initialState);
+    await saving;
     expect(save).toHaveBeenCalledTimes(8);
     expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
   });
