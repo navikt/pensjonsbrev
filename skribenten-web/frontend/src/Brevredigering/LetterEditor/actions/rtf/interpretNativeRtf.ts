@@ -215,7 +215,11 @@ function appendText(ctx: ParseContext, value: string, destination: RtfDestinatio
     const isWhitespace = value.trim().length === 0;
     if (isWhitespace && ctx.table && !isInTable(ctx)) return;
     endTableIfLeft(ctx);
-    ctx.text.push({ type: "TEXT", font: fontOf(group), text: value });
+    // Coalesce runs with the same font, so a `\u`-heavy paragraph doesn't become hundreds of runs to merge.
+    const font = fontOf(group);
+    const last = ctx.text.at(-1);
+    if (last?.font === font) last.text += value;
+    else ctx.text.push({ type: "TEXT", font, text: value });
   }
 }
 
