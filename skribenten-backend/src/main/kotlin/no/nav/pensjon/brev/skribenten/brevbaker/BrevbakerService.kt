@@ -173,19 +173,9 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             contentType(ContentType.Application.Json)
             setBody(
                 BestillRedigertBrevRequest(
-                    kode = brevkode,
-                    letterData = GeneriskRedigerbarBrevdata(
-                        pesysData = fagsystemBrevdata,
-                        saksbehandlerValg = saksbehandlervalg,
-                    ),
-                    fagsystemBrevdata = fagsystemBrevdata,
-                    saksbehandlervalg = saksbehandlervalg,
-                    felles = felles,
-                    language = spraak,
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
                     redigerteVedlegg = redigerteVedlegg,
-                    pdfVedlegg = pdfVedlegg,
                     redigerbartBrev = BestillRedigerbartBrevRequest(
                         kode = brevkode,
                         letterData = GeneriskRedigerbarBrevdata(
