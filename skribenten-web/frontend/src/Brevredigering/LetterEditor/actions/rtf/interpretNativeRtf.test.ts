@@ -696,8 +696,7 @@ describe("interpretNativeRtf - structure and formatting", () => {
     expect(interpret(rtf)).toEqual([{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "First" }] }]);
   });
 
-  // G3: an empty list paragraph should not split the list.
-  test.fails("an empty list item in the middle of a list is kept as an empty item", () => {
+  test("an empty list item in the middle of a list is kept as an empty item", () => {
     const rtf =
       "{\\rtf1\\ansi\\pard\\ls1{\\listtext\\'b7\\tab}a\\par" +
       "\\pard\\ls1{\\listtext\\'b7\\tab}\\par" +

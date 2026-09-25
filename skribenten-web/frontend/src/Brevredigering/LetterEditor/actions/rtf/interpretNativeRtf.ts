@@ -130,6 +130,10 @@ function isListItem(ctx: ParseContext, props: ParagraphProps): boolean {
   return ctx.listMarker !== undefined || ctx.pnListType !== undefined || props.listId > 0;
 }
 
+function listTypeOf(ctx: ParseContext): ListType {
+  return ctx.listMarker === undefined ? (ctx.pnListType ?? ListType.PUNKTLISTE) : listTypeFromMarker(ctx.listMarker);
+}
+
 function flushTable(ctx: ParseContext) {
   const table = ctx.table;
   if (!table) return;
@@ -161,17 +165,18 @@ function flushParagraph(ctx: ParseContext) {
   const heading = headingOf(ctx, props);
 
   if (content.length === 0) {
-    // Blank lines are kept as empty paragraphs, like `<p></p>` in the HTML path.
-    ctx.elements.push({ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "" }] });
+    // Blank lines are kept as empty paragraphs or list items, like `<p></p>` and `<li></li>` in the HTML path.
+    const empty: Text[] = [{ type: "TEXT", font: FontType.PLAIN, text: "" }];
+    if (!heading && isListItem(ctx, props))
+      ctx.elements.push({ type: "ITEM", content: empty, listType: listTypeOf(ctx) });
+    else ctx.elements.push({ type: "P", content: empty });
   } else if (heading) {
     // Numbered headings ("1 Innledning") keep their number as text.
     const marker = ctx.listMarker?.trim();
     const prefix: Text[] = marker ? [{ type: "TEXT", font: FontType.PLAIN, text: `${marker} ` }] : [];
     ctx.elements.push({ type: heading, content: finalizeTextRun([...prefix, ...content]) });
   } else if (isListItem(ctx, props)) {
-    const listType =
-      ctx.listMarker === undefined ? (ctx.pnListType ?? ListType.PUNKTLISTE) : listTypeFromMarker(ctx.listMarker);
-    ctx.elements.push({ type: "ITEM", content, listType });
+    ctx.elements.push({ type: "ITEM", content, listType: listTypeOf(ctx) });
   } else {
     ctx.elements.push({ type: "P", content });
   }
@@ -337,7 +342,7 @@ function finish(ctx: ParseContext) {
   }
 
   const isBlank = (element: TraversedElement) =>
-    element.type === "P" && element.content.every((item) => item.text.length === 0);
+    (element.type === "P" || element.type === "ITEM") && element.content.every((item) => item.text.length === 0);
   while (ctx.elements.length > 0 && isBlank(ctx.elements[0])) ctx.elements.shift();
   while (ctx.elements.length > 0 && isBlank(ctx.elements.at(-1)!)) ctx.elements.pop();
 }
