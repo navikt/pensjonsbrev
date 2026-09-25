@@ -10,7 +10,9 @@ import {
   newVariable,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import {
+  type Content,
   ElementTags,
   FontType,
   type Item,
@@ -18,8 +20,11 @@ import {
   ListType,
   type LiteralValue,
   type ParagraphBlock,
+  type TextContent,
   type VariableValue,
 } from "~/types/brevbakerTypes";
+import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
+import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
 import { item, itemList, letter, literal, paragraph, select, variable } from "~test/support/letterEditorTestUtils";
 
 describe("LetterEditorActions.paste", () => {
@@ -3770,6 +3775,41 @@ describe("LetterEditorActions.paste - nested list flattening", () => {
   });
 });
 
+describe("LetterEditorActions.paste - blocks after lists and tables", () => {
+  test("a numbered list after a bullet list becomes its own list, and a paragraph after it leaves the list", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/html": "<ul><li>a</li></ul><ol><li>b</li></ol><p>c</p>",
+    });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+    expect(projectLetter(result)).toEqual(["• a", "1. b", "P: c"]);
+  });
+
+  test("a table after a list is kept", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/html": "<ul><li>a</li></ul><table><tr><th>A</th></tr><tr><td>b</td></tr></table>",
+    });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+    expect(projectLetter(result)).toEqual(["• a", "TABLE", "  th: A", "  tr: b"]);
+  });
+
+  test("a paragraph after a table is inserted after the table, not in its cells", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "føretter" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table><p>c</p>",
+    });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 3, clipboard);
+
+    expect(projectLetter(result)).toEqual(["P: før", "TABLE", "  th: A", "  tr: b", "P: c", "P: etter"]);
+  });
+});
+
 describe("LetterEditorActions.paste - RTF", () => {
   const HEADER = "{\\rtf1\\ansi\\ansicpg1252\\deflang1033";
 
@@ -3844,7 +3884,131 @@ describe("LetterEditorActions.paste - RTF", () => {
 
     expect(text(select<LiteralValue>(result, index))).toEqual("Fra application/rtf");
   });
+
+  test("keeps headings, lists, the table and formatting from a Word 365 paste", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({ "text/rtf": word365, "text/plain": "ren tekst" });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+    expect(projectLetter(result)).toEqual([
+      "H1: Vedtak om alderspensjon",
+      "P: Vi har **innvilget** søknaden din om _alderspensjon_ fra 1. mai 2026.",
+      "H2: Dette er grunnlaget for vedtaket",
+      "• Du har fylt 67 år.",
+      "• Du har bodd i Norge i minst fem år.",
+      "1. Pensjonen blir utbetalt den 20. hver måned.",
+      "1. Utbetaling i utlandet skjer i euro (€).",
+      "P: Du skrev “jeg vil ha pensjon” i søknaden – det har vi tatt hensyn til. Ny linje i samme avsnitt.",
+      "TABLE",
+      "  th: **Periode** | **Beløp per måned**",
+      "  tr: Fra 1. mai 2026 | kr 25 000",
+      "  tr: Fra 1. mai 2027 | kr 25 500",
+      "P: Med vennlig hilsen",
+    ]);
+  });
+
+  test("unwraps HTML encapsulated in Outlook RTF (\\fromhtml1)", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({ "text/rtf": outlook365, "text/plain": "ren tekst" });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+    expect(projectLetter(result)).toEqual([
+      "H1: Vedtak om alderspensjon",
+      "P: Vi har **innvilget** søknaden din om _alderspensjon_ fra 1. mai 2026.",
+      "• Du har fylt 67 år.",
+      "• Du har bodd i Norge i minst fem år.",
+      "1. Pensjonen blir utbetalt den 20. hver måned.",
+      "1. Utbetaling i utlandet skjer i euro (€).",
+      "TABLE",
+      "  th: **Periode** | **Beløp per måned**",
+      "  tr: Fra 1. mai 2026 | kr 25 000",
+      "P: Les mer på nav.no.",
+    ]);
+  });
+
+  test("inserts plain text encapsulated in Outlook RTF (\\fromtext) as text", () => {
+    const index = { blockIndex: 0, contentIndex: 0 };
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/rtf": "{\\rtf1\\ansi\\fromtext {\\*\\htmltag <b>}Hei\\htmlrtf \\b\\htmlrtf0  fra Outlook}",
+    });
+
+    const result = Actions.paste(state, index, 0, clipboard);
+
+    expect(text(select<LiteralValue>(result, index))).toEqual("Hei fra Outlook");
+  });
+
+  test.each([
+    ["empty RTF", ""],
+    ["RTF without content", `${HEADER}{\\fonttbl{\\f0 Calibri;}}}`],
+  ])("falls back to text/plain for %s", (_, rtf) => {
+    const index = { blockIndex: 0, contentIndex: 0 };
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({ "text/rtf": rtf, "text/plain": "ren tekst" });
+
+    const result = Actions.paste(state, index, 0, clipboard);
+
+    expect(text(select<LiteralValue>(result, index))).toEqual("ren tekst");
+  });
+
+  test("inserts a partial selection without a paragraph mark inline", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "Her har vi noe" })] }));
+    const clipboard = new MockDataTransfer({ "text/rtf": `${HEADER}\\b  ikke}` });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 10, clipboard);
+
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    expect(projectLetter(result)).toEqual(["P: Her har vi** ikke** noe"]);
+  });
 });
+
+/** Compact text projection of the letter: `H1: …`, `P: …`, `• …`/`1. …`, `TABLE`/`th:`/`tr:`, `**bold**`, `_italic_`. */
+function projectLetter(state: LetterEditorState): string[] {
+  const runs = (content: TextContent[]) =>
+    content
+      .map((c) => {
+        const value = text(c as LiteralValue);
+        if (value.length === 0) return "";
+        const font = fontTypeOf(c);
+        if (font === FontType.BOLD) return `**${value}**`;
+        if (font === FontType.ITALIC) return `_${value}_`;
+        return value;
+      })
+      .join("");
+
+  return state.redigertBrev.blocks.flatMap((block) => {
+    const prefix = block.type === "PARAGRAPH" ? "P" : block.type.replace("TITLE", "H");
+    const lines: string[] = [];
+    let textRun: TextContent[] = [];
+    const flushText = () => {
+      const line = runs(textRun);
+      if (line.length > 0) lines.push(`${prefix}: ${line}`);
+      textRun = [];
+    };
+
+    for (const content of block.content as Content[]) {
+      if (content.type === "ITEM_LIST") {
+        flushText();
+        const marker = content.listType === ListType.NUMMERERT_LISTE ? "1." : "•";
+        lines.push(...content.items.map((listItem) => `${marker} ${runs(listItem.content)}`));
+      } else if (content.type === "TABLE") {
+        flushText();
+        const row = (cells: TextContent[][]) => cells.map(runs).join(" | ");
+        lines.push(
+          "TABLE",
+          `  th: ${row(content.header.colSpec.map((spec) => spec.headerContent.text))}`,
+          ...content.rows.map((tableRow) => `  tr: ${row(tableRow.cells.map((cell) => cell.text))}`),
+        );
+      } else {
+        textRun.push(content);
+      }
+    }
+    flushText();
+    return lines;
+  });
+}
 
 class MockDataTransfer implements DataTransfer {
   private readonly data: { [format: string]: string } = {};
