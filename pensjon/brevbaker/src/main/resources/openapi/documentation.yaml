@@ -432,47 +432,34 @@ components:
       type: object
       description: Se `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest`
       required:
-        - kode
-        - letterData
-        - felles
-        - language
+        - letterMarkup
+        - alltidValgbareVedlegg
+        - redigerteVedlegg
+        - redigerbartBrev
       properties:
-        kode:
-          type: string
-          description: Brevkode (name på enum)
-        letterData:
-          type: object
-          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:pensjon-api-model)
-        felles:
-          type: object
-          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:pensjon-api-model)
-        language:
-          $ref: "#/components/schemas/LanguageCode"
         letterMarkup:
           $ref: "#/components/schemas/LetterMarkup"
+        alltidValgbareVedlegg:
+          type: array
+          description: Se `no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode`.
+          items:
+            $ref: "#/components/schemas/AlltidValgbartVedleggKode"
+        redigerteVedlegg:
+          type: object
+          description: Redigerte vedlegg per vedleggId. Se `no.nav.brev.brevbaker.markup.Attachment`.
+          additionalProperties:
+            $ref: "#/components/schemas/LetterMarkup_Attachment"
+        redigerbartBrev:
+          $ref: "#/components/schemas/BestillRedigerbartBrevRequest"
     BestillRedigertBrevRequestV2:
       type: object
       description: Se `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2`
       required:
-        - kode
-        - letterData
-        - felles
-        - language
         - letterMarkup
         - alltidValgbareVedlegg
         - redigerteVedlegg
+        - redigerbartBrev
       properties:
-        kode:
-          type: string
-          description: Brevkode (name på enum)
-        letterData:
-          type: object
-          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:pensjon-api-model)
-        felles:
-          type: object
-          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:pensjon-api-model)
-        language:
-          $ref: "#/components/schemas/LanguageCode"
         letterMarkup:
           $ref: "#/components/schemas/LetterMarkupV2"
         alltidValgbareVedlegg:
@@ -490,6 +477,59 @@ components:
           description: Tittel på PDF-vedlegg. Se `no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel`.
           items:
             type: string
+        redigerbartBrev:
+          $ref: "#/components/schemas/BestillRedigerbartBrevRequest"
+    BestillRedigerbartBrevRequest:
+      type: object
+      description: Se `no.nav.pensjon.brev.api.model.maler.BestillRedigerbartBrevRequest`
+      required:
+        - kode
+        - letterData
+        - fagsystemBrevdata
+        - saksbehandlervalg
+        - felles
+        - language
+      properties:
+        kode:
+          type: string
+          description: Brevkode (name på enum)
+        letterData:
+          type: object
+          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:pensjon-api-model)
+        fagsystemBrevdata:
+          type: object
+          description: Fagsystemdata for brevet.
+        saksbehandlervalg:
+          type: object
+          description: Saksbehandlervalg for brevet.
+        felles:
+          type: object
+          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:pensjon-api-model)
+        language:
+          $ref: "#/components/schemas/LanguageCode"
+        pdfVedlegg:
+          type: array
+          description: Tittel på PDF-vedlegg. Se `no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel`.
+          items:
+            type: string
+    LetterMarkup_Attachment:
+      type: object
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.Attachment`
+      required:
+        - title
+        - blocks
+        - includeSakspart
+      properties:
+        title:
+          type: array
+          items:
+            type: object
+        blocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/LetterMarkup_Block"
+        includeSakspart:
+          type: boolean
     AlltidValgbartVedleggKode:
       type: object
       description: Se `no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode`
@@ -1083,4 +1123,3 @@ components:
     TemplateDoc:
       type: object
       description: Se data klasse `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
-

@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.markup.dsl.extended.*
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
+import no.nav.pensjon.brev.api.model.maler.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -38,18 +39,22 @@ class BestillRedigertBrevRequestV2Test {
         }
     )
 
-    private fun request() = BestillRedigertBrevRequestV2(
-        kode = RedigerbarBrevkode("TEST_BREV"),
-        letterData = TestBrevdata(lagSaksbehandlervalg("begrunnelse" to "fordi"), TestPesysData(1234)),
-        fagsystemBrevdata = TestPesysData(1234),
-        saksbehandlervalg = lagSaksbehandlervalg("begrunnelse" to "fordi"),
-        felles = felles(),
-        language = LanguageCode.BOKMAL,
-        letterMarkup = MarkupGoldenFixture.letter(),
-        alltidValgbareVedlegg = emptyList(),
-        redigerteVedlegg = mapOf(BrevbakerType.VedleggId("vedlegg-1") to vedlegg()),
-        redigerbartBrev = null,
-    )
+    private fun request(): BestillRedigertBrevRequestV2<Brevkode.Redigerbart> {
+        val letterData = TestBrevdata(lagSaksbehandlervalg("begrunnelse" to "fordi"), TestPesysData(1234))
+        return BestillRedigertBrevRequestV2(
+            letterMarkup = MarkupGoldenFixture.letter(),
+            alltidValgbareVedlegg = emptyList(),
+            redigerteVedlegg = mapOf(BrevbakerType.VedleggId("vedlegg-1") to vedlegg()),
+            redigerbartBrev = BestillRedigerbartBrevRequest(
+                kode = RedigerbarBrevkode("TEST_BREV"),
+                letterData = letterData,
+                fagsystemBrevdata = letterData.pesysData,
+                saksbehandlervalg = letterData.saksbehandlerValg,
+                felles = felles(),
+                language = LanguageCode.BOKMAL,
+            ),
+        )
+    }
 
     @Test
     fun `hele forespoerselen gaar rundt med den interne mapperen`() {
@@ -65,9 +70,10 @@ class BestillRedigertBrevRequestV2Test {
     fun `markup og api-model-common ligger side om side i samme payload`() {
         val json = mapper.readTree(mapper.writeValueAsString(request()))
 
-        assertEquals("TEST_BREV", json.get("kode").textValue())
-        assertEquals("1337123", json.get("felles").get("saksnummer").textValue())
-        assertEquals(1234, json.get("letterData").get("pesysData").get("belop").intValue())
+        val redigerbartBrev = json.get("redigerbartBrev")
+        assertEquals("TEST_BREV", redigerbartBrev.get("kode").textValue())
+        assertEquals("1337123", redigerbartBrev.get("felles").get("saksnummer").textValue())
+        assertEquals(1234, redigerbartBrev.get("letterData").get("pesysData").get("belop").intValue())
         assertEquals("TITLE2", json.get("letterMarkup").get("blocks").get(0).get("type").textValue())
     }
 

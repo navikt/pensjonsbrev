@@ -66,12 +66,6 @@ class BrevtekstITest {
             accept(ContentType.Application.Json)
             setBody(
                 BestillRedigertBrevRequest(
-                    kode = EnkeltRedigerbartTestbrev.kode,
-                    letterData = EmptyRedigerbarBrevdata(saksbehandlerValg = lagSaksbehandlervalg()),
-                    fagsystemBrevdata = EmptyFagsystemdata,
-                    saksbehandlervalg = lagSaksbehandlervalg(),
-                    felles = felles,
-                    language = LanguageCode.BOKMAL,
                     letterMarkup = markup,
                     alltidValgbareVedlegg = listOf(),
                     redigerteVedlegg = emptyMap(),
