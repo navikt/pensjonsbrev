@@ -3,6 +3,10 @@ package no.nav.pensjon.brev.skribenten.model
 import com.fasterxml.jackson.annotation.*
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
@@ -92,25 +96,25 @@ object Api {
         JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
     )
     sealed interface OverstyrtMottaker {
-        data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker
+        data class Samhandler(val tssId: TssId, val navn: Navn?) : OverstyrtMottaker
         data class NorskAdresse(
-            val navn: String,
+            val navn: Navn,
             val postnummer: NorskPostnummer,
-            val poststed: String,
-            val adresselinje1: String?,
-            val adresselinje2: String?,
-            val adresselinje3: String?,
+            val poststed: Poststed,
+            val adresselinje1: Adresselinje?,
+            val adresselinje2: Adresselinje?,
+            val adresselinje3: Adresselinje?,
             val manueltAdressertTil: ManueltAdressertTil?,
         ) : OverstyrtMottaker
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
-            val navn: String,
-            val adresselinje1: String,
-            val adresselinje2: String?,
-            val adresselinje3: String?,
+            val navn: Navn,
+            val adresselinje1: Adresselinje,
+            val adresselinje2: Adresselinje?,
+            val adresselinje3: Adresselinje?,
             val landkode: Landkode,
-            val manueltAdressertTil: ManueltAdressertTil?
+            val manueltAdressertTil: ManueltAdressertTil?,
         ) : OverstyrtMottaker
     }
 

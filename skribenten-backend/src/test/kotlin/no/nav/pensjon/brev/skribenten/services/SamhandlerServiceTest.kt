@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -26,8 +27,8 @@ class SamhandlerServiceTest {
                 engine = engine,
             )
 
-            assertEquals("Advokat Handler AS", service.hentSamhandlerNavn("80000123456"))
-            assertEquals("ADVO", service.hentSamhandlerType("80000123456"))
+            assertEquals("Advokat Handler AS", service.hentSamhandlerNavn(TssId("80000123456")))
+            assertEquals("ADVO", service.hentSamhandlerType(TssId("80000123456")))
 
             assertEquals(1, engine.requestHistory.count { it.url.encodedPath.contains("hentSamhandlerEnkel") })
         }
