@@ -2,7 +2,7 @@ import { cleanseText } from "~/Brevredigering/LetterEditor/actions/common";
 import { type FontType, type ListType } from "~/types/brevbakerTypes";
 
 /**
- * Intermediate representation produced by both the HTML (`paste.ts`) and RTF (`paste-rtf.ts`)
+ * Intermediate representation produced by both the HTML (`paste.ts`) and RTF (`rtf/interpretNativeRtf.ts`)
  * clipboard parsers. Keeping this shape shared means the insertion logic in `paste.ts`
  * (`insertTraversedElements`, `insertBlock`, `insertItem`, `insertTable`, etc.) is completely
  * format-agnostic: it only ever operates on `TraversedElement[]`, regardless of whether the

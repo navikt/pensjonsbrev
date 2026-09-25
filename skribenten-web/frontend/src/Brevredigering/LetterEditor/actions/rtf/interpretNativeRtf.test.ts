@@ -1,20 +1,20 @@
 import { describe, expect, test } from "vitest";
 
-import { parseRtfToTraversedElements } from "~/Brevredigering/LetterEditor/actions/paste-rtf";
+import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
 import { FontType, ListType } from "~/types/brevbakerTypes";
 
-// Real Word/TextEdit exports have a much larger preamble; see paste-rtf.fixtures.test.ts.
+// Real Word/TextEdit exports have a much larger preamble; see interpretNativeRtf.fixtures.test.ts.
 const HEADER = "{\\rtf1\\ansi\\ansicpg1252\\deflang1033";
 
 const plain = (text: string) => ({ type: "TEXT", font: FontType.PLAIN, text });
 const paragraph = (text: string) => ({ type: "P", content: [plain(text)] });
 const EMPTY_PARAGRAPH = paragraph("");
 
-describe("parseRtfToTraversedElements", () => {
+describe("interpretNativeRtf", () => {
   test("parses plain paragraph text", () => {
     const rtf = `${HEADER} Hello world\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Hello world" }] },
     ]);
   });
@@ -22,7 +22,7 @@ describe("parseRtfToTraversedElements", () => {
   test("parses multiple paragraphs", () => {
     const rtf = `${HEADER} First\\par Second\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "First" }] },
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Second" }] },
     ]);
@@ -31,7 +31,7 @@ describe("parseRtfToTraversedElements", () => {
   test("parses bold text", () => {
     const rtf = `${HEADER} Before \\b bold\\b0  after\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       {
         type: "P",
         content: [
@@ -48,7 +48,7 @@ describe("parseRtfToTraversedElements", () => {
   test("parses italic text", () => {
     const rtf = `${HEADER} Before \\i italic\\i0  after\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       {
         type: "P",
         content: [
@@ -63,7 +63,7 @@ describe("parseRtfToTraversedElements", () => {
   test("bold takes precedence when bold and italic overlap", () => {
     const rtf = `${HEADER} \\b\\i both\\i0\\b0 \\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.BOLD, text: "both" }] },
     ]);
   });
@@ -77,7 +77,7 @@ describe("parseRtfToTraversedElements", () => {
       "\\s3 Sub-subtitle\\par" +
       "\\pard Body text\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "H1", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Title" }] },
       { type: "H2", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Subtitle" }] },
       { type: "H3", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Sub-subtitle" }] },
@@ -92,7 +92,7 @@ describe("parseRtfToTraversedElements", () => {
       "\\s1 Tittel\\par" +
       "\\pard Brødtekst\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "H1", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Tittel" }] },
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Brødtekst" }] },
     ]);
@@ -101,7 +101,7 @@ describe("parseRtfToTraversedElements", () => {
   test("does not treat unrecognized style names as headings", () => {
     const rtf = `${HEADER}{\\stylesheet{\\s1 Custom Style;}}\\s1 Not a heading\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Not a heading" }] },
     ]);
   });
@@ -109,7 +109,7 @@ describe("parseRtfToTraversedElements", () => {
   test("parses a bullet list using the old-style \\pntext marker", () => {
     const rtf = `${HEADER}{\\pntext\\'B7\\tab}First item\\par{\\pntext\\'B7\\tab}Second item\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       {
         type: "ITEM",
         content: [{ type: "TEXT", font: FontType.PLAIN, text: "First item" }],
@@ -126,7 +126,7 @@ describe("parseRtfToTraversedElements", () => {
   test("parses a bullet list referenced via the modern \\ls paragraph property (defaults to bullet)", () => {
     // Modern Word list export only puts \lsN directly on each paragraph; the actual bullet-vs-
     // numbered distinction lives in \listoverridetable -> \listtable -> \levelnfc, which we
-    // intentionally don't resolve (see paste-rtf.ts). \ls alone is treated as "a list item,
+    // intentionally don't resolve (see interpretNativeRtf.ts). \ls alone is treated as "a list item,
     // default to bullet" - the far more common case for pasted letter content.
     const rtf =
       `${HEADER}` +
@@ -134,7 +134,7 @@ describe("parseRtfToTraversedElements", () => {
       "\\pard\\ls1 First item\\par" +
       "\\pard\\ls1 Second item\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       {
         type: "ITEM",
         content: [{ type: "TEXT", font: FontType.PLAIN, text: "First item" }],
@@ -151,7 +151,7 @@ describe("parseRtfToTraversedElements", () => {
   test("parses a numbered list using the old-style \\pntext + \\pndec marker", () => {
     const rtf = `${HEADER}{\\pntext\\pndec 1.\\tab}First item\\par{\\pntext\\pndec 2.\\tab}Second item\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       {
         type: "ITEM",
         content: [{ type: "TEXT", font: FontType.PLAIN, text: "First item" }],
@@ -168,7 +168,7 @@ describe("parseRtfToTraversedElements", () => {
   test("does not misread \\pndec occurring only inside the ignorable list-definition table as a list item", () => {
     const rtf = `${HEADER}{\\*\\listtable{\\list\\ls1{\\listlevel{\\*\\pn\\pndec}}}}\\pard Plain paragraph\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Plain paragraph" }] },
     ]);
   });
@@ -179,7 +179,7 @@ describe("parseRtfToTraversedElements", () => {
       "\\trowd\\cellx1440\\cellx2880\\pard\\intbl A1\\cell\\pard\\intbl B1\\cell\\row" +
       "\\trowd\\cellx1440\\cellx2880\\pard\\intbl A2\\cell\\pard\\intbl B2\\cell\\row}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       {
         type: "TABLE",
         rows: [
@@ -203,7 +203,7 @@ describe("parseRtfToTraversedElements", () => {
   test("a real paragraph following a table is not swallowed into the table", () => {
     const rtf = `${HEADER}\\trowd\\cellx1440\\pard\\intbl A1\\cell\\row\\pard Body after the table\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       {
         type: "TABLE",
         rows: [{ cells: [{ content: [{ type: "TEXT", font: FontType.PLAIN, text: "A1" }] }] }],
@@ -216,7 +216,7 @@ describe("parseRtfToTraversedElements", () => {
     // 0xE6 0xF8 0xE5 = æøå in cp1252 (same code points as Latin-1 for these bytes).
     const rtf = `${HEADER} \\'e6\\'f8\\'e5\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "æøå" }] },
     ]);
   });
@@ -225,7 +225,7 @@ describe("parseRtfToTraversedElements", () => {
     // 0xE4 = ä, 0xF6 = ö, 0xF5 = õ in cp1257.
     const rtf = "{\\rtf1\\ansi\\ansicpg1257\\deflang1044 \\'e4\\'f6\\'f5\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "äöõ" }] },
     ]);
   });
@@ -235,7 +235,7 @@ describe("parseRtfToTraversedElements", () => {
     // must be skipped rather than emitted.
     const rtf = `${HEADER} \\u8364?\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "€" }] },
     ]);
   });
@@ -243,7 +243,7 @@ describe("parseRtfToTraversedElements", () => {
   test("respects \\uc to skip multiple fallback characters", () => {
     const rtf = `${HEADER} \\uc2\\u8364??\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "€" }] },
     ]);
   });
@@ -256,7 +256,7 @@ describe("parseRtfToTraversedElements", () => {
       "{\\info{\\author Someone}}" +
       " Real content\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Real content" }] },
     ]);
   });
@@ -264,17 +264,17 @@ describe("parseRtfToTraversedElements", () => {
   test("ignores unsupported destinations wrapped generically with \\*", () => {
     const rtf = `${HEADER}{\\*\\unknownfutureDestination should not appear} Visible text\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Visible text" }] },
     ]);
   });
 
   test("returns an empty array for an empty document", () => {
-    expect(parseRtfToTraversedElements(`${HEADER}}`)).toEqual([]);
+    expect(interpretNativeRtf(`${HEADER}}`)).toEqual([]);
   });
 
   test("returns an unterminated plain paragraph as inline text", () => {
-    expect(parseRtfToTraversedElements(`${HEADER} a \\b partial\\b0  selection}`)).toEqual([
+    expect(interpretNativeRtf(`${HEADER} a \\b partial\\b0  selection}`)).toEqual([
       plain("a "),
       { type: "TEXT", font: FontType.BOLD, text: "partial" },
       plain(" selection"),
@@ -282,50 +282,43 @@ describe("parseRtfToTraversedElements", () => {
   });
 
   test("keeps the edge spaces of inline text", () => {
-    expect(parseRtfToTraversedElements(`${HEADER}\\b  ikke }`)).toEqual([
-      { type: "TEXT", font: FontType.BOLD, text: " ikke " },
-    ]);
+    expect(interpretNativeRtf(`${HEADER}\\b  ikke }`)).toEqual([{ type: "TEXT", font: FontType.BOLD, text: " ikke " }]);
   });
 });
 
-describe("parseRtfToTraversedElements - paragraph properties", () => {
+describe("interpretNativeRtf - paragraph properties", () => {
   test("heading style does not leak into the next paragraph after \\pard", () => {
     const rtf = `${HEADER}{\\stylesheet{\\s1 heading 1;}}\\pard\\plain\\s1 {Heading\\par}\\pard\\plain {Body\\par}}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([{ type: "H1", content: [plain("Heading")] }, paragraph("Body")]);
+    expect(interpretNativeRtf(rtf)).toEqual([{ type: "H1", content: [plain("Heading")] }, paragraph("Body")]);
   });
 
   test("detects headings via \\outlinelevel on the paragraph, regardless of style name", () => {
     const rtf = `${HEADER}{\\stylesheet{\\s5 Min stil;}}\\pard\\s5\\outlinelevel1 Kapittel\\par\\pard Tekst\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
-      { type: "H2", content: [plain("Kapittel")] },
-      paragraph("Tekst"),
-    ]);
+    expect(interpretNativeRtf(rtf)).toEqual([{ type: "H2", content: [plain("Kapittel")] }, paragraph("Tekst")]);
   });
 
   test("detects headings via \\outlinelevel in the stylesheet entry", () => {
     const rtf = `${HEADER}{\\stylesheet{\\s1\\outlinelevel0 \\sbasedon0 Egendefinert;}}\\pard\\s1 Tittel\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([{ type: "H1", content: [plain("Tittel")] }]);
+    expect(interpretNativeRtf(rtf)).toEqual([{ type: "H1", content: [plain("Tittel")] }]);
   });
 
   test("outline levels below 3 are plain paragraphs", () => {
-    expect(parseRtfToTraversedElements(`${HEADER}\\pard\\outlinelevel3 Level four\\par}`)).toEqual([
-      paragraph("Level four"),
-    ]);
+    expect(interpretNativeRtf(`${HEADER}\\pard\\outlinelevel3 Level four\\par}`)).toEqual([paragraph("Level four")]);
   });
 
   test("ignores character styles in the stylesheet", () => {
     const rtf = `${HEADER}{\\stylesheet{\\*\\cs1 heading 1;}}\\pard\\s1 Not a heading\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([paragraph("Not a heading")]);
+    expect(interpretNativeRtf(rtf)).toEqual([paragraph("Not a heading")]);
   });
 
   test("\\ls persists across \\par until the next \\pard", () => {
     const rtf = `${HEADER}\\pard\\ls1 {One\\par Two\\par}\\pard After\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "ITEM", content: [plain("One")], listType: ListType.PUNKTLISTE },
       { type: "ITEM", content: [plain("Two")], listType: ListType.PUNKTLISTE },
       paragraph("After"),
@@ -335,17 +328,17 @@ describe("parseRtfToTraversedElements - paragraph properties", () => {
   test("keeps blank lines as empty paragraphs, but trims them at the edges", () => {
     const rtf = `${HEADER}\\pard\\par First\\par\\par Second\\par\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([paragraph("First"), EMPTY_PARAGRAPH, paragraph("Second")]);
+    expect(interpretNativeRtf(rtf)).toEqual([paragraph("First"), EMPTY_PARAGRAPH, paragraph("Second")]);
   });
 });
 
-describe("parseRtfToTraversedElements - lists", () => {
+describe("interpretNativeRtf - lists", () => {
   test("{\\listtext} marks a list item and its formatting does not leak into the item", () => {
     const rtf =
       `${HEADER}{\\stylesheet{\\s1 heading 1;}}` +
       "{\\listtext\\pard\\plain\\s1\\b\\f3 \\'b7\\tab}\\pard\\ls1 Item\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "ITEM", content: [plain("Item")], listType: ListType.PUNKTLISTE },
     ]);
   });
@@ -364,13 +357,13 @@ describe("parseRtfToTraversedElements - lists", () => {
   ])("classifies list marker %s", (marker, listType) => {
     const rtf = `${HEADER}{\\listtext ${marker}\\tab}\\pard\\ls1 Item\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([{ type: "ITEM", content: [plain("Item")], listType }]);
+    expect(interpretNativeRtf(rtf)).toEqual([{ type: "ITEM", content: [plain("Item")], listType }]);
   });
 
   test("reads the list type from {\\*\\pn} when there is no marker text", () => {
     const rtf = `${HEADER}\\pard{\\*\\pn\\pnlvlbody\\pndec{\\pntxta .}} Item\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "ITEM", content: [plain("Item")], listType: ListType.NUMMERERT_LISTE },
     ]);
   });
@@ -378,19 +371,19 @@ describe("parseRtfToTraversedElements - lists", () => {
   test("ignores list definitions in {\\*\\pnseclvl}", () => {
     const rtf = `${HEADER}{\\*\\pnseclvl1\\pnucrm\\pnstart1{\\pntxta .}}{\\*\\pnseclvl2\\pnlvlblt}\\pard Tekst\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([paragraph("Tekst")]);
+    expect(interpretNativeRtf(rtf)).toEqual([paragraph("Tekst")]);
   });
 
   test("keeps the number of a numbered heading as text", () => {
     const rtf = `${HEADER}{\\listtext 3\\tab}\\pard\\ls2\\outlinelevel0 Innledning\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([{ type: "H1", content: [plain("3 Innledning")] }]);
+    expect(interpretNativeRtf(rtf)).toEqual([{ type: "H1", content: [plain("3 Innledning")] }]);
   });
 });
 
-describe("parseRtfToTraversedElements - character formatting", () => {
+describe("interpretNativeRtf - character formatting", () => {
   test("\\plain resets bold and italic", () => {
-    expect(parseRtfToTraversedElements(`${HEADER}\\pard\\b\\i Fet \\plain vanlig\\par}`)).toEqual([
+    expect(interpretNativeRtf(`${HEADER}\\pard\\b\\i Fet \\plain vanlig\\par}`)).toEqual([
       {
         type: "P",
         content: [{ type: "TEXT", font: FontType.BOLD, text: "Fet " }, plain("vanlig")],
@@ -401,7 +394,7 @@ describe("parseRtfToTraversedElements - character formatting", () => {
   test("drops hidden (\\v) and tracked-deleted (\\deleted) text", () => {
     const rtf = `${HEADER}\\pard Synlig{\\v  skjult}{\\deleted  slettet} tekst\\par}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([paragraph("Synlig tekst")]);
+    expect(interpretNativeRtf(rtf)).toEqual([paragraph("Synlig tekst")]);
   });
 
   test.each([
@@ -416,7 +409,7 @@ describe("parseRtfToTraversedElements - character formatting", () => {
     ["non\\_breaking", "non-breaking"],
     ["a\\page b", "ab"],
   ])("converts %s", (source, expected) => {
-    expect(parseRtfToTraversedElements(`${HEADER}\\pard ${source}\\par}`)).toEqual([paragraph(expected)]);
+    expect(interpretNativeRtf(`${HEADER}\\pard ${source}\\par}`)).toEqual([paragraph(expected)]);
   });
 
   test("skips footnotes, annotations, field instructions and \\nonesttables", () => {
@@ -426,29 +419,29 @@ describe("parseRtfToTraversedElements - character formatting", () => {
       '{\\field{\\*\\fldinst HYPERLINK "https://nav.no"}{\\fldrslt  lenke}}' +
       "{\\nonesttables duplikat}\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([paragraph("Tekst lenke")]);
+    expect(interpretNativeRtf(rtf)).toEqual([paragraph("Tekst lenke")]);
   });
 
   test("the \\u fallback skip counts \\'hh and control words, and stops at a group boundary", () => {
-    expect(parseRtfToTraversedElements(`${HEADER}\\pard\\uc2 \\u8364\\'80\\'80 a\\u8364{}b\\par}`)).toEqual([
+    expect(interpretNativeRtf(`${HEADER}\\pard\\uc2 \\u8364\\'80\\'80 a\\u8364{}b\\par}`)).toEqual([
       paragraph("€ a€b"),
     ]);
   });
 
   test("decodes \\uN escapes with negative parameters", () => {
-    expect(parseRtfToTraversedElements(`${HEADER}\\pard \\u-4064?\\par}`)).toEqual([paragraph("\uF020")]);
+    expect(interpretNativeRtf(`${HEADER}\\pard \\u-4064?\\par}`)).toEqual([paragraph("\uF020")]);
   });
 
   test("falls back to Windows-1252 for unknown codepages", () => {
-    expect(parseRtfToTraversedElements("{\\rtf1\\ansi\\ansicpg99999 \\'e6\\'80\\par}")).toEqual([paragraph("æ€")]);
+    expect(interpretNativeRtf("{\\rtf1\\ansi\\ansicpg99999 \\'e6\\'80\\par}")).toEqual([paragraph("æ€")]);
   });
 
   test("skips \\bin data", () => {
-    expect(parseRtfToTraversedElements(`${HEADER}\\pard a\\bin3 x}yb\\par}`)).toEqual([paragraph("ab")]);
+    expect(interpretNativeRtf(`${HEADER}\\pard a\\bin3 x}yb\\par}`)).toEqual([paragraph("ab")]);
   });
 });
 
-describe("parseRtfToTraversedElements - tables", () => {
+describe("interpretNativeRtf - tables", () => {
   test("keeps cells when Word repeats \\trowd before \\row", () => {
     const rowDefinition = "\\trowd\\irow0\\trgaph108\\cellx4000\\cellx8000";
     const rtf =
@@ -457,7 +450,7 @@ describe("parseRtfToTraversedElements - tables", () => {
       `\\pard\\intbl {${rowDefinition}\\row}` +
       "\\pard After\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "TABLE", rows: [{ cells: [{ content: [plain("A1")] }, { content: [plain("B1")] }] }] },
       paragraph("After"),
     ]);
@@ -468,7 +461,7 @@ describe("parseRtfToTraversedElements - tables", () => {
       `${HEADER}\\trowd\\trhdr\\cellx4000\\pard\\intbl {\\b Periode\\cell}{\\trowd\\trhdr\\cellx4000\\row}` +
       "\\trowd\\cellx4000\\pard\\intbl {2026\\cell}{\\trowd\\cellx4000\\row}\\pard\\par}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       {
         type: "TABLE",
         headerCells: [{ content: [{ type: "TEXT", font: FontType.BOLD, text: "Periode" }] }],
@@ -480,7 +473,7 @@ describe("parseRtfToTraversedElements - tables", () => {
   test("joins paragraphs in a cell with a space and ignores list markers there", () => {
     const rtf = `${HEADER}\\trowd\\cellx4000\\pard\\intbl {\\listtext 1.\\tab}First\\par Second\\cell\\row}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "TABLE", rows: [{ cells: [{ content: [plain("First Second")] }] }] },
     ]);
   });
@@ -491,7 +484,7 @@ describe("parseRtfToTraversedElements - tables", () => {
       "\\pard\\intbl\\itap2 inner1\\nestcell inner2\\nestcell{\\*\\nesttableprops\\trowd\\nestrow}" +
       "{\\nonesttables inner1 inner2}\\pard\\intbl\\itap1 \\cell\\row}";
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "TABLE", rows: [{ cells: [{ content: [plain("Outer inner1 inner2")] }] }] },
     ]);
   });
@@ -500,7 +493,7 @@ describe("parseRtfToTraversedElements - tables", () => {
     const table = (text: string) => `\\trowd\\cellx4000\\pard\\intbl ${text}\\cell\\row`;
     const rtf = `${HEADER}${table("A")}\\pard Mellom\\par${table("B")}}`;
 
-    expect(parseRtfToTraversedElements(rtf)).toEqual([
+    expect(interpretNativeRtf(rtf)).toEqual([
       { type: "TABLE", rows: [{ cells: [{ content: [plain("A")] }] }] },
       paragraph("Mellom"),
       { type: "TABLE", rows: [{ cells: [{ content: [plain("B")] }] }] },
@@ -508,7 +501,7 @@ describe("parseRtfToTraversedElements - tables", () => {
   });
 
   test("keeps an unterminated last row", () => {
-    expect(parseRtfToTraversedElements(`${HEADER}\\trowd\\cellx4000\\pard\\intbl A\\cell\\pard\\intbl B}`)).toEqual([
+    expect(interpretNativeRtf(`${HEADER}\\trowd\\cellx4000\\pard\\intbl A\\cell\\pard\\intbl B}`)).toEqual([
       { type: "TABLE", rows: [{ cells: [{ content: [plain("A")] }, { content: [plain("B")] }] }] },
     ]);
   });

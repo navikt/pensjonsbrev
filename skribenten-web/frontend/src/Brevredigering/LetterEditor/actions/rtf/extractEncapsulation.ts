@@ -7,7 +7,7 @@ import {
   type RtfToken,
   skipUnicodeFallback,
   tokenizeRtf,
-} from "~/Brevredigering/LetterEditor/actions/paste-rtf-tokenizer";
+} from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 
 /**
  * Outlook puts mail bodies on the clipboard as RTF that wraps the original HTML (`\fromhtml1`) or

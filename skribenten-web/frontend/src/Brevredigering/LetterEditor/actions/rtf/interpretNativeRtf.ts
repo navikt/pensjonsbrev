@@ -1,12 +1,4 @@
 import {
-  cleansePastedText,
-  mergeNeighbouringText,
-  type TableCell,
-  type TableRow,
-  type Text,
-  type TraversedElement,
-} from "~/Brevredigering/LetterEditor/actions/paste-elements";
-import {
   type ByteDecoder,
   createByteDecoder,
   decodeUnicodeParam,
@@ -15,7 +7,15 @@ import {
   type RtfToken,
   skipUnicodeFallback,
   tokenizeRtf,
-} from "~/Brevredigering/LetterEditor/actions/paste-rtf-tokenizer";
+} from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
+import {
+  cleansePastedText,
+  mergeNeighbouringText,
+  type TableCell,
+  type TableRow,
+  type Text,
+  type TraversedElement,
+} from "~/Brevredigering/LetterEditor/actions/traversedElement";
 import { FontType, ListType } from "~/types/brevbakerTypes";
 
 /**
@@ -499,7 +499,7 @@ function finish(ctx: ParseContext) {
 }
 
 /** Parses RTF into the `TraversedElement[]` used by the HTML paste path. Never throws on unknown input. */
-export function parseRtfToTraversedElements(rtf: string): TraversedElement[] {
+export function interpretNativeRtf(rtf: string): TraversedElement[] {
   const tokens = tokenizeRtf(rtf);
   const ctx: ParseContext = {
     decodeBytes: createByteDecoder(rtf),

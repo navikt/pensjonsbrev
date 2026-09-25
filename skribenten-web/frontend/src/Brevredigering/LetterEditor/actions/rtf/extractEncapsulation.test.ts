@@ -8,7 +8,7 @@
  */
 import { describe, expect, test } from "vitest";
 
-import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/paste-rtf-html";
+import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
 import specExpectedHtml from "~test/fixtures/rtf/outlook-encapsulated-html.html?raw";
 import specExample from "~test/fixtures/rtf/outlook-encapsulated-html.rtf?raw";
 import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";

@@ -23,6 +23,9 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
+import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
+import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
+import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import {
   cleansePastedText,
   type ItemElement,
@@ -36,10 +39,7 @@ import {
   type Title2Element,
   type Title3Element,
   type TraversedElement,
-} from "~/Brevredigering/LetterEditor/actions/paste-elements";
-import { parseRtfToTraversedElements } from "~/Brevredigering/LetterEditor/actions/paste-rtf";
-import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/paste-rtf-html";
-import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
+} from "~/Brevredigering/LetterEditor/actions/traversedElement";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import {
@@ -293,9 +293,7 @@ function insertRtfInLetter(draft: Draft<LetterEditorState>, rtf: string): boolea
   }
 
   const elements =
-    encapsulated?.format === "html"
-      ? parseHtmlToTraversedElements(encapsulated.html)
-      : parseRtfToTraversedElements(rtf);
+    encapsulated?.format === "html" ? parseHtmlToTraversedElements(encapsulated.html) : interpretNativeRtf(rtf);
   return insertParsedElements(draft, elements);
 }
 
