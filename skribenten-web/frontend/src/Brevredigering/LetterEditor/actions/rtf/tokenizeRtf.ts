@@ -1,6 +1,6 @@
 /**
- * Tokenizer and character decoding shared by the RTF parser (`paste-rtf.ts`) and the Outlook
- * HTML de-encapsulator (`paste-rtf-html.ts`).
+ * Tokenizer and character decoding shared by the RTF parser (`interpretNativeRtf.ts`) and the Outlook
+ * HTML de-encapsulator (`extractEncapsulation.ts`).
  */
 
 export type RtfControlToken = { type: "control"; word: string; hasParam: boolean; param: number };
