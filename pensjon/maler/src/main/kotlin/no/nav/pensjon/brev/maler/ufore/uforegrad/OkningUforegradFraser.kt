@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
-class OkningUforegradFraser(private val perioder: Expression<List<OkningUforegradDto.Fribelopsperiode>>, private val fribelop: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
+class Fribelopsperioder(private val perioder: Expression<List<OkningUforegradDto.Fribelopsperiode>>, private val fribelop: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(header = {

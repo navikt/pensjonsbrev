@@ -25,8 +25,7 @@ data class OkningUforegradDto(
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
         val hjemler: Set<String>,
         val fribelopsperioder: List<Fribelopsperiode>,
-        val vektetFribelopKr: Kroner,
-        val fribelop: Kroner? = null,
+        val fribelop: Kroner,
         val harVTA: Boolean,
     ) : FagsystemBrevdata
 
