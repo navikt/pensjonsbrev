@@ -20,7 +20,7 @@ export type ParsedRtfClipboard =
 export function parseRtfClipboard(rtf: string): ParsedRtfClipboard {
   try {
     const tokens = tokenizeRtf(rtf);
-    const decodeBytes = createByteDecoder(rtf);
+    const decodeBytes = createByteDecoder(tokens);
     const encapsulated = extractEncapsulatedContent(tokens, decodeBytes);
     if (encapsulated?.format === "html") return { mode: "html", html: encapsulated.html };
     if (encapsulated?.format === "text") {

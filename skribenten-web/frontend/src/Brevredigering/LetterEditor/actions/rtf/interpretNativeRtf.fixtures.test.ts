@@ -25,7 +25,10 @@ import wordNumberedLists from "~test/fixtures/rtf/word-numbered-lists.rtf?raw";
 import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
 import word2003Sample from "~test/fixtures/rtf/word2003-sample.rtf?raw";
 
-const interpret = (rtf: string) => interpretNativeRtf(tokenizeRtf(rtf), createByteDecoder(rtf));
+const interpret = (rtf: string) => {
+  const tokens = tokenizeRtf(rtf);
+  return interpretNativeRtf(tokens, createByteDecoder(tokens));
+};
 
 function runs(content: Text[]): string {
   return content

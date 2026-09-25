@@ -18,7 +18,10 @@ import specExpectedHtml from "~test/fixtures/rtf/outlook-encapsulated-html.html?
 import specExample from "~test/fixtures/rtf/outlook-encapsulated-html.rtf?raw";
 import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
 
-const extractEncapsulatedContent = (rtf: string) => extractFromTokens(tokenizeRtf(rtf), createByteDecoder(rtf));
+const extractEncapsulatedContent = (rtf: string) => {
+  const tokens = tokenizeRtf(rtf);
+  return extractFromTokens(tokens, createByteDecoder(tokens));
+};
 
 const html = (rtf: string) => {
   const result = extractEncapsulatedContent(rtf);
