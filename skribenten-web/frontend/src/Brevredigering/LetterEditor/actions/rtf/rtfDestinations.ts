@@ -73,9 +73,3 @@ export const ENCAPSULATION_DESTINATIONS: ReadonlyMap<string, RtfDestination> = n
   ...[...ENCAPSULATION_SKIPPED_DESTINATIONS].map((word) => [word, "skip"] as const),
   ["htmltag", "htmltag"],
 ]);
-
-/** The only `\*` destinations the native interpreter reads; any other word after `\*` is skipped. */
-export const NATIVE_IGNORABLE_DESTINATIONS: ReadonlySet<string> = new Set(["pn"]);
-
-/** The only `\*` destination the de-encapsulator reads; any other word after `\*` is skipped. */
-export const ENCAPSULATION_IGNORABLE_DESTINATIONS: ReadonlySet<string> = new Set(["htmltag"]);
