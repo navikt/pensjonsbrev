@@ -8,10 +8,14 @@
  */
 import { describe, expect, test } from "vitest";
 
-import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
+import { extractEncapsulatedContent as extractFromTokens } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
+import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
+import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import specExpectedHtml from "~test/fixtures/rtf/outlook-encapsulated-html.html?raw";
 import specExample from "~test/fixtures/rtf/outlook-encapsulated-html.rtf?raw";
 import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
+
+const extractEncapsulatedContent = (rtf: string) => extractFromTokens(tokenizeRtf(rtf), createByteDecoder(rtf));
 
 const html = (rtf: string) => {
   const result = extractEncapsulatedContent(rtf);

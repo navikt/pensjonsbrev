@@ -2,9 +2,8 @@ import { type RtfToken } from "~/Brevredigering/LetterEditor/actions/rtf/tokeniz
 
 /** Character decoding for RTF: symbol words, `\uN` escapes and `\'hh` bytes in the document's code page. */
 
-/** Control words that stand for a single character. `\line` maps to a space since soft line breaks are not supported. */
+/** Control words that stand for a single character. `\line` is left to the consumers, which treat it differently. */
 export const RTF_SYMBOL_WORDS: ReadonlyMap<string, string> = new Map([
-  ["line", " "],
   ["tab", "\t"],
   ["lquote", "\u2018"],
   ["rquote", "\u2019"],

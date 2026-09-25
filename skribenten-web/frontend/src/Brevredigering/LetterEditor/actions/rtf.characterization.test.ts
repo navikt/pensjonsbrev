@@ -3,6 +3,8 @@ import { expect, test } from "vitest";
 
 import { extractEncapsulatedContent } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
 import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
+import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
+import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import outlookEncapsulatedHtml from "~test/fixtures/rtf/outlook-encapsulated-html.rtf?raw";
 import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
 import wordpad from "~test/fixtures/rtf/richedit-wordpad.rtf?raw";
@@ -60,7 +62,9 @@ const corpus: Record<string, string> = {
 };
 
 function parse(rtf: string): unknown {
-  return extractEncapsulatedContent(rtf) ?? interpretNativeRtf(rtf);
+  const tokens = tokenizeRtf(rtf);
+  const decodeBytes = createByteDecoder(rtf);
+  return extractEncapsulatedContent(tokens, decodeBytes) ?? interpretNativeRtf(tokens, decodeBytes);
 }
 
 test("RTF clipboard parsing is unchanged", async () => {

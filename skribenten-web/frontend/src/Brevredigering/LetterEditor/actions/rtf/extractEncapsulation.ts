@@ -1,16 +1,10 @@
+import { type ByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
 import {
-  type ByteDecoder,
-  createByteDecoder,
-  decodeUnicodeParam,
-  RTF_SYMBOL_WORDS,
-  skipUnicodeFallback,
-} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
-import { ENCAPSULATION_SKIPPED_DESTINATIONS } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
-import {
-  type RtfControlToken,
-  type RtfToken,
-  tokenizeRtf,
-} from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
+  ENCAPSULATION_DESTINATIONS,
+  ENCAPSULATION_IGNORABLE_DESTINATIONS,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
+import { type RtfToken } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
+import { type RtfDestination, walkRtf } from "~/Brevredigering/LetterEditor/actions/rtf/walkRtf";
 
 /**
  * Outlook puts mail bodies on the clipboard as RTF that wraps the original HTML (`\fromhtml1`) or
@@ -29,25 +23,8 @@ type Format = EncapsulatedContent["format"];
 /** The spec requires `\fromhtml1`/`\fromtext` in the header, before any other group or text. */
 const HEADER_SCAN_LIMIT = 10;
 
-type Destination = "body" | "htmltag" | "skip";
-
-interface GroupState {
-  destination: Destination;
-  htmlrtf: boolean;
-  ignorableIfUnknown: boolean;
-  ucSkip: number;
-}
-
-interface DeencapsulationContext {
-  format: Format;
-  decodeBytes: ByteDecoder;
-  groups: GroupState[];
-  output: string[];
-  pendingBytes: number[];
-  unicodeSkip: number;
-}
-
-function detectFormat(tokens: RtfToken[]): Format | undefined {
+/** Returns the encapsulated format declared in the RTF header, or undefined for other RTF. */
+export function detectEncapsulationFormat(tokens: readonly RtfToken[]): Format | undefined {
   if (tokens[0]?.type !== "groupStart") return undefined;
   for (const token of tokens.slice(1, 1 + HEADER_SCAN_LIMIT)) {
     if (token.type !== "control") return undefined;
@@ -59,108 +36,57 @@ function detectFormat(tokens: RtfToken[]): Format | undefined {
 
 const escapeHtml = (text: string) => text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
-const currentGroup = (ctx: DeencapsulationContext): GroupState => ctx.groups.at(-1)!;
-
-function emit(ctx: DeencapsulationContext, value: string) {
-  const group = currentGroup(ctx);
-  if (value.length === 0 || group.destination === "skip" || group.htmlrtf) return;
-
-  if (group.destination === "htmltag") {
-    if (ctx.format === "html") ctx.output.push(value);
-  } else {
-    ctx.output.push(ctx.format === "html" ? escapeHtml(value) : value);
-  }
-}
-
-function flushPendingBytes(ctx: DeencapsulationContext) {
-  if (ctx.pendingBytes.length === 0) return;
-  const decoded = ctx.decodeBytes(ctx.pendingBytes);
-  ctx.pendingBytes = [];
-  emit(ctx, decoded);
-}
-
-function handleControlWord(ctx: DeencapsulationContext, token: RtfControlToken) {
-  const group = currentGroup(ctx);
-  if (group.destination === "skip") return;
-
-  if (token.word === "*") {
-    group.ignorableIfUnknown = true;
-  } else if (group.ignorableIfUnknown) {
-    group.ignorableIfUnknown = false;
-    group.destination = token.word === "htmltag" ? "htmltag" : "skip";
-  } else if (ENCAPSULATION_SKIPPED_DESTINATIONS.has(token.word)) {
-    group.destination = "skip";
-  } else if (token.word === "rtf" && ctx.groups.length > 2) {
-    // Outlook appends mail signatures as a nested, plain RTF document.
-    group.destination = "body";
-    group.htmlrtf = false;
-  } else if (token.word === "htmlrtf") {
-    group.htmlrtf = !token.hasParam || token.param !== 0;
-  } else if (token.word === "uc") {
-    group.ucSkip = Math.max(0, token.param);
-  } else if (token.word === "u") {
-    emit(ctx, decodeUnicodeParam(token.param));
-    ctx.unicodeSkip = group.ucSkip;
-  } else if (token.word === "par" || token.word === "line") {
-    emit(ctx, "\r\n");
-  } else {
-    const symbol = RTF_SYMBOL_WORDS.get(token.word);
-    if (symbol !== undefined) emit(ctx, symbol);
-  }
-}
-
 /** Returns the original HTML or text of Outlook's encapsulating RTF, or undefined for other RTF. */
-export function extractEncapsulatedContent(rtf: string): EncapsulatedContent | undefined {
-  const tokens = tokenizeRtf(rtf);
-  const format = detectFormat(tokens);
+export function extractEncapsulatedContent(
+  tokens: readonly RtfToken[],
+  decodeBytes: ByteDecoder,
+): EncapsulatedContent | undefined {
+  const format = detectEncapsulationFormat(tokens);
   if (!format) return undefined;
 
-  const ctx: DeencapsulationContext = {
-    format,
-    decodeBytes: createByteDecoder(rtf),
-    groups: [{ destination: "body", htmlrtf: false, ignorableIfUnknown: false, ucSkip: 1 }],
-    output: [],
-    pendingBytes: [],
-    unicodeSkip: 0,
+  const output: string[] = [];
+  /** `\htmlrtf` is group scoped. */
+  const htmlrtf: boolean[] = [false];
+
+  const emit = (value: string, destination: RtfDestination) => {
+    if (htmlrtf.at(-1)) return;
+    if (destination === "htmltag") {
+      if (format === "html") output.push(value);
+    } else if (destination === "body") {
+      output.push(format === "html" ? escapeHtml(value) : value);
+    }
   };
 
-  for (const rawToken of tokens) {
-    if (rawToken.type !== "hexByte") flushPendingBytes(ctx);
-
-    let token: RtfToken | undefined = rawToken;
-    if (ctx.unicodeSkip > 0) {
-      const skip = skipUnicodeFallback(ctx.unicodeSkip, rawToken);
-      ctx.unicodeSkip = skip.remaining;
-      token = skip.rest;
-    }
-    if (!token) continue;
-
-    switch (token.type) {
+  const events = walkRtf(tokens, {
+    destinations: ENCAPSULATION_DESTINATIONS,
+    ignorableDestinations: ENCAPSULATION_IGNORABLE_DESTINATIONS,
+    decodeBytes,
+  });
+  for (const event of events) {
+    switch (event.kind) {
       case "groupStart": {
-        ctx.groups.push({ ...currentGroup(ctx), ignorableIfUnknown: false });
+        htmlrtf.push(htmlrtf.at(-1)!);
         break;
       }
       case "groupEnd": {
-        if (ctx.groups.length > 1) ctx.groups.pop();
-        break;
-      }
-      case "hexByte": {
-        ctx.pendingBytes.push(token.byte);
+        htmlrtf.pop();
         break;
       }
       case "text": {
-        if (currentGroup(ctx).ignorableIfUnknown) currentGroup(ctx).destination = "skip";
-        emit(ctx, token.value);
+        emit(event.value, event.destination);
         break;
       }
       case "control": {
-        handleControlWord(ctx, token);
+        const { word, hasParam, param } = event.token;
+        if (word === "htmlrtf") htmlrtf[htmlrtf.length - 1] = !hasParam || param !== 0;
+        // A nested document is Outlook's mail signature in plain RTF.
+        else if (word === "rtf") htmlrtf[htmlrtf.length - 1] = false;
+        else if (word === "par" || word === "line") emit("\r\n", event.destination);
         break;
       }
     }
   }
-  flushPendingBytes(ctx);
 
-  const content = ctx.output.join("");
+  const content = output.join("");
   return format === "html" ? { format, html: content } : { format, text: content };
 }
