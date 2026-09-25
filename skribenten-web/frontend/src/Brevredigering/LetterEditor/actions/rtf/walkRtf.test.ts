@@ -10,12 +10,12 @@ import { type RtfEvent, type WalkRtfOptions, walkRtf } from "~/Brevredigering/Le
 
 const NATIVE: WalkRtfOptions = {
   destinations: NATIVE_DESTINATIONS,
-  decodeBytes: createByteDecoder(""),
+  decodeBytes: createByteDecoder([]),
 };
 
 const ENCAPSULATION: WalkRtfOptions = {
   destinations: ENCAPSULATION_DESTINATIONS,
-  decodeBytes: createByteDecoder(""),
+  decodeBytes: createByteDecoder([]),
 };
 
 const walk = (rtf: string, options = NATIVE): RtfEvent[] => [...walkRtf(tokenizeRtf(rtf), options)];

@@ -776,7 +776,7 @@
      {
       "type": "TEXT",
       "font": "PLAIN",
-      "text": "“ú–{"
+      "text": "日本"
      }
     ]
    }
@@ -791,7 +791,7 @@
      {
       "type": "TEXT",
       "font": "PLAIN",
-      "text": "Tekst \\ansicpg1251 ж"
+      "text": "Tekst \\ansicpg1251 æ"
      }
     ]
    }

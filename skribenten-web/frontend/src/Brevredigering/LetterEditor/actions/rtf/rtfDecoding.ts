@@ -45,22 +45,42 @@ export function skipUnicodeFallback(remaining: number, token: RtfToken): { remai
 
 export type ByteDecoder = (bytes: number[]) => string;
 
-function textDecoderLabel(codepage: number): string {
-  if (codepage === 65_001) return "utf-8";
-  if (codepage === 10_000) return "macintosh";
-  return `windows-${codepage}`;
+const DEFAULT_ENCODING = "windows-1252";
+
+/** Windows code pages (`\ansicpgN`) mapped to WHATWG Encoding labels understood by `TextDecoder`. */
+const ENCODING_BY_CODEPAGE: ReadonlyMap<number, string> = new Map([
+  [874, "windows-874"],
+  ...[1250, 1251, 1252, 1253, 1254, 1255, 1256, 1257, 1258].map((cp): [number, string] => [cp, `windows-${cp}`]),
+  [932, "shift_jis"],
+  [936, "gbk"],
+  [949, "euc-kr"],
+  [950, "big5"],
+  [10_000, "macintosh"],
+  [20_866, "koi8-r"],
+  [21_866, "koi8-u"],
+  ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 13, 15].map((n): [number, string] => [28_590 + n, `iso-8859-${n}`]),
+  [65_001, "utf-8"],
+]);
+
+/** The first `\ansicpgN` in the header, i.e. before any visible text. */
+function headerCodepage(tokens: readonly RtfToken[]): number | undefined {
+  for (const token of tokens) {
+    if (token.type === "control" && token.word === "ansicpg" && token.hasParam) return token.param;
+    if (token.type === "hexByte" || (token.type === "text" && token.value.trim().length > 0)) return undefined;
+  }
+  return undefined;
 }
 
 /** Decoder for `\'hh` bytes, using the document's `\ansicpgN` (default Windows-1252). */
-export function createByteDecoder(rtf: string): ByteDecoder {
-  const match = /\\ansicpg(\d+)/.exec(rtf);
-  const codepage = match ? Number.parseInt(match[1], 10) : 1252;
+export function createByteDecoder(tokens: readonly RtfToken[]): ByteDecoder {
+  const codepage = headerCodepage(tokens);
+  const label = (codepage !== undefined && ENCODING_BY_CODEPAGE.get(codepage)) || DEFAULT_ENCODING;
 
   let decoder: TextDecoder;
   try {
-    decoder = new TextDecoder(textDecoderLabel(codepage));
+    decoder = new TextDecoder(label);
   } catch {
-    decoder = new TextDecoder("windows-1252");
+    decoder = new TextDecoder(DEFAULT_ENCODING);
   }
   return (bytes) => decoder.decode(new Uint8Array(bytes));
 }

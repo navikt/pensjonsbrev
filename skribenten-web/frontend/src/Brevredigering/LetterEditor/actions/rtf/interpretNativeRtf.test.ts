@@ -8,7 +8,10 @@ import { FontType, ListType } from "~/types/brevbakerTypes";
 // Real Word/TextEdit exports have a much larger preamble; see interpretNativeRtf.fixtures.test.ts.
 const HEADER = "{\\rtf1\\ansi\\ansicpg1252\\deflang1033";
 
-const interpret = (rtf: string) => interpretNativeRtf(tokenizeRtf(rtf), createByteDecoder(rtf));
+const interpret = (rtf: string) => {
+  const tokens = tokenizeRtf(rtf);
+  return interpretNativeRtf(tokens, createByteDecoder(tokens));
+};
 
 const plain = (text: string) => ({ type: "TEXT", font: FontType.PLAIN, text });
 const paragraph = (text: string) => ({ type: "P", content: [plain(text)] });
@@ -226,6 +229,34 @@ describe("interpretNativeRtf", () => {
     const rtf = "{\\rtf1\\ansi\\ansicpg1257\\deflang1044 \\'e4\\'f6\\'f5\\par}";
 
     expect(interpret(rtf)).toEqual([{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "äöõ" }] }]);
+  });
+
+  test("decodes double-byte code pages (Shift JIS) with the byte pairs kept together", () => {
+    const rtf = "{\\rtf1\\ansi\\ansicpg932 \\pard \\'93\\'fa\\'96\\'7b\\par}";
+
+    expect(interpret(rtf)).toEqual([{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "日本" }] }]);
+  });
+
+  test("skips double-byte fallback bytes after \\uN with \\uc2", () => {
+    // 日 as a Shift JIS byte pair, then 本 (U+672C) as \u with its Shift JIS bytes as a two-unit fallback.
+    const rtf = "{\\rtf1\\ansi\\ansicpg932 \\pard \\'93\\'fa\\uc2\\u26412\\'96\\'7b\\par}";
+
+    expect(interpret(rtf)).toEqual([{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "日本" }] }]);
+  });
+
+  test("decodes ISO 8859 code pages", () => {
+    // 0xB1 = ą, 0xBE = ž in ISO-8859-2.
+    const rtf = "{\\rtf1\\ansi\\ansicpg28592 \\pard \\'b1\\'be\\par}";
+
+    expect(interpret(rtf)).toEqual([{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "ąž" }] }]);
+  });
+
+  test("only reads \\ansicpg from the header, not from escaped body text", () => {
+    const rtf = "{\\rtf1\\ansi Tekst \\\\ansicpg1251 \\'e6\\par}";
+
+    expect(interpret(rtf)).toEqual([
+      { type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Tekst \\ansicpg1251 æ" }] },
+    ]);
   });
 
   test("decodes \\uN unicode escapes and skips the default single fallback character", () => {
