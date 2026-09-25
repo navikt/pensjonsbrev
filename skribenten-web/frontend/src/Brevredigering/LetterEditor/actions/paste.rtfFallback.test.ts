@@ -4,6 +4,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
 import { type LiteralValue } from "~/types/brevbakerTypes";
 import { letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
+import { MockDataTransfer } from "~test/support/pasteTestUtils";
 
 vi.mock("~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard", () => ({ parseRtfClipboard: vi.fn() }));
 
@@ -19,17 +20,13 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-function clipboardOf(data: Record<string, string>): DataTransfer {
-  return { types: Object.keys(data), getData: (format: string) => data[format] ?? "" } as unknown as DataTransfer;
-}
-
 function pasteRtfWithPlainText(): string {
   const state = letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
   const result = Actions.paste(
     state,
     { blockIndex: 0, contentIndex: 0 },
     0,
-    clipboardOf({ "text/rtf": "{\\rtf1 Hei\\par}", "text/plain": "Ren tekst " }),
+    new MockDataTransfer({ "text/rtf": "{\\rtf1 Hei\\par}", "text/plain": "Ren tekst " }),
   );
   const content = result.redigertBrev.blocks[0].content as LiteralValue[];
   return content.map((item) => item.editedText ?? item.text).join("");
