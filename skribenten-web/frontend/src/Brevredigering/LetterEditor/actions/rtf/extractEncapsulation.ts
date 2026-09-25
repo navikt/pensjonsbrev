@@ -3,9 +3,12 @@ import {
   createByteDecoder,
   decodeUnicodeParam,
   RTF_SYMBOL_WORDS,
+  skipUnicodeFallback,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
+import { ENCAPSULATION_SKIPPED_DESTINATIONS } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
+import {
   type RtfControlToken,
   type RtfToken,
-  skipUnicodeFallback,
   tokenizeRtf,
 } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 
@@ -25,15 +28,6 @@ type Format = EncapsulatedContent["format"];
 
 /** The spec requires `\fromhtml1`/`\fromtext` in the header, before any other group or text. */
 const HEADER_SCAN_LIMIT = 10;
-
-const SKIPPED_DESTINATIONS: ReadonlySet<string> = new Set([
-  "colortbl",
-  "fonttbl",
-  "info",
-  "pict",
-  "pntext",
-  "stylesheet",
-]);
 
 type Destination = "body" | "htmltag" | "skip";
 
@@ -94,7 +88,7 @@ function handleControlWord(ctx: DeencapsulationContext, token: RtfControlToken) 
   } else if (group.ignorableIfUnknown) {
     group.ignorableIfUnknown = false;
     group.destination = token.word === "htmltag" ? "htmltag" : "skip";
-  } else if (SKIPPED_DESTINATIONS.has(token.word)) {
+  } else if (ENCAPSULATION_SKIPPED_DESTINATIONS.has(token.word)) {
     group.destination = "skip";
   } else if (token.word === "rtf" && ctx.groups.length > 2) {
     // Outlook appends mail signatures as a nested, plain RTF document.

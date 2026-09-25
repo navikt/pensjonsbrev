@@ -3,9 +3,20 @@ import {
   createByteDecoder,
   decodeUnicodeParam,
   RTF_SYMBOL_WORDS,
+  skipUnicodeFallback,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
+import {
+  LIST_MARKER_DESTINATIONS,
+  NATIVE_SKIPPED_DESTINATIONS,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
+import {
+  HEADING_BY_OUTLINE_LEVEL,
+  type HeadingType,
+  parseHeadingStyles,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfStylesheet";
+import {
   type RtfControlToken,
   type RtfToken,
-  skipUnicodeFallback,
   tokenizeRtf,
 } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 import {
@@ -23,57 +34,6 @@ import { FontType, ListType } from "~/types/brevbakerTypes";
  * bold/italic, bullet/numbered lists and simple tables, and produces the same `TraversedElement[]`
  * as the HTML paste path. Anything else is ignored.
  */
-
-type HeadingType = "H1" | "H2" | "H3";
-
-const HEADING_BY_OUTLINE_LEVEL: readonly HeadingType[] = ["H1", "H2", "H3"];
-
-/** Fallback for writers that set no `\outlinelevel` on heading styles. */
-const HEADING_STYLE_NAMES: ReadonlyMap<string, HeadingType> = new Map([
-  ["heading 1", "H1"],
-  ["heading 2", "H2"],
-  ["heading 3", "H3"],
-  ["overskrift 1", "H1"],
-  ["overskrift 2", "H2"],
-  ["overskrift 3", "H3"],
-]);
-
-/** Destinations without visible document text. Unknown `\*` destinations are skipped too. */
-const SKIPPED_DESTINATIONS: ReadonlySet<string> = new Set([
-  "annotation",
-  "atnauthor",
-  "atndate",
-  "atnid",
-  "colortbl",
-  "fldinst",
-  "fonttbl",
-  "footer",
-  "footerf",
-  "footerl",
-  "footerr",
-  "footnote",
-  "header",
-  "headerf",
-  "headerl",
-  "headerr",
-  "info",
-  "listoverridetable",
-  "listtable",
-  "nonesttables",
-  "nonshppict",
-  "object",
-  "pict",
-  "pnseclvl",
-  "pntxta",
-  "pntxtb",
-  "shpinst",
-  "shprslt",
-  "stylesheet",
-  "tc",
-  "xe",
-]);
-
-const LIST_MARKER_DESTINATIONS: ReadonlySet<string> = new Set(["listtext", "pntext"]);
 
 const NUMBERED_PN_WORDS: ReadonlySet<string> = new Set([
   "pnlvlbody",
@@ -155,53 +115,6 @@ function initialGroupState(): GroupState {
 }
 
 const currentGroup = (ctx: ParseContext): GroupState => ctx.groups.at(-1)!;
-
-function headingFromStyleName(name: string): HeadingType | undefined {
-  // Style names may carry aliases, e.g. "heading 1,Overskrift 1".
-  for (const alias of name.split(",")) {
-    const heading = HEADING_STYLE_NAMES.get(alias.trim().toLowerCase());
-    if (heading) return heading;
-  }
-  return undefined;
-}
-
-/** Maps paragraph style index (`\sN`) to heading level, from `\outlinelevel` or the style name. */
-function parseHeadingStyles(tokens: RtfToken[]): Map<number, HeadingType> {
-  const headingStyles = new Map<number, HeadingType>();
-  const start = tokens.findIndex((token) => token.type === "control" && token.word === "stylesheet");
-  if (start === -1) return headingStyles;
-
-  let depth = 1;
-  let entry: { styleIndex?: number; outlineLevel?: number; name: string } | undefined;
-
-  for (let index = start + 1; index < tokens.length && depth > 0; index++) {
-    const token = tokens[index];
-    if (token.type === "groupStart") {
-      depth++;
-      if (depth === 2) entry = { name: "" };
-    } else if (token.type === "groupEnd") {
-      if (depth === 2 && entry?.styleIndex !== undefined) {
-        const heading =
-          entry.outlineLevel === undefined
-            ? headingFromStyleName(entry.name.split(";")[0])
-            : HEADING_BY_OUTLINE_LEVEL[entry.outlineLevel];
-        if (heading) headingStyles.set(entry.styleIndex, heading);
-      }
-      depth--;
-    } else if (depth === 2 && entry) {
-      if (token.type === "text") {
-        entry.name += token.value;
-      } else if (token.type === "control") {
-        // Character (`\*\csN`) and table (`\*\tsN`) styles are not paragraph styles.
-        if (token.word === "*") entry = undefined;
-        else if (token.word === "s" && token.hasParam) entry.styleIndex = token.param;
-        else if (token.word === "outlinelevel" && token.hasParam) entry.outlineLevel = token.param;
-      }
-    }
-  }
-
-  return headingStyles;
-}
 
 function fontOf(group: GroupState): FontType {
   // Brevbaker text cannot be both bold and italic; bold wins, as in the HTML path.
@@ -336,7 +249,7 @@ function enterDestination(group: GroupState, word: string): boolean {
     group.destination = word === "pn" ? "pn" : "skip";
     return true;
   }
-  if (SKIPPED_DESTINATIONS.has(word)) {
+  if (NATIVE_SKIPPED_DESTINATIONS.has(word)) {
     group.destination = "skip";
     return true;
   }
