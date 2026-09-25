@@ -56,12 +56,6 @@ class LetterRoutesITest {
             with(bestillMarkupRequest) {
                 val brevdata = letterData as EksempelRedigerbartDto
                 BestillRedigertBrevRequest(
-                    kode = kode,
-                    letterData = brevdata,
-                    fagsystemBrevdata = brevdata.pesysData,
-                    saksbehandlervalg = brevdata.saksbehandlerValg,
-                    felles = felles,
-                    language = language,
                     letterMarkup = it,
                     alltidValgbareVedlegg = listOf(),
                     redigerteVedlegg = emptyMap(),
