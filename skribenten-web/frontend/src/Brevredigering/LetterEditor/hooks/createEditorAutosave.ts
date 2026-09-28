@@ -14,6 +14,11 @@ type EditorStateUpdate = LetterEditorState | ((state: LetterEditorState) => Lett
  * External Store that owns the editor state and keeps it in sync with the backend.
  * Every content edit bumps `latestRevision`; a save acknowledges exactly the revision it sent,
  * so edits made while a request is in flight are never marked as saved by mistake.
+ *
+ * Errors: a rejected `save` is a failed server save (`saveFailed`, not retried automatically).
+ * If `onSaved` or `applyResponse` throws, the server already has the revision, so it stays saved,
+ * the local draft is kept as-is, `saveFailed` is not set, and the error rejects `savePendingChanges`
+ * (`autosave` has no caller to report to and ignores it).
  */
 export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Response>) {
   /* The version number of the latest edit made to the local editor state. */
@@ -29,6 +34,10 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
 
   let isSaving = false;
   let isResetting = false;
+
+  /* Set by an explicit save: keep saving newer revisions until the latest one is stored. */
+  /* Without it the loop saves one revision and leaves later edits to the next debounced autosave. */
+  let keepSavingUntilLatest = false;
 
   /* The most recent save/reset operation; only awaited while the matching flag is set. */
   let currentSave: Promise<void> = Promise.resolve();
@@ -46,11 +55,15 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
 
   const hasUnsavedChanges = () => latestRevision !== lastSavedRevision;
 
+  /* Autosave skips a revision that already failed, so it does not retry the same draft in a loop. */
+  const canAutosave = () => hasUnsavedChanges() && failedRevision !== latestRevision && !isResetting;
+
   const currentSaveStatus = (): SaveStatus => {
     if (!hasUnsavedChanges()) return "SAVED";
     return isSaving ? "SAVE_PENDING" : "DIRTY";
   };
 
+  /* Contract: an edit sets saveStatus "DIRTY" */
   const isContentEdit = (previous: LetterEditorState, next: LetterEditorState) =>
     next.saveStatus === "DIRTY" &&
     (next.redigertBrev !== previous.redigertBrev || next.saksbehandlerValg !== previous.saksbehandlerValg);
@@ -67,6 +80,7 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
   };
 
   /* Applies a local change. Only content edits create a new revision; focus/cursor changes do not. */
+  /* Ignored during a reset, since the reset result replaces the draft anyway (the editor is frozen meanwhile). */
   const update = (stateOrUpdater: EditorStateUpdate) => {
     if (isResetting) return;
     const previous = snapshot.editorState;
@@ -76,7 +90,7 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
     publish(next);
   };
 
-  /* Saves one revision after another until the latest edit is stored or a reset takes over. */
+  /* Saves the current revision; with `keepSavingUntilLatest`, keeps going until the latest edit is stored or a reset takes over. */
   const runSaveLoop = async () => {
     try {
       while (hasUnsavedChanges() && !isResetting) {
@@ -92,7 +106,7 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
           failedRevision = revisionBeingSaved;
           // A newer draft (revision) makes this failure irrelevant, so try again with that draft.
           const hasNewerEdits = latestRevision !== revisionBeingSaved;
-          if (hasNewerEdits && !isResetting) continue;
+          if (keepSavingUntilLatest && hasNewerEdits && !isResetting) continue;
           throw error;
         }
 
@@ -101,14 +115,31 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
         // Only apply the server response when it does not overwrite edits made during the request.
         const hasNewerEdits = latestRevision !== revisionBeingSaved;
         publish(hasNewerEdits ? snapshot.editorState : options.applyResponse(snapshot.editorState, response));
+        if (!keepSavingUntilLatest) break;
       }
     } finally {
       isSaving = false;
+      keepSavingUntilLatest = false;
       publish();
     }
   };
 
-  /* Saves pending edits right away. Concurrent callers share the same save, and also wait for a reset started meanwhile. */
+  const startSaveLoop = () => {
+    isSaving = true;
+    // Deferred so subscribers and `save` never see the flag without the matching promise.
+    currentSave = Promise.resolve().then(runSaveLoop);
+    publish();
+  };
+
+  /* Debounced save of the current revision. Does nothing while a save runs; later edits get their own debounce. */
+  const autosave = () => {
+    if (isSaving || !canAutosave()) return;
+    startSaveLoop();
+    currentSave.catch(() => undefined);
+  };
+
+  /* Saves pending edits right away, including edits made while it runs, and resolves once the latest revision is stored. */
+  /* Concurrent callers share the same save, and also wait for a reset started meanwhile. */
   const savePendingChanges = async (): Promise<void> => {
     if (isResetting) {
       await currentReset;
@@ -116,11 +147,9 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
     }
     if (!isSaving) {
       if (!hasUnsavedChanges()) return;
-      isSaving = true;
-      // Deferred so subscribers and `save` never see the flag without the matching promise.
-      currentSave = Promise.resolve().then(runSaveLoop);
-      publish();
+      startSaveLoop();
     }
+    keepSavingUntilLatest = true;
     await currentSave;
     if (isResetting) await currentReset;
   };
@@ -139,8 +168,8 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
     }
   };
 
-  /* Replaces the state with the result of `operation` once any running save has settled. */
-  /* Pending edits are discarded only if the operation succeeds. */
+  /* Replaces the state with the result of `operation` once any running save has settled (even if it failed). */
+  /* Pending edits are discarded only if the operation succeeds. A reset requested while one runs joins it; its operation is ignored. */
   const reset = (operation: () => Promise<LetterEditorState>): Promise<void> => {
     if (!isResetting) {
       isResetting = true;
@@ -159,9 +188,9 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
       };
     },
     update,
+    autosave,
     savePendingChanges,
     reset,
-    // Autosave skips a revision that already failed, so it does not retry the same draft in a loop.
-    canAutosave: () => hasUnsavedChanges() && failedRevision !== latestRevision && !isResetting,
+    canAutosave,
   };
 }

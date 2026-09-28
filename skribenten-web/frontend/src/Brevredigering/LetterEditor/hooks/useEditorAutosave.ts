@@ -21,12 +21,11 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
   const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (controller.canAutosave()) void controller.savePendingChanges().catch(() => undefined);
-    }, AUTOSAVE_TIMER);
+    const timeout = setTimeout(controller.autosave, AUTOSAVE_TIMER);
     return () => clearTimeout(timeout);
   }, [controller, snapshot.revision, snapshot.resetting, snapshot.saveFailed, snapshot.editorState.saveStatus]);
 
+  // Best effort only: nothing waits for this request, and it cannot survive the browser closing the page.
   useEffect(
     () => () => {
       if (controller.canAutosave()) void controller.savePendingChanges().catch(() => undefined);
