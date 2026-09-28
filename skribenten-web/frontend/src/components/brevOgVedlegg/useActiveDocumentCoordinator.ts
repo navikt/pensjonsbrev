@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { useVedleggEditorWarnings } from "~/components/brevOgVedlegg/useVedleggEditorWarnings";
+import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 
 /**
@@ -15,6 +16,7 @@ export const useActiveDocumentCoordinator = (args: {
   navigateToDocument: (vedleggId: string | undefined) => Promise<void>;
 }) => {
   const { saksId, brevId, activeVedleggId, redigeringsflate, navigateToDocument } = args;
+  const { saveNow } = useManagedLetterEditorContext();
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const activeVedleggSaveRef = useRef<(() => Promise<void>) | null>(null);
   const [savingActiveDocument, setSavingActiveDocument] = useState(false);
@@ -33,17 +35,18 @@ export const useActiveDocumentCoordinator = (args: {
     setSavingActiveDocument(true);
     try {
       await activeVedleggSaveRef.current?.();
+      await saveNow();
       return true;
     } catch {
       return false;
     } finally {
       setSavingActiveDocument(false);
     }
-  }, []);
+  }, [saveNow]);
 
   const selectDocument = useCallback(
     async (vedleggId: string | undefined): Promise<boolean> => {
-      if (activeVedleggId !== undefined && vedleggId !== activeVedleggId && !(await saveActiveDocument())) {
+      if (vedleggId !== activeVedleggId && !(await saveActiveDocument())) {
         return false;
       }
       await navigateToDocument(vedleggId);
