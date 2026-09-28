@@ -39,6 +39,7 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
     saveFailed: snapshot.saveFailed,
     resetting: snapshot.resetting,
     savePendingChanges: controller.savePendingChanges,
+    saveWith: controller.saveWith,
     reset: controller.reset,
   };
 }

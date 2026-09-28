@@ -299,6 +299,37 @@ describe("createEditorAutosave edit detection", () => {
 });
 
 describe("createEditorAutosave saving", () => {
+  it("serializes a custom save after autosave and supplies the latest draft", async () => {
+    const { controller, edit, request } = setup();
+    edit();
+    controller.autosave();
+    const pending = await request(0);
+    edit();
+    const draft = controller.getSnapshot().editorState;
+    const customSave = vi.fn(async (state: LetterEditorState) => state);
+    const saving = controller.saveWith({ save: customSave, applyResponse: (_state, response) => response });
+    expect(customSave).not.toHaveBeenCalled();
+    pending.resolve(initialState);
+    await saving;
+    expect(customSave).toHaveBeenCalledWith(expect.objectContaining({ redigertBrev: draft.redigertBrev }));
+    expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
+  });
+
+  it("does not invent a failed text revision when a custom save fails", async () => {
+    const { controller } = setup();
+    await expect(
+      controller.saveWith({
+        save: async () => {
+          throw new Error("form save failed");
+        },
+        applyResponse: (state) => state,
+      }),
+    ).rejects.toThrow("form save failed");
+    expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
+    expect(controller.getSnapshot().saveFailed).toBe(false);
+    expect(controller.canAutosave()).toBe(false);
+  });
+
   it("autosaves only the current revision and leaves newer edits to the next autosave", async () => {
     const { controller, edit, save, request, applyResponse } = setup();
     edit();
