@@ -42,7 +42,8 @@ function renderEditor(redigeringsflate: Redigeringsflate) {
 
   const Testkomponent = () => {
     const { setEditorState, saveNow } = useManagedLetterEditorContext();
-    markerSomEndret.current = () => setEditorState((state) => ({ ...state, saveStatus: "DIRTY" }));
+    markerSomEndret.current = () =>
+      setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" }));
     lagreNa.current = saveNow;
     return null;
   };
@@ -152,8 +153,6 @@ describe("saveNow", () => {
   });
 
   test("sender ikke en konkurrerende lagring mens autolagringen er underveis", async () => {
-    // Endepunktene for brev har ingen versjon, så to samtidige PUT-er kan lande i feil rekkefølge
-    // og lagre det eldste brevet. Autolagringen som allerede er underveis får fullføre alene.
     let fullførAutolagring = () => {};
     lagreAttestertBrevtekstMock.mockReturnValueOnce(
       new Promise<BrevResponse>((resolve) => {
@@ -166,14 +165,20 @@ describe("saveNow", () => {
     expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
 
     act(() => markerSomEndret.current?.());
+    const ferdig = vi.fn();
+    let lagring: Promise<void> | undefined;
     await act(async () => {
-      await lagreNa.current?.();
+      lagring = lagreNa.current?.().then(ferdig);
     });
 
     expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
+    expect(ferdig).not.toHaveBeenCalled();
 
     await act(async () => {
       fullførAutolagring();
+      await lagring;
     });
+    expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(2);
+    expect(ferdig).toHaveBeenCalledOnce();
   });
 });

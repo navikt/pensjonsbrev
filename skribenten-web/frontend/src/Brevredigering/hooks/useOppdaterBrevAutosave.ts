@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
-import { type Dispatch, type SetStateAction } from "react";
 
 import { oppdaterBrev } from "~/api/brev-queries";
 import {
@@ -8,15 +7,8 @@ import {
   createSaksbehandlerValgEndretHistoryEntry,
   type LetterSnapshot,
 } from "~/Brevredigering/LetterEditor/history";
-import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse, type OppdaterBrevRequest } from "~/types/brev";
-
-type SaveSuccessOptions = {
-  createHistoryEntry?: (
-    previousState: LetterEditorState,
-    response: BrevResponse,
-  ) => ReturnType<typeof createSaksbehandlerValgEndretHistoryEntry>;
-};
 
 export type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
   historySnapshot?: LetterSnapshot;
@@ -33,58 +25,33 @@ export type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
  * Rutens lagring av tekstvalg-/overstyringsendringer og av "ferdig"-innsendingen.
  *
  * Mutasjonen eies av ruten fordi ruten utleder `freeze = oppdaterBrevMutation.isPending` (og
- * tilsvarende for feilvisning) og sender det inn i <ManagedLetterEditor />. Autolagringen av selve
- * brevteksten har derfor sin egen mutasjon inne i <ManagedLetterEditor />: deler de én mutasjon,
- * ville `freeze` slått inn for hvert tastetrykk og låst editoren mens saksbehandler skriver.
+ * tilsvarende for feilvisning) og sender det inn i <ManagedLetterEditor />.
  */
-export function useOppdaterBrevAutosave({
-  saksId,
-  brevId,
-  saveStatus,
-  setEditorState,
-  onSaveSuccess,
-}: {
-  saksId: string;
-  brevId: number;
-  saveStatus: LetterEditorState["saveStatus"];
-  setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
-  onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
-}) {
-  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables, boolean>({
-    onMutate: () => saveStatus === "SAVED",
+export function useOppdaterBrevAutosave(saksId: string) {
+  const { saveLetterOperation } = useManagedLetterEditorContext();
+  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
     mutationFn: (values) => {
-      // Mark the editor as saving so onSaveSuccess will apply the response
-      // (it ignores responses while the editor is DIRTY).
-      setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
-      return oppdaterBrev({
-        saksId: Number.parseInt(saksId, 10),
-        brevId,
-        frigiReservasjon: values.frigiReservasjon ?? false,
-        request: {
-          redigertBrev: values.redigertBrev,
-          saksbehandlerValg: values.saksbehandlerValg,
+      let historySnapshot = values.historySnapshot;
+      return saveLetterOperation(
+        (state) => {
+          if (historySnapshot) historySnapshot = createLetterSnapshot(state);
+          return oppdaterBrev({
+            saksId: Number.parseInt(saksId, 10),
+            brevId: state.info.id,
+            frigiReservasjon: values.frigiReservasjon ?? false,
+            request: { redigertBrev: state.redigertBrev, saksbehandlerValg: values.saksbehandlerValg },
+          });
         },
-      });
-    },
-    onSuccess: (response, variables) => {
-      const historySnapshot = variables.historySnapshot;
-
-      onSaveSuccess(
-        response,
         historySnapshot
           ? {
-              createHistoryEntry: () =>
-                createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response)),
+              createHistoryEntry: (_state, response) =>
+                historySnapshot
+                  ? createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response))
+                  : null,
             }
           : undefined,
       );
     },
-    // The form retries its own unsaved values. A failure must not invent a text edit and start
-    // a competing text-only save, but actual text edits must remain eligible for autosave.
-    onError: (_error, _values, wasSaved) =>
-      setEditorState((state) =>
-        state.saveStatus === "DIRTY" ? state : { ...state, saveStatus: wasSaved ? "SAVED" : "DIRTY" },
-      ),
   });
 
   return { oppdaterBrevMutation };

@@ -265,8 +265,7 @@ function RedigerBrev({
     navigateToDocument,
   });
 
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset } =
-    useManagedLetterEditorContext();
+  const { editorState, redigertBrev, setEditorState, registerSaveErrorReset } = useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
     lagretRedigertBrev: brev.redigertBrev,
@@ -301,13 +300,7 @@ function RedigerBrev({
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
 
-  const oppdaterBrevAutosave = useOppdaterBrevAutosave({
-    saksId,
-    brevId: brev.info.id,
-    saveStatus: editorState.saveStatus,
-    setEditorState,
-    onSaveSuccess,
-  });
+  const oppdaterBrevAutosave = useOppdaterBrevAutosave(saksId);
   const { oppdaterBrevMutation } = oppdaterBrevAutosave;
 
   const defaultValuesModelEditor = useMemo(
@@ -349,7 +342,7 @@ function RedigerBrev({
   const onSubmit = async (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
     // An attachment is saved through its own endpoint, so it must be persisted while the reservation is
     // still held. The final submit releases the reservation, so a failed attachment save must stop it.
-    if (!(await documentCoordinator.saveActiveDocument())) return;
+    if (activeVedlegg !== undefined && !(await documentCoordinator.saveActiveDocument())) return;
 
     oppdaterBrevMutation.reset();
     oppdaterBrevMutation.mutate(

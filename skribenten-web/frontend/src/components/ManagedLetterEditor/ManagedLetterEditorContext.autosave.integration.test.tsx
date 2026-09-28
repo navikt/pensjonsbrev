@@ -13,15 +13,17 @@ import { type BrevResponse } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
-const { oppdaterBrevMock, oppdaterBrevtekstMock } = vi.hoisted(() => ({
+const { oppdaterBrevMock, oppdaterBrevtekstMock, tilbakestillBrevMock } = vi.hoisted(() => ({
   oppdaterBrevMock: vi.fn(),
   oppdaterBrevtekstMock: vi.fn(),
+  tilbakestillBrevMock: vi.fn(),
 }));
 
 vi.mock("~/api/brev-queries", async (importOriginal) => ({
   ...(await importOriginal<typeof import("~/api/brev-queries")>()),
   oppdaterBrev: oppdaterBrevMock,
   oppdaterBrevtekst: oppdaterBrevtekstMock,
+  tilbakestillBrev: tilbakestillBrevMock,
 }));
 
 const lagretBrev = brevResponse({
@@ -38,13 +40,7 @@ function renderAutosave() {
 
   const Testkomponent = () => {
     const context = useManagedLetterEditorContext();
-    const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
-      saksId: "123456",
-      brevId: 1,
-      saveStatus: context.editorState.saveStatus,
-      setEditorState: context.setEditorState,
-      onSaveSuccess: context.onSaveSuccess,
-    });
+    const { oppdaterBrevMutation } = useOppdaterBrevAutosave("123456");
     result.current = {
       ...context,
       lagreValg: () =>
@@ -199,5 +195,88 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     act(() => harness().setEditorState((state) => ({ ...state, focus: { ...state.focus, cursorPosition: 2 } })));
     await vent(1);
     expect(oppdaterBrevtekstMock).toHaveBeenCalledTimes(1);
+  });
+
+  test("eksplisitt lagring venter på autolagring og lagrer nyere brevtekst", async () => {
+    const first = Promise.withResolvers<BrevResponse>();
+    oppdaterBrevtekstMock.mockReturnValueOnce(first.promise);
+    const harness = renderAutosave();
+    endreBrev(harness, 100);
+    await vent(AUTOSAVE_TIMER);
+    endreBrev(harness, 101);
+    const finished = vi.fn();
+    let saving!: Promise<void>;
+    await act(async () => {
+      saving = harness().saveNow().then(finished);
+    });
+    expect(finished).not.toHaveBeenCalled();
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      first.resolve({ ...lagretBrev, redigertBrev: { ...lagretBrev.redigertBrev, deletedBlocks: [100] } });
+      await saving;
+    });
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledTimes(2);
+    expect(oppdaterBrevtekstMock).toHaveBeenLastCalledWith(
+      expect.objectContaining({ redigertBrev: expect.objectContaining({ deletedBlocks: [100, 101] }) }),
+    );
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+  });
+
+  test("tilbakestilling venter på autolagring og erstatter ulagrede endringer", async () => {
+    const first = Promise.withResolvers<BrevResponse>();
+    oppdaterBrevtekstMock.mockReturnValueOnce(first.promise);
+    tilbakestillBrevMock.mockResolvedValue(lagretBrev);
+    const harness = renderAutosave();
+    endreBrev(harness, 100);
+    await vent(AUTOSAVE_TIMER);
+    endreBrev(harness, 101);
+    let resetting!: Promise<void>;
+    await act(async () => {
+      resetting = harness().resetLetter();
+    });
+    expect(harness().resetting).toBe(true);
+    expect(tilbakestillBrevMock).not.toHaveBeenCalled();
+    await act(async () => {
+      first.resolve({ ...lagretBrev, redigertBrev: { ...lagretBrev.redigertBrev, deletedBlocks: [100] } });
+      await resetting;
+    });
+    expect(tilbakestillBrevMock).toHaveBeenCalledOnce();
+    expect(harness().editorState.redigertBrev).toEqual(lagretBrev.redigertBrev);
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+    expect(harness().resetting).toBe(false);
+    await vent(AUTOSAVE_TIMER);
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
+  });
+
+  test("tekstvalglagring venter på autolagring og bruker siste brevtekst", async () => {
+    const first = Promise.withResolvers<BrevResponse>();
+    oppdaterBrevtekstMock.mockReturnValueOnce(first.promise);
+    oppdaterBrevMock.mockImplementation(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+    const harness = renderAutosave();
+    endreBrev(harness, 100);
+    await vent(AUTOSAVE_TIMER);
+    endreBrev(harness, 101);
+    let saving!: Promise<BrevResponse>;
+    await act(async () => {
+      saving = harness().lagreValg();
+    });
+    expect(oppdaterBrevMock).not.toHaveBeenCalled();
+    await act(async () => {
+      first.resolve({ ...lagretBrev, redigertBrev: { ...lagretBrev.redigertBrev, deletedBlocks: [100] } });
+      await saving;
+    });
+    expect(oppdaterBrevMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        request: {
+          redigertBrev: expect.objectContaining({ deletedBlocks: [100, 101] }),
+          saksbehandlerValg: nyeValg,
+        },
+      }),
+    );
+    expect(harness().editorState.saksbehandlerValg).toEqual(nyeValg);
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+    await vent(AUTOSAVE_TIMER);
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
   });
 });

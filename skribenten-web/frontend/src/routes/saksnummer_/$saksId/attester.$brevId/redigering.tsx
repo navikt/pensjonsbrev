@@ -213,7 +213,7 @@ const VedtakWrapper = () => {
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const { vedlegg: activeVedlegg } = Route.useSearch();
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset, saveNow } =
+  const { editorState, redigertBrev, setEditorState, saveLetterOperation, registerSaveErrorReset, saveNow } =
     useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
@@ -340,13 +340,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterAttesteringRequest>({
     mutationFn: (requestData) =>
-      attesterBrev({
-        saksId: props.saksId,
-        brevId: props.brev.info.id,
-        request: requestData,
-      }),
-
-    onSuccess: (response) => onSaveSuccess(response),
+      saveLetterOperation((state) =>
+        attesterBrev({
+          saksId: props.saksId,
+          brevId: props.brev.info.id,
+          request: { ...requestData, redigertBrev: state.redigertBrev },
+        }),
+      ),
     onError: (err) => {
       const reason = (err as AxiosError & { forbidReason?: AttestForbiddenReason }).forbidReason;
 
@@ -359,7 +359,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const onSubmit = async (onSuccess?: () => void) => {
-    if (!(await documentCoordinator.saveActiveDocument())) return;
+    if (activeVedlegg !== undefined && !(await documentCoordinator.saveActiveDocument())) return;
 
     attesterMutation.reset();
     attesterMutation.mutate(

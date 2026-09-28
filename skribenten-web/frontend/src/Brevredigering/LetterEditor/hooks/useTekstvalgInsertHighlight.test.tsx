@@ -72,7 +72,7 @@ function renderHarness() {
   const harness = { current: null as Harness | null };
 
   const Testkomponent = () => {
-    const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+    const { editorState, redigertBrev, setEditorState } = useManagedLetterEditorContext();
 
     // Rutene leser brevet fra query-cachen, som `onSaveSuccess` skriver til. Abonnementet her
     // gjør at `lagretRedigertBrev` oppdateres på samme måte som i produksjon.
@@ -88,13 +88,7 @@ function renderHarness() {
       editorState: editorState,
       setEditorState: setEditorState,
     });
-    const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
-      saksId: SAKS_ID,
-      brevId: BREV_ID,
-      saveStatus: editorState.saveStatus,
-      setEditorState: setEditorState,
-      onSaveSuccess: onSaveSuccess,
-    });
+    const { oppdaterBrevMutation } = useOppdaterBrevAutosave(SAKS_ID);
 
     harness.current = {
       highlightedIds: highlightedIds,
@@ -105,7 +99,8 @@ function renderHarness() {
           redigertBrev: redigertBrev,
           saksbehandlerValg: nyeValg,
         }),
-      simulerTasting: () => setEditorState((state) => ({ ...state, saveStatus: "DIRTY" })),
+      simulerTasting: () =>
+        setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" })),
     };
 
     return null;
