@@ -56,7 +56,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                     text(
                         bokmal { +"Vi har fått melding om at " + data.avdoedNavn + " er død. Du kan ha rett til omstillingsstønad, som er en midlertidig støtte til etterlatte etter dødsfall." },
                         nynorsk { +"Vi har fått melding om at " + data.avdoedNavn + " er død. Du kan ha rett til omstillingsstønad, som er ein tidsavgrensa stønad til etterlatte etter dødsfall." },
-                        english { +"We have been informed that " + data.avdoedNavn + " has died. You may have rights as a surviving spouse, which is a temporary form of support for surviving relatives following a death." },
+                        english { +"We have been informed that " + data.avdoedNavn + " has died. You may be entitled to an adjustment allowance, which is a temporary form of support for surviving relatives following a death." },
                     )
                 }
                 paragraph {
@@ -103,7 +103,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                             text(
                                 bokmal { +"Ekteskapet varte i minst 5 år" },
                                 nynorsk { +"ekteskapet varte i minst 5 år" },
-                                english { +"you had been married at least 5 years" },
+                                english { +"you had been married for at least 5 years" },
                             )
                         }
                         item {
@@ -117,7 +117,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                             text(
                                 bokmal { +"dere var gift i mindre enn 5 år, men du hadde minst 50 prosent omsorg for barn under 18 år. Dette gjelder alle barn du har omsorg for, ikke bare felles barn" },
                                 nynorsk { +"du og avdøde var gift i mindre enn 5 år, men du hadde minst 50 prosent omsorg for barn under 18 år. Dette gjelder alle barn du har omsorg for, ikkje berre felles barn" },
-                                english { +"you had been married for less than 5 years, but you have custody of a child under the age of 18 for more than 50 percent of the time. This includes all children, not just joint children" },
+                                english { +"you had been married for less than 5 years, but you have custody of a child under the age of 18 for at least 50 percent of the time. This includes all children, not just joint children" },
                             )
                         }
                     }
@@ -298,7 +298,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 paragraph {
                     text(
                         bokmal { +"Omstillingsstønad kan som hovedregel bare etterbetales for de siste 3 månedene. Vi ber deg derfor om å søke så snart som mulig." },
-                        nynorsk { +"Omstillingsstønad kan som hovudregel berre etterbetalast for de siste tre månadene. Vi ber deg difor om å søke så snart som mogleg." },
+                        nynorsk { +"Omstillingsstønad kan som hovudregel berre etterbetalast for dei siste tre månadene. Vi ber deg difor om å søkje så snart som mogleg." },
                         english { +"We encourage you to apply as soon as possible because we normally only pay retroactively for 3 months." },
                     )
                 }
@@ -336,7 +336,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                     text(
                         bokmal { +"Andre stønader til du kan ha rett på" },
                         nynorsk { +"Andre ytingar du kan ha rett til" },
-                        english { +"Other benefits you may be entitled to as a surviving spouse" },
+                        english { +"Other benefits you may be entitled to" },
                     )
                 }
                 paragraph {
