@@ -94,7 +94,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     }
 //SLUTT FELLESTEKSTER
 
-    //START BREVMALER
+    //START FOLKETRYGDLOVEN
     object Generisk : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
@@ -1145,7 +1145,9 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(VedtaketOpprettholdes)
         }
     }
+    // SLUTT FOLKETRYGDLOVEN
 
+    // START FORVALTNINGSLOVEN
     //§ 31 Oversittet klagefrist
     object OversittetKlagefrist : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
@@ -1211,4 +1213,5 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(VedtaketOpprettholdes)
         }
     }
+    //SLUTT FORVALTNINGSLOVEN
 }
