@@ -7,8 +7,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { type SearchableContent } from "~/api/brevbaker-api-endpoints";
 import { type TemplateDescription } from "~/api/brevbakerTypes";
 import { Route as TemplatesRouteImport } from "~/routes/templates";
-import { deferrableClient } from "~/search/deferrableClient.testutil";
 import { createLocalSearchClient, type SearchClient } from "~/search/searchClient";
+import { deferrableClient } from "~test/support/deferrableClient";
 
 const { getAllTemplateDocumentation, getBrevkoderMedMetadata } = vi.hoisted(() => ({
   getAllTemplateDocumentation: {

@@ -4,9 +4,9 @@ import { type ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { type SearchableContent } from "~/api/brevbaker-api-endpoints";
-import { deferrableClient } from "~/search/deferrableClient.testutil";
 import { createLocalSearchClient, type SearchClient } from "~/search/searchClient";
 import { type TemplateRef, type TemplateSearch, useTemplateSearch } from "~/search/useTemplateSearch";
+import { deferrableClient } from "~test/support/deferrableClient";
 
 const { getAllTemplateDocumentation } = vi.hoisted(() => ({
   getAllTemplateDocumentation: {
