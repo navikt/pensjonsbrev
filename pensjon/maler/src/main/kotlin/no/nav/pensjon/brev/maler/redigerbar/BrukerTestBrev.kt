@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.Utsikten
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -17,12 +18,14 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope.RedigerbartVedlegg
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.saksbehandlervalg
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
 @TemplateModelHelpers
 object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
@@ -216,4 +219,52 @@ private val testvedleggRedigerbart = createAttachment<LangBokmal, EmptyVedleggDa
         text(bokmal { +"Testvedlegg (redigerbart)" })
     },
     includeSakspart = false,
-) { paragraph { text(bokmal { +"Dette er innholdet i testvedlegget slik det produseres fra malen." }) } }
+) {
+    paragraph { text(bokmal { +"Dette er innholdet i testvedlegget slik det produseres fra malen." }) }
+    paragraph {
+        val bla = BrevbakerType.Kroner(1000).expr().format()
+        table(
+            header = {
+                column(columnSpan = 1) {
+                    text(
+                        bokmal {
+                            +"Beregning"
+                        }
+                    )
+                }
+                column(columnSpan = 1) {
+                    text(
+                        bokmal {
+                            +"Beregning"
+                        }
+                    )
+                }
+            }) {
+            row {
+                cell {
+                    text(
+                        bokmal { +"Bla" + bla },
+                    )
+                }
+                cell {
+                    text(
+                        bokmal { +"Bla" + bla },
+                    )
+                }
+            }
+            row {
+                cell {
+                    text(
+                        bokmal { +"Bla" + redigerbarData(bla) },
+                    )
+                }
+                cell {
+                    text(
+                        bokmal { +"Bla" + redigerbarData(bla) },
+                    )
+                }
+            }
+
+        }
+    }
+}

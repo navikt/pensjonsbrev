@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "~/*": ["./src/*"],
+      "~test/*": ["./test/*"]
+    }
+  },
+  "include": ["src", "test/e2e/**/*.ts", "test/support/**/*.ts", "playwright.config.ts"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+}

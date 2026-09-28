@@ -5,7 +5,8 @@
   "version": "0.0.0",
   "scripts": {
     "build": "tsc && vite build",
-    "check-types": "tsc --noemit",
+    "check-types": "tsc --noemit && tsc --noemit -p tsconfig.test.json",
+    "check-unit-test-location": "test -z \"$(find . -path './node_modules' -prune -o -path './src' -prune -o \\( -name '*.test.ts' -o -name '*.test.tsx' \\) -print -quit)\"",
     "dev": "vite",
     "format": "biome format --write .",
     "lint": "biome check .",
@@ -14,7 +15,7 @@
     "preview": "vite preview",
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
     "stylelint": "stylelint '**/*.{tsx,css}'",
-    "test": "vitest run"
+    "test": "${npm_execpath} run check-unit-test-location && vitest run --config ./vitest.config.ts"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

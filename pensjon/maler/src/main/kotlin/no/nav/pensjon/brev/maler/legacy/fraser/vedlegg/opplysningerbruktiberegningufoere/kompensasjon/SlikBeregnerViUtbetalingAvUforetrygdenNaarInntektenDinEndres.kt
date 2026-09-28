@@ -24,7 +24,7 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
                 .lessThan(
                     pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
                 ) and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode()
-                .notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode()
+                .notEqualTo("PE_UT_04_109") and pe.pebrevkode()
                 .notEqualTo("PE_UT_07_200") and (pe.pebrevkode()
                 .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
                 "tilst_dod"
@@ -60,7 +60,6 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
                 and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0)
                 and pe.pebrevkode().notEqualTo("PE_UT_04_108")
                 and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                and pe.pebrevkode().notEqualTo("PE_UT_04_500")
                 and pe.pebrevkode().notEqualTo("PE_UT_07_200")
                 and (pe.pebrevkode()
             .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
@@ -97,7 +96,6 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
                     and pe.pebrevkode().notEqualTo("PE_UT_04_108")
                     and pe.pebrevkode().notEqualTo("PE_UT_04_109")
                     and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_500")
                     and (pe.pebrevkode()
                 .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
                 "tilst_dod"

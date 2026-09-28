@@ -1,0 +1,1582 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "type": "text",
+      "title": "Om dashbordet",
+      "datasource": null,
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "mode": "markdown",
+        "content": "Dashbordet er laget for å vurdere om **TTL-valgene for Valkey-cachen i skribenten-backend er fornuftige**.\nKildene er `skribenten_cache_requests_total` (treff/bom per cacheområde) og `skribenten_cache_operations_seconds` (latens og feil), begge satt i `Valkey`-klassen i `Cache.kt`.\n\n**Slik leses det.** Et lavt treffrate-tall er ikke i seg selv et argument for lengre TTL. To signaler skiller de to forklaringene:\n\n1. *Treffrate mot last* (panelene nederst, ett per område). Stiger treffraten når oppslagsraten stiger, er TTL-en den bindende skranken — flere oppslag rekker inn i samme vindu. Er den flat og lav uansett last, er nøklene kalde, og lengre TTL hjelper lite.\n2. *Spredningen mellom områder med samme TTL.* De aller fleste områdene bruker `defaultTtl` på 10 minutter. Når de likevel spenner over et bredt spenn av treffrater, ligger forskjellen i tilgangsmønsteret, ikke i TTL-en.\n\nBruk så kostnadstabellen til å prioritere: et område med lav treffrate og dyr baktjeneste er verdt å se på, ett med lav treffrate og et raskt kall er det sjelden.\n\n**Dette kan dashbordet ikke svare på.** Et bom forteller ikke om nøkkelen nettopp utløp eller aldri har vært sett før. Vi kan derfor ikke måle direkte hvor mange bom en lengre TTL ville fjernet — bare indikere det. Vil vi ha et eksakt svar, må vi måle alder ved treff, og det krever at skrivetidspunktet lagres i selve cache-verdien.\n\n**Forbehold.**\n- Feilede Valkey-lesninger telles ikke som bom; de faller helt ut av treff/bom-tallene. Sjekk feilpanelet før treffratene tolkes.\n- Kjører appen uten Valkey, brukes `InMemoryCache`, som ikke er instrumentert. Da er dashbordet tomt.\n- `AD` har ikke fast TTL: den settes til tokenets gjenstående levetid minus 5 minutter, og har derfor tom TTL-celle.\n- `increase()` ekstrapolerer, så antallene er avrundede anslag.\n- Området `Samhandler` er et etterslep fra før prefikset ble delt i `SamhandlerEnkel` og `SamhandlerAdresse`. Variabelen `Cacheområde` filtrerer det bort, men velges «All», utvider Grafana det til `.*`, og da dukker det likevel opp i tabellene og tidsseriene for historiske vinduer. Ignorer det."
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Oppslag i perioden (ca.)",
+      "description": "Totalt antall cache-oppslag, treff og bom samlet, over valgt tidsrom.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 10
+      },
+      "id": 2,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum(increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Samlet treffrate",
+      "description": "Andel av alle oppslag som ble besvart fra cache. Et snitt på tvers av områder med svært ulikt volum - se tabellen under for fordelingen.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 10
+      },
+      "id": 3,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 50
+              },
+              {
+                "color": "green",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent",
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * sum(increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"hit\"}[$__range])) / (sum(increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range])) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Bom i perioden (ca.)",
+      "description": "Antall oppslag som ikke fantes i cache og derfor utløste et kall til baktjenesten.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 10
+      },
+      "id": 4,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum(increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"miss\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Feilede cache-operasjoner",
+      "description": "Andel kall mot Valkey som feilet. Feilede lesninger telles ikke som bom, så et tall over null betyr at treffratene er regnet av et ufullstendig grunnlag.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 10
+      },
+      "id": 5,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 0.1
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "percent",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * (sum(increase(skribenten_cache_operations_seconds_count{k8s_cluster_name=~\"$cluster\", outcome=\"error\"}[$__range])) or vector(0)) / (sum(increase(skribenten_cache_operations_seconds_count{k8s_cluster_name=~\"$cluster\"}[$__range])) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Treffrate per cacheområde",
+      "description": "Oppslag, treff og bom over valgt tidsrom, med konfigurert TTL ved siden av. TTL-kolonnen er hardkodet fra Cache.kt og kallstedene - metrikken bærer ingen TTL-label. Sorter på bom for å se hvor det er volum å hente.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "id": 6,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Område"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "string"
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Oppslag"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Treff"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bom"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Treffrate"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "gradient"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TTL"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": [
+            "Oppslag",
+            "Treff",
+            "Bom"
+          ],
+          "enablePagination": false,
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Bom"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"hit\"}[$__range]))) or 0 * round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"miss\"}[$__range]))) or 0 * round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * (round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"hit\"}[$__range]))) or 0 * round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range])))) / (round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range]))) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "(\n  label_replace(vector(600), \"omraade\", \"ALLTID_VALGBARE_VEDLEGG\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"fagsak\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"Navansatt\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"NavAnsattEnhet\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"Norg\", \"\", \"\")\n  or label_replace(vector(300), \"omraade\", \"Skjerming\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"Redigerbar\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"HarRedigerbareVedlegg\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"SamhandlerEnkel\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"SamhandlerAdresse\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"PensjonRepresentasjon\", \"\", \"\")\n  or label_replace(vector(600), \"omraade\", \"PensjonPersondata\", \"\", \"\")\n)\nand on (omraade) (round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range]))) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "E"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "omraade",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "omraade",
+                "destinationType": "string"
+              }
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Time 1": true,
+              "Time 2": true,
+              "Time 3": true,
+              "Time 4": true,
+              "Time 5": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "omraade": "Område",
+              "Value #A": "Oppslag",
+              "Value #B": "Treff",
+              "Value #C": "Bom",
+              "Value #D": "Treffrate",
+              "Value #E": "TTL"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Treffrate over tid, per område",
+      "description": "Treffrate per område gjennom perioden. Fall om natten og i helger er normalt: med få oppslag blir raten støyete, og en kald nøkkel veier tungt.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 26
+      },
+      "id": 7,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent",
+          "max": 100,
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * sum by (omraade) (rate(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"hit\"}[$__rate_interval])) / (sum by (omraade) (rate(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__rate_interval])) > 0)",
+          "format": "time_series",
+          "instant": false,
+          "range": true,
+          "legendFormat": "{{omraade}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Oppslag per sekund, per område",
+      "description": "Lasten inn mot cachen. Sammenlign formen her med treffratepanelet ved siden av: følger de hverandre, er TTL-en den bindende skranken.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 26
+      },
+      "id": 8,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (omraade) (rate(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__rate_interval]))",
+          "format": "time_series",
+          "instant": false,
+          "range": true,
+          "legendFormat": "{{omraade}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Bom per sekund, per område",
+      "description": "Lasten cachen slipper gjennom til baktjenestene. Dette er trafikken en lengre TTL kan fjerne - forutsatt at bommene skyldes utløpte nøkler og ikke nøkler som aldri gjentas.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 35
+      },
+      "id": 9,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (omraade) (rate(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"miss\"}[$__rate_interval]))",
+          "format": "time_series",
+          "instant": false,
+          "range": true,
+          "legendFormat": "{{omraade}}",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Latens og feil for kall mot Valkey",
+      "description": "p95 for lesing og skriving, og feilrate. Kontekst for tallene over: er Valkey treg, koster selv et treff noe, og er den feilende, forsvinner oppslag ut av treff/bom-statistikken.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 35
+      },
+      "id": 10,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "feil/s.*"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "reqps"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "histogram_quantile(0.95, sum by (le, operation) (rate(skribenten_cache_operations_seconds_bucket{k8s_cluster_name=~\"$cluster\"}[$__rate_interval])))",
+          "format": "time_series",
+          "instant": false,
+          "range": true,
+          "legendFormat": "p95 {{operation}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (operation) (rate(skribenten_cache_operations_seconds_count{k8s_cluster_name=~\"$cluster\", outcome=\"error\"}[$__rate_interval])) or 0 * sum by (operation) (rate(skribenten_cache_operations_seconds_count{k8s_cluster_name=~\"$cluster\"}[$__rate_interval]))",
+          "format": "time_series",
+          "instant": false,
+          "range": true,
+          "legendFormat": "feil/s {{operation}}",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Hva bommene koster oppstrøms",
+      "description": "Bommene koblet mot kallet de utløser. Koblingen område til rute er hardkodet fra metricsRoute() på kallstedene. Anslått tid er bom ganger p95 og er en størrelsesorden, ikke et fasitsvar - p95 overvurderer snittkallet. p95 regnes over alle statuskoder; feilsvar utgjør under en promille av trafikken på disse rutene, og de koster tid de også. fagsak mangler rute fordi oppslaget slår sammen to kall (fagsak og PDL-adressebeskyttelse).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      },
+      "id": 11,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Område"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "string"
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Rute"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "string"
+              },
+              {
+                "id": "custom.align",
+                "value": "left"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Bom"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "short"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Treffrate"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 1
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "gradient"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p95 på ruten"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 3
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Anslått tid brukt"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "gauge",
+                  "mode": "gradient"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": [
+            "Bom",
+            "Anslått tid brukt"
+          ],
+          "enablePagination": false,
+          "reducer": [
+            "sum"
+          ],
+          "show": true
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Anslått tid brukt"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"miss\"}[$__range]))) or 0 * round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range])))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * (round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"hit\"}[$__range]))) or 0 * round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range])))) / (round(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\"}[$__range]))) > 0)",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "round(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"miss\"}[$__range])), \"route\", \"oauth2/v2.0/token\", \"omraade\", \"AD\"), \"route\", \"navansatt/{ansattId}\", \"omraade\", \"Navansatt\"), \"route\", \"navansatt/{ansattId}/enheter\", \"omraade\", \"NavAnsattEnhet\"), \"route\", \"api/v1/enhet/{enhetId}\", \"omraade\", \"Norg\"), \"route\", \"skjerming\", \"omraade\", \"Skjerming\"), \"route\", \"/api/adresse/kontaktadresse\", \"omraade\", \"PensjonPersondata\"), \"route\", \"representasjon/hasRepresentant\", \"omraade\", \"PensjonRepresentasjon\"), \"route\", \"templates/redigerbar/{brevkode}\", \"omraade\", \"Redigerbar\"), \"route\", \"templates/redigerbar/{brevkode}/har-redigerbare-vedlegg\", \"omraade\", \"HarRedigerbareVedlegg\"), \"route\", \"letter/redigerbar/alltidValgbareVedlegg\", \"omraade\", \"ALLTID_VALGBARE_VEDLEGG\"), \"route\", \"api/samhandler/hentSamhandlerEnkel/{idTSSEkstern}\", \"omraade\", \"SamhandlerEnkel\"), \"route\", \"api/samhandler/hentSamhandlerPostadresse/{idTSSEkstern}\", \"omraade\", \"SamhandlerAdresse\")) * 0 + 1",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "C"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (omraade) ((round(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"miss\"}[$__range])), \"route\", \"oauth2/v2.0/token\", \"omraade\", \"AD\"), \"route\", \"navansatt/{ansattId}\", \"omraade\", \"Navansatt\"), \"route\", \"navansatt/{ansattId}/enheter\", \"omraade\", \"NavAnsattEnhet\"), \"route\", \"api/v1/enhet/{enhetId}\", \"omraade\", \"Norg\"), \"route\", \"skjerming\", \"omraade\", \"Skjerming\"), \"route\", \"/api/adresse/kontaktadresse\", \"omraade\", \"PensjonPersondata\"), \"route\", \"representasjon/hasRepresentant\", \"omraade\", \"PensjonRepresentasjon\"), \"route\", \"templates/redigerbar/{brevkode}\", \"omraade\", \"Redigerbar\"), \"route\", \"templates/redigerbar/{brevkode}/har-redigerbare-vedlegg\", \"omraade\", \"HarRedigerbareVedlegg\"), \"route\", \"letter/redigerbar/alltidValgbareVedlegg\", \"omraade\", \"ALLTID_VALGBARE_VEDLEGG\"), \"route\", \"api/samhandler/hentSamhandlerEnkel/{idTSSEkstern}\", \"omraade\", \"SamhandlerEnkel\"), \"route\", \"api/samhandler/hentSamhandlerPostadresse/{idTSSEkstern}\", \"omraade\", \"SamhandlerAdresse\")) * 0 + 1) * on (route) group_left () (histogram_quantile(0.95, sum by (le, route) (rate(skribenten_http_client_requests_seconds_bucket{k8s_cluster_name=~\"$cluster\"}[$__range])))))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "D"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (omraade) (round(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(label_replace(sum by (omraade) (increase(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=~\"$omraade\", result=\"miss\"}[$__range])), \"route\", \"oauth2/v2.0/token\", \"omraade\", \"AD\"), \"route\", \"navansatt/{ansattId}\", \"omraade\", \"Navansatt\"), \"route\", \"navansatt/{ansattId}/enheter\", \"omraade\", \"NavAnsattEnhet\"), \"route\", \"api/v1/enhet/{enhetId}\", \"omraade\", \"Norg\"), \"route\", \"skjerming\", \"omraade\", \"Skjerming\"), \"route\", \"/api/adresse/kontaktadresse\", \"omraade\", \"PensjonPersondata\"), \"route\", \"representasjon/hasRepresentant\", \"omraade\", \"PensjonRepresentasjon\"), \"route\", \"templates/redigerbar/{brevkode}\", \"omraade\", \"Redigerbar\"), \"route\", \"templates/redigerbar/{brevkode}/har-redigerbare-vedlegg\", \"omraade\", \"HarRedigerbareVedlegg\"), \"route\", \"letter/redigerbar/alltidValgbareVedlegg\", \"omraade\", \"ALLTID_VALGBARE_VEDLEGG\"), \"route\", \"api/samhandler/hentSamhandlerEnkel/{idTSSEkstern}\", \"omraade\", \"SamhandlerEnkel\"), \"route\", \"api/samhandler/hentSamhandlerPostadresse/{idTSSEkstern}\", \"omraade\", \"SamhandlerAdresse\")) * on (route) group_left () (histogram_quantile(0.95, sum by (le, route) (rate(skribenten_http_client_requests_seconds_bucket{k8s_cluster_name=~\"$cluster\"}[$__range])))))",
+          "format": "table",
+          "instant": true,
+          "range": false,
+          "legendFormat": "__auto",
+          "refId": "E"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "joinByField",
+          "options": {
+            "byField": "omraade",
+            "mode": "outer"
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "targetField": "omraade",
+                "destinationType": "string"
+              },
+              {
+                "targetField": "route",
+                "destinationType": "string"
+              }
+            ]
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Time 1": true,
+              "Time 2": true,
+              "Time 3": true,
+              "Time 4": true,
+              "Time 5": true,
+              "Value #C": true
+            },
+            "includeByName": {},
+            "indexByName": {
+              "omraade": 0,
+              "route": 1,
+              "Value #A": 2,
+              "Value #B": 3,
+              "Value #D": 4,
+              "Value #E": 5
+            },
+            "renameByName": {
+              "omraade": "Område",
+              "route": "Rute",
+              "Value #A": "Bom",
+              "Value #B": "Treffrate",
+              "Value #D": "p95 på ruten",
+              "Value #E": "Anslått tid brukt"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "title": "Treffrate mot last, per område",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 56
+      },
+      "id": 12,
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "$omraade",
+      "description": "Treffrate (venstre akse, blå) mot oppslag per sekund (høyre akse, gul). Følger kurvene hverandre, indikerer det at TTL-en er den bindende skranken, og at lengre TTL vil gi flere treff. Er treffraten flat mens lasten svinger, er nøklene kalde og TTL-en ikke problemet. Vær oppmerksom på at et område der gjenbruket skjer innen sekunder viser samme form uten at TTL-lengden betyr noe - formen alene avgjør altså ikke saken. Zoom inn på ett til to døgn: over sju døgn glatter oppløsningen ut døgnrytmen panelet er ment å vise.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 57
+      },
+      "id": 13,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Treffrate"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "max",
+                "value": 100
+              },
+              {
+                "id": "min",
+                "value": 0
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "blue"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Oppslag/s"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "reqps"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 15
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "yellow"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "100 * sum (rate(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=\"$omraade\", result=\"hit\"}[$__rate_interval])) / (sum (rate(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=\"$omraade\"}[$__rate_interval])) > 0)",
+          "format": "time_series",
+          "instant": false,
+          "range": true,
+          "legendFormat": "Treffrate",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum (rate(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\", omraade=\"$omraade\"}[$__rate_interval]))",
+          "format": "time_series",
+          "instant": false,
+          "range": true,
+          "legendFormat": "Oppslag/s",
+          "refId": "B"
+        }
+      ],
+      "repeat": "omraade",
+      "repeatDirection": "h",
+      "maxPerRow": 3
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [
+    "pensjonsbrev",
+    "skribenten",
+    "cache"
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "datasource",
+        "type": "datasource",
+        "label": "Datakilde",
+        "query": "prometheus",
+        "refresh": 1,
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "current": {},
+        "options": [],
+        "skipUrlSync": false
+      },
+      {
+        "name": "cluster",
+        "type": "query",
+        "label": "Cluster",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(skribenten_cache_requests_total, k8s_cluster_name)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(skribenten_cache_requests_total, k8s_cluster_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "current": {},
+        "options": [],
+        "skipUrlSync": false,
+        "sort": 1
+      },
+      {
+        "name": "omraade",
+        "type": "query",
+        "label": "Cacheområde",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\"}, omraade)",
+        "query": {
+          "qryType": 1,
+          "query": "label_values(skribenten_cache_requests_total{k8s_cluster_name=~\"$cluster\"}, omraade)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "regex": "/^(?!Samhandler$)/",
+        "current": {},
+        "options": [],
+        "skipUrlSync": false,
+        "sort": 1
+      }
+    ]
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Skribenten - cache og TTL",
+  "uid": "skribenten-cache-ttl",
+  "version": 1,
+  "weekStart": ""
+}

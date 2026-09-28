@@ -5,7 +5,8 @@
   "version": "0.0.0",
   "scripts": {
     "build": "tsc && vite build",
-    "check-types": "tsc --noemit",
+    "check-types": "tsc --noemit && tsc --noemit -p tsconfig.test.json && tsc --noemit -p tsconfig.e2e.json",
+    "check-unit-test-location": "files=$(find . -path './node_modules' -prune -o -path './src' -prune -o \\( -name '*.test.ts' -o -name '*.test.tsx' \\) -print); if [ -n \"$files\" ]; then echo 'Feilplasserte testfiler (må ligge under src/):'; echo \"$files\"; exit 1; fi",
     "dev": "vite --host",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
@@ -16,9 +17,9 @@
     "preview": "vite preview",
     "stylelint": "stylelint 'src/**/*.{tsx,css}'",
     "stylelint:fix": "stylelint --fix 'src/**/*.{tsx,css}'",
-    "test": "vitest --config ./vite.config.ts",
+    "test": "${npm_execpath} run check-unit-test-location && vitest --config ./vitest.config.ts",
     "tsc:watch": "tsc --watch",
-    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run e2e"
+    "verify": "${npm_execpath} run lint-and-check-types && ${npm_execpath} run test -- --run && ${npm_execpath} run e2e"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

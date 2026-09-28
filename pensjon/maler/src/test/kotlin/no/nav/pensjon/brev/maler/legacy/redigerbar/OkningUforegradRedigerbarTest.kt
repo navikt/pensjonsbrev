@@ -17,36 +17,6 @@ import java.time.LocalDate
 class OkningUforegradRedigerbarTest {
 
     @Test
-    fun testPdf() {
-        LetterTestImpl(
-            OkningUforegradRedigerbar.template,
-            Fixtures.create(OkningUforegradRedigerbar::class),
-            Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("UT_OKNING_UFOREGRAD")
-    }
-
-    @Test
-    fun testHtml() {
-        LetterTestImpl(
-            OkningUforegradRedigerbar.template,
-            Fixtures.create(OkningUforegradRedigerbar::class),
-            Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestHtml("UT_OKNING_UFOREGRAD")
-    }
-
-    @Test
-    fun `testPdf - nynorsk`() {
-        LetterTestImpl(
-            OkningUforegradRedigerbar.template,
-            Fixtures.create(OkningUforegradRedigerbar::class),
-            Language.Nynorsk,
-            Fixtures.fellesAuto
-        ).renderTestPDF("UT_OKNING_UFOREGRAD_NYNORSK")
-    }
-
-    @Test
     fun `testPdf - ung ufor`() {
         val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe

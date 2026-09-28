@@ -11,6 +11,7 @@ import {
   type BrevResponse,
   type DistribusjonstypeRequest,
   type OppdaterAttesteringRequest,
+  type OppdaterFoerstesideRequest,
   type OppdaterKlarStatusRequest,
   type OppdaterMottakerRequest,
   type ValgteVedleggRequest,
@@ -75,6 +76,9 @@ export const hentPdfForAttestering = pdfQuery(
 
 export const veksleKlarStatus = async (saksId: string, brevId: string | number, body: OppdaterKlarStatusRequest) =>
   (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/status`, body)).data;
+
+export const oppdaterFoersteside = async (saksId: string, brevId: string | number, body: OppdaterFoerstesideRequest) =>
+  (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/foersteside`, body)).data;
 
 export const endreDistribusjonstype = async (saksId: string, brevId: string | number, body: DistribusjonstypeRequest) =>
   (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/distribusjon`, body)).data;

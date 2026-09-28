@@ -29,12 +29,9 @@
   user-select: text;
 }
 
-.editor-surface td [data-literal-index],
-.editor-surface th [data-literal-index] {
-  display: block;
-  width: 100%;
-  min-height: 1.4rem;
-  white-space: pre-wrap;
+.editor-surface td,
+.editor-surface th {
+  cursor: text;
 }
 
 .editor-surface.is-drag-selecting [data-literal-index] {
@@ -44,6 +41,28 @@
 .editor-surface.is-drag-selecting [data-literal-index]:where(:focus, :focus-visible) {
   outline: 0;
   box-shadow: none;
+}
+
+.editor-surface td [data-literal-index]:is([contenteditable], [data-ce-orig]),
+.editor-surface th [data-literal-index]:is([contenteditable], [data-ce-orig]) {
+  display: inline;
+  white-space: pre-wrap;
+}
+
+/* En tom literal (kun zero-width space) må ha et klikkbart område, uten å fylle hele cellen. */
+.editor-surface td [data-literal-index]:is([contenteditable], [data-ce-orig])[data-empty],
+.editor-surface th [data-literal-index]:is([contenteditable], [data-ce-orig])[data-empty] {
+  display: inline-block;
+  min-width: 1ch;
+  min-height: 1.4rem;
+}
+
+/* Begrens variabel-bokser (inline-block) til cellens bredde slik at lange verdier brytes. */
+.editor-surface td [data-literal-index]:not([contenteditable], [data-ce-orig], br),
+.editor-surface th [data-literal-index]:not([contenteditable], [data-ce-orig], br) {
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 
 .attestant-diff-inserted,

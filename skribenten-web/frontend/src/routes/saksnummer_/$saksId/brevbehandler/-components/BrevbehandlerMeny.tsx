@@ -15,13 +15,20 @@ import {
   Tag,
   VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
-import { endreDistribusjonstype, hentAlleBrevInfoForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
+import {
+  endreDistribusjonstype,
+  hentAlleBrevInfoForSak,
+  hentPdfForBrev,
+  oppdaterFoersteside,
+  veksleKlarStatus,
+} from "~/api/sak-api-endpoints";
+import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useEndreMottaker } from "~/hooks/useEndreMottaker";
@@ -179,6 +186,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
+  const foerstesideFeatureToggle = useQuery(getFeatureToggle("foersteside"));
 
   const {
     modalÅpen,
@@ -216,6 +224,21 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       );
       queryClient.invalidateQueries({
         queryKey: getBrev.queryKey(props.brev.id),
+      });
+    },
+  });
+
+  const foerstesideMutation = useMutation<BrevInfo, Error, boolean, unknown>({
+    mutationFn: (leggVedFoersteside) =>
+      oppdaterFoersteside(props.saksId, props.brev.id, {
+        leggVedFoersteside,
+      }),
+    onSuccess: (response) => {
+      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
+      );
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(props.brev.id),
       });
     },
   });
@@ -303,6 +326,26 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         </HStack>
       )}
       <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
+      {foerstesideFeatureToggle.data?.enabled === true && (
+        <>
+          <Switch
+            checked={props.brev.leggVedFoersteside ?? false}
+            disabled={erLaast}
+            loading={foerstesideMutation.isPending}
+            onChange={(event) => {
+              foerstesideMutation.mutate(event.target.checked);
+            }}
+            size="small"
+          >
+            Førsteside
+          </Switch>
+          {foerstesideMutation.isError && (
+            <Alert size="small" variant="error">
+              {getErrorMessage(foerstesideMutation.error)}
+            </Alert>
+          )}
+        </>
+      )}
       <Switch
         checked={erLaast}
         loading={laasForRedigeringMutation.isPending}

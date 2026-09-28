@@ -8,8 +8,9 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
@@ -58,11 +59,30 @@ open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg
     override suspend fun getEnhet(enhetId: EnhetId) = enheter[enhetId.value] ?: throw IllegalStateException("Enhet $enhetId ikke funnet i FakeNorg2Service")
 }
 
-open class FakeSamhandlerService(val navn: Map<String, String> = mapOf(), val typer: Map<String, String> = mapOf()) : SamhandlerService {
+open class FakeSamhandlerService(
+    val navn: Map<String, String> = mapOf(),
+    val typer: Map<String, String> = mapOf(),
+    val idTyper: Map<String, String> = mapOf(),
+    val offentligIder: Map<String, String> = mapOf(),
+) : SamhandlerService {
+    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
+        if (listOf(navn, typer, idTyper, offentligIder).none { idTSSEkstern in it }) {
+            HentSamhandlerResponseDto(null, HentSamhandlerResponseDto.FailureType.IKKE_FUNNET)
+        } else {
+            HentSamhandlerResponseDto(
+                success = HentSamhandlerResponseDto.Success(
+                    navn = navn[idTSSEkstern] ?: "",
+                    samhandlerType = typer[idTSSEkstern] ?: "",
+                    offentligId = offentligIder[idTSSEkstern] ?: "",
+                    idType = idTyper[idTSSEkstern] ?: "",
+                ),
+                failure = null,
+            )
+        }
+
     override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
     override suspend fun hentSamhandlerType(idTSSEkstern: String) = typer[idTSSEkstern]
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
-    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
 }
 
@@ -94,13 +114,15 @@ open class FakeBrevbakerService(
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
         felles: BrevbakerFelles,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
     ): LetterMarkupWithDataUsage = notYetStubbed()
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -110,14 +132,16 @@ open class FakeBrevbakerService(
     override suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler = notYetStubbed()
     override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean = notYetStubbed()
     override suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*>,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? = notYetStubbed()

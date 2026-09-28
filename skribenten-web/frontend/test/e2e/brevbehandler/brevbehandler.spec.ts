@@ -40,6 +40,10 @@ test.describe("Brevbehandler", () => {
     await setupSakStubs(page);
   });
 
+  const stubFoerstesideFeatureToggle = async (page: Page, enabled: boolean) => {
+    await page.route("**/bff/skribenten-backend/features/foersteside", (route) => route.fulfill({ json: { enabled } }));
+  };
+
   test("saken inneholder ingen brev", async ({ page }) => {
     await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => {
       if (route.request().method() === "GET") {
@@ -49,6 +53,74 @@ test.describe("Brevbehandler", () => {
     });
     await page.goto("/saksnummer/123456/brevbehandler");
     await expect(page.getByText("Fant ingen brev som er under behandling")).toBeVisible();
+  });
+
+  test("kan velge å legge ved førsteside", async ({ page }) => {
+    const brevMedFoersteside = { ...kladdBrev, leggVedFoersteside: true };
+
+    await stubFoerstesideFeatureToggle(page, true);
+    await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({ json: [kladdBrev] });
+      }
+      return route.fallback();
+    });
+
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/foersteside", async (route) => {
+      if (route.request().method() === "PUT") {
+        expect(route.request().postDataJSON()).toEqual({ leggVedFoersteside: true });
+        return route.fulfill({ json: brevMedFoersteside });
+      }
+      return route.fallback();
+    });
+
+    await page.goto("/saksnummer/123456/brevbehandler");
+    const initialPdf = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/bff/skribenten-backend/sak/123456/brev/1/pdf") &&
+        response.request().method() === "GET",
+    );
+    await openBrevCard(page, kladdBrev.brevtittel);
+    await initialPdf;
+    const pdfRefresh = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/bff/skribenten-backend/sak/123456/brev/1/pdf") &&
+        response.request().method() === "GET",
+    );
+    await page.getByText("Førsteside").click();
+
+    await pdfRefresh;
+    await expect(page.getByRole("checkbox", { name: "Førsteside" })).toBeChecked();
+  });
+
+  test("viser ikke førsteside når feature toggle er av", async ({ page }) => {
+    await stubFoerstesideFeatureToggle(page, false);
+    await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({ json: [kladdBrev] });
+      }
+      return route.fallback();
+    });
+
+    await page.goto("/saksnummer/123456/brevbehandler");
+    await openBrevCard(page, kladdBrev.brevtittel);
+
+    await expect(page.getByRole("checkbox", { name: "Førsteside" })).not.toBeVisible();
+  });
+
+  test("viser førsteside som skrivebeskyttet når brevet er klart for sending/attestering", async ({ page }) => {
+    await stubFoerstesideFeatureToggle(page, true);
+    await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({ json: [{ ...klarBrev, leggVedFoersteside: true }] });
+      }
+      return route.fallback();
+    });
+
+    await page.goto("/saksnummer/123456/brevbehandler");
+    await openBrevCard(page, klarBrev.brevtittel);
+
+    await expect(page.getByRole("checkbox", { name: "Førsteside" })).toBeDisabled();
   });
 
   test("kan ferdigstille og sende brev med sentralprint", async ({ page }) => {

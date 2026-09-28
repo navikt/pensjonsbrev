@@ -14,10 +14,8 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
-import no.nav.pensjon.brev.skribenten.model.RedigerbarSaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
-import no.nav.pensjon.brev.skribenten.model.toRedigerbarSaksbehandlervalgMap
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -43,7 +41,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         val etterSaksbehandlersEndringerOgDeretterEndringIMalen = oppdaterBrev(
             brevId = originalBrevmal.info.id,
-            nyeSaksbehandlerValg = RedigerbarSaksbehandlervalgMap(),
+            nyeSaksbehandlerValg = SaksbehandlervalgMap(),
             nyttRedigertbrev = editedLetter {
                 paragraph(id = 1) { literal(id = 2, text = "red pill", editedText = "blue pill") }
             },
@@ -62,12 +60,12 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan oppdatere brevredigering`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val original = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         brevbakerService.renderMarkupKall.clear()
 
-        val nyeValg = RedigerbarSaksbehandlervalgMap().apply { put("valg2", SaksbehandlervalgVerdi.Boolean(true)) }
+        val nyeValg = SaksbehandlervalgMap().apply { put("valg2", SaksbehandlervalgVerdi.Boolean(true)) }
         val oppdatert = oppdaterBrev(
             brevId = original.info.id,
             nyeSaksbehandlerValg = nyeValg,
@@ -85,10 +83,10 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan ikke oppdatere brevredigering som ikke eksisterer`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val oppdatert = oppdaterBrev(
             brevId = BrevId(1099),
-            nyeSaksbehandlerValg = saksbehandlerValg.toRedigerbarSaksbehandlervalgMap(),
+            nyeSaksbehandlerValg = saksbehandlerValg,
             nyttRedigertbrev = nyttRedigertBrev,
         )
         assertThat(oppdatert).isNull()
@@ -96,10 +94,10 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `oppdaterer redigertBrev med fersk rendering fra brevbaker`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val original = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
-        val nyeValg = RedigerbarSaksbehandlervalgMap().apply { put("valg2", SaksbehandlervalgVerdi.Boolean(true)) }
+        val nyeValg = SaksbehandlervalgMap().apply { put("valg2", SaksbehandlervalgVerdi.Boolean(true)) }
         val freshRender = letter.copy(
             blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph")))
         )
@@ -166,7 +164,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(
             oppdaterBrev(
                 brevId = brev.info.id,
-                nyeSaksbehandlerValg = brev.saksbehandlerValg.toRedigerbarSaksbehandlervalgMap(),
+                nyeSaksbehandlerValg = brev.saksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertBrev,
                 principal = saksbehandler2Principal,
             )
@@ -179,7 +177,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         val oppdatertBrev = oppdaterBrev(
             brevId = brev.info.id,
-            nyeSaksbehandlerValg = brev.saksbehandlerValg.toRedigerbarSaksbehandlervalgMap(),
+            nyeSaksbehandlerValg = brev.saksbehandlerValg,
             frigiReservasjon = false,
         )
 
@@ -194,7 +192,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         val oppdatertBrev = oppdaterBrev(
             brevId = brev.info.id,
-            nyeSaksbehandlerValg = brev.saksbehandlerValg.toRedigerbarSaksbehandlervalgMap(),
+            nyeSaksbehandlerValg = brev.saksbehandlerValg,
             frigiReservasjon = true,
         )
 

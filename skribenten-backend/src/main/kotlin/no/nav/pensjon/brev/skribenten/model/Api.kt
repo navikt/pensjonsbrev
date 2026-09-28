@@ -24,14 +24,14 @@ object Api {
         val brevkode: RedigerbarBrevkode,
         val spraak: SpraakKode,
         val avsenderEnhetsId: EnhetId,
-        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
+        val saksbehandlerValg: SaksbehandlervalgMap,
         val reserverForRedigering: Boolean?,
         val mottaker: OverstyrtMottaker?,
         val vedtaksId: VedtaksId?,
     )
 
     data class OppdaterBrevRequest(
-        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
+        val saksbehandlerValg: SaksbehandlervalgMap,
         val redigertBrev: Edit.Letter,
     )
 
@@ -118,7 +118,7 @@ object Api {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
+        val saksbehandlerValg: SaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
     )

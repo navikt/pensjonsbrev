@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.brev.brevbaker.*
 import no.nav.pensjon.brev.alder.Fixtures
+import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class MaanedligPensjonFoerSkattITest {
-    private val maanedligPensjonFoerSkattData = Fixtures.createVedlegg(MaanedligPensjonFoerSkattDto::class)
+    private val maanedligPensjonFoerSkattData = createMaanedligPensjonFoerSkatt()
 
     val template = createVedleggTestTemplate(
         vedleggMaanedligPensjonFoerSkatt,

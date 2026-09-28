@@ -9,15 +9,30 @@ import no.nav.pensjon.brev.template.validation.EmptyValidator
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import java.util.Objects
+import kotlin.reflect.KClass
 
-fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
-    title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
+inline fun <Lang : LanguageSupport, reified LetterData : VedleggData> createAttachment(
+    noinline title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
     includeSakspart: Boolean = false,
-    outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
-) = AttachmentTemplate<Lang, LetterData>(
-    PlainTextOnlyScope<Lang, LetterData>().apply(title).elements,
-    OutlineOnlyScope<Lang, LetterData>(EmptyValidator).apply(outline).elements,
-    includeSakspart
+    noinline outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit,
+) = createAttachment(
+    dataType = LetterData::class,
+    title = title,
+    includeSakspart = includeSakspart,
+    outline = outline,
+)
+
+@PublishedApi
+internal fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
+    dataType: KClass<LetterData>,
+    title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
+    includeSakspart: Boolean,
+    outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit,
+) = AttachmentTemplate(
+    dataType = dataType,
+    title = PlainTextOnlyScope<Lang, LetterData>().apply(title).elements,
+    outline = OutlineOnlyScope<Lang, LetterData>(EmptyValidator).apply(outline).elements,
+    includeSakspart = includeSakspart,
 )
 
 class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : VedleggData> internal constructor(
@@ -35,6 +50,7 @@ class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : VedleggData
 }
 
 class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : VedleggData> internal constructor(
+    val dataType: KClass<AttachmentData>,
     val title: List<TextElement<Lang>>,
     val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,

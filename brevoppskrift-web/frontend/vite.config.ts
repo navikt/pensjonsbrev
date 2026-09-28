@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import { fileURLToPath, URL } from "node:url";
 
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
@@ -11,7 +10,9 @@ export default defineConfig({
     react({
       jsxImportSource: "@emotion/react",
     }),
-    tanstackRouter(),
+    tanstackRouter({
+      routeFileIgnorePattern: "\\.test\\.",
+    }),
   ],
   resolve: {
     alias: {
@@ -20,9 +21,5 @@ export default defineConfig({
   },
   server: {
     origin: "http://localhost:5173",
-  },
-  test: {
-    environment: "jsdom",
-    globals: true, // Enables Vitest to automatically cleanup after each test
   },
 });

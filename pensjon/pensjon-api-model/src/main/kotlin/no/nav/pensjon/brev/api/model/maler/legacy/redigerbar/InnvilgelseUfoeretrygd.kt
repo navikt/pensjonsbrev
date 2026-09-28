@@ -24,7 +24,7 @@ data class InnvilgelseUfoeretrygdDto(
         val nyeAvslagBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
         val avslagBarnetilleggNye: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
-        val harVTA: Boolean = false,
+        val harVTA: Boolean,
         val hjemler: Set<String>
     ) : FagsystemBrevdata
 

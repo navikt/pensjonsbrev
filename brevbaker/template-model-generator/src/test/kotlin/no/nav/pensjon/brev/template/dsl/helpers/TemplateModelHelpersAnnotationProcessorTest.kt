@@ -194,4 +194,58 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(generatedSources).contains("MyModelSelectors.kt")
         assertThat(generatedSources).doesNotContain("SaksbehandlervalgIDSLSelectors.kt")
     }
+
+    @Test
+    fun `generates selectors for the Data type-argument of RedigerbarBrevdata`() {
+        val result = KotlinSourceFile(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+                    import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+
+                    data class Nested(val x: Int)
+                    data class AModel(val nested: Nested) : FagsystemBrevdata
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<RedigerbarBrevdata<AModel>>
+                    """.trimIndent()
+        ).generateSelectors()
+
+        assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
+
+        val generatedSources = result.generatedSources.map { it.name }
+        assertThat(generatedSources).contains("AModelSelectors.kt")
+        assertThat(generatedSources).contains("NestedSelectors.kt")
+        // Selectors for RedigerbarBrevdata itself are hand-written in brevbaker:dsl, since it is generic
+        assertThat(generatedSources).doesNotContain("RedigerbarBrevdataSelectors.kt")
+    }
+
+    @Test
+    fun `generates selectors for the Data type-argument of each template using RedigerbarBrevdata`() {
+        val result = KotlinSourceFile(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+                    import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+
+                    data class AModel(val x: Int) : FagsystemBrevdata
+                    data class BModel(val y: String) : FagsystemBrevdata
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<RedigerbarBrevdata<AModel>>
+
+                    @TemplateModelHelpers
+                    object MyOtherClass : HasModel<RedigerbarBrevdata<BModel>>
+                    """.trimIndent()
+        ).generateSelectors()
+
+        assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
+
+        val generatedSources = result.generatedSources.map { it.name }
+        assertThat(generatedSources).contains("AModelSelectors.kt")
+        assertThat(generatedSources).contains("BModelSelectors.kt")
+        assertThat(generatedSources).doesNotContain("RedigerbarBrevdataSelectors.kt")
+    }
 }

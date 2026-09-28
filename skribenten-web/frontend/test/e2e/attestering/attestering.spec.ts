@@ -131,6 +131,10 @@ test.describe("attestering", () => {
   });
 
   test("kan attestere, forhåndsvise og sende brev", async ({ page }) => {
+    await page.route("**/bff/api/baseUrls", (route) => {
+      return route.fulfill({ json: { psak: "https://psak.example.invalid" } });
+    });
+
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) => {
       if (route.request().method() === "GET") {
         return route.fulfill({ json: defaultBrev });
@@ -266,6 +270,10 @@ test.describe("attestering", () => {
     await expect(page.getByText("Sentral print")).toBeVisible();
     await expect(page.getByText("Journalpost")).toBeVisible();
     await expect(page.getByText("9908")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Gå til brukeroversikt" })).toHaveAttribute(
+      "href",
+      "https://psak.example.invalid/psak/brukeroversikt/fnr=09417320595",
+    );
   });
 
   test("kan ikke sende cachet PDF mens en ny PDF hentes", async ({ page }) => {

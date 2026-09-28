@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
-import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -9,14 +8,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP_UTLAND
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
 import no.nav.pensjon.brev.template.saksbehandlervalg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.trygdetid.*
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP_UTLAND
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.trygdetid.fomDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.trygdetid.land
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.trygdetid.tomDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.uforeAvslagPendata.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
@@ -25,8 +26,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
-
-    override val featureToggle = FeatureToggles.avslagMedlemskapUtland.toggle
 
     override val kode = UT_AVSLAG_MEDLEMSKAP_UTLAND
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING

@@ -60,6 +60,7 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 inntektspensjon = Kroner(100),
                 gjenlevendetilleggKap19 = Kroner(2500),
                 gjenlevendetillegg = Kroner(750),
+                tilleggspensjonOver0 = true,
                 antallBeregningsperioderPensjon = 2
             ),
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),

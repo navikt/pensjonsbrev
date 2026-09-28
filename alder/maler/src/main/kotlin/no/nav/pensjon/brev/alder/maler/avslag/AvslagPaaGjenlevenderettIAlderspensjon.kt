@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJ
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.alder.model.BeloepEndring.ENDR_RED
-import no.nav.pensjon.brev.alder.model.BeloepEndring.UENDRET
 import no.nav.pensjon.brev.alder.model.KravInitiertAv.BRUKER
 import no.nav.pensjon.brev.alder.model.KravInitiertAv.NAV
 import no.nav.pensjon.brev.alder.model.KravInitiertAv.VERGE
@@ -49,6 +48,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
@@ -81,9 +81,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
     ) {
         val initiertAvBrukerEllerVerge = pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)
         val initiertAvNav = pesysData.krav.kravInitiertAv.equalTo(NAV)
-
+        val avdoedNavn = pesysData.avdoed.navn.ifNull(fritekst("Avdød navn"))
+        val skiltOver5Aar = saksbehandlervalg("skiltOver5Aar", "Skilt for mer enn 5 år siden").bool()
         val samboerUtenFellesBarn = saksbehandlervalg("samboerUtenFellesBarn", "Samboer uten felles barn").bool()
-        val avdoedNavn = saksbehandlervalg("avdoedNavn", "Avdød navn").text().ifNull(fritekst("Avdød navn"))
         val underEttAarsMedlemstidEOESEllerAvtaleland = saksbehandlervalg("underEttAarsMedlemstidEOESEllerAvtaleland", "Under ett års medlemstid EØS eller avtaleland").bool()
         val underTreFemAarsMedlemstidNasjonalSak = saksbehandlervalg("underTreFemAarsMedlemstidNasjonalSak", "Under tre/fem års medlemstid nasjonal sak").bool()
         val underTreFemAarsMedlemstidEOESSak = saksbehandlervalg("underTreFemAarsMedlemstidEOESSak", "Under tre/fem års medlemstid EØS-sak").bool()
@@ -132,6 +132,21 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         bokmal { + "Vi har fått beskjed om at " + avdoedNavn + " døde " + dato + "." },
                         nynorsk { + "Vi har fått beskjed om at " + avdoedNavn + " døydde " + dato + "." },
                         english { + "We have received notice that " + avdoedNavn + " died " + dato + "." }
+                    )
+                }
+            }
+
+            showIf(skiltOver5Aar) {
+                val skiltDato = fritekst("Skilsmissedato")
+                val avdodeDodsdato = pesysData.avdoed.dodsfallDato.format().ifNull(fritekst("Dødsdato"))
+                paragraph {
+                    text(
+                        bokmal { +"For å ha rettigheter etter en fraskilt ektefelle, kan det ikke ha gått mer enn fem år mellom skilsmissen og dødsfallet. Dette går frem av folketrygdloven § 19-16 andre ledd. " +
+                                "Du og " + avdoedNavn + " ble skilt " + skiltDato + ". " + avdoedNavn + " døde " + avdodeDodsdato + ". Siden det har gått mer enn fem år mellom skilsmissen og dødsfallet, fyller du ikke vilkårene for gjenlevenderett etter " + avdoedNavn + "." },
+                        nynorsk { +"For å ha rettar etter ein fråskild ektefelle, kan det ikkje ha gått meir enn fem år mellom skilsmissa og dødsfallet. Dette går fram av folketrygdlova § 19-16 andre ledd. " +
+                                "Du og " + avdoedNavn + " vart skilde " + skiltDato + ". " + avdoedNavn + " døydde " + avdodeDodsdato + ". Sidan det gjekk meir enn fem år mellom skilsmissa og dødsfallet, oppfyller du ikkje vilkåra for gjenlevanderett etter " + avdoedNavn + "." },
+                        english { +"To qualify for survivor’s rights based on a divorced spouse, no more than five years may have elapsed between the divorce and the death. This follows from Section 19-16, second paragraph, of the National Insurance Act. " +
+                                "You and " + avdoedNavn + " were divorced on " + skiltDato + ". " + avdoedNavn + " died on " + avdodeDodsdato + ". As more than five years elapsed between the divorce and the death, you do not meet the conditions for survivor’s rights based on " + avdoedNavn + ". " }
                     )
                 }
             }
@@ -300,38 +315,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     includePhrase(DerforHar(initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge, initiertAvNav = initiertAvNav))
                 }
             }
-            // omregnetEnsligAP_002
-            paragraph {
-                text(
-                    bokmal { + "Vi har regnet om pensjonen din fordi du har blitt enslig pensjonist. Dette er gjort etter folketrygdloven § 3-2." },
-                    nynorsk { + "Vi har rekna om pensjonen din fordi du har blitt einsleg pensjonist. Dette er gjort etter folketrygdlova § 3-2." },
-                    english { + "We have recalculated your pension because you have become a single pensioner. This decision was made pursuant to the provisions of § 3-2 of the National Insurance Act." }
-                )
-            }
 
-            showIf(
-                pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(UENDRET) and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(
-                    0
-                )
-            ) {
-                // ingenEndringBelop_002
-                paragraph {
-                    text(
-                        bokmal { + "Dette får derfor ingen betydning for utbetalingen din." },
-                        nynorsk { + "Dette får derfor ingen følgjer for utbetalinga di." },
-                        english { + "Therefore, this does not affect the amount you will receive." }
-                    )
-                }
-            }.orShowIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)) {
-                // nyBeregningAPØkning_001
-                paragraph {
-                    text(
-                        bokmal { + "Dette fører til at pensjonen din øker." },
-                        nynorsk { + "Dette fører til at pensjonen din aukar." },
-                        english { + "This leads to an increase in your retirement pension." }
-                    )
-                }
-            }
             includePhrase(DuFaarHverMaaned(pesysData.alderspensjonVedVirk.totalPensjon))
 
             showIf(

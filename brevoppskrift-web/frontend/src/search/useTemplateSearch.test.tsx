@@ -177,4 +177,26 @@ describe("useTemplateSearch", () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false));
     expect(fuseConstructions.count).toBe(2);
   });
+
+  it("treats a lone special-character query (e.g. §) as searching despite being shorter than MIN_QUERY_LENGTH", async () => {
+    const sectionContent: SearchableContent[] = [
+      {
+        brevkode: "A1",
+        language: "BOKMAL",
+        lines: [{ index: 0, segments: [{ type: "text", value: "Vedtaket er gjort etter folketrygdloven § 19" }] }],
+      },
+    ];
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? sectionContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    const { result } = renderHook(() => useTemplateSearch(refs), { wrapper: wrapper(queryClient) });
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    act(() => result.current.setQuery("§"));
+
+    await waitFor(() => expect(result.current.isSearching).toBe(true));
+    await waitFor(() => expect(result.current.contentHits).toHaveLength(1));
+  });
 });

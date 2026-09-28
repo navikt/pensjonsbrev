@@ -238,4 +238,155 @@ describe("search", () => {
       expect(notFound.brev).toEqual([]);
     });
   });
+
+  describe("special-character-only queries", () => {
+    // A query that consists *only* of special characters (e.g. "§" or "§§")
+    // can't be tokenized by Fuse at all, so it must be routed to verbatim
+    // substring matching regardless of `exactOnly` - see `SPECIAL_CHAR_QUERY`.
+    const templates = [
+      template({ id: "SECTION_19", title: "Paragraf 19", lines: ["Vedtaket er gjort etter folketrygdloven § 19."] }),
+      template({
+        id: "SECTIONS_8_2_8_3",
+        title: "Paragrafene 8-2 og 8-3",
+        lines: ["Jf. folketrygdloven §§ 8-2 og 8-3 om ytelser."],
+      }),
+      template({ id: "PERCENT_50", title: "Femti prosent", lines: ["Reduksjonen utgjør 50 % av grunnbeløpet."] }),
+      template({ id: "NO_SYMBOL", title: "Uten symbol", lines: ["Helt urelatert tekst uten henvisning."] }),
+    ];
+
+    it("finds every line containing a § in fuzzy mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§");
+
+      // Both SECTION_19 ("§ 19") and SECTIONS_8_2_8_3 ("§§ 8-2...") contain
+      // "§" as a substring, so a lone "§" query matches both.
+      expect(content.map((hit) => hit.template.id).sort()).toEqual(["SECTIONS_8_2_8_3", "SECTION_19"]);
+    });
+
+    it("finds every line containing a § in exact mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§", true);
+
+      expect(content.map((hit) => hit.template.id).sort()).toEqual(["SECTIONS_8_2_8_3", "SECTION_19"]);
+    });
+
+    it("finds only the line containing a double §§ in fuzzy mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§§");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SECTIONS_8_2_8_3"]);
+    });
+
+    it("finds only the line containing a double §§ in exact mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§§", true);
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SECTIONS_8_2_8_3"]);
+    });
+
+    it("finds a line containing a lone % in fuzzy mode", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "%");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["PERCENT_50"]);
+    });
+
+    it("does not match templates without the special character", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§");
+
+      expect(content.map((hit) => hit.template.id)).not.toContain("NO_SYMBOL");
+      expect(content.map((hit) => hit.template.id)).not.toContain("PERCENT_50");
+    });
+
+    it("does not confuse a double §§ query with a line containing only a single §", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "§§");
+
+      // SECTION_19 only contains a single "§", not "§§", so it must not match.
+      expect(content.map((hit) => hit.template.id)).not.toContain("SECTION_19");
+    });
+
+    it("still finds fuzzy matches when a special character is combined with a word term", () => {
+      const index = buildIndex(templates);
+
+      // "folketrygdlovan" is a typo of "folketrygdloven"; this is unaffected
+      // by the special-character-only routing (that only applies to a query
+      // consisting of nothing but special characters). Both templates'
+      // lines contain "folketrygdloven" (fuzzy word match) and "§" as a
+      // verbatim substring (SECTIONS_8_2_8_3 has "§§", which also contains "§").
+      const { content } = search(index, "folketrygdlovan §");
+
+      expect(content.map((hit) => hit.template.id).sort()).toEqual(["SECTIONS_8_2_8_3", "SECTION_19"]);
+    });
+
+    it("does not confuse a fuzzy word match with a §§ symbol term that isn't actually present", () => {
+      const index = buildIndex(templates);
+
+      // Regression test (PR #3861 review comment): "§§" (length 2) must
+      // still be required to occur verbatim even though it's longer than
+      // SHORT_TERM_LENGTH, because Fuse can't tokenize it at all and would
+      // otherwise silently skip checking it, matching any line with a fuzzy
+      // hit on "folketrygdloven" regardless of whether "§§" is present.
+      const { content } = search(index, "folketrygdlovan §§");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SECTIONS_8_2_8_3"]);
+    });
+
+    it("finds a line containing separated symbols (e.g. § §) in fuzzy mode", () => {
+      const separated = [
+        template({ id: "SEPARATED", title: "To paragraftegn", lines: ["Jf. § § i loven om ytelser."] }),
+        template({ id: "OTHER", title: "Uten symbol", lines: ["Helt urelatert tekst."] }),
+      ];
+      const index = buildIndex(separated);
+
+      // Regression test (PR #3861 review comment): SPECIAL_CHAR_QUERY must
+      // allow internal whitespace (since both callers trim the query first),
+      // otherwise "§ §" falls through to fuzzySearch, which finds no
+      // candidates at all for a query Fuse can't tokenize.
+      const { content } = search(index, "§ §");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SEPARATED"]);
+    });
+
+    it("finds a line containing separated symbols (e.g. § §) in exact mode", () => {
+      const separated = [template({ id: "SEPARATED", title: "To paragraftegn", lines: ["Jf. § § i loven."] })];
+      const index = buildIndex(separated);
+
+      const { content } = search(index, "§ §", true);
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["SEPARATED"]);
+    });
+
+    it("does not fuzzy-match a term mixing junk characters with a single word character", () => {
+      const variableLike = [
+        template({
+          id: "VEDTAK_OMREGNING_GJP_TIL_ALDER_AUTO",
+          title: "Vedtak omregning",
+          lines: ["Det er viktig at du kontakter [_Value NAV_]. Vi vil deretter"],
+        }),
+      ];
+      const index = buildIndex(variableLike);
+
+      // Regression test: a term like "{{[[{{{_" is not classified as
+      // special-character-only (it contains "_", one of Fuse's own "word"
+      // characters), so it used to be treated as an ordinary long term left
+      // to Fuse's fuzzy matching. But Fuse's tokenizer discards all the
+      // junk and extracts only "_" as the real query token, which then
+      // fuzzy-matches any text containing an underscore (such as the
+      // variable placeholder "[_Value NAV_]" above) - a false positive.
+      // The line does not contain the literal string "{{[[{{{_" anywhere,
+      // so it must not match.
+      const { content } = search(index, "{{[[{{{_");
+
+      expect(content).toEqual([]);
+    });
+  });
 });

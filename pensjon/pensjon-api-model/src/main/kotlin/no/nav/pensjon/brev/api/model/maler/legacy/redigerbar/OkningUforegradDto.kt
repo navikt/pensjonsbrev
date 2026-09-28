@@ -24,12 +24,10 @@ data class OkningUforegradDto(
         val nyeAvslagBarnetillegg: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
         val hjemler: Set<String>,
-        val fribelopsperioder: List<Fribelopsperiode>? = null,
-        val vektetFribelop: Double = 0.0,
-        val vektetFribelopKr: Kroner = Kroner(0),
-        val harVTA: Boolean = false,
+        val fribelopsperioder: List<Fribelopsperiode>,
+        val fribelop: Kroner,
+        val harVTA: Boolean,
     ) : FagsystemBrevdata
-    //TODO: fjern defaultingen og nullable perioder når pen er oppdatert med ny dto
 
     data class Trygdetidsgrunnlag(
         val fom: LocalDate,
@@ -41,6 +39,7 @@ data class OkningUforegradDto(
         val tom: LocalDate,
         val gradsokning: Boolean,
         val faktor: Double,
+        val grunnbelop: Kroner,
         val venteperiodeStartDato: LocalDate,
     )
 }

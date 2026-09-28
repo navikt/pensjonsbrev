@@ -3,6 +3,7 @@ import type * as generated from "./skribenten-api";
 export type BrevResponse = generated.ApiBrevResponse;
 export type OpprettBrevRequest = generated.ApiOpprettBrevRequest;
 export type OppdaterKlarStatusRequest = generated.ApiOppdaterKlarStatusRequest;
+export type OppdaterFoerstesideRequest = generated.ApiOppdaterFoerstesideRequest;
 export type DistribusjonstypeRequest = generated.ApiDistribusjonstypeRequest;
 export type OppdaterMottakerRequest = generated.ApiOppdaterMottakerRequest;
 export type ValgteVedleggRequest = generated.ApiValgteVedleggRequest;
@@ -41,3 +42,7 @@ export const P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
 
 export type AlltidValgbartVedlegg = generated.ValgbartVedlegg;
 export type AlltidValgbartVedleggBrevkode = generated.AlltidValgbartVedleggBrevkode;
+
+export type EditAttachment = generated.EditAttachment;
+export type RedigerbartVedleggInfo = generated.RedigerbartVedleggInfo;
+export type RedigertVedleggRequest = generated.ApiRedigertVedleggRequest;

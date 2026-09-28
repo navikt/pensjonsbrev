@@ -4,6 +4,9 @@
 * xref:skribenten-101.adoc[Veiledning (101)]
 * xref:skribenten-produktoppdateringer.adoc[Produktoppdateringer]
 
+.For mal-interesserte
+* xref:brevoppskriften-produktoppdateringer.adoc[Produktoppdateringer]
+
 .For utviklere
 * xref:skribenten-beskrivelse.adoc[Skribenten – teknisk beskrivelse]
 * xref:brevbaker-arkitektur.adoc[Brevbaker – arkitektur]

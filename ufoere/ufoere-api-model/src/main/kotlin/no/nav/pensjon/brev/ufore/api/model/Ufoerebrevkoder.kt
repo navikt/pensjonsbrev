@@ -78,6 +78,7 @@ object Ufoerebrevkoder {
         UT_S_VARSEL_LAVERE_REDUKSJONSPROSENT,
         UT_S_VARSEL_OKT_MINSTE_IFU,
         UT_S_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS,
+        UT_S_SIMULERING,
         ;
 
         override fun kode(): String = this.name
