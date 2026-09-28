@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.klageOgAnke.tekstNAY
 
-import no.nav.brev.brevbaker.markup.dsl.extended.pdfTittelExtended
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
