@@ -365,8 +365,8 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         }
                         paragraph {
                             text(
-                                bokmal { + "I ditt tilfelle er alderspensjonen du har tjent opp selv høyere. Derfor får du ikke gjenlevendetillegg." },
-                                nynorsk { + "I ditt tilfelle er alderspensjonen du har tent opp sjølv høgare. Derfor får du ikkje attlevandetillegg." },
+                                bokmal { + "I ditt tilfelle er alderspensjonen du har tjent opp selv høyere. Derfor får du ikke utbetalt gjenlevendetillegg." }, //TODO: oversettelse
+                                nynorsk { + "I ditt tilfelle er alderspensjonen du har tent opp sjølv høgare. Derfor får du ikkje utbetalt attlevandetillegg." },
                                 english { + "In your case, the retirement pension you have earned in your own right is higher. Therefore, you are not entitled to a survivor's supplement." }
                             )
                         }
