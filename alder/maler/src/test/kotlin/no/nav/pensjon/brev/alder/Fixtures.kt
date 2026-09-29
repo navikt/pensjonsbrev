@@ -124,122 +124,122 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : BrevbakerBrevdata> create(templateType: KClass<out BrevTemplate<T, *>>): T =
         when (templateType) {
-            AdhocAlderspensjonGjtOpprydding::class -> createAlderspensjonGjtOppryddingAutoDto() as T
-            AdhocTidligereUfoereGradertAP::class -> createAdhocTidligereUfoereGradertAPAutoDto() as T
-            VarselGjpForlengetArskull6270::class -> createGjenlevenderett2027Dto() as T
-            VarselGjpForlengetArskull6061Utland::class -> createGjenlevenderett2027Dto() as T
-            VarselGjpForlengetArskull6270Utland::class -> createGjenlevenderett2027Dto() as T
-            VedtakGjpForlengetArskull6270::class -> createGjenlevenderett2027Dto() as T
-            VedtakGjpForlengetArskull6061::class -> createGjenlevenderett2027Dto() as T
-            VarselGjpOpphorArskull6070Utland::class -> createGjenlevenderett2027Dto() as T
-            VarselGjpOpphorArskull6070::class -> createGjenlevenderett2027Dto() as T
-            VedtakGjpOpphorArskull6070Utland::class -> createGjenlevenderett2027Dto() as T
-            VedtakGjpForlengetArskull6061Utland::class -> createGjenlevenderett2027Dto() as T
-            VedtakGjpForlengetArskull6270Utland::class -> createGjenlevenderett2027Dto() as T
-            VedtakGjpOpphorArskull6070::class -> createGjenlevenderett2027Dto() as T
-            VarselGjpForlengetArskull6061::class -> createGjenlevenderett2027Dto() as T
-            AvslagForLiteTrygdetidAP::class -> createAvslagForLiteTrygdetidAPDto() as T
-            AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
-            AvslagGradsendringFoerNormertPensjonsalderFoerEttAar::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
-            AvslagPaaGjenlevenderettIAlderspensjon::class -> createAvslagPaaGjenlevenderettIAlderspensjon() as T
-            AvslagUttakFoerNormertPensjonsalderAP2016Auto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
-            AvslagGradsendringFoerNormertPensjonsalder2016Auto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
-            AvslagUttakFoerNormertPensjonsalderAP2016::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
-            AvslagGradsendringFoerNormertPensjonsalderAP2016::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
-            AvslagUttakFoerNormertPensjonsalderAuto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T
-            AvslagGradsendringFoerNormertPensjonsalderAuto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T
-            AvslagUttakFoerNormertPensjonsalder::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
-            AvslagGradsendringFoerNormertPensjonsalder::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
-            AvslagUnder5AartrygdetidAuto::class -> createUnder5AarTrygdetidAutoDto() as T
-            InfoFyller67AarSaerskiltSats::class -> EmptyAutobrevdata as T
-            AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling::class -> EmptyAutobrevdata as T
-            AdhocSkjermingstilleggFeilMottaker::class -> EmptyAutobrevdata as T
-            AdhocAlderspensjonFraFolketrygden2::class -> EmptyAutobrevdata as T
-            AdhocSkjermingstilleggFeilBeroertBruker::class -> EmptyAutobrevdata as T
             AdhocAFPInformasjonOekningToleransebeloep::class -> EmptyAutobrevdata as T
-            AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling::class -> EmptyAutobrevdata as T
+            AdhocAlderspensjonFraFolketrygden2::class -> EmptyAutobrevdata as T
             AdhocAlderspensjonFraFolketrygden::class -> EmptyAutobrevdata as T
-            AdhocGjenlevendEtter1970::class -> EmptyAutobrevdata as T
-            FeilUtsendingAvGjenlevenderett::class -> EmptyAutobrevdata as T
+            AdhocAlderspensjonGjtOpprydding::class -> createAlderspensjonGjtOppryddingAutoDto() as T
             AdhocAlderspensjonGjtVarselBrev::class -> EmptyAutobrevdata as T
+            AdhocGjenlevendEtter1970::class -> EmptyAutobrevdata as T
+            AdhocSkjermingstilleggFeilBeroertBruker::class -> EmptyAutobrevdata as T
+            AdhocSkjermingstilleggFeilMottaker::class -> EmptyAutobrevdata as T
+            AdhocTidligereUfoereGradertAP::class -> createAdhocTidligereUfoereGradertAPAutoDto() as T
+            AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling::class -> EmptyAutobrevdata as T
+            AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling::class -> EmptyAutobrevdata as T
+            AfpPrivatSokerUforeTrygd::class -> createAfpPrivatSokerUforeTrygdDto() as T
+            AvslagAfpGammel::class -> createAvslagAfpGammelDto() as T
+            AvslagAfpPrivat::class -> createAvslagAfpPrivatDto() as T
+            AvslagAfpPrivatAuto::class -> createAvslagAfpPrivatAutoDto() as T
+            AvslagForLiteTrygdetidAP::class -> createAvslagForLiteTrygdetidAPDto() as T
+            AvslagGradsendringFoerNormertPensjonsalder2016Auto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
+            AvslagGradsendringFoerNormertPensjonsalder::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
+            AvslagGradsendringFoerNormertPensjonsalderAP2016::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
+            AvslagGradsendringFoerNormertPensjonsalderAuto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T
+            AvslagGradsendringFoerNormertPensjonsalderFoerEttAar::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
+            AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
+            AvslagPaaGjenlevenderettIAlderspensjon::class -> createAvslagPaaGjenlevenderettIAlderspensjon() as T
+            AvslagUnder5AartrygdetidAuto::class -> createUnder5AarTrygdetidAutoDto() as T
+            AvslagUttakFoerNormertPensjonsalder::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
+            AvslagUttakFoerNormertPensjonsalderAP2016::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
+            AvslagUttakFoerNormertPensjonsalderAP2016Auto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
+            AvslagUttakFoerNormertPensjonsalderAuto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T
             BekreftelseAvUtsendtKravTilUtlandet::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = lagSaksbehandlervalg()) as T
-            EndringAvAlderspensjonFordiDuFyller75AarAuto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             EndringAvAlderspensjonAvdodAuto::class -> createEndringAvAlderspensjonAvdodAuto() as T
+            EndringAvAlderspensjonFordiDuFyller75AarAuto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             EndringAvAlderspensjonPgaGarantitillegg::class -> createEndringAvAlderspensjonGarantitilleggDto() as T
-            EndringAvAlderspensjonSivilstandAuto::class -> createEndringAvAlderspensjonSivilstandAutoDto() as T
             EndringAvAlderspensjonSivilstand::class -> createEndringAvAlderspensjonSivilstandDto() as T
+            EndringAvAlderspensjonSivilstandAuto::class -> createEndringAvAlderspensjonSivilstandAutoDto() as T
             EndringAvAlderspensjonSivilstandSaerskiltSats::class -> createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() as T
             EndringAvUttaksgradAuto::class -> createEndringAvUttaksgradAutoDto() as T
             EndringPgaOpptjeningAuto::class -> createEndringPgaOpptjeningAutoDto() as T
+            FeilUtsendingAvGjenlevenderett::class -> EmptyAutobrevdata as T
             ForespoerselOmDokumentasjonAvBotidINorgeAlder::class -> createForespoerselOmDokumentasjonAvBotidINorgeAlderDto() as T
-            InnhentingInformasjonFraBruker::class -> createInnhentingInformasjonFraBrukerDto() as T
-            InnvilgelseAvAfpAuto::class -> createInnvilgelseAvAfpAutoDto() as T
-            AvslagAfpPrivat::class -> createAvslagAfpPrivatDto() as T
-            AvslagAfpPrivatAuto::class -> createAvslagAfpPrivatAutoDto() as T
-            AvslagAfpGammel::class -> createAvslagAfpGammelDto() as T
-            VedtakAfpPrivatEndring::class -> createVedtakAfpPrivatEndringDto() as T
-            VedtakAfpEtteroppgjoerIngenEndring::class -> createVedtakAfpEtteroppgjoerIngenEndringDto() as T
-            VedtakAfpEtteroppgjoerEtterbetaling::class -> createVedtakAfpEtteroppgjoerEtterbetalingDto() as T
-            VedtakAfpEtteroppgjoerIngenEndringAndreAvvik::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto() as T
-            InnvilgelseAvAfp::class -> createInnvilgelseAvAfpDto() as T
-            InnvilgelseAvAfpOffentligSektor::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
-            InnvilgelseAvAlderspensjonAuto::class -> createInnvilgelseAvAlderspensjonAutoDto() as T
-            InnvilgelseAvAlderspensjon::class -> createInnvilgelseAvAlderspensjonDto() as T
-            InnvilgelseAvAlderspensjonTrygdeavtale::class -> createInnvilgelseAvAlderspensjonTrygdeavtaleDto() as T
-            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvar::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto() as T
-            VedtakAfpEtteroppgjoerEtterbetalingAuto::class -> createVedtakAfpEtteroppgjoerEtterbetalingAutoDto() as T
-            VedtakAfpEtteroppgjoerEtterbetalingEtterSvar::class -> createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto() as T
-            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto() as T
-            VedtakAfpEtteroppgjoerIngenEndringEtterSvar::class -> createVedtakAfpEtteroppgjoerIngenEndringEtterSvarDto() as T
-            VedtakAfpEtteroppgjoerTilbakekrevingAuto::class -> createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto() as T
-            VarselAfpEtteroppgjoerForeloepigAuto::class -> createVarselAfpEtteroppgjoerForeloepigAutoDto() as T
-            VarselAfpEtteroppgjoerForeloepig::class -> createVarselAfpEtteroppgjoerForeloepigDto() as T
-            VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger::class -> createVedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto() as T
-            VedtakAfpEtteroppgjoerIngenEndringAuto::class -> createVedtakAfpEtteroppgjoerIngenEndringAutoDto() as T
-            VedtakEndringAfpOffentligSektor::class -> createVedtakEndringAfpOffentligSektorDto() as T
+            InfoAldersovergang67AarAuto::class -> createInfoAlderspensjonOvergang67AarAutoDto() as T
             InfoAldersovergangEps60AarAuto::class -> InfoAldersovergangEps60AarAutoDto(ytelse = Ytelse.ALDER) as T
             InfoAldersovergangEps62AarAuto::class -> InfoAldersovergangEps62AarAutoDto(ytelse = YtelseType.ALDER) as T
-            InfoAldersovergang67AarAuto::class -> createInfoAlderspensjonOvergang67AarAutoDto() as T
-            OmregningAlderUfore2016Auto::class -> createOmregningAlderUfore2016Dto() as T
+            InfoFyller67AarSaerskiltSats::class -> EmptyAutobrevdata as T
+            InnhentingInformasjonFraBruker::class -> createInnhentingInformasjonFraBrukerDto() as T
+            InnvilgelseAvAfp::class -> createInnvilgelseAvAfpDto() as T
+            InnvilgelseAvAfpAuto::class -> createInnvilgelseAvAfpAutoDto() as T
+            InnvilgelseAvAfpOffentligSektor::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
+            InnvilgelseAvAlderspensjon::class -> createInnvilgelseAvAlderspensjonDto() as T
+            InnvilgelseAvAlderspensjonAuto::class -> createInnvilgelseAvAlderspensjonAutoDto() as T
+            InnvilgelseAvAlderspensjonTrygdeavtale::class -> createInnvilgelseAvAlderspensjonTrygdeavtaleDto() as T
             OmregningAlderUfore2016::class -> createOmregningAlderUfore2016RedigerbarDto() as T
+            OmregningAlderUfore2016Auto::class -> createOmregningAlderUfore2016Dto() as T
+            UforetrygdSokerAfpPrivat::class -> createUforeTrygdSokerAfpPrivatDto() as T
+            VarselAfpEtteroppgjoerForeloepig::class -> createVarselAfpEtteroppgjoerForeloepigDto() as T
+            VarselAfpEtteroppgjoerForeloepigAuto::class -> createVarselAfpEtteroppgjoerForeloepigAutoDto() as T
+            VarselGjpForlengetArskull6061::class -> createGjenlevenderett2027Dto() as T
+            VarselGjpForlengetArskull6061Utland::class -> createGjenlevenderett2027Dto() as T
+            VarselGjpForlengetArskull6270::class -> createGjenlevenderett2027Dto() as T
+            VarselGjpForlengetArskull6270Utland::class -> createGjenlevenderett2027Dto() as T
+            VarselGjpOpphorArskull6070::class -> createGjenlevenderett2027Dto() as T
+            VarselGjpOpphorArskull6070Utland::class -> createGjenlevenderett2027Dto() as T
+            VedtakAfpEtteroppgjoerEtterbetaling::class -> createVedtakAfpEtteroppgjoerEtterbetalingDto() as T
+            VedtakAfpEtteroppgjoerEtterbetalingAuto::class -> createVedtakAfpEtteroppgjoerEtterbetalingAutoDto() as T
+            VedtakAfpEtteroppgjoerEtterbetalingEtterSvar::class -> createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto() as T
+            VedtakAfpEtteroppgjoerIngenEndring::class -> createVedtakAfpEtteroppgjoerIngenEndringDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringAndreAvvik::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvar::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringAuto::class -> createVedtakAfpEtteroppgjoerIngenEndringAutoDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringEtterSvar::class -> createVedtakAfpEtteroppgjoerIngenEndringEtterSvarDto() as T
+            VedtakAfpEtteroppgjoerTilbakekrevingAuto::class -> createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto() as T
+            VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger::class -> createVedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto() as T
+            VedtakAfpPrivatEndring::class -> createVedtakAfpPrivatEndringDto() as T
             VedtakAldersovergang67AarGarantitilleggAuto::class -> createVedtakAldersovergang67AarGarantitilleggAutoDto() as T
+            VedtakEndringAFPEndretOpptjeningAuto::class -> createVedtakEndringAFPEndretOpptjeningAutoDto() as T
+            VedtakEndringAfpOffentligSektor::class -> createVedtakEndringAfpOffentligSektorDto() as T
+            VedtakEndringAvAlderspensjonFordiOpptjeningErEndret::class -> createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() as T
             VedtakEndringAvAlderspensjonGjenlevenderettigheter::class -> createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() as T
             VedtakEndringAvAlderspensjonInstitusjonsopphold::class -> createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() as T
-            VedtakEndringAFPEndretOpptjeningAuto::class -> createVedtakEndringAFPEndretOpptjeningAutoDto() as T
             VedtakEndringAvUttaksgrad::class -> createVedtakEndringAvUttaksgradDto() as T
-            VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge::class -> createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto() as T
             VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge::class -> createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() as T
+            VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge::class -> createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto() as T
             VedtakEndringVedFlyttingMellomLand::class -> createVedtakEndringVedFlyttingMellomLandDto() as T
-            VedtakEndringAvAlderspensjonFordiOpptjeningErEndret::class -> createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() as T
-            VedtakStansAlderspensjonFlyttingMellomLand::class -> createVedtakStansAlderspensjonFlyttingMellomLandDto() as T
+            VedtakGjpForlengetArskull6061::class -> createGjenlevenderett2027Dto() as T
+            VedtakGjpForlengetArskull6061Utland::class -> createGjenlevenderett2027Dto() as T
+            VedtakGjpForlengetArskull6270::class -> createGjenlevenderett2027Dto() as T
+            VedtakGjpForlengetArskull6270Utland::class -> createGjenlevenderett2027Dto() as T
+            VedtakGjpOpphorArskull6070::class -> createGjenlevenderett2027Dto() as T
+            VedtakGjpOpphorArskull6070Utland::class -> createGjenlevenderett2027Dto() as T
             VedtakOmregningAFPTilEnsligPensjonistAuto::class -> createVedtakOmregningAFPTilEnsligPensjonistAutoDto() as T
             VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto::class -> createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto() as T
-            UforetrygdSokerAfpPrivat::class -> createUforeTrygdSokerAfpPrivatDto() as T
-            AfpPrivatSokerUforeTrygd::class -> createAfpPrivatSokerUforeTrygdDto() as T
+            VedtakStansAlderspensjonFlyttingMellomLand::class -> createVedtakStansAlderspensjonFlyttingMellomLandDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+        AFpPrivatSokerUforeTrygdVedleggDto::class -> createAfpPrivatSokerUforeTrygdVedleggDto() as T
         DineRettigheterOgMulighetTilAaKlageDto::class -> createDineRettigheterOgMulighetTilAaKlageDto() as T
         EmptyVedleggData::class -> EmptyVedleggData as T
-        AFpPrivatSokerUforeTrygdVedleggDto::class -> createAfpPrivatSokerUforeTrygdVedleggDto() as T
-        MaanedligPensjonFoerSkattDto::class -> createMaanedligPensjonFoerSkatt() as T
+        HvordanPensjonenErBeregnetAfpOffentligDto::class -> createHvordanPensjonenErBeregnetAfpOffentligDto() as T
         MaanedligPensjonFoerSkattAFPDto::class -> createMaanedligPensjonFoerSkattAFPDto() as T
         MaanedligPensjonFoerSkattAFPOffentligDto::class -> createMaanedligPensjonFoerSkattAFPOffentligDto() as T
-        HvordanPensjonenErBeregnetAfpOffentligDto::class -> createHvordanPensjonenErBeregnetAfpOffentligDto() as T
-        OpplysningerOmBeregningenAfpDto::class -> createOpplysningerOmBeregningenAfpDto() as T
-        OversiktOverPensjonenAfpDto::class -> createOversiktOverPensjonenAfpDto() as T
-        OversiktOverPensjonenAfpPrivatDto::class -> createOversiktOverPensjonenAfpPrivatDto() as T
         MaanedligPensjonFoerSkattAP2025Dto::class -> createMaanedligPensjonFoerSkattAP2025Dto() as T
         MaanedligPensjonFoerSkattAlderspensjonDto::class -> createMaanedligPensjonFoerSkattAlderspensjonDto() as T
+        MaanedligPensjonFoerSkattDto::class -> createMaanedligPensjonFoerSkatt() as T
         OpplysningerBruktIBeregningen::class -> createOpplysningerBruktIBeregningen() as T
-        OpplysningerBruktIBeregningenAlderDto::class -> createOpplysningerBruktIBeregningAlderDto() as T
         OpplysningerBruktIBeregningenAlderAP2025Dto::class -> createOpplysningerBruktIBeregningAlderAP2025Dto() as T
         OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto::class -> createOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto() as T
+        OpplysningerBruktIBeregningenAlderDto::class -> createOpplysningerBruktIBeregningAlderDto() as T
         OpplysningerBruktIBeregningenEndretUttaksgradDto::class -> createOpplysningerBruktIBeregningenEndretUttaksgradDto() as T
         OpplysningerOmAvdoedBruktIBeregningDto::class -> createOpplysningerOmAvdoedBruktIBeregningDto() as T
+        OpplysningerOmBeregningenAfpDto::class -> createOpplysningerOmBeregningenAfpDto() as T
         OrienteringOmRettigheterOgPlikterDto::class -> createOrienteringOmRettigheterOgPlikterDto() as T
+        OversiktOverPensjonenAfpDto::class -> createOversiktOverPensjonenAfpDto() as T
+        OversiktOverPensjonenAfpPrivatDto::class -> createOversiktOverPensjonenAfpPrivatDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
 }
