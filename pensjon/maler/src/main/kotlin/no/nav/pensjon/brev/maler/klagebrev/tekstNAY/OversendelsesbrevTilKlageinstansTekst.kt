@@ -98,7 +98,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object Generisk : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -133,7 +132,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object Medlemskap : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -191,7 +189,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object HensiktsmessigBehandlingOgTiltak : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -241,7 +238,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object KunArbeidsrettedeTiltak : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -273,10 +269,9 @@ object OversendelsesbrevTilKlageinstansTekst {
     }
 
     //§ 12-6 Hovedårsak til sykdom
-    object HovedAarakTilSykdom : RedigerbarOutlinePhrase<LangBokmal>() {
+    object HovedAarsakTilSykdom : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(
                     bokmal {
@@ -319,7 +314,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object NedsattInntektsevne : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             includePhrase(NedsattInntektsevneHvaKlagesakenGjelder)
 
             paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-7 – nedsatt inntektsevne." }) }
@@ -348,7 +342,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object KombinasjonNedsattInntektsevne : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             includePhrase(NedsattInntektsevneHvaKlagesakenGjelder)
 
             paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-7, 12-9 og 12-10 – nedsatt inntektsevne." }) }
@@ -391,7 +384,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object Ufoeretidspunkt : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -523,7 +515,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object BeregningAvUfoeretrygd : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -558,7 +549,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object Trygdetid : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -605,7 +595,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object UngUfoer : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -679,7 +668,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object AutomatiskInntektsreduksjon : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(
                     bokmal {
@@ -720,7 +708,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object Etteroppgjoer : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -770,7 +757,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object EtteroppgjoerBarnetillegg : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(HvaKlagesakenGjelderOverskrift)
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -809,7 +795,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     //§ 12-15 Barnetillegg
     object Barnetillegg : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(
                     bokmal {
@@ -845,7 +831,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     //§ 12-16 Reduksjon av barnetillegg
     object ReduksjonAvBarnetillegg : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -878,7 +864,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     //§ 12-17 Yrkesskade
     object Yrkesskade : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -920,7 +906,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     //§ 12-19 Opphold i institusjon
     object OppholdIinstitusjon : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -955,9 +941,9 @@ object OversendelsesbrevTilKlageinstansTekst {
     }
 
     //§ 12-20 Straffegjennomføring
-    object Straffegjennomføring : RedigerbarOutlinePhrase<LangBokmal>() {
+    object Straffegjennomfoering : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -988,7 +974,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     //§ 22-12/22-13 Virkningstidspunkt
     object Virkningstidspunkt : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -1024,7 +1010,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     //§ 22-15 Tilbakekreving
     object Tilbakekreving : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -1061,7 +1047,7 @@ object OversendelsesbrevTilKlageinstansTekst {
     //EØS artikkel 57 Trygdetid eller botid under ett år
     object EoesArtikkel57 : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -1148,10 +1134,10 @@ object OversendelsesbrevTilKlageinstansTekst {
     // SLUTT FOLKETRYGDLOVEN
 
     // START FORVALTNINGSLOVEN
-    //§ 31 Oversittet klagefrist
+    //Fvl. § 31 Oversittet klagefrist
     object OversittetKlagefrist : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            includePhrase(HvaKlagesakenGjelderOverskrift)
+
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
