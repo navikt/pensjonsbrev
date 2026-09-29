@@ -343,7 +343,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                     text(
                         bokmal { +"Du kan også ha rett til stønad til barnetilsyn, tilleggsstønad og stønad til skolepenger. Forsørger du barn under 18 år, kan du ha rett til utvidet barnetrygd." },
                         nynorsk { +"Du kan også ha rett til stønad til barnetilsyn, tilleggsstønad og stønad til skulepengar. Forsørger du barn under 18 år, kan du ha rett til utvida barnetrygd." },
-                        english { +"If you stay in Norway, you may also be entitled to childcare benefits, supplemental benefits and an allowance to cover tuition fees. If you provide for children under the age of 18, you may be entitled to extended child benefit." },
+                        english { +"You may also be entitled to childcare benefits, supplemental benefits and an allowance to cover tuition fees. If you provide for children under the age of 18, you may be entitled to extended child benefit." },
                     )
                 }
                 paragraph {
