@@ -215,6 +215,7 @@ object Fixtures : LetterDataFactory {
             VedtakGjpOpphorArskull6070Utland::class -> createGjenlevenderett2027Dto() as T
             VedtakOmregningAFPTilEnsligPensjonistAuto::class -> createVedtakOmregningAFPTilEnsligPensjonistAutoDto() as T
             VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto::class -> createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto() as T
+            VedtakOmOmgjoering::class -> createVedtakOmOmgjoeringDto() as T
             VedtakStansAlderspensjonFlyttingMellomLand::class -> createVedtakStansAlderspensjonFlyttingMellomLandDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
