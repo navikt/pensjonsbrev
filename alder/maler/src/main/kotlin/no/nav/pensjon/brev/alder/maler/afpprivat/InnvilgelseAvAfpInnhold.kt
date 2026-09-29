@@ -1,6 +1,10 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
+import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.MINSIDE_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
@@ -9,9 +13,11 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 /**
@@ -25,74 +31,273 @@ import java.time.LocalDate
 data class InnvilgelseAvAfpInnhold(
     val kravMottattDato: Expression<LocalDate>,
     val virkningFom: Expression<LocalDate>,
-    val totalPensjon: Expression<BrevbakerType.Kroner>,
-    val livsvarigBrutto: Expression<BrevbakerType.Kroner?>,
-    val kronetilleggBrutto: Expression<BrevbakerType.Kroner?>,
-    val kompensasjonstilleggBrutto: Expression<BrevbakerType.Kroner?>,
+    val totalPensjon: Expression<Kroner>,
+    val livsvarigBrutto: Expression<Kroner?>,
+    val kronetilleggBrutto: Expression<Kroner?>,
+    val kompensasjonstilleggBrutto: Expression<Kroner?>,
     val brukerUnder70Aar: Expression<Boolean>,
     val bosattINorge: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title2 {
+            text(
+                bokmal { +"Vedtak" },
+                nynorsk { +"Vedtak" },
+                english { +"Decision" },
+            )
+        }
         paragraph {
             text(
                 bokmal {
-                    +"Nav viser til søknaden din om AFP i privat sektor mottatt " +
-                        kravMottattDato.format() +
-                        ". Du har valgt å ta ut AFP fra " + virkningFom.format() +
-                        ". Du får " + totalPensjon.format() +
-                        " hver måned før skatt."
+                    +"Du er innvilget AFP i privat sektor. " +
+                            "Du får " + totalPensjon.format()  + " hver måned før skatt fra " + virkningFom.format() + "."
                 },
                 nynorsk {
-                    +"Nav viser til søknaden din om AFP i privat sektor motteken " +
-                        kravMottattDato.format() +
-                        ". Du har valt å ta ut AFP frå " + virkningFom.format() +
-                        ". Du får " + totalPensjon.format() +
-                        " kvar månad før skatt."
+                    +"Du er innvilga AFP i privat sektor. " +
+                            "Du får " + totalPensjon.format()  + " kvar månad før skatt frå " + virkningFom.format() + "."
                 },
                 english {
-                    +"Nav has granted your application which we received on " +
-                        kravMottattDato.format() +
-                        " for contractual pension in the private sector. You have decided to draw " +
-                        "contractual pension starting on " + virkningFom.format() +
-                        ". You will receive " + totalPensjon.format() + " per month before tax."
+                    +""
                 },
+            )
+        }
+
+        ifNotNull(kronetilleggBrutto) { brutto ->
+            showIf(brutto.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Av dette er AFP kronetillegget " + brutto.format() + " i måneden. Dette tillegget får du bare til og med den måneden du fyller 67 år." },
+                        nynorsk { +"Av dette er AFP kronetillegget " + brutto.format() + " i månaden. Dette tillegget får du bare til og med den måneden du fyller 67 år."  },
+                        english { +" " + brutto.format() + "." },
+                    )
+                }
+            }
+        }
+
+        paragraph {
+            text(
+                bokmal { +"AFP blir utbetalt samtidig som alderspensjonen senest den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL." },
+                nynorsk { +"AFP blir utbetalt samtidig som alderspensjonen seinast den 20. kvar månad. Du finn oversikt over utbetalingane dine på $UTBETALINGER_URL."  },
+                english { +"" },
+            )
+        }
+
+        title2 {
+            text(
+                bokmal { +"Begrunnelse for vedtaket" },
+                nynorsk { +"Grunngiving for vedtaket " },
+                english { +"" },
             )
         }
 
         paragraph {
             text(
                 bokmal {
-                    +"AFP i privat sektor gis etter bestemmelsene i lov om statstilskott til arbeidstakere som tar " +
-                        "ut avtalefestet pensjon i privat sektor (AFP-tilskottsloven). Fellesordningen for AFP har " +
-                        "funnet at du oppfyller de avtalemessige vilkårene for rett til AFP. Nav har avgjort andre " +
-                        "spørsmål om retten til pensjon, blant annet beregningen. Beregningsreglene står i " +
-                        "paragrafene 6 til 11 i AFP-tilskottsloven."
+                    +"Vedtaket er gjort etter bestemmelsene i lov om statstilskott til arbeidstakere som tar ut avtalefestet pensjon i privat sektor (AFP-tilskottsloven). " +
+                    "Fellesordningen for AFP har vurdert at du oppfyller de avtalemessige vilkårene for rett til AFP. Nav har avgjort andre spørsmål om retten til pensjon, blant annet beregningen. " +
+                    "Beregningsreglene står i paragrafene 6 til 11 i AFP-tilskottsloven. "
                 },
                 nynorsk {
-                    +"AFP i privat sektor blir gitt etter føresegnene i lov om statstilskot til arbeidstakarar som " +
-                        "tek ut avtalefesta pensjon i privat sektor (AFP-tilskotslova). Fellesordninga for AFP har " +
-                        "funne at du oppfyller dei avtalemessige vilkåra for rett til AFP. Nav har avgjort andre " +
-                        "spørsmål om retten til pensjon, mellom anna berekninga. Berekningsreglane står i " +
-                        "paragrafane 6 til 11 i AFP-tilskotslova."
+                    +"Vedtaket er gjort etter reglane i lov om statstilskott til arbeidstakarar som tar ut avtalefesta pensjon i privat sektor (AFP-tilskottslova). " +
+                            "Fellesordninga for AFP har vurdert at du oppfyller dei avtalemessige vilkåra for rett til AFP. " +
+                            "Nav har avgjort andre spørsmål om retten til pensjon, mellom anna berekninga. Berekningsreglane står i paragrafane 6 til 11 i AFP-tilskottslova. "
                 },
                 english {
-                    +"Private sector contractual pension is granted pursuant to the act relating to state subsidies " +
-                        "to employees who draw an early retirement pension in the private sector (the Early " +
-                        "Retirement Pension Subsidy Act - AFP-tilskottsloven). The Common Scheme for Contractual " +
-                        "Pension has ascertained that you meet the contractual terms for the right to AFP. Nav has " +
-                        "made a decision on other issues regarding the right to pension, including the calculation. " +
-                        "The calculation rules are listed in sections 6 to 11 of the Early Retirement Pension " +
-                        "Subsidy Act."
+                    +""
                 },
             )
         }
+
+        showIf(brukerUnder70Aar)    {
+            title2 {
+                text(
+                    bokmal { +"AFP i privat sektor og alderspensjon fra folketrygden " },
+                    nynorsk { +"AFP i privat sektor og alderspensjon frå folketrygda " },
+                    english { +"" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du får AFP i privat sektor sammen med alderspensjonen din." },
+                    nynorsk { +"Du får AFP i privat sektor saman med alderspensjonen din." },
+                    english { +"" },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Du må ha tatt ut minst 20 prosent alderspensjon i minst en måned for å ha rett AFP i privat sektor. " +
+                            "Deretter kan du endre uttaksgraden for alderspensjonen til 0 prosent uten at det påvirker AFP-en din.  " },
+                    nynorsk { +"Du må ha tatt ut minst 20 prosent alderspensjon i minst ein månad for å ha rett AFP i privat sektor. " +
+                            "Deretter kan du endre uttaksgraden for alderspensjonen til 0 prosent utan at det påverkar AFP-en din.  " },
+                    english { +"" },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL for å se hvordan endringer påvirker pensjonen din." },
+                    nynorsk { +"Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL for å sjå korleis endringar påverkar pensjonen din. " },
+                    english { +"" },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Du kan ha arbeidsinntekt uten at AFP blir redusert. " +
+                            "Opptjening etter det året du fylte 61 år, påvirker ikke hvor mye du får i AFP. Ny opptjening kan gi økt alderspensjon.  " },
+                    nynorsk { +"Du kan ha arbeidsinntekt utan at AFP blir redusert. " +
+                            "Opptening etter det året du fylte 61 år, påverkar ikkje kor mykje du får i AFP. Ny opptening kan gi høgare alderspensjon.  " },
+                    english { +"" },
+                )
+            }
+        }
+
+        showIf(brukerUnder70Aar){  //TODO: Etterbetaling?
+            title2 {
+                text(
+                    bokmal { +"Etterbetaling" },
+                    nynorsk { +"Etterbetaling" },
+                    english { +"" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du får etterbetalt pensjon fra <dato>. " +//TODO: Trenger vi å få inn etterbetalingsdato her?
+                            "Etterbetalingen vil vanligvis bli utbetalt i løpet av sju virkedager. " +
+                            "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. " +
+                            "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
+                            "Du kan sjekke eventuelle trekk i utbetalingsmeldingen på $MINSIDE_URL. " },
+                    nynorsk { +"Du får etterbetalt pensjon frå <dato>. " + //TODO: Trenger vi å få inn etterbetalingsdato her?
+                            "Etterbetalinga vil vanlegvis bli utbetalt i løpet av sju vyrkedagar. " +
+                            "Vi kan trekke frå skatt og ytingar du har fått frå til dømes Nav eller tenestepensjonsordningar. " +
+                            "Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordningar har ni vekers frist på å krevje trekk i etterbetalinga. " +
+                            "Du kan sjekke eventuelle trekk i utbetalingsmeldinga på $MINSIDE_URL." },
+                    english { +"" },
+                )
+            }
+
+        }
+
+
+        title2 {
+            text(
+                bokmal { +"Det er egne skatteregler for pensjon" },
+                nynorsk { +"Det er eigne skattereglar for pensjon " },
+                english { +"Your pension" },
+            )
+        }
+
+        showIf(bosattINorge){
+            paragraph {
+                ifNotNull(kompensasjonstilleggBrutto) {
+                    text(
+                        bokmal { +"Med unntak av kompensasjonstillegget er din AFP skattepliktig." },
+                        nynorsk { +"Med unntak av kompensasjonstillegget er AFP skattepliktig." },
+                        english { +"" },
+                    )
+                }
+                .orShow {
+                    text(
+                        bokmal { +"Din AFP er skattepliktig. " },
+                        nynorsk { +"AFP-en din er skattepliktig. " },
+                        english { +"Your contractual pension is taxable. " },
+                    )
+                }
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du bør sjekke skattekortet når du begynner å ta ut AFP. " +
+                            "Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. " +
+                            "Der får du også mer informasjon om skattekort for pensjonister. " +
+                            "Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss. " },
+                    nynorsk { +"Du bør sjekke skattekortet når du byrjar å ta ut AFP. " +
+                            "Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. " +
+                            "Der får du også meir informasjon om skattekort for pensjonistar. " +
+                            "Vi får skattekortet elektronisk. Du skal derfor ikkje sende det til oss. " },
+                    english { +"" },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"På $DIN_PENSJON_URL kan du se hva du betaler i skatt. " +
+                            "Her kan du også legge inn ekstra skattetrekk om du ønsker det. " +
+                            "Hvis du endrer skattetrekket, vil dette gjelde fra måneden etter at vi har fått beskjed. " },
+                    nynorsk { +"På $DIN_PENSJON_URL kan du sjå kva du betaler i skatt. " +
+                            "Her kan du også leggje inn ekstra skattetrekk om du ønskjer det. " +
+                            "Om du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed. " },
+                    english { +"" },
+                )
+            }
+        }.orShow {
+            paragraph {
+                ifNotNull(kompensasjonstilleggBrutto) {
+                    text(
+                        bokmal { +"Med unntak av kompensasjonstillegget er din AFP skattepliktig til Norge." },
+                        nynorsk { +"Med unntak av kompensasjonstillegget er AFP skattepliktig til Noreg." },
+                        english { +"" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"Din AFP er skattepliktig til Norge." },
+                        nynorsk { +"AFP er skattepliktig til Noreg." },
+                        english { +"Your contractual pension is taxable. " },
+                    )
+                }
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Hvis du har spørsmål om skatteplikt til Norge etter flytting til utlandet, må du kontakte skattekontoret i den kommunen du har flyttet fra. " +
+                            "Hvis du har spørsmål om skatteplikt til det landet du er bosatt i, må du kontakte skattemyndighetene der. " },
+                    nynorsk { +"Om du har spørsmål om skatteplikt til Noreg etter flytting til utlandet, må du kontakte skattekontoret i den kommunen du har flytta frå. " +
+                            "Om du har spørsmål om skatteplikt til det landet du er busett i, må du kontakte skattemyndighetane der. " },
+                    english { +"" },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"På $DIN_PENSJON_URL kan du se hva du betaler i skatt. " +
+                            "Her kan du også legge inn ekstra skattetrekk om du ønsker det. " +
+                            "Hvis du endrer skattetrekket, vil dette gjelde fra måneden etter at vi har fått beskjed. " },
+                    nynorsk { +"På $DIN_PENSJON_URL kan du sjå kva du betaler i skatt. " +
+                            "Her kan du også leggje inn ekstra skattetrekk om du ønskjer det. " +
+                            "Om du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed. " },
+                    english { +"" },
+                )
+            }
+        }
+
+
+
+        showIf(brukerUnder70Aar) { //TODO: ETTERBETALNG
+            title2() {
+                text(
+                    bokmal { +"Oversikt over hva du får fra etterbetaling.virkningFom " },
+                    nynorsk { +"Oversikt over kva du får frå etterbetaling.virkningFom" },
+                    english { +"" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert i perioden, kan dette endre hvor mye du får." },
+                    nynorsk { +"Om det har vore endringar i nokre av opplysningane som ligg til grunn for berekninga eller pensjonen har vært regulert i perioden, kan dette endre kor mykje du får." },
+                    english { +"" },
+                )
+            }
+
+        }
+
+        //TODO: Her trenger jeg en gjennomgang av etterbetalingstabellen
 
         // Tabell: "Beløp per måned" — restaurert fra de flate text(...)-blokkene i konverteren
         // (Step 5 i convert-exstream-letter). Konvertert til ekte table med betinget rad per komponent.
         paragraph {
             text(
                 bokmal { +"Din AFP per måned blir slik:" },
-                nynorsk { +"AFP-en din per månad blir slik:" },
+                nynorsk { +"AFP per månad blir slik:" },
                 english { +"Your monthly contractual pension will be:" },
             )
             table(
@@ -162,6 +367,44 @@ data class InnvilgelseAvAfpInnhold(
                     ) }
                 }
             }
+        }
+
+        title2 {
+            text(
+                bokmal { +"Slik har vi beregnet din AFP" },
+                nynorsk { +"Slik har vi berekna AFP-en din" },
+                english { +"" },
+            )
+        }
+
+        paragraph {
+            text(
+                bokmal { +"AFP livsvarig del:" },
+                nynorsk { +"AFP livsvarig del:" },
+                english { +"" },
+                fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+            )
+            text(
+                bokmal { +"Grunnlaget for beregning av AFP er den årlige pensjonsgivende inntekten din opp til 7,1 G (grunnbeløp i folketrygden). " +
+                        "Det gis opptjening til og med det året du fyller 61 år. " +
+                        "AFP livsvarig del er 0,314 prosent av samlet grunnlag." },
+                nynorsk { +"Grunnlaget for berekning av AFP er den årlege pensjonsgivande inntekta di opp til 7,1 G (grunnbeløp i folketrygda). " +
+                        "Du får opptening til og med det året du fyller 61 år. " +
+                        "AFP Livsvarig del er 0,314 prosent av samla grunnlag." },
+                english { +"" },
+            )
+        }
+
+        paragraph {
+            text(
+                bokmal { +"AFP livsvarig del er levealdersjustert. " +
+                        "Det er fordi vi lever lenger, og pensjonen skal fordeles over flere år. Hvert årskull får fastsatt et forholdstall. " +
+                        "Tallet brukes for å beregne fordelingen av pensjonen din på det som er igjen av forventet levetid for årskullet ditt." },
+                nynorsk { +"AFP livsvarig del er levealdersjustert. " +
+                        "Det er fordi vi lever lenger, og pensjonen skal fordelast over fleire år. Kvart årskull får fastsett eit forholdstal. " +
+                        "Talet blir brukt for å berekne fordelinga av pensjonen din på det som er att av forventa levetid for årskullet ditt. " },
+                english { +"" },
+            )
         }
 
         // Levealdersjustering — felles tekst for alle.
