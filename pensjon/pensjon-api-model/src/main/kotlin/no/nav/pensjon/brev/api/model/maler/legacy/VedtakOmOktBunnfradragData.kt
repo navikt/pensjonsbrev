@@ -18,6 +18,7 @@ data class VedtakOmOktBunnfradragData(
     val okningUt: Boolean,
     val redusertBtfb: Boolean,
     val redusertBtsb: Boolean,
+    val endringGjt: Boolean = false,
     val datoOkningBunnfradrag: LocalDate,
     val nettoUtHarBlittLikBrutto: Boolean,
     val btHarBlitt0: Boolean,

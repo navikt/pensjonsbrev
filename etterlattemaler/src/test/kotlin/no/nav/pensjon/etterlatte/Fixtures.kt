@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte
 
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createAvvistKlageInnholdDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonAvslagDTO
@@ -65,6 +66,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmO
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggData
 import kotlin.reflect.KClass
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.etterlatte.maler.andre.*
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.*
@@ -159,10 +161,15 @@ object Fixtures : LetterDataFactory {
         }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+    override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
         BarnepensjonBeregning::class -> lagBeregning() as T
+        BarnepensjonOpphoerDTO::class -> createBarnepensjonOpphoerDTO() as T
+        BarnepensjonRevurderingDTO::class -> createBarnepensjonRevurderingDTO() as T
         BeregningsVedleggData::class -> lagBeregningsVedleggData() as T
+        EmptyVedleggData::class -> EmptyVedleggData as T
         OmstillingsstoenadBeregning::class -> lagOmstillingsstoenadBeregning() as T
+        OmstillingsstoenadOpphoerDTO::class -> createOmstillingsstoenadOpphoerDTO() as T
+        OmstillingsstoenadRevurderingDTO::class -> createOmstillingsstoenadRevurderingDTO() as T
         InformasjonOmOmstillingsstoenadData::class -> lagInformasjonOmOmstillingsstoenadData() as T
         TilbakekrevingDTO::class -> lagTilbakekrevingDTO() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
@@ -170,4 +177,3 @@ object Fixtures : LetterDataFactory {
 
 
 }
-

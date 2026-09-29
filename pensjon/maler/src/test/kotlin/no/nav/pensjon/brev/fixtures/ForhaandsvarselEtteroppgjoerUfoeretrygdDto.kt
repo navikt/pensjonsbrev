@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
@@ -19,8 +18,8 @@ fun createForhaandsvarselEtteroppgjoerUfoeretrygdDto() =
         harTjentOver80prosentAvOIFU = false,
         kanSoekeOmNyInntektsgrense = false,
         oppjustertInntektFoerUfoerhet = Kroner(0),
-        opplysningerOmEtteroppgjoeretUfoeretrygd = Fixtures.createVedlegg(),
-        orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
+        opplysningerOmEtteroppgjoeretUfoeretrygd = createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret(),
+        orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
     )
 
 fun createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret() =

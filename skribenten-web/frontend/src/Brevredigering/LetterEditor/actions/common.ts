@@ -1225,12 +1225,16 @@ export const countMissingFromTemplateBlocks = (letter: EditedDocument): number =
   return letter.blocks.filter((block) => block.missingFromTemplate).length;
 };
 
-export function getBlockClassName(block: AnyBlock, isFlashHighlighted: boolean): string {
+export function getBlockClassName(
+  block: AnyBlock,
+  isFlashHighlighted: boolean,
+  showMissingFromTemplate: boolean,
+): string {
   const classNames: string[] = [block.type];
   if (isFlashHighlighted) {
     classNames.push("inserted-flash-block");
   }
-  if (block.missingFromTemplate) {
+  if (block.missingFromTemplate && showMissingFromTemplate) {
     classNames.push("missing-from-template-block");
   }
   return classNames.join(" ");

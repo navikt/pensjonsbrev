@@ -62,10 +62,20 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
         brevbaker.renderRedigerbartVedleggV2Markup(createLetter(brevbestilling), VedleggId(vedleggId))
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg, brevbestilling.pdfVedlegg)
+        brevbaker.renderRedigertBrevPDF(
+            createLetter(brevbestilling),
+            brevbestilling.letterMarkup,
+            brevbestilling.redigerteVedlegg,
+            brevbestilling.redigerbartBrev.pdfVedlegg
+        )
 
     suspend fun renderPDFV2(brevbestilling: BestillRedigertBrevRequestV2<Kode>): LetterResponse =
-        brevbaker.renderRedigertBrevV2PDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg, brevbestilling.pdfVedlegg)
+        brevbaker.renderRedigertBrevV2PDF(
+            createLetter(brevbestilling),
+            brevbestilling.letterMarkup,
+            brevbestilling.redigerteVedlegg,
+            brevbestilling.redigerbartBrev.pdfVedlegg
+        )
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
@@ -74,8 +84,8 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
 
     private fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>) =
-        letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
+        letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.redigerbartBrev.kode))
 
     private fun createLetter(brevbestilling: BestillRedigertBrevRequestV2<Kode>) =
-        letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
+        letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.redigerbartBrev.kode))
 }

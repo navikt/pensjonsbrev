@@ -1,14 +1,13 @@
 package no.nav.pensjon.brev.alder.maler.endring
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.pensjon.brev.alder.Fixtures
+import no.nav.pensjon.brev.alder.maler.sivilstand.createMaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -37,8 +36,8 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
             ),
             etterbetaling = true,
             orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterOgPlikterDto(),
-            maanedligPensjonFoerSkatt = Fixtures.createVedlegg(MaanedligPensjonFoerSkattDto::class),
-            maanedligPensjonFoerSkattAP2025 = Fixtures.createVedlegg(MaanedligPensjonFoerSkattAP2025Dto::class),
+            maanedligPensjonFoerSkatt = createMaanedligPensjonFoerSkatt(),
+            maanedligPensjonFoerSkattAP2025 = createMaanedligPensjonFoerSkattAP2025Dto(),
             opplysningerBruktIBeregningenAlder = createOpplysningerBruktIBeregningAlderDto(),
             opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
             opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening = null,

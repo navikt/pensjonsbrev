@@ -6,7 +6,7 @@ import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.fixtures.createPEgruppe10
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -20,7 +20,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             vedleggOpplysningerBruktIBeregningUTLegacy,
-            Fixtures.createVedlegg(PEgruppe10::class).expr(),
+            createPEgruppe10().expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
         LetterTestImpl(
@@ -33,7 +33,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
 
     @Test
     fun testVedleggMedInntektsgrenseOgAvkortning() {
-        val basis = Fixtures.createVedlegg(PEgruppe10::class)
+        val basis = createPEgruppe10()
         val vedtaksdata = basis.vedtaksbrev.vedtaksdata!!
         val medInntektsdetaljer = basis.copy(
             pebrevkode = "PE_UT_04_100",

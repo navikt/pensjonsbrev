@@ -60,9 +60,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         text(
-                            bokmal { +"du blir innvilget full uføretrygd (omstillingsstønaden skal stoppe)" },
-                            nynorsk { +"du blir innvilga full uføretrygd (omstillingsstønaden skal stoppe)" },
-                            english { +"you will be granted full disability benefit (the adjustment allowance will stop)" },
+                            bokmal { +"du blir innvilget full uføretrygd" + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), " fra Nav i Norge", "") + " (omstillingsstønaden skal stoppe)" },
+                            nynorsk { +"du blir innvilga full uføretrygd" + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), " frå Nav i Noreg", "") + " (omstillingsstønaden skal stoppe)" },
+                            english { +"you will be granted full disability benefit" + ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), " from Nav in Norway", "") + " (the adjustment allowance will stop)" },
                         )
                     }
                     item {

@@ -31,16 +31,16 @@ export const getRedigerbareVedlegg = {
     (await axios.get<RedigerbartVedleggInfo[]>(vedleggUrl(saksId, brevId, redigeringsflate))).data,
 };
 
-export const getRedigerbartVedlegg = {
-  queryKey: redigerbareVedleggKeys.vedlegg,
-  queryFn: async (
-    saksId: string,
-    brevId: number | string,
-    vedleggId: string,
-    redigeringsflate: Redigeringsflate,
-    signal?: AbortSignal,
-  ) => (await axios.get<EditAttachment>(vedleggUrl(saksId, brevId, redigeringsflate, vedleggId), { signal })).data,
-};
+export const getRedigerbartVedlegg = (
+  saksId: string,
+  brevId: number | string,
+  vedleggId: string,
+  redigeringsflate: Redigeringsflate,
+) => ({
+  queryKey: redigerbareVedleggKeys.vedlegg(brevId, vedleggId, redigeringsflate),
+  queryFn: async ({ signal }: { signal: AbortSignal }) =>
+    (await axios.get<EditAttachment>(vedleggUrl(saksId, brevId, redigeringsflate, vedleggId), { signal })).data,
+});
 
 export const lagreRedigerbartVedlegg = async (
   saksId: string,
