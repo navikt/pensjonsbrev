@@ -260,29 +260,21 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 english { + "This leads to an increase in your retirement pension." }
                             )
                         }
-                    }.orShow {
-                        paragraph {
+
+                        title1 {
                             text(
-                                bokmal { + "Dette fører ikke til at pensjonen din øker." },
-                                nynorsk { + "Dette fører ikkje til at pensjonen din aukar." },
-                                english { + "This does not lead to an increase in your retirement pension." }
+                                bokmal { + "Slik blir gjenlevendetillegget ditt beregnet" },
+                                nynorsk { + "Slik blir attlevandetillegget ditt rekna ut" },
+                                english { + "This is how your survivor’s supplement is calculated" }
                             )
                         }
-                    }
-
-                    title1 {
-                        text(
-                            bokmal { + "Slik blir gjenlevendetillegget ditt beregnet" },
-                            nynorsk { + "Slik blir attlevandetillegget ditt rekna ut" },
-                            english { + "This is how your survivor’s supplement is calculated" }
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv." },
-                            nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening og oppteninga frå den avdøde. Attlevandetillegget er skilnaden mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv." },
-                            english { + "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself." }
-                        )
+                        paragraph {
+                            text(
+                                bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv." },
+                                nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening og oppteninga frå den avdøde. Attlevandetillegget er skilnaden mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv." },
+                                english { + "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself." }
+                            )
+                        }
                     }
 
                     // forklaringberegningGjtKap19_148_10
@@ -365,9 +357,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         }
                         paragraph {
                             text(
-                                bokmal { + "I ditt tilfelle er alderspensjonen du har tjent opp selv høyere. Derfor får du ikke utbetalt gjenlevendetillegg." }, //TODO: oversettelse
+                                bokmal { + "I ditt tilfelle er alderspensjonen du har tjent opp selv høyere. Derfor får du ikke utbetalt gjenlevendetillegg." },
                                 nynorsk { + "I ditt tilfelle er alderspensjonen du har tent opp sjølv høgare. Derfor får du ikkje utbetalt attlevandetillegg." },
-                                english { + "In your case, the retirement pension you have earned in your own right is higher. Therefore, you are not entitled to a survivor's supplement." }
+                                english { + "In your case, the retirement pension you have earned in your own right is higher. Therefore, you will not receive the survivor's supplement." }
                             )
                         }
                     }
