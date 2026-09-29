@@ -47,6 +47,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
@@ -228,11 +229,13 @@ object OktBunnfradrag {
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. " },
-                    nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad. " },
-                )
+            showIf(data.uforetrygd.greaterThan(0) or data.gjenlevendetillegg.ifNull(Kroner(0)).greaterThan(0) or data.barnetillegg.ifNull(Kroner(0)).greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. " },
+                        nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad. " },
+                    )
+                }
             }
 
             title1 {
