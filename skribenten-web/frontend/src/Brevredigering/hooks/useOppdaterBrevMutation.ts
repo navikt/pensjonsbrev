@@ -10,8 +10,8 @@ import {
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse, type OppdaterBrevRequest } from "~/types/brev";
 
-export type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
-  historySnapshot?: LetterSnapshot;
+type OppdaterBrevMutationVariables = Pick<OppdaterBrevRequest, "saksbehandlerValg"> & {
+  recordHistory?: boolean;
   /**
    * Defaults to `false`: å lagre en tekstvalg-/overstyringsendring skal aldri frigi reservasjonen
    * saksbehandler har på brevet. Send `true` eksplisitt for en avsluttende "ferdig"-innsending som
@@ -27,14 +27,14 @@ export type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
  * Mutasjonen eies av ruten fordi ruten utleder `freeze = oppdaterBrevMutation.isPending` (og
  * tilsvarende for feilvisning) og sender det inn i <ManagedLetterEditor />.
  */
-export function useOppdaterBrevAutosave(saksId: string) {
+export function useOppdaterBrevMutation(saksId: string) {
   const { saveLetterOperation } = useManagedLetterEditorContext();
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
     mutationFn: (values) => {
-      let historySnapshot = values.historySnapshot;
+      let historySnapshot: LetterSnapshot | undefined;
       return saveLetterOperation(
         (state) => {
-          if (historySnapshot) historySnapshot = createLetterSnapshot(state);
+          if (values.recordHistory) historySnapshot = createLetterSnapshot(state);
           return oppdaterBrev({
             saksId: Number.parseInt(saksId, 10),
             brevId: state.info.id,
@@ -42,7 +42,7 @@ export function useOppdaterBrevAutosave(saksId: string) {
             request: { redigertBrev: state.redigertBrev, saksbehandlerValg: values.saksbehandlerValg },
           });
         },
-        historySnapshot
+        values.recordHistory
           ? {
               createHistoryEntry: (_state, response) =>
                 historySnapshot

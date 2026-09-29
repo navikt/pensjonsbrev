@@ -1,7 +1,6 @@
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
-import { type BrevResponse } from "~/types/brev";
 
 /**
  * Renders the editor for the letter.
@@ -9,13 +8,7 @@ import { type BrevResponse } from "~/types/brev";
  * The provider preserves the letter's editor state and autosave instance across document switches.
  * The document coordinator waits for pending saves before switching to an attachment.
  */
-const ManagedLetterEditor = (props: {
-  brev: BrevResponse;
-  freeze: boolean;
-  error: boolean;
-  canReset?: boolean;
-  showDebug?: boolean;
-}) => {
+const ManagedLetterEditor = (props: { freeze: boolean; error: boolean; canReset?: boolean; showDebug?: boolean }) => {
   const { editorState, setEditorState, saveFailed, resetLetter, resetting } = useManagedLetterEditorContext();
 
   return (

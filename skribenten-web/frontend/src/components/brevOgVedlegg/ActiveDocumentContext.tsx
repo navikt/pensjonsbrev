@@ -20,7 +20,7 @@ type ActiveDocumentContextValue = {
    * The active attachment editor registers its save function so navigation and submission can wait
    * for unsaved changes before leaving the editing session.
    */
-  registerVedleggSave: (saveNow: (() => Promise<void>) | null) => void;
+  registerVedleggSave: (savePendingChanges: (() => Promise<void>) | null) => void;
   registerVedleggMissingFromTemplate: (vedleggId: string, count: number | null) => void;
 };
 
@@ -34,7 +34,7 @@ export const ActiveDocumentProvider = (props: {
   activeVedleggId: string | undefined;
   redigeringsflate: Redigeringsflate;
   onSelectDocument: (vedleggId: string | undefined) => Promise<boolean>;
-  registerVedleggSave: (saveNow: (() => Promise<void>) | null) => void;
+  registerVedleggSave: (savePendingChanges: (() => Promise<void>) | null) => void;
   registerVedleggMissingFromTemplate?: (vedleggId: string, count: number | null) => void;
   children: ReactNode;
 }) => {

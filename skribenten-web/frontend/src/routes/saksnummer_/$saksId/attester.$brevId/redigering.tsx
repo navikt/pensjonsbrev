@@ -53,12 +53,7 @@ import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
-import {
-  type BrevResponse,
-  type OppdaterAttesteringRequest,
-  type ReservasjonResponse,
-  type SaksbehandlerValg,
-} from "~/types/brev";
+import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
@@ -213,7 +208,7 @@ const VedtakWrapper = () => {
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const { vedlegg: activeVedlegg } = Route.useSearch();
-  const { editorState, redigertBrev, setEditorState, saveLetterOperation, registerSaveErrorReset, saveNow } =
+  const { editorState, redigertBrev, setEditorState, saveLetterOperation, registerSaveErrorReset, savePendingChanges } =
     useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
@@ -309,7 +304,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     if (!checked) return;
 
     try {
-      await saveNow();
+      await savePendingChanges();
     } catch {
       // Without a successful save there is no fresh letter version to diff against. The autosave
       // error UI reports the failure; here we only undo the diff mode it was meant to enable.
@@ -338,13 +333,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
-  const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterAttesteringRequest>({
-    mutationFn: (requestData) =>
+  const attesterMutation = useMutation<BrevResponse, AxiosError, void>({
+    mutationFn: () =>
       saveLetterOperation((state) =>
         attesterBrev({
           saksId: props.saksId,
           brevId: props.brev.info.id,
-          request: { ...requestData, redigertBrev: state.redigertBrev },
+          request: { redigertBrev: state.redigertBrev },
         }),
       ),
     onError: (err) => {
@@ -359,15 +354,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const onSubmit = async (onSuccess?: () => void) => {
-    if (activeVedlegg !== undefined && !(await documentCoordinator.saveActiveDocument())) return;
+    if (activeVedlegg !== undefined && !(await documentCoordinator.savePendingDocuments())) return;
 
     attesterMutation.reset();
-    attesterMutation.mutate(
-      {
-        redigertBrev: redigertBrev,
-      },
-      { onSuccess: onSuccess },
-    );
+    attesterMutation.mutate(undefined, { onSuccess });
   };
 
   const freeze = attesterMutation.isPending;
@@ -458,7 +448,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <Button
                 icon={<ArrowRightIcon />}
                 iconPosition="right"
-                loading={freeze || documentCoordinator.savingActiveDocument}
+                loading={freeze || documentCoordinator.savingPendingDocuments}
                 size="small"
               >
                 Fortsett
@@ -571,7 +561,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     diffHash={attestantDiff.diffHash}
                     disableDiffMode={trackedDisableDiffMode}
                   >
-                    <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+                    <ManagedLetterEditor error={error} freeze={freeze} showDebug={showDebug} />
                   </AttestantDiffProvider>
                 )}
                 saksId={props.saksId}

@@ -31,7 +31,7 @@ import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUti
 import { type BrevResponse } from "~/types/brev";
 import { type EditedDocument, type EditedLetter } from "~/types/brevbakerTypes";
 
-type SaveSuccessOptions = {
+type ApplySavedResponseOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
   preserveUnchangedValg?: boolean;
 };
@@ -45,13 +45,13 @@ interface ManagedLetterEditorContextValue {
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   saveLetterOperation: (
     operation: (state: LetterEditorState & { redigertBrev: EditedLetter }) => Promise<BrevResponse>,
-    options?: SaveSuccessOptions,
+    options?: ApplySavedResponseOptions,
   ) => Promise<BrevResponse>;
 
   /** Whether autosaving the letter has failed. */
   saveFailed: boolean;
 
-  saveNow: () => Promise<void>;
+  savePendingChanges: () => Promise<void>;
   resetLetter: () => Promise<void>;
   resetting: boolean;
 
@@ -88,7 +88,7 @@ const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue
 const applySavedResponse = (
   state: LetterEditorState,
   response: BrevResponse,
-  options?: SaveSuccessOptions,
+  options?: ApplySavedResponseOptions,
 ): LetterEditorState => ({
   ...state,
   redigertBrev: response.redigertBrev,
@@ -101,12 +101,6 @@ const applySavedResponse = (
   history: resolveHistoryAfterSave(state, response, options?.createHistoryEntry?.(state, response)),
 });
 
-/**
- * Autosave lives in this provider so it survives when `ManagedLetterEditor`
- * unmounts while switching to an attachment. If autosave lived in the editor,
- * unmounting would clean up the autosave effect and cancel a pending debounce,
- * potentially leaving letter changes unsaved.
- */
 export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; children: ReactNode }) => {
   const queryClient = useQueryClient();
   const redigeringsflate = useRedigeringsflate();
@@ -201,7 +195,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         setEditorState: setEditorState,
         saveLetterOperation,
         saveFailed: saveFailed,
-        saveNow: savePendingChanges,
+        savePendingChanges,
         resetLetter,
         resetting,
         registerSaveErrorReset: registerSaveErrorReset,

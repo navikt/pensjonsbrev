@@ -38,13 +38,13 @@ const lagretBrev: BrevResponse = brevResponse({
 
 function renderEditor(redigeringsflate: Redigeringsflate) {
   const markerSomEndret = { current: null as (() => void) | null };
-  const lagreNa = { current: null as (() => Promise<void>) | null };
+  const lagreEndringer = { current: null as (() => Promise<void>) | null };
 
   const Testkomponent = () => {
-    const { setEditorState, saveNow } = useManagedLetterEditorContext();
+    const { setEditorState, savePendingChanges } = useManagedLetterEditorContext();
     markerSomEndret.current = () =>
       setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" }));
-    lagreNa.current = saveNow;
+    lagreEndringer.current = savePendingChanges;
     return null;
   };
 
@@ -53,7 +53,7 @@ function renderEditor(redigeringsflate: Redigeringsflate) {
       <RedigeringsflateProvider redigeringsflate={redigeringsflate}>
         <ManagedLetterEditorContextProvider brev={lagretBrev}>
           <Testkomponent />
-          <ManagedLetterEditor brev={lagretBrev} error={false} freeze={false} />
+          <ManagedLetterEditor error={false} freeze={false} />
         </ManagedLetterEditorContextProvider>
       </RedigeringsflateProvider>
     </QueryClientProvider>,
@@ -66,7 +66,7 @@ function renderEditor(redigeringsflate: Redigeringsflate) {
     });
   };
 
-  return { autolagre, markerSomEndret, lagreNa };
+  return { autolagre, markerSomEndret, lagreEndringer };
 }
 
 describe("<ManagedLetterEditor /> velger lagringsendepunkt ut fra redigeringsflate", () => {
@@ -100,7 +100,7 @@ describe("<ManagedLetterEditor /> velger lagringsendepunkt ut fra redigeringsfla
   });
 });
 
-describe("saveNow", () => {
+describe("savePendingChanges", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     lagreAttestertBrevtekstMock.mockResolvedValue(lagretBrev);
@@ -111,21 +111,21 @@ describe("saveNow", () => {
   });
 
   test("lagrer umiddelbart, uten å vente på autolagringsintervallet", async () => {
-    const { markerSomEndret, lagreNa } = renderEditor("attestant-redigering");
+    const { markerSomEndret, lagreEndringer } = renderEditor("attestant-redigering");
 
     act(() => markerSomEndret.current?.());
     await act(async () => {
-      await lagreNa.current?.();
+      await lagreEndringer.current?.();
     });
 
     expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
   });
 
   test("gjør ingenting når brevet allerede er lagret", async () => {
-    const { lagreNa } = renderEditor("attestant-redigering");
+    const { lagreEndringer } = renderEditor("attestant-redigering");
 
     await act(async () => {
-      await lagreNa.current?.();
+      await lagreEndringer.current?.();
     });
 
     expect(lagreAttestertBrevtekstMock).not.toHaveBeenCalled();
@@ -133,20 +133,20 @@ describe("saveNow", () => {
 
   test("avviser når lagringen feiler, slik at kalleren kan rulle tilbake", async () => {
     lagreAttestertBrevtekstMock.mockRejectedValue(new Error("lagring feilet"));
-    const { markerSomEndret, lagreNa } = renderEditor("attestant-redigering");
+    const { markerSomEndret, lagreEndringer } = renderEditor("attestant-redigering");
 
     act(() => markerSomEndret.current?.());
     await act(async () => {
-      await expect(lagreNa.current?.()).rejects.toThrow("lagring feilet");
+      await expect(lagreEndringer.current?.()).rejects.toThrow("lagring feilet");
     });
   });
 
   test("lar samtidige kall vente på samme lagring i stedet for å sende en ny", async () => {
-    const { markerSomEndret, lagreNa } = renderEditor("attestant-redigering");
+    const { markerSomEndret, lagreEndringer } = renderEditor("attestant-redigering");
 
     act(() => markerSomEndret.current?.());
     await act(async () => {
-      await Promise.all([lagreNa.current?.(), lagreNa.current?.()]);
+      await Promise.all([lagreEndringer.current?.(), lagreEndringer.current?.()]);
     });
 
     expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
@@ -160,7 +160,7 @@ describe("saveNow", () => {
       }),
     );
 
-    const { autolagre, markerSomEndret, lagreNa } = renderEditor("attestant-redigering");
+    const { autolagre, markerSomEndret, lagreEndringer } = renderEditor("attestant-redigering");
     await autolagre();
     expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
 
@@ -168,7 +168,7 @@ describe("saveNow", () => {
     const ferdig = vi.fn();
     let lagring: Promise<void> | undefined;
     await act(async () => {
-      lagring = lagreNa.current?.().then(ferdig);
+      lagring = lagreEndringer.current?.().then(ferdig);
     });
 
     expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
