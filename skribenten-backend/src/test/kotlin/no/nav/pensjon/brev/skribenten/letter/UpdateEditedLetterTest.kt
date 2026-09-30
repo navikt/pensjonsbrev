@@ -1197,6 +1197,35 @@ class UpdateRenderedLetterTest {
     }
 
     @Test
+    fun `deletion marker survives when the kept duplicate disappears from the template`() {
+        // Original render was [X, A, X]; the caseworker deleted the first X.
+        val edited = editedLetter {
+            title1(id = 1, deletedContent = listOf(2)) {
+                literal(id = 3, text = " og ")
+                variable(id = 2, text = "1000 kroner")
+            }
+        }
+        // Template change: [X, A] - the kept X is gone, while the deleted X is still rendered.
+        val rendered = letter(
+            Title1Impl(
+                1, true, listOf(
+                    VariableImpl(2, "1000 kroner"),
+                    LiteralImpl(3, " og "),
+                )
+            )
+        )
+        val expected = editedLetter {
+            title1(id = 1, deletedContent = listOf(2)) {
+                literal(id = 3, text = " og ")
+            }
+        }
+
+        val firstUpdate = edited.updateEditedLetter(rendered)
+        assertEquals(expected, firstUpdate)
+        assertEquals(expected, firstUpdate.updateEditedLetter(rendered))
+    }
+
+    @Test
     fun `deleting both occurrences of a duplicated variable removes it entirely`() {
         val rendered = letter(
             Title1Impl(

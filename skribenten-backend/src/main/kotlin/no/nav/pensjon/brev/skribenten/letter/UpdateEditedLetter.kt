@@ -63,23 +63,22 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     /**
      * Caps a multiset of deleted ids (one entry per deleted occurrence, see [mergeList]) at the
-     * number of occurrences of that id that are actually still "spare" after accounting for the
-     * occurrences [edited] currently keeps, relative to how many occurrences [rendered] has now.
-     * This prevents a stale deletion (e.g. the template no longer renders that many occurrences of
-     * the id at all) from accumulating forever, without ever discarding a deletion that still
-     * applies to a real, currently-unmatched occurrence.
+     * number of rendered occurrences of that id that are not aligned with [edited]. This uses the
+     * same alignment as [mergeList], so an edited occurrence that is no longer in the template
+     * cannot use up capacity belonging to a deleted occurrence that is still rendered.
      */
     private fun prunedDeleted(deleted: List<Int>, edited: List<Edit.Identifiable>, rendered: List<Edit.Identifiable>): List<Int> {
-        val editedCounts = edited.mapNotNull { it.id }.groupingBy { it }.eachCount()
-        val renderedCounts = rendered.mapNotNull { it.id }.groupingBy { it }.eachCount()
+        if (deleted.isEmpty()) return emptyList()
+
+        val matchedRenderedIndices = matchedRenderedIndices(edited, rendered)
+        val unmatchedRenderedCounts = rendered
+            .filterIndexed { index, element -> element.id != null && index !in matchedRenderedIndices }
+            .groupingBy { it.id }
+            .eachCount()
         val deletedCounts = deleted.groupingBy { it }.eachCount()
 
-        val remainingCapacity = deletedCounts.keys.associateWith { id ->
-            maxOf((renderedCounts[id] ?: 0) - (editedCounts[id] ?: 0), 0)
-        }
-
         return deletedCounts.flatMap { (id, deletedCount) ->
-            List(minOf(deletedCount, remainingCapacity.getValue(id))) { id }
+            List(minOf(deletedCount, unmatchedRenderedCounts[id] ?: 0)) { id }
         }
     }
 
