@@ -101,6 +101,7 @@ object Fixtures : LetterDataFactory {
             AnkeOrienteringOmSaksbehandling::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             AnkeTilsvarTilAnkendePart::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageOrienteringOmOversendelseTilKlageinstans::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            OversendelsesbrevTilKlageinstansUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             EndretBarnetilleggUfoerertrygdAuto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUfoeretrygdPGAInntektV2::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUforetrygdPGAInntektNesteAr::class -> createEndretUTPgaInntektDtoV2() as T
@@ -118,7 +119,6 @@ object Fixtures : LetterDataFactory {
             OpphoerBarnetilleggAuto::class -> createOpphoerBarnetilleggAutoDto() as T
             OpptjeningVedForhoeyetHjelpesats::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
             OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidDto() as T
-            OversendelsesbrevTilKlageinstansUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             SamletMeldingOmPensjonsvedtakV2::class -> createSamletMeldingOmPensjonsvedtakV2Dto() as T
             TilbakekrevingAvFeilutbetaltBeloep::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
             UfoerOmregningEnslig::class -> createUfoerOmregningEnsligDto() as T
