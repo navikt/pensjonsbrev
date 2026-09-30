@@ -24,10 +24,10 @@ import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoring
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.TestVedleggDto
-import no.nav.pensjon.brev.maler.klageOgAnke.AnkeOrienteringOmSaksbehandling
-import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
-import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
-import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
+import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland

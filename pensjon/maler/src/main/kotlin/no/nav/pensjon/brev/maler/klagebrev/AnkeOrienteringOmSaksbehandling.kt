@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.klageOgAnke
+package no.nav.pensjon.brev.maler.klagebrev
 
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
