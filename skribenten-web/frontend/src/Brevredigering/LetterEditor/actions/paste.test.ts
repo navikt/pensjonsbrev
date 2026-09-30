@@ -10,6 +10,7 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import {
+  type Content,
   ElementTags,
   FontType,
   type Item,
@@ -3802,5 +3803,85 @@ describe("LetterEditorActions.paste - blocks after lists and tables", () => {
     const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 3, clipboard);
 
     expect(projectLetter(result)).toEqual(["P: før", "TABLE", "  th: A", "  tr: b", "P: c", "P: etter"]);
+  });
+
+  describe("content after the list or table in the same block stays after the pasted content", () => {
+    const listFollowedBy = (...trailing: Content[]) =>
+      letter(
+        paragraph({
+          id: 1,
+          content: [itemList({ id: 10, items: [item(literal({ id: 11, text: "a" }))] }), ...trailing],
+        }),
+      );
+    const endOfFirstItem = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+
+    test("another list", () => {
+      const state = listFollowedBy(
+        itemList({ id: 20, listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "z" }))] }),
+      );
+      const clipboard = new MockDataTransfer({ "text/html": "<ul><li>x</li></ul><p>y</p>" });
+
+      const result = Actions.paste(state, endOfFirstItem, 1, clipboard);
+
+      expect(projectLetter(result)).toEqual(["• ax", "P: y", "1. z"]);
+      const [source, pasted, trailing] = result.redigertBrev.blocks;
+      expect(result.redigertBrev.blocks).toHaveLength(3);
+      expect(source.id).toBe(1);
+      expect(source.deletedContent).toEqual([20]);
+      expect(trailing.id).toBeNull();
+      expect(trailing.content.map((content) => content.id)).toEqual([20]);
+      expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 1 });
+      expect(text(pasted.content[0] as LiteralValue)).toBe("y");
+    });
+
+    test("a variable that starts the next sentence", () => {
+      const state = listFollowedBy(variable("Ola"), literal({ id: 30, text: " hale" }));
+      const clipboard = new MockDataTransfer({ "text/html": "<ul><li>x</li></ul><p>y</p>" });
+
+      const result = Actions.paste(state, endOfFirstItem, 1, clipboard);
+
+      expect(projectLetter(result)).toEqual(["• ax", "P: y", "P: Ola hale"]);
+    });
+
+    test("several pasted paragraphs keep their order before the trailing content", () => {
+      const state = listFollowedBy(
+        itemList({ id: 20, listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "z" }))] }),
+      );
+      const clipboard = new MockDataTransfer({ "text/html": "<ul><li>x</li></ul><p>y</p><h2>w</h2>" });
+
+      const result = Actions.paste(state, endOfFirstItem, 1, clipboard);
+
+      expect(projectLetter(result)).toEqual(["• ax", "P: y", "H2: w", "1. z"]);
+      expect(result.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 1 });
+    });
+
+    test("a pasted table after the list goes before the trailing content", () => {
+      const state = listFollowedBy(
+        itemList({ id: 20, listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "z" }))] }),
+      );
+      const clipboard = new MockDataTransfer({
+        "text/html": "<ul><li>x</li></ul><table><tr><th>A</th></tr><tr><td>b</td></tr></table>",
+      });
+
+      const result = Actions.paste(state, endOfFirstItem, 1, clipboard);
+
+      expect(projectLetter(result)).toEqual(["• ax", "TABLE", "  th: A", "  tr: b", "1. z"]);
+    });
+
+    test("a paragraph after a pasted table goes before a list that followed the cursor", () => {
+      const state = letter(
+        paragraph({
+          id: 1,
+          content: [literal({ id: 2, text: "før" }), itemList({ id: 20, items: [item(literal({ text: "z" }))] })],
+        }),
+      );
+      const clipboard = new MockDataTransfer({
+        "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table><p>y</p>",
+      });
+
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 3, clipboard);
+
+      expect(projectLetter(result)).toEqual(["P: før", "TABLE", "  th: A", "  tr: b", "P: y", "• z"]);
+    });
   });
 });

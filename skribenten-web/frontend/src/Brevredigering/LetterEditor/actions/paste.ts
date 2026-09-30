@@ -429,12 +429,13 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
 }
 
 function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
+  let trailingBlock: Draft<AnyBlock> | undefined;
   for (const [index, element] of elements.entries()) {
     const previous = index > 0 ? elements[index - 1] : undefined;
     if (previous?.type === "ITEM" && element.type !== "TEXT" && !continuesPastedList(draft, element)) {
-      breakOutOfPastedList(draft);
+      trailingBlock = breakOutOfPastedList(draft) ?? trailingBlock;
     } else if (previous?.type === "TABLE") {
-      moveFocusAfterPastedTable(draft);
+      trailingBlock = moveFocusAfterPastedTable(draft) ?? trailingBlock;
     }
 
     switch (element.type) {
@@ -468,6 +469,8 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
       }
     }
   }
+
+  if (trailingBlock) removeCursorParagraphBefore(draft, trailingBlock);
 }
 
 /** Et innlimt punkt fortsetter lista vi står i, med mindre det er et punkt av en annen listetype. */
@@ -482,49 +485,91 @@ function continuesPastedList(draft: Draft<LetterEditorState>, element: Traversed
 /**
  * Etter et innlimt punkt står fokus i et nytt, tomt punkt. Skal neste element være en blokk, en
  * tabell eller et punkt i en ny liste, fjerner vi det tomme punktet og fortsetter i en egen blokk etter lista.
+ * Returnerer blokka med innhold som sto etter lista, om det ble flyttet ut.
  */
-function breakOutOfPastedList(draft: Draft<LetterEditorState>) {
+function breakOutOfPastedList(draft: Draft<LetterEditorState>): Draft<AnyBlock> | undefined {
   const focus = draft.focus;
-  if (!isItemContentIndex(focus)) return;
+  if (!isItemContentIndex(focus)) return undefined;
 
   const itemList = draft.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex];
-  if (!isItemList(itemList) || focus.itemIndex !== itemList.items.length - 1 || focus.itemIndex === 0) return;
-  if (!isEmptyItem(itemList.items[focus.itemIndex])) return;
+  if (!isItemList(itemList) || focus.itemIndex !== itemList.items.length - 1 || focus.itemIndex === 0) return undefined;
+  if (!isEmptyItem(itemList.items[focus.itemIndex])) return undefined;
 
   removeElements(focus.itemIndex, 1, {
     content: itemList.items,
     deletedContent: itemList.deletedItems,
     id: itemList.id,
   });
-  focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
+  return focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
 }
 
-/** Etter en innlimt tabell står fokus i tabellen; flytt det til en egen blokk etter tabellen. */
-function moveFocusAfterPastedTable(draft: Draft<LetterEditorState>) {
+/**
+ * Etter en innlimt tabell står fokus i tabellen; flytt det til en egen blokk etter tabellen.
+ * Returnerer blokka med innhold som sto etter tabellen, om det ble flyttet ut.
+ */
+function moveFocusAfterPastedTable(draft: Draft<LetterEditorState>): Draft<AnyBlock> | undefined {
   const focus = draft.focus;
   if (!isTableCellIndex(focus) || !isTable(draft.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex]))
-    return;
+    return undefined;
 
-  focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
+  return focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
 }
 
-/** Splitter blokka etter `contentIndex` (eller legger til et tomt avsnitt) og setter fokus i starten av den nye blokka. */
-function focusNewBlockAfter(draft: Draft<LetterEditorState>, blockIndex: number, contentIndex: number) {
+/**
+ * Setter fokus i starten av en ny blokk rett etter `contentIndex`. Står det en literal der, splitter vi
+ * blokka ved den. Står det annet innhold der (liste, tabell, variabel), flyttes det ut i en egen blokk, og
+ * fokus settes i et tomt avsnitt foran den, slik at resten av innlimingen havner mellom. Returnerer den
+ * utflyttede blokka, så markøravsnittet kan fjernes etterpå.
+ */
+function focusNewBlockAfter(
+  draft: Draft<LetterEditorState>,
+  blockIndex: number,
+  contentIndex: number,
+): Draft<AnyBlock> | undefined {
   const blocks = draft.redigertBrev.blocks;
+  const block = blocks[blockIndex];
   const afterIndex = { blockIndex, contentIndex: contentIndex + 1 };
 
-  if (isLiteral(blocks[blockIndex].content[afterIndex.contentIndex])) {
+  if (isLiteral(block.content[afterIndex.contentIndex])) {
     draft.focus = { ...afterIndex, cursorPosition: 0 };
     splitRecipe(draft, afterIndex, 0);
-  } else {
-    addElements(
-      [newParagraph({ content: [newLiteral({ editedText: "" })] })],
-      blockIndex + 1,
-      blocks,
-      draft.redigertBrev.deletedBlocks,
-    );
-    draft.focus = { blockIndex: blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+    return undefined;
   }
+
+  // removeElements records moved template ids in the source block, so the split persists (see letter-editor-actions SKILL.md).
+  const trailingContent = removeElements(afterIndex.contentIndex, block.content.length, block);
+  const trailingBlock = trailingContent.length > 0 ? newParagraph({ content: trailingContent }) : undefined;
+  addElements(
+    [newParagraph({ content: [newLiteral({ editedText: "" })] }), ...(trailingBlock ? [trailingBlock] : [])],
+    blockIndex + 1,
+    blocks,
+    draft.redigertBrev.deletedBlocks,
+  );
+  draft.focus = { blockIndex: blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+  return trailingBlock && blocks[blockIndex + 2];
+}
+
+/**
+ * Fjerner det tomme markøravsnittet foran innhold som ble flyttet ut av `focusNewBlockAfter`, når
+ * innlimingen er ferdig, og setter markøren på slutten av det siste innlimte avsnittet.
+ */
+function removeCursorParagraphBefore(draft: Draft<LetterEditorState>, trailingBlock: Draft<AnyBlock>) {
+  const focus = draft.focus;
+  const blocks = draft.redigertBrev.blocks;
+  const cursorBlock = blocks[focus.blockIndex];
+  if (!isBlockContentIndex(focus) || focus.blockIndex === 0 || blocks[focus.blockIndex + 1] !== trailingBlock) return;
+  if (!isParagraph(cursorBlock) || cursorBlock.id !== null || !isEmptyBlock(cursorBlock)) return;
+
+  const previousBlock = blocks[focus.blockIndex - 1];
+  const lastContent = previousBlock.content.at(-1);
+  if (!isLiteral(lastContent)) return;
+
+  removeElements(focus.blockIndex, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks });
+  draft.focus = {
+    blockIndex: focus.blockIndex - 1,
+    contentIndex: previousBlock.content.length - 1,
+    cursorPosition: text(lastContent).length,
+  };
 }
 
 function insertBlock(

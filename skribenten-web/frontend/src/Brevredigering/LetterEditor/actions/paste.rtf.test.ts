@@ -6,7 +6,7 @@ import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { FontType, type ItemList, ListType, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
 import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
 import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
-import { letter, literal, paragraph, select } from "~test/support/letterEditorTestUtils";
+import { item, itemList, letter, literal, paragraph, select } from "~test/support/letterEditorTestUtils";
 import { MockDataTransfer, projectLetter } from "~test/support/pasteTestUtils";
 
 describe("LetterEditorActions.paste - RTF", () => {
@@ -265,6 +265,28 @@ describe("LetterEditorActions.paste - format: text/rtf", () => {
         `${WORD_HEADER}\\pard Første\\par\\pard\\par\\pard Andre\\par}`,
         "<p>Første</p><p></p><p>Andre</p>",
       );
+    });
+
+    test("a paragraph after a list goes before a list that followed it in the same block", () => {
+      const state = letter(
+        paragraph({
+          id: 1,
+          content: [
+            itemList({ id: 10, items: [item(literal({ text: "a" }))] }),
+            itemList({ id: 20, listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "z" }))] }),
+          ],
+        }),
+      );
+      const rtf = `${WORD_HEADER}\\pard\\ls1{\\listtext\\'b7\\tab}x\\par\\pard y\\par}`;
+
+      const result = Actions.paste(
+        state,
+        { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+        1,
+        new MockDataTransfer({ "text/rtf": rtf }),
+      );
+
+      expect(projectLetter(result)).toEqual(["• ax", "P: y", "1. z"]);
     });
 
     test("Norwegian characters via hex and unicode escapes", () => {
