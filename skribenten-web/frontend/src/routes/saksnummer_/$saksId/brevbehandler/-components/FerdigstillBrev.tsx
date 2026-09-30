@@ -181,7 +181,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
 
   // Sending before PDF generation finishes can fail with a 409 because the stored PDF is outdated.
   // Track initial loads and background refreshes for the selected letters, even when another letter
-  // is being previewed. 
+  // is being previewed.
   const valgteBrev = form.watch("valgteBrevSomSkalSendes");
   const antallPdfSomHentes = useIsFetching({
     predicate: (query) => valgteBrev.some((brevId) => matchQuery({ queryKey: hentPdfForBrev.queryKey(brevId) }, query)),
