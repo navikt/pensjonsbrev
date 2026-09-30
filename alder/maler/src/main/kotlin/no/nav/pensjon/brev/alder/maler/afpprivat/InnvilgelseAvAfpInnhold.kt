@@ -407,50 +407,137 @@ data class InnvilgelseAvAfpInnhold(
             )
         }
 
-        // Levealdersjustering — felles tekst for alle.
-        includePhrase(AfpPrivatFraser.Levealdersjustering)
-
-        // Per-komponent forklaring (én paragraph per innvilget komponent — null = ikke innvilget).
-        includePhrase(AfpPrivatFraser.KomponentLivsvarig(livsvarigBrutto))
-        includePhrase(AfpPrivatFraser.KomponentKronetillegg(kronetilleggBrutto))
-        includePhrase(AfpPrivatFraser.KomponentKompensasjonstillegg(kompensasjonstilleggBrutto))
-
-        // AFP og alderspensjon fra folketrygden.
-        includePhrase(AfpPrivatFraser.AfpOgAlderspensjon)
-
-        // Opptjening etter 61 år (kun for brukere under 70 år).
-        showIf(brukerUnder70Aar) {
-            includePhrase(AfpPrivatFraser.OpptjeningEtter61Aar)
+        ifNotNull(kronetilleggBrutto) { brutto ->
+            showIf(brutto.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Kronetillegg:" },
+                        nynorsk { +"Kronetillegg:" },
+                        english { +"" },
+                        fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                    )
+                    text(
+                        bokmal { +"Du får en utbetalt en høyere andel av AFP-en din fram til du blir 67 år. " +
+                                "Dette kronetillegget er normalt 1 600 kroner i måneden og utbetales til og med den måneden du fyller 67 år. " +
+                                "Hvis livsvarig del av AFP er lav, kan kronetillegget bli lavere eller ikke bli utbetalt. " +
+                                "Ved utbetaling av kronetillegg vil den livsvarige delen av AFP reduseres ved hjelp av et justeringsbeløp. " +
+                                "Reduksjonen vil gjelde resten av tiden som pensjonist." },
+                        nynorsk { +"Du får en utbetalt ein høgare del av AFP-en din fram til du blir 67 år. " +
+                                "Dette kronetillegget er normalt 1 600 kroner i månaden og blir utbetalt til og med den månaden du fyller 67 år. " +
+                                "Om livsvarig del av AFP er låg, kan kronetillegget bli lågare eller ikkje bli utbetalt. " +
+                                "Ved utbetaling av kronetillegg vil den livsvarige delen av AFP reduserast ved hjelp av eit justeringsbeløp. " +
+                                "Reduksjonen vil gjelde resten av tida som pensjonist." },
+                        english { +"" },
+                    )
+                }
+            }
         }
 
-        includePhrase(AfpPrivatFraser.ArbeidUtenReduksjon)
-
-        // Utbetaling — overskrift + tekst.
-        includePhrase(AfpPrivatFraser.MaanedligUtbetaling)
-
-        // Skattepliktig — bosatt i Norge.
-        showIf(bosattINorge) {
-            includePhrase(AfpPrivatFraser.SkattINorge(kompensasjonstilleggBrutto))
+        ifNotNull(kompensasjonstilleggBrutto) { brutto ->
+            showIf(brutto.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Kompensasjonstillegg:" },
+                        nynorsk { +"Kompensasjonstillegg:" },
+                        english { +"" },
+                        fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                    )
+                    text(
+                        bokmal { +"Årskullene 1944-1962 får et kompensasjonstillegg til AFP. " +
+                                "Dette tillegget kompenserer for at disse årskullene har begrenset mulighet til å få høyere pensjon ved å jobbe lenger. " +
+                                "Kompensasjonstillegget fastsettes med utgangspunkt i et referansebeløp, " +
+                                "og blir delt på et eget forholdstall for kompensasjonstillegget." },
+                        nynorsk { +"Årskulla 1944-1962 får eit kompensasjonstillegg til AFP. " +
+                                "Dette tillegget kompenserer for at desse årskulla har avgrensa høve til å få høgare pensjon ved å jobbe lenger. " +
+                                "Kompensasjonstillegget blir fastsett med utgangspunkt i eit referansebeløp, " +
+                                "og blir delt på eit eige forholdstal for kompensasjonstillegget.  " },
+                        english { +"" },
+                    )
+                }
+            }
         }
 
-        // Skattepliktig — bosatt i utlandet.
-        showIf(not(bosattINorge)) {
-            includePhrase(AfpPrivatFraser.SkattIUtlandet(kompensasjonstilleggBrutto))
-        }
-
-        includePhrase(AfpPrivatFraser.DinPensjonSkattetrekk)
-
-        // Dine rettigheter — innsyn.
-        title1 {
+        paragraph {
             text(
-                bokmal { +"Dine rettigheter" },
-                nynorsk { +"Dine rettar" },
-                english { +"Your rights" },
+                bokmal { +"Opplysninger brukt i beregningen av din AFP" },
+                nynorsk { +"" },
+                english { +"" },
             )
+            table(
+                header = {
+                    column {
+                        text(
+                            bokmal { +"Beløp per måned" },
+                            nynorsk { +"Beløp per månad" },
+                            english { +"Amount per month" },
+                        )
+                    }
+                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                        text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
+                    }
+                },
+            ) {
+                ifNotNull(livsvarigBrutto) { opptjening -> //TODO: Afp opptjening
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"AFP-opptjening" },
+                                nynorsk { +"" },
+                                english { +"" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(opptjening)) }
+                    }
+                }
+                ifNotNull(kronetilleggBrutto) { forholdstall -> //TODO: AfpLivsvarig.forholdstall ved uttak
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Forholdstall ved uttak" },
+                                nynorsk { +"" },
+                                english { +"" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(forholdstall)) }
+                    }
+                }
+                ifNotNull(kronetilleggBrutto) { justeringsbeloep -> //TODO: hentSatserForAFP.justeringsbeloep
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Justeringsbeløp" },
+                                nynorsk { +"" },
+                                english { +"" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(justeringsbeloep)) }
+                    }
+                }
+                ifNotNull(kompensasjonstilleggBrutto) { referansebelop-> //TODO: hentSatserForAFP.referansebelop
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Referansebeløp" },
+                                nynorsk { +"" },
+                                english { +"" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(referansebelop)) }
+                    }
+                }
+                ifNotNull(kompensasjonstilleggBrutto) { forholdstall -> //TODO: hentSatserForAFP.forholdstall
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Forholdstall" },
+                                nynorsk { +"" },
+                                english { +"" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(forholdstall)) }
+                    }
+                }
+            }
         }
-        includePhrase(AfpPrivatFraser.InnsynForvaltningsloven18)
-
-        // Klagerett.
-        includePhrase(AfpPrivatFraser.KlagerettFolketrygdloven2112)
     }
 }
