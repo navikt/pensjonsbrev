@@ -169,7 +169,6 @@ object Fixtures : LetterDataFactory {
             ReverseringLavereMinstesatsRedigerbar::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
             ReverseringLavereMinstesatsAuto::class -> createReverseringLavereMinstesatsAutoDto() as T
             VedtakOmEndringBTEPSRedigerbar::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
-            OversendelsesbrevTilKlageinstansUT::class -> createOversendelsesbrevTilKlageinstansDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
