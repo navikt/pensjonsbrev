@@ -13,7 +13,7 @@ import {
   Modal,
   VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { matchQuery, useIsFetching, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
 import { partition } from "lodash";
@@ -21,7 +21,7 @@ import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { hentAlleBrevInfoForSak, sendBrev } from "~/api/sak-api-endpoints";
+import { hentAlleBrevInfoForSak, hentPdfForBrev, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { type BestillBrevError, type BestillBrevResponse, type BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
@@ -179,6 +179,14 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     resolver: zodResolver(validationSchema),
   });
 
+  // Sending before PDF generation finishes can fail with a 409 because the stored PDF is outdated.
+  // Track initial loads and background refreshes for the selected letters, even when another letter
+  // is being previewed. 
+  const valgteBrev = form.watch("valgteBrevSomSkalSendes");
+  const antallPdfSomHentes = useIsFetching({
+    predicate: (query) => valgteBrev.some((brevId) => matchQuery({ queryKey: hentPdfForBrev.queryKey(brevId) }, query)),
+  });
+
   useEffect(() => {
     setBrevListKlarTilAttestering(brevAttestering);
   }, [brevAttestering, setBrevListKlarTilAttestering]);
@@ -191,6 +199,16 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   }, [brevSending, form]);
 
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
+    // Recheck the live query cache before sending: the button's loading state alone cannot guard
+    // form submissions that bypass the button or occur before it reflects a newly started PDF request.
+    if (
+      values.valgteBrevSomSkalSendes.some(
+        (brevId) => queryClient.isFetching({ queryKey: hentPdfForBrev.queryKey(brevId) }) > 0,
+      )
+    ) {
+      return;
+    }
+
     const toSend = values.valgteBrevSomSkalSendes.map((id) => brevSending.find((brev) => brev.id === id)!);
 
     await Promise.all(
@@ -311,7 +329,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               Avbryt
             </Button>
 
-            <Button loading={sendBrevMutation.isPending} type="submit">
+            <Button loading={antallPdfSomHentes > 0 || sendBrevMutation.isPending} type="submit">
               Ja, send valgte brev
             </Button>
           </HStack>
