@@ -4,8 +4,8 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "build": "tsc && vite build",
-    "check-types": "tsc --noemit && tsc --noemit -p tsconfig.test.json",
+    "build": "tsc -p tsconfig.app.json && vite build",
+    "check-types": "tsc --noemit -p tsconfig.app.json && tsc --noemit -p tsconfig.test.json",
     "check-unit-test-location": "test -z \"$(find . -path './node_modules' -prune -o -path './src' -prune -o \\( -name '*.test.ts' -o -name '*.test.tsx' \\) -print -quit)\"",
     "dev": "vite",
     "format": "biome format --write .",
