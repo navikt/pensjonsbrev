@@ -179,9 +179,6 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     resolver: zodResolver(validationSchema),
   });
 
-  // Sending before PDF generation finishes can fail with a 409 because the stored PDF is outdated.
-  // Track initial loads and background refreshes for the selected letters, even when another letter
-  // is being previewed.
   const valgteBrev = form.watch("valgteBrevSomSkalSendes");
   const antallPdfSomHentes = useIsFetching({
     predicate: (query) => valgteBrev.some((brevId) => matchQuery({ queryKey: hentPdfForBrev.queryKey(brevId) }, query)),
@@ -199,8 +196,6 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   }, [brevSending, form]);
 
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
-    // Recheck the live query cache before sending: the button's loading state alone cannot guard
-    // form submissions that bypass the button or occur before it reflects a newly started PDF request.
     if (
       values.valgteBrevSomSkalSendes.some(
         (brevId) => queryClient.isFetching({ queryKey: hentPdfForBrev.queryKey(brevId) }) > 0,
