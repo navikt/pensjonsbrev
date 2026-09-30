@@ -4,8 +4,35 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.AutomatiskInntektsreduksjon
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Barnetillegg
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.BeregningAvUfoeretrygd
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.EosArtikkel57
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Etteropgjoer
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.EtteroppgjoerBarnetillegg
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.FastsettelseIEU
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.FastsettelseIFU
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.FastsettelseUfoeregrad
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Generell
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.HensiktsmessigBehandlingOgTiltak
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.HovedAarsakTilSykdom
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.KombinasjonNedsattInntektsevne
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.KunArbeidsrettedeTiltak
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Medlemskap
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.NedsattInnteksevne
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Oppholdsinstitusjon
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Oversittetklagefrist
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.ReduksjonAvBarnetillegg
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Straffegjennomfoering
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Tilbakekreving
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Trygdetid
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Ufoeretidspunkt
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Ungufoer
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Virkningstidspunkt
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.Yrkesskade
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
@@ -13,8 +40,9 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -41,32 +69,8 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        val generisk = saksbehandlervalg("generisk", "Gererisk tekst").bool()
-        val medlemskap = saksbehandlervalg("medlemskap", "§12-2 Medlemskap").bool()
-        val hensiktsmessigBehandlingOgTiltak = saksbehandlervalg("hensiktsmessigBehandlingOgTiltak", "§ 12-5 Hensiktsmessig behandling og tiltak").bool()
-        val kunArbeidsrettedeTiltak = saksbehandlervalg("kunArbeidsrettedeTiltak", "§ 12-5 Kun arbeidsrettede tiltak").bool()
-        val hovedAarsakTilSykdom = saksbehandlervalg("hovedAarsakTilSykdom", "§ 12-6 Hovedårsak til sykdom").bool()
-        val nedsattInnteksevne = saksbehandlervalg("nedsattInnteksevne", "§ 12-7 Nedsatt innteksevne").bool()
-        val kombinasjonNedsattInntektsevne = saksbehandlervalg("kombinasjonNedsattInntektsevne", "§ 12-7 Kombinasjon nedsatt inntektsevne").bool()
-        val ufoeretidspunkt = saksbehandlervalg("ufoeretidspunkt", "§ 12-8 Uføretidspunkt").bool()
-        val fastsettelseIFU = saksbehandlervalg("fastsettelseIFU", "§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU").bool()
-        val fastsettelseIEU = saksbehandlervalg("fastsettelseIEU ", "§ 12-9 Fastsettelse av Inntekt Etter Uførehet IEU").bool()
-        val fastsettelseUfoeregrad = saksbehandlervalg("fastsettelseUfoeregrad", "§ 12-10 Fastsettelse av Uføregrad").bool()
-        val beregningAvUfoeretrygd = saksbehandlervalg("beregningAvUfoeretrygd", "§ 12-11 Beregning av uføretrygd").bool()
-        val trygdetid = saksbehandlervalg("trygdetid", "§ 12-12 Trygdetid").bool()
-        val ungufoer = saksbehandlervalg("ungufoer", "§ 12-13 Ung ufør").bool()
-        val automatiskInntektsreduksjon = saksbehandlervalg("automatiskInntektsreduksjon", "§ 12-14 Reduksjon på grunn av inntekt - automatisk").bool()
-        val etteropgjoer = saksbehandlervalg("etteroppgjoer", "§ 12-14 Reduksjon på grunn av inntekt - etteropgjør").bool()
-        val etteroppgjoerBarnetillegg = saksbehandlervalg("etteroppgjoerBarnetillegg", "§ 12-14 Reduksjon på grunn av inntekt - etteroppgjør barnetillegg").bool()
-        val barnetillegg = saksbehandlervalg("barnetillegg", "§ 12-15 Barnetillegg").bool()
-        val reduksjonAvBarnetillegg = saksbehandlervalg("reduksjonAvBarnetillegg", "§ 12-16 Reduksjon av barnetillegg").bool()
-        val yrkesskade = saksbehandlervalg("yrkesskade", "§ 12-17 Yrkesskade").bool()
-        val oppholdsinstitusjon = saksbehandlervalg("oppholdsinstitusjon", "§ 12-19 Opphold i institusjon").bool()
-        val straffegjennomfoering = saksbehandlervalg("straffegjennomfoering", "§ 12-20 Straffegjennomføring").bool()
-        val virkningstidspunkt = saksbehandlervalg("virkningstidspunkt", "§ 22-12/22-13 Virkningstidspunkt").bool()
-        val tilbakekreving = saksbehandlervalg("tilbakekreving", "§ 22-15 Tilbakekreving").bool()
-        val eosArtikkel57 = saksbehandlervalg("eosArtikkel57", "EØS-trygdeforordningen artikkel 57 Trygdetid eller botid under ett år").bool()
-        val oversittetklagefrist = saksbehandlervalg("oversittetklagefrist", "Fvl. § 31 Oversittet klagefrist").bool()
+
+        val forskrift = saksbehandlervalg("forskrift", "Velg forskriften:").enum<Forskriften>()
 
 
         title { text(bokmal { +"Klage - Uføretrygd - Innstillingen til Nav Klageinstans" }) }
@@ -122,68 +126,100 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
 
             title2 { text(bokmal { +"Hva klagesaken gjelder" }) }
 
-            showIf(generisk) {
+            showIf(forskrift.isOneOf(Generell)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Generisk)
-            }.orShowIf(medlemskap) {
+            }.orShowIf(forskrift.isOneOf(Medlemskap)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Medlemskap)
-            }.orShowIf(hensiktsmessigBehandlingOgTiltak) {
+            }.orShowIf(forskrift.isOneOf(HensiktsmessigBehandlingOgTiltak)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.HensiktsmessigBehandlingOgTiltak)
-            }.orShowIf(kunArbeidsrettedeTiltak) {
+            }.orShowIf(forskrift.isOneOf(KunArbeidsrettedeTiltak)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KunArbeidsrettedeTiltak)
-            }.orShowIf(hovedAarsakTilSykdom) {
+            }.orShowIf(forskrift.isOneOf(HovedAarsakTilSykdom)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.HovedAarsakTilSykdom)
-            }.orShowIf(nedsattInnteksevne) {
+            }.orShowIf(forskrift.isOneOf(NedsattInnteksevne)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.NedsattInntektsevne)
-            }.orShowIf(kombinasjonNedsattInntektsevne) {
+            }.orShowIf(forskrift.isOneOf(KombinasjonNedsattInntektsevne)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KombinasjonNedsattInntektsevne)
-            }.orShowIf(ufoeretidspunkt) {
+            }.orShowIf(forskrift.isOneOf(Ufoeretidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Ufoeretidspunkt)
-            }.orShowIf(fastsettelseIFU) {
+            }.orShowIf(forskrift.isOneOf(FastsettelseIFU)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFU)
-            }.orShowIf(fastsettelseIEU) {
+            }.orShowIf(forskrift.isOneOf(FastsettelseIEU)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIEU)
-            }.orShowIf(fastsettelseUfoeregrad) {
+            }.orShowIf(forskrift.isOneOf(FastsettelseUfoeregrad)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseUfoeregrad)
-            }.orShowIf(beregningAvUfoeretrygd) {
+            }.orShowIf(forskrift.isOneOf(BeregningAvUfoeretrygd)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.BeregningAvUfoeretrygd)
-            }.orShowIf(trygdetid) {
+            }.orShowIf(forskrift.isOneOf(Trygdetid)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Trygdetid)
-            }.orShowIf(ungufoer) {
+            }.orShowIf(forskrift.isOneOf(Ungufoer)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.UngUfoer)
-            }.orShowIf(automatiskInntektsreduksjon) {
+            }.orShowIf(forskrift.isOneOf(AutomatiskInntektsreduksjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.AutomatiskInntektsreduksjon)
-            }.orShowIf(etteropgjoer) {
+            }.orShowIf(forskrift.isOneOf(Etteropgjoer)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Etteroppgjoer)
-            }.orShowIf(etteroppgjoerBarnetillegg) {
+            }.orShowIf(forskrift.isOneOf(EtteroppgjoerBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EtteroppgjoerBarnetillegg)
-            }.orShowIf(barnetillegg) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.EtteroppgjoerBarnetillegg)
-            }.orShowIf(reduksjonAvBarnetillegg) {
+            }.orShowIf(forskrift.isOneOf(Barnetillegg)) {
+                includePhrase(OversendelsesbrevTilKlageinstansTekst.Barnetillegg)
+            }.orShowIf(forskrift.isOneOf(ReduksjonAvBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.ReduksjonAvBarnetillegg)
-            }.orShowIf(yrkesskade) {
+            }.orShowIf(forskrift.isOneOf(Yrkesskade)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade)
-            }.orShowIf(oppholdsinstitusjon) {
+            }.orShowIf(forskrift.isOneOf(Oppholdsinstitusjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OppholdIinstitusjon)
-            }.orShowIf(straffegjennomfoering) {
+            }.orShowIf(forskrift.isOneOf(Straffegjennomfoering)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Straffegjennomfoering)
-            }.orShowIf(virkningstidspunkt) {
+            }.orShowIf(forskrift.isOneOf(Virkningstidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Virkningstidspunkt)
-            }.orShowIf(tilbakekreving) {
+            }.orShowIf(forskrift.isOneOf(Tilbakekreving)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Tilbakekreving)
-            }.orShowIf(eosArtikkel57) {
+            }.orShowIf(forskrift.isOneOf(EosArtikkel57)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EoesArtikkel57)
-            }.orShowIf(oversittetklagefrist) {
+            }.orShowIf(forskrift.isOneOf(Oversittetklagefrist)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OversittetKlagefrist)
             }
 
-            showIf(not(hovedAarsakTilSykdom) and not(eosArtikkel57)) {
+            showIf(forskrift.notEqualTo(HovedAarsakTilSykdom) or forskrift.notEqualTo(EosArtikkel57)) {
                 paragraph { text(bokmal { +"<Klipp inn fra vedtak eller vilkårsvurdering og svar ut anførslene konkret>" }, ITALIC) }
             }
 
-            paragraph { text(bokmal { +"Vedtaket opprettholdes og klagen oversendes til Nav klageinstans for videre behandling." }) }
-            paragraph { text(bokmal { +"Klagen har ikke ført til at vedtak blir endret." }) }
+            paragraph{ text(bokmal { +"Vedtaket opprettholdes og klagen oversendes til Nav klageinstans for videre behandling." }) }
+            paragraph{ text(bokmal { +"Klagen har ikke ført til at vedtak blir endret." }) }
         }
     }
+
+    enum class Forskriften(override val displayText: String) : SaksbehandlerValgEnum {
+        Medlemskap("§ 12-2 Medlemskap"),
+        HensiktsmessigBehandlingOgTiltak("§ 12-5 Hensiktsmessig behandling og tiltak"),
+        KunArbeidsrettedeTiltak("§ 12-5 Kun arbeidsrettede tiltak"),
+        HovedAarsakTilSykdom("§ 12-6 Hovedårsak til sykdom"),
+        NedsattInnteksevne("§ 12-7 Nedsatt innteksevne"),
+        KombinasjonNedsattInntektsevne("§ 12-7 Kombinasjon nedsatt inntektsevne"),
+        Ufoeretidspunkt("§ 12-8 Uføretidspunkt"),
+        FastsettelseIFU("§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU"),
+        FastsettelseIEU("§ 12-9 Fastsettelse av Inntekt Etter Uførehet IEU"),
+        FastsettelseUfoeregrad("§ 12-10 Fastsettelse av Uføregrad"),
+        BeregningAvUfoeretrygd("§ 12-11 Beregning av uføretrygd"),
+        Trygdetid("§ 12-12 Trygdetid"),
+        Ungufoer("§ 12-13 Ung ufør"),
+        AutomatiskInntektsreduksjon("§ 12-14 Reduksjon på grunn av inntekt - automatisk"),
+        Etteropgjoer("§ 12-14 Reduksjon på grunn av inntekt - etteropgjør"),
+        EtteroppgjoerBarnetillegg("§ 12-14 Reduksjon på grunn av inntekt - etteroppgjør barnetillegg"),
+        Barnetillegg("§ 12-15 Barnetillegg"),
+        ReduksjonAvBarnetillegg("§ 12-16 Reduksjon av barnetillegg"),
+        Yrkesskade("§ 12-17 Yrkesskade"),
+        Oppholdsinstitusjon("§ 12-19 Opphold i institusjon"),
+        Straffegjennomfoering("§ 12-20 Straffegjennomføring"),
+        Virkningstidspunkt("§ 22-12/22-13 Virkningstidspunkt"),
+        Tilbakekreving("§ 22-15 Tilbakekreving"),
+        EosArtikkel57("EØS-trygdeforordningen artikkel 57 Trygdetid eller botid under ett år"),
+        Oversittetklagefrist("Fvl. § 31 Oversittet klagefrist"),
+        Generell("Generell tekst")
+    }
 }
+
+
+
 
 

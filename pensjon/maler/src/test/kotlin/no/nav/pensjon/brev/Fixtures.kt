@@ -118,6 +118,7 @@ object Fixtures : LetterDataFactory {
             OpphoerBarnetilleggAuto::class -> createOpphoerBarnetilleggAutoDto() as T
             OpptjeningVedForhoeyetHjelpesats::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
             OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidDto() as T
+            OversendelsesbrevTilKlageinstansUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             SamletMeldingOmPensjonsvedtakV2::class -> createSamletMeldingOmPensjonsvedtakV2Dto() as T
             TilbakekrevingAvFeilutbetaltBeloep::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
             UfoerOmregningEnslig::class -> createUfoerOmregningEnsligDto() as T
