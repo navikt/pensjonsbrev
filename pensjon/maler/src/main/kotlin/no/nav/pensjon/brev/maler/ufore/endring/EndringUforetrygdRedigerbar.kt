@@ -970,61 +970,16 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((instoppholdtype.equalTo("reduksjon_fo") and kravarsak.notEqualTo("instopphold"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                    )
-                }
-            }
-
             showIf(instoppholdtype.equalTo("reduksjon_fo")) {
-                paragraph {
-                    text(
-                        bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring. " },
-                        nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring. " },
-                    )
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
+                showIf(kravarsak.notEqualTo("instopphold")) {
+                    title1 {
                         text(
-                            bokmal { +"Da du forsørger barn" },
-                            nynorsk { +"Da du forsørgjer barn" },
-                        )
-                    }
-
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) and ektefelletilleggInnvilget)) {
-                        text(
-                            bokmal { +" og/eller ektefelle" },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +", vil utbetaling av uføretrygden din reduseres med 50 prosent. " },
-                            nynorsk { +", vil utbetalinga av uføretrygda di reduserast med 50 prosent. " },
-                        )
-                    }
-                    text(
-                        bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " },
-                        nynorsk { +"Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa tok til. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
-                    )
-
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert. " },
-                            nynorsk { +"Dersom du får ektefelletillegg vil dette tillegget også bli redusert. " },
-                        )
-                    }
-
-                    showIf(gjenlevendetilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert." },
-                            nynorsk { +"Dersom du får attlevandetillegg vil dette tillegget også bli redusert." },
+                            bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
+                            nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
                         )
                     }
                 }
+                includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
             }
 
             showIf((kravarsak.equalTo("instopphold") and instoppholdtype.equalTo(""))) {
