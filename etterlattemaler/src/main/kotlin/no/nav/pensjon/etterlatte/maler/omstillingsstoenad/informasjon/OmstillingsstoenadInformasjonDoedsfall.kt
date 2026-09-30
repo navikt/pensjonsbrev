@@ -84,7 +84,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 paragraph {
                     text(
                         bokmal { +"En partner har samme rettigheter som en ektefelle." },
-                        nynorsk { +"Ein partner har same rettighetar som ein ektefelle." },
+                        nynorsk { +"Ein partner har same rettar som ein ektefelle." },
                         english { +"A registered partner has the same rights as a surviving spouse." },
                     )
                 }
