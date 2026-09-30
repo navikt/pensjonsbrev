@@ -1147,4 +1147,94 @@ class UpdateRenderedLetterTest {
         }
         assertEquals(edited, edited.updateEditedLetter(rendered))
     }
+
+    @Test
+    fun `deleting one occurrence of a duplicated variable is not resurrected by a later merge`() {
+        // brevbaker can assign the same (structural) id to two occurrences of the same expression
+        // within one block, e.g. `text(beloep) + " ... " + text(beloep)`. Deleting one occurrence is
+        // recorded as one entry in deletedContent (a multiset: one entry per deleted occurrence, not
+        // a "this id is deleted" flag), keeping the other occurrence's entry out of deletedContent.
+        val rendered = letter(
+            Title1Impl(
+                1, true, listOf(
+                    VariableImpl(2, "1000 kroner"),
+                    LiteralImpl(3, " og "),
+                    VariableImpl(2, "1000 kroner"),
+                )
+            )
+        )
+        val edited = editedLetter {
+            title1(id = 1, deletedContent = listOf(2)) {
+                variable(id = 2, text = "1000 kroner")
+                literal(id = 3, text = " og ")
+            }
+        }
+
+        // The remaining (kept) occurrence must not be affected by re-merging against a fresh render
+        // that still contains both occurrences, and the deleted occurrence must not be resurrected.
+        assertEquals(edited, edited.updateEditedLetter(rendered))
+    }
+
+    @Test
+    fun `deleting the first occurrence of a duplicated variable preserves the remaining content order`() {
+        val rendered = letter(
+            Title1Impl(
+                1, true, listOf(
+                    VariableImpl(2, "1000 kroner"),
+                    LiteralImpl(3, " og "),
+                    VariableImpl(2, "1000 kroner"),
+                )
+            )
+        )
+        val edited = editedLetter {
+            title1(id = 1, deletedContent = listOf(2)) {
+                literal(id = 3, text = " og ")
+                variable(id = 2, text = "1000 kroner")
+            }
+        }
+
+        assertEquals(edited, edited.updateEditedLetter(rendered))
+    }
+
+    @Test
+    fun `deleting both occurrences of a duplicated variable removes it entirely`() {
+        val rendered = letter(
+            Title1Impl(
+                1, true, listOf(
+                    VariableImpl(2, "1000 kroner"),
+                    LiteralImpl(3, " og "),
+                    VariableImpl(2, "1000 kroner"),
+                )
+            )
+        )
+        val edited = editedLetter {
+            title1(id = 1, deletedContent = listOf(2, 2)) {
+                literal(id = 3, text = " og ")
+            }
+        }
+
+        assertEquals(edited, edited.updateEditedLetter(rendered))
+    }
+
+    @Test
+    fun `a duplicated variable removed entirely from the template is forgotten instead of piling up deletions`() {
+        // Saksbehandler previously deleted one of two occurrences of variable id=2.
+        val edited = editedLetter {
+            title1(id = 1, deletedContent = listOf(2)) {
+                literal(id = 3, text = " og ")
+            }
+        }
+        // Template change: the variable is now only rendered once, and the caseworker's remaining
+        // (kept) occurrence was already removed by them too - so there is nothing left to delete.
+        val rendered = letter(
+            Title1Impl(
+                1, true, listOf(
+                    LiteralImpl(3, " og "),
+                )
+            )
+        )
+
+        val result = edited.updateEditedLetter(rendered)
+        assertEquals(emptyList<Int>(), (result.blocks.single() as Edit.Block.Title1).deletedContent)
+    }
 }

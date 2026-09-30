@@ -112,7 +112,7 @@ class MottakerTest {
                     attesterendeSaksbehandlerNavn = "i",
                     navAvsenderEnhet = "j",
                 ),
-                emptySet(),
+                emptyList(),
             ),
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             vedtaksId = null,

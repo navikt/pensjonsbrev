@@ -594,12 +594,7 @@ function deleteElement(
   toDelete: Identifiable,
   from: { content: Identifiable[]; deletedContent: Draft<number[]>; id?: number | null },
 ) {
-  if (
-    isFromTemplate(toDelete) &&
-    toDelete.parentId === from.id &&
-    !from.deletedContent.includes(toDelete.id) &&
-    !from.content.map((c) => c.id).includes(toDelete.id)
-  ) {
+  if (isFromTemplate(toDelete) && toDelete.parentId === from.id) {
     from.deletedContent.push(toDelete.id);
   }
 }
@@ -630,8 +625,8 @@ export function addElements<T extends Identifiable, E extends T>(
     to.splice(toIndex, 0, ...(elements as unknown as Draft<T>[]));
   }
 
-  const presentIds = to.map((e) => e.id).filter((id) => id !== null) as number[];
-  for (const id of presentIds) {
+  const addedIds = elements.map((e) => e.id).filter((id) => id !== null) as number[];
+  for (const id of addedIds) {
     const index = deleted.indexOf(id);
     if (index !== -1) {
       deleted.splice(index, 1);
