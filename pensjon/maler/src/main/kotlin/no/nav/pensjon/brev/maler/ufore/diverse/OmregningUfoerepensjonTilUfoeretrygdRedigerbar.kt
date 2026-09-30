@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2370_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2371_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU3105_Generated
@@ -879,7 +878,7 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                         includePhrase(TBU2370_Generated)
                         includePhrase(TBU2371_Generated)
                     }
-                    includePhrase(TBU2212_Generated(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
+                    includePhrase(Ufoeretrygd.MeldeFraOmEndringer(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
                     includePhrase(Felles.RettTilAAKlage)
                     includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
                     includePhrase(Ufoeretrygd.SjekkUtbetalingene)

@@ -422,19 +422,6 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
                     nynorsk { +"Reglane for botnfrådraget og korleis inntekt reduserer uføretrygd, gjeld berre for den norske uføretrygda di. Har du spørsmål om botnfrådraget i eit anna land, må du kontakte trygdemyndigheitene i det landet det gjeld." },
                 )
             }
-            title1 {
-                text(
-                    bokmal { +"Du må melde fra om eventuell inntekt" },
-                    nynorsk { +"Du må melde frå om eventuell inntekt" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Dersom du er i jobb eller har planer om å jobbe må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din. " },
-                    nynorsk { +"Dersom du er i jobb eller har planar om å jobbe må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som mogleg, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjere under menyvalet «uføretrygd» når du loggar deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du vil få utbetalt i uføretrygd ved sida av inntekta di. " },
-                )
-            }
-
             //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"
             showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs")) {
                 title1 {
@@ -1150,7 +1137,7 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
                 }
             }
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Ufoeretrygd.RettTilNyVurdering)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))

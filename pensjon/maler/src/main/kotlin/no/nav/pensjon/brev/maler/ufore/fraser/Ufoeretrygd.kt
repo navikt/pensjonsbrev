@@ -212,66 +212,9 @@ object Ufoeretrygd {
         }
     }
 
-    // TBU2364, MeldInntektUTOverskrift_001
-    object MeldeFraOmEventuellInntektOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 {
-                text(
-                    bokmal { +"Du må melde fra om eventuell inntekt" },
-                    nynorsk { +"Du må melde frå om eventuell inntekt" },
-                    english { +"Report any income" }
-                )
-            }
-        }
-    }
-
-    // TBU2365, MeldInntektUT_001
-    object MeldeFraOmEventuellInntekt : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal { +"Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din." },
-                    nynorsk { +"Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di." },
-                    english { +"If you are working or are planning to work, you must report any changes in your income. It is important that you report this as soon as possible, so that you receive the correct disability benefit payments. You can register your change in income under the option " + quoted("uføretrygd") + " at $NAV_URL. You can register how much you expect to earn in the calendar year. You will then be able to see how much disability benefit you will receive in addition to your income." }
-                )
-            }
-        }
-    }
-
-    // MeldInntektUTBT_001
-    object MeldeFraOmEventuellInntektBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            paragraph {
-                text(
-                    bokmal {
-                        +"Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. " +
-                                "Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd og barnetillegg. " +
-                                "Dette kan du gjøre under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. " +
-                                "Her kan du legge inn hvor mye du forventer å tjene i løpet av året. " +
-                                "Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd og barnetillegg."
-                    },
-
-                    nynorsk {
-                        +"Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. " +
-                                "Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd og barnetillegg. " +
-                                "Dette kan du gjere under menyvalet " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. " +
-                                "Her kan du leggje inn kor mykje du forventar å tene i løpet av året. " +
-                                "Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd og barnetillegg."
-                    },
-
-                    english {
-                        +"If you are working or are planning to work, you must report any changes in your income. " +
-                                "It is important that you report this as soon as possible, so that you receive the correct disability benefit and child supplement payments. " +
-                                "You can register your change in income under the option " + quoted("uføretrygd") + " at $NAV_URL. " +
-                                "You can register how much you expect to earn in the calendar year. " +
-                                "You will then be able to see how much disability benefit and child supplement you will receive."
-                    }
-                )
-            }
-    }
-
     // TBU2212, TBU1223, TBU1224, MeldEndringerPesys_001
-    object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    class MeldeFraOmEndringer(
+        val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>? = null) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -282,15 +225,36 @@ object Ufoeretrygd {
             }
             paragraph {
                 text(
-                    bokmal { +"Skjer det endringer, må du melde fra til oss med en gang. I vedlegget " },
-                    nynorsk { +"Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget " },
-                    english { +"You must notify us immediately of any changes in your situation. In the attachment " }
+                    bokmal { +"Endringer i inntekt og din situasjon kan påvirke hvor mye du får utbetalt fra oss. Derfor er det viktig at du sier ifra så fort det skjer en endring, slik at vi kan beregne riktig utbetaling. " },
+                    nynorsk { +"Endringar i inntekt og situasjonen din kan påverke kor mykje du får utbetalt frå oss. Derfor er det viktig at du seier ifrå så fort det skjer ein endring, slik at vi kan berekne riktig utbetaling. " },
+                    english { +"Changes in your income and situation may affect how much you receive from us. Therefore, it is important that you notify us as soon as a change occurs, so that we can calculate the correct payment. " }
                 )
-                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+            }
+            paragraph {
                 text(
-                    bokmal { +" ser du hvilke endringer du må si fra om." },
-                    nynorsk { +" ser du kva endringar du må seie frå om." },
-                    english { +" you will see which changes you must report." }
+                    bokmal { +"Du kan melde inn forventet inntekt i Inntektsplanleggeren på ${Constants.INNTEKTSPLANLEGGEREN_URL}. " },
+                    nynorsk { +"Du kan melde inn forventa inntekt i Inntektsplanleggeren på ${Constants.INNTEKTSPLANLEGGEREN_URL}. " },
+                    english { +"You can report your expected income at ${Constants.INNTEKTSPLANLEGGEREN_URL}. " }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Alle andre endringer kan du melde inn på ${Constants.MELDE_URL}. " },
+                    nynorsk { +"Alle andre endringar kan du melde inn på ${Constants.MELDE_URL}. " },
+                    english { +"All other changes can be reported at ${Constants.MELDE_URL}. " }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Les mer om dette i vedlegget " },
+                    nynorsk { +"Les meir om dette i vedlegget" },
+                    english { +"Read more about this in the attachment " }
+                )
+                namedReference(vedlegg ?: vedleggDineRettigheterOgPlikterUfoere)
+                text(
+                    bokmal { +". " },
+                    nynorsk { +". " },
+                    english { +". " }
                 )
             }
         }

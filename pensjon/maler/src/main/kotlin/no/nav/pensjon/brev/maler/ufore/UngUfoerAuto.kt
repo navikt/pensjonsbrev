@@ -78,7 +78,7 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)
             includePhrase(Ufoeretrygd.VirkningFraOgMed(kravVirkningFraOgMed))
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
