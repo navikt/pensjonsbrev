@@ -204,10 +204,15 @@ describe("<KvitterteBrev />", () => {
         config: { headers: new AxiosHeaders() },
       },
     );
+    // ApiError logs the error to the console on purpose; silence it here and verify it instead.
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
 
     await renderKvitterteBrev([
       nyKvittertBrev({ apiStatus: "error", context: "sendBrev", sendtBrevError: sendBrev422Error }),
     ]);
+
+    expect(consoleError).toHaveBeenCalledWith(sendBrev422Error);
+    consoleError.mockRestore();
 
     expect(screen.getByTestId("functional-error-alert")).not.toBeNull();
     expect(screen.getByText("Brevet kan ikke sendes")).not.toBeNull();

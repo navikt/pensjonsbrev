@@ -12,7 +12,8 @@ enum class FeatureToggles(
     innvilgelseAvAfpOffentligSektor("innvilgelseAvAfpOffentligSektor"),
     omregningAlderUfore2016("omregningAlderUfore2016"),
     vedtakAfpPrivatEndring("vedtakAfpPrivatEndring"),
-    vedtakEndringAfpOffentligSektor("vedtakEndringAfpOffentligSektor");
+    vedtakEndringAfpOffentligSektor("vedtakEndringAfpOffentligSektor"),
+    vedtakOmOmgjoering("vedtakOmOmgjoering");
 
     val toggle = FeatureToggle(key)
 }
