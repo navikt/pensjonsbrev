@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
@@ -37,6 +38,14 @@ data class InnvilgelseAvAfpInnhold(
     val kompensasjonstilleggBrutto: Expression<Kroner?>,
     val brukerUnder70Aar: Expression<Boolean>,
     val bosattINorge: Expression<Boolean>,
+    val opptjening: Expression<Kroner>,
+    val forholdstallUttak: Expression<Double>,
+    val justeringsbeloep: Expression<Kroner?>,
+    val referansebeloep: Expression<Kroner?>,
+    val kompensasjonstilleggForholdstall: Expression<Double?>,
+    val harEtterbetaling: Expression<Boolean>,
+    val etterbetalingVirkningFom: Expression<LocalDate?>,
+    val etterbetalingVirkningTom: Expression<LocalDate?>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -286,6 +295,81 @@ data class InnvilgelseAvAfpInnhold(
                     nynorsk { +"Om det har vore endringar i nokre av opplysningane som ligg til grunn for berekninga eller pensjonen har vært regulert i perioden, kan dette endre kor mykje du får." },
                     english { +"" },
                 )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Din AFP per måned fra :" },
+                    nynorsk { +"AFP per månad blir slik:" },
+                    english { +"Your monthly contractual pension will be:" },
+                )
+                table(
+                    header = {
+                        column {
+                            text(
+                                bokmal { +"Beløp per måned" },
+                                nynorsk { +"Beløp per månad" },
+                                english { +"Amount per month" },
+                            )
+                        }
+                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                            text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
+                        }
+                    },
+                ) {
+                    ifNotNull(livsvarigBrutto) { brutto ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"AFP livsvarig del" },
+                                    nynorsk { +"AFP livsvarig del" },
+                                    english { +"Contractual pension, lifelong amount" },
+                                )
+                            }
+                            cell { includePhrase(KronerText(brutto)) }
+                        }
+                    }
+                    ifNotNull(kronetilleggBrutto) { brutto ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"AFP kronetillegg" },
+                                    nynorsk { +"AFP-kronetillegg" },
+                                    english { +"Contractual pension, NOK supplement" },
+                                )
+                            }
+                            cell { includePhrase(KronerText(brutto)) }
+                        }
+                    }
+                    ifNotNull(kompensasjonstilleggBrutto) { brutto ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
+                                    nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
+                                    english { +"Contractual pension, compensation supplement (tax-free)" },
+                                )
+                            }
+                            cell { includePhrase(KronerText(brutto)) }
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Sum AFP før skatt" },
+                                nynorsk { +"Sum AFP før skatt" },
+                                english { +"Total contractual pension before tax" },
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
+                            )
+                        }
+                        cell { includePhrase(
+                            KronerText(
+                                totalPensjon,
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                            )
+                        ) }
+                    }
+                }
             }
 
         }

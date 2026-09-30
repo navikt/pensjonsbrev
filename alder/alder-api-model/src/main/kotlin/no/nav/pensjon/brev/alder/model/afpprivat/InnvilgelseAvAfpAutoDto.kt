@@ -30,6 +30,8 @@ data class InnvilgelseAvAfpAutoDto(
     val bosattINorge: Boolean,
 
     val afpBeregning: AfpBeregning,
+
+    val etterbetaling: Etterbetaling,
 ) : AutobrevData {
 
     data class AfpBeregning(
@@ -55,5 +57,17 @@ data class InnvilgelseAvAfpAutoDto(
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKompensasjonstillegg AFPKompBrutto)
         // Tilstede ⇔ PE_..._AFPKompensasjonstillegg_AFPKompInnvilget = true
         val kompensasjonstilleggBrutto: BrevbakerType.Kroner?,
+
+        val opptjening: BrevbakerType.Kroner,
+        val forholdstallUttak: Double,
+        val justeringsbeloep: BrevbakerType.Kroner?,
+        val referansebeloep: BrevbakerType.Kroner?,
+        val kompensasjonstilleggForholdstall: Double?,
+    )
+
+    data class Etterbetaling(
+        val harEtterbetaling: Boolean,
+        val virkningFom: LocalDate?,
+        val virkningTom: LocalDate?,
     )
 }

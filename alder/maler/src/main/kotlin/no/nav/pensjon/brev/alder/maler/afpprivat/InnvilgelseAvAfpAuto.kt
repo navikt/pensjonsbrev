@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.alder.maler.felles.RettTilAaKlageAfpPrivat
 import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.etterbetaling.*
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.afpBeregning.*
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -54,6 +55,14 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
                     kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
                     brukerUnder70Aar = brukerUnder70Aar,
                     bosattINorge = bosattINorge,
+                    opptjening = afpBeregning.opptjening,
+                    forholdstallUttak = afpBeregning.forholdstallUttak,
+                    justeringsbeloep = afpBeregning.justeringsbeloep,
+                    referansebeloep = afpBeregning.referansebeloep,
+                    kompensasjonstilleggForholdstall = afpBeregning.kompensasjonstilleggForholdstall,
+                    harEtterbetaling = etterbetaling.harEtterbetaling,
+                    etterbetalingVirkningFom = etterbetaling.virkningFom,
+                    etterbetalingVirkningTom = etterbetaling.virkningTom,
                 ),
             )
             includePhrase(RettigheterPersonopplysninger)
