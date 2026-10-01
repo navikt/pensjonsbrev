@@ -115,7 +115,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val penService = FakePenClient()
     protected val pdlService = FakePDLService()
     protected val samhandlerService = FakeSamhandlerService(
-        navn = mapOf("samhandler1" to "Sam Handler AS", SAMHANDLER_TSS_ID to "Advokat Handler AS"),
+        navn = mapOf(TssId("samhandler1") to "Sam Handler AS", SAMHANDLER_TSS_ID to "Advokat Handler AS"),
         typer = mapOf(SAMHANDLER_TSS_ID to SAMHANDLER_TYPE),
         idTyper = mapOf(SAMHANDLER_TSS_ID to "ORG"),
         offentligIder = mapOf(SAMHANDLER_TSS_ID to SAMHANDLER_ORGNR),
@@ -209,7 +209,7 @@ abstract class BrevredigeringHandlerTestBase {
         }
 
         val PRINCIPAL_NAVENHET_ID = EnhetId("1234")
-        const val SAMHANDLER_TSS_ID = "80000123456"
+        val SAMHANDLER_TSS_ID = TssId("80000123456")
         const val SAMHANDLER_TYPE = "ADVO"
         const val SAMHANDLER_ORGNR = "987654321"
         val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
