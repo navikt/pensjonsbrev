@@ -65,7 +65,6 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
     return hasUnsavedChanges() ? "DIRTY" : "SAVED";
   };
 
-  /* Contract: an edit sets saveStatus "DIRTY" */
   const isContentEdit = (previous: LetterEditorState, next: LetterEditorState) =>
     next.saveStatus === "DIRTY" &&
     (next.redigertBrev !== previous.redigertBrev || next.saksbehandlerValg !== previous.saksbehandlerValg);
@@ -160,6 +159,8 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
     if (isResetting) await currentReset;
   };
 
+  
+  /* Waits for active saves/resets, then runs the supplied operation with the latest state through the shared save loop. */
   const saveWith = async (operation: SaveOperation<Response>): Promise<Response> => {
     if (isResetting) {
       await currentReset;
