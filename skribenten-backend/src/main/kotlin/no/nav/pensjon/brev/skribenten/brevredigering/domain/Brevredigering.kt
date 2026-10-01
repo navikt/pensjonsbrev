@@ -34,6 +34,7 @@ interface Brevredigering {
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
     val saksbehandlerValg: SaksbehandlervalgMap
+    val saksbehandlerValgKryptert: SaksbehandlervalgMap?
     val statiskFagsystemBrevdata: StatiskFagsystemBrevdata?
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
@@ -98,6 +99,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
         private set
     override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
+    override var saksbehandlerValgKryptert by BrevredigeringTable.saksbehandlerValgKryptert
     override var statiskFagsystemBrevdata by BrevredigeringTable.statiskFagsystemBrevdata
         private set
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
@@ -192,6 +194,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.spraak = spraak
             this.avsenderEnhetId = avsenderEnhetId
             this.saksbehandlerValg = saksbehandlerValg
+            this.saksbehandlerValgKryptert = saksbehandlerValg
             this.statiskFagsystemBrevdata = statiskFagsystemBrevdata
             this.laastForRedigering = false
             this.distribusjonstype = distribusjonstype
@@ -283,7 +286,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
             ?.let { modelSpec.types[it] }
 
-        saksbehandlerValg = SaksbehandlervalgMap().apply {
+        val oppdaterteSaksbehandlervalg = SaksbehandlervalgMap().apply {
             putAll(saksbehandlerValg)
             saksbehandlerValgSpec?.entries?.forEach {
                 val fieldType = it.value
@@ -294,6 +297,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 }
             }
         }
+        saksbehandlerValg = oppdaterteSaksbehandlervalg
+        saksbehandlerValgKryptert = oppdaterteSaksbehandlervalg
     }
 
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) {
