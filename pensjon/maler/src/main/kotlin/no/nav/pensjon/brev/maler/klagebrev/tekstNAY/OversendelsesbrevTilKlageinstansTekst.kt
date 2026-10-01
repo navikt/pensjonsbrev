@@ -564,9 +564,9 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal { +"For å ha rett til å få uføretrygden beregnet etter reglene for unge uføre må:" })
                 list {
-                    item { bokmal { +"du ha blitt ufør før du ble 26 år." } }
-                    item { bokmal { +"uførheten skyldes alvorlig og varig sykdom." } }
-                    item { bokmal { +"sykdommen være klart dokumentert." } }
+                    item { text(bokmal { +"du ha blitt ufør før du ble 26 år." }) }
+                    item { text(bokmal { +"uførheten skyldes alvorlig og varig sykdom." }) }
+                    item { text(bokmal { +"sykdommen være klart dokumentert." }) }
                 }
             }
             paragraph { text(bokmal { +"Dette går fram av folketrygdloven § 12-13 tredje ledd. " }) }
