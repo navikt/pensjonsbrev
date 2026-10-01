@@ -5,7 +5,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "tsc -p tsconfig.app.json && vite build",
-    "check-types": "tsc --noemit -p tsconfig.app.json && tsc --noemit -p tsconfig.test.json && tsc --noemit -p tsconfig.e2e.json",
+    "check-types": "tsc --noemit -p tsconfig.app.json && tsc --noemit -p tsconfig.test.json && tsc --noemit -p tsconfig.e2e.json && tsc --noemit -p tsconfig.node.json",
     "check-unit-test-location": "files=$(find . -path './node_modules' -prune -o -path './src' -prune -o \\( -name '*.test.ts' -o -name '*.test.tsx' \\) -print); if [ -n \"$files\" ]; then echo 'Feilplasserte testfiler (må ligge under src/):'; echo \"$files\"; exit 1; fi",
     "dev": "vite --host",
     "e2e": "playwright test",
