@@ -413,7 +413,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             includePhrase(InnvilgetUfoeretrygd)
 
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-9 – fastsettelse av inntekt før uføhet." }) }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-9 – fastsettelse av inntekt før uførhet." }) }
 
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
