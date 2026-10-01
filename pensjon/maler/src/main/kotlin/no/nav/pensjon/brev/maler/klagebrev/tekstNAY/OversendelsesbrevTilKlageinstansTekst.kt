@@ -603,7 +603,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal {
                     +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
-                    +fritekst("dato") + ". Uføretidspunktet skal fastsettes til det tidspunktet da inntektsevnene ble varig nedsatt med minst 50 prosent. "
+                    +fritekst("dato") + ". Uføretidspunktet skal fastsettes til det tidspunktet da inntektsevnen ble varig nedsatt med minst 50 prosent. "
                     +"Det er altså ikke avgjørende når man er diagnostiert med sykdom. "
                     +"For at klager skal kunne vurderes mot rettigheter som ung ufør etter folketrygdlovens § 12-13 tredje ledd må uføretidspunktet være satt til før "
                     +fritekst("dato") + " da klager fylte 26 år."
