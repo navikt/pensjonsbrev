@@ -407,7 +407,7 @@ object OversendelsesbrevTilKlageinstansTekst {
         }
     }
 
-    //§ 12-9 Fastsettelse av Inntekt Etter Uførehet IEU
+    //§ 12-9 Fastsettelse av Inntekt Etter Uførhet IEU
     object FastsettelseIEU : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
