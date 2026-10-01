@@ -1,8 +1,9 @@
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
-import { Box, HStack, VStack } from "@navikt/ds-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Alert, BodyLong, Box, Heading, HStack, VStack } from "@navikt/ds-react";
+import { CatchBoundary } from "@tanstack/react-router";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Document, Page as PDFPage, pdfjs } from "react-pdf";
 
 import { CenteredLoader } from "~/components/CenteredLoader";
@@ -19,7 +20,11 @@ const PDFViewer = (properties: {
   children?: React.ReactNode;
 }) => {
   const [scale, setScale] = useState<number>(1);
-  const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(1);
+  // Antall sider er knyttet til fila det ble lest fra. Når pdf-en byttes (f.eks. ved å slå av førsteside) kan den nye
+  // ha færre sider, og vi må ikke be om sider som ikke finnes før den nye er lastet - da kaster react-pdf feil.
+  const [loadedDocument, setLoadedDocument] = useState<{ file: Blob; numPages: number } | null>(null);
+  const totalNumberOfPages = loadedDocument?.numPages ?? 1;
+  const numberOfPagesToRender = loadedDocument && loadedDocument.file === properties.pdf ? loadedDocument.numPages : 0;
 
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
   const pdfContainerReference = useRef<HTMLDivElement>(null);
@@ -87,28 +92,43 @@ const PDFViewer = (properties: {
         />
         {properties.children}
         <HStack flexGrow="1" justify="space-around" overflow="auto" padding="space-12">
-          <Document
-            css={{ display: "flex", flexDirection: "column", "> div": { flexGrow: "1" } }}
-            file={properties.pdf}
-            loading={<CenteredLoader label="Henter brev..." verticalStrategy="height" />}
-            noData={<CenteredLoader label="Henter brev..." verticalStrategy="height" />}
-            onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
-          >
-            {Array.from({ length: totalNumberOfPages }, (_, index) => (
-              <Box
-                className={`pdf-page`}
-                id={`page_${index + 1}`}
-                key={`page_${index + 1}`}
-                marginBlock="space-0 space-16"
+          <CatchBoundary errorComponent={PDFRenderError} getResetKey={() => properties.pdf}>
+            <Suspense fallback={<CenteredLoader label="Henter brev..." verticalStrategy="height" />}>
+              <Document
+                css={{ display: "flex", flexDirection: "column", "> div": { flexGrow: "1" } }}
+                file={properties.pdf}
+                noData={<CenteredLoader label="Henter brev..." verticalStrategy="height" />}
+                onLoadSuccess={(pdf) => {
+                  if (properties.pdf) setLoadedDocument({ file: properties.pdf, numPages: pdf.numPages });
+                }}
               >
-                <PDFPage pageNumber={index + 1} scale={scale} />
-              </Box>
-            ))}
-          </Document>
+                {Array.from({ length: numberOfPagesToRender }, (_, index) => (
+                  <Box
+                    className={`pdf-page`}
+                    id={`page_${index + 1}`}
+                    key={`page_${index + 1}`}
+                    marginBlock="space-0 space-16"
+                  >
+                    {/* Egen Suspense per side, slik at sider som lastes ikke skjuler sider som allerede vises */}
+                    <Suspense fallback={null}>
+                      <PDFPage pageNumber={index + 1} scale={scale} />
+                    </Suspense>
+                  </Box>
+                ))}
+              </Document>
+            </Suspense>
+          </CatchBoundary>
         </HStack>
       </VStack>
     </Box>
   );
 };
+
+const PDFRenderError = () => (
+  <Alert variant="error">
+    <Heading size="xsmall">Klarte ikke vise pdf</Heading>
+    <BodyLong>Prøv å laste siden på nytt.</BodyLong>
+  </Alert>
+);
 
 export default PDFViewer;
