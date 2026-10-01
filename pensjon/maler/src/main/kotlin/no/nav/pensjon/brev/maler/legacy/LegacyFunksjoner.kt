@@ -48,46 +48,10 @@ import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.localDateNow
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeSoknadOmBarnetillegg
+import no.nav.pensjon.brev.maler.legacy.vedlegg.harIkkeBarnetilleggBrevkode
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeInntektsendringBrevkode
 
-
-fun Expression<PEgruppe10>.ut_trygdetid(): Expression<Boolean> =
-    vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
-            pebrevkode().notEqualTo("PE_UT_04_108") and
-            pebrevkode().notEqualTo("PE_UT_04_109") and
-            pebrevkode().notEqualTo("PE_UT_07_200") and
-            pebrevkode().notEqualTo("PE_UT_06_300") and
-            (
-                    (pebrevkode().equalTo("PE_UT_04_101") or pebrevkode().equalTo("PE_UT_04_114")) or
-                            (pebrevkode().notEqualTo("PE_UT_05_100") and pebrevkode().notEqualTo("PE_UT_07_100")
-                                    and vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40))
-                    )
-
-
-
-fun Expression<PEgruppe10>.ut_tbu056v() = (
-        pebrevkode().equalTo("PE_UT_04_102")
-                or pebrevkode().equalTo("PE_UT_04_116")
-                or pebrevkode().equalTo("PE_UT_04_101")
-                or pebrevkode().equalTo("PE_UT_04_114")
-                or pebrevkode().equalTo("PE_UT_04_300")
-                or pebrevkode().equalTo("PE_UT_14_300")
-                or (vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")
-                and vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(
-            vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-        )
-                )
-        ) and vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().lessThan(
-    vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-)
-
-
-
-fun Expression<PEgruppe10>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {
-    val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
-    return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
-            (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb.ifNull(Kroner(0)) }) or
-                    belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb.ifNull(Kroner(0)) }))
-}
 
 fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
     date.ifNull(LocalDate.of(2020, 2, 2)).month.equalTo(1) and
@@ -100,7 +64,13 @@ fun FUNKSJON_Year(date: Expression<LocalDate?>): Expression<Int> =
 fun FUNKSJON_Month(date: Expression<LocalDate?>): Expression<Int> =
     date.ifNull(LocalDate.of(1000,1,1)).month
 
-fun Expression<PEgruppe10>.ut_trygdetid_avdod() = (vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pebrevkode().notEqualTo("PE_UT_07_100") and vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and pebrevkode().notEqualTo("PE_UT_05_100") and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and pebrevkode().notEqualTo("PE_UT_04_108") and pebrevkode().notEqualTo("PE_UT_04_109") and pebrevkode().notEqualTo("PE_UT_07_200") and pebrevkode().notEqualTo("PE_UT_06_300"))
+fun Expression<PEgruppe10>.ut_trygdetid_avdod() =
+    vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and
+            erIkkeSoknadOmBarnetillegg() and
+            erIkkeInntektsendringBrevkode() and
+            vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and
+            vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and
+            harIkkeBarnetilleggBrevkode()
 
 fun Expression<PEgruppe10>.ut_barnet_barna_felles(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
@@ -120,32 +90,6 @@ fun Expression<PEgruppe10>.ut_barnet_barna_serkull(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
     val erEttBarn = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { barnetilleggserkull }.safe { antallbarnserkull }.ifNull(0).equalTo(1)
     val erFlereBarn = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { barnetilleggserkull }.safe { antallbarnserkull }.ifNull(0).greaterThan(1)
-    return ifElse(
-        erEttBarn, ifElse(erEngelsk, "child", "barnet"),
-        ifElse(
-            erFlereBarn,
-            ifElse(erEngelsk, "children", "barna"),
-            "".expr()
-        )
-    )
-}
-
-fun Expression<PEgruppe10>.pe_ut_barnet_barna_felles_serkull(): Expression<String> {
-    val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
-    val beregningytelseskomp = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }
-
-    val barnetilleggserkull = beregningytelseskomp.safe { barnetilleggserkull }
-    val barnetilleggfelles = beregningytelseskomp.safe { barnetilleggfelles }
-
-    val erEttBarn = (barnetilleggfelles.safe { antallbarnfelles }.ifNull(0).equalTo(1) and
-            barnetilleggfelles.safe { btfbnetto }.ifNull(Kroner(0)).equalTo(0)) or
-            (barnetilleggserkull.safe { antallbarnserkull }.ifNull(0).equalTo(1) and
-                    barnetilleggserkull.safe { btsbnetto }.ifNull(Kroner(0)).equalTo(0))
-
-    val erFlereBarn = (barnetilleggfelles.safe { antallbarnfelles }.ifNull(0).greaterThan(1) and
-            barnetilleggfelles.safe { btfbnetto }.ifNull(Kroner(0)).equalTo(0)) or
-            (barnetilleggserkull.safe { antallbarnserkull }.ifNull(0).greaterThan(1) and
-                    barnetilleggserkull.safe { btsbnetto }.ifNull(Kroner(0)).equalTo(0))
     return ifElse(
         erEttBarn, ifElse(erEngelsk, "child", "barnet"),
         ifElse(
@@ -240,32 +184,6 @@ fun Expression<PEgruppe10>.ut_virkningstidpunkttilprosent(): Expression<Int> {
 fun Expression<PEgruppe10>.ut_virkningstidpunktar(): Expression<Int> =
     vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(1000,1,1)).year
 
-//IF(PE_UT_KravLinjeKode_VedtakResultat_Antall(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_innv) = 1)
-//THEN IF UCase(PE_XML_brev_spraak) ='EN'  THEN value = "child"
-//          ELSE value = "barnet"
-//          END IF
-//ELSEIF (PE_UT_KravLinjeKode_VedtakResultat_Antall(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_innv) > 1)
-//THEN IF UCase(PE_XML_brev_spraak) ='EN'  THEN value = "children"
-//          ELSE value = "barna"
-//          END IF
-//
-//ENDIF
-fun Expression<PEgruppe10>.ut_barnet_barna_innvilget(): Expression<String> {
-    val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
-    val erEttBarn = foedselsdatoTilBarnTilleggErInnvilgetFor().size().ifNull(0).equalTo(1)
-    val erFlereBarn = foedselsdatoTilBarnTilleggErInnvilgetFor().size().ifNull(0).greaterThan(1)
-    return ifElse(
-        erEttBarn, ifElse(erEngelsk, "child", "barnet"),
-        ifElse(
-            erFlereBarn,
-            ifElse(erEngelsk, "children", "barna"),
-            "".expr()
-        )
-    )
-}
-
-
-
 // GENERATED
 fun Expression<PEgruppe10>.inkluderopplysningerbruktiberegningen() = ((not(vedtaksdata_faktoromregnet()) and pebrevkode().notEqualTo("PE_UT_04_102")) or (pebrevkode().equalTo("PE_UT_04_102") and (vedtaksdata_beregningsdata_beregningufore_belopokt() or (vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(0)) or vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo("stdbegr_12_8_2_5")) or vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
 fun Expression<PEgruppe10>.ut_etteroppgjor_bt_utbetalt(): Expression<Boolean> = not((vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))
@@ -295,5 +213,5 @@ fun Expression<PEgruppe10>.inkludervedleggopplysningerometteroppgjoeret() = not(
 fun Expression<PEgruppe10>.ut_tbu1286_del1() = (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and ((vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0) and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)) or (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0) and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))))
 fun Expression<PEgruppe10>.ut_tbu1286_del2() = ((vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)))
 fun Expression<PEgruppe10>.ut_tbu1286_del3() = ((vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)))
-fun Expression<PEgruppe10>.ut_avdod() = ((vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pebrevkode().notEqualTo("PE_UT_07_100") and vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and pebrevkode().notEqualTo("PE_UT_05_100") and not(vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) and pebrevkode().notEqualTo("PE_UT_04_114") and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_opptjeningutliste_opptjeningut_ar().notEqualTo(0)) and pebrevkode().notEqualTo("PE_UT_04_108") and pebrevkode().notEqualTo("PE_UT_04_109") and pebrevkode().notEqualTo("PE_UT_07_200") and pebrevkode().notEqualTo("PE_UT_07_200") and pebrevkode().notEqualTo("PE_UT_06_300") and (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))))
+fun Expression<PEgruppe10>.ut_avdod() = ((vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and erIkkeSoknadOmBarnetillegg() and pebrevkode().notEqualTo("PE_UT_07_100") and vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and pebrevkode().notEqualTo("PE_UT_05_100") and not(vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) and pebrevkode().notEqualTo("PE_UT_04_114") and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_opptjeningutliste_opptjeningut_ar().notEqualTo(0)) and harIkkeBarnetilleggBrevkode() and (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))))
 fun Expression<PEgruppe10>.ut_tbu501v() = ((vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and (pebrevkode().equalTo("PE_UT_04_101") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")) or pebrevkode().equalTo("PE_UT_04_114") or pebrevkode().equalTo("PE_UT_04_300") or pebrevkode().equalTo("PE_UT_14_300") or pebrevkode().equalTo("PE_UT_06_100") or pebrevkode().equalTo("PE_UT_04_103") or pebrevkode().equalTo("PE_UT_04_106") or pebrevkode().equalTo("PE_UT_04_108") or pebrevkode().equalTo("PE_UT_04_109") or pebrevkode().equalTo("PE_UT_07_200")))
