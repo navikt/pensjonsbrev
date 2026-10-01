@@ -26,7 +26,7 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
     return () => clearTimeout(timeout);
   }, [controller, snapshot.revision, snapshot.resetting, snapshot.saveFailed, snapshot.editorState.saveStatus]);
 
-  // Best effort only: browser Back navigates within the app and unmounts the editor, this cleanup attempts to save pending edits. 
+  // Best effort only: browser Back navigates within the app and unmounts the editor, this cleanup attempts to save pending edits.
   useEffect(
     () => () => {
       if (controller.canAutosave()) void controller.savePendingChanges().catch(() => undefined);
