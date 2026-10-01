@@ -35,13 +35,13 @@ object OversendelsesbrevTilKlageinstansTekst {
     object KlagersAnfoersler : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
             title1 { text(bokmal { +"Klagers anførsler" }) }
-            paragraph { text(bokmal { +"Det anføres i klagen <gjengi hovedinnholdet i klagers anførsler i tekst eller punktvis>" }) }
+            paragraph { text(bokmal { +"Det anføres i klagen " + fritekst("gjengi hovedinnholdet i klagers anførsler i tekst eller punktvis") }) }
         }
     }
 
     object KlippInnFraVedtak : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            paragraph { text(bokmal { +"<Klipp inn fra vedtak eller vilkårsvurdering og svar ut anførslene konkret>" }, ITALIC) }
+            paragraph { text(bokmal { +fritekst("Klipp inn fra vedtak eller vilkårsvurdering og svar ut anførslene konkret") }) }
         }
     }
 
@@ -81,7 +81,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                 text(bokmal {
                     +"Vi viser til klagen av "
                     +fritekst("dato") + " på vedtak av "
-                    +fritekst("dato") + ", der <beskrive kort hva avslaget gjelder/vedtaket gjelder. Eks: (...), der klager fikk avslag på sitt krav om uføretrygd>"
+                    +fritekst("dato") + ", der "
+                    +fritekst("beskrive kort hva avslaget gjelder/vedtaket gjelder. Eks: (...), der klager fikk avslag på sitt krav om uføretrygd")
                     +". Klagefristen er overholdt."
                 })
             }
@@ -315,14 +316,17 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal {
                     +"Uføretidspunktet skal som hovedregel fastsettes til det tidspunktet da personens inntektsevne ble varig nedsatt med minst halvparten på grunn av sykdom, skade eller lyte. "
-                    +"Uføretidspunktet er fastsatt til XXX. "
+                    +"Uføretidspunktet er fastsatt til "
+                    +fritekst("dato") + "."
                 })
                 text(bokmal { +"Hvis uføretidspunktet er påklaget, hent mal fra §12-8." }, ITALIC)
             }
             paragraph {
                 text(bokmal {
                     +"Inntekt før uførhet (IFU) skal fastsettes til vedkommende sin normale inntektssituasjon før uføretidspunktet i full stilling. "
-                    +"IFU er fastsatt til XXX. Oppjustert til i dag utgjør dette XXX kroner."
+                    +"IFU er fastsatt til "
+                    +fritekst("kr") + " kroner. Oppjustert til i dag utgjør dette "
+                    +fritekst("kr") + " kroner."
                 })
             }
             paragraph {
@@ -571,14 +575,14 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal {
                     +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
-                    +fritekst("xxxx") + ". Fra dette tidspunktet er det vurdert at klagers inntektsevne er varig nedsatt med minst 50 prosent grunnet sykdom. "
+                    +fritekst("dato") + ". Fra dette tidspunktet er det vurdert at klagers inntektsevne er varig nedsatt med minst 50 prosent grunnet sykdom. "
                     +"Uføretidspunktet er fastsatt til før fylte 26 år, forutsetningen for å vurdere om klager har rettigheter som ung ufør er altså oppfylt."
                 })
             }
             paragraph {
                 text(bokmal {
                     +"Klager fylte 26 år den "
-                    +fritekst("xxxx") + ", dokumentasjon som er tidsnær til tidspunktet klager fylte 26 år vil være avgjørende i vurderingen av hvorvidt klagers helseplager kvalifiserer til rettigheter som ung ufør."
+                    +fritekst("dato") + ", dokumentasjon som er tidsnær til tidspunktet klager fylte 26 år vil være avgjørende i vurderingen av hvorvidt klagers helseplager kvalifiserer til rettigheter som ung ufør."
                 })
             }
             paragraph {
@@ -599,10 +603,10 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal {
                     +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
-                    +fritekst("xxxx") + ". Uføretidspunktet skal fastsettes til det tidspunktet da inntektsevnene ble varig nedsatt med minst 50 prosent. "
+                    +fritekst("dato") + ". Uføretidspunktet skal fastsettes til det tidspunktet da inntektsevnene ble varig nedsatt med minst 50 prosent. "
                     +"Det er altså ikke avgjørende når man er diagnostiert med sykdom. "
                     +"For at klager skal kunne vurderes mot rettigheter som ung ufør etter folketrygdlovens § 12-13 tredje ledd må uføretidspunktet være satt til før "
-                    +fritekst("xxxx") + " da klager fylte 26 år."
+                    +fritekst("dato") + " da klager fylte 26 år."
                 })
             }
 
@@ -629,7 +633,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title1{ text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Det framgår av folketrygdloven § 12-14 at utbetalingen av uføretrygden skal reduseres dersom inntektsgrensen overskrides. "
@@ -889,7 +893,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title1{ text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Personer som mottar uføretrygd har under varetekt, straff eller særreaksjon i anstalt under kriminalomsorgen eller tilsvarende anstalt i utlandet, ikke har rett til å få utbetalt uføretrygd fra og med andre måned etter at soningen tar til. "
