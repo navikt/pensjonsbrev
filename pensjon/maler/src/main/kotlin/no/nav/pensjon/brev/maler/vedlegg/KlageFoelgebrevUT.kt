@@ -7,10 +7,14 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
 
 
 @TemplateModelHelpers
@@ -18,6 +22,12 @@ val vedleggFoelgebrevKlageinstansUT = createAttachment<LangBokmal, EmptyVedleggD
     title = { text(bokmal { +"Klage - Uføretrygd" }) },
     includeSakspart = true,
 ) {
+    paragraph {
+        text(bokmal { +"Klager: " })
+        text(bokmal { +felles.bruker.fulltNavn() + " " })
+        text(bokmal { +felles.bruker.foedselsnummer.format() })
+    }
+
     paragraph { text(bokmal { +"Vi viser til din klage av (dato) på vedtak av <dato>." }) }
     paragraph { text(bokmal { +"Vi har vurdert vedtaket vårt på nytt, men har ikke endret det. " }) }
     paragraph { text(bokmal { +"Klagesaken er derfor oversendt til $NAV_KLAGEINSTANS for behandling. Kopi av innstillingen vår er vedlagt." }) }
