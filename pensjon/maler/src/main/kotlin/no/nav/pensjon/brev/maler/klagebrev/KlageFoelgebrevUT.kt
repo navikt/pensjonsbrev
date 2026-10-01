@@ -28,7 +28,7 @@ val vedleggFoelgebrevKlageinstansUT = createAttachment<LangBokmal, EmptyVedleggD
         text(bokmal { +felles.bruker.foedselsnummer.format() })
     }
 
-    paragraph { text(bokmal { +"Vi viser til din klage av (dato) på vedtak av <dato>." }) }
+    paragraph { text(bokmal { +"Vi viser til din klage av <dato> på vedtak av <dato>." }) }
     paragraph { text(bokmal { +"Vi har vurdert vedtaket vårt på nytt, men har ikke endret det. " }) }
     paragraph { text(bokmal { +"Klagesaken er derfor oversendt til $NAV_KLAGEINSTANS for behandling. Kopi av innstillingen vår er vedlagt." }) }
     paragraph {

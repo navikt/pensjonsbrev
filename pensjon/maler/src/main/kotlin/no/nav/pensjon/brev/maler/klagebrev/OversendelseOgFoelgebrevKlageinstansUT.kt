@@ -12,11 +12,13 @@ import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -29,6 +31,7 @@ object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerb
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
+    @OptIn(TemplateRootScope.RedigerbartVedlegg::class)
     override val template = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
@@ -105,7 +108,7 @@ object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerb
             paragraph { text(bokmal { +"Klagen har ikke ført til at vedtak blir endret." }) }
         }
 
-        includeAttachment(vedleggFoelgebrevKlageinstansUT)
+        includeAttachmentRedigerbar(VedleggId("vedleggFoelgebrevKlageinstansUT"), vedleggFoelgebrevKlageinstansUT)
     }
 
     enum class Forskriften(override val displayText: String) : SaksbehandlerValgEnum {
