@@ -6,11 +6,10 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
-import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.*
+import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT.Forskriften.*
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst
+import no.nav.pensjon.brev.maler.vedlegg.vedleggFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.model.Brevkategori
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -20,15 +19,13 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
-import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
 
 @TemplateModelHelpers
-object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
-    override val featureToggle = FeatureToggles.brevmalKlageOversendelsesbrevTilKlageinstansUT.toggle
+    override val featureToggle = FeatureToggles.brevmalKlageOversendelseOgFoelgebrevKlageinstansUT.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.UT_KLAGE_OVERSENDELSESBREV_TIL_KLAGEINSTANS
+    override val kode = Pesysbrevkoder.Redigerbar.UT_KLAGE_OVERSENDELSE_OG_FOELGEBREV_KLAGEINSTANS
     override val kategori = Brevkategori.KLAGE_OG_ANKE
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -36,7 +33,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
     override val template = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Klage - oversendelsesbrev til Nav klageinstans",
+            displayTitle = "Klage - oversendelsesbrev til Nav klageinstans (m/følgebrev)",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
@@ -49,56 +46,9 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
 
         outline {
 
-            paragraph {
-                text(bokmal { +"Klager: " })
-                text(bokmal { +felles.bruker.fulltNavn() + " " })
-                text(bokmal { +felles.bruker.foedselsnummer.format() })
-            }
-
-            paragraph {
-                text(bokmal {
-                    +"Vi viser til din klage av "
-                    +fritekst("dato") + " på vedtak av "
-                    +fritekst("dato") + "."
-                })
-            }
-            paragraph { text(bokmal { +"Vi har vurdert vedtaket vårt på nytt, men har ikke endret det." }) }
-            paragraph {
-                text(bokmal {
-                    +"Klagesaken er derfor oversendt til Nav klageinstans for behandling. "
-                    +"Kopi av innstillingen vår er vedlagt."
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"Klageinstansen vurderer alle sider av saken på selvstendig grunnlag. "
-                    +"Resultatet av klagebehandlingen kan bli at vårt vedtak ikke blir endret, eller at det blir endret helt eller delvis. "
-                    +"Klageinstansen kan også oppheve vedtaket vårt, og sende saken tilbake til oss for helt eller delvis ny behandling. "
-                })
-            }
-            paragraph { text(bokmal { +"Du får melding fra Nav klageinstans når de har mottatt saken." }) }
-            paragraph {
-                text(bokmal {
-                    +"Du finner oversikt over saksbehandlingstidene på nav.no/saksbehandlingstider. "
-                    +"Du får beskjed fra Nav klageinstans, dersom de trenger mer tid."
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"Du kan sende merknader og dokumentasjon til Nav klageinstans. "
-                    +"Du kan logge deg inn på nav.no/kontakt og sende skriftlig melding der. "
-                    +"Hvis du ønsker å ettersende dokumentasjon, kan du gå til nav.no/klage og trykke på 'Ettersend dokumentasjon' for det saken gjelder."
-                })
-            }
-            paragraph { text(bokmal { +"Har du spørsmål? Du finner mer informasjon på nav.no. " }) }
-            paragraph { text(bokmal { +"På nav.no/kontakt kan du chatte eller skrive til oss." }) }
-            paragraph { text(bokmal { +"Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager 09.00-15.00." }) }
-
-            title1 { text(bokmal { +"Innstillingen til Nav klageinstans - uføretrygd" }) }
-
             title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
 
-            showIf(forskrift.isOneOf(Generell)) {
+           showIf(forskrift.isOneOf(Generell)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Generisk)
             }.orShowIf(forskrift.isOneOf(Medlemskap)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Medlemskap)
@@ -152,9 +102,11 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OversittetKlagefrist)
             }
 
-            paragraph{ text(bokmal { +"Vedtaket opprettholdes og klagen oversendes til Nav klageinstans for videre behandling." }) }
-            paragraph{ text(bokmal { +"Klagen har ikke ført til at vedtak blir endret." }) }
+            paragraph { text(bokmal { +"Vedtaket opprettholdes og klagen oversendes til Nav klageinstans for videre behandling." }) }
+            paragraph { text(bokmal { +"Klagen har ikke ført til at vedtak blir endret." }) }
         }
+
+        includeAttachment(vedleggFoelgebrevKlageinstansUT)
     }
 
     enum class Forskriften(override val displayText: String) : SaksbehandlerValgEnum {

@@ -13,7 +13,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     //START FELLESTEKSTER
     object InnvilgetUfoeretrygd : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            title2 { text(bokmal { +"Hva klagesaken gjelder" }) }
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
@@ -35,7 +34,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
     object KlagersAnfoersler : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            title2 { text(bokmal { +"Klagers anførsler" }) }
+            title1 { text(bokmal { +"Klagers anførsler" }) }
             paragraph { text(bokmal { +"Det anføres i klagen <gjengi hovedinnholdet i klagers anførsler i tekst eller punktvis>" }) }
         }
     }
@@ -61,7 +60,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
     object NedsattInntektsevneVurderingAvKlagen : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Uføregraden fastsettes ved å sammenligne inntektsevne før og etter uførhet. "
@@ -91,7 +90,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"<Gjør rede for problemstillingen i saken. "
@@ -121,7 +120,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph { text(bokmal { +"For å ha rett til uføretrygd, må man ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet." }) }
             paragraph {
                 text(bokmal { +"Vi kan gjøre unntak fra hovedregelen dersom:" })
@@ -153,6 +152,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                 newline()
                 text(bokmal { +"Begrunn fastsatt tidspunkt for medlemskap." }, ITALIC)
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -173,7 +174,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"For å ha rett til uføretrygd må personen ha gjennomført hensiktsmessig utredning og behandling som kan bedre inntektsmulighetene. "
@@ -198,6 +199,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                 text(bokmal { +"(ev. ytterligere)" }, ITALIC)
                 text(bokmal { +" arbeidsrettede tiltak." })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -218,7 +221,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"For å ha rett til uføretrygd må personen ha gjennomført hensiktsmessige arbeidsrettede tiltak som kan bedre inntektsmulighetene. "
@@ -228,6 +231,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Arbeidsrettede tiltak skal tilpasses helsen. All avklaring må være gjennomført og avsluttet før uføretrygd kan innvilges."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -249,7 +254,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Det er et vilkår at den medisinske lidelsen må ha medført en varig funksjonsnedsettelse av en slik art og grad at den utgjør hovedårsaken til nedsettelsen av inntektsevnen. "
@@ -290,6 +295,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Dette betyr at inntekt etter uførhet kan settes til et høyere nivå enn den faktiske inntekten. "
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -328,6 +335,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"IEU er fastsatt til XXX"
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -349,7 +358,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Uføretidspunktet skal som hovedregel fastsettes til det tidspunktet da personens inntektsevne ble varig nedsatt med minst halvparten på grunn av sykdom, skade eller lyte. "
@@ -364,6 +373,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"I fravær av et klart skjæringstidspunkt, for eksempel på grunn av arbeidsløshet eller flere sykmeldingstidspunkter, blir vurderingen mer skjønnsmessig."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -378,7 +389,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Inntekt før uførhet skal være et uttrykk for personens normale inntektssituasjon før uføretidspunktet. "
@@ -387,6 +398,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Dette kan være inntekten på uføretidspunktet eller året før."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -401,7 +414,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Inntekt etter uførhet skal fastsettes til den inntekten som personen forutsetter å kunne skaffe seg ved å utnytte restinntektsevnen. "
@@ -410,6 +423,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Inntekten etter uførhet kan derfor settes høyere enn faktisk pensjonsgivende inntekt."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -424,7 +439,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Uføregraden skal fastsettes ved å sammenligne inntektsevne før og etter uførhet. "
@@ -443,6 +458,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Dette betyr at IEU kan settes til et høyere nivå enn den faktiske inntekten."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -473,6 +490,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +" Inntekten i de aktuelle årene oppjusteres til virkningstidspunktet på bakgrunn av grunnbeløpet."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -494,7 +513,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Trygdetid regnes fra fylte 16 år, eller fra en ble medlem av folketrygden til og med året en fyller 66 år, for at det skal innvilges full uføretrygd må samlet trygdetid tilsvare 40 år. "
@@ -515,6 +534,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                 })
             }
             paragraph { text(bokmal { +"<Ved bruk av unntaksreglene, se verktøykassen>" }, ITALIC) }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -535,7 +556,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal { +"For å ha rett til å få uføretrygden beregnet etter reglene for unge uføre må:" })
                 list {
@@ -546,7 +567,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
             paragraph { text(bokmal { +"Dette går fram av folketrygdloven § 12-13 tredje ledd. " }) }
 
-            title2 { text(bokmal { +"Uføretidspunkt før fylte 26 år" }) }
+            title1 { text(bokmal { +"Uføretidspunkt før fylte 26 år" }) }
             paragraph {
                 text(bokmal {
                     +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
@@ -574,7 +595,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                 })
             }
 
-            title2 { text(bokmal { +"Uføretidspunkt etter fylte 26 år" }) }
+            title1 { text(bokmal { +"Uføretidspunkt etter fylte 26 år" }) }
             paragraph {
                 text(bokmal {
                     +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
@@ -584,6 +605,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +fritekst("xxxx") + " da klager fylte 26 år."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -606,7 +629,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2{ text(bokmal { +"Vurdering av klagen" }) }
+            title1{ text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Det framgår av folketrygdloven § 12-14 at utbetalingen av uføretrygden skal reduseres dersom inntektsgrensen overskrides. "
@@ -620,6 +643,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"A-ordningen er en samordnet måte for arbeidsgivere å rapportere opplysninger om inntekt til Nav, Statistisk sentralbyrå og Skatteetaten."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -643,7 +668,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Det skal foretas et etteroppgjør når den uføretrygdede i løpet av et kalenderår har fått utbetalt for lite eller for mye uføretrygd. "
@@ -665,6 +690,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Vi har vurdert om klager kommer inn under bestemmelsen for arbeidsforsøk, men vi kan ikke se at dette er mulig."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -687,7 +714,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Det skal foretas et etteroppgjør når den uføretrygdede i løpet av et kalenderår har fått utbetalt for lite eller for mye uføretrygd og barnetillegg. "
@@ -700,6 +727,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Utbetalt barnetillegg i kalenderåret sammenlignes med ny fastsatt årlig personinntekt basert på den skattefastsatte inntekten."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -722,7 +751,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Barnetillegg kan gis når den uføretrygdede forsørger barn under 18 år. "
@@ -732,6 +761,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Det gis imidlertid ikke barnetillegg for ektefelle/samboers særkullsbarn selv om den uføretrygdede bidrar til forsørgelsen av barnet."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -761,6 +792,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Inntekten som benyttes er personinntekt etter skatteloven § 12-2 og omfatter både arbeidsinntekt og pensjonsinntekter."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -782,15 +815,15 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
-            title2 { text(bokmal { +"Avslag" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Avslag" }) }
             paragraph {
                 text(bokmal {
                     +"I henhold til retningslinjene til folketrygdloven § 12-17 må det foretas en vurdering av om det mest sannsynlig er en årsakssammenheng mellom den godkjente yrkesskaden/ yrkessykdommen og hele eller noen deler av uførheten. "
                     +"Dersom det mest sannsynlig ikke er noen årsakssammenheng, skal søknaden avslås."
                 })
             }
-            title2 { text(bokmal { +"Delvis innvilget" }) }
+            title1 { text(bokmal { +"Delvis innvilget" }) }
             paragraph {
                 text(bokmal {
                     +"Når uførheten delvis skyldes godkjent yrkesskade/yrkessykdom og delvis skyldes annen sykdom fastsettes en særskilt uføregrad for den delen av uførheten som skyldes yrkesskade/yrkessykdom. "
@@ -799,6 +832,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Dersom yrkesskaden forverrer allerede foreliggende sykdomsforhold som alene ikke ville medført uførhet, skal det gjøres en fordeling mellom årsakene."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -819,7 +854,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Under opphold i institusjon med fri kost og losji under statlig ansvar skal uføretrygden reduseres fra fjerde måned etter innleggelse. "
@@ -832,6 +867,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Dersom vedkommende har faste utgifter til bolig, kan Nav bestemme at uføretrygden ikke skal reduseres, eller at den skal reduseres mindre enn 14 prosent."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -852,13 +889,15 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2{ text(bokmal { +"Vurdering av klagen" }) }
+            title1{ text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Personer som mottar uføretrygd har under varetekt, straff eller særreaksjon i anstalt under kriminalomsorgen eller tilsvarende anstalt i utlandet, ikke har rett til å få utbetalt uføretrygd fra og med andre måned etter at soningen tar til. "
                     +"Uføretrygden skal likevel utbetales med 50 prosent når vedkommende forsørger barn."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -880,7 +919,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"For å få en ytelse, må den som har krav på ytelsen sette fram krav. "
@@ -891,6 +930,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"I særskilte tilfeller, der medlemmet ikke har vært i stand til å sette fram krav eller fordi Nav har gitt misvisende opplysninger, kan uføretrygd gis for opptil tre år før kravet ble satt fram."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -911,7 +952,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"En utbetaling som Nav har foretatt til noen som ikke hadde krav på den, kan kreves tilbake dersom den som har fått utbetalingen forsto eller burde ha forstått at utbetalingen skyldtes en feil. "
@@ -924,6 +965,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Vi har også vurdert om det er grunnlag for å redusere vårt krav om tilbakebetaling etter folketrygdloven § 22-15 fjerde ledd, men ikke funnet at det foreligger særlige forhold (ut over det som allerede er lagt vekt på i vedtaket)."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -944,7 +987,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph { text(bokmal { +"For å ha rett til uføretrygd, må man ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet." }) }
             paragraph {
                 text(bokmal { +"Vi kan gjøre unntak fra hovedregelen dersom:" })
