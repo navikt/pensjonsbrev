@@ -10,6 +10,7 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
     callbacks.current = options;
   });
 
+  // Creates and retains one controller instance for that mounted hook, returning the same instance on every subsequent render.
   const [controller] = useState(() =>
     createEditorAutosave({
       initialState: options.initialState,
@@ -25,7 +26,7 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
     return () => clearTimeout(timeout);
   }, [controller, snapshot.revision, snapshot.resetting, snapshot.saveFailed, snapshot.editorState.saveStatus]);
 
-  // Best effort only: nothing waits for this request, and it cannot survive the browser closing the page.
+  // Best effort only: browser Back navigates within the app and unmounts the editor, this cleanup attempts to save pending edits. 
   useEffect(
     () => () => {
       if (controller.canAutosave()) void controller.savePendingChanges().catch(() => undefined);
