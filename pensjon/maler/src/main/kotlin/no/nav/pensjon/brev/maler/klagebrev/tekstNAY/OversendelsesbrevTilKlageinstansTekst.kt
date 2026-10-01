@@ -1118,7 +1118,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                 text(bokmal {
                     +"På bakgrunn av en helhetlig vurdering kan vi ikke se at vedtak av "
                     +fritekst("dato") + " skulle medføre uriktighet. "
-                    +"Klagen er fremmet for seint, og det foreligger heller ikke særlige grunnet for at klagen blir utprøvd."
+                    +"Klagen er fremmet for seint, og det foreligger heller ikke særlige grunner for at klagen blir utprøvd."
                 })
             }
         }
