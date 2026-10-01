@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.vedlegg
+package no.nav.pensjon.brev.maler.klagebrev
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL

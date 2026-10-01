@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT.Forskriften.*
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst
-import no.nav.pensjon.brev.maler.vedlegg.vedleggFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
