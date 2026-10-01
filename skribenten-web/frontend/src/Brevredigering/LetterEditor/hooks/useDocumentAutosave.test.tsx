@@ -9,11 +9,27 @@ import { type SaveStatus, useDocumentAutosave } from "~/Brevredigering/LetterEdi
 // interleaving in the hook realistic instead of driving it through a fake clock.
 vi.mock("~/components/ManagedLetterEditor/autosave_timer", () => ({ AUTOSAVE_TIMER: 5 }));
 
-// React only enables act() support when this flag is set; RTL sets it during render, but the hook's
-// queued saves are driven from act() calls outside render.
-(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
-
 const tick = (ms = 0) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Starts a long-running hook operation inside a synchronous act() so its immediate state updates are
+ * flushed, without keeping an act scope open while the test drives the rest via settle()/waitFor().
+ * An async act() left open across other act()/waitFor() calls makes React warn about overlapping scopes.
+ */
+const startInAct = <T,>(operation: () => Promise<T>): Promise<T> => {
+  let promise!: Promise<T>;
+  act(() => {
+    promise = operation();
+  });
+  return promise;
+};
+
+/** Awaits a promise started with startInAct inside act(), flushing the updates of its final steps. */
+const finishInAct = async (promise: Promise<unknown>) => {
+  await act(async () => {
+    await promise;
+  });
+};
 
 type Doc = { text: string };
 
@@ -178,7 +194,7 @@ describe("useDocumentAutosave", () => {
 
     act(() => result.current.edit("sist"));
     let saveNowSettled = false;
-    const saveNowPromise = act(async () => {
+    const saveNowPromise = startInAct(async () => {
       await result.current.saver.saveNow();
       saveNowSettled = true;
     });
@@ -191,7 +207,7 @@ describe("useDocumentAutosave", () => {
     await saver.settle(0, { text: "først" });
     await waitFor(() => expect(saver.saved).toHaveLength(2));
     await saver.settle(1, { text: "sist" });
-    await saveNowPromise;
+    await finishInAct(saveNowPromise);
 
     expect(saver.saved).toEqual([{ text: "først" }, { text: "sist" }]);
     expect(result.current.saveStatus).toBe("SAVED");
@@ -204,11 +220,9 @@ describe("useDocumentAutosave", () => {
     act(() => result.current.edit("feiler"));
     await waitFor(() => expect(saver.saved).toHaveLength(1));
 
-    const saveNowPromise = act(async () => {
-      await expect(result.current.saver.saveNow()).rejects.toThrow("lagring feilet");
-    });
+    const saveNowPromise = expect(startInAct(() => result.current.saver.saveNow())).rejects.toThrow("lagring feilet");
     await saver.settle(0, new Error("lagring feilet"));
-    await saveNowPromise;
+    await finishInAct(saveNowPromise);
 
     expect(saver.saved).toHaveLength(1);
     expect(result.current.saveStatus).toBe("DIRTY");
@@ -279,12 +293,12 @@ describe("useDocumentAutosave", () => {
 
     let operationStarted = false;
     const operation = deferred<string>();
-    const paused = act(async () => {
-      await result.current.saver.withSavingPaused(async () => {
+    const paused = startInAct(() =>
+      result.current.saver.withSavingPaused(async () => {
         operationStarted = true;
         return operation.promise;
-      });
-    });
+      }),
+    );
 
     // The operation must wait for the in-flight save to finish.
     await new Promise((resolve) => setTimeout(resolve, 20));
@@ -302,9 +316,15 @@ describe("useDocumentAutosave", () => {
       operation.resolve("ferdig");
       await operation.promise;
     });
-    await paused;
+    await finishInAct(paused);
 
+    // Once the pause is over, saving works again and the edit made during the pause is still pending.
+    // Autosave isn't re-armed by unpausing alone, so trigger the save explicitly.
+    const saveNowPromise = startInAct(() => result.current.saver.saveNow());
     await waitFor(() => expect(saver.saved).toHaveLength(2));
+    await saver.settle(1, { text: "mens pauset" });
+    await finishInAct(saveNowPromise);
+    expect(saver.saved).toEqual([{ text: "under lagring" }, { text: "mens pauset" }]);
   });
 
   it("lagrer et ulagret dokument når editoren avmonteres", async () => {
@@ -328,16 +348,14 @@ describe("useDocumentAutosave", () => {
     // Brukeren skriver videre mens den lagringen fortsatt pågår, og et eksplisitt kall (f.eks.
     // navigasjon) skjer før den gamle lagringen er avgjort.
     act(() => result.current.edit("ny snapshot"));
-    const saveNowPromise = act(async () => {
-      await result.current.saver.saveNow();
-    });
+    const saveNowPromise = startInAct(() => result.current.saver.saveNow());
 
     // Den gamle lagringen feiler. Den eksplisitte lagringen må ikke avvises av dette - den skal i
     // stedet fortsette og lagre det nyeste dokumentet.
     await saver.settle(0, new Error("gammel lagring feilet"));
     await waitFor(() => expect(saver.saved).toHaveLength(2));
     await saver.settle(1, { text: "ny snapshot" });
-    await saveNowPromise;
+    await finishInAct(saveNowPromise);
 
     expect(saver.saved).toEqual([{ text: "gammel snapshot" }, { text: "ny snapshot" }]);
     expect(result.current.saveStatus).toBe("SAVED");
@@ -351,14 +369,14 @@ describe("useDocumentAutosave", () => {
     await waitFor(() => expect(saver.saved).toHaveLength(1));
 
     act(() => result.current.edit("ny snapshot"));
-    const saveNowPromise = act(async () => {
-      await expect(result.current.saver.saveNow()).rejects.toThrow("ny lagring feilet");
-    });
+    const saveNowPromise = expect(startInAct(() => result.current.saver.saveNow())).rejects.toThrow(
+      "ny lagring feilet",
+    );
 
     await saver.settle(0, new Error("gammel lagring feilet"));
     await waitFor(() => expect(saver.saved).toHaveLength(2));
     await saver.settle(1, new Error("ny lagring feilet"));
-    await saveNowPromise;
+    await finishInAct(saveNowPromise);
 
     expect(result.current.saveStatus).toBe("DIRTY");
   });
@@ -371,14 +389,12 @@ describe("useDocumentAutosave", () => {
     await waitFor(() => expect(saver.saved).toHaveLength(1));
 
     act(() => result.current.edit("ny snapshot"));
-    const saveNowPromise = act(async () => {
-      await result.current.saver.saveNow();
-    });
+    const saveNowPromise = startInAct(() => result.current.saver.saveNow());
 
     await saver.settle(0, { text: "gammel snapshot" });
     await waitFor(() => expect(saver.saved).toHaveLength(2));
     await saver.settle(1, { text: "ny snapshot" });
-    await saveNowPromise;
+    await finishInAct(saveNowPromise);
 
     expect(saver.saved).toEqual([{ text: "gammel snapshot" }, { text: "ny snapshot" }]);
     expect(result.current.saveStatus).toBe("SAVED");
