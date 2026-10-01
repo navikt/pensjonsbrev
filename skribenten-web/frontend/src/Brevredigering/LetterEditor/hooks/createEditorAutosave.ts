@@ -118,8 +118,7 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
         publish(
           hasNewerEdits ? snapshot.editorState : (operation ?? options).applyResponse(snapshot.editorState, response),
         );
-        operation = undefined;
-        if (!keepSavingUntilLatest) break;
+        if (operation || !keepSavingUntilLatest) break;
       }
       return response;
     } finally {
@@ -157,9 +156,9 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
     keepSavingUntilLatest = true;
     await currentSave;
     if (isResetting) await currentReset;
+    if (hasUnsavedChanges()) return savePendingChanges();
   };
 
-  
   /* Waits for active saves/resets, then runs the supplied operation with the latest state through the shared save loop. */
   const saveWith = async (operation: SaveOperation<Response>): Promise<Response> => {
     if (isResetting) {
@@ -167,7 +166,7 @@ export function createEditorAutosave<Response>(options: EditorAutosaveOptions<Re
       return saveWith(operation);
     }
     if (isSaving) {
-      await currentSave;
+      await currentSave.catch(() => undefined);
       return saveWith(operation);
     }
     startSaveLoop(operation);

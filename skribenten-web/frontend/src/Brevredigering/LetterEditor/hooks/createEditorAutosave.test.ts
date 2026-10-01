@@ -315,6 +315,74 @@ describe("createEditorAutosave saving", () => {
     expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
   });
 
+  for (const previousSave of ["autosave", "custom save"] as const) {
+    it(`runs a queued custom save with the latest draft after a failing ${previousSave}`, async () => {
+      const { controller, edit, request } = setup();
+      edit();
+      let previousFailure: Promise<unknown> | undefined;
+      if (previousSave === "autosave") {
+        controller.autosave();
+      } else {
+        previousFailure = expect(
+          controller.saveWith({
+            save: () => Promise.reject(new Error("previous save failed")),
+            applyResponse: (state) => state,
+          }),
+        ).rejects.toThrow("previous save failed");
+      }
+      const pending = previousSave === "autosave" ? await request(0) : undefined;
+      edit();
+      const draft = controller.getSnapshot().editorState.redigertBrev;
+      const customSave = vi.fn(async (state: LetterEditorState) => state);
+      const saving = controller.saveWith({ save: customSave, applyResponse: (_state, response) => response });
+      expect(customSave).not.toHaveBeenCalled();
+      pending?.reject(new Error("previous save failed"));
+      await previousFailure;
+      await saving;
+      expect(customSave).toHaveBeenCalledTimes(1);
+      expect(customSave).toHaveBeenCalledWith(expect.objectContaining({ redigertBrev: draft }));
+      expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
+      expect(controller.getSnapshot().saveFailed).toBe(false);
+    });
+  }
+
+  for (const outcome of ["succeeds", "fails"] as const) {
+    it(`keeps the custom save result independent of a joined flush that ${outcome}`, async () => {
+      const { controller, edit, request, onSaved } = setup();
+      const customRequest = deferred<LetterEditorState>();
+      const customSave = vi.fn(() => customRequest.promise);
+      const customApplyResponse = vi.fn((_state: LetterEditorState, response: LetterEditorState) => response);
+      const customResponse = letter(paragraph([literal("Custom response")]));
+      const saving = controller.saveWith({ save: customSave, applyResponse: customApplyResponse });
+      await vi.waitFor(() => expect(customSave).toHaveBeenCalledTimes(1));
+      edit();
+      const draft = controller.getSnapshot().editorState.redigertBrev;
+      const flush = controller.savePendingChanges();
+      const failure = outcome === "fails" ? expect(flush).rejects.toThrow("follow-up save failed") : undefined;
+      customRequest.resolve(customResponse);
+      const followUp = await request(0);
+      let customResult: LetterEditorState | undefined;
+      void saving.then((response) => {
+        customResult = response;
+      });
+      await vi.waitFor(() => expect(customResult).toBe(customResponse));
+      expect(customApplyResponse).not.toHaveBeenCalled();
+      expect(controller.getSnapshot().editorState.redigertBrev).toBe(draft);
+      expect(onSaved).toHaveBeenCalledWith(customResponse);
+      if (outcome === "succeeds") {
+        followUp.resolve({ ...initialState, redigertBrev: draft });
+        await flush;
+        expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
+      } else {
+        followUp.reject(new Error("follow-up save failed"));
+        await failure;
+        expect(controller.getSnapshot().editorState.saveStatus).toBe("DIRTY");
+        expect(controller.getSnapshot().saveFailed).toBe(true);
+      }
+      await expect(saving).resolves.toBe(customResponse);
+    });
+  }
+
   it("does not invent a failed text revision when a custom save fails", async () => {
     const { controller } = setup();
     await expect(
