@@ -7,6 +7,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { Document, Page as PDFPage, pdfjs } from "react-pdf";
 
 import { CenteredLoader } from "~/components/CenteredLoader";
+import { logError } from "~/utils/logger";
 
 import PDFViewerTopBar from "./PDFViewerTopBar";
 
@@ -92,7 +93,7 @@ const PDFViewer = (properties: {
         />
         {properties.children}
         <HStack flexGrow="1" justify="space-around" overflow="auto" padding="space-12">
-          <CatchBoundary errorComponent={PDFRenderError} getResetKey={() => properties.pdf}>
+          <CatchBoundary errorComponent={PDFRenderError} getResetKey={() => properties.pdf} onCatch={logPDFRenderError}>
             <Suspense fallback={<CenteredLoader label="Henter brev..." verticalStrategy="height" />}>
               <Document
                 css={{ display: "flex", flexDirection: "column", "> div": { flexGrow: "1" } }}
@@ -122,6 +123,11 @@ const PDFViewer = (properties: {
       </VStack>
     </Box>
   );
+};
+
+const logPDFRenderError = (error: unknown) => {
+  console.error(error);
+  logError(error, undefined).catch(() => console.error("Unable to log error message"));
 };
 
 const PDFRenderError = () => (
