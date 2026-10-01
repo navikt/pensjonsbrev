@@ -1019,7 +1019,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
             paragraph {
                 text(bokmal {
-                    +"Uføretidspunktet er fast satt til "
+                    +"Uføretidspunktet er fastsatt til "
                     +fritekst("dato") + ", og det er vurdert at klager ble medlem av folketrygden den "
                     +fritekst("dato") + "."
                 })
@@ -1045,7 +1045,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal {
                     +"Vi viser til Arbeids- og velferdsetatens retningslinjer i R45-00 punkt 12.4.5. "
-                    +"Av retningslinjene kommer det fram at Nav mener artikkel 57 nr. 1 ikke referer til selve ordlyden i nasjonal lovgivning slik Trygderetten tar utgangspunkt i, men at det er snakk om tid tilbakelagt etter nasjonal lovgivning, og som skal medregnes når trygdetilfellet inntreffer. "
+                    +"Av retningslinjene kommer det fram at Nav mener artikkel 57 nr. 1 ikke refererer til selve ordlyden i nasjonal lovgivning slik Trygderetten tar utgangspunkt i, men at det er snakk om tid tilbakelagt etter nasjonal lovgivning, og som skal medregnes når trygdetilfellet inntreffer. "
                     +"Bestemmelsen peker direkte på beregningsregelen i artikkel 52 nr. 1 bokstav b. Sett i kontekst er det trygdetiden som skal inngå i pro rata-brøken som må utgjøre minst ett år. "
                     +"Trygdetiden i pro rata-brøken er alltid faktisk trygdetid, det vil si den tiden vedkommende har opparbeidet seg før uføretidspunktet."
                 })
