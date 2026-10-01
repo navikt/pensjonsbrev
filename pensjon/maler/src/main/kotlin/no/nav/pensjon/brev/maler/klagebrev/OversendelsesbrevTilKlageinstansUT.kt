@@ -166,7 +166,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
         KombinasjonNedsattInntektsevne("§ 12-7 Kombinasjon nedsatt inntektsevne"),
         Ufoeretidspunkt("§ 12-8 Uføretidspunkt"),
         FastsettelseIFU("§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU"),
-        FastsettelseIEU("§ 12-9 Fastsettelse av Inntekt Etter Uførehet IEU"),
+        FastsettelseIEU("§ 12-9 Fastsettelse av Inntekt Etter Uførhet IEU"),
         FastsettelseUfoeregrad("§ 12-10 Fastsettelse av Uføregrad"),
         BeregningAvUfoeretrygd("§ 12-11 Beregning av uføretrygd"),
         Trygdetid("§ 12-12 Trygdetid"),
