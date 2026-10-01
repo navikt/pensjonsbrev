@@ -896,7 +896,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
-                    +"Personer som mottar uføretrygd har under varetekt, straff eller særreaksjon i anstalt under kriminalomsorgen eller tilsvarende anstalt i utlandet, ikke har rett til å få utbetalt uføretrygd fra og med andre måned etter at soningen tar til. "
+                    +"Personer som mottar uføretrygd har under varetekt, straff eller særreaksjon i anstalt under kriminalomsorgen eller tilsvarende anstalt i utlandet ikke rett til å få utbetalt uføretrygd fra og med andre måned etter at soningen tar til. "
                     +"Uføretrygden skal likevel utbetales med 50 prosent når vedkommende forsørger barn."
                 })
             }
