@@ -1,8 +1,15 @@
 {
   "compilerOptions": {
-    "composite": true,
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "types": ["node"],
     "module": "ESNext",
-    "moduleResolution": "nodenext"
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "lint-staged.config.ts"]
 }
