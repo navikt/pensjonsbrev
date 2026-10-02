@@ -1,15 +1,19 @@
 /**
  * Parser tests against RTF produced by real applications (test/fixtures/rtf/).
  *
- * Sources:
- * - word2003-sample.rtf: tbluemel/rtf.js@85fddf5 test/rtf-test-files/sample/source.rtf
- *   (Microsoft Word 11), MIT, https://github.com/tbluemel/rtf.js
- * - word-numbered-lists.rtf: excerpt of tbluemel/rtf.js@85fddf5 test/rtf-test-files/wmf-and-emf/source.rtf,
- *   MIT. Trimmed from 1.7 MB to the header, list tables and one list section; images removed.
- * - richedit-wordpad.rtf: tbluemel/rtf.js@85fddf5 samples/.common/data/rtf/simple5.rtf
- *   (Msftedit 5.41, i.e. WordPad/RichEdit), MIT
- * - word365-nb.rtf: syntetisk, etter strukturen i Word 365-utklipp (norsk bokmål), since no freely
- *   licensed modern captures were found.
+ * Sources, copied from tbluemel/rtf.js at commit 85fddf55b2f262bfd450769120c18c9ccef1f21c, licensed MIT:
+ * https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/LICENSE
+ * - word2003-sample.rtf: verbatim copy (Microsoft Word 11) of
+ *   https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/test/rtf-test-files/sample/source.rtf
+ * - word-numbered-lists.rtf: excerpt of
+ *   https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/test/rtf-test-files/wmf-and-emf/source.rtf
+ *   Trimmed from 1.7 MB to the header, list tables and one list section; images and CRs removed.
+ * - richedit-wordpad.rtf: verbatim copy (Msftedit 5.41, i.e. WordPad/RichEdit) of
+ *   https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/samples/.common/data/rtf/simple5.rtf
+ *
+ * Synthetic:
+ * - word365-nb.rtf: structured according to the Word 365 clipboard format (Norwegian
+ *   Bokmål), since no freely licensed modern captures were found.
  *
  * Output is projected to text: **fet**, _kursiv_, "•"/"1." for list items.
  */

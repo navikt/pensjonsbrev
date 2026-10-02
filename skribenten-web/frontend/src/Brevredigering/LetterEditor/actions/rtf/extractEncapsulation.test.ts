@@ -1,10 +1,16 @@
 /**
- * Sources:
- * - outlook-encapsulated-html.rtf/.html: the MS-OXRTFEX spec example and its expected output, from
- *   mazira/rtf-stream-parser@f112deb test/examples/, MIT, https://github.com/mazira/rtf-stream-parser
- * - Inline snippets marked "fra Outlook" are copied from rtf-stream-parser's
- *   test/de-encapsulate.test.ts (MIT), where they are noted as seen in the wild.
- * - outlook365-fromhtml.rtf: syntetisk, etter strukturen i Outlook 365-utklipp.
+ * Sources, copied from mazira/rtf-stream-parser at commit f112deb2cd93797a2dbc28aa38d8e143b86a79d4, licensed MIT:
+ * https://github.com/mazira/rtf-stream-parser/blob/f112deb2cd93797a2dbc28aa38d8e143b86a79d4/LICENSE
+ * - outlook-encapsulated-html.rtf/.html: verbatim copies of the MS-OXRTFEX spec example and its expected output,
+ *   https://github.com/mazira/rtf-stream-parser/blob/f112deb2cd93797a2dbc28aa38d8e143b86a79d4/test/examples/encapsulated.rtf
+ *   https://github.com/mazira/rtf-stream-parser/blob/f112deb2cd93797a2dbc28aa38d8e143b86a79d4/test/examples/encapsulated.html
+ *   The example originates in the MS-OXRTFEX specification:
+ *   https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxrtfex
+ * - Inline snippets in tests marked "fra Outlook", which upstream notes as seen in the wild, are copied from
+ *   https://github.com/mazira/rtf-stream-parser/blob/f112deb2cd93797a2dbc28aa38d8e143b86a79d4/test/de-encapsulate.test.ts
+ *
+ * Synthetic:
+ * - outlook365-fromhtml.rtf: structured according to the Outlook 365 clipboard format.
  */
 import { describe, expect, test } from "vitest";
 
