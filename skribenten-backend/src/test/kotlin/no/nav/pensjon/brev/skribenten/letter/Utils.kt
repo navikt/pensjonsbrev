@@ -29,7 +29,7 @@ fun letter(vararg blocks: LetterMarkup.Block) =
         )
     )
 
-fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixParentIds: Boolean = true, dokumentDato: LocalDate = LocalDate.now()): Edit.Letter =
+fun editedLetter(vararg blocks: Edit.Block, deleted: Collection<Int> = emptyList(), fixParentIds: Boolean = true, dokumentDato: LocalDate = LocalDate.now()): Edit.Letter =
     Edit.Letter(
         title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(1, "En tittel"))),
         sakspart = SakspartImpl(
@@ -46,11 +46,11 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
             attesterendeSaksbehandlerNavn = null,
             navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn"
         ),
-        deletedBlocks = deleted
+        deletedBlocks = deleted.toList()
     )
 
 fun editedLetter(
-    deleted: Set<Int> = emptySet(),
+    deleted: Collection<Int> = emptyList(),
     fixParentIds: Boolean = true,
     dokumentDato: LocalDate = LocalDate.now(),
     builder: EditLetterBuilder.() -> Unit,
@@ -68,7 +68,7 @@ fun attachment(vararg blocks: LetterMarkup.Block, includeSakspart: Boolean = fal
 
 fun editedAttachment(
     vararg blocks: Edit.Block,
-    deleted: Set<Int> = emptySet(),
+    deleted: Collection<Int> = emptyList(),
     includeSakspart: Boolean = false,
     fixParentIds: Boolean = true,
     title: String = "En vedleggstittel",
@@ -76,12 +76,12 @@ fun editedAttachment(
     Edit.Attachment(
         title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(1, title))),
         blocks = if (fixParentIds) blocks.map { it.fixParentIds(null) }.toList() else blocks.toList(),
-        deletedBlocks = deleted,
+        deletedBlocks = deleted.toList(),
         includeSakspart = includeSakspart,
     )
 
 fun editedAttachment(
-    deleted: Set<Int> = emptySet(),
+    deleted: Collection<Int> = emptyList(),
     includeSakspart: Boolean = false,
     fixParentIds: Boolean = true,
     title: String = "En vedleggstittel",
@@ -127,4 +127,3 @@ private fun Edit.ParagraphContent.Table.Header.fixParentIds(parentId: Int?): Edi
 
 private fun Edit.ParagraphContent.Table.ColumnSpec.fixParentIds(parentId: Int?): Edit.ParagraphContent.Table.ColumnSpec =
     copy(headerContent = headerContent.fixParentIds(id), parentId = this.parentId ?: parentId)
-

@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 
 import {
   absorbListIntoList,
+  addElements,
   buildMergedItemList,
   coalesceAdjacentSameTypeLists,
   findAdjoiningContent,
@@ -193,6 +194,48 @@ describe("removeElements", () => {
     ];
     const result = removeElementsProducer({ content: otherParent, deletedContent: [], id: 1 }, 0, 3);
     expect(result.deletedContent).toEqual(otherParent.slice(1, 3).map(id));
+  });
+
+  test("each removed occurrence of a duplicated template id gets its own deletion marker", () => {
+    const duplicateIdContent = [
+      literal({ id: 42, parentId: 1, text: "same variable" }),
+      literal({ id: 42, parentId: 1, text: "same variable" }),
+    ];
+
+    const afterFirstDeletion = removeElementsProducer({ content: duplicateIdContent, deletedContent: [], id: 1 }, 0, 1);
+    expect(afterFirstDeletion.deletedContent).toEqual([42]);
+
+    const afterSecondDeletion = removeElementsProducer(afterFirstDeletion, 0, 1);
+    expect(afterSecondDeletion.deletedContent).toEqual([42, 42]);
+  });
+});
+
+describe("addElements", () => {
+  type AddElementsState<T extends Identifiable> = { content: T[]; deletedContent: number[] };
+  type AddElementsProducer<T extends Identifiable> = (
+    state: AddElementsState<T>,
+    elements: T[],
+    atIndex: number,
+  ) => AddElementsState<T>;
+
+  const addElementsProducer: AddElementsProducer<LiteralValue> = produce((draft, elements, atIndex) => {
+    addElements(elements, atIndex, draft.content, draft.deletedContent);
+  });
+
+  test("re-adding one duplicate occurrence consumes one deletion marker", () => {
+    const duplicate = literal({ id: 42, parentId: 1, text: "same variable" });
+    const result = addElementsProducer({ content: [], deletedContent: [42, 42] }, [duplicate], 0);
+
+    expect(result.deletedContent).toEqual([42]);
+    expect(result.content).toEqual([duplicate]);
+  });
+
+  test("adding unrelated content does not consume a deletion marker for an existing duplicate id", () => {
+    const keptDuplicate = literal({ id: 42, parentId: 1, text: "same variable" });
+    const unrelated = literal({ id: null, parentId: null, text: "new text" });
+    const result = addElementsProducer({ content: [keptDuplicate], deletedContent: [42] }, [unrelated], 1);
+
+    expect(result.deletedContent).toEqual([42]);
   });
 });
 
