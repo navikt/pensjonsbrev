@@ -27,8 +27,8 @@ data class OkningUforegradDto(
         val fribelopsperioder: List<Fribelopsperiode>,
         val fribelop: Kroner,
         val harVTA: Boolean,
-        val forrigeUforegrad: Int? = null,
-        val forrigeUforetidspunkt: LocalDate? = null,
+        val forrigeUforegrad: Int,
+        val forrigeUforetidspunkt: LocalDate,
     ) : FagsystemBrevdata
 
     data class Trygdetidsgrunnlag(
