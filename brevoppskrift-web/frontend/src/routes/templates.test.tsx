@@ -175,7 +175,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     expect(screen.queryByText(/Søker i innholdet/)).toBeNull();
   });
 
-  it("outlines the search field while the corpus is indexing, and shows no spinner", async () => {
+  it("outlines the search field and counts dots after the status while the corpus is indexing, with no spinner", async () => {
     getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) =>
       Promise.resolve(malType === "autobrev" ? autobrevDescriptions : redigerbarDescriptions),
     );
@@ -183,7 +183,10 @@ describe("<AllTemplates /> (route: /templates)", () => {
 
     await renderTemplatesRoute();
 
-    expect(await screen.findByText("Indekserer innhold …")).toBeTruthy();
+    const status = await screen.findByText("Indekserer innhold");
+    expect(status.textContent).toBe("Indekserer innhold...");
+    // The counting dots are decorative, so screen readers hear just the text.
+    expect(status.querySelector('[aria-hidden="true"]')?.textContent).toBe("...");
     expect(screen.getByTestId("search-activity").getAttribute("aria-hidden")).toBe("true");
     expect(screen.queryByTitle(/Søker|Indekserer/)).toBeNull();
   });

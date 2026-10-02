@@ -19,6 +19,7 @@ import { useMemo, useState } from "react";
 
 import { getBrevkoderMedMetadata, getTemplateDescription, type MalType } from "~/api/brevbaker-api-endpoints";
 import { type TemplateDescription } from "~/api/brevbakerTypes";
+import { AnimatedEllipsis } from "~/components/AnimatedEllipsis";
 import {
   BrevResultList,
   CONTENT_PAGE_SIZE,
@@ -118,6 +119,12 @@ function toRefs(templates: TemplateDescription[], malType: MalType): TemplateRef
   }));
 }
 const SEARCH_FAILED_MESSAGE = "Søket kunne ikke gjennomføres på grunn av en teknisk feil.";
+const INDEXING_SUMMARY = (
+  <>
+    Indekserer innhold
+    <AnimatedEllipsis />
+  </>
+);
 /** A page number, and the search it is a page of. */
 type Paging = { page: number; of: DisplayedSearch | undefined };
 function AllTemplates() {
@@ -193,7 +200,7 @@ function AllTemplates() {
   // panel body empty.
   const error = searchFailed ? SEARCH_FAILED_MESSAGE : undefined;
   const contentSummary = isLoading ? (
-    "Indekserer innhold …"
+    INDEXING_SUMMARY
   ) : !displayed ? undefined : displayed.contentHits.length === 0 ? (
     "Ingen treff i innholdet"
   ) : (
@@ -202,7 +209,7 @@ function AllTemplates() {
     </>
   );
   const brevSummary = isLoading ? (
-    "Indekserer innhold …"
+    INDEXING_SUMMARY
   ) : !displayed ? undefined : displayed.brevHits.length === 0 ? (
     "Ingen treff i tittel, navn eller brevkode"
   ) : (
