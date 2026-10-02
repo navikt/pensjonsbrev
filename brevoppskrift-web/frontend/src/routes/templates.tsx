@@ -6,10 +6,8 @@ import {
   Box,
   Button,
   Checkbox,
-  Detail,
   Heading,
   HStack,
-  Loader,
   Search,
   Tabs,
   Tag,
@@ -17,18 +15,21 @@ import {
 } from "@navikt/ds-react";
 import { type QueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { getBrevkoderMedMetadata, getTemplateDescription, type MalType } from "~/api/brevbaker-api-endpoints";
 import { type TemplateDescription } from "~/api/brevbakerTypes";
+import { AnimatedEllipsis } from "~/components/AnimatedEllipsis";
 import {
   BrevResultList,
   CONTENT_PAGE_SIZE,
+  type DisplayedSearch,
   LETTER_PAGE_SIZE,
-  MIN_QUERY_LENGTH,
+  SearchActivityOutline,
   SearchResultsPanel,
   SearchSnippet,
   type TemplateRef,
+  templateKey,
   useTemplateSearch,
 } from "~/search";
 
@@ -89,7 +90,9 @@ function TemplateList({ templates, malType }: { templates: TemplateDescription[]
     </VStack>
   );
 }
-function TabLabel({ label, count, isSearching }: { label: string; count: number; isSearching: boolean }) {
+/** `count` is left out until a search has completed, so the first search shows
+ *  no count rather than a `0` it hasn't earned. */
+function TabLabel({ label, count }: { label: string; count?: number }) {
   return (
     <span
       css={css`
@@ -99,11 +102,11 @@ function TabLabel({ label, count, isSearching }: { label: string; count: number;
       `}
     >
       {label}
-      {isSearching ? (
+      {count === undefined ? null : (
         <Tag data-color="neutral" size="xsmall" variant="moderate">
           {count}
         </Tag>
-      ) : null}
+      )}
     </span>
   );
 }
@@ -115,6 +118,15 @@ function toRefs(templates: TemplateDescription[], malType: MalType): TemplateRef
     languages: description.languages,
   }));
 }
+const SEARCH_FAILED_MESSAGE = "Søket kunne ikke gjennomføres på grunn av en teknisk feil.";
+const INDEXING_SUMMARY = (
+  <>
+    Klargjør malene for søk
+    <AnimatedEllipsis />
+  </>
+);
+/** A page number, and the search it is a page of. */
+type Paging = { page: number; of: DisplayedSearch | undefined };
 function AllTemplates() {
   const { autobrev, redigerbar } = Route.useLoaderData();
   const refs = useMemo<TemplateRef[]>(
@@ -126,32 +138,86 @@ function AllTemplates() {
     setQuery,
     exactOnly,
     setExactOnly,
-    isSearching,
     isLoading,
-    failedCount,
+    isPending,
+    displayed,
+    searchFailed,
     failedMalTypes,
     retryFailed,
-    contentHits,
-    brevHits,
-    contentTemplateCount,
-    contentLineCount,
-    brevTemplateCount,
-    templateTotal,
-    languageTotal,
   } = useTemplateSearch(refs);
   const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
-  const [page, setPage] = useState(1);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset pagination whenever the query or tab changes.
-  useEffect(() => setPage(1), [query, activeTab]);
-  const activeHits = activeTab === "innhold" ? contentHits : brevHits;
-  const pageCount = Math.max(
-    1,
-    Math.ceil(activeHits.length / (activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE)),
-  );
+  // A page belongs to the search it was chosen in. Once a different search is
+  // on screen the stored page no longer applies and reads as page 1 - in the
+  // same render the new hits arrive in, so the list is never rendered at a
+  // stale page first. The tab switch resets it explicitly.
+  const [paging, setPaging] = useState<Paging>({ page: 1, of: undefined });
+  const page = paging.of === displayed ? paging.page : 1;
+  const setPage = (next: number) => setPaging({ page: next, of: displayed });
+  const activeHits = (activeTab === "innhold" ? displayed?.contentHits : displayed?.brevHits) ?? [];
+  const pageSize = activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE;
+  // Only the active tab's panel is mounted, so both panels can share the page
+  // state; each still slices with its own page size.
+  const pageCount = Math.max(1, Math.ceil(activeHits.length / pageSize));
   const safePage = Math.min(page, pageCount);
-  const pageStart = (safePage - 1) * (activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE);
-  const contentItems = contentHits.slice(pageStart, pageStart + CONTENT_PAGE_SIZE);
-  const brevItems = brevHits.slice(pageStart, pageStart + LETTER_PAGE_SIZE);
+  // The result lists are by far the most expensive thing on this page, and they
+  // depend only on the search on screen and the page - never on `isPending`.
+  // Memoising the elements lets React bail out of the whole subtree when the
+  // only thing that changed is the search outline, so toggling it twice per search
+  // costs nothing while the user is typing.
+  const contentList = useMemo(() => {
+    if (!displayed || displayed.contentHits.length === 0) {
+      return null;
+    }
+    const { contentHits, highlight } = displayed;
+    const start = (safePage - 1) * CONTENT_PAGE_SIZE;
+    return contentHits
+      .slice(start, start + CONTENT_PAGE_SIZE)
+      .map((hit) => (
+        <SearchSnippet
+          exact={highlight.exactOnly}
+          hit={hit}
+          key={templateKey(hit.template)}
+          needle={highlight.needle}
+        />
+      ));
+  }, [displayed, safePage]);
+  const brevList = useMemo(() => {
+    if (!displayed || displayed.brevHits.length === 0) {
+      return null;
+    }
+    const { brevHits, highlight } = displayed;
+    const start = (safePage - 1) * LETTER_PAGE_SIZE;
+    return (
+      <BrevResultList
+        exact={highlight.exactOnly}
+        hits={brevHits.slice(start, start + LETTER_PAGE_SIZE)}
+        needle={highlight.needle}
+      />
+    );
+  }, [displayed, safePage]);
+  // Summaries describe the search on screen, so while the next one runs the
+  // previous summary simply stays. Zero hits is reported here too, leaving the
+  // panel body empty.
+  const error = searchFailed ? SEARCH_FAILED_MESSAGE : undefined;
+  const contentSummary = isLoading ? (
+    INDEXING_SUMMARY
+  ) : !displayed ? undefined : displayed.contentHits.length === 0 ? (
+    "Ingen treff i innholdet"
+  ) : (
+    <>
+      Frasen du søker etter er brukt i <b>{displayed.contentTemplateCount} maler</b> i {displayed.contentLineCount}{" "}
+      avsnitt
+    </>
+  );
+  const brevSummary = isLoading ? (
+    INDEXING_SUMMARY
+  ) : !displayed ? undefined : displayed.brevHits.length === 0 ? (
+    "Ingen treff i tittel, navn eller brevkode"
+  ) : (
+    <>
+      Søket traff tittel, navn eller brevkode i <b>{displayed.brevTemplateCount} maler</b>
+    </>
+  );
   return (
     <Box asChild background="default" height="100vh" overflow="hidden">
       <VStack flexGrow="1" gap="space-16" paddingBlock="space-16 space-0" paddingInline="space-16">
@@ -159,27 +225,23 @@ function AllTemplates() {
           Brevoppskrift
         </Heading>
         <Box maxWidth="480px" width="100%">
-          <Search
-            hideLabel={false}
-            label="Søk i innholdet i alle maler"
-            onChange={setQuery}
-            onClear={() => setQuery("")}
-            size="small"
-            value={query}
-            variant="simple"
-          />
+          <SearchActivityOutline active={isLoading || isPending}>
+            <Search
+              autoFocus
+              label="Søk etter innholdet eller brevmal"
+              onChange={setQuery}
+              onClear={() => setQuery("")}
+              placeholder="Søk etter innholdet eller brevmal"
+              size="small"
+              value={query}
+              variant="simple"
+            />
+          </SearchActivityOutline>
         </Box>
         <Checkbox checked={exactOnly} onChange={(e) => setExactOnly(e.target.checked)} size="small">
           Vis kun nøyaktige treff
         </Checkbox>
-        <Detail aria-live="polite" textColor="subtle">
-          {isLoading
-            ? "Indekserer innhold …"
-            : `Søker i innholdet til ${templateTotal} maler på ${languageTotal} språk${
-                failedCount > 0 ? ` (${failedCount} feilet)` : ""
-              }`}
-        </Detail>
-        {failedCount > 0 ? (
+        {failedMalTypes.length > 0 ? (
           <Alert size="small" variant="warning">
             <HStack align="center" gap="space-16" justify="space-between">
               <BodyShort>
@@ -196,80 +258,51 @@ function AllTemplates() {
           <Bleed asChild marginInline="space-16">
             <Tabs
               css={{ ">div:first-of-type": { marginInline: "var(--ax-space-16)" } }}
-              onChange={(tab) => setActiveTab(tab === "brev" ? "brev" : "innhold")}
+              onChange={(tab) => {
+                setActiveTab(tab === "brev" ? "brev" : "innhold");
+                setPaging({ page: 1, of: displayed });
+              }}
               value={activeTab}
             >
               <Tabs.List>
                 <Tabs.Tab
-                  label={<TabLabel count={contentTemplateCount} isSearching={isSearching} label="Innhold" />}
+                  label={<TabLabel count={displayed?.contentTemplateCount} label="Innhold" />}
                   value="innhold"
                 />
-                <Tabs.Tab
-                  label={<TabLabel count={brevTemplateCount} isSearching={isSearching} label="Brev" />}
-                  value="brev"
-                />
+                <Tabs.Tab label={<TabLabel count={displayed?.brevTemplateCount} label="Brev" />} value="brev" />
               </Tabs.List>
 
               <Box asChild flexGrow="1" overflow="hidden">
                 <Tabs.Panel value="innhold">
                   <SearchResultsPanel
+                    error={error}
+                    isPending={isPending}
                     page={safePage}
-                    pageCount={Math.max(1, Math.ceil(contentHits.length / CONTENT_PAGE_SIZE))}
+                    pageCount={pageCount}
                     setPage={setPage}
-                    summary={
-                      isSearching && contentHits.length > 0 ? (
-                        <>
-                          Frasen du søker på er brukt i <b>{contentTemplateCount} maler</b> i {contentLineCount} avsnitt
-                        </>
-                      ) : undefined
-                    }
+                    summary={contentSummary}
                   >
-                    {isLoading ? (
-                      <HStack flexGrow="1" justify="center">
-                        <BodyShort>
-                          <Loader size="3xlarge" title={"Henter maler"} />
-                        </BodyShort>
-                      </HStack>
-                    ) : !isSearching ? (
-                      <BodyShort textColor="subtle">
-                        Skriv minst {MIN_QUERY_LENGTH} tegn for å søke i innholdet i malene.
-                      </BodyShort>
-                    ) : contentHits.length === 0 ? (
-                      <BodyShort>Ingen treff i innholdet</BodyShort>
-                    ) : (
-                      contentItems.map((hit) => (
-                        <SearchSnippet
-                          exact={exactOnly}
-                          hit={hit}
-                          key={`${hit.template.malType}/${hit.template.id}/${hit.template.language}`}
-                          needle={query}
-                        />
-                      ))
-                    )}
+                    {contentList}
                   </SearchResultsPanel>
                 </Tabs.Panel>
               </Box>
               <Box asChild flexGrow="1" overflow="hidden">
                 <Tabs.Panel value="brev">
                   <SearchResultsPanel
+                    error={error}
+                    isPending={isPending}
                     page={safePage}
-                    pageCount={Math.max(1, Math.ceil(brevHits.length / LETTER_PAGE_SIZE))}
+                    pageCount={pageCount}
                     setPage={setPage}
-                    summary={
-                      isSearching && brevHits.length > 0 ? (
-                        <>
-                          Søket traff tittel, navn eller brevkode i <b>{brevTemplateCount} maler</b>
-                        </>
-                      ) : undefined
-                    }
+                    summary={brevSummary}
                   >
-                    {isSearching ? (
-                      brevHits.length === 0 ? (
-                        <BodyShort>Ingen treff i tittel, navn eller brevkode</BodyShort>
-                      ) : (
-                        <BrevResultList exact={exactOnly} hits={brevItems} needle={query} />
-                      )
+                    {displayed || searchFailed ? (
+                      brevList
                     ) : (
+                      // Until a search is on screen the full index is browsable:
+                      // it comes from the route loader, not the search corpus, so
+                      // it is there before indexing finishes and stays while the
+                      // first search runs.
                       <VStack gap="space-20">
                         <VStack gap="space-8">
                           <Heading level="2" size="xsmall">
