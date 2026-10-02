@@ -2,8 +2,8 @@ import { css, keyframes } from "@emotion/react";
 
 // Each cycle starts on three dots and lingers there, then counts up from
 // nothing: three (linger), none, one, two, back to three.
-const STEP_MS = 400;
-const LINGER_MS = 1000;
+const STEP_MS = 300;
+const LINGER_MS = 800;
 const CYCLE_MS = LINGER_MS + 3 * STEP_MS;
 
 const percentAt = (ms: number) => `${(ms / CYCLE_MS) * 100}%`;
