@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.innvilgelse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.fattetFoerDenneMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdMellombehandlingDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.pesysData
@@ -334,6 +335,7 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
             includePhrase(Innvilgelse.EtterbetalingUforetrygd(
                 pe = pe,
                 uforegrad = uforegrad,
+                fattetFoerDenneMnd = pesysData.vedtaksinfo.fattetFoerDenneMnd,
             ))
 
             includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
