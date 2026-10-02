@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.klageOgAnke
+package no.nav.pensjon.brev.maler.klagebrev
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
