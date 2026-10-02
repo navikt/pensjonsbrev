@@ -174,7 +174,7 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // query mode, so it never re-triggers a reindex in the worker.
   // While `isLoading` is true, some malType's corpus hasn't arrived yet, so we
   // skip building entirely rather than repeatedly indexing a partial corpus
-  // that no one can search yet (the UI shows "Indekserer innhold …" instead).
+  // that no one can search yet (the UI shows "Klargjør malene for søk" instead).
   // biome-ignore lint/correctness/useExhaustiveDependencies: `queries` is a new array every render; `freshnessKey` captures the data we actually depend on.
   const corpus = useMemo<Corpus | undefined>(() => {
     if (isLoading) {

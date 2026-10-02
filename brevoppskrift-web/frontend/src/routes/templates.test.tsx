@@ -155,21 +155,21 @@ describe("<AllTemplates /> (route: /templates)", () => {
     const client = installClient(deferrableClient());
 
     const { user } = await renderTemplatesRoute();
-    await waitFor(() => expect(screen.queryByText(/Indekserer innhold/)).toBeNull());
+    await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     // An empty box: nothing in flight, nothing to summarise.
     expect(screen.queryByTestId("search-activity")).toBeNull();
-    expect(screen.queryByText(/Frasen du søker på/)).toBeNull();
+    expect(screen.queryByText(/Frasen du søker etter/)).toBeNull();
 
     await user.type(screen.getByRole("searchbox"), "Hei");
 
     // First search running: the outline, but no summary and no tab count yet.
     await waitFor(() => expect(screen.getByTestId("search-activity")).toBeTruthy());
-    expect(screen.queryByText(/Frasen du søker på/)).toBeNull();
+    expect(screen.queryByText(/Frasen du søker etter/)).toBeNull();
     expect(screen.getByRole("tab", { name: "Innhold" })).toBeTruthy();
 
     await act(async () => client.release());
 
-    await waitFor(() => expect(screen.getByText(/Frasen du søker på er brukt i/)).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(/Frasen du søker etter er brukt i/)).toBeTruthy());
     expect(screen.queryByTestId("search-activity")).toBeNull();
     expect(screen.getByRole("tab", { name: /^Innhold\s*\d+$/ })).toBeTruthy();
     expect(screen.queryByText(/Søker i innholdet/)).toBeNull();
@@ -183,8 +183,8 @@ describe("<AllTemplates /> (route: /templates)", () => {
 
     await renderTemplatesRoute();
 
-    const status = await screen.findByText("Indekserer innhold");
-    expect(status.textContent).toBe("Indekserer innhold...");
+    const status = await screen.findByText("Klargjør malene for søk");
+    expect(status.textContent).toBe("Klargjør malene for søk...");
     // The counting dots are decorative, so screen readers hear just the text.
     expect(status.querySelector('[aria-hidden="true"]')?.textContent).toBe("...");
     expect(screen.getByTestId("search-activity").getAttribute("aria-hidden")).toBe("true");
@@ -196,15 +196,15 @@ describe("<AllTemplates /> (route: /templates)", () => {
     const client = installClient(deferrableClient());
 
     const { user } = await renderTemplatesRoute();
-    await waitFor(() => expect(screen.queryByText(/Indekserer innhold/)).toBeNull());
+    await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "Hei");
     await act(async () => client.release());
-    await waitFor(() => expect(screen.getByText(/Frasen du søker på er brukt i/)).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(/Frasen du søker etter er brukt i/)).toBeTruthy());
 
     await user.type(screen.getByRole("searchbox"), "{Backspace}");
 
     await waitFor(() => expect(screen.getByTestId("search-activity")).toBeTruthy());
-    expect(screen.getByText(/Frasen du søker på er brukt i/)).toBeTruthy();
+    expect(screen.getByText(/Frasen du søker etter er brukt i/)).toBeTruthy();
     expect(screen.queryByText(/Søker i innholdet/)).toBeNull();
   });
 
@@ -212,7 +212,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     mockCorpus();
 
     const { user } = await renderTemplatesRoute();
-    await waitFor(() => expect(screen.queryByText(/Indekserer innhold/)).toBeNull());
+    await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "xyzzy");
 
     await waitFor(() => expect(screen.getByText("Ingen treff i innholdet")).toBeTruthy());
@@ -230,7 +230,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     const client = installClient(deferrableClient());
 
     const { user } = await renderTemplatesRoute();
-    await waitFor(() => expect(screen.queryByText(/Indekserer innhold/)).toBeNull());
+    await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.click(screen.getByRole("tab", { name: "Brev" }));
     expect(screen.getByRole("heading", { name: "Automatiske brev" })).toBeTruthy();
 
@@ -247,7 +247,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     const client = installClient(deferrableClient());
 
     const { user } = await renderTemplatesRoute();
-    await waitFor(() => expect(screen.queryByText(/Indekserer innhold/)).toBeNull());
+    await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "Hei");
     await waitFor(() => expect(screen.getByTestId("search-activity")).toBeTruthy());
 
@@ -283,7 +283,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     const isCurrent = (page: string) => screen.getByRole("button", { name: page }).getAttribute("aria-current");
 
     const { user } = await renderTemplatesRoute();
-    await waitFor(() => expect(screen.queryByText(/Indekserer innhold/)).toBeNull());
+    await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "Hei");
     await waitFor(() => expect(screen.getByRole("button", { name: "2" })).toBeTruthy());
 

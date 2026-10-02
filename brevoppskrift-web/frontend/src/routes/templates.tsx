@@ -121,7 +121,7 @@ function toRefs(templates: TemplateDescription[], malType: MalType): TemplateRef
 const SEARCH_FAILED_MESSAGE = "Søket kunne ikke gjennomføres på grunn av en teknisk feil.";
 const INDEXING_SUMMARY = (
   <>
-    Indekserer innhold
+    Klargjør malene for søk
     <AnimatedEllipsis />
   </>
 );
@@ -205,7 +205,8 @@ function AllTemplates() {
     "Ingen treff i innholdet"
   ) : (
     <>
-      Frasen du søker på er brukt i <b>{displayed.contentTemplateCount} maler</b> i {displayed.contentLineCount} avsnitt
+      Frasen du søker etter er brukt i <b>{displayed.contentTemplateCount} maler</b> i {displayed.contentLineCount}{" "}
+      avsnitt
     </>
   );
   const brevSummary = isLoading ? (
