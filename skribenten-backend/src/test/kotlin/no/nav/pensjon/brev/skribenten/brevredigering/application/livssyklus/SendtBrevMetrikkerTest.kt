@@ -6,12 +6,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.joinAll
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.Metrics
+import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.FakeSamhandlerService
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
@@ -42,12 +45,16 @@ class SendtBrevMetrikkerTest {
         tssId: String? = null,
         manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil? = null,
         avsenderEnhet: String = "1234",
+        brevkode: Brevkode<*> = Testbrevkoder.INFORMASJONSBREV,
+        valgteVedlegg: List<AlltidValgbartVedleggBrevkode> = emptyList(),
     ) = SendtBrevMetrikker.SendtBrevMaaling(
         mottakerType = mottakerType,
         tssId = tssId,
         manueltAdressertTil = manueltAdressertTil,
         distribusjonstype = Distribusjon.SENTRALPRINT,
         avsenderEnhet = EnhetId(avsenderEnhet),
+        brevkode = brevkode,
+        valgteVedlegg = valgteVedlegg
     )
 
     @Test
@@ -57,7 +64,7 @@ class SendtBrevMetrikkerTest {
         metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
 
         assertThat(registry.scrape()).contains(
-            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="ORG",mottaker="SAMHANDLER",samhandler_type="ADVO"} 1.0"""
+            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",brevkode="INFORMASJONSBREV",distribusjon="SENTRALPRINT",id_type="ORG",mottaker="SAMHANDLER",samhandler_type="ADVO",valgte_vedlegg=""} 1.0"""
         )
     }
 
@@ -147,7 +154,7 @@ class SendtBrevMetrikkerTest {
         tellSamhandler(registry, "80000000003")
 
         assertThat(registry.scrape()).contains(
-            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT"} 1.0"""
+            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",brevkode="INFORMASJONSBREV",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT",valgte_vedlegg=""} 1.0"""
         )
         assertThat(registry.orgBoetter()).isEmpty()
     }
@@ -197,7 +204,7 @@ class SendtBrevMetrikkerTest {
             .tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
 
         assertThat(registry.scrape()).contains(
-            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT"} 1.0"""
+            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",brevkode="INFORMASJONSBREV",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT",valgte_vedlegg=""} 1.0"""
         )
     }
 

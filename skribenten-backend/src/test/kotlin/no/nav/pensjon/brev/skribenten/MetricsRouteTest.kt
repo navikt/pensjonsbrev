@@ -117,6 +117,8 @@ class MetricsRouteTest {
                 manueltAdressertTil = null,
                 distribusjonstype = Distribusjon.SENTRALPRINT,
                 avsenderEnhet = EnhetId("4321"),
+                brevkode = Testbrevkoder.INFORMASJONSBREV,
+                valgteVedlegg = emptyList(),
             )
         ).join()
 
