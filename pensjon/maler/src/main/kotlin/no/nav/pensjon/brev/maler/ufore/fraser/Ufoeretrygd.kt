@@ -642,6 +642,12 @@ object Ufoeretrygd {
         val gjenlevendetilleggInnvilget: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
+                    nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
+                )
+            }
             paragraph {
                 text(
                     bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring. " },

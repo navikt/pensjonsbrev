@@ -759,11 +759,6 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"
                 showIf(instoppholdType.equalTo("reduksjon_fo")) {
-                    title1 {
-                        text (
-                            bokmal { + "Utbetaling av uføretrygd for deg som er under straffegjennomføring" }
-                        )
-                    }
                     includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
                 }
 

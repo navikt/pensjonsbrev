@@ -1191,25 +1191,6 @@ object Innvilgelse {
         }
     }
 
-    data class Straffegjennomfoering(
-        val pe: Expression<PEgruppe10>,
-        val instoppholdType: Expression<String>,
-        val ektefelletilleggInnvilget: Expression<Boolean>,
-        val gjenlevendetilleggInnvilget: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            showIf(instoppholdType.equalTo("reduksjon_fo")) {
-                title1 {
-                    text(
-                        bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                    )
-                }
-                includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
-            }
-        }
-    }
-
     data class BarnetilleggOgInntekt(
         val pe: Expression<PEgruppe10>,
         val btInnvilget: Expression<Boolean>,

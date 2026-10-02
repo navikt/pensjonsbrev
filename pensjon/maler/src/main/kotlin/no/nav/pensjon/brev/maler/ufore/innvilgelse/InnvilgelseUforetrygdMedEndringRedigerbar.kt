@@ -547,18 +547,17 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
 
             //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"
             showIf(instoppholdType.equalTo("reduksjon_fo")) {
-                title1 {
-                    text(
-                        bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                    )
-                }
-
                 showIf(pe.ut_forsorgeransvar_ingen_er_false()) {
                     includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
                 }
 
                 showIf(pe.ut_forsorgeransvar_ingen_er_true()) {
+                    title1(uniqueness = "straff_innv_endring") {
+                        text(
+                            bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
+                            nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
+                        )
+                    }
                     paragraph {
                         text(
                             bokmal { +"Du er under straffegjennomføring og uføretrygden din kommer derfor ikke til utbetaling. Vi vil sette i gang utbetalingene igjen når straffegjennomføringen er avsluttet." },

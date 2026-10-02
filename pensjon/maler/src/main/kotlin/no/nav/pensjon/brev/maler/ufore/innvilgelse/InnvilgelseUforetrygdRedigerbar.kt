@@ -257,12 +257,15 @@ object InnvilgelseUforetrygdRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretry
                 totalNettoUforeberegning = totalNettoUforeberegning,
             ))
 
-            includePhrase(Innvilgelse.Straffegjennomfoering(
-                pe = pe,
-                instoppholdType = instoppholdType,
-                ektefelletilleggInnvilget = ektefelletilleggInnvilget,
-                gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
-            ))
+            showIf(instoppholdType.equalTo("reduksjon_fo")) {
+                includePhrase(
+                    Ufoeretrygd.Straffegjennomfoering(
+                        pe = pe,
+                        ektefelletilleggInnvilget = ektefelletilleggInnvilget,
+                        gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                    )
+                )
+            }
 
             includePhrase(Innvilgelse.BarnetilleggOgInntekt(
                 pe = pe,

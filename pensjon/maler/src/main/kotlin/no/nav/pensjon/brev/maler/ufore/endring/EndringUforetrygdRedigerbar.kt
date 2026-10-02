@@ -972,14 +972,8 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf(instoppholdtype.equalTo("reduksjon_fo")) {
                 showIf(kravarsak.notEqualTo("instopphold")) {
-                    title1 {
-                        text(
-                            bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                            nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                        )
-                    }
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
                 }
-                includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
             }
 
             showIf((kravarsak.equalTo("instopphold") and instoppholdtype.equalTo(""))) {
