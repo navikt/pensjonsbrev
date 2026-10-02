@@ -390,7 +390,7 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
             // TBU1288
             includePhrase(TBU1288_Generated)
             // TBU1223 og TBU1224
-            includePhrase(MeldeFraOmEndringer)
+            includePhrase(MeldeFraOmEndringer())
             // TBU1100
             includePhrase(Felles.RettTilAAKlage)
             // TBU1074 og TBU1075

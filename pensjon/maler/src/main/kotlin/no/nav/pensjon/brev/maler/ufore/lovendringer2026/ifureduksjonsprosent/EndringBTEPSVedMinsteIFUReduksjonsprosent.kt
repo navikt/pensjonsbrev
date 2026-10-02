@@ -216,7 +216,7 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
             }
 
             showIf(not(data.opphortUforetrygdEllerBTFB)) {
-                includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+                includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             }
             includePhrase(Ufoeretrygd.Etteroppgjor)
             includePhrase(Ufoeretrygd.RettTilAKlage)
