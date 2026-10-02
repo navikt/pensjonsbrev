@@ -286,8 +286,6 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 harVTA = pesysData.harVTA
             ))
 
-            includePhrase(Innvilgelse.MeldeFraOmInntekt)
-
             includePhrase(Innvilgelse.InstitusjonReduksjon(
                 pe = pe,
                 instoppholdType = instoppholdType,
