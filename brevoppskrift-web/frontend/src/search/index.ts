@@ -1,4 +1,5 @@
 export { BrevResultList } from "~/search/components/BrevResultList";
+export { SearchActivityOutline } from "~/search/components/SearchActivityOutline";
 export { CONTENT_PAGE_SIZE, LETTER_PAGE_SIZE, SearchResultsPanel } from "~/search/components/SearchResultsPanel";
 export { SearchSnippet } from "~/search/components/SearchSnippet";
 export { templateKey } from "~/search/searchProtocol";

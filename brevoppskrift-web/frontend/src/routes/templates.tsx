@@ -8,7 +8,6 @@ import {
   Checkbox,
   Heading,
   HStack,
-  Loader,
   Search,
   Tabs,
   Tag,
@@ -25,6 +24,7 @@ import {
   CONTENT_PAGE_SIZE,
   type DisplayedSearch,
   LETTER_PAGE_SIZE,
+  SearchActivityOutline,
   SearchResultsPanel,
   SearchSnippet,
   type TemplateRef,
@@ -138,7 +138,6 @@ function AllTemplates() {
     failedMalTypes,
     retryFailed,
   } = useTemplateSearch(refs);
-  const isWorking = isLoading || isPending;
   const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
   // A page belongs to the search it was chosen in. Once a different search is
   // on screen the stored page no longer applies and reads as page 1 - in the
@@ -156,7 +155,7 @@ function AllTemplates() {
   // The result lists are by far the most expensive thing on this page, and they
   // depend only on the search on screen and the page - never on `isPending`.
   // Memoising the elements lets React bail out of the whole subtree when the
-  // only thing that changed is the spinner, so toggling it twice per search
+  // only thing that changed is the search outline, so toggling it twice per search
   // costs nothing while the user is typing.
   const contentList = useMemo(() => {
     if (!displayed || displayed.contentHits.length === 0) {
@@ -217,10 +216,8 @@ function AllTemplates() {
         <Heading level="1" size="small">
           Brevoppskrift
         </Heading>
-        {/* No wrapping: the spinner must never drop to a line of its own, or
-            it would push the page down every time it appears. */}
-        <HStack align="center" gap="space-8" wrap={false}>
-          <Box maxWidth="480px" width="100%">
+        <Box maxWidth="480px" width="100%">
+          <SearchActivityOutline active={isLoading || isPending}>
             <Search
               autoFocus
               label="Søk etter innholdet eller brevmal"
@@ -231,9 +228,8 @@ function AllTemplates() {
               value={query}
               variant="simple"
             />
-          </Box>
-          {isWorking ? <Loader size="small" title={isLoading ? "Indekserer" : "Søker"} /> : null}
-        </HStack>
+          </SearchActivityOutline>
+        </Box>
         <Checkbox checked={exactOnly} onChange={(e) => setExactOnly(e.target.checked)} size="small">
           Vis kun nøyaktige treff
         </Checkbox>

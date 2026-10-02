@@ -418,7 +418,7 @@ describe("useTemplateSearch", () => {
   });
 
   // The first character defers a render like any keystroke, but nothing is
-  // searched and nothing on screen changes, so the spinner must not flash.
+  // searched and nothing on screen changes, so the search outline must not flash.
   it("is never pending while typing the first character into an empty box", async () => {
     getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
       Promise.resolve(malType === "autobrev" ? autobrevContent : []),

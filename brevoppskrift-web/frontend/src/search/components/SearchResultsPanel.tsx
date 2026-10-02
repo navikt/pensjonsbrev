@@ -25,7 +25,7 @@ export function SearchResultsPanel({
   error?: ReactNode;
   /** Marks the results as stale for assistive technology while a newer query is
    *  still running. Deliberately has no visual effect: the results stay fully
-   *  opaque and readable, and the spinner next to the search field carries the
+   *  opaque and readable, and the outline around the search field carries the
    *  visual signal instead. Dimming the text here would drop it below the WCAG
    *  1.4.3 contrast floor. */
   isPending?: boolean;

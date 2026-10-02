@@ -150,29 +150,42 @@ describe("<AllTemplates /> (route: /templates)", () => {
     });
   });
 
-  it("shows a spinner next to the search field only while a search runs, then the hit summary", async () => {
+  it("outlines the search field only while a search runs, then shows the hit summary", async () => {
     mockCorpus();
     const client = installClient(deferrableClient());
 
     const { user } = await renderTemplatesRoute();
     await waitFor(() => expect(screen.queryByText(/Indekserer innhold/)).toBeNull());
     // An empty box: nothing in flight, nothing to summarise.
-    expect(screen.queryByTitle("Søker")).toBeNull();
+    expect(screen.queryByTestId("search-activity")).toBeNull();
     expect(screen.queryByText(/Frasen du søker på/)).toBeNull();
 
     await user.type(screen.getByRole("searchbox"), "Hei");
 
-    // First search running: the spinner, but no summary and no tab count yet.
-    await waitFor(() => expect(screen.getByTitle("Søker")).toBeTruthy());
+    // First search running: the outline, but no summary and no tab count yet.
+    await waitFor(() => expect(screen.getByTestId("search-activity")).toBeTruthy());
     expect(screen.queryByText(/Frasen du søker på/)).toBeNull();
     expect(screen.getByRole("tab", { name: "Innhold" })).toBeTruthy();
 
     await act(async () => client.release());
 
     await waitFor(() => expect(screen.getByText(/Frasen du søker på er brukt i/)).toBeTruthy());
-    expect(screen.queryByTitle("Søker")).toBeNull();
+    expect(screen.queryByTestId("search-activity")).toBeNull();
     expect(screen.getByRole("tab", { name: /^Innhold\s*\d+$/ })).toBeTruthy();
     expect(screen.queryByText(/Søker i innholdet/)).toBeNull();
+  });
+
+  it("outlines the search field while the corpus is indexing, and shows no spinner", async () => {
+    getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevDescriptions : redigerbarDescriptions),
+    );
+    getAllTemplateDocumentation.queryFn.mockReturnValue(new Promise(() => undefined));
+
+    await renderTemplatesRoute();
+
+    expect(await screen.findByText("Indekserer innhold …")).toBeTruthy();
+    expect(screen.getByTestId("search-activity").getAttribute("aria-hidden")).toBe("true");
+    expect(screen.queryByTitle(/Søker|Indekserer/)).toBeNull();
   });
 
   it("keeps the previous summary unchanged while the next search runs", async () => {
@@ -187,7 +200,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
 
     await user.type(screen.getByRole("searchbox"), "{Backspace}");
 
-    await waitFor(() => expect(screen.getByTitle("Søker")).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId("search-activity")).toBeTruthy());
     expect(screen.getByText(/Frasen du søker på er brukt i/)).toBeTruthy();
     expect(screen.queryByText(/Søker i innholdet/)).toBeNull();
   });
@@ -219,7 +232,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     expect(screen.getByRole("heading", { name: "Automatiske brev" })).toBeTruthy();
 
     await user.type(screen.getByRole("searchbox"), "Hei");
-    await waitFor(() => expect(screen.getByTitle("Søker")).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId("search-activity")).toBeTruthy());
     expect(screen.getByRole("heading", { name: "Automatiske brev" })).toBeTruthy();
 
     await act(async () => client.release());
@@ -233,12 +246,12 @@ describe("<AllTemplates /> (route: /templates)", () => {
     const { user } = await renderTemplatesRoute();
     await waitFor(() => expect(screen.queryByText(/Indekserer innhold/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "Hei");
-    await waitFor(() => expect(screen.getByTitle("Søker")).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId("search-activity")).toBeTruthy());
 
     await act(async () => client.fail());
 
     await waitFor(() => expect(screen.getByText(/Søket kunne ikke gjennomføres/)).toBeTruthy());
-    expect(screen.queryByTitle("Søker")).toBeNull();
+    expect(screen.queryByTestId("search-activity")).toBeNull();
     expect(screen.queryByText("Ingen treff i innholdet")).toBeNull();
   });
 

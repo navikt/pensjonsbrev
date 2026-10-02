@@ -174,7 +174,7 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // query mode, so it never re-triggers a reindex in the worker.
   // While `isLoading` is true, some malType's corpus hasn't arrived yet, so we
   // skip building entirely rather than repeatedly indexing a partial corpus
-  // that no one can search yet (the UI shows a loading spinner instead).
+  // that no one can search yet (the UI shows "Indekserer innhold …" instead).
   // biome-ignore lint/correctness/useExhaustiveDependencies: `queries` is a new array every render; `freshnessKey` captures the data we actually depend on.
   const corpus = useMemo<Corpus | undefined>(() => {
     if (isLoading) {
@@ -275,7 +275,7 @@ export function useTemplateSearch(templates: TemplateRef[], searchClient?: Searc
   // of what it returned. All three mean "what you see is older than what you
   // typed". Only counted when a search is involved, though: typing the first
   // character into an empty box also defers a render, but nothing is searched
-  // and nothing on screen changes, so it should not flash a spinner.
+  // and nothing on screen changes, so it should not flash the search outline.
   const involvesSearch = isSearchQuery(query.trim()) || shown.displayed !== undefined;
   const isPending = involvesSearch && (query !== deferredQuery || isAwaitingHits || isRenderingHits);
   const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError);
