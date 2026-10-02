@@ -59,11 +59,11 @@ data class InnvilgelseAvAfpInnhold(
             text(
                 bokmal {
                     +"Du er innvilget AFP i privat sektor. " +
-                            "Du får " + totalPensjon.format()  + " hver måned før skatt fra " + virkningFom.format() + "."
+                            "Du får " + totalPensjon.format() + " hver måned før skatt fra " + virkningFom.format() + "."
                 },
                 nynorsk {
                     +"Du er innvilga AFP i privat sektor. " +
-                            "Du får " + totalPensjon.format()  + " kvar månad før skatt frå " + virkningFom.format() + "."
+                            "Du får " + totalPensjon.format() + " kvar månad før skatt frå " + virkningFom.format() + "."
                 },
                 english {
                     +""
@@ -76,7 +76,7 @@ data class InnvilgelseAvAfpInnhold(
                 paragraph {
                     text(
                         bokmal { +"Av dette er AFP kronetillegget " + brutto.format() + " i måneden. Dette tillegget får du bare til og med den måneden du fyller 67 år." },
-                        nynorsk { +"Av dette er AFP kronetillegget " + brutto.format() + " i månaden. Dette tillegget får du bare til og med den måneden du fyller 67 år."  },
+                        nynorsk { +"Av dette er AFP kronetillegget " + brutto.format() + " i månaden. Dette tillegget får du bare til og med den måneden du fyller 67 år." },
                         english { +" " + brutto.format() + "." },
                     )
                 }
@@ -86,7 +86,7 @@ data class InnvilgelseAvAfpInnhold(
         paragraph {
             text(
                 bokmal { +"AFP blir utbetalt samtidig som alderspensjonen senest den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL." },
-                nynorsk { +"AFP blir utbetalt samtidig som alderspensjonen seinast den 20. kvar månad. Du finn oversikt over utbetalingane dine på $UTBETALINGER_URL."  },
+                nynorsk { +"AFP blir utbetalt samtidig som alderspensjonen seinast den 20. kvar månad. Du finn oversikt over utbetalingane dine på $UTBETALINGER_URL." },
                 english { +"" },
             )
         }
@@ -117,7 +117,7 @@ data class InnvilgelseAvAfpInnhold(
             )
         }
 
-        showIf(brukerUnder70Aar)    {
+        showIf(brukerUnder70Aar) {
             title2 {
                 text(
                     bokmal { +"AFP i privat sektor og alderspensjon fra folketrygden " },
@@ -162,7 +162,7 @@ data class InnvilgelseAvAfpInnhold(
             }
         }
 
-        showIf(brukerUnder70Aar){  //TODO: Etterbetaling?
+        showIf(brukerUnder70Aar){ //TODO: Etterbetaling?
             title2 {
                 text(
                     bokmal { +"Etterbetaling" },
@@ -276,351 +276,6 @@ data class InnvilgelseAvAfpInnhold(
                             "Om du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed. " },
                     english { +"" },
                 )
-            }
-        }
-
-
-
-        showIf(brukerUnder70Aar) { //TODO: ETTERBETALNG
-            title2() {
-                text(
-                    bokmal { +"Oversikt over hva du får fra etterbetaling.virkningFom " },
-                    nynorsk { +"Oversikt over kva du får frå etterbetaling.virkningFom" },
-                    english { +"" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert i perioden, kan dette endre hvor mye du får." },
-                    nynorsk { +"Om det har vore endringar i nokre av opplysningane som ligg til grunn for berekninga eller pensjonen har vært regulert i perioden, kan dette endre kor mykje du får." },
-                    english { +"" },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal { +"Din AFP per måned fra :" },
-                    nynorsk { +"AFP per månad blir slik:" },
-                    english { +"Your monthly contractual pension will be:" },
-                )
-                table(
-                    header = {
-                        column {
-                            text(
-                                bokmal { +"Beløp per måned" },
-                                nynorsk { +"Beløp per månad" },
-                                english { +"Amount per month" },
-                            )
-                        }
-                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                            text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
-                        }
-                    },
-                ) {
-                    ifNotNull(livsvarigBrutto) { brutto ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP livsvarig del" },
-                                    nynorsk { +"AFP livsvarig del" },
-                                    english { +"Contractual pension, lifelong amount" },
-                                )
-                            }
-                            cell { includePhrase(KronerText(brutto)) }
-                        }
-                    }
-                    ifNotNull(kronetilleggBrutto) { brutto ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP kronetillegg" },
-                                    nynorsk { +"AFP-kronetillegg" },
-                                    english { +"Contractual pension, NOK supplement" },
-                                )
-                            }
-                            cell { includePhrase(KronerText(brutto)) }
-                        }
-                    }
-                    ifNotNull(kompensasjonstilleggBrutto) { brutto ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
-                                    nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
-                                    english { +"Contractual pension, compensation supplement (tax-free)" },
-                                )
-                            }
-                            cell { includePhrase(KronerText(brutto)) }
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Sum AFP før skatt" },
-                                nynorsk { +"Sum AFP før skatt" },
-                                english { +"Total contractual pension before tax" },
-                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
-                            )
-                        }
-                        cell { includePhrase(
-                            KronerText(
-                                totalPensjon,
-                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                            )
-                        ) }
-                    }
-                }
-            }
-
-        }
-
-        //TODO: Her trenger jeg en gjennomgang av etterbetalingstabellen
-
-        // Tabell: "Beløp per måned" — restaurert fra de flate text(...)-blokkene i konverteren
-        // (Step 5 i convert-exstream-letter). Konvertert til ekte table med betinget rad per komponent.
-        paragraph {
-            text(
-                bokmal { +"Din AFP per måned blir slik:" },
-                nynorsk { +"AFP per månad blir slik:" },
-                english { +"Your monthly contractual pension will be:" },
-            )
-            table(
-                header = {
-                    column {
-                        text(
-                            bokmal { +"Beløp per måned" },
-                            nynorsk { +"Beløp per månad" },
-                            english { +"Amount per month" },
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
-                    }
-                },
-            ) {
-                ifNotNull(livsvarigBrutto) { brutto ->
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"AFP livsvarig del" },
-                                nynorsk { +"AFP livsvarig del" },
-                                english { +"Contractual pension, lifelong amount" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(brutto)) }
-                    }
-                }
-                ifNotNull(kronetilleggBrutto) { brutto ->
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"AFP kronetillegg" },
-                                nynorsk { +"AFP-kronetillegg" },
-                                english { +"Contractual pension, NOK supplement" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(brutto)) }
-                    }
-                }
-                ifNotNull(kompensasjonstilleggBrutto) { brutto ->
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
-                                nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
-                                english { +"Contractual pension, compensation supplement (tax-free)" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(brutto)) }
-                    }
-                }
-                row {
-                    cell {
-                        text(
-                            bokmal { +"Sum AFP før skatt" },
-                            nynorsk { +"Sum AFP før skatt" },
-                            english { +"Total contractual pension before tax" },
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
-                        )
-                    }
-                    cell { includePhrase(
-                        KronerText(
-                            totalPensjon,
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                        )
-                    ) }
-                }
-            }
-        }
-
-        title2 {
-            text(
-                bokmal { +"Slik har vi beregnet din AFP" },
-                nynorsk { +"Slik har vi berekna AFP-en din" },
-                english { +"" },
-            )
-        }
-
-        paragraph {
-            text(
-                bokmal { +"AFP livsvarig del:" },
-                nynorsk { +"AFP livsvarig del:" },
-                english { +"" },
-                fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-            )
-            text(
-                bokmal { +"Grunnlaget for beregning av AFP er den årlige pensjonsgivende inntekten din opp til 7,1 G (grunnbeløp i folketrygden). " +
-                        "Det gis opptjening til og med det året du fyller 61 år. " +
-                        "AFP livsvarig del er 0,314 prosent av samlet grunnlag." },
-                nynorsk { +"Grunnlaget for berekning av AFP er den årlege pensjonsgivande inntekta di opp til 7,1 G (grunnbeløp i folketrygda). " +
-                        "Du får opptening til og med det året du fyller 61 år. " +
-                        "AFP Livsvarig del er 0,314 prosent av samla grunnlag." },
-                english { +"" },
-            )
-        }
-
-        paragraph {
-            text(
-                bokmal { +"AFP livsvarig del er levealdersjustert. " +
-                        "Det er fordi vi lever lenger, og pensjonen skal fordeles over flere år. Hvert årskull får fastsatt et forholdstall. " +
-                        "Tallet brukes for å beregne fordelingen av pensjonen din på det som er igjen av forventet levetid for årskullet ditt." },
-                nynorsk { +"AFP livsvarig del er levealdersjustert. " +
-                        "Det er fordi vi lever lenger, og pensjonen skal fordelast over fleire år. Kvart årskull får fastsett eit forholdstal. " +
-                        "Talet blir brukt for å berekne fordelinga av pensjonen din på det som er att av forventa levetid for årskullet ditt. " },
-                english { +"" },
-            )
-        }
-
-        ifNotNull(kronetilleggBrutto) { brutto ->
-            showIf(brutto.greaterThan(0)) {
-                paragraph {
-                    text(
-                        bokmal { +"Kronetillegg:" },
-                        nynorsk { +"Kronetillegg:" },
-                        english { +"" },
-                        fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                    )
-                    text(
-                        bokmal { +"Du får en utbetalt en høyere andel av AFP-en din fram til du blir 67 år. " +
-                                "Dette kronetillegget er normalt 1 600 kroner i måneden og utbetales til og med den måneden du fyller 67 år. " +
-                                "Hvis livsvarig del av AFP er lav, kan kronetillegget bli lavere eller ikke bli utbetalt. " +
-                                "Ved utbetaling av kronetillegg vil den livsvarige delen av AFP reduseres ved hjelp av et justeringsbeløp. " +
-                                "Reduksjonen vil gjelde resten av tiden som pensjonist." },
-                        nynorsk { +"Du får en utbetalt ein høgare del av AFP-en din fram til du blir 67 år. " +
-                                "Dette kronetillegget er normalt 1 600 kroner i månaden og blir utbetalt til og med den månaden du fyller 67 år. " +
-                                "Om livsvarig del av AFP er låg, kan kronetillegget bli lågare eller ikkje bli utbetalt. " +
-                                "Ved utbetaling av kronetillegg vil den livsvarige delen av AFP reduserast ved hjelp av eit justeringsbeløp. " +
-                                "Reduksjonen vil gjelde resten av tida som pensjonist." },
-                        english { +"" },
-                    )
-                }
-            }
-        }
-
-        ifNotNull(kompensasjonstilleggBrutto) { brutto ->
-            showIf(brutto.greaterThan(0)) {
-                paragraph {
-                    text(
-                        bokmal { +"Kompensasjonstillegg:" },
-                        nynorsk { +"Kompensasjonstillegg:" },
-                        english { +"" },
-                        fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-                    )
-                    text(
-                        bokmal { +"Årskullene 1944-1962 får et kompensasjonstillegg til AFP. " +
-                                "Dette tillegget kompenserer for at disse årskullene har begrenset mulighet til å få høyere pensjon ved å jobbe lenger. " +
-                                "Kompensasjonstillegget fastsettes med utgangspunkt i et referansebeløp, " +
-                                "og blir delt på et eget forholdstall for kompensasjonstillegget." },
-                        nynorsk { +"Årskulla 1944-1962 får eit kompensasjonstillegg til AFP. " +
-                                "Dette tillegget kompenserer for at desse årskulla har avgrensa høve til å få høgare pensjon ved å jobbe lenger. " +
-                                "Kompensasjonstillegget blir fastsett med utgangspunkt i eit referansebeløp, " +
-                                "og blir delt på eit eige forholdstal for kompensasjonstillegget.  " },
-                        english { +"" },
-                    )
-                }
-            }
-        }
-
-        paragraph {
-            text(
-                bokmal { +"Opplysninger brukt i beregningen av din AFP" },
-                nynorsk { +"" },
-                english { +"" },
-            )
-            table(
-                header = {
-                    column {
-                        text(
-                            bokmal { +"Beløp per måned" },
-                            nynorsk { +"Beløp per månad" },
-                            english { +"Amount per month" },
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
-                    }
-                },
-            ) {
-                ifNotNull(livsvarigBrutto) { opptjening -> //TODO: Afp opptjening
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"AFP-opptjening" },
-                                nynorsk { +"" },
-                                english { +"" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(opptjening)) }
-                    }
-                }
-                ifNotNull(kronetilleggBrutto) { forholdstall -> //TODO: AfpLivsvarig.forholdstall ved uttak
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Forholdstall ved uttak" },
-                                nynorsk { +"" },
-                                english { +"" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(forholdstall)) }
-                    }
-                }
-                ifNotNull(kronetilleggBrutto) { justeringsbeloep -> //TODO: hentSatserForAFP.justeringsbeloep
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Justeringsbeløp" },
-                                nynorsk { +"" },
-                                english { +"" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(justeringsbeloep)) }
-                    }
-                }
-                ifNotNull(kompensasjonstilleggBrutto) { referansebelop-> //TODO: hentSatserForAFP.referansebelop
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Referansebeløp" },
-                                nynorsk { +"" },
-                                english { +"" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(referansebelop)) }
-                    }
-                }
-                ifNotNull(kompensasjonstilleggBrutto) { forholdstall -> //TODO: hentSatserForAFP.forholdstall
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Forholdstall" },
-                                nynorsk { +"" },
-                                english { +"" },
-                            )
-                        }
-                        cell { includePhrase(KronerText(forholdstall)) }
-                    }
-                }
             }
         }
     }

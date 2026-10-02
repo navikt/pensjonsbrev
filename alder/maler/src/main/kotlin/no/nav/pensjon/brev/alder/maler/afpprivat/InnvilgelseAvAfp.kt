@@ -1,10 +1,12 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAaKlageAfpPrivat
 import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDinAfpPrivatBeregning
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOversiktOverPensjonenAfpPrivat
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
@@ -24,6 +26,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.p
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.totalPensjon
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.bosattINorge
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.brukerUnder70Aar
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.dinAfpPrivatBeregning
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling.harEtterbetaling
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling.virkningTom
@@ -106,6 +109,8 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
             includePhrase(RettTilAaKlageAfpPrivat)
             includePhrase(HarDuSpoersmaal.alder)
         }
+
+        includeAttachment(vedleggDinAfpPrivatBeregning, pesysData.dinAfpPrivatBeregning)
 
         // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når vedtaket har flere
         // beregningsperioder (i Exstream: BeregningAntallPerioder > 1).

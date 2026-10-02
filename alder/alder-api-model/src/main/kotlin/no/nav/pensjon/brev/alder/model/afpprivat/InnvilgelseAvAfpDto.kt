@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto.Etterbetaling
+import no.nav.pensjon.brev.alder.model.vedlegg.DinAfpPrivatBeregningDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -48,6 +49,22 @@ data class InnvilgelseAvAfpDto(
         val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
 
         val etterbetaling: Etterbetaling,
+        val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto = DinAfpPrivatBeregningDto(
+            brukerUnder70Aar = brukerUnder70Aar,
+            bosattINorge = bosattINorge,
+            totalPensjon = afpBeregning.totalPensjon,
+            livsvarigBrutto = afpBeregning.livsvarigBrutto,
+            kronetilleggBrutto = afpBeregning.kronetilleggBrutto,
+            kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
+            opptjening = afpBeregning.opptjening,
+            forholdstallUttak = afpBeregning.forholdstallUttak,
+            justeringsbeloep = afpBeregning.justeringsbeloep,
+            referansebeloep = afpBeregning.referansebeloep,
+            kompensasjonstilleggForholdstall = afpBeregning.kompensasjonstilleggForholdstall,
+            harEtterbetaling = etterbetaling.harEtterbetaling,
+            etterbetalingVirkningFom = etterbetaling.virkningFom,
+            etterbetalingVirkningTom = etterbetaling.virkningTom,
+        ),
     ) : FagsystemBrevdata {
 
         data class AfpBeregning(
