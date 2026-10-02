@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto.Etterbetaling
+import no.nav.pensjon.brev.alder.model.vedlegg.DinAfpPrivatBeregningDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -45,6 +47,24 @@ data class InnvilgelseAvAfpDto(
         // den redigerbare malen `InnvilgelseAvAfp` (PE_AF_04_111); autobrevet
         // (PE_AF_04_115) inkluderer ikke vedlegget.
         val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
+
+        val etterbetaling: Etterbetaling,
+        val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto = DinAfpPrivatBeregningDto(
+            brukerUnder70Aar = brukerUnder70Aar,
+            bosattINorge = bosattINorge,
+            totalPensjon = afpBeregning.totalPensjon,
+            livsvarigBrutto = afpBeregning.livsvarigBrutto,
+            kronetilleggBrutto = afpBeregning.kronetilleggBrutto,
+            kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
+            opptjening = afpBeregning.opptjening,
+            forholdstallUttak = afpBeregning.forholdstallUttak,
+            justeringsbeloep = afpBeregning.justeringsbeloep,
+            referansebeloep = afpBeregning.referansebeloep,
+            kompensasjonstilleggForholdstall = afpBeregning.kompensasjonstilleggForholdstall,
+            harEtterbetaling = etterbetaling.harEtterbetaling,
+            etterbetalingVirkningFom = etterbetaling.virkningFom,
+            etterbetalingVirkningTom = etterbetaling.virkningTom,
+        ),
     ) : FagsystemBrevdata {
 
         data class AfpBeregning(
@@ -70,6 +90,18 @@ data class InnvilgelseAvAfpDto(
             // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKompensasjonstillegg AFPKompBrutto)
             // Tilstede ⇔ PE_..._AFPKompensasjonstillegg_AFPKompInnvilget = true
             val kompensasjonstilleggBrutto: BrevbakerType.Kroner?,
+
+            val opptjening: BrevbakerType.Kroner,
+            val forholdstallUttak: Double,
+            val justeringsbeloep: BrevbakerType.Kroner?,
+            val referansebeloep: BrevbakerType.Kroner?,
+            val kompensasjonstilleggForholdstall: Double?,
+        )
+
+        data class Etterbetaling(
+            val harEtterbetaling: Boolean,
+            val virkningFom: LocalDate?,
+            val virkningTom: LocalDate?,
         )
 
     }

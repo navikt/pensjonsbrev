@@ -1,8 +1,12 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAaKlageAfpPrivat
+import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDinAfpPrivatBeregning
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOversiktOverPensjonenAfpPrivat
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
@@ -11,12 +15,22 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.forholdstallUttak
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.justeringsbeloep
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.kompensasjonstilleggBrutto
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.kompensasjonstilleggForholdstall
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.kronetilleggBrutto
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.livsvarigBrutto
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.opptjening
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.referansebeloep
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.afpBeregning.totalPensjon
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.bosattINorge
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.brukerUnder70Aar
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.dinAfpPrivatBeregning
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling.harEtterbetaling
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling.virkningTom
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling.virkningFom
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.kravMottattDato
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.oversiktOverPensjonen
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.virkningFom
@@ -64,8 +78,8 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
     ) {
         title {
             text(
-                bokmal { +"Søknaden din om avtalefestet pensjon (AFP) i privat sektor er innvilget – melding om vedtak" },
-                nynorsk { +"Søknaden din om avtalefesta pensjon (AFP) i privat sektor er innvilga – melding om vedtak" },
+                bokmal { +"Nav har innvilget søknaden din om avtalefestet pensjon (AFP) i privat sektor" },
+                nynorsk { +"Nav har innvilga søknaden din om avtalefesta pensjon (AFP) i privat sektor" },
                 english { +"Your application for contractual pension (AFP) in the private sector has been granted - notification of decision" },
             )
         }
@@ -81,10 +95,22 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
                     kompensasjonstilleggBrutto = pesysData.afpBeregning.kompensasjonstilleggBrutto,
                     brukerUnder70Aar = pesysData.brukerUnder70Aar,
                     bosattINorge = pesysData.bosattINorge,
+                    opptjening = pesysData.afpBeregning.opptjening,
+                    forholdstallUttak = pesysData.afpBeregning.forholdstallUttak,
+                    justeringsbeloep = pesysData.afpBeregning.justeringsbeloep,
+                    referansebeloep = pesysData.afpBeregning.referansebeloep,
+                    kompensasjonstilleggForholdstall = pesysData.afpBeregning.kompensasjonstilleggForholdstall,
+                    harEtterbetaling = pesysData.etterbetaling.harEtterbetaling,
+                    etterbetalingVirkningFom = pesysData.etterbetaling.virkningFom,
+                    etterbetalingVirkningTom = pesysData.etterbetaling.virkningTom,
                 ),
             )
+            includePhrase(RettigheterPersonopplysninger)
+            includePhrase(RettTilAaKlageAfpPrivat)
             includePhrase(HarDuSpoersmaal.alder)
         }
+
+        includeAttachment(vedleggDinAfpPrivatBeregning, pesysData.dinAfpPrivatBeregning)
 
         // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når vedtaket har flere
         // beregningsperioder (i Exstream: BeregningAntallPerioder > 1).

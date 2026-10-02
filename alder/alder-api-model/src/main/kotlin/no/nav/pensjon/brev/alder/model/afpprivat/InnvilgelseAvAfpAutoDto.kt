@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.alder.model.vedlegg.DinAfpPrivatBeregningDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import java.time.LocalDate
 
@@ -30,6 +31,24 @@ data class InnvilgelseAvAfpAutoDto(
     val bosattINorge: Boolean,
 
     val afpBeregning: AfpBeregning,
+
+    val etterbetaling: Etterbetaling,
+    val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto = DinAfpPrivatBeregningDto(
+        brukerUnder70Aar = brukerUnder70Aar,
+        bosattINorge = bosattINorge,
+        totalPensjon = afpBeregning.totalPensjon,
+        livsvarigBrutto = afpBeregning.livsvarigBrutto,
+        kronetilleggBrutto = afpBeregning.kronetilleggBrutto,
+        kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
+        opptjening = afpBeregning.opptjening,
+        forholdstallUttak = afpBeregning.forholdstallUttak,
+        justeringsbeloep = afpBeregning.justeringsbeloep,
+        referansebeloep = afpBeregning.referansebeloep,
+        kompensasjonstilleggForholdstall = afpBeregning.kompensasjonstilleggForholdstall,
+        harEtterbetaling = etterbetaling.harEtterbetaling,
+        etterbetalingVirkningFom = etterbetaling.virkningFom,
+        etterbetalingVirkningTom = etterbetaling.virkningTom,
+    ),
 ) : AutobrevData {
 
     data class AfpBeregning(
@@ -55,5 +74,17 @@ data class InnvilgelseAvAfpAutoDto(
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKompensasjonstillegg AFPKompBrutto)
         // Tilstede ⇔ PE_..._AFPKompensasjonstillegg_AFPKompInnvilget = true
         val kompensasjonstilleggBrutto: BrevbakerType.Kroner?,
+
+        val opptjening: BrevbakerType.Kroner,
+        val forholdstallUttak: Double,
+        val justeringsbeloep: BrevbakerType.Kroner?,
+        val referansebeloep: BrevbakerType.Kroner?,
+        val kompensasjonstilleggForholdstall: Double?,
+    )
+
+    data class Etterbetaling(
+        val harEtterbetaling: Boolean,
+        val virkningFom: LocalDate?,
+        val virkningTom: LocalDate?,
     )
 }
