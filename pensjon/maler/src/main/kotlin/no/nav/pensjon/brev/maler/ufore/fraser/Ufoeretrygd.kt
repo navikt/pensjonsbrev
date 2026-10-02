@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -695,6 +696,26 @@ object Ufoeretrygd {
             }
         }
     }
+
+    data class EtterbetalingUforetrygd(
+        val virkningsdato: Expression<LocalDate>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Etterbetaling av uføretrygd" },
+                    nynorsk { +"Etterbetaling av uføretrygd" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du får etterbetalt uføretrygd fra " + virkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
+                    nynorsk { +"Du får etterbetalt uføretrygd frå " + virkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju vyrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
+                )
+            }
+        }
+    }
+
 
     private class BarnetBarnaFormatter(private val storBokstav: Boolean = false) : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>() {
         override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTidDto, second: Language): String {

@@ -1794,18 +1794,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
-                title1 {
-                    text(
-                        bokmal { +"Etterbetaling av uføretrygd" },
-                        nynorsk { +"Etterbetaling av uføretrygd" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Du får etterbetalt uføretrygd fra " + onsketvirkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-                        nynorsk { +"Du får etterbetalt uføretrygd frå " + onsketvirkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju vyrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
-                    )
-                }
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
