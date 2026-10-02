@@ -18,7 +18,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Vi viser til klagen av "
                     +fritekst("dato") + " på vedtak av "
                     +fritekst("dato") + " der klager ble innvilget "
-                    +fritekst("X prosent") + " uføretrygd fra "
+                    +fritekst("antall") + " prosent uføretrygd fra "
                     +fritekst("dato") + ". "
                     +"Klagefristen er overholdt."
                 })
@@ -51,7 +51,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                 text(bokmal {
                     +"Vi viser til klagen av "
                     +fritekst("dato") + " på vedtak av "
-                    +fritekst("dato") + " der klager fikk avslag på søknad om uføretrygd fordi inntektsevnen ikke var nedsatt med minst 30/40/50 prosent. "
+                    +fritekst("dato") + " der klager fikk avslag på søknad om uføretrygd fordi inntektsevnen ikke var nedsatt med minst "
+                    +fritekst("30/40/50") + " prosent. "
                     +"Klagefristen er overholdt."
                 })
             }
@@ -281,7 +282,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             includePhrase(NedsattInntektsevneHvaKlagesakenGjelder)
 
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-7 – nedsatt inntektsevne." }) }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-7 – nedsatt inntektsevne." }) }
 
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
@@ -319,7 +320,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Uføretidspunktet er fastsatt til "
                     +fritekst("dato") + "."
                 })
-                text(bokmal { +"Hvis uføretidspunktet er påklaget, hent mal fra §12-8." }, ITALIC)
+                text(bokmal { +"Hvis uføretidspunktet er påklaget, hent mal fra § 12-8." }, ITALIC)
             }
             paragraph {
                 text(bokmal {
@@ -336,7 +337,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Dette vil ikke nødvendigvis tilsvare den faktiske inntekten på virkningstidspunktet. "
                     +"Hvis vedkommende har inntektsmuligheter som ikke utnyttes, skal disse medregnes ved fastsettelsen av IEU. "
                     +"Dette betyr at IEU kan settes til et høyere nivå enn den faktiske inntekten. "
-                    +"IEU er fastsatt til XXX"
+                    +"IEU er fastsatt til "
+                    +fritekst("antall") + " kroner."
                 })
             }
 
@@ -388,7 +390,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             includePhrase(InnvilgetUfoeretrygd)
 
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-9 – fastsettelse av inntekt før uførhet." }) }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-9 – fastsettelse av inntekt før uførhet." }) }
 
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
@@ -413,7 +415,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             includePhrase(InnvilgetUfoeretrygd)
 
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-9 – fastsettelse av inntekt før uførhet." }) }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-9 – fastsettelse av inntekt før uførhet." }) }
 
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
@@ -438,7 +440,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             includePhrase(InnvilgetUfoeretrygd)
 
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-10 – fastsettelse av uføregrad." }) }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-10 – fastsettelse av uføregrad." }) }
 
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
@@ -480,7 +482,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Klagefristen er overholdt."
                 })
             }
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §12-11 – beregning av uføretrygd." }) }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-11 – beregning av uføretrygd." }) }
 
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
@@ -761,7 +763,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Barnetillegg kan gis når den uføretrygdede forsørger barn under 18 år. "
                     +"Med forsørgelse menes at barnet er bosatt hos den uføretrygdede, eller at vedkommende på annen måte bidrar til forsørgelsen av barnet. "
                     +"Skriftlig bidragsavtale eller fastsatt bidrag via Nav regnes som forsørgelse av barnet. "
-                    +"Når foreldrene har avtale om vanlig samværsrett, slik det kommer frem av barnelova §43, likestilles dette med forsørgelse. "
+                    +"Når foreldrene har avtale om vanlig samværsrett, slik det kommer frem av barnelova § 43, likestilles dette med forsørgelse. "
                     +"Det gis imidlertid ikke barnetillegg for ektefelle/samboers særkullsbarn selv om den uføretrygdede bidrar til forsørgelsen av barnet."
                 })
             }
@@ -810,7 +812,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Vi viser til klagen av "
                     +fritekst("dato") + " på vedtak av "
                     +fritekst("dato") + " der klager fikk "
-                    +fritekst("XXX") + " etter særbestemmelsene ved yrkesskade. "
+                    +fritekst("antall") + " kroner etter særbestemmelsene ved yrkesskade. "
                     +"Klagefristen er overholdt."
                 })
             }
