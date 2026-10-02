@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object OktBunnfradragInst {
 
@@ -186,11 +187,13 @@ object OktBunnfradragInst {
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. " },
-                    nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad. " },
-                )
+            showIf(data.uforetrygd.greaterThan(0) or data.gjenlevendetillegg.ifNull(Kroner(0)).greaterThan(0) or data.barnetillegg.ifNull(Kroner(0)).greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. " },
+                        nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad. " },
+                    )
+                }
             }
 
             title1 {
@@ -339,6 +342,36 @@ object OktBunnfradragInst {
                             )
                         }
                     }
+                }
+            }
+
+            showIf((data.redusertBtfb or data.redusertBtsb) and data.endringGjt) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12. " },
+                        nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12. " },
+                    )
+                }
+            }.orShowIf(data.redusertBtfb or data.redusertBtsb) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14 til 12-16 og 22-12. " },
+                        nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14 til 12-16 og 22-12. " },
+                    )
+                }
+            }.orShowIf(data.endringGjt) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14, 12-18 og 22-12. " },
+                        nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14, 12-18 og 22-12. " },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14 og 22-12. " },
+                        nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14 og 22-12. " },
+                    )
                 }
             }
         }

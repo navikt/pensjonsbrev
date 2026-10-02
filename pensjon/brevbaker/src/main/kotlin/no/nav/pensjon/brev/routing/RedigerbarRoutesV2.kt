@@ -42,9 +42,9 @@ fun Route.redigerbarRoutesV2(
         }
 
         post<BestillRedigertBrevRequestV2<Brevkode.Redigerbart>>("/pdf") { brevbestilling ->
-            installBrevkodeInCallContext(brevbestilling.kode)
+            installBrevkodeInCallContext(brevbestilling.redigerbartBrev.kode)
             call.respond(redigerbareBrev.renderPDFV2(brevbestilling))
-            countLetter(brevbestilling.kode)
+            countLetter(brevbestilling.redigerbartBrev.kode)
         }
     }
 }

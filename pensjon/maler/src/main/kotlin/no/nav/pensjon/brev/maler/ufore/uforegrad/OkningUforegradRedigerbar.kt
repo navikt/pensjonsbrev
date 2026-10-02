@@ -5,16 +5,18 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.*
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU5005_Generated
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.InntektBarnetillegg
-import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.*
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -32,15 +34,12 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
-import no.nav.pensjon.brev.template.dsl.expression.localDateNow
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 
 @TemplateModelHelpers
 object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
-
-    override val featureToggle = FeatureToggles.brevmalUtOkningUforegrad.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_OKNING_UFOREGRAD
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -115,8 +114,8 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                 )
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().isNotAnyOf("omgj_etter_klage", "omgj_etter_anke")) {
                     text(
-                        bokmal { +"Uføregraden din øker fra " + fritekst("Forrige uføregrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
-                        nynorsk { +"Uføregraden din aukar frå " + fritekst("Forrige uføregrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
+                        bokmal { +"Uføregraden din øker fra " + pesysData.forrigeUforegrad.format() + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
+                        nynorsk { +"Uføregraden din aukar frå " + pesysData.forrigeUforegrad.format() + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
                     )
                 }.orShow {
                     text(
@@ -637,8 +636,8 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
-                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
+                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + pesysData.forrigeUforetidspunkt.formatMonthYear() + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
+                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + pesysData.forrigeUforetidspunkt.formatMonthYear() + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
                 )
             }
 
@@ -837,7 +836,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                             nynorsk { +"Slik reknar vi ut fribeløpet ditt i år: " },
                         )
                     }
-                    includePhrase(OkningUforegradFraser(pesysData.fribelopsperioder, pesysData.vektetFribelop, pesysData.vektetFribelopKr))
+                    includePhrase(Fribelopsperioder(pesysData.fribelopsperioder, pesysData.fribelop))
                 }
             }.orShow {
                 showIf(pesysData.harVTA) {

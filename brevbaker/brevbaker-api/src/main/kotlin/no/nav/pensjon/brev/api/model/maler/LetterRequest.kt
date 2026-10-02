@@ -56,7 +56,7 @@ class BestillAutobrevRequest<T : Brevkode<T>>(
 
 class BestillRedigerbartBrevRequest<T : Brevkode<T>>(
     val kode: T,
-    val letterData: BrevbakerBrevdata,
+    val letterData: RedigerbarBrevdata<*>,
     val fagsystemBrevdata: FagsystemBrevdata,
     val saksbehandlervalg: SaksbehandlervalgIDSL,
     val felles: BrevbakerFelles,

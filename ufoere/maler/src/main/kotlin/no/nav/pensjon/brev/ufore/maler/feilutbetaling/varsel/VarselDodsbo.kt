@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
-import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -11,23 +10,21 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_FEILUTBETALING_VARSEL_DODSBO
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype.UFOREP
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingVarselDodsboDto.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingVarselDodsboDto.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.feilutbetaltBrutto
 import no.nav.pensjon.brev.ufore.maler.Brevkategori.FEILUTBETALING
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
-import no.nav.pensjon.brev.template.saksbehandlervalg
 
 @TemplateModelHelpers
 object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
-    override val featureToggle = FeatureToggles.feilutbetalingNy.toggle
-
     override val kode = UT_FEILUTBETALING_VARSEL_DODSBO
     override val kategori = FEILUTBETALING
     override val brevkontekst = VEDTAK

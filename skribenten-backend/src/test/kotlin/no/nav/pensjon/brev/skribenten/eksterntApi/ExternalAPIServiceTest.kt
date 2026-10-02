@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -94,15 +95,22 @@ class ExternalAPIServiceTest {
     @Test
     fun `modellen som blir returnert matcher med modellen i openapi-deklarasjonen`() {
         val yamlfil = Files.readAllLines(Paths.get("src/main/resources/openapi/external-api.yaml")).joinToString(System.lineSeparator()).replace($$"$ref", "ref")
-        val yaml = ObjectMapper(YAMLFactory()).registerModule(KotlinModule.Builder().build()).readValue(yamlfil, Yamlstruktur::class.java)
+        val yaml = ObjectMapper(YAMLFactory())
+            .registerModule(KotlinModule.Builder().build())
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .readValue(yamlfil, Yamlstruktur::class.java)
         val brevinfo = yaml.components.schemas.brevinfo.properties
 
         val parameters = ExternalAPI.BrevInfo::class.primaryConstructor!!.parameters
         parameters.forEach {
             val forventaType = finnForventaType(it)
+            val property = brevinfo[it.name]!!
+            val typer = property.type.orEmpty()
+            val erNullable = "null" in typer || property.oneOf.orEmpty().any { alternativ -> alternativ.type == listOf("null") }
 
-            assertThat(brevinfo[it.name]!!.type).`as`("typen til ${it.name}").isEqualTo(forventaType.first)
-            assertThat(brevinfo[it.name]!!.format).`as`("formatet til ${it.name}").isEqualTo(forventaType.second)
+            assertThat(typer.filterNot { type -> type == "null" }.singleOrNull()).`as`("typen til ${it.name}").isEqualTo(forventaType.first)
+            assertThat(property.format).`as`("formatet til ${it.name}").isEqualTo(forventaType.second)
+            assertThat(erNullable).`as`("nullable for ${it.name}").isEqualTo(it.type.isMarkedNullable)
         }
         assertThat(parameters.size).isEqualTo(brevinfo.size)
     }
@@ -162,10 +170,10 @@ class ExternalAPIServiceTest {
     )
 
     private fun finnForventaType(parameter: KParameter): Pair<String?, String?> = when (parameter.type.classifier as KClass<*>) {
-        Int::class, Long::class -> Pair("number", null)
+        Int::class, Long::class -> Pair("integer", null)
         String::class -> Pair("string", if (parameter.name == "url") "uri" else null)
         NavIdent::class -> Pair("string", null)
-        BrevId::class, SaksId::class, VedtaksId::class, JournalpostId::class -> Pair("number", "int64")
+        BrevId::class, SaksId::class, VedtaksId::class, JournalpostId::class -> Pair("integer", "int64")
         EnhetId::class -> Pair("string", null)
         SpraakKode::class -> Pair("string", null)
         RedigerbarBrevkode::class, LetterMetadata.Brevtype::class -> Pair("string", null)
@@ -202,7 +210,18 @@ class Yamlstruktur(
             data class OpprettetBrev(val type: String, val required: List<String>, val properties: Map<String, Property>)
             data class OpprettBrevRequest(val type: String, val required: List<String>, val properties: Map<String, Property>)
 
-            data class Property(val type: String?, val format: String? = null, val description: String?, val enum: List<String>?, val ref: String?, val additionalProperties: Map<String, String>?)
+            data class Property(
+                val type: List<String>?,
+                val format: String? = null,
+                val description: String?,
+                val enum: List<String>?,
+                val ref: String?,
+                val additionalProperties: Map<String, String>?,
+                val oneOf: List<Property>?,
+                val minLength: Int?,
+                val maxLength: Int?,
+                val default: Any?,
+            )
         }
 
         data class SecurityScheme(val type: String, val scheme: String, val bearerFormat: String, val description: String)

@@ -12,8 +12,8 @@ import {
 
 import { addElements, isTable, newLiteral, newRow } from "../actions/common";
 import { type Focus, type LetterEditorState, type TableCellIndex } from "../model/state";
-import { isEmptyContentList, isTableCellIndex } from "../model/utils";
-import { getCursorOffset } from "./caretUtils";
+import { isEmptyContentList, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
+import { ensureLineVisibleInScrollContainer, getCaretRect, getCursorOffset, parseLiteralIndex } from "./caretUtils";
 
 export type MoveResult = Focus;
 
@@ -114,6 +114,139 @@ export function verticalTableStep(focus: TableCellIndex, table: Table, direction
     return getValidVerticalTableFocus(focus, table, focus.rowIndex + 1);
   }
   return "exit";
+}
+
+// Looks up a DOM caret without changing focus or selection, preferring the standard browser API.
+function getCaretRangeAtCoordinates({ x, y }: { x: number; y: number }): Range | null {
+  if (document.caretPositionFromPoint) {
+    const position = document.caretPositionFromPoint(x, y);
+    if (!position) return null;
+    const range = document.createRange();
+    range.setStart(position.offsetNode, position.offset);
+    range.collapse(true);
+    return range;
+  }
+
+  // Compatibility fallback for browsers without caretPositionFromPoint, as in MDN's example.
+  return document.caretRangeFromPoint?.(x, y) ?? null;
+}
+
+/**
+ * Collects the rendered line fragments of editable text in a cell, excluding VARIABLE elements.
+ * Keeps each fragment's element and rectangle index so it can be measured again after scrolling.
+ */
+function editableLines(cell: Element) {
+  const lines: { element: HTMLElement; rect: DOMRect; rectIndex: number }[] = [];
+  const elements = cell.querySelectorAll<HTMLElement>('[contenteditable="true"][data-literal-index]');
+  for (const element of elements) {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const rects = Array.from(range.getClientRects());
+    for (const [rectIndex, rect] of rects.entries()) {
+      lines.push({ element, rect, rectIndex });
+    }
+  }
+  return lines;
+}
+
+/**
+ * Finds the Up/Down destination on the next rendered line, crossing cells only at a line boundary.
+ * Returns undefined for native movement within a span, or "exit" at the table boundary.
+ */
+export function getTableArrowNavigationFocus(
+  element: HTMLElement,
+  focus: TableCellIndex,
+  table: Table,
+  direction: "up" | "down",
+): Focus | "exit" | undefined {
+  const cell = element.closest("td, th");
+  const caret = getCaretRect();
+  if (!cell || !caret || !globalThis.getSelection()?.isCollapsed) {
+    return verticalTableStep(focus, table, direction);
+  }
+
+  let lines = editableLines(cell).filter(({ rect }) =>
+    direction === "up" ? rect.bottom <= caret.top + 1 : rect.top >= caret.bottom - 1,
+  );
+  const withinCell = lines.length > 0;
+  let fallback: Focus = focus;
+  // Only look in the adjacent row when this cell has no more editable lines in the requested direction.
+  if (!withinCell) {
+    const next = verticalTableStep(focus, table, direction);
+    if (next === "exit" || !isTableCellIndex(next)) return next;
+    fallback = next;
+    const target = Array.from(cell.closest("table")!.querySelectorAll<HTMLElement>("[data-literal-index]")).find(
+      (candidate) => {
+        const index = parseLiteralIndex(candidate);
+        return isTableCellIndex(index) && index.rowIndex === next.rowIndex && index.cellIndex === next.cellIndex;
+      },
+    );
+    const targetCell = target?.closest("td, th");
+    if (!targetCell) return fallback;
+    lines = editableLines(targetCell);
+  }
+
+  // Up enters the last editable line; Down enters the first.
+  let edge: (typeof lines)[number] | undefined;
+  for (const line of lines) {
+    if (!edge || (direction === "up" ? line.rect.bottom > edge.rect.bottom : line.rect.top < edge.rect.top)) {
+      edge = line;
+    }
+  }
+  if (!edge) return fallback;
+
+  const center = (edge.rect.top + edge.rect.bottom) / 2;
+  const distance = (rect: DOMRect) => Math.max(rect.left - caret.x, caret.x - rect.right, 0);
+  // Several editable spans can share a line. Choose the one nearest the caret's horizontal position.
+  let target = edge;
+  for (const line of lines) {
+    const onSameLine = line.rect.top <= center && line.rect.bottom >= center;
+    if (onSameLine && distance(line.rect) < distance(target.rect)) {
+      target = line;
+    }
+  }
+
+  // Diff-decorated literals contain display-only deleted text outside the caret model;
+  // use cell-level navigation until the attestant diff is dismissed.
+  if (target.element.dataset.diffVersion !== undefined) {
+    return verticalTableStep(focus, table, direction);
+  }
+
+  if (withinCell && target.element === element) return undefined;
+
+  // Point-based caret lookup requires a visible target. Scrolling changes viewport coordinates,
+  // so measure the target line again before looking up its text position.
+  // Up enters the last line of the target, Down the first — reveal exactly that line.
+  ensureLineVisibleInScrollContainer(target.element, direction === "up" ? "bottom" : "top");
+  const targetRange = document.createRange();
+  targetRange.selectNodeContents(target.element);
+  const rect = targetRange.getClientRects()[target.rectIndex];
+  // Clamp to the editable fragment when the destination line is shorter or contains non-editable text.
+  const x = Math.max(rect.left, Math.min(caret.x, rect.right));
+  const y = (rect.top + rect.bottom) / 2;
+  const range = getCaretRangeAtCoordinates({ x, y });
+  if (!range) return fallback;
+
+  // At an inline edge, the browser can return the parent boundary instead of a position inside the span.
+  if (range.startContainer === target.element.parentNode) {
+    const siblings = range.startContainer.childNodes;
+    const beforeTarget = siblings[range.startOffset] === target.element;
+    const afterTarget = siblings[range.startOffset - 1] === target.element;
+    if (beforeTarget || afterTarget) {
+      range.selectNodeContents(target.element);
+      range.collapse(beforeTarget);
+    }
+  }
+  if (!target.element.contains(range.startContainer)) return fallback;
+
+  // Focus restoration uses DOM offsets, including a leading zero-width space in non-empty text.
+  const literalIndex = parseLiteralIndex(target.element);
+  if (!literalIndex) return fallback;
+  targetRange.setEnd(range.startContainer, range.startOffset);
+  return {
+    ...literalIndex,
+    cursorPosition: target.element.textContent === ZERO_WIDTH_SPACE ? 0 : targetRange.toString().length,
+  };
 }
 
 /**
