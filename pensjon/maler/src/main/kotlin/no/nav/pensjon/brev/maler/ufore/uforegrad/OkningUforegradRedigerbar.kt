@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.uforegrad
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.pesysData
@@ -1479,7 +1480,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato < PE_VedtakFattetDato_minus_1mnd) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegradFraBeregning) and onsketvirkningsdato.legacyLessThan(pe.vedtakfattetdato_minus_1mnd()))) {
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
                 includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
             }
 

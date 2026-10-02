@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.endring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.barn_flyttet_ikke_avt_land
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land
@@ -1793,11 +1794,11 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 includePhrase(Ufoeretrygd.KombinereUforetrygdAldersPensjon)
             }
 
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
                 includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
             }
 
-            showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
+            showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
                 title1 {
                     text(
                         bokmal { +"Tilbakekreving av uføretrygd" },
