@@ -42,6 +42,7 @@ object Constants {
     const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#barnepensjon"
     const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#omstillingsstonad"
     const val REGISTRER_ARBEIDSSOKER = "$NAV_URL/registrer-arbeidssoker"
+    const val MISTET_NOEN_URL = "$NAV_URL/mistet-noen"
 
     object Engelsk {
         const val BARNEPENSJON_URL = "${Constants.BARNEPENSJON_URL}/en"
