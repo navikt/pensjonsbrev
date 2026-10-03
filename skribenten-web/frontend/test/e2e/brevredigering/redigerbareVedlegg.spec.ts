@@ -351,6 +351,43 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
   });
 
+  test("venter på brevets lagring før vedlegget åpnes og beholder brevteksten", async ({ page }) => {
+    const response = Promise.withResolvers<void>();
+    const started = Promise.withResolvers<void>();
+    let lagretTekst = "";
+    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", async (route) => {
+      const redigertBrev = route.request().postDataJSON();
+      lagretTekst = JSON.stringify(redigertBrev);
+      started.resolve();
+      await response.promise;
+      return route.fulfill({ json: { ...brevResponse, redigertBrev, redigertBrevHash: "ny-brevtekst" } });
+    });
+    await page.goto("/saksnummer/123456/brev/1");
+    await page.getByRole("textbox", { name: "Underskrift" }).fill("Ny saksbehandler");
+    await page.getByRole("tab", { name: "Vedlegg", exact: true }).click();
+    await started.promise;
+    await expect(page.getByRole("tab", { name: "Brevmal" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+    expect(lagretTekst).toContain("Ny saksbehandler");
+    response.resolve();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+    await page.getByRole("tab", { name: "Brevmal" }).click();
+    await expect(page.getByRole("textbox", { name: "Underskrift" })).toHaveValue("Ny saksbehandler");
+  });
+
+  test("blir i brevet når lagring før åpning av vedlegg feiler", async ({ page }) => {
+    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", (route) =>
+      route.fulfill({ status: 500, json: "Uff" }),
+    );
+    await page.goto("/saksnummer/123456/brev/1");
+    await page.getByRole("textbox", { name: "Underskrift" }).fill("Ny saksbehandler");
+    await page.getByRole("tab", { name: "Vedlegg", exact: true }).click();
+    await expect(page.getByText("Klarte ikke lagre")).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Brevmal" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+    await expect(page.getByRole("textbox", { name: "Underskrift" })).toHaveValue("Ny saksbehandler");
+  });
+
   test("autolagrer en endring i vedlegget én gang", async ({ page }) => {
     const lagringer: string[] = [];
     await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) => {

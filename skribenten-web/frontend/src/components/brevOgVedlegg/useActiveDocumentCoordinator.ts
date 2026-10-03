@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { useVedleggEditorWarnings } from "~/components/brevOgVedlegg/useVedleggEditorWarnings";
+import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 
 /**
@@ -15,9 +16,10 @@ export const useActiveDocumentCoordinator = (args: {
   navigateToDocument: (vedleggId: string | undefined) => Promise<void>;
 }) => {
   const { saksId, brevId, activeVedleggId, redigeringsflate, navigateToDocument } = args;
+  const { savePendingChanges } = useManagedLetterEditorContext();
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const activeVedleggSaveRef = useRef<(() => Promise<void>) | null>(null);
-  const [savingActiveDocument, setSavingActiveDocument] = useState(false);
+  const [savingPendingDocuments, setSavingPendingDocuments] = useState(false);
   const { getMissingFromTemplateCount, registerVedleggMissingFromTemplate } = useVedleggEditorWarnings({
     saksId,
     brevId,
@@ -25,31 +27,32 @@ export const useActiveDocumentCoordinator = (args: {
     vedlegg: redigerbareVedleggQuery.data,
   });
 
-  const registerVedleggSave = useCallback((saveNow: (() => Promise<void>) | null) => {
-    activeVedleggSaveRef.current = saveNow;
+  const registerVedleggSave = useCallback((savePendingChanges: (() => Promise<void>) | null) => {
+    activeVedleggSaveRef.current = savePendingChanges;
   }, []);
 
-  const saveActiveDocument = useCallback(async (): Promise<boolean> => {
-    setSavingActiveDocument(true);
+  const savePendingDocuments = useCallback(async (): Promise<boolean> => {
+    setSavingPendingDocuments(true);
     try {
       await activeVedleggSaveRef.current?.();
+      await savePendingChanges();
       return true;
     } catch {
       return false;
     } finally {
-      setSavingActiveDocument(false);
+      setSavingPendingDocuments(false);
     }
-  }, []);
+  }, [savePendingChanges]);
 
   const selectDocument = useCallback(
     async (vedleggId: string | undefined): Promise<boolean> => {
-      if (activeVedleggId !== undefined && vedleggId !== activeVedleggId && !(await saveActiveDocument())) {
+      if (vedleggId !== activeVedleggId && !(await savePendingDocuments())) {
         return false;
       }
       await navigateToDocument(vedleggId);
       return true;
     },
-    [activeVedleggId, saveActiveDocument, navigateToDocument],
+    [activeVedleggId, savePendingDocuments, navigateToDocument],
   );
 
   const vedleggExists =
@@ -64,8 +67,8 @@ export const useActiveDocumentCoordinator = (args: {
 
   return {
     activeVedleggId: vedleggExists ? activeVedleggId : undefined,
-    saveActiveDocument,
-    savingActiveDocument,
+    savePendingDocuments,
+    savingPendingDocuments,
     registerVedleggSave,
     getMissingFromTemplateCount,
     registerVedleggMissingFromTemplate,

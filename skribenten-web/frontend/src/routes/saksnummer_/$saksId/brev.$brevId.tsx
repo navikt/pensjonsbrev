@@ -8,10 +8,9 @@ import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon } from "~/api/brev-queries";
 import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmit";
-import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
+import { useOppdaterBrevMutation } from "~/Brevredigering/hooks/useOppdaterBrevMutation";
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
-import { createLetterSnapshot } from "~/Brevredigering/LetterEditor/history";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
 import { InsertedTekstValgHighlightProvider } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
@@ -265,8 +264,7 @@ function RedigerBrev({
     navigateToDocument,
   });
 
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset } =
-    useManagedLetterEditorContext();
+  const { editorState, redigertBrev, setEditorState, registerSaveErrorReset } = useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
     lagretRedigertBrev: brev.redigertBrev,
@@ -282,7 +280,7 @@ function RedigerBrev({
     });
 
   const navigateToBrevvelger = async () => {
-    if (!(await documentCoordinator.saveActiveDocument())) return;
+    if (!(await documentCoordinator.savePendingDocuments())) return;
 
     await navigate({
       to: "/saksnummer/$saksId/brevvelger",
@@ -301,14 +299,7 @@ function RedigerBrev({
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
 
-  const oppdaterBrevAutosave = useOppdaterBrevAutosave({
-    saksId,
-    brevId: brev.info.id,
-    saveStatus: editorState.saveStatus,
-    setEditorState,
-    onSaveSuccess,
-  });
-  const { oppdaterBrevMutation } = oppdaterBrevAutosave;
+  const { oppdaterBrevMutation } = useOppdaterBrevMutation(saksId);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -338,9 +329,8 @@ function RedigerBrev({
         beforeTekstvalgChange(updatedValg, redigertBrev);
         oppdaterBrevMutation.reset();
         oppdaterBrevMutation.mutate({
-          redigertBrev: redigertBrev,
           saksbehandlerValg: updatedValg,
-          historySnapshot: createLetterSnapshot({ ...editorState, redigertBrev }),
+          recordHistory: true,
         });
       }
     });
@@ -349,12 +339,11 @@ function RedigerBrev({
   const onSubmit = async (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
     // An attachment is saved through its own endpoint, so it must be persisted while the reservation is
     // still held. The final submit releases the reservation, so a failed attachment save must stop it.
-    if (!(await documentCoordinator.saveActiveDocument())) return;
+    if (activeVedlegg !== undefined && !(await documentCoordinator.savePendingDocuments())) return;
 
     oppdaterBrevMutation.reset();
     oppdaterBrevMutation.mutate(
       {
-        redigertBrev: redigertBrev,
         saksbehandlerValg: values.saksbehandlerValg,
         frigiReservasjon: true,
       },
@@ -442,7 +431,7 @@ function RedigerBrev({
                 bottom={
                   <HStack justify="space-between" width="100%">
                     <Button
-                      disabled={documentCoordinator.savingActiveDocument}
+                      disabled={documentCoordinator.savingPendingDocuments}
                       onClick={navigateToBrevvelger}
                       size="small"
                       type="button"
@@ -450,7 +439,7 @@ function RedigerBrev({
                     >
                       Tilbake til brevvelger
                     </Button>
-                    <Button loading={freeze || documentCoordinator.savingActiveDocument} size="small" type="submit">
+                    <Button loading={freeze || documentCoordinator.savingPendingDocuments} size="small" type="submit">
                       <HStack align="center" gap="space-8">
                         <Label size="small">Fortsett</Label>
                       </HStack>
@@ -483,7 +472,7 @@ function RedigerBrev({
                     freeze={freeze}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                        <ManagedLetterEditor brev={brev} canReset error={error} freeze={freeze} showDebug={showDebug} />
+                        <ManagedLetterEditor canReset error={error} freeze={freeze} showDebug={showDebug} />
                       </InsertedTekstValgHighlightProvider>
                     )}
                     saksId={saksId}

@@ -3,9 +3,9 @@ import { formatISO } from "date-fns";
 
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { setupSakStubs } from "~test/e2e/support/helpers";
-import { brevResponse } from "~test/support/brevFixtures";
+import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
-const defaultBrev = brevResponse();
+const defaultBrev = brevResponse({ info: brevInfo({ saksId: 123456 }) });
 const VEDLEGG_ID = "vedlegg-om-alderspensjon";
 const VEDLEGG_TITTEL = "Opplysninger om alderspensjon";
 const VEDLEGG_TEKST = "Vedleggsteksten attestanten kan redigere.";
