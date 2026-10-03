@@ -96,6 +96,75 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
 
   afterEach(() => vi.useRealTimers());
 
+  test("bevarer lagrede tekstvalg og nyere brevtekst ved neste autolagring", async () => {
+    const response = Promise.withResolvers<BrevResponse>();
+    const lagretMedNyeValg = { ...lagretBrev, saksbehandlerValg: nyeValg };
+    oppdaterBrevMock.mockReturnValueOnce(response.promise);
+    oppdaterBrevtekstMock.mockImplementation(({ redigertBrev }: { redigertBrev: EditedLetter }) =>
+      Promise.resolve({ ...lagretMedNyeValg, redigertBrev }),
+    );
+    const harness = renderAutosave();
+    let saving!: Promise<BrevResponse>;
+    await act(async () => {
+      saving = harness().lagreValg();
+    });
+    endreBrev(harness, 101);
+    const nyereBrevtekst = harness().redigertBrev;
+    await act(async () => {
+      response.resolve(lagretMedNyeValg);
+      expect(await saving).toBe(lagretMedNyeValg);
+    });
+
+    expect(harness().redigertBrev).toBe(nyereBrevtekst);
+    expect(harness().editorState.saksbehandlerValg).toEqual(nyeValg);
+    expect(harness().editorState.saveStatus).toBe("DIRTY");
+
+    await vent(AUTOSAVE_TIMER);
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(1);
+    expect(oppdaterBrevtekstMock).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        redigertBrev: expect.objectContaining({ deletedBlocks: [101] }),
+        frigiReservasjon: false,
+      }),
+    );
+    expect(harness().editorState.saksbehandlerValg).toEqual(nyeValg);
+    expect(harness().redigertBrev.deletedBlocks).toEqual([101]);
+    expect(harness().editorState.saveStatus).toBe("SAVED");
+  });
+
+  for (const ytelse of ["Uføretrygd", "alderspensjon"]) {
+    test(`bevarer nyere lokale valg av ${ytelse} mens tekstvalglagringen pågår`, async () => {
+      const response = Promise.withResolvers<BrevResponse>();
+      oppdaterBrevMock.mockReturnValueOnce(response.promise);
+      oppdaterBrevMock.mockImplementationOnce(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+      const harness = renderAutosave();
+      let saving!: Promise<BrevResponse>;
+      await act(async () => {
+        saving = harness().lagreValg();
+      });
+      const nyereValg = { ytelse };
+      act(() => harness().setEditorState((state) => ({ ...state, saksbehandlerValg: nyereValg, saveStatus: "DIRTY" })));
+      await act(async () => {
+        response.resolve({ ...lagretBrev, saksbehandlerValg: nyeValg });
+        await saving;
+      });
+
+      expect(harness().editorState.saksbehandlerValg).toBe(nyereValg);
+      expect(harness().editorState.saveStatus).toBe("DIRTY");
+      await vent(AUTOSAVE_TIMER);
+      expect(oppdaterBrevMock).toHaveBeenCalledTimes(2);
+      expect(oppdaterBrevMock).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          request: expect.objectContaining({ saksbehandlerValg: nyereValg }),
+          frigiReservasjon: false,
+        }),
+      );
+      expect(oppdaterBrevtekstMock).not.toHaveBeenCalled();
+      expect(harness().editorState.saksbehandlerValg).toEqual(nyereValg);
+      expect(harness().editorState.saveStatus).toBe("SAVED");
+    });
+  }
+
   test("en mislykket tekstvalglagring starter ikke autolagring av uendret brevtekst", async () => {
     const harness = renderAutosave();
     await act(async () => {

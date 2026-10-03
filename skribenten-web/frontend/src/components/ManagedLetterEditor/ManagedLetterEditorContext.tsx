@@ -172,10 +172,18 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const saveLetterOperation = useCallback<ManagedLetterEditorContextValue["saveLetterOperation"]>(
     (operation, options) =>
       saveWith({
-        save: (state) => operation({ ...state, redigertBrev: requireLetterDocument(state.redigertBrev) }),
+        save: async (state) => {
+          const response = await operation({ ...state, redigertBrev: requireLetterDocument(state.redigertBrev) });
+          setEditorState((current) =>
+            current.saksbehandlerValg === state.saksbehandlerValg
+              ? { ...current, saksbehandlerValg: response.saksbehandlerValg }
+              : current,
+          );
+          return response;
+        },
         applyResponse: (state, response) => applySavedResponse(state, response, options),
       }),
-    [saveWith],
+    [saveWith, setEditorState],
   );
 
   useEffect(() => {
