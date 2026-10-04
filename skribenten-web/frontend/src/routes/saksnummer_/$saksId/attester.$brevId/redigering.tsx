@@ -243,6 +243,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   useReleaseReservationOnPageExit({
     enabled: reservasjonQuery.isSuccess,
     brevId: props.brev.info.id,
+    beforeRelease: documentCoordinator.savePendingDocuments,
     currentUserNavIdent: currentUser?.navident,
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });

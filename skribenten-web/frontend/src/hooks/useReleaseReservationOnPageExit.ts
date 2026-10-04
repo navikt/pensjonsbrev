@@ -7,6 +7,7 @@ type UseReleaseReservationOnPageExitArgs = {
   brevId: number;
   currentUserNavIdent?: string;
   reservationOwnerNavIdent?: string;
+  beforeRelease?: () => Promise<unknown>;
 };
 
 export function useReleaseReservationOnPageExit({
@@ -14,6 +15,7 @@ export function useReleaseReservationOnPageExit({
   brevId,
   currentUserNavIdent,
   reservationOwnerNavIdent,
+  beforeRelease,
 }: UseReleaseReservationOnPageExitArgs) {
   const releasedRef = useRef(false);
 
@@ -43,7 +45,11 @@ export function useReleaseReservationOnPageExit({
 
     return () => {
       globalThis.removeEventListener("pagehide", releaseOnce);
-      releaseOnce();
+      if (beforeRelease) {
+        void beforeRelease().then(releaseOnce, releaseOnce);
+      } else {
+        releaseOnce();
+      }
     };
-  }, [enabled, ownsReservation, brevId]);
+  }, [enabled, ownsReservation, brevId, beforeRelease]);
 }

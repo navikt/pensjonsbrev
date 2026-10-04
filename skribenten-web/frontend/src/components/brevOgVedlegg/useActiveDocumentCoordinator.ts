@@ -34,8 +34,11 @@ export const useActiveDocumentCoordinator = (args: {
   const savePendingDocuments = useCallback(async (): Promise<boolean> => {
     setSavingPendingDocuments(true);
     try {
-      await activeVedleggSaveRef.current?.();
-      await savePendingChanges();
+      try {
+        await activeVedleggSaveRef.current?.();
+      } finally {
+        await savePendingChanges();
+      }
       return true;
     } catch {
       return false;

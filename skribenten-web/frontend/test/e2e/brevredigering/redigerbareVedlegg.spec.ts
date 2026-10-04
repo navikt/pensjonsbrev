@@ -355,6 +355,16 @@ test.describe("Redigerbare vedlegg", () => {
     const response = Promise.withResolvers<void>();
     const started = Promise.withResolvers<void>();
     let lagretTekst = "";
+    let releases = 0;
+    await page.route("**/bff/skribenten-backend/brev/1/reservasjon", (route) => {
+      if (route.request().method() === "DELETE") {
+        releases++;
+        return route.fulfill({ status: 204 });
+      }
+      return route.fulfill({
+        json: { vellykket: true, reservertAv: { id: "Z990297", navn: "Saksbehandler" }, expiresIn: 600 },
+      });
+    });
     await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", async (route) => {
       const redigertBrev = route.request().postDataJSON();
       lagretTekst = JSON.stringify(redigertBrev);
@@ -373,6 +383,7 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
     await page.getByRole("tab", { name: "Brevmal" }).click();
     await expect(page.getByRole("textbox", { name: "Underskrift" })).toHaveValue("Ny saksbehandler");
+    expect(releases).toBe(0);
   });
 
   test("blir i brevet når lagring før åpning av vedlegg feiler", async ({ page }) => {
