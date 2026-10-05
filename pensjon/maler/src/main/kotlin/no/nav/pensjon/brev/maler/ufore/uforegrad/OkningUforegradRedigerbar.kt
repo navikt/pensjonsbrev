@@ -37,6 +37,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
+import java.time.Month
 
 @TemplateModelHelpers
 object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
@@ -825,9 +826,30 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             showIf(!pesysData.harVTA) {
                 paragraph {
                     text(
-                        bokmal { +"Når uføregraden øker, vil du få ny venteperiode på 2 år med et fribeløp på 0,4 G, før fribeløpet igjen vil øke til 1 G. Du kan ha en årlig inntekt på 0,4 G, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt. " },
-                        nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit fribeløp på 0,4 G, før fribeløpet igjen vil auke til 1 G. Du kan ha ei årleg inntekt på 0,4 G utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt. " },
+                        bokmal { +"Når uføregraden øker, vil du få ny venteperiode på 2 år med et fribeløp på 0,4 G, før fribeløpet igjen vil øke til 1 G. Neste år kan du ha en årlig inntekt på 0,4 G" },
+                        nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit fribeløp på 0,4 G, før fribeløpet igjen vil auke til 1 G. Neste år kan du ha ei årleg inntekt på 0,4 G" },
                     )
+                    showIf(uforegradFraBeregning.notEqualTo(100)) {
+                        text(
+                            bokmal { +", i tillegg til oppjustert inntekt etter uførhet," },
+                            nynorsk { +", i tillegg til oppjustert inntekt etter uførleik," },
+                        )
+                    }
+                    text(
+                        bokmal { +" uten at uføretrygden din blir redusert. " },
+                        nynorsk { +" utan at uføretrygda di blir redusert. " },
+                    )
+                    showIf(virkningstidpunkt.month.notEqualTo(Month.DECEMBER.value)) {
+                        text(
+                            bokmal { +"Ut inneværende kalenderår beholder du det nåværende bunnfradraget ditt, som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
+                            nynorsk { +"Ut inneverande kalenderår beheld du det noverande botnfrådraget ditt, som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Bunnfradraget ditt neste år er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            nynorsk { +"Botnfrådraget ditt neste år er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                        )
+                    }
                 }
                 showIf(pesysData.fribelopsperioder.isNotEmpty()) {
                     paragraph {
@@ -857,12 +879,12 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             paragraph {
                 text(
                     bokmal {
-                        +"For deg utgjør reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_bunnfradrag_faktisk().format()
-                        +", som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_bunnfradrag_faktisk().format() + " trekkes fra uføretrygden din."
+                        +"For deg utgjør reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger bunnfradraget ditt "
+                        +"vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over bunnfradraget ditt trekkes fra uføretrygden din."
                     },
                     nynorsk {
-                        +"For deg utgjer reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_bunnfradrag_faktisk().format()
-                        +", som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_bunnfradrag_faktisk().format() + " blir trekt frå uføretrygda di."
+                        +"For deg utgjer reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig botnfrådraget ditt "
+                        +"vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over botnfrådraget ditt blir trekt frå uføretrygda di."
                     },
                 )
             }
