@@ -846,8 +846,8 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                         )
                     }.orShow {
                         text(
-                            bokmal { +"Bunnfradraget ditt er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
-                            nynorsk { +"Botnfrådraget ditt er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            bokmal { +"Bunnfradraget ditt neste år er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            nynorsk { +"Botnfrådraget ditt neste år er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                         )
                     }
                 }
