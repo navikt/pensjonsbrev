@@ -70,7 +70,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
           {samhandlerMottaker.error && <ApiError error={samhandlerMottaker.error} title="Fant ikke mottaker" />}
           {samhandlerMottaker.data?.type === "organisasjon" && (
             <AdresseVisning
-              adresselinjer={[`Organisasjonsnummer: ${samhandlerMottaker.data.samhandler.offentligId}`]}
+              adresselinjer={[samhandlerMottaker.data.samhandler.offentligId]}
               navn={samhandlerMottaker.data.samhandler.navn}
               tags={[MOTTAKER_TAG_SAMHANDLER]}
               withTitle={properties.showMottakerTitle}

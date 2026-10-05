@@ -134,8 +134,9 @@ test.describe("Endrer på mottaker", () => {
       await expect(modal).not.toBeVisible();
 
       if (visOrgnummer) {
-        const orgnummer = page.getByText(`Organisasjonsnummer: ${samhandler.offentligId}`, { exact: true });
+        const orgnummer = page.getByText(samhandler.offentligId, { exact: true });
         await expect(orgnummer).toBeVisible();
+        await expect(page.getByText("Organisasjonsnummer", { exact: false })).not.toBeVisible();
         await expect(page.getByText("Postboks 603 Sentrum")).not.toBeVisible();
         expect(adresseOppslag).toBe(0);
         expect(samhandlerOppslag).toBeGreaterThan(0);
@@ -143,7 +144,7 @@ test.describe("Endrer på mottaker", () => {
         await page.screenshot({ path: test.info().outputPath("samhandler-summary.png"), fullPage: true });
       } else {
         await expect(page.getByText("Postboks 603 Sentrum")).toBeVisible();
-        await expect(page.getByText(`Organisasjonsnummer: ${samhandler.offentligId}`)).not.toBeVisible();
+        await expect(page.getByText(samhandler.offentligId, { exact: true })).not.toBeVisible();
         expect(adresseOppslag).toBeGreaterThan(0);
         if (!scenario.enabled) {
           expect(samhandlerOppslag).toBe(0);
