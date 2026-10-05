@@ -19,6 +19,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+
+
     override val kode = Pesysbrevkoder.Redigerbar.UT_KLAGE_ORIENTERING_OM_SVARTID
     override val kategori = KLAGE_OG_ANKE
     override val brevkontekst = ALLE

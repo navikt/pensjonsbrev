@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
@@ -168,6 +169,7 @@ object Fixtures : LetterDataFactory {
             ReverseringLavereMinstesatsRedigerbar::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
             ReverseringLavereMinstesatsAuto::class -> createReverseringLavereMinstesatsAutoDto() as T
             VedtakOmEndringBTEPSRedigerbar::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
+            OrienteringOmSvartidKlageUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
