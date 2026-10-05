@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -20,6 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
+    override val featureToggle = FeatureToggles.brevmalOrienteringOmSvartidKlageUT.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_KLAGE_ORIENTERING_OM_SVARTID
     override val kategori = KLAGE_OG_ANKE
