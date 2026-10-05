@@ -32,23 +32,8 @@ data class InnvilgelseAvAfpAutoDto(
 
     val afpBeregning: AfpBeregning,
 
-    val etterbetaling: Etterbetaling,
-    val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto = DinAfpPrivatBeregningDto(
-        brukerUnder70Aar = brukerUnder70Aar,
-        bosattINorge = bosattINorge,
-        totalPensjon = afpBeregning.totalPensjon,
-        livsvarigBrutto = afpBeregning.livsvarigBrutto,
-        kronetilleggBrutto = afpBeregning.kronetilleggBrutto,
-        kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
-        opptjening = afpBeregning.opptjening,
-        forholdstallUttak = afpBeregning.forholdstallUttak,
-        justeringsbeloep = afpBeregning.justeringsbeloep,
-        referansebeloep = afpBeregning.referansebeloep,
-        kompensasjonstilleggForholdstall = afpBeregning.kompensasjonstilleggForholdstall,
-        harEtterbetaling = etterbetaling.harEtterbetaling,
-        etterbetalingVirkningFom = etterbetaling.virkningFom,
-        etterbetalingVirkningTom = etterbetaling.virkningTom,
-    ),
+    val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto?
+
 ) : AutobrevData {
 
     data class AfpBeregning(
@@ -80,11 +65,5 @@ data class InnvilgelseAvAfpAutoDto(
         val justeringsbeloep: BrevbakerType.Kroner?,
         val referansebeloep: BrevbakerType.Kroner?,
         val kompensasjonstilleggForholdstall: Double?,
-    )
-
-    data class Etterbetaling(
-        val harEtterbetaling: Boolean,
-        val virkningFom: LocalDate?,
-        val virkningTom: LocalDate?,
     )
 }

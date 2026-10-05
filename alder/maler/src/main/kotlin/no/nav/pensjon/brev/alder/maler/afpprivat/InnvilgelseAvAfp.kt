@@ -27,10 +27,6 @@ import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.p
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.bosattINorge
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.brukerUnder70Aar
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.dinAfpPrivatBeregning
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling.harEtterbetaling
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling.virkningTom
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.etterbetaling.virkningFom
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.kravMottattDato
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.oversiktOverPensjonen
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.virkningFom
@@ -100,9 +96,6 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
                     justeringsbeloep = pesysData.afpBeregning.justeringsbeloep,
                     referansebeloep = pesysData.afpBeregning.referansebeloep,
                     kompensasjonstilleggForholdstall = pesysData.afpBeregning.kompensasjonstilleggForholdstall,
-                    harEtterbetaling = pesysData.etterbetaling.harEtterbetaling,
-                    etterbetalingVirkningFom = pesysData.etterbetaling.virkningFom,
-                    etterbetalingVirkningTom = pesysData.etterbetaling.virkningTom,
                 ),
             )
             includePhrase(RettigheterPersonopplysninger)
@@ -110,13 +103,10 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
             includePhrase(HarDuSpoersmaal.alder)
         }
 
-        includeAttachment(vedleggDinAfpPrivatBeregning, pesysData.dinAfpPrivatBeregning)
+        includeAttachmentIfNotNull(vedleggDinAfpPrivatBeregning, pesysData.dinAfpPrivatBeregning)
 
         // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når vedtaket har flere
         // beregningsperioder (i Exstream: BeregningAntallPerioder > 1).
-        includeAttachmentIfNotNull(
-            vedleggOversiktOverPensjonenAfpPrivat,
-            pesysData.oversiktOverPensjonen,
-        )
+       // includeAttachmentIfNotNull( vedleggOversiktOverPensjonenAfpPrivat,pesysData.oversiktOverPensjonen,)
     }
 }

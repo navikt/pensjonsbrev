@@ -8,7 +8,6 @@ import java.time.LocalDate
  * Vedlegg «Din AfP Privat Beregning» for innvilgelse av AFP i privat sektor.
  */
 data class DinAfpPrivatBeregningDto(
-    val brukerUnder70Aar: Boolean,
     val bosattINorge: Boolean,
     val totalPensjon: BrevbakerType.Kroner,
     val livsvarigBrutto: BrevbakerType.Kroner?,
@@ -19,7 +18,14 @@ data class DinAfpPrivatBeregningDto(
     val justeringsbeloep: BrevbakerType.Kroner?,
     val referansebeloep: BrevbakerType.Kroner?,
     val kompensasjonstilleggForholdstall: Double?,
-    val harEtterbetaling: Boolean,
-    val etterbetalingVirkningFom: LocalDate?,
-    val etterbetalingVirkningTom: LocalDate?,
-) : VedleggData
+    val etterbetaling: List<Etterbetaling> = emptyList(),
+) : VedleggData {
+    data class Etterbetaling(
+        val virkningFom: LocalDate,
+        val virkningTom: LocalDate,
+        val etterbetalingAfpLivsvarig: BrevbakerType.Kroner?,
+        val etterbetalingKronetillegg: BrevbakerType.Kroner?,
+        val etterbetalingKompensasjonstillegg: BrevbakerType.Kroner?,
+        val etterbetalingAfpSum: BrevbakerType.Kroner?,
+    )
+}

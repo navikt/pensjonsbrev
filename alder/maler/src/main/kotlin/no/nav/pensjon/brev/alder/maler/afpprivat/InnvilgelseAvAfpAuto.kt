@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDinAfpPrivatBeregning
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.etterbetaling.*
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.afpBeregning.*
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -61,9 +60,6 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
                     justeringsbeloep = afpBeregning.justeringsbeloep,
                     referansebeloep = afpBeregning.referansebeloep,
                     kompensasjonstilleggForholdstall = afpBeregning.kompensasjonstilleggForholdstall,
-                    harEtterbetaling = etterbetaling.harEtterbetaling,
-                    etterbetalingVirkningFom = etterbetaling.virkningFom,
-                    etterbetalingVirkningTom = etterbetaling.virkningTom,
                 ),
             )
             includePhrase(RettigheterPersonopplysninger)
@@ -71,6 +67,6 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
             includePhrase(HarDuSpoersmaal.alder)
         }
 
-        includeAttachment(vedleggDinAfpPrivatBeregning, dinAfpPrivatBeregning)
+        includeAttachmentIfNotNull(vedleggDinAfpPrivatBeregning, dinAfpPrivatBeregning)
     }
 }

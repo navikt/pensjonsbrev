@@ -2,7 +2,13 @@ package no.nav.pensjon.brev.alder.maler.vedlegg
 
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.model.vedlegg.DinAfpPrivatBeregningDto
-import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.brukerUnder70Aar
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.etterbetalingAfpLivsvarig
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.etterbetalingAfpSum
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.etterbetalingKompensasjonstillegg
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.etterbetalingKronetillegg
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.virkningFom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.virkningTom
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.forholdstallUttak
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.justeringsbeloep
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.kompensasjonstilleggBrutto
@@ -17,7 +23,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.isNotEmpty
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -32,88 +38,92 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
     },
     includeSakspart = false,
 ) {
-    showIf(brukerUnder70Aar) {
-        title2 {
-            text(
-                bokmal { +"Oversikt over hva du får fra etterbetaling.virkningFom " },
-                nynorsk { +"Oversikt over kva du får frå etterbetaling.virkningFom" },
-                english { +"" },
-            )
-        }
-        paragraph {
-            text(
-                bokmal { +"Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert i perioden, kan dette endre hvor mye du får." },
-                nynorsk { +"Om det har vore endringar i nokre av opplysningane som ligg til grunn for berekninga eller pensjonen har vore regulert i perioden, kan dette endre kor mykje du får." },
-                english { +"" },
-            )
-        }
+    showIf(etterbetaling.isNotEmpty()) {
+        forEach(etterbetaling) { etterbetaling ->
+            title2 {
+                text(
+                    bokmal { +"Oversikt over hva du får fra " + etterbetaling.virkningFom.format() },
+                    nynorsk { +"Oversikt over kva du får frå " + etterbetaling.virkningFom.format() },
+                    english { +"" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert i perioden, kan dette endre hvor mye du får." },
+                    nynorsk { +"Om det har vore endringar i nokre av opplysningane som ligg til grunn for berekninga eller pensjonen har vore regulert i perioden, kan dette endre kor mykje du får." },
+                    english { +"" },
+                )
+            }
 
-        paragraph {
-            text(
-                bokmal { +"Din AFP per måned fra :" },
-                nynorsk { +"AFP per månad blir slik:" },
-                english { +"Your monthly contractual pension will be:" },
-            )
-            table(
-                header = {
-                    column {
-                        text(
-                            bokmal { +"Beløp per måned" },
-                            nynorsk { +"Beløp per månad" },
-                            english { +"Amount per month" },
-                        )
-                    }
-                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                        text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
-                    }
-                },
-            ) {
-                ifNotNull(livsvarigBrutto) { brutto ->
-                    row {
-                        cell {
+            paragraph {
+                text(
+                    bokmal { +"Din AFP per måned fra " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
+                    nynorsk { +"AFP per månad blir slik fra " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
+                    english { +"Your monthly contractual pension will be:" },
+                )
+                table(
+                    header = {
+                        column {
                             text(
-                                bokmal { +"AFP livsvarig del" },
-                                nynorsk { +"AFP livsvarig del" },
-                                english { +"Contractual pension, lifelong amount" },
+                                bokmal { +"Beløp per måned" },
+                                nynorsk { +"Beløp per månad" },
+                                english { +"Amount per month" },
                             )
                         }
-                        cell { includePhrase(KronerText(brutto)) }
-                    }
-                }
-                ifNotNull(kronetilleggBrutto) { brutto ->
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"AFP kronetillegg" },
-                                nynorsk { +"AFP-kronetillegg" },
-                                english { +"Contractual pension, NOK supplement" },
-                            )
+                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                            text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
                         }
-                        cell { includePhrase(KronerText(brutto)) }
-                    }
-                }
-                ifNotNull(kompensasjonstilleggBrutto) { brutto ->
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
-                                nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
-                                english { +"Contractual pension, compensation supplement (tax-free)" },
-                            )
+                    },
+                ) {
+                    ifNotNull(etterbetaling.etterbetalingAfpLivsvarig) { brutto ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"AFP livsvarig del" },
+                                    nynorsk { +"AFP livsvarig del" },
+                                    english { +"Contractual pension, lifelong amount" },
+                                )
+                            }
+                            cell { includePhrase(KronerText(brutto)) }
                         }
-                        cell { includePhrase(KronerText(brutto)) }
                     }
-                }
-                row {
-                    cell {
-                        text(
-                            bokmal { +"Sum AFP før skatt" },
-                            nynorsk { +"Sum AFP før skatt" },
-                            english { +"Total contractual pension before tax" },
-                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
-                        )
+                    ifNotNull(etterbetaling.etterbetalingKronetillegg) { brutto ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"AFP kronetillegg" },
+                                    nynorsk { +"AFP-kronetillegg" },
+                                    english { +"Contractual pension, NOK supplement" },
+                                )
+                            }
+                            cell { includePhrase(KronerText(brutto)) }
+                        }
                     }
-                    cell { includePhrase(KronerText(totalPensjon, Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                    ifNotNull(etterbetaling.etterbetalingKompensasjonstillegg) { brutto ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
+                                    nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
+                                    english { +"Contractual pension, compensation supplement (tax-free)" },
+                                )
+                            }
+                            cell { includePhrase(KronerText(brutto)) }
+                        }
+                    }
+                    ifNotNull(etterbetaling.etterbetalingAfpSum) { sum ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sum AFP før skatt" },
+                                    nynorsk { +"Sum AFP før skatt" },
+                                    english { +"Total contractual pension before tax" },
+                                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
+                                )
+                            }
+                            cell { includePhrase(KronerText(sum, Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                        }
+                    }
                 }
             }
         }

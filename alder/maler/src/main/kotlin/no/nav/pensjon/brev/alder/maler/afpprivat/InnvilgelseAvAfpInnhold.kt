@@ -1,23 +1,16 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
-import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
-import no.nav.pensjon.brev.alder.maler.felles.KronerText
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
@@ -43,9 +36,6 @@ data class InnvilgelseAvAfpInnhold(
     val justeringsbeloep: Expression<Kroner?>,
     val referansebeloep: Expression<Kroner?>,
     val kompensasjonstilleggForholdstall: Expression<Double?>,
-    val harEtterbetaling: Expression<Boolean>,
-    val etterbetalingVirkningFom: Expression<LocalDate?>,
-    val etterbetalingVirkningTom: Expression<LocalDate?>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -161,33 +151,6 @@ data class InnvilgelseAvAfpInnhold(
                 )
             }
         }
-
-        showIf(brukerUnder70Aar){ //TODO: Etterbetaling?
-            title2 {
-                text(
-                    bokmal { +"Etterbetaling" },
-                    nynorsk { +"Etterbetaling" },
-                    english { +"" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Du får etterbetalt pensjon fra <dato>. " +//TODO: Trenger vi å få inn etterbetalingsdato her?
-                            "Etterbetalingen vil vanligvis bli utbetalt i løpet av sju virkedager. " +
-                            "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. " +
-                            "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
-                            "Du kan sjekke eventuelle trekk i utbetalingsmeldingen på $MINSIDE_URL. " },
-                    nynorsk { +"Du får etterbetalt pensjon frå <dato>. " + //TODO: Trenger vi å få inn etterbetalingsdato her?
-                            "Etterbetalinga vil vanlegvis bli utbetalt i løpet av sju vyrkedagar. " +
-                            "Vi kan trekke frå skatt og ytingar du har fått frå til dømes Nav eller tenestepensjonsordningar. " +
-                            "Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordningar har ni vekers frist på å krevje trekk i etterbetalinga. " +
-                            "Du kan sjekke eventuelle trekk i utbetalingsmeldinga på $MINSIDE_URL." },
-                    english { +"" },
-                )
-            }
-
-        }
-
 
         title2 {
             text(
