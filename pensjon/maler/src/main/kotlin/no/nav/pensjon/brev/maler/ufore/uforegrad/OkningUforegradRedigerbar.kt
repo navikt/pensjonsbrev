@@ -841,8 +841,8 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                     )
                     showIf(virkningstidpunkt.month.notEqualTo(Month.DECEMBER.value)) {
                         text(
-                            bokmal { +"Ut inneværende kalenderår beholder du det nåværende bunnfradraget ditt, som er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
-                            nynorsk { +"Ut inneverande kalenderår beheld du det noverande botnfrådraget ditt, som er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            bokmal { +"Ut inneværende kalenderår beholder du det nåværende bunnfradraget ditt, som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
+                            nynorsk { +"Ut inneverande kalenderår beheld du det noverande botnfrådraget ditt, som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
                         )
                     }.orShow {
                         text(
