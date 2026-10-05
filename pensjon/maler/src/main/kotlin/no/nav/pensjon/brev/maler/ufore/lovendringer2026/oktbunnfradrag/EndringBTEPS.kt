@@ -226,7 +226,7 @@ object EndringBTEPS {
                 )
             }
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Ufoeretrygd.Etteroppgjor)
             includePhrase(Ufoeretrygd.RettTilAKlage)
             includePhrase(Ufoeretrygd.RettTilInnsyn)
