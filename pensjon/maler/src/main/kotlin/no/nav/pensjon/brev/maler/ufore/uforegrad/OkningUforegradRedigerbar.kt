@@ -827,7 +827,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                 paragraph {
                     text(
                         bokmal { +"Når uføregraden øker, vil du få ny venteperiode på 2 år med et fribeløp på 0,4 G, før fribeløpet igjen vil øke til 1 G. Neste år kan du ha en årlig inntekt på 0,4 G" },
-                        nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit botnfrådrag på 0,4 G, før botnfrådraget igjen vil auke til 1 G. Neste år kan du ha ei årleg inntekt på 0,4 G" },
+                        nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit fribeløp på 0,4 G, før fribeløpet igjen vil auke til 1 G. Neste år kan du ha ei årleg inntekt på 0,4 G" },
                     )
                     showIf(uforegradFraBeregning.notEqualTo(100)) {
                         text(
