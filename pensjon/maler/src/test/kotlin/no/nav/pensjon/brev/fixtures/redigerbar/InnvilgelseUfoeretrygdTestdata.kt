@@ -398,6 +398,9 @@ fun createOkningUforegradDto() =
                 )
             ),
             harVTA = false,
-            fribelop = Kroner(5000)
+            fribelop = Kroner(5000),
+            forrigeUforegrad = 50,
+            forrigeUforetidspunkt = LocalDate.of(2025, 12, 1),
+
         ),
     )

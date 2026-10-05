@@ -68,7 +68,7 @@ jobs:
         run: npm prune --omit=dev
 
       - name: Build and push Docker container
-        uses: nais/docker-build-push@8e41f1f58749b9248e376c25d33bfbdd2b1163c0 # v0
+        uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a # v0
         id: docker-build-push
         with:
           team: pensjonsbrev

@@ -40,7 +40,7 @@ class OkningUforegradRedigerbarTest {
             )
         }
         LetterTestImpl(OkningUforegradRedigerbar.template, dto, Language.Bokmal, Fixtures.fellesAuto)
-            .renderTestPDF("UT_OKNING_UFOREGRAD_UNG_UFOR")
+            .renderTestHtml("UT_OKNING_UFOREGRAD_UNG_UFOR")
     }
 
     @Test
