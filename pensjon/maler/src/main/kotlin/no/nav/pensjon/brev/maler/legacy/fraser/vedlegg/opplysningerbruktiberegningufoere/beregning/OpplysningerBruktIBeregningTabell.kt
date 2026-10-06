@@ -34,7 +34,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                 ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt()){ uforetidspunkt ->
                     val foedselsdato = pe.personsak.foedselsdato
                     val erMndEtterFoedsel = erUforetidspunktMaanedEtterFoedsel(uforetidspunkt, foedselsdato)
-                    val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.format())
+                    val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.formatMonthYear())
 
                     row {
                         cell {
