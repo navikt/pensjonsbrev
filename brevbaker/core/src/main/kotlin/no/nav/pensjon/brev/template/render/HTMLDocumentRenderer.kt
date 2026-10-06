@@ -159,14 +159,25 @@ abstract class HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     }
 
     private fun FlowOrPhrasingContent.renderTextContent(element: ParagraphContent.Text) {
-        when (element.fontType) {
-            FontType.PLAIN if element is ParagraphContent.Text.Literal && element.tags.contains(ElementTags.FRITEKST) -> markerFritekst {
-                renderTextContentWithoutStyle(element)
+        when (element) {
+            is ParagraphContent.Text.Literal if ElementTags.FRITEKST in element.tags -> markerFritekst {
+                renderTextContentWithStyle(element)
             }
 
-            FontType.PLAIN if element is ParagraphContent.Text.Variable -> markerVariabel {
-                renderTextContentWithoutStyle(element)
+            is ParagraphContent.Text.Variable if ElementTags.REDIGERBAR_DATA in element.tags -> markerRedigerbarData {
+                renderTextContentWithStyle(element)
             }
+
+            is ParagraphContent.Text.Variable -> markerVariabel {
+                renderTextContentWithStyle(element)
+            }
+
+            else -> renderTextContentWithStyle(element)
+        }
+    }
+
+    private fun FlowOrPhrasingContent.renderTextContentWithStyle(element: ParagraphContent.Text) {
+        when (element.fontType) {
             FontType.PLAIN -> renderTextContentWithoutStyle(element)
             FontType.BOLD -> span(classes("text-bold")) {
                 renderTextContentWithoutStyle(element)
@@ -182,6 +193,10 @@ abstract class HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     }
 
     protected open fun FlowOrPhrasingContent.markerVariabel(function: SPAN.() -> Unit) {
+        span(classes = null, function)
+    }
+
+    protected open fun FlowOrPhrasingContent.markerRedigerbarData(function: SPAN.() -> Unit) {
         span(classes = null, function)
     }
 

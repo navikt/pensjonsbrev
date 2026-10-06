@@ -13,4 +13,8 @@ object HTMLDocumentRendererTest : HTMLDocumentRenderer() {
     override fun FlowOrPhrasingContent.markerVariabel(function: SPAN.() -> Unit) {
         span(classes("data"), function)
     }
+
+    override fun FlowOrPhrasingContent.markerRedigerbarData(function: SPAN.() -> Unit) {
+        span(classes("redigerbarData"), function)
+    }
 }

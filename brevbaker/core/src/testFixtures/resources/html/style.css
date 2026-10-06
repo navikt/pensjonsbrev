@@ -94,6 +94,10 @@ h4.pensjonsbrev-title3 {
     border: 1px dotted grey;
 }
 
+.pensjonsbrev-redigerbarData {
+    border: 1px dotted yellow;
+}
+
 /* Sakspart */
 .pensjonsbrev-sakspart {
     display: inline-grid;
