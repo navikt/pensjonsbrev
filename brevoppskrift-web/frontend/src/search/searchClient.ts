@@ -1,4 +1,5 @@
 import { type HitRefs, type WorkerRequest, type WorkerResponse } from "~/search/searchProtocol";
+import searchWorkerUrl from "~/search/searchWorker.ts?worker&url";
 import { createSearchWorkerCore } from "~/search/searchWorkerCore";
 import { type TemplateText } from "~/search/textSearch";
 
@@ -57,8 +58,25 @@ type PendingSearch = {
   reject: (error: Error) => void;
 };
 
+/** The URL to start the search worker from, given the page it runs on.
+ *
+ *  Browsers only start worker scripts from the page's own origin. That always
+ *  holds when deployed, but not in vite-mode, where the BFF serves the page and
+ *  the Vite dev server serves every script. A module worker started from a
+ *  same-origin `blob:` URL may still import a script from elsewhere, so that
+ *  case gets a one-line shim instead. The BFF allows `blob:` workers in its
+ *  vite-mode CSP. */
+export function searchWorkerEntryUrl(workerUrl: string, pageUrl: string): string {
+  const script = new URL(workerUrl, pageUrl);
+  if (script.origin === new URL(pageUrl).origin) {
+    return script.href;
+  }
+  const shim = new Blob([`import ${JSON.stringify(script.href)};`], { type: "text/javascript" });
+  return URL.createObjectURL(shim);
+}
+
 export function createWorkerSearchClient(): SearchClient {
-  const worker = new Worker(new URL("./searchWorker.ts", import.meta.url), { type: "module" });
+  const worker = new Worker(searchWorkerEntryUrl(searchWorkerUrl, globalThis.location.href), { type: "module" });
 
   let nextRequestId = 1;
   let currentCorpus: TemplateText[] | undefined;
@@ -178,7 +196,8 @@ export function createSearchClient(): SearchClient {
   }
   try {
     return createWorkerSearchClient();
-  } catch {
+  } catch (error) {
+    console.warn("Failed to create worker search client, falling back to local search client.", error);
     return createLocalSearchClient();
   }
 }

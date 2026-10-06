@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createLocalSearchClient, createWorkerSearchClient } from "~/search/searchClient";
+import { createLocalSearchClient, createWorkerSearchClient, searchWorkerEntryUrl } from "~/search/searchClient";
 import { type WorkerRequest, type WorkerResponse } from "~/search/searchProtocol";
 import { createSearchWorkerCore } from "~/search/searchWorkerCore";
 import { type TemplateText } from "~/search/textSearch";
@@ -213,5 +213,42 @@ describe("createLocalSearchClient", () => {
     client.setCorpus(unindexableCorpus);
 
     await expect(client.search("alderspensjon", false)).rejects.toThrow();
+  });
+});
+
+describe("searchWorkerEntryUrl", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("starts the worker straight from its script when page and script share an origin", () => {
+    expect(searchWorkerEntryUrl("/assets/searchWorker-abc.js", "https://brevoppskrift.intern.nav.no/templates")).toBe(
+      "https://brevoppskrift.intern.nav.no/assets/searchWorker-abc.js",
+    );
+  });
+
+  // vite-mode: the BFF serves the page, the Vite dev server serves the script.
+  it("starts a cross-origin script through a same-origin blob that imports it", async () => {
+    const created: Blob[] = [];
+    // jsdom has no `URL.createObjectURL`.
+    vi.stubGlobal(
+      "URL",
+      class extends URL {
+        static override createObjectURL(blob: Blob) {
+          created.push(blob);
+          return "blob:http://localhost:8088/shim";
+        }
+      },
+    );
+
+    const entry = searchWorkerEntryUrl(
+      "http://localhost:5173/src/search/searchWorker.ts?worker_file&type=module",
+      "http://localhost:8088/templates",
+    );
+
+    expect(entry).toBe("blob:http://localhost:8088/shim");
+    expect(await created[0].text()).toBe(
+      'import "http://localhost:5173/src/search/searchWorker.ts?worker_file&type=module";',
+    );
   });
 });
