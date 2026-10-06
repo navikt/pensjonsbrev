@@ -46,8 +46,8 @@ data class InnvilgelseAvAfpDto(
         // den redigerbare malen `InnvilgelseAvAfp` (PE_AF_04_111); autobrevet
         // (PE_AF_04_115) inkluderer ikke vedlegget.
         val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
-
-        val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto?
+        val harEtterbetaling: Boolean,
+        val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto?,
     ) : FagsystemBrevdata {
 
         data class AfpBeregning(

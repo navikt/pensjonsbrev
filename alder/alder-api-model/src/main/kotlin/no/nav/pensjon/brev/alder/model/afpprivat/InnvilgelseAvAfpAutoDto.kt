@@ -31,9 +31,8 @@ data class InnvilgelseAvAfpAutoDto(
     val bosattINorge: Boolean,
 
     val afpBeregning: AfpBeregning,
-
-    val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto?
-
+    val harEtterbetaling: Boolean,
+    val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto?,
 ) : AutobrevData {
 
     data class AfpBeregning(
