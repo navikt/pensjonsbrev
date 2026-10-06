@@ -175,7 +175,7 @@ function SamhandlerMottakerDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) 
   }
 
   if (isError) {
-    return <ApiError error={error} title="Fant ikke samhandler" />;
+    return <ApiError error={error} title="Fant ikke mottakerinformasjon" />;
   }
 
   return <MottakerDetaljer mottaker={data} />;
