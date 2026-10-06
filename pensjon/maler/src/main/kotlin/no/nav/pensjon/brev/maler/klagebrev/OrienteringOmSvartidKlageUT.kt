@@ -31,7 +31,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
     override val template = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Klage - orientering om svartid",
+            displayTitle = "Klage/omgjøring - orientering om svartid",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
