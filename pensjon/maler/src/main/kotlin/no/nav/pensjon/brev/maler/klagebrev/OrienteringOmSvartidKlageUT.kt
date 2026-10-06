@@ -6,6 +6,11 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -57,7 +62,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
                 paragraph {
                     text(bokmal {
                         +"Saksbehandlingstiden hos Nav arbeid og ytelser er inntil 4 måneder. "
-                        +"Dersom vi ikke finner grunnlag for å gjøre om vedtaket vårt, vil vi sende klagen din over til Nav klageinstans for videre behandling. "
+                        +"Dersom vi ikke finner grunnlag for å gjøre om vedtaket vårt, vil vi sende klagen din over til $NAV_KLAGEINSTANS for videre behandling. "
                         +"Hvis saken din ikke er ferdigbehandlet av oss i løpet av denne tiden, vil du få nærmere beskjed."
                     })
                 }
@@ -73,7 +78,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
                 paragraph {
                     text(bokmal {
                         +"Saksbehandlingstiden hos Nav arbeid og ytelser er inntil 4 måneder. "
-                        +"Dersom vi ikke finner grunnlag for å gjøre om vedtaket vårt, vil vi sende kravet ditt om omgjøring over til Nav klageinstans for videre behandling. "
+                        +"Dersom vi ikke finner grunnlag for å gjøre om vedtaket vårt, vil vi sende kravet ditt om omgjøring over til $NAV_KLAGEINSTANS for videre behandling. "
                         +"Hvis saken din ikke er ferdigbehandlet av oss i løpet av denne tiden, vil du få nærmere beskjed."
                     })
                 }
@@ -83,16 +88,16 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
                 title1 { text(bokmal { +"Saksinnsyn" }) }
                 paragraph {
                     text(bokmal {
-                        +"Du har bedt om innsyn i saken, og du vil få tilsendt kopi av sakens dokumenter av Nav kontaktsenter så snart som mulig. "
+                        +"Du har bedt om innsyn i saken, og du vil få tilsendt kopi av sakens dokumenter av $NAV_KONTAKTSENTER så snart som mulig. "
                         +"Utfyllende klage må sendes innen to uker etter at du har mottatt kopi av sakens dokumenter."
                     })
                 }
-                paragraph { text(bokmal { +"På Nav.no kan du sende inn den utfyllende klagen elektronisk ved bruk av BankID." }) }
+                paragraph { text(bokmal { +"På $NAV_URL kan du sende inn den utfyllende klagen elektronisk ved bruk av BankID." }) }
                 paragraph {
                     text(bokmal {
-                        +"Hvis du er representert av advokat eller fullmektig kan denne ettersende utfyllende klage eller ytterligere kommentarer på vegne av deg. "
+                        +"Hvis du er representert av advokat eller fullmektig, kan denne ettersende utfyllende klage eller ytterligere kommentarer på vegne av deg. "
                         +"Det må da benyttes forside for innsendelse. "
-                        +"Forside kan enkelt lages på Nav.no/ettersendelse."
+                        +"Forside kan enkelt lages på $ETTERSENDELSE_URL."
                     })
                 }
             }
