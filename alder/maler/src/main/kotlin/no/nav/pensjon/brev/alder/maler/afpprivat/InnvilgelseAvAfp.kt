@@ -84,19 +84,12 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
         outline {
             includePhrase(
                 InnvilgelseAvAfpInnhold(
-                    kravMottattDato = pesysData.kravMottattDato,
                     virkningFom = pesysData.virkningFom,
                     totalPensjon = pesysData.afpBeregning.totalPensjon,
-                    livsvarigBrutto = pesysData.afpBeregning.livsvarigBrutto,
                     kronetilleggBrutto = pesysData.afpBeregning.kronetilleggBrutto,
                     kompensasjonstilleggBrutto = pesysData.afpBeregning.kompensasjonstilleggBrutto,
                     brukerUnder70Aar = pesysData.brukerUnder70Aar,
                     bosattINorge = pesysData.bosattINorge,
-                    opptjening = pesysData.afpBeregning.opptjening,
-                    forholdstallUttak = pesysData.afpBeregning.forholdstallUttak,
-                    justeringsbeloep = pesysData.afpBeregning.justeringsbeloep,
-                    referansebeloep = pesysData.afpBeregning.referansebeloep,
-                    kompensasjonstilleggForholdstall = pesysData.afpBeregning.kompensasjonstilleggForholdstall,
                     harEtterbetaling = pesysData.harEtterbetaling
                 ),
             )

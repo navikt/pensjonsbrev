@@ -49,19 +49,12 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
         outline {
             includePhrase(
                 InnvilgelseAvAfpInnhold(
-                    kravMottattDato = kravMottattDato,
                     virkningFom = virkningFom,
                     totalPensjon = afpBeregning.totalPensjon,
-                    livsvarigBrutto = afpBeregning.livsvarigBrutto,
                     kronetilleggBrutto = afpBeregning.kronetilleggBrutto,
                     kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
                     brukerUnder70Aar = brukerUnder70Aar,
                     bosattINorge = bosattINorge,
-                    opptjening = afpBeregning.opptjening,
-                    forholdstallUttak = afpBeregning.forholdstallUttak,
-                    justeringsbeloep = afpBeregning.justeringsbeloep,
-                    referansebeloep = afpBeregning.referansebeloep,
-                    kompensasjonstilleggForholdstall = afpBeregning.kompensasjonstilleggForholdstall,
                     harEtterbetaling = harEtterbetaling,
                 ),
             )

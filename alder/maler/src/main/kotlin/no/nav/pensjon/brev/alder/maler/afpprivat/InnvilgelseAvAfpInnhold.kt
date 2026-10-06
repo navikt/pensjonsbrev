@@ -24,19 +24,12 @@ import java.time.LocalDate
  * inkluderes separat i hver mal.
  */
 data class InnvilgelseAvAfpInnhold(
-    val kravMottattDato: Expression<LocalDate>,
     val virkningFom: Expression<LocalDate>,
     val totalPensjon: Expression<Kroner>,
-    val livsvarigBrutto: Expression<Kroner?>,
     val kronetilleggBrutto: Expression<Kroner?>,
     val kompensasjonstilleggBrutto: Expression<Kroner?>,
     val brukerUnder70Aar: Expression<Boolean>,
     val bosattINorge: Expression<Boolean>,
-    val opptjening: Expression<Kroner>,
-    val forholdstallUttak: Expression<Double>,
-    val justeringsbeloep: Expression<Kroner?>,
-    val referansebeloep: Expression<Kroner?>,
-    val kompensasjonstilleggForholdstall: Expression<Double?>,
     val harEtterbetaling: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
