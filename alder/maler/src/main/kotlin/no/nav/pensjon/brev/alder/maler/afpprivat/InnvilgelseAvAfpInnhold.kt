@@ -168,7 +168,7 @@ data class InnvilgelseAvAfpInnhold(
                 )
             }
 
-            paragraph  {
+            paragraph {
                 text(
                     bokmal { +"Du får etterbetalt pensjon fra <dato>. " + //TODO: Etterbetalingsdato
                             "Etterbetalingen vil vanligvis bli utbetalt i løpet av sju virkedager. " +
