@@ -48,6 +48,7 @@ import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.localDateNow
+import java.time.Month
 
 
 fun Expression<PEgruppe10>.ut_trygdetid(): Expression<Boolean> =
@@ -158,7 +159,7 @@ fun Expression<PEgruppe10>.pe_ut_barnet_barna_felles_serkull(): Expression<Strin
 
 fun Expression<PEgruppe10>.ut_bunnfradrag_faktisk() =
     ifElse(
-        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear().equalTo(0),
+        this.vedtaksdata_virkningfom().month.notEqualTo(Month.DECEMBER.value) or vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear().equalTo(0),
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag(),
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear()
     )

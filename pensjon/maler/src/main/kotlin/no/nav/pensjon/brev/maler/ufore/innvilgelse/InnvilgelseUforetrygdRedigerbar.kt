@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.innvilgelse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.pesysData
@@ -245,8 +246,6 @@ object InnvilgelseUforetrygdRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretry
                 harVTA = pesysData.harVTA
             ))
 
-            includePhrase(Innvilgelse.MeldeFraOmInntekt)
-
             includePhrase(Innvilgelse.InstitusjonReduksjon(
                 pe = pe,
                 instoppholdType = instoppholdType,
@@ -257,12 +256,15 @@ object InnvilgelseUforetrygdRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretry
                 totalNettoUforeberegning = totalNettoUforeberegning,
             ))
 
-            includePhrase(Innvilgelse.Straffegjennomfoering(
-                pe = pe,
-                instoppholdType = instoppholdType,
-                ektefelletilleggInnvilget = ektefelletilleggInnvilget,
-                gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
-            ))
+            showIf(instoppholdType.equalTo("reduksjon_fo")) {
+                includePhrase(
+                    Ufoeretrygd.Straffegjennomfoering(
+                        pe = pe,
+                        ektefelletilleggInnvilget = ektefelletilleggInnvilget,
+                        gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                    )
+                )
+            }
 
             includePhrase(Innvilgelse.BarnetilleggOgInntekt(
                 pe = pe,
@@ -291,6 +293,7 @@ object InnvilgelseUforetrygdRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretry
             includePhrase(Innvilgelse.EtterbetalingUforetrygd(
                 pe = pe,
                 uforegrad = uforegrad,
+                virkningsdatoTidligereMnd = pesysData.vedtaksinfo.virkningsdatoTidligereMnd,
             ))
 
             showIf(kravGjelder.equalTo("f_bh_med_utl")){
@@ -303,7 +306,7 @@ object InnvilgelseUforetrygdRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretry
                 uforegrad = uforegrad,
             ))
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))

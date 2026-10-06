@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.endring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.barn_flyttet_ikke_avt_land
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land
@@ -970,60 +971,9 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((instoppholdtype.equalTo("reduksjon_fo") and kravarsak.notEqualTo("instopphold"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                    )
-                }
-            }
-
             showIf(instoppholdtype.equalTo("reduksjon_fo")) {
-                paragraph {
-                    text(
-                        bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring. " },
-                        nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring. " },
-                    )
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +"Da du forsørger barn" },
-                            nynorsk { +"Da du forsørgjer barn" },
-                        )
-                    }
-
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) and ektefelletilleggInnvilget)) {
-                        text(
-                            bokmal { +" og/eller ektefelle" },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +", vil utbetaling av uføretrygden din reduseres med 50 prosent. " },
-                            nynorsk { +", vil utbetalinga av uføretrygda di reduserast med 50 prosent. " },
-                        )
-                    }
-                    text(
-                        bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " },
-                        nynorsk { +"Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa tok til. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
-                    )
-
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert. " },
-                            nynorsk { +"Dersom du får ektefelletillegg vil dette tillegget også bli redusert. " },
-                        )
-                    }
-
-                    showIf(gjenlevendetilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert." },
-                            nynorsk { +"Dersom du får attlevandetillegg vil dette tillegget også bli redusert." },
-                        )
-                    }
+                showIf(kravarsak.notEqualTo("instopphold")) {
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
                 }
             }
 
@@ -1344,21 +1294,28 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
                 paragraph {
-                    text(
-                        bokmal { +"Ut fra den årlige inntekten din vil uføretrygden utgjøre " + pe.ut_nettoakk_pluss_nettorestar().format() + "." },
-                        nynorsk { +"På bakgrunn av den innmelde inntekta di utgjer uføretrygda di " + pe.ut_nettoakk_pluss_nettorestar().format() + "." },
-                    )
-
-                    showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())))) {
+                    showIf(pe.ut_nettoakk_pluss_nettorestar().greaterThan(0)) {
                         text(
-                            bokmal { +" Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." },
-                            nynorsk { +" Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." },
+                            bokmal { +"Ut fra den årlige inntekten din vil uføretrygden utgjøre " + pe.ut_nettoakk_pluss_nettorestar().format() + "." },
+                            nynorsk { +"På bakgrunn av den innmelde inntekta di utgjer uføretrygda di " + pe.ut_nettoakk_pluss_nettorestar().format() + "." },
+                        )
+
+                        showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())))) {
+                            text(
+                                bokmal { +" Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." },
+                                nynorsk { +" Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." },
+                            )
+                        }
+                        text(
+                            bokmal { +" Du har derfor rett til en utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " per måned for resten av året." },
+                            nynorsk { +" Du har derfor rett til ei utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " per månad for resten av kalenderåret." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Ut fra den årlige inntekten din vil uføretrygden ikke komme til utbetaling resten av året." },
+                            nynorsk { +"På bakgrunn av den årlege inntekta di kjem uføretrygda ikkje til utbetaling resten av året." },
                         )
                     }
-                    text(
-                        bokmal { +" Du har derfor rett til en utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " per måned for resten av året." },
-                        nynorsk { +" Du har derfor rett til ei utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " per månad for resten av kalenderåret." },
-                    )
                 }
             }
 
@@ -1837,22 +1794,11 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 includePhrase(Ufoeretrygd.KombinereUforetrygdAldersPensjon)
             }
 
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
-                title1 {
-                    text(
-                        bokmal { +"Etterbetaling av uføretrygd" },
-                        nynorsk { +"Etterbetaling av uføretrygd" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Du får etterbetalt uføretrygd fra " + onsketvirkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-                        nynorsk { +"Du får etterbetalt uføretrygd frå " + onsketvirkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju vyrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
-                    )
-                }
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
             }
 
-            showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
+            showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
                 title1 {
                     text(
                         bokmal { +"Tilbakekreving av uføretrygd" },
@@ -1867,7 +1813,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)

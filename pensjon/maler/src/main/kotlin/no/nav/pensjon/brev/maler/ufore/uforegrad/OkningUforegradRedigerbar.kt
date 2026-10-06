@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.uforegrad
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.pesysData
@@ -37,6 +38,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
+import java.time.Month
 
 @TemplateModelHelpers
 object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
@@ -114,8 +116,8 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                 )
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().isNotAnyOf("omgj_etter_klage", "omgj_etter_anke")) {
                     text(
-                        bokmal { +"Uføregraden din øker fra " + fritekst("Forrige uføregrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
-                        nynorsk { +"Uføregraden din aukar frå " + fritekst("Forrige uføregrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
+                        bokmal { +"Uføregraden din øker fra " + pesysData.forrigeUforegrad.format() + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
+                        nynorsk { +"Uføregraden din aukar frå " + pesysData.forrigeUforegrad.format() + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
                     )
                 }.orShow {
                     text(
@@ -636,8 +638,8 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
-                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
+                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + pesysData.forrigeUforetidspunkt.formatMonthYear() + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
+                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + pesysData.forrigeUforetidspunkt.formatMonthYear() + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
                 )
             }
 
@@ -825,9 +827,30 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             showIf(!pesysData.harVTA) {
                 paragraph {
                     text(
-                        bokmal { +"Når uføregraden øker, vil du få ny venteperiode på 2 år med et fribeløp på 0,4 G, før fribeløpet igjen vil øke til 1 G. Du kan ha en årlig inntekt på 0,4 G, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt. " },
-                        nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit fribeløp på 0,4 G, før fribeløpet igjen vil auke til 1 G. Du kan ha ei årleg inntekt på 0,4 G utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt. " },
+                        bokmal { +"Når uføregraden øker, vil du få ny venteperiode på 2 år med et fribeløp på 0,4 G, før fribeløpet igjen vil øke til 1 G. Neste år kan du ha en årlig inntekt på 0,4 G" },
+                        nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit fribeløp på 0,4 G, før fribeløpet igjen vil auke til 1 G. Neste år kan du ha ei årleg inntekt på 0,4 G" },
                     )
+                    showIf(uforegradFraBeregning.notEqualTo(100)) {
+                        text(
+                            bokmal { +", i tillegg til oppjustert inntekt etter uførhet," },
+                            nynorsk { +", i tillegg til oppjustert inntekt etter uførleik," },
+                        )
+                    }
+                    text(
+                        bokmal { +" uten at uføretrygden din blir redusert. " },
+                        nynorsk { +" utan at uføretrygda di blir redusert. " },
+                    )
+                    showIf(virkningstidpunkt.month.notEqualTo(Month.DECEMBER.value)) {
+                        text(
+                            bokmal { +"Ut inneværende kalenderår beholder du det nåværende bunnfradraget ditt, som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
+                            nynorsk { +"Ut inneverande kalenderår beheld du det noverande botnfrådraget ditt, som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Bunnfradraget ditt neste år er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            nynorsk { +"Botnfrådraget ditt neste år er " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                        )
+                    }
                 }
                 showIf(pesysData.fribelopsperioder.isNotEmpty()) {
                     paragraph {
@@ -857,12 +880,12 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             paragraph {
                 text(
                     bokmal {
-                        +"For deg utgjør reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_bunnfradrag_faktisk().format()
-                        +", som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_bunnfradrag_faktisk().format() + " trekkes fra uføretrygden din."
+                        +"For deg utgjør reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger bunnfradraget ditt "
+                        +"vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over bunnfradraget ditt trekkes fra uføretrygden din."
                     },
                     nynorsk {
-                        +"For deg utgjer reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_bunnfradrag_faktisk().format()
-                        +", som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_bunnfradrag_faktisk().format() + " blir trekt frå uføretrygda di."
+                        +"For deg utgjer reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig botnfrådraget ditt "
+                        +"vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over botnfrådraget ditt blir trekt frå uføretrygda di."
                     },
                 )
             }
@@ -880,19 +903,6 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                         nynorsk { +"Botnfrådraget gjeld berre for den norske uføretrygda di. Har du spørsmål om botnfrådraget i eit anna land, må du kontakte trygdestyresmaktene i det landet det gjeld." },
                     )
                 }
-            }
-
-            title1 {
-                text(
-                    bokmal { +"Du må melde fra om eventuell inntekt" },
-                    nynorsk { +"Du må melde frå om eventuell inntekt" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din." },
-                    nynorsk { +"Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di." },
-                )
             }
 
             showIf(instoppholdtype.equalTo("reduksjon_hs")) {
@@ -997,63 +1007,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             }
 
             showIf(instoppholdtype.equalTo("reduksjon_fo")) {
-                title1 {
-                    text(
-                        bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                    )
-                }
-
-                paragraph {
-                    text(
-                        bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring." },
-                        nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring." },
-                    )
-
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()))) {
-                        text(
-                            bokmal { +" " },
-                            nynorsk { +" " },
-                        )
-                    }
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +"Da du forsørger barn" },
-                            nynorsk { +"Da du forsørgjer barn" },
-                        )
-                    }
-
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) and ektefelletilleggInnvilget)) {
-                        text(
-                            bokmal { +" og/eller ektefelle" },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +", vil utbetaling av uføretrygden din reduseres med 50 prosent. " },
-                            nynorsk { +", vil utbetalinga av uføretrygda di reduserast med 50 prosent. " },
-                        )
-                    }
-                    text(
-                        bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " },
-                        nynorsk { +"Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa tok til. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
-                    )
-
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert." },
-                            nynorsk { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert." },
-                        )
-                    }.orShowIf(gjenlevendetilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert." },
-                            nynorsk { +"Dersom du mottar attlevandetillegg vil dette tillegget også bli redusert." },
-                        )
-                    }
-                }
+                includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
             }
 
             showIf((btInnvilget)) {
@@ -1548,17 +1502,8 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato < PE_VedtakFattetDato_minus_1mnd) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegradFraBeregning) and onsketvirkningsdato.legacyLessThan(pe.vedtakfattetdato_minus_1mnd()))) {
-                paragraph {
-                    text(
-                        bokmal { +"Etterbetaling av uføretrygd" },
-                        nynorsk { +"Etterbetaling av uføretrygd" },
-                    )
-                    text(
-                        bokmal { +"Du får etterbetalt uføretrygd fra " + onsketvirkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-                        nynorsk { +"Du får etterbetalt uføretrygd frå " + onsketvirkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju vyrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
-                    )
-                }
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
             }
 
             showIf(bostedutland) {
@@ -1590,7 +1535,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             }
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Felles.RettTilAAKlage)
             showIf(bostedutland) {
                 paragraph {
