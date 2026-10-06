@@ -44,7 +44,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
             text(bokmal { +"Orientering om svartid " })
             showIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Klage)) {
                 text(bokmal { +"- klage" })
-            }.orShowIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Omgjoerring)) {
+            }.orShowIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Omgjoering)) {
                 text(bokmal { +"- krav om omgjøring" })
             }
         }
@@ -61,7 +61,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
                         +"Hvis saken din ikke er ferdigbehandlet av oss i løpet av denne tiden, vil du få nærmere beskjed."
                     })
                 }
-            }.orShowIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Omgjoerring)) {
+            }.orShowIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Omgjoering)) {
                 paragraph {
                     text(bokmal {
                         +"Vi har den " + fritekst("dato") + " mottatt kravet ditt om omgjøring av vedtaket vårt av " + fritekst("datoVedtak") + ". "
@@ -111,6 +111,6 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
 
     enum class OrienteringOmSvartid(override val displayText: String) : SaksbehandlerValgEnum {
         Klage("Orientering om svartid - klage"),
-        Omgjoerring("Orientering om svartid - krav om omgjøring")
+        Omgjoering("Orientering om svartid - krav om omgjøring")
     }
 }
