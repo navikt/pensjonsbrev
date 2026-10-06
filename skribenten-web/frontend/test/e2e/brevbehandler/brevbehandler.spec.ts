@@ -4,6 +4,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { setupSakStubs } from "~test/e2e/support/helpers";
+import { lagPdfBase64 } from "~test/e2e/support/pdf";
 import { brevInfo } from "~test/support/brevFixtures";
 
 test.describe("Brevbehandler", () => {
@@ -92,6 +93,138 @@ test.describe("Brevbehandler", () => {
     await pdfRefresh;
     await expect(page.getByRole("checkbox", { name: "Førsteside" })).toBeChecked();
   });
+
+  test("viser ny pdf med færre sider når førsteside slås av", async ({ page }) => {
+    let gjeldendeBrev: BrevInfo = { ...kladdBrev, leggVedFoersteside: true };
+    const loggedeFeil: unknown[] = [];
+
+    await stubFoerstesideFeatureToggle(page, true);
+    await page.route("**/bff/api/logg", (route) => {
+      loggedeFeil.push(route.request().postDataJSON());
+      return route.fulfill({ status: 200 });
+    });
+    await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({ json: [gjeldendeBrev] });
+      }
+      return route.fallback();
+    });
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/foersteside", (route) => {
+      if (route.request().method() === "PUT") {
+        gjeldendeBrev = { ...gjeldendeBrev, leggVedFoersteside: route.request().postDataJSON().leggVedFoersteside };
+        return route.fulfill({ json: gjeldendeBrev });
+      }
+      return route.fallback();
+    });
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", (route) => {
+      if (route.request().method() === "GET") {
+        const sider = gjeldendeBrev.leggVedFoersteside ? ["Forsteside", "Hello World"] : ["Hello World"];
+        return route.fulfill({ json: { pdf: lagPdfBase64(sider), rendretBrevErEndret: false } });
+      }
+      return route.fallback();
+    });
+
+    await page.goto("/saksnummer/123456/brevbehandler");
+    await openBrevCard(page, kladdBrev.brevtittel);
+    await expect(page.locator(".pdf-page")).toHaveCount(2);
+    await expect(page.getByText("Forsteside")).toBeVisible();
+
+    const pdfRefresh = page.waitForResponse(
+      (response) =>
+        response.url().endsWith("/bff/skribenten-backend/sak/123456/brev/1/pdf") &&
+        response.request().method() === "GET",
+    );
+    await page.getByRole("checkbox", { name: "Førsteside" }).click();
+    await pdfRefresh;
+
+    await expect(page.getByRole("checkbox", { name: "Førsteside" })).not.toBeChecked();
+    await expect(page.locator(".pdf-page")).toHaveCount(1);
+    await expect(page.getByText("Hello World")).toBeVisible();
+    await expect(page.getByText("Forsteside")).not.toBeVisible();
+    await expect(page.getByText("Klarte ikke vise pdf")).not.toBeVisible();
+    await expect(page.getByText("Teknisk feil")).not.toBeVisible();
+    expect(loggedeFeil).toEqual([]);
+  });
+
+  for (const regenerering of [false, true]) {
+    test(`venter med sending under ${regenerering ? "regenerering etter førsteside" : "første lasting av PDF"}`, async ({
+      page,
+    }) => {
+      let gjeldendeBrev = kladdBrev;
+      const annetBrev = { ...klarBrev, id: 2, brevtittel: "Et annet brev" };
+      let pdfRequests = 0;
+      let sendRequests = 0;
+      let fullfoerPdf!: () => void;
+      const pdfKlar = new Promise<void>((resolve) => {
+        fullfoerPdf = resolve;
+      });
+
+      await stubFoerstesideFeatureToggle(page, true);
+      await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) =>
+        route.fulfill({ json: [gjeldendeBrev, annetBrev] }),
+      );
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1/foersteside", (route) => {
+        gjeldendeBrev = { ...gjeldendeBrev, leggVedFoersteside: true };
+        return route.fulfill({ json: gjeldendeBrev });
+      });
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1/status", (route) => {
+        gjeldendeBrev = { ...gjeldendeBrev, status: { type: "Klar" } };
+        return route.fulfill({ json: gjeldendeBrev });
+      });
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", async (route) => {
+        pdfRequests += 1;
+        if (!regenerering || pdfRequests > 1) {
+          await pdfKlar;
+        }
+        await route.fulfill({ path: "test/e2e/fixtures/helloWorldPdf.txt", contentType: "application/json" });
+      });
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/*/pdf/send", (route) => {
+        sendRequests += 1;
+        return route.fulfill({ json: { journalpostId: 80_912, error: null } });
+      });
+
+      await page.goto("/saksnummer/123456/brevbehandler");
+      if (regenerering) {
+        const initialPdf = page.waitForResponse("**/brev/1/pdf");
+        await openBrevCard(page, kladdBrev.brevtittel);
+        await initialPdf;
+        await page.getByRole("checkbox", { name: "Førsteside" }).click();
+        await expect(page.getByRole("checkbox", { name: "Førsteside" })).toBeChecked();
+      } else {
+        await openBrevCard(page, kladdBrev.brevtittel);
+      }
+      await expect.poll(() => pdfRequests).toBe(regenerering ? 2 : 1);
+      await page.getByLabel(kladdBrev.brevtittel, { exact: true }).getByText("Brevet er klart for sending").click();
+      if (regenerering) {
+        await openBrevCard(page, annetBrev.brevtittel);
+      }
+      await page.getByRole("button", { name: "Send 2 brev" }).click();
+
+      const bekreftSending = page.getByRole("dialog").locator('button[type="submit"]');
+      const valgtBrev = page.getByTestId("ferdigstillbrev-valgte-brev").getByRole("checkbox", {
+        name: kladdBrev.brevtittel,
+      });
+      await expect(bekreftSending).toBeDisabled();
+      await expect(bekreftSending.locator("svg")).toBeVisible();
+      await bekreftSending.evaluate((button: HTMLButtonElement) => button.form!.requestSubmit());
+      await expect(page).toHaveURL(/brevbehandler/);
+      await valgtBrev.uncheck();
+      await expect(bekreftSending).toBeEnabled();
+      await valgtBrev.check();
+      await expect(bekreftSending).toBeDisabled();
+      expect(sendRequests).toBe(0);
+
+      const pdfResponse = page.waitForResponse("**/brev/1/pdf");
+      fullfoerPdf();
+      await pdfResponse;
+      await expect(bekreftSending).toBeEnabled();
+      await expect(bekreftSending.locator("svg")).toHaveCount(0);
+      expect(sendRequests).toBe(0);
+      await bekreftSending.click();
+      await expect(page).toHaveURL(/\/saksnummer\/123456\/kvittering$/);
+      expect(sendRequests).toBe(2);
+    });
+  }
 
   test("viser ikke førsteside når feature toggle er av", async ({ page }) => {
     await stubFoerstesideFeatureToggle(page, false);

@@ -70,6 +70,8 @@ export const LetterEditor = ({
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
+  const showMissingFromTemplate = redigeringsflate !== "attestant-redigering";
+
   const canUndo = !freeze && editorState.history.entryPointer >= 0;
   const canRedo = !freeze && editorState.history.entryPointer < editorState.history.entries.length - 1;
 
@@ -167,8 +169,14 @@ export const LetterEditor = ({
               {blocks.map((block, blockIndex) => (
                 <React.Fragment key={blockIndex}>
                   <DeletedBlocksAt blockIndex={blockIndex} />
-                  <div className={getBlockClassName(block, isTekstValgHighlighted(highlightedIds, block))}>
-                    {block.missingFromTemplate && (
+                  <div
+                    className={getBlockClassName(
+                      block,
+                      isTekstValgHighlighted(highlightedIds, block),
+                      showMissingFromTemplate,
+                    )}
+                  >
+                    {block.missingFromTemplate && showMissingFromTemplate && (
                       <HStack className="missing-from-template-actions" gap="space-4" justify="end">
                         <Button
                           icon={<CheckmarkIcon aria-hidden />}

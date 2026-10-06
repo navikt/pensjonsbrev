@@ -88,10 +88,11 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includePhrase(ForDegSomHarRettTilMinsteytelse(pe))
 
         // TODO TBU028V-TBU020V trengs for brev PE_UT_04_300 og PE_UT_14_300
+        // (Vedtak - omregning av uførepensjon til uføretrygd auto & manuell)
 
-        showIf(
-            pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
-            includePhrase(GrunnbeloepOgYrkesskadeForklaring(pe))
+        showIf(pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
+            includePhrase(Grunnbeloep(pe))
+            includePhrase(YrkesskadeForklaring(pe))
         }
 
         // ============================================================

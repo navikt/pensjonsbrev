@@ -6,13 +6,15 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.Nasjon
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdData
 
-fun createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO() =
+fun createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO(
+    nasjonalEllerUtland: NasjonalEllerUtland = NasjonalEllerUtland.NASJONAL,
+) =
     OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO(
         data = OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdData(
             aktivitetsgrad = Aktivitetsgrad.OVER_50_PROSENT,
             utbetaling = true,
             redusertEtterInntekt = true,
-            nasjonalEllerUtland = NasjonalEllerUtland.NASJONAL,
+            nasjonalEllerUtland = nasjonalEllerUtland,
             halvtGrunnbeloep = Kroner(130160 / 2),
         )
     )

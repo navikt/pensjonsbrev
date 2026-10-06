@@ -3,7 +3,11 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -77,18 +81,21 @@ object DocumentTable : LongIdTable() {
 object MottakerTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
-    val tssId: Column<String?> = varchar("tssId", 50).nullable()
-    val navn: Column<String?> = varchar("navn", 128).nullable()
+    val tssId: Column<TssId?> = varchar("tssId", 50).transform(::TssId, TssId::value).nullable()
+    val navn: Column<Navn?> = varchar("navn", 128).transform(::Navn, Navn::value).nullable()
     val navnKryptert: Column<String?> = kryptertDto<String>("navnKryptert").nullable()
     val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
     val postnummerKryptert: Column<NorskPostnummer?> = kryptertDto<NorskPostnummer>("postnummerKryptert").nullable()
-    val poststed: Column<String?> = varchar("poststed", 50).nullable()
+    val poststed: Column<Poststed?> = varchar("poststed", 50).transform(::Poststed, Poststed::value).nullable()
     val poststedKryptert: Column<String?> = kryptertDto<String>("poststedKryptert").nullable()
-    val adresselinje1: Column<String?> = varchar("adresselinje1", 128).nullable()
+    val adresselinje1: Column<Adresselinje?> =
+        varchar("adresselinje1", 128).transform(::Adresselinje, Adresselinje::value).nullable()
     val adresselinje1Kryptert: Column<String?> = kryptertDto<String>("adresselinje1Kryptert").nullable()
-    val adresselinje2: Column<String?> = varchar("adresselinje2", 128).nullable()
+    val adresselinje2: Column<Adresselinje?> =
+        varchar("adresselinje2", 128).transform(::Adresselinje, Adresselinje::value).nullable()
     val adresselinje2Kryptert: Column<String?> = kryptertDto<String>("adresselinje2Kryptert").nullable()
-    val adresselinje3: Column<String?> = varchar("adresselinje3", 128).nullable()
+    val adresselinje3: Column<Adresselinje?> =
+        varchar("adresselinje3", 128).transform(::Adresselinje, Adresselinje::value).nullable()
     val adresselinje3Kryptert: Column<String?> = kryptertDto<String>("adresselinje3Kryptert").nullable()
     val landkode: Column<Landkode?> = varchar("landkode", 2).transform(::Landkode, Landkode::landkode).nullable()
     val landkodeKryptert: Column<Landkode?> = kryptertDto<Landkode>("landkodeKryptert").nullable()

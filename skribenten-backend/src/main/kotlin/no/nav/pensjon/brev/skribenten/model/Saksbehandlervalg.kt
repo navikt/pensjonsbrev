@@ -3,12 +3,22 @@ package no.nav.pensjon.brev.skribenten.model
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.skribenten.serialize.SaksbehandlervalgVerdiDeserializer
 
 class SaksbehandlervalgMap(entries: Iterable<Pair<String, SaksbehandlervalgVerdi?>>? = null) :
     LinkedHashMap<String, SaksbehandlervalgVerdi?>() {
     init {
         if (entries != null) putAll(entries)
+    }
+
+    fun somSaksbehandlervalgIDSL(): SaksbehandlervalgIDSL = GeneriskSaksbehandlervalg(this)
+
+    private class GeneriskSaksbehandlervalg(saksbehandlervalgMap: SaksbehandlervalgMap) : SaksbehandlervalgIDSL,
+        LinkedHashMap<String, Any?>() {
+        init {
+            saksbehandlervalgMap.forEach { (k, v) -> put(k, v?.value) }
+        }
     }
 }
 

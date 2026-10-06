@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.common.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
@@ -42,11 +41,9 @@ class BrevmalService(
         brevbakerService.renderMarkup(
             brevkode = brevkode,
             spraak = spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = saksbehandlerValg,
-            ),
-            felles = pesysData.felles
+            felles = pesysData.felles,
+            fagsystemBrevdata = pesysData.brevdata,
+            saksbehandlervalg = saksbehandlerValg.somSaksbehandlervalgIDSL()
         )
 
     suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): LetterMarkupWithDataUsage =
@@ -61,10 +58,8 @@ class BrevmalService(
         brevbakerService.hentRedigerbareVedleggTitler(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = brev.saksbehandlerValg,
-            ),
+            fagsystemBrevdata = pesysData.brevdata,
+            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
             felles = pesysData.felles,
         )
 
@@ -75,10 +70,8 @@ class BrevmalService(
         brevbakerService.renderRedigerbartVedlegg(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = brev.saksbehandlerValg,
-            ),
+            fagsystemBrevdata = pesysData.brevdata,
+            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
             felles = pesysData.felles,
             vedleggId = vedleggId,
         )

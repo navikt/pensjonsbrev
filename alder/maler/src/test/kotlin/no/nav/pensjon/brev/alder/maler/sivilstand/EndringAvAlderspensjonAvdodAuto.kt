@@ -2,12 +2,12 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.Institusjon
 import no.nav.pensjon.brev.alder.model.SivilstandAvdoed
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDto
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 fun createEndringAvAlderspensjonAvdodAuto() = EndringAvAlderspensjonAvdodAutoDto(

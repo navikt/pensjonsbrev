@@ -10,12 +10,12 @@ export default {
   "*.{ts,cts,mts}": [
     "biome format --write --no-errors-on-unmatched", // format and write to disk
     "biome check --no-errors-on-unmatched",
-    () => "tsc --noEmit", // use function to pick up tsconfig.json
+    () => "npm run check-types", // function: run once, not per file
   ],
   "*.tsx": [
     "biome format --write --no-errors-on-unmatched", // format and write to disk
     "biome check --no-errors-on-unmatched",
-    () => "tsc --noEmit", // use function to pick up tsconfig.json
+    () => "npm run check-types", // function: run once, not per file
     "stylelint",
   ],
   "*.css": [

@@ -13,6 +13,8 @@ import no.nav.pensjon.brev.maler.legacy.BarnetilleggFlereBarnFormatter
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggOpphorFormatter
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
+import no.nav.pensjon.brev.maler.legacy.ut_forsorgeransvar_siste_er_true
+import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.model.format
@@ -20,6 +22,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -210,66 +213,9 @@ object Ufoeretrygd {
         }
     }
 
-    // TBU2364, MeldInntektUTOverskrift_001
-    object MeldeFraOmEventuellInntektOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            title1 {
-                text(
-                    bokmal { +"Du må melde fra om eventuell inntekt" },
-                    nynorsk { +"Du må melde frå om eventuell inntekt" },
-                    english { +"Report any income" }
-                )
-            }
-        }
-    }
-
-    // TBU2365, MeldInntektUT_001
-    object MeldeFraOmEventuellInntekt : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal { +"Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din." },
-                    nynorsk { +"Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di." },
-                    english { +"If you are working or are planning to work, you must report any changes in your income. It is important that you report this as soon as possible, so that you receive the correct disability benefit payments. You can register your change in income under the option " + quoted("uføretrygd") + " at $NAV_URL. You can register how much you expect to earn in the calendar year. You will then be able to see how much disability benefit you will receive in addition to your income." }
-                )
-            }
-        }
-    }
-
-    // MeldInntektUTBT_001
-    object MeldeFraOmEventuellInntektBarnetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            paragraph {
-                text(
-                    bokmal {
-                        +"Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. " +
-                                "Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd og barnetillegg. " +
-                                "Dette kan du gjøre under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. " +
-                                "Her kan du legge inn hvor mye du forventer å tjene i løpet av året. " +
-                                "Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd og barnetillegg."
-                    },
-
-                    nynorsk {
-                        +"Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. " +
-                                "Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd og barnetillegg. " +
-                                "Dette kan du gjere under menyvalet " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. " +
-                                "Her kan du leggje inn kor mykje du forventar å tene i løpet av året. " +
-                                "Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd og barnetillegg."
-                    },
-
-                    english {
-                        +"If you are working or are planning to work, you must report any changes in your income. " +
-                                "It is important that you report this as soon as possible, so that you receive the correct disability benefit and child supplement payments. " +
-                                "You can register your change in income under the option " + quoted("uføretrygd") + " at $NAV_URL. " +
-                                "You can register how much you expect to earn in the calendar year. " +
-                                "You will then be able to see how much disability benefit and child supplement you will receive."
-                    }
-                )
-            }
-    }
-
     // TBU2212, TBU1223, TBU1224, MeldEndringerPesys_001
-    object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    class MeldeFraOmEndringer(
+        val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>? = null) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
                 text(
@@ -280,15 +226,36 @@ object Ufoeretrygd {
             }
             paragraph {
                 text(
-                    bokmal { +"Skjer det endringer, må du melde fra til oss med en gang. I vedlegget " },
-                    nynorsk { +"Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget " },
-                    english { +"You must notify us immediately of any changes in your situation. In the attachment " }
+                    bokmal { +"Endringer i inntekt og din situasjon kan påvirke hvor mye du får utbetalt fra oss. Derfor er det viktig at du sier ifra så fort det skjer en endring, slik at vi kan beregne riktig utbetaling. " },
+                    nynorsk { +"Endringar i inntekt og situasjonen din kan påverke kor mykje du får utbetalt frå oss. Derfor er det viktig at du seier ifrå så fort det skjer ein endring, slik at vi kan berekne riktig utbetaling. " },
+                    english { +"Changes in your income and situation may affect how much you receive from us. Therefore, it is important that you notify us as soon as a change occurs, so that we can calculate the correct payment. " }
                 )
-                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+            }
+            paragraph {
                 text(
-                    bokmal { +" ser du hvilke endringer du må si fra om." },
-                    nynorsk { +" ser du kva endringar du må seie frå om." },
-                    english { +" you will see which changes you must report." }
+                    bokmal { +"Du kan melde inn forventet inntekt i Inntektsplanleggeren på ${Constants.INNTEKTSPLANLEGGEREN_URL}. " },
+                    nynorsk { +"Du kan melde inn forventa inntekt i Inntektsplanleggeren på ${Constants.INNTEKTSPLANLEGGEREN_URL}. " },
+                    english { +"You can report your expected income at ${Constants.INNTEKTSPLANLEGGEREN_URL}. " }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Alle andre endringer kan du melde inn på ${Constants.MELDE_URL}. " },
+                    nynorsk { +"Alle andre endringar kan du melde inn på ${Constants.MELDE_URL}. " },
+                    english { +"All other changes can be reported at ${Constants.MELDE_URL}. " }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Les mer om dette i vedlegget " },
+                    nynorsk { +"Les meir om dette i vedlegget" },
+                    english { +"Read more about this in the attachment " }
+                )
+                namedReference(vedlegg ?: vedleggDineRettigheterOgPlikterUfoere)
+                text(
+                    bokmal { +". " },
+                    nynorsk { +". " },
+                    english { +". " }
                 )
             }
         }
@@ -670,11 +637,92 @@ object Ufoeretrygd {
         }
     }
 
+    data class Straffegjennomfoering(
+        val pe: Expression<PEgruppe10>,
+        val ektefelletilleggInnvilget: Expression<Boolean>,
+        val gjenlevendetilleggInnvilget: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
+                    nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring. " },
+                    nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring. " },
+                )
+
+                showIf((pe.ut_forsorgeransvar_siste_er_true())) {
+                    text(
+                        bokmal { +"Fordi du forsørger barn" },
+                        nynorsk { +"Fordi du forsørgjer barn" },
+                    )
+                }
+
+                showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) and ektefelletilleggInnvilget)) {
+                    text(
+                        bokmal { +" og/eller ektefelle" },
+                        nynorsk { +" og/eller ektefelle" },
+                    )
+                }
+
+                showIf((pe.ut_forsorgeransvar_siste_er_true())) {
+                    text(
+                        bokmal { +", vil utbetalingen av uføretrygden din reduseres med 50 prosent. " },
+                        nynorsk { +", vil utbetalinga av uføretrygda di reduserast med 50 prosent. " },
+                    )
+                }
+                text(
+                    bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring startet. Når straffegjennomføringen er avsluttet, vil vi ikke lenger redusere uføretrygden din. " },
+                    nynorsk { +"Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa starta. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
+                )
+
+                showIf(ektefelletilleggInnvilget) {
+                    text(
+                        bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert. " },
+                        nynorsk { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert. " },
+                    )
+                }
+
+                showIf(gjenlevendetilleggInnvilget) {
+                    text(
+                        bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert. " },
+                        nynorsk { +"Dersom du mottar attlevandetillegg vil dette tillegget også bli redusert. " },
+                    )
+                }
+            }
+        }
+    }
+
+    data class EtterbetalingUforetrygd(
+        val virkningsdato: Expression<LocalDate>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Etterbetaling av uføretrygd" },
+                    nynorsk { +"Etterbetaling av uføretrygd" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du får etterbetalt uføretrygd fra " + virkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
+                    nynorsk { +"Du får etterbetalt uføretrygd frå " + virkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju yrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
+                )
+            }
+        }
+    }
+
+
     private class BarnetBarnaFormatter(private val storBokstav: Boolean = false) : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>() {
         override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTidDto, second: Language): String {
             val barn = if (first.erFlereBarn()) "barnet" else "barna"
             return if (storBokstav) barn.replaceFirstChar { it.uppercase() } else barn
         }
+
         override fun stableHashCode(): Int = "BarnetBarnaFormatter3${storBokstav}".hashCode()
 
     }

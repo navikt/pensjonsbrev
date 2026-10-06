@@ -10,6 +10,10 @@ import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -44,12 +48,14 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
     private fun SimpleMeterRegistry.antallSendt(
         mottaker: String,
         samhandlerType: String = SendtBrevMetrikker.IKKE_RELEVANT,
+        idType: String = SendtBrevMetrikker.IKKE_RELEVANT,
         adressertTil: String = SendtBrevMetrikker.IKKE_RELEVANT,
         distribusjon: Distribusjon = Distribusjon.SENTRALPRINT,
     ): Double =
         find(SendtBrevMetrikker.metricName)
             .tag("mottaker", mottaker)
             .tag("samhandler_type", samhandlerType)
+            .tag("id_type", idType)
             .tag("adressert_til", adressertTil)
             .tag("distribusjon", distribusjon.name)
             .tag("avsender_enhet", PRINCIPAL_NAVENHET_ID.value)
@@ -94,32 +100,64 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
 
         sendKlartBrev(maalinger, Dto.Mottaker.samhandler(SAMHANDLER_TSS_ID))
 
-        assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SAMHANDLER_TYPE)).isEqualTo(1.0)
+        assertThat(
+            maalinger.registry.antallSendt(
+                mottaker = "SAMHANDLER",
+                samhandlerType = SAMHANDLER_TYPE,
+                idType = SendtBrevMetrikker.SamhandlerIdType.ORG.name,
+            )
+        ).isEqualTo(1.0)
+    }
+
+    @Test
+    suspend fun `brev til samhandler med organisasjonsnummer havner i en hash-boette`() {
+        val maalinger = nyeMaalinger()
+
+        sendKlartBrev(maalinger, Dto.Mottaker.samhandler(SAMHANDLER_TSS_ID))
+
+        assertThat(
+            maalinger.registry.find(SendtBrevMetrikker.orgMetricName)
+                .tag("org_bucket", SendtBrevMetrikker.orgBoette(SAMHANDLER_ORGNR).toString())
+                .counter()?.count()
+        ).isEqualTo(1.0)
     }
 
     @Test
     suspend fun `samhandler uten kjent type telles som ukjent`() {
         val maalinger = nyeMaalinger()
 
-        sendKlartBrev(maalinger, Dto.Mottaker.samhandler("ukjent-tssid"))
+        sendKlartBrev(maalinger, Dto.Mottaker.samhandler(TssId("ukjent-tssid")))
 
-        assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SendtBrevMetrikker.UKJENT)).isEqualTo(1.0)
+        assertThat(
+            maalinger.registry.antallSendt(
+                mottaker = "SAMHANDLER",
+                samhandlerType = SendtBrevMetrikker.UKJENT,
+                idType = SendtBrevMetrikker.UKJENT,
+            )
+        ).isEqualTo(1.0)
     }
 
     @Test
     suspend fun `feil ved oppslag av samhandlertype stopper ikke sendingen`() {
         val feilendeSamhandlerService = object : SamhandlerService {
-            override suspend fun hentSamhandlerType(idTSSEkstern: String): String = throw RuntimeException("TSS er nede")
-            override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = null
+            override suspend fun hentSamhandlerType(idTSSEkstern: TssId): String = throw RuntimeException("TSS er nede")
+            override suspend fun hentSamhandlerNavn(idTSSEkstern: TssId): String? = null
             override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
+            override suspend fun hentSamhandler(idTSSEkstern: TssId): HentSamhandlerResponseDto = throw RuntimeException("TSS er nede")
+            override suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId): HentSamhandlerAdresseResponseDto =
+                notYetStubbed()
         }
         val maalinger = nyeMaalinger(feilendeSamhandlerService)
 
         sendKlartBrev(maalinger, Dto.Mottaker.samhandler(SAMHANDLER_TSS_ID))
 
-        assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SendtBrevMetrikker.UKJENT)).isEqualTo(1.0)
+        assertThat(
+            maalinger.registry.antallSendt(
+                mottaker = "SAMHANDLER",
+                samhandlerType = SendtBrevMetrikker.UKJENT,
+                idType = SendtBrevMetrikker.UKJENT,
+            )
+        ).isEqualTo(1.0)
     }
 
     @Test
@@ -129,10 +167,10 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
         sendKlartBrev(
             maalinger,
             Dto.Mottaker.norskAdresse(
-                navn = "Anon Y. Mouse",
+                navn = Navn("Anon Y. Mouse"),
                 postnummer = NorskPostnummer("0001"),
-                poststed = "Andeby",
-                adresselinje1 = "Andebyveien 1",
+                poststed = Poststed("Andeby"),
+                adresselinje1 = Adresselinje("Andebyveien 1"),
                 adresselinje2 = null,
                 adresselinje3 = null,
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.ANNEN,
@@ -149,8 +187,8 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
         sendKlartBrev(
             maalinger,
             Dto.Mottaker.utenlandskAdresse(
-                navn = "Reci Pient",
-                adresselinje1 = "Nikosiaveien 1",
+                navn = Navn("Reci Pient"),
+                adresselinje1 = Adresselinje("Nikosiaveien 1"),
                 adresselinje2 = null,
                 adresselinje3 = null,
                 landkode = Landkode("CY"),
@@ -200,21 +238,35 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
     suspend fun `samhandleroppslaget beholder saksbehandlerens principal etter at requesten er besvart`() {
         var identIOppslag: String? = null
         val principalKrevendeSamhandlerService = object : SamhandlerService {
-            override suspend fun hentSamhandlerType(idTSSEkstern: String): String {
+            override suspend fun hentSamhandler(idTSSEkstern: TssId): HentSamhandlerResponseDto {
                 identIOppslag = PrincipalInContext.require().navIdent.id
-                return SAMHANDLER_TYPE
+                return HentSamhandlerResponseDto(
+                    success = HentSamhandlerResponseDto.Success(
+                        navn = "Advokat Handler AS",
+                        samhandlerType = SAMHANDLER_TYPE,
+                        offentligId = SAMHANDLER_ORGNR,
+                        idType = "ORG",
+                    ),
+                    failure = null,
+                )
             }
 
-            override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = null
+            override suspend fun hentSamhandlerType(idTSSEkstern: TssId): String = notYetStubbed()
+            override suspend fun hentSamhandlerNavn(idTSSEkstern: TssId): String? = null
             override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto = notYetStubbed()
-            override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
+            override suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId): HentSamhandlerAdresseResponseDto = notYetStubbed()
         }
         val maalinger = nyeMaalinger(principalKrevendeSamhandlerService)
 
         sendKlartBrev(maalinger, Dto.Mottaker.samhandler(SAMHANDLER_TSS_ID))
 
         assertThat(identIOppslag).isEqualTo(saksbehandler1Principal.navIdent.id)
-        assertThat(maalinger.registry.antallSendt(mottaker = "SAMHANDLER", samhandlerType = SAMHANDLER_TYPE)).isEqualTo(1.0)
+        assertThat(
+            maalinger.registry.antallSendt(
+                mottaker = "SAMHANDLER",
+                samhandlerType = SAMHANDLER_TYPE,
+                idType = SendtBrevMetrikker.SamhandlerIdType.ORG.name,
+            )
+        ).isEqualTo(1.0)
     }
 }

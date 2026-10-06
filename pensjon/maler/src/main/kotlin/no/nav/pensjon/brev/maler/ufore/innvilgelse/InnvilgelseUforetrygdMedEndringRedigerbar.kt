@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.innvilgelse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndringDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdMedEndringDto.pesysData.*
@@ -75,6 +76,9 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
             val barnetilleggSerkullInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
             val barnetilleggFellesInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
+            val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+            val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
+            val instoppholdType = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype()
 
             val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
 
@@ -265,8 +269,8 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().equalTo(0) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("slutt_bh_utl"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". Vi har fått opplyst at du har vært medlem av den " + fritekst("nasjonalitet") + " trygdeordningen fra " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden." },
-                        nynorsk { +"Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". Vi har fått opplyst at du har vore medlem av den " + fritekst("Nasjonalitet") + " trygdeordninga frå " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". Du har derfor vore medlem av den norske folketrygda og den " + fritekst("Nasjonalitet") + " trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("Land") + ", får du unntak frå vilkåret om medlemskap i folketrygda." },
+                        bokmal { +"Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". Vi har fått opplyst at du har vært medlem av den " + fritekst("nasjonalitet") + " trygdeordningen fra " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". Uføretidspunktet ditt er satt til " + uforetidspunkt.formatMonthYear() + ". Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden." },
+                        nynorsk { +"Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". Vi har fått opplyst at du har vore medlem av den " + fritekst("Nasjonalitet") + " trygdeordninga frå " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". Uføretidspunktet ditt er sett til " + uforetidspunkt.formatMonthYear() + ". Du har derfor vore medlem av den norske folketrygda og den " + fritekst("Nasjonalitet") + " trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("Land") + ", får du unntak frå vilkåret om medlemskap i folketrygda." },
                     )
                 }
             }
@@ -403,7 +407,7 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             showIf((pesysData.harVTA)) {
                 includePhrase(TBU1206_Generated(pe))
             }.orShowIf((uforegrad.equalTo(100) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().equalTo(0))) {
-                includePhrase(TBU1205_Generated(pe, pesysData.vektetFribelop))
+                includePhrase(TBU1205_Generated(pe))
             }
 
             //IF(  (FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) < 100  AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) > 0)  OR  (FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt ) > 0 AND  FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) = 100) ) THEN      INCLUDE ENDIF
@@ -419,19 +423,6 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
                     nynorsk { +"Reglane for botnfrådraget og korleis inntekt reduserer uføretrygd, gjeld berre for den norske uføretrygda di. Har du spørsmål om botnfrådraget i eit anna land, må du kontakte trygdemyndigheitene i det landet det gjeld." },
                 )
             }
-            title1 {
-                text(
-                    bokmal { +"Du må melde fra om eventuell inntekt" },
-                    nynorsk { +"Du må melde frå om eventuell inntekt" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Dersom du er i jobb eller har planer om å jobbe må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget «uføretrygd» når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din. " },
-                    nynorsk { +"Dersom du er i jobb eller har planar om å jobbe må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som mogleg, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjere under menyvalet «uføretrygd» når du loggar deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du vil få utbetalt i uføretrygd ved sida av inntekta di. " },
-                )
-            }
-
             //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"
             showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs")) {
                 title1 {
@@ -556,101 +547,24 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             }
 
             //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"
-            showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo")) {
-                paragraph {
-                    text(
-                        bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                    )
+            showIf(instoppholdType.equalTo("reduksjon_fo")) {
+                showIf(pe.ut_forsorgeransvar_ingen_er_false()) {
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
                 }
-            }
 
-            //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  AND PE_UT_Forsorgeransvar_ingen_er_false()) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo") and pe.ut_forsorgeransvar_ingen_er_false())) {
-                //[TBU3115]
-                paragraph {
-                    text(
-                        bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring." },
-                        nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring." },
-                    )
-
-                    //IF(FF_GetArrayElement_Boolean(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphReduksjonsperiodeListe_InstOpphReduksjonsperiode_Forsorgeransvar) = true) THEN      INCLUDE ENDIF
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()))) {
+                showIf(pe.ut_forsorgeransvar_ingen_er_true()) {
+                    title1(uniqueness = "straff_innv_endring") {
                         text(
-                            bokmal { +" " },
-                            nynorsk { +" " },
+                            bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
+                            nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
                         )
                     }
-
-                    //IF(PE_UT_Forsorgeransvar_siste_er_true()) THEN      INCLUDE ENDIF
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
+                    paragraph {
                         text(
-                            bokmal { +"Da du forsørger barn" },
-                            nynorsk { +"Da du forsørgjer barn" },
+                            bokmal { +"Du er under straffegjennomføring og uføretrygden din kommer derfor ikke til utbetaling. Vi vil sette i gang utbetalingene igjen når straffegjennomføringen er avsluttet." },
+                            nynorsk { +"Du er under straffegjennomføring og uføretrygda di kommer derfor ikkje til utbetaling. Vi vil sette i gang utbetalingane igjen når straffegjennomføringa er avslutta." },
                         )
                     }
-
-                    //IF(FF_GetArrayElement_Boolean(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphReduksjonsperiodeListe_InstOpphReduksjonsperiode_Forsorgeransvar) = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN      INCLUDE ENDIF
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())) {
-                        text(
-                            bokmal { +" og/eller ektefelle" },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-
-                    //IF(PE_UT_Forsorgeransvar_siste_er_true()) THEN      INCLUDE ENDIF
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +", vil utbetaling av uføretrygden din reduseres med 50 prosent. " },
-                            nynorsk { +", vil utbetalinga av uføretrygda di reduserast med 50 prosent. " },
-                        )
-                    }
-                    text(
-                        bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " },
-                        nynorsk { +"Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa tok til. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
-                    )
-
-                    //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true OR PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
-                    showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget())) {
-                        text(
-                            bokmal { +"Dersom du mottar " },
-                            nynorsk { +"Dersom du mottar " },
-                        )
-                    }
-
-                    //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
-                        text(
-                            bokmal { +"ektefelletillegg" },
-                            nynorsk { +"ektefelletillegg" },
-                        )
-                    }
-
-                    //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
-                    showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                        text(
-                            bokmal { +"gjenlevendetillegg" },
-                            nynorsk { +"attlevandetillegg" },
-                        )
-                    }
-
-                    //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true OR PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
-                    showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget())) {
-                        text(
-                            bokmal { +" vil dette tillegget også bli redusert." },
-                            nynorsk { +" vil dette tillegget også bli redusert." },
-                        )
-                    }
-                }
-            }
-
-            //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  AND  PE_UT_Forsorgeransvar_ingen_er_true()) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo") and pe.ut_forsorgeransvar_ingen_er_true())) {
-                paragraph {
-                    text(
-                        bokmal { +"Du er under straffegjennomføring og uføretrygden din kommer derfor ikke til utbetaling. Vi vil sette i gang utbetalingene igjen når straffegjennomføringen er avsluttet." },
-                        nynorsk { +"Du er under straffegjennomføring og uføretrygda di kommer derfor ikkje til utbetaling. Vi vil sette i gang utbetalingane igjen når straffegjennomføringa er avslutta." },
-                    )
                 }
             }
 
@@ -1170,17 +1084,8 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato < PE_VedtakFattetDato_minus_1mnd) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegrad) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(pe.vedtakfattetdato_minus_1mnd()))) {
-                paragraph {
-                    text(
-                        bokmal { +"Etterbetaling av uføretrygd" },
-                        nynorsk { +"Etterbetaling av uføretrygd" },
-                    )
-                    text(
-                        bokmal { +"Du får etterbetalt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-                        nynorsk { +"Du får etterbetalt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldinga." },
-                    )
-                }
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegrad) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(pe.vedtaksdata_virkningfom()))
             }
             //[TBU3225]
 
@@ -1223,7 +1128,7 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
                 }
             }
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Ufoeretrygd.RettTilNyVurdering)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))

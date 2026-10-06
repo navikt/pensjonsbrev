@@ -56,23 +56,30 @@ fun createInnvilgelseUfoeretrygdDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1992, Month.MARCH, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
             ),
             avslagBarnetilleggNye = listOf(
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))
+                ),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUfoeretrygdDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
-            ),
+            hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
+            harVTA = false
+        ),
     )
 
 fun createInnvilgelseUfoeretrygdUtlandDto() =
@@ -113,24 +120,32 @@ fun createInnvilgelseUfoeretrygdUtlandDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1992, Month.MARCH, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
             ),
             avslagBarnetilleggNye = listOf(
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))
+                ),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUfoeretrygdUtlandDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
+            harVTA = false
         ),
     )
+
 fun createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() =
     InnvilgelseUforetrygdBosattNorgeEtterUtlandDto(
         saksbehandlerValg = lagSaksbehandlervalg(),
@@ -170,17 +185,25 @@ fun createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() =
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1992, Month.MARCH, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
             ),
             nyeAvslagBarnetillegg = listOf(
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1), ))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2), ))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3), ))),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))
+                ),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUforetrygdBosattNorgeEtterUtlandDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
+            harVTA = false
         ),
     )
+
 fun createInnvilgelseUforetrygdMellombehandlingDto() =
     InnvilgelseUfoeretrygdMellombehandlingDto(
         saksbehandlerValg = lagSaksbehandlervalg(
@@ -218,22 +241,29 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1992, Month.MARCH, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
             ),
             avslagBarnetilleggNye = listOf(
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))
+                ),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUfoeretrygdMellombehandlingDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
+            hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
+            harVTA = false
         ),
     )
 
@@ -271,23 +301,30 @@ fun createInnvilgelseUforetrygdMedEndringDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1992, Month.MARCH, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
             ),
             nyeAvslagBarnetillegg = listOf(
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
-                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))),
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
-                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))
+                ),
             ),
             sisteTrygdetidsgrunnlag = InnvilgelseUforetrygdMedEndringDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14")
-            ),
+            hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
+            harVTA = false,
+        ),
     )
 
 fun createOkningUforegradDto() =
@@ -325,35 +362,45 @@ fun createOkningUforegradDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1992, Month.MARCH, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
             ),
             nyeAvslagBarnetillegg = listOf(
-                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.ANNET_AVSLAG, fom = LocalDate.of(1990, Month.JANUARY, 1),
                     barn = listOf(
                         BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1990, Month.APRIL, 1)),
                         BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1995, Month.APRIL, 1))
-                    )),
-                    BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
-                        barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))),
-                        BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
-                            barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))),
+                    )
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31),
+                    barn = listOf(BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1991, Month.MAY, 2)))
+                ),
+                BarnetilleggMedSammeBegrunnelsePaSammeTidDto(
+                    begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fom = LocalDate.of(1992, Month.JANUARY, 1),
+                    barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))
+                ),
             ),
             sisteTrygdetidsgrunnlag = OkningUforegradDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
-            hjemler = setOf("12-2", "12-3", "12-4","12-5", "12-6", "12-7","12-8", "12-9", "12-10","12-11","12-12", "12-13", "12-14"),
+            hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
             fribelopsperioder = listOf(
                 OkningUforegradDto.Fribelopsperiode(
                     fom = LocalDate.of(2026, 1, 1),
                     tom = LocalDate.of(2026, 12, 31),
-                    faktor = 1.0,
-                    venteperiodeStartDato = LocalDate.of(2026, 1, 1),
+                    faktor = 0.4,
+                    grunnbelop = Kroner(136000),
+                    venteperiodeStartDato = LocalDate.of(2026, 7, 1),
                     gradsokning = true
                 )
             ),
             harVTA = false,
+            fribelop = Kroner(5000),
+            forrigeUforegrad = 50,
+            forrigeUforetidspunkt = LocalDate.of(2025, 12, 1),
 
-            ),
+        ),
     )

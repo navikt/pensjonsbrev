@@ -221,12 +221,12 @@ object EndringBTEPS {
 
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12. " },
-                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12. " },
+                    bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-15, 12-16 og 22-12. " },
+                    nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-15, 12-16 og 22-12. " },
                 )
             }
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Ufoeretrygd.Etteroppgjor)
             includePhrase(Ufoeretrygd.RettTilAKlage)
             includePhrase(Ufoeretrygd.RettTilInnsyn)

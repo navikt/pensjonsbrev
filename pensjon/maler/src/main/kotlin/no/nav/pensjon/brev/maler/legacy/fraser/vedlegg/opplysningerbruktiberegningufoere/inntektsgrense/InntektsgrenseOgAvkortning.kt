@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntektsgrense
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse
@@ -81,7 +80,7 @@ data class InntektsgrenseOgAvkortning(
                 .equalTo("stdbegr_12_8_2_3") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
                 .equalTo("stdbegr_12_8_2_4") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo(
                 "stdbegr_12_8_2_5"
-            ) or pe.pebrevkode().equalTo("PE_UT_04_500"))){
+            ))){
             paragraph {
                 text (
                     bokmal { + "Minstenivå på inntekt før uførhet" },
@@ -95,7 +94,7 @@ data class InntektsgrenseOgAvkortning(
                 .equalTo("stdbegr_12_8_2_3") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
                 .equalTo("stdbegr_12_8_2_4") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo(
                 "stdbegr_12_8_2_5"
-            ) or pe.pebrevkode().equalTo("PE_UT_04_500"))){
+            ))){
             paragraph {
                 text (
                     bokmal { + "Før 1. januar 2026 skal inntekten din før du ble ufør ikke settes lavere enn:" },
@@ -180,9 +179,7 @@ data class InntektsgrenseOgAvkortning(
             }
 
             includePhrase(SlikFastsetterViUfoeregraden)
-            showIf(FeatureToggles.bunnfradragIVedlegg.toggle.expr().enabled()) {
-                includePhrase(HvaErBunnfradragFribelopOgVenteperiode)
-            }
+            includePhrase(HvaErBunnfradragFribelopOgVenteperiode)
         }
     }
 }

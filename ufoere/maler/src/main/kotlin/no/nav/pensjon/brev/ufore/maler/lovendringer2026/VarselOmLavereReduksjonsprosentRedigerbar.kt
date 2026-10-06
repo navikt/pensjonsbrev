@@ -12,14 +12,11 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VarselOmLavereReduksjonsprosentRedigerbar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
-
-    override val featureToggle = FeatureToggles.varseloktminsteifuoglaverereduksjonsprosent.toggle
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_S_VARSEL_LAVERE_REDUKSJONSPROSENT
     override val kategori = Brevkategori.VARSEL

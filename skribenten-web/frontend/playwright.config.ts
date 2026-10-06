@@ -8,6 +8,7 @@ const isUiMode = process.env.E2E_UI_MODE === "true";
 
 export default defineConfig({
   testDir: "./test/e2e",
+  tsconfig: "./tsconfig.e2e.json",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

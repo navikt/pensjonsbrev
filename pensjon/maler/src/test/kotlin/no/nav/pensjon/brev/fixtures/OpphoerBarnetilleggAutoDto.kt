@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.brevbaker.vilkaarligDato
-import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -49,7 +48,7 @@ fun createOpphoerBarnetilleggAutoDto() =
             gjenlevendetilleggUtbetalt = null,
             harUtbetalingsgrad = false
         ),
-        maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
-        opplysningerBruktIBeregningUT = Fixtures.createVedlegg(),
-        orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
+        maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
+        opplysningerBruktIBeregningUT = createOpplysningerBruktIBeregningUTDto(),
+        orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
     )

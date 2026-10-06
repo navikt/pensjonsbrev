@@ -2,13 +2,13 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.KravArsakType
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandAutoDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 

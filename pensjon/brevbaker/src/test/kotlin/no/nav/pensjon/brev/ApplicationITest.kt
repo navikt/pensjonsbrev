@@ -35,23 +35,12 @@ class ApplicationITest {
         }
     }
 
-    @Tag(TestTags.MANUAL_TEST)
+    @Tag(TestTags.INTEGRATION_TEST)
     @Test
     fun `deserialiser value class`() = testBrevbakerApp { client ->
         val response = client.post("/letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(reqValue)
-        }
-        assertThat(response.bodyAsText()).contains("file")
-        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
-    }
-
-    @Tag(TestTags.MANUAL_TEST)
-    @Test
-    fun `deserialiser wrapped`() = testBrevbakerApp { client ->
-        val response = client.post("/letter/autobrev/pdf") {
-            contentType(ContentType.Application.Json)
-            setBody(reqWrapped)
         }
         assertThat(response.bodyAsText()).contains("file")
         assertThat(response.status).isEqualTo(HttpStatusCode.OK)
@@ -138,61 +127,3 @@ private val reqValue = """
     }
 """.trimIndent()
 
-private val reqWrapped = """
-    {
-        "kode":"TESTBREV",
-        "letterData":{
-            "pensjonInnvilget":true,
-            "datoInnvilget":"2025-08-04",
-            "navneliste":[],
-            "tilleggEksempel": [ 
-                {
-                  "navn" : "Test testerson 1",
-                  "tillegg1" : {
-                    "value": "300"
-                  },
-                  "tillegg2" : null,
-                  "tillegg3" : {
-                    "value":"500"
-                  }                
-                }, {
-                  "navn" : "Test testerson 2",
-                  "tillegg1" : 100,
-                  "tillegg2" : 600,
-                  "tillegg3" : null
-                }, {
-                  "navn" : "Test testerson 3",
-                  "tillegg1" : null,
-                  "tillegg2" : {
-                    "value": "300"
-                    },
-                  "tillegg3" : null
-                } 
-            ],
-            "datoAvslaatt":"2025-08-04",
-            "pensjonBeloep":100
-            },
-        "felles":{
-            "dokumentDato":"2020-01-01",
-            "saksnummer":"1337123",
-            "avsenderEnhet":{
-                "nettside":"nav.no",
-                "navn":"Nav Familie- og pensjonsytelser Porsgrunn",
-                "telefonnummer": { 
-                    "value":"55553334"
-                }
-            },
-            "bruker":{
-                "foedselsnummer":{
-                    "value":"01019878910"
-                },
-                "fornavn":"Test",
-                "mellomnavn":"\"bruker\"",
-                "etternavn":"Testerson"
-            },
-            "annenMottaker":null,
-            "signerendeSaksbehandlere":null
-        },
-        "language":"BOKMAL"
-    }
-""".trimIndent()

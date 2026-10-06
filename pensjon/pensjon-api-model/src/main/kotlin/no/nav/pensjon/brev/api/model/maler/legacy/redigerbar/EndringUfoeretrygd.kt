@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
@@ -16,6 +17,7 @@ data class EndringUfoeretrygdDto(
 ) : RedigerbarBrevdata<EndringUfoeretrygdDto.PesysData> {
     data class PesysData(
         val pe: PEgruppe10,
+        val vedtaksinfo: UforeVedtaksinfo = UforeVedtaksinfo(),
         val kravFremsattDato: LocalDate?,
 
         val oifuVedVirkningstidspunkt: Kroner?,
@@ -35,8 +37,7 @@ data class EndringUfoeretrygdDto(
         val avslagBarnetilleggNye: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val opphorteBarnetilleggNye: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
 
-        val harVTA: Boolean = false,
-        val vektetFribelop: Double = 0.4,
+        val harVTA: Boolean,
         val hjemler: Set<String>
     ) : FagsystemBrevdata
 

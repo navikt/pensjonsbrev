@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
@@ -66,13 +65,14 @@ export default defineConfig(({ command }) => ({
     react({
       jsxImportSource: "@emotion/react",
     }),
-    tanstackRouter(),
+    tanstackRouter({
+      routeFileIgnorePattern: "\\.test\\.",
+    }),
     ...(command === "serve" ? [umamiConfigPlugin()] : [extractSourcemapsPlugin()]),
   ],
   resolve: {
     alias: {
       "~": fileURLToPath(new URL("src", import.meta.url)),
-      "~test": fileURLToPath(new URL("test", import.meta.url)),
     },
   },
   build: {
@@ -97,11 +97,5 @@ export default defineConfig(({ command }) => ({
   server: {
     origin: "http://localhost:5173",
     cors: true,
-  },
-  test: {
-    environment: "jsdom",
-    globals: true, // Enables Vitest to automatically cleanup after each test
-    setupFiles: "./src/setupTests.ts",
-    exclude: ["**/node_modules/**", "**/test/e2e/**"],
   },
 }));

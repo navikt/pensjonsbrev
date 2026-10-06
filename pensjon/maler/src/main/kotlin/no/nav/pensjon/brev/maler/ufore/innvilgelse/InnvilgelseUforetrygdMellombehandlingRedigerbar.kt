@@ -3,19 +3,20 @@ package no.nav.pensjon.brev.maler.ufore.innvilgelse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdMellombehandlingDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.trygdetidsgrunnlag.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.*
-import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.trygdetidsgrunnlag.fom
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.trygdetidsgrunnlag.tom
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.ufore.innvilgelse.Innvilgelse.BarnetilleggOgInntekt
-import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.Innvilgelse.BarnetilleggOgInntekt
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -31,14 +32,11 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretrygdMellombehandlingDto> {
-
-    override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MELLOMBEHANDLING
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
@@ -193,12 +191,12 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                         text(
                             bokmal {+"Du har vært medlem av folketrygden fra " + trygdetid.fom.format() + " til " + trygdetid.tom.format() + ". " +
                                     "Vi har fått opplyst at du har vært medlem av den " + fritekst("nasjonalitet") + " trygdeordningen fra " + fritekst("fom") + " til " + fritekst("tom") + ". " +
-                                    "Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". " +
+                                    "Uføretidspunktet ditt er satt til " + uforetidspunkt.formatMonthYear() + ". " +
                                     "Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i " + pe.aars_trygdetid() + " år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden."
                             },
                             nynorsk {+"Du har vore medlem av den norske folketrygda frå " + trygdetid.fom.format() + " til " + trygdetid.tom.format() + ". " +
                                     "Vi har fått opplyst at du har vore medlem av den " + fritekst("Nasjonalitet") + " trygdeordninga frå " + fritekst("fom") + " til " + fritekst("tom") + ". " +
-                                    "Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". " +
+                                    "Uføretidspunktet ditt er sett til " + uforetidspunkt.formatMonthYear() + ". " +
                                     "Du har derfor vore medlem av den norske folketrygda og den " + fritekst("Nasjonalitet") + " trygdeordninga samanhengande i " + pe.aars_trygdetid() + " år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("land") + ", får du unntak frå vilkåret om medlemskap i folketrygda."
                             },
                         )
@@ -289,8 +287,6 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 harVTA = pesysData.harVTA
             ))
 
-            includePhrase(Innvilgelse.MeldeFraOmInntekt)
-
             includePhrase(Innvilgelse.InstitusjonReduksjon(
                 pe = pe,
                 instoppholdType = instoppholdType,
@@ -300,13 +296,15 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 txtOgEllerEktefelle = txtOgEllerEktefelle,
                 totalNettoUforeberegning = totalNettoUforeberegning,
             ))
-
-            includePhrase(Innvilgelse.Straffegjennomfoering(
-                pe = pe,
-                instoppholdType = instoppholdType,
-                ektefelletilleggInnvilget = ektefelletilleggInnvilget,
-                gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
-            ))
+            showIf(instoppholdType.equalTo("reduksjon_fo")) {
+                includePhrase(
+                    Ufoeretrygd.Straffegjennomfoering(
+                        pe = pe,
+                        ektefelletilleggInnvilget = ektefelletilleggInnvilget,
+                        gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                    )
+                )
+            }
 
             includePhrase(
                 BarnetilleggOgInntekt(
@@ -337,6 +335,7 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
             includePhrase(Innvilgelse.EtterbetalingUforetrygd(
                 pe = pe,
                 uforegrad = uforegrad,
+                virkningsdatoTidligereMnd = pesysData.vedtaksinfo.virkningsdatoTidligereMnd,
             ))
 
             includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
@@ -347,7 +346,7 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 uforegrad = uforegrad,
             ))
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))

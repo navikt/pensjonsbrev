@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.brevbaker
 
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.common.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
@@ -14,10 +13,8 @@ class RenderService(private val brevbakerService: BrevbakerService) {
         brevbakerService.renderPdf(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = brev.saksbehandlerValg,
-            ),
+            fagsystemBrevdata = pesysData.brevdata,
+            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
             felles = pesysData.felles,
             redigertBrev = brev.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
                 .toMarkup(),

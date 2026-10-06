@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
@@ -16,6 +17,7 @@ data class OkningUforegradDto(
 
     data class PesysData(
         val pe: PEgruppe10,
+        val vedtaksinfo: UforeVedtaksinfo = UforeVedtaksinfo(),
         val kravFremsattDato: LocalDate?,
         val oifuVedVirkningstidspunkt: Kroner?,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
@@ -24,12 +26,12 @@ data class OkningUforegradDto(
         val nyeAvslagBarnetillegg: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
         val hjemler: Set<String>,
-        val fribelopsperioder: List<Fribelopsperiode>? = null,
-        val vektetFribelop: Double = 0.0,
-        val vektetFribelopKr: Kroner = Kroner(0),
-        val harVTA: Boolean = false,
+        val fribelopsperioder: List<Fribelopsperiode>,
+        val fribelop: Kroner,
+        val harVTA: Boolean,
+        val forrigeUforegrad: Int,
+        val forrigeUforetidspunkt: LocalDate,
     ) : FagsystemBrevdata
-    //TODO: fjern defaultingen og nullable perioder når pen er oppdatert med ny dto
 
     data class Trygdetidsgrunnlag(
         val fom: LocalDate,
@@ -41,6 +43,7 @@ data class OkningUforegradDto(
         val tom: LocalDate,
         val gradsokning: Boolean,
         val faktor: Double,
+        val grunnbelop: Kroner,
         val venteperiodeStartDato: LocalDate,
     )
 }

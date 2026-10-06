@@ -187,7 +187,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
 
                     paragraph {
                         text(
-                            bokmal { +"Etterbetalingen gjelder tidligere år derfor trekker Nav skatt etter Skatteetatens standardsatser. Du kan lese mer om satsene på nav.no/skattetrekk#etterbetaling." },
+                            bokmal { +"Etterbetalingen gjelder tidligere år, derfor trekker Nav skatt etter Skatteetatens standardsatser. Du kan lese mer om satsene på nav.no/skattetrekk#etterbetaling." },
                             nynorsk { +"Etterbetalinga gjeld tidlegare år, derfor trekkjer Nav skatt etter Skatteetaten sine standardsatsar. Du kan lese meir om satsane på nav.no/skattetrekk#etterbetaling." },
                             english { +"Since the back payment applies to a previous year, Nav withholds tax according to the Tax Administration’s standard rates. You can read more about the rates at nav.no/skattetrekk#etterbetaling." },
                         )

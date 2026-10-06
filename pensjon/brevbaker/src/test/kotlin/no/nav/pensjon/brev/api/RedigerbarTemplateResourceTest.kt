@@ -14,6 +14,7 @@ import no.nav.brev.brevbaker.markup.dsl.signatur
 import no.nav.brev.brevbaker.markup.dsl.title1
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
+import no.nav.pensjon.brev.api.model.maler.BestillRedigerbartBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.Testmaler
@@ -42,11 +43,8 @@ class RedigerbarTemplateResourceTest {
     private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger,
         Testmaler.hentAlltidValgbareVedlegg())
 
+    val letterData = createEksempelbrevRedigerbartDto()
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
-        EksempelbrevRedigerbart.kode,
-        createEksempelbrevRedigerbartDto(),
-        FellesFactory.felles,
-        LanguageCode.BOKMAL,
         LetterMarkupImpl(
             title = listOf(LiteralImpl(1, "redigert markup")),
             sakspart = LetterMarkupImpl.SakspartImpl(
@@ -66,13 +64,17 @@ class RedigerbarTemplateResourceTest {
         ),
         alltidValgbareVedlegg = listOf(),
         redigerteVedlegg = emptyMap(),
+        redigerbartBrev = BestillRedigerbartBrevRequest(
+            kode = EksempelbrevRedigerbart.kode,
+            letterData = letterData,
+            fagsystemBrevdata = letterData.pesysData,
+            saksbehandlervalg = letterData.saksbehandlerValg,
+            felles = FellesFactory.felles,
+            language = LanguageCode.BOKMAL
+        )
     )
 
     private val validRedigertBrevRequestV2 = BestillRedigertBrevRequestV2(
-        EksempelbrevRedigerbart.kode,
-        createEksempelbrevRedigerbartDto(),
-        FellesFactory.felles,
-        LanguageCode.BOKMAL,
         letterMarkup(
             saksinformasjon = saksinformasjon(
                 gjelderNavn = "gjelder bruker",
@@ -89,6 +91,14 @@ class RedigerbarTemplateResourceTest {
         },
         alltidValgbareVedlegg = listOf(),
         redigerteVedlegg = emptyMap(),
+        redigerbartBrev = BestillRedigerbartBrevRequest(
+            kode = EksempelbrevRedigerbart.kode,
+            letterData = letterData,
+            fagsystemBrevdata = letterData.pesysData,
+            saksbehandlervalg = letterData.saksbehandlerValg,
+            felles = FellesFactory.felles,
+            language = LanguageCode.BOKMAL
+        )
     )
 
     @Test
@@ -96,7 +106,7 @@ class RedigerbarTemplateResourceTest {
         val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
         val letterTitle = validRedigertBrevRequest.letterMarkup.title.joinToString("") { it.text }
         val anAttachmentTitle = LetterTestRenderer.renderAttachmentsOnly(
-            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
+            validRedigertBrevRequest.redigerbartBrev.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
             EksempelbrevRedigerbart.template
         ).first().title.joinToString { it.text }
 

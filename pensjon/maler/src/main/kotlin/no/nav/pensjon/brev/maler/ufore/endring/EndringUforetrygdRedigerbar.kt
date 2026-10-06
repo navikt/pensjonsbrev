@@ -3,17 +3,20 @@ package no.nav.pensjon.brev.maler.ufore.endring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.barn_flyttet_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.eps_flyttet_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.eps_opph_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.*
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -23,7 +26,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope.RedigerbartVedlegg
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -31,15 +33,11 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brev.template.dsl.expression.localDateNow
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
-
-    override val featureToggle = FeatureToggles.brevmalUtEndring.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_ENDRING_UFOERETRYGD
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -547,8 +545,8 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
                 paragraph {
                     text(
-                        bokmal { +"For å innvilges rettighet som ung ufør, må du være alvorlig og varig syk før du fylte 26 år. Uføretidspunktet ditt er fastsatt til " + uforetidspunkt.format() + ". Du er innvilget rettighet som ung ufør. Det betyr at uføretrygden din vil bli beregnet etter regler som gjelder ung ufør." },
-                        nynorsk { +"For at du skal få innvilga rett som ung ufør, må du vere alvorleg og varig sjuk før du fylte 26 år. Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". Du er innvilga rett som ung ufør. Det betyr at uføretrygda di blir berekna etter reglar som gjeld ung ufør." },
+                        bokmal { +"For å innvilges rettighet som ung ufør, må du være alvorlig og varig syk før du fylte 26 år. Uføretidspunktet ditt er fastsatt til " + uforetidspunkt.formatMonthYear() + ". Du er innvilget rettighet som ung ufør. Det betyr at uføretrygden din vil bli beregnet etter regler som gjelder ung ufør." },
+                        nynorsk { +"For at du skal få innvilga rett som ung ufør, må du vere alvorleg og varig sjuk før du fylte 26 år. Uføretidspunktet ditt er sett til " + uforetidspunkt.formatMonthYear() + ". Du er innvilga rett som ung ufør. Det betyr at uføretrygda di blir berekna etter reglar som gjeld ung ufør." },
                     )
                 }
 
@@ -973,60 +971,9 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((instoppholdtype.equalTo("reduksjon_fo") and kravarsak.notEqualTo("instopphold"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                    )
-                }
-            }
-
             showIf(instoppholdtype.equalTo("reduksjon_fo")) {
-                paragraph {
-                    text(
-                        bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring. " },
-                        nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring. " },
-                    )
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +"Da du forsørger barn" },
-                            nynorsk { +"Da du forsørgjer barn" },
-                        )
-                    }
-
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) and ektefelletilleggInnvilget)) {
-                        text(
-                            bokmal { +" og/eller ektefelle" },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +", vil utbetaling av uføretrygden din reduseres med 50 prosent. " },
-                            nynorsk { +", vil utbetalinga av uføretrygda di reduserast med 50 prosent. " },
-                        )
-                    }
-                    text(
-                        bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " },
-                        nynorsk { +"Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa tok til. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
-                    )
-
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert. " },
-                            nynorsk { +"Dersom du får ektefelletillegg vil dette tillegget også bli redusert. " },
-                        )
-                    }
-
-                    showIf(gjenlevendetilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert." },
-                            nynorsk { +"Dersom du får attlevandetillegg vil dette tillegget også bli redusert." },
-                        )
-                    }
+                showIf(kravarsak.notEqualTo("instopphold")) {
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
                 }
             }
 
@@ -1280,24 +1227,10 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((uforegradFraBeregning.equalTo(100) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
                 showIf(!pesysData.harVTA and ieuInntekt.equalTo(0)) {
                     paragraph {
-                        showIf(FeatureToggles.bunnfradragIVedlegg.toggle.expr().enabled()) {
-                            showIf(pesysData.vektetFribelop.equalTo(1.0)) {
-                                text(
-                                    bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                                    nynorsk { +"Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
-                                )
-                            }.orShow {
-                                text(
-                                    bokmal { +"Du kan tjene " + pe.ut_bunnfradrag_faktisk().format() + " uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt. " },
-                                    nynorsk { +"Du kan tene " + pe.ut_bunnfradrag_faktisk().format() + " utan at uføretrygda di blir redusert. Dette er botnfrådraget ditt. " },
-                                )
-                            }
-                        }.orShow {
-                            text(
-                                bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                                nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
-                            )
-                        }
+                        text(
+                            bokmal { +"Du kan tjene " + pe.ut_bunnfradrag_faktisk().format() + " uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt. " },
+                            nynorsk { +"Du kan tene " + pe.ut_bunnfradrag_faktisk().format() + " utan at uføretrygda di blir redusert. Dette er botnfrådraget ditt. " },
+                        )
                     }
                 }
             }
@@ -1361,21 +1294,28 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
                 paragraph {
-                    text(
-                        bokmal { +"Ut fra den årlige inntekten din vil uføretrygden utgjøre " + pe.ut_nettoakk_pluss_nettorestar().format() + "." },
-                        nynorsk { +"På bakgrunn av den innmelde inntekta di utgjer uføretrygda di " + pe.ut_nettoakk_pluss_nettorestar().format() + "." },
-                    )
-
-                    showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())))) {
+                    showIf(pe.ut_nettoakk_pluss_nettorestar().greaterThan(0)) {
                         text(
-                            bokmal { +" Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." },
-                            nynorsk { +" Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." },
+                            bokmal { +"Ut fra den årlige inntekten din vil uføretrygden utgjøre " + pe.ut_nettoakk_pluss_nettorestar().format() + "." },
+                            nynorsk { +"På bakgrunn av den innmelde inntekta di utgjer uføretrygda di " + pe.ut_nettoakk_pluss_nettorestar().format() + "." },
+                        )
+
+                        showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())))) {
+                            text(
+                                bokmal { +" Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." },
+                                nynorsk { +" Hittil i år har du fått utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoakk().format() + "." },
+                            )
+                        }
+                        text(
+                            bokmal { +" Du har derfor rett til en utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " per måned for resten av året." },
+                            nynorsk { +" Du har derfor rett til ei utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " per månad for resten av kalenderåret." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Ut fra den årlige inntekten din vil uføretrygden ikke komme til utbetaling resten av året." },
+                            nynorsk { +"På bakgrunn av den årlege inntekta di kjem uføretrygda ikkje til utbetaling resten av året." },
                         )
                     }
-                    text(
-                        bokmal { +" Du har derfor rett til en utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " per måned for resten av året." },
-                        nynorsk { +" Du har derfor rett til ei utbetaling av uføretrygd på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " per månad for resten av kalenderåret." },
-                    )
                 }
             }
 
@@ -1854,22 +1794,11 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 includePhrase(Ufoeretrygd.KombinereUforetrygdAldersPensjon)
             }
 
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
-                title1 {
-                    text(
-                        bokmal { +"Etterbetaling av uføretrygd" },
-                        nynorsk { +"Etterbetaling av uføretrygd" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Du får etterbetalt uføretrygd fra " + onsketvirkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-                        nynorsk { +"Du får etterbetalt uføretrygd frå " + onsketvirkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju vyrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
-                    )
-                }
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
             }
 
-            showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
+            showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
                 title1 {
                     text(
                         bokmal { +"Tilbakekreving av uføretrygd" },
@@ -1884,7 +1813,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
@@ -1894,7 +1823,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
         }
 
         @OptIn(RedigerbartVedlegg::class)
-        includeAttachmentRedigerbarIfNotNull(VedleggId("endringUTMaanedligVedlegg"),vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
+        includeAttachmentRedigerbarIfNotNull(VedleggId("endringUTMaanedligVedlegg"), vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         @OptIn(RedigerbartVedlegg::class)
         includeAttachmentRedigerbar(VedleggId("endringUTBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)

@@ -58,14 +58,13 @@ object OktFribelop {
                 }
             }
 
-            title1 {
-                text(
-                    bokmal { +"Slik beregner vi fribeløp " },
-                    nynorsk { +"Slik reknar vi ut fribeløp " },
-                )
-            }
-
             showIf(not(data.oktFribelopHeleAret)) {
+                title1 {
+                    text(
+                        bokmal { +"Slik beregner vi fribeløp " },
+                        nynorsk { +"Slik reknar vi ut fribeløp " },
+                    )
+                }
                 paragraph {
                     text(
                         bokmal { +"Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal øke til 1 G. " },
@@ -88,6 +87,18 @@ object OktFribelop {
                 }
             }
 
+            title1 {
+                text(
+                    bokmal { +"Hva er fribeløp og bunnfradrag?" },
+                    nynorsk { +"Kva er fribeløp og botnfrådrag?" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss inntekt etter uførhet. Dette ble tidligere omtalt som inntektsgrense. " },
+                    nynorsk { +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Botnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette vart tidlegare omtalt som inntektsgrense. " },
+                )
+            }
             paragraph {
                 text(
                     bokmal { +"I vedlegget " },
@@ -100,16 +111,10 @@ object OktFribelop {
                 )
             }
 
-            title1 {
-                text(
-                    bokmal { +"Hva er fribeløp og bunnfradrag?" },
-                    nynorsk { +"Kva er fribeløp og botnfrådrag?" },
-                )
-            }
             paragraph {
                 text(
-                    bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss inntekt etter uførhet. Dette ble tidligere omtalt som inntektsgrense. " },
-                    nynorsk { +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Botnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette vart tidlegare omtalt som inntektsgrense. " },
+                    bokmal { +"Vedtaket har vi gjort etter Folketrygdloven §§ 12-14 og 22-12. " },
+                    nynorsk { +"Vedtaket har vi gjort etter Folketrygdlova §§ 12-14 og 22-12. " },
                 )
             }
 
