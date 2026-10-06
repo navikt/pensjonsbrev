@@ -2,9 +2,12 @@ package no.nav.pensjon.brev.skribenten.common
 
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -50,7 +53,7 @@ class UpdateMottakerTest {
 
     private val principal = NavIdent("abc")
 
-    private fun createMottaker(navn: String): BrevId {
+    private fun createMottaker(navn: Navn): BrevId {
         val brevredigeringId = transaction {
             BrevredigeringEntity.opprettBrev(
                 saksId = SaksId(456L),
@@ -89,8 +92,8 @@ class UpdateMottakerTest {
                 type = MottakerType.NORSK_ADRESSE
                 this.navn = navn
                 postnummer = NorskPostnummer("1234")
-                poststed = "Lillevik"
-                adresselinje1 = "Vei 1"
+                poststed = Poststed("Lillevik")
+                adresselinje1 = Adresselinje("Vei 1")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 // manueltAdressertTilKryptert må settes eksplisitt her (Exposed sitt DAO-lag feiler
                 // ved flush av insert av et uinitialisert nullable enum-transform-felt). De andre
@@ -105,23 +108,23 @@ class UpdateMottakerTest {
 
     @Test
     fun `updateMottaker krypterer klartekstfelter for eksisterende mottakere`() {
-        val brevredigeringId = createMottaker(navn = "Kari Nordmann")
+        val brevredigeringId = createMottaker(navn = Navn("Kari Nordmann"))
 
         JobConfig("test-oppdater-mottaker-${brevredigeringId.id}").updateMottaker()
 
         transaction {
             val mottaker = Mottaker[brevredigeringId]
-            assertThat(mottaker.navnKryptert).isEqualTo("Kari Nordmann")
+            assertThat(mottaker.navnKryptert).isEqualTo(Navn("Kari Nordmann"))
             assertThat(mottaker.postnummerKryptert).isEqualTo(NorskPostnummer("1234"))
-            assertThat(mottaker.poststedKryptert).isEqualTo("Lillevik")
-            assertThat(mottaker.adresselinje1Kryptert).isEqualTo("Vei 1")
+            assertThat(mottaker.poststedKryptert).isEqualTo(Poststed("Lillevik"))
+            assertThat(mottaker.adresselinje1Kryptert).isEqualTo(Adresselinje("Vei 1"))
             assertThat(mottaker.manueltAdressertTilKryptert).isEqualTo(Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
         }
     }
 
     @Test
     fun `samtidig skriving mens updateMottaker kjorer blir ikke tapt i de krypterte kolonnene`() {
-        val brevredigeringId = createMottaker(navn = "Gammelt Navn")
+        val brevredigeringId = createMottaker(navn = Navn("Gammelt Navn"))
 
         val writerHarLaastRaden = CountDownLatch(1)
         val jobKanStarte = CountDownLatch(1)
@@ -145,8 +148,8 @@ class UpdateMottakerTest {
                     Thread.sleep(500)
 
                     MottakerTable.update({ MottakerTable.id eq brevredigeringId }) { update ->
-                        update[navn] = "Nytt Navn"
-                        update[navnKryptert] = "Nytt Navn"
+                        update[navn] = Navn("Nytt Navn")
+                        update[navnKryptert] = Navn("Nytt Navn")
                     }
                 }
             }
@@ -166,8 +169,8 @@ class UpdateMottakerTest {
 
         transaction {
             val mottaker = Mottaker[brevredigeringId]
-            assertThat(mottaker.navn).isEqualTo("Nytt Navn")
-            assertThat(mottaker.navnKryptert).isEqualTo("Nytt Navn")
+            assertThat(mottaker.navn).isEqualTo(Navn("Nytt Navn"))
+            assertThat(mottaker.navnKryptert).isEqualTo(Navn("Nytt Navn"))
         }
     }
 }
