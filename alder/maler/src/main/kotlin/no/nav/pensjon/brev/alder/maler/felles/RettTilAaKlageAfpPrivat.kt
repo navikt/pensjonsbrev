@@ -11,8 +11,8 @@ object RettTilAaKlageAfpPrivat: OutlinePhrase<LangBokmalNynorskEnglish>() {
         title1 {
             text(
                 bokmal { +"Dine rettigheter" },
-                nynorsk { +"Du har rett til å klage" },
-                english { +"" },
+                nynorsk { +"Dine rettar " },
+                english { +"Your rights " },
             )
         }
         paragraph {
@@ -23,7 +23,8 @@ object RettTilAaKlageAfpPrivat: OutlinePhrase<LangBokmalNynorskEnglish>() {
                 nynorsk { +"Om du meiner vedtaket er feil, kan du klage innan 6 veker frå den datoen vedtaket har komme fram til deg. " +
                         "Dette følgjer av AFP-tilskottslova § 17 andre ledd andre punktum, samanheldt med folketrygdlova § 21-12. " +
                         "Du finn skjema og informasjon på $KLAGE_URL." },
-                english { +"" },
+                english { +"If you believe that the decision is incorrect, you may appeal within 6 weeks from when you receive the decision. " +
+                        "This is pursuant to the National Insurance Act § 21-12. You will find the form and further information at $KLAGE_URL." },
             )
         }
     }

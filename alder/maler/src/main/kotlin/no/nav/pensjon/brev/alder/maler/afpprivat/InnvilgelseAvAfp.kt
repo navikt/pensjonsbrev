@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.p
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.bosattINorge
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.brukerUnder70Aar
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.dinAfpPrivatBeregning
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.harEtterbetaling
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.kravMottattDato
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.oversiktOverPensjonen
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.virkningFom
@@ -76,7 +77,7 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
             text(
                 bokmal { +"Nav har innvilget søknaden din om avtalefestet pensjon (AFP) i privat sektor" },
                 nynorsk { +"Nav har innvilga søknaden din om avtalefesta pensjon (AFP) i privat sektor" },
-                english { +"Your application for contractual pension (AFP) in the private sector has been granted - notification of decision" },
+                english { +"Nav has granted your application for contractual pension (AFP) in the private sector" },
             )
         }
 
@@ -96,6 +97,7 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
                     justeringsbeloep = pesysData.afpBeregning.justeringsbeloep,
                     referansebeloep = pesysData.afpBeregning.referansebeloep,
                     kompensasjonstilleggForholdstall = pesysData.afpBeregning.kompensasjonstilleggForholdstall,
+                    harEtterbetaling = pesysData.harEtterbetaling
                 ),
             )
             includePhrase(RettigheterPersonopplysninger)

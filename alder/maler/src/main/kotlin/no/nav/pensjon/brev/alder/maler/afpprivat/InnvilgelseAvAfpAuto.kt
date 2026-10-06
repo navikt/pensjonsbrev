@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.afpBeregning.*
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
@@ -30,7 +31,7 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_INNVILGELSE_AUTO
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilgelse av AFP i privat sektor",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
@@ -41,6 +42,7 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
             text(
                 bokmal { +"Nav har innvilget søknaden din om avtalefestet pensjon (AFP) i privat sektor" },
                 nynorsk { +"Nav har innvilga søknaden din om avtalefesta pensjon (AFP) i privat sektor" },
+                english { +"Nav has granted your application for contractual pension (AFP) in the private sector" }
             )
         }
 
@@ -60,6 +62,7 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
                     justeringsbeloep = afpBeregning.justeringsbeloep,
                     referansebeloep = afpBeregning.referansebeloep,
                     kompensasjonstilleggForholdstall = afpBeregning.kompensasjonstilleggForholdstall,
+                    harEtterbetaling = harEtterbetaling,
                 ),
             )
             includePhrase(RettigheterPersonopplysninger)
