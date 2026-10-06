@@ -28,7 +28,7 @@ object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerb
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_KLAGE_OVERSENDELSE_OG_FOELGEBREV_KLAGEINSTANS
     override val kategori = Brevkategori.KLAGE_OG_ANKE
-    override val brevkontekst = TemplateDescription.Brevkontekst.SAK
+    override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     @OptIn(TemplateRootScope.RedigerbartVedlegg::class)
