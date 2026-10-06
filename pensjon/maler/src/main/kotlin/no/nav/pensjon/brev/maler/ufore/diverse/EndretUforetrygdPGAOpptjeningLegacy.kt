@@ -47,7 +47,6 @@ import no.nav.pensjon.brev.maler.legacy.fraser.TBU2367_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2368_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2490_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2530_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU3224_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3740_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3800_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3801_Generated
@@ -583,7 +582,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()))){
-                includePhrase(TBU3224_Generated(pe))
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(pe.vedtaksdata_virkningfom()))
             }
 
             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = true

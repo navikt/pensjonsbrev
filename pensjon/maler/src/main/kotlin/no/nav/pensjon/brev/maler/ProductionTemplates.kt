@@ -11,7 +11,8 @@ import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
-import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
+import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
@@ -147,6 +148,8 @@ object ProductionTemplates : AllTemplates {
         InnvilgelseUforetrygdMedEndringRedigerbar,
         KlageOrienteringOmOversendelseTilKlageinstans,
         KlageOrienteringOmSaksbehandlingstid,
+        OversendelseOgFoelgebrevKlageinstansUT,
+        OversendelsesbrevTilKlageinstansUT,
         OkningUforegradRedigerbar,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,
         OmsorgEgenManuell,
