@@ -7,10 +7,12 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
-import no.nav.pensjon.brev.maler.klageOgAnke.AnkeOrienteringOmSaksbehandling
-import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
-import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
-import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
+import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
@@ -146,6 +148,8 @@ object ProductionTemplates : AllTemplates {
         InnvilgelseUforetrygdMedEndringRedigerbar,
         KlageOrienteringOmOversendelseTilKlageinstans,
         KlageOrienteringOmSaksbehandlingstid,
+        OversendelseOgFoelgebrevKlageinstansUT,
+        OversendelsesbrevTilKlageinstansUT,
         OkningUforegradRedigerbar,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,
         OmsorgEgenManuell,

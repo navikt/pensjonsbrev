@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.klageOgAnke
+package no.nav.pensjon.brev.maler.klagebrev
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
-import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid.Saksbehandlingstid.*
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid.Saksbehandlingstid.*
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
