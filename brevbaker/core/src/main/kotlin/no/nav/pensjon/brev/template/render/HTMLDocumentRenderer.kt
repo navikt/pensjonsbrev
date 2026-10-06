@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.template.render.DocumentLanguageSettings
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
@@ -14,7 +15,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import java.time.format.FormatStyle
 import java.util.*
 
-internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
+object HTMLDocumentRendererImpl : HTMLDocumentRenderer()
+
+abstract class HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
     private val navLogoImg =
@@ -157,6 +160,13 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private fun FlowOrPhrasingContent.renderTextContent(element: ParagraphContent.Text) {
         when (element.fontType) {
+            FontType.PLAIN if element is ParagraphContent.Text.Literal && element.tags.contains(ElementTags.FRITEKST) -> markerFritekst {
+                renderTextContentWithoutStyle(element)
+            }
+
+            FontType.PLAIN if element is ParagraphContent.Text.Variable -> markerVariabel {
+                renderTextContentWithoutStyle(element)
+            }
             FontType.PLAIN -> renderTextContentWithoutStyle(element)
             FontType.BOLD -> span(classes("text-bold")) {
                 renderTextContentWithoutStyle(element)
@@ -165,6 +175,14 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                 renderTextContentWithoutStyle(element)
             }
         }
+    }
+
+    protected open fun FlowOrPhrasingContent.markerFritekst(function: SPAN.() -> Unit) {
+        span(classes = null, function)
+    }
+
+    protected open fun FlowOrPhrasingContent.markerVariabel(function: SPAN.() -> Unit) {
+        span(classes = null, function)
     }
 
     private fun Tag.renderTextWithoutStyle(elements: List<ParagraphContent.Text>) {
@@ -271,7 +289,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         }
     }
 
-    private fun classes(vararg classes: String?): String =
+    protected fun classes(vararg classes: String?): String =
         classes.filterNotNull().joinToString(" ") { "pensjonsbrev-$it" }
 
     private fun alignmentClass(alignment: ParagraphContent.Table.ColumnAlignment): String =

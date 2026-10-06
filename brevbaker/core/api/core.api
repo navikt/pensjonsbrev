@@ -90,6 +90,21 @@ public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pen
 	public final fun getIndexHTML ()Lno/nav/pensjon/brev/template/render/DocumentFile;
 }
 
+public abstract class no/nav/pensjon/brev/template/render/HTMLDocumentRenderer : no/nav/pensjon/brev/template/render/DocumentRenderer {
+	public fun <init> ()V
+	protected final fun classes ([Ljava/lang/String;)Ljava/lang/String;
+	protected fun markerFritekst (Lkotlinx/html/FlowOrPhrasingContent;Lkotlin/jvm/functions/Function1;)V
+	protected fun markerVariabel (Lkotlinx/html/FlowOrPhrasingContent;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun render (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)Ljava/lang/Object;
+	public fun render (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)Lno/nav/pensjon/brev/template/render/HTMLDocument;
+	public synthetic fun render (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brev/template/Letter;)Ljava/lang/Object;
+	public fun render (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/template/render/HTMLDocument;
+}
+
+public final class no/nav/pensjon/brev/template/render/HTMLDocumentRendererImpl : no/nav/pensjon/brev/template/render/HTMLDocumentRenderer {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/render/HTMLDocumentRendererImpl;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/selectors/brevbakerFelles/BrevbakerFellesSelectorsKt {
 	public static final field annenMottakerNavnSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public static final field avsenderEnhetSelector Lno/nav/pensjon/brev/template/SimpleSelector;

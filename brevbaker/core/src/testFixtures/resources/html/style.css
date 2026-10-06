@@ -86,6 +86,14 @@ h4.pensjonsbrev-title3 {
     font-weight: bold;
 }
 
+.pensjonsbrev-text-blue {
+    color: blue;
+}
+
+.pensjonsbrev-data {
+    border: 1px dotted grey;
+}
+
 /* Sakspart */
 .pensjonsbrev-sakspart {
     display: inline-grid;
