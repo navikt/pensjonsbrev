@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
@@ -79,7 +80,7 @@ data class TabellUfoereOpplysninger(
                         )
                     }
                     cell {
-                        val ufoeretidspunkt = ufoeretrygdGjeldende.ufoeretidspunkt.format()
+                        val ufoeretidspunkt = ufoeretrygdGjeldende.ufoeretidspunkt.formatMonthYear()
                         text(
                             bokmal { + ufoeretidspunkt },
                             nynorsk { + ufoeretidspunkt },

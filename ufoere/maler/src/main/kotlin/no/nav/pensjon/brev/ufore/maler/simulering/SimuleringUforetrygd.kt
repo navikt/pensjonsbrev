@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -109,7 +110,7 @@ object SimuleringUforetrygd : RedigerbarTemplate<SimuleringUforetrygdDto> {
                     }
                     row {
                         cell { text(bokmal { +"Uføretidspunkt" }) }
-                        cell { text(bokmal { +pesysData.uforetidspunkt.format() }) }
+                        cell { text(bokmal { +pesysData.uforetidspunkt.formatMonthYear() }) }
                     }
                     row {
                         cell { text(bokmal { +"Uføregrad" }) }
