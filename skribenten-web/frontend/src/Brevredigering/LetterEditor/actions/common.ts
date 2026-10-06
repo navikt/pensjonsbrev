@@ -948,17 +948,8 @@ export function breakOutEmptyItem(
   // Reuse the original block for the first piece (preserving block.id and block.deletedContent).
   // Record any template-id child that leaves the block so the backend doesn't re-introduce it.
   const firstPiece = pieces[0];
-  const survivingIds = new Set(firstPiece.map((c) => c.id).filter((id): id is number => id !== null));
-  for (const childContent of block.content) {
-    if (
-      isFromTemplate(childContent) &&
-      childContent.parentId === block.id &&
-      !survivingIds.has(childContent.id) &&
-      !block.deletedContent.includes(childContent.id)
-    ) {
-      block.deletedContent.push(childContent.id);
-    }
-  }
+  const retainedContentCount = contentBeforeList.length > 0 ? contentBeforeList.length : beforeListContent ? 1 : 0;
+  removeElements(retainedContentCount, block.content.length - retainedContentCount, block);
   block.content = firstPiece as Draft<Content[]>;
 
   // Insert the remaining pieces as new id: null blocks after the original.
