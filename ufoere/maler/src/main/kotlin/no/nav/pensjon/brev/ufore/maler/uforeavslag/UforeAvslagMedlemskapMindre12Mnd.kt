@@ -44,6 +44,7 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
     {
         val ikkeYrkesaktiv = saksbehandlervalg("EttEllerTreAr", "Ikke vært yrkesaktiv i Norge eller andre EØS-land").bool()
         val txtEttEllerTreAr = ifElse(ikkeYrkesaktiv, "tre", "ett")
+        val txtEllerArbeidet = ifElse(ikkeYrkesaktiv, "", "eller arbeidet ")
 
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
@@ -69,7 +70,7 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Har du ikke vært yrkesaktiv i Norge eller andre EØS-land, må du ha minst tre års medlemskap i folketrygden før uføretidspunktet. " })
             }
             paragraph {
-                text(bokmal { +"Du bodde eller arbeidet i Norge fra " + fritekst("FOM medlemsperiode") + " til " + fritekst("TOM medlemsperiode") + ". " })
+                text(bokmal { +"Du bodde " + txtEllerArbeidet + "i Norge fra " + fritekst("FOM medlemsperiode") + " til " + fritekst("TOM medlemsperiode") + ". " })
             }
             paragraph {
                 text(bokmal { +"Du har ikke vært medlem i folketrygden i minst " + txtEttEllerTreAr + " år, og fyller dermed ikke minstekravet til medlemskap i Norge. Vi avslår derfor søknaden din om uføretrygd. " })
