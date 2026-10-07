@@ -30,7 +30,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_KLAGE_OVERSENDELSESBREV_TIL_KLAGEINSTANS
     override val kategori = Brevkategori.KLAGE_OG_ANKE
-    override val brevkontekst = TemplateDescription.Brevkontekst.SAK
+    override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
