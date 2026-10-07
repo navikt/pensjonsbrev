@@ -1,25 +1,23 @@
-package no.nav.pensjon.brev.maler.ufore.diverse
+package no.nav.pensjon.brev.ufore.maler.svartid
 
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.SAKSBEHANDLINGSTID_URL
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.ufore.api.model.maler.svartid.OrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.enabled
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.maler.FeatureToggles
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_URL
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.SAKSBEHANDLINGSTID_URL
+import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -27,11 +25,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehandlingstidDto> {
 
     // PE_UP_07_105
-    override val kode = Pesysbrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID
+    override val kode = Ufoerebrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID
     override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
+    override val valgbareVedlegg = setOf(Ufoerebrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
@@ -39,7 +37,8 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
             displayTitle = "Orientering om saksbehandlingstid (uføretrygd)",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-        )
+        ),
+        letterDataType = OrienteringOmSaksbehandlingstidDto::class
     ) {
         val soeknadOversendesTilUtlandet = saksbehandlervalg("soeknadOversendesTilUtlandet", "Søknad oversendes til utlandet").bool()
 
@@ -68,7 +67,7 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
                         bokmal {
                             +"Søknaden vil bli behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på " + quoted(
                                 "Min side"
-                            ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
+                            ) + " på ${NAV_URL}. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
                         },
                         nynorsk {
                             +"Søknaden vil bli behandla så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på " + quoted(
@@ -124,7 +123,7 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
                 )
             }
 
-            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+            includePhrase(Felles.HarDuSporsmal)
         }
     }
 }

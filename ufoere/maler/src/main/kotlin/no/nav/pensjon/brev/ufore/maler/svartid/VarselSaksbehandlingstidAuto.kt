@@ -1,13 +1,6 @@
-package no.nav.pensjon.brev.maler.ufore
+package no.nav.pensjon.brev.ufore.maler.svartid
 
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.selectors.varselSaksbehandlingstidAutoDto.*
-import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.SAKSBEHANDLINGSTID_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_ENDRING_URL
-import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.ufore.api.model.maler.svartid.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate
@@ -18,16 +11,24 @@ import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
+import no.nav.pensjon.brev.ufore.api.model.maler.svartid.selectors.varselSaksbehandlingstidAutoDto.dagensDatoMinus2Dager
+import no.nav.pensjon.brev.ufore.api.model.maler.svartid.selectors.varselSaksbehandlingstidAutoDto.utvidetBehandlingstid
+import no.nav.pensjon.brev.ufore.maler.FeatureToggles
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_URL
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.SAKSBEHANDLINGSTID_URL
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.UFOERETRYGD_ENDRING_URL
+import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidAutoDto> {
 
     // PE_UT_06_200
-    override val kode = Pesysbrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO
+    override val kode = Ufoerebrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk, English),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Automatisk varsel om saksbehandlingstid",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
@@ -38,7 +39,6 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
             text(
                 bokmal { + "Nav har mottatt søknaden din om uføretrygd" },
                 nynorsk { + "Nav har motteke søknaden din om uføretrygd" },
-                english { + "Nav has received your application for disability benefit" }
             )
         }
         outline {
@@ -48,7 +48,6 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                 text(
                     bokmal { + "Vi viser til søknaden din om uføretrygd som vi mottok " + mottattDato + "." },
                     nynorsk { + "Vi viser til søknaden din om uføretrygd som vi tok imot " + mottattDato + "." },
-                    english { + "We refer to your application for disability benefit that we received " + mottattDato + "." }
                 )
             }
             // TBU3015
@@ -58,17 +57,12 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                         bokmal {
                             +"Søknaden din blir behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på " + quoted(
                                 "Min side"
-                            ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
+                            ) + " på ${NAV_URL}. Du kan sjekke saksbehandlingstidene på ${SAKSBEHANDLINGSTID_URL}."
                         },
                         nynorsk {
                             +"Søknaden din vert handsama så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på " + quoted(
                                 "Mi side"
-                            ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
-                        },
-                        english {
-                            +"Your application will be processed as soon as possible. When your application has been processed, you will receive a response from us on " + quoted(
-                                "My Page"
-                            ) + " at $NAV_URL. You can check the processing times at $SAKSBEHANDLINGSTID_URL."
+                            ) + " på ${NAV_URL}. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
                         }
                     )
                 } orShow {
@@ -80,11 +74,7 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                         nynorsk {
                             +"Søknaden din vert handsama så snart som mogleg, og seinast innan "
                             + ifElse(utvidetBehandlingstid, ifFalse = "6", ifTrue = "20") + " månader. "
-                            + "Vert ikkje saka di handsama innan denne fristen, vil vi gje deg melding om ny svartid." },
-                        english {
-                            +"Your application will be processed as soon as possible, and no later than within "
-                            + ifElse(utvidetBehandlingstid, ifFalse = "6", ifTrue = "20") + " months. "
-                            + "If your case is not processed within this deadline, we will notify you of a new response time." }
+                            + "Vert ikkje saka di handsama innan denne fristen, vil vi gje deg melding om ny svartid." }
                     )
                 }
             }
@@ -93,42 +83,37 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                 text(
                     bokmal { + "Du må melde fra om endringer" },
                     nynorsk { + "Du må melde frå om endringar" },
-                    english { + "You must notify any changes" }
                 )
             }
             paragraph {
                 text(
                     bokmal { + "Du må melde fra om endringer som kan påvirke søknaden din. Det kan være endringer som gjelder helse, arbeidssituasjon, inntekt, sivilstatus eller at du flytter til et annet land." },
-                    nynorsk { + "Du må melde frå om endringar som kan påverke søknaden din. Det kan vere endringar som gjeld helse, arbeidssituasjon, inntekt, sivilstatus eller at du flyttar til eit anna land." },
-                    english { + "You must notify us of any changes that may impact your application. These changes might relate to your health, employment, income, marital status, or moving abroad." }
+                    nynorsk { + "Du må melde frå om endringar som kan påverke søknaden din. Det kan vere endringar som gjeld helse, arbeidssituasjon, inntekt, sivilstatus eller at du flyttar til eit anna land." }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { + "For informasjon om hvordan du melder fra om endringer se: $UFOERETRYGD_ENDRING_URL" },
-                    nynorsk { + "For informasjon om korleis du melder frå om endringar, sjå: $UFOERETRYGD_ENDRING_URL" },
-                    english { + "For information on how to report changes, see: $UFOERETRYGD_ENDRING_URL" }
+                    bokmal { + "For informasjon om hvordan du melder fra om endringer se: ${UFOERETRYGD_ENDRING_URL}" },
+                    nynorsk { + "For informasjon om korleis du melder frå om endringar, sjå: $UFOERETRYGD_ENDRING_URL" }
                 )
             }
 
             title1 {
                 text(
                     bokmal { + "Du har rett til innsyn" },
-                    nynorsk { + "Du har rett til innsyn" },
-                    english { + "You have the right to access your file" },
+                    nynorsk { + "Du har rett til innsyn" }
                 )
             }
 
             paragraph {
                 text(
                     bokmal { + "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din." },
-                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di." },
-                    english { + "You are entitled to see your case documents. You can log in via $NAV_URL to view documents related to your case." }
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di." }
                 )
             }
 
-            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+            includePhrase(Felles.HarDuSporsmal)
         }
     }
 }

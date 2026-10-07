@@ -14,6 +14,7 @@ object Ufoerebrevkoder {
         UT_VARSEL_LAVERE_REDUKSJONSPROSENT,
         UT_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS,
         UT_INFO_REVERSERING_AV_MINSTESATS,
+        UT_VARSEL_SAKSBEHANDLINGSTID_AUTO,
         ;
         override fun kode(): String = this.name
     }
@@ -79,6 +80,7 @@ object Ufoerebrevkoder {
         UT_S_VARSEL_OKT_MINSTE_IFU,
         UT_S_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS,
         UT_S_SIMULERING,
+        UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
         ;
 
         override fun kode(): String = this.name

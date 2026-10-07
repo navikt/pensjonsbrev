@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
-import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0
 import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettInfo4Aar
@@ -100,7 +99,6 @@ object ProductionTemplates : AllTemplates {
         OpptjeningVedForhoeyetHjelpesats,
         UfoerOmregningEnslig,
         UngUfoerAuto,
-        VarselSaksbehandlingstidAuto,
         FeilBelopInntekstendringsbrev,
         FeilBelopInntekstendringsbrev_AvkortetTil0,
         HvilendeRettInfo4Aar,

@@ -6,6 +6,7 @@ enum class FeatureToggles(private val key: String) {
     avslagMedlemskapUtland12mnd("ut.avslagmedlemskaputland12mnd"),
     testmal("ut.testmal"),
     simulering("ut.simulering"),
+    pl7231ForventetSvartid("pl_7231.foreventet_svartid"),
     ;
 
     val toggle = FeatureToggle(key)
