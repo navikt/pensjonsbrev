@@ -38,7 +38,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal),
-        letterMetadata = LetterMetadata(displayTitle = "Klage - oversendelse til Nav klageinstans",
+        letterMetadata = LetterMetadata(displayTitle = "Oversendelse til Nav klageinstans - Uføretrygd",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
