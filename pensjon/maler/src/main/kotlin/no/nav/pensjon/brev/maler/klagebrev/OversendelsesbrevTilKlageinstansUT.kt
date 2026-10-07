@@ -6,8 +6,14 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
-import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Forskriften.*
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Paragraf.*
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
@@ -35,17 +41,16 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Klage - oversendelses til Nav klageinstans",
+        letterMetadata = LetterMetadata(displayTitle = "Klage - oversendelse til Nav klageinstans",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
 
-        val forskrift = saksbehandlervalg("forskrift", "Velg forskriften:").enum<Forskriften>()
+        val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
 
 
-        title { text(bokmal { +"Oversendelsesbrev til Nav Klageinstans - Uføretrygd" }) }
+        title { text(bokmal { +"Oversendelse til $NAV_KLAGEINSTANS - Uføretrygd" }) }
 
         outline {
 
@@ -65,7 +70,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             paragraph { text(bokmal { +"Vi har vurdert vedtaket vårt på nytt, men har ikke endret det." }) }
             paragraph {
                 text(bokmal {
-                    +"Klagesaken er derfor oversendt til Nav klageinstans for behandling. "
+                    +"Klagesaken er derfor oversendt til $NAV_KLAGEINSTANS for behandling. "
                     +"Kopi av innstillingen vår er vedlagt."
                 })
             }
@@ -76,79 +81,77 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
                     +"Klageinstansen kan også oppheve vedtaket vårt, og sende saken tilbake til oss for helt eller delvis ny behandling. "
                 })
             }
-            paragraph { text(bokmal { +"Du får melding fra Nav klageinstans når de har mottatt saken." }) }
+            paragraph { text(bokmal { +"Du får melding fra $NAV_KLAGEINSTANS når de har mottatt saken." }) }
             paragraph {
                 text(bokmal {
-                    +"Du finner oversikt over saksbehandlingstidene på nav.no/saksbehandlingstider. "
-                    +"Du får beskjed fra Nav klageinstans, dersom de trenger mer tid."
+                    +"Du finner oversikt over saksbehandlingstidene på $NAV_URL/saksbehandlingstider. "
+                    +"Du får beskjed fra $NAV_KLAGEINSTANS, dersom de trenger mer tid."
                 })
             }
             paragraph {
                 text(bokmal {
-                    +"Du kan sende merknader og dokumentasjon til Nav klageinstans. "
-                    +"Du kan logge deg inn på nav.no/kontakt og sende skriftlig melding der. "
-                    +"Hvis du ønsker å ettersende dokumentasjon, kan du gå til nav.no/klage og trykke på 'Ettersend dokumentasjon' for det saken gjelder."
+                    +"Du kan sende merknader og dokumentasjon til $NAV_KLAGEINSTANS. "
+                    +"Du kan logge deg inn på $KONTAKT_URL og sende skriftlig melding der. "
+                    +"Hvis du ønsker å ettersende dokumentasjon, kan du gå til $KLAGE_URL og trykke på 'Ettersend dokumentasjon' for det saken gjelder."
                 })
             }
-            paragraph { text(bokmal { +"Har du spørsmål? Du finner mer informasjon på nav.no. " }) }
-            paragraph { text(bokmal { +"På nav.no/kontakt kan du chatte eller skrive til oss." }) }
-            paragraph { text(bokmal { +"Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager 09.00-15.00." }) }
+            paragraph { text(bokmal { +"Har du spørsmål? Du finner mer informasjon på $NAV_URL. " }) }
+            paragraph { text(bokmal { +"På $KONTAKT_URL kan du chatte eller skrive til oss." }) }
+            paragraph { text(bokmal { +"Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON, hverdager $NAV_KONTAKTSENTER_AAPNINGSTID." }) }
 
-            title1 { text(bokmal { +"Innstillingen til Nav klageinstans - uføretrygd" }) }
+            title1 { text(bokmal { +"Innstillingen til $NAV_KLAGEINSTANS - uføretrygd" }) }
 
             title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
 
-            showIf(forskrift.isOneOf(Generell)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.Generisk)
-            }.orShowIf(forskrift.isOneOf(Medlemskap)) {
+            showIf(paragraf.isOneOf(Medlemskap)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Medlemskap)
-            }.orShowIf(forskrift.isOneOf(HensiktsmessigBehandlingOgTiltak)) {
+            }.orShowIf(paragraf.isOneOf(HensiktsmessigBehandlingOgTiltak)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.HensiktsmessigBehandlingOgTiltak)
-            }.orShowIf(forskrift.isOneOf(KunArbeidsrettedeTiltak)) {
+            }.orShowIf(paragraf.isOneOf(KunArbeidsrettedeTiltak)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KunArbeidsrettedeTiltak)
-            }.orShowIf(forskrift.isOneOf(HovedAarsakTilSykdom)) {
+            }.orShowIf(paragraf.isOneOf(HovedAarsakTilSykdom)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.HovedAarsakTilSykdom)
-            }.orShowIf(forskrift.isOneOf(NedsattInnteksevne)) {
+            }.orShowIf(paragraf.isOneOf(NedsattInnteksevne)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.NedsattInntektsevne)
-            }.orShowIf(forskrift.isOneOf(KombinasjonNedsattInntektsevne)) {
+            }.orShowIf(paragraf.isOneOf(KombinasjonNedsattInntektsevne)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KombinasjonNedsattInntektsevne)
-            }.orShowIf(forskrift.isOneOf(Ufoeretidspunkt)) {
+            }.orShowIf(paragraf.isOneOf(Ufoeretidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Ufoeretidspunkt)
-            }.orShowIf(forskrift.isOneOf(FastsettelseIFU)) {
+            }.orShowIf(paragraf.isOneOf(FastsettelseIFU)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFU)
-            }.orShowIf(forskrift.isOneOf(FastsettelseIEU)) {
+            }.orShowIf(paragraf.isOneOf(FastsettelseIEU)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIEU)
-            }.orShowIf(forskrift.isOneOf(FastsettelseUfoeregrad)) {
+            }.orShowIf(paragraf.isOneOf(FastsettelseUfoeregrad)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseUfoeregrad)
-            }.orShowIf(forskrift.isOneOf(BeregningAvUfoeretrygd)) {
+            }.orShowIf(paragraf.isOneOf(BeregningAvUfoeretrygd)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.BeregningAvUfoeretrygd)
-            }.orShowIf(forskrift.isOneOf(Trygdetid)) {
+            }.orShowIf(paragraf.isOneOf(Trygdetid)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Trygdetid)
-            }.orShowIf(forskrift.isOneOf(Ungufoer)) {
+            }.orShowIf(paragraf.isOneOf(Ungufoer)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.UngUfoer)
-            }.orShowIf(forskrift.isOneOf(AutomatiskInntektsreduksjon)) {
+            }.orShowIf(paragraf.isOneOf(AutomatiskInntektsreduksjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.AutomatiskInntektsreduksjon)
-            }.orShowIf(forskrift.isOneOf(Etteropgjoer)) {
+            }.orShowIf(paragraf.isOneOf(Etteropgjoer)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Etteroppgjoer)
-            }.orShowIf(forskrift.isOneOf(EtteroppgjoerBarnetillegg)) {
+            }.orShowIf(paragraf.isOneOf(EtteroppgjoerBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EtteroppgjoerBarnetillegg)
-            }.orShowIf(forskrift.isOneOf(Barnetillegg)) {
+            }.orShowIf(paragraf.isOneOf(Barnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Barnetillegg)
-            }.orShowIf(forskrift.isOneOf(ReduksjonAvBarnetillegg)) {
+            }.orShowIf(paragraf.isOneOf(ReduksjonAvBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.ReduksjonAvBarnetillegg)
-            }.orShowIf(forskrift.isOneOf(Yrkesskade)) {
+            }.orShowIf(paragraf.isOneOf(Yrkesskade)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade)
-            }.orShowIf(forskrift.isOneOf(Oppholdsinstitusjon)) {
+            }.orShowIf(paragraf.isOneOf(Oppholdsinstitusjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OppholdIinstitusjon)
-            }.orShowIf(forskrift.isOneOf(Straffegjennomfoering)) {
+            }.orShowIf(paragraf.isOneOf(Straffegjennomfoering)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Straffegjennomfoering)
-            }.orShowIf(forskrift.isOneOf(Virkningstidspunkt)) {
+            }.orShowIf(paragraf.isOneOf(Virkningstidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Virkningstidspunkt)
-            }.orShowIf(forskrift.isOneOf(Tilbakekreving)) {
+            }.orShowIf(paragraf.isOneOf(Tilbakekreving)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Tilbakekreving)
-            }.orShowIf(forskrift.isOneOf(EosArtikkel57)) {
+            }.orShowIf(paragraf.isOneOf(EosArtikkel57)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EoesArtikkel57)
-            }.orShowIf(forskrift.isOneOf(Oversittetklagefrist)) {
+            }.orShowIf(paragraf.isOneOf(Oversittetklagefrist)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OversittetKlagefrist)
             }
 
@@ -157,7 +160,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
         }
     }
 
-    enum class Forskriften(override val displayText: String) : SaksbehandlerValgEnum {
+    enum class Paragraf(override val displayText: String) : SaksbehandlerValgEnum {
         Medlemskap("§ 12-2 Medlemskap"),
         HensiktsmessigBehandlingOgTiltak("§ 12-5 Hensiktsmessig behandling og tiltak"),
         KunArbeidsrettedeTiltak("§ 12-5 Kun arbeidsrettede tiltak"),
