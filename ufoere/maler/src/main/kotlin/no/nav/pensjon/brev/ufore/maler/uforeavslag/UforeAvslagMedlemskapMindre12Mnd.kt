@@ -58,22 +58,22 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du har vært medlem i folketrygden i mindre enn " + txtEttEllerTreAr + " år. " })
+                text(bokmal { +"Vi avslår søknaden din fordi du har mindre enn " + txtEttEllerTreAr + " års trygdetid i folketrygden. " })
             }
             paragraph {
                 text(bokmal { +"For å ha rett til uføretrygd må du ha vært medlem i folketrygden eller i en trygdeordning i et annet EØS-land, i de siste fem årene frem til uføretidspunktet ditt, eller ha rett til uføretrygd som følge av en godkjent yrkesskade. " })
             }
             paragraph {
-                text(bokmal { +"For at trygdetid i annet EØS-land kan brukes, må du ha minst ett års medlemskap i folketrygden før uføretidspunktet, forutsatt at du har vært yrkesaktiv i Norge eller andre EØS-land. " })
+                text(bokmal { +"For at trygdetid i annet EØS-land kan brukes, må du ha minst ett års trygdetid i folketrygden før uføretidspunktet, forutsatt at du har vært yrkesaktiv i Norge eller andre EØS-land. " })
             }
             paragraph {
-                text(bokmal { +"Har du ikke vært yrkesaktiv i Norge eller andre EØS-land, må du ha minst tre års medlemskap i folketrygden før uføretidspunktet. " })
+                text(bokmal { +"Har du ikke vært yrkesaktiv i Norge eller andre EØS-land, må du ha minst tre års trygdetid i folketrygden før uføretidspunktet. " })
             }
             paragraph {
                 text(bokmal { +"Du bodde " + txtEllerArbeidet + "i Norge fra " + fritekst("FOM medlemsperiode") + " til " + fritekst("TOM medlemsperiode") + ". " + fritekst("Individuell vurdering for perioder") })
             }
             paragraph {
-                text(bokmal { +"Du har ikke vært medlem i folketrygden i minst " + txtEttEllerTreAr + " år, og fyller dermed ikke minstekravet til medlemskap i Norge. Vi avslår derfor søknaden din om uføretrygd. " })
+                text(bokmal { +"Du har ikke minst " + txtEttEllerTreAr + " års trygdetid i folketrygden, og fyller dermed ikke minstekravet til trygdetid i Norge. Vi avslår derfor søknaden din om uføretrygd. " })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter EØS-forordning 883/2004 artikkel 57. " })
@@ -83,7 +83,7 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { + "Vurdering av andre vilkår for uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Du har mindre enn " + txtEttEllerTreAr + " års medlemskap i folketrygden, og fyller ikke vilkårene for uføretrygd, uavhengig av når uføretidspunktet ditt er. Vi har derfor ikke vurdert andre vilkår, som for eksempel om alle medisinske og arbeidsrettede tiltak er utprøvd. " })
+                text(bokmal { +"Du har mindre enn " + txtEttEllerTreAr + " års trygdetid i folketrygden, og fyller ikke vilkårene for uføretrygd, uavhengig av når uføretidspunktet ditt er. Vi har derfor ikke vurdert andre vilkår, som for eksempel om alle medisinske og arbeidsrettede tiltak er utprøvd. " })
             }
 
             includePhrase(Felles.RettTilAKlageLang)
