@@ -155,7 +155,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OversittetKlagefrist)
             }
 
-            paragraph{ text(bokmal { +"Vedtaket opprettholdes og klagen oversendes til Nav klageinstans for videre behandling." }) }
+            paragraph{ text(bokmal { +"Vedtaket opprettholdes og klagen oversendes til $NAV_KLAGEINSTANS for videre behandling." }) }
             paragraph{ text(bokmal { +"Klagen har ikke ført til at vedtak blir endret." }) }
         }
     }
@@ -186,7 +186,6 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
         Tilbakekreving("§ 22-15 Tilbakekreving"),
         EosArtikkel57("EØS-trygdeforordningen artikkel 57 Trygdetid eller botid under ett år"),
         Oversittetklagefrist("Fvl. § 31 Oversittet klagefrist"),
-        Generell("Generell tekst")
     }
 }
 
