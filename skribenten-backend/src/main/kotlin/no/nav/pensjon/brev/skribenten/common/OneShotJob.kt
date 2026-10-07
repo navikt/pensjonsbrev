@@ -124,29 +124,33 @@ fun JobConfig.updateMottaker() {
 }
 
 fun JobConfig.updateBrevredigeringJson() {
-    transaction {
-        val alleBrev = BrevredigeringTable.select(
-            BrevredigeringTable.id,
-            BrevredigeringTable.sistReservert,
-            BrevredigeringTable.saksbehandlerValg,
-            BrevredigeringTable.saksbehandlerValgKryptert,
-        ).toList()
-        val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-        val kanOppdateres = alleBrev
-            .filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+    val alleBrevIder = transaction {
+        BrevredigeringTable.select(BrevredigeringTable.id).map { it[BrevredigeringTable.id] }
+    }
+    val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
+    var antallOppdaterte = 0
 
-        kanOppdateres.forEach {
-            val brevId = it[BrevredigeringTable.id]
-            logger.debug("Oppdaterer {}", brevId)
-            val saksbehandlervalg = it[BrevredigeringTable.saksbehandlerValg]
-            BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                update[BrevredigeringTable.saksbehandlerValgKryptert] = saksbehandlervalg
+    alleBrevIder.forEach { brevId ->
+        transaction {
+            val rad = BrevredigeringTable
+                .select(BrevredigeringTable.sistReservert, BrevredigeringTable.saksbehandlerValg)
+                .where { BrevredigeringTable.id eq brevId }
+                .forUpdate(ForUpdateOption.ForUpdate)
+                .singleOrNull() ?: return@transaction
+
+            if (rad[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) != true) {
+                return@transaction
             }
+            logger.debug("Oppdaterer {}", brevId)
+            BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
+                update[BrevredigeringTable.saksbehandlerValgKryptert] = rad[BrevredigeringTable.saksbehandlerValg]
+            }
+            antallOppdaterte++
         }
+    }
 
-        if (alleBrev.size != kanOppdateres.size) {
-            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
-            completed = false
-        }
+    if (alleBrevIder.size != antallOppdaterte) {
+        logger.info("Oppdaterte $antallOppdaterte av ${alleBrevIder.size} brevredigeringer med ikke-aktive reservasjoner.")
+        completed = false
     }
 }
