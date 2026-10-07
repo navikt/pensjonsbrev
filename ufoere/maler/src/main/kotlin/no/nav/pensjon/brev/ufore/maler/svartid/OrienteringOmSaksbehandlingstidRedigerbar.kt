@@ -5,8 +5,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.svartid.OrienteringOmSaksbehand
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.expression.enabled
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -14,9 +12,6 @@ import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
-import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_URL
-import no.nav.pensjon.brev.ufore.maler.fraser.Constants.SAKSBEHANDLINGSTID_URL
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -34,7 +29,7 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Orientering om saksbehandlingstid (uføretrygd)",
+            displayTitle = "Orientering om saksbehandlingstid av søknad om uføretrygd",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
@@ -43,86 +38,30 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
         val soeknadOversendesTilUtlandet = saksbehandlervalg("soeknadOversendesTilUtlandet", "Søknad oversendes til utlandet").bool()
 
         title {
-            //[PE_UP_07_105_overskrift]
             text(
-                bokmal { + "Orientering om svartid" },
-                nynorsk { + "Orientering om svartid" },
+                bokmal { +"Orientering om svartid" },
+                nynorsk { +"Orientering om svartid" },
             )
         }
 
         outline {
-            //[PE_UP_07_105_TB3018-3021,TB124]
-
-            showIf(FeatureToggles.pl7231ForventetSvartid.toggle.expr().enabled()) {
-                paragraph {
-                    val mottattDato = fritekst("dato")
-                    text(
-                        bokmal { +"Vi har " + mottattDato + " mottatt søknaden din om uføretrygd." },
-                        nynorsk { +"Vi har " + mottattDato + " mottatt søknaden din om uføretrygd." },
-                    )
-                }
-
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Søknaden vil bli behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på " + quoted(
-                                "Min side"
-                            ) + " på ${NAV_URL}. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
-                        },
-                        nynorsk {
-                            +"Søknaden vil bli behandla så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på " + quoted(
-                                "Mi side"
-                            ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
-                        },
-                    )
-                }
-            } orShow {
-
-                paragraph {
-                    val mottattDato = fritekst("dato")
-                    text(
-                        bokmal { +"Vi har " + mottattDato + " mottatt søknaden din om uføretrygd." },
-                        nynorsk { +"Vi har " + mottattDato + " mottatt søknaden din om uførepensjon." },
-                    )
-                }
-
-                paragraph {
-                    text(
-                        bokmal { +"Søknaden vil bli behandlet så snart som mulig og senest innen 6 måneder. " },
-                        nynorsk { +"Søknaden vil bli behandla så snart som mogleg og seinast innan 6 månader. " },
-                    )
-                }
-
-                paragraph {
-                    text(
-                        bokmal { +"Hvis søknaden ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss. " },
-                        nynorsk { +"Viss søknaden ikkje vert avgjort i løpet av denne tida, vil du høyre nærmare frå oss. " },
-                    )
-                }
+            paragraph {
+                text(
+                    bokmal { +"Vi viser til søknaden din om uføretrygd som vi mottok " + fritekst("dato") + "." },
+                    nynorsk { +"Vi viser til søknaden din om uføretrygd som vi tok imot " + fritekst("dato") + "." },
+                )
             }
-
+            includePhrase(OrienteringOmSaksbehandlingstid.SoknadenBehandles)
             showIf(soeknadOversendesTilUtlandet) {
                 paragraph {
                     text(
-                        bokmal { + "Søknaden din vil også bli oversendt utlandet fordi du har opplyst at du har bodd/arbeidet i et land Norge har trygdeavtale med." },
-                        nynorsk { + "Søknaden din vil også bli send til utlandet fordi du har opplyst at du har budd/arbeidd i eit land Noreg har trygdeavtale med. " },
+                        bokmal { +"Søknaden din vil også bli oversendt utlandet fordi du har opplyst at du har bodd/arbeidet i et land Norge har trygdeavtale med." },
+                        nynorsk { +"Søknaden din vil også bli send til utlandet fordi du har opplyst at du har budd/arbeidd i eit land Noreg har trygdeavtale med. " },
                     )
                 }
             }
-
-            title1 {
-                text(
-                    bokmal { + "Meld fra om endringer" },
-                    nynorsk { + "Meld frå om endringar" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Vi ber om at du holder oss orientert om forhold som kan ha betydning for avgjørelsen av søknaden din. Det kan være endringer i medisinske forhold, arbeid, inntekt, sivilstand og lignende. " },
-                    nynorsk { + "Vi ber om at du held oss orientert om forhold som kan ha noko å seie for avgjerda av søknaden din. Det kan vere endringar i medisinske forhold, arbeid, inntekt, sivilstand og liknande. " },
-                )
-            }
-
+            includePhrase(OrienteringOmSaksbehandlingstid.MeldeFraOmEndringer)
+            includePhrase(Felles.RettTilInnsyn)
             includePhrase(Felles.HarDuSporsmal)
         }
     }

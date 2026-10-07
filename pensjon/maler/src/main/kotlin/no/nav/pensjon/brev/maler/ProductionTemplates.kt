@@ -54,7 +54,6 @@ import no.nav.pensjon.brev.maler.ufore.diverse.BekreftelsePaaUfoeretrygdRedigerb
 import no.nav.pensjon.brev.maler.ufore.diverse.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.ufore.diverse.InformasjonOmSaksbehandlingstidUTRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.OmregningUfoerepensjonTilUfoeretrygdRedigerbar
-import no.nav.pensjon.brev.maler.ufore.diverse.OrienteringOmSaksbehandlingstidRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.VedtakBlankMalRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.VedtakOmEtterbetalingOpphor2026Redigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
@@ -157,7 +156,6 @@ object ProductionTemplates : AllTemplates {
         OmsorgEgenManuell,
         OpphoerGjenlevendepensjon,
         OrienteringOmForlengetSaksbehandlingstid,
-        OrienteringOmSaksbehandlingstidRedigerbar,
         OrienteringOmSvartidKlageUT,
         OversettelseAvDokumenter,
         SamletMeldingOmPensjonsvedtakV2,
