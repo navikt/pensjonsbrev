@@ -161,15 +161,17 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
     }
 
     enum class Paragraf(override val displayText: String) : SaksbehandlerValgEnum {
+        Oversittetklagefrist("Fvl. § 31 Oversittet klagefrist"),
+        EosArtikkel57("Trygdeforordningen EØS-artikkel 57 Trygdetid, eller botid under ett år"),
         Medlemskap("§ 12-2 Medlemskap"),
         HensiktsmessigBehandlingOgTiltak("§ 12-5 Hensiktsmessig behandling og tiltak"),
         KunArbeidsrettedeTiltak("§ 12-5 Kun arbeidsrettede tiltak"),
         HovedAarsakTilSykdom("§ 12-6 Hovedårsak til sykdom"),
-        NedsattInnteksevne("§ 12-7 Nedsatt innteksevne"),
         KombinasjonNedsattInntektsevne("§ 12-7 Kombinasjon nedsatt inntektsevne"),
+        NedsattInnteksevne("§ 12-7 Nedsatt innteksevne"),
         Ufoeretidspunkt("§ 12-8 Uføretidspunkt"),
-        FastsettelseIFU("§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU"),
         FastsettelseIEU("§ 12-9 Fastsettelse av Inntekt Etter Uførhet IEU"),
+        FastsettelseIFU("§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU"),
         FastsettelseUfoeregrad("§ 12-10 Fastsettelse av Uføregrad"),
         BeregningAvUfoeretrygd("§ 12-11 Beregning av uføretrygd"),
         Trygdetid("§ 12-12 Trygdetid"),
@@ -184,8 +186,6 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
         Straffegjennomfoering("§ 12-20 Straffegjennomføring"),
         Virkningstidspunkt("§ 22-12/22-13 Virkningstidspunkt"),
         Tilbakekreving("§ 22-15 Tilbakekreving"),
-        EosArtikkel57("EØS-trygdeforordningen artikkel 57 Trygdetid eller botid under ett år"),
-        Oversittetklagefrist("Fvl. § 31 Oversittet klagefrist"),
     }
 }
 
