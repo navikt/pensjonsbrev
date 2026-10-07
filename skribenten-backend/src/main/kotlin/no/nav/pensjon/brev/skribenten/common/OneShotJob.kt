@@ -138,7 +138,7 @@ fun JobConfig.updateBrevredigeringJson() {
                 .forUpdate(ForUpdateOption.ForUpdate)
                 .singleOrNull() ?: return@transaction
 
-            if (rad[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) != true) {
+            if (rad[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) == false) {
                 return@transaction
             }
             logger.debug("Oppdaterer {}", brevId)
