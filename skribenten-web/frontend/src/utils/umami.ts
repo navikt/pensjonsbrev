@@ -15,6 +15,7 @@ export type UmamiEventName =
   | "exstream brev valgt"
   | "brev sendt"
   | "endre mottaker klikket"
+  | "pdfjs mangler nettleserstøtte"
   | "pesys feil"
   | "pesys omdirigering"
   | "samhandler valgt"

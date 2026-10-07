@@ -8,6 +8,7 @@ import { Document, Page as PDFPage, pdfjs } from "react-pdf";
 
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { logError } from "~/utils/logger";
+import { trackMissingPdfjsSupport } from "~/utils/pdfjsBrowserSupportTracking";
 
 import PDFViewerTopBar from "./PDFViewerTopBar";
 
@@ -29,6 +30,10 @@ const PDFViewer = (properties: {
 
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
   const pdfContainerReference = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    trackMissingPdfjsSupport();
+  }, []);
 
   const handleScroll = useCallback(() => {
     const pdfContainer = pdfContainerReference.current;
