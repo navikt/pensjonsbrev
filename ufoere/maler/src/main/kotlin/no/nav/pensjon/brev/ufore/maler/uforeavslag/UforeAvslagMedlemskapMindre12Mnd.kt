@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagDto.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagDto.uforeAvslagPendata.kravMottattDato
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -24,8 +23,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 
 @TemplateModelHelpers
 object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
-
-    override val featureToggle = FeatureToggles.avslagMedlemskapUtland12mnd.toggle
 
     override val kode = UT_AVSLAG_MEDLEMSKAP_12MND
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
