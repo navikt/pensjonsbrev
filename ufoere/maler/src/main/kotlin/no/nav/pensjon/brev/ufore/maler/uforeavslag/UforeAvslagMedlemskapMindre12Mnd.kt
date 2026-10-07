@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -42,7 +43,7 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
     )
     {
         val ikkeYrkesaktiv = saksbehandlervalg("EttEllerTreAr", "Ikke vært yrkesaktiv i Norge eller andre EØS-land").bool()
-        val txtEttEllerTreAr = if (ikkeYrkesaktiv.equals(true)) "tre" else "ett"
+        val txtEttEllerTreAr = ifElse(ikkeYrkesaktiv, "tre", "ett")
 
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
