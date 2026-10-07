@@ -70,7 +70,7 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Har du ikke vært yrkesaktiv i Norge eller andre EØS-land, må du ha minst tre års medlemskap i folketrygden før uføretidspunktet. " })
             }
             paragraph {
-                text(bokmal { +"Du bodde " + txtEllerArbeidet + "i Norge fra " + fritekst("FOM medlemsperiode") + " til " + fritekst("TOM medlemsperiode") + ". " })
+                text(bokmal { +"Du bodde " + txtEllerArbeidet + "i Norge fra " + fritekst("FOM medlemsperiode") + " til " + fritekst("TOM medlemsperiode") + ". " + fritekst("Individuell vurdering for perioder") })
             }
             paragraph {
                 text(bokmal { +"Du har ikke vært medlem i folketrygden i minst " + txtEttEllerTreAr + " år, og fyller dermed ikke minstekravet til medlemskap i Norge. Vi avslår derfor søknaden din om uføretrygd. " })
