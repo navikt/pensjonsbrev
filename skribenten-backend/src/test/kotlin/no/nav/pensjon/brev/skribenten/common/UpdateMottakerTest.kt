@@ -95,11 +95,15 @@ class UpdateMottakerTest {
                 poststed = Poststed("Lillevik")
                 adresselinje1 = Adresselinje("Vei 1")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
-                // manueltAdressertTilKryptert må settes eksplisitt her (Exposed sitt DAO-lag feiler
-                // ved flush av insert av et uinitialisert nullable enum-transform-felt). De andre
-                // *Kryptert-feltene lar vi bevisst stå usatt/null, for å simulere en rad fra før
-                // krypteringen av mottakeradresse ble innført.
-                manueltAdressertTilKryptert = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+                adresse = Dto.Mottaker.norskAdresse(
+                    navn = navn,
+                    postnummer = NorskPostnummer("1234"),
+                    poststed = Poststed("Lillevik"),
+                    adresselinje1 = Adresselinje("Vei 1"),
+                    adresselinje2 = null,
+                    adresselinje3 = null,
+                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+                )
             }
         }
 
@@ -113,12 +117,12 @@ class UpdateMottakerTest {
         JobConfig("test-oppdater-mottaker-${brevredigeringId.id}").updateMottaker()
 
         transaction {
-            val mottaker = Mottaker[brevredigeringId]
-            assertThat(mottaker.navnKryptert).isEqualTo(Navn("Kari Nordmann"))
-            assertThat(mottaker.postnummerKryptert).isEqualTo(NorskPostnummer("1234"))
-            assertThat(mottaker.poststedKryptert).isEqualTo(Poststed("Lillevik"))
-            assertThat(mottaker.adresselinje1Kryptert).isEqualTo(Adresselinje("Vei 1"))
-            assertThat(mottaker.manueltAdressertTilKryptert).isEqualTo(Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
+            val mottaker = Mottaker[brevredigeringId].adresse
+            assertThat(mottaker?.navn).isEqualTo(Navn("Kari Nordmann"))
+            assertThat(mottaker?.postnummer).isEqualTo(NorskPostnummer("1234"))
+            assertThat(mottaker?.poststed).isEqualTo(Poststed("Lillevik"))
+            assertThat(mottaker?.adresselinje1).isEqualTo(Adresselinje("Vei 1"))
+            assertThat(mottaker?.manueltAdressertTil).isEqualTo(Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
         }
     }
 
@@ -149,7 +153,6 @@ class UpdateMottakerTest {
 
                     MottakerTable.update({ MottakerTable.id eq brevredigeringId }) { update ->
                         update[navn] = Navn("Nytt Navn")
-                        update[navnKryptert] = Navn("Nytt Navn")
                     }
                 }
             }
@@ -170,7 +173,6 @@ class UpdateMottakerTest {
         transaction {
             val mottaker = Mottaker[brevredigeringId]
             assertThat(mottaker.navn).isEqualTo(Navn("Nytt Navn"))
-            assertThat(mottaker.navnKryptert).isEqualTo(Navn("Nytt Navn"))
         }
     }
 }

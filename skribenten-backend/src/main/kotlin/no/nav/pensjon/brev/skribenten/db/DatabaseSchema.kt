@@ -82,27 +82,19 @@ object MottakerTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<TssId?> = varchar("tssId", 50).transform(::TssId, TssId::value).nullable()
+    val adresse: Column<Dto.Mottaker?> = kryptertDto<Dto.Mottaker>("mottaker").nullable()
     val navn: Column<Navn?> = varchar("navn", 128).transform(::Navn, Navn::value).nullable()
-    val navnKryptert: Column<Navn?> = kryptertDto<Navn>("navnKryptert").nullable()
     val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
-    val postnummerKryptert: Column<NorskPostnummer?> = kryptertDto<NorskPostnummer>("postnummerKryptert").nullable()
     val poststed: Column<Poststed?> = varchar("poststed", 50).transform(::Poststed, Poststed::value).nullable()
-    val poststedKryptert: Column<Poststed?> = kryptertDto<Poststed>("poststedKryptert").nullable()
     val adresselinje1: Column<Adresselinje?> =
         varchar("adresselinje1", 128).transform(::Adresselinje, Adresselinje::value).nullable()
-    val adresselinje1Kryptert: Column<Adresselinje?> = kryptertDto<Adresselinje>("adresselinje1Kryptert").nullable()
     val adresselinje2: Column<Adresselinje?> =
         varchar("adresselinje2", 128).transform(::Adresselinje, Adresselinje::value).nullable()
-    val adresselinje2Kryptert: Column<Adresselinje?> = kryptertDto<Adresselinje>("adresselinje2Kryptert").nullable()
     val adresselinje3: Column<Adresselinje?> =
         varchar("adresselinje3", 128).transform(::Adresselinje, Adresselinje::value).nullable()
-    val adresselinje3Kryptert: Column<Adresselinje?> = kryptertDto<Adresselinje>("adresselinje3Kryptert").nullable()
     val landkode: Column<Landkode?> = varchar("landkode", 2).transform(::Landkode, Landkode::landkode).nullable()
-    val landkodeKryptert: Column<Landkode?> = kryptertDto<Landkode>("landkodeKryptert").nullable()
     val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
         .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
-    val manueltAdressertTilKryptert: Column<ManueltAdressertTil?> =
-        kryptertEnum<ManueltAdressertTil>("manueltAdressertTilKryptert").nullable()
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

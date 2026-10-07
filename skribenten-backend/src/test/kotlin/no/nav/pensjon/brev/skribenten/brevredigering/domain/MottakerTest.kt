@@ -44,7 +44,6 @@ class MottakerTest {
                 type = MottakerType.SAMHANDLER
                 tssId = TssId("12345")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
-                manueltAdressertTilKryptert = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         val mottaker = transaction { Mottaker[brevredigering.id] }
@@ -61,13 +60,11 @@ class MottakerTest {
                     type = MottakerType.SAMHANDLER
                     tssId = TssId("12345")
                     manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
-                    manueltAdressertTilKryptert = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = TssId("123456")
                     manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
-                    manueltAdressertTilKryptert = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
             }
         }
@@ -81,7 +78,6 @@ class MottakerTest {
                 type = MottakerType.SAMHANDLER
                 tssId = TssId("12345")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
-                manueltAdressertTilKryptert = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         transaction {

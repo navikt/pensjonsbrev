@@ -110,20 +110,14 @@ fun JobConfig.updateMottaker() {
                     MottakerTable.adresselinje3,
                     MottakerTable.landkode,
                     MottakerTable.manueltAdressertTil,
+                    MottakerTable.adresse,
                 )
                 .where { MottakerTable.id eq mottakerId }
                 .forUpdate(ForUpdateOption.ForUpdate)
                 .singleOrNull() ?: return@transaction
 
             MottakerTable.update({ MottakerTable.id eq mottakerId }) { update ->
-                update[navnKryptert] = rad[MottakerTable.navn]
-                update[postnummerKryptert] = rad[MottakerTable.postnummer]
-                update[poststedKryptert] = rad[MottakerTable.poststed]
-                update[adresselinje1Kryptert] = rad[MottakerTable.adresselinje1]
-                update[adresselinje2Kryptert] = rad[MottakerTable.adresselinje2]
-                update[adresselinje3Kryptert] = rad[MottakerTable.adresselinje3]
-                update[landkodeKryptert] = rad[MottakerTable.landkode]
-                update[manueltAdressertTilKryptert] = rad[MottakerTable.manueltAdressertTil]
+                update[adresse] = rad[MottakerTable.adresse]
             }
         }
     }
