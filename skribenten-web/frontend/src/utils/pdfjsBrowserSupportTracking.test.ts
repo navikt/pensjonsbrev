@@ -78,8 +78,14 @@ describe("trackMissingPdfjsSupport", () => {
     expect(trackMock).toHaveBeenCalledTimes(1);
     const [eventName, data] = trackMock.mock.calls[0] as [string, Record<string, unknown>];
     expect(eventName).toBe("pdfjs mangler nettleserstøtte");
-    expect(data.mangler).toBe("toHex,toBase64");
-    expect(typeof data.nettleser).toBe("string");
+    expect(data).toEqual({
+      mangler_toHex: true,
+      mangler_toBase64: true,
+      mangler_fromBase64: false,
+      mangler_setFromBase64: false,
+      mangler_setFromHex: false,
+      nettleser: expect.any(String),
+    });
   });
 
   it("sender event bare én gang per sesjon", () => {

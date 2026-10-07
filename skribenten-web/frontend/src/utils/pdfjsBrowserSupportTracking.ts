@@ -49,8 +49,12 @@ export const trackMissingPdfjsSupport = (): void => {
   if (missing.length === 0 || isAlreadyTracked()) return;
 
   markAsTracked();
+  // Umami stores arrays as a single JSON string, so one boolean key per feature is used to allow aggregation per feature.
+  const missingPerFeature = Object.fromEntries(
+    requiredFeatures.map((feature) => [`mangler_${feature.name}`, missing.includes(feature.name)]),
+  );
   trackEvent("pdfjs mangler nettleserstøtte", {
-    mangler: missing.join(","),
+    ...missingPerFeature,
     nettleser: shortBrowserName(globalThis.navigator?.userAgent ?? ""),
   });
 };
