@@ -266,15 +266,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
             is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing)
             is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing)
             is Edit.Block.Title3 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing)
-            is Edit.Block.Paragraph -> mergeList(
-                parent,
-                editedContent,
-                rendered.content.filterIsInstance<Edit.ParagraphContent.Text>(),
-                deleted,
-                ::mergeTextContent,
-                ::updateVariableValues,
-                ::setMissing
-            )
+            is Edit.Block.Paragraph -> mergeList(parent, editedContent, rendered.textContent(), deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing)
         }
 
     private fun mergeTextContent(edited: Edit.ParagraphContent.Text, rendered: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
