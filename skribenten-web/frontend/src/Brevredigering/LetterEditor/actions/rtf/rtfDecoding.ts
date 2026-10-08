@@ -22,6 +22,13 @@ export function decodeUnicodeParam(param: number): string {
   return String.fromCharCode(param < 0 ? param + 65_536 : param);
 }
 
+/** Replaces a `\uN` surrogate that has no partner. */
+export const REPLACEMENT_CHARACTER = "\uFFFD";
+
+const utf16Unit = (param: number) => (param < 0 ? param + 65_536 : param);
+export const isHighSurrogate = (param: number) => utf16Unit(param) >= 0xd8_00 && utf16Unit(param) <= 0xdb_ff;
+export const isLowSurrogate = (param: number) => utf16Unit(param) >= 0xdc_00 && utf16Unit(param) <= 0xdf_ff;
+
 /**
  * After `\uN` a reader skips `\ucN` fallback units (a character, `\'hh` or control word each);
  * group boundaries end the skip. Returns what is left of the token, if anything.

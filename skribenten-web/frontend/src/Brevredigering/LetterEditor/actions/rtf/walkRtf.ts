@@ -1,6 +1,9 @@
 import {
   type ByteDecoder,
   decodeUnicodeParam,
+  isHighSurrogate,
+  isLowSurrogate,
+  REPLACEMENT_CHARACTER,
   RTF_SYMBOL_WORDS,
   skipUnicodeFallback,
 } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
@@ -79,6 +82,8 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
   let pendingBytes: number[] = [];
   /** Fallback units left to skip after `\uN`. */
   let unicodeSkip = 0;
+  /** A high surrogate from `\uN`, waiting for the low surrogate in the next `\uN`. */
+  let pendingHighSurrogate: string | undefined;
 
   const current = () => groups.at(-1)!;
   /** HTML markup encapsulated by Outlook is never in a symbol font, whatever font is current. */
@@ -145,6 +150,16 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
     }
     if (!token) continue;
 
+    // A high surrogate not followed by a low one would make the text ill-formed.
+    if (
+      pendingHighSurrogate !== undefined &&
+      !(token.type === "control" && token.word === "u" && isLowSurrogate(token.param))
+    ) {
+      pendingHighSurrogate = undefined;
+      const event = text(REPLACEMENT_CHARACTER);
+      if (event) yield event;
+    }
+
     switch (token.type) {
       case "groupStart": {
         const parent = current();
@@ -206,9 +221,17 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
           break;
         }
         if (token.word === "u") {
-          const event = fontText(decodeUnicodeParam(token.param));
-          if (event) yield event;
+          const unit = decodeUnicodeParam(token.param);
           unicodeSkip = group.ucSkip;
+          if (isHighSurrogate(token.param)) {
+            pendingHighSurrogate = unit;
+            break;
+          }
+          // Only a low surrogate can follow a pending high one here; without one it is ill-formed.
+          const pair = isLowSurrogate(token.param) ? pendingHighSurrogate : "";
+          pendingHighSurrogate = undefined;
+          const event = pair === undefined ? text(REPLACEMENT_CHARACTER) : fontText(pair + unit);
+          if (event) yield event;
           break;
         }
         if (token.word === "f" && token.hasParam) group.font = token.param;
@@ -227,6 +250,10 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
     }
   }
 
+  if (pendingHighSurrogate !== undefined) {
+    const event = text(REPLACEMENT_CHARACTER);
+    if (event) yield event;
+  }
   const flushed = flushBytes();
   if (flushed) yield flushed;
   yield { kind: "documentEnd" };

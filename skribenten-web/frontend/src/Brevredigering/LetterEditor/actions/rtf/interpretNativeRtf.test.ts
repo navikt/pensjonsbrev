@@ -1005,3 +1005,49 @@ describe("interpretNativeRtf - structure and formatting", () => {
     expect(interpret(rtf)).toEqual([{ type: "H1", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Tittel" }] }]);
   });
 });
+
+// Synthetic cases modelled on the scenarios in Apache Tika's RTFParserTest; no Tika test files are used.
+describe("interpretNativeRtf - cases modelled on Apache Tika", () => {
+  test("a hex escape inside a word does not split it", () => {
+    expect(interpret(`${HEADER}\\pard Gr\\'f8nland og \\'c6rlig\\par}`)).toEqual([paragraph("Grønland og Ærlig")]);
+  });
+
+  test("the space after a hex escape is text, unlike the space after a control word", () => {
+    expect(interpret(`${HEADER}\\pard \\'fc ber\\par}`)).toEqual([paragraph("ü ber")]);
+  });
+
+  test("unknown control words are ignored without dropping the text around them", () => {
+    expect(interpret(`${HEADER}\\pard F\\foo\\bar12 ør \\noproof etter\\par}`)).toEqual([paragraph("Før etter")]);
+  });
+
+  test("escaped braces are text, and unbalanced groups are tolerated", () => {
+    expect(interpret(`${HEADER}\\pard \\{klammer\\} {og gruppe}\\par}}`)).toEqual([paragraph("{klammer} og gruppe")]);
+  });
+
+  test("\\par inside a hyperlink result breaks the paragraph", () => {
+    const rtf = `${HEADER}\\pard Før {\\field{\\*\\fldinst HYPERLINK "https://nav.no"}{\\fldrslt lenke\\par tekst}} etter\\par}`;
+
+    expect(interpret(rtf)).toEqual([paragraph("Før lenke"), paragraph("tekst etter")]);
+  });
+
+  test("table cells are separated, not glued together", () => {
+    const rtf = `${HEADER}\\trowd\\cellx1000\\cellx2000\\pard\\intbl En\\cell To\\cell\\row}`;
+
+    expect(interpret(rtf)).toEqual([
+      { type: "TABLE", rows: [{ cells: [{ content: [plain("En")] }, { content: [plain("To")] }] }] },
+    ]);
+  });
+
+  test.each([
+    ["a lone high surrogate", "a\\u-10179?b", "a\uFFFDb"],
+    ["a lone low surrogate", "a\\u-9216?b", "a\uFFFDb"],
+    ["a high surrogate at the end of a group", "{a\\u-10179?}b", "a\uFFFDb"],
+    ["two high surrogates", "a\\u-10179?\\u-10179?b", "a\uFFFD\uFFFDb"],
+  ])("%s becomes U+FFFD instead of ill-formed text", (_, source, expected) => {
+    expect(interpret(`${HEADER}\\pard ${source}\\par}`)).toEqual([paragraph(expected)]);
+  });
+
+  test("a surrogate pair split by its fallback character is joined", () => {
+    expect(interpret(`${HEADER}\\pard a\\u-10179?\\u-9047?b\\par}`)).toEqual([paragraph("a\u{1F4A9}b")]);
+  });
+});
