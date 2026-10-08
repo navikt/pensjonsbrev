@@ -90,7 +90,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             paragraph {
                 text(bokmal {
                     +"Klagesaken er derfor oversendt til $NAV_KLAGEINSTANS for behandling. "
-                    +"Kopi av innstillingen vår er vedlagt."
+                    +"Kopi av innstillingen vår er vedlagt under."
                 })
             }
             paragraph {
