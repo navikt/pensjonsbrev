@@ -121,7 +121,7 @@ fun JobConfig.updateMottaker() {
                 .singleOrNull() ?: return@transaction
 
             MottakerTable.update({ MottakerTable.id eq mottakerId }) { update ->
-                update[adresse] = Mottaker.Adresse(
+                update[MottakerTable.adresse] = Mottaker.Adresse(
                     type = rad[MottakerTable.type],
                     tssId = rad[MottakerTable.tssId],
                     navn = rad[MottakerTable.navn],
