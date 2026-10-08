@@ -1,6 +1,6 @@
 /**
  * Parser tests against the test files of other open source RTF parsers (test/fixtures/rtf/<source>/).
- * All files are verbatim copies. The expectations are Skribenten's supported subset, projected to text
+ * Files are verbatim copies unless noted. The expectations are Skribenten's supported subset, projected to text
  * (`projectElements`); the HTML the other parsers produce is not used as an oracle.
  *
  * rtf2xml/ — paulhtremblay/rtf2xml at commit fc3f36ba081e642926f89f7535ec48f3490d40be, licensed MIT:
@@ -26,6 +26,11 @@
  * https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/LICENSE
  * - hyperlink, implicit-par, pile-of-poo: <name>.rtf is a copy of
  *   https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/test/rtf-test-files/<name>/source.rtf
+ * - sample, simple5 and wmf-and-emf-excerpt (an excerpt, not verbatim): see interpretNativeRtf.fixtures.test.ts
+ *
+ * rtfstreamparser/ — mazira/rtf-stream-parser: see extractEncapsulation.test.ts
+ *
+ * The smoke test also covers the synthetic fixtures at the top level of test/fixtures/rtf/.
  */
 import { describe, expect, test } from "vitest";
 

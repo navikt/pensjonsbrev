@@ -1,17 +1,17 @@
 /**
  * Parser tests against RTF produced by real applications (test/fixtures/rtf/).
  *
- * Sources, copied from tbluemel/rtf.js at commit 85fddf55b2f262bfd450769120c18c9ccef1f21c, licensed MIT:
+ * rtfjs/ — tbluemel/rtf.js at commit 85fddf55b2f262bfd450769120c18c9ccef1f21c, licensed MIT:
  * https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/LICENSE
- * - word2003-sample.rtf: verbatim copy (Microsoft Word 11) of
+ * - sample.rtf: verbatim copy (Microsoft Word 11) of
  *   https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/test/rtf-test-files/sample/source.rtf
- * - word-numbered-lists.rtf: excerpt of
+ * - wmf-and-emf-excerpt.rtf: excerpt (Microsoft Word, numbered lists) of
  *   https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/test/rtf-test-files/wmf-and-emf/source.rtf
  *   Trimmed from 1.7 MB to the header, list tables and one list section; images and CRs removed.
- * - richedit-wordpad.rtf: verbatim copy (Msftedit 5.41, i.e. WordPad/RichEdit) of
+ * - simple5.rtf: verbatim copy (Msftedit 5.41, i.e. WordPad/RichEdit) of
  *   https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/samples/.common/data/rtf/simple5.rtf
  *
- * Synthetic:
+ * Synthetic, at the top level:
  * - word365-nb.rtf: structured according to the Word 365 clipboard format (Norwegian
  *   Bokmål), since no freely licensed modern captures were found.
  *
@@ -22,10 +22,10 @@ import { describe, expect, test } from "vitest";
 import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
 import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
 import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
-import wordpad from "~test/fixtures/rtf/richedit-wordpad.rtf?raw";
-import wordNumberedLists from "~test/fixtures/rtf/word-numbered-lists.rtf?raw";
+import word2003Sample from "~test/fixtures/rtf/rtfjs/sample.rtf?raw";
+import wordpad from "~test/fixtures/rtf/rtfjs/simple5.rtf?raw";
+import wordNumberedLists from "~test/fixtures/rtf/rtfjs/wmf-and-emf-excerpt.rtf?raw";
 import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
-import word2003Sample from "~test/fixtures/rtf/word2003-sample.rtf?raw";
 import { projectElements } from "~test/support/pasteTestUtils";
 
 const interpret = (rtf: string) => {
