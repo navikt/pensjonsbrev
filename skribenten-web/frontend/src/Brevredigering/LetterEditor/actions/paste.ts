@@ -62,7 +62,7 @@ import {
   type TextContent,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
-import { getRtfClipboardData } from "~/utils/pasteTracking";
+import { getPasteMetadata, getRtfClipboardData } from "~/utils/pasteTracking";
 
 import {
   isEmptyBlock,
@@ -73,8 +73,6 @@ import {
   isTableCellIndex,
   isTextContent,
 } from "../model/utils";
-
-const MAX_LOGGED_RTF_LENGTH = 2000;
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   withPatches((draft, literalIndex, offset, clipboard) => {
@@ -167,12 +165,12 @@ function insertInLetter(draft: Draft<LetterEditorState>, insertion: ClipboardIns
   }
 }
 
+/** Logs the pasted formats, their lengths and metadata, never the content: letters may contain personopplysninger. */
 export function logPastedClipboard(clipboardData: DataTransfer) {
-  const rtf = getRtfClipboardData(clipboardData) ?? "";
-  log("available paste types - ", clipboardData.types);
-  log(`pasted html content - ${clipboardData.getData("text/html")}`);
-  log(`pasted rtf content (${rtf.length} tegn) - ${rtf.slice(0, MAX_LOGGED_RTF_LENGTH)}`);
-  log(`pasted plain content - ${clipboardData.getData("text/plain")}`);
+  const lengths = Object.fromEntries(
+    Array.from(clipboardData.types, (type) => [type, clipboardData.getData(type).length]),
+  );
+  log("pasted clipboard - ", { lengths, ...getPasteMetadata(clipboardData) });
 }
 
 /**

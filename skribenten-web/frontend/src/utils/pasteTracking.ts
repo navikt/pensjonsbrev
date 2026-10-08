@@ -5,6 +5,8 @@ export interface PasteMetadata {
   htmlTagger?: string;
   rtfDokumentSpraak?: string;
   rtfKilde?: string;
+  /** `\ansicpgN` from the RTF header, to learn whether non-Western code pages reach the RTF paste path. */
+  rtfKodetabell?: string;
 }
 
 type Clipboard = Pick<DataTransfer, "getData" | "types">;
@@ -26,6 +28,15 @@ export function getRtfClipboardData(clipboard: Clipboard): string | undefined {
   return undefined;
 }
 
+/** Whether the clipboard has anything to paste; RTF-only clipboards have no text/plain. */
+export function hasPasteContent(clipboard: Clipboard): boolean {
+  return (
+    clipboard.getData("text/plain").length > 0 ||
+    clipboard.getData("text/html").length > 0 ||
+    getRtfClipboardData(clipboard) !== undefined
+  );
+}
+
 export function getPasteMetadata(clipboard: Clipboard): PasteMetadata {
   const types = Array.from(clipboard.types);
   const hasHtml = types.includes("text/html");
@@ -37,6 +48,7 @@ export function getPasteMetadata(clipboard: Clipboard): PasteMetadata {
     htmlTagger: hasHtml ? extractHtmlTags(clipboard.getData("text/html")) : undefined,
     rtfDokumentSpraak: rtfHeader === undefined ? undefined : detectRtfDocumentLanguage(rtfHeader),
     rtfKilde: rtfHeader === undefined ? undefined : detectRtfSource(rtfHeader),
+    rtfKodetabell: rtfHeader === undefined ? undefined : detectRtfCodePage(rtfHeader),
   };
 }
 
@@ -75,10 +87,19 @@ export function detectRtfDocumentLanguage(rtf: string): string | undefined {
 
 /** Which application produced the RTF, to learn which sources actually reach the RTF paste path. */
 export function detectRtfSource(rtf: string): string | undefined {
-  const header = /^\{\\rtf1?[^{}]*/.exec(rtf)?.[0] ?? "";
+  const header = rtfHeaderGroup(rtf);
   if (/\\fromhtml1/.test(header)) return "Outlook (HTML)";
   if (/\\fromtext/.test(header)) return "Outlook (tekst)";
 
   const generator = /\{\\\*\\generator ([^;}]*)/.exec(rtf)?.[1]?.trim();
   return generator ? generator.slice(0, MAX_RTF_SOURCE_LENGTH) : undefined;
+}
+
+export function detectRtfCodePage(rtf: string): string | undefined {
+  return /\\ansicpg(\d{1,5})(?!\d)/.exec(rtfHeaderGroup(rtf))?.[1];
+}
+
+/** The document's own control words, before its first group (the font table etc.). */
+function rtfHeaderGroup(rtf: string): string {
+  return /^\{\\rtf1?[^{}]*/.exec(rtf)?.[0] ?? "";
 }

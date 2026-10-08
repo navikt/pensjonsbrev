@@ -1,7 +1,8 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { fontTypeOf, newLiteral, newParagraph, newTitle, text } from "~/Brevredigering/LetterEditor/actions/common";
+import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { FontType, type ItemList, ListType, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
 import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
@@ -519,5 +520,36 @@ describe("LetterEditorActions.paste - text/rtf matches text/html at every positi
     expect(fromRtf.redigertBrev).toEqual(fromHtml.redigertBrev);
     expect(fromRtf.focus).toEqual(fromHtml.focus);
     expect(projectLetter(fromRtf).join("\n")).not.toContain("Teksten min");
+  });
+});
+
+describe("logPastedClipboard", () => {
+  test("logs formats, lengths and metadata but never the pasted content", () => {
+    const info = vi.spyOn(console, "info").mockImplementation(() => {});
+    const rtf = "{\\rtf1\\ansi\\ansicpg1252{\\*\\generator Riched20 10.0.22621}Fødselsnummer 12345678901\\par}";
+
+    logPastedClipboard(
+      new MockDataTransfer({
+        "text/html": "<p>Fødselsnummer 12345678901</p>",
+        "text/rtf": rtf,
+        "text/plain": "Fødselsnummer 12345678901",
+      }),
+    );
+
+    const logged = JSON.stringify(info.mock.calls);
+    expect(logged).not.toContain("12345678901");
+    expect(info.mock.calls).toEqual([
+      [
+        "Skribenten:pasteHandler: pasted clipboard - ",
+        expect.objectContaining({
+          lengths: { "text/html": 32, "text/rtf": rtf.length, "text/plain": 25 },
+          innholdsformat: "HTML",
+          htmlTagger: "p",
+          rtfKilde: "Riched20 10.0.22621",
+          rtfKodetabell: "1252",
+        }),
+      ],
+    ]);
+    info.mockRestore();
   });
 });

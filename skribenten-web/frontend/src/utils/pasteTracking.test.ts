@@ -1,6 +1,12 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { detectRtfDocumentLanguage, getPasteMetadata, getRtfClipboardData } from "~/utils/pasteTracking";
+import {
+  detectRtfCodePage,
+  detectRtfDocumentLanguage,
+  getPasteMetadata,
+  getRtfClipboardData,
+  hasPasteContent,
+} from "~/utils/pasteTracking";
 
 function clipboard(types: string[], data: Record<string, string> = {}): Pick<DataTransfer, "getData" | "types"> {
   return {
@@ -148,5 +154,38 @@ describe("detectRtfDocumentLanguage", () => {
 
   test("returnerer undefined uten språk", () => {
     expect(detectRtfDocumentLanguage("{\\rtf1\\ansi text}")).toBeUndefined();
+  });
+});
+
+describe("detectRtfCodePage", () => {
+  test("leser \\ansicpg fra RTF-hodet", () => {
+    expect(detectRtfCodePage("{\\rtf1\\ansi\\ansicpg1252\\deff0{\\fonttbl{\\f0 Calibri;}} Hei}")).toBe("1252");
+    expect(detectRtfCodePage("{\\rtf1\\ansi\\ansicpg1251 Привет}")).toBe("1251");
+  });
+
+  test("ser bort fra \\ansicpg etter første gruppe og fra urimelig lange tall", () => {
+    expect(detectRtfCodePage("{\\rtf1\\ansi{\\fonttbl{\\f0 Calibri;}}\\ansicpg1252 Hei}")).toBeUndefined();
+    expect(detectRtfCodePage("{\\rtf1\\ansi\\ansicpg123456 Hei}")).toBeUndefined();
+  });
+
+  test("kommer med i metadataene for RTF", () => {
+    const rtf = "{\\rtf1\\ansi\\ansicpg1250 Dobrý den\\par}";
+
+    expect(getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": rtf })).rtfKodetabell).toBe("1250");
+  });
+});
+
+describe("hasPasteContent", () => {
+  test("gjelder også utklippstavler med bare RTF eller bare HTML", () => {
+    expect(hasPasteContent(clipboard(["text/rtf"], { "text/rtf": "{\\rtf1 Hei\\par}" }))).toBe(true);
+    expect(hasPasteContent(clipboard(["application/rtf"], { "application/rtf": "{\\rtf1 Hei\\par}" }))).toBe(true);
+    expect(hasPasteContent(clipboard(["text/html"], { "text/html": "<p>Hei</p>" }))).toBe(true);
+    expect(hasPasteContent(clipboard(["text/plain"], { "text/plain": "Hei" }))).toBe(true);
+  });
+
+  test("er usann når alt er tomt", () => {
+    expect(hasPasteContent(clipboard([]))).toBe(false);
+    expect(hasPasteContent(clipboard(["text/plain", "text/rtf"], { "text/plain": "", "text/rtf": "" }))).toBe(false);
+    expect(hasPasteContent(clipboard(["Files"]))).toBe(false);
   });
 });
