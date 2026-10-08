@@ -9,6 +9,8 @@
     "check-unit-test-location": "files=$(find . -path './node_modules' -prune -o -path './src' -prune -o \\( -name '*.test.ts' -o -name '*.test.tsx' \\) -print); if [ -n \"$files\" ]; then echo 'Feilplasserte testfiler (må ligge under src/):'; echo \"$files\"; exit 1; fi",
     "dev": "vite --host",
     "e2e": "playwright test",
+    "a11y": "playwright test test/e2e/accessibility",
+    "a11y:report": "${npm_execpath} run a11y -- --reporter=html",
     "e2e:ui": "playwright test --ui",
     "format": "biome format --write .",
     "lint": "biome check .",
@@ -42,6 +44,7 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@biomejs/biome": "2.5.14",
     "@navikt/aksel-stylelint": "8.16.2",
     "@playwright/test": "1.63.0",
