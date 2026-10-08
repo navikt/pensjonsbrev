@@ -195,3 +195,46 @@ describe("walkRtf", () => {
     expect(walk("Hello}}}")).toEqual([{ kind: "text", value: "Hello", destination: "body" }, { kind: "documentEnd" }]);
   });
 });
+
+describe("walkRtf - symbol fonts", () => {
+  const FONTS = "{\\fonttbl{\\f0 Calibri;}{\\f3\\fcharset2 Symbol;}{\\f4\\fcharset2 Wingdings;}}";
+  const textIn = (body: string, deff = "\\deff0") => textOf(walk(`{\\rtf1\\ansi${deff}${FONTS}${body}}`));
+
+  test("maps bytes and text in a symbol font", () => {
+    expect(textIn("{\\f3 \\'b7 a}")).toBe("• α");
+  });
+
+  test("restores the outer font at the end of the group", () => {
+    expect(textIn("{\\f3 a}a\\'b7")).toBe("αa·");
+  });
+
+  test("decodes bytes before a font change with the font they were written in", () => {
+    expect(textIn("\\f3\\'b7\\f0\\'b7\\f4\\'a7")).toBe("•·▪");
+  });
+
+  test("\\plain returns to the default font", () => {
+    expect(textIn("\\f3 a\\plain a")).toBe("αa");
+    expect(textIn("\\f0 a\\plain a", "\\deff3")).toBe("aα");
+  });
+
+  test("uses \\deff before any \\f", () => {
+    expect(textIn("a", "\\deff3")).toBe("α");
+  });
+
+  test("maps Word for Mac's \\uN in the private use area, and skips the fallback", () => {
+    expect(textIn("{\\f3 \\u-3913\\'b7}")).toBe("•");
+  });
+
+  test("maps list markers in a symbol font", () => {
+    const events = walk(`{\\rtf1\\ansi${FONTS}{\\listtext\\f3 \\'b7\\tab}Punkt}`);
+
+    expect(events).toContainEqual({ kind: "text", value: "•", destination: "listMarker" });
+  });
+
+  test("never maps encapsulated HTML markup", () => {
+    const events = walk(`{\\rtf1\\ansi\\fromhtml1${FONTS}\\f3{\\*\\htmltag <p>}a}`, ENCAPSULATION);
+
+    expect(events).toContainEqual({ kind: "text", value: "<p>", destination: "htmltag" });
+    expect(textOf(events)).toBe("<p>α");
+  });
+});

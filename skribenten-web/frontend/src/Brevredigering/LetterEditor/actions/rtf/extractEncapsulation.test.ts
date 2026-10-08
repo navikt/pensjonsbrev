@@ -204,6 +204,13 @@ describe("extractEncapsulatedContent - html", () => {
     expect(html(rtf)).toBe("<p>Hi</p>");
   });
 
+  test("maps text in a symbol font, but not the markup around it", () => {
+    const rtf =
+      "{\\rtf1\\ansi\\fromhtml1{\\fonttbl{\\f0 Arial;}{\\f3\\fcharset2 Symbol;}}" +
+      "{\\*\\htmltag <p><span style='font-family:Symbol'>}{\\f3 \\'b7}{\\*\\htmltag </span> Punkt</p>}}";
+    expect(html(rtf)).toBe("<p><span style='font-family:Symbol'>•</span> Punkt</p>");
+  });
+
   test("drops content between \\htmlrtf and \\htmlrtf0, which is only for RTF readers", () => {
     const rtf =
       "{\\rtf1\\ansi\\fromhtml1{\\*\\htmltag <p>}\\htmlrtf {\\b RTF only}\\htmlrtf0 Hi{\\*\\htmltag <br>\\htmlrtf \\line\\htmlrtf0}}";

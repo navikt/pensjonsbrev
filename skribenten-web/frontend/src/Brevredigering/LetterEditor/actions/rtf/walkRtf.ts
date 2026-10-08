@@ -4,6 +4,11 @@ import {
   RTF_SYMBOL_WORDS,
   skipUnicodeFallback,
 } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
+import {
+  mapSymbolBytes,
+  mapSymbolText,
+  parseSymbolFonts,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfSymbolFonts";
 import { type RtfControlToken, type RtfToken } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
 
 /**
@@ -42,17 +47,27 @@ interface WalkerGroup {
   /** Set by `\*`: the destination word that follows is skipped unless we know it. */
   ignorable: boolean;
   ucSkip: number;
+  /** `\fN`, which decides how text in symbol fonts is decoded. */
+  font?: number;
   /** Whether a `groupStart` was emitted, so that `groupEnd` is emitted too. */
   announced: boolean;
 }
 
 export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): Generator<RtfEvent, void, undefined> {
-  const groups: WalkerGroup[] = [{ destination: "body", ignorable: false, ucSkip: 1, announced: false }];
+  const symbolFonts = parseSymbolFonts(tokens);
+  const groups: WalkerGroup[] = [
+    { destination: "body", ignorable: false, ucSkip: 1, announced: false, font: symbolFonts.defaultFont },
+  ];
   let pendingBytes: number[] = [];
   /** Fallback units left to skip after `\uN`. */
   let unicodeSkip = 0;
 
   const current = () => groups.at(-1)!;
+  /** HTML markup encapsulated by Outlook is never in a symbol font, whatever font is current. */
+  const symbolTable = () => {
+    const { font, destination } = current();
+    return font === undefined || destination === "htmltag" ? undefined : symbolFonts.tables.get(font);
+  };
 
   function text(value: string): RtfEvent | undefined {
     const { destination } = current();
@@ -60,9 +75,17 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
     return { kind: "text", value, destination };
   }
 
+  /** Text and `\uN` in a symbol font. */
+  function fontText(value: string): RtfEvent | undefined {
+    const table = symbolTable();
+    return text(table ? mapSymbolText(table, value, (byte) => options.decodeBytes([byte])) : value);
+  }
+
+  // Bytes are flushed before every other token, so before a font change or the end of a group.
   function flushBytes(): RtfEvent | undefined {
     if (pendingBytes.length === 0) return undefined;
-    const value = options.decodeBytes(pendingBytes);
+    const table = symbolTable();
+    const value = table ? mapSymbolBytes(table, pendingBytes, options.decodeBytes) : options.decodeBytes(pendingBytes);
     pendingBytes = [];
     return text(value);
   }
@@ -114,7 +137,7 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
       case "text": {
         const group = current();
         if (group.ignorable) group.destination = "skip";
-        const event = text(token.value);
+        const event = fontText(token.value);
         if (event) yield event;
         break;
       }
@@ -136,11 +159,13 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
           break;
         }
         if (token.word === "u") {
-          const event = text(decodeUnicodeParam(token.param));
+          const event = fontText(decodeUnicodeParam(token.param));
           if (event) yield event;
           unicodeSkip = group.ucSkip;
           break;
         }
+        if (token.word === "f" && token.hasParam) group.font = token.param;
+        else if (token.word === "plain") group.font = symbolFonts.defaultFont;
         const symbol = RTF_SYMBOL_WORDS.get(token.word);
         if (symbol !== undefined) {
           const event = text(symbol);

@@ -438,6 +438,14 @@ describe("interpretNativeRtf - lists", () => {
     expect(interpret(rtf)).toEqual([{ type: "ITEM", content: [plain("Item")], listType }]);
   });
 
+  test("maps text in symbol fonts, in list markers and in the item", () => {
+    const rtf =
+      `${HEADER}{\\fonttbl{\\f0 Calibri;}{\\f3\\fcharset2 Symbol;}}` +
+      "{\\listtext\\pard\\plain\\f3 \\'b7\\tab}\\pard\\ls1 Alder {\\f3 \\'b3} 67\\par}";
+
+    expect(interpret(rtf)).toEqual([{ type: "ITEM", content: [plain("Alder ≥ 67")], listType: ListType.PUNKTLISTE }]);
+  });
+
   test("reads the list type from {\\*\\pn} when there is no marker text", () => {
     const rtf = `${HEADER}\\pard{\\*\\pn\\pnlvlbody\\pndec{\\pntxta .}} Item\\par}`;
 
