@@ -11,6 +11,18 @@ export type RtfToken =
 
 const isLetter = (char: string | undefined) => char !== undefined && /[a-zA-Z]/.test(char);
 const isDigit = (char: string | undefined) => char !== undefined && /[0-9]/.test(char);
+const isHexDigit = (char: string | undefined) => char !== undefined && /[0-9a-fA-F]/.test(char);
+
+/** Parameters are signed 32-bit numbers, so more than 10 digits is malformed. */
+const MAX_PARAM_DIGITS = 10;
+const INT32_MIN = -(2 ** 31);
+const INT32_MAX = 2 ** 31 - 1;
+
+/** Parses a control word parameter as a signed 32-bit number, or undefined if it is malformed. */
+function parseParam(source: string): number | undefined {
+  if (source.replace("-", "").length > MAX_PARAM_DIGITS) return undefined;
+  return Math.min(INT32_MAX, Math.max(INT32_MIN, Number.parseInt(source, 10)));
+}
 
 function readControlWord(rtf: string, start: number): { token: RtfControlToken; end: number } {
   let wordEnd = start;
@@ -19,14 +31,14 @@ function readControlWord(rtf: string, start: number): { token: RtfControlToken; 
   let paramEnd = rtf[wordEnd] === "-" ? wordEnd + 1 : wordEnd;
   const digitsStart = paramEnd;
   while (isDigit(rtf[paramEnd])) paramEnd++;
-  const hasParam = paramEnd > digitsStart;
-  if (!hasParam) paramEnd = wordEnd;
+  if (paramEnd === digitsStart) paramEnd = wordEnd;
+  const param = paramEnd > wordEnd ? parseParam(rtf.slice(wordEnd, paramEnd)) : undefined;
 
   const token: RtfControlToken = {
     type: "control",
     word: rtf.slice(start, wordEnd),
-    hasParam,
-    param: hasParam ? Number.parseInt(rtf.slice(wordEnd, paramEnd), 10) : 0,
+    hasParam: param !== undefined,
+    param: param ?? 0,
   };
   // A single space delimits the control word and is part of it.
   return { token, end: rtf[paramEnd] === " " ? paramEnd + 1 : paramEnd };
@@ -52,14 +64,19 @@ export function tokenizeRtf(rtf: string): RtfToken[] {
         const { token, end } = readControlWord(rtf, index + 1);
         index = end;
         if (token.word === "bin" && token.hasParam) {
+          // Binary data running past the end means the clipboard was truncated; keep what came before it.
+          if (token.param > rtf.length - index) break;
           index += Math.max(0, token.param);
         } else {
           tokens.push(token);
         }
       } else if (next === "'") {
-        const byte = Number.parseInt(rtf.slice(index + 2, index + 4), 16);
-        tokens.push({ type: "hexByte", byte: Number.isNaN(byte) ? 0x3f : byte });
-        index += 4;
+        // A malformed escape becomes "?" and consumes only its valid hex digits, so it never yields a control character.
+        let digitsEnd = index + 2;
+        while (digitsEnd < index + 4 && isHexDigit(rtf[digitsEnd])) digitsEnd++;
+        const byte = digitsEnd === index + 4 ? Number.parseInt(rtf.slice(index + 2, digitsEnd), 16) : 0x3f;
+        tokens.push({ type: "hexByte", byte });
+        index = digitsEnd;
       } else {
         const symbol = readControlSymbol(next);
         if (symbol !== undefined) tokens.push(symbol);

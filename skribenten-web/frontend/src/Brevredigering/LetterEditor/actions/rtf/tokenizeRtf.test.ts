@@ -71,6 +71,30 @@ describe("tokenizeRtf", () => {
     expect(tokenizeRtf("\\bin5{}\\\\xAfter")).toEqual([text("After")]);
   });
 
+  test("stops at \\bin data that runs past the end of the input", () => {
+    expect(tokenizeRtf("{Før\\bin99 {}\\par}")).toEqual([{ type: "groupStart" }, text("Før")]);
+  });
+
+  test.each([
+    ["\\'4}", [{ type: "hexByte", byte: 0x3f }, { type: "groupEnd" }]],
+    ["\\'4", [{ type: "hexByte", byte: 0x3f }]],
+    ["\\'", [{ type: "hexByte", byte: 0x3f }]],
+    ["\\'zz", [{ type: "hexByte", byte: 0x3f }, text("zz")]],
+    ["\\'4g", [{ type: "hexByte", byte: 0x3f }, text("g")]],
+  ])("a malformed hex escape %s becomes '?' and consumes only valid hex digits", (rtf, expected) => {
+    expect(tokenizeRtf(rtf)).toEqual(expected);
+  });
+
+  test.each([
+    ["\\ls2147483647", control("ls", 2_147_483_647)],
+    ["\\ls-2147483648", control("ls", -2_147_483_648)],
+    ["\\ls9999999999", control("ls", 2_147_483_647)],
+    ["\\ls-9999999999", control("ls", -2_147_483_648)],
+    ["\\ls12345678901234567890", control("ls")],
+  ])("clamps %s to a signed 32-bit parameter, or drops it if longer than 10 digits", (rtf, expected) => {
+    expect(tokenizeRtf(`${rtf} x`)).toEqual([expected, text("x")]);
+  });
+
   test("realistic snippet: bold paragraph followed by plain paragraph", () => {
     expect(tokenizeRtf("{\\rtf1{\\b Hello}\\par World}")).toEqual([
       { type: "groupStart" },

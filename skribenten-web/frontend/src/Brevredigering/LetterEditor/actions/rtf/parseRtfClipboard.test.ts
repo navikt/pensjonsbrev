@@ -1,7 +1,7 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
-import { parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
+import { MAX_RTF_LENGTH, parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
 import { FontType, ListType } from "~/types/brevbakerTypes";
 
 vi.mock("~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf", async (importOriginal) => {
@@ -58,5 +58,20 @@ describe("parseRtfClipboard", () => {
     });
 
     expect(parseRtfClipboard("{\\rtf1\\ansi Hei\\par}")).toEqual({ mode: "unsupported", error });
+  });
+
+  test("returns unsupported without parsing when the RTF is too large", () => {
+    vi.mocked(interpretNativeRtf).mockClear();
+    const rtf = `{\\rtf1\\ansi Hei${" ".repeat(MAX_RTF_LENGTH)}\\par}`;
+
+    expect(parseRtfClipboard(rtf)).toEqual({ mode: "unsupported", error: expect.any(Error) });
+    expect(interpretNativeRtf).not.toHaveBeenCalled();
+  });
+
+  test("returns what came before \\bin data that runs past the end of the clipboard", () => {
+    expect(parseRtfClipboard("{\\rtf1\\ansi\\pard Hei\\par{\\pict\\bin999 abc}")).toEqual({
+      mode: "elements",
+      elements: [{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Hei" }] }],
+    });
   });
 });

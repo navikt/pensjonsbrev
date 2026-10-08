@@ -22,14 +22,20 @@ export type ParsedRtfClipboard =
   | { mode: "elements"; elements: TraversedElement[] }
   /** Parsed fine, but there is nothing to insert. The caller falls back to text/plain silently. */
   | { mode: "empty" }
-  /** Parsing threw. The caller logs it and falls back to text/plain. */
+  /** Parsing threw, or the RTF is too large. The caller logs it and falls back to text/plain. */
   | { mode: "unsupported"; error: unknown };
+
+/** RTF from Word with images can be tens of megabytes; parsing that would freeze the editor. */
+export const MAX_RTF_LENGTH = 20_000_000;
 
 /**
  * Unwraps HTML or text encapsulated by Outlook (MS-OXRTFEX), or interprets native RTF from Word/WordPad.
  * Tokenizes once. Never throws.
  */
 export function parseRtfClipboard(rtf: string): ParsedRtfClipboard {
+  if (rtf.length > MAX_RTF_LENGTH) {
+    return { mode: "unsupported", error: new Error(`RTF is too large to paste: ${rtf.length} characters`) };
+  }
   try {
     const tokens = tokenizeRtf(rtf);
     const decodeBytes = createByteDecoder(tokens);
