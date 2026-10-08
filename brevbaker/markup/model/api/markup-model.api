@@ -63,9 +63,7 @@ public final class no/nav/brev/brevbaker/document/DocumentSaksinformasjon {
 }
 
 public final class no/nav/brev/brevbaker/markup/Attachment {
-	public final fun component1 ()Ljava/util/List;
-	public final fun component2 ()Ljava/util/List;
-	public final fun component3 ()Z
+	public final fun clean ()Lno/nav/brev/brevbaker/markup/Attachment;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBlocks ()Ljava/util/List;
 	public final fun getInkluderSaksinformasjon ()Z
@@ -76,18 +74,12 @@ public final class no/nav/brev/brevbaker/markup/Attachment {
 
 public final class no/nav/brev/brevbaker/markup/CleanMarkupKt {
 	public static final fun clean (Ljava/util/List;)Ljava/util/List;
-	public static final fun clean (Lno/nav/brev/brevbaker/markup/Attachment;)Lno/nav/brev/brevbaker/markup/Attachment;
-	public static final fun clean (Lno/nav/brev/brevbaker/markup/LetterMarkup;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
 }
 
 public final class no/nav/brev/brevbaker/markup/LetterMarkup {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkup$Companion;
 	public static final field VERSION I
-	public final fun component1 ()Ljava/util/List;
-	public final fun component2 ()Lno/nav/brev/brevbaker/markup/Saksinformasjon;
-	public final fun component3 ()Ljava/util/List;
-	public final fun component4 ()Lno/nav/brev/brevbaker/markup/Signatur;
-	public final fun component5 ()I
+	public final fun clean ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBlocks ()Ljava/util/List;
 	public final fun getSaksinformasjon ()Lno/nav/brev/brevbaker/markup/Saksinformasjon;
@@ -102,9 +94,6 @@ public final class no/nav/brev/brevbaker/markup/LetterMarkup$Companion {
 }
 
 public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage {
-	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
-	public final fun component2 ()Ljava/util/Set;
-	public final fun component3 ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
 	public final fun getLetterDataUsage ()Ljava/util/Set;
@@ -114,8 +103,6 @@ public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage {
 }
 
 public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property {
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getPropertyName ()Ljava/lang/String;
 	public final fun getTypeName ()Ljava/lang/String;
@@ -216,7 +203,6 @@ public abstract interface annotation class no/nav/brev/brevbaker/markup/MarkupMo
 }
 
 public final class no/nav/brev/brevbaker/markup/PDFTittel {
-	public final fun component1 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getTitle1 ()Ljava/util/List;
 	public fun hashCode ()I
@@ -224,8 +210,6 @@ public final class no/nav/brev/brevbaker/markup/PDFTittel {
 }
 
 public final class no/nav/brev/brevbaker/markup/SaksbehandlerSignatur {
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttesterendeSaksbehandlerNavn ()Ljava/lang/String;
 	public final fun getSaksbehandlerNavn ()Ljava/lang/String;
@@ -234,11 +218,6 @@ public final class no/nav/brev/brevbaker/markup/SaksbehandlerSignatur {
 }
 
 public final class no/nav/brev/brevbaker/markup/Saksinformasjon {
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2-YJ9aDXQ ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4-Bu5HaUw ()Ljava/lang/String;
-	public final fun component5 ()Ljava/time/LocalDate;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAnnenMottakerNavn ()Ljava/lang/String;
 	public final fun getDokumentDato ()Ljava/time/LocalDate;
@@ -250,8 +229,6 @@ public final class no/nav/brev/brevbaker/markup/Saksinformasjon {
 }
 
 public final class no/nav/brev/brevbaker/markup/Signatur {
-	public final fun component1 ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
-	public final fun component2 ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getNavAvsenderEnhet ()Ljava/lang/String;
 	public final fun getSaksbehandlerSignatur ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
@@ -556,11 +533,6 @@ public final class no/nav/brev/brevbaker/pdfbygger/api/HttpStatusCodes : java/la
 }
 
 public final class no/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest {
-	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
-	public final fun component2 ()Ljava/util/List;
-	public final fun component3 ()Ljava/util/List;
-	public final fun component4 ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
-	public final fun component5 ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
