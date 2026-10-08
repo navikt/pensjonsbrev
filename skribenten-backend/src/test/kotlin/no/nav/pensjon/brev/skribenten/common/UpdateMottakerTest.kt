@@ -79,7 +79,7 @@ class UpdateMottakerTest {
                         attesterendeSaksbehandlerNavn = "i",
                         navAvsenderEnhet = "j",
                     ),
-                    emptySet(),
+                    emptyList(),
                 ),
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 vedtaksId = null,
