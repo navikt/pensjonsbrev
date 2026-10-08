@@ -1,4 +1,5 @@
 import { fontTypeOf, text } from "~/Brevredigering/LetterEditor/actions/common";
+import { type Text, type TraversedElement } from "~/Brevredigering/LetterEditor/actions/traversedElement";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { type Content, FontType, ListType, type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
 
@@ -78,4 +79,39 @@ export class MockDataTransfer implements DataTransfer {
   setDragImage(): void {
     throw new Error("Method not implemented.");
   }
+}
+
+/** The same projection as `projectLetter`, for parser output; nested list items are marked `(n)`. */
+export function projectElements(elements: TraversedElement[]): string[] {
+  const runs = (content: Text[]) =>
+    content
+      .map((run) => {
+        if (run.font === FontType.BOLD) return `**${run.text}**`;
+        if (run.font === FontType.ITALIC) return `_${run.text}_`;
+        return run.text;
+      })
+      .join("");
+
+  return elements.flatMap((element) => {
+    switch (element.type) {
+      case "TEXT": {
+        return [`TEXT: ${runs([element])}`];
+      }
+      case "ITEM": {
+        const marker = element.listType === ListType.NUMMERERT_LISTE ? "1." : "•";
+        return [`${marker}${element.nested ? " (n)" : ""} ${runs(element.content)}`];
+      }
+      case "TABLE": {
+        const row = (cells: { content: Text[] }[]) => cells.map((cell) => runs(cell.content)).join(" | ");
+        return [
+          "TABLE",
+          ...(element.headerCells ? [`  th: ${row(element.headerCells)}`] : []),
+          ...element.rows.map((tableRow) => `  tr: ${row(tableRow.cells)}`),
+        ];
+      }
+      default: {
+        return [`${element.type}: ${runs(element.content)}`];
+      }
+    }
+  });
 }

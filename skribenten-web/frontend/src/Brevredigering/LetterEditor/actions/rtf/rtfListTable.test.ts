@@ -28,7 +28,7 @@ describe("parseListLevelFormats", () => {
 
   test("uses \\levelnfcn when \\levelnfc is missing", () => {
     const formats = parse(
-      "{\\*\\listtable{\\list{\\listlevel\\levelnfcn23}\\listid1}}{\\*\\listoverridetable" + override(1, 1) + "}",
+      `{\\*\\listtable{\\list{\\listlevel\\levelnfcn23}\\listid1}}{\\*\\listoverridetable${override(1, 1)}}`,
     );
 
     expect(formats.get(1)).toEqual([23]);

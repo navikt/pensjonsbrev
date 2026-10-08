@@ -2,11 +2,21 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { fontTypeOf, newLiteral, newParagraph, newTitle, text } from "~/Brevredigering/LetterEditor/actions/common";
-import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { FontType, type ItemList, ListType, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
 import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
 import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
-import { item, itemList, letter, literal, paragraph, select } from "~test/support/letterEditorTestUtils";
+import {
+  cell,
+  item,
+  itemList,
+  letter,
+  literal,
+  paragraph,
+  row,
+  select,
+  table,
+} from "~test/support/letterEditorTestUtils";
 import { MockDataTransfer, projectLetter } from "~test/support/pasteTestUtils";
 
 describe("LetterEditorActions.paste - RTF", () => {
@@ -410,5 +420,104 @@ describe("LetterEditorActions.paste - format: text/rtf", () => {
       new MockDataTransfer({ "text/rtf": "{\\rtf1 Min}" }),
     );
     expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("Min min");
+  });
+});
+
+// Both paths feed the same insertion logic, so RTF and the equivalent HTML must give the same letter and focus
+// wherever the caret is. Each case pastes into the same state, so generated ids are identical.
+describe("LetterEditorActions.paste - text/rtf matches text/html at every position", () => {
+  const RTF_HEADER = "{\\rtf1\\ansi\\ansicpg1252{\\stylesheet{\\s0 Normal;}{\\s1\\outlinelevel0 heading 1;}}";
+
+  const contents: [string, string, string][] = [
+    ["inline text", `${RTF_HEADER}Vanlig {\\b fet}}`, "Vanlig <b>fet</b>"],
+    [
+      "formatted paragraphs",
+      `${RTF_HEADER}\\pard Vanlig {\\b fet}\\par\\pard {\\i kursiv}\\par}`,
+      "<p>Vanlig <b>fet</b></p><p><i>kursiv</i></p>",
+    ],
+    [
+      "a heading and a paragraph",
+      `${RTF_HEADER}\\pard\\s1 Tittel\\par\\pard Tekst\\par}`,
+      "<h1>Tittel</h1><p>Tekst</p>",
+    ],
+    [
+      "a list with a nested item",
+      `${RTF_HEADER}\\pard\\ls1{\\listtext\\'b7\\tab}En\\par\\pard\\ls1\\ilvl1{\\listtext o\\tab}Under\\par` +
+        "\\pard\\ls1{\\listtext\\'b7\\tab}To\\par}",
+      "<ul><li>En<ul><li>Under</li></ul></li><li>To</li></ul>",
+    ],
+    [
+      "a table",
+      `${RTF_HEADER}\\trowd\\cellx1000\\cellx2000\\pard\\intbl A\\cell B\\cell\\row` +
+        "\\trowd\\cellx1000\\cellx2000\\pard\\intbl C\\cell D\\cell\\row}",
+      "<table><tr><td>A</td><td>B</td></tr><tr><td>C</td><td>D</td></tr></table>",
+    ],
+  ];
+
+  const inParagraph = () => letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
+  const inList = () =>
+    letter(
+      paragraph({
+        id: 1,
+        content: [itemList({ id: 2, items: [item({ id: 3, content: [literal({ id: 31, text: "punkt en" })] })] })],
+      }),
+    );
+  const inTable = () =>
+    letter(
+      paragraph([
+        literal({ text: "" }),
+        table(
+          [cell(literal({ text: "H1" })), cell(literal({ text: "H2" }))],
+          [row(cell(literal({ text: "celle" })), cell(literal({ text: "annen" })))],
+        ),
+        literal({ text: "" }),
+      ]),
+    );
+
+  const positions: [string, () => LetterEditorState, Focus][] = [
+    ["at the start of a paragraph", inParagraph, { blockIndex: 0, contentIndex: 0, cursorPosition: 0 }],
+    ["in the middle of a paragraph", inParagraph, { blockIndex: 0, contentIndex: 0, cursorPosition: 7 }],
+    ["at the end of a paragraph", inParagraph, { blockIndex: 0, contentIndex: 0, cursorPosition: 11 }],
+    [
+      "inside a list item",
+      inList,
+      { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0, cursorPosition: 5 },
+    ],
+    [
+      "inside a table cell",
+      inTable,
+      { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 2 },
+    ],
+  ];
+
+  describe.each(positions)("%s", (_, createState, focus) => {
+    test.each(contents)("%s", (name, rtf, html) => {
+      const state = createState();
+      const { cursorPosition, ...index } = focus;
+
+      const fromRtf = Actions.paste(state, index, cursorPosition ?? 0, new MockDataTransfer({ "text/rtf": rtf }));
+      const fromHtml = Actions.paste(state, index, cursorPosition ?? 0, new MockDataTransfer({ "text/html": html }));
+
+      expect(fromRtf.redigertBrev).toEqual(fromHtml.redigertBrev);
+      expect(fromRtf.focus).toEqual(fromHtml.focus);
+      // Tables can only be pasted directly in a paragraph; everything else must change the letter.
+      const insertable = name !== "a table" || !("cellIndex" in index || "itemIndex" in index);
+      expect(JSON.stringify(fromRtf.redigertBrev) !== JSON.stringify(state.redigertBrev)).toBe(insertable);
+    });
+  });
+
+  test.each(contents)("over a selection: %s", (_, rtf, html) => {
+    const state = inParagraph();
+    const selection = {
+      start: { blockIndex: 0, contentIndex: 0, cursorPosition: 3 },
+      end: { blockIndex: 0, contentIndex: 0, cursorPosition: 8 },
+    };
+
+    const fromRtf = Actions.pasteReplacingSelection(state, selection, new MockDataTransfer({ "text/rtf": rtf }));
+    const fromHtml = Actions.pasteReplacingSelection(state, selection, new MockDataTransfer({ "text/html": html }));
+
+    expect(fromRtf.redigertBrev).toEqual(fromHtml.redigertBrev);
+    expect(fromRtf.focus).toEqual(fromHtml.focus);
+    expect(projectLetter(fromRtf).join("\n")).not.toContain("Teksten min");
   });
 });

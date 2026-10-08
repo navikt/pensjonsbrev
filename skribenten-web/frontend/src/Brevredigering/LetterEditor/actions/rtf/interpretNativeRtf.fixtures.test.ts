@@ -15,62 +15,27 @@
  * - word365-nb.rtf: structured according to the Word 365 clipboard format (Norwegian
  *   Bokmål), since no freely licensed modern captures were found.
  *
- * Output is projected to text: **fet**, _kursiv_, "•"/"1." for list items.
+ * Output is projected to text: **fet**, _kursiv_, "•"/"1." for list items, "(n)" for nested items (`projectElements`).
  */
 import { describe, expect, test } from "vitest";
 
 import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
 import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
 import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
-import { type Text, type TraversedElement } from "~/Brevredigering/LetterEditor/actions/traversedElement";
-import { FontType, ListType } from "~/types/brevbakerTypes";
 import wordpad from "~test/fixtures/rtf/richedit-wordpad.rtf?raw";
 import wordNumberedLists from "~test/fixtures/rtf/word-numbered-lists.rtf?raw";
 import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
 import word2003Sample from "~test/fixtures/rtf/word2003-sample.rtf?raw";
+import { projectElements } from "~test/support/pasteTestUtils";
 
 const interpret = (rtf: string) => {
   const tokens = tokenizeRtf(rtf);
   return interpretNativeRtf(tokens, createByteDecoder(tokens));
 };
 
-function runs(content: Text[]): string {
-  return content
-    .map((run) => {
-      if (run.font === FontType.BOLD) return `**${run.text}**`;
-      if (run.font === FontType.ITALIC) return `_${run.text}_`;
-      return run.text;
-    })
-    .join("");
-}
-
-function project(elements: TraversedElement[]): string[] {
-  return elements.flatMap((element) => {
-    switch (element.type) {
-      case "TEXT": {
-        return [`TEXT: ${runs([element])}`];
-      }
-      case "ITEM": {
-        return [`${element.listType === ListType.NUMMERERT_LISTE ? "1." : "•"} ${runs(element.content)}`];
-      }
-      case "TABLE": {
-        const row = (cells: { content: Text[] }[]) => cells.map((cell) => runs(cell.content)).join(" | ");
-        return [
-          "TABLE",
-          ...(element.headerCells ? [`  th: ${row(element.headerCells)}`] : []),
-          ...element.rows.map((tableRow) => `  tr: ${row(tableRow.cells)}`),
-        ];
-      }
-      default: {
-        return [`${element.type}: ${runs(element.content)}`];
-      }
-    }
-  });
-}
-
 describe("RTF from Word 365 (syntetisk, norsk bokmål)", () => {
   test("keeps headings, formatting, lists and the table", () => {
-    expect(project(interpret(word365))).toEqual([
+    expect(projectElements(interpret(word365))).toEqual([
       "H1: Vedtak om alderspensjon",
       "P: Vi har **innvilget** søknaden din om _alderspensjon_ fra 1. mai 2026.",
       "P: ",
@@ -90,7 +55,7 @@ describe("RTF from Word 365 (syntetisk, norsk bokmål)", () => {
   });
 
   test("drops tracked deletions and hidden text", () => {
-    const text = project(interpret(word365)).join("\n");
+    const text = projectElements(interpret(word365)).join("\n");
 
     expect(text).not.toContain("Slettet tekst");
     expect(text).not.toContain("Skjult tekst");
@@ -99,7 +64,7 @@ describe("RTF from Word 365 (syntetisk, norsk bokmål)", () => {
 
 describe("RTF from Word 2003 (rtf.js sample)", () => {
   test("keeps the heading, list and table, and drops hidden text and footnotes", () => {
-    expect(project(interpret(word2003Sample))).toEqual([
+    expect(projectElements(interpret(word2003Sample))).toEqual([
       "H1: **This is a test RTF**",
       "P: Hi! I’m a test file. This is some **bold** text, and some _italic_ text, as well as some underline text. And a bit of text. So we’re going to end this paragraph here and go on to a nice little list:",
       "P: ",
@@ -126,7 +91,7 @@ describe("RTF from Word with {\\listtext} numbered lists (rtf.js wmf-and-emf exc
   test("reads numbered lists from the marker text and keeps the table", () => {
     const items = (...texts: string[]) => texts.map((text) => `1. ${text}`);
 
-    expect(project(interpret(wordNumberedLists))).toEqual([
+    expect(projectElements(interpret(wordNumberedLists))).toEqual([
       "P: **Technology Solution System Integration Test Process**",
       "P: ",
       "P: The Technology Solution System Integration Testing (SIT) process validates that the technology solution and its features conform to the Technology Solution Design document specifications and the Technology Solution Requirements, prior to the customer testing.",
@@ -158,7 +123,7 @@ describe("RTF from Word with {\\listtext} numbered lists (rtf.js wmf-and-emf exc
 
 describe("RTF from WordPad (rtf.js simple5)", () => {
   test("keeps formatting toggled mid-paragraph and joins \\line breaks", () => {
-    expect(project(interpret(wordpad))).toEqual([
+    expect(projectElements(interpret(wordpad))).toEqual([
       "P: This is a **simple five paragraph **_document_.",
       "P: This is the second paragraph with a line break and it is centered.",
       "P: This is the third paragraph.",
