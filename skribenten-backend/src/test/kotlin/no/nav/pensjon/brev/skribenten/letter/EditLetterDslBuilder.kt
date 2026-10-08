@@ -42,8 +42,8 @@ class ParagraphContentBuilder : TextScope() {
     val content = mutableListOf<Edit.ParagraphContent>()
     override fun add(text: Edit.ParagraphContent.Text) { content += text }
 
-    fun itemList(id: Int? = null, listType: Listetype = Listetype.PUNKTLISTE, editedListType: Listetype? = null, deletedItems: Set<Int> = emptySet(), builder: ItemListBuilder.() -> Unit) {
-        content += Edit.ParagraphContent.ItemList(id = id, items = ItemListBuilder().apply(builder).items, listType = listType, editedListType = editedListType, deletedItems = deletedItems)
+    fun itemList(id: Int? = null, listType: Listetype = Listetype.PUNKTLISTE, editedListType: Listetype? = null, deletedItems: Collection<Int> = emptyList(), builder: ItemListBuilder.() -> Unit) {
+        content += Edit.ParagraphContent.ItemList(id = id, items = ItemListBuilder().apply(builder).items, listType = listType, editedListType = editedListType, deletedItems = deletedItems.toList())
     }
 
     fun table(id: Int? = null, builder: TableBuilder.() -> Unit) {
@@ -59,8 +59,8 @@ class ParagraphContentBuilder : TextScope() {
 @EditDsl
 class ItemListBuilder {
     val items = mutableListOf<Edit.ParagraphContent.ItemList.Item>()
-    fun item(id: Int? = null, deletedContent: Set<Int> = emptySet(), builder: TextContentBuilder.() -> Unit = {}) {
-        items += Edit.ParagraphContent.ItemList.Item(id = id, content = TextContentBuilder().apply(builder).texts, deletedContent = deletedContent)
+    fun item(id: Int? = null, deletedContent: Collection<Int> = emptyList(), builder: TextContentBuilder.() -> Unit = {}) {
+        items += Edit.ParagraphContent.ItemList.Item(id = id, content = TextContentBuilder().apply(builder).texts, deletedContent = deletedContent.toList())
     }
 }
 
@@ -69,23 +69,23 @@ class TableBuilder {
     var header: Edit.ParagraphContent.Table.Header? = null
     val rows = mutableListOf<Edit.ParagraphContent.Table.Row>()
 
-    fun header(id: Int? = null, deletedColSpecs: Set<Int> = emptySet(), builder: HeaderBuilder.() -> Unit) {
+    fun header(id: Int? = null, deletedColSpecs: Collection<Int> = emptyList(), builder: HeaderBuilder.() -> Unit) {
         check(header == null) { "header already set" }
-        header = Edit.ParagraphContent.Table.Header(id = id, colSpec = HeaderBuilder().apply(builder).colSpecs, deletedColSpecs = deletedColSpecs)
+        header = Edit.ParagraphContent.Table.Header(id = id, colSpec = HeaderBuilder().apply(builder).colSpecs, deletedColSpecs = deletedColSpecs.toList())
     }
 
-    fun row(id: Int? = null, deletedCells: Set<Int> = emptySet(), builder: RowBuilder.() -> Unit) {
-        rows += Edit.ParagraphContent.Table.Row(id = id, cells = RowBuilder().apply(builder).cells, deletedCells = deletedCells)
+    fun row(id: Int? = null, deletedCells: Collection<Int> = emptyList(), builder: RowBuilder.() -> Unit) {
+        rows += Edit.ParagraphContent.Table.Row(id = id, cells = RowBuilder().apply(builder).cells, deletedCells = deletedCells.toList())
     }
 }
 
 @EditDsl
 class HeaderBuilder {
     val colSpecs = mutableListOf<Edit.ParagraphContent.Table.ColumnSpec>()
-    fun colSpec(id: Int? = null, cellId: Int? = null, alignment: Edit.ParagraphContent.Table.ColumnAlignment = LEFT, span: Int = 1, deletedContent: Set<Int> = emptySet(), builder: TextContentBuilder.() -> Unit = {}) {
+    fun colSpec(id: Int? = null, cellId: Int? = null, alignment: Edit.ParagraphContent.Table.ColumnAlignment = LEFT, span: Int = 1, deletedContent: Collection<Int> = emptyList(), builder: TextContentBuilder.() -> Unit = {}) {
         colSpecs += Edit.ParagraphContent.Table.ColumnSpec(
             id = id,
-            headerContent = Edit.ParagraphContent.Table.Cell(id = cellId, text = TextContentBuilder().apply(builder).texts, deletedContent = deletedContent),
+            headerContent = Edit.ParagraphContent.Table.Cell(id = cellId, text = TextContentBuilder().apply(builder).texts, deletedContent = deletedContent.toList()),
             alignment = alignment,
             span = span,
         )
@@ -95,25 +95,25 @@ class HeaderBuilder {
 @EditDsl
 class RowBuilder {
     val cells = mutableListOf<Edit.ParagraphContent.Table.Cell>()
-    fun cell(id: Int? = null, deletedContent: Set<Int> = emptySet(), builder: TextContentBuilder.() -> Unit = {}) {
-        cells += Edit.ParagraphContent.Table.Cell(id = id, text = TextContentBuilder().apply(builder).texts, deletedContent = deletedContent)
+    fun cell(id: Int? = null, deletedContent: Collection<Int> = emptyList(), builder: TextContentBuilder.() -> Unit = {}) {
+        cells += Edit.ParagraphContent.Table.Cell(id = id, text = TextContentBuilder().apply(builder).texts, deletedContent = deletedContent.toList())
     }
 }
 
 @EditDsl
 class EditLetterBuilder {
     val blocks = mutableListOf<Edit.Block>()
-    fun paragraph(id: Int? = null, missingFromTemplate: Boolean = false, deletedContent: Set<Int> = emptySet(), builder: ParagraphContentBuilder.() -> Unit) {
-        blocks += Edit.Block.Paragraph(id = id, editable = true, content = ParagraphContentBuilder().apply(builder).content, missingFromTemplate = missingFromTemplate, deletedContent = deletedContent)
+    fun paragraph(id: Int? = null, missingFromTemplate: Boolean = false, deletedContent: Collection<Int> = emptyList(), builder: ParagraphContentBuilder.() -> Unit) {
+        blocks += Edit.Block.Paragraph(id = id, editable = true, content = ParagraphContentBuilder().apply(builder).content, missingFromTemplate = missingFromTemplate, deletedContent = deletedContent.toList())
     }
-    fun title1(id: Int? = null, missingFromTemplate: Boolean = false, deletedContent: Set<Int> = emptySet(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
-        blocks += Edit.Block.Title1(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, deletedContent = deletedContent, originalType = originalType)
+    fun title1(id: Int? = null, missingFromTemplate: Boolean = false, deletedContent: Collection<Int> = emptyList(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
+        blocks += Edit.Block.Title1(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, deletedContent = deletedContent.toList(), originalType = originalType)
     }
-    fun title2(id: Int? = null, missingFromTemplate: Boolean = false, deletedContent: Set<Int> = emptySet(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
-        blocks += Edit.Block.Title2(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, deletedContent = deletedContent, originalType = originalType)
+    fun title2(id: Int? = null, missingFromTemplate: Boolean = false, deletedContent: Collection<Int> = emptyList(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
+        blocks += Edit.Block.Title2(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, deletedContent = deletedContent.toList(), originalType = originalType)
     }
-    fun title3(id: Int? = null, missingFromTemplate: Boolean = false, deletedContent: Set<Int> = emptySet(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
-        blocks += Edit.Block.Title3(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, deletedContent = deletedContent, originalType = originalType)
+    fun title3(id: Int? = null, missingFromTemplate: Boolean = false, deletedContent: Collection<Int> = emptyList(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
+        blocks += Edit.Block.Title3(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, deletedContent = deletedContent.toList(), originalType = originalType)
     }
 }
 
