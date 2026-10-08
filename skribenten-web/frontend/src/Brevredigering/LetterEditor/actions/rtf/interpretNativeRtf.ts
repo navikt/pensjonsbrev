@@ -67,6 +67,13 @@ interface TableBuilder {
   rowIsHeader: boolean;
   /** Between `\trowd` or a `\cell` and the `\row` that ends the row. */
   rowOpen: boolean;
+  /**
+   * For each cell definition (`\cellxN`) of the current row, whether it continues a horizontal merge
+   * (`\clmrg`). Word may repeat the definitions after the cells; the last set before `\row` is used.
+   */
+  mergedCells: boolean[];
+  /** `\clmrg` seen since the last `\cellx`. */
+  nextCellIsMerged: boolean;
 }
 
 interface ParseContext {
@@ -87,7 +94,14 @@ interface ParseContext {
 
 const defaultParagraphProps = (): ParagraphProps => ({ listId: 0, listLevel: 0, inTable: false });
 
-const newTable = (): TableBuilder => ({ rows: [], cells: [], rowIsHeader: false, rowOpen: false });
+const newTable = (): TableBuilder => ({
+  rows: [],
+  cells: [],
+  rowIsHeader: false,
+  rowOpen: false,
+  mergedCells: [],
+  nextCellIsMerged: false,
+});
 
 function initialGroupState(): GroupState {
   return {
@@ -171,7 +185,7 @@ function listItem(ctx: ParseContext, props: ParagraphProps, content: Text[]): It
 function flushTable(ctx: ParseContext) {
   const table = ctx.table;
   if (!table) return;
-  if (table.cells.length > 0) table.rows.push({ cells: table.cells });
+  if (table.cells.length > 0) table.rows.push({ cells: rowCells(table) });
   if (table.rows.length > 0 || table.headerCells) {
     ctx.elements.push({
       type: "TABLE",
@@ -224,15 +238,21 @@ function flushCell(ctx: ParseContext) {
   resetParagraphMarkers(ctx);
 }
 
+/** The cells of the current row, without the continuations of horizontally merged cells, like `colspan` in the HTML path. */
+function rowCells(table: TableBuilder): TableCell[] {
+  return table.cells.filter((_, index) => !table.mergedCells[index]);
+}
+
 function flushRow(ctx: ParseContext) {
   const table = ctx.table;
   if (!table) return;
   table.rowOpen = false;
-  if (table.cells.length === 0) return;
+  const cells = rowCells(table);
+  if (cells.length === 0) return;
   if (table.rowIsHeader && table.rows.length === 0 && !table.headerCells) {
-    table.headerCells = table.cells;
+    table.headerCells = cells;
   } else {
-    table.rows.push({ cells: table.cells });
+    table.rows.push({ cells });
   }
   table.cells = [];
   table.rowIsHeader = false;
@@ -358,6 +378,19 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
       if (ctx.table) ctx.table.rowIsHeader = false;
       else ctx.table = newTable();
       ctx.table.rowOpen = true;
+      ctx.table.mergedCells = [];
+      ctx.table.nextCellIsMerged = false;
+      break;
+    }
+    case "clmrg": {
+      if (ctx.table) ctx.table.nextCellIsMerged = true;
+      break;
+    }
+    case "cellx": {
+      if (ctx.table) {
+        ctx.table.mergedCells.push(ctx.table.nextCellIsMerged);
+        ctx.table.nextCellIsMerged = false;
+      }
       break;
     }
     case "trhdr": {

@@ -605,6 +605,48 @@ describe("interpretNativeRtf - character formatting", () => {
 });
 
 describe("interpretNativeRtf - tables", () => {
+  const cell = (text: string) => ({ content: text ? [plain(text)] : [] });
+
+  test("drops the continuation cells of a horizontal merge (\\clmgf, \\clmrg)", () => {
+    const rtf =
+      `${HEADER}\\trowd\\clmgf\\cellx2000\\clmrg\\cellx4000\\clmrg\\cellx6000\\cellx8000` +
+      "\\pard\\intbl Bred\\cell\\cell\\cell Smal\\cell\\row" +
+      "\\trowd\\cellx2000\\cellx4000\\cellx6000\\cellx8000\\pard\\intbl A\\cell B\\cell C\\cell D\\cell\\row\\pard\\par}";
+
+    expect(interpret(rtf)).toEqual([
+      {
+        type: "TABLE",
+        rows: [{ cells: [cell("Bred"), cell("Smal")] }, { cells: [cell("A"), cell("B"), cell("C"), cell("D")] }],
+      },
+    ]);
+  });
+
+  test("keeps the cells of a vertical merge (\\clvmgf, \\clvmrg) as empty cells", () => {
+    const rtf =
+      `${HEADER}\\trowd\\clvmgf\\cellx4000\\cellx8000\\pard\\intbl Høy\\cell A\\cell\\row` +
+      "\\trowd\\clvmrg\\cellx4000\\cellx8000\\pard\\intbl \\cell B\\cell\\row\\pard\\par}";
+
+    expect(interpret(rtf)).toEqual([
+      { type: "TABLE", rows: [{ cells: [cell("Høy"), cell("A")] }, { cells: [cell(""), cell("B")] }] },
+    ]);
+  });
+
+  test("uses the cell definitions Word repeats after the cells", () => {
+    const definition = "\\trowd\\clmgf\\cellx4000\\clmrg\\cellx8000";
+    const rtf = `${HEADER}${definition}\\pard\\intbl {Bred\\cell}{\\cell}\\pard\\intbl {${definition}\\row}\\pard\\par}`;
+
+    expect(interpret(rtf)).toEqual([{ type: "TABLE", rows: [{ cells: [cell("Bred")] }] }]);
+  });
+
+  test("merges in the header row are dropped too", () => {
+    const rtf =
+      `${HEADER}\\trowd\\trhdr\\clmgf\\cellx4000\\clmrg\\cellx8000\\pard\\intbl Overskrift\\cell\\cell\\row` +
+      "\\trowd\\cellx4000\\cellx8000\\pard\\intbl A\\cell B\\cell\\row\\pard\\par}";
+
+    expect(interpret(rtf)).toEqual([
+      { type: "TABLE", headerCells: [cell("Overskrift")], rows: [{ cells: [cell("A"), cell("B")] }] },
+    ]);
+  });
   test("keeps cells when Word repeats \\trowd before \\row", () => {
     const rowDefinition = "\\trowd\\irow0\\trgaph108\\cellx4000\\cellx8000";
     const rtf =

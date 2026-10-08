@@ -275,6 +275,15 @@ describe("LetterEditorActions.paste - format: text/rtf", () => {
       ]);
     });
 
+    test("a horizontally merged cell is one cell, like colspan in HTML", () => {
+      expectRtfEquivalentToHtml(
+        WORD_HEADER +
+          "\\trowd\\clmgf\\cellx3000\\clmrg\\cellx6000\\cellx9000\\pard\\intbl Navn\\cell\\pard\\intbl \\cell\\pard\\intbl Sum\\cell\\row" +
+          "\\trowd\\cellx3000\\cellx6000\\cellx9000\\pard\\intbl Ola\\cell\\pard\\intbl 100\\cell\\pard\\intbl kr\\cell\\row}",
+        '<table><tr><td colspan="2">Navn</td><td>Sum</td></tr><tr><td>Ola</td><td>100</td><td>kr</td></tr></table>',
+      );
+    });
+
     test("a trailing paragraph without \\par is inserted inline, like trailing HTML text", () => {
       expectRtfEquivalentToHtml("{\\rtf1\\ansi\\pard First\\par\\pard No trailing par}", "<p>First</p>No trailing par");
     });
