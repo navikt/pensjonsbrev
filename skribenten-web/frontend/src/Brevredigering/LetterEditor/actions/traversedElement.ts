@@ -70,14 +70,30 @@ export function cleansePastedText(str: string): string {
   return cleanseText(str).replaceAll(/\s+/g, " ");
 }
 
+/** Merges neighbouring same-font text runs; linear, since RTF can produce tens of thousands of runs. */
 export function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
-  return elements.reduce<T[]>((acc, curr) => {
-    const previous = acc.at(-1);
+  const merged: T[] = [];
+  let run: string[] = [];
 
-    if (previous?.type === "TEXT" && curr.type === "TEXT" && previous?.font === curr.font) {
-      return [...acc.slice(0, -1), { ...previous, text: cleansePastedText(previous.text + curr.text) }];
-    } else {
-      return acc.concat(curr);
+  const flushRun = () => {
+    const last = merged.at(-1);
+    if (run.length > 1 && last?.type === "TEXT") {
+      merged[merged.length - 1] = { ...last, text: cleansePastedText(run.join("")) };
     }
-  }, []);
+    run = [];
+  };
+
+  for (const curr of elements) {
+    const previous = merged.at(-1);
+    if (previous?.type === "TEXT" && curr.type === "TEXT" && previous.font === curr.font) {
+      run.push(curr.text);
+    } else {
+      flushRun();
+      merged.push(curr);
+      if (curr.type === "TEXT") run = [curr.text];
+    }
+  }
+  flushRun();
+
+  return merged;
 }
