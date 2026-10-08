@@ -20,6 +20,4 @@ object Constants {
     private val navKontaktsenterLege = Telefonnummer("55553336")
     val NAV_KONTAKTSENTER_TELEFON_UFORE = navKontaktsenterUfore.format()
     val NAV_KONTAKTSENTER_TELEFON_LEGE = navKontaktsenterLege.format()
-
-
 }

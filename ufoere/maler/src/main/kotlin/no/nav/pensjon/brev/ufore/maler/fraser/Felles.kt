@@ -216,8 +216,7 @@ class Felles {
                             "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe vår telefon for lege og behanlder på ${Constants.NAV_KONTAKTSENTER_TELEFON_LEGE} " +
                             "hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
                     },
-                    nynorsk { + "Du finn meir informasjon på ${Constants.UFORE_URL}. " +
-                            "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. " +
+                    nynorsk { + "Du finn meir informasjon på ${Constants.LEGE_URL}. " +
                             "Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe vår telefon for lege og behandlar på ${Constants.NAV_KONTAKTSENTER_TELEFON_LEGE} " +
                             "kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
                     }
