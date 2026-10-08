@@ -595,6 +595,17 @@ describe("interpretNativeRtf - character formatting", () => {
     expect(interpret(rtf)).toEqual([paragraph("Tekst lenke")]);
   });
 
+  // Destinations without \* that carry no body text (RTF 1.9.1); unknown \* destinations are skipped anyway.
+  test.each([
+    ["footnote separators", ["ftnsep", "ftnsepc", "aftnsep", "aftnsepc", "ftncn", "aftncn"]],
+    ["document properties", ["template", "docvar", "userprops", "private"]],
+    ["document tables", ["pgdsctbl", "filetbl", "listpicture"]],
+  ])("skips %s", (_, words) => {
+    const groups = words.map((word) => `{\\${word} skjult ${word}}`).join("");
+
+    expect(interpret(`${HEADER}\\pard Tekst${groups}\\par}`)).toEqual([paragraph("Tekst")]);
+  });
+
   test("the \\u fallback skip counts \\'hh and control words, and stops at a group boundary", () => {
     expect(interpret(`${HEADER}\\pard\\uc2 \\u8364\\'80\\'80 a\\u8364{}b\\par}`)).toEqual([paragraph("€ a€b")]);
   });
