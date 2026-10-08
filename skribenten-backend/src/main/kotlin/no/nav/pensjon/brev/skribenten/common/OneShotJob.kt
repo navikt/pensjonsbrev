@@ -113,7 +113,8 @@ fun JobConfig.updateMottaker() {
                     MottakerTable.landkode,
                     MottakerTable.manueltAdressertTil,
                     MottakerTable.adresse,
-                    MottakerTable.type
+                    MottakerTable.type,
+                    MottakerTable.tssId,
                 )
                 .where { MottakerTable.id eq mottakerId }
                 .forUpdate(ForUpdateOption.ForUpdate)
