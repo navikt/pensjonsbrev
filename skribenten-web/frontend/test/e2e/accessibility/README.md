@@ -28,8 +28,9 @@ An existing preview server is reused locally; rebuild with `npm run build` first
 if its assets are stale. For UI mode, start `npm run dev` separately and run
 `npm run e2e:ui -- test/e2e/accessibility` (port 5173).
 
-Tests reuse `setupSakStubs`, its mocked user information/reservation and the existing
-letter/model-specification JSON fixtures. They render the real Skribenten route,
+Tests reuse `setupSakStubs`, its mocked user information/reservation, the existing
+letter/model-specification JSON fixtures and list/table builders from
+`test/support/letterEditorTestUtils.ts`. They render the real Skribenten route,
 not a standalone component. This does not test authentication or live integrations.
 Chromium uses the existing 1200 x 1400 viewport. No separate config or test framework
 is introduced. `npm run e2e` and the existing CI E2E command also discover these tests;
@@ -37,17 +38,40 @@ known violations make those runs fail until the underlying issues are fixed.
 
 ## States and assertions
 
-- Editor at `/saksnummer/123456/brev/1`, including toolbar, case details and form.
-- Same page with the reset letter dialog open. Scan the whole page,
-  without explicit exclusions; the native dialog makes its background inert.
-- Keyboard-only check: reach the reset control with Tab, open with Enter, confirm
-  focus enters/stays in the dialog after a Tab press, dismiss with Escape and verify
-  focus returns to the trigger. A 50-Tab bound detects an unreachable control;
-  it is not a claim that the overall focus order is good or that every trap is absent.
+All tests open `/saksnummer/123456/brev/1`. Seven axe scans and one keyboard test
+are grouped by feature in the report:
 
-Scans wait for letter text, the loaded Land field, saved status, an enabled reset
-control, fonts and current animations. The dialog scan also waits for its cancel
-button. No fixed sleep or `networkidle` dependency is used.
+```text
+Letter editor accessibility
+  Page
+    loaded editor page
+  Lists
+    bulleted list
+    numbered list
+  Tables
+    table with headers and editable cells
+    insert table dialog
+    open table context menu
+  Reset letter
+    reset letter dialog
+    reset dialog opens and closes with focus restored to its trigger
+```
+
+Each test opens a fresh editor. Lists and populated tables are supplied through
+fixtures; dialogs and the context menu are opened through their UI controls. Tests
+are independent and can run in parallel; their grouping does not impose execution order.
+
+The shared page-opening helper waits for the editor title, loaded Land field, saved
+status and an enabled reset control. Each state verifies its content before scanning:
+list items and list type, table headers/rows/cells, dialog inputs/buttons, or visible
+menu items. Scans then wait for fonts and current animations. No fixed sleep or
+`networkidle` dependency is used.
+
+Scans cover the whole page without explicit exclusions. Native dialogs make their
+background inert. The keyboard test reaches reset with Tab, opens with Enter, checks
+focus enters/stays in the dialog after one Tab press, closes with Escape and checks
+focus returns. Its 50-Tab bound does not prove logical focus order or absence of every trap.
+The context-menu scan uses right-click; keyboard access to that menu is not covered yet.
 
 The axe tags are `wcag2a`, `wcag2aa` and `wcag21aa`: automated WCAG 2.0 A/AA rules
 plus WCAG 2.1 AA additions. Best-practice and AAA rules are outside this suite's scope.
@@ -60,17 +84,21 @@ rendered letter data: keep synthetic fixtures and do not share reports of real c
 
 ## Observed baseline
 
-Local Chromium run with axe 4.13.0: one failing editor scan, one passing dialog scan
-and one passing keyboard test. No violations were suppressed or fixed.
+Local Chromium run with axe 4.13.0: five failing scans, two passing dialog scans and
+one passing keyboard test. All state assertions reached the scans. No violations
+are suppressed by this suite.
 
 | WCAG | Axe rule / impact | Editor finding |
 | --- | --- | --- |
 | 1.4.3 Contrast (Minimum), AA | `color-contrast` / serious | Seven text elements: case-detail labels/values and letter date. `#909399` on white gives 3.07:1; normal 16px text requires 4.5:1. |
 | 1.1.1 Non-text Content, A | `svg-img-alt` / serious | One `svg[font-size="24px"]` has `role="img"` without an accessible name. Evaluate whether it is meaningful or decorative before choosing a fix. |
+| 4.1.2 Name, Role, Value, A | `aria-hidden-focus` / serious | The open table context menu has a focusable trigger button marked `aria-hidden="true"`. Review its target and HTML in the detailed attachment. |
 
-The dialog has no definite violations for the selected tags. Its inert background
-is not equivalent to the base editor passing, and a passing scan does not replace
-the manual checks below. These findings describe this fixture/state/version only.
+The page, both list states and the populated table report the same contrast/SVG
+findings. The context-menu scan also reports `aria-hidden-focus`. Neither dialog has
+definite violations for the selected tags; their inert backgrounds do not mean the
+base editor passes. These findings describe these fixtures/states/version only and
+do not replace the manual checks below.
 
 ## Automated versus manual coverage
 
@@ -97,11 +125,13 @@ useful foundations, but should be reviewed before claiming accessibility coverag
 
 ### Adding editor states
 
-Keep editor accessibility tests in `editor.spec.ts`. The shared `beforeEach` loads
-the editor with existing fixtures. Add state-specific scans under `WCAG 2.1 A/AA scans`:
-perform the interaction, wait for the resulting content or control to be ready, then
-call `expectNoAxeViolations(page, testInfo)`. Keep keyboard/focus assertions under
-`Keyboard interaction`; a scan alone does not verify interaction behavior.
+Keep editor accessibility tests in `editor.spec.ts`. The shared `beforeEach` installs
+common API mocks. Call `openEditor(page)` for the existing letter or
+`openEditor(page, blocks)` for custom content; `openTableEditor(page)` also verifies
+the populated table. Add tests under the owning feature group, perform any interaction,
+verify the intended state, then call `expectNoAxeViolations(page, testInfo)`.
+Keep keyboard/focus checks as separately named tests in that feature group;
+a scan alone does not verify interaction behavior.
 
 For numbered lists, assert that the list is rendered before scanning. For tables,
 wait for their cells and headers. For a table context menu, wait for its menu items
@@ -123,7 +153,7 @@ evaluate any production fixes separately.
 Next small additions, reusing existing fixtures and editor tests:
 
 1. Enter/exit contentEditable using the keyboard; verify caret/selection survives toolbar formatting.
-2. Table header/body navigation, cell editing and keyboard entry/exit from table tools.
+2. Table header/body navigation, cell editing, keyboard context-menu access and entry/exit from table tools.
 3. Save success/failure and validation states: axe scan plus live-region semantics and manual announcement checks.
 4. Dialog Tab/Shift+Tab cycling, cancellation and focus restoration for table insertion.
 5. 320px/400% zoom and text-spacing evaluation, with keyboard-visible-focus screenshots and human review.
