@@ -66,10 +66,6 @@ public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMa
 
 public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkupV2 {
 	public fun <init> (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;)V
-	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
-	public final fun component2 ()Ljava/util/List;
-	public final fun copy (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;)Lno/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkupV2;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkupV2;Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkupV2;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getLetterMarkup ()Lno/nav/brev/brevbaker/markup/LetterMarkup;

@@ -15,7 +15,13 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
-data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
+class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>) {
+    override fun equals(other: Any?) =
+        other is LetterWithAttachmentsMarkupV2 && letterMarkup == other.letterMarkup && attachments == other.attachments
+
+    override fun hashCode() = 31 * letterMarkup.hashCode() + attachments.hashCode()
+    override fun toString() = "LetterWithAttachmentsMarkupV2(letterMarkup=$letterMarkup, attachments=$attachments)"
+}
 
 internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkupV2 =
