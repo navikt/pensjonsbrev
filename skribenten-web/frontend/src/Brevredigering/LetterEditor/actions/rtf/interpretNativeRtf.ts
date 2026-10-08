@@ -69,6 +69,8 @@ interface ParseContext {
   listMarker?: string;
   pnListType?: ListType;
   table?: TableBuilder;
+  /** The last paragraph break, until visible text follows. `\par\sect` and `\page\par` are one break, not two. */
+  lastBreak?: "par" | "sectionOrPage";
 }
 
 const defaultParagraphProps = (): ParagraphProps => ({ listId: 0, inTable: false });
@@ -215,6 +217,7 @@ function appendText(ctx: ParseContext, value: string, destination: RtfDestinatio
     const isWhitespace = value.trim().length === 0;
     if (isWhitespace && ctx.table && !isInTable(ctx)) return;
     endTableIfLeft(ctx);
+    if (!isWhitespace) ctx.lastBreak = undefined;
     // Coalesce runs with the same font, so a `\u`-heavy paragraph doesn't become hundreds of runs to merge.
     const font = fontOf(group);
     const last = ctx.text.at(-1);
@@ -224,6 +227,22 @@ function appendText(ctx: ParseContext, value: string, destination: RtfDestinatio
 }
 
 const isOn = (token: RtfControlToken) => !token.hasParam || token.param !== 0;
+
+/** `\par`, and section and page breaks, which we can't represent, end the paragraph. */
+function breakParagraph(ctx: ParseContext, kind: "par" | "sectionOrPage") {
+  if (isInTable(ctx)) {
+    // Paragraphs inside a cell are joined with a space.
+    ctx.table ??= newTable();
+    appendText(ctx, " ", "body");
+    ctx.listMarker = undefined;
+    ctx.pnListType = undefined;
+    return;
+  }
+  const isEmpty = ctx.listMarker === undefined && ctx.text.every((item) => item.text.trim().length === 0);
+  const repeatsBreak = ctx.lastBreak !== undefined && (ctx.lastBreak === "sectionOrPage" || kind === "sectionOrPage");
+  if (!(isEmpty && repeatsBreak)) flushParagraph(ctx);
+  ctx.lastBreak = kind;
+}
 
 function handleControlWord(ctx: ParseContext, token: RtfControlToken, destination: RtfDestination) {
   // Soft line breaks are not supported, so `\line` becomes a space.
@@ -289,15 +308,12 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
       break;
     }
     case "par": {
-      if (isInTable(ctx)) {
-        // Paragraphs inside a cell are joined with a space.
-        ctx.table ??= newTable();
-        appendText(ctx, " ", "body");
-        ctx.listMarker = undefined;
-        ctx.pnListType = undefined;
-      } else {
-        flushParagraph(ctx);
-      }
+      breakParagraph(ctx, "par");
+      break;
+    }
+    case "sect":
+    case "page": {
+      breakParagraph(ctx, "sectionOrPage");
       break;
     }
     case "trowd": {

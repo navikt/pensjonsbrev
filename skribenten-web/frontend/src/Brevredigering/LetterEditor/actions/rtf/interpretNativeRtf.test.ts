@@ -370,6 +370,46 @@ describe("interpretNativeRtf - paragraph properties", () => {
 
     expect(interpret(rtf)).toEqual([paragraph("First"), EMPTY_PARAGRAPH, paragraph("Second")]);
   });
+
+  test.each(["sect", "page"])("\\%s ends the paragraph", (word) => {
+    expect(interpret(`${HEADER}\\pard En\\${word} To\\par}`)).toEqual([paragraph("En"), paragraph("To")]);
+  });
+
+  test.each([
+    ["\\par\\sect", "par then sect"],
+    ["\\par\\page", "par then page"],
+    ["\\page\\par", "page then par"],
+    ["\\sect\\par", "sect then par"],
+    ["\\page\\sect\\par", "page, sect and par"],
+  ])("%s is a single paragraph break (%s)", (breaks) => {
+    expect(interpret(`${HEADER}\\pard En${breaks} To\\par}`)).toEqual([paragraph("En"), paragraph("To")]);
+  });
+
+  test("a blank line before a page break is kept", () => {
+    expect(interpret(`${HEADER}\\pard En\\par\\par\\page To\\par}`)).toEqual([
+      paragraph("En"),
+      EMPTY_PARAGRAPH,
+      paragraph("To"),
+    ]);
+  });
+
+  test("\\sect ends a list item, and the next item keeps its marker", () => {
+    const rtf = `${HEADER}{\\listtext 1.\\tab}\\pard\\ls1 {Ett\\sect }\\sectd {\\listtext 2.\\tab}\\pard\\ls1 To\\par}`;
+
+    expect(interpret(rtf)).toEqual([
+      { type: "ITEM", content: [plain("Ett")], listType: ListType.NUMMERERT_LISTE },
+      { type: "ITEM", content: [plain("To")], listType: ListType.NUMMERERT_LISTE },
+    ]);
+  });
+
+  test("\\page inside a table cell is a space", () => {
+    const rtf = `${HEADER}\\trowd\\cellx4000\\pard\\intbl En\\page To\\cell\\row\\pard Etter\\par}`;
+
+    expect(interpret(rtf)).toEqual([
+      { type: "TABLE", rows: [{ cells: [{ content: [plain("En To")] }] }] },
+      paragraph("Etter"),
+    ]);
+  });
 });
 
 describe("interpretNativeRtf - lists", () => {
@@ -443,7 +483,6 @@ describe("interpretNativeRtf - character formatting", () => {
     ["a\\~b", "a b"],
     ["opt\\-ional", "optional"],
     ["non\\_breaking", "non-breaking"],
-    ["a\\page b", "ab"],
   ])("converts %s", (source, expected) => {
     expect(interpret(`${HEADER}\\pard ${source}\\par}`)).toEqual([paragraph(expected)]);
   });
