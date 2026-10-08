@@ -19,7 +19,7 @@ export interface ItemElement {
   type: "ITEM";
   content: Text[];
   listType?: ListType;
-  /** Punkt fra en underliste (HTML); flates ut i ytre liste i stedet for å starte en ny liste. */
+  /** Punkt fra en underliste (HTML, eller `\ilvl` i RTF); flates ut i ytre liste i stedet for å starte en ny liste. */
   nested?: boolean;
 }
 

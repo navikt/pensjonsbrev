@@ -468,7 +468,12 @@ describe("interpretNativeRtf - list tables", () => {
     "{\\listoverride\\listid200\\listoverridecount0\\ls2}" +
     "{\\listoverride\\listid300\\listoverridecount0\\ls3}}";
   const withLists = (body: string) => `${HEADER}${LIST_TABLES}${body}}`;
-  const item = (text: string, listType: ListType) => ({ type: "ITEM", content: [plain(text)], listType });
+  const item = (text: string, listType: ListType, nested?: boolean) => ({
+    type: "ITEM",
+    content: [plain(text)],
+    listType,
+    ...(nested ? { nested } : {}),
+  });
 
   test("reads the list type from the list table when there is no marker text", () => {
     expect(interpret(withLists("\\pard\\ls1 En\\par\\pard\\ls2 To\\par"))).toEqual([
@@ -479,8 +484,8 @@ describe("interpretNativeRtf - list tables", () => {
 
   test("reads the list type of the paragraph's \\ilvl", () => {
     expect(interpret(withLists("\\pard\\ls1\\ilvl1 En\\par\\pard\\ls2\\ilvl1 To\\par"))).toEqual([
-      item("En", ListType.PUNKTLISTE),
-      item("To", ListType.NUMMERERT_LISTE),
+      item("En", ListType.PUNKTLISTE, true),
+      item("To", ListType.NUMMERERT_LISTE, true),
     ]);
   });
 
@@ -520,9 +525,25 @@ describe("interpretNativeRtf - list tables", () => {
 
   test("\\pard resets \\ilvl", () => {
     expect(interpret(withLists("\\pard\\ls1\\ilvl1 En\\par\\pard\\ls1 To\\par"))).toEqual([
-      item("En", ListType.PUNKTLISTE),
+      item("En", ListType.PUNKTLISTE, true),
       item("To", ListType.NUMMERERT_LISTE),
     ]);
+  });
+
+  test("marks items below the top level as nested, also without list tables", () => {
+    const rtf = `${HEADER}{\\listtext\\'b7\\tab}\\pard\\ls1 En\\par{\\listtext o\\tab}\\pard\\ls1\\ilvl1 Under\\par}`;
+
+    expect(interpret(rtf)).toEqual([item("En", ListType.PUNKTLISTE), item("Under", ListType.PUNKTLISTE, true)]);
+  });
+
+  test.each([
+    ["\\pnlvlbody\\pndec", false],
+    ["\\pnlvl1\\pndec", false],
+    ["\\pnlvl2\\pndec", true],
+  ])("Word 95 list with {\\*\\pn%s} is nested: %s", (pn, nested) => {
+    const rtf = `${HEADER}\\pard{\\*\\pn${pn}{\\pntxta .}} Item\\par}`;
+
+    expect(interpret(rtf)).toEqual([item("Item", ListType.NUMMERERT_LISTE, nested)]);
   });
 });
 

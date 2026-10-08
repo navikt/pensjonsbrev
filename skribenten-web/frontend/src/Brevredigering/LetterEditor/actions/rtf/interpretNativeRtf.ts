@@ -15,6 +15,7 @@ import { type RtfControlToken, type RtfToken } from "~/Brevredigering/LetterEdit
 import { type RtfDestination, walkRtf } from "~/Brevredigering/LetterEditor/actions/rtf/walkRtf";
 import {
   cleansePastedText,
+  type ItemElement,
   mergeNeighbouringText,
   type TableCell,
   type TableRow,
@@ -77,6 +78,8 @@ interface ParseContext {
   text: Text[];
   listMarker?: string;
   pnListType?: ListType;
+  /** `\pnlvlN` of a Word 95 list (`\*\pn`), where 1 is the top level. */
+  pnLevel?: number;
   table?: TableBuilder;
   /** The last paragraph break, until visible text follows. `\par\sect` and `\page\par` are one break, not two. */
   lastBreak?: "par" | "sectionOrPage";
@@ -130,6 +133,7 @@ function resetParagraphMarkers(ctx: ParseContext) {
   ctx.text = [];
   ctx.listMarker = undefined;
   ctx.pnListType = undefined;
+  ctx.pnLevel = undefined;
 }
 
 function headingOf(ctx: ParseContext, props: ParagraphProps): HeadingType | undefined {
@@ -156,6 +160,12 @@ function listTypeOf(ctx: ParseContext, props: ParagraphProps): ListType {
     return levelFormat === LEVEL_FORMAT_BULLET ? ListType.PUNKTLISTE : ListType.NUMMERERT_LISTE;
   if (ctx.pnListType !== undefined) return ctx.pnListType;
   return ctx.listMarker === undefined ? ListType.PUNKTLISTE : listTypeFromMarker(ctx.listMarker);
+}
+
+/** Items below the top level are flattened into the outer list, like nested `<ul>`/`<ol>` in the HTML path. */
+function listItem(ctx: ParseContext, props: ParagraphProps, content: Text[]): ItemElement {
+  const nested = props.listLevel > 0 || (ctx.pnLevel !== undefined && ctx.pnLevel > 1);
+  return { type: "ITEM", content, listType: listTypeOf(ctx, props), ...(nested ? { nested } : {}) };
 }
 
 function flushTable(ctx: ParseContext) {
@@ -191,8 +201,7 @@ function flushParagraph(ctx: ParseContext) {
   if (content.length === 0) {
     // Blank lines are kept as empty paragraphs or list items, like `<p></p>` and `<li></li>` in the HTML path.
     const empty: Text[] = [{ type: "TEXT", font: FontType.PLAIN, text: "" }];
-    if (!heading && isListItem(ctx, props))
-      ctx.elements.push({ type: "ITEM", content: empty, listType: listTypeOf(ctx, props) });
+    if (!heading && isListItem(ctx, props)) ctx.elements.push(listItem(ctx, props, empty));
     else ctx.elements.push({ type: "P", content: empty });
   } else if (heading) {
     // Numbered headings ("1 Innledning") keep their number as text.
@@ -200,7 +209,7 @@ function flushParagraph(ctx: ParseContext) {
     const prefix: Text[] = marker ? [{ type: "TEXT", font: FontType.PLAIN, text: `${marker} ` }] : [];
     ctx.elements.push({ type: heading, content: finalizeTextRun([...prefix, ...content]) });
   } else if (isListItem(ctx, props)) {
-    ctx.elements.push({ type: "ITEM", content, listType: listTypeOf(ctx, props) });
+    ctx.elements.push(listItem(ctx, props, content));
   } else {
     ctx.elements.push({ type: "P", content });
   }
@@ -258,6 +267,7 @@ function breakParagraph(ctx: ParseContext, kind: "par" | "sectionOrPage") {
     appendText(ctx, " ", "body");
     ctx.listMarker = undefined;
     ctx.pnListType = undefined;
+    ctx.pnLevel = undefined;
     return;
   }
   const isEmpty = ctx.listMarker === undefined && ctx.text.every((item) => item.text.trim().length === 0);
@@ -275,6 +285,7 @@ function handleControlWord(ctx: ParseContext, token: RtfControlToken, destinatio
   if (destination === "pn") {
     if (token.word === "pnlvlblt") ctx.pnListType = ListType.PUNKTLISTE;
     else if (NUMBERED_PN_WORDS.has(token.word)) ctx.pnListType = ListType.NUMMERERT_LISTE;
+    else if (token.word === "pnlvl" && token.hasParam) ctx.pnLevel = token.param;
     return;
   }
   if (destination !== "body") return;

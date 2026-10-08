@@ -229,6 +229,21 @@ describe("LetterEditorActions.paste - format: text/rtf", () => {
       );
     });
 
+    // Word marks sub-items with \ilvl; the list table gives each level its own number format.
+    test("nested list items are flattened into the outer list, like nested HTML lists", () => {
+      const listTables =
+        "{\\*\\listtable{\\list{\\listlevel\\levelnfc23}{\\listlevel\\levelnfc0}\\listid5}}" +
+        "{\\*\\listoverridetable{\\listoverride\\listid5\\listoverridecount0\\ls1}}";
+      expectRtfEquivalentToHtml(
+        WORD_HEADER +
+          listTables +
+          "\\pard\\ls1\\ilvl0{\\listtext\\'b7\\tab}Ett\\par" +
+          "\\pard\\ls1\\ilvl1{\\listtext 1.\\tab}Under\\par" +
+          "\\pard\\ls1\\ilvl0{\\listtext\\'b7\\tab}To\\par}",
+        "<ul><li>Ett<ol><li>Under</li></ol></li><li>To</li></ul>",
+      );
+    });
+
     // Unlike HTML, a trailing blank RTF paragraph is trimmed, so the trailing `\pard\par` / `<p></p>` is left out.
     test("table", () => {
       expectRtfEquivalentToHtml(
