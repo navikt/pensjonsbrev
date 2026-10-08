@@ -51,6 +51,24 @@ interface WalkerGroup {
   font?: number;
   /** Whether a `groupStart` was emitted, so that `groupEnd` is emitted too. */
   announced: boolean;
+  /** An `{\upr{ANSI}{\*\ud{Unicode}}}` group with a `\ud` branch: its ANSI branch is skipped. */
+  hasUnicodeBranch?: boolean;
+  /** A branch of such a group, until its first word tells whether it's `\ud`. */
+  undecidedBranch?: boolean;
+}
+
+/** Whether the `\upr` group at `index` has a `{\*\ud …}` branch. */
+function hasUnicodeBranch(tokens: readonly RtfToken[], index: number): boolean {
+  let depth = 0;
+  for (let next = index + 1; next < tokens.length; next++) {
+    const token = tokens[next];
+    if (token.type === "groupStart") depth++;
+    else if (token.type === "groupEnd") {
+      if (depth === 0) return false;
+      depth--;
+    } else if (token.type === "control" && token.word === "ud" && depth === 1) return true;
+  }
+  return false;
 }
 
 export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): Generator<RtfEvent, void, undefined> {
@@ -97,7 +115,23 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
     return known ?? "skip";
   }
 
-  for (const rawToken of tokens) {
+  // The first token of an `\upr` branch tells whether it is the `\ud` branch; any other branch is skipped.
+  function decideBranch(group: WalkerGroup, token: RtfToken): boolean {
+    if (!group.undecidedBranch) return false;
+    if (token.type === "control" && token.word === "*") {
+      group.ignorable = true;
+      return true;
+    }
+    group.undecidedBranch = false;
+    if (token.type === "control" && token.word === "ud") {
+      group.ignorable = false;
+      return true;
+    }
+    group.destination = "skip";
+    return false;
+  }
+
+  for (const [index, rawToken] of tokens.entries()) {
     if (rawToken.type !== "hexByte") {
       const flushed = flushBytes();
       if (flushed) yield flushed;
@@ -114,8 +148,15 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
     switch (token.type) {
       case "groupStart": {
         const parent = current();
+        decideBranch(parent, token);
         const announced = parent.destination !== "skip";
-        groups.push({ ...parent, ignorable: false, announced });
+        groups.push({
+          ...parent,
+          ignorable: false,
+          announced,
+          hasUnicodeBranch: false,
+          undecidedBranch: parent.hasUnicodeBranch === true,
+        });
         if (announced) yield { kind: "groupStart", destination: parent.destination };
         break;
       }
@@ -131,11 +172,13 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
         break;
       }
       case "hexByte": {
+        decideBranch(current(), token);
         pendingBytes.push(token.byte);
         break;
       }
       case "text": {
         const group = current();
+        decideBranch(group, token);
         if (group.ignorable) group.destination = "skip";
         const event = fontText(token.value);
         if (event) yield event;
@@ -143,7 +186,11 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
       }
       case "control": {
         const group = current();
-        if (group.destination === "skip") break;
+        if (decideBranch(group, token) || group.destination === "skip") break;
+        if (token.word === "upr") {
+          group.hasUnicodeBranch = hasUnicodeBranch(tokens, index);
+          break;
+        }
 
         if (token.word === "*") {
           group.ignorable = true;

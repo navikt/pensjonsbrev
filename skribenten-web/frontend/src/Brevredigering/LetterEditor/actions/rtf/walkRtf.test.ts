@@ -238,3 +238,38 @@ describe("walkRtf - symbol fonts", () => {
     expect(textOf(events)).toBe("<p>α");
   });
 });
+
+// Modelled on Apache Tika's uprState: of {\upr{ANSI}{\*\ud{Unicode}}}, only the Unicode branch is read.
+describe("walkRtf - \\upr and \\ud", () => {
+  test("reads the \\ud branch and skips the ANSI branch", () => {
+    expect(textOf(walk("{\\rtf1\\ansi Før {\\upr{ansi \\'e6}{\\*\\ud{unicode \\u230?}}} etter}"))).toBe(
+      "Før unicode æ etter",
+    );
+  });
+
+  test("keeps formatting and groups in the \\ud branch", () => {
+    const events = walk("{\\rtf1\\ansi{\\upr{\\b ansi}{\\*\\ud{\\b uni}}}}");
+
+    expect(textOf(events)).toBe("uni");
+    expect(events).toContainEqual(control("b"));
+  });
+
+  test("skips an ANSI branch that starts with a group", () => {
+    expect(textOf(walk("{\\rtf1\\ansi{\\upr{{ansi}}{\\*\\ud{uni}}}}"))).toBe("uni");
+  });
+
+  test("reads the ANSI branch when there is no \\ud branch", () => {
+    expect(textOf(walk("{\\rtf1\\ansi{\\upr{ansi}}}"))).toBe("ansi");
+  });
+
+  test("the \\ud branch is read in the destination of the \\upr group", () => {
+    const events = walk("{\\rtf1\\ansi{\\listtext{\\upr{a}{\\*\\ud{\\'b7}}}}Punkt}");
+
+    expect(events).toContainEqual({ kind: "text", value: "·", destination: "listMarker" });
+    expect(textOf(events)).toBe("·Punkt");
+  });
+
+  test("\\upr in a skipped destination stays skipped", () => {
+    expect(textOf(walk("{\\rtf1\\ansi{\\fonttbl{\\upr{a}{\\*\\ud{b}}}}Tekst}"))).toBe("Tekst");
+  });
+});
