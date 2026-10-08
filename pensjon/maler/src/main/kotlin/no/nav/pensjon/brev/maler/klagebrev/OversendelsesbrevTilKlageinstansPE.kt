@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.klagebrev
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
@@ -18,6 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.saksnummer
+import kotlin.collections.Set
 
 @TemplateModelHelpers
 object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
@@ -27,7 +29,7 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
     override val kode = Pesysbrevkoder.Redigerbar.PE_KLAGE_OVERSENDELSESBREV_TIL_KLAGEINSTANS
     override val kategori = Brevkategori.KLAGE_OG_ANKE
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
-    override val sakstyper = setOf(pensjon)
+    override val sakstyper: Set<Sakstype> = pensjon
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal),
