@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.brev.brevbaker.document.Document
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
-import no.nav.brev.brevbaker.document.clean
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
