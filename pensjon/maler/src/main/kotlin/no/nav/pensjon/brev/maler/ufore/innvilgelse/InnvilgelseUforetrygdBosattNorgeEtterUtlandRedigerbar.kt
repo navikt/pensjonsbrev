@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.innvilgelse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.vedtakFattetDatoEllerIdag
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdBosattNorgeEtterUtlandDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdBosattNorgeEtterUtlandDto.*
@@ -28,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.Month
 
 @TemplateModelHelpers
 object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUforetrygdBosattNorgeEtterUtlandDto> {
@@ -266,21 +268,47 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
                 }
             }
                 .orShowIf((uforegrad.equalTo(100) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().equalTo(0))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                            nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
-                        )
+                    ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { virkningstidspunkt ->
+                        paragraph {
+                            text(
+                                bokmal { +"Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet vil du kunne tjene 1 G uten å bli redusert. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
+                                nynorsk { +"Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet vil du kunne tene 1 G utan å bli redusert. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
+                            )
+                            showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                                text(
+                                    bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() },
+                                    nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() },
+                                )
+                            }.orShow {
+                                text(
+                                    bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() },
+                                    nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() },
+                                )
+                            }
+                        }
                     }
                 }
 
             //IF(  (FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) < 100  AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) > 0)  OR  (FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt ) > 0 AND  FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) = 100) ) THEN      INCLUDE ENDIF
             showIf((((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).lessThan(100) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).greaterThan(0)) or ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()).greaterThan(0) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).equalTo(100)))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Botnfrådraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                    )
+                ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { virkningstidspunkt ->
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet øker dette beløpet til 1 G. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
+                            nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet aukar dette beløpet til 1 G. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
+                        )
+                        showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                            text(
+                                bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() },
+                                nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() },
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() },
+                                nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() },
+                            )
+                        }
+                    }
                 }
             }
             paragraph {
