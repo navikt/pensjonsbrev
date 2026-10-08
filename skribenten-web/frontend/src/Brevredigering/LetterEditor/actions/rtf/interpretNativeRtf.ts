@@ -25,9 +25,24 @@ import {
 import { FontType, ListType } from "~/types/brevbakerTypes";
 
 /**
- * Narrow RTF parser for pasting from Word, WordPad and similar. Supports paragraphs, headings,
- * bold/italic, bullet/numbered lists and simple tables, and produces the same `TraversedElement[]`
- * as the HTML paste path. Anything else is ignored.
+ * Narrow RTF parser for pasting from Word, WordPad and similar. Produces the same `TraversedElement[]`
+ * as the HTML paste path, and aims for the same result as pasting the HTML of the same content:
+ *
+ * - Paragraphs: `\par`, and `\sect`/`\page` outside tables. `\line` becomes a space.
+ * - Headings H1–H3: from the paragraph's `\outlinelevel`, or its style's outline level or name
+ *   (`rtfStylesheet.ts`).
+ * - Plain, bold and italic. Brevbaker text cannot be both, so as in HTML the emphasis turned on first wins.
+ *   Bold/italic defined only by a paragraph style is not applied: heading styles are the only place
+ *   writers rely on it, and Word repeats direct formatting in the body.
+ * - Lists: the type comes from `\ls` → `\listoverridetable` → `\listtable` (`rtfListTable.ts`), then
+ *   old-style `\pn` words, then the rendered marker. `\levelnfc255` (no marker) is a plain paragraph.
+ *   Lists are flat; items at `\ilvl > 0` or `\pnlvl > 1` are marked `nested`, like nested HTML lists.
+ * - Simple tables: `\trhdr` rows become the header, horizontally merged continuation cells (`\clmrg`)
+ *   are dropped, and vertically merged cells (`\clvmrg`) stay as empty cells.
+ *
+ * Dropped: images and other objects, hidden text (`\v`), tracked deletions (`\deleted`), field instructions
+ * (their result is kept), headers/footers/notes and other destinations without body text. Anything
+ * else, such as underline, colour, indents and numbering styles, is ignored.
  */
 
 const NUMBERED_PN_WORDS: ReadonlySet<string> = new Set([
