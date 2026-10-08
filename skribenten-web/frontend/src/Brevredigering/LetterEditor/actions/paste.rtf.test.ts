@@ -239,6 +239,27 @@ describe("LetterEditorActions.paste - format: text/rtf", () => {
       );
     });
 
+    test("a header row narrower than the body is padded to the widest row", () => {
+      expectRtfEquivalentToHtml(
+        WORD_HEADER +
+          "\\trowd\\trhdr\\cellx3000\\cellx6000\\pard\\intbl Navn\\cell\\pard\\intbl Bel\\'f8p\\cell\\row" +
+          "\\trowd\\cellx2000\\cellx4000\\cellx6000\\pard\\intbl Ola\\cell\\pard\\intbl 100\\cell\\pard\\intbl kr\\cell\\row}",
+        "<table><tr><th>Navn</th><th>Beløp</th></tr><tr><td>Ola</td><td>100</td><td>kr</td></tr></table>",
+      );
+      const result = pasteAtStart(
+        new MockDataTransfer({
+          "text/html":
+            "<table><tr><th>Navn</th><th>Beløp</th></tr><tr><td>Ola</td><td>100</td><td>kr</td></tr></table>",
+        }),
+      );
+      expect(projectLetter(result)).toEqual([
+        "TABLE",
+        "  th: Navn | Beløp | ",
+        "  tr: Ola | 100 | kr",
+        "P: Teksten min",
+      ]);
+    });
+
     test("a trailing paragraph without \\par is inserted inline, like trailing HTML text", () => {
       expectRtfEquivalentToHtml("{\\rtf1\\ansi\\pard First\\par\\pard No trailing par}", "<p>First</p>No trailing par");
     });

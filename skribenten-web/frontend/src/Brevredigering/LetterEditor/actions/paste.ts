@@ -422,10 +422,8 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table): bool
   }
 
   const headerCells = tableElement.headerCells ?? [];
-  // Determine the column count if there’s no header.
-  const bodyColMax = Math.max(1, ...tableElement.rows.map((row) => row.cells.length));
-  //if there’s a header, use its length; otherwise, use the widest body row.
-  const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
+  // The widest row decides the column count; shorter header and body rows are padded with empty cells.
+  const colCount = Math.max(1, headerCells.length, ...tableElement.rows.map((row) => row.cells.length));
   // If there are no header cells, we promote the first row to header.
   // This is to ensure that the table has a header row if it was pasted without one (pasted from Word for example)
   const hasHeader = headerCells.length > 0;
@@ -440,9 +438,9 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table): bool
       };
     });
 
-  const headerSpecSource = hasHeader
-    ? getHeaderSpec(headerCells)
-    : getHeaderSpec(normalizeCells(tableElement.rows[0]?.cells ?? [], colCount));
+  const headerSpecSource = getHeaderSpec(
+    normalizeCells(hasHeader ? headerCells : (tableElement.rows[0]?.cells ?? []), colCount),
+  );
 
   const colSpec = newColSpec(colCount, headerSpecSource);
   const bodyRows = shouldPromoteFirstRowToHeader ? tableElement.rows.slice(1) : tableElement.rows;
