@@ -152,7 +152,8 @@ fun JobConfig.updateMottaker() {
 
 fun JobConfig.updateBrevredigeringJson() {
     val alleBrevIder = transaction {
-        BrevredigeringTable.select(BrevredigeringTable.id).map { it[BrevredigeringTable.id] }
+        BrevredigeringTable.select(BrevredigeringTable.id)
+            .where { BrevredigeringTable.saksbehandlerValgKryptert.isNull() }.map { it[BrevredigeringTable.id] }
     }
     val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
     var antallOppdaterte = 0
