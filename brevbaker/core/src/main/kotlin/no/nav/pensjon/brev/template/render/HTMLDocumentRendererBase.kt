@@ -15,9 +15,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import java.time.format.FormatStyle
 import java.util.*
 
-object HTMLDocumentRendererImpl : HTMLDocumentRenderer()
+object HTMLDocumentRenderer : HTMLDocumentRendererBase()
 
-abstract class HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
+abstract class HTMLDocumentRendererBase : DocumentRenderer<HTMLDocument> {
 
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
     private val navLogoImg =
