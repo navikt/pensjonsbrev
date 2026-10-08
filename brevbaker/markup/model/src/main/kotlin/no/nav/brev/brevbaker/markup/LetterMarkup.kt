@@ -53,7 +53,7 @@ class Attachment internal constructor(
     override fun toString() =
         "Attachment(title1=$title1, blocks=$blocks, inkluderSaksinformasjon=$inkluderSaksinformasjon)"
 
-    fun clean() = Attachment(
+    internal fun clean() = Attachment(
         title1 = title1,
         blocks = blocks.cleanBlocks(),
         inkluderSaksinformasjon = inkluderSaksinformasjon,

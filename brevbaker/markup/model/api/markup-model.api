@@ -46,7 +46,6 @@ public final class no/nav/brev/brevbaker/document/DocumentSaksinformasjon {
 }
 
 public final class no/nav/brev/brevbaker/markup/Attachment {
-	public final fun clean ()Lno/nav/brev/brevbaker/markup/Attachment;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBlocks ()Ljava/util/List;
 	public final fun getInkluderSaksinformasjon ()Z
