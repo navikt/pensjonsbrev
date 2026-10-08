@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
@@ -31,6 +33,34 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
         }
     }
 
+    data class Adresse(
+        val type: MottakerType,
+        val tssId: TssId?,
+        val navn: Navn?,
+        val postnummer: NorskPostnummer?,
+        val poststed: Poststed?,
+        val adresselinje1: Adresselinje?,
+        val adresselinje2: Adresselinje?,
+        val adresselinje3: Adresselinje?,
+        val manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil?,
+        val landkode: BrevLandmodell.Landkode?,
+    ) {
+        companion object {
+            fun fraDto(mottaker: Dto.Mottaker) = Adresse(
+                type = mottaker.type,
+                tssId = mottaker.tssId,
+                navn = mottaker.navn,
+                postnummer = mottaker.postnummer,
+                poststed = mottaker.poststed,
+                adresselinje1 = mottaker.adresselinje1,
+                adresselinje2 = mottaker.adresselinje2,
+                adresselinje3 = mottaker.adresselinje3,
+                manueltAdressertTil = mottaker.manueltAdressertTil,
+                landkode = mottaker.landkode,
+            )
+        }
+    }
+
     fun oppdater(mottaker: Dto.Mottaker): Mottaker {
         type = mottaker.type
         tssId = mottaker.tssId
@@ -43,7 +73,7 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
         landkode = mottaker.landkode
         manueltAdressertTil = mottaker.manueltAdressertTil
 
-        adresse = mottaker
+        adresse = Adresse.fraDto(mottaker)
 
         return this
     }

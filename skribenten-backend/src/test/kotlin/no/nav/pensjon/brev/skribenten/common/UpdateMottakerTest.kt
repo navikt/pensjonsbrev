@@ -95,14 +95,17 @@ class UpdateMottakerTest {
                 poststed = Poststed("Lillevik")
                 adresselinje1 = Adresselinje("Vei 1")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
-                adresse = Dto.Mottaker.norskAdresse(
+                adresse = Mottaker.Adresse(
                     navn = navn,
+                    type = MottakerType.NORSK_ADRESSE,
+                    tssId = null,
                     postnummer = NorskPostnummer("1234"),
                     poststed = Poststed("Lillevik"),
                     adresselinje1 = Adresselinje("Vei 1"),
                     adresselinje2 = null,
                     adresselinje3 = null,
-                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT,
+                    landkode = null,
                 )
             }
         }

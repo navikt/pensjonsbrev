@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.skribenten.common
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
-import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.isNull
@@ -122,29 +121,18 @@ fun JobConfig.updateMottaker() {
                 .singleOrNull() ?: return@transaction
 
             MottakerTable.update({ MottakerTable.id eq mottakerId }) { update ->
-                val type = rad[MottakerTable.type]
-                val mottaker = when (type) {
-                    MottakerType.SAMHANDLER -> Dto.Mottaker.samhandler(rad[MottakerTable.tssId]!!)
-                    MottakerType.NORSK_ADRESSE -> Dto.Mottaker.norskAdresse(
-                        navn = rad[MottakerTable.navn]!!,
-                        postnummer = rad[MottakerTable.postnummer]!!,
-                        poststed = rad[MottakerTable.poststed]!!,
-                        adresselinje1 = rad[MottakerTable.adresselinje1],
-                        adresselinje2 = rad[MottakerTable.adresselinje2],
-                        adresselinje3 = rad[MottakerTable.adresselinje3],
-                        manueltAdressertTil = rad[MottakerTable.manueltAdressertTil]
-                    )
-
-                    MottakerType.UTENLANDSK_ADRESSE -> Dto.Mottaker.utenlandskAdresse(
-                        navn = rad[MottakerTable.navn]!!,
-                        adresselinje1 = rad[MottakerTable.adresselinje1]!!,
-                        adresselinje2 = rad[MottakerTable.adresselinje2],
-                        adresselinje3 = rad[MottakerTable.adresselinje3],
-                        landkode = rad[MottakerTable.landkode]!!,
-                        manueltAdressertTil = rad[MottakerTable.manueltAdressertTil]
-                    )
-                }
-                update[adresse] = mottaker
+                update[adresse] = Mottaker.Adresse(
+                    type = rad[MottakerTable.type],
+                    tssId = rad[MottakerTable.tssId],
+                    navn = rad[MottakerTable.navn],
+                    postnummer = rad[MottakerTable.postnummer],
+                    poststed = rad[MottakerTable.poststed],
+                    adresselinje1 = rad[MottakerTable.adresselinje1],
+                    adresselinje2 = rad[MottakerTable.adresselinje2],
+                    adresselinje3 = rad[MottakerTable.adresselinje3],
+                    manueltAdressertTil = rad[MottakerTable.manueltAdressertTil],
+                    landkode = rad[MottakerTable.landkode]
+                )
             }
         }
     }
