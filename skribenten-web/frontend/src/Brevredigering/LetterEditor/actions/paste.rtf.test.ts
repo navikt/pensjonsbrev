@@ -207,6 +207,13 @@ describe("LetterEditorActions.paste - format: text/rtf", () => {
       );
     });
 
+    test("overlapping bold and italic keep the emphasis turned on first", () => {
+      expectRtfEquivalentToHtml(
+        `${WORD_HEADER}\\pard {\\i kursiv {\\b begge}} og {\\b fet {\\i begge}}\\par}`,
+        "<p><i>kursiv <b>begge</b></i> og <b>fet <i>begge</i></b></p>",
+      );
+    });
+
     test("inline formatted text without paragraph break merges into current literal", () => {
       expectRtfEquivalentToHtml(`${WORD_HEADER}{\\b Fet }}`, "<b>Fet </b>");
     });

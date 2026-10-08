@@ -55,6 +55,8 @@ interface ParagraphProps {
 interface GroupState {
   bold: boolean;
   italic: boolean;
+  /** Whether `\b` was turned on before `\i`; decides the font when both are on. */
+  boldFirst: boolean;
   hidden: boolean;
   deleted: boolean;
   paragraph: ParagraphProps;
@@ -107,6 +109,7 @@ function initialGroupState(): GroupState {
   return {
     bold: false,
     italic: false,
+    boldFirst: false,
     hidden: false,
     deleted: false,
     paragraph: defaultParagraphProps(),
@@ -116,7 +119,8 @@ function initialGroupState(): GroupState {
 const currentGroup = (ctx: ParseContext): GroupState => ctx.groups.at(-1)!;
 
 function fontOf(group: GroupState): FontType {
-  // Brevbaker text cannot be both bold and italic; bold wins, as in the HTML path.
+  // Brevbaker text cannot be both bold and italic; the one turned on first wins, as in the HTML path.
+  if (group.bold && group.italic) return group.boldFirst ? FontType.BOLD : FontType.ITALIC;
   if (group.bold) return FontType.BOLD;
   if (group.italic) return FontType.ITALIC;
   return FontType.PLAIN;
@@ -318,11 +322,15 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
 
   switch (token.word) {
     case "b": {
-      group.bold = isOn(token);
+      const on = isOn(token);
+      if (on && !group.bold) group.boldFirst = !group.italic;
+      group.bold = on;
       break;
     }
     case "i": {
-      group.italic = isOn(token);
+      const on = isOn(token);
+      if (on && !group.italic) group.boldFirst = group.bold;
+      group.italic = on;
       break;
     }
     case "v": {

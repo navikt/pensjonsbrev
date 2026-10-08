@@ -67,10 +67,30 @@ describe("interpretNativeRtf", () => {
     ]);
   });
 
-  test("bold takes precedence when bold and italic overlap", () => {
-    const rtf = `${HEADER} \\b\\i both\\i0\\b0 \\par}`;
+  // Brevbaker text cannot be both bold and italic; like the HTML path, the emphasis turned on first wins.
+  test.each([
+    ["\\b\\i begge", FontType.BOLD],
+    ["\\i\\b begge", FontType.ITALIC],
+    ["{\\i {\\b begge}}", FontType.ITALIC],
+    ["{\\b {\\i begge}}", FontType.BOLD],
+    ["\\i\\b0\\b begge", FontType.ITALIC],
+  ])("the emphasis turned on first wins when bold and italic overlap: %s", (source, font) => {
+    expect(interpret(`${HEADER}\\pard ${source}\\par}`)).toEqual([
+      { type: "P", content: [{ type: "TEXT", font, text: "begge" }] },
+    ]);
+  });
 
-    expect(interpret(rtf)).toEqual([{ type: "P", content: [{ type: "TEXT", font: FontType.BOLD, text: "both" }] }]);
+  test("the remaining emphasis applies when the first one is turned off", () => {
+    expect(interpret(`${HEADER}\\pard\\b\\i x\\b0  y\\i0  z\\par}`)).toEqual([
+      {
+        type: "P",
+        content: [
+          { type: "TEXT", font: FontType.BOLD, text: "x" },
+          { type: "TEXT", font: FontType.ITALIC, text: " y" },
+          plain(" z"),
+        ],
+      },
+    ]);
   });
 
   test("detects headings via English Word stylesheet names", () => {
