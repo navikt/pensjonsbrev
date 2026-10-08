@@ -25,6 +25,11 @@ const stubAllFeatures = () => {
   for (const name of staticFeatures) {
     Object.defineProperty(Uint8Array, name, { value: () => {}, configurable: true, writable: true });
   }
+  Object.defineProperty(ReadableStream.prototype, Symbol.asyncIterator, {
+    value: () => {},
+    configurable: true,
+    writable: true,
+  });
 };
 
 const restoreFeatures = () => {
@@ -42,10 +47,12 @@ beforeEach(() => {
   trackMock.mockClear();
   globalThis.umami = { track: trackMock };
   sessionStorage.clear();
+  vi.stubGlobal("ReadableStream", class {});
   stubAllFeatures();
 });
 
 afterEach(() => {
+  vi.unstubAllGlobals();
   restoreFeatures();
 });
 
@@ -59,6 +66,18 @@ describe("findMissingPdfjsFeatures", () => {
     Reflect.deleteProperty(Uint8Array, "fromBase64");
 
     expect(findMissingPdfjsFeatures()).toEqual(["toHex", "fromBase64"]);
+  });
+
+  it("oppdager manglende async iterator for ReadableStream", () => {
+    Reflect.deleteProperty(ReadableStream.prototype, Symbol.asyncIterator);
+
+    expect(findMissingPdfjsFeatures()).toEqual(["readableStreamAsyncIterator"]);
+  });
+
+  it("oppdager manglende ReadableStream", () => {
+    vi.stubGlobal("ReadableStream", undefined);
+
+    expect(findMissingPdfjsFeatures()).toEqual(["readableStreamAsyncIterator"]);
   });
 });
 
@@ -84,8 +103,21 @@ describe("trackMissingPdfjsSupport", () => {
       mangler_fromBase64: false,
       mangler_setFromBase64: false,
       mangler_setFromHex: false,
+      mangler_readableStreamAsyncIterator: false,
       nettleser: expect.any(String),
     });
+  });
+
+  it("sender event når bare async iterator for ReadableStream mangler", () => {
+    Reflect.deleteProperty(ReadableStream.prototype, Symbol.asyncIterator);
+
+    trackMissingPdfjsSupport();
+
+    expect(trackMock).toHaveBeenCalledTimes(1);
+    expect(trackMock).toHaveBeenCalledWith(
+      "pdfjs mangler nettleserstøtte",
+      expect.objectContaining({ mangler_readableStreamAsyncIterator: true }),
+    );
   });
 
   it("sender event bare én gang per sesjon", () => {

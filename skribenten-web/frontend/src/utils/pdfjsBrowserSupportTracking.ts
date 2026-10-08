@@ -1,12 +1,17 @@
 import { trackEvent } from "~/utils/umami";
 
-// pdfjs-dist 6 calls these without a fallback (only the legacy build polyfills them).
+// pdfjs-dist 6 requires these APIs; the legacy build only polyfills the Uint8Array methods.
 const requiredFeatures: { name: string; isSupported: () => boolean }[] = [
   { name: "toHex", isSupported: () => typeof Uint8Array.prototype.toHex === "function" },
   { name: "toBase64", isSupported: () => typeof Uint8Array.prototype.toBase64 === "function" },
   { name: "fromBase64", isSupported: () => typeof Uint8Array.fromBase64 === "function" },
   { name: "setFromBase64", isSupported: () => typeof Uint8Array.prototype.setFromBase64 === "function" },
   { name: "setFromHex", isSupported: () => typeof Uint8Array.prototype.setFromHex === "function" },
+  {
+    name: "readableStreamAsyncIterator",
+    isSupported: () =>
+      typeof ReadableStream !== "undefined" && typeof ReadableStream.prototype[Symbol.asyncIterator] === "function",
+  },
 ];
 
 const SESSION_KEY = "pdfjs-browser-support-tracked";
