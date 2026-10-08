@@ -228,6 +228,87 @@ describe("Actions.pasteReplacingSelection", () => {
     });
   });
 
+  describe("keeps the selection when the clipboard has nothing to insert", () => {
+    const selectHello: SelectionIndex = {
+      start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
+      end: { blockIndex: 0, contentIndex: 0, cursorPosition: 5 },
+    };
+
+    test("empty RTF without text/plain", () => {
+      const state = letter(paragraph([literal({ text: "Hello World" })]));
+      const clipboard = new MockDataTransfer({ "text/rtf": "{\\rtf1\\ansi {\\fonttbl{\\f0 Arial;}}\\par}" });
+
+      const result = Actions.pasteReplacingSelection(state, selectHello, clipboard);
+
+      expect(result.redigertBrev).toEqual(state.redigertBrev);
+      expect(result.saveStatus).toEqual(state.saveStatus);
+    });
+
+    test("empty text/plain", () => {
+      const state = letter(paragraph([literal({ text: "Hello World" })]));
+
+      const result = Actions.pasteReplacingSelection(state, selectHello, new MockDataTransfer({ "text/plain": "" }));
+
+      expect(result.redigertBrev).toEqual(state.redigertBrev);
+    });
+
+    const tableState = () =>
+      letter(
+        paragraph([
+          literal({ text: "" }),
+          table(
+            [cell(literal({ text: "H1" })), cell(literal({ text: "H2" }))],
+            [row(cell(literal({ text: "cell content" })), cell(literal({ text: "other" })))],
+          ),
+          literal({ text: "" }),
+        ]),
+      );
+    const selectInCell: SelectionIndex = {
+      start: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 5 },
+      end: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 12 },
+    };
+    const htmlTable = "<table><tr><td>A</td><td>B</td></tr></table>";
+
+    test("a table while the selection is inside a table cell", () => {
+      const state = tableState();
+
+      const result = Actions.pasteReplacingSelection(
+        state,
+        selectInCell,
+        new MockDataTransfer({ "text/html": htmlTable }),
+      );
+
+      expect(result.redigertBrev).toEqual(state.redigertBrev);
+    });
+
+    test("a table inside a table cell falls back to text/plain", () => {
+      const state = tableState();
+
+      const result = Actions.pasteReplacingSelection(
+        state,
+        selectInCell,
+        new MockDataTransfer({ "text/html": htmlTable, "text/plain": "A\tB" }),
+      );
+
+      const cellText = select<Table>(result, { blockIndex: 0, contentIndex: 1 }).rows[0].cells[0].text;
+      expect(cellText.map((content) => text(content as LiteralValue)).join("")).toEqual("cell A\tB");
+    });
+
+    test("an RTF table inside a table cell falls back to text/plain", () => {
+      const state = tableState();
+      const rtfTable = "{\\rtf1\\ansi \\trowd\\cellx1000\\cellx2000 A\\cell B\\cell\\row}";
+
+      const result = Actions.pasteReplacingSelection(
+        state,
+        selectInCell,
+        new MockDataTransfer({ "text/rtf": rtfTable, "text/plain": "A\tB" }),
+      );
+
+      const cellText = select<Table>(result, { blockIndex: 0, contentIndex: 1 }).rows[0].cells[0].text;
+      expect(cellText.map((content) => text(content as LiteralValue)).join("")).toEqual("cell A\tB");
+    });
+  });
+
   describe("undo atomicity", () => {
     test("single undo reverts the entire paste-replace operation", () => {
       const state = letter(paragraph([literal({ text: "Hello World" })]));

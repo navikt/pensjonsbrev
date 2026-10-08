@@ -46,3 +46,20 @@ test("falls back to text/plain silently when the RTF has nothing to insert", () 
   expect(pasteRtfWithPlainText()).toBe("Ren tekst Teksten min");
   expect(info).not.toHaveBeenCalledWith(LOG_LINE, expect.anything());
 });
+
+test("keeps the selection when the RTF can't be interpreted and there is no text/plain", () => {
+  vi.mocked(parseRtfClipboard).mockReturnValue({ mode: "unsupported", error: new Error("boom") });
+  const state = letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
+
+  const result = Actions.pasteReplacingSelection(
+    state,
+    {
+      start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
+      end: { blockIndex: 0, contentIndex: 0, cursorPosition: 7 },
+    },
+    new MockDataTransfer({ "text/rtf": "{\\rtf1 Hei\\par}" }),
+  );
+
+  expect(result.redigertBrev).toEqual(state.redigertBrev);
+  expect(info).toHaveBeenCalledWith(LOG_LINE, expect.any(Error));
+});

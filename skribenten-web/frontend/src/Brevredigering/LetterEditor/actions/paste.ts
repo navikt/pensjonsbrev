@@ -85,7 +85,8 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };
 
-    insertClipboardInLetter(draft, clipboard);
+    const insertion = resolveClipboardInsertion(draft, draft.focus, clipboard);
+    if (insertion) insertInLetter(draft, insertion);
   });
 
 export const pasteReplacingSelection: Action<LetterEditorState, [selection: SelectionIndex, clipboard: DataTransfer]> =
@@ -96,29 +97,73 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
     if (!isValidIndex(draft.redigertBrev, selection.start) || !isValidIndex(draft.redigertBrev, selection.end)) {
       return;
     }
+    // The selection is only deleted if the clipboard has something we can insert where it starts.
+    const insertion = resolveClipboardInsertion(draft, selection.start, clipboard);
+    if (!insertion) return;
+
     deleteSelectionRecipe(draft, selection);
 
     // After deletion, draft.focus is set to the collapsed position where the selection was.
     // Now paste at that position.
-    insertClipboardInLetter(draft, clipboard);
+    insertInLetter(draft, insertion);
   });
 
-/** Prefers HTML, then RTF, then plain text. RTF that yields no content falls back to plain text. */
-function insertClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
+type ClipboardInsertion = { kind: "elements"; elements: TraversedElement[] } | { kind: "text"; text: string };
+
+/**
+ * Picks what to insert before the letter is changed: HTML, then RTF, then plain text, using the first
+ * one that has something insertable at `focus`. Returns undefined if nothing can be inserted.
+ */
+function resolveClipboardInsertion(
+  draft: Draft<LetterEditorState>,
+  focus: Focus,
+  clipboard: DataTransfer,
+): ClipboardInsertion | undefined {
+  const insertable = (insertion: ClipboardInsertion | undefined) =>
+    insertion && canInsertAt(draft, focus, insertion) ? insertion : undefined;
+
   if (clipboard.types.includes("text/html")) {
-    insertParsedElements(draft, parseHtmlToTraversedElements(clipboard.getData("text/html")));
-    return;
+    const fromHtml = insertable({
+      kind: "elements",
+      elements: parseHtmlToTraversedElements(clipboard.getData("text/html")),
+    });
+    if (fromHtml) return fromHtml;
   }
 
   const rtf = getRtfClipboardData(clipboard);
-  if (rtf !== undefined && insertRtfInLetter(draft, rtf)) {
-    return;
+  if (rtf !== undefined) {
+    const fromRtf = insertable(rtfInsertion(rtf));
+    if (fromRtf) return fromRtf;
   }
 
   if (clipboard.types.includes("text/plain")) {
-    insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
-  } else if (rtf === undefined) {
+    return insertable({ kind: "text", text: clipboard.getData("text/plain") });
+  }
+  if (rtf === undefined && !clipboard.types.includes("text/html")) {
     log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
+  }
+  return undefined;
+}
+
+/** Tables can only be inserted in a paragraph, outside other tables; anything else goes wherever text can. */
+function canInsertAt(draft: Draft<LetterEditorState>, focus: Focus, insertion: ClipboardInsertion): boolean {
+  if (insertion.kind === "text") return insertion.text.length > 0;
+  if (insertion.elements.length === 0) return false;
+  if (insertion.elements.some((element) => element.type !== "TABLE")) return true;
+  return canInsertTableAt(draft, focus);
+}
+
+function canInsertTableAt(draft: Draft<LetterEditorState>, focus: Focus): boolean {
+  return (
+    isBlockContentIndex(focus) && !isTableCellIndex(focus) && isParagraph(draft.redigertBrev.blocks[focus.blockIndex])
+  );
+}
+
+function insertInLetter(draft: Draft<LetterEditorState>, insertion: ClipboardInsertion) {
+  if (insertion.kind === "text") {
+    insertTextInLetter(draft, insertion.text, FontType.PLAIN, false);
+  } else {
+    insertParsedElements(draft, insertion.elements);
   }
 }
 
@@ -281,26 +326,25 @@ function shouldModifyExistingLiteral(
   return (isNew(literal) || offset > 0 || !multipartPaste) && fontType === fontTypeOf(literal);
 }
 
-/** Returns false if the RTF yields nothing to insert, so the caller can fall back to plain text. */
-function insertRtfInLetter(draft: Draft<LetterEditorState>, rtf: string): boolean {
+/** What the RTF has to insert; undefined if nothing, so the caller can fall back to plain text. */
+function rtfInsertion(rtf: string): ClipboardInsertion | undefined {
   const parsed = parseRtfClipboard(rtf);
   switch (parsed.mode) {
     case "html": {
-      return insertParsedElements(draft, parseHtmlToTraversedElements(parsed.html));
+      return { kind: "elements", elements: parseHtmlToTraversedElements(parsed.html) };
     }
     case "elements": {
-      return insertParsedElements(draft, parsed.elements);
+      return { kind: "elements", elements: parsed.elements };
     }
     case "text": {
-      insertTextInLetter(draft, parsed.text, FontType.PLAIN, false);
-      return true;
+      return { kind: "text", text: parsed.text };
     }
     case "empty": {
-      return false;
+      return undefined;
     }
     case "unsupported": {
       log("unable to interpret rtf clipboard content", parsed.error);
-      return false;
+      return undefined;
     }
   }
 }
@@ -310,21 +354,23 @@ function insertRtfInLetter(draft: Draft<LetterEditorState>, rtf: string): boolea
  * Merk da at det er forskjellige regler hvis man limer inn i start/midten/slutt, på en literal, eller punktliste,
  * og om det kopierte innholdet er bare literal eller punktliste, eller begge.
  *
- * Returns false if there was nothing to insert.
+ * Returns false if nothing was inserted.
  */
 function insertParsedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]): boolean {
+  let inserted: boolean;
   if (elements.length === 0) {
     //trenger ikke å lime inn tomt innhold
-    return false;
+    inserted = false;
   } else if (elements.every((element) => element.type === "TEXT")) {
     for (const element of elements) {
       insertTextInLetter(draft, element.text, element.font, false);
     }
+    inserted = true;
   } else {
-    insertTraversedElements(draft, elements);
+    inserted = insertTraversedElements(draft, elements);
   }
-  draft.saveStatus = "DIRTY";
-  return true;
+  if (inserted) draft.saveStatus = "DIRTY";
+  return inserted;
 }
 
 // Ensure that every table row has exactly the same number of cells (colCount)
@@ -366,13 +412,13 @@ function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
   };
 }
 
-// Insert a parsed table element at current focus.
-function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
-  if (isTableCellIndex(draft.focus)) {
-    return;
+// Insert a parsed table element at current focus. Returns false if nothing was inserted.
+function insertTable(draft: Draft<LetterEditorState>, tableElement: Table): boolean {
+  if (!canInsertTableAt(draft, draft.focus)) {
+    return false;
   }
   if ((tableElement.headerCells?.length ?? 0) === 0 && tableElement.rows.length === 0) {
-    return;
+    return false;
   }
 
   const headerCells = tableElement.headerCells ?? [];
@@ -405,30 +451,31 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
 
   const table = createTable(colSpec, rows);
 
-  if (isBlockContentIndex(draft.focus) && isParagraph(draft.redigertBrev.blocks[draft.focus.blockIndex])) {
-    // Split current literal at cursor so trailing text stays after table.
-    splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
-    const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+  // Split current literal at cursor so trailing text stays after table.
+  splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+  const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
 
-    const tableIndex = draft.focus.contentIndex;
-    addElements([table], tableIndex, currentBlock.content, currentBlock.deletedContent);
+  const tableIndex = draft.focus.contentIndex;
+  addElements([table], tableIndex, currentBlock.content, currentBlock.deletedContent);
 
-    const focusRowIndex = rows.length > 0 ? 0 : -1;
+  const focusRowIndex = rows.length > 0 ? 0 : -1;
 
-    draft.focus = {
-      blockIndex: draft.focus.blockIndex,
-      contentIndex: tableIndex,
-      rowIndex: focusRowIndex,
-      cellIndex: 0,
-      cellContentIndex: 0,
-      cursorPosition: 0,
-    };
+  draft.focus = {
+    blockIndex: draft.focus.blockIndex,
+    contentIndex: tableIndex,
+    rowIndex: focusRowIndex,
+    cellIndex: 0,
+    cellContentIndex: 0,
+    cursorPosition: 0,
+  };
 
-    draft.saveStatus = "DIRTY";
-  }
+  draft.saveStatus = "DIRTY";
+  return true;
 }
 
-function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
+/** Returns false if none of the elements could be inserted. */
+function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]): boolean {
+  let inserted = false;
   let trailingBlock: Draft<AnyBlock> | undefined;
   for (const [index, element] of elements.entries()) {
     const previous = index > 0 ? elements[index - 1] : undefined;
@@ -464,13 +511,15 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "TABLE": {
-        insertTable(draft, element);
-        break;
+        if (insertTable(draft, element)) inserted = true;
+        continue;
       }
     }
+    inserted = true;
   }
 
   if (trailingBlock) removeCursorParagraphBefore(draft, trailingBlock);
+  return inserted;
 }
 
 /** Et innlimt punkt fortsetter lista vi står i, med mindre det er et punkt av en annen listetype. */
