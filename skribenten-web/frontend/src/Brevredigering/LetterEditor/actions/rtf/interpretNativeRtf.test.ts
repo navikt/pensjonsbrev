@@ -457,6 +457,75 @@ describe("interpretNativeRtf - lists", () => {
   });
 });
 
+describe("interpretNativeRtf - list tables", () => {
+  const LIST_TABLES =
+    "{\\*\\listtable" +
+    "{\\list{\\listlevel\\levelnfc0}{\\listlevel\\levelnfc23}\\listid100}" +
+    "{\\list{\\listlevel\\levelnfc23}{\\listlevel\\levelnfc4}\\listid200}" +
+    "{\\list{\\listlevel\\levelnfc255}\\listid300}}" +
+    "{\\*\\listoverridetable" +
+    "{\\listoverride\\listid100\\listoverridecount0\\ls1}" +
+    "{\\listoverride\\listid200\\listoverridecount0\\ls2}" +
+    "{\\listoverride\\listid300\\listoverridecount0\\ls3}}";
+  const withLists = (body: string) => `${HEADER}${LIST_TABLES}${body}}`;
+  const item = (text: string, listType: ListType) => ({ type: "ITEM", content: [plain(text)], listType });
+
+  test("reads the list type from the list table when there is no marker text", () => {
+    expect(interpret(withLists("\\pard\\ls1 En\\par\\pard\\ls2 To\\par"))).toEqual([
+      item("En", ListType.NUMMERERT_LISTE),
+      item("To", ListType.PUNKTLISTE),
+    ]);
+  });
+
+  test("reads the list type of the paragraph's \\ilvl", () => {
+    expect(interpret(withLists("\\pard\\ls1\\ilvl1 En\\par\\pard\\ls2\\ilvl1 To\\par"))).toEqual([
+      item("En", ListType.PUNKTLISTE),
+      item("To", ListType.NUMMERERT_LISTE),
+    ]);
+  });
+
+  test("the list table wins over marker text and \\pn", () => {
+    const rtf = withLists("{\\listtext 1.\\tab}\\pard\\ls2 En\\par{\\*\\pn\\pnlvlblt}\\pard\\ls1 To\\par");
+
+    expect(interpret(rtf)).toEqual([item("En", ListType.PUNKTLISTE), item("To", ListType.NUMMERERT_LISTE)]);
+  });
+
+  test("a level without number (\\levelnfc255) is a plain paragraph", () => {
+    expect(interpret(withLists("{\\listtext\\tab}\\pard\\ls3 Innrykket\\par"))).toEqual([paragraph("Innrykket")]);
+  });
+
+  // Modelled on Apache Tika's testRTFListOverride: the type comes from the list that the override points to.
+  test("follows \\ls through the override table to the list", () => {
+    const rtf =
+      `${HEADER}{\\*\\listtable{\\list{\\listlevel\\levelnfc23}\\listid7}{\\list{\\listlevel\\levelnfc0}\\listid8}}` +
+      "{\\*\\listoverridetable{\\listoverride\\listid8\\ls1}{\\listoverride\\listid7\\ls2}}" +
+      "\\pard\\ls1 En\\par\\pard\\ls2 To\\par}";
+
+    expect(interpret(rtf)).toEqual([item("En", ListType.NUMMERERT_LISTE), item("To", ListType.PUNKTLISTE)]);
+  });
+
+  // Modelled on Apache Tika's testRTFCorruptListOverride: a broken list table falls back to the marker text.
+  test.each([
+    ["an override to a missing list", "{\\*\\listoverridetable{\\listoverride\\listid999\\ls1}}"],
+    ["a missing override", "{\\*\\listtable{\\list{\\listlevel\\levelnfc23}\\listid1}}"],
+    [
+      "a level that is not defined",
+      "{\\*\\listtable{\\list\\listid1}}{\\*\\listoverridetable{\\listoverride\\listid1\\ls1}}",
+    ],
+  ])("falls back to the marker text with %s", (_, tables) => {
+    const rtf = `${HEADER}${tables}{\\listtext 1.\\tab}\\pard\\ls1 En\\par}`;
+
+    expect(interpret(rtf)).toEqual([item("En", ListType.NUMMERERT_LISTE)]);
+  });
+
+  test("\\pard resets \\ilvl", () => {
+    expect(interpret(withLists("\\pard\\ls1\\ilvl1 En\\par\\pard\\ls1 To\\par"))).toEqual([
+      item("En", ListType.PUNKTLISTE),
+      item("To", ListType.NUMMERERT_LISTE),
+    ]);
+  });
+});
+
 describe("interpretNativeRtf - character formatting", () => {
   test("\\plain resets bold and italic", () => {
     expect(interpret(`${HEADER}\\pard\\b\\i Fet \\plain vanlig\\par}`)).toEqual([

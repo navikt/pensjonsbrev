@@ -1,6 +1,12 @@
 import { type ByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
 import { NATIVE_DESTINATIONS } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDestinations";
 import {
+  LEVEL_FORMAT_BULLET,
+  LEVEL_FORMAT_NONE,
+  type ListLevelFormats,
+  parseListLevelFormats,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfListTable";
+import {
   HEADING_BY_OUTLINE_LEVEL,
   type HeadingType,
   parseHeadingStyles,
@@ -39,6 +45,8 @@ interface ParagraphProps {
   styleIndex?: number;
   outlineLevel?: number;
   listId: number;
+  /** `\ilvl`, 0 for the top level. */
+  listLevel: number;
   inTable: boolean;
 }
 
@@ -62,6 +70,7 @@ interface TableBuilder {
 
 interface ParseContext {
   headingStyles: ReadonlyMap<number, HeadingType>;
+  listLevelFormats: ListLevelFormats;
   elements: TraversedElement[];
   groups: GroupState[];
   /** Text of the current paragraph or table cell. */
@@ -73,7 +82,7 @@ interface ParseContext {
   lastBreak?: "par" | "sectionOrPage";
 }
 
-const defaultParagraphProps = (): ParagraphProps => ({ listId: 0, inTable: false });
+const defaultParagraphProps = (): ParagraphProps => ({ listId: 0, listLevel: 0, inTable: false });
 
 const newTable = (): TableBuilder => ({ rows: [], cells: [], rowIsHeader: false, rowOpen: false });
 
@@ -128,12 +137,25 @@ function headingOf(ctx: ParseContext, props: ParagraphProps): HeadingType | unde
   return props.styleIndex === undefined ? undefined : ctx.headingStyles.get(props.styleIndex);
 }
 
+/** The number format of the paragraph's list level in the list table, if the list table defines it. */
+function levelFormatOf(ctx: ParseContext, props: ParagraphProps): number | undefined {
+  if (props.listId <= 0) return undefined;
+  return ctx.listLevelFormats.get(props.listId)?.[props.listLevel];
+}
+
 function isListItem(ctx: ParseContext, props: ParagraphProps): boolean {
+  const levelFormat = levelFormatOf(ctx, props);
+  if (levelFormat !== undefined) return levelFormat !== LEVEL_FORMAT_NONE;
   return ctx.listMarker !== undefined || ctx.pnListType !== undefined || props.listId > 0;
 }
 
-function listTypeOf(ctx: ParseContext): ListType {
-  return ctx.listMarker === undefined ? (ctx.pnListType ?? ListType.PUNKTLISTE) : listTypeFromMarker(ctx.listMarker);
+/** From the list table, then `\pn`, then the marker text. The marker is a guess, for writers without list tables. */
+function listTypeOf(ctx: ParseContext, props: ParagraphProps): ListType {
+  const levelFormat = levelFormatOf(ctx, props);
+  if (levelFormat !== undefined)
+    return levelFormat === LEVEL_FORMAT_BULLET ? ListType.PUNKTLISTE : ListType.NUMMERERT_LISTE;
+  if (ctx.pnListType !== undefined) return ctx.pnListType;
+  return ctx.listMarker === undefined ? ListType.PUNKTLISTE : listTypeFromMarker(ctx.listMarker);
 }
 
 function flushTable(ctx: ParseContext) {
@@ -170,7 +192,7 @@ function flushParagraph(ctx: ParseContext) {
     // Blank lines are kept as empty paragraphs or list items, like `<p></p>` and `<li></li>` in the HTML path.
     const empty: Text[] = [{ type: "TEXT", font: FontType.PLAIN, text: "" }];
     if (!heading && isListItem(ctx, props))
-      ctx.elements.push({ type: "ITEM", content: empty, listType: listTypeOf(ctx) });
+      ctx.elements.push({ type: "ITEM", content: empty, listType: listTypeOf(ctx, props) });
     else ctx.elements.push({ type: "P", content: empty });
   } else if (heading) {
     // Numbered headings ("1 Innledning") keep their number as text.
@@ -178,7 +200,7 @@ function flushParagraph(ctx: ParseContext) {
     const prefix: Text[] = marker ? [{ type: "TEXT", font: FontType.PLAIN, text: `${marker} ` }] : [];
     ctx.elements.push({ type: heading, content: finalizeTextRun([...prefix, ...content]) });
   } else if (isListItem(ctx, props)) {
-    ctx.elements.push({ type: "ITEM", content, listType: listTypeOf(ctx) });
+    ctx.elements.push({ type: "ITEM", content, listType: listTypeOf(ctx, props) });
   } else {
     ctx.elements.push({ type: "P", content });
   }
@@ -303,6 +325,10 @@ function handleBodyControlWord(ctx: ParseContext, group: GroupState, token: RtfC
       props.listId = token.param;
       break;
     }
+    case "ilvl": {
+      props.listLevel = token.param;
+      break;
+    }
     case "intbl": {
       props.inTable = true;
       break;
@@ -371,6 +397,7 @@ function finish(ctx: ParseContext) {
 export function interpretNativeRtf(tokens: readonly RtfToken[], decodeBytes: ByteDecoder): TraversedElement[] {
   const ctx: ParseContext = {
     headingStyles: parseHeadingStyles(tokens),
+    listLevelFormats: parseListLevelFormats(tokens),
     elements: [],
     groups: [initialGroupState()],
     text: [],
