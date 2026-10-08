@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.isNull
 import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
@@ -90,7 +91,7 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
 
 fun JobConfig.updateMottaker() {
     val alleMottakerIder = transaction {
-        MottakerTable.select(MottakerTable.id).map { it[MottakerTable.id] }
+        MottakerTable.select(MottakerTable.id).where { MottakerTable.adresse.isNull() }.map { it[MottakerTable.id] }
     }
 
     alleMottakerIder.forEach { mottakerId ->
