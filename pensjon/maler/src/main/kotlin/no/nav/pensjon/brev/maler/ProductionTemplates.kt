@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlag
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
@@ -150,6 +151,7 @@ object ProductionTemplates : AllTemplates {
         KlageOrienteringOmOversendelseTilKlageinstans,
         KlageOrienteringOmSaksbehandlingstid,
         OversendelseOgFoelgebrevKlageinstansUT,
+        OversendelsesbrevTilKlageinstansPE,
         OversendelsesbrevTilKlageinstansUT,
         OkningUforegradRedigerbar,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,
