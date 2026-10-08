@@ -38,7 +38,7 @@ known violations make those runs fail until the underlying issues are fixed.
 ## States and assertions
 
 - Editor at `/saksnummer/123456/brev/1`, including toolbar, case details and form.
-- Same page with the reset-template confirmation dialog open. Scan the whole page,
+- Same page with the reset letter dialog open. Scan the whole page,
   without explicit exclusions; the native dialog makes its background inert.
 - Keyboard-only check: reach the reset control with Tab, open with Enter, confirm
   focus enters/stays in the dialog after a Tab press, dismiss with Escape and verify

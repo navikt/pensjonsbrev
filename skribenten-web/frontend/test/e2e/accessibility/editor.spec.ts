@@ -83,7 +83,7 @@ test.describe("Letter editor accessibility", () => {
       await expectNoAxeViolations(page, testInfo);
     });
 
-    test("reset confirmation dialog", async ({ page }, testInfo) => {
+    test("reset letter dialog", async ({ page }, testInfo) => {
       await page.getByRole("button", { name: "Tilbakestill mal", exact: true }).click();
       const dialog = page.getByRole("dialog", { name: dialogName });
       await expect(dialog).toBeVisible();
