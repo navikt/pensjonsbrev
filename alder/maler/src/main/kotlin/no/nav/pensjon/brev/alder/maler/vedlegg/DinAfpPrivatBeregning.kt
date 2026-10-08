@@ -31,8 +31,8 @@ import no.nav.pensjon.brev.template.dsl.text
 val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, DinAfpPrivatBeregningDto>(
     title = {
         text(
-            bokmal { +"Din AfP Privat Beregning" },
-            nynorsk { +"Din AFP privat berekning" },
+            bokmal { +"Slik er din AFP privat beregnet" },
+            nynorsk { +"Slik er din AFP privat berekna" },
             english { +"Your private AFP calculation" },
         )
     },
