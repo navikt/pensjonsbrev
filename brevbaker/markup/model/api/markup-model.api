@@ -439,10 +439,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$FontType : java/lan
 }
 
 public final class no/nav/brev/brevbaker/markup/outline/Text$Literal : no/nav/brev/brevbaker/markup/outline/Text {
-	public final fun component1 ()I
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
-	public final fun component4 ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEditBehaviour ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
@@ -454,7 +450,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Literal : no/nav/br
 }
 
 public final class no/nav/brev/brevbaker/markup/outline/Text$NewLine : no/nav/brev/brevbaker/markup/outline/Text {
-	public final fun component1 ()I
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
 	public fun getId ()I
@@ -474,10 +469,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Type : java/lang/En
 }
 
 public final class no/nav/brev/brevbaker/markup/outline/Text$Variable : no/nav/brev/brevbaker/markup/outline/Text {
-	public final fun component1 ()I
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
-	public final fun component4 ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEditBehaviour ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
