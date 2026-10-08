@@ -30,7 +30,7 @@
  *
  * rtfstreamparser/ — mazira/rtf-stream-parser: see extractEncapsulation.test.ts
  *
- * The smoke test also covers the synthetic fixtures at the top level of test/fixtures/rtf/.
+ * The smoke test also covers synthetic/, described in interpretNativeRtf.fixtures.test.ts and extractEncapsulation.test.ts.
  */
 import { describe, expect, test } from "vitest";
 

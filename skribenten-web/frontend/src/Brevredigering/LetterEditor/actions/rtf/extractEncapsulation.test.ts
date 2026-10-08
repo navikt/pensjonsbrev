@@ -9,7 +9,7 @@
  * - Inline snippets in tests marked "fra Outlook", which upstream notes as seen in the wild, are copied from
  *   https://github.com/mazira/rtf-stream-parser/blob/f112deb2cd93797a2dbc28aa38d8e143b86a79d4/test/de-encapsulate.test.ts
  *
- * Synthetic, at the top level of test/fixtures/rtf/:
+ * synthetic/ — written for Skribenten:
  * - outlook365-fromhtml.rtf: structured according to the Outlook 365 clipboard format.
  */
 import { describe, expect, test } from "vitest";
@@ -20,9 +20,9 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/rtf/extractEncapsulation";
 import { createByteDecoder } from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
 import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
-import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
 import specExpectedHtml from "~test/fixtures/rtf/rtfstreamparser/encapsulated.html?raw";
 import specExample from "~test/fixtures/rtf/rtfstreamparser/encapsulated.rtf?raw";
+import outlook365 from "~test/fixtures/rtf/synthetic/outlook365-fromhtml.rtf?raw";
 
 const extractEncapsulatedContent = (rtf: string) => {
   const tokens = tokenizeRtf(rtf);

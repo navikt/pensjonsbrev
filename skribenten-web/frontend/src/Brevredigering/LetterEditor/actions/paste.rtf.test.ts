@@ -5,8 +5,8 @@ import { fontTypeOf, newLiteral, newParagraph, newTitle, text } from "~/Brevredi
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { FontType, type ItemList, ListType, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
-import outlook365 from "~test/fixtures/rtf/outlook365-fromhtml.rtf?raw";
-import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
+import outlook365 from "~test/fixtures/rtf/synthetic/outlook365-fromhtml.rtf?raw";
+import word365 from "~test/fixtures/rtf/synthetic/word365-nb.rtf?raw";
 import {
   cell,
   item,

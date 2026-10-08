@@ -11,7 +11,7 @@
  * - simple5.rtf: verbatim copy (Msftedit 5.41, i.e. WordPad/RichEdit) of
  *   https://github.com/tbluemel/rtf.js/blob/85fddf55b2f262bfd450769120c18c9ccef1f21c/samples/.common/data/rtf/simple5.rtf
  *
- * Synthetic, at the top level:
+ * synthetic/ — written for Skribenten:
  * - word365-nb.rtf: structured according to the Word 365 clipboard format (Norwegian
  *   Bokmål), since no freely licensed modern captures were found.
  *
@@ -25,7 +25,7 @@ import { tokenizeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeR
 import word2003Sample from "~test/fixtures/rtf/rtfjs/sample.rtf?raw";
 import wordpad from "~test/fixtures/rtf/rtfjs/simple5.rtf?raw";
 import wordNumberedLists from "~test/fixtures/rtf/rtfjs/wmf-and-emf-excerpt.rtf?raw";
-import word365 from "~test/fixtures/rtf/word365-nb.rtf?raw";
+import word365 from "~test/fixtures/rtf/synthetic/word365-nb.rtf?raw";
 import { projectElements } from "~test/support/pasteTestUtils";
 
 const interpret = (rtf: string) => {
