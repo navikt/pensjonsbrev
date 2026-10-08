@@ -35,7 +35,7 @@ sealed class Block : Identifiable {
         override fun hashCode() = Objects.hash(id, content)
         override fun toString() = "Title2(id=$id, content=$content)"
 
-        fun copy(content: List<Text>) = Title2(id = id, content = content)
+        internal fun copy(content: List<Text>) = Title2(id = id, content = content)
     }
 
     class Title3 internal constructor(
@@ -48,7 +48,7 @@ sealed class Block : Identifiable {
         override fun hashCode() = Objects.hash(id, content)
         override fun toString() = "Title3(id=$id, content=$content)"
 
-        fun copy(content: List<Text>) = Title3(id = id, content = content)
+        internal fun copy(content: List<Text>) = Title3(id = id, content = content)
     }
 
     class Title4 internal constructor(
@@ -61,7 +61,7 @@ sealed class Block : Identifiable {
         override fun hashCode() = Objects.hash(id, content)
         override fun toString() = "Title4(id=$id, content=$content)"
 
-        fun copy(content: List<Text>) = Title4(id = id, content = content)
+        internal fun copy(content: List<Text>) = Title4(id = id, content = content)
     }
 
     class Paragraph internal constructor(
@@ -74,7 +74,7 @@ sealed class Block : Identifiable {
         override fun hashCode() = Objects.hash(id, content)
         override fun toString() = "Paragraph(id=$id, content=$content)"
 
-        fun copy(content: List<Text>) = Paragraph(id = id, content = content)
+        internal fun copy(content: List<Text>) = Paragraph(id = id, content = content)
     }
 
     class ItemList internal constructor(

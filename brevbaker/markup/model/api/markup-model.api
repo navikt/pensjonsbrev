@@ -291,7 +291,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$NumberedList : no/
 }
 
 public final class no/nav/brev/brevbaker/markup/outline/Block$Paragraph : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
-	public final fun copy (Ljava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -353,7 +352,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Row : no/nav
 }
 
 public final class no/nav/brev/brevbaker/markup/outline/Block$Title2 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
-	public final fun copy (Ljava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title2;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -363,7 +361,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title2 : no/nav/br
 }
 
 public final class no/nav/brev/brevbaker/markup/outline/Block$Title3 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
-	public final fun copy (Ljava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title3;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -373,7 +370,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title3 : no/nav/br
 }
 
 public final class no/nav/brev/brevbaker/markup/outline/Block$Title4 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
-	public final fun copy (Ljava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title4;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
