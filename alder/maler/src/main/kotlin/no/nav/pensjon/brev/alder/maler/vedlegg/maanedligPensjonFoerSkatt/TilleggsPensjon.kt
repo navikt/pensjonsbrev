@@ -34,24 +34,8 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
     val regelverkstype: Expression<AlderspensjonRegelverkType>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        //vedleggBelopFullTP_001
-        val harTilleggspensjonUtbetalt = beregnetPensjonPerManedGjeldende.tilleggspensjon
-            .ifNull(Kroner(0)).greaterThan(0)
-        // AP1967
-        showIf(harTilleggspensjonUtbetalt and regelverkstype.equalTo(AP1967)) {
-            paragraph {
-                includePhrase(TilleggspensjonenBold)
-                text(
-                    bokmal { +"din avhenger av antall år med pensjonspoeng og størrelsen på pensjonspoengene. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp." },
-                    nynorsk { +"din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda." },
-                    english { +"depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G)." },
-                )
-            }
-        }
-
-        // AP2011, AP2016
         ifNotNull(tilleggspensjonGjeldende) { tilleggspensjon ->
-            showIf(not(tilleggspensjon.erRedusert) and not(tilleggspensjon.kombinertMedAvdod) and regelverkstype.isOneOf(AP2011, AP2016)) {
+            showIf(not(tilleggspensjon.erRedusert) and not(tilleggspensjon.kombinertMedAvdod) ) {
                 paragraph {
                     includePhrase(TilleggspensjonenBold)
                     text(
@@ -63,7 +47,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             }
 
             //veldeggBelopRedusTP_001
-            showIf(tilleggspensjon.erRedusert and regelverkstype.isOneOf(AP2011, AP2016)) {
+            showIf(tilleggspensjon.erRedusert ) {
                 paragraph {
                     includePhrase(TilleggspensjonenBold)
                     text(
@@ -75,7 +59,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             }
 
             //vedleggBelopTPAvdod_001
-            showIf(tilleggspensjon.kombinertMedAvdod and regelverkstype.isOneOf(AP2011, AP2016)) {
+            showIf(tilleggspensjon.kombinertMedAvdod ) {
                 paragraph {
                     includePhrase(TilleggspensjonenBold)
                     text(
@@ -87,7 +71,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             }
 
             //vedleggBelopTPYS_001
-            showIf(tilleggspensjon.pgaYrkesskade and regelverkstype.isOneOf(AP2011, AP2016)) {
+            showIf(tilleggspensjon.pgaYrkesskade ) {
                 paragraph {
                     text(
                         bokmal { +"Fordi uførheten din skyldes yrkesskade, er tilleggspensjonen din beregnet etter egne regler for yrkesskade. Dette gir deg en høyere tilleggspensjon enn en beregning etter ordinære regler for alderspensjon ville gitt deg." },
@@ -98,7 +82,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             }
 
             //vedleggBelopTPYSAvdod_001
-            showIf(tilleggspensjon.pgaYrkesskadeAvdod and regelverkstype.isOneOf(AP2011, AP2016)) {
+            showIf(tilleggspensjon.pgaYrkesskadeAvdod ) {
                 paragraph {
                     text(
                         bokmal { +"Tilleggspensjonen etter avdøde er beregnet etter egne regler for yrkesskade. Dette gir deg en høyere tilleggspensjon." },
@@ -109,7 +93,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             }
 
             //vedleggBelopTPUngUfor_001
-            showIf(tilleggspensjon.pgaUngUfore and regelverkstype.isOneOf(AP2011, AP2016)) {
+            showIf(tilleggspensjon.pgaUngUfore ) {
                 paragraph {
                     text(
                         bokmal { +"Tilleggspensjonen din er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser. Denne beregningsfordelen videreføres ved overgang til alderspensjon." },
@@ -127,7 +111,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             }
 
             //vedleggBelopTPUngUforAvdod_001
-            showIf(tilleggspensjon.pgaUngUforeAvdod and regelverkstype.isOneOf(AP2011, AP2016)) {
+            showIf(tilleggspensjon.pgaUngUforeAvdod ) {
                 paragraph {
                     text(
                         bokmal { +"Tilleggspensjonen etter avdøde er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser." },
