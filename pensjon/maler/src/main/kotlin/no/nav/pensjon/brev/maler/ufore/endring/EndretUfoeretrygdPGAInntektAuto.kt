@@ -22,7 +22,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 object EndretUfoeretrygdPGAInntektAuto : AutobrevTemplate<EndretUTPgaInntektDtoV2> {
 
     // PE_UT_05_100
-    // Brukes for eksempel når inntektsendring skjer via Inntektsplanlegger og BPEN090
+    // Brukes når inntektsendring skjer via Inntektsplanlegger og BPEN090 (løpende inntektsavkortning)
     override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_INNTEKT_V2
 
     override val template = createTemplate(

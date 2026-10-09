@@ -189,7 +189,24 @@ object EndretUfoeretrygdPGAInntekt {
             }
 
             paragraph {
-                showIf(endretUt and not(btfbEndret)) {
+                showIf(not(endretUt) and not(btfbEndret) and not(btsbEndret)) { // Mulig test på btsbEndret ikke er nødvendig her?
+                    ifNotNull(forventetInntekt) { forventetInntekt ->
+                        text(
+                            bokmal { + "Din forventede inntekt er " + forventetInntekt.format(CurrencyFormat) + " kroner. " },
+                            nynorsk { + "Din forventa inntekt er " + forventetInntekt.format(CurrencyFormat) + " kroner. " },
+                        )
+                        ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
+                            text(
+                                bokmal { +"Barnetillegg for fellesbarn er i tillegg beregnet ut fra den andre forelderens inntekt på " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                        "Inntil én ganger folketrygdens grunnbeløp er holdt utenfor den andre forelderens inntekt. "
+                                },
+                                nynorsk { +"Barnetillegg for fellesbarn er i tillegg rekna ut frå inntekta til den andre forelderen, som er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                        "Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen. "
+                                },
+                            )
+                        }
+                    }
+                }.orShowIf(endretUt and not(btfbEndret)) {
                     ifNotNull(forventetInntekt) { forventetInntekt ->
                         text(
                             bokmal { + "Ny forventet inntekt for deg er " + forventetInntekt.format(CurrencyFormat) + " kroner. " },
@@ -212,7 +229,7 @@ object EndretUfoeretrygdPGAInntekt {
                         text(
                             bokmal { + "Barnetillegg for fellesbarn er beregnet ut fra den andre forelderens inntekt på " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Inntil én ganger folketrygdens grunnbeløp er holdt utenfor den andre forelderens inntekt. " },
-                            nynorsk { + "Barnetillegg for fellesbarn er i tillegg rekna ut frå inntekta til den andre forelderen, som er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                            nynorsk { + "Barnetillegg for fellesbarn er rekna ut frå inntekta til den andre forelderen, som er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen. " },
                         )
                     }
