@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
-import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektV2
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektAuto
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
@@ -87,7 +87,7 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
         EndretBarnetilleggUfoerertrygdAuto,
-        EndretUfoeretrygdPGAInntektV2,
+        EndretUfoeretrygdPGAInntektAuto,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
         VedtakOmEtterbetalingOpphor2026Auto,

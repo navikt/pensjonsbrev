@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2> {
+object EndretUfoeretrygdPGAInntektAuto : AutobrevTemplate<EndretUTPgaInntektDtoV2> {
 
     // PE_UT_05_100
     // Brukes for eksempel når inntektsendring skjer via Inntektsplanlegger og BPEN090
