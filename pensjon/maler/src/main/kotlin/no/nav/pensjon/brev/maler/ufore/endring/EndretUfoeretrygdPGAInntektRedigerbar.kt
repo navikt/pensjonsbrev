@@ -57,10 +57,15 @@ object EndretUfoeretrygdPGAInntektRedigerbar : RedigerbarTemplate<EndretUfoeretr
                     bokmal { + "Vi endrer utbetalingen av uføretrygden og barnetillegget du får " },
                     nynorsk { + "Vi endrar utbetalinga av uføretrygda og barnetillegget du får " },
                 )
-            }.orShow {
+            }.orShowIf(not(endretUt) and (btfbEndret or btsbEndret)) {
                 text(
                     bokmal { + "Vi endrer utbetalingen av barnetillegget du får " },
                     nynorsk { + "Vi endrar utbetalinga av barnetillegget du får " },
+                )
+            }.orShow {
+                text(
+                    bokmal { + "Uføretrygden din er beregnet på nytt på grunn av nye inntektsopplysninger " },
+                    nynorsk { + "Uføretrygda di er rekna ut på nytt på grunn av nye inntektsopplysningar " },
                 )
             }
         }

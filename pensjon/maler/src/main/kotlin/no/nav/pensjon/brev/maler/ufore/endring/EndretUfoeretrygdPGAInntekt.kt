@@ -153,28 +153,60 @@ object EndretUfoeretrygdPGAInntekt {
                 )
             }
 
-            title1 {
-                text(
-                    bokmal { + "Derfor endres utbetalingen " },
-                    nynorsk { + "Difor blir utbetalinga endra " }
-                )
+            showIf(not(endretUt) and not(btfbEndret) and not(btsbEndret)) {
+                title1 {
+                    text(
+                        bokmal { + "Derfor endres ikke utbetalingen  " },
+                        nynorsk { + "Difor blir utbetalinga ikkje endra " }
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Vi endrer ikke din utbetaling fordi ny forventet inntekt ikke påvirker utbetalingen din. " },
+                        nynorsk { +"Vi endrar ikkje utbetalinga di fordi ny forventa inntekt ikkje påverkar utbetalinga di. " },
+                    )
+                }
+            }.orShow {
+                title1 {
+                    text(
+                        bokmal { + "Derfor endres utbetalingen " },
+                        nynorsk { + "Difor blir utbetalinga endra " }
+                    )
+                }
+                paragraph {
+                    if (erRedigerbar) {
+                        text(
+                            bokmal { + "Vi endrer din utbetaling fordi du har sendt oss nye opplysninger om forventet inntekt. " },
+                            nynorsk { + "Vi endrar utbetalinga di fordi du har sendt oss nye opplysningar om forventa inntekt. " },
+                        )
+                    } else {
+                        text(
+                            bokmal { + "Vi endrer din utbetaling fordi vi har fått opplysninger om endring i inntekt. Vi har fått opplysningene fra deg eller fra Skatteetaten. " },
+                            nynorsk { + "Vi endrar utbetalinga di fordi vi har fått opplysningar om endring i inntekt. Vi har fått opplysningane frå deg eller frå Skatteetaten. " },
+                        )
+                    }
+                }
             }
 
             paragraph {
-                if (erRedigerbar) {
-                    text(
-                        bokmal { + "Vi endrer din utbetaling fordi du har sendt oss nye opplysninger om forventet inntekt. " },
-                        nynorsk { + "Vi endrar utbetalinga di fordi du har sendt oss nye opplysningar om forventa inntekt. " },
-                    )
-                } else {
-                    text(
-                        bokmal { + "Vi endrer din utbetaling fordi vi har fått opplysninger om endring i inntekt. Vi har fått opplysningene fra deg eller fra Skatteetaten. " },
-                        nynorsk { + "Vi endrar utbetalinga di fordi vi har fått opplysningar om endring i inntekt. Vi har fått opplysningane frå deg eller frå Skatteetaten. " },
-                    )
-                }
-            }
-            paragraph {
-                showIf(endretUt and not(btfbEndret)) {
+                showIf(not(endretUt) and not(btfbEndret) and not(btsbEndret)) { // Mulig test på btsbEndret ikke er nødvendig her?
+                    ifNotNull(forventetInntekt) { forventetInntekt ->
+                        text(
+                            bokmal { + "Din forventede inntekt er " + forventetInntekt.format(CurrencyFormat) + " kroner. " },
+                            nynorsk { + "Din forventa inntekt er " + forventetInntekt.format(CurrencyFormat) + " kroner. " },
+                        )
+                        ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
+                            text(
+                                bokmal { +"Barnetillegg for fellesbarn er i tillegg beregnet ut fra den andre forelderens inntekt på " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                        "Inntil én ganger folketrygdens grunnbeløp er holdt utenfor den andre forelderens inntekt. "
+                                },
+                                nynorsk { +"Barnetillegg for fellesbarn er i tillegg rekna ut frå inntekta til den andre forelderen, som er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                        "Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen. "
+                                },
+                            )
+                        }
+                    }
+                }.orShowIf(endretUt and not(btfbEndret)) {
                     ifNotNull(forventetInntekt) { forventetInntekt ->
                         text(
                             bokmal { + "Ny forventet inntekt for deg er " + forventetInntekt.format(CurrencyFormat) + " kroner. " },
@@ -192,12 +224,12 @@ object EndretUfoeretrygdPGAInntekt {
                                     "Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen. " },
                         )
                     }
-                }.orShowIf(not(endretUt) and btfbEndret) {
+                }.orShowIf(not(endretUt) and btfbEndret) { // Bruker eller saksbehandler har kun lagt inn ny inntekt for eps
                     ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                         text(
                             bokmal { + "Barnetillegg for fellesbarn er beregnet ut fra den andre forelderens inntekt på " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Inntil én ganger folketrygdens grunnbeløp er holdt utenfor den andre forelderens inntekt. " },
-                            nynorsk { + "Barnetillegg for fellesbarn er i tillegg rekna ut frå inntekta til den andre forelderen, som er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                            nynorsk { + "Barnetillegg for fellesbarn er rekna ut frå inntekta til den andre forelderen, som er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Inntil éin gong grunnbeløpet i folketrygda er halden utanfor inntekta til den andre forelderen. " },
                         )
                     }
