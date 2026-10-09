@@ -276,13 +276,13 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
                             )
                             showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
                                 text(
-                                    bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() },
-                                    nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() },
+                                    bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                    nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                                 )
                             }.orShow {
                                 text(
-                                    bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() },
-                                    nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() },
+                                    bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                    nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                                 )
                             }
                         }
@@ -299,13 +299,13 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
                         )
                         showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
                             text(
-                                bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() },
-                                nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() },
+                                bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() },
-                                nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() },
+                                bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                             )
                         }
                     }
