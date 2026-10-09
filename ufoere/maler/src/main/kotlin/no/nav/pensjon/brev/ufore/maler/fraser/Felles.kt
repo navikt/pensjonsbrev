@@ -202,6 +202,28 @@ class Felles {
             }
         }
     }
+    object HarDuSporsmalLegeBehandler : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Har du spørsmål?" },
+                    nynorsk { + "Har du spørsmål?" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Du finner mer informasjon på ${Constants.LEGE_URL}. " +
+                            "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe vår telefon for lege og behanlder på ${Constants.NAV_KONTAKTSENTER_TELEFON_LEGE} " +
+                            "hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                    },
+                    nynorsk { + "Du finn meir informasjon på ${Constants.LEGE_URL}. " +
+                            "Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe vår telefon for lege og behandlar på ${Constants.NAV_KONTAKTSENTER_TELEFON_LEGE} " +
+                            "kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                    }
+                )
+            }
+        }
+    }
     object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
