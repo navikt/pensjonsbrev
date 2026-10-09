@@ -5,6 +5,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.toByteArray
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -24,6 +26,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import java.time.LocalDate
 
 class PenClientTest {
@@ -56,6 +60,45 @@ class PenClientTest {
     )
 
     private fun penClient(engine: MockEngine) = PentHttpClient(config, FakeAuthService, engine)
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun `sendbrev serialiserer organisasjon og TSS_ID`(organisasjon: Boolean) {
+        val mottaker = if (organisasjon) {
+            Pen.SendRedigerbartBrevRequest.Mottaker(
+                type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
+                organisasjon = Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon("987654321"),
+            )
+        } else {
+            Pen.SendRedigerbartBrevRequest.Mottaker(
+                type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
+                tssId = TssId("80000123456"),
+            )
+        }
+        val mapper = jacksonObjectMapper()
+        val engine = MockEngine { httpRequest ->
+            val json = mapper.readTree(httpRequest.body.toByteArray())["mottaker"]
+            assertThat(json["type"].asText()).isEqualTo(if (organisasjon) "ORGNR" else "TSS_ID")
+            assertThat(json.path("norskAdresse").isNull || json.path("norskAdresse").isMissingNode).isTrue()
+            assertThat(json.path("utenlandskAdresse").isNull || json.path("utenlandskAdresse").isMissingNode).isTrue()
+            if (organisasjon) {
+                assertThat(json["organisasjon"]).isEqualTo(mapper.readTree("""{"orgNr":"987654321"}"""))
+                assertThat(json.path("tssId").isNull || json.path("tssId").isMissingNode).isTrue()
+            } else {
+                assertThat(json["tssId"].asText()).isEqualTo("80000123456")
+                assertThat(json.path("organisasjon").isNull || json.path("organisasjon").isMissingNode).isTrue()
+            }
+            respond(
+                content = mapper.writeValueAsString(Pen.BestillBrevResponse(null, null)),
+                status = HttpStatusCode.OK,
+                headers = headersOf("Content-Type", "application/json"),
+            )
+        }
+
+        httpClientTest(Unit) {
+            penClient(engine).sendbrev(request.copy(mottaker = mottaker), distribuer = true)
+        }
+    }
 
     @Test
     fun `sendbrev returnerer BestillBrevResponse ved suksess`() {

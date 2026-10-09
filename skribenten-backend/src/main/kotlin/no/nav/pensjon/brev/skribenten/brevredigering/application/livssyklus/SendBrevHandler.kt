@@ -1,8 +1,11 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
 
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
@@ -15,8 +18,8 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.model.toPen
 import no.nav.pensjon.brev.skribenten.services.ServiceException
+import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import org.slf4j.LoggerFactory
@@ -28,6 +31,7 @@ class SendBrevHandler(
     private val brevService: BrevService,
     private val brevmalService: BrevmalService,
     private val sendtBrevMetrikker: SendtBrevMetrikker,
+    private val samhandlerService: SamhandlerService,
 ) {
 
     data class Request(val brevId: BrevId, val saksId: SaksId)
@@ -70,6 +74,62 @@ class SendBrevHandler(
 
             success(Dto.SendBrevResult(journalpostId = response.journalpostId, error = response.error))
         }
+
+    private suspend fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker {
+        return when (type) {
+            MottakerType.SAMHANDLER -> {
+                val tssId = tssId!!
+                hentSamhandlerOrgMottaker(tssId) ?: Pen.SendRedigerbartBrevRequest.Mottaker(
+                    type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
+                    tssId = tssId,
+                )
+            }
+
+            MottakerType.NORSK_ADRESSE -> Pen.SendRedigerbartBrevRequest.Mottaker(
+                type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.NORSK_ADRESSE,
+                norskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.NorskAdresse(
+                    navn = navn!!,
+                    postnummer = postnummer!!,
+                    poststed = poststed!!,
+                    adresselinje1 = adresselinje1,
+                    adresselinje2 = adresselinje2,
+                    adresselinje3 = adresselinje3,
+                ),
+            )
+
+            MottakerType.UTENLANDSK_ADRESSE -> Pen.SendRedigerbartBrevRequest.Mottaker(
+                type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.UTENLANDSK_ADRESSE,
+                utenlandskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.UtenlandsAdresse(
+                    navn = navn!!,
+                    landkode = landkode!!,
+                    adresselinje1 = adresselinje1!!,
+                    adresselinje2 = adresselinje2,
+                    adresselinje3 = adresselinje3,
+                ),
+            )
+        }
+    }
+
+    private suspend fun hentSamhandlerOrgMottaker(tssId: TssId): Pen.SendRedigerbartBrevRequest.Mottaker? {
+        return if (Features.samhandlerOrgnummer.isEnabled()) {
+            val response = samhandlerService.hentSamhandler(tssId)
+            val samhandler = response.success
+
+            if (samhandler == null) {
+                logger.warn("Klarte ikke å hente samhandler for sending ({}). Bruker TSS_ID som mottaker.", response.failure)
+                null
+            } else {
+                samhandler.offentligId
+                    .takeIf { samhandler.idType == "ORG" && it.isNotBlank() }
+                    ?.let { orgNr ->
+                        Pen.SendRedigerbartBrevRequest.Mottaker(
+                            type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
+                            organisasjon = Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon(orgNr),
+                        )
+                    }
+            }
+        } else null
+    }
 
     /**
      * PEN kan ha journalført brevet selv om sendingen feilet. Transaksjonen i [Brevtilgang.forSending] er
