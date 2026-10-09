@@ -158,8 +158,8 @@ fun Expression<PEgruppe10>.pe_ut_barnet_barna_felles_serkull(): Expression<Strin
 }
 
 fun Expression<PEgruppe10>.ut_bunnfradrag_faktisk() =
-    ifElse(
-        this.vedtaksdata_virkningfom().month.notEqualTo(Month.DECEMBER.value) or vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear().equalTo(0),
+    ifElse(not (localDateNow.year.equalTo(this.vedtaksdata_virkningfom().year) and this.vedtaksdata_virkningfom().month.equalTo(Month.DECEMBER.value))
+            or vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear().equalTo(0),
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag(),
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear()
     )
