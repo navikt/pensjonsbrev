@@ -6,9 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -16,9 +14,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
-import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.saksnummer
 import kotlin.collections.Set
 
 @TemplateModelHelpers
@@ -39,33 +34,39 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        title { text(bokmal { +"Oversendelsesbrev til Nav Klageinstans " + fritekst("Fagområde") }) }
+        title { text(bokmal { +"Vi har sendt klagen din til Nav klageinstans " + fritekst("Enhet") }) }
 
         outline {
 
             paragraph {
-                text(bokmal { +"Klager: " })
-                text(bokmal { +felles.bruker.fulltNavn() + " " })
-                text(bokmal { +felles.bruker.foedselsnummer.format() })
-                newline()
-                text(bokmal { +"Saksnummer: " })
-                text(bokmal { +felles.saksnummer })
-            }
-
-            title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
-            paragraph {
                 text(bokmal {
-                    +"Vi viser til klage av "
-                    +fritekst("dato") + " på vedtak av "
-                    +fritekst("dato") + " der "
-                    +fritekst("kort om resultatet i vedtaket")
+                    +"Vi har mottatt klagen din på vedtaket om "
+                    +fritekst("ytelse") + " den " + fritekst("dato") + ". "
+                    +"Etter en ny vurdering har vi kommet til at vedtaket ikke skal endres. "
+                    +"Saken sendes derfor til Nav klageinstans, som vil foreta en ny vurdering av klagen din."
                 })
             }
+            paragraph {
+                text(bokmal {
+                    +"Klageinstansen vurderer alle sider av saken på selvstendig grunnlag. "
+                    +"Resultatet av klagebehandlingen kan bli at vårt vedtak ikke blir endret, eller at det blir endret helt eller delvis. "
+                    +"Klageinstansen kan også oppheve vedtaket vårt, og sende saken tilbake til oss for helt eller delvis ny behandling."
+                })
+            }
+            paragraph {
+                text(bokmal {
+                    +"Saksbehandlingstiden til Nav klageinstans finner du på nav.no/saksbehandlingstider. "
+                })
+                newline()
+                newline()
+            }
 
-            title1 { text(bokmal { +"Klagers anførsler" }) }
+            title1 { text(bokmal { +"Dette er vurderingen vi har sendt til Nav Klageinstans" }) }
+
+            title2 { text(bokmal { +"Klagers anførsler" }) }
             paragraph { text(bokmal { +fritekst("Gjengi hovedinnholdet i klagers anførsler") }) }
 
-            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            title2 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +fritekst(
