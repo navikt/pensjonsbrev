@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SAKSBEHANDLINGSTID_URL
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -29,21 +31,23 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
     override val template = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Klage - Oversendelsesbrev til Nav Klageinstans",
+            displayTitle = "Klage - Oversendelse til Nav Klageinstans",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        title { text(bokmal { +"Vi har sendt klagen din til Nav klageinstans " + fritekst("Enhet") }) }
+        title { text(bokmal { +"Vi har sendt klagen din til $NAV_KLAGEINSTANS" }) }
 
         outline {
 
             paragraph {
                 text(bokmal {
-                    +"Vi har mottatt klagen din på vedtaket om "
-                    +fritekst("ytelse") + " den " + fritekst("dato") + ". "
+                    +"Vi har den "
+                    + fritekst("dato") + " mottatt klagen din på vedtaket om "
+                    +fritekst("ytelse") + " av den "
+                    + fritekst("dato") + ". "
                     +"Etter en ny vurdering har vi kommet til at vedtaket ikke skal endres. "
-                    +"Saken sendes derfor til Nav klageinstans, som vil foreta en ny vurdering av klagen din."
+                    +"Saken sendes derfor til $NAV_KLAGEINSTANS, som vil foreta en ny vurdering av klagen din."
                 })
             }
             paragraph {
@@ -54,17 +58,15 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
                 })
             }
             paragraph {
-                text(bokmal {
-                    +"Saksbehandlingstiden til Nav klageinstans finner du på nav.no/saksbehandlingstider. "
-                })
+                text(bokmal { +"Saksbehandlingstiden til $NAV_KLAGEINSTANS finner du på $SAKSBEHANDLINGSTID_URL." })
                 newline()
                 newline()
             }
 
-            title1 { text(bokmal { +"Dette er vurderingen vi har sendt til Nav Klageinstans" }) }
+            title1 { text(bokmal { +"Dette er vurderingen vi har sendt til $NAV_KLAGEINSTANS" }) }
 
             title2 { text(bokmal { +"Klagers anførsler" }) }
-            paragraph { text(bokmal { +fritekst("Gjengi hovedinnholdet i klagers anførsler") }) }
+            paragraph { text(bokmal { +fritekst("Gjengi hovedinnholdet i klagers anførsler.") }) }
 
             title2 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
