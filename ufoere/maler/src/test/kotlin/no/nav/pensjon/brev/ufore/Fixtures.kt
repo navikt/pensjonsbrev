@@ -21,6 +21,8 @@ import java.time.Month
 import kotlin.reflect.KClass
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.ufore.api.model.maler.svartid.OrienteringOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.ufore.api.model.maler.svartid.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.*
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.*
@@ -29,6 +31,8 @@ import no.nav.pensjon.brev.ufore.maler.info.*
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
 import no.nav.pensjon.brev.ufore.maler.simulering.SimuleringUforetrygd
+import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidAuto
+import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidRedigerbar
 import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 
 object Fixtures : LetterDataFactory {
@@ -105,6 +109,8 @@ object Fixtures : LetterDataFactory {
             VarselOmLavereReduksjonsprosent::class -> EmptyAutobrevdata as T
             VarselOmOktMinsteIFU::class -> EmptyAutobrevdata as T
             InfobrevLovendringer2026::class -> EmptyAutobrevdata as T
+            OrienteringOmSaksbehandlingstidAuto::class -> createOrienteringOmSaksbehandlingstidAutoDto() as T
+            OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidRedigerbarDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
@@ -404,5 +410,14 @@ object Fixtures : LetterDataFactory {
         ),
     )
 
+    fun createOrienteringOmSaksbehandlingstidAutoDto() =
+        VarselSaksbehandlingstidAutoDto(
+            dagensDatoMinus2Dager = vilkaarligDato,
+            utvidetBehandlingstid = false,
+        )
 
+    fun createOrienteringOmSaksbehandlingstidRedigerbarDto() = OrienteringOmSaksbehandlingstidDto(
+        saksbehandlerValg = lagSaksbehandlervalg("soeknadOversendesTilUtlandet" to true),
+        pesysData = EmptyFagsystemdata
+    )
 }
