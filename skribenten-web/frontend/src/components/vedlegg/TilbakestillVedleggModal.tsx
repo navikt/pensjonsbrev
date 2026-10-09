@@ -1,21 +1,15 @@
 import { BodyLong, Button, HStack, Modal } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 
-import { type EditAttachment } from "~/types/brev";
-
 const TilbakestillVedleggModal = (props: {
   vedleggTitle: string;
   open: boolean;
   onClose: () => void;
-  reset: () => Promise<EditAttachment>;
-  resetEditor: (vedlegg: EditAttachment) => void;
+  reset: () => Promise<void>;
 }) => {
-  const resetMutation = useMutation<EditAttachment, Error>({
+  const resetMutation = useMutation<void, Error>({
     mutationFn: () => props.reset(),
-    onSuccess: (vedlegg) => {
-      props.resetEditor(vedlegg);
-      props.onClose();
-    },
+    onSuccess: props.onClose,
   });
 
   return (

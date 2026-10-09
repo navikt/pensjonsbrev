@@ -1,28 +1,10 @@
 import { BodyLong, Button, HStack, Modal } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-import { getBrev, tilbakestillBrev } from "~/api/brev-queries";
-import { redigerbareVedleggKeys } from "~/api/redigerbareVedlegg-endpoints";
-import { type BrevResponse } from "~/types/brev";
-
-const TilbakestillMalModal = (props: {
-  brevId: number;
-  åpen: boolean;
-  onClose: () => void;
-  resetEditor: (brevResponse: BrevResponse) => void;
-}) => {
-  const queryClient = useQueryClient();
-  const tilbakestillMutation = useMutation<BrevResponse, Error>({
-    mutationFn: () => tilbakestillBrev(props.brevId),
-    onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(props.brevId), response);
-      // Resetting the letter merges current template changes into stored edited attachments.
-      queryClient.invalidateQueries({
-        queryKey: redigerbareVedleggKeys.brev(props.brevId, "saksbehandler-redigering"),
-      });
-      props.resetEditor(response);
-      props.onClose();
-    },
+const TilbakestillMalModal = (props: { åpen: boolean; onClose: () => void; resetLetter: () => Promise<void> }) => {
+  const tilbakestillMutation = useMutation<void, Error>({
+    mutationFn: props.resetLetter,
+    onSuccess: props.onClose,
   });
 
   return (

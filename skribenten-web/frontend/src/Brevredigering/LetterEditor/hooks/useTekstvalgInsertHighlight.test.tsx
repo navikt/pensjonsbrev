@@ -4,7 +4,7 @@ import { type ReactNode } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { getBrev } from "~/api/brev-queries";
-import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
+import { useOppdaterBrevMutation } from "~/Brevredigering/hooks/useOppdaterBrevMutation";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import {
@@ -64,17 +64,14 @@ type Harness = {
 
 /**
  * Speiler hvordan rutene kobler sammen autolagring og tekstvalg-highlight.
- *
- * Den ekte <ManagedLetterEditorContextProvider /> brukes med vilje: feilen vi tester for oppstår
- * bare når `onSaveSuccess` og `setEditorState` treffer samme fiber/hook-kø.
  */
 function renderHarness() {
   const harness = { current: null as Harness | null };
 
   const Testkomponent = () => {
-    const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+    const { editorState, redigertBrev, setEditorState } = useManagedLetterEditorContext();
 
-    // Rutene leser brevet fra query-cachen, som `onSaveSuccess` skriver til. Abonnementet her
+    // Rutene leser brevet fra query-cachen, som autosave-store skriver til. Abonnementet her
     // gjør at `lagretRedigertBrev` oppdateres på samme måte som i produksjon.
     const { data: brevFraCache } = useQuery({
       queryKey: getBrev.queryKey(BREV_ID),
@@ -88,13 +85,7 @@ function renderHarness() {
       editorState: editorState,
       setEditorState: setEditorState,
     });
-    const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
-      saksId: SAKS_ID,
-      brevId: BREV_ID,
-      saveStatus: editorState.saveStatus,
-      setEditorState: setEditorState,
-      onSaveSuccess: onSaveSuccess,
-    });
+    const { oppdaterBrevMutation } = useOppdaterBrevMutation(SAKS_ID);
 
     harness.current = {
       highlightedIds: highlightedIds,
@@ -102,10 +93,10 @@ function renderHarness() {
       beforeTekstvalgChange: (valg) => beforeTekstvalgChange(valg, redigertBrev),
       lagreTekstvalg: () =>
         oppdaterBrevMutation.mutate({
-          redigertBrev: redigertBrev,
           saksbehandlerValg: nyeValg,
         }),
-      simulerTasting: () => setEditorState((state) => ({ ...state, saveStatus: "DIRTY" })),
+      simulerTasting: () =>
+        setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" })),
     };
 
     return null;
@@ -171,7 +162,7 @@ describe("tekstvalg-highlight ved lagring", () => {
       harness().lagreTekstvalg();
     });
 
-    // Brukeren taster før svaret kommer. `onSaveSuccess` forkaster da svaret, og brukeren ser
+    // Brukeren taster før svaret kommer. Autosave-store forkaster da svaret, og brukeren ser
     // fortsatt sin egen tekst — da må vi verken markere noe eller flytte markøren.
     act(() => harness().simulerTasting());
     await svar(brevMedTekstvalg);
