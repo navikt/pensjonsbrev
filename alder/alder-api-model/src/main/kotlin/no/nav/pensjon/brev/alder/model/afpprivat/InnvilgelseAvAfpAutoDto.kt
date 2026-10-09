@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.alder.model.vedlegg.DinAfpPrivatBeregningDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import java.time.LocalDate
 
@@ -30,6 +31,8 @@ data class InnvilgelseAvAfpAutoDto(
     val bosattINorge: Boolean,
 
     val afpBeregning: AfpBeregning,
+    val harEtterbetaling: Boolean,
+    val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto?,
 ) : AutobrevData {
 
     data class AfpBeregning(
@@ -55,5 +58,11 @@ data class InnvilgelseAvAfpAutoDto(
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKompensasjonstillegg AFPKompBrutto)
         // Tilstede ⇔ PE_..._AFPKompensasjonstillegg_AFPKompInnvilget = true
         val kompensasjonstilleggBrutto: BrevbakerType.Kroner?,
+
+        val opptjening: BrevbakerType.Kroner,
+        val forholdstallUttak: Double,
+        val justeringsbeloep: BrevbakerType.Kroner?,
+        val referansebeloep: BrevbakerType.Kroner?,
+        val kompensasjonstilleggForholdstall: Double?,
     )
 }

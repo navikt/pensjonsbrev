@@ -1,11 +1,15 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAaKlageAfpPrivat
+import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDinAfpPrivatBeregning
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.afpBeregning.*
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
@@ -27,7 +31,7 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_INNVILGELSE_AUTO
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - innvilgelse av AFP i privat sektor",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
@@ -36,25 +40,29 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
     ) {
         title {
             text(
-                bokmal { +"Søknaden din om avtalefestet pensjon (AFP) i privat sektor er innvilget – melding om vedtak" },
-                nynorsk { +"Søknaden din om avtalefesta pensjon (AFP) i privat sektor er innvilga – melding om vedtak" },
+                bokmal { +"Nav har innvilget søknaden din om avtalefestet pensjon (AFP) i privat sektor" },
+                nynorsk { +"Nav har innvilga søknaden din om avtalefesta pensjon (AFP) i privat sektor" },
+                english { +"Nav has granted your application for contractual pension (AFP) in the private sector" }
             )
         }
 
         outline {
             includePhrase(
                 InnvilgelseAvAfpInnhold(
-                    kravMottattDato = kravMottattDato,
                     virkningFom = virkningFom,
                     totalPensjon = afpBeregning.totalPensjon,
-                    livsvarigBrutto = afpBeregning.livsvarigBrutto,
                     kronetilleggBrutto = afpBeregning.kronetilleggBrutto,
                     kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
                     brukerUnder70Aar = brukerUnder70Aar,
                     bosattINorge = bosattINorge,
+                    harEtterbetaling = harEtterbetaling,
                 ),
             )
+            includePhrase(RettigheterPersonopplysninger)
+            includePhrase(RettTilAaKlageAfpPrivat)
             includePhrase(HarDuSpoersmaal.alder)
         }
+
+        includeAttachmentIfNotNull(vedleggDinAfpPrivatBeregning, dinAfpPrivatBeregning)
     }
 }

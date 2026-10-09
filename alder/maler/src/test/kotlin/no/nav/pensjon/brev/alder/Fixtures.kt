@@ -114,6 +114,8 @@ import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.*
 import no.nav.pensjon.brev.alder.maler.innvilgelse.*
 import no.nav.pensjon.brev.alder.maler.sivilstand.*
 import no.nav.pensjon.brev.alder.maler.stans.VedtakStansAlderspensjonFlyttingMellomLand
+import no.nav.pensjon.brev.alder.maler.vedlegg.createDinAfpPrivatBeregningDto
+import no.nav.pensjon.brev.alder.model.vedlegg.DinAfpPrivatBeregningDto
 import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -241,6 +243,7 @@ object Fixtures : LetterDataFactory {
         OrienteringOmRettigheterOgPlikterDto::class -> createOrienteringOmRettigheterOgPlikterDto() as T
         OversiktOverPensjonenAfpDto::class -> createOversiktOverPensjonenAfpDto() as T
         OversiktOverPensjonenAfpPrivatDto::class -> createOversiktOverPensjonenAfpPrivatDto() as T
+        DinAfpPrivatBeregningDto::class -> createDinAfpPrivatBeregningDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
 }
