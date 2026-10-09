@@ -123,8 +123,11 @@ object Pen {
             val tssId: TssId? = null,
             val norskAdresse: NorskAdresse? = null,
             val utenlandskAdresse: UtenlandsAdresse? = null,
+            val organisasjon: Organisasjon? = null,
         ) {
-            enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
+            enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE, ORGNR }
+            data class Organisasjon(val orgNr: String)
+
             data class NorskAdresse(
                 val navn: Navn,
                 val postnummer: NorskPostnummer,
