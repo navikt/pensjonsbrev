@@ -1,10 +1,13 @@
 package no.nav.pensjon.brev.skribenten.common
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.Hash
+import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.isNull
+import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -85,32 +88,85 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
     }
 }
 
+fun JobConfig.updateMottaker() {
+    val alleMottakerIder = transaction {
+        MottakerTable.select(MottakerTable.id).where { MottakerTable.adresse.isNull() }.map { it[MottakerTable.id] }
+    }
 
-fun JobConfig.updateBrevredigeringJson() {
-    transaction {
-        val alleBrev = BrevredigeringTable.select(
-            BrevredigeringTable.id,
-            BrevredigeringTable.sistReservert,
-            BrevredigeringTable.redigertBrevKryptert,
-            BrevredigeringTable.redigertBrevKryptertHash,
-        ).toList()
-        val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-        val kanOppdateres = alleBrev
-            .filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+    alleMottakerIder.forEach { mottakerId ->
+        // Leser og oppdaterer én og én rad, låst med SELECT ... FOR UPDATE innenfor samme
+        // transaksjon. Uten låsen kan EndreMottakerHandler committe en endring av begge
+        // kolonnesettene mellom vår lesing og skriving, og vi ville da overskrevet de krypterte
+        // kolonnene med utdaterte klartekstverdier fra før endringen. Låsen sikrer at vi alltid
+        // backfiller fra raden slik den er akkurat nå, og at en samtidig skriving enten er ferdig
+        // før vi leser, eller må vente til vi har commitet.
+        transaction {
+            logger.debug("Oppdaterer {}", mottakerId)
+            val rad = MottakerTable
+                .select(
+                    MottakerTable.navn,
+                    MottakerTable.postnummer,
+                    MottakerTable.poststed,
+                    MottakerTable.adresselinje1,
+                    MottakerTable.adresselinje2,
+                    MottakerTable.adresselinje3,
+                    MottakerTable.landkode,
+                    MottakerTable.manueltAdressertTil,
+                    MottakerTable.adresse,
+                    MottakerTable.type,
+                    MottakerTable.tssId,
+                )
+                .where { MottakerTable.id eq mottakerId }
+                .forUpdate(ForUpdateOption.ForUpdate)
+                .singleOrNull() ?: return@transaction
 
-        kanOppdateres.forEach {
-            val brevId = it[BrevredigeringTable.id]
-            logger.debug("Oppdaterer {}", brevId)
-            val redigertBrev = it[BrevredigeringTable.redigertBrevKryptert]
-            BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
-                update[BrevredigeringTable.redigertBrevKryptertHash] = Hash.read(redigertBrev)
+            MottakerTable.update({ MottakerTable.id eq mottakerId }) { update ->
+                update[MottakerTable.adresse] = Mottaker.Adresse(
+                    type = rad[MottakerTable.type],
+                    tssId = rad[MottakerTable.tssId],
+                    navn = rad[MottakerTable.navn],
+                    postnummer = rad[MottakerTable.postnummer],
+                    poststed = rad[MottakerTable.poststed],
+                    adresselinje1 = rad[MottakerTable.adresselinje1],
+                    adresselinje2 = rad[MottakerTable.adresselinje2],
+                    adresselinje3 = rad[MottakerTable.adresselinje3],
+                    manueltAdressertTil = rad[MottakerTable.manueltAdressertTil],
+                    landkode = rad[MottakerTable.landkode]
+                )
             }
         }
+    }
+}
 
-        if (alleBrev.size != kanOppdateres.size) {
-            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
-            completed = false
+fun JobConfig.updateBrevredigeringJson() {
+    val alleBrevIder = transaction {
+        BrevredigeringTable.select(BrevredigeringTable.id)
+            .where { BrevredigeringTable.saksbehandlerValgKryptert.isNull() }.map { it[BrevredigeringTable.id] }
+    }
+    val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
+    var antallOppdaterte = 0
+
+    alleBrevIder.forEach { brevId ->
+        transaction {
+            val rad = BrevredigeringTable
+                .select(BrevredigeringTable.sistReservert, BrevredigeringTable.saksbehandlerValg)
+                .where { BrevredigeringTable.id eq brevId }
+                .forUpdate(ForUpdateOption.ForUpdate)
+                .singleOrNull() ?: return@transaction
+
+            if (rad[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) == false) {
+                return@transaction
+            }
+            logger.debug("Oppdaterer {}", brevId)
+            BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
+                update[BrevredigeringTable.saksbehandlerValgKryptert] = rad[BrevredigeringTable.saksbehandlerValg]
+            }
+            antallOppdaterte++
         }
+    }
+
+    if (alleBrevIder.size != antallOppdaterte) {
+        logger.info("Oppdaterte $antallOppdaterte av ${alleBrevIder.size} brevredigeringer med ikke-aktive reservasjoner.")
+        completed = false
     }
 }

@@ -23,6 +23,7 @@ open class BrevredigeringStub : Brevredigering {
     override val spraak: LanguageCode get() = notYetStubbed()
     override val avsenderEnhetId: EnhetId get() = notYetStubbed()
     override val saksbehandlerValg: SaksbehandlervalgMap get() = notYetStubbed()
+    override val saksbehandlerValgKryptert: SaksbehandlervalgMap get() = notYetStubbed()
     override val statiskFagsystemBrevdata: StatiskFagsystemBrevdata? get() = notYetStubbed()
     override val redigertBrev: Edit.Letter get() = notYetStubbed()
     override val redigertBrevHash: Hash<Edit.Letter> get() = notYetStubbed()
