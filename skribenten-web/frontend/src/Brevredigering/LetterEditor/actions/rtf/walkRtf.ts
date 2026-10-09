@@ -1,0 +1,260 @@
+import {
+  type ByteDecoder,
+  decodeUnicodeParam,
+  isHighSurrogate,
+  isLowSurrogate,
+  REPLACEMENT_CHARACTER,
+  RTF_SYMBOL_WORDS,
+  skipUnicodeFallback,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfDecoding";
+import {
+  mapSymbolBytes,
+  mapSymbolText,
+  parseSymbolFonts,
+} from "~/Brevredigering/LetterEditor/actions/rtf/rtfSymbolFonts";
+import { type RtfControlToken, type RtfToken } from "~/Brevredigering/LetterEditor/actions/rtf/tokenizeRtf";
+
+/**
+ * The RTF mechanics shared by the native interpreter and the Outlook de-encapsulator: group scoping,
+ * destinations (incl. `\*`), `\'hh` and `\uN` decoding with `\ucN` fallback skipping, nested `\rtf`
+ * documents and the end of the document. Formatting, paragraph structure and the meaning of control
+ * words such as `\par` and `\line` are left to the consumer, and so is the code page (`decodeBytes`).
+ *
+ * - `body`: document content
+ * - `skip`: nothing inside is emitted
+ * - `listMarker`: `\listtext`/`\pntext`, the rendered bullet or number of a list item
+ * - `pn`: old-style `\pn` list properties of the current paragraph
+ * - `htmltag`: `\*\htmltag`, HTML markup encapsulated by Outlook
+ */
+export type RtfDestination = "body" | "skip" | "listMarker" | "pn" | "htmltag";
+
+export type RtfEvent =
+  /** Only emitted for groups opened in a non-skip destination, so start and end are always balanced. */
+  | { kind: "groupStart"; destination: RtfDestination }
+  | { kind: "groupEnd"; destination: RtfDestination }
+  /** Decoded text: plain text, `\'hh` runs (decoded together), `\uN` and character control words. */
+  | { kind: "text"; value: string; destination: RtfDestination }
+  /** Any other control word in a non-skip group (`\par`, `\b`, `\intbl`, `\htmlrtf`, `\rtf`, …). */
+  | { kind: "control"; token: RtfControlToken; destination: RtfDestination }
+  /** The root `{\rtf1 …}` group closed or the input ended. Anything after it is ignored. */
+  | { kind: "documentEnd" };
+
+export interface WalkRtfOptions {
+  /** Destination words and what they open, e.g. fonttbl → "skip", listtext → "listMarker". */
+  destinations: ReadonlyMap<string, RtfDestination>;
+  decodeBytes: ByteDecoder;
+}
+
+interface WalkerGroup {
+  destination: RtfDestination;
+  /** Set by `\*`: the destination word that follows is skipped unless we know it. */
+  ignorable: boolean;
+  ucSkip: number;
+  /** `\fN`, which decides how text in symbol fonts is decoded. */
+  font?: number;
+  /** Whether a `groupStart` was emitted, so that `groupEnd` is emitted too. */
+  announced: boolean;
+  /** An `{\upr{ANSI}{\*\ud{Unicode}}}` group with a `\ud` branch: its ANSI branch is skipped. */
+  hasUnicodeBranch?: boolean;
+  /** A branch of such a group, until its first word tells whether it's `\ud`. */
+  undecidedBranch?: boolean;
+}
+
+/** Whether the `\upr` group at `index` has a `{\*\ud …}` branch. */
+function hasUnicodeBranch(tokens: readonly RtfToken[], index: number): boolean {
+  let depth = 0;
+  for (let next = index + 1; next < tokens.length; next++) {
+    const token = tokens[next];
+    if (token.type === "groupStart") depth++;
+    else if (token.type === "groupEnd") {
+      if (depth === 0) return false;
+      depth--;
+    } else if (token.type === "control" && token.word === "ud" && depth === 1) return true;
+  }
+  return false;
+}
+
+export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): Generator<RtfEvent, void, undefined> {
+  const symbolFonts = parseSymbolFonts(tokens);
+  const groups: WalkerGroup[] = [
+    { destination: "body", ignorable: false, ucSkip: 1, announced: false, font: symbolFonts.defaultFont },
+  ];
+  let pendingBytes: number[] = [];
+  /** Fallback units left to skip after `\uN`. */
+  let unicodeSkip = 0;
+  /** A high surrogate from `\uN`, waiting for the low surrogate in the next `\uN`. */
+  let pendingHighSurrogate: string | undefined;
+
+  const current = () => groups.at(-1)!;
+  /** HTML markup encapsulated by Outlook is never in a symbol font, whatever font is current. */
+  const symbolTable = () => {
+    const { font, destination } = current();
+    return font === undefined || destination === "htmltag" ? undefined : symbolFonts.tables.get(font);
+  };
+
+  function text(value: string): RtfEvent | undefined {
+    const { destination } = current();
+    if (value.length === 0 || destination === "skip") return undefined;
+    return { kind: "text", value, destination };
+  }
+
+  /** Text and `\uN` in a symbol font. */
+  function fontText(value: string): RtfEvent | undefined {
+    const table = symbolTable();
+    return text(table ? mapSymbolText(table, value, (byte) => options.decodeBytes([byte])) : value);
+  }
+
+  // Bytes are flushed before every other token, so before a font change or the end of a group.
+  function flushBytes(): RtfEvent | undefined {
+    if (pendingBytes.length === 0) return undefined;
+    const table = symbolTable();
+    const value = table ? mapSymbolBytes(table, pendingBytes, options.decodeBytes) : options.decodeBytes(pendingBytes);
+    pendingBytes = [];
+    return text(value);
+  }
+
+  function resolveDestination(group: WalkerGroup, word: string): RtfDestination | undefined {
+    const known = options.destinations.get(word);
+    if (!group.ignorable) return known;
+    group.ignorable = false;
+    return known ?? "skip";
+  }
+
+  // The first token of an `\upr` branch tells whether it is the `\ud` branch; any other branch is skipped.
+  function decideBranch(group: WalkerGroup, token: RtfToken): boolean {
+    if (!group.undecidedBranch) return false;
+    if (token.type === "control" && token.word === "*") {
+      group.ignorable = true;
+      return true;
+    }
+    group.undecidedBranch = false;
+    if (token.type === "control" && token.word === "ud") {
+      group.ignorable = false;
+      return true;
+    }
+    group.destination = "skip";
+    return false;
+  }
+
+  for (const [index, rawToken] of tokens.entries()) {
+    if (rawToken.type !== "hexByte") {
+      const flushed = flushBytes();
+      if (flushed) yield flushed;
+    }
+
+    let token: RtfToken | undefined = rawToken;
+    if (unicodeSkip > 0) {
+      const skip = skipUnicodeFallback(unicodeSkip, rawToken);
+      unicodeSkip = skip.remaining;
+      token = skip.rest;
+    }
+    if (!token) continue;
+
+    // A high surrogate not followed by a low one would make the text ill-formed.
+    if (
+      pendingHighSurrogate !== undefined &&
+      !(token.type === "control" && token.word === "u" && isLowSurrogate(token.param))
+    ) {
+      pendingHighSurrogate = undefined;
+      const event = text(REPLACEMENT_CHARACTER);
+      if (event) yield event;
+    }
+
+    switch (token.type) {
+      case "groupStart": {
+        const parent = current();
+        decideBranch(parent, token);
+        const announced = parent.destination !== "skip";
+        groups.push({
+          ...parent,
+          ignorable: false,
+          announced,
+          hasUnicodeBranch: false,
+          undecidedBranch: parent.hasUnicodeBranch === true,
+        });
+        if (announced) yield { kind: "groupStart", destination: parent.destination };
+        break;
+      }
+      case "groupEnd": {
+        if (groups.length === 2) {
+          yield { kind: "documentEnd" };
+          return;
+        }
+        if (groups.length > 1) {
+          const closed = groups.pop()!;
+          if (closed.announced) yield { kind: "groupEnd", destination: closed.destination };
+        }
+        break;
+      }
+      case "hexByte": {
+        decideBranch(current(), token);
+        pendingBytes.push(token.byte);
+        break;
+      }
+      case "text": {
+        const group = current();
+        decideBranch(group, token);
+        if (group.ignorable) group.destination = "skip";
+        const event = fontText(token.value);
+        if (event) yield event;
+        break;
+      }
+      case "control": {
+        const group = current();
+        if (decideBranch(group, token) || group.destination === "skip") break;
+        if (token.word === "upr") {
+          group.hasUnicodeBranch = hasUnicodeBranch(tokens, index);
+          break;
+        }
+
+        if (token.word === "*") {
+          group.ignorable = true;
+          break;
+        }
+        const destination = resolveDestination(group, token.word);
+        if (destination) {
+          group.destination = destination;
+          break;
+        }
+        if (token.word === "uc") {
+          group.ucSkip = Math.max(0, token.param);
+          break;
+        }
+        if (token.word === "u") {
+          const unit = decodeUnicodeParam(token.param);
+          unicodeSkip = group.ucSkip;
+          if (isHighSurrogate(token.param)) {
+            pendingHighSurrogate = unit;
+            break;
+          }
+          // Only a low surrogate can follow a pending high one here; without one it is ill-formed.
+          const pair = isLowSurrogate(token.param) ? pendingHighSurrogate : "";
+          pendingHighSurrogate = undefined;
+          const event = pair === undefined ? text(REPLACEMENT_CHARACTER) : fontText(pair + unit);
+          if (event) yield event;
+          break;
+        }
+        if (token.word === "f" && token.hasParam) group.font = token.param;
+        else if (token.word === "plain") group.font = symbolFonts.defaultFont;
+        const symbol = RTF_SYMBOL_WORDS.get(token.word);
+        if (symbol !== undefined) {
+          const event = text(symbol);
+          if (event) yield event;
+          break;
+        }
+        // Outlook appends mail signatures as a nested, plain RTF document.
+        if (token.word === "rtf" && groups.length > 2) group.destination = "body";
+        yield { kind: "control", token, destination: group.destination };
+        break;
+      }
+    }
+  }
+
+  if (pendingHighSurrogate !== undefined) {
+    const event = text(REPLACEMENT_CHARACTER);
+    if (event) yield event;
+  }
+  const flushed = flushBytes();
+  if (flushed) yield flushed;
+  yield { kind: "documentEnd" };
+}

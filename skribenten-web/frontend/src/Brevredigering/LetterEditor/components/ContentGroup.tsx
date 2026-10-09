@@ -56,7 +56,7 @@ import {
   type LiteralValue,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
-import { getPasteMetadata } from "~/utils/pasteTracking";
+import { getPasteMetadata, hasPasteContent } from "~/utils/pasteTracking";
 import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
@@ -660,7 +660,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (offset >= 0) {
       const pastedText = event.clipboardData.getData("text/plain");
       const pasteLength = pastedText.length;
-      if (pasteLength > 0) {
+      if (hasPasteContent(event.clipboardData)) {
         const pasteMetadata = getPasteMetadata(event.clipboardData);
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
@@ -679,7 +679,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       if (selection) {
         const pastedText = event.clipboardData.getData("text/plain");
         const pasteLength = pastedText.length;
-        if (pasteLength > 0) {
+        if (hasPasteContent(event.clipboardData)) {
           const pasteMetadata = getPasteMetadata(event.clipboardData);
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,

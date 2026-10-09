@@ -10,6 +10,7 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import {
+  type Content,
   ElementTags,
   FontType,
   type Item,
@@ -20,6 +21,7 @@ import {
   type VariableValue,
 } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph, select, variable } from "~test/support/letterEditorTestUtils";
+import { MockDataTransfer, projectLetter } from "~test/support/pasteTestUtils";
 
 describe("LetterEditorActions.paste", () => {
   describe("format: text/plain", () => {
@@ -3769,33 +3771,117 @@ describe("LetterEditorActions.paste - nested list flattening", () => {
   });
 });
 
-class MockDataTransfer implements DataTransfer {
-  private readonly data: { [format: string]: string } = {};
+describe("LetterEditorActions.paste - blocks after lists and tables", () => {
+  test("a numbered list after a bullet list becomes its own list, and a paragraph after it leaves the list", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/html": "<ul><li>a</li></ul><ol><li>b</li></ol><p>c</p>",
+    });
 
-  get types() {
-    return Object.keys(this.data);
-  }
-  getData(format: string): string {
-    return this.data[format];
-  }
-  setData(format: string, data: string): void {
-    this.data[format] = data;
-  }
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
 
-  constructor(data: { [format: string]: string }) {
-    this.data = { ...data };
-  }
+    expect(projectLetter(result)).toEqual(["• a", "1. b", "P: c"]);
+  });
 
-  dropEffect: "none" | "copy" | "link" | "move" = "none";
-  effectAllowed: "none" | "copy" | "link" | "move" | "all" | "copyLink" | "copyMove" | "linkMove" | "uninitialized" =
-    "uninitialized";
-  files = [] as unknown as FileList;
-  items = [] as unknown as DataTransferItemList;
+  test("a table after a list is kept", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/html": "<ul><li>a</li></ul><table><tr><th>A</th></tr><tr><td>b</td></tr></table>",
+    });
 
-  clearData(): void {
-    throw new Error("Method not implemented.");
-  }
-  setDragImage(): void {
-    throw new Error("Method not implemented.");
-  }
-}
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+    expect(projectLetter(result)).toEqual(["• a", "TABLE", "  th: A", "  tr: b"]);
+  });
+
+  test("a paragraph after a table is inserted after the table, not in its cells", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "føretter" })] }));
+    const clipboard = new MockDataTransfer({
+      "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table><p>c</p>",
+    });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 3, clipboard);
+
+    expect(projectLetter(result)).toEqual(["P: før", "TABLE", "  th: A", "  tr: b", "P: c", "P: etter"]);
+  });
+
+  describe("content after the list or table in the same block stays after the pasted content", () => {
+    const listFollowedBy = (...trailing: Content[]) =>
+      letter(
+        paragraph({
+          id: 1,
+          content: [itemList({ id: 10, items: [item(literal({ id: 11, text: "a" }))] }), ...trailing],
+        }),
+      );
+    const endOfFirstItem = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+
+    test("another list", () => {
+      const state = listFollowedBy(
+        itemList({ id: 20, listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "z" }))] }),
+      );
+      const clipboard = new MockDataTransfer({ "text/html": "<ul><li>x</li></ul><p>y</p>" });
+
+      const result = Actions.paste(state, endOfFirstItem, 1, clipboard);
+
+      expect(projectLetter(result)).toEqual(["• ax", "P: y", "1. z"]);
+      const [source, pasted, trailing] = result.redigertBrev.blocks;
+      expect(result.redigertBrev.blocks).toHaveLength(3);
+      expect(source.id).toBe(1);
+      expect(source.deletedContent).toEqual([20]);
+      expect(trailing.id).toBeNull();
+      expect(trailing.content.map((content) => content.id)).toEqual([20]);
+      expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 1 });
+      expect(text(pasted.content[0] as LiteralValue)).toBe("y");
+    });
+
+    test("a variable that starts the next sentence", () => {
+      const state = listFollowedBy(variable("Ola"), literal({ id: 30, text: " hale" }));
+      const clipboard = new MockDataTransfer({ "text/html": "<ul><li>x</li></ul><p>y</p>" });
+
+      const result = Actions.paste(state, endOfFirstItem, 1, clipboard);
+
+      expect(projectLetter(result)).toEqual(["• ax", "P: y", "P: Ola hale"]);
+    });
+
+    test("several pasted paragraphs keep their order before the trailing content", () => {
+      const state = listFollowedBy(
+        itemList({ id: 20, listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "z" }))] }),
+      );
+      const clipboard = new MockDataTransfer({ "text/html": "<ul><li>x</li></ul><p>y</p><h2>w</h2>" });
+
+      const result = Actions.paste(state, endOfFirstItem, 1, clipboard);
+
+      expect(projectLetter(result)).toEqual(["• ax", "P: y", "H2: w", "1. z"]);
+      expect(result.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 1 });
+    });
+
+    test("a pasted table after the list goes before the trailing content", () => {
+      const state = listFollowedBy(
+        itemList({ id: 20, listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "z" }))] }),
+      );
+      const clipboard = new MockDataTransfer({
+        "text/html": "<ul><li>x</li></ul><table><tr><th>A</th></tr><tr><td>b</td></tr></table>",
+      });
+
+      const result = Actions.paste(state, endOfFirstItem, 1, clipboard);
+
+      expect(projectLetter(result)).toEqual(["• ax", "TABLE", "  th: A", "  tr: b", "1. z"]);
+    });
+
+    test("a paragraph after a pasted table goes before a list that followed the cursor", () => {
+      const state = letter(
+        paragraph({
+          id: 1,
+          content: [literal({ id: 2, text: "før" }), itemList({ id: 20, items: [item(literal({ text: "z" }))] })],
+        }),
+      );
+      const clipboard = new MockDataTransfer({
+        "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table><p>y</p>",
+      });
+
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 3, clipboard);
+
+      expect(projectLetter(result)).toEqual(["P: før", "TABLE", "  th: A", "  tr: b", "P: y", "• z"]);
+    });
+  });
+});
