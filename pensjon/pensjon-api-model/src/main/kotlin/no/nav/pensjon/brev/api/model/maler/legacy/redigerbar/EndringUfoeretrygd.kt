@@ -17,7 +17,7 @@ data class EndringUfoeretrygdDto(
 ) : RedigerbarBrevdata<EndringUfoeretrygdDto.PesysData> {
     data class PesysData(
         val pe: PEgruppe10,
-        val vedtaksinfo: UforeVedtaksinfo = UforeVedtaksinfo(),
+        val vedtaksinfo: UforeVedtaksinfo,
         val kravFremsattDato: LocalDate?,
 
         val oifuVedVirkningstidspunkt: Kroner?,

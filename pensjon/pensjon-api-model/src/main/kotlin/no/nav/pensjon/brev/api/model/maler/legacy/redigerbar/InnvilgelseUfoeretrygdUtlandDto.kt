@@ -18,7 +18,7 @@ data class InnvilgelseUfoeretrygdUtlandDto(
     data class PesysData(
         val pe: PEgruppe10,
         val oifuVedVirkningstidspunkt: Kroner?,
-        val vedtaksinfo: UforeVedtaksinfo = UforeVedtaksinfo(),
+        val vedtaksinfo: UforeVedtaksinfo,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
         val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
