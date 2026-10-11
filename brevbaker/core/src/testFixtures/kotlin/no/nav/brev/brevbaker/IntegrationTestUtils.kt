@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
-import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
@@ -131,7 +130,7 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
 fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String, buildSubDir: String = "test_html"): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let {
-            HTMLDocumentRenderer.render(
+            HTMLDocumentRendererTest.render(
                 it.letterMarkup,
                 it.attachments,
                 language,
