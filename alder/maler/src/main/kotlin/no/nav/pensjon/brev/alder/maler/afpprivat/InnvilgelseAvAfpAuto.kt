@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.RettTilAaKlageAfpPrivat
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
-import no.nav.pensjon.brev.alder.maler.felles.RettTilAaKlageAfpPrivat
 import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDinAfpPrivatBeregning
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder

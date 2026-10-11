@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.alder.maler.afpprivat
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.RettTilAaKlageAfpPrivat
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
-import no.nav.pensjon.brev.alder.maler.felles.RettTilAaKlageAfpPrivat
 import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDinAfpPrivatBeregning
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOversiktOverPensjonenAfpPrivat

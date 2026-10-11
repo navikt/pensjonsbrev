@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler.felles
+package no.nav.pensjon.brev.alder.maler.afpprivat.fraser
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.KLAGE_URL
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
