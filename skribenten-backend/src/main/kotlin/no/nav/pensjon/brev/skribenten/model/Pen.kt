@@ -29,7 +29,16 @@ object Pen {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
 
-    data class Avtaleland(val navn: String, val kode: String)
+    data class Avtaleland(val navn: String, val kode: String) {
+        init {
+            require(navn.isNotBlank()) { "Avtaleland navn kan ikke være blank" }
+            require(kode.isNotBlank()) { "Avtaleland kode kan ikke være blank" }
+            require(kode.length == 2) { "Avtaleland kode må være 2 tegn" }
+            require(navn.length <= 128) {
+                "Avtaleland navn kan ikke være lengre enn 128 tegn"
+            }
+        }
+    }
 
     data class BestillExstreamBrevResponse(
         val journalpostId: JournalpostId,
