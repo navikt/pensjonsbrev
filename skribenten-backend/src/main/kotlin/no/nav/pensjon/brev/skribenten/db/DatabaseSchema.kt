@@ -55,6 +55,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
         kryptertDto<StatiskFagsystemBrevdata>("statiskFagsystemBrevdata")
         .nullable()
     val redigertBrevKryptert: Column<Edit.Letter> = kryptertDto<Edit.Letter>("redigertBrevKryptert")
+    val rendretBrevKryptert: Column<Edit.Letter?> = kryptertDto<Edit.Letter>("rendretBrevKryptert").nullable()
     val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjon> = varchar("distribusjonstype", length = 50).transform(Distribusjon::valueOf, Distribusjon::name)
