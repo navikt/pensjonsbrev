@@ -54,6 +54,18 @@ describe.each([false, true])("useSamhandlerMottaker (DEV=%s)", (isDevelopment) =
     });
   });
 
+  it.each(["", "   "])("fetches the address for an organization with blank public ID %j", async (offentligId) => {
+    vi.mocked(axios.post).mockResolvedValueOnce({ data: { success: { ...samhandler, offentligId } } });
+    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: createWrapper() });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(result.current.data).toEqual({ type: "adresse", adresse });
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.post).toHaveBeenLastCalledWith(expect.stringContaining("/hentSamhandlerAdresse"), {
+      idTSSEkstern: "80000781720",
+    });
+  });
+
   it.each(["disabled", "unavailable"])("keeps address behavior when the toggle is %s", async (state) => {
     if (state === "disabled") {
       vi.mocked(axios.get).mockResolvedValue({ data: { enabled: false } });
