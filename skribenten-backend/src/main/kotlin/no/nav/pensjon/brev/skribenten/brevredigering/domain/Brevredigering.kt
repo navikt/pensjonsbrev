@@ -35,7 +35,7 @@ interface Brevredigering {
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
     val saksbehandlerValg: SaksbehandlervalgMap
-    val saksbehandlerValgKryptert: SaksbehandlervalgMap?
+    val saksbehandlerValgKryptert: SaksbehandlervalgMap
     val statiskFagsystemBrevdata: StatiskFagsystemBrevdata?
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
