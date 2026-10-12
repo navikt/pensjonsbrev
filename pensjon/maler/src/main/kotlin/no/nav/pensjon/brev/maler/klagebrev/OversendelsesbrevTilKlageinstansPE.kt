@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.klagebrev
 
+import jdk.internal.org.jline.utils.InfoCmp
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -43,9 +44,9 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
             paragraph {
                 text(bokmal {
                     +"Vi har den "
-                    + fritekst("dato") + " mottatt klagen din på vedtaket om "
+                    +fritekst("dato") + " mottatt klagen din på vedtaket om "
                     +fritekst("ytelse") + " av den "
-                    + fritekst("dato") + ". "
+                    +fritekst("dato") + ". "
                     +"Etter en ny vurdering har vi kommet til at vedtaket ikke skal endres. "
                     +"Saken sendes derfor til $NAV_KLAGEINSTANS, som vil foreta en ny vurdering av klagen din."
                 })
@@ -65,10 +66,21 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
 
             title1 { text(bokmal { +"Dette er vurderingen vi har sendt til $NAV_KLAGEINSTANS" }) }
 
-            title2 { text(bokmal { +"Klagers anførsler" }) }
-            paragraph { text(bokmal { +fritekst("Gjengi hovedinnholdet i klagers anførsler.") }) }
+            title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
 
-            title2 { text(bokmal { +"Vurdering av klagen" }) }
+            paragraph {
+                text(bokmal {
+                    +"Vi viser til klage av "
+                    +fritekst("dato") + " på vedtak av "
+                    +fritekst("dato") + " der "
+                    +fritekst("kort om resultatet i vedtaket")
+                })
+            }
+
+            title1 { text(bokmal { +"Klagers anførsler" }) }
+            paragraph { text(bokmal { +fritekst("Gjengi hovedinnholdet i klagers anførsler") }) }
+
+            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +fritekst(
