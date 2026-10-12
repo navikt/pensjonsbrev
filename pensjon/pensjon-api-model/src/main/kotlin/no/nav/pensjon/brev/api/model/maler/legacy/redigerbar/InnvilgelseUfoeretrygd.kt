@@ -17,7 +17,7 @@ data class InnvilgelseUfoeretrygdDto(
 
     data class PesysData(
         val pe: PEgruppe10,
-        val vedtaksinfo: UforeVedtaksinfo = UforeVedtaksinfo(),
+        val vedtaksinfo: UforeVedtaksinfo,
         val kravFremsattDato: LocalDate?,
         val oifuVedVirkningstidspunkt: Kroner?,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,

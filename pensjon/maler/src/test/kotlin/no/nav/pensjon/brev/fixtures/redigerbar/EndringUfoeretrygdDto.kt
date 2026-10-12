@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
@@ -19,6 +20,7 @@ fun createEndringUfoeretrygdDto() =
         saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = EndringUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
+            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
             opphortEktefelletillegg = true,
             opphortGjenlevendetillegg = true,

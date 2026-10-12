@@ -31,6 +31,7 @@ class OppdaterBrevHandler(
         brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
             if (request.nyeSaksbehandlerValg != null) {
                 brev.saksbehandlerValg = request.nyeSaksbehandlerValg
+                brev.saksbehandlerValgKryptert = request.nyeSaksbehandlerValg
             }
             if (request.nyttRedigertbrev != null) {
                 brev.oppdaterRedigertBrev(request.nyttRedigertbrev, PrincipalInContext.require().navIdent)

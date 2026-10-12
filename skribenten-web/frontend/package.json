@@ -70,8 +70,8 @@
     "openapi-typescript": {
       "typescript": "$typescript"
     },
-    "@redocly/openapi-core": {
-      "js-yaml": "^4.2.0"
+    "solid-js": {
+      "seroval": "^1.6.8"
     }
   }
 }
