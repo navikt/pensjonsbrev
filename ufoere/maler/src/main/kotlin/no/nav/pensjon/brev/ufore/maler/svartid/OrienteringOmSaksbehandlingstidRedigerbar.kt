@@ -35,32 +35,67 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
         ),
         letterDataType = OrienteringOmSaksbehandlingstidDto::class
     ) {
-        val soeknadOversendesTilUtlandet = saksbehandlervalg("soeknadOversendesTilUtlandet", "Søknad oversendes til utlandet").bool()
+        val forlengetSaksbehandlingstid = saksbehandlervalg("forlengetSaksbehandlingstid", "Forlenget saksbehandlingstid").bool()
 
         title {
-            text(
-                bokmal { +"Orientering om svartid" },
-                nynorsk { +"Orientering om svartid" },
-            )
-        }
-
-        outline {
-            paragraph {
+            showIf(forlengetSaksbehandlingstid) {
                 text(
-                    bokmal { +"Vi viser til søknaden din om uføretrygd som vi mottok " + fritekst("dato") + "." },
-                    nynorsk { +"Vi viser til søknaden din om uføretrygd som vi tok imot " + fritekst("dato") + "." },
+                    bokmal { + "Orientering om forlenget saksbehandlingstid uføretrygd" },
+                    nynorsk { + "Orientering om forlenget saksbehandlingstid uføretrygd" },
+                )
+            }.orShow {
+                text(
+                    bokmal { + "Orientering om saksbehandlingstiden uføretrygd" },
+                    nynorsk { + "Orientering om saksbehandlingstiden uføretrygd" },
                 )
             }
-            includePhrase(OrienteringOmSaksbehandlingstid.SoknadenBehandles)
-            showIf(soeknadOversendesTilUtlandet) {
-                paragraph {
+        }
+        outline {
+            paragraph {
+                showIf(forlengetSaksbehandlingstid) {
                     text(
-                        bokmal { +"Søknaden din vil også bli oversendt utlandet fordi du har opplyst at du har bodd/arbeidet i et land Norge har trygdeavtale med." },
-                        nynorsk { +"Søknaden din vil også bli send til utlandet fordi du har opplyst at du har budd/arbeidd i eit land Noreg har trygdeavtale med. " },
+                        bokmal { + "Vi har " + fritekst("dato") + " mottatt din søknad om uføretrygd. "
+                            + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. "
+                            + "Forsinkelsen skyldes " + fritekst("årsak til forsinkelse") + "." },
+                        nynorsk { + "Vi har " + fritekst("dato") + " fått søknaden din om uføretrygd. "
+                            + "Det vil dessverre ta oss lengre tid enn venta å behandle kravet. "
+                            + "Forsinkinga skuldast " + fritekst("årsak til forsinkelse") + "." }
+                    )
+                }.orShow {
+                    text(
+                        bokmal { + "Vi har " + fritekst("dato") + " mottatt søknaden din om uføretrygd." },
+                        nynorsk { + "Vi har " + fritekst("dato") + " fått søknaden din om uføretrygd." },
                     )
                 }
             }
-            includePhrase(OrienteringOmSaksbehandlingstid.MeldeFraOmEndringer)
+            showIf(forlengetSaksbehandlingstid) {
+                title1 {
+                    text(
+                        bokmal { + "Ny svartid" },
+                        nynorsk { + "Ny svartid" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { + "Vi antar at kravet ditt kan bli ferdigbehandlet innen " + fritekst("svartid") + "." },
+                        nynorsk { + "Vi reknar med at kravet ditt kan bli ferdigbehandla innan " + fritekst("svartid") + "." },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { + "Saksbehandlingstiden vår er vanligvis " + fritekst("svartid") + "." },
+                        nynorsk { + "Saksbehandlingstida vår er vanlegvis " + fritekst("svartid") + "." },
+                    )
+                }
+            }
+            paragraph {
+                text(
+                    bokmal { + "Dersom vi trenger flere opplysninger fra deg, vil du høre fra oss." },
+                    nynorsk { + "Dersom vi treng fleire opplysningar frå deg, vil du høyre frå oss." },
+                )
+            }
+            includePhrase(OrienteringOmSaksbehandlingstidFraser.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilInnsyn)
             includePhrase(Felles.HarDuSporsmal)
         }

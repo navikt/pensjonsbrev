@@ -10,6 +10,8 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.svartid.selectors.varselSaksbehandlingstidAutoDto.dagensDatoMinus2Dager
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_URL
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.SAKSBEHANDLINGSTID_URL
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -34,7 +36,6 @@ object OrienteringOmSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandli
             )
         }
         outline {
-            // TBU3020
             paragraph {
                 val mottattDato = dagensDatoMinus2Dager.format()
                 text(
@@ -42,8 +43,21 @@ object OrienteringOmSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandli
                     nynorsk { +"Vi viser til søknaden din om uføretrygd som vi tok imot " + mottattDato + "." },
                 )
             }
-            includePhrase(OrienteringOmSaksbehandlingstid.SoknadenBehandles)
-            includePhrase(OrienteringOmSaksbehandlingstid.MeldeFraOmEndringer)
+            paragraph {
+                text(
+                    bokmal {
+                        +"Søknaden din blir behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på " + quoted(
+                            "Min side"
+                        ) + " på ${NAV_URL}. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
+                    },
+                    nynorsk {
+                        +"Søknaden din vert behandla så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på " + quoted(
+                            "Mi side"
+                        ) + " på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL."
+                    },
+                )
+            }
+            includePhrase(OrienteringOmSaksbehandlingstidFraser.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilInnsyn)
             includePhrase(Felles.HarDuSporsmal)
         }
