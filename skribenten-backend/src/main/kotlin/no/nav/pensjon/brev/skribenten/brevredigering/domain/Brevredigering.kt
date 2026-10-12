@@ -298,7 +298,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             ?.let { modelSpec.types[it] }
 
         val oppdaterteSaksbehandlervalg = SaksbehandlervalgMap().apply {
-            putAll(saksbehandlerValg)
+            putAll(saksbehandlerValgKryptert)
             saksbehandlerValgSpec?.entries?.forEach {
                 val fieldType = it.value
                 if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
@@ -400,7 +400,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             info = toBrevInfo(brevreservasjonPolicy),
             redigertBrev = redigertBrev,
             redigertBrevHash = redigertBrevHash,
-            saksbehandlerValg = saksbehandlerValg,
+            saksbehandlerValg = saksbehandlerValgKryptert,
             propertyUsage = coverage,
             valgteVedlegg = valgteVedlegg
         )
