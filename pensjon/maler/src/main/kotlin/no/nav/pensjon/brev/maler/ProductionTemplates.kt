@@ -56,6 +56,7 @@ import no.nav.pensjon.brev.maler.ufore.diverse.EndretUforetrygdPGAOpptjeningLega
 import no.nav.pensjon.brev.maler.ufore.diverse.InformasjonOmSaksbehandlingstidUTRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.OmregningUfoerepensjonTilUfoeretrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.OrienteringOmSaksbehandlingstidRedigerbar
+import no.nav.pensjon.brev.maler.ufore.diverse.VedtakBlankMalRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.VedtakOmEtterbetalingOpphor2026Redigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
@@ -177,6 +178,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
         ReverseringLavereMinstesatsRedigerbar,
         VedtakOmEndringBTEPSRedigerbar,
+        VedtakBlankMalRedigerbar,
     )
 
     override fun hentAutobrevmaler() = autobrev

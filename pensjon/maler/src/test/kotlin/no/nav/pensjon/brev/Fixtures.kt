@@ -173,6 +173,7 @@ object Fixtures : LetterDataFactory {
             ReverseringLavereMinstesatsRedigerbar::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
             ReverseringLavereMinstesatsAuto::class -> createReverseringLavereMinstesatsAutoDto() as T
             VedtakOmEndringBTEPSRedigerbar::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
+            VedtakBlankMalRedigerbar::class -> createVedtakBlankMalRedigerbarDto() as T
             OversendelseOgFoelgebrevKlageinstansUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             OrienteringOmSvartidKlageUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             OversendelsesbrevTilKlageinstansPE::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
