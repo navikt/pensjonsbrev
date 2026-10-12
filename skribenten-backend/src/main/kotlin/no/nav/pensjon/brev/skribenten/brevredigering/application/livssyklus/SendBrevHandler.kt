@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.skribenten.services.ServiceException
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon
 import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger(SendBrevHandler::class.java)
@@ -120,11 +121,11 @@ class SendBrevHandler(
                 null
             } else {
                 samhandler.offentligId
-                    .takeIf { samhandler.idType == "ORG" && it.isNotBlank() }
+                    .takeIf { samhandler.idType == "ORG" && Organisasjon.erGyldig(it) }
                     ?.let { orgNr ->
                         Pen.SendRedigerbartBrevRequest.Mottaker(
                             type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
-                            organisasjon = Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon(orgNr),
+                            organisasjon = Organisasjon(orgNr),
                         )
                     }
             }

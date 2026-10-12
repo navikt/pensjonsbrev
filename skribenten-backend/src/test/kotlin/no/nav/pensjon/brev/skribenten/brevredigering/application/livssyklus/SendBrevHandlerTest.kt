@@ -78,8 +78,8 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["", "   "])
-    suspend fun `tomt orgnummer bruker TSS_ID`(offentligId: String) {
+    @ValueSource(strings = ["", "   ", "12345678", "1234567890", "12345678a", " 987654321"])
+    suspend fun `ugyldig orgnummer bruker TSS_ID`(offentligId: String) {
         Features.override(Features.samhandlerOrgnummer, true)
         sendMedOppslag { samhandlerService.hentSamhandler(it).let { response ->
             response.copy(success = response.success!!.copy(offentligId = offentligId))
