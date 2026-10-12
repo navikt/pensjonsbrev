@@ -90,10 +90,9 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
 }
 
 fun JobConfig.slettKladder() {
-    logger.info("Sletter uredigerte kladder 99033 og 99063 fra da pensjonskalkulator brukte saksbehandlervalg som workaround")
+    logger.info("Sletter uredigerte kladd 99033 fra da pensjonskalkulator brukte saksbehandlervalg som workaround")
     transaction {
-        BrevredigeringTable.deleteWhere(limit = 1) { BrevredigeringTable.id eq BrevId(99033) and BrevredigeringTable.sistReservert.isNull() }
-        BrevredigeringTable.deleteWhere(limit = 1) { BrevredigeringTable.id eq BrevId(99063) and BrevredigeringTable.sistReservert.isNull() }
+        BrevredigeringTable.deleteWhere { BrevredigeringTable.id eq BrevId(99033) and BrevredigeringTable.sistReservert.isNull() }
     }
     logger.info("Ferdig med sletting av kladder")
 }
