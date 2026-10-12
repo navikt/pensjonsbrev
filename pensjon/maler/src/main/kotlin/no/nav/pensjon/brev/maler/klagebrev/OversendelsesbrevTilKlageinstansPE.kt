@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.klagebrev
 
-import jdk.internal.org.jline.utils.InfoCmp
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -66,7 +65,7 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
 
             title1 { text(bokmal { +"Dette er vurderingen vi har sendt til $NAV_KLAGEINSTANS" }) }
 
-            title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
+            title2 { text(bokmal { +"Hva klagesaken gjelder" }) }
 
             paragraph {
                 text(bokmal {
@@ -77,10 +76,10 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
                 })
             }
 
-            title1 { text(bokmal { +"Klagers anførsler" }) }
+            title2 { text(bokmal { +"Klagers anførsler" }) }
             paragraph { text(bokmal { +fritekst("Gjengi hovedinnholdet i klagers anførsler") }) }
 
-            title1 { text(bokmal { +"Vurdering av klagen" }) }
+            title2 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +fritekst(
