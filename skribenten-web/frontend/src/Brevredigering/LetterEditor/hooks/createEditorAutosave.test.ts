@@ -26,11 +26,11 @@ const setup = (overrides: Partial<EditorAutosaveOptions<LetterEditorState>> = {}
     requests.push(request);
     return request.promise;
   });
-  const applyResponse = vi.fn((_state: LetterEditorState, response: LetterEditorState) => response);
+  const applyLatestResponse = vi.fn((_state: LetterEditorState, response: LetterEditorState) => response);
   const onSaved = vi.fn();
-  const controller = createEditorAutosave({ initialState, save, applyResponse, onSaved, ...overrides });
+  const controller = createEditorAutosave({ initialState, save, applyLatestResponse, onSaved, ...overrides });
   const edit = () =>
-    controller.update((state) => ({
+    controller.setEditorState((state) => ({
       ...state,
       redigertBrev: { ...state.redigertBrev },
       saveStatus: "DIRTY",
@@ -39,12 +39,12 @@ const setup = (overrides: Partial<EditorAutosaveOptions<LetterEditorState>> = {}
     await vi.waitFor(() => expect(requests.length).toBeGreaterThan(index));
     return requests[index];
   };
-  return { controller, edit, save, request, applyResponse, onSaved };
+  return { controller, edit, save, request, applyLatestResponse, onSaved };
 };
 
 describe("createEditorAutosave", () => {
   it("acknowledges only the sent revision and then saves the latest draft", async () => {
-    const { controller, edit, save, request, applyResponse } = setup();
+    const { controller, edit, save, request, applyLatestResponse } = setup();
     edit();
     const firstDraft = controller.getSnapshot().editorState.redigertBrev;
     const saving = controller.savePendingChanges();
@@ -55,14 +55,14 @@ describe("createEditorAutosave", () => {
     expect(save).toHaveBeenCalledTimes(1);
     firstRequest.resolve(initialState);
     const secondRequest = await request(1);
-    expect(applyResponse).not.toHaveBeenCalled();
+    expect(applyLatestResponse).not.toHaveBeenCalled();
     expect(controller.getSnapshot().editorState.redigertBrev).toBe(latestDraft);
     expect(controller.getSnapshot().editorState.saveStatus).not.toBe("SAVED");
     expect(firstDraft).not.toBe(latestDraft);
     secondRequest.resolve({ ...initialState, redigertBrev: latestDraft });
     await saving;
     expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
-    expect(applyResponse).toHaveBeenCalledTimes(1);
+    expect(applyLatestResponse).toHaveBeenCalledTimes(1);
   });
 
   it("shares one save process and propagates its failure without retrying", async () => {
@@ -96,7 +96,7 @@ describe("createEditorAutosave", () => {
 
   it("does not save focus-only changes or save responses again", async () => {
     const { controller, save } = setup();
-    controller.update((state) => ({ ...state, focus: { blockIndex: 1, contentIndex: 0 } }));
+    controller.setEditorState((state) => ({ ...state, focus: { blockIndex: 1, contentIndex: 0 } }));
     await controller.savePendingChanges();
     expect(save).not.toHaveBeenCalled();
     expect(controller.getSnapshot().revision).toBe(0);
@@ -190,8 +190,13 @@ describe("createEditorAutosave", () => {
     const save = vi.fn((): Promise<LetterEditorState> => {
       throw new Error("sync failure");
     });
-    const controller = createEditorAutosave({ initialState, save, applyResponse: (state) => state, onSaved: vi.fn() });
-    controller.update((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" }));
+    const controller = createEditorAutosave({
+      initialState,
+      save,
+      applyLatestResponse: (state) => state,
+      onSaved: vi.fn(),
+    });
+    controller.setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" }));
     await expect(controller.savePendingChanges()).rejects.toThrow("sync failure");
     await expect(controller.savePendingChanges()).rejects.toThrow("sync failure");
     expect(save).toHaveBeenCalledTimes(2);
@@ -278,10 +283,10 @@ describe("createEditorAutosave edit detection", () => {
 
   it("counts content edits but not no-op, focus-only or unmarked updates", () => {
     const { controller, edit } = setup();
-    controller.update((state) => state);
-    controller.update(controller.getSnapshot().editorState);
-    controller.update((state) => ({ ...state, focus: { blockIndex: 1, contentIndex: 0 } }));
-    controller.update((state) => ({ ...state, redigertBrev: { ...state.redigertBrev } }));
+    controller.setEditorState((state) => state);
+    controller.setEditorState(controller.getSnapshot().editorState);
+    controller.setEditorState((state) => ({ ...state, focus: { blockIndex: 1, contentIndex: 0 } }));
+    controller.setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev } }));
     expect(controller.getSnapshot().revision).toBe(0);
     edit();
     expect(controller.getSnapshot().revision).toBe(1);
@@ -289,7 +294,7 @@ describe("createEditorAutosave edit detection", () => {
 
   it("detects saksbehandlerValg changes", () => {
     const { controller } = setup();
-    controller.update((state) => ({
+    controller.setEditorState((state) => ({
       ...state,
       saksbehandlerValg: { ...state.saksbehandlerValg },
       saveStatus: "DIRTY",
@@ -307,7 +312,7 @@ describe("createEditorAutosave saving", () => {
     edit();
     const draft = controller.getSnapshot().editorState;
     const customSave = vi.fn(async (state: LetterEditorState) => state);
-    const saving = controller.saveWith({ save: customSave, applyResponse: (_state, response) => response });
+    const saving = controller.saveWith({ save: customSave, applyLatestResponse: (_state, response) => response });
     expect(customSave).not.toHaveBeenCalled();
     pending.resolve(initialState);
     await saving;
@@ -326,7 +331,7 @@ describe("createEditorAutosave saving", () => {
         previousFailure = expect(
           controller.saveWith({
             save: () => Promise.reject(new Error("previous save failed")),
-            applyResponse: (state) => state,
+            applyLatestResponse: (state) => state,
           }),
         ).rejects.toThrow("previous save failed");
       }
@@ -334,7 +339,7 @@ describe("createEditorAutosave saving", () => {
       edit();
       const draft = controller.getSnapshot().editorState.redigertBrev;
       const customSave = vi.fn(async (state: LetterEditorState) => state);
-      const saving = controller.saveWith({ save: customSave, applyResponse: (_state, response) => response });
+      const saving = controller.saveWith({ save: customSave, applyLatestResponse: (_state, response) => response });
       expect(customSave).not.toHaveBeenCalled();
       pending?.reject(new Error("previous save failed"));
       await previousFailure;
@@ -351,9 +356,9 @@ describe("createEditorAutosave saving", () => {
       const { controller, edit, request, onSaved } = setup();
       const customRequest = deferred<LetterEditorState>();
       const customSave = vi.fn(() => customRequest.promise);
-      const customApplyResponse = vi.fn((_state: LetterEditorState, response: LetterEditorState) => response);
+      const customApplyLatestResponse = vi.fn((_state: LetterEditorState, response: LetterEditorState) => response);
       const customResponse = letter(paragraph([literal("Custom response")]));
-      const saving = controller.saveWith({ save: customSave, applyResponse: customApplyResponse });
+      const saving = controller.saveWith({ save: customSave, applyLatestResponse: customApplyLatestResponse });
       await vi.waitFor(() => expect(customSave).toHaveBeenCalledTimes(1));
       edit();
       const draft = controller.getSnapshot().editorState.redigertBrev;
@@ -366,7 +371,7 @@ describe("createEditorAutosave saving", () => {
         customResult = response;
       });
       await vi.waitFor(() => expect(customResult).toBe(customResponse));
-      expect(customApplyResponse).not.toHaveBeenCalled();
+      expect(customApplyLatestResponse).not.toHaveBeenCalled();
       expect(controller.getSnapshot().editorState.redigertBrev).toBe(draft);
       expect(onSaved).toHaveBeenCalledWith(customResponse);
       if (outcome === "succeeds") {
@@ -390,7 +395,7 @@ describe("createEditorAutosave saving", () => {
         save: async () => {
           throw new Error("form save failed");
         },
-        applyResponse: (state) => state,
+        applyLatestResponse: (state) => state,
       }),
     ).rejects.toThrow("form save failed");
     expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
@@ -399,7 +404,7 @@ describe("createEditorAutosave saving", () => {
   });
 
   it("autosaves only the current revision and leaves newer edits to the next autosave", async () => {
-    const { controller, edit, save, request, applyResponse } = setup();
+    const { controller, edit, save, request, applyLatestResponse } = setup();
     edit();
     controller.autosave();
     const firstRequest = await request(0);
@@ -409,7 +414,7 @@ describe("createEditorAutosave saving", () => {
     await vi.waitFor(() => expect(controller.getSnapshot().editorState.saveStatus).toBe("DIRTY"));
     await settle();
     expect(save).toHaveBeenCalledTimes(1);
-    expect(applyResponse).not.toHaveBeenCalled();
+    expect(applyLatestResponse).not.toHaveBeenCalled();
 
     controller.autosave();
     (await request(1)).resolve(initialState);
@@ -418,7 +423,7 @@ describe("createEditorAutosave saving", () => {
 
   for (const outcome of ["succeeds", "fails"] as const) {
     it(`drains newer edits when an explicit save joins a background save that ${outcome}`, async () => {
-      const { controller, edit, save, request, applyResponse } = setup();
+      const { controller, edit, save, request, applyLatestResponse } = setup();
       edit();
       controller.autosave();
       const firstRequest = await request(0);
@@ -444,21 +449,21 @@ describe("createEditorAutosave saving", () => {
       expect(save).toHaveBeenNthCalledWith(2, expect.objectContaining({ redigertBrev: latestDraft }));
       expect(controller.getSnapshot().editorState.redigertBrev).toBe(latestDraft);
       expect(controller.getSnapshot().editorState.saveStatus).not.toBe("SAVED");
-      expect(applyResponse).not.toHaveBeenCalled();
+      expect(applyLatestResponse).not.toHaveBeenCalled();
       expect(finished).not.toHaveBeenCalled();
 
       latestRequest.resolve({ ...initialState, redigertBrev: latestDraft });
       await saving;
       expect(finished).toHaveBeenCalledTimes(1);
       expect(save).toHaveBeenCalledTimes(2);
-      expect(applyResponse).toHaveBeenCalledTimes(1);
+      expect(applyLatestResponse).toHaveBeenCalledTimes(1);
       expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
       expect(controller.getSnapshot().saveFailed).toBe(false);
     });
   }
 
-  it("runs onSaved for every successful response, even when newer edits skip applyResponse", async () => {
-    const { controller, edit, request, onSaved, applyResponse } = setup();
+  it("runs onSaved for every successful response, even when newer edits skip applyLatestResponse", async () => {
+    const { controller, edit, request, onSaved, applyLatestResponse } = setup();
     edit();
     const saving = controller.savePendingChanges();
     const firstRequest = await request(0);
@@ -467,11 +472,11 @@ describe("createEditorAutosave saving", () => {
     (await request(1)).resolve(initialState);
     await saving;
     expect(onSaved).toHaveBeenCalledTimes(2);
-    expect(applyResponse).toHaveBeenCalledTimes(1);
+    expect(applyLatestResponse).toHaveBeenCalledTimes(1);
   });
 
   it("keeps document identity and history when the caller treats the response as equivalent", async () => {
-    const { controller, edit, request } = setup({ applyResponse: (state) => state });
+    const { controller, edit, request } = setup({ applyLatestResponse: (state) => state });
     edit();
     const { redigertBrev, history } = controller.getSnapshot().editorState;
     const saving = controller.savePendingChanges();
@@ -484,7 +489,7 @@ describe("createEditorAutosave saving", () => {
   it("publishes the caller's replacement when the response differs", async () => {
     const serverState = letter(paragraph([literal("Fra serveren")]));
     const { controller, edit, request } = setup({
-      applyResponse: (state, response) => ({ ...state, redigertBrev: response.redigertBrev }),
+      applyLatestResponse: (state, response) => ({ ...state, redigertBrev: response.redigertBrev }),
     });
     edit();
     const saving = controller.savePendingChanges();
@@ -494,13 +499,13 @@ describe("createEditorAutosave saving", () => {
     expect(controller.getSnapshot().editorState.saveStatus).toBe("SAVED");
   });
 
-  for (const callback of ["onSaved", "applyResponse"] as const) {
+  for (const callback of ["onSaved", "applyLatestResponse"] as const) {
     it(`treats a failing ${callback} as a local error, not a failed server save`, async () => {
       const failing = vi.fn(() => {
         throw new Error(`${callback} failed`);
       });
       const { controller, edit, request } = setup(
-        callback === "onSaved" ? { onSaved: failing } : { applyResponse: failing },
+        callback === "onSaved" ? { onSaved: failing } : { applyLatestResponse: failing },
       );
       edit();
       const draft = controller.getSnapshot().editorState.redigertBrev;

@@ -118,7 +118,7 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg
       initialState: createVedleggState(brev, props.initialVedlegg),
       save: (state) =>
         lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, toVedlegg(state.redigertBrev), redigeringsflate),
-      applyResponse: (state, vedleggResponse) => {
+      applyLatestResponse: (state, vedleggResponse) => {
         const savedDocument: EditedDocument = {
           title: vedleggResponse.title,
           blocks: vedleggResponse.blocks,

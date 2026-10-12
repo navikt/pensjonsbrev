@@ -21,7 +21,7 @@ const setup = (save = vi.fn(async (state: LetterEditorState) => state)) => {
     useEditorAutosave({
       initialState,
       save,
-      applyResponse: (_state, response) => response,
+      applyLatestResponse: (_state, response) => response,
       onSaved: vi.fn(),
     }),
   );
@@ -121,7 +121,7 @@ describe("useEditorAutosave", () => {
     const otherInitialState = Actions.create(brevResponse());
     const { result, rerender } = renderHook(
       (props: { save: typeof firstSave; initialState: LetterEditorState }) =>
-        useEditorAutosave({ ...props, applyResponse: (state) => state, onSaved: vi.fn() }),
+        useEditorAutosave({ ...props, applyLatestResponse: (state) => state, onSaved: vi.fn() }),
       { initialProps: { save: firstSave, initialState } },
     );
     act(() => result.current.setEditorState(edit));
@@ -164,7 +164,13 @@ describe("useEditorAutosave", () => {
   it("sends one request per draft and keeps updating under Strict Mode", async () => {
     const save = vi.fn(async (state: LetterEditorState) => state);
     const { result } = renderHook(
-      () => useEditorAutosave({ initialState, save, applyResponse: (_state, response) => response, onSaved: vi.fn() }),
+      () =>
+        useEditorAutosave({
+          initialState,
+          save,
+          applyLatestResponse: (_state, response) => response,
+          onSaved: vi.fn(),
+        }),
       { wrapper: StrictMode },
     );
     act(() => result.current.setEditorState(edit));

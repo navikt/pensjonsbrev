@@ -15,7 +15,7 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
     createEditorAutosave({
       initialState: options.initialState,
       save: (state) => callbacks.current.save(state),
-      applyResponse: (state, response: Response) => callbacks.current.applyResponse(state, response),
+      applyLatestResponse: (state, response: Response) => callbacks.current.applyLatestResponse(state, response),
       onSaved: (response) => callbacks.current.onSaved(response),
     }),
   );
@@ -36,7 +36,7 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
 
   return {
     editorState: snapshot.editorState,
-    setEditorState: controller.update,
+    setEditorState: controller.setEditorState,
     saveFailed: snapshot.saveFailed,
     resetting: snapshot.resetting,
     savePendingChanges: controller.savePendingChanges,

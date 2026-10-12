@@ -157,7 +157,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
           },
         });
       },
-      applyResponse: (state, response) => applySavedResponse(state, response, { preserveUnchangedValg: true }),
+      applyLatestResponse: (state, response) => applySavedResponse(state, response, { preserveUnchangedValg: true }),
       onSaved,
     });
 
@@ -181,7 +181,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
           );
           return response;
         },
-        applyResponse: (state, response) => applySavedResponse(state, response, options),
+        applyLatestResponse: (state, response) => applySavedResponse(state, response, options),
       }),
     [saveWith, setEditorState],
   );
