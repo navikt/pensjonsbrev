@@ -28,12 +28,14 @@ class SendtBrevMetrikkerTest {
             TssId("80000999999") to "FNR",
             TssId("80000000001") to "ORGNR",
             TssId("80000000002") to "UTOR",
+            TssId("80000000004") to "ORG",
         ),
         offentligIder = mapOf(
             TssId("80000123456") to ORGNR,
             TssId("80000999999") to "12345678910",
             TssId("80000000001") to ANNET_ORGNR,
             TssId("80000000002") to "SE556036079301",
+            TssId("80000000004") to "12345",
         ),
     )
 
@@ -125,13 +127,22 @@ class SendtBrevMetrikkerTest {
     }
 
     @Test
-    suspend fun `ORGNR godtas paa lik linje med ORG`() {
+    suspend fun `ORGNR gir id_type ANNEN og telles ikke i boette`() {
         val registry = SimpleMeterRegistry()
 
         tellSamhandler(registry, TssId("80000000001"))
 
-        assertThat(registry.idTypeFor("80000000001")).isEqualTo(SendtBrevMetrikker.SamhandlerIdType.ORG.name)
-        assertThat(registry.orgBoetter()).containsExactly(entry(SendtBrevMetrikker.orgBoette(ANNET_ORGNR).toString(), 1.0))
+        assertThat(registry.idTypeFor("80000000001")).isEqualTo(SendtBrevMetrikker.SamhandlerIdType.ANNEN.name)
+        assertThat(registry.orgBoetter()).isEmpty()
+    }
+
+    @Test
+    suspend fun `ORG med ugyldig organisasjonsnummer telles ikke i boette`() {
+        val registry = SimpleMeterRegistry()
+
+        tellSamhandler(registry, TssId("80000000004"))
+
+        assertThat(registry.orgBoetter()).isEmpty()
     }
 
     @Test
