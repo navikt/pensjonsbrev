@@ -6,7 +6,10 @@ import { type LiteralValue } from "~/types/brevbakerTypes";
 import { letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
 import { MockDataTransfer } from "~test/support/pasteTestUtils";
 
-vi.mock("~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard", () => ({ parseRtfClipboard: vi.fn() }));
+vi.mock("~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard")>()),
+  parseRtfClipboard: vi.fn(),
+}));
 
 const LOG_LINE = "Skribenten:pasteHandler: unable to interpret rtf clipboard content";
 

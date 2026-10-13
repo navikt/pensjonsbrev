@@ -41,6 +41,19 @@ export type ParsedRtfClipboard =
 /** RTF from Word with images can be tens of megabytes; parsing that would freeze the editor. */
 export const MAX_RTF_LENGTH = 20_000_000;
 
+/** RTF is exposed as "text/rtf" or "application/rtf" depending on OS and browser. */
+export const RTF_TYPES = ["text/rtf", "application/rtf"] as const;
+
+/** The RTF on the clipboard, preferring `text/rtf`. Empty RTF counts as none. */
+export function getRtfClipboardData(clipboard: Pick<DataTransfer, "getData" | "types">): string | undefined {
+  const types = Array.from(clipboard.types);
+  for (const type of RTF_TYPES) {
+    const data = types.includes(type) ? clipboard.getData(type) : "";
+    if (data) return data;
+  }
+  return undefined;
+}
+
 /**
  * Unwraps HTML or text encapsulated by Outlook (MS-OXRTFEX), or interprets native RTF from Word/WordPad.
  * Tokenizes once. Never throws.

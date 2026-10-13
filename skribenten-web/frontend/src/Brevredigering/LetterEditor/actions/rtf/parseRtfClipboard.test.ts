@@ -1,8 +1,13 @@
 import { describe, expect, test, vi } from "vitest";
 
 import { interpretNativeRtf } from "~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf";
-import { MAX_RTF_LENGTH, parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
+import {
+  getRtfClipboardData,
+  MAX_RTF_LENGTH,
+  parseRtfClipboard,
+} from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
 import { FontType, ListType } from "~/types/brevbakerTypes";
+import { MockDataTransfer } from "~test/support/pasteTestUtils";
 
 vi.mock("~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf", async (importOriginal) => {
   const actual = await importOriginal<typeof import("~/Brevredigering/LetterEditor/actions/rtf/interpretNativeRtf")>();
@@ -73,5 +78,24 @@ describe("parseRtfClipboard", () => {
       mode: "elements",
       elements: [{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Hei" }] }],
     });
+  });
+});
+
+describe("getRtfClipboardData", () => {
+  test("prefers text/rtf over application/rtf", () => {
+    const clipboard = new MockDataTransfer({ "application/rtf": "{\\rtf1 b}", "text/rtf": "{\\rtf1 a}" });
+
+    expect(getRtfClipboardData(clipboard)).toBe("{\\rtf1 a}");
+  });
+
+  test("uses application/rtf when text/rtf is empty", () => {
+    const clipboard = new MockDataTransfer({ "text/rtf": "", "application/rtf": "{\\rtf1 b}" });
+
+    expect(getRtfClipboardData(clipboard)).toBe("{\\rtf1 b}");
+  });
+
+  test("returns undefined without RTF, or when the RTF is empty", () => {
+    expect(getRtfClipboardData(new MockDataTransfer({ "text/plain": "Hei" }))).toBeUndefined();
+    expect(getRtfClipboardData(new MockDataTransfer({ "text/rtf": "" }))).toBeUndefined();
   });
 });

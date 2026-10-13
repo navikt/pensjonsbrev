@@ -23,7 +23,7 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
-import { parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
+import { getRtfClipboardData, parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import {
   cleansePastedText,
@@ -62,7 +62,7 @@ import {
   type TextContent,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
-import { getPasteMetadata, getRtfClipboardData } from "~/utils/pasteTracking";
+import { getPasteMetadata } from "~/utils/pasteTracking";
 
 import {
   isEmptyBlock,

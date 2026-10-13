@@ -1,12 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import {
-  detectRtfCodePage,
-  detectRtfDocumentLanguage,
-  getPasteMetadata,
-  getRtfClipboardData,
-  hasPasteContent,
-} from "~/utils/pasteTracking";
+import { detectRtfCodePage, detectRtfDocumentLanguage, getPasteMetadata, hasPasteContent } from "~/utils/pasteTracking";
 
 function clipboard(types: string[], data: Record<string, string> = {}): Pick<DataTransfer, "getData" | "types"> {
   return {
@@ -115,25 +109,6 @@ describe("getPasteMetadata", () => {
     const rtf = `{\\rtf1\\ansi{\\*\\generator ${"x".repeat(80)};} Hei\\par}`;
 
     expect(getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": rtf })).rtfKilde).toBe("x".repeat(50));
-  });
-});
-
-describe("getRtfClipboardData", () => {
-  test("foretrekker text/rtf framfor application/rtf", () => {
-    const data = { "text/rtf": "{\\rtf1 a}", "application/rtf": "{\\rtf1 b}" };
-
-    expect(getRtfClipboardData(clipboard(["application/rtf", "text/rtf"], data))).toBe("{\\rtf1 a}");
-  });
-
-  test("bruker application/rtf når text/rtf er tom", () => {
-    const data = { "text/rtf": "", "application/rtf": "{\\rtf1 b}" };
-
-    expect(getRtfClipboardData(clipboard(["text/rtf", "application/rtf"], data))).toBe("{\\rtf1 b}");
-  });
-
-  test("returnerer undefined uten RTF, eller når RTF er tom", () => {
-    expect(getRtfClipboardData(clipboard(["text/plain"], { "text/plain": "Hei" }))).toBeUndefined();
-    expect(getRtfClipboardData(clipboard(["text/rtf"], { "text/rtf": "" }))).toBeUndefined();
   });
 });
 

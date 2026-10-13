@@ -1,3 +1,5 @@
+import { getRtfClipboardData, RTF_TYPES } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
+
 export type PasteFormat = "HTML" | "RTF" | "ren tekst";
 
 export interface PasteMetadata {
@@ -15,18 +17,6 @@ const MAX_HTML_LENGTH_FOR_TAG_EXTRACTION = 100_000;
 /** `\deflang` and `\generator` are in the RTF header, so only the start of large documents is read. */
 const MAX_RTF_HEADER_LENGTH = 100_000;
 const MAX_RTF_SOURCE_LENGTH = 50;
-
-const RTF_TYPES = ["text/rtf", "application/rtf"] as const;
-
-/** RTF is exposed as "text/rtf" or "application/rtf" depending on OS and browser. Empty RTF counts as none. */
-export function getRtfClipboardData(clipboard: Clipboard): string | undefined {
-  const types = Array.from(clipboard.types);
-  for (const type of RTF_TYPES) {
-    const data = types.includes(type) ? clipboard.getData(type) : "";
-    if (data) return data;
-  }
-  return undefined;
-}
 
 /** Whether the clipboard has anything to paste; RTF-only clipboards have no text/plain. */
 export function hasPasteContent(clipboard: Clipboard): boolean {
