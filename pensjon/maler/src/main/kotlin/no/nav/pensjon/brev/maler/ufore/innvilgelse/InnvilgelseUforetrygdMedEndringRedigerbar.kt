@@ -337,16 +337,36 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             }
 
             showIf(uforegrad.equalTo(100)) {
-                includePhrase(TBU1201_Generated)
+                title1 {
+                    text (
+                        bokmal { + "Skal du kombinere uføretrygd og inntekt?" },
+                        nynorsk { + "Skal du kombinere uføretrygd og inntekt?" },
+                    )
+                }
             }
 
             showIf((uforegrad.lessThan(100) and uforegrad.greaterThan(0))) {
-                includePhrase(TBU1203_Generated)
+                title1 {
+                    text (
+                        bokmal { + "For deg som kombinerer uføretrygd og inntekt" },
+                        nynorsk { + "For deg som kombinerer uføretrygd og inntekt" },
+                    )
+                }
             }
-            includePhrase(TBU1204_Generated)
+            paragraph {
+                text (
+                    bokmal { + "Du har mulighet til å ha inntekt ved siden av uføretrygden din. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
+                    nynorsk { + "Det er mogleg for deg å ha inntekt ved sida av uføretrygda di. Det lønner seg å jobbe fordi inntekt og uføretrygd alltid vil vere høgare enn uføretrygd åleine." },
+                )
+            }
 
             showIf((pesysData.harVTA)) {
-                includePhrase(TBU1206_Generated(pe))
+                paragraph {
+                    text (
+                        bokmal { + "Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er bunnfradraget ditt." },
+                        nynorsk { + "Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". Dette er botnfrådraget ditt." },
+                    )
+                }
             }.orShowIf((uforegrad.equalTo(100) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().equalTo(0))) {
                 includePhrase(TBU1205_Generated(pe))
             }
@@ -374,8 +394,6 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
                         + ", som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_bunnfradrag_faktisk().format() + " blir trekt frå uføretrygda di." },
                 )
             }
-            includePhrase(TBU1210_Generated(pe))
-
             paragraph {
                 text(
                     bokmal { +"Reglene for bunnfradraget og hvordan inntekt reduserer uføretrygd, gjelder bare for den norske uføretrygden din. Har du spørsmål om bunnfradraget i et annet land, må du kontakte trygdemyndighetene i det landet det gjelder." },
@@ -514,7 +532,12 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             }
 
             showIf((barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget)) {
-                includePhrase(TBU3800_Generated)
+                title1 {
+                    text(
+                        bokmal { + "Slik påvirker inntekt barnetillegget ditt " },
+                        nynorsk { + "Slik verkar inntekt inn på barnetillegget ditt" },
+                    )
+                }
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumutbt().greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().notEqualTo("overgangsregler_2016") and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016, 1, 1)))) {
@@ -916,12 +939,22 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             showIf((barnetilleggFellesInnvilget or barnetilleggSerkullInnvilget)) {
                 showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))) {
                     includePhrase(TBU5005_Generated)
-                    includePhrase(TBU5007_Generated)
+                    paragraph {
+                        text(
+                            bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
+                            nynorsk { + "Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjeld også om barnet du forsørgjer skal opphalde seg i eit anna land. " },
+                        )
+                    }
                 }
             }
 
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                includePhrase(TBU1214_Generated)
+                title1 {
+                    text (
+                        bokmal { + "For deg som mottar gjenlevendetillegg" },
+                        nynorsk { + "For deg som mottar tillegg for attlevande ektefelle" },
+                    )
+                }
             }
 
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
@@ -950,7 +983,12 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().lessThan(uforegrad) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget())) {
-                includePhrase(TBU2368_Generated(pe))
+                paragraph {
+                    text (
+                        bokmal { + "Du har en inntekt tilsvarende " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + ". Gjenlevendetillegget er redusert ut fra dette." },
+                        nynorsk { + "Du har ei inntekt tilsvarande " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + ". Attlevandetillegget er redusert ut frå dette." },
+                    )
+                }
             }
 
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {

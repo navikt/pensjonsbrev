@@ -113,8 +113,17 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                     bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
                 )
             }
-            includePhrase(TBU1091_Generated)
-            includePhrase(TBU1092_Generated)
+            paragraph {
+                text (
+                    bokmal { + "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet." },
+                )
+            }
+
+            title1 {
+                text (
+                    bokmal { + "Begrunnelse for vedtaket" },
+                )
+            }
             //[TBU4065]
 
             paragraph {
@@ -262,7 +271,11 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                         text(
                             bokmal { + "Dette barnetillegget er derfor " }
                         )
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_ikke(pe))
+                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto())) {
+                            text(
+                                bokmal { + "ikke " },
+                            )
+                        }
                         text(
                             bokmal { + "redusert ut fra inntekt. " }
                         )
@@ -384,7 +397,11 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
 
             // IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))) {
-                includePhrase(TBU5007_Generated)
+                paragraph {
+                    text(
+                        bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
+                    )
+                }
             }
 
             // TBU1288
