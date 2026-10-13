@@ -1,0 +1,20 @@
+ALTER TABLE "mottaker"
+    DROP COLUMN "type";
+ALTER TABLE "mottaker"
+    DROP COLUMN "tssId";
+ALTER TABLE "mottaker"
+    DROP COLUMN "navn";
+ALTER TABLE "mottaker"
+    DROP COLUMN "postnummer";
+ALTER TABLE "mottaker"
+    DROP COLUMN "poststed";
+ALTER TABLE "mottaker"
+    DROP COLUMN "adresselinje1";
+ALTER TABLE "mottaker"
+    DROP COLUMN "adresselinje2";
+ALTER TABLE "mottaker"
+    DROP COLUMN "adresselinje3";
+ALTER TABLE "mottaker"
+    DROP COLUMN "landkode";
+ALTER TABLE "mottaker"
+    DROP COLUMN "manueltAdressertTil";

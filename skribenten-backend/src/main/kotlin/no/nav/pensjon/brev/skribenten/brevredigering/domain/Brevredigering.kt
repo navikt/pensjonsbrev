@@ -34,7 +34,6 @@ interface Brevredigering {
     val brevkode: RedigerbarBrevkode
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
-    val saksbehandlerValg: SaksbehandlervalgMap
     val saksbehandlerValgKryptert: SaksbehandlervalgMap
     val statiskFagsystemBrevdata: StatiskFagsystemBrevdata?
     val redigertBrev: Edit.Letter
@@ -101,7 +100,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
         private set
-    override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     override var saksbehandlerValgKryptert by BrevredigeringTable.saksbehandlerValgKryptert
     override var statiskFagsystemBrevdata by BrevredigeringTable.statiskFagsystemBrevdata
         private set
@@ -198,7 +196,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.brevkode = brevkode
             this.spraak = spraak
             this.avsenderEnhetId = avsenderEnhetId
-            this.saksbehandlerValg = saksbehandlerValg
             this.saksbehandlerValgKryptert = saksbehandlerValg
             this.statiskFagsystemBrevdata = statiskFagsystemBrevdata
             this.laastForRedigering = false
@@ -308,7 +305,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 }
             }
         }
-        saksbehandlerValg = oppdaterteSaksbehandlervalg
         saksbehandlerValgKryptert = oppdaterteSaksbehandlervalg
     }
 
