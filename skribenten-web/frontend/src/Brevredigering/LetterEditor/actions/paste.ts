@@ -117,8 +117,7 @@ function resolveClipboardInsertion(
   focus: Focus,
   clipboard: DataTransfer,
 ): ClipboardInsertion | undefined {
-  const insertable = (insertion: ClipboardInsertion | undefined) =>
-    insertion && canInsertAt(draft, focus, insertion) ? insertion : undefined;
+  const insertable = (insertion: ClipboardInsertion | undefined) => insertion && fitToFocus(draft, focus, insertion);
 
   if (clipboard.types.includes("text/html")) {
     const fromHtml = insertable({
@@ -143,12 +142,35 @@ function resolveClipboardInsertion(
   return undefined;
 }
 
-/** Tables can only be inserted in a paragraph, outside other tables; anything else goes wherever text can. */
-function canInsertAt(draft: Draft<LetterEditorState>, focus: Focus, insertion: ClipboardInsertion): boolean {
-  if (insertion.kind === "text") return insertion.text.length > 0;
-  if (insertion.elements.length === 0) return false;
-  if (insertion.elements.some((element) => element.type !== "TABLE")) return true;
-  return canInsertTableAt(draft, focus);
+/**
+ * What `insertion` becomes at `focus`, or undefined if it can't be inserted there.
+ *
+ * A table cell only takes bold and italic text, so anything with structure (paragraphs, headings, lists,
+ * tables) is rejected as a whole and the paste falls back to plain text, instead of losing or mangling parts of it.
+ * Elsewhere, tables can only be inserted in a paragraph; anything else goes wherever text can.
+ */
+function fitToFocus(
+  draft: Draft<LetterEditorState>,
+  focus: Focus,
+  insertion: ClipboardInsertion,
+): ClipboardInsertion | undefined {
+  if (insertion.kind === "text") return insertion.text.length > 0 ? insertion : undefined;
+  const { elements } = insertion;
+  if (elements.length === 0) return undefined;
+  if (isTableCellIndex(focus)) {
+    const inlineText = inlineTextOf(elements);
+    return inlineText ? { kind: "elements", elements: inlineText } : undefined;
+  }
+  if (elements.every((element) => element.type === "TABLE") && !canInsertTableAt(draft, focus)) return undefined;
+  return insertion;
+}
+
+/** Text runs, or the text of a single paragraph (RTF always has one); undefined for anything else or no text. */
+function inlineTextOf(elements: TraversedElement[]): Text[] | undefined {
+  const [first] = elements;
+  const runs: TraversedElement[] = elements.length === 1 && first.type === "P" ? first.content : elements;
+  if (!runs.every((run): run is Text => run.type === "TEXT")) return undefined;
+  return runs.some((run) => run.text.length > 0) ? runs : undefined;
 }
 
 function canInsertTableAt(draft: Draft<LetterEditorState>, focus: Focus): boolean {

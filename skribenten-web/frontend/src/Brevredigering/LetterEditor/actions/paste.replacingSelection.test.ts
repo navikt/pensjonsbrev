@@ -16,7 +16,7 @@ import {
   table,
   variable,
 } from "~test/support/letterEditorTestUtils";
-import { MockDataTransfer } from "~test/support/pasteTestUtils";
+import { MockDataTransfer, projectLetter } from "~test/support/pasteTestUtils";
 
 describe("Actions.pasteReplacingSelection", () => {
   describe("paste plain text replacing selection in a single literal", () => {
@@ -306,6 +306,52 @@ describe("Actions.pasteReplacingSelection", () => {
 
       const cellText = select<Table>(result, { blockIndex: 0, contentIndex: 1 }).rows[0].cells[0].text;
       expect(cellText.map((content) => text(content as LiteralValue)).join("")).toEqual("cell A\tB");
+    });
+
+    const mixedHtml = `<p>Før</p>${htmlTable}`;
+    const mixedRtf = "{\\rtf1\\ansi \\pard Før\\par\\trowd\\cellx1000\\cellx2000\\pard\\intbl A\\cell B\\cell\\row}";
+
+    test.each([
+      ["mixed text and a table (HTML)", { "text/html": mixedHtml }],
+      ["mixed text and a table (RTF)", { "text/rtf": mixedRtf }],
+      ["two paragraphs", { "text/html": "<p>Før</p><p>A\tB</p>" }],
+      ["a heading", { "text/html": "<h2>Før A\tB</h2>" }],
+      ["a list", { "text/html": "<ul><li>Før</li><li>A\tB</li></ul>" }],
+      ["RTF paragraphs", { "text/rtf": "{\\rtf1\\ansi \\pard Før\\par A\\tab B\\par}" }],
+    ])("%s inside a table cell falls back to text/plain", (_, clipboard) => {
+      const result = Actions.pasteReplacingSelection(
+        tableState(),
+        selectInCell,
+        new MockDataTransfer({ ...clipboard, "text/plain": "Før A\tB" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell Før A\tB | other"]);
+    });
+
+    test("structured content inside a table cell without text/plain", () => {
+      const state = tableState();
+
+      const result = Actions.pasteReplacingSelection(
+        state,
+        selectInCell,
+        new MockDataTransfer({ "text/html": mixedHtml, "text/rtf": mixedRtf }),
+      );
+
+      expect(result.redigertBrev).toEqual(state.redigertBrev);
+    });
+
+    test.each([
+      ["HTML text", { "text/html": "<b>fet</b> og <i>kursiv</i>" }],
+      ["an HTML paragraph", { "text/html": "<p><b>fet</b> og <i>kursiv</i></p>" }],
+      ["an RTF paragraph", { "text/rtf": "{\\rtf1\\ansi \\pard{\\b fet} og {\\i kursiv}\\par}" }],
+    ])("%s inside a table cell keeps bold and italic", (_, clipboard) => {
+      const result = Actions.pasteReplacingSelection(
+        tableState(),
+        selectInCell,
+        new MockDataTransfer({ ...clipboard, "text/plain": "fet og kursiv" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell **fet** og _kursiv_ | other"]);
     });
   });
 
