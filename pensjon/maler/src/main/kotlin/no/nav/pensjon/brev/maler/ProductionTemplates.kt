@@ -13,13 +13,13 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlag
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
-import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0
 import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettInfo4Aar
@@ -54,7 +54,7 @@ import no.nav.pensjon.brev.maler.ufore.diverse.BekreftelsePaaUfoeretrygdRedigerb
 import no.nav.pensjon.brev.maler.ufore.diverse.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.ufore.diverse.InformasjonOmSaksbehandlingstidUTRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.OmregningUfoerepensjonTilUfoeretrygdRedigerbar
-import no.nav.pensjon.brev.maler.ufore.diverse.OrienteringOmSaksbehandlingstidRedigerbar
+import no.nav.pensjon.brev.maler.ufore.diverse.VedtakBlankMalRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.VedtakOmEtterbetalingOpphor2026Redigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
@@ -100,7 +100,6 @@ object ProductionTemplates : AllTemplates {
         OpptjeningVedForhoeyetHjelpesats,
         UfoerOmregningEnslig,
         UngUfoerAuto,
-        VarselSaksbehandlingstidAuto,
         FeilBelopInntekstendringsbrev,
         FeilBelopInntekstendringsbrev_AvkortetTil0,
         HvilendeRettInfo4Aar,
@@ -150,13 +149,13 @@ object ProductionTemplates : AllTemplates {
         KlageOrienteringOmOversendelseTilKlageinstans,
         KlageOrienteringOmSaksbehandlingstid,
         OversendelseOgFoelgebrevKlageinstansUT,
+        OversendelsesbrevTilKlageinstansPE,
         OversendelsesbrevTilKlageinstansUT,
         OkningUforegradRedigerbar,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,
         OmsorgEgenManuell,
         OpphoerGjenlevendepensjon,
         OrienteringOmForlengetSaksbehandlingstid,
-        OrienteringOmSaksbehandlingstidRedigerbar,
         OrienteringOmSvartidKlageUT,
         OversettelseAvDokumenter,
         SamletMeldingOmPensjonsvedtakV2,
@@ -175,6 +174,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
         ReverseringLavereMinstesatsRedigerbar,
         VedtakOmEndringBTEPSRedigerbar,
+        VedtakBlankMalRedigerbar,
     )
 
     override fun hentAutobrevmaler() = autobrev

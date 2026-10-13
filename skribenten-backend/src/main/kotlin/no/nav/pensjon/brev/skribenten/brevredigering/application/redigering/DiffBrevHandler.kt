@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
@@ -52,8 +53,7 @@ class DiffBrevHandler(
 
     suspend operator fun invoke(request: Request): Outcome<Response, Nothing>? =
         brevtilgang.forLesing(request.brevId, request.saksId) {
-            val pesysdata = brevdataService.hentBrevdata(brev)
-            val rendretBrev = brevmalService.renderMarkup(brev, pesysdata).markup.toEdit()
+            val rendretBrev = brev.rendretBrev ?: renderGjeldendeMal(brev)
 
             val wordDiff = EditLetterWordDiff()
             if (request.split) {
@@ -66,4 +66,8 @@ class DiffBrevHandler(
                 }
             }
         }
+
+    // Brev opprettet før rendretBrev ble lagret mangler utgangspunkt og faller tilbake til gjeldende mal
+    private suspend fun renderGjeldendeMal(brev: Brevredigering): Edit.Letter =
+        brevmalService.renderMarkup(brev, brevdataService.hentBrevdata(brev)).markup.toEdit()
 }
