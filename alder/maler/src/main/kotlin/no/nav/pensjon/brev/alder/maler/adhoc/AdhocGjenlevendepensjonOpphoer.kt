@@ -3,7 +3,10 @@ package no.nav.pensjon.brev.alder.maler.adhoc
 import no.nav.pensjon.brev.alder.maler.felles.Constants.ALDERSPENSJON_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.GJENLEVENDEPENSJON_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.KONTAKT_ENG_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
+import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SOSIALHJELP_URL
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
@@ -26,17 +29,17 @@ object AdhocGjenlevendepensjonOpphoer : AutobrevTemplate<EmptyAutobrevdata> {
         letterMetadata = LetterMetadata(
             displayTitle = "Feil informasjon om når gjenlevendepensjonen stopper ",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ){
-        title {
-            text(
-                bokmal { +"Feil informasjon om når gjenlevendepensjonen stopper" },
-                nynorsk { +"Feil informasjon om når attlevandepensjonen stansar" },
-                english { +"Incorrect information about when the survivor's pension stops" },
-            )
-        }
         outline {
+            title1 {
+                text(
+                    bokmal { +"Feil informasjon om når gjenlevendepensjonen stopper" },
+                    nynorsk { +"Feil informasjon om når attlevandepensjonen stansar" },
+                    english { +"Incorrect information about when the survivor's pension stops" },
+                )
+            }
             paragraph {
                 text(
                     bokmal { +"Du har tidligere fått brev om at retten til gjenlevendepensjon opphører fra 1. januar 2027." },
@@ -130,11 +133,11 @@ object AdhocGjenlevendepensjonOpphoer : AutobrevTemplate<EmptyAutobrevdata> {
             paragraph {
                 text(
                     bokmal { +"På $KONTAKT_URL kan du chatte eller skrive til oss. " +
-                            "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34 hverdager kl. 09.00-15.00." },
+                            "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager kl. 09.00-15.00." },
                     nynorsk { +"På $KONTAKT_URL kan du chatte eller skrive til oss. " +
-                            "Om du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 34 kvardagar kl. 09.00-15.00." },
-                    english { +"At $KONTAKT_URL you can chat with us or write to us. " +
-                            "If you cannot find the answer on nav.no, you can call us on telephone 55 55 33 34 on weekdays between 09.00 and 15.00." },
+                            "Om du ikkje finn svar på $NAV_URL, kan du ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON kvardagar kl. 09.00-15.00." },
+                    english { +"At $KONTAKT_ENG_URL you can chat with us or write to us. " +
+                            "If you cannot find the answer on $NAV_URL, you can call us on telephone +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON on weekdays between 09.00 and 15.00." },
                 )
             }
         }
