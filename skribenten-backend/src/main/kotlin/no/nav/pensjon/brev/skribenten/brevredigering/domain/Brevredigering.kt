@@ -34,7 +34,7 @@ interface Brevredigering {
     val brevkode: RedigerbarBrevkode
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
-    val saksbehandlerValgKryptert: SaksbehandlervalgMap
+    val saksbehandlerValg: SaksbehandlervalgMap
     val statiskFagsystemBrevdata: StatiskFagsystemBrevdata?
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
@@ -100,7 +100,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
         private set
-    override var saksbehandlerValgKryptert by BrevredigeringTable.saksbehandlerValgKryptert
+    override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     override var statiskFagsystemBrevdata by BrevredigeringTable.statiskFagsystemBrevdata
         private set
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
@@ -196,7 +196,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.brevkode = brevkode
             this.spraak = spraak
             this.avsenderEnhetId = avsenderEnhetId
-            this.saksbehandlerValgKryptert = saksbehandlerValg
+            this.saksbehandlerValg = saksbehandlerValg
             this.statiskFagsystemBrevdata = statiskFagsystemBrevdata
             this.laastForRedigering = false
             this.distribusjonstype = distribusjonstype
@@ -295,7 +295,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             ?.let { modelSpec.types[it] }
 
         val oppdaterteSaksbehandlervalg = SaksbehandlervalgMap().apply {
-            putAll(saksbehandlerValgKryptert)
+            putAll(saksbehandlerValg)
             saksbehandlerValgSpec?.entries?.forEach {
                 val fieldType = it.value
                 if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
@@ -305,7 +305,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 }
             }
         }
-        saksbehandlerValgKryptert = oppdaterteSaksbehandlervalg
+        saksbehandlerValg = oppdaterteSaksbehandlervalg
     }
 
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) {
@@ -396,7 +396,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             info = toBrevInfo(brevreservasjonPolicy),
             redigertBrev = redigertBrev,
             redigertBrevHash = redigertBrevHash,
-            saksbehandlerValg = saksbehandlerValgKryptert,
+            saksbehandlerValg = saksbehandlerValg,
             propertyUsage = coverage,
             valgteVedlegg = valgteVedlegg
         )

@@ -1,20 +1,13 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -49,7 +42,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val brevkode: Column<RedigerbarBrevkode> = varchar("brevkode", length = 50).transform(::RedigerbarBrevkode, RedigerbarBrevkode::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
-    val saksbehandlerValgKryptert = kryptertDto<SaksbehandlervalgMap>("saksbehandlerValgKryptert")
+    val saksbehandlerValg = kryptertDto<SaksbehandlervalgMap>("saksbehandlerValgKryptert")
     val statiskFagsystemBrevdata: Column<StatiskFagsystemBrevdata?> =
         kryptertDto<StatiskFagsystemBrevdata>("statiskFagsystemBrevdata")
         .nullable()

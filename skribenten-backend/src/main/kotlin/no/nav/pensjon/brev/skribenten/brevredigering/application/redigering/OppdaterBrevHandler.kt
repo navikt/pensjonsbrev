@@ -30,7 +30,7 @@ class OppdaterBrevHandler(
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
             if (request.nyeSaksbehandlerValg != null) {
-                brev.saksbehandlerValgKryptert = request.nyeSaksbehandlerValg
+                brev.saksbehandlerValg = request.nyeSaksbehandlerValg
             }
             if (request.nyttRedigertbrev != null) {
                 brev.oppdaterRedigertBrev(request.nyttRedigertbrev, PrincipalInContext.require().navIdent)
