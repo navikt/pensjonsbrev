@@ -2,21 +2,24 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.LocalDate
 
 object BarnepensjonAvslagFraser {
     data class Vedtak(
         val erSluttbehandling: Expression<Boolean>,
         val avdoedNavn: Expression<String>,
+        val avdoedDoedsdato: Expression<LocalDate?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val formatertDoedsdato = avdoedDoedsdato.format().ifNull(
+                "<Klarte ikke å finne dødsdato automatisk, du må sette inn her>",
+            )
+
             showIf(erSluttbehandling) {
                 paragraph {
                     text(
@@ -31,28 +34,26 @@ object BarnepensjonAvslagFraser {
                 paragraph {
                     text(
                         bokmal { +
-                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du ikke har rett på stønaden vurdert etter EØS/avtalelandreglene." },
+                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du ikke har rett på stønaden vurdert etter EØS/avtalelandreglene heller." },
                         nynorsk { +
-                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på stønaden vurdert etter EØS/avtalelandreglane." },
+                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på stønaden vurdert etter EØS/avtalelandreglane heller." },
                         english { +
-                            "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA/agreement country rules." },
+                            "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA/agreement country rules either." },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Din søknad om barnepensjon etter " + avdoedNavn + " er derfor endelig avslått." },
-                        nynorsk { +"Søknaden din om barnepensjon etter " + avdoedNavn + " er derfor endeleg avslått." },
-                        english { +
-                                "Your application for children`s pension for the deceased " + avdoedNavn + " has therefore been finally rejected." },
+                        bokmal { +"Vi har behandlet søknaden din om barnepensjon etter " + avdoedNavn + ", som døde " + formatertDoedsdato + ". Søknaden er derfor endelig avslått." },
+                        nynorsk { +"Vi har behandla søknaden din om barnepensjon etter " + avdoedNavn + ", som døydde " + formatertDoedsdato + ". Søknaden er endeleg avslått." },
+                        english { +"We have processed your application for children`s pension following the death of " + avdoedNavn + ", who died on " + formatertDoedsdato + ". Your application has been finally rejected." },
                     )
                 }
             }.orShow {
                 paragraph {
                     text(
-                        bokmal { +"Din søknad om barnepensjon etter " + avdoedNavn + " er avslått." },
-                        nynorsk { +"Søknaden din om barnepensjon etter " + avdoedNavn + " er avslått." },
-                        english { +
-                                "Your application for children`s pension for the deceased " + avdoedNavn + " has been rejected." },
+                        bokmal { +"Vi har behandlet søknaden din om barnepensjon etter " + avdoedNavn + ", som døde " + formatertDoedsdato + ". Søknaden er avslått." },
+                        nynorsk { +"Vi har behandla søknaden din om barnepensjon etter " + avdoedNavn + ", som døydde " + formatertDoedsdato + ". Søknaden er avslått." },
+                        english { +"We have processed your application for children's pension following the death of " + avdoedNavn + ", who died on " + formatertDoedsdato + ". Your application has been rejected." },
                     )
                 }
             }

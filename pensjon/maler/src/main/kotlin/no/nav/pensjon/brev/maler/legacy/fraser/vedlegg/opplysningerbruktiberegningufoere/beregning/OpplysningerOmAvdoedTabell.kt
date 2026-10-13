@@ -70,8 +70,8 @@ data class OpplysningerOmAvdoedTabell (val pe: Expression<PEgruppe10>) : Outline
                             }
                             cell {
                                 text(
-                                    bokmal { + uforetidspunkt.format() },
-                                    nynorsk { + uforetidspunkt.format() },
+                                    bokmal { + uforetidspunkt.formatMonthYear() },
+                                    nynorsk { + uforetidspunkt.formatMonthYear() },
                                 )
                             }
                         }

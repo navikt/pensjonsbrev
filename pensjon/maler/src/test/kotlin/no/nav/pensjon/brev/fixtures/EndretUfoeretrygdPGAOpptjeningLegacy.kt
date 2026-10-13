@@ -8,5 +8,4 @@ fun createEndretUforetrygdPGAOpptjeningLegacyDto() =
         maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
         harVTA = false,
-        vektetFribelop = 0.5
     )

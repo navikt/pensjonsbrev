@@ -53,6 +53,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
         ...(rolle ? { rolle } : {}),
         enhetsId: brevInfo.avsenderEnhet.enhetNr,
         brevkode: brevInfo.brevkode,
+        spraak: brevInfo.spraak,
       });
 
     switch (brevInfo.status.type) {

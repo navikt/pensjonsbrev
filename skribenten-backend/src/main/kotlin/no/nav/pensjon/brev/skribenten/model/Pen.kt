@@ -1,10 +1,13 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.pensjon.brev.api.model.IBrevkategori
-import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
@@ -115,10 +118,41 @@ object Pen {
             return result
         }
 
-        data class Mottaker(val type: Type, val tssId: String? = null, val norskAdresse: NorskAdresse? = null, val utenlandskAdresse: UtenlandsAdresse? = null) {
-            enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
-            data class NorskAdresse(val navn: String, val postnummer: NorskPostnummer, val poststed: String, val adresselinje1: String?, val adresselinje2: String?, val adresselinje3: String?)
-            data class UtenlandsAdresse(val navn: String, val landkode: Landkode, val adresselinje1: String, val adresselinje2: String?, val adresselinje3: String?)
+        data class Mottaker(
+            val type: Type,
+            val tssId: TssId? = null,
+            val norskAdresse: NorskAdresse? = null,
+            val utenlandskAdresse: UtenlandsAdresse? = null,
+            val organisasjon: Organisasjon? = null,
+        ) {
+            enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE, ORGNR }
+            data class Organisasjon(val orgNr: String) {
+                init {
+                    require(erGyldig(orgNr)) { "Organisasjonsnummer må være ni siffer" }
+                }
+
+                companion object {
+                    private val NI_SIFFER = Regex("\\d{9}")
+                    fun erGyldig(orgNr: String): Boolean = NI_SIFFER.matches(orgNr)
+                }
+            }
+
+            data class NorskAdresse(
+                val navn: Navn,
+                val postnummer: NorskPostnummer,
+                val poststed: Poststed,
+                val adresselinje1: Adresselinje?,
+                val adresselinje2: Adresselinje?,
+                val adresselinje3: Adresselinje?,
+            )
+
+            data class UtenlandsAdresse(
+                val navn: Navn,
+                val landkode: Landkode,
+                val adresselinje1: Adresselinje,
+                val adresselinje2: Adresselinje?,
+                val adresselinje3: Adresselinje?,
+            )
         }
     }
 

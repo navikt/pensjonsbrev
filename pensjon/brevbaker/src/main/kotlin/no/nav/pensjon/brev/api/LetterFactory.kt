@@ -28,10 +28,28 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         with(brevbestilling) { createLetter(template,kode, letterData, language, felles, listOf()) }
 
     fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
+        with(brevbestilling) {
+            createLetter(
+                template,
+                redigerbartBrev.kode,
+                redigerbartBrev.letterData,
+                redigerbartBrev.language,
+                redigerbartBrev.felles,
+                alltidValgbareVedlegg
+            )
+        }
 
     fun createLetter(brevbestilling: BestillRedigertBrevRequestV2<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
-        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
+        with(brevbestilling) {
+            createLetter(
+                template,
+                redigerbartBrev.kode,
+                redigerbartBrev.letterData,
+                redigerbartBrev.language,
+                redigerbartBrev.felles,
+                alltidValgbareVedlegg
+            )
+        }
 
     private fun createLetter(
         brevTemplate: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?,

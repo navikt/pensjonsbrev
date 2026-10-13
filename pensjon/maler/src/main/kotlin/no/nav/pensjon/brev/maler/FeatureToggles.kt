@@ -15,24 +15,26 @@ enum class FeatureToggles(private val key: String) {
     brevmalInnvilgelseGjenlevendepensjonBosattNorgeEtterUtland("brevmalInnvilgelseGjenlevendepensjonBosattNorgeEtterUtland"),
     brevmalKlageOrienteringOmOversendelseTilKlageinstans("klageOrienteringOmOversendelseTilKlageinstans"),
     brevmalKlageOrienteringOmSaksbehandlingstid("brevmalKlageOrienteringOmSaksbehandlingstid"),
+    brevmalKlageOversendelseOgFoelgebrevKlageinstansUT("brevmalKlageOversendelseOgFoelgebrevKlageinstansUT"),
+    brevmalKlageOversendelsesbrevTilKlageinstansPE("brevmalKlageOversendelsesbrevTilKlageinstansPE"),
+    brevmalKlageOversendelsesbrevTilKlageinstansUT("brevmalKlageOversendelsesbrevTilKlageinstansUT"),
     brevmalOpphoerGjenlevendepensjon("brevmalOpphoerGjenlevendepensjon"),
+    brevmalOrienteringOmSvartidKlageUT("brevmalOrienteringOmSvartidKlageUT"),
+    brevmalUtAvslag("brevmalUtAvslag"),
     brevmalUtBosattNorgeEtterUtland("brevmalUtBosattNorgeEtterUtland"),
     brevmalUtDelvisEksport("brevmalUtDelvisEksport"),
-    brevmalUtEndring("brevmalUtEndring"),
     brevmalUtEndretPgaInntekt("brevmalUtEndretPgaInntekt"),
-    brevmalUtEndretPgaInntektRedigerbar("brevmalUtEndretPgaInntektRedigerbar"),
-    brevmalUtInnvilgelse("brevmalUtInnvilgelse"),
     brevmalUtInnvilgelseMedEndring("brevmalUtInnvilgelseMedEndring"),
-    brevmalUtOkningUforegrad("brevmalUtOkningUforegrad"),
     brevmalUtOmregningUfoerepensjonTilUfoeretrygd("brevmalOmregningUfoerepensjonTilUfoeretrygd"),
+    brevmalUtVedtakBlankMal("brevmalUtVedtakBlankMal"),
     brukertestbrev2025("brukertestbrev2025"),
     orienteringOmForlengetSaksbehandlingstid("orienteringOmForlengetSaksbehandlingstid"),
     oversettelseAvDokumenter("oversettelseAvDokumenter"),
-    pl7231ForventetSvartid("pl_7231.foreventet_svartid"),
     samletMeldingOmPensjonsvedtak("samletMeldingOmPensjonsvedtak"),
     vedtakAvslagPaaOmsorgsopptjening("vedtakAvslagPaaOmsorgsopptjening"),
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
     vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng");
+
 
     val toggle = FeatureToggle(key)
 }

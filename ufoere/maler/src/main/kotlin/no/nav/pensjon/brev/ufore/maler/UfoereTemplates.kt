@@ -19,6 +19,9 @@ import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
+import no.nav.pensjon.brev.ufore.maler.simulering.SimuleringUforetrygd
+import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidAuto
+import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidRedigerbar
 import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 import no.nav.pensjon.brev.ufore.maler.vedlegg.alltidValgbare.skjemaForBankopplysninger
 
@@ -31,6 +34,7 @@ object UfoereTemplates : AllTemplates {
         VarselOmOktMinsteIFU,
         VarselOmOktMinsteIFUOgLavereReduksjonsprosent,
         InfoOmReverseringAvMinstesats,
+        OrienteringOmSaksbehandlingstidAuto,
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(
@@ -93,6 +97,8 @@ object UfoereTemplates : AllTemplates {
         VarselOmLavereReduksjonsprosentRedigerbar,
         VarselOmOktMinsteIFURedigerbar,
         VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar,
+        SimuleringUforetrygd,
+        OrienteringOmSaksbehandlingstidRedigerbar,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(

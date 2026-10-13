@@ -320,15 +320,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 includePhrase(VirkningstidspunktUfoeretrygdAvkortetTil0(krav_virkningsDatoFraOgMed))
             }
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
-
-            showIf(harBarnetillegg) {
-                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektBarnetillegg)
-            }.orShow {
-                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
-            }
-
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)

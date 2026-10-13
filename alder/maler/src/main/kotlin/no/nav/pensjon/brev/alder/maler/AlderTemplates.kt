@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonFraFolketrygden2
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtOpprydding
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtVarselBrev
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocGjenlevendEtter1970
+import no.nav.pensjon.brev.alder.maler.adhoc.AdhocGjenlevendepensjonOpphoer
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilBeroertBruker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilMottaker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
@@ -69,6 +70,7 @@ import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.alder.maler.endring.EndringAvUttaksgradAuto
 import no.nav.pensjon.brev.alder.maler.endring.EndringPgaOpptjeningAuto
+import no.nav.pensjon.brev.alder.maler.endring.VedtakOmOmgjoering
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonFordiOpptjeningErEndret
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonInstitusjonsopphold
@@ -107,6 +109,7 @@ object AlderTemplates : AllTemplates {
             AdhocAlderspensjonFraFolketrygden2,
             AdhocAlderspensjonGjtOpprydding,
             AdhocAlderspensjonGjtVarselBrev,
+            AdhocGjenlevendepensjonOpphoer,
             AdhocGjenlevendEtter1970,
             AdhocSkjermingstilleggFeilBeroertBruker,
             AdhocSkjermingstilleggFeilMottaker,
@@ -197,6 +200,7 @@ object AlderTemplates : AllTemplates {
             VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
             VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
             VedtakEndringVedFlyttingMellomLand,
+            VedtakOmOmgjoering,
             VedtakStansAlderspensjonFlyttingMellomLand,
         )
 

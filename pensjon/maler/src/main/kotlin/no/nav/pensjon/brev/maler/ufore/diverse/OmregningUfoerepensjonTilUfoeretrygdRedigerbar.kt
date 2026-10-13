@@ -15,7 +15,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.generated.*
+import no.nav.pensjon.brev.maler.fraser.generated.TBU3105_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU3107_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU3109_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU3112_Generated
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -58,6 +61,10 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
         outline {
             val pe = pesysData.pe
+
+            val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+            val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
+            val instoppholdType = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype()
 
             //IF(PE_VedtaksData_VirkningFOM <= DateValue("01/01/2015")) THEN      INCLUDE ENDIF
             showIf(pe.vedtaksdata_virkningfom().lessThanOrEqual(LocalDate.of(2015, 1, 1))) {
@@ -701,62 +708,8 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                 }
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"
-                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo")) {
-                    paragraph {
-                        text (
-                            bokmal { + "Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        )
-                    }
-                }
-
-                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"
-                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo")) {
-                    //TBU3115
-                    paragraph {
-                        text(bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring." })
-
-                        //IF(FF_GetArrayElement_Boolean(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphReduksjonsperiodeListe_InstOpphReduksjonsperiode_Forsorgeransvar) = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) {
-                            text(bokmal { +" " })
-                        }
-
-                        //IF(PE_UT_Forsorgeransvar_siste_er_true()) THEN      INCLUDE ENDIF
-                        showIf(pe.ut_forsorgeransvar_siste_er_true()) {
-                            text(bokmal { +"Da du forsørger barn" })
-                        }
-
-                        //IF(FF_GetArrayElement_Boolean(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphReduksjonsperiodeListe_InstOpphReduksjonsperiode_Forsorgeransvar) = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
-                            text(bokmal { +" og/eller ektefelle" })
-                        }
-
-                        //IF(PE_UT_Forsorgeransvar_siste_er_true()) THEN      INCLUDE ENDIF
-                        showIf(pe.ut_forsorgeransvar_siste_er_true()) {
-                            text(bokmal { +", vil utbetaling av uføretrygden din reduseres med 50 prosent. " })
-                        }
-
-                        text(bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " })
-
-                        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true OR PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                            text(bokmal { +"Dersom du mottar " })
-                        }
-
-                        //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
-                            text(bokmal { +"ektefelletillegg" })
-                        }
-
-                        //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
-                        showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                            text(bokmal { +"gjenlevendetillegg" })
-                        }
-
-                        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true OR PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                            text(bokmal { +" vil dette tillegget også bli redusert." })
-                        }
-                    }
+                showIf(instoppholdType.equalTo("reduksjon_fo")) {
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND FF_GetArrayElement_Integer(PE_Grunnlag_Persongrunnlagsliste_UforehistorikkGarantigrad) <> 0) THEN      INCLUDE ENDIF
@@ -890,7 +843,7 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                             )
                         }
                     }
-                    includePhrase(TBU2212_Generated(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
+                    includePhrase(Ufoeretrygd.MeldeFraOmEndringer(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
                     includePhrase(Felles.RettTilAAKlage)
                     includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
                     includePhrase(Ufoeretrygd.SjekkUtbetalingene)
