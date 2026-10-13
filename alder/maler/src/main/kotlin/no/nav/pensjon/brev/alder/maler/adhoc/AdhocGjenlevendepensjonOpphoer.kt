@@ -32,14 +32,14 @@ object AdhocGjenlevendepensjonOpphoer : AutobrevTemplate<EmptyAutobrevdata> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ){
+        title {
+            text(
+                bokmal { +"Feil informasjon om når gjenlevendepensjonen stopper" },
+                nynorsk { +"Feil informasjon om når attlevandepensjonen stansar" },
+                english { +"Incorrect information about when the survivor's pension stops" },
+            )
+        }
         outline {
-            title1 {
-                text(
-                    bokmal { +"Feil informasjon om når gjenlevendepensjonen stopper" },
-                    nynorsk { +"Feil informasjon om når attlevandepensjonen stansar" },
-                    english { +"Incorrect information about when the survivor's pension stops" },
-                )
-            }
             paragraph {
                 text(
                     bokmal { +"Du har tidligere fått brev om at retten til gjenlevendepensjon opphører fra 1. januar 2027." },
