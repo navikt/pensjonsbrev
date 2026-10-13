@@ -9,6 +9,7 @@ export type RtfToken =
   | { type: "text"; value: string }
   | { type: "hexByte"; byte: number };
 
+// Expect ASCII letters (a-zA-Z) in RTF control words (disregard æøå).
 const isLetter = (char: string | undefined) => char !== undefined && /[a-zA-Z]/.test(char);
 const isDigit = (char: string | undefined) => char !== undefined && /[0-9]/.test(char);
 const isHexDigit = (char: string | undefined) => char !== undefined && /[0-9a-fA-F]/.test(char);

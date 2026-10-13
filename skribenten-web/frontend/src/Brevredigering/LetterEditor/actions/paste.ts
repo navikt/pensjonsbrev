@@ -348,16 +348,15 @@ function rtfInsertion(rtf: string): ClipboardInsertion | undefined {
 }
 
 /**
- * Pasting funksjonalitet skal etterligne hvordan det fungerer i microsoft word.
- * Merk da at det er forskjellige regler hvis man limer inn i start/midten/slutt, på en literal, eller punktliste,
- * og om det kopierte innholdet er bare literal eller punktliste, eller begge.
+ * Pasting should behave as it does in Microsoft Word.
+ * The rules differ depending on whether the paste is at the start, middle, or end of a literal or list,
+ * and whether the copied content contains only a literal, only a list, or both.
  *
  * Returns false if nothing was inserted.
  */
 function insertParsedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]): boolean {
   let inserted: boolean;
   if (elements.length === 0) {
-    //trenger ikke å lime inn tomt innhold
     inserted = false;
   } else if (elements.every((element) => element.type === "TEXT")) {
     for (const element of elements) {
@@ -518,7 +517,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
   return inserted;
 }
 
-/** Et innlimt punkt fortsetter lista vi står i, med mindre det er et punkt av en annen listetype. */
+/** A pasted item continues the current list unless it belongs to a different list type. */
 function continuesPastedList(draft: Draft<LetterEditorState>, element: TraversedElement): boolean {
   if (element.type !== "ITEM") return false;
   if (element.nested || element.listType === undefined || !isItemContentIndex(draft.focus)) return true;
@@ -528,9 +527,9 @@ function continuesPastedList(draft: Draft<LetterEditorState>, element: Traversed
 }
 
 /**
- * Etter et innlimt punkt står fokus i et nytt, tomt punkt. Skal neste element være en blokk, en
- * tabell eller et punkt i en ny liste, fjerner vi det tomme punktet og fortsetter i en egen blokk etter lista.
- * Returnerer blokka med innhold som sto etter lista, om det ble flyttet ut.
+ * After a pasted item, focus is in a new, empty item. If the next element is a block, a
+ * table, or an item in a new list, remove the empty item and continue in a separate block after the list.
+ * Returns the block containing the content that followed the list, if it was moved.
  */
 function breakOutOfPastedList(draft: Draft<LetterEditorState>): Draft<AnyBlock> | undefined {
   const focus = draft.focus;
@@ -549,8 +548,8 @@ function breakOutOfPastedList(draft: Draft<LetterEditorState>): Draft<AnyBlock> 
 }
 
 /**
- * Etter en innlimt tabell står fokus i tabellen; flytt det til en egen blokk etter tabellen.
- * Returnerer blokka med innhold som sto etter tabellen, om det ble flyttet ut.
+ * After a pasted table, focus is inside the table; move it to a separate block after the table.
+ * Returns the block containing the content that followed the table, if it was moved.
  */
 function moveFocusAfterPastedTable(draft: Draft<LetterEditorState>): Draft<AnyBlock> | undefined {
   const focus = draft.focus;
@@ -561,10 +560,10 @@ function moveFocusAfterPastedTable(draft: Draft<LetterEditorState>): Draft<AnyBl
 }
 
 /**
- * Setter fokus i starten av en ny blokk rett etter `contentIndex`. Står det en literal der, splitter vi
- * blokka ved den. Står det annet innhold der (liste, tabell, variabel), flyttes det ut i en egen blokk, og
- * fokus settes i et tomt avsnitt foran den, slik at resten av innlimingen havner mellom. Returnerer den
- * utflyttede blokka, så markøravsnittet kan fjernes etterpå.
+ * Sets focus at the start of a new block immediately after `contentIndex`. If there is a literal there, split
+ * the block at that point. If there is other content (a list, table, or variable), move it to a separate block
+ * and place focus in an empty paragraph before it, so the rest of the paste goes in between. Returns the moved
+ * block so the cursor paragraph can be removed afterward.
  */
 function focusNewBlockAfter(
   draft: Draft<LetterEditorState>,
@@ -595,8 +594,8 @@ function focusNewBlockAfter(
 }
 
 /**
- * Fjerner det tomme markøravsnittet foran innhold som ble flyttet ut av `focusNewBlockAfter`, når
- * innlimingen er ferdig, og setter markøren på slutten av det siste innlimte avsnittet.
+ * Once the paste is complete, removes the empty cursor paragraph before content moved by `focusNewBlockAfter`
+ * and places the cursor at the end of the last pasted paragraph.
  */
 function removeCursorParagraphBefore(draft: Draft<LetterEditorState>, trailingBlock: Draft<AnyBlock>) {
   const focus = draft.focus;
@@ -690,21 +689,21 @@ function toggleItemListAndSplitAtCursor(
 ) {
   let itemContent: TextContent[] = [];
 
-  // Finn første indeks for all sammenhengende TextContent før der vi limer inn.
+  // Find the first index of the contiguous TextContent before the paste location.
   const sentenceIndex = findAdjoiningContent(
     draft.focus.contentIndex,
     currentBlock.content.slice(0, draft.focus.contentIndex + 1),
     isTextContent,
   );
 
-  // Om count er 1 så er det kun gjeldende content-element, så vi trenger ikke å inkludere flere.
+  // If count is 1, only the current content element is included, so there is nothing else to include.
   if (sentenceIndex.count > 1) {
     itemContent = removeElements(sentenceIndex.startIndex, sentenceIndex.count - 1, currentBlock).filter(isTextContent);
-    // Vi har fjernet fra og med startIndex frem til draft.focus.contentIndex som betyr at den nye indeksen til current er startIndex
+    // We removed content from startIndex up to draft.focus.contentIndex, so the current element is now at startIndex.
     draft.focus.contentIndex = sentenceIndex.startIndex;
   }
 
-  // Split currentContent om vi limer inn et sted som ikke er i starten av den, og legg den til i itemContent og resten tilbake til blokken.
+  // If the paste is not at the start of currentContent, split it and add the first part to itemContent, leaving the rest in the block.
   const currentContent = currentBlock.content[draft.focus.contentIndex];
   if (isLiteral(currentContent) && (draft.focus.cursorPosition! ?? 0) > 0) {
     removeElements(draft.focus.contentIndex, 1, currentBlock);
@@ -717,17 +716,17 @@ function toggleItemListAndSplitAtCursor(
     itemContent.push(currentContent);
   }
 
-  // Sørg for at vårt nye item har noe content.
+  // Ensure the new item has content.
   if (itemContent.length === 0) {
     itemContent.push(newLiteral({ editedText: "" }));
   }
   const theItem = newItem({ content: itemContent });
 
-  // Sett inn item i eksisterende liste før current content, eller lag en ny liste og theItem inn i den.
+  // Insert the item into the existing list before the current content, or create a new list containing it.
   const prevNonTextContent = sentenceIndex.startIndex > 0 ? currentBlock.content[sentenceIndex.startIndex - 1] : null;
   if (isItemList(prevNonTextContent)) {
     addElements([theItem], prevNonTextContent.items.length, prevNonTextContent.items, prevNonTextContent.deletedItems);
-    // Sett fokus til det theItem som vi har satt inn i eksisterende ItemList.
+    // Set focus to the item inserted into the existing ItemList.
     draft.focus = {
       ...draft.focus,
       contentIndex: sentenceIndex.startIndex - 1,
