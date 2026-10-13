@@ -41,9 +41,10 @@ object InnhnentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
         outline {
             paragraph {
                 text(bokmal {
-                    +"Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst(
-                        "dato"
-                    ) + "."
+                    +"Vi har den "
+                    +fritekst("dato") + " mottatt klagen din over vedtaket vårt av "
+                    +fritekst("dato") + "."
+                    +"."
                 })
             }
 
@@ -81,7 +82,8 @@ object InnhnentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
                 text(bokmal {
                     +fritekst(
                         "Vi ber deg sende klagen innen "
-                                + fritekst("klagefristenes utløp/14 dager") + ". Dersom du trenger hjelp til å utforme klagen ber vi deg ta kontakt med ditt lokale Nav-kontor."
+                                + fritekst("klagefristenes utløp/14 dager") + ". "
+                                +"Dersom du trenger hjelp til å utforme klagen ber vi deg ta kontakt med ditt lokale Nav-kontor."
                     )
                 })
             }
