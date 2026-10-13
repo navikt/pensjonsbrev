@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarVedleggData
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.api.model.maler.VedleggData
@@ -91,10 +92,10 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     @RedigerbartVedlegg
     fun includeAttachmentRedigerbar(
         vedleggId: VedleggId,
-        template: AttachmentTemplate<Lang, EmptyVedleggData>,
+        template: AttachmentTemplate<Lang, EmptyRedigerbarVedleggData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate, vedleggId))
+        attachments.add(IncludeAttachment(EmptyRedigerbarVedleggData.expr(), template, predicate, vedleggId))
     }
 
     fun <AttachmentData : VedleggData> includeAttachmentIfNotNull(

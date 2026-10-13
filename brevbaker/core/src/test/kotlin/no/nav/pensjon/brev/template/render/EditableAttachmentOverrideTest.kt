@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarVedleggData
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -27,13 +28,13 @@ class EditableAttachmentOverrideTest {
 
     data class PredikatBrev(val visVedlegg: Boolean) : AutobrevData
 
-    private val originaltVedlegg = createAttachment<LangNynorsk, EmptyVedleggData>(
+    private val originaltVedlegg = createAttachment<LangNynorsk, EmptyRedigerbarVedleggData>(
         title = { text(nynorsk { +"Original tittel" }) },
     ) {
         paragraph { text(nynorsk { +"Originalt innhold" }) }
     }
 
-    private val annetVedlegg = createAttachment<LangNynorsk, EmptyVedleggData>(
+    private val annetVedlegg = createAttachment<LangNynorsk, EmptyRedigerbarVedleggData>(
         title = { text(nynorsk { +"Overstyrt tittel" }) },
     ) {
         paragraph { text(nynorsk { +"Overstyrt innhold" }) }

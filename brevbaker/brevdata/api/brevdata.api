@@ -84,6 +84,13 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyFagsystemdata : no/n
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/api/model/maler/EmptyRedigerbarVedleggData : no/nav/pensjon/brev/api/model/maler/RedigerbarVedleggData {
+	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyRedigerbarVedleggData;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggData : no/nav/pensjon/brev/api/model/maler/VedleggData {
 	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyVedleggData;
 	public fun equals (Ljava/lang/Object;)Z
@@ -112,6 +119,9 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarVedleggData : no/nav/pensjon/brev/api/model/maler/VedleggData {
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum {

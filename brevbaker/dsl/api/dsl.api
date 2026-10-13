@@ -335,6 +335,11 @@ public final class no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev$D
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev;Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
 }
 
+public final class no/nav/pensjon/brev/template/DslExtensionForRedigerbareVedlegg {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/DslExtensionForRedigerbareVedlegg;
+	public final fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
+}
+
 public abstract class no/nav/pensjon/brev/template/Element : no/nav/pensjon/brev/template/StableHash {
 }
 

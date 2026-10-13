@@ -18,3 +18,5 @@ interface FagsystemBrevdata
 interface SaksbehandlervalgIDSL : Map<String, Any?>
 
 interface VedleggData
+
+interface RedigerbarVedleggData : VedleggData

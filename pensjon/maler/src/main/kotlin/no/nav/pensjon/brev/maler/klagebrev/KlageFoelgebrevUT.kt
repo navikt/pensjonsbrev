@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.klagebrev
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarVedleggData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEF
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.DslExtensionForRedigerbareVedlegg.fritekst
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -18,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foeds
 
 
 @TemplateModelHelpers
-val vedleggFoelgebrevKlageinstansUT = createAttachment<LangBokmal, EmptyVedleggData>(
+val vedleggFoelgebrevKlageinstansUT = createAttachment<LangBokmal, EmptyRedigerbarVedleggData>(
     title = { text(bokmal { +"Klage - Uføretrygd" }) },
     includeSakspart = true,
 ) {
@@ -28,7 +29,7 @@ val vedleggFoelgebrevKlageinstansUT = createAttachment<LangBokmal, EmptyVedleggD
         text(bokmal { +felles.bruker.foedselsnummer.format() })
     }
 
-    paragraph { text(bokmal { +"Vi viser til din klage av <dato> på vedtak av <dato>." }) }
+    paragraph { text(bokmal { +"Vi viser til din klage av " + fritekst("dato") + " på vedtak av " + fritekst("dato") + "." }) }
     paragraph { text(bokmal { +"Vi har vurdert vedtaket vårt på nytt, men har ikke endret det. " }) }
     paragraph { text(bokmal { +"Klagesaken er derfor oversendt til $NAV_KLAGEINSTANS for behandling. Kopi av innstillingen vår er vedlagt." }) }
     paragraph {

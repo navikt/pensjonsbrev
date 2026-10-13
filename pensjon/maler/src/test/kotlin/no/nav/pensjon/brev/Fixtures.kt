@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarVedleggData
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDto
 import no.nav.pensjon.brev.api.model.maler.VedleggData
@@ -182,6 +183,7 @@ object Fixtures : LetterDataFactory {
         DineRettigheterOgPlikterUforeDto::class -> createDineRettigheterOgPlikterUforeDto() as T
         EgenerklaeringOmsorgsarbeidDto::class -> createEgenerklaeringOmsorgsarbeidDto() as T
         EmptyVedleggData::class -> EmptyVedleggData as T
+        EmptyRedigerbarVedleggData::class -> EmptyRedigerbarVedleggData as T
         MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T
         OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
         OpplysningerBruktIBeregningUTDto::class -> createOpplysningerBruktIBeregningUTDto() as T

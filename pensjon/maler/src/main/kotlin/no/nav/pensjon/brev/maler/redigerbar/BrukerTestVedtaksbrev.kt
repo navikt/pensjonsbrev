@@ -2,11 +2,11 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarVedleggData
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestVedtaksbrevDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestVedtaksbrevDto.DenBesteKaken.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestVedtaksbrevDto.UtsiktenFraKontoret.*
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.LangBokmal
@@ -211,7 +211,7 @@ object BrukerTestVedtaksbrev : RedigerbarTemplate<BrukerTestVedtaksbrevDto> {
     }
 }
 
-private val testvedleggRedigerbart = createAttachment<LangBokmal, EmptyVedleggData>(
+private val testvedleggRedigerbart = createAttachment<LangBokmal, EmptyRedigerbarVedleggData>(
     title = {
         text(bokmal { +"Testvedlegg (redigerbart)" })
     },

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarVedleggData
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
@@ -24,4 +25,11 @@ sealed interface DslExtensionForRedigerbareBrev {
     ) {
         phrase.apply(this)
     }
+}
+
+object DslExtensionForRedigerbareVedlegg {
+    fun <VedleggData : RedigerbarVedleggData> TemplateGlobalScope<VedleggData>.fritekst(beskrivelse: String): Fritekst =
+        beskrivelse.takeIf { it.trim().isNotEmpty() }
+            ?.let { Fritekst(it) }
+            ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 }
