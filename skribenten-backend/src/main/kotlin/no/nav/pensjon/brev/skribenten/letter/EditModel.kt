@@ -26,7 +26,7 @@ object Edit {
         val blocks: List<Block>,
         // TODO: Lag egen edit-modell for signatur slik at saksbehandlerNavn kan påkreves
         val signatur: Signatur,
-        val deletedBlocks: Set<Int>
+        val deletedBlocks: List<Int>
     ) {
         fun withSakspart(
             gjelderNavn: String = sakspart.gjelderNavn,
@@ -66,7 +66,7 @@ object Edit {
     data class Attachment(
         val title: Title,
         val blocks: List<Edit.Block>,
-        val deletedBlocks: Set<Int>,
+        val deletedBlocks: List<Int>,
         val includeSakspart: Boolean,
     )
 
@@ -83,7 +83,7 @@ object Edit {
 
     data class Title(
         val text: List<Edit.ParagraphContent.Text>,
-        val deletedContent: Set<Int> = emptySet(),
+        val deletedContent: List<Int> = emptyList(),
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
@@ -100,7 +100,7 @@ object Edit {
 
         abstract val editable: Boolean
         abstract val content: List<ParagraphContent>
-        abstract val deletedContent: Set<Int>
+        abstract val deletedContent: List<Int>
         abstract val originalType: Type?
         abstract val missingFromTemplate: Boolean
 
@@ -113,7 +113,7 @@ object Edit {
             override val id: Int?,
             override val editable: Boolean,
             override val content: List<ParagraphContent.Text>,
-            override val deletedContent: Set<Int> = emptySet(),
+            override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
             override val missingFromTemplate: Boolean = false,
@@ -123,7 +123,7 @@ object Edit {
             override val id: Int?,
             override val editable: Boolean,
             override val content: List<ParagraphContent.Text>,
-            override val deletedContent: Set<Int> = emptySet(),
+            override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
             override val missingFromTemplate: Boolean = false,
@@ -133,7 +133,7 @@ object Edit {
             override val id: Int?,
             override val editable: Boolean,
             override val content: List<ParagraphContent.Text>,
-            override val deletedContent: Set<Int> = emptySet(),
+            override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
             override val missingFromTemplate: Boolean = false,
@@ -143,7 +143,7 @@ object Edit {
             override val id: Int?,
             override val editable: Boolean,
             override val content: List<ParagraphContent>,
-            override val deletedContent: Set<Int> = emptySet(),
+            override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
             override val missingFromTemplate: Boolean = false,
@@ -168,13 +168,13 @@ object Edit {
             val items: List<Item>,
             val listType: Listetype = Listetype.PUNKTLISTE,
             val editedListType: Listetype? = null,
-            val deletedItems: Set<Int> = emptySet(),
+            val deletedItems: List<Int> = emptyList(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
             data class Item(
                 override val id: Int?,
                 val content: List<Text>,
-                val deletedContent: Set<Int> = emptySet(),
+                val deletedContent: List<Int> = emptyList(),
                 override val parentId: Int? = null,
             ) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
@@ -187,18 +187,18 @@ object Edit {
             override val id: Int?,
             val rows: List<Row>,
             val header: Header,
-            val deletedRows: Set<Int> = emptySet(),
+            val deletedRows: List<Int> = emptyList(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.TABLE) {
-            data class Row(override val id: Int?, val cells: List<Cell>, val deletedCells: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+            data class Row(override val id: Int?, val cells: List<Cell>, val deletedCells: List<Int> = emptyList(), override val parentId: Int? = null) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id } || deletedCells.isNotEmpty()
             }
 
-            data class Cell(override val id: Int?, val text: List<Text>, val deletedContent: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+            data class Cell(override val id: Int?, val text: List<Text>, val deletedContent: List<Int> = emptyList(), override val parentId: Int? = null) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
             }
 
-            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, val deletedColSpecs: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, val deletedColSpecs: List<Int> = emptyList(), override val parentId: Int? = null) : Identifiable {
                 override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id } || deletedColSpecs.isNotEmpty()
             }
 
@@ -256,13 +256,13 @@ object Edit {
 }
 
 fun LetterMarkup.toEdit(): Edit.Letter =
-    Edit.Letter(Edit.Title(title.toEdit(null)), sakspart, blocks.toEdit(), signatur, emptySet())
+    Edit.Letter(Edit.Title(title.toEdit(null)), sakspart, blocks.toEdit(), signatur, emptyList())
 
 fun LetterMarkup.Attachment.toEdit(): Edit.Attachment =
     Edit.Attachment(
         title = Edit.Title(title.toEdit(null)),
         blocks = blocks.toEdit(),
-        deletedBlocks = emptySet(),
+        deletedBlocks = emptyList(),
         includeSakspart = includeSakspart,
     )
 

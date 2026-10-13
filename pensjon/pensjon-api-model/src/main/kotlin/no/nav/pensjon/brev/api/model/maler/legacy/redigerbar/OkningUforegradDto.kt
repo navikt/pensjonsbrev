@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
@@ -16,6 +17,7 @@ data class OkningUforegradDto(
 
     data class PesysData(
         val pe: PEgruppe10,
+        val vedtaksinfo: UforeVedtaksinfo,
         val kravFremsattDato: LocalDate?,
         val oifuVedVirkningstidspunkt: Kroner?,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
@@ -25,9 +27,10 @@ data class OkningUforegradDto(
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
         val hjemler: Set<String>,
         val fribelopsperioder: List<Fribelopsperiode>,
-        val vektetFribelop: Double,
-        val vektetFribelopKr: Kroner,
+        val fribelop: Kroner,
         val harVTA: Boolean,
+        val forrigeUforegrad: Int,
+        val forrigeUforetidspunkt: LocalDate,
     ) : FagsystemBrevdata
 
     data class Trygdetidsgrunnlag(
@@ -40,6 +43,7 @@ data class OkningUforegradDto(
         val tom: LocalDate,
         val gradsokning: Boolean,
         val faktor: Double,
+        val grunnbelop: Kroner,
         val venteperiodeStartDato: LocalDate,
     )
 }

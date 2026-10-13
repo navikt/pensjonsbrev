@@ -1,11 +1,10 @@
 import { Bleed, BodyShort, Box, Skeleton, type SortState, Table, Tag, VStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
 import { sortBy } from "lodash";
 import { useRef, useState } from "react";
 
-import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import { type Samhandler, type SamhandlerPostadresse } from "~/types/apiTypes";
+import { useSamhandlerMottaker } from "~/hooks/useSamhandlerMottaker";
+import { type Samhandler } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
 import { trackEvent } from "~/utils/umami";
@@ -109,7 +108,7 @@ function SamhandlerResultRow({
 
   return (
     <Table.ExpandableRow
-      content={<SamhandlerAdresseDetaljer idTSSEkstern={samhandler.idTSSEkstern} />}
+      content={<SamhandlerMottakerDetaljer idTSSEkstern={samhandler.idTSSEkstern} />}
       css={{ cursor: "pointer" }}
       onOpenChange={setOpen}
       open={open}
@@ -162,8 +161,8 @@ function SamhandlerResultRow({
   );
 }
 
-function SamhandlerAdresseDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) {
-  const { data, isPending, isError, error } = useQuery(hentSamhandlerAdresse(idTSSEkstern));
+function SamhandlerMottakerDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) {
+  const { data, isPending, isError, error } = useSamhandlerMottaker(idTSSEkstern);
 
   if (isPending) {
     return (
@@ -176,21 +175,27 @@ function SamhandlerAdresseDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) {
   }
 
   if (isError) {
-    return <ApiError error={error} title="Fant ikke samhandleradresse" />;
+    return <ApiError error={error} title="Fant ikke mottakerinformasjon" />;
   }
 
-  return <AdresseDetaljer adresse={data} />;
+  return <MottakerDetaljer mottaker={data} />;
 }
 
-function AdresseDetaljer({ adresse }: { adresse: SamhandlerPostadresse }) {
-  const rows: { label: string; value: Nullable<string> }[] = [
-    { label: "Navn", value: adresse.navn },
-    { label: "Adresselinje 1", value: adresse.linje1 ?? null },
-    { label: "Adresselinje 2", value: adresse.linje2 ?? null },
-    { label: "Postnummer", value: adresse.postnr ?? null },
-    { label: "Poststed", value: adresse.poststed ?? null },
-    { label: "Land", value: adresse.land ?? null },
-  ];
+function MottakerDetaljer({ mottaker }: { mottaker: NonNullable<ReturnType<typeof useSamhandlerMottaker>["data"]> }) {
+  const rows: { label: string; value: Nullable<string> }[] =
+    mottaker.type === "organisasjon"
+      ? [
+          { label: "Navn", value: mottaker.samhandler.navn },
+          { label: "Organisasjonsnummer", value: mottaker.samhandler.offentligId },
+        ]
+      : [
+          { label: "Navn", value: mottaker.adresse.navn },
+          { label: "Adresselinje 1", value: mottaker.adresse.linje1 ?? null },
+          { label: "Adresselinje 2", value: mottaker.adresse.linje2 ?? null },
+          { label: "Postnummer", value: mottaker.adresse.postnr ?? null },
+          { label: "Poststed", value: mottaker.adresse.poststed ?? null },
+          { label: "Land", value: mottaker.adresse.land ?? null },
+        ];
 
   return (
     <Table size="small">

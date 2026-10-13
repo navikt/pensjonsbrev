@@ -36,8 +36,9 @@ export const internalRoutes = (server: Express) => {
       JSON.stringify({
         level: body.level ?? "ERROR",
         statusCode: body.status,
-        timestamp: body.jsonContent.timestamp,
-        message: `Feil fra frontend: ${body.message}: ${body.jsonContent.url}`,
+        timestamp: body.jsonContent?.timestamp,
+        message: `Feil fra frontend: ${body.message}: ${body.jsonContent?.url}`,
+        user_agent: body.jsonContent?.userAgent,
         stack_trace: resolveStackTrace(body.stack),
         x_correlationId: body.requestId,
       }),

@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -35,7 +36,7 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
             felles = pesysData.felles
                 .medSignerendeSaksbehandlere(signatur)
                 .let {
-                    if (mottaker != null) it.medAnnenMottakerNavn(mottaker.annenMottakerNavn()) else it
+                    if (mottaker != null) it.medAnnenMottakerNavn(mottaker.annenMottakerNavn()?.value) else it
                 },
             brevdata = statiskFagsystemBrevdata ?: pesysData.brevdata
         )
@@ -58,11 +59,11 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
 
     // TODO: Jeg føler ikke helt at denne hører til her.
     suspend fun hentAnnenMottakerNavn(mottaker: Dto.Mottaker): String? =
-        mottaker.annenMottakerNavn()
+        mottaker.annenMottakerNavn()?.value
 
-    private suspend fun Dto.Mottaker.annenMottakerNavn(): String? =
+    private suspend fun Dto.Mottaker.annenMottakerNavn(): Navn? =
         when (type) {
-            MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }
+            MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }?.let { Navn(it) }
             MottakerType.NORSK_ADRESSE, MottakerType.UTENLANDSK_ADRESSE ->
                 if (manueltAdressertTil == Dto.Mottaker.ManueltAdressertTil.ANNEN) navn else null
         }

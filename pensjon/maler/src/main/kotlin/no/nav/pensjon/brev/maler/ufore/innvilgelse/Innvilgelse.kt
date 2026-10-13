@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
+import java.time.Month
 
 object Innvilgelse {
 
@@ -964,6 +965,7 @@ object Innvilgelse {
         val pe: Expression<PEgruppe10>,
         val uforegrad: Expression<Int>,
         val ieuInntekt: Expression<Kroner>,
+        val vedtakFattetDatoEllerIdag: Expression<LocalDate>,
         val beregningsvilkarUforegrad: Expression<Int>,
         val harVTA: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorsk>() {
@@ -993,11 +995,24 @@ object Innvilgelse {
             }
 
             showIf((uforegrad.equalTo(100) and !harVTA and ieuInntekt.equalTo(0))) {
-                paragraph {
-                    text(
-                        bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                        nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
-                    )
+                ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { virkningstidspunkt ->
+                    paragraph {
+                        text(
+                            bokmal { +"Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet vil du kunne tjene 1 G uten å bli redusert. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
+                            nynorsk { +"Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet vil du kunne tene 1 G utan å bli redusert. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
+                        )
+                        showIf(vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                            text(
+                                bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            )
+                        }
+                    }
                 }
             }
 
@@ -1011,11 +1026,24 @@ object Innvilgelse {
             }
 
             showIf((((beregningsvilkarUforegrad).lessThan(100) and (beregningsvilkarUforegrad).greaterThan(0)) or ((ieuInntekt).greaterThan(0) and (beregningsvilkarUforegrad).equalTo(100)))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Botnfrådraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                    )
+                ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { virkningstidspunkt ->
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet øker dette beløpet til 1 G. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
+                            nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet aukar dette beløpet til 1 G. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
+                        )
+                        showIf(vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                            text(
+                                bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            )
+                        }
+                    }
                 }
             }
 
@@ -1042,23 +1070,6 @@ object Innvilgelse {
                 text(
                     bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn bunnfradraget ditt. " },
                     nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn botnfrådraget ditt. " },
-                )
-            }
-        }
-    }
-
-    object MeldeFraOmInntekt : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            title1 {
-                text(
-                    bokmal { +"Du må melde fra hvis du har inntekt" },
-                    nynorsk { +"Du må melde frå om du har inntekt" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din." },
-                    nynorsk { +"Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di." },
                 )
             }
         }
@@ -1184,69 +1195,6 @@ object Innvilgelse {
                         text(
                             bokmal { +"Du forsørger ikke barn" + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + totalNettoUforeberegning.format() + "." },
                             nynorsk { +"Du forsørgjer ikkje barn" + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + totalNettoUforeberegning.format() + "." },
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    data class Straffegjennomfoering(
-        val pe: Expression<PEgruppe10>,
-        val instoppholdType: Expression<String>,
-        val ektefelletilleggInnvilget: Expression<Boolean>,
-        val gjenlevendetilleggInnvilget: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            showIf(instoppholdType.equalTo("reduksjon_fo")) {
-                title1 {
-                    text(
-                        bokmal { +"Utbetaling av uføretrygd for deg som er under straffegjennomføring" },
-                        nynorsk { +"Utbetaling av uføretrygd når du er under straffegjennomføring" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring." },
-                        nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring." },
-                    )
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +" Da du forsørger barn" },
-                            nynorsk { +" Da du forsørgjer barn" },
-                        )
-                    }
-
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) and ektefelletilleggInnvilget)) {
-                        text(
-                            bokmal { +" og/eller ektefelle" },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-
-                    showIf((pe.ut_forsorgeransvar_siste_er_true())) {
-                        text(
-                            bokmal { +", vil utbetaling av uføretrygden din reduseres med 50 prosent. " },
-                            nynorsk { +", vil utbetalinga av uføretrygda di reduserast med 50 prosent." },
-                        )
-                    }
-                    text(
-                        bokmal { +" Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " },
-                        nynorsk { +" Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa tok til. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
-                    )
-
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert." },
-                            nynorsk { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert." },
-                        )
-                    }
-
-                    showIf(gjenlevendetilleggInnvilget) {
-                        text(
-                            bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert." },
-                            nynorsk { +"Dersom du mottar attlevandetillegg vil dette tillegget også bli redusert." },
                         )
                     }
                 }
@@ -1635,22 +1583,12 @@ object Innvilgelse {
     data class EtterbetalingUforetrygd(
         val pe: Expression<PEgruppe10>,
         val uforegrad: Expression<Int>,
+        val virkningsdatoTidligereMnd: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegrad) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(pe.vedtakfattetdato_minus_1mnd())) {
+            showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegrad) and virkningsdatoTidligereMnd) {
                 ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { onsketvirkningsdato ->
-                    title1 {
-                        text(
-                            bokmal { +"Etterbetaling av uføretrygd" },
-                            nynorsk { +"Etterbetaling av uføretrygd" },
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { +"Du får etterbetalt uføretrygd fra " + onsketvirkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-                            nynorsk { +"Du får etterbetalt uføretrygd frå " + onsketvirkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju vyrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
-                        )
-                    }
+                    includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
                 }
             }
         }

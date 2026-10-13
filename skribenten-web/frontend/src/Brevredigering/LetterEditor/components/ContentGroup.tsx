@@ -66,9 +66,9 @@ import {
   adjacentTableEntryFocus,
   determineTableCellDeleteAction,
   exitTable,
+  getTableArrowNavigationFocus,
   isAtLastTableCell,
   nextTableFocus,
-  verticalTableStep,
 } from "../services/tableCaretUtils";
 import { isMac } from "../utils";
 
@@ -481,9 +481,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const block = editorState.redigertBrev.blocks[f.blockIndex];
       const content = block.content[f.contentIndex];
 
-      if (isTable(content)) {
+      if (isTable(content) && contentEditableReference.current) {
+        const next = getTableArrowNavigationFocus(contentEditableReference.current, f, content, "up");
+        if (next === undefined) return;
         event.preventDefault();
-        const next = verticalTableStep(f, content, "up");
         if (next === "exit") {
           setEditorState(exitTable("backward"));
         } else {
@@ -544,9 +545,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const block = editorState.redigertBrev.blocks[f.blockIndex];
       const content = block.content[f.contentIndex];
 
-      if (isTable(content)) {
+      if (isTable(content) && contentEditableReference.current) {
+        const next = getTableArrowNavigationFocus(contentEditableReference.current, f, content, "down");
+        if (next === undefined) return;
         event.preventDefault();
-        const next = verticalTableStep(f, content, "down");
         if (next === "exit") {
           setEditorState(exitTable("forward"));
         } else {
@@ -662,6 +664,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         const pasteMetadata = getPasteMetadata(event.clipboardData);
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
+          spraak: editorState.info.spraak,
           enhetsId: editorState.info.avsenderEnhet.enhetNr,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
@@ -681,6 +684,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           const pasteMetadata = getPasteMetadata(event.clipboardData);
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,
+            spraak: editorState.info.spraak,
             enhetsId: editorState.info.avsenderEnhet.enhetNr,
             antallTegn: pasteLength,
             merEnn200: pasteLength > 200,

@@ -119,10 +119,8 @@ object SharedPostgres {
 
     private val subscriptions = ConcurrentSet<Any>()
 
-    private val container by lazy {
-        createStandaloneContainer()
-            .apply { start() }
-    }
+    // Stoppes når siste abonnent forsvinner, så en ny syklus må få en ny container.
+    private var container: PostgreSQLContainer? = null
 
     private val initialized = AtomicBoolean(false)
 
@@ -132,7 +130,8 @@ object SharedPostgres {
     fun subscribeAndEnsureDatabaseInitialized(subscriber: Any) {
         synchronized(this) {
             if (initialized.compareAndSet(false, true)) {
-                val c = container
+                val c = createStandaloneContainer().apply { start() }
+                container = c
                 database = Database.connect(initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20))
             }
             subscriptions.add(subscriber)
@@ -144,7 +143,8 @@ object SharedPostgres {
             subscriptions.remove(subscriber)
             if (subscriptions.isEmpty()) {
                 try {
-                    container.stop()
+                    container?.stop()
+                    container = null
                 } catch (t: Throwable) {
                     println("Could not stop Postgres container: ${t.message}")
                 }

@@ -11,7 +11,6 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregning.*
 import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
 
 object OmstillingsstoenadFellesFraser {
 
@@ -149,22 +148,37 @@ object OmstillingsstoenadFellesFraser {
             paragraph {
                 text(
                     bokmal {
-                        +"Du kan finne svar på ${Constants.OMS_URL}. På ${Constants.KONTAKT_URL} kan du " +
-                                "chatte eller skrive til oss. Du kan også kontakte oss på telefon " +
-                                "${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, hverdager mellom klokken 09.00-15.00. " +
-                                "Hvis du oppgir fødselsnummer, kan vi lettere gi deg rask og god hjelp."
-                    },
+                        +"Du finner mer informasjon på ${Constants.OMS_URL}."},
                     nynorsk {
-                        +"Du kan finne svar på ${Constants.OMS_URL}. Du kan skrive til eller chatte " +
-                                "med oss på ${Constants.KONTAKT_URL}. Alternativt kan du ringje oss på telefon " +
-                                "${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, kvardagar mellom klokka 09.00–15.00. " +
-                                "Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummer."
+                        +"Du finn meir informasjon på ${Constants.OMS_URL}."
                     },
                     english {
-                        +"You can find answers to your questions online: ${Constants.OMS_URL}. " +
-                                "Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact " +
-                                "us by phone at ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, Monday to Friday between 9:00 AM and 3:00 PM. " +
-                                "If you provide your national identity number, we can more easily provide you with quick and good help."
+                        +"You can find more information at ${Constants.OMS_URL}."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."},
+                    nynorsk {
+                        +"På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                    },
+                    english {
+                        +"You can chat or write to us at ${Constants.Engelsk.KONTAKT_URL}."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, hverdager 09.00–15.00."
+                    },
+                    nynorsk {
+                        +"Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, kvardagar 09.00–15.00."
+                    },
+                    english {
+                        +"If you do not find the answer at ${Constants.NAV_URL}, you can call us by phone at ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, weekdays 09:00-15:00."
                     }
                 )
             }

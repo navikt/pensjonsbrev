@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
@@ -20,6 +22,7 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
     var adresselinje3 by MottakerTable.adresselinje3
     var manueltAdressertTil by MottakerTable.manueltAdressertTil
     var landkode by MottakerTable.landkode
+    var adresse by MottakerTable.adresse
 
     companion object : EntityClass<BrevId, Mottaker>(MottakerTable) {
 
@@ -27,6 +30,34 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
             return new(brevredigering.id.value) {
                 oppdater(mottaker)
             }
+        }
+    }
+
+    data class Adresse(
+        val type: MottakerType,
+        val tssId: TssId?,
+        val navn: Navn?,
+        val postnummer: NorskPostnummer?,
+        val poststed: Poststed?,
+        val adresselinje1: Adresselinje?,
+        val adresselinje2: Adresselinje?,
+        val adresselinje3: Adresselinje?,
+        val manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil,
+        val landkode: BrevLandmodell.Landkode?,
+    ) {
+        companion object {
+            fun fraDto(mottaker: Dto.Mottaker) = Adresse(
+                type = mottaker.type,
+                tssId = mottaker.tssId,
+                navn = mottaker.navn,
+                postnummer = mottaker.postnummer,
+                poststed = mottaker.poststed,
+                adresselinje1 = mottaker.adresselinje1,
+                adresselinje2 = mottaker.adresselinje2,
+                adresselinje3 = mottaker.adresselinje3,
+                manueltAdressertTil = mottaker.manueltAdressertTil,
+                landkode = mottaker.landkode,
+            )
         }
     }
 
@@ -42,29 +73,60 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
         landkode = mottaker.landkode
         manueltAdressertTil = mottaker.manueltAdressertTil
 
+        adresse = Adresse.fraDto(mottaker)
+
         return this
     }
 
     fun toDto(): Dto.Mottaker =
-        when (type) {
-            MottakerType.SAMHANDLER -> Dto.Mottaker.samhandler(tssId!!)
+        when (adresse.type) {
+            MottakerType.SAMHANDLER -> Dto.Mottaker.samhandler(adresse.tssId!!)
             MottakerType.NORSK_ADRESSE -> Dto.Mottaker.norskAdresse(
-                navn = navn!!,
-                postnummer = postnummer!!,
-                poststed = poststed!!,
-                adresselinje1 = adresselinje1,
-                adresselinje2 = adresselinje2,
-                adresselinje3 = adresselinje3,
-                manueltAdressertTil = manueltAdressertTil,
+                navn = adresse.navn!!,
+                postnummer = adresse.postnummer!!,
+                poststed = adresse.poststed!!,
+                adresselinje1 = adresse.adresselinje1,
+                adresselinje2 = adresse.adresselinje2,
+                adresselinje3 = adresse.adresselinje3,
+                manueltAdressertTil = adresse.manueltAdressertTil,
             )
 
             MottakerType.UTENLANDSK_ADRESSE -> Dto.Mottaker.utenlandskAdresse(
-                navn = navn!!,
-                adresselinje1 = adresselinje1!!,
-                adresselinje2 = adresselinje2,
-                adresselinje3 = adresselinje3,
-                landkode = landkode!!,
-                manueltAdressertTil = manueltAdressertTil,
+                navn = adresse.navn!!,
+                adresselinje1 = adresse.adresselinje1!!,
+                adresselinje2 = adresse.adresselinje2,
+                adresselinje3 = adresse.adresselinje3,
+                landkode = adresse.landkode!!,
+                manueltAdressertTil = adresse.manueltAdressertTil,
             )
         }
+}
+
+@JvmInline
+value class Adresselinje(val value: String) {
+    init {
+        require(value.length <= 128) { "Adresselinje kan ikke være lengre enn 128 tegn" }
+    }
+}
+
+@JvmInline
+value class Navn(val value: String) {
+    init {
+        // Er ikke helt sikker på hvorfor akkurat 128, men det er det vi per no har i databasetabellen, så viderefører det
+        require(value.length <= 128) { "Navn kan ikke være lengre enn 128 tegn" }
+    }
+}
+
+@JvmInline
+value class Poststed(val value: String) {
+    init {
+        require(value.length <= 50) { "Poststed kan ikke være lengre enn 50 tegn" }
+    }
+}
+
+@JvmInline
+value class TssId(val value: String) {
+    init {
+        require(value.length <= 50) { "TSS-ID kan ikke være lengre enn 50 tegn" }
+    }
 }

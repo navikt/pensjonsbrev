@@ -20,6 +20,8 @@ import no.nav.pensjon.brev.alder.maler.sivilstand.fraser.InnvilgetYtelseEPS
 import no.nav.pensjon.brev.alder.maler.sivilstand.fraser.OmregningGarantiPen
 import no.nav.pensjon.brev.alder.maler.sivilstand.fraser.OpphoerYtelseEPS
 import no.nav.pensjon.brev.alder.maler.sivilstand.fraser.OpphoerYtelseEPSOver2G
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
@@ -674,5 +676,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 vedleggMaanedligPensjonFoerSkattAp2025,
                 pesysData.maanedligPensjonFoerSkattAP2025Dto,
             )
+            includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlderDto)
+            includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.opplysningerBruktIBeregningenAlderAP2025Dto)
         }
 }
