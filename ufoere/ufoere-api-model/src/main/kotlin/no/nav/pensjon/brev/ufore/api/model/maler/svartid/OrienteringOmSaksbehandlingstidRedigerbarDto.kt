@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.redigerbar
+package no.nav.pensjon.brev.ufore.api.model.maler.svartid
 
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
