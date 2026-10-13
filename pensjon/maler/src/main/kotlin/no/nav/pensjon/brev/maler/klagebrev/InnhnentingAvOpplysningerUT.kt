@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.UT_KLAGE_INNHENTING_AV_OPPLYSNINGER
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -38,7 +39,13 @@ object InnhnentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
         }
 
         outline {
-            paragraph { text(bokmal { +"Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst("dato") + "." }) }
+            paragraph {
+                text(bokmal {
+                    +"Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst(
+                        "dato"
+                    ) + "."
+                })
+            }
 
             paragraph {
                 text(bokmal {
@@ -49,12 +56,39 @@ object InnhnentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
                 })
             }
 
-            paragraph { text(bokmal { +fritekst("<Tilpass etter hva som er mangelen i klagen. Vi ber derfor om at du underskriver på vedlagt kopi av klagen / opplyser om hvilket vedtak du klager på / opplyser om hvilken endring du ønsker i vedtaket/ hvorfor vedtaket er feil>. }) }
+            paragraph {
+                text(bokmal {
+                    +fritekst(
+                        "Tilpass etter hva som er mangelen i klagen. "
+                                + "Vi ber derfor om at du underskriver på vedlagt kopi av klagen / "
+                                + "opplyser om hvilket vedtak du klager på / "
+                                + "opplyser om hvilken endring du ønsker i vedtaket/ hvorfor vedtaket er feil."
+                    )
+                })
+            }
 
+            paragraph {
+                text(bokmal {
+                    +fritekst(
+                        "Klagen må sendes inn til skanning sammen med vedlagte forside til adressen oppgitt på forsidearket. "
+                                + "På $NAV_URL kan du sende inn dokumenter elektronisk ved bruk av BankID. "
+                                + "Det beste er om klagen sendes til oss på nytt på denne måten."
+                    )
+                })
+            }
 
+            paragraph {
+                text(bokmal {
+                    +fritekst(
+                        "Vi ber deg sende klagen innen "
+                                + fritekst("klagefristenes utløp/14 dager") + ". Dersom du trenger hjelp til å utforme klagen ber vi deg ta kontakt med ditt lokale Nav-kontor."
+                    )
+                })
+            }
 
-                    paragraph { text(bokmal { +fritekst("dokumentasjon") }) }
-            paragraph { text(bokmal { +"Når vi har mottatt dokumentasjonen, vil vi fortsette behandlingen av klagen din." }) }
+            paragraph {
+                text(bokmal { +"Klagen din kan bli avvist dersom vi ikke mottar klagen innen fristen." })
+            }
         }
     }
 }
