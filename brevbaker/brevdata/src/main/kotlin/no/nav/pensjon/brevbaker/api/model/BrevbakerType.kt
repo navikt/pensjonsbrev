@@ -73,7 +73,7 @@ object BrevbakerType {
     value class VedleggId(val id: String) {
         init {
             require(id.isNotBlank()) { "VedleggId kan ikke være blank" }
-            require(id.length <= 8) { "VedleggId må være mindre enn eller lik 8 tegn, var ${id.length}" }
+            require(id.length <= 128) { "VedleggId må være mindre enn eller lik 128 tegn, var ${id.length}" }
         }
     }
 
