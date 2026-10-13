@@ -314,10 +314,9 @@ describe("Actions.pasteReplacingSelection", () => {
     test.each([
       ["mixed text and a table (HTML)", { "text/html": mixedHtml }],
       ["mixed text and a table (RTF)", { "text/rtf": mixedRtf }],
-      ["two paragraphs", { "text/html": "<p>Før</p><p>A\tB</p>" }],
       ["a heading", { "text/html": "<h2>Før A\tB</h2>" }],
       ["a list", { "text/html": "<ul><li>Før</li><li>A\tB</li></ul>" }],
-      ["RTF paragraphs", { "text/rtf": "{\\rtf1\\ansi \\pard Før\\par A\\tab B\\par}" }],
+      ["paragraphs and a list", { "text/html": "<p>Før</p><ul><li>A\tB</li></ul>" }],
     ])("%s inside a table cell falls back to text/plain", (_, clipboard) => {
       const result = Actions.pasteReplacingSelection(
         tableState(),
@@ -352,6 +351,35 @@ describe("Actions.pasteReplacingSelection", () => {
       );
 
       expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell **fet** og _kursiv_ | other"]);
+    });
+
+    const pasteInCell = (clipboard: Record<string, string>) =>
+      Actions.pasteReplacingSelection(tableState(), selectInCell, new MockDataTransfer(clipboard));
+    const cellLiterals = (result: ReturnType<typeof pasteInCell>) =>
+      select<Table>(result, { blockIndex: 0, contentIndex: 1 }).rows[0].cells[0].text.map((content) =>
+        text(content as LiteralValue),
+      );
+
+    test.each([
+      ["HTML", { "text/html": "<p><b>fet</b></p><p><i>kursiv</i></p>" }],
+      ["RTF", { "text/rtf": "{\\rtf1\\ansi \\pard{\\b fet}\\par\\pard{\\i kursiv}\\par}" }],
+    ])("paragraphs from %s inside a table cell are joined with a space and keep their formatting", (_, clipboard) => {
+      const result = pasteInCell({ ...clipboard, "text/plain": "fet\nkursiv" });
+
+      // The joining space takes the previous paragraph's font.
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell **fet **_kursiv_ | other"]);
+    });
+
+    test("same-font paragraphs inside a table cell become one literal", () => {
+      const result = pasteInCell({ "text/html": "<p>En</p><p>To</p>", "text/plain": "En\nTo" });
+
+      expect(cellLiterals(result)).toEqual(["cell En To"]);
+    });
+
+    test("an empty paragraph between paragraphs inside a table cell adds no extra space", () => {
+      const result = pasteInCell({ "text/html": "<p>En</p><p>&nbsp;</p><p>To</p>", "text/plain": "En\n\nTo" });
+
+      expect(cellLiterals(result).join("")).toEqual("cell En To");
     });
   });
 

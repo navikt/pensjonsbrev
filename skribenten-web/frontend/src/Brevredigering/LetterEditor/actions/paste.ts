@@ -145,8 +145,9 @@ function resolveClipboardInsertion(
 /**
  * What `insertion` becomes at `focus`, or undefined if it can't be inserted there.
  *
- * A table cell only takes bold and italic text, so anything with structure (paragraphs, headings, lists,
- * tables) is rejected as a whole and the paste falls back to plain text, instead of losing or mangling parts of it.
+ * A table cell only takes bold and italic text: paragraphs are joined, and anything with more structure
+ * (headings, lists, tables) is rejected as a whole and the paste falls back to plain text, instead of losing or
+ * mangling parts of it.
  * Elsewhere, tables can only be inserted in a paragraph; anything else goes wherever text can.
  */
 function fitToFocus(
@@ -165,12 +166,27 @@ function fitToFocus(
   return insertion;
 }
 
-/** Text runs, or the text of a single paragraph (RTF always has one); undefined for anything else or no text. */
+/**
+ * The text runs of text and paragraphs, with paragraphs joined by a space since cells have no line breaks.
+ * Undefined for anything else, or if there is no text.
+ */
 function inlineTextOf(elements: TraversedElement[]): Text[] | undefined {
-  const [first] = elements;
-  const runs: TraversedElement[] = elements.length === 1 && first.type === "P" ? first.content : elements;
-  if (!runs.every((run): run is Text => run.type === "TEXT")) return undefined;
-  return runs.some((run) => run.text.length > 0) ? runs : undefined;
+  const runs: Text[] = [];
+  let previous: TraversedElement | undefined;
+  for (const element of elements) {
+    if (element.type !== "TEXT" && element.type !== "P") return undefined;
+    const content = element.type === "P" ? element.content : [element];
+    const last = runs.at(-1);
+    const startsParagraph = element.type === "P" || previous?.type === "P";
+    if (startsParagraph && last && content.some((run) => run.text.trim().length > 0)) {
+      // On the previous run, so it keeps that font and same-font paragraphs merge into one literal.
+      runs[runs.length - 1] = { ...last, text: `${last.text} ` };
+    }
+    runs.push(...content);
+    previous = element;
+  }
+  const merged = mergeNeighbouringText(runs);
+  return merged.some((run) => run.text.trim().length > 0) ? merged : undefined;
 }
 
 function canInsertTableAt(draft: Draft<LetterEditorState>, focus: Focus): boolean {

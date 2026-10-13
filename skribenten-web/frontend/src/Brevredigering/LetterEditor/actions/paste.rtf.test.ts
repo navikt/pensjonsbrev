@@ -501,9 +501,12 @@ describe("LetterEditorActions.paste - text/rtf matches text/html at every positi
 
       expect(fromRtf.redigertBrev).toEqual(fromHtml.redigertBrev);
       expect(fromRtf.focus).toEqual(fromHtml.focus);
-      // Tables can only be pasted directly in a paragraph, and a table cell only takes inline text;
+      // Tables can only be pasted directly in a paragraph, and a table cell only takes text and paragraphs;
       // everything else must change the letter.
-      const insertable = "cellIndex" in index ? name === "inline text" : name !== "a table" || !("itemIndex" in index);
+      const insertable =
+        "cellIndex" in index
+          ? name === "inline text" || name === "formatted paragraphs"
+          : name !== "a table" || !("itemIndex" in index);
       expect(JSON.stringify(fromRtf.redigertBrev) !== JSON.stringify(state.redigertBrev)).toBe(insertable);
     });
   });
