@@ -79,9 +79,9 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
 
             paragraph {
                 text(bokmal {
-                        "Vi ber deg sende klagen innen "
-                                + fritekst("klagefristenes utløp/14 dager") + ". "
-                                +"Dersom du trenger hjelp til å utforme klagen ber vi deg ta kontakt med ditt lokale Nav-kontor."
+                    +"Vi ber deg sende klagen innen "
+                    +fritekst("klagefristenes utløp/14 dager") + ". "
+                    +"Dersom du trenger hjelp til å utforme klagen ber vi deg ta kontakt med ditt lokale Nav-kontor."
                 })
             }
 
