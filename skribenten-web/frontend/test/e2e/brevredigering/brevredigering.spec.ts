@@ -4,6 +4,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
+import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 
 const fixturesDir = path.resolve("test/e2e/fixtures");
@@ -95,6 +96,46 @@ test.describe("Brevredigering", () => {
     await expect(page.getByText("Lagret")).toBeVisible();
     await expect(page.getByText("hello!")).toBeVisible();
   });
+
+  for (const saveStatus of [200, 500]) {
+    test(`browser Back frigir reservasjonen etter at siste autolagring svarer ${saveStatus}`, async ({ page }) => {
+      const saveGate = Promise.withResolvers<void>();
+      const events: string[] = [];
+      const reservasjon = JSON.parse(fs.readFileSync(path.join(fixturesDir, "brevreservasjon.json"), "utf-8"));
+      reservasjon.reservertAv.id = "Z990297";
+      await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", async (route) => {
+        events.push("save-start");
+        await saveGate.promise;
+        await route.fulfill({
+          status: saveStatus,
+          json: { ...brevResponse, redigertBrev: route.request().postDataJSON() },
+        });
+        events.push("save-end");
+      });
+      await page.route("**/bff/skribenten-backend/brev/1/reservasjon", (route) => {
+        if (route.request().method() !== "DELETE") return route.fulfill({ json: reservasjon });
+        events.push("release");
+        return route.fulfill({ status: 204 });
+      });
+      await page.goto("/saksnummer/123456/brev/1");
+      await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+      await page.evaluate(() => {
+        const state = history.state;
+        history.replaceState(state, "", "/saksnummer/123456/brevvelger");
+        history.pushState(state, "", "/saksnummer/123456/brev/1");
+      });
+      await page.clock.install();
+      await page.getByLabel("Underskrift").fill("Oppdatert signatur");
+      await page.goBack();
+      await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger/);
+      await expect.poll(() => events).toContain("save-start");
+      expect(events).toEqual(["save-start"]);
+      saveGate.resolve();
+      await expect.poll(() => events).toEqual(["save-start", "save-end", "release"]);
+      await page.clock.runFor(AUTOSAVE_TIMER + 100);
+      expect(events).toEqual(["save-start", "save-end", "release"]);
+    });
+  }
 
   test("lagrer signatur og saksbehandlerValg ved fortsett klikk", async ({ page }) => {
     let lagreBrevCount = 0;

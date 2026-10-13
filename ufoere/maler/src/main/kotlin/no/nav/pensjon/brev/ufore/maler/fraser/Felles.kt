@@ -5,6 +5,11 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_KONTAKTSENTER_TELEFON_UFORE
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_URL
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.UFORE_URL
 
 class Felles {
 
@@ -69,11 +74,11 @@ class Felles {
                 text(
                     bokmal { +
                     "Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. " +
-                    "Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} hvis du trenger hjelp. " +
+                    "Kontakt oss på telefon ${NAV_KONTAKTSENTER_TELEFON_UFORE} hvis du trenger hjelp. " +
                     "Klagen kan sendes direkte til oss eller gjennom utenlandsk trygdemyndighet på ditt bosted."},
                     nynorsk { +
                     "Nav kan rettleie deg på telefon om korleis du sender ei klage. Nav-kontoret ditt kan òg hjelpe deg med å skrive ei klage. " +
-                    "Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} dersom du treng hjelp. " +
+                    "Kontakt oss på telefon ${NAV_KONTAKTSENTER_TELEFON_UFORE} dersom du treng hjelp. " +
                     "Klagen kan sendast direkte til oss eller gjennom utanlandsk trygdemyndigheit på din bustad."}
                 )
             }
@@ -126,7 +131,7 @@ class Felles {
                 text(
                     bokmal { +
                     "Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. " +
-                            "Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} hvis du trenger hjelp."},
+                            "Kontakt oss på telefon ${NAV_KONTAKTSENTER_TELEFON_UFORE} hvis du trenger hjelp."},
                 )
             }
             paragraph {
@@ -171,8 +176,8 @@ class Felles {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via nav.no for å se dokumenter i saken din."},
-                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via nav.no for å sjå dokument i saka di. "}
+                    bokmal { + "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din."},
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokument i saka di. "}
                 )
             }
         }
@@ -188,15 +193,15 @@ class Felles {
             }
             paragraph {
                 text(
-                    bokmal { + "Du finner mer informasjon på ${Constants.UFORE_URL}. " +
-                            "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. " +
-                            "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} " +
-                            "hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                    bokmal { + "Du finner mer informasjon på $UFORE_URL. " +
+                            "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
+                            "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE " +
+                            "hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID."
                     },
-                    nynorsk { + "Du finn meir informasjon på ${Constants.UFORE_URL}. " +
-                            "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. " +
-                            "Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} " +
-                            "kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                    nynorsk { + "Du finn meir informasjon på $UFORE_URL. " +
+                            "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
+                            "Dersom du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE " +
+                            "kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID."
                     }
                 )
             }

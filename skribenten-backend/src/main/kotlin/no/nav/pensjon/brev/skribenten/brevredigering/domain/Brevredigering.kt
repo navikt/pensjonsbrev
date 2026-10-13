@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.Stat
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.letter.updateSakspartOgSignatur
@@ -34,10 +35,11 @@ interface Brevredigering {
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
     val saksbehandlerValg: SaksbehandlervalgMap
-    val saksbehandlerValgKryptert: SaksbehandlervalgMap?
+    val saksbehandlerValgKryptert: SaksbehandlervalgMap
     val statiskFagsystemBrevdata: StatiskFagsystemBrevdata?
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
+    val rendretBrev: Edit.Letter?
 
     /**
      * Denne burde få et bedre navn.
@@ -78,6 +80,7 @@ interface Brevredigering {
     fun markerSomArkivert(journalpostId: JournalpostId)
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
+    fun settRendretBrev(rendretBrev: LetterMarkup)
     fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
     fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
@@ -105,6 +108,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
         private set
     override val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
+    override var rendretBrev by BrevredigeringTable.rendretBrevKryptert
+        private set
     override var laastForRedigering by BrevredigeringTable.laastForRedigering
         private set
     override var distribusjonstype by BrevredigeringTable.distribusjonstype
@@ -202,6 +207,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.sistredigert = timestamp
             this.sistRedigertAv = opprettetAv
             this.redigertBrev = redigertBrev
+            this.rendretBrev = redigertBrev
             this.brevtype = brevtype
         }
     }
@@ -263,6 +269,11 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
         redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
+        settRendretBrev(rendretBrev)
+    }
+
+    override fun settRendretBrev(rendretBrev: LetterMarkup) {
+        this.rendretBrev = rendretBrev.toEdit()
     }
 
     override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
@@ -287,7 +298,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             ?.let { modelSpec.types[it] }
 
         val oppdaterteSaksbehandlervalg = SaksbehandlervalgMap().apply {
-            putAll(saksbehandlerValg)
+            putAll(saksbehandlerValgKryptert)
             saksbehandlerValgSpec?.entries?.forEach {
                 val fieldType = it.value
                 if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
@@ -389,7 +400,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             info = toBrevInfo(brevreservasjonPolicy),
             redigertBrev = redigertBrev,
             redigertBrevHash = redigertBrevHash,
-            saksbehandlerValg = saksbehandlerValg,
+            saksbehandlerValg = saksbehandlerValgKryptert,
             propertyUsage = coverage,
             valgteVedlegg = valgteVedlegg
         )

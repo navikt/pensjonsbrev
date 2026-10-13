@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmaktsgiverBprofAutoDto
 import no.nav.pensjon.brev.fixtures.adhoc.fullmakterbprof.createFullmektigBprofAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.*
-import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakOmFjerningAvOmsorgsopptjeningDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
 import no.nav.pensjon.brev.maler.*
@@ -40,7 +39,6 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
 import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
-import no.nav.pensjon.brev.maler.ufore.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0
 import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoerepensjonRedigerbar
@@ -48,7 +46,7 @@ import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertry
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ufore.diverse.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
-import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektV2
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektAuto
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
@@ -108,7 +106,7 @@ object Fixtures : LetterDataFactory {
             OversendelsesbrevTilKlageinstansUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageInnhentingAvOpplysningerUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             EndretBarnetilleggUfoerertrygdAuto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
-            EndretUfoeretrygdPGAInntektV2::class -> createEndretUTPgaInntektDtoV2() as T
+            EndretUfoeretrygdPGAInntektAuto::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUforetrygdPGAInntektNesteAr::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUfoeretrygdPGAInntektRedigerbar::class -> createEndretUfoeretrygdPGAInntektRedigerbarDto() as T
             EndretUforetrygdPGAOpptjeningLegacy::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
@@ -123,13 +121,11 @@ object Fixtures : LetterDataFactory {
             OmsorgEgenManuell::class -> createOmsorgManuellDto() as T
             OpphoerBarnetilleggAuto::class -> createOpphoerBarnetilleggAutoDto() as T
             OpptjeningVedForhoeyetHjelpesats::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
-            OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidDto() as T
             SamletMeldingOmPensjonsvedtakV2::class -> createSamletMeldingOmPensjonsvedtakV2Dto() as T
             TilbakekrevingAvFeilutbetaltBeloep::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
             UfoerOmregningEnslig::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAuto::class -> createUngUfoerAutoDto() as T
             VarselRevurderingAvPensjon::class -> createVarselRevurderingAvPensjonDto() as T
-            VarselSaksbehandlingstidAuto::class -> createVarselSaksbehandlingstidAutoDto() as T
             VarselTilbakekrevingAvFeilutbetaltBeloep::class -> createVarselTilbakekrevingAvFeilutbetaltBeloep() as T
             VedtakAvslagPaaOmsorgsopptjening::class -> createVedtakAvslagPaaOmsorgsopptjeningDto() as T
             VedtakOmFjerningAvOmsorgsopptjening::class -> createVedtakOmFjerningAvOmsorgsopptjeningDto() as T
