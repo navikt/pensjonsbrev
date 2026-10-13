@@ -156,7 +156,7 @@ object EndretUfoeretrygdPGAInntekt {
             showIf(not(endretUt) and not(btfbEndret) and not(btsbEndret)) {
                 title1 {
                     text(
-                        bokmal { + "Derfor endres ikke utbetalingen  " },
+                        bokmal { + "Derfor endres ikke utbetalingen " },
                         nynorsk { + "Difor blir utbetalinga ikkje endra " }
                     )
                 }
