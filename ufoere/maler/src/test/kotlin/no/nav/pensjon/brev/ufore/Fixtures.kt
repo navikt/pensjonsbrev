@@ -417,7 +417,7 @@ object Fixtures : LetterDataFactory {
         )
 
     fun createOrienteringOmSaksbehandlingstidRedigerbarDto() = OrienteringOmSaksbehandlingstidDto(
-        saksbehandlerValg = lagSaksbehandlervalg("soeknadOversendesTilUtlandet" to true),
+        saksbehandlerValg = lagSaksbehandlervalg("forlengetSaksbehandlingstid" to true),
         pesysData = EmptyFagsystemdata
     )
 }
