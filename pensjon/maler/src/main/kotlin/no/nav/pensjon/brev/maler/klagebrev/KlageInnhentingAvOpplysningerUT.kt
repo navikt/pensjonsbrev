@@ -17,7 +17,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 @TemplateModelHelpers
-object InnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.brevmalKlageInnhentingAvOpplysningerUT.toggle
 

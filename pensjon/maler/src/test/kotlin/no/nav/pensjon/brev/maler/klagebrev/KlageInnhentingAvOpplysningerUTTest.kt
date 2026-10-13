@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
-class InnhentingAvOpplysningerUTTest {
+class KlageInnhentingAvOpplysningerUTTest {
 
     private val letter = LetterTestImpl(
-        InnhentingAvOpplysningerUT.template,
+        KlageInnhentingAvOpplysningerUT.template,
         EmptyRedigerbarBrevdata(saksbehandlerValg = lagSaksbehandlervalg()),
         Language.Bokmal,
         Fixtures.felles,
@@ -23,11 +23,11 @@ class InnhentingAvOpplysningerUTTest {
 
     @Test
     fun testPdf() {
-        letter.renderTestPDF(InnhentingAvOpplysningerUT.kode.name)
+        letter.renderTestPDF(KlageInnhentingAvOpplysningerUT.kode.name)
     }
 
     @Test
     fun testHtml() {
-        letter.renderTestHtml(InnhentingAvOpplysningerUT.kode.name)
+        letter.renderTestHtml(KlageInnhentingAvOpplysningerUT.kode.name)
     }
 }

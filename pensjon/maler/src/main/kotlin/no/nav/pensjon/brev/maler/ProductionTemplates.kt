@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoring
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
-import no.nav.pensjon.brev.maler.klagebrev.InnhentingAvOpplysningerUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
@@ -143,7 +143,7 @@ object ProductionTemplates : AllTemplates {
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUTRedigerbar,
         InnhentingDokumentasjonFraBruker,
-        InnhentingAvOpplysningerUT,
+        KlageInnhentingAvOpplysningerUT,
         InnhentingOpplysningerFraBruker,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
         InnvilgelseUforetrygdRedigerbar,
