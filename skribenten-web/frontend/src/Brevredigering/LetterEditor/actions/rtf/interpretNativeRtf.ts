@@ -40,9 +40,10 @@ import { FontType, ListType } from "~/types/brevbakerTypes";
  * - Simple tables: `\trhdr` rows become the header, horizontally merged continuation cells (`\clmrg`)
  *   are dropped, and vertically merged cells (`\clvmrg`) stay as empty cells.
  *
- * Dropped: images and other objects, hidden text (`\v`), tracked deletions (`\deleted`), field instructions
- * (their result is kept), headers/footers/notes and other destinations without body text. Anything
- * else, such as underline, colour, indents and numbering styles, is ignored.
+ * Dropped: images and other objects, hidden text (`\v`) and tracked deletions (`\deleted`) including their
+ * paragraph marks (a deleted paragraph leaves no blank line, a deleted mark joins two paragraphs), field
+ * instructions (their result is kept), headers/footers/notes and other destinations without body text.
+ * Anything else, such as underline, colour, indents and numbering styles, is ignored.
  */
 
 const NUMBERED_PN_WORDS: ReadonlySet<string> = new Set([
@@ -162,11 +163,15 @@ function finalizeTextRun(items: Text[], trimEdges = true): Text[] {
     .filter((item) => item.text.length > 0);
 }
 
-function resetParagraphMarkers(ctx: ParseContext) {
-  ctx.text = [];
+function discardParagraphMarkers(ctx: ParseContext) {
   ctx.listMarker = undefined;
   ctx.pnListType = undefined;
   ctx.pnLevel = undefined;
+}
+
+function resetParagraphMarkers(ctx: ParseContext) {
+  ctx.text = [];
+  discardParagraphMarkers(ctx);
 }
 
 function headingOf(ctx: ParseContext, props: ParagraphProps): HeadingType | undefined {
@@ -298,15 +303,23 @@ function appendText(ctx: ParseContext, value: string, destination: RtfDestinatio
 
 const isOn = (token: RtfControlToken) => !token.hasParam || token.param !== 0;
 
-/** `\par`, and section and page breaks, which we can't represent, end the paragraph. */
+/**
+ * `\par`, and section and page breaks, which we can't represent, end the paragraph.
+ *
+ * A hidden or tracked-deleted break is dropped like the text around it: the paragraph's text continues into the
+ * next one, which gets that paragraph's properties, and its list marker is discarded.
+ */
 function breakParagraph(ctx: ParseContext, kind: "par" | "sectionOrPage") {
+  const group = currentGroup(ctx);
+  if (group.hidden || group.deleted) {
+    discardParagraphMarkers(ctx);
+    return;
+  }
   if (isInTable(ctx)) {
     // Paragraphs inside a cell are joined with a space.
     ctx.table ??= newTable();
     appendText(ctx, " ", "body");
-    ctx.listMarker = undefined;
-    ctx.pnListType = undefined;
-    ctx.pnLevel = undefined;
+    discardParagraphMarkers(ctx);
     return;
   }
   const isEmpty = ctx.listMarker === undefined && ctx.text.every((item) => item.text.trim().length === 0);

@@ -592,6 +592,31 @@ describe("interpretNativeRtf - character formatting", () => {
   });
 
   test.each([
+    ["a deleted paragraph", "\\pard Før\\par {\\deleted Slettet.\\par}\\pard Etter\\par", ["Før", "Etter"]],
+    ["a deleted paragraph mark", "\\pard Første{\\deleted\\par}\\pard Andre\\par", ["FørsteAndre"]],
+    ["a hidden paragraph", "\\pard Før\\par {\\v Skjult\\par}\\pard Etter\\par", ["Før", "Etter"]],
+    ["a style separator", "\\pard Overskrift{\\v\\specvanish\\par}\\pard  tekst\\par", ["Overskrift tekst"]],
+    ["a deleted list item", "{\\listtext 2.\\tab}{\\deleted Punkt\\par}\\pard Avsnitt\\par", ["Avsnitt"]],
+    ["\\sect and \\page in deleted text", "\\pard Før{\\deleted\\sect\\page} etter\\par", ["Før etter"]],
+  ])("drops the paragraph break of %s", (_, body, expected) => {
+    expect(interpret(`${HEADER}${body}}`)).toEqual(expected.map(paragraph));
+  });
+
+  test("a deleted paragraph break inside a table cell adds no space", () => {
+    const rtf = `${HEADER}\\trowd\\cellx4000\\pard\\intbl En{\\deleted\\par}To\\cell\\row\\pard\\par}`;
+
+    expect(interpret(rtf)).toEqual([{ type: "TABLE", rows: [{ cells: [{ content: [plain("EnTo")] }] }] }]);
+  });
+
+  test.each([
+    ["after a hidden group", "\\pard {\\v skjult}Første\\par Andre\\par"],
+    ["after \\v0", "\\pard \\v skjult\\v0 Første\\par Andre\\par"],
+    ["after \\plain", "\\pard \\deleted slettet\\plain Første\\par Andre\\par"],
+  ])("a visible paragraph break %s still breaks", (_, body) => {
+    expect(interpret(`${HEADER}${body}}`)).toEqual([paragraph("Første"), paragraph("Andre")]);
+  });
+
+  test.each([
     ["\\lquote a\\rquote", "\u2018a\u2019"],
     ["\\ldblquote a\\rdblquote", "\u201Ca\u201D"],
     ["a\\endash b\\emdash c", "a\u2013b\u2014c"],
