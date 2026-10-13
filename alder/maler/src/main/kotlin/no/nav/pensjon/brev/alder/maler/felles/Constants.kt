@@ -21,6 +21,7 @@ object Constants {
     const val FAMILIEPLEIER_URL = "$NAV_URL/tidligere-familiepleier"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
     const val GJENLEVENDEPENSJON_URL = "$NAV_URL/gjenlevendepensjon"
+    const val SOSIALHJELP_URL = "$NAV_URL/sosialhjelp"
     const val UFOERETRYGD_URL = "$NAV_URL/uforetrygd"
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val AFP_OFFENTLIG_URL = "$NAV_URL/afp-offentlig"
