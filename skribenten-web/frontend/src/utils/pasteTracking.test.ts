@@ -80,11 +80,29 @@ describe("getPasteMetadata", () => {
     expect(metadata).toEqual({ innholdsformat: "RTF", htmlTagger: undefined, rtfDokumentSpraak: undefined });
   });
 
-  test("henter RTF-kilde fra \\generator", () => {
-    const rtf =
-      "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Calibri;}}{\\*\\generator Msftedit 5.41.21.2510;}\\viewkind4 Hei\\par}";
+  test.each([
+    ["Msftedit 5.41.21.2510", "RichEdit (WordPad e.l.)", "5.41.21.2510"],
+    ["Riched20 10.0.22621", "RichEdit (WordPad e.l.)", "10.0.22621"],
+    ["Microsoft Word 11.0.6113", "Word", "11.0.6113"],
+    ["Riched20", "RichEdit (WordPad e.l.)", undefined],
+    ["Riched20 10.0 Ola Nordmann", "RichEdit (WordPad e.l.)", undefined],
+    ["Aspose.Words for Java 13.12.0.0", "Annen", undefined],
+  ])("henter RTF-kilde fra \\generator %s som fast verdi", (generator, kilde, versjon) => {
+    const rtf = `{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0 Calibri;}}{\\*\\generator ${generator};}\\viewkind4 Hei\\par}`;
 
-    expect(getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": rtf })).rtfKilde).toBe("Msftedit 5.41.21.2510");
+    const metadata = getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": rtf }));
+
+    expect(metadata.rtfKilde).toBe(kilde);
+    expect(metadata.rtfKildeVersjon).toBe(versjon);
+  });
+
+  test("kjenner igjen TextEdit på \\cocoartf i RTF-hodet", () => {
+    const rtf = "{\\rtf1\\ansi\\ansicpg1252\\cocoartf2580\n{\\fonttbl\\f0\\fswiss Helvetica;}\\f0 Hei\\par}";
+
+    expect(getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": rtf }))).toMatchObject({
+      rtfKilde: "TextEdit (macOS)",
+      rtfKildeVersjon: undefined,
+    });
   });
 
   test("kjenner igjen Outlook-RTF med innkapslet HTML", () => {
@@ -105,10 +123,13 @@ describe("getPasteMetadata", () => {
     expect(getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": rtf })).rtfKilde).toBeUndefined();
   });
 
-  test("korter ned lange \\generator-navn", () => {
-    const rtf = `{\\rtf1\\ansi{\\*\\generator ${"x".repeat(80)};} Hei\\par}`;
+  test("sender aldri teksten fra \\generator videre", () => {
+    const rtf = "{\\rtf1\\ansi{\\*\\generator Ola Nordmann 12345678901;} Hei\\par}";
 
-    expect(getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": rtf })).rtfKilde).toBe("x".repeat(50));
+    const metadata = getPasteMetadata(clipboard(["text/rtf"], { "text/rtf": rtf }));
+
+    expect(metadata).toMatchObject({ rtfKilde: "Annen", rtfKildeVersjon: undefined });
+    expect(JSON.stringify(metadata)).not.toMatch(/Ola|12345678901/);
   });
 });
 

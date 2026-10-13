@@ -6,7 +6,10 @@ export interface PasteMetadata {
   innholdsformat: PasteFormat;
   htmlTagger?: string;
   rtfDokumentSpraak?: string;
+  /** Which application produced the RTF, as a fixed label; never text from the RTF itself. */
   rtfKilde?: string;
+  /** The version from `\generator`, only for known applications and only if it is a plain version number. */
+  rtfKildeVersjon?: string;
   /** `\ansicpgN` from the RTF header, to learn whether non-Western code pages reach the RTF paste path. */
   rtfKodetabell?: string;
 }
@@ -16,7 +19,6 @@ type Clipboard = Pick<DataTransfer, "getData" | "types">;
 const MAX_HTML_LENGTH_FOR_TAG_EXTRACTION = 100_000;
 /** `\deflang` and `\generator` are in the RTF header, so only the start of large documents is read. */
 const MAX_RTF_HEADER_LENGTH = 100_000;
-const MAX_RTF_SOURCE_LENGTH = 50;
 
 /** Whether the clipboard has anything to paste; RTF-only clipboards have no text/plain. */
 export function hasPasteContent(clipboard: Clipboard): boolean {
@@ -32,12 +34,14 @@ export function getPasteMetadata(clipboard: Clipboard): PasteMetadata {
   const hasHtml = types.includes("text/html");
   const hasRtf = RTF_TYPES.some((type) => types.includes(type));
   const rtfHeader = hasRtf ? getRtfClipboardData(clipboard)?.slice(0, MAX_RTF_HEADER_LENGTH) : undefined;
+  const rtfSource = rtfHeader === undefined ? undefined : detectRtfSource(rtfHeader);
 
   return {
     innholdsformat: hasHtml ? "HTML" : hasRtf ? "RTF" : "ren tekst",
     htmlTagger: hasHtml ? extractHtmlTags(clipboard.getData("text/html")) : undefined,
     rtfDokumentSpraak: rtfHeader === undefined ? undefined : detectRtfDocumentLanguage(rtfHeader),
-    rtfKilde: rtfHeader === undefined ? undefined : detectRtfSource(rtfHeader),
+    rtfKilde: rtfSource?.kilde,
+    rtfKildeVersjon: rtfSource?.versjon,
     rtfKodetabell: rtfHeader === undefined ? undefined : detectRtfCodePage(rtfHeader),
   };
 }
@@ -75,14 +79,38 @@ export function detectRtfDocumentLanguage(rtf: string): string | undefined {
   return LCID_LABELS.get(lcid) ?? `unknown (${lcid})`;
 }
 
-/** Which application produced the RTF, to learn which sources actually reach the RTF paste path. */
-export function detectRtfSource(rtf: string): string | undefined {
+export interface RtfSource {
+  kilde: string;
+  versjon?: string;
+}
+
+const KNOWN_GENERATORS: ReadonlyArray<readonly [RegExp, string]> = [
+  [/^(?:Riched20|Msftedit)\b/, "RichEdit (WordPad e.l.)"],
+  [/^Microsoft Word\b/, "Word"],
+];
+const GENERATOR_VERSION = /^\d{1,5}(?:\.\d{1,5}){0,3}$/;
+
+/**
+ * Which application produced the RTF, to learn which sources actually reach the RTF paste path. `\generator` is
+ * free text from the document, so it is only matched against known applications and never passed on as is.
+ */
+export function detectRtfSource(rtf: string): RtfSource | undefined {
   const header = rtfHeaderGroup(rtf);
-  if (/\\fromhtml1/.test(header)) return "Outlook (HTML)";
-  if (/\\fromtext/.test(header)) return "Outlook (tekst)";
+  if (/\\fromhtml1/.test(header)) return { kilde: "Outlook (HTML)" };
+  if (/\\fromtext/.test(header)) return { kilde: "Outlook (tekst)" };
+  if (/\\cocoartf/.test(header)) return { kilde: "TextEdit (macOS)" };
 
   const generator = /\{\\\*\\generator ([^;}]*)/.exec(rtf)?.[1]?.trim();
-  return generator ? generator.slice(0, MAX_RTF_SOURCE_LENGTH) : undefined;
+  if (!generator) return undefined;
+
+  for (const [pattern, kilde] of KNOWN_GENERATORS) {
+    const match = pattern.exec(generator);
+    if (match) {
+      const version = generator.slice(match[0].length).trim();
+      return { kilde, versjon: GENERATOR_VERSION.test(version) ? version : undefined };
+    }
+  }
+  return { kilde: "Annen" };
 }
 
 export function detectRtfCodePage(rtf: string): string | undefined {
