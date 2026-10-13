@@ -353,6 +353,7 @@ function RedigerBrev({
           trackEvent("tid brukt i editor", {
             brevId: brev.info.id,
             brevkode: brev.info.brevkode,
+            spraak: brev.info.spraak,
             varighetSekunder,
             varighetMinutter: Math.round(varighetSekunder / 60),
             enhetsId,
