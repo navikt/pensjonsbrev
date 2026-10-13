@@ -166,9 +166,17 @@ test.describe("Letter editor accessibility", () => {
     test("open table context menu", async ({ page }, testInfo) => {
       await openTableEditor(page);
       await page.getByTestId("table-cell-0-0").click({ button: "right" });
-      await expect(page.getByRole("menu")).toBeVisible();
+      const menu = page.getByRole("menu");
+      await expect(menu).toBeVisible();
+      const trigger = page.getByRole("button", { name: "Tabellmeny", exact: true });
+      await expect(trigger).not.toHaveAttribute("aria-hidden", "true");
+      await expect(trigger).toHaveAttribute("tabindex", "-1");
       await expect(page.getByRole("menuitem", { name: "Sett inn kolonne til høyre", exact: true })).toBeVisible();
       await expectNoAxeViolations(page, testInfo);
+      await page.keyboard.press("ArrowDown");
+      await expect(menu.locator('[role="menuitem"]:focus')).toHaveCount(1);
+      await page.keyboard.press("Escape");
+      await expect(menu).not.toBeVisible();
     });
   });
 
