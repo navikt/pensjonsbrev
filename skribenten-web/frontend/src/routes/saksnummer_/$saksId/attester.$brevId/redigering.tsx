@@ -272,13 +272,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       trackEvent("diff modus endret", {
         brevId: props.brev.info.id,
         brevkode: props.brev.info.brevkode,
+        spraak: props.brev.info.spraak,
         kilde: "automatisk",
         diffModus: false,
         defaultDiffModus: defaultDiffMode,
       });
     }
     disableDiffMode();
-  }, [disableDiffMode, defaultDiffMode, props.brev.info.id, props.brev.info.brevkode]);
+  }, [disableDiffMode, defaultDiffMode, props.brev.info.id, props.brev.info.brevkode, props.brev.info.spraak]);
 
   // Safety net for saveStatus transitions to DIRTY that don't go through an explicit disableDiffMode
   // call first (e.g. editing the underskrift field, or keeping/deleting a block missing from the mal).
@@ -297,6 +298,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     trackEvent("diff modus endret", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
       kilde: "manuell",
       diffModus: checked,
       defaultDiffModus: defaultDiffMode,
@@ -391,6 +393,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     trackEvent("tid brukt i attestering", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
       varighetSekunder,
       varighetMinutter: Math.round(varighetSekunder / 60),
       enhetsId: props.brev.info.avsenderEnhet.enhetNr,
@@ -398,6 +401,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     trackEvent("brev attestert", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
       enhetsId: props.brev.info.avsenderEnhet.enhetNr,
     });
     navigate({
