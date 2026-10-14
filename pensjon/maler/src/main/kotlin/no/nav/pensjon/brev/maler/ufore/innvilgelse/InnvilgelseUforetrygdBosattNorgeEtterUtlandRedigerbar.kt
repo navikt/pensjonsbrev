@@ -38,7 +38,7 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
 
     // PE_UT_04_107
     override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_NORGE_UTLAND
-    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
