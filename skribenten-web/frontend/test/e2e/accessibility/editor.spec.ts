@@ -64,7 +64,7 @@ async function expectNoAxeViolations(page: Page, testInfo: TestInfo) {
     await Promise.all(document.getAnimations().map((animation) => animation.finished.catch(() => {})));
   });
 
-  const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+  const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
 
   await testInfo.attach("axe-results", {
     body: JSON.stringify(results, null, 2),
