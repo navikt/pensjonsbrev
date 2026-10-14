@@ -29,10 +29,10 @@ object TypstDocumentRenderer {
         appendDictionary(
             "input",
             mapOf(
-                "gjelderNavn" to document.saksinformasjon?.mottaker?.gjelderNavn,
-                "gjelderFoedselsnummer" to document.saksinformasjon?.mottaker?.gjelderPersonidentifikator?.format(),
-                "annenMottakerNavn" to document.saksinformasjon?.mottaker?.annenMottakerNavn,
-                "saksnummer" to document.saksinformasjon?.saksnummer?.value,
+                "gjelderNavn" to document.gjelderNavn,
+                "gjelderFoedselsnummer" to document.gjelderPersonidentifikator?.format(),
+                "annenMottakerNavn" to document.annenMottakerNavn,
+                "saksnummer" to document.saksnummer?.saksnummer?.value,
                 "dokumentDato" to document.dokumentDato?.format(pdfDateFormatter(language, FormatStyle.LONG)),
             )
         )
@@ -50,9 +50,9 @@ object TypstDocumentRenderer {
         appendCodeln("""  title: "${document.tittel.typstStringEscape()}",""")
         appendCodeln("""  showTitle: ${document.visTittel.typst()},""")
         appendCodeln("""  showLogo: ${document.visLogo.typst()},""")
-        appendCodeln("""  showCaseDetails: ${(document.saksinformasjon?.mottaker != null).typst()},""")
+        appendCodeln("""  showCaseDetails: ${document.harSaksinformasjon().typst()},""")
         appendCodeln("""  showDocumentDate: ${(document.dokumentDato != null).typst()},""")
-        appendCodeln("""  showFooter: ${(document.saksinformasjon?.visFooter == true).typst()},""")
+        appendCodeln("""  showFooter: ${(document.saksnummer?.visFooter == true).typst()},""")
         appendCodeln("""  input: input,""")
         appendCodeln("""  languageSettings: languageSettings,""")
         appendCodeln(""")""")
@@ -64,5 +64,8 @@ object TypstDocumentRenderer {
         appendCodeln("}")
     }
 }
+
+private fun Document.harSaksinformasjon(): Boolean =
+    listOf(gjelderNavn, gjelderPersonidentifikator, annenMottakerNavn, saksnummer).any { it != null }
 
 private fun Boolean.typst(): String = if (this) "true" else "false"

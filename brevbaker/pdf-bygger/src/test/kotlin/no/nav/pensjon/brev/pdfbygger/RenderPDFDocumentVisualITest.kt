@@ -3,8 +3,7 @@ package no.nav.pensjon.brev.pdfbygger
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.document.dsl.document
 import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
-import no.nav.brev.brevbaker.document.dsl.documentMottaker
-import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
+import no.nav.brev.brevbaker.document.dsl.documentSaksnummer
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.cell
 import no.nav.brev.brevbaker.markup.dsl.column
@@ -32,14 +31,9 @@ class RenderPDFDocumentVisualITest {
         val request = documentPDFRequest(
             document(
                 tittel = "Dokument med alle elementer",
-                saksinformasjon = documentSaksinformasjon(
-                    saksnummer = PdfByggerTestData.saksnummer,
-                    visFooter = true,
-                    mottaker = documentMottaker(
-                        gjelderNavn = PdfByggerTestData.gjelderNavn,
-                        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
-                    ),
-                ),
+                gjelderNavn = PdfByggerTestData.gjelderNavn,
+                gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                saksnummer = documentSaksnummer(PdfByggerTestData.saksnummer, visFooter = true),
                 dokumentDato = PdfByggerTestData.dokumentDato,
             ) {
                 paragraph(
@@ -79,6 +73,50 @@ class RenderPDFDocumentVisualITest {
 
         writeTestPDF(
             pdfFileName = "document med alle elementer",
+            pdf = pdf.bytes,
+            path = Path.of("build/test_visual/pdf"),
+        )
+    }
+
+    @Test
+    fun `document med delvis saksinformasjon`() {
+        val request = documentPDFRequest(
+            document(
+                tittel = "Dokument med delvis saksinformasjon",
+                gjelderNavn = PdfByggerTestData.gjelderNavn,
+                annenMottakerNavn = "Annen Mottaker",
+                dokumentDato = PdfByggerTestData.dokumentDato,
+            ) {
+                paragraph("Saksinformasjonen viser kun feltene som er sendt med, og ingen footer.")
+            },
+            Markup.Spraak.BOKMAL,
+        )
+
+        val pdf = runBlocking { pdfCompileService.producePDFDokument(request) }
+
+        writeTestPDF(
+            pdfFileName = "document med delvis saksinformasjon",
+            pdf = pdf.bytes,
+            path = Path.of("build/test_visual/pdf"),
+        )
+    }
+
+    @Test
+    fun `document med bare dokumentdato`() {
+        val request = documentPDFRequest(
+            document(
+                tittel = "Dokument med bare dokumentdato",
+                dokumentDato = PdfByggerTestData.dokumentDato,
+            ) {
+                paragraph("Dokumentdatoen vises selv om ingen andre saksinformasjonsfelter er sendt med.")
+            },
+            Markup.Spraak.BOKMAL,
+        )
+
+        val pdf = runBlocking { pdfCompileService.producePDFDokument(request) }
+
+        writeTestPDF(
+            pdfFileName = "document med bare dokumentdato",
             pdf = pdf.bytes,
             path = Path.of("build/test_visual/pdf"),
         )
