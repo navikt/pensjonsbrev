@@ -71,16 +71,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
 
             paragraph {
                 text(
-                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                )
-                text(
-                    bokmal { +"<Eller>" },
-                    nynorsk { +"<Eller>" },
-                )
-                text(
-                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
+                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din. " },
+                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din. " },
                 )
             }
 
