@@ -4,7 +4,9 @@
  * - encapsulated.rtf/.html: verbatim copies of the MS-OXRTFEX spec example and its expected output,
  *   https://github.com/mazira/rtf-stream-parser/blob/f112deb2cd93797a2dbc28aa38d8e143b86a79d4/test/examples/encapsulated.rtf
  *   https://github.com/mazira/rtf-stream-parser/blob/f112deb2cd93797a2dbc28aa38d8e143b86a79d4/test/examples/encapsulated.html
- *   The example originates in the MS-OXRTFEX specification:
+ *   The example is section 3.1 of the MS-OXRTFEX specification and is covered by Microsoft copyrights, not by the
+ *   MIT license; the specification's IP notice permits copies for developing implementations (quoted in
+ *   test/fixtures/rtf/README.md):
  *   https://learn.microsoft.com/en-us/openspecs/exchange_server_protocols/ms-oxrtfex
  * - Inline snippets in tests marked "fra Outlook", which upstream notes as seen in the wild, are copied from
  *   https://github.com/mazira/rtf-stream-parser/blob/f112deb2cd93797a2dbc28aa38d8e143b86a79d4/test/de-encapsulate.test.ts
