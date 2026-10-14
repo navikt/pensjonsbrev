@@ -97,10 +97,10 @@ data class InnvilgelseAvAfpInnhold(
                             "Nav har avgjort andre spørsmål om retten til pensjon, mellom anna berekninga. Berekningsreglane står i paragrafane 6 til 11 i AFP-tilskottslova. "
                 },
                 english {
-                    +"This decision is made pursuant to the act relating to state subsidies to employees who draw an early retirement pension in the private sector (the Early Retirement Pension Subsidy Act – AFP-tilskottsloven). " +
-                            "The Common Scheme for Contractual Pension has ascertained that you meet the contractual terms for the right to AFP. " +
+                    +"This decision is made pursuant to the Act on state subsidies to employees who receive contractual pension in the private sector (AFP Subsidies Act). " +
+                            "Fellesordningen for AFP has determined that you meet the contractual terms for the right to AFP. " +
                             "Nav has decided on other issues regarding the right to pension, including the calculation. " +
-                            "The calculation rules are listed in sections 6 to 11 of the Early Retirement Pension Subsidy Act. "
+                            "The calculation rules are listed in sections 6 to 11 of the AFP Subsidies Act. "
                 },
             )
         }
@@ -163,7 +163,7 @@ data class InnvilgelseAvAfpInnhold(
 
             paragraph {
                 text(
-                    bokmal { +"Du får etterbetalt pensjon fra <dato>. " + //TODO: Etterbetalingsdato
+                    bokmal { +"Du får etterbetalt pensjon fra <dato>. " + //TODO: FOM på første etterbetalingsperiode
                             "Etterbetalingen vil vanligvis bli utbetalt i løpet av sju virkedager. " +
                             "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. " +
                             "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
@@ -195,14 +195,14 @@ data class InnvilgelseAvAfpInnhold(
                     text(
                         bokmal { +"Med unntak av kompensasjonstillegget er din AFP skattepliktig." },
                         nynorsk { +"Med unntak av kompensasjonstillegget er AFP skattepliktig." },
-                        english { +"Your contractual pension is taxable, except for the compensation supplement." },
+                        english { +"Your AFP is taxable, except for the compensatory allowance." },
                     )
                 }
                 .orShow {
                     text(
                         bokmal { +"Din AFP er skattepliktig." },
                         nynorsk { +"AFP-en din er skattepliktig." },
-                        english { +"Your contractual pension is taxable." },
+                        english { +"Your AFP is taxable." },
                     )
                 }
             }
