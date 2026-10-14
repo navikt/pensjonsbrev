@@ -8,9 +8,11 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe1
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.selectors.personSak.foedselsdato
 import no.nav.pensjon.brev.maler.ufore.fraser.erUforetidspunktMaanedEtterFoedsel
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.SlikBeregnerViUPTilUT
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.barnetillegg.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.OpplysningerBruktIBeregningTabell
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.OpplysningerOmAvdoedTabell
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntekt.ReduksjonsprosentOgUtbetalingUPTilUT
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.SlikBeregnerViUfoeretrygden
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.SlikBeregnerViUfoeretrygdenKonvertert
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.etteroppgjoer.EtteroppgjoerAvUforetrygdOgBarnetillegg
@@ -20,7 +22,7 @@ import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegni
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikBeregnerViReduksjonenAvUfoeretrygden
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikBlirDinUtbetalingFoerSkatt
-import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikHarViFastsattKompensasjonsgradenDin
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikHarViFastsattReduksjonsprosentenDin
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.minsteytelse.ForDegSomHarRettTilMinsteytelse
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.trygdetid.*
 import no.nav.pensjon.brev.model.format
@@ -87,8 +89,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // Minsteytelse
         includePhrase(ForDegSomHarRettTilMinsteytelse(pe))
 
-        // TODO TBU028V-TBU020V trengs for brev PE_UT_04_300 og PE_UT_14_300
-        // (Vedtak - omregning av uførepensjon til uføretrygd auto & manuell)
+        showIf(pe.skalViseOmregningUPtilUT()){
+            includePhrase(SlikBeregnerViUPTilUT(pe))
+        }
 
         showIf(pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
             includePhrase(Grunnbeloep(pe))
@@ -168,12 +171,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         }
 
         // ============================================================
-        // Kompensasjonsgrad og utbetaling
+        // Reduksjonsprosent og utbetaling
         // ============================================================
-        // TODO vises kun om brevkode er PE_UT_14_300 or PE_UT_04_300
-        //includePhrase(TBU052V_TBU073V_Del_1_InntektenDinFoerDuBleUfoer())
+        showIf(pe.skalViseOmregningUPtilUT()) {
+            includePhrase(ReduksjonsprosentOgUtbetalingUPTilUT(pe))
+        }
 
-        includePhrase(SlikHarViFastsattKompensasjonsgradenDin(pe))
+        includePhrase(SlikHarViFastsattReduksjonsprosentenDin(pe))
 
         includePhrase(SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(pe))
 
@@ -184,7 +188,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // ============================================================
         // Barnetillegg og andre tillegg
         // ============================================================
-        showIf(pe.pe_ut_tbu601v_tbu604v()) {
+        showIf(pe.erInntektsendringMedEndretBarnetillegg()) {
             includePhrase(SlikRedusererViBarnetilleggetUtFraInntekt(pe))
         }
         includePhrase(ForDegSomHarRettTilBarnetillegg(pe))

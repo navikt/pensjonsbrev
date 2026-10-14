@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER

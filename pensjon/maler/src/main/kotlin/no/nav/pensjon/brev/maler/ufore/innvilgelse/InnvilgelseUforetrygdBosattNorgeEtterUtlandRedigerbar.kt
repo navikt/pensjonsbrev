@@ -36,8 +36,9 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
 
     override val featureToggle = FeatureToggles.brevmalUtBosattNorgeEtterUtland.toggle
 
+    // PE_UT_04_107
     override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_NORGE_UTLAND
-    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
@@ -51,8 +52,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilga søknaden din om uføretrygd " },
+                bokmal { +"Nav har gjort en endelig beregning av uføretrygden din" },
+                nynorsk { +"Nav har gjort ein endeleg berekning av uføretrygda di" },
             )
         }
         outline {
@@ -70,16 +71,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
 
             paragraph {
                 text(
-                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                )
-                text(
-                    bokmal { +"<Eller>" },
-                    nynorsk { +"<Eller>" },
-                )
-                text(
-                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
+                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din. " },
+                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din. " },
                 )
             }
 
@@ -174,8 +167,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
             showIf(trygdetideosland) {
                 paragraph {
                     text(
-                        bokmal { +"Uføretrygden din har vært foreløpig beregnet etter folketrygdlovens regler. Etter EØS- avtalens regler har du rett til en alternativ beregning." },
-                        nynorsk { +"Uføretrygda di har vore førebels rekna ut etter folketrygdlova sine reglar. Etter EØS-avtalen sine reglar har du rett til ei alternativ rekning." },
+                        bokmal { +"Uføretrygden din har vært foreløpig beregnet etter folketrygdlovens regler. Etter EØS- avtalens regler har du rett til en alternativ beregning. " },
+                        nynorsk { +"Uføretrygda di har vore førebels rekna ut etter folketrygdlova sine reglar. Etter EØS-avtalen sine reglar har du rett til ei alternativ rekning. " },
                     )
                     text(
                         bokmal { +"Vi har sammenlignet hvor mye du får i uføretrygd beregnet både etter folketrygdlovens regler og EØS-avtalens regler. Du får den beregningen som er mest gunstig for deg. Uføretrygden din er derfor beregnet etter reglene i folketrygdloven." },
@@ -228,8 +221,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
             }
             paragraph {
                 text(
-                    bokmal { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra " + fritekst("utenlandsk trygdemyndighet") + "." },
-                    nynorsk { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra " + fritekst("utenlandsk trygdemyndighet") + "." },
+                    bokmal { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». " },
+                    nynorsk { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». " },
                 )
             }
 

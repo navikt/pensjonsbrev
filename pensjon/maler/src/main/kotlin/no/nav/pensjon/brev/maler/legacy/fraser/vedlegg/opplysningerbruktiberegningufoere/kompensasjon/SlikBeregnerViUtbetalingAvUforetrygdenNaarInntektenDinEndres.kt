@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.exstreamFunctions.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.*
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseUtbetalingVedInntektsendringTittel
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseUtbetalingVedInntektsendringDetaljer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -16,19 +18,7 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
     val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            showIf((pe.vedtaksdata_kravhode_kravarsaktype()
-                .equalTo("endret_inntekt") and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
-                .notEqualTo(
-                    pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-                ) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
-                .lessThan(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                ) and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode()
-                .notEqualTo("PE_UT_04_109") and pe.pebrevkode()
-                .notEqualTo("PE_UT_07_200") and (pe.pebrevkode()
-                .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
-                "tilst_dod"
-            ))))){
+            showIf(pe.skalViseUtbetalingVedInntektsendringTittel()){
 
             title1 {
                 text (
@@ -45,26 +35,7 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
             }
         }
 
-        showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")
-                and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(
-            pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-        )
-                and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-            .greaterThanOrEqual(
-                pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
-            )
-                and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
-            .lessThan(
-                pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-            )
-                and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0)
-                and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                and (pe.pebrevkode()
-            .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
-            "tilst_dod"
-        ))))){
+        showIf(pe.skalViseUtbetalingVedInntektsendringDetaljer()){
             paragraph {
                 text (
                     bokmal { + "Uføretrygden reduseres med " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
@@ -80,26 +51,8 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
         }
 
         showIf(
-            pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")
-                    and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(
-                pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-            )
-                    and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
-                .greaterThanOrEqual(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
-                )
-                    and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
-                .lessThan(
-                    pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-                )
-                    and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0)
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                    and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                    and (pe.pebrevkode()
-                .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
-                "tilst_dod"
-            )))){
+            pe.skalViseUtbetalingVedInntektsendringDetaljer()
+        ){
             paragraph {
                 text (
                     bokmal { + "Du har et bunnfradrag på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
