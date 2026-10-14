@@ -47,6 +47,7 @@ data class InnvilgelseAvAfpDto(
         // (PE_AF_04_115) inkluderer ikke vedlegget.
         val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
         val harEtterbetaling: Boolean,
+        val forsteEtterbetalingsDato: LocalDate?,
         val dinAfpPrivatBeregning: DinAfpPrivatBeregningDto?,
     ) : FagsystemBrevdata {
 

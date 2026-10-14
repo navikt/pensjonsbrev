@@ -25,6 +25,7 @@ fun createInnvilgelseAvAfpDto(): InnvilgelseAvAfpDto =
                 referansebeloep = Kroner(11122),
                 kompensasjonstilleggForholdstall = 11.7,
             ),
+            forsteEtterbetalingsDato = LocalDate.of(2023, 3, 1),
             harEtterbetaling = true,
             dinAfpPrivatBeregning = createDinAfpPrivatBeregningDto(),
         )

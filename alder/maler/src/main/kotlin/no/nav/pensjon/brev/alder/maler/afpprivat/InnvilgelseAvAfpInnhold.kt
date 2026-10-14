@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -30,6 +31,7 @@ data class InnvilgelseAvAfpInnhold(
     val kompensasjonstilleggBrutto: Expression<Kroner?>,
     val brukerUnder70Aar: Expression<Boolean>,
     val bosattINorge: Expression<Boolean>,
+    val forsteEtterbetalingsDato: Expression<LocalDate?>,
     val harEtterbetaling: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -160,24 +162,25 @@ data class InnvilgelseAvAfpInnhold(
                     english { +"Back payment" },
                 )
             }
-
-            paragraph {
-                text(
-                    bokmal { +"Du får etterbetalt pensjon fra <dato>. " + //TODO: FOM på første etterbetalingsperiode
-                            "Etterbetalingen vil vanligvis bli utbetalt i løpet av sju virkedager. " +
-                            "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. " +
-                            "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
-                            "Du kan sjekke eventuelle trekk i utbetalingsmeldingen på $MINSIDE_URL." },
-                    nynorsk { +"Du får etterbetalt pensjon frå <dato>. " +
-                            "Etterbetalinga vil vanlegvis bli utbetalt i løpet av sju vyrkedagar. " +
-                            "Vi kan trekke frå skatt og ytingar du har fått frå til dømes Nav eller tenestepensjonsordningar. " +
-                            "Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordningar har ni vekers frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle trekk i utbetalingsmeldinga på $MINSIDE_URL." },
-                    english { +"You will receive a back payment of pension from <dato>. " +
-                            "The back payment will normally be paid within seven working days. " +
-                            "We may deduct tax and benefits you have received from, for example, Nav or occupational pension schemes. " +
-                            "This may delay your back payment. Occupational pension schemes have a nine-week deadline to request deductions from the back payment. " +
-                            "You can check any deductions in your payment statement at $MINSIDE_URL." },
-                )
+            ifNotNull(forsteEtterbetalingsDato) { forsteEtterbetalingsDato ->
+                paragraph {
+                    text(
+                        bokmal { +"Du får etterbetalt pensjon fra " + forsteEtterbetalingsDato.format() + "."+
+                                "Etterbetalingen vil vanligvis bli utbetalt i løpet av sju virkedager. " +
+                                "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. " +
+                                "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
+                                "Du kan sjekke eventuelle trekk i utbetalingsmeldingen på $MINSIDE_URL." },
+                        nynorsk { +"Du får etterbetalt pensjon frå " + forsteEtterbetalingsDato.format() + ". " +
+                                "Etterbetalinga vil vanlegvis bli utbetalt i løpet av sju vyrkedagar. " +
+                                "Vi kan trekke frå skatt og ytingar du har fått frå til dømes Nav eller tenestepensjonsordningar. " +
+                                "Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordningar har ni vekers frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle trekk i utbetalingsmeldinga på $MINSIDE_URL." },
+                        english { +"You will receive a back payment of pension from " + forsteEtterbetalingsDato.format() + ". " +
+                                "The back payment will normally be paid within seven working days. " +
+                                "We may deduct tax and benefits you have received from, for example, Nav or occupational pension schemes. " +
+                                "This may delay your back payment. Occupational pension schemes have a nine-week deadline to request deductions from the back payment. " +
+                                "You can check any deductions in your payment statement at $MINSIDE_URL." },
+                    )
+                }
             }
         }
 

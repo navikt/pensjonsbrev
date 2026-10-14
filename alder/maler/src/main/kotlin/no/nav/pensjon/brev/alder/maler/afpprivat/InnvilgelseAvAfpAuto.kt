@@ -55,6 +55,7 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
                     kompensasjonstilleggBrutto = afpBeregning.kompensasjonstilleggBrutto,
                     brukerUnder70Aar = brukerUnder70Aar,
                     bosattINorge = bosattINorge,
+                    forsteEtterbetalingsDato = forsteEtterbetalingsDato,
                     harEtterbetaling = harEtterbetaling,
                 ),
             )

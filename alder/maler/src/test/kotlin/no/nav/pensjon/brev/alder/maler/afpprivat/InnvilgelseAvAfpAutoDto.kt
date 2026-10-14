@@ -24,6 +24,7 @@ fun createInnvilgelseAvAfpAutoDto(): InnvilgelseAvAfpAutoDto =
             kompensasjonstilleggForholdstall = 11.7,
         ),
         harEtterbetaling = true,
+        forsteEtterbetalingsDato = LocalDate.of(2023, 3, 1),
         dinAfpPrivatBeregning = createDinAfpPrivatBeregningDto(),
     )
 
