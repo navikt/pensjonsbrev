@@ -143,7 +143,6 @@ object Fixtures : LetterDataFactory {
             DelvisEksportAvUforetrygdRedigerbar::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             OmregningUfoerepensjonTilUfoeretrygdRedigerbar::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
             OpphoerGjenlevendepensjon::class -> createOpphoerGjenlevendepensjonDto() as T
-            VedtakFeilutbetaltBeloepTilbakekrevesIkke::class -> createVedtakFeilutbetaltBeloepTilbakekrevesIkkeDto() as T
             AvslagGjenlevendepensjon::class -> createAvslagGjenlevendepensjonDto() as T
             AvslagGjenlevendepensjonUtland::class -> createAvslagGjenlevendepensjonUtlandDto() as T
             VedtakOmLavereMinstesatsAuto::class -> createVedtakOmLavereMinstesatsAutoDto() as T

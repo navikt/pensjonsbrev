@@ -1,6 +1,6 @@
-package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
+package no.nav.pensjon.brev.alder.model.feilutbetaltbelop
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL

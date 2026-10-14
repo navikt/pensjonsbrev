@@ -1,8 +1,8 @@
-package no.nav.pensjon.brev.fixtures.redigerbar
+package no.nav.pensjon.brev.alder.maler.feilutbetaltbelop
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto
+import no.nav.pensjon.brev.alder.model.Sakstype
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto
 import java.time.LocalDate
 
 fun createVedtakFeilutbetaltBeloepTilbakekrevesIkkeDto() =

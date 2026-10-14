@@ -1,13 +1,18 @@
-package no.nav.pensjon.brev.maler.legacy.redigerbar
+package no.nav.pensjon.brev.alder.maler.feilutbetaltbelop
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.Hjemmel
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.*
-import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.erForeloepigUfoerepensjon
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.forhaandsvarselDato
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.hjemmel
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.sakstype
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.virkningFom
+import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.virkningTom
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -25,10 +30,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VedtakFeilutbetaltBeloepTilbakekrevesIkke : RedigerbarTemplate<VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto> {
 
-    override val kode = Pesysbrevkoder.Redigerbar.PE_FEILUTBETALT_BELOEP_TILBAKEKREVES_IKKE
+    override val kode = Aldersbrevkoder.Redigerbar.FEILUTBETALT_BELOEP_TILBAKEKREVES_IKKE
     override val kategori = Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER, Sakstype.AFP, Sakstype.BARNEP, Sakstype.GJENLEV, Sakstype.UFOREP)
+
+    override val featureToggle = FeatureToggles.feilutbetaltBelopTilbakekrevesIkke.toggle
 
     override val template = createTemplate(
         languages = languages(Bokmal),
@@ -62,7 +69,7 @@ object VedtakFeilutbetaltBeloepTilbakekrevesIkke : RedigerbarTemplate<VedtakFeil
                 text(bokmal { +"Vi viser til forhåndsvarselet vårt av " + pesysData.forhaandsvarselDato.format() + "." })
             }
             paragraph {
-                val erParagraf2216 = pesysData.hjemmel.equalTo(Hjemmel.PARAGRAF_22_16)
+                val erParagraf2216 = pesysData.hjemmel.equalTo(VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.Hjemmel.PARAGRAF_22_16)
                 text(
                     bokmal {
                         +"Vilkårene for tilbakekreving i folketrygdloven paragraf " + ifElse(erParagraf2216, "22-16", "22-15") +
