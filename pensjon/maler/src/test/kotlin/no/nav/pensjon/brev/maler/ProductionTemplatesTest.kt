@@ -17,6 +17,5 @@ class ProductionTemplatesTest : BrevmodulTest(
     },
     auto = Pesysbrevkoder.AutoBrev.entries,
     redigerbare = Pesysbrevkoder.Redigerbar.entries,
-    fixtures = Fixtures,
-    filterForPDF = listOf()
+    fixtures = Fixtures
 )
