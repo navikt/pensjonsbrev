@@ -3885,3 +3885,123 @@ describe("LetterEditorActions.paste - blocks after lists and tables", () => {
     });
   });
 });
+
+describe("LetterEditorActions.paste - a table in a list item ends the list", () => {
+  const htmlTable = "<table><tr><th>A</th></tr><tr><td>b</td></tr></table>";
+  const pastedTable = ["TABLE", "  th: A", "  tr: b"];
+  const list = (listType: ListType = ListType.PUNKTLISTE) =>
+    letter(
+      paragraph({
+        id: 1,
+        content: [
+          itemList({
+            id: 10,
+            listType,
+            items: [
+              item({ id: 11, content: [literal({ id: 111, text: "en" })] }),
+              item({ id: 12, content: [literal({ id: 121, text: "to" })] }),
+              item({ id: 13, content: [literal({ id: 131, text: "tre" })] }),
+            ],
+          }),
+        ],
+      }),
+    );
+  const inItem = (itemIndex: number) => ({ blockIndex: 0, contentIndex: 0, itemIndex, itemContentIndex: 0 });
+
+  test.each([
+    ["HTML", { "text/html": `<p>Før</p>${htmlTable}` }],
+    [
+      "RTF",
+      {
+        "text/rtf":
+          "{\\rtf1\\ansi \\pard Før\\par\\trowd\\cellx1000\\pard\\intbl A\\cell\\row\\trowd\\cellx1000\\pard\\intbl b\\cell\\row}",
+      },
+    ],
+  ])("text before the table stays in the item, and the table is not lost (%s)", (_, clipboard) => {
+    const result = Actions.paste(list(), inItem(2), 3, new MockDataTransfer(clipboard));
+
+    expect(projectLetter(result)).toEqual(["• en", "• to", "• treFør", ...pastedTable]);
+  });
+
+  test("a table on its own at the end of the last item goes after the list", () => {
+    const result = Actions.paste(list(), inItem(2), 3, new MockDataTransfer({ "text/html": htmlTable }));
+
+    expect(projectLetter(result)).toEqual(["• en", "• to", "• tre", ...pastedTable]);
+  });
+
+  test("in the middle of an item, the rest of the item and the following items continue the list after the table", () => {
+    const result = Actions.paste(list(), inItem(1), 1, new MockDataTransfer({ "text/html": htmlTable }));
+
+    expect(projectLetter(result)).toEqual(["• en", "• t", ...pastedTable, "• o", "• tre"]);
+  });
+
+  test("the following items keep their ids, the list type and are recorded as moved", () => {
+    const result = Actions.paste(
+      list(ListType.NUMMERERT_LISTE),
+      inItem(0),
+      2,
+      new MockDataTransfer({ "text/html": htmlTable }),
+    );
+
+    expect(projectLetter(result)).toEqual(["1. en", ...pastedTable, "1. to", "1. tre"]);
+    const [source, tableBlock, trailing] = result.redigertBrev.blocks;
+    expect(result.redigertBrev.blocks).toHaveLength(3);
+    expect(source.id).toBe(1);
+    expect((source.content[0] as ItemList).id).toBe(10);
+    expect((source.content[0] as ItemList).deletedItems).toEqual([12, 13]);
+    expect(tableBlock.id).toBeNull();
+    expect(trailing.id).toBeNull();
+    expect(trailing.content).toHaveLength(1);
+    const movedList = trailing.content[0] as ItemList;
+    expect(movedList.id).toBeNull();
+    expect(movedList.listType).toBe(ListType.NUMMERERT_LISTE);
+    expect(movedList.items.map((movedItem) => movedItem.id)).toEqual([12, 13]);
+  });
+
+  test("content after the table goes between the table and the rest of the list", () => {
+    const result = Actions.paste(
+      list(),
+      inItem(1),
+      1,
+      new MockDataTransfer({ "text/html": `<p>Før</p>${htmlTable}<p>Etter</p>` }),
+    );
+
+    expect(projectLetter(result)).toEqual(["• en", "• tFør", ...pastedTable, "P: Etter", "• o", "• tre"]);
+    expect(result.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 5 });
+  });
+
+  test("at the start of the first item, the table goes before the list", () => {
+    const result = Actions.paste(list(), inItem(0), 0, new MockDataTransfer({ "text/html": htmlTable }));
+
+    expect(projectLetter(result)).toEqual([...pastedTable, "• en", "• to", "• tre"]);
+    expect(result.redigertBrev.blocks[1].id).toBe(1);
+  });
+
+  test("at the start of the first item after text in the same block, the table goes between them", () => {
+    const state = letter(
+      paragraph({
+        id: 1,
+        content: [literal({ id: 2, text: "før" }), itemList({ id: 10, items: [item(literal({ text: "en" }))] })],
+      }),
+    );
+
+    const result = Actions.paste(
+      state,
+      { ...inItem(0), contentIndex: 1 },
+      0,
+      new MockDataTransfer({ "text/html": htmlTable }),
+    );
+
+    expect(projectLetter(result)).toEqual(["P: før", ...pastedTable, "• en"]);
+  });
+
+  test("replacing a selection in an item", () => {
+    const result = Actions.pasteReplacingSelection(
+      list(),
+      { start: { ...inItem(1), cursorPosition: 0 }, end: { ...inItem(1), cursorPosition: 2 } },
+      new MockDataTransfer({ "text/html": `<p>Før</p>${htmlTable}` }),
+    );
+
+    expect(projectLetter(result)).toEqual(["• en", "• Før", ...pastedTable, "• tre"]);
+  });
+});

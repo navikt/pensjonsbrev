@@ -20,6 +20,7 @@ import {
   newTitle,
   removeElements,
   splitLiteralAtOffset,
+  splitMixedListBlock,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
@@ -56,6 +57,7 @@ import {
   type ColumnSpec,
   type Content,
   FontType,
+  type ItemList,
   ListType,
   type LiteralValue,
   type Row,
@@ -65,6 +67,7 @@ import {
 import { getPasteMetadata } from "~/utils/pasteTracking";
 
 import {
+  effectiveListType,
   isEmptyBlock,
   isEmptyItem,
   isItemList,
@@ -148,7 +151,8 @@ function resolveClipboardInsertion(
  * A table cell only takes bold and italic text: paragraphs are joined, and anything with more structure
  * (headings, lists, tables) is rejected as a whole and the paste falls back to plain text, instead of losing or
  * mangling parts of it.
- * Elsewhere, tables can only be inserted in a paragraph; anything else goes wherever text can.
+ * Elsewhere, tables can only be inserted in a paragraph or a list item, where they end the list
+ * (`breakOutOfListBeforeTable`); anything else goes wherever text can.
  */
 function fitToFocus(
   draft: Draft<LetterEditorState>,
@@ -162,7 +166,13 @@ function fitToFocus(
     const inlineText = inlineTextOf(elements);
     return inlineText ? { kind: "elements", elements: inlineText } : undefined;
   }
-  if (elements.every((element) => element.type === "TABLE") && !canInsertTableAt(draft, focus)) return undefined;
+  if (
+    elements.every((element) => element.type === "TABLE") &&
+    !canInsertTableAt(draft, focus) &&
+    !isItemContentIndex(focus)
+  ) {
+    return undefined;
+  }
   return insertion;
 }
 
@@ -447,12 +457,13 @@ function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
   };
 }
 
+function hasCells(tableElement: Table): boolean {
+  return (tableElement.headerCells?.length ?? 0) > 0 || tableElement.rows.length > 0;
+}
+
 // Insert a parsed table element at current focus. Returns false if nothing was inserted.
 function insertTable(draft: Draft<LetterEditorState>, tableElement: Table): boolean {
-  if (!canInsertTableAt(draft, draft.focus)) {
-    return false;
-  }
-  if ((tableElement.headerCells?.length ?? 0) === 0 && tableElement.rows.length === 0) {
+  if (!canInsertTableAt(draft, draft.focus) || !hasCells(tableElement)) {
     return false;
   }
 
@@ -544,6 +555,9 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "TABLE": {
+        if (isItemContentIndex(draft.focus) && hasCells(element)) {
+          trailingBlock = breakOutOfListBeforeTable(draft) ?? trailingBlock;
+        }
         if (insertTable(draft, element)) inserted = true;
         continue;
       }
@@ -595,6 +609,73 @@ function moveFocusAfterPastedTable(draft: Draft<LetterEditorState>): Draft<AnyBl
     return undefined;
 
   return focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
+}
+
+/**
+ * A table can't go in a list, so a table pasted in an item ends the list at the cursor: the items from the cursor on
+ * move to a list of their own after the table, and focus moves to a new paragraph in between. Returns the block
+ * containing the content that followed, if it was moved.
+ */
+function breakOutOfListBeforeTable(draft: Draft<LetterEditorState>): Draft<AnyBlock> | undefined {
+  const focus = draft.focus;
+  if (!isItemContentIndex(focus)) return undefined;
+  const { blockIndex, contentIndex } = focus;
+  const blocks = draft.redigertBrev.blocks;
+  const block = blocks[blockIndex];
+  const itemList = block?.content[contentIndex];
+  if (!isItemList(itemList)) return undefined;
+
+  const splitIndex = splitItemAtCursor(draft, itemList);
+  const items = { content: itemList.items, deletedContent: itemList.deletedItems, id: itemList.id };
+
+  if (splitIndex === 0) {
+    // The whole list follows the table.
+    if (contentIndex > 0) return focusNewBlockAfter(draft, blockIndex, contentIndex - 1);
+    addElements(
+      [newParagraph({ content: [newLiteral({ editedText: "" })] })],
+      blockIndex,
+      blocks,
+      draft.redigertBrev.deletedBlocks,
+    );
+    draft.focus = { blockIndex, contentIndex: 0, cursorPosition: 0 };
+    return blocks[blockIndex + 1];
+  }
+
+  // An empty item at the cursor, e.g. one left by a pasted paragraph or an emptied selection, would otherwise end up
+  // as an empty first item after the table.
+  const itemAtCursor = itemList.items[splitIndex];
+  if (itemAtCursor && isEmptyItem(itemAtCursor)) removeElements(splitIndex, 1, items);
+
+  const movedItems = removeElements(splitIndex, itemList.items.length - splitIndex, items);
+  if (movedItems.length > 0) {
+    addElements(
+      [newItemList({ items: movedItems, listType: effectiveListType(itemList) })],
+      contentIndex + 1,
+      block.content,
+      block.deletedContent,
+    );
+  }
+  const trailingBlock = focusNewBlockAfter(draft, blockIndex, contentIndex);
+  // The moved list is new, so it must be alone in its block.
+  if (trailingBlock) splitMixedListBlock(draft, blockIndex + 2);
+  return trailingBlock;
+}
+
+/** Splits the focused item at the cursor and returns the index of the first item after it. */
+function splitItemAtCursor(draft: Draft<LetterEditorState>, itemList: Draft<ItemList>): number {
+  const focus = draft.focus as Draft<ItemContentIndex & Focus>;
+  const { itemIndex, itemContentIndex } = focus;
+  const cursorPosition = focus.cursorPosition ?? 0;
+  if (isAtStartOfItem(focus)) return itemIndex;
+
+  const content = itemList.items[itemIndex]?.content ?? [];
+  const atEndOfItem =
+    itemContentIndex >= content.length - 1 && cursorPosition >= (text(content[itemContentIndex]) ?? "").length;
+  if (atEndOfItem) return itemIndex + 1;
+
+  splitRecipe(draft, focus, cursorPosition);
+  // splitRecipe refuses some splits (e.g. next to an empty item); the table then goes after the whole item.
+  return isItemContentIndex(draft.focus) && draft.focus.itemIndex > itemIndex ? draft.focus.itemIndex : itemIndex + 1;
 }
 
 /**
