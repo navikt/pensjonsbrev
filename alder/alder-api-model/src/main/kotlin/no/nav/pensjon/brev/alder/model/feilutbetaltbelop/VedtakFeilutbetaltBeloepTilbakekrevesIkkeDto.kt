@@ -17,10 +17,6 @@ data class VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto(
         // (rtv-brev brev Vedtaksbrev Vedtaksdata Sakskode)
         val sakstype: Sakstype,
 
-        // PE_Vedtaksdata_Kravhode_KravVelgType = 'forelopig'
-        // (rtv-brev brev Vedtaksbrev Vedtaksdata Kravhode KravVelgType)
-        val erForeloepigUfoerepensjon: Boolean,
-
         // PE_Vedtaksdata_Kravhode_KravMottatDato
         // (rtv-brev brev Vedtaksbrev Vedtaksdata Kravhode KravMottatDato)
         val forhaandsvarselDato: LocalDate,

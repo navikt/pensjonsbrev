@@ -10,7 +10,6 @@ fun createVedtakFeilutbetaltBeloepTilbakekrevesIkkeDto() =
         saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.PesysData(
             sakstype = Sakstype.ALDER,
-            erForeloepigUfoerepensjon = false,
             forhaandsvarselDato = LocalDate.of(2026, 8, 15),
             virkningFom = LocalDate.of(2025, 1, 1),
             virkningTom = LocalDate.of(2025, 12, 31),

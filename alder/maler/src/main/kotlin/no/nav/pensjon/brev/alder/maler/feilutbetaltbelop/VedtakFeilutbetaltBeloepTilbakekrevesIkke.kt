@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto
 import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData
-import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.erForeloepigUfoerepensjon
 import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.forhaandsvarselDato
 import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.hjemmel
 import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.pesysData.sakstype
@@ -16,11 +15,9 @@ import no.nav.pensjon.brev.alder.model.feilutbetaltbelop.selectors.vedtakFeilutb
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -33,7 +30,7 @@ object VedtakFeilutbetaltBeloepTilbakekrevesIkke : RedigerbarTemplate<VedtakFeil
     override val kode = Aldersbrevkoder.Redigerbar.FEILUTBETALT_BELOEP_TILBAKEKREVES_IKKE
     override val kategori = Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
-    override val sakstyper = setOf(Sakstype.ALDER, Sakstype.AFP, Sakstype.BARNEP, Sakstype.GJENLEV, Sakstype.UFOREP)
+    override val sakstyper = setOf(Sakstype.ALDER, Sakstype.AFP, Sakstype.BARNEP, Sakstype.GJENLEV)
 
     override val featureToggle = FeatureToggles.feilutbetaltBelopTilbakekrevesIkke.toggle
 
@@ -58,10 +55,6 @@ object VedtakFeilutbetaltBeloepTilbakekrevesIkke : RedigerbarTemplate<VedtakFeil
                 text(bokmal { +"Feilutbetalt barnepensjon - melding om vedtak" })
             }.orShowIf(sakstype.equalTo(Sakstype.GJENLEV)) {
                 text(bokmal { +"Feilutbetalt pensjon til gjenlevende - melding om vedtak" })
-            }.orShowIf(sakstype.equalTo(Sakstype.UFOREP) and not(pesysData.erForeloepigUfoerepensjon)) {
-                text(bokmal { +"Feilutbetalt uførepensjon - melding om vedtak" })
-            }.orShowIf(sakstype.equalTo(Sakstype.UFOREP) and pesysData.erForeloepigUfoerepensjon) {
-                text(bokmal { +"Feilutbetalt foreløpig uførepensjon - melding om vedtak" })
             }
         }
         outline {
