@@ -36,6 +36,7 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
 
     override val featureToggle = FeatureToggles.brevmalUtBosattNorgeEtterUtland.toggle
 
+    // PE_UT_04_107
     override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_NORGE_UTLAND
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -51,8 +52,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilga søknaden din om uføretrygd " },
+                bokmal { +"Nav har gjort en endelig beregning av uføretrygden din" },
+                nynorsk { +"Nav har gjort ein endeleg berekning av uføretrygda di" },
             )
         }
         outline {
