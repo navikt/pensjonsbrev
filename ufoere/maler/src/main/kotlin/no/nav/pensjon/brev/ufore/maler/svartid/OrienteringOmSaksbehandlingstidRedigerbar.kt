@@ -182,8 +182,8 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
                 showIf(saksomkostninger) {
                     paragraph {
                         text(
-                            bokmal { +"For å få kunne vurdere kravet ditt om saksomkostninger, må vi ha konkret timeliste med informasjon om antall timer, timetakst og hva arbeidet besto i. Vi ber om at du sender oss dette innen to uker fra du mottok dette brevet. Hvis vi ikke får timeliste, kan vi avslå kravet. " },
-                            nynorsk { +"For å få kunne vurdere kravet ditt om saksomkostninger, må vi ha konkret timeliste med informasjon om antall timer, timetakst og hva arbeidet besto i. Vi ber om at du sender oss dette innen to uker fra du mottok dette brevet. Hvis vi ikke får timeliste, kan vi avslå kravet. " },
+                            bokmal { +"For å kunne vurdere kravet ditt om saksomkostninger, må vi ha konkret timeliste med informasjon om antall timer, timetakst og hva arbeidet besto i. Vi ber om at du sender oss dette innen to uker fra du mottok dette brevet. Hvis vi ikke får timeliste, kan vi avslå kravet. " },
+                            nynorsk { +"For å kunne vurdere kravet ditt om saksomkostninger, må vi ha konkret timeliste med informasjon om antall timer, timetakst og hva arbeidet besto i. Vi ber om at du sender oss dette innen to uker fra du mottok dette brevet. Hvis vi ikke får timeliste, kan vi avslå kravet. " },
                         )
                     }
                 }
