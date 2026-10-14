@@ -5,7 +5,7 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { ListType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
-import { isFocusInTable } from "../actions/common";
+import { isFocusInTable, isFocusInTitle } from "../actions/common";
 import { applyAction } from "../lib/actions";
 import { effectiveListType } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
@@ -37,7 +37,9 @@ const EditorListButton = ({ listType }: EditorListButtonProps) => {
         aria-label={listType === ListType.NUMMERERT_LISTE ? "Nummerert liste" : "Punktliste"}
         color="text-neutral"
         data-testid={dataTestId}
-        disabled={freeze || editorState.focus.blockIndex < 0 || isFocusInTable(editorState)}
+        disabled={
+          freeze || editorState.focus.blockIndex < 0 || isFocusInTable(editorState) || isFocusInTitle(editorState)
+        }
         icon={icon}
         onClick={() => {
           applyAction(action, setEditorState, editorState.focus);

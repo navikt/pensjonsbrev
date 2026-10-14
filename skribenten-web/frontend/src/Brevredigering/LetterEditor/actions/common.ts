@@ -90,6 +90,11 @@ export function isFocusInTableHeader(editorState: LetterEditorState): boolean {
   );
 }
 
+export function isFocusInTitle(editorState: LetterEditorState): boolean {
+  const type = editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.type;
+  return type === "TITLE1" || type === "TITLE2" || type === "TITLE3";
+}
+
 export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is ItemContentIndex {
   return (
     f !== undefined &&

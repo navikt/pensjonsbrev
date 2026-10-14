@@ -5,7 +5,7 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
-import { isFocusInTableHeader } from "../actions/common";
+import { isFocusInTableHeader, isFocusInTitle } from "../actions/common";
 import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
 import { applyAction } from "../lib/actions";
 import { refocusEditableAtSelection } from "../services/caretUtils";
@@ -14,7 +14,9 @@ import { tooltipText } from "../utils";
 const EditorFonts = () => {
   const { editorState, freeze, setEditorState } = useEditor();
   const activeFontType = getCurrentActiveFontTypeAtCursor(editorState);
-  const boldDisabled = isFocusInTableHeader(editorState);
+  const disabled = freeze || editorState.focus.blockIndex < 0 || isFocusInTitle(editorState);
+  // Tabelloverskrifter er allerede fete
+  const boldDisabled = disabled || isFocusInTableHeader(editorState);
 
   const switchFontType = (fontType: FontType) => {
     // Must run before the action: the resulting focus event would otherwise overwrite the focus set by the action.
@@ -27,7 +29,7 @@ const EditorFonts = () => {
       <FontButton
         active={!boldDisabled && activeFontType === FontType.BOLD}
         data-testid="fonttype-bold-button"
-        disabled={freeze || editorState.focus.blockIndex < 0 || boldDisabled}
+        disabled={boldDisabled}
         onClick={() => {
           switchFontType(FontType.BOLD);
         }}
@@ -35,9 +37,9 @@ const EditorFonts = () => {
         tooltip={tooltipText.bold}
       />
       <FontButton
-        active={activeFontType === FontType.ITALIC}
+        active={!disabled && activeFontType === FontType.ITALIC}
         data-testid="fonttype-italic-button"
-        disabled={freeze || editorState.focus.blockIndex < 0}
+        disabled={disabled}
         onClick={() => {
           switchFontType(FontType.ITALIC);
         }}

@@ -855,3 +855,26 @@ test.describe("Markør og fokus etter endring av fonttype", () => {
     await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "700");
   });
 });
+
+test.describe("Verktøylinje i overskrifter", () => {
+  test("fet, kursiv, liste- og tabellknapper er deaktivert i overskrifter", async ({ page }) => {
+    await setupBrevRoute(page, makeBrevResponse(exampleLetter1));
+    await navigateToEditor(page);
+
+    for (const title of ["Tittel over punktliste", "Tittel under punktliste"]) {
+      await placeCaretBefore(page, title, "punktliste");
+      await expect(page.getByTestId("fonttype-bold-button")).toBeDisabled();
+      await expect(page.getByTestId("fonttype-italic-button")).toBeDisabled();
+      await expect(page.getByTestId("bullet-list-button")).toBeDisabled();
+      await expect(page.getByTestId("number-list-button")).toBeDisabled();
+      await expect(page.getByTestId("toolbar-table-button")).toBeDisabled();
+    }
+
+    await placeCaretBefore(page, longLiteralText, "piltast");
+    await expect(page.getByTestId("fonttype-bold-button")).toBeEnabled();
+    await expect(page.getByTestId("fonttype-italic-button")).toBeEnabled();
+    await expect(page.getByTestId("bullet-list-button")).toBeEnabled();
+    await expect(page.getByTestId("number-list-button")).toBeEnabled();
+    await expect(page.getByTestId("toolbar-table-button")).toBeEnabled();
+  });
+});
