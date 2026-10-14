@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.svartid.OrienteringOmSaksbehand
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -89,11 +90,13 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
                     )
                 }
             }.orShow {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har " + fritekst("dato") + " mottatt søknaden din om uføretrygd." },
-                        nynorsk { +"Vi har " + fritekst("dato") + " fått søknaden din om uføretrygd." },
-                    )
+                showIf(not(omgjoringKlage)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har " + fritekst("dato") + " mottatt søknaden din om uføretrygd." },
+                            nynorsk { +"Vi har " + fritekst("dato") + " fått søknaden din om uføretrygd." },
+                        )
+                    }
                 }
 
                 showIf(kurantsak) {
