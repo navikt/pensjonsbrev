@@ -106,6 +106,7 @@ class RenderPDFDocumentVisualITest {
         val request = documentPDFRequest(
             document(
                 tittel = "Dokument med bare dokumentdato",
+                dokumentDato = PdfByggerTestData.dokumentDato,
             ) {
                 paragraph("Dokumentdatoen vises selv om ingen andre saksinformasjonsfelter er sendt med.")
             },
