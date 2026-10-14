@@ -20,7 +20,7 @@ export function useSamhandlerMottaker(idTSSEkstern?: string) {
         if (!samhandler) {
           throw new Error("Fant ikke samhandler");
         }
-        if (samhandler.idType === Identtype.NORSK_ORGNR) {
+        if (samhandler.idType === Identtype.NORSK_ORGNR && samhandler.offentligId.trim() !== "") {
           return { type: "organisasjon" as const, samhandler };
         }
       }

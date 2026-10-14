@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
@@ -76,10 +77,10 @@ class SendtBrevMetrikker(
             .register(registry)
             .increment()
 
-        val offentligId = samhandler?.getOrNull()?.takeIf { it.idType() == SamhandlerIdType.ORG }?.offentligId
-        if (!offentligId.isNullOrBlank()) {
-            tellOrganisasjon(offentligId)
-        }
+        // Samme krav som SendBrevHandler stiller for å sende organisasjonsnummer til PEN.
+        samhandler?.getOrNull()
+            ?.takeIf { it.idType() == SamhandlerIdType.ORG && Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon.erGyldig(it.offentligId) }
+            ?.let { tellOrganisasjon(it.offentligId) }
     }
 
     // Tom labelverdi leses som fraværende i Prometheus, og serien ville da falt ut av `sum by (samhandler_type)`.
@@ -90,7 +91,7 @@ class SendtBrevMetrikker(
         when (idType.takeIf(String::isNotBlank)) {
             null -> SamhandlerIdType.UKJENT
             "FNR" -> SamhandlerIdType.FNR
-            "ORG", "ORGNR" -> SamhandlerIdType.ORG
+            "ORG" -> SamhandlerIdType.ORG
             else -> SamhandlerIdType.ANNEN
         }
 
