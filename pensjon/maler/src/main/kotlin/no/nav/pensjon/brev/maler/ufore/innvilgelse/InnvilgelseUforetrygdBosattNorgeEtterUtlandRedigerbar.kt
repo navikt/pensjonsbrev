@@ -229,8 +229,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
             }
             paragraph {
                 text(
-                    bokmal { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra " + fritekst("utenlandsk trygdemyndighet") + "." },
-                    nynorsk { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra " + fritekst("utenlandsk trygdemyndighet") + "." },
+                    bokmal { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». " },
+                    nynorsk { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». " },
                 )
             }
 
