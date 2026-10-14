@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -170,6 +171,7 @@ abstract class BrevmodulTest(
             filnavn(brevkode, spraak),
             path = Path.of("build", "test_pdf_typst"),
             pdfByggerService = PdfByggerTestService(),
+            objectMapper = internalObjectMapper()
         )
     }
 
