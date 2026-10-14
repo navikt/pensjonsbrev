@@ -2,7 +2,7 @@ import { Global } from "@emotion/react";
 import { Accordion, BodyShort, Box, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
 import { type AkselColor } from "@navikt/ds-react/types/theme";
 import type React from "react";
-import { type Dispatch, useEffect, useState } from "react";
+import { type Dispatch, useEffect, useRef, useState } from "react";
 
 import { isItemContentIndex, isNew, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -11,13 +11,71 @@ import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEdi
 import { getCaretRect, getRange, getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { type AnyBlock, type Content, type Item } from "~/types/brevbakerTypes";
 
+const MIN_HEIGHT = 120;
+const RESIZE_STEP = 16;
+
 export default function DebugPanel() {
   const { freeze, editorState } = useEditor();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [caretOffset, setCaretOffset] = useState(0);
   const [caretRect, setCaretRect] = useState<DOMRect>();
-
+  const [height, setHeight] = useState<number>();
+  const dragRef = useRef<{ pointerId: number; startY: number; startHeight: number } | null>(null);
   const [mappedSelection, setMappedSelection] = useState<SelectionIndex | null>(null);
+
+  const getMaxHeight = () => Math.max(MIN_HEIGHT, Math.floor(globalThis.innerHeight * 0.8));
+  const getInitialHeight = () => Math.round(globalThis.innerHeight * 0.4);
+  const clampHeight = (nextHeight: number) => Math.min(getMaxHeight(), Math.max(MIN_HEIGHT, nextHeight));
+
+  const resizeWithKeyboard = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const currentHeight = height ?? getInitialHeight();
+    let nextHeight: number | undefined;
+
+    switch (event.key) {
+      case "ArrowUp":
+        nextHeight = currentHeight + RESIZE_STEP;
+        break;
+      case "ArrowDown":
+        nextHeight = currentHeight - RESIZE_STEP;
+        break;
+      case "Home":
+        nextHeight = MIN_HEIGHT;
+        break;
+      case "End":
+        nextHeight = getMaxHeight();
+        break;
+    }
+
+    if (nextHeight !== undefined) {
+      event.preventDefault();
+      setHeight(clampHeight(nextHeight));
+    }
+  };
+
+  useEffect(() => {
+    const onPointerMove = (event: PointerEvent) => {
+      const drag = dragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      setHeight(clampHeight(drag.startHeight + drag.startY - event.clientY));
+    };
+    const onPointerUp = (event: PointerEvent) => {
+      if (event.pointerId === dragRef.current?.pointerId) dragRef.current = null;
+    };
+    const onWindowResize = () => {
+      setHeight((currentHeight) => (currentHeight === undefined ? currentHeight : clampHeight(currentHeight)));
+    };
+
+    globalThis.addEventListener("pointermove", onPointerMove);
+    globalThis.addEventListener("pointerup", onPointerUp);
+    globalThis.addEventListener("pointercancel", onPointerUp);
+    globalThis.addEventListener("resize", onWindowResize);
+    return () => {
+      globalThis.removeEventListener("pointermove", onPointerMove);
+      globalThis.removeEventListener("pointerup", onPointerUp);
+      globalThis.removeEventListener("pointercancel", onPointerUp);
+      globalThis.removeEventListener("resize", onWindowResize);
+    };
+  }, []);
 
   const mouseMoveEventListener = (event: MouseEvent) => {
     setMousePosition({ x: event.pageX, y: event.pageY });
@@ -50,6 +108,36 @@ export default function DebugPanel() {
     <>
       <Global
         styles={{
+          ".debug-panel": {
+            position: "relative",
+          },
+          ".debug-panel-resize-handle": {
+            cursor: "ns-resize",
+            height: "8px",
+            left: 0,
+            position: "absolute",
+            right: 0,
+            touchAction: "none",
+            top: 0,
+            zIndex: 1,
+            "&::after": {
+              backgroundColor: "var(--ax-border-neutral-subtle)",
+              borderRadius: "2px",
+              content: '""',
+              height: "2px",
+              left: "calc(50% - 16px)",
+              position: "absolute",
+              top: "3px",
+              width: "32px",
+            },
+            "&:hover::after": {
+              backgroundColor: "var(--ax-border-neutral)",
+            },
+            "&:focus-visible": {
+              outline: "2px solid var(--ax-border-focus)",
+              outlineOffset: "-2px",
+            },
+          },
           ".editor": {
             "[contenteditable]": {
               "&:focus-within": {
@@ -66,12 +154,35 @@ export default function DebugPanel() {
         background="neutral-soft"
         borderColor="neutral-subtle"
         borderWidth={"1 0 0 0"}
+        className="debug-panel"
         flexShrink="0"
-        height="40vh"
+        height={height === undefined ? "40vh" : `${height}px`}
         overflowY="auto"
         padding="space-16"
       >
         <VStack>
+          {/* biome-ignore lint/a11y/useSemanticElements: This adjustable separator exposes resize values and keyboard controls. */}
+          <div
+            aria-label="Endre høyden på debugpanelet"
+            aria-orientation="horizontal"
+            aria-valuemax={getMaxHeight()}
+            aria-valuemin={MIN_HEIGHT}
+            aria-valuenow={height ?? getInitialHeight()}
+            className="debug-panel-resize-handle"
+            onKeyDown={resizeWithKeyboard}
+            onPointerDown={(event) => {
+              if (event.button !== 0) return;
+              event.preventDefault();
+              dragRef.current = {
+                pointerId: event.pointerId,
+                startY: event.clientY,
+                startHeight:
+                  event.currentTarget.parentElement?.getBoundingClientRect().height || height || getInitialHeight(),
+              };
+            }}
+            role="separator"
+            tabIndex={0}
+          />
           <HStack gap="space-16">
             {mappedSelection ? (
               <VStack>
