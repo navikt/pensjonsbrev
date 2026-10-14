@@ -28,7 +28,11 @@ class FagsakService(private val penClient: PenClient) {
 }
 
 @JvmInline
-value class Behandlingsnummer(val value: String)
+value class Behandlingsnummer(val value: String) {
+    init {
+        require(value.length == 4) { "Behandlingsnummer må være 4 tegn, var ${value.length}" }
+    }
+}
 
 data class Fagsak(
     val saksId: SaksId,
@@ -39,5 +43,11 @@ data class Fagsak(
     val behandlingsnumre: List<Behandlingsnummer>,
     val tema: Tema,
 ) {
-    data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+    data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String) {
+        init {
+            require(fornavn.length < 128) { "Fornavn må være mindre enn 128 bokstaver" }
+            require((mellomnavn?.length ?: 0) < 128) { "Mellomnavn må være mindre enn 128 bokstaver" }
+            require(etternavn.length < 128) { "Etternavn må være mindre enn 128 bokstaver" }
+        }
+    }
 }
