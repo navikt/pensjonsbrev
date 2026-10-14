@@ -100,4 +100,24 @@ class RenderPDFDocumentVisualITest {
             path = Path.of("build/test_visual/pdf"),
         )
     }
+
+    @Test
+    fun `document med bare dokumentdato`() {
+        val request = documentPDFRequest(
+            document(
+                tittel = "Dokument med bare dokumentdato",
+            ) {
+                paragraph("Dokumentdatoen vises selv om ingen andre saksinformasjonsfelter er sendt med.")
+            },
+            Markup.Spraak.BOKMAL,
+        )
+
+        val pdf = runBlocking { pdfCompileService.producePDFDokument(request) }
+
+        writeTestPDF(
+            pdfFileName = "document med bare dokumentdato",
+            pdf = pdf.bytes,
+            path = Path.of("build/test_visual/pdf"),
+        )
+    }
 }

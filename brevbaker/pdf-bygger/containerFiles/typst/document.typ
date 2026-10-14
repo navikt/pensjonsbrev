@@ -4,7 +4,7 @@
 // konsumenten velger selv hvilke topp-elementer som vises. Side- og tekstoppsettet er felles med
 // brev (`content/pagesetup.typ`), og innholdet rendres med de samme komponentene under `content/`.
 
-#import "casedetails.typ": documentCasedetails, documentDate
+#import "casedetails.typ": casedetails
 #import "footer.typ": footer
 #import "content/state.typ": section-start, section-end
 #import "content/header.typ": logo, mainTitle
@@ -36,12 +36,8 @@
       above = elementSpacing
     }
 
-    if showCaseDetails {
-      documentCasedetails(input, languageSettings, above: above)
-      above = elementSpacing
-    } else if showDocumentDate {
-      // Datoen vises i saksinformasjonen når begge er med, ellers alene.
-      documentDate(input.dokumentDato, above: above)
+    if showCaseDetails or showDocumentDate {
+      casedetails(input, languageSettings, above: above)
       above = elementSpacing
     }
 

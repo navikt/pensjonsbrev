@@ -158,7 +158,7 @@ jobs:
       packages: write
     with:
       gradleTarget: 'brevbaker:brevbaker-api'
-      changes: ${{ needs.abi.outputs.brevbakerApi == 'true' || needs.abi.outputs.brevdata == 'true' || needs.abi.outputs.markup == 'true' }}
+      changes: ${{ needs.abi.outputs.brevbakerApi == 'true' || needs.abi.outputs.brevdata == 'true' }}
       localDependenciesToPublish: >-
         :brevbaker:brevdata:publishToMavenLocal
         :brevbaker:markup-model:publishToMavenLocal
