@@ -36,7 +36,8 @@ import { FontType, ListType } from "~/types/brevbakerTypes";
  *   writers rely on it, and Word repeats direct formatting in the body.
  * - Lists: the type comes from `\ls` → `\listoverridetable` → `\listtable` (`rtfListTable.ts`), then
  *   old-style `\pn` words, then the rendered marker. `\levelnfc255` (no marker) is a plain paragraph.
- *   Lists are flat; items at `\ilvl > 0` or `\pnlvl > 1` are marked `nested`, like nested HTML lists.
+ *   Lists are flat; items at `\ilvl > 0` or `\pnlvl > 1` are marked `nested`, like nested HTML lists, unless
+ *   they directly follow an item from another list.
  * - Simple tables: `\trhdr` rows become the header, horizontally merged continuation cells (`\clmrg`)
  *   are dropped, and vertically merged cells (`\clvmrg`) stay as empty cells.
  *
@@ -108,6 +109,8 @@ interface ParseContext {
   table?: TableBuilder;
   /** The last paragraph break, until visible text follows. `\par\sect` and `\page\par` are one break, not two. */
   lastBreak?: "par" | "sectionOrPage";
+  /** The `\ls` of the last list item (0 for `\pn` lists). */
+  lastItemListId?: number;
 }
 
 const defaultParagraphProps = (): ParagraphProps => ({ listId: 0, listLevel: 0, inTable: false });
@@ -200,9 +203,16 @@ function listTypeOf(ctx: ParseContext, props: ParagraphProps): ListType {
   return ctx.listMarker === undefined ? ListType.PUNKTLISTE : listTypeFromMarker(ctx.listMarker);
 }
 
-/** Items below the top level are flattened into the outer list, like nested `<ul>`/`<ol>` in the HTML path. */
+/**
+ * Items below the top level are flattened into the outer list, like nested `<ul>`/`<ol>` in the HTML path.
+ * An item right after an item from another list (`\ls`) starts a list of its own, even below the top level:
+ * it is nested in its own list, not in the one before it.
+ */
 function listItem(ctx: ParseContext, props: ParagraphProps, content: Text[]): ItemElement {
-  const nested = props.listLevel > 0 || (ctx.pnLevel !== undefined && ctx.pnLevel > 1);
+  const followsOtherList = ctx.elements.at(-1)?.type === "ITEM" && ctx.lastItemListId !== props.listId;
+  const belowTopLevel = props.listLevel > 0 || (ctx.pnLevel !== undefined && ctx.pnLevel > 1);
+  const nested = belowTopLevel && !followsOtherList;
+  ctx.lastItemListId = props.listId;
   return { type: "ITEM", content, listType: listTypeOf(ctx, props), ...(nested ? { nested } : {}) };
 }
 

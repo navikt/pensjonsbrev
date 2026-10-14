@@ -513,7 +513,27 @@ describe("interpretNativeRtf - list tables", () => {
   test("reads the list type of the paragraph's \\ilvl", () => {
     expect(interpret(withLists("\\pard\\ls1\\ilvl1 En\\par\\pard\\ls2\\ilvl1 To\\par"))).toEqual([
       item("En", ListType.PUNKTLISTE, true),
-      item("To", ListType.NUMMERERT_LISTE, true),
+      item("To", ListType.NUMMERERT_LISTE),
+    ]);
+  });
+
+  test("an item below the top level right after an item from another list starts its own list", () => {
+    const rtf = withLists(
+      "\\pard\\ls1 En\\par\\pard\\ls2\\ilvl1 To\\par\\pard\\ls2\\ilvl1 Tre\\par\\pard\\ls1\\ilvl1 Fire\\par",
+    );
+
+    expect(interpret(rtf)).toEqual([
+      item("En", ListType.NUMMERERT_LISTE),
+      item("To", ListType.NUMMERERT_LISTE),
+      item("Tre", ListType.NUMMERERT_LISTE, true),
+      item("Fire", ListType.PUNKTLISTE),
+    ]);
+  });
+
+  test("an item below the top level after a paragraph stays nested", () => {
+    expect(interpret(withLists("\\pard Avsnitt\\par\\pard\\ls2\\ilvl1 En\\par"))).toEqual([
+      paragraph("Avsnitt"),
+      item("En", ListType.NUMMERERT_LISTE, true),
     ]);
   });
 

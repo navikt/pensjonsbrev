@@ -164,7 +164,7 @@ describe("lists", () => {
       "1. item two level one",
       "• item one bullet",
       "• item two bullet",
-      "1. (n) item one level two",
+      "1. item one level two",
       "1. (n) item two level two",
       "1. (n) item one level three",
       "1. (n) item two level three",

@@ -1,3 +1,17 @@
+/**
+ * Fixtures (test/fixtures/rtf/):
+ *
+ * rtf2xml/ — paulhtremblay/rtf2xml at commit fc3f36ba081e642926f89f7535ec48f3490d40be, licensed MIT:
+ * https://github.com/paulhtremblay/rtf2xml/blob/fc3f36ba081e642926f89f7535ec48f3490d40be/LICENSE
+ * - complex_list_bullet.rtf: verbatim copy of
+ *   https://github.com/paulhtremblay/rtf2xml/blob/fc3f36ba081e642926f89f7535ec48f3490d40be/test/test_files/good/complex_list_bullet.rtf
+ *
+ * synthetic/ — written for Skribenten:
+ * - word365-nb.rtf: structured according to the Word 365 clipboard format (Norwegian Bokmål), see
+ *   interpretNativeRtf.fixtures.test.ts.
+ * - outlook365-fromhtml.rtf: structured according to the Outlook 365 clipboard format, see
+ *   extractEncapsulation.test.ts.
+ */
 import { describe, expect, test, vi } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -5,6 +19,7 @@ import { fontTypeOf, newLiteral, newParagraph, newTitle, text } from "~/Brevredi
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { FontType, type ItemList, ListType, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
+import complexListBullet from "~test/fixtures/rtf/rtf2xml/complex_list_bullet.rtf?raw";
 import outlook365 from "~test/fixtures/rtf/synthetic/outlook365-fromhtml.rtf?raw";
 import word365 from "~test/fixtures/rtf/synthetic/word365-nb.rtf?raw";
 import {
@@ -115,6 +130,29 @@ describe("LetterEditorActions.paste - RTF", () => {
       "  tr: Fra 1. mai 2026 | kr 25 000",
       "  tr: Fra 1. mai 2027 | kr 25 500",
       "P: Med vennlig hilsen",
+    ]);
+  });
+
+  test("keeps the list type of nested items that return to an earlier list (rtf2xml complex_list_bullet)", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));
+    const clipboard = new MockDataTransfer({ "text/rtf": complexListBullet, "text/plain": "ren tekst" });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+    expect(projectLetter(result)).toEqual([
+      "P: Text before list",
+      "1. item one level one",
+      "1. item two level one",
+      "• item one bullet",
+      "• item two bullet",
+      "1. item one level two",
+      "1. item two level two",
+      "1. item one level three",
+      "1. item two level three",
+      "1. item one level four",
+      "1. item three level two",
+      // The cursor is left in a new, empty item after the pasted list.
+      "1. ",
     ]);
   });
 
@@ -259,6 +297,23 @@ describe("LetterEditorActions.paste - format: text/rtf", () => {
           "\\pard\\ls1\\ilvl1{\\listtext 1.\\tab}Under\\par" +
           "\\pard\\ls1\\ilvl0{\\listtext\\'b7\\tab}To\\par}",
         "<ul><li>Ett<ol><li>Under</li></ol></li><li>To</li></ul>",
+      );
+    });
+
+    test("a nested item right after another list starts a list of its own, like Chrome's HTML", () => {
+      const listTables =
+        "{\\*\\listtable{\\list{\\listlevel\\levelnfc0}{\\listlevel\\levelnfc0}\\listid5}" +
+        "{\\list{\\listlevel\\levelnfc23}\\listid6}}" +
+        "{\\*\\listoverridetable{\\listoverride\\listid5\\listoverridecount0\\ls1}" +
+        "{\\listoverride\\listid6\\listoverridecount0\\ls2}}";
+      expectRtfEquivalentToHtml(
+        WORD_HEADER +
+          listTables +
+          "\\pard\\ls1{\\listtext 1.\\tab}En\\par" +
+          "\\pard\\ls2{\\listtext\\'b7\\tab}Punkt\\par" +
+          "\\pard\\ls1\\ilvl1{\\listtext 1.1.\\tab}Under\\par" +
+          "\\pard\\ls1\\ilvl1{\\listtext 1.2.\\tab}Under to\\par}",
+        "<ol><li>En</li></ol><ul><li>Punkt</li></ul><ol><li>Under</li><li>Under to</li></ol>",
       );
     });
 
