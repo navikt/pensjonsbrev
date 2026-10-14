@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.KravArsakType
@@ -54,6 +56,8 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                     createMaanedligPensjonFoerSkattAP2025Dto(),
                 orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
                 beloepEndring = BeloepEndring.UENDRET,
+                opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
+                opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto(),
             ),
     )
 

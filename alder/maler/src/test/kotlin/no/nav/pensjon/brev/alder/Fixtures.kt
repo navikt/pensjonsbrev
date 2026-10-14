@@ -131,6 +131,7 @@ object Fixtures : LetterDataFactory {
             AdhocAlderspensjonFraFolketrygden::class -> EmptyAutobrevdata as T
             AdhocAlderspensjonGjtOpprydding::class -> createAlderspensjonGjtOppryddingAutoDto() as T
             AdhocAlderspensjonGjtVarselBrev::class -> EmptyAutobrevdata as T
+            AdhocGjenlevendepensjonOpphoer::class -> EmptyAutobrevdata as T
             AdhocGjenlevendEtter1970::class -> EmptyAutobrevdata as T
             AdhocSkjermingstilleggFeilBeroertBruker::class -> EmptyAutobrevdata as T
             AdhocSkjermingstilleggFeilMottaker::class -> EmptyAutobrevdata as T

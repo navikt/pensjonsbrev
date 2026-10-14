@@ -1,13 +1,14 @@
 package no.nav.pensjon.brev.skribenten.common
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.services.LeaderService
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.isNull
 import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -88,54 +89,12 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
     }
 }
 
-fun JobConfig.updateMottaker() {
-    val alleMottakerIder = transaction {
-        MottakerTable.select(MottakerTable.id).where { MottakerTable.adresse.isNull() }.map { it[MottakerTable.id] }
+fun JobConfig.slettKladder() {
+    logger.info("Sletter uredigerte kladd 99033 fra da pensjonskalkulator brukte saksbehandlervalg som workaround")
+    transaction {
+        BrevredigeringTable.deleteWhere { BrevredigeringTable.id eq BrevId(99033) and BrevredigeringTable.sistReservert.isNull() }
     }
-
-    alleMottakerIder.forEach { mottakerId ->
-        // Leser og oppdaterer én og én rad, låst med SELECT ... FOR UPDATE innenfor samme
-        // transaksjon. Uten låsen kan EndreMottakerHandler committe en endring av begge
-        // kolonnesettene mellom vår lesing og skriving, og vi ville da overskrevet de krypterte
-        // kolonnene med utdaterte klartekstverdier fra før endringen. Låsen sikrer at vi alltid
-        // backfiller fra raden slik den er akkurat nå, og at en samtidig skriving enten er ferdig
-        // før vi leser, eller må vente til vi har commitet.
-        transaction {
-            logger.debug("Oppdaterer {}", mottakerId)
-            val rad = MottakerTable
-                .select(
-                    MottakerTable.navn,
-                    MottakerTable.postnummer,
-                    MottakerTable.poststed,
-                    MottakerTable.adresselinje1,
-                    MottakerTable.adresselinje2,
-                    MottakerTable.adresselinje3,
-                    MottakerTable.landkode,
-                    MottakerTable.manueltAdressertTil,
-                    MottakerTable.adresse,
-                    MottakerTable.type,
-                    MottakerTable.tssId,
-                )
-                .where { MottakerTable.id eq mottakerId }
-                .forUpdate(ForUpdateOption.ForUpdate)
-                .singleOrNull() ?: return@transaction
-
-            MottakerTable.update({ MottakerTable.id eq mottakerId }) { update ->
-                update[MottakerTable.adresse] = Mottaker.Adresse(
-                    type = rad[MottakerTable.type],
-                    tssId = rad[MottakerTable.tssId],
-                    navn = rad[MottakerTable.navn],
-                    postnummer = rad[MottakerTable.postnummer],
-                    poststed = rad[MottakerTable.poststed],
-                    adresselinje1 = rad[MottakerTable.adresselinje1],
-                    adresselinje2 = rad[MottakerTable.adresselinje2],
-                    adresselinje3 = rad[MottakerTable.adresselinje3],
-                    manueltAdressertTil = rad[MottakerTable.manueltAdressertTil],
-                    landkode = rad[MottakerTable.landkode]
-                )
-            }
-        }
-    }
+    logger.info("Ferdig med sletting av kladder")
 }
 
 fun JobConfig.updateBrevredigeringJson() {
