@@ -3,7 +3,8 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.document.dsl.document
 import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
-import no.nav.brev.brevbaker.document.dsl.documentSaksnummer
+import no.nav.brev.brevbaker.document.dsl.documentMottaker
+import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.item
 import no.nav.brev.brevbaker.markup.dsl.itemList
@@ -30,7 +31,16 @@ class TypstDokumentRendererTest {
         return output.toString(Charsets.UTF_8)
     }
 
-    private val saksnummer = documentSaksnummer(PdfByggerTestData.saksnummer, visFooter = true)
+    private val mottaker = documentMottaker(
+        gjelderNavn = PdfByggerTestData.gjelderNavn,
+        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+    )
+
+    private val saksinformasjon = documentSaksinformasjon(
+        saksnummer = PdfByggerTestData.saksnummer,
+        visFooter = true,
+        mottaker = mottaker,
+    )
 
     @Test
     fun `alle elementer synlige`() {
@@ -38,9 +48,7 @@ class TypstDokumentRendererTest {
             documentPDFRequest(
                 document(
                     tittel = "Mitt dokument",
-                    gjelderNavn = PdfByggerTestData.gjelderNavn,
-                    gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
-                    saksnummer = saksnummer,
+                    saksinformasjon = saksinformasjon,
                     dokumentDato = PdfByggerTestData.dokumentDato,
                 ) {
                     title2("Overskrift")
@@ -104,63 +112,31 @@ class TypstDokumentRendererTest {
     }
 
     @Test
-    fun `kun saksnummer gir saksinformasjon med bare saksnummer`() {
+    fun `saksinformasjon uten mottaker gir footer uten saksinformasjonsblokk`() {
         val typst = render(
             documentPDFRequest(
                 document(
                     tittel = "Dokument",
-                    saksnummer = saksnummer,
+                    saksinformasjon = documentSaksinformasjon(
+                        saksnummer = PdfByggerTestData.saksnummer,
+                        visFooter = true,
+                    ),
                 ) { paragraph("Et avsnitt.") },
                 Markup.Spraak.BOKMAL,
             )
         )
 
-        assertThat(typst).contains("showCaseDetails: true")
+        assertThat(typst).contains("showCaseDetails: false")
         assertThat(typst).contains("showFooter: true")
         assertThat(typst).contains(""""${PdfByggerTestData.saksnummer}"""")
         assertThat(typst).contains("gjelderNavn: none")
-        assertThat(typst).contains("gjelderFoedselsnummer: none")
-    }
-
-    @Test
-    fun `saksinformasjon uten saksnummer gir ingen footer`() {
-        val typst = render(
-            documentPDFRequest(
-                document(
-                    tittel = "Dokument",
-                    gjelderNavn = PdfByggerTestData.gjelderNavn,
-                ) { paragraph("Et avsnitt.") },
-                Markup.Spraak.BOKMAL,
-            )
-        )
-
-        assertThat(typst).contains("showCaseDetails: true")
-        assertThat(typst).contains("showFooter: false")
-        assertThat(typst).doesNotContain("gjelderNavn: none")
-        assertThat(typst).contains("saksnummer: none")
-    }
-
-    @Test
-    fun `saksnummer uten footer`() {
-        val typst = render(
-            documentPDFRequest(
-                document(
-                    tittel = "Dokument",
-                    saksnummer = documentSaksnummer(PdfByggerTestData.saksnummer),
-                ) { paragraph("Et avsnitt.") },
-                Markup.Spraak.BOKMAL,
-            )
-        )
-
-        assertThat(typst).contains("showCaseDetails: true")
-        assertThat(typst).contains("showFooter: false")
     }
 
     @Test
     fun `nynorsk gir nynorske ledetekster`() {
         val typst = render(
             documentPDFRequest(
-                document(tittel = "Dokument", gjelderNavn = PdfByggerTestData.gjelderNavn, saksnummer = saksnummer) {
+                document(tittel = "Dokument", saksinformasjon = saksinformasjon) {
                     paragraph("Eit avsnitt.")
                 },
                 Markup.Spraak.NYNORSK,
