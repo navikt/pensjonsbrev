@@ -42,7 +42,7 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
         val sykepenger = saksbehandlervalg("sykepenger", "Bruker mottar sykepenger").bool()
         val yrkesskade = saksbehandlervalg("yrkesskade", "Yrkesskade").bool()
         val omgjoring = saksbehandlervalg("omgjoring", "Omgjøring").bool()
-        val omgjoringKlage = saksbehandlervalg("omgjoring", "Omgjøring ved for sent fremsatt klage").bool()
+        val omgjoringKlage = saksbehandlervalg("omgjoringKlage", "Omgjøring ved for sent fremsatt klage").bool()
         val saksomkostninger = saksbehandlervalg("saksomkostninger", "Saksomkostninger").bool()
         val ettersendeDok = saksbehandlervalg("ettersendeDok", "Ettersende dokumentasjon").bool()
 
@@ -106,7 +106,7 @@ object OrienteringOmSaksbehandlingstidRedigerbar : RedigerbarTemplate<Orienterin
                     paragraph {
                         text(
                             bokmal { + "Vi ser at du har alvorlig sykdom, og saken din vil bli prioritert så snart den kan behandles. " },
-                            nynorsk { + "Vi ser at du har alvorleg sjukdom, og saka di vil bli prioritert så snart den kan behandlast. " }, // TODO: Sjekk om dette er riktig nynorsk
+                            nynorsk { + "Vi ser at du har alvorleg sjukdom, og saka di vil bli prioritert så snart den kan behandlast. " },
                         )
                     }
                 }
