@@ -175,8 +175,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
             showIf(trygdetideosland) {
                 paragraph {
                     text(
-                        bokmal { +"Uføretrygden din har vært foreløpig beregnet etter folketrygdlovens regler. Etter EØS- avtalens regler har du rett til en alternativ beregning." },
-                        nynorsk { +"Uføretrygda di har vore førebels rekna ut etter folketrygdlova sine reglar. Etter EØS-avtalen sine reglar har du rett til ei alternativ rekning." },
+                        bokmal { +"Uføretrygden din har vært foreløpig beregnet etter folketrygdlovens regler. Etter EØS- avtalens regler har du rett til en alternativ beregning. " },
+                        nynorsk { +"Uføretrygda di har vore førebels rekna ut etter folketrygdlova sine reglar. Etter EØS-avtalen sine reglar har du rett til ei alternativ rekning. " },
                     )
                     text(
                         bokmal { +"Vi har sammenlignet hvor mye du får i uføretrygd beregnet både etter folketrygdlovens regler og EØS-avtalens regler. Du får den beregningen som er mest gunstig for deg. Uføretrygden din er derfor beregnet etter reglene i folketrygdloven." },
