@@ -2,10 +2,12 @@ import React, { useLayoutEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
+  collectAllLiteralValues,
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
   isTable,
+  isUneditedFritekst,
   text as textOf,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
@@ -50,7 +52,6 @@ import {
 import {
   type Content,
   type EditedDocument,
-  ElementTags,
   FontType,
   ListType,
   type LiteralValue,
@@ -258,9 +259,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
   // hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
-  const erFritekst =
-    content.tags.includes(ElementTags.FRITEKST) &&
-    (content.editedText === null || content.editedText === undefined || content.editedText === content.text);
+  const erFritekst = isUneditedFritekst(content);
+  const isTitleTabEntry =
+    !freeze &&
+    literalIndex.blockIndex === TITLE_INDEX &&
+    literalIndex.contentIndex === editorState.redigertBrev.title.text.findIndex((text) => text.type === "LITERAL") &&
+    !collectAllLiteralValues(editorState.redigertBrev).some(isUneditedFritekst);
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
@@ -939,7 +943,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onMouseDown={handleOnMouseDown}
       onPaste={handleOnPaste}
       ref={contentEditableReference}
-      tabIndex={erFritekst ? 0 : -1}
+      tabIndex={erFritekst || isTitleTabEntry ? 0 : -1}
     />
   );
 }

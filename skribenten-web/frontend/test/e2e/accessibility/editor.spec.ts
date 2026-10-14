@@ -4,7 +4,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, type TestInfo, test } from "@playwright/test";
 
 import { type BrevResponse } from "~/types/brev";
-import { type AnyBlock, ListType } from "~/types/brevbakerTypes";
+import { type AnyBlock, ElementTags, ListType } from "~/types/brevbakerTypes";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { cell, item, itemList, literal, paragraph, row, table } from "~test/support/letterEditorTestUtils";
 
@@ -21,6 +21,10 @@ async function openEditor(page: Page, blocks?: AnyBlock[]) {
   await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
     route.fulfill({ json: response }),
   );
+  await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", (route) => {
+    response.redigertBrev = route.request().postDataJSON();
+    return route.fulfill({ json: response });
+  });
 
   await page.goto("/saksnummer/123456/brev/1");
   await expect(page.locator(".editor .letter-title")).toBeVisible();
@@ -124,6 +128,82 @@ test.describe("Letter editor accessibility", () => {
       await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
       await expectNoAxeViolations(page, testInfo);
     });
+
+    const placeholder = "Fyll inn fritekst";
+    for (const scenario of [
+      {
+        name: "the title when there is no fritekst",
+        blocks: listBlocks(ListType.PUNKTLISTE),
+        expectTitle: true,
+      },
+      {
+        name: "the title when fritekst has been filled in",
+        blocks: [paragraph([literal({ text: placeholder, editedText: "Utfylt tekst", tags: [ElementTags.FRITEKST] })])],
+        expectTitle: true,
+      },
+      {
+        name: "fritekst in a list before the title",
+        blocks: [
+          paragraph([itemList({ items: [item(literal({ text: placeholder, tags: [ElementTags.FRITEKST] }))] })]),
+        ],
+        expectTitle: false,
+      },
+      {
+        name: "fritekst in a table before the title",
+        blocks: [
+          paragraph([
+            table(
+              [cell(literal("Opplysning"))],
+              [row(cell(literal({ text: placeholder, tags: [ElementTags.FRITEKST] })))],
+            ),
+          ]),
+        ],
+        expectTitle: false,
+      },
+    ]) {
+      test(`Tab enters ${scenario.name} after the toolbar`, async ({ page }) => {
+        await openEditor(page, scenario.blocks);
+        const resetButton = page.getByRole("button", { name: "Tilbakestill mal", exact: true });
+        for (let tabCount = 0; tabCount < 50; tabCount++) {
+          await page.keyboard.press("Tab");
+          if (await resetButton.evaluate((button) => button === document.activeElement)) break;
+        }
+        await expect(resetButton, "Toolbar should be reachable within 50 Tab presses").toBeFocused();
+        const editor = page.locator(".editor");
+        await expect(editor).toHaveCSS("outline-style", "none");
+        await page.keyboard.press("Tab");
+        const entry = scenario.expectTitle
+          ? page.locator(".editor .letter-title span[contenteditable=true]").first()
+          : page.getByText(placeholder, { exact: true });
+        await expect(entry).toBeFocused();
+        await expect(editor).toHaveCSS("outline-style", "solid");
+        await expect(editor).toHaveCSS("outline-width", "2px");
+        await expect(editor).toHaveCSS("outline-offset", "-2px");
+        if (scenario.expectTitle) {
+          const originalText = await entry.textContent();
+          await page.keyboard.press("End");
+          await page.keyboard.type("!");
+          await expect(entry).toHaveText(`${originalText}!`);
+          await expect(entry).toBeFocused();
+          await expect(editor).toHaveCSS("outline-style", "solid");
+          await page.keyboard.press("Backspace");
+          await expect(entry).toHaveText(originalText ?? "");
+          await entry.click();
+          await expect(editor).toHaveCSS("outline-style", "none");
+          await page.keyboard.press("Shift+Tab");
+          await expect(resetButton).toBeFocused();
+          await page.keyboard.press("Tab");
+          await expect(entry).toBeFocused();
+          await expect(editor).toHaveCSS("outline-style", "solid");
+        } else {
+          await expect.poll(() => page.evaluate(() => globalThis.getSelection()?.toString())).toBe(placeholder);
+          await expect(page.locator(".editor .letter-title span[contenteditable=true]").first()).toHaveAttribute(
+            "tabindex",
+            "-1",
+          );
+        }
+      });
+    }
   });
 
   test.describe("Lists", () => {
@@ -150,6 +230,23 @@ test.describe("Letter editor accessibility", () => {
     test("table with headers and editable cells", async ({ page }, testInfo) => {
       await openTableEditor(page);
       await expectNoAxeViolations(page, testInfo);
+    });
+
+    test("Tab between cells and in the last cell does not show the editor focus ring", async ({ page }) => {
+      await openTableEditor(page);
+      const editor = page.locator(".editor");
+      const cellText = (rowIndex: number, cellIndex: number) =>
+        page.getByTestId(`table-cell-${rowIndex}-${cellIndex}`).locator("span[contenteditable=true]");
+
+      await cellText(0, 0).click();
+      await page.keyboard.press("Tab");
+      await expect(cellText(0, 1)).toBeFocused();
+      await expect(editor).toHaveCSS("outline-style", "none");
+
+      await cellText(1, 1).click();
+      await page.keyboard.press("Tab");
+      await expect(page.getByTestId("letter-table").locator("tbody tr")).toHaveCount(3);
+      await expect(editor).toHaveCSS("outline-style", "none");
     });
 
     test("insert table dialog", async ({ page }, testInfo) => {
