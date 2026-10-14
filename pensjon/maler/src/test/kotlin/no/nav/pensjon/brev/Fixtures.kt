@@ -36,6 +36,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakFeilutbetaltBeloepTilbakekrevesIkke
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
 import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
@@ -142,6 +143,7 @@ object Fixtures : LetterDataFactory {
             DelvisEksportAvUforetrygdRedigerbar::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             OmregningUfoerepensjonTilUfoeretrygdRedigerbar::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
             OpphoerGjenlevendepensjon::class -> createOpphoerGjenlevendepensjonDto() as T
+            VedtakFeilutbetaltBeloepTilbakekrevesIkke::class -> createVedtakFeilutbetaltBeloepTilbakekrevesIkkeDto() as T
             AvslagGjenlevendepensjon::class -> createAvslagGjenlevendepensjonDto() as T
             AvslagGjenlevendepensjonUtland::class -> createAvslagGjenlevendepensjonUtlandDto() as T
             VedtakOmLavereMinstesatsAuto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
