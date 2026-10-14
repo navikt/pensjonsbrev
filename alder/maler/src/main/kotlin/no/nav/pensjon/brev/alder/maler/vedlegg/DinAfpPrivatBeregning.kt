@@ -235,13 +235,13 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                 )
                 text(
                     bokmal { +"Du får en utbetalt en høyere andel av AFP-en din fram til du blir 67 år. " +
-                            "Dette kronetillegget er normalt 1 600 kroner i måneden og utbetales til og med den måneden du fyller 67 år. Hvis livsvarig del av AFP er lav, kan kronetillegget bli lavere eller ikke bli utbetalt. " +
+                            "Dette kronetillegget er normalt 1 600 kroner i måneden og utbetales til og med den måneden du fyller 67 år. Hvis livsvarig del av AFP er lav, får du ikke utbetalt kronetillegg. " +
                             "Ved utbetaling av kronetillegg vil den livsvarige delen av AFP reduseres ved hjelp av et justeringsbeløp. Reduksjonen vil gjelde resten av tiden som pensjonist." },
                     nynorsk { +"Du får en utbetalt ein høgare del av AFP-en din fram til du blir 67 år. " +
-                            "Dette kronetillegget er normalt 1 600 kroner i månaden og blir utbetalt til og med den månaden du fyller 67 år. Om livsvarig del av AFP er låg, kan kronetillegget bli lågare eller ikkje bli utbetalt. " +
+                            "Dette kronetillegget er normalt 1 600 kroner i månaden og blir utbetalt til og med den månaden du fyller 67 år. Om livsvarig del av AFP er låg, får du ikkje utbetalt kronetillegg. " +
                             "Ved utbetaling av kronetillegg vil den livsvarige delen av AFP reduserast ved hjelp av eit justeringsbeløp. Reduksjonen vil gjelde resten av tida som pensjonist." },
                     english { +"You will receive a larger share of your AFP until you reach the age of 67. " +
-                            "This AFP fixed amount is normally NOK 1,600 per month and is paid up to and including the month in which you turn 67. If the lifelong component of AFP is low, the AFP fixed amount may be lower or may not be paid. " +
+                            "This AFP fixed amount is normally NOK 1,600 per month and is paid up to and including the month in which you turn 67. If the lifelong component of AFP is low, you will not receive the AFP fixed amount. " +
                             "When the AFP fixed amount is paid, the lifelong component of AFP is reduced by means of an adjustment amount. This reduction will apply for the rest of your retirement." },
                 )
             }
