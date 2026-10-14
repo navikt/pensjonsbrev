@@ -1,7 +1,8 @@
 package no.nav.brev.brevbaker.document
 
 import no.nav.brev.brevbaker.document.dsl.document
-import no.nav.brev.brevbaker.document.dsl.documentSaksnummer
+import no.nav.brev.brevbaker.document.dsl.documentMottaker
+import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.title2
 import no.nav.brev.brevbaker.markup.outline.Block
@@ -14,6 +15,15 @@ import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
 class DocumentDslTest {
+
+    private val saksinformasjon = documentSaksinformasjon(
+        saksnummer = "9876543",
+        visFooter = true,
+        mottaker = documentMottaker(
+            gjelderNavn = "Ola Nordmann",
+            gjelderPersonidentifikator = "12345678901",
+        ),
+    )
 
     @Test
     fun `bygger dokument med innhold uten outline-nivaa`() {
@@ -34,42 +44,32 @@ class DocumentDslTest {
 
         assertTrue(dokument.visTittel)
         assertTrue(dokument.visLogo)
-        assertNull(dokument.gjelderNavn)
-        assertNull(dokument.gjelderPersonidentifikator)
-        assertNull(dokument.annenMottakerNavn)
-        assertNull(dokument.saksnummer)
+        assertNull(dokument.saksinformasjon)
         assertNull(dokument.dokumentDato)
     }
 
     @Test
-    fun `saksinformasjonsfeltene settes uavhengig av hverandre`() {
+    fun `saksinformasjon baerer bade saksnummer og footervalget`() {
         val dokument = document(
             tittel = "Min tittel",
-            gjelderNavn = "Ola Nordmann",
-            gjelderPersonidentifikator = "12345678901",
+            saksinformasjon = saksinformasjon,
             dokumentDato = LocalDate.of(2020, 1, 1),
         ) { paragraph("Innhold") }
 
-        assertEquals("Ola Nordmann", dokument.gjelderNavn)
-        assertEquals("12345678901", dokument.gjelderPersonidentifikator?.value)
-        assertNull(dokument.annenMottakerNavn)
-        assertNull(dokument.saksnummer)
+        assertTrue(dokument.saksinformasjon?.visFooter == true)
+        assertEquals("9876543", dokument.saksinformasjon?.saksnummer?.value)
+        assertEquals("Ola Nordmann", dokument.saksinformasjon?.mottaker?.gjelderNavn)
     }
 
     @Test
-    fun `saksnummer baerer footervalget`() {
+    fun `saksinformasjon uten mottaker gir ingen saksinformasjonsblokk`() {
         val dokument = document(
             tittel = "Min tittel",
-            saksnummer = documentSaksnummer("9876543", visFooter = true),
+            saksinformasjon = documentSaksinformasjon(saksnummer = "9876543"),
         ) { paragraph("Innhold") }
 
-        assertEquals("9876543", dokument.saksnummer?.saksnummer?.value)
-        assertTrue(dokument.saksnummer?.visFooter == true)
-    }
-
-    @Test
-    fun `footer er av som standard`() {
-        assertFalse(documentSaksnummer("9876543").visFooter)
+        assertNull(dokument.saksinformasjon?.mottaker)
+        assertFalse(dokument.saksinformasjon?.visFooter == true)
     }
 
     @Test

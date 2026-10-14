@@ -12,7 +12,8 @@ import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.document.dsl.document
 import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
-import no.nav.brev.brevbaker.document.dsl.documentSaksnummer
+import no.nav.brev.brevbaker.document.dsl.documentMottaker
+import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
 import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
@@ -211,9 +212,14 @@ class PdfByggerAppTest {
         val request = documentPDFRequest(
             document(
                 tittel = "Et dokument",
-                gjelderNavn = PdfByggerTestData.gjelderNavn,
-                gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
-                saksnummer = documentSaksnummer(PdfByggerTestData.saksnummer, visFooter = true),
+                saksinformasjon = documentSaksinformasjon(
+                    saksnummer = PdfByggerTestData.saksnummer,
+                    visFooter = true,
+                    mottaker = documentMottaker(
+                        gjelderNavn = PdfByggerTestData.gjelderNavn,
+                        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                    ),
+                ),
                 dokumentDato = PdfByggerTestData.dokumentDato,
             ) {
                 paragraph("Hei, dette er et dokument.")
