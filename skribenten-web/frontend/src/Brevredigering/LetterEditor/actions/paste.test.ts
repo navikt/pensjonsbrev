@@ -4005,3 +4005,69 @@ describe("LetterEditorActions.paste - a table in a list item ends the list", () 
     expect(projectLetter(result)).toEqual(["• en", "• Før", ...pastedTable, "• tre"]);
   });
 });
+
+describe("LetterEditorActions.paste - where a table pasted in a paragraph goes", () => {
+  const htmlTable = new MockDataTransfer({ "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table>" });
+  const state = () =>
+    letter(
+      paragraph({ id: 1, content: [literal({ id: 11, text: "første" })] }),
+      paragraph({ id: 2, content: [literal({ id: 21, text: "andre" })] }),
+      paragraph({ id: 3, content: [literal({ id: 31, text: "" })] }),
+    );
+  const blocksOf = (result: ReturnType<typeof state>) =>
+    result.redigertBrev.blocks.map((block) => ({
+      id: block.id,
+      content: block.content.map((content) => (content.type === "LITERAL" ? text(content) : content.type)),
+    }));
+
+  test.each([
+    ["the first", 0],
+    ["a later", 1],
+  ])(
+    "at the start of %s paragraph, the table goes in front of its text without an empty paragraph",
+    (_, blockIndex) => {
+      const result = Actions.paste(state(), { blockIndex, contentIndex: 0 }, 0, htmlTable);
+
+      const expected = [
+        { id: 1, content: ["første"] },
+        { id: 2, content: ["andre"] },
+        { id: 3, content: [""] },
+      ];
+      expected[blockIndex].content.unshift("TABLE");
+      expect(blocksOf(result)).toEqual(expected);
+      expect(result.focus).toMatchObject({ blockIndex, contentIndex: 0, rowIndex: 0 });
+    },
+  );
+
+  test("in the middle of a paragraph, the paragraph is split with the table between", () => {
+    const result = Actions.paste(state(), { blockIndex: 1, contentIndex: 0 }, 2, htmlTable);
+
+    expect(blocksOf(result)).toEqual([
+      { id: 1, content: ["første"] },
+      { id: 2, content: ["an"] },
+      { id: null, content: ["TABLE", "dre"] },
+      { id: 3, content: [""] },
+    ]);
+  });
+
+  test("at the end of a paragraph, the table goes after it", () => {
+    const result = Actions.paste(state(), { blockIndex: 1, contentIndex: 0 }, 5, htmlTable);
+
+    expect(blocksOf(result)).toEqual([
+      { id: 1, content: ["første"] },
+      { id: 2, content: ["andre"] },
+      { id: null, content: ["TABLE", ""] },
+      { id: 3, content: [""] },
+    ]);
+  });
+
+  test("in an empty paragraph, the table goes in front of the empty line", () => {
+    const result = Actions.paste(state(), { blockIndex: 2, contentIndex: 0 }, 0, htmlTable);
+
+    expect(blocksOf(result)).toEqual([
+      { id: 1, content: ["første"] },
+      { id: 2, content: ["andre"] },
+      { id: 3, content: ["TABLE", ""] },
+    ]);
+  });
+});

@@ -495,8 +495,11 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table): bool
 
   const table = createTable(colSpec, rows);
 
-  // Split current literal at cursor so trailing text stays after table.
-  splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+  // Split current literal at cursor so trailing text stays after table. At the start of a paragraph the table goes in
+  // front of its content instead; arrow up from the table makes room for the caret before it if needed.
+  if (!isAtStartOfBlock(draft.focus)) {
+    splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+  }
   const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
 
   const tableIndex = draft.focus.contentIndex;
