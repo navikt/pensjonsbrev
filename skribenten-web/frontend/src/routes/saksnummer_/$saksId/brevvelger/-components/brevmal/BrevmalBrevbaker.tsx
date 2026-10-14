@@ -122,6 +122,7 @@ const BrevmalBrevbaker = (props: {
     onSuccess: async (response) => {
       trackEvent("brev opprettet", {
         brevkode: props.letterTemplate.id,
+        spraak: response.info.spraak,
         brevtittel: props.letterTemplate.name,
         brevsystem: "brevbaker",
         brevtype: response.info.brevtype,

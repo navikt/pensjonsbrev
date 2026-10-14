@@ -14,7 +14,7 @@ class RenderService(private val brevbakerService: BrevbakerService) {
             brevkode = brev.brevkode,
             spraak = brev.spraak,
             fagsystemBrevdata = pesysData.brevdata,
-            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
+            saksbehandlervalg = brev.saksbehandlerValgKryptert.somSaksbehandlervalgIDSL(),
             felles = pesysData.felles,
             redigertBrev = brev.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
                 .toMarkup(),

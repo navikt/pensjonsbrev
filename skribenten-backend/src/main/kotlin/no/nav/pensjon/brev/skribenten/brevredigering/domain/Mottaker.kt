@@ -42,7 +42,7 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
         val adresselinje1: Adresselinje?,
         val adresselinje2: Adresselinje?,
         val adresselinje3: Adresselinje?,
-        val manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil?,
+        val manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil,
         val landkode: BrevLandmodell.Landkode?,
     ) {
         companion object {
@@ -79,25 +79,25 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
     }
 
     fun toDto(): Dto.Mottaker =
-        when (type) {
-            MottakerType.SAMHANDLER -> Dto.Mottaker.samhandler(tssId!!)
+        when (adresse.type) {
+            MottakerType.SAMHANDLER -> Dto.Mottaker.samhandler(adresse.tssId!!)
             MottakerType.NORSK_ADRESSE -> Dto.Mottaker.norskAdresse(
-                navn = navn!!,
-                postnummer = postnummer!!,
-                poststed = poststed!!,
-                adresselinje1 = adresselinje1,
-                adresselinje2 = adresselinje2,
-                adresselinje3 = adresselinje3,
-                manueltAdressertTil = manueltAdressertTil,
+                navn = adresse.navn!!,
+                postnummer = adresse.postnummer!!,
+                poststed = adresse.poststed!!,
+                adresselinje1 = adresse.adresselinje1,
+                adresselinje2 = adresse.adresselinje2,
+                adresselinje3 = adresse.adresselinje3,
+                manueltAdressertTil = adresse.manueltAdressertTil,
             )
 
             MottakerType.UTENLANDSK_ADRESSE -> Dto.Mottaker.utenlandskAdresse(
-                navn = navn!!,
-                adresselinje1 = adresselinje1!!,
-                adresselinje2 = adresselinje2,
-                adresselinje3 = adresselinje3,
-                landkode = landkode!!,
-                manueltAdressertTil = manueltAdressertTil,
+                navn = adresse.navn!!,
+                adresselinje1 = adresse.adresselinje1!!,
+                adresselinje2 = adresse.adresselinje2,
+                adresselinje3 = adresse.adresselinje3,
+                landkode = adresse.landkode!!,
+                manueltAdressertTil = adresse.manueltAdressertTil,
             )
         }
 }

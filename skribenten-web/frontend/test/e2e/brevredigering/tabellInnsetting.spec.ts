@@ -3,6 +3,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type Row } from "~/types/brevbakerTypes";
+import defaultBrev from "~test/e2e/fixtures/brevResponse.json" with { type: "json" };
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse, editedLetter } from "~test/support/brevFixtures";
 
@@ -40,7 +41,8 @@ const waitAfterAutosave = async (page: Page) => {
     (resp) => resp.url().includes("/redigertBrev") && resp.request().method() === "PUT",
   );
   await page.clock.fastForward(AUTOSAVE_TIMER);
-  await autosavePromise;
+  expect((await autosavePromise).ok()).toBe(true);
+  await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
 };
 
 function tableRow(...texts: string[]): Row {
@@ -83,7 +85,7 @@ test.describe("Tabell innsetting og redigering via kontekstmeny", () => {
 
     await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
       if (route.request().method() === "PUT") {
-        await route.fulfill({ status: 200, json: { ok: true } });
+        await route.fulfill({ json: { ...defaultBrev, redigertBrev: route.request().postDataJSON() } });
       } else {
         await route.fallback();
       }
@@ -176,7 +178,7 @@ test.describe("Tabellsnarveier for sletting", () => {
 
     await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
       if (route.request().method() === "PUT") {
-        await route.fulfill({ status: 200, json: { ok: true } });
+        await route.fulfill({ json: { ...brevMedUtfyltTabell, redigertBrev: route.request().postDataJSON() } });
       } else {
         await route.fallback();
       }
@@ -259,7 +261,7 @@ test.describe("Tabellsnarveier for flytting av rader", () => {
 
     await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
       if (route.request().method() === "PUT") {
-        await route.fulfill({ status: 200, json: { ok: true } });
+        await route.fulfill({ json: { ...brevMedUtfyltTabell, redigertBrev: route.request().postDataJSON() } });
       } else {
         await route.fallback();
       }
