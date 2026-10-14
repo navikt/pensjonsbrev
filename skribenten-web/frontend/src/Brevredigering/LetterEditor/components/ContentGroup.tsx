@@ -46,6 +46,7 @@ import {
   getCursorOffsetOrRange,
   getSelectionFocus,
   gotoCoordinates,
+  selectTextRange,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import {
   type Content,
@@ -297,6 +298,21 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         return;
       }
 
+      // Restore a caret/selection requested by an action (e.g. font type change), then clear the one-shot
+      // request. For a range, cursorPosition is cleared too so the next run respects the DOM selection (see below).
+      const { selectionStart } = editorState.focus;
+      if (selectionStart !== undefined && editorState.focus.cursorPosition !== undefined && element.childNodes[0]) {
+        const end = Math.min(editorState.focus.cursorPosition, text.length);
+        const start = Math.min(selectionStart, end);
+        selectTextRange(element.childNodes[0], start, end);
+        setEditorState((s) => {
+          if (s.focus.selectionStart === undefined) return s;
+          const { selectionStart: _, cursorPosition, ...focus } = s.focus;
+          return { ...s, focus: start === end ? { ...focus, cursorPosition } : focus };
+        });
+        return;
+      }
+
       // If we do NOT yet have a stored cursorPosition, respect any existing DOM caret/selection.
       if (editorState.focus.cursorPosition === undefined || editorState.focus.cursorPosition < 0) {
         const selection = globalThis.getSelection();
@@ -333,6 +349,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     shouldBeFocused,
     editorState.focus.cursorPosition,
     editorState.focus.selectAll,
+    editorState.focus.selectionStart,
     freeze,
     setEditorState,
     erFritekst,

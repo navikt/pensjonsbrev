@@ -74,6 +74,22 @@ export function isTable(content: Content | undefined | null): content is Table {
   return content?.type === "TABLE";
 }
 
+export const TABLE_HEADER_ROW_INDEX = -1;
+
+export function isFocusInTable(editorState: LetterEditorState): boolean {
+  const { focus } = editorState;
+  const content = editorState.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex];
+  return isTable(content) && isTableCellIndex(focus);
+}
+
+export function isFocusInTableHeader(editorState: LetterEditorState): boolean {
+  return (
+    isFocusInTable(editorState) &&
+    isTableCellIndex(editorState.focus) &&
+    editorState.focus.rowIndex === TABLE_HEADER_ROW_INDEX
+  );
+}
+
 export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is ItemContentIndex {
   return (
     f !== undefined &&

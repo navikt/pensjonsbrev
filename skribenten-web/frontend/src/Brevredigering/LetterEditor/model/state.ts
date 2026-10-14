@@ -29,6 +29,12 @@ export type Focus = LiteralIndex & {
    * native focus event.
    */
   selectAll?: boolean;
+  /**
+   * When set, ContentGroup.tsx selects the text between `selectionStart` and `cursorPosition` in the focused
+   * literal (a collapsed caret when equal) and refocuses it, e.g. to keep the caret/selection after a font
+   * type change. One-shot: cleared once applied (for a range, together with `cursorPosition`).
+   */
+  selectionStart?: number;
 };
 
 export type LetterEditorState = {

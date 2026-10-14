@@ -5,22 +5,31 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
+import { isFocusInTableHeader } from "../actions/common";
 import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
 import { applyAction } from "../lib/actions";
+import { refocusEditableAtSelection } from "../services/caretUtils";
 import { tooltipText } from "../utils";
 
 const EditorFonts = () => {
   const { editorState, freeze, setEditorState } = useEditor();
   const activeFontType = getCurrentActiveFontTypeAtCursor(editorState);
+  const boldDisabled = isFocusInTableHeader(editorState);
+
+  const switchFontType = (fontType: FontType) => {
+    // Must run before the action: the resulting focus event would otherwise overwrite the focus set by the action.
+    refocusEditableAtSelection();
+    applyAction(Actions.switchFontType, setEditorState, fontType);
+  };
 
   return (
     <>
       <FontButton
-        active={activeFontType === FontType.BOLD}
+        active={!boldDisabled && activeFontType === FontType.BOLD}
         data-testid="fonttype-bold-button"
-        disabled={freeze || editorState.focus.blockIndex < 0}
+        disabled={freeze || editorState.focus.blockIndex < 0 || boldDisabled}
         onClick={() => {
-          applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
+          switchFontType(FontType.BOLD);
         }}
         text={<BodyShort weight="semibold">F</BodyShort>}
         tooltip={tooltipText.bold}
@@ -30,7 +39,7 @@ const EditorFonts = () => {
         data-testid="fonttype-italic-button"
         disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
-          applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
+          switchFontType(FontType.ITALIC);
         }}
         text={
           <BodyShort css={{ fontStyle: "italic" }} weight="semibold">
@@ -60,6 +69,8 @@ const FontButton = (props: {
         data-testid={props["data-testid"]}
         disabled={props.disabled}
         onClick={props.onClick}
+        // Keep focus and selection in the editor when clicking
+        onMouseDown={(event) => event.preventDefault()}
         size="small"
         type="button"
         variant={props.active ? "primary-neutral" : "tertiary-neutral"}

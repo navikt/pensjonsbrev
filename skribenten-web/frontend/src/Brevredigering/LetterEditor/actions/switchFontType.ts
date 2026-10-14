@@ -2,22 +2,26 @@ import { type Draft } from "immer";
 
 import {
   type Cell,
-  type Content,
   FontType,
   type ItemList,
   type LiteralValue,
-  type ParagraphBlock,
-  type Row,
   type TextContent,
   type VariableValue,
 } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import { type Action, withPatches } from "../lib/actions";
-import { type LetterEditorState, type LiteralIndex } from "../model/state";
+import { type LetterEditorState } from "../model/state";
 import { isItemList, isLiteral, isTableCellIndex, isTextContent } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
-import { fontTypeOf, isItemContentIndex, isTable, newLiteral } from "./common";
+import {
+  fontTypeOf,
+  isFocusInTableHeader,
+  isItemContentIndex,
+  isTable,
+  newLiteral,
+  TABLE_HEADER_ROW_INDEX,
+} from "./common";
 
 export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
@@ -28,7 +32,7 @@ export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState)
 
   if (isTable(blockContent) && isTableCellIndex(focus)) {
     const cell =
-      focus.rowIndex === -1
+      focus.rowIndex === TABLE_HEADER_ROW_INDEX
         ? blockContent.header.colSpec[focus.cellIndex]?.headerContent
         : blockContent.rows[focus.rowIndex]?.cells[focus.cellIndex];
 
@@ -51,37 +55,42 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
     return;
   }
 
+  // Tabelloverskrifter er allerede fete, så fet skrift er ikke tillatt der.
+  if (fontType === FontType.BOLD && isFocusInTableHeader(draft)) {
+    return;
+  }
+
   if (fontType === getCurrentActiveFontTypeAtCursor(draft)) {
     fontType = FontType.PLAIN;
   }
 
   const contentAtFocus = block.content[literalIndex.contentIndex];
   if (isTable(contentAtFocus) && isTableCellIndex(literalIndex)) {
-    const table = contentAtFocus;
+    const isHeader = literalIndex.rowIndex === TABLE_HEADER_ROW_INDEX;
+    const cell: Draft<Cell> | undefined = isHeader
+      ? contentAtFocus.header.colSpec[literalIndex.cellIndex]?.headerContent
+      : contentAtFocus.rows[literalIndex.rowIndex]?.cells[literalIndex.cellIndex];
+    const textContent = cell?.text[literalIndex.cellContentIndex];
 
-    const TABLE_HEADER_INDEX = -1;
-    if (literalIndex.rowIndex === TABLE_HEADER_INDEX) {
-      const colSpec = table.header.colSpec[literalIndex.cellIndex];
-      const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
-
-      if (isLiteral(headerLiteral)) {
-        headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? undefined : fontType;
-      }
-      draft.focus = { ...draft.focus, cursorPosition: 0 };
-      draft.saveStatus = "DIRTY";
+    if (!cell || !isLiteral(textContent)) {
       return;
     }
 
-    const row: Draft<Row> = table.rows[literalIndex.rowIndex];
-    const cell: Draft<Cell> = row.cells[literalIndex.cellIndex];
-
-    const textContent = cell.text[literalIndex.cellContentIndex];
-
-    if (isLiteral(textContent)) {
-      textContent.editedFontType = textContent.editedFontType === fontType ? undefined : fontType;
+    const result = switchFontTypeForLiteral({ literal: textContent, fonttype: fontType });
+    if (!result) {
+      return;
     }
 
-    draft.focus = { ...draft.focus, cursorPosition: 0 };
+    cell.text.splice(literalIndex.cellContentIndex, 1, ...result.resultingContent);
+    if (typeof result.deletedContent === "number") {
+      cell.deletedContent.push(result.deletedContent);
+    }
+    draft.focus = {
+      ...literalIndex,
+      cellContentIndex: literalIndex.cellContentIndex + result.newThisLiteralPositionInNewContent,
+      cursorPosition: result.updatedCursorPosition,
+      selectionStart: result.selectionStart,
+    };
     draft.saveStatus = "DIRTY";
     return;
   }
@@ -96,11 +105,6 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
     content: theContentWeAreOn,
     onLiteral: (literal) => {
       const result = switchFontTypeForLiteral({
-        draft: draft,
-        thisBlock: block,
-        literalIndex: literalIndex,
-        contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-        contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
         literal: literal,
         fonttype: fontType,
       });
@@ -115,6 +119,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
         contentIndex:
           block.content.slice(0, literalIndex.contentIndex).length + result.newThisLiteralPositionInNewContent,
         cursorPosition: result.updatedCursorPosition,
+        selectionStart: result.selectionStart,
       };
       block.content = [...contentBeforeTheLiteralWeAreOn, ...result.resultingContent, ...contentAfterTheLiteralWeAreOn];
       block.deletedContent = [...block.deletedContent, ...(result.deletedContent ? [result.deletedContent] : [])];
@@ -140,11 +145,6 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
         content: itemContent,
         onLiteral: (literal) => {
           const result = switchFontTypeForLiteral({
-            draft: draft,
-            thisBlock: block,
-            literalIndex: literalIndex,
-            contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-            contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
             literal: literal,
             fonttype: fontType,
           });
@@ -163,6 +163,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
             ...draft.focus,
             blockIndex: literalIndex.blockIndex,
             cursorPosition: result.updatedCursorPosition,
+            selectionStart: result.selectionStart,
             itemContentIndex:
               item.content.slice(0, literalIndex.itemContentIndex).length + result.newThisLiteralPositionInNewContent,
           };
@@ -198,15 +199,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
   });
 });
 
-const switchFontTypeForLiteral = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  contentBeforeTheLiteralWeAreOn: Content[];
-  contentAfterTheLiteralWeAreOn: Content[];
-  literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
+const switchFontTypeForLiteral = (args: { literal: Draft<LiteralValue>; fonttype: FontType }) => {
   const selection = globalThis.getSelection();
 
   const hasSelectionAndMarkedText = selection && (selection.toString?.()?.length ?? 0) > 0;
@@ -224,13 +217,7 @@ const switchFontTypeForVariable = (args: { fonttype: FontType; variable: Draft<V
   // });
 };
 
-const switchFontTypeOfMarkedText = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
+const switchFontTypeOfMarkedText = (args: { literal: Draft<LiteralValue>; fonttype: FontType }) => {
   const selection = globalThis.getSelection()!;
   const range = selection.getRangeAt(0);
 
@@ -272,7 +259,8 @@ const switchFontTypeOfMarkedText = (args: {
 
   return {
     resultingContent: newContent,
-    updatedCursorPosition: newThisLiteral.editedText?.length ?? 0,
+    updatedCursorPosition: textInSelection.length,
+    selectionStart: 0,
     newThisLiteralPositionInNewContent: hasTextBeforeTheSelection ? 1 : 0,
     deletedContent: changesTheWholeLiteral ? null : args.literal.id,
   };
@@ -281,13 +269,7 @@ const switchFontTypeOfMarkedText = (args: {
 /**
  * Eksempel case er når dem har caret i midten av et ord, og vil bytte fonttypen på dette ordet.
  */
-const switchFontTypeOfCurrentWord = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
+const switchFontTypeOfCurrentWord = (args: { literal: Draft<LiteralValue>; fonttype: FontType }) => {
   const cursorPosition = getCursorOffset();
 
   if (cursorPosition < 0) {
@@ -347,6 +329,7 @@ const switchFontTypeOfCurrentWord = (args: {
   return {
     resultingContent: newContent,
     updatedCursorPosition: cursorPosition - wordStartPosition,
+    selectionStart: cursorPosition - wordStartPosition,
     newThisLiteralPositionInNewContent: hasTextBeforeTheWord ? 1 : 0,
     deletedContent: changesTheWholeLiteral ? null : args.literal.id,
   };
