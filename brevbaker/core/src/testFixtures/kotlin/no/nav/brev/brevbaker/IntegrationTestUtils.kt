@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.Path
 
@@ -47,11 +48,14 @@ fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode
     }
 
 fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("build", "test_pdf")) {
-    val file = path.resolve("${pdfFileName.replace(" ", "_")}.pdf").toFile()
+    val file = lagFil(path, pdfFileName)
     file.parentFile.mkdirs()
     file.writeBytes(pdf)
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
+
+private fun lagFil(path: Path, pdfFileName: String): File =
+    path.resolve("${pdfFileName.replace(" ", "_")}.pdf").toFile()
 
 fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
