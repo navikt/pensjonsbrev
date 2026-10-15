@@ -6,7 +6,7 @@
 // derfor likt som i nettleseren, derfor bruker vi happy-dom i denne testen:
 // @vitest-environment happy-dom
 
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from "vitest";
 
@@ -18,7 +18,18 @@ import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ElementTags, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
-import { item, itemList, letter, literal, paragraph, variable } from "~test/support/letterEditorTestUtils";
+import {
+  cell,
+  item,
+  itemList,
+  letter,
+  literal,
+  paragraph,
+  row,
+  table,
+  title1,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 const content: LiteralValue[] = [newLiteral({ id: 1, text: "Heisann" }), newLiteral({ id: 2, text: "Velkommen" })];
 
@@ -444,6 +455,55 @@ describe("ArrowRight will move focus to next editable content", () => {
 });
 
 describe("onClickHandler", () => {
+  test.each(["first", "middle", "last"])(
+    "triple-clicking the %s literal selects only that literal",
+    async (position) => {
+      const state = letter(paragraph(["first", "middle", "last"].map((name) => literal({ text: `${name} literal` }))));
+      const { user } = setupComplex(state);
+
+      await user.tripleClick(screen.getByText(`${position} literal`));
+
+      expect(globalThis.getSelection()?.toString()).toBe(`${position} literal`);
+    },
+  );
+
+  test("triple-click mousedown prevents native paragraph selection on a non-fritekst literal", () => {
+    const state = letter(paragraph(["first", "middle", "last"].map((name) => literal({ text: `${name} literal` }))));
+    setupComplex(state);
+
+    const notPrevented = fireEvent.mouseDown(screen.getByText("middle literal"), { detail: 3 });
+
+    expect(notPrevented).toBe(false);
+    expect(globalThis.getSelection()?.toString()).toBe("middle literal");
+  });
+
+  test("triple-clicking literals in headings, list items, and table cells selects only that literal", async () => {
+    const state = letter(
+      title1(literal({ text: "heading literal" })),
+      paragraph([
+        itemList({
+          items: [item(literal({ text: "first list literal" }), literal({ text: "middle list literal" }))],
+        }),
+      ]),
+      paragraph([
+        table(
+          [cell(literal({ text: "table heading" }))],
+          [row(cell(literal({ text: "first cell literal" }), literal({ text: "middle cell literal" })))],
+        ),
+      ]),
+    );
+    const { user } = setupComplex(state);
+
+    await user.tripleClick(screen.getByText("heading literal"));
+    expect(globalThis.getSelection()?.toString()).toBe("heading literal");
+
+    await user.tripleClick(screen.getByText("middle list literal"));
+    expect(globalThis.getSelection()?.toString()).toBe("middle list literal");
+
+    await user.tripleClick(screen.getByText("middle cell literal"));
+    expect(globalThis.getSelection()?.toString()).toBe("middle cell literal");
+  });
+
   test("clicking on a fritekst variable will select the whole element", async () => {
     const { user } = setupComplex();
 

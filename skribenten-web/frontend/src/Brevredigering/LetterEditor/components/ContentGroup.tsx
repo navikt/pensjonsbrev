@@ -845,6 +845,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnMouseDown = (e: React.MouseEvent) => {
     pasteViaContextMenuRef.current = false;
+    // Native trippelklikk markerer hele avsnittet ved mousedown, noe som avgrenses til første literal i blokken.
+    // Blokker dette og marker heller hele literalen det ble klikket i.
+    if (!erFritekst && e.detail === 3) {
+      e.preventDefault();
+      setLiteralSelection(e.currentTarget as HTMLSpanElement);
+      return;
+    }
     if (!erFritekst) return;
 
     // Tøm markering for å restarte dra-og-marker
@@ -903,6 +910,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const range = document.createRange();
       selection.removeAllRanges();
       range.selectNodeContents(element.childNodes[0]);
+      selection.addRange(range);
+    }
+  };
+
+  const setLiteralSelection = (element: HTMLSpanElement) => {
+    const selection = globalThis.getSelection();
+    if (selection) {
+      const range = document.createRange();
+      selection.removeAllRanges();
+      range.selectNodeContents(element);
       selection.addRange(range);
     }
   };
