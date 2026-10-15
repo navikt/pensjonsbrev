@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
@@ -43,31 +44,8 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        val oversittetklagefrist = saksbehandlervalg("oversittetklagefrist", "Fvl. § 31 Oversittet klagefrist").bool()
-        val eoesArtikkel57 = saksbehandlervalg("eosArtikkel57", "Trygdeforordningen EØS-artikkel 57 Trygdetid, eller botid under ett år").bool()
-        val medlemskap = saksbehandlervalg("medlemskap", "§ 12-2 Medlemskap").bool()
-        val hensiktsmessigBehandlingOgTiltak = saksbehandlervalg("hensiktsmessigBehandlingOgTiltak", "§ 12-5 Hensiktsmessig behandling og tiltak").bool()
-        val kunArbeidsrettedeTiltak = saksbehandlervalg("kunArbeidsrettedeTiltak", "§ 12-5 Kun arbeidsrettede tiltak").bool()
-        val hovedAarsakTilSykdom = saksbehandlervalg("hovedAarsakTilSykdom", "§ 12-6 Hovedårsak til sykdom").bool()
-        val kombinasjonNedsattInntektsevne = saksbehandlervalg("kombinasjonNedsattInntektsevne", "§ 12-7 Kombinasjon nedsatt inntektsevne").bool()
-        val nedsattInnteksevne = saksbehandlervalg("nedsattInnteksevne", "§ 12-7 Nedsatt innteksevne").bool()
-        val ufoeretidspunkt = saksbehandlervalg("ufoeretidspunkt", "§ 12-8 Uføretidspunkt").bool()
-        val fastsettelseIEU = saksbehandlervalg("fastsettelseIEU", "§ 12-9 Fastsettelse av Inntekt Etter Uførhet IEU").bool()
-        val fastsettelseIFU = saksbehandlervalg("fastsettelseIFU", "§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU").bool()
-        val fastsettelseUfoeregrad = saksbehandlervalg("fastsettelseUfoeregrad", "§ 12-10 Fastsettelse av Uføregrad").bool()
-        val beregningAvUfoeretrygd = saksbehandlervalg("beregningAvUfoeretrygd", "§ 12-11 Beregning av uføretrygd").bool()
-        val trygdetid = saksbehandlervalg("trygdetid", "§ 12-12 Trygdetid").bool()
-        val ungufoer = saksbehandlervalg("ungufoer", "§ 12-13 Ung ufør").bool()
-        val automatiskInntektsreduksjon = saksbehandlervalg("automatiskInntektsreduksjon", "§ 12-14 Reduksjon på grunn av inntekt - automatisk").bool()
-        val etteropgjoer = saksbehandlervalg("etteropgjoer", "§ 12-14 Reduksjon på grunn av inntekt - etteropgjør").bool()
-        val etteroppgjoerBarnetillegg = saksbehandlervalg("etteroppgjoerBarnetillegg", "§ 12-14 Reduksjon på grunn av inntekt - etteroppgjør barnetillegg").bool()
-        val barnetillegg = saksbehandlervalg("barnetillegg", "§ 12-15 Barnetillegg").bool()
-        val reduksjonAvBarnetillegg = saksbehandlervalg("reduksjonAvBarnetillegg", "§ 12-16 Reduksjon av barnetillegg").bool()
-        val yrkesskade = saksbehandlervalg("yrkesskade", "§ 12-17 Yrkesskade").bool()
-        val oppholdsinstitusjon = saksbehandlervalg("oppholdsinstitusjon", "§ 12-19 Opphold i institusjon").bool()
-        val straffegjennomfoering = saksbehandlervalg("straffegjennomfoering", "§ 12-20 Straffegjennomføring").bool()
-        val virkningstidspunkt = saksbehandlervalg("virkningstidspunkt", "§ 22-12/22-13 Virkningstidspunkt").bool()
-        val tilbakekreving = saksbehandlervalg("tilbakekreving", "§ 22-15 Tilbakekreving").bool()
+
+        val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
 
         title { text(bokmal { +"Oversendelse til $NAV_KLAGEINSTANS - Uføretrygd" }) }
 
@@ -120,8 +98,8 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             title1 { text(bokmal { +"Innstillingen til $NAV_KLAGEINSTANS - uføretrygd" }) }
 
             title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
-
-            showIf(oversittetklagefrist.equalTo(true)) {
+z
+            showIf(Paragraf.Oversittetklagefrist.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OversittetKlagefrist)
             }.orShowIf(eoesArtikkel57.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EoesArtikkel57)
@@ -173,9 +151,36 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Tilbakekreving)
             }
 
-            paragraph{ text(bokmal { +"Vedtaket opprettholdes og klagen oversendes til $NAV_KLAGEINSTANS for videre behandling." }) }
-            paragraph{ text(bokmal { +"Klagen har ikke ført til at vedtak blir endret." }) }
+            paragraph { text(bokmal { +"Vedtaket opprettholdes og klagen oversendes til $NAV_KLAGEINSTANS for videre behandling." }) }
+            paragraph { text(bokmal { +"Klagen har ikke ført til at vedtak blir endret." }) }
         }
+    }
+        enum class Paragraf(override val displayText: String) : SaksbehandlerValgEnum {
+            Medlemskap("§ 12-2 Medlemskap"),
+            HensiktsmessigBehandlingOgTiltak("§ 12-5 Hensiktsmessig behandling og tiltak"),
+            KunArbeidsrettedeTiltak("§ 12-5 Kun arbeidsrettede tiltak"),
+            HovedAarsakTilSykdom("§ 12-6 Hovedårsak til sykdom"),
+            NedsattInnteksevne("§ 12-7 Nedsatt innteksevne"),
+            KombinasjonNedsattInntektsevne("§ 12-7 Kombinasjon nedsatt inntektsevne"),
+            Ufoeretidspunkt("§ 12-8 Uføretidspunkt"),
+            FastsettelseIFU("§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU"),
+            FastsettelseIEU("§ 12-9 Fastsettelse av Inntekt Etter Uførhet IEU"),
+            FastsettelseUfoeregrad("§ 12-10 Fastsettelse av Uføregrad"),
+            BeregningAvUfoeretrygd("§ 12-11 Beregning av uføretrygd"),
+            Trygdetid("§ 12-12 Trygdetid"),
+            Ungufoer("§ 12-13 Ung ufør"),
+            AutomatiskInntektsreduksjon("§ 12-14 Reduksjon på grunn av inntekt - automatisk"),
+            Etteropgjoer("§ 12-14 Reduksjon på grunn av inntekt - etteropgjør"),
+            EtteroppgjoerBarnetillegg("§ 12-14 Reduksjon på grunn av inntekt - etteroppgjør barnetillegg"),
+            Barnetillegg("§ 12-15 Barnetillegg"),
+            ReduksjonAvBarnetillegg("§ 12-16 Reduksjon av barnetillegg"),
+            Yrkesskade("§ 12-17 Yrkesskade"),
+            Oppholdsinstitusjon("§ 12-19 Opphold i institusjon"),
+            Straffegjennomfoering("§ 12-20 Straffegjennomføring"),
+            Virkningstidspunkt("§ 22-12/22-13 Virkningstidspunkt"),
+            Tilbakekreving("§ 22-15 Tilbakekreving"),
+            EosArtikkel57("EØS-trygdeforordningen artikkel 57 Trygdetid eller botid under ett år"),
+            Oversittetklagefrist("Fvl. § 31 Oversittet klagefrist"),
     }
 }
 
