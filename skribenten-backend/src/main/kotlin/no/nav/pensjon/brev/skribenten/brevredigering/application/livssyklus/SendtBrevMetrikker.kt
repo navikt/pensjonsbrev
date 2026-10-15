@@ -64,7 +64,10 @@ class SendtBrevMetrikker(
         val kontekst = currentPrincipalContext() +
             (currentCoroutineContext()[KtorCallIdContextElement] ?: EmptyCoroutineContext)
 
-        return scope.launch(kontekst) { tell(maaling) }
+        return scope.launch(kontekst) {
+            tell(maaling)
+            tellValgteVedlegg(maaling)
+        }
     }
 
     private suspend fun tell(maaling: SendtBrevMaaling) {
@@ -78,8 +81,6 @@ class SendtBrevMetrikker(
             .tag("adressert_til", maaling.manueltAdressertTil?.name ?: IKKE_RELEVANT)
             .tag("distribusjon", maaling.distribusjonstype.name)
             .tag("avsender_enhet", maaling.avsenderEnhet.value)
-            .tag("brevkode", maaling.brevkode.kode())
-            .tag("valgte_vedlegg", maaling.valgteVedlegg.joinToString(",") { it.kode })
             .register(registry)
             .increment()
 
@@ -88,6 +89,13 @@ class SendtBrevMetrikker(
             tellOrganisasjon(offentligId)
         }
     }
+    private fun tellValgteVedlegg(maaling: SendtBrevMaaling) =
+        Counter.builder("skribenten_valgte_vedlegg")
+            .description("Valgte vedlegg, fordelt på brevkode")
+            .tag("brevkode", maaling.brevkode.kode())
+            .tag("valgte_vedlegg", maaling.valgteVedlegg.joinToString(",") { it.kode })
+            .register(registry)
+            .increment()
 
     // Tom labelverdi leses som fraværende i Prometheus, og serien ville da falt ut av `sum by (samhandler_type)`.
     private fun Result<String?>.getOrUkjent(): String =

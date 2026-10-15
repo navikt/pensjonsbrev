@@ -64,7 +64,7 @@ class SendtBrevMetrikkerTest {
         metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
 
         assertThat(registry.scrape()).contains(
-            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",brevkode="INFORMASJONSBREV",distribusjon="SENTRALPRINT",id_type="ORG",mottaker="SAMHANDLER",samhandler_type="ADVO",valgte_vedlegg=""} 1.0"""
+            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="ORG",mottaker="SAMHANDLER",samhandler_type="ADVO"} 1.0"""
         )
     }
 
@@ -154,7 +154,7 @@ class SendtBrevMetrikkerTest {
         tellSamhandler(registry, "80000000003")
 
         assertThat(registry.scrape()).contains(
-            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",brevkode="INFORMASJONSBREV",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT",valgte_vedlegg=""} 1.0"""
+            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT"} 1.0"""
         )
         assertThat(registry.orgBoetter()).isEmpty()
     }
@@ -204,7 +204,7 @@ class SendtBrevMetrikkerTest {
             .tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
 
         assertThat(registry.scrape()).contains(
-            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",brevkode="INFORMASJONSBREV",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT",valgte_vedlegg=""} 1.0"""
+            """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT"} 1.0"""
         )
     }
 
