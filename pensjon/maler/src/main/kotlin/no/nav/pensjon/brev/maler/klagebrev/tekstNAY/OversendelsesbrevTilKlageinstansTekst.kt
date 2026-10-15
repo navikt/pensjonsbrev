@@ -68,7 +68,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Som hovedregel må inntektsevnen være varig nedsatt med minst 50 prosent. "
                     +"For personer som mottar arbeidsavklaringspenger når søknaden om uføretrygd blir fremsatt, er det tilstrekkelig at inntektsevnen er varig nedsatt med minst 40 prosent. "
                 })
-                text(bokmal { +fritekst("Hvis uførheten skyldes en godkjent yrkesskade er det tilstrekkelig at inntektsevnen er varig nedsatt med minst 30 prosent.") })
+                text(bokmal { +"Hvis uførheten skyldes en godkjent yrkesskade er det tilstrekkelig at inntektsevnen er varig nedsatt med minst 30 prosent." }, ITALIC)
             }
         }
     }
@@ -1102,7 +1102,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     },ITALIC)
                 }
 
-                paragraph {F
+                paragraph {
                     text(bokmal {
                         +"I vedtaket av "
                         +fritekst("dato") + " ble klager innvilget/ avslått fra "
