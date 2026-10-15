@@ -123,6 +123,69 @@ test.describe("Letter editor accessibility", () => {
   });
 
   test.describe("Page", () => {
+    for (const activationKey of ["Enter", "Space"]) {
+      for (const targetDocument of ["brev", "vedlegg"]) {
+        test(`switching documents with ${activationKey} keeps tab focus and preserves ${targetDocument} fritekst selection`, async ({
+          page,
+        }) => {
+          const placeholder = "Fyll inn fritekst i vedlegget";
+          const letterPlaceholder = "Fyll inn fritekst i brevet";
+          const vedleggId = "redigerbart-vedlegg";
+          const vedlegg = {
+            includeSakspart: false,
+            title: { text: [literal("Redigerbart vedlegg")], deletedContent: [] },
+            blocks: [paragraph([literal({ text: placeholder, tags: [ElementTags.FRITEKST] })])],
+            deletedBlocks: [],
+          };
+          const vedleggUrl = "**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg";
+          await page.route(vedleggUrl, (route) =>
+            route.fulfill({ json: [{ vedleggId, tittel: "Redigerbart vedlegg" }] }),
+          );
+          await page.route(`${vedleggUrl}/${vedleggId}`, (route) => route.fulfill({ json: vedlegg }));
+          await openEditor(page, [paragraph([literal({ text: letterPlaceholder, tags: [ElementTags.FRITEKST] })])]);
+          await expect(page.getByText(letterPlaceholder, { exact: true })).toBeFocused();
+
+          const brevmalTab = page.getByRole("tab", { name: "Brevmal", exact: true });
+          const vedleggTab = page.getByRole("tab", { name: "Vedlegg", exact: true });
+          for (let count = 0; count < 50; count++) {
+            await page.keyboard.press("Tab");
+            if (await brevmalTab.evaluate((tab) => tab === document.activeElement)) break;
+          }
+          await expect(brevmalTab).toBeFocused();
+          await page.keyboard.press("ArrowRight");
+          await expect(vedleggTab).toBeFocused();
+          await page.keyboard.press(activationKey);
+          await expect(page.getByText(placeholder, { exact: true })).toBeVisible();
+          await expect(vedleggTab).toHaveAttribute("aria-selected", "true");
+          await expect(vedleggTab).toBeFocused();
+          await page.keyboard.press("ArrowLeft");
+          await page.keyboard.press(activationKey);
+          await expect(page.getByText(letterPlaceholder, { exact: true })).toBeVisible();
+          await expect(brevmalTab).toHaveAttribute("aria-selected", "true");
+          await expect(brevmalTab).toBeFocused();
+
+          if (targetDocument === "vedlegg") {
+            await page.keyboard.press("ArrowRight");
+            await page.keyboard.press(activationKey);
+            await expect(page.getByText(placeholder, { exact: true })).toBeVisible();
+            await expect(vedleggTab).toBeFocused();
+          }
+          const targetPlaceholder = targetDocument === "vedlegg" ? placeholder : letterPlaceholder;
+          const field = page.getByText(targetPlaceholder, { exact: true });
+          for (let count = 0; count < 50; count++) {
+            await page.keyboard.press("Tab");
+            if (await field.evaluate((field) => field === document.activeElement)) break;
+          }
+          await expect(field).toBeFocused();
+          await expect.poll(() => page.evaluate(() => globalThis.getSelection()?.toString())).toBe(targetPlaceholder);
+          await expect(page.locator(".editor")).toHaveCSS("outline-style", "solid");
+          await page.keyboard.type("Utfylt vedlegg");
+          await expect(page.locator(".editor")).toContainText("Utfylt vedlegg");
+          await expect(page.locator(".editor")).not.toContainText(targetPlaceholder);
+        });
+      }
+    }
+
     test("loaded editor page", async ({ page }, testInfo) => {
       await openEditor(page);
       await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
@@ -132,21 +195,21 @@ test.describe("Letter editor accessibility", () => {
     const placeholder = "Fyll inn fritekst";
     for (const scenario of [
       {
-        name: "the title when there is no fritekst",
+        name: "the first body text when there is no fritekst",
         blocks: listBlocks(ListType.PUNKTLISTE),
-        expectTitle: true,
+        expectBody: true,
       },
       {
-        name: "the title when fritekst has been filled in",
+        name: "the first body text when fritekst has been filled in",
         blocks: [paragraph([literal({ text: placeholder, editedText: "Utfylt tekst", tags: [ElementTags.FRITEKST] })])],
-        expectTitle: true,
+        expectBody: true,
       },
       {
         name: "fritekst in a list before the title",
         blocks: [
           paragraph([itemList({ items: [item(literal({ text: placeholder, tags: [ElementTags.FRITEKST] }))] })]),
         ],
-        expectTitle: false,
+        expectBody: false,
       },
       {
         name: "fritekst in a table before the title",
@@ -158,7 +221,7 @@ test.describe("Letter editor accessibility", () => {
             ),
           ]),
         ],
-        expectTitle: false,
+        expectBody: false,
       },
     ]) {
       test(`Tab enters ${scenario.name} after the toolbar`, async ({ page }) => {
@@ -172,14 +235,28 @@ test.describe("Letter editor accessibility", () => {
         const editor = page.locator(".editor");
         await expect(editor).toHaveCSS("outline-style", "none");
         await page.keyboard.press("Tab");
-        const entry = scenario.expectTitle
-          ? page.locator(".editor .letter-title span[contenteditable=true]").first()
+        const entry = scenario.expectBody
+          ? page.locator(".editor-surface span[contenteditable=true][tabindex='0']").first()
           : page.getByText(placeholder, { exact: true });
         await expect(entry).toBeFocused();
         await expect(editor).toHaveCSS("outline-style", "solid");
         await expect(editor).toHaveCSS("outline-width", "2px");
         await expect(editor).toHaveCSS("outline-offset", "-2px");
-        if (scenario.expectTitle) {
+        await expect(page.locator(".editor .letter-title span[contenteditable=true]").first()).toHaveAttribute(
+          "tabindex",
+          "-1",
+        );
+        if (scenario.expectBody) {
+          await expect
+            .poll(() =>
+              entry.evaluate((element) => {
+                const selection = globalThis.getSelection();
+                return selection?.isCollapsed && element.contains(selection.anchorNode) ? selection.anchorOffset : -1;
+              }),
+            )
+            .toBe(0);
+          await expect(page.getByTestId("toolbar-table-button")).toBeEnabled();
+          await expect(page.getByTestId("typography-select")).toBeEnabled();
           const originalText = await entry.textContent();
           await page.keyboard.press("End");
           await page.keyboard.type("!");
@@ -197,12 +274,93 @@ test.describe("Letter editor accessibility", () => {
           await expect(editor).toHaveCSS("outline-style", "solid");
         } else {
           await expect.poll(() => page.evaluate(() => globalThis.getSelection()?.toString())).toBe(placeholder);
-          await expect(page.locator(".editor .letter-title span[contenteditable=true]").first()).toHaveAttribute(
-            "tabindex",
-            "-1",
-          );
         }
       });
+    }
+
+    for (const tool of ["table", "bullet-list", "number-list"]) {
+      for (const documentType of ["letter", "attachment"]) {
+        test(`inserting ${tool} in a new ${documentType} paragraph using only the keyboard`, async ({ page }) => {
+          if (documentType === "attachment") {
+            const vedleggUrl = "**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg";
+            await page.route(vedleggUrl, (route) =>
+              route.fulfill({ json: [{ vedleggId: "vedlegg", tittel: "Redigerbart vedlegg" }] }),
+            );
+            await page.route(`${vedleggUrl}/vedlegg`, (route) =>
+              route.fulfill({
+                json: {
+                  includeSakspart: false,
+                  title: { text: [literal("Redigerbart vedlegg")], deletedContent: [] },
+                  blocks: [paragraph([literal("Første avsnitt")])],
+                  deletedBlocks: [],
+                },
+              }),
+            );
+          }
+          await openEditor(page, [paragraph([literal("Første avsnitt")])]);
+          if (documentType === "attachment") {
+            const brevmalTab = page.getByRole("tab", { name: "Brevmal", exact: true });
+            for (let count = 0; count < 50; count++) {
+              await page.keyboard.press("Tab");
+              if (await brevmalTab.evaluate((tab) => tab === document.activeElement)) break;
+            }
+            await expect(brevmalTab).toBeFocused();
+            await page.keyboard.press("ArrowRight");
+            await page.keyboard.press("Enter");
+            await expect(page.locator(".editor .letter-title")).toHaveText("Redigerbart vedlegg");
+          }
+          const lastToolbarControl =
+            documentType === "letter"
+              ? page.getByRole("button", { name: "Tilbakestill mal", exact: true })
+              : page.getByTestId("typography-select");
+          for (let count = 0; count < 50; count++) {
+            await page.keyboard.press("Tab");
+            if (await lastToolbarControl.evaluate((control) => control === document.activeElement)) break;
+          }
+          await expect(lastToolbarControl).toBeFocused();
+          await page.keyboard.press("Tab");
+          await expect(page.getByText("Første avsnitt", { exact: true })).toBeFocused();
+          await page.keyboard.press("End");
+          await page.keyboard.press("Enter");
+          const blankParagraph = page.locator(".editor-surface > div").nth(1);
+          await expect(blankParagraph.locator("[contenteditable=true]")).toBeFocused();
+          await page.keyboard.press("Space");
+          await expect(blankParagraph.locator("[contenteditable=true]")).toBeFocused();
+          const toolButton = page.getByTestId(tool === "table" ? "toolbar-table-button" : `${tool}-button`);
+          await expect(toolButton).toBeEnabled();
+          await page.keyboard.press("Shift+Tab");
+          await expect(lastToolbarControl).toBeFocused();
+          for (let count = 0; count < 10; count++) {
+            await page.keyboard.press("Shift+Tab");
+            if (await toolButton.evaluate((button) => button === document.activeElement)) break;
+          }
+          await expect(toolButton).toBeFocused();
+          await page.keyboard.press("Enter");
+          if (tool !== "table") {
+            await expect(blankParagraph.locator(tool === "bullet-list" ? "ul" : "ol")).toBeVisible();
+            await page.keyboard.type("Nytt punkt");
+            await expect(blankParagraph).toContainText("Nytt punkt");
+            await expect(page.locator(".editor-surface > div").first()).toHaveText("Første avsnitt");
+            return;
+          }
+          const dialog = page.getByTestId("insert-table-modal");
+          await expect(dialog).toBeVisible();
+          const insertButton = dialog.getByTestId("insert-table-confirm-btn");
+          for (let count = 0; count < 10; count++) {
+            await page.keyboard.press("Tab");
+            if (await insertButton.evaluate((button) => button === document.activeElement)) break;
+          }
+          await expect(insertButton).toBeFocused();
+          await page.keyboard.press("Enter");
+          await expect(dialog).toBeHidden();
+          await expect(page.getByTestId("letter-table")).toBeVisible();
+          await expect(blankParagraph.getByTestId("letter-table")).toBeVisible();
+          await expect(blankParagraph.locator("span[contenteditable=true]:focus")).toHaveCount(1);
+          await page.keyboard.type("Tabelltekst");
+          await expect(blankParagraph.getByTestId("letter-table")).toContainText("Tabelltekst");
+          await expect(page.locator(".editor")).toContainText("Første avsnitt");
+        });
+      }
     }
   });
 
@@ -227,6 +385,24 @@ test.describe("Letter editor accessibility", () => {
   });
 
   test.describe("Tables", () => {
+    for (const cancelWith of ["Escape", "Avbryt"]) {
+      test(`cancelling table insertion with ${cancelWith} returns focus to the toolbar`, async ({ page }) => {
+        await openEditor(page);
+        const tableButton = page.getByTestId("toolbar-table-button");
+        await tableButton.click();
+        const dialog = page.getByTestId("insert-table-modal");
+        await expect(dialog).toBeVisible();
+        if (cancelWith === "Escape") {
+          await page.keyboard.press("Escape");
+        } else {
+          await dialog.getByRole("button", { name: "Avbryt", exact: true }).click();
+        }
+        await expect(dialog).toBeHidden();
+        await expect(tableButton).toBeFocused();
+        await expect(page.getByTestId("letter-table")).toHaveCount(0);
+      });
+    }
+
     test("table with headers and editable cells", async ({ page }, testInfo) => {
       await openTableEditor(page);
       await expectNoAxeViolations(page, testInfo);

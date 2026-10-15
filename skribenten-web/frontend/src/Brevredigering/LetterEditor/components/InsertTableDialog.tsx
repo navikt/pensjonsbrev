@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { Button, HStack, Modal, TextField, VStack } from "@navikt/ds-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 interface InsertTableDialogProps {
   open: boolean;
@@ -9,6 +9,7 @@ interface InsertTableDialogProps {
 }
 
 function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps) {
+  const modalRef = useRef<HTMLDialogElement>(null);
   const [columnCount, setColumnCount] = useState("3");
   const [rowCount, setRowCount] = useState("2");
 
@@ -21,6 +22,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
       header={{ heading: "Sett inn tabell" }}
       onClose={onCancel}
       open={open}
+      ref={modalRef}
       width={360}
     >
       <Modal.Body style={{ paddingTop: "0.5rem" }}>
@@ -92,7 +94,11 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
           <Button
             data-testid="insert-table-confirm-btn"
             disabled={numCols < 1 || numRows < 1}
-            onClick={() => onInsert(Math.max(1, numCols), Math.max(1, numRows))}
+            onClick={() => {
+              // Close first so the new table can receive focus.
+              modalRef.current?.close();
+              onInsert(Math.max(1, numCols), Math.max(1, numRows));
+            }}
             size="small"
             type="button"
           >

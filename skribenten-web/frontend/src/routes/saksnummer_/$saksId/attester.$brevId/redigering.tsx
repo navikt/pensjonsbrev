@@ -565,13 +565,19 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <BrevOgVedleggEditor
                 brev={props.brev}
                 freeze={freeze}
-                renderBrev={() => (
+                renderBrev={(autoFocus) => (
                   <AttestantDiffProvider
                     diff={attestantDiff.activeDiff}
                     diffHash={attestantDiff.diffHash}
                     disableDiffMode={trackedDisableDiffMode}
                   >
-                    <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+                    <ManagedLetterEditor
+                      autoFocus={autoFocus}
+                      brev={props.brev}
+                      error={error}
+                      freeze={freeze}
+                      showDebug={showDebug}
+                    />
                   </AttestantDiffProvider>
                 )}
                 saksId={props.saksId}

@@ -6,6 +6,7 @@ import {
   buildMergedItemList,
   coalesceAdjacentSameTypeLists,
   findAdjoiningContent,
+  findEditorTabEntryFocus,
   findFirstUneditedFritekstFocus,
   isFromTemplate,
   isNew,
@@ -36,6 +37,69 @@ import {
   table,
   title1,
 } from "~test/support/letterEditorTestUtils";
+
+describe("findEditorTabEntryFocus", () => {
+  test("prefers body text over the title", () => {
+    const document = letter(paragraph([literal("Body")])).redigertBrev;
+    expect(findEditorTabEntryFocus(document)).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
+  });
+
+  test("skips non-editable blocks", () => {
+    const document = letter(
+      { ...paragraph([literal("Not editable")]), editable: false },
+      paragraph([literal("Body")]),
+    ).redigertBrev;
+    expect(findEditorTabEntryFocus(document)).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
+  });
+
+  test("finds text inside lists", () => {
+    const document = letter(paragraph([itemList({ items: [item(literal("Item"))] })])).redigertBrev;
+    expect(findEditorTabEntryFocus(document)).toEqual({
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+      cursorPosition: 0,
+    });
+  });
+
+  test("finds text inside tables", () => {
+    const document = editedLetter({ blocks: [paragraph([table([cell(literal("Header"))], [])])] });
+    expect(findEditorTabEntryFocus(document)).toEqual({
+      blockIndex: 0,
+      contentIndex: 0,
+      rowIndex: -1,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+    });
+  });
+
+  test("leaves unedited fritekst as the entry point", () => {
+    const document = letter(
+      paragraph([literal("Body")]),
+      paragraph([itemList({ items: [item(literal({ text: "Placeholder", tags: [ElementTags.FRITEKST] }))] })]),
+    ).redigertBrev;
+    expect(findEditorTabEntryFocus(document)).toBeNull();
+  });
+
+  test("uses body text when fritekst is filled in", () => {
+    const document = letter(
+      paragraph([literal({ text: "Placeholder", editedText: "Filled in", tags: [ElementTags.FRITEKST] })]),
+    ).redigertBrev;
+    expect(findEditorTabEntryFocus(document)).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
+  });
+
+  test("retains a title entry when there is no editable body text", () => {
+    const document = letter().redigertBrev;
+    expect(findEditorTabEntryFocus(document)).toEqual({ blockIndex: TITLE_INDEX, contentIndex: 0, cursorPosition: 0 });
+  });
+
+  test("returns null when there are no literals", () => {
+    const document = editedLetter({ title: { text: [], deletedContent: [] }, blocks: [] });
+    expect(findEditorTabEntryFocus(document)).toBeNull();
+  });
+});
 
 describe("findAdjoiningContent", () => {
   describe("entire array matches", () => {

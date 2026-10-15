@@ -46,6 +46,7 @@ const createVedleggState = (brev: BrevResponse, vedlegg: EditAttachment): Letter
 });
 
 type AttachmentEditorProps = {
+  autoFocus?: boolean;
   saksId: string;
   brev: BrevResponse;
   vedleggId: string;
@@ -185,6 +186,7 @@ const AttachmentEditorSession = (props: AttachmentEditorProps & { initialVedlegg
   return (
     <>
       <LetterEditor
+        autoFocus={props.autoFocus}
         editorState={editorState}
         error={saveFailed}
         freeze={props.freeze}

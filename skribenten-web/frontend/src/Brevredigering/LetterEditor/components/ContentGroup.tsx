@@ -2,7 +2,6 @@ import React, { useLayoutEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
-  collectAllLiteralValues,
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
@@ -245,7 +244,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const pasteViaKeyboardRef = useRef(false);
   const pasteViaContextMenuRef = useRef(false);
-  const { freeze, editorState, setEditorState, undo, redo } = useEditor();
+  const { freeze, editorState, setEditorState, undo, redo, restoreFocus = true, tabEntryFocus } = useEditor();
   const highlightedIds = useInsertedTekstValgHighlight();
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
@@ -260,11 +259,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   // hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
   const erFritekst = isUneditedFritekst(content);
-  const isTitleTabEntry =
-    !freeze &&
-    literalIndex.blockIndex === TITLE_INDEX &&
-    literalIndex.contentIndex === editorState.redigertBrev.title.text.findIndex((text) => text.type === "LITERAL") &&
-    !collectAllLiteralValues(editorState.redigertBrev).some(isUneditedFritekst);
+  const isTabEntry = !freeze && tabEntryFocus != null && hasFocus(tabEntryFocus, literalIndex);
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
@@ -285,7 +280,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       element.textContent = text;
     }
 
-    if (!freeze && shouldBeFocused) {
+    if (!freeze && shouldBeFocused && restoreFocus) {
       // Preserve full selection for untouched fritekst placeholders (first key should replace it).
       if (shouldPreserveFullSelection(erFritekst, element)) {
         return;
@@ -335,6 +330,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   }, [
     text,
     shouldBeFocused,
+    restoreFocus,
     editorState.focus.cursorPosition,
     editorState.focus.selectAll,
     freeze,
@@ -943,7 +939,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onMouseDown={handleOnMouseDown}
       onPaste={handleOnPaste}
       ref={contentEditableReference}
-      tabIndex={erFritekst || isTitleTabEntry ? 0 : -1}
+      tabIndex={erFritekst || isTabEntry ? 0 : -1}
     />
   );
 }

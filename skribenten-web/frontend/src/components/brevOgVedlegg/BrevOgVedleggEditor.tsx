@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 
 import { ApiError } from "~/components/ApiError";
 import { useActiveDocument } from "~/components/brevOgVedlegg/ActiveDocumentContext";
@@ -14,9 +14,16 @@ export const BrevOgVedleggEditor = (props: {
   saksId: string;
   brev: BrevResponse;
   freeze: boolean;
-  renderBrev: () => ReactNode;
+  renderBrev: (autoFocus: boolean) => ReactNode;
 }) => {
   const { activeDocument, redigeringsflate } = useActiveDocument();
+  const documentKey = activeDocument.type === "brev" ? "brev" : activeDocument.vedleggId;
+  const [initialDocument, setInitialDocument] = useState<string | null>(documentKey);
+  // Only the initial document may autofocus; switching documents keeps focus on navigation.
+  if (initialDocument !== null && initialDocument !== documentKey) {
+    setInitialDocument(null);
+  }
+  const autoFocus = initialDocument === documentKey;
   const vedleggQuery = useRedigerbareVedlegg({
     saksId: props.saksId,
     brevId: props.brev.info.id,
@@ -24,7 +31,7 @@ export const BrevOgVedleggEditor = (props: {
   });
 
   if (activeDocument.type === "brev") {
-    return props.renderBrev();
+    return props.renderBrev(autoFocus);
   }
 
   // The attachment's title comes from the vedlegg-list, so a deep link has to wait for it rather than flash
@@ -38,11 +45,12 @@ export const BrevOgVedleggEditor = (props: {
 
   const vedlegg = vedleggQuery.data.find((v) => v.vedleggId === activeDocument.vedleggId);
   if (!vedlegg) {
-    return props.renderBrev();
+    return props.renderBrev(autoFocus);
   }
 
   return (
     <ManagedAttachmentEditor
+      autoFocus={autoFocus}
       brev={props.brev}
       freeze={props.freeze}
       // Keying by the full editing identity forces a fresh query owner and activation lifecycle on

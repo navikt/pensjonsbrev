@@ -1202,6 +1202,19 @@ export const isUneditedFritekst = (literal: LiteralValue): boolean =>
   isFritekst(literal) &&
   (literal.editedText === null || literal.editedText === undefined || literal.editedText === literal.text);
 
+/** Fritekst keeps its Tab stops; otherwise prefer body text, with the title as fallback. */
+export function findEditorTabEntryFocus(letter: EditedDocument): Focus | null {
+  if (findLiteral(letter, (literal) => (isUneditedFritekst(literal) ? true : undefined))) return null;
+
+  return (
+    findLiteral(letter, (_literal, focus) =>
+      focus.blockIndex !== TITLE_INDEX && letter.blocks[focus.blockIndex].editable ? focus : undefined,
+    ) ??
+    findLiteral(letter, (_literal, focus) => (focus.blockIndex === TITLE_INDEX ? focus : undefined)) ??
+    null
+  );
+}
+
 export const countUneditedFritekstPlaceholders = (letter: EditedDocument): number => {
   return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;
 };

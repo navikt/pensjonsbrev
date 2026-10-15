@@ -481,9 +481,16 @@ function RedigerBrev({
                   <BrevOgVedleggEditor
                     brev={brev}
                     freeze={freeze}
-                    renderBrev={() => (
+                    renderBrev={(autoFocus) => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                        <ManagedLetterEditor brev={brev} canReset error={error} freeze={freeze} showDebug={showDebug} />
+                        <ManagedLetterEditor
+                          autoFocus={autoFocus}
+                          brev={brev}
+                          canReset
+                          error={error}
+                          freeze={freeze}
+                          showDebug={showDebug}
+                        />
                       </InsertedTekstValgHighlightProvider>
                     )}
                     saksId={saksId}

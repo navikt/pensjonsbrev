@@ -12,6 +12,7 @@ import { type BrevResponse } from "~/types/brev";
  * debounced save and leave letter changes unsaved.
  */
 const ManagedLetterEditor = (props: {
+  autoFocus?: boolean;
   brev: BrevResponse;
   freeze: boolean;
   error: boolean;
@@ -22,6 +23,7 @@ const ManagedLetterEditor = (props: {
 
   return (
     <LetterEditor
+      autoFocus={props.autoFocus}
       editorState={editorState}
       error={props.error || saveFailed}
       freeze={props.freeze}

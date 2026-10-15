@@ -9,6 +9,7 @@ import React, {
   type SetStateAction,
   useCallback,
   useContext,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -21,20 +22,26 @@ import { TITLE_INDEX } from "~/types/brevbakerTypes";
 import { type MissingFromTemplateEventName, trackMissingFromTemplateAction } from "~/utils/editorTracking";
 
 import Actions from "./actions";
-import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
+import {
+  countMissingFromTemplateBlocks,
+  findEditorTabEntryFocus,
+  getBlockClassName,
+  isValidIndex,
+} from "./actions/common";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
-import { type LetterEditorState } from "./model/state";
+import { type Focus, type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
 
 export const LetterEditor = ({
+  autoFocus = true,
   freeze,
   error,
   editorState,
@@ -42,6 +49,7 @@ export const LetterEditor = ({
   showDebug,
   renderTilbakestillModal,
 }: {
+  autoFocus?: boolean;
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
@@ -55,6 +63,13 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
+  const initialFocus = useRef(editorState.focus);
+  // Skip initial autofocus after document switches, but allow subsequent caret restoration.
+  const restoreFocus = autoFocus || editorState.focus !== initialFocus.current;
+  const fallbackTabEntryFocus = useMemo(() => findEditorTabEntryFocus(letter), [letter]);
+  // Shift+Tab must reach the toolbar without refocusing an earlier paragraph.
+  const tabEntryFocus =
+    fallbackTabEntryFocus && isValidIndex(letter, editorState.focus) ? editorState.focus : fallbackTabEntryFocus;
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const [showFocusRing, setShowFocusRing] = useState(false);
@@ -136,7 +151,9 @@ export const LetterEditor = ({
 
   return (
     <VStack height="100%" overflowY="hidden">
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
+      <EditorStateContext.Provider
+        value={{ freeze, error, editorState, setEditorState, undo, redo, restoreFocus, tabEntryFocus }}
+      >
         <EditorMenu
           canRedo={canRedo}
           canUndo={canUndo}
@@ -158,7 +175,10 @@ export const LetterEditor = ({
               tabHandledByEditor.current = event.key === "Tab" && event.defaultPrevented;
             }}
             onKeyUp={(event) => {
-              if (event.key === "Tab" && !tabHandledByEditor.current) setShowFocusRing(true);
+              if (event.key === "Tab" && !tabHandledByEditor.current) {
+                setShowFocusRing(true);
+                if (tabEntryFocus) applyAction(Actions.cursorPosition, setEditorState, 0);
+              }
               tabHandledByEditor.current = false;
             }}
             onPointerDown={() => setShowFocusRing(false)}
@@ -248,6 +268,8 @@ export const LetterEditor = ({
 };
 
 export const EditorStateContext = createContext<{
+  tabEntryFocus?: Focus | null;
+  restoreFocus?: boolean;
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
