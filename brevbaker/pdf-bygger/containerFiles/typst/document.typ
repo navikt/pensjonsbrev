@@ -18,13 +18,12 @@
   showLogo: true,
   showCaseDetails: false,
   showDocumentDate: false,
-  showFooter: false,
   input: (:),
   languageSettings: (:),
   doc,
 ) = pageSetup(
   title: title,
-  footer: if showFooter { footer(input, languageSettings) } else { none },
+  footer: footer(input.footerSaksnummer, languageSettings),
   {
     section-start(1)
 
