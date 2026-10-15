@@ -49,6 +49,35 @@ export const getCursorOffsetOrRange = () => {
  * @param node the node to focus cursor to
  * @param offset the offset in the node
  */
+/**
+ * Moves DOM focus back to the editable element holding the current selection/caret (e.g. after a
+ * toolbar button took focus), without changing the selection.
+ */
+export function refocusEditableAtSelection() {
+  const node = globalThis.getSelection()?.anchorNode;
+  const element = (node instanceof HTMLElement ? node : node?.parentElement)?.closest<HTMLElement>(
+    "[contenteditable='true']",
+  );
+  if (element && document.activeElement !== element) {
+    element.focus({ preventScroll: true });
+  }
+}
+
+export function selectTextRange(node: ChildNode, start: number, end: number) {
+  try {
+    const range = document.createRange();
+    range.setStart(node, start);
+    range.setEnd(node, end);
+    node.parentElement?.focus();
+
+    const selection = globalThis.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  } catch (error) {
+    console.warn("Could not set selection for node", node, error);
+  }
+}
+
 export function focusAtOffset(node: ChildNode, offset: number) {
   if (node && offset >= 0) {
     try {

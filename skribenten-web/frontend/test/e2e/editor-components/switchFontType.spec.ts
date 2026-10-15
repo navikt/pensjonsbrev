@@ -7,9 +7,12 @@ import { brevResponse, editedLetter, signatur } from "~test/support/brevFixtures
 import {
   literal as _literal,
   variable as _variable,
+  cell,
   item,
   itemList,
   paragraph,
+  row,
+  table,
   title1,
   title2,
 } from "~test/support/letterEditorTestUtils";
@@ -676,5 +679,202 @@ test.describe("Switch font type", () => {
       await page.getByTestId("fonttype-bold-button").click();
       await expect(page.getByText(fullText)).toBeVisible();
     });
+  });
+});
+
+test.describe("Switch font type i tabell", () => {
+  const headerText = "Overskrift med kursiv";
+  const bodyText = "Celle med fet tekst";
+  const otherParagraphText = "Avsnitt etter tabellen";
+
+  const tableLetter = editedLetter({
+    title: { text: [makeLiteral(1, null, "Tabellbrev")], deletedContent: [] },
+    sakspart: baseSakspart(),
+    blocks: [
+      paragraph({
+        id: 1,
+        content: [
+          table([cell(makeLiteral(100, null, headerText))], [row(cell(makeLiteral(101, null, bodyText)))]),
+          makeLiteral(102, 1, otherParagraphText),
+        ],
+      }),
+    ],
+    signatur: baseSignatur(),
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(page, makeBrevResponse(tableLetter));
+    await navigateToEditor(page);
+    await expect(page.getByTestId("letter-table")).toBeVisible();
+  });
+
+  test("markert tekst i en celle gjøres fet uten å endre resten av cellen", async ({ page }) => {
+    await selectTextInElement(page, bodyText, "fet");
+    await page.getByTestId("fonttype-bold-button").click();
+
+    const tableCell = page.getByTestId("table-cell-0-0");
+    await expect(tableCell.getByText("Celle med", { exact: true })).toHaveCSS("font-weight", "400");
+    await expect(tableCell.getByText("fet", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect(tableCell.getByText("tekst", { exact: true })).toHaveCSS("font-weight", "400");
+
+    // Markeringen beholdes, slik at fonttypen kan endres på nytt uten å markere teksten igjen
+    await expect.poll(() => page.evaluate(() => document.getSelection()?.toString())).toBe("fet");
+    await page.getByTestId("fonttype-italic-button").click();
+    await expect(tableCell.getByText("fet", { exact: true })).toHaveCSS("font-style", "italic");
+    await expect(tableCell.getByText("fet", { exact: true })).toHaveCSS("font-weight", "400");
+    await expect.poll(() => page.evaluate(() => document.getSelection()?.toString())).toBe("fet");
+  });
+
+  test("uten markering gjøres kun ordet under markøren fet", async ({ page }) => {
+    await placeCaretBefore(page, bodyText, "et tekst");
+    await page.keyboard.press("Control+f");
+
+    const tableCell = page.getByTestId("table-cell-0-0");
+    await expect(tableCell.getByText("fet", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect(tableCell.getByText("Celle med", { exact: true })).toHaveCSS("font-weight", "400");
+  });
+
+  test("i tabelloverskrift er fet deaktivert og kursiv gjelder kun markert tekst", async ({ page }) => {
+    await selectTextInElement(page, headerText, "kursiv");
+    await expect(page.getByTestId("fonttype-bold-button")).toBeDisabled();
+    await page.getByTestId("fonttype-italic-button").click();
+
+    const header = page.getByTestId("table-header-0");
+    await expect(header.getByText("kursiv", { exact: true })).toHaveCSS("font-style", "italic");
+    await expect(header.getByText("Overskrift med", { exact: true })).toHaveCSS("font-style", "normal");
+
+    await selectTextInElement(page, "Overskrift med", "med");
+    await page.keyboard.press("Control+f");
+    await expect(header.getByText("Overskrift med", { exact: true })).toHaveCSS("font-style", "normal");
+    await expect(page.getByTestId("fonttype-bold-button")).toBeDisabled();
+  });
+
+  test("listeknapper er deaktivert i tabellceller", async ({ page }) => {
+    await selectTextInElement(page, headerText, "Overskrift");
+    await expect(page.getByTestId("bullet-list-button")).toBeDisabled();
+    await expect(page.getByTestId("number-list-button")).toBeDisabled();
+
+    await placeCaretBefore(page, bodyText, "Celle");
+    await expect(page.getByTestId("bullet-list-button")).toBeDisabled();
+    await expect(page.getByTestId("number-list-button")).toBeDisabled();
+    await expect(page.getByTestId("fonttype-bold-button")).toBeEnabled();
+
+    await placeCaretBefore(page, otherParagraphText, "Avsnitt");
+    await expect(page.getByTestId("bullet-list-button")).toBeEnabled();
+    await expect(page.getByTestId("number-list-button")).toBeEnabled();
+  });
+});
+
+test.describe("Markering etter endring av fonttype", () => {
+  test("markert tekst i et avsnitt forblir markert og kan endres videre", async ({ page }) => {
+    await setupBrevRoute(page, makeBrevResponse(exampleLetter1));
+    await navigateToEditor(page);
+
+    await selectTextInElement(page, longLiteralText, "teste piltast");
+    await page.getByTestId("fonttype-bold-button").click();
+    await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "700");
+    await expect.poll(() => page.evaluate(() => document.getSelection()?.toString())).toBe("teste piltast");
+
+    await page.keyboard.press("Control+i");
+    await expect(page.getByText("teste piltast")).toHaveCSS("font-style", "italic");
+    await expect.poll(() => page.evaluate(() => document.getSelection()?.toString())).toBe("teste piltast");
+
+    // Skriving erstatter markeringen som vanlig
+    await page.keyboard.type("X");
+    await expect(page.getByText("X", { exact: true })).toBeVisible();
+    await expect(page.getByText("teste piltast")).toHaveCount(0);
+  });
+});
+
+test.describe("Markør og fokus etter endring av fonttype", () => {
+  const caretState = (page: Page) =>
+    page.evaluate(() => {
+      const selection = document.getSelection();
+      const active = document.activeElement as HTMLElement | null;
+      return {
+        editorFocused: active?.isContentEditable === true && active.contains(selection?.anchorNode ?? null),
+        collapsed: selection?.isCollapsed,
+        text: selection?.anchorNode?.textContent,
+        offset: selection?.anchorOffset,
+      };
+    });
+
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(page, makeBrevResponse(exampleLetter1));
+    await navigateToEditor(page);
+  });
+
+  test("markøren blir stående og editoren beholder fokus ved gjentatte klikk", async ({ page }) => {
+    await placeCaretBefore(page, longLiteralText, "ste piltast");
+
+    await page.getByTestId("fonttype-bold-button").click();
+    await expect(page.getByText("teste", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect
+      .poll(() => caretState(page))
+      .toEqual({ editorFocused: true, collapsed: true, text: "teste", offset: 2 });
+
+    // Ordet er nå en egen literal – fokus skal likevel tilbake til editoren
+    await page.getByTestId("fonttype-italic-button").click();
+    await expect(page.getByText("teste", { exact: true })).toHaveCSS("font-style", "italic");
+    await expect
+      .poll(() => caretState(page))
+      .toEqual({ editorFocused: true, collapsed: true, text: "teste", offset: 2 });
+
+    await page.keyboard.type("X");
+    await expect(page.getByText("teXste", { exact: true })).toBeVisible();
+  });
+
+  test("markør på mellomrom gir ingen endring, men editoren beholder fokus", async ({ page }) => {
+    await placeCaretBefore(page, longLiteralText, " teste piltast");
+
+    await page.getByTestId("fonttype-bold-button").click();
+    await expect
+      .poll(() => caretState(page))
+      .toEqual({ editorFocused: true, collapsed: true, text: expect.stringContaining("Er laget for å"), offset: 14 });
+  });
+
+  test("tastaturaktivering av knappen gir fokus tilbake til editoren", async ({ page }) => {
+    await placeCaretBefore(page, longLiteralText, "ste piltast");
+    await page.getByTestId("fonttype-bold-button").focus();
+
+    await page.keyboard.press("Enter");
+    await expect(page.getByText("teste", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect
+      .poll(() => caretState(page))
+      .toEqual({ editorFocused: true, collapsed: true, text: "teste", offset: 2 });
+  });
+
+  test("markering beholdes ved klikk på knappene", async ({ page }) => {
+    await selectTextInElement(page, longLiteralText, "teste piltast");
+
+    for (const button of ["fonttype-bold-button", "fonttype-italic-button", "fonttype-bold-button"]) {
+      await page.getByTestId(button).click();
+      await expect.poll(() => page.evaluate(() => document.getSelection()?.toString())).toBe("teste piltast");
+    }
+    await expect(page.getByText("teste piltast")).toHaveCSS("font-style", "normal");
+    await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "700");
+  });
+});
+
+test.describe("Verktøylinje i overskrifter", () => {
+  test("fet, kursiv, liste- og tabellknapper er deaktivert i overskrifter", async ({ page }) => {
+    await setupBrevRoute(page, makeBrevResponse(exampleLetter1));
+    await navigateToEditor(page);
+
+    for (const title of ["Tittel over punktliste", "Tittel under punktliste"]) {
+      await placeCaretBefore(page, title, "punktliste");
+      await expect(page.getByTestId("fonttype-bold-button")).toBeDisabled();
+      await expect(page.getByTestId("fonttype-italic-button")).toBeDisabled();
+      await expect(page.getByTestId("bullet-list-button")).toBeDisabled();
+      await expect(page.getByTestId("number-list-button")).toBeDisabled();
+      await expect(page.getByTestId("toolbar-table-button")).toBeDisabled();
+    }
+
+    await placeCaretBefore(page, longLiteralText, "piltast");
+    await expect(page.getByTestId("fonttype-bold-button")).toBeEnabled();
+    await expect(page.getByTestId("fonttype-italic-button")).toBeEnabled();
+    await expect(page.getByTestId("bullet-list-button")).toBeEnabled();
+    await expect(page.getByTestId("number-list-button")).toBeEnabled();
+    await expect(page.getByTestId("toolbar-table-button")).toBeEnabled();
   });
 });
