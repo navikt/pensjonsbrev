@@ -123,77 +123,53 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
 
             showIf(oversittetklagefrist.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OversittetKlagefrist)
-            }
-            showIf(eoesArtikkel57.equalTo(true)) {
+            }.orShowIf(eoesArtikkel57.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EoesArtikkel57)
-            }
-            showIf(medlemskap.equalTo(true)) {
+            }.orShowIf(medlemskap.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Medlemskap)
-            }
-            showIf(hensiktsmessigBehandlingOgTiltak.equalTo(true)) {
+            }.orShowIf(hensiktsmessigBehandlingOgTiltak.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.HensiktsmessigBehandlingOgTiltak)
-            }
-            showIf(kunArbeidsrettedeTiltak.equalTo(true)) {
+            }.orShowIf(kunArbeidsrettedeTiltak.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KunArbeidsrettedeTiltak)
-            }
-            showIf(hovedAarsakTilSykdom.equalTo(true)) {
+            }.orShowIf(hovedAarsakTilSykdom.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.HovedAarsakTilSykdom)
-            }
-            showIf(nedsattInnteksevne.equalTo(true)) {
+            }.orShowIf(nedsattInnteksevne.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.NedsattInntektsevne)
-            }
-            showIf(kombinasjonNedsattInntektsevne.equalTo(true)) {
+            }.orShowIf(kombinasjonNedsattInntektsevne.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KombinasjonNedsattInntektsevne)
-            }
-            showIf(ufoeretidspunkt.equalTo(true)) {
+            }.orShowIf(ufoeretidspunkt.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Ufoeretidspunkt)
-            }
-            showIf(fastsettelseIFU.equalTo(true)) {
+            }.orShowIf(fastsettelseIFU.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFU)
-            }
-            showIf(fastsettelseIEU.equalTo(true)) {
+            }.orShowIf(fastsettelseIEU.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIEU)
-            }
-            showIf(fastsettelseUfoeregrad.equalTo(true)) {
+            }.orShowIf(fastsettelseUfoeregrad.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseUfoeregrad)
-            }
-            showIf(beregningAvUfoeretrygd.equalTo(true)) {
+            }.orShowIf(beregningAvUfoeretrygd.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.BeregningAvUfoeretrygd)
-            }
-            showIf(trygdetid.equalTo(true)) {
+            }.orShowIf(trygdetid.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Trygdetid)
-            }
-            showIf(ungufoer.equalTo(true)) {
+            }.orShowIf(ungufoer.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.UngUfoer)
-            }
-            showIf(automatiskInntektsreduksjon.equalTo(true)) {
+            }.orShowIf(automatiskInntektsreduksjon.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.AutomatiskInntektsreduksjon)
-            }
-            showIf(etteropgjoer.equalTo(true)) {
+            }.orShowIf(etteropgjoer.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Etteroppgjoer)
-            }
-            showIf(etteroppgjoerBarnetillegg.equalTo(true)) {
+            }.orShowIf(etteroppgjoerBarnetillegg.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EtteroppgjoerBarnetillegg)
-            }
-            showIf(barnetillegg.equalTo(true)) {
+            }.orShowIf(barnetillegg.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Barnetillegg)
-            }
-            showIf(reduksjonAvBarnetillegg.equalTo(true)) {
+            }.orShowIf(reduksjonAvBarnetillegg.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.ReduksjonAvBarnetillegg)
-            }
-            showIf(yrkesskade.equalTo(true)) {
+            }.orShowIf(yrkesskade.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade)
-            }
-            showIf(oppholdsinstitusjon.equalTo(true)) {
+            }.orShowIf(oppholdsinstitusjon.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OppholdIinstitusjon)
-            }
-            showIf(straffegjennomfoering.equalTo(true)) {
+            }.orShowIf(straffegjennomfoering.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Straffegjennomfoering)
-            }
-            showIf(virkningstidspunkt.equalTo(true)) {
+            }.orShowIf(virkningstidspunkt.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Virkningstidspunkt)
-            }
-            showIf(tilbakekreving.equalTo(true)) {
+            }.orShowIf(tilbakekreving.equalTo(true)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Tilbakekreving)
             }
 
