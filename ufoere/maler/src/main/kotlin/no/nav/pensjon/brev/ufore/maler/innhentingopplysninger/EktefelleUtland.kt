@@ -40,7 +40,7 @@ object EktefelleUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har fått informasjon om at du har ektefelle som bor i utlandet. Hvis din ektefelle skal flytte til Norge, er det viktig at du gir oss beskjed med en gang, slik at vi beregner riktig utbetaling av din uføretrygd. Vi ber deg i så fall gi oss informasjon med " + fritekst("flyttedato/planlagt flyttedato") + ". " })
+                text(bokmal { +"Vi har fått informasjon om at du har ektefelle som bor i utlandet. Hvis din ektefelle skal flytte til Norge, er det viktig at du gir oss beskjed med en gang, slik at vi beregner riktig utbetaling av din uføretrygd. Vi ber deg i så fall gi oss informasjon med " + fritekst("flyttedato/planlagt flyttedato") + ". Dette er viktig for å forhindre eventuell feilutbetaling. " })
             }
 
             includePhrase(Felles.HarDuSporsmal)
