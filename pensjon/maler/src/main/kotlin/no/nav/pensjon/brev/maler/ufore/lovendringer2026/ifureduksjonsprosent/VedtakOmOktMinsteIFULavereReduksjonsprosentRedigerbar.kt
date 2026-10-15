@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmIFUReduksjon
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmIFUReduksjonsprosentRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmIFUReduksjonsprosentRedigerbarDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmIFUReduksjonsprosentRedigerbarDto.pesysData.*
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
@@ -30,8 +29,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar : RedigerbarTemplate<VedtakOmIFUReduksjonsprosentRedigerbarDto> {
-
-    override val featureToggle = FeatureToggles.vedtakOmOktMinsteIFUOgReduksjonsprosent.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_MINSTE_IFU_REDUKSJONSPROSENT_2026_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

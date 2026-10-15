@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
@@ -19,6 +20,7 @@ fun createEndringUfoeretrygdDto() =
         saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = EndringUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
+            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
             opphortEktefelletillegg = true,
             opphortGjenlevendetillegg = true,
@@ -83,6 +85,7 @@ fun createEndringUfoeretrygdDto() =
                 BarnetilleggMedSammeBegrunnelsePaSammeTidDto(begrunnelse = BtBegrunnelseCode.ANNET_OPPHOR, fom = LocalDate.of(2023, Month.JANUARY, 1),
                     barn = listOf(BarnDto(antallBarn = 2, fodselsdato = LocalDate.of(1992, Month.MARCH, 3)), BarnDto(antallBarn = 1, fodselsdato = LocalDate.of(1997, Month.DECEMBER, 3)))),
             ),
-            hjemler = setOf("12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14", "12-15", "12-16")
+            hjemler = setOf("12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14", "12-15", "12-16"),
+            harVTA = false,
         ),
     )

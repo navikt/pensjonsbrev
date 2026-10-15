@@ -9,12 +9,14 @@ import no.nav.pensjon.brev.alder.model.KravInitiertAv
 import no.nav.pensjon.brev.alder.model.avslag.AvslagPaaGjenlevenderettIAlderspensjonDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
+import java.time.LocalDate
 
 fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAlderspensjonDto(
     saksbehandlerValg = lagSaksbehandlervalg(
         "samboerUtenFellesBarn" to false,
         "avdoedNavn" to "Peder Ås",
         "underEttAarsMedlemstidEOESEllerAvtaleland" to true,
+        "skiltOver5Aar" to true,
         "underTreFemAarsMedlemstidNasjonalSak" to false,
         "underTreFemAarsMedlemstidEOESSak" to false,
         "underTrefemAarsMedlemstidAvtalesak" to true,
@@ -34,7 +36,9 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
         avdoed = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.Avdoed(
             harTrygdetidNorge = false,
             harTrygdetidEOS = false,
-            harTrygdetidAvtaleland = true
+            harTrygdetidAvtaleland = true,
+            dodsfallDato = LocalDate.of(2020, 2, 4),
+            navn = "Kari Nordmann"
         ),
         ytelseskomponentInformasjon = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.YtelseskomponentInformasjon(
             beloepEndring = BeloepEndring.ENDR_OKT

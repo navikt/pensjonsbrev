@@ -5,11 +5,13 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.Nasjon
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdData
 
-fun createOmstillingsstoenadAktivitetspliktInformasjon6mndDto() =
+fun createOmstillingsstoenadAktivitetspliktInformasjon6mndDto(
+    nasjonalEllerUtland: NasjonalEllerUtland = NasjonalEllerUtland.NASJONAL,
+) =
     OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO(
         data = OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdData(
             redusertEtterInntekt = true,
-            nasjonalEllerUtland = NasjonalEllerUtland.NASJONAL,
+            nasjonalEllerUtland = nasjonalEllerUtland,
             halvtGrunnbeloep = Kroner(130160 / 2),
         )
     )

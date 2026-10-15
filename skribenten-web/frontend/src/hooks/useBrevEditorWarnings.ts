@@ -18,6 +18,8 @@ interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: Sa
   form: UseFormReturn<FormSchema>;
   redigertBrev: EditedDocument;
   propertyUsage?: PropertyUsage[];
+  warnAboutMissingFromTemplate?: boolean;
+  getMissingFromTemplateVedleggCount?: () => Promise<number>;
 }
 
 type WarningResult = { kind: WarnModalKind; count?: number } | null;
@@ -27,6 +29,8 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
   form,
   redigertBrev,
   propertyUsage,
+  warnAboutMissingFromTemplate = true,
+  getMissingFromTemplateVedleggCount,
 }: UseBrevEditorWarningsParams<FormSchema>) {
   const { status, specification, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
 
@@ -60,10 +64,9 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     [redigertBrev],
   );
 
-  const getWarning = useCallback((): WarningResult => {
+  const getWarning = useCallback(async (): Promise<WarningResult> => {
     const unedited = numberOfUneditedFritekstPlaceholders();
     const missingRequired = hasMissingRequiredSaksbehandlerValg();
-    const missingFromTemplate = numberOfMissingFromTemplateBlocks();
 
     if (unedited > 0 && missingRequired) {
       return { kind: "fritekstOgTekstValg", count: unedited };
@@ -74,11 +77,21 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     if (missingRequired) {
       return { kind: "tekstValg" };
     }
-    if (missingFromTemplate > 0) {
-      return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
+    if (warnAboutMissingFromTemplate) {
+      const missingFromTemplate =
+        numberOfMissingFromTemplateBlocks() + ((await getMissingFromTemplateVedleggCount?.()) ?? 0);
+      if (missingFromTemplate > 0) {
+        return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
+      }
     }
     return null;
-  }, [hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders, numberOfMissingFromTemplateBlocks]);
+  }, [
+    hasMissingRequiredSaksbehandlerValg,
+    numberOfUneditedFritekstPlaceholders,
+    numberOfMissingFromTemplateBlocks,
+    warnAboutMissingFromTemplate,
+    getMissingFromTemplateVedleggCount,
+  ]);
 
   return { getWarning, hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders };
 }

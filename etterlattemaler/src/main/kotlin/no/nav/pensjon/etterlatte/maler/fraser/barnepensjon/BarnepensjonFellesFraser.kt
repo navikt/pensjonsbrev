@@ -2,14 +2,10 @@ package no.nav.pensjon.etterlatte.maler.fraser.barnepensjon
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
-import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
 object BarnepensjonFellesFraser {
 
@@ -108,35 +104,41 @@ object BarnepensjonFellesFraser {
                     english { +"Do you have any questions?" },
                 )
             }
-
-            showIf(brukerUnder18Aar) {
-                paragraph {
-                    text(
-                        bokmal { +"Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon " },
-                        nynorsk { +"Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " },
-                        english { +"For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone at " }
-                    )
-                    kontakttelefonPensjon(bosattUtland)
-                    text(
-                        bokmal { +", hverdager mellom klokken 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp." },
-                        nynorsk { +", kvardagar mellom klokka 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet." },
-                        english { +", Monday to Friday between 09:00 AM and 03:00 PM. If you provide your child's national identity number, we can more easily provide you with quick and good help." }
-                    )
-                }
-            }.orShow {
-                paragraph {
-                    text(
-                        bokmal { +"Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Du kan også kontakte oss på telefon " },
-                        nynorsk { +"Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Du kan skrive til eller chatte med oss på ${Constants.KONTAKT_URL}. Alternativt kan du ringje oss på telefon " },
-                        english { +"You can find answers to your questions online: ${Constants.Engelsk.BARNEPENSJON_URL}. Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact us by phone at " }
-                    )
-                    kontakttelefonPensjon(bosattUtland)
-                    text(
-                        bokmal { +", hverdager mellom klokken 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp." },
-                        nynorsk { +", kvardagar mellom klokka 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt." },
-                        english { +", Monday to Friday between 9:00 AM and 3:00 PM. If you provide your national identity number, we can more easily provide you with quick and good help." }
-                    )
-                }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}."},
+                    nynorsk {
+                        +"Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}."
+                    },
+                    english {
+                        +"You can find more information at ${Constants.Engelsk.BARNEPENSJON_URL}."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."},
+                    nynorsk {
+                        +"På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
+                    },
+                    english {
+                        +"You can chat or write to us at ${Constants.Engelsk.KONTAKT_URL}."
+                    }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, hverdager 09.00–15.00."},
+                    nynorsk {
+                        +"Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, kvardagar 09.00–15.00."
+                    },
+                    english {
+                        +"If you do not find the answer at ${Constants.NAV_URL}, you can call us by phone at ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE}, weekdays 09:00-15:00."
+                    }
+                )
             }
         }
     }

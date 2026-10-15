@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -10,6 +11,7 @@ import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
 import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
@@ -23,11 +25,16 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
-import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.apache.commons.codec.digest.DigestUtils
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.io.path.createDirectories
+import kotlin.io.path.createFile
+import kotlin.io.path.exists
+import kotlin.io.path.readBytes
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
 
@@ -58,6 +65,7 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
     pdfByggerService: PDFByggerService? = null,
+    objectMapper: ObjectMapper = internalObjectMapper(),
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -68,7 +76,15 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
 
     val pdfBygger = pdfByggerService ?: PdfByggerTestService()
 
-    Letter2Markup.render(this)
+    val sti = path.resolve(pdfFileName.replace(" ", "_")).createDirectories()
+
+    val markup = Letter2Markup.render(this)
+    val hash = hash(markup, objectMapper)
+    sti.resolve("hash.txt").takeIf { it.exists() }?.takeUnless { it.readBytes().contentEquals(hash) }
+        ?: return this
+    Files.write(sti.resolve("hash.txt"), hash)
+
+    markup
         .let {
             runBlocking {
                 pdfBygger.producePDF(
@@ -82,9 +98,13 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
                 )
             }
         }
-        .also { writeTestPDF(pdfFileName, it.bytes, path) }
+        .also { writeTestPDF(pdfFileName, it.bytes, sti) }
     return this
 }
+
+fun <T> hash(obj: T, objectMapper: ObjectMapper): ByteArray =
+    DigestUtils.sha3_256(objectMapper.writeValueAsBytes(obj))
+        .also { assert(it.size == 32) { "SHA3-256 hash of ${obj?.javaClass} was longer than 32 bytes: ${it.size}" } }
 
 fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDFV2(
     pdfFileName: String,
@@ -131,7 +151,7 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
 fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String, buildSubDir: String = "test_html"): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let {
-            HTMLDocumentRenderer.render(
+            HTMLDocumentRendererTest.render(
                 it.letterMarkup,
                 it.attachments,
                 language,

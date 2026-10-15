@@ -53,12 +53,7 @@ import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
-import {
-  type BrevResponse,
-  type OppdaterAttesteringRequest,
-  type ReservasjonResponse,
-  type SaksbehandlerValg,
-} from "~/types/brev";
+import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
@@ -213,7 +208,7 @@ const VedtakWrapper = () => {
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const { vedlegg: activeVedlegg } = Route.useSearch();
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registerSaveErrorReset } =
+  const { editorState, redigertBrev, setEditorState, saveLetterOperation, registerSaveErrorReset, savePendingChanges } =
     useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
@@ -248,6 +243,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   useReleaseReservationOnPageExit({
     enabled: reservasjonQuery.isSuccess,
     brevId: props.brev.info.id,
+    beforeRelease: documentCoordinator.savePendingDocuments,
     currentUserNavIdent: currentUser?.navident,
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
@@ -260,10 +256,64 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   // The diff decorations belong to the latest saved letter and are removed as soon as editing begins.
-  const { disableDiff } = attestantDiff;
+  const { disableDiffMode, isDiffMode, defaultDiffMode } = attestantDiff;
+
+  // Read via a ref so trackedDisableDiffMode can see the latest isDiffMode at call time without
+  // being recreated on every toggle.
+  const isDiffModeReference = useRef(isDiffMode);
+  isDiffModeReference.current = isDiffMode;
+
+  // Direct editor/table edits (e.g. ContentGroup's handleEditIntent, TableView's context menu) call
+  // disableDiffMode straight from AttestantDiffContext, turning off diff mode before saveStatus becomes
+  // DIRTY. Wrapping disableDiffMode here — rather than tracking from the saveStatus effect below — is
+  // what actually observes those disables, since by the time the effect runs isDiffMode is already false.
+  const trackedDisableDiffMode = useCallback(() => {
+    if (isDiffModeReference.current) {
+      trackEvent("diff modus endret", {
+        brevId: props.brev.info.id,
+        brevkode: props.brev.info.brevkode,
+        spraak: props.brev.info.spraak,
+        kilde: "automatisk",
+        diffModus: false,
+        defaultDiffModus: defaultDiffMode,
+      });
+    }
+    disableDiffMode();
+  }, [disableDiffMode, defaultDiffMode, props.brev.info.id, props.brev.info.brevkode, props.brev.info.spraak]);
+
+  // Safety net for saveStatus transitions to DIRTY that don't go through an explicit disableDiffMode
+  // call first (e.g. editing the underskrift field, or keeping/deleting a block missing from the mal).
+  // Deliberately keyed on saveStatus only: reacting to isDiffMode too would turn the switch straight
+  // back off when the attestant enables diff mode on a letter that is still saving.
   useEffect(() => {
-    if (editorState.saveStatus === "DIRTY") disableDiff();
-  }, [disableDiff, editorState.saveStatus]);
+    if (editorState.saveStatus === "DIRTY" && isDiffModeReference.current) {
+      trackedDisableDiffMode();
+    }
+  }, [editorState.saveStatus, trackedDisableDiffMode]);
+
+  // Diffing needs a saved letter to compare against, so enabling diff mode flushes pending edits
+  // instead of leaving the attestant waiting for the autosave debounce.
+  const handleDiffModeChange = async (checked: boolean) => {
+    attestantDiff.setDiffMode(checked);
+    trackEvent("diff modus endret", {
+      brevId: props.brev.info.id,
+      brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
+      kilde: "manuell",
+      diffModus: checked,
+      defaultDiffModus: defaultDiffMode,
+    });
+
+    if (!checked) return;
+
+    try {
+      await savePendingChanges();
+    } catch {
+      // Without a successful save there is no fresh letter version to diff against. The autosave
+      // error UI reports the failure; here we only undo the diff mode it was meant to enable.
+      trackedDisableDiffMode();
+    }
+  };
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -279,21 +329,22 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const { getWarning } = useBrevEditorWarnings({
+    warnAboutMissingFromTemplate: false,
     brevkode: props.brev.info.brevkode,
     form,
     redigertBrev: redigertBrev,
     propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
-  const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterAttesteringRequest>({
-    mutationFn: (requestData) =>
-      attesterBrev({
-        saksId: props.saksId,
-        brevId: props.brev.info.id,
-        request: requestData,
-      }),
-
-    onSuccess: (response) => onSaveSuccess(response),
+  const attesterMutation = useMutation<BrevResponse, AxiosError, void>({
+    mutationFn: () =>
+      saveLetterOperation((state) =>
+        attesterBrev({
+          saksId: props.saksId,
+          brevId: props.brev.info.id,
+          request: { redigertBrev: state.redigertBrev },
+        }),
+      ),
     onError: (err) => {
       const reason = (err as AxiosError & { forbidReason?: AttestForbiddenReason }).forbidReason;
 
@@ -306,15 +357,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const onSubmit = async (onSuccess?: () => void) => {
-    if (!(await documentCoordinator.saveActiveDocument())) return;
+    if (activeVedlegg !== undefined && !(await documentCoordinator.savePendingDocuments())) return;
 
     attesterMutation.reset();
-    attesterMutation.mutate(
-      {
-        redigertBrev: redigertBrev,
-      },
-      { onSuccess: onSuccess },
-    );
+    attesterMutation.mutate(undefined, { onSuccess });
   };
 
   const freeze = attesterMutation.isPending;
@@ -347,6 +393,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     trackEvent("tid brukt i attestering", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
       varighetSekunder,
       varighetMinutter: Math.round(varighetSekunder / 60),
       enhetsId: props.brev.info.avsenderEnhet.enhetNr,
@@ -354,6 +401,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     trackEvent("brev attestert", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
       enhetsId: props.brev.info.avsenderEnhet.enhetNr,
     });
     navigate({
@@ -405,7 +453,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <Button
                 icon={<ArrowRightIcon />}
                 iconPosition="right"
-                loading={freeze || documentCoordinator.savingActiveDocument}
+                loading={freeze || documentCoordinator.savingPendingDocuments}
                 size="small"
               >
                 Fortsett
@@ -440,8 +488,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                         {diffFeatureToggle.data?.enabled === true && (
                           <>
                             <Switch
-                              checked={attestantDiff.enabled}
-                              onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
+                              checked={attestantDiff.isDiffMode}
+                              onChange={(event) => void handleDiffModeChange(event.target.checked)}
                               size="small"
                             >
                               Marker tekst som er lagt til og slettet
@@ -516,9 +564,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <AttestantDiffProvider
                     diff={attestantDiff.activeDiff}
                     diffHash={attestantDiff.diffHash}
-                    disableDiff={attestantDiff.disableDiff}
+                    disableDiffMode={trackedDisableDiffMode}
                   >
-                    <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+                    <ManagedLetterEditor error={error} freeze={freeze} showDebug={showDebug} />
                   </AttestantDiffProvider>
                 )}
                 saksId={props.saksId}

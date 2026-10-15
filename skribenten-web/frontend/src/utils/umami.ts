@@ -15,6 +15,7 @@ export type UmamiEventName =
   | "exstream brev valgt"
   | "brev sendt"
   | "endre mottaker klikket"
+  | "pdfjs mangler nettleserstøtte"
   | "pesys feil"
   | "pesys omdirigering"
   | "samhandler valgt"
@@ -26,7 +27,8 @@ export type UmamiEventName =
   | "tid brukt i editor"
   | "tilbakestill mottaker klikket"
   | "blokk beholdt"
-  | "blokk slettet";
+  | "blokk slettet"
+  | "diff modus endret";
 
 export interface UmamiEventData {
   [key: string]: string | number | boolean | undefined;

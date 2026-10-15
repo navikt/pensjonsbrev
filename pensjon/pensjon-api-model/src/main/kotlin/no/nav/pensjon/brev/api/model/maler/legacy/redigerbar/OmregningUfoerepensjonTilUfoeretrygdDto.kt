@@ -11,7 +11,7 @@ data class OmregningUfoerepensjonTilUfoeretrygdDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<OmregningUfoerepensjonTilUfoeretrygdDto.PesysData> {
     data class PesysData(
-        val harVTA: Boolean = false,
+        val harVTA: Boolean,
         val pe: PEgruppe10,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?
     ) : FagsystemBrevdata

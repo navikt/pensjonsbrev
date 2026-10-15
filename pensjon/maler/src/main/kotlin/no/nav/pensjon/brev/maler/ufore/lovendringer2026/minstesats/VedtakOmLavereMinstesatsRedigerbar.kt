@@ -4,10 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbarDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.pesysData.vedtakData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmLavereMinstesatsData.*
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -24,8 +23,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VedtakOmLavereMinstesatsRedigerbar : RedigerbarTemplate<VedtakOmLavereMinstesatsRedigerbarDto> {
-
-    override val featureToggle = FeatureToggles.vedtakOmLavereMinstesats.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_OM_LAVERE_MINSTESATS_2026
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

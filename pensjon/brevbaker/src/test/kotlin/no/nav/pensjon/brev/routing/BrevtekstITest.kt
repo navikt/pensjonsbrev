@@ -11,6 +11,8 @@ import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.maler.BestillRedigerbartBrevRequest
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
@@ -64,14 +66,18 @@ class BrevtekstITest {
             accept(ContentType.Application.Json)
             setBody(
                 BestillRedigertBrevRequest(
-                    kode = EnkeltRedigerbartTestbrev.kode,
-                    letterData = EmptyRedigerbarBrevdata(saksbehandlerValg = lagSaksbehandlervalg()),
-                    felles = felles,
-                    language = LanguageCode.BOKMAL,
                     letterMarkup = markup,
                     alltidValgbareVedlegg = listOf(),
                     redigerteVedlegg = emptyMap(),
+                    redigerbartBrev = BestillRedigerbartBrevRequest(
+                        kode = EnkeltRedigerbartTestbrev.kode,
+                        letterData = EmptyRedigerbarBrevdata(saksbehandlerValg = lagSaksbehandlervalg()),
+                        fagsystemBrevdata = EmptyFagsystemdata,
+                        saksbehandlervalg = lagSaksbehandlervalg(),
+                        felles = felles,
+                        language = LanguageCode.BOKMAL
                     )
+                )
             )
         }.body()
 

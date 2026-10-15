@@ -3,13 +3,15 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.KravArsakType
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
@@ -54,6 +56,8 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                     createMaanedligPensjonFoerSkattAP2025Dto(),
                 orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
                 beloepEndring = BeloepEndring.UENDRET,
+                opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
+                opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto(),
             ),
     )
 

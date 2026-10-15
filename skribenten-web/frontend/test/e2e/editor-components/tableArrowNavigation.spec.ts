@@ -1,6 +1,14 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  createNewLine,
+  newCell,
+  newLiteral,
+  newParagraph,
+  newTable,
+  newVariable,
+} from "~/Brevredigering/LetterEditor/actions/common";
+import { ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
 import { type Row } from "~/types/brevbakerTypes";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse, editedLetter } from "~test/support/brevFixtures";
@@ -54,6 +62,206 @@ function bodyCell(page: Page, rowIndex: number, cellIndex: number) {
 async function assertFocused(_page: Page, locator: ReturnType<typeof bodyCell>) {
   await expect(locator).toBeFocused();
 }
+
+async function visualLines(locator: ReturnType<typeof bodyCell>) {
+  return locator.evaluate((element) => {
+    const node = element.firstChild!;
+    const lines: { offset: number; top: number }[] = [];
+    for (let offset = 0; offset < node.textContent!.length; offset++) {
+      const range = document.createRange();
+      range.setStart(node, offset);
+      range.setEnd(node, offset + 1);
+      const { top } = range.getBoundingClientRect();
+      if (lines.at(-1)?.top !== top) lines.push({ offset, top });
+    }
+    return lines;
+  });
+}
+
+async function placeCaret(locator: ReturnType<typeof bodyCell>, offset: number) {
+  await locator.focus();
+  await locator.evaluate((element, position) => {
+    const range = document.createRange();
+    range.setStart(element.firstChild!, position);
+    range.collapse(true);
+    const selection = globalThis.getSelection()!;
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }, offset);
+}
+
+async function caretPosition(page: Page) {
+  return page.evaluate(() => {
+    const range = globalThis.getSelection()!.getRangeAt(0);
+    const { x, top } = range.getBoundingClientRect();
+    return { x, top, offset: range.startOffset };
+  });
+}
+
+test.describe("Table fallback caret boundaries", () => {
+  for (const boundary of ["before", "after"] as const) {
+    test(`normalizes a parent position ${boundary} the target span`, async ({ page }) => {
+      const destination = tableRow("short");
+      destination.cells[0].text.unshift(newVariable({ text: "VARIABLE" }));
+      await setupEditor(page, [
+        newParagraph({ content: [newTable([tableRow("a much longer source cell"), destination])] }),
+      ]);
+      const target = bodyCell(page, 1, 0);
+      await placeCaret(bodyCell(page, 0, 0), 20);
+      await target.evaluate((element, edge) => {
+        Object.defineProperty(document, "caretPositionFromPoint", { configurable: true, value: undefined });
+        document.caretRangeFromPoint = () => {
+          const range = document.createRange();
+          if (edge === "before") range.setStartBefore(element);
+          else range.setStartAfter(element);
+          range.collapse(true);
+          return range;
+        };
+      }, boundary);
+
+      await page.keyboard.press("ArrowDown");
+
+      await expect(target).toBeFocused();
+      expect((await caretPosition(page)).offset).toBe(boundary === "before" ? 0 : 5);
+      await page.keyboard.type("!");
+      await expect(target).toHaveText(boundary === "before" ? "!short" : "short!");
+      await expect(page.getByText("VARIABLE", { exact: true })).toHaveText("VARIABLE");
+    });
+  }
+
+  test("rejects a caret position outside the target cell", async ({ page }) => {
+    await setupEditor(page, [newParagraph({ content: [newTable([tableRow("long source text"), tableRow("short")])] })]);
+    await placeCaret(bodyCell(page, 0, 0), 15);
+    await page.evaluate(() => {
+      Object.defineProperty(document, "caretPositionFromPoint", { configurable: true, value: undefined });
+      document.caretRangeFromPoint = () => {
+        const range = document.createRange();
+        range.setStart(document.body, 0);
+        range.collapse(true);
+        return range;
+      };
+    });
+
+    await page.keyboard.press("ArrowDown");
+
+    await expect(bodyCell(page, 1, 0)).toBeFocused();
+    expect((await caretPosition(page)).offset).toBe(0);
+  });
+});
+
+test.describe("Table visual-line navigation", () => {
+  for (const direction of ["up", "down"] as const) {
+    test(`${direction} preserves the caret column with a leading zero-width space`, async ({ page }) => {
+      const text = "Content 1";
+      const table = newTable([tableRow(direction === "down" ? ZERO_WIDTH_SPACE + text : text)]);
+      table.header.colSpec[0].headerContent = newCell([
+        newLiteral({ editedText: direction === "up" ? ZERO_WIDTH_SPACE + text : text }),
+      ]);
+      await setupEditor(page, [newParagraph({ content: [table] })]);
+      await page.getByTestId("table-header-0").evaluate((header) => {
+        header.style.fontWeight = "normal";
+      });
+      const source = direction === "down" ? headerCell(page, 0) : bodyCell(page, 0, 0);
+      const target = direction === "down" ? bodyCell(page, 0, 0) : headerCell(page, 0);
+      await placeCaret(source, 3);
+      const before = await caretPosition(page);
+
+      await page.keyboard.press(direction === "down" ? "ArrowDown" : "ArrowUp");
+
+      await expect(target).toBeFocused();
+      const after = await caretPosition(page);
+      expect(after.offset).toBe(4);
+      expect(after.x).toBeCloseTo(before.x, 0);
+      await page.keyboard.type("!");
+      await expect(target).toHaveText(`${ZERO_WIDTH_SPACE}Con!tent 1`);
+    });
+
+    for (const targetText of ["short", ""]) {
+      test(`${direction} clamps the caret in a ${targetText ? "short" : "empty"} cell`, async ({ page }) => {
+        const sourceText = "a much longer source cell";
+        const rows =
+          direction === "up"
+            ? [tableRow(targetText), tableRow(sourceText)]
+            : [tableRow(sourceText), tableRow(targetText)];
+        await setupEditor(page, [newParagraph({ content: [newTable(rows)] })]);
+        await placeCaret(bodyCell(page, direction === "up" ? 1 : 0, 0), 20);
+
+        await page.keyboard.press(direction === "up" ? "ArrowUp" : "ArrowDown");
+
+        const target = bodyCell(page, direction === "up" ? 0 : 1, 0);
+        await expect(target).toBeFocused();
+        expect((await caretPosition(page)).offset).toBe(targetText.length);
+        await page.keyboard.type("!");
+        await expect(target).toHaveText(`${targetText}!`);
+      });
+    }
+
+    for (const acrossCells of [false, true]) {
+      test(`${direction} navigates separate text spans ${acrossCells ? "across cells" : "inside a cell"}`, async ({
+        page,
+      }) => {
+        const row = tableRow("");
+        row.cells[0] = newCell([
+          newLiteral({ editedText: "first editable line" }),
+          createNewLine(),
+          newLiteral({ editedText: "second editable line" }),
+        ]);
+        await setupEditor(page, [newParagraph({ content: [newTable([row, structuredClone(row)])] })]);
+        const sourceRow = direction === "up" ? 1 : 0;
+        const sourceSpan = direction === "up" ? (acrossCells ? 0 : 1) : acrossCells ? 1 : 0;
+        const source = page
+          .getByTestId(`table-cell-${sourceRow}-0`)
+          .locator("span[contenteditable=true]")
+          .nth(sourceSpan);
+        await placeCaret(source, 4);
+        const before = await caretPosition(page);
+
+        await page.keyboard.press(direction === "up" ? "ArrowUp" : "ArrowDown");
+
+        const targetRow = acrossCells ? 1 - sourceRow : sourceRow;
+        const target = page
+          .getByTestId(`table-cell-${targetRow}-0`)
+          .locator("span[contenteditable=true]")
+          .nth(1 - sourceSpan);
+        await expect(target).toBeFocused();
+        expect(Math.abs((await caretPosition(page)).x - before.x)).toBeLessThan(10);
+        await page.keyboard.type("!");
+        await expect(target).toContainText("!");
+        await expect(source).not.toContainText("!");
+      });
+
+      test(`${direction} preserves horizontal position ${acrossCells ? "across cells" : "within a wrapped cell"}`, async ({
+        page,
+      }) => {
+        const text = "alpha bravo charlie delta echo foxtrot golf hotel india juliet kilo lima";
+        await setupEditor(page, [newParagraph({ content: [newTable([tableRow(text), tableRow(text)])] })]);
+        await page.getByTestId("letter-table").evaluate((table) => {
+          table.style.width = "260px";
+        });
+
+        const source = bodyCell(page, direction === "up" ? 1 : 0, 0);
+        const lines = await visualLines(source);
+        expect(lines.length).toBeGreaterThan(1);
+        const sourceLine =
+          direction === "up" ? (acrossCells ? lines[0] : lines.at(-1)!) : acrossCells ? lines.at(-1)! : lines[0];
+        await placeCaret(source, sourceLine.offset + 4);
+        const before = await caretPosition(page);
+
+        await page.keyboard.press(direction === "up" ? "ArrowUp" : "ArrowDown");
+
+        const target = acrossCells ? bodyCell(page, direction === "up" ? 0 : 1, 0) : source;
+        await expect(target).toBeFocused();
+        const targetLines = await visualLines(target);
+        const expectedLine =
+          direction === "up" ? targetLines.at(acrossCells ? -1 : -2)! : targetLines[acrossCells ? 0 : 1];
+        const after = await caretPosition(page);
+        expect(after.top).toBeCloseTo(expectedLine.top, 0);
+        expect(Math.abs(after.x - before.x)).toBeLessThan(10);
+        expect(after.offset).toBeGreaterThan(0);
+      });
+    }
+  }
+});
 
 test.describe("Table ArrowDown navigation", () => {
   test("moves focus from header to first body row", async ({ page }) => {

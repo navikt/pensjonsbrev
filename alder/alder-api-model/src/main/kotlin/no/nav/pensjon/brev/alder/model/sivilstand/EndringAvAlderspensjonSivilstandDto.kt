@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.alder.model.KravArsakType
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -37,7 +39,9 @@ data class EndringAvAlderspensjonSivilstandDto(
         val beloepEndring: BeloepEndring,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
+        val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
+        val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
     ) : FagsystemBrevdata
 
     data class EpsVedVirk(

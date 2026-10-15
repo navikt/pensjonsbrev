@@ -51,7 +51,7 @@ describe("WarnModal", () => {
     expect(screen.queryByText("Du må velge om du vil beholde eller slette 2 avsnitt")).not.toBeNull();
     expect(
       screen.queryByText(
-        "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
+        "Disse avsnittene er markert i brevet eller redigerbare vedlegg. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
       ),
     ).not.toBeNull();
   });
@@ -63,7 +63,7 @@ describe("WarnModal", () => {
     expect(screen.queryByText("Du må velge om du vil beholde eller slette 1 avsnitt")).not.toBeNull();
     expect(
       screen.queryByText(
-        "Dette avsnittet er markert i brevet. Velg «Behold» eller «Slett». Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
+        "Dette avsnittet er markert i brevet eller et redigerbart vedlegg. Velg «Behold» eller «Slett». Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
       ),
     ).not.toBeNull();
   });

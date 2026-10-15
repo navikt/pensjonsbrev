@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -13,11 +14,9 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -45,7 +44,6 @@ abstract class BrevmodulTest(
     val auto: Collection<Brevkode.Automatisk>,
     val redigerbare: Collection<Brevkode.Redigerbart>,
     val fixtures: LetterDataFactory,
-    val filterForPDF: List<Brevkode<*>>
 ) {
     @Test
     open fun `alle autobrev fins i templates`() {
@@ -87,23 +85,16 @@ abstract class BrevmodulTest(
     }
 
     @Suppress("unused") // Brukt i MethodSource
-    private fun filtrerPdf() = finnMaler { filterForPDF.isEmpty() || filterForPDF.contains(it.kode) }
-
-    @Suppress("unused") // Brukt i MethodSource
     private fun filtrerVedlegg() = (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
         .map { it.template }
         .flatMap { template ->
             template.language.all().flatMap { spraak ->
                 template.attachments.map { vedlegg ->
-                    val dto =
-                        (((vedlegg.data as? Expression.UnaryInvoke<*, *>)?.operation as? UnaryOperation.Select<*, *>)?.selector?.propertyType)?.let {
-                            Class.forName(it.removeSuffix("?"))
-                        }
-                    dto?.let { Arguments.of(vedlegg.template, fixtures.createVedlegg(dto.kotlin), spraak, dto.simpleName) }
+                    val dto = vedlegg.template.dataType
+                    Arguments.of(vedlegg.template, fixtures.createVedlegg(dto), spraak, dto.simpleName)
                 }
             }
         }
-        .filterNotNull()
         .distinctBy { it.get()[2].toString() + it.get()[3] }
 
     @Suppress("unused") // Brukt i MethodSource
@@ -127,27 +118,6 @@ abstract class BrevmodulTest(
                     .filter { shouldInclude(it) }
                     .map { Arguments.of(it.template, it.kode, fixtures.create(it::class), spraak) }
             }
-    }
-
-    @Tag(TestTags.MANUAL_TEST)
-    @ParameterizedTest(name = "{1}, {3}")
-    @MethodSource("filtrerPdf")
-    fun <T : BrevbakerBrevdata> testPdf(
-        template: LetterTemplate<LanguageSupport, T>,
-        brevkode: Brevkode<*>,
-        fixtures: T,
-        spraak: Language,
-    ) {
-        if (!template.language.supports(spraak)) {
-            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
-            return
-        }
-        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
-
-        letter.renderTestPDF(
-            filnavn(brevkode, spraak),
-            pdfByggerService = PdfByggerTestService(),
-        )
     }
 
     @Tag(TestTags.INTEGRATION_TEST)
@@ -176,6 +146,7 @@ abstract class BrevmodulTest(
             filnavn(brevkode, spraak),
             path = Path.of("build", "test_pdf_typst"),
             pdfByggerService = PdfByggerTestService(),
+            objectMapper = internalObjectMapper()
         )
     }
 

@@ -38,10 +38,13 @@ const lagretBrev: BrevResponse = brevResponse({
 
 function renderEditor(redigeringsflate: Redigeringsflate) {
   const markerSomEndret = { current: null as (() => void) | null };
+  const lagreEndringer = { current: null as (() => Promise<void>) | null };
 
   const Testkomponent = () => {
-    const { setEditorState } = useManagedLetterEditorContext();
-    markerSomEndret.current = () => setEditorState((state) => ({ ...state, saveStatus: "DIRTY" }));
+    const { setEditorState, savePendingChanges } = useManagedLetterEditorContext();
+    markerSomEndret.current = () =>
+      setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" }));
+    lagreEndringer.current = savePendingChanges;
     return null;
   };
 
@@ -50,18 +53,20 @@ function renderEditor(redigeringsflate: Redigeringsflate) {
       <RedigeringsflateProvider redigeringsflate={redigeringsflate}>
         <ManagedLetterEditorContextProvider brev={lagretBrev}>
           <Testkomponent />
-          <ManagedLetterEditor brev={lagretBrev} error={false} freeze={false} />
+          <ManagedLetterEditor error={false} freeze={false} />
         </ManagedLetterEditorContextProvider>
       </RedigeringsflateProvider>
     </QueryClientProvider>,
   );
 
-  return async () => {
+  const autolagre = async () => {
     act(() => markerSomEndret.current?.());
     await act(async () => {
       await vi.advanceTimersByTimeAsync(6000);
     });
   };
+
+  return { autolagre, markerSomEndret, lagreEndringer };
 }
 
 describe("<ManagedLetterEditor /> velger lagringsendepunkt ut fra redigeringsflate", () => {
@@ -75,7 +80,7 @@ describe("<ManagedLetterEditor /> velger lagringsendepunkt ut fra redigeringsfla
   });
 
   test("attestanten lagrer via attestering-endepunktet, som ikke merger mot malen", async () => {
-    const autolagre = renderEditor("attestant-redigering");
+    const { autolagre } = renderEditor("attestant-redigering");
     await autolagre();
 
     await waitFor(() => expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1));
@@ -87,10 +92,93 @@ describe("<ManagedLetterEditor /> velger lagringsendepunkt ut fra redigeringsfla
   });
 
   test("saksbehandleren lagrer fortsatt via det mergende endepunktet", async () => {
-    const autolagre = renderEditor("saksbehandler-redigering");
+    const { autolagre } = renderEditor("saksbehandler-redigering");
     await autolagre();
 
     await waitFor(() => expect(oppdaterBrevtekstMock).toHaveBeenCalledTimes(1));
     expect(lagreAttestertBrevtekstMock).not.toHaveBeenCalled();
+  });
+});
+
+describe("savePendingChanges", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    lagreAttestertBrevtekstMock.mockResolvedValue(lagretBrev);
+    oppdaterBrevtekstMock.mockResolvedValue(lagretBrev);
+    oppdaterBrevMock.mockResolvedValue(lagretBrev);
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    return () => vi.useRealTimers();
+  });
+
+  test("lagrer umiddelbart, uten å vente på autolagringsintervallet", async () => {
+    const { markerSomEndret, lagreEndringer } = renderEditor("attestant-redigering");
+
+    act(() => markerSomEndret.current?.());
+    await act(async () => {
+      await lagreEndringer.current?.();
+    });
+
+    expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
+  });
+
+  test("gjør ingenting når brevet allerede er lagret", async () => {
+    const { lagreEndringer } = renderEditor("attestant-redigering");
+
+    await act(async () => {
+      await lagreEndringer.current?.();
+    });
+
+    expect(lagreAttestertBrevtekstMock).not.toHaveBeenCalled();
+  });
+
+  test("avviser når lagringen feiler, slik at kalleren kan rulle tilbake", async () => {
+    lagreAttestertBrevtekstMock.mockRejectedValue(new Error("lagring feilet"));
+    const { markerSomEndret, lagreEndringer } = renderEditor("attestant-redigering");
+
+    act(() => markerSomEndret.current?.());
+    await act(async () => {
+      await expect(lagreEndringer.current?.()).rejects.toThrow("lagring feilet");
+    });
+  });
+
+  test("lar samtidige kall vente på samme lagring i stedet for å sende en ny", async () => {
+    const { markerSomEndret, lagreEndringer } = renderEditor("attestant-redigering");
+
+    act(() => markerSomEndret.current?.());
+    await act(async () => {
+      await Promise.all([lagreEndringer.current?.(), lagreEndringer.current?.()]);
+    });
+
+    expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
+  });
+
+  test("sender ikke en konkurrerende lagring mens autolagringen er underveis", async () => {
+    let fullførAutolagring = () => {};
+    lagreAttestertBrevtekstMock.mockReturnValueOnce(
+      new Promise<BrevResponse>((resolve) => {
+        fullførAutolagring = () => resolve(lagretBrev);
+      }),
+    );
+
+    const { autolagre, markerSomEndret, lagreEndringer } = renderEditor("attestant-redigering");
+    await autolagre();
+    expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
+
+    act(() => markerSomEndret.current?.());
+    const ferdig = vi.fn();
+    let lagring: Promise<void> | undefined;
+    await act(async () => {
+      lagring = lagreEndringer.current?.().then(ferdig);
+    });
+
+    expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(1);
+    expect(ferdig).not.toHaveBeenCalled();
+
+    await act(async () => {
+      fullførAutolagring();
+      await lagring;
+    });
+    expect(lagreAttestertBrevtekstMock).toHaveBeenCalledTimes(2);
+    expect(ferdig).toHaveBeenCalledOnce();
   });
 });

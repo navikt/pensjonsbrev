@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmO
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.pe
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -26,8 +25,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VedtakOmOktFribelopRedigerbar : RedigerbarTemplate<VedtakOmOktFribelopRedigerbarDto> {
-
-    override val featureToggle = FeatureToggles.vedtakOmOktBunnfradrag.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_OKT_FRIBELOP_2026_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

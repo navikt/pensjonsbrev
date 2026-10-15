@@ -1,14 +1,13 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto
 import java.time.LocalDate
 
 fun createEndretUfoeretrygdPGAInntektDto() =
     EndretUfoeretrygdPGAInntektDto(
-        pe = Fixtures.createVedlegg(),
-        maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
-        orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
+        pe = createPEgruppe10(),
+        maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
+        orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
         gammeltBelop = 2000,
         nyttBelop = 2000,
         virkningFom = LocalDate.of(2020, 1, 1),

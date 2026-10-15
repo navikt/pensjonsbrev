@@ -48,16 +48,16 @@ describe("useAttestantLetterDiff", () => {
       wrapper,
     });
 
-    act(() => result.current.setEnabled(true));
+    act(() => result.current.setDiffMode(true));
     await waitFor(() => expect(result.current.status).toBe("ready"));
     expect(queryFn).toHaveBeenLastCalledWith(1, initialProps.savedLetter);
 
     // Autolagring i ManagedLetterEditor gir en ny hash uten at diff-funksjonen varsles.
-    act(() => result.current.disableDiff());
+    act(() => result.current.disableDiffMode());
     const autosaved = { ...initialProps, savedLetter: letterFor("autosaved"), savedHash: "hash-2" };
     rerender(autosaved);
 
-    act(() => result.current.setEnabled(true));
+    act(() => result.current.setDiffMode(true));
     await waitFor(() => expect(result.current.status).toBe("ready"));
     expect(queryFn).toHaveBeenLastCalledWith(1, autosaved.savedLetter);
     expect(result.current.diffHash).toBe("hash-2");
@@ -77,7 +77,7 @@ describe("useAttestantLetterDiff", () => {
       wrapper,
     });
 
-    act(() => result.current.setEnabled(true));
+    act(() => result.current.setDiffMode(true));
     expect(result.current.status).toBe("loading");
     expect(result.current.activeDiff).toBeUndefined();
     expect(queryFn).not.toHaveBeenCalled();
@@ -85,5 +85,57 @@ describe("useAttestantLetterDiff", () => {
     rerender({ ...initialProps, savedLetter: letterFor("saved"), savedHash: "hash-2", isSaved: true });
 
     await waitFor(() => expect(result.current.status).toBe("ready"));
+  });
+
+  it("exposes the diff state that was active when the page first loaded, unaffected by later toggling", async () => {
+    const initialProps = {
+      brevId: 1,
+      savedLetter: letterFor("original"),
+      savedHash: "hash-1",
+      isSaved: true,
+    };
+
+    const { result, rerender } = renderHook((props: typeof initialProps) => useAttestantLetterDiff(props), {
+      initialProps,
+      wrapper,
+    });
+
+    expect(result.current.defaultDiffMode).toBe(false);
+
+    act(() => result.current.setDiffMode(true));
+    rerender({ ...initialProps, savedHash: "hash-2" });
+
+    // defaultDiffMode must stay the same regardless of subsequent manual or automatic toggling.
+    expect(result.current.defaultDiffMode).toBe(false);
+
+    act(() => result.current.disableDiffMode());
+    expect(result.current.defaultDiffMode).toBe(false);
+  });
+
+  it("hides the cached markers once the letter goes dirty at the hash they were fetched for", async () => {
+    vi.spyOn(getBrevDiff, "queryFn").mockResolvedValue(diffWithEdit);
+    const initialProps = {
+      brevId: 1,
+      savedLetter: letterFor("original"),
+      savedHash: "hash-1",
+      isSaved: true,
+    };
+
+    const { result, rerender } = renderHook((props: typeof initialProps) => useAttestantLetterDiff(props), {
+      initialProps,
+      wrapper,
+    });
+
+    act(() => result.current.setDiffMode(true));
+    await waitFor(() => expect(result.current.status).toBe("ready"));
+    expect(result.current.activeDiff).toBeDefined();
+
+    // Editing does not move `savedHash` until a save responds, so the cached diff still matches the
+    // key. Rendering it anyway would decorate text the attestant has already edited past.
+    rerender({ ...initialProps, isSaved: false });
+
+    expect(result.current.activeDiff).toBeUndefined();
+    expect(result.current.diffHash).toBeUndefined();
+    expect(result.current.status).toBe("loading");
   });
 });

@@ -1677,7 +1677,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "round(sum by (id_type) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", mottaker=\"SAMHANDLER\"}[$__range])))",
+          "expr": "round(sum by (id_type) (increase(skribenten_brev_sendt_total{app=\"$app\", k8s_cluster_name=~\"$cluster\", avsender_enhet=~\"$avsender_enhet\", mottaker=\"SAMHANDLER\", id_type=~\".+\"}[$__range])))",
           "instant": true,
           "range": false,
           "legendFormat": "{{id_type}}",
@@ -1724,7 +1724,7 @@
         "colorMode": "none",
         "graphMode": "none",
         "justifyMode": "auto",
-        "orientation": "vertical",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"

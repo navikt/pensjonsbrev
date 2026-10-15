@@ -2,10 +2,7 @@ package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LocalizedFormatter
-import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -13,18 +10,14 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.varselFeilutbetalingUforeDto.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.feilutbetaltBrutto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.varselFeilutbetalingUforeDto.pesysData
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
-import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
-    override val featureToggle = FeatureToggles.feilutbetaling.toggle
-
     override val kode = Ufoerebrevkoder.Redigerbar.UT_VARSEL_FEILUTBETALING
     override val kategori = Brevkategori.FEILUTBETALING
     override val brevkontekst: TemplateDescription.Brevkontekst = VEDTAK

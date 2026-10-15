@@ -20,7 +20,8 @@ type ActiveDocumentContextValue = {
    * The active attachment editor registers its save function so navigation and submission can wait
    * for unsaved changes before leaving the editing session.
    */
-  registerVedleggSave: (saveNow: (() => Promise<void>) | null) => void;
+  registerVedleggSave: (savePendingChanges: (() => Promise<void>) | null) => void;
+  registerVedleggMissingFromTemplate: (vedleggId: string, count: number | null) => void;
 };
 
 const ActiveDocumentContext = createContext<ActiveDocumentContextValue | null>(null);
@@ -33,7 +34,8 @@ export const ActiveDocumentProvider = (props: {
   activeVedleggId: string | undefined;
   redigeringsflate: Redigeringsflate;
   onSelectDocument: (vedleggId: string | undefined) => Promise<boolean>;
-  registerVedleggSave: (saveNow: (() => Promise<void>) | null) => void;
+  registerVedleggSave: (savePendingChanges: (() => Promise<void>) | null) => void;
+  registerVedleggMissingFromTemplate?: (vedleggId: string, count: number | null) => void;
   children: ReactNode;
 }) => {
   const { activeVedleggId, redigeringsflate, onSelectDocument, registerVedleggSave } = props;
@@ -57,6 +59,8 @@ export const ActiveDocumentProvider = (props: {
       resetActiveVedlegg: resetActiveVedlegg,
       registerReset: registerReset,
       registerVedleggSave: registerVedleggSave,
+      registerVedleggMissingFromTemplate: (vedleggId, count) =>
+        props.registerVedleggMissingFromTemplate?.(vedleggId, count),
     }),
     [
       activeVedleggId,
@@ -66,6 +70,7 @@ export const ActiveDocumentProvider = (props: {
       resetActiveVedlegg,
       registerReset,
       registerVedleggSave,
+      props.registerVedleggMissingFromTemplate,
     ],
   );
 

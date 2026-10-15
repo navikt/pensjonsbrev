@@ -16,8 +16,10 @@ import no.nav.pensjon.brev.skribenten.Metrics
 import no.nav.pensjon.brev.skribenten.auth.currentPrincipalContext
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
@@ -39,7 +41,7 @@ class SendtBrevMetrikker(
 
     data class SendtBrevMaaling(
         val mottakerType: MottakerType?,
-        val tssId: String?,
+        val tssId: TssId?,
         val manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil?,
         val distribusjonstype: Distribusjon,
         val avsenderEnhet: EnhetId,
@@ -84,10 +86,10 @@ class SendtBrevMetrikker(
             .register(registry)
             .increment()
 
-        val offentligId = samhandler?.getOrNull()?.takeIf { it.idType() == SamhandlerIdType.ORG }?.offentligId
-        if (!offentligId.isNullOrBlank()) {
-            tellOrganisasjon(offentligId)
-        }
+        // Samme krav som SendBrevHandler stiller for å sende organisasjonsnummer til PEN.
+        samhandler?.getOrNull()
+            ?.takeIf { it.idType() == SamhandlerIdType.ORG && Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon.erGyldig(it.offentligId) }
+            ?.let { tellOrganisasjon(it.offentligId) }
     }
     private fun tellValgteVedlegg(maaling: SendtBrevMaaling) =
         Counter.builder("skribenten_valgte_vedlegg")
@@ -105,7 +107,7 @@ class SendtBrevMetrikker(
         when (idType.takeIf(String::isNotBlank)) {
             null -> SamhandlerIdType.UKJENT
             "FNR" -> SamhandlerIdType.FNR
-            "ORG", "ORGNR" -> SamhandlerIdType.ORG
+            "ORG" -> SamhandlerIdType.ORG
             else -> SamhandlerIdType.ANNEN
         }
 
@@ -122,7 +124,7 @@ class SendtBrevMetrikker(
     }
 
     // Brevet er allerede sendt, så en feil her skal kun gi en mindre presis metrikk.
-    private suspend fun hentSamhandler(tssId: String): Result<HentSamhandlerResponseDto.Success?> =
+    private suspend fun hentSamhandler(tssId: TssId): Result<HentSamhandlerResponseDto.Success?> =
         runCatching { samhandlerService.hentSamhandler(tssId).success }
             .onFailure { e ->
                 currentCoroutineContext().ensureActive()

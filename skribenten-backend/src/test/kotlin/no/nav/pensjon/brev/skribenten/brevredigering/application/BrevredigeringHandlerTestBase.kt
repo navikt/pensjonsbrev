@@ -115,7 +115,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val penService = FakePenClient()
     protected val pdlService = FakePDLService()
     protected val samhandlerService = FakeSamhandlerService(
-        navn = mapOf("samhandler1" to "Sam Handler AS", SAMHANDLER_TSS_ID to "Advokat Handler AS"),
+        navn = mapOf(TssId("samhandler1") to "Sam Handler AS", SAMHANDLER_TSS_ID to "Advokat Handler AS"),
         typer = mapOf(SAMHANDLER_TSS_ID to SAMHANDLER_TYPE),
         idTyper = mapOf(SAMHANDLER_TSS_ID to "ORG"),
         offentligIder = mapOf(SAMHANDLER_TSS_ID to SAMHANDLER_ORGNR),
@@ -198,7 +198,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val metrikkRegistry = SimpleMeterRegistry()
     protected val metrikkScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     protected val sendtBrevMetrikker by lazy { SendtBrevMetrikker(samhandlerService, metrikkRegistry, metrikkScope) }
-    protected val sendBrevHandler by lazy { SendBrevHandler(brevtilgang, brevService, brevmalService, sendtBrevMetrikker) }
+    protected val sendBrevHandler by lazy { SendBrevHandler(brevtilgang, brevService, brevmalService, sendtBrevMetrikker, samhandlerService) }
     protected val slettBrevHandler by lazy { SlettBrevHandler(brevtilgang, slettBrevPolicy) }
 
     companion object Fixtures {
@@ -209,7 +209,7 @@ abstract class BrevredigeringHandlerTestBase {
         }
 
         val PRINCIPAL_NAVENHET_ID = EnhetId("1234")
-        const val SAMHANDLER_TSS_ID = "80000123456"
+        val SAMHANDLER_TSS_ID = TssId("80000123456")
         const val SAMHANDLER_TYPE = "ADVO"
         const val SAMHANDLER_ORGNR = "987654321"
         val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
@@ -590,8 +590,9 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderMarkup(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*>,
-            felles: BrevbakerFelles
+            felles: BrevbakerFelles,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
@@ -600,7 +601,8 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*>,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
             alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
@@ -617,7 +619,8 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun hentRedigerbareVedleggTitler(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*>,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
         ): RedigerbareVedleggTitler =
             RedigerbareVedleggTitler(
@@ -632,7 +635,8 @@ abstract class BrevredigeringHandlerTestBase {
         override suspend fun renderRedigerbartVedlegg(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            brevdata: RedigerbarBrevdata<*>,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
         ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]

@@ -17,6 +17,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
 
     init {
         addAbstractTypeMapping<BrevbakerBrevdata, GenericBrevdata>()
+        addAbstractTypeMapping<FagsystemBrevdata, GenericBrevdata>()
         addAbstractTypeMapping<RedigerbarBrevdata<*>, GenericRedigerbarBrevdata>()
         addAbstractTypeMapping<SaksbehandlervalgIDSL, SaksbehandlervalgMap>()
     }
