@@ -47,7 +47,7 @@ export default function TableContextMenu({ anchor, onClose, children }: TableCon
       open={open}
     >
       <ActionMenu.Trigger>
-        <button aria-hidden css={triggerStyle} ref={triggerRef} type="button" />
+        <button aria-label="Tabellmeny" css={triggerStyle} ref={triggerRef} tabIndex={-1} type="button" />
       </ActionMenu.Trigger>
 
       <ActionMenu.Content align="start" css={menuSize}>
