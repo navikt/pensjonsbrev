@@ -42,6 +42,7 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
 
     override val featureToggle = FeatureToggles.brevmalUtInnvilgelseMedEndring.toggle
 
+    // PE_UT_04_106
     override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MED_ENDRING
     override val kategori = Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
