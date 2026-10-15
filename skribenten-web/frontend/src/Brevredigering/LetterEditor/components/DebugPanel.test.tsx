@@ -8,7 +8,7 @@ import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
 
-const initialHeight = Math.round(globalThis.innerHeight * 0.4);
+const initialHeight = Math.round(globalThis.innerHeight * 0.3);
 const minimumHeight = 120;
 const maximumHeight = Math.max(minimumHeight, Math.floor(globalThis.innerHeight * 0.8));
 
@@ -44,7 +44,7 @@ afterEach(() => {
 });
 
 describe("DebugPanel resize handle", () => {
-  test("starts at 40vh and supports keyboard resizing within its bounds", () => {
+  test("starts at 30vh and supports keyboard resizing within its bounds", () => {
     renderDebugPanel();
     const handle = screen.getByRole("separator", { name: "Endre høyden på debugpanelet" });
 
