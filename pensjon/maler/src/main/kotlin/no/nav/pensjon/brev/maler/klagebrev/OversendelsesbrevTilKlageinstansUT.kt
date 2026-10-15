@@ -12,13 +12,14 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Paragraf.Oversittetklagefrist
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -98,56 +99,56 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             title1 { text(bokmal { +"Innstillingen til $NAV_KLAGEINSTANS - uføretrygd" }) }
 
             title1 { text(bokmal { +"Hva klagesaken gjelder" }) }
-z
-            showIf(Paragraf.Oversittetklagefrist.equalTo(true)) {
+
+            showIf(Paragraf.isOneOf(Oversittetklagefrist)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OversittetKlagefrist)
-            }.orShowIf(eoesArtikkel57.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.EosArtikkel57)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EoesArtikkel57)
-            }.orShowIf(medlemskap.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Medlemskap)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Medlemskap)
-            }.orShowIf(hensiktsmessigBehandlingOgTiltak.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.HensiktsmessigBehandlingOgTiltak)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.HensiktsmessigBehandlingOgTiltak)
-            }.orShowIf(kunArbeidsrettedeTiltak.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.KunArbeidsrettedeTiltak)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KunArbeidsrettedeTiltak)
-            }.orShowIf(hovedAarsakTilSykdom.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.HovedAarsakTilSykdom)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.HovedAarsakTilSykdom)
-            }.orShowIf(nedsattInnteksevne.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.NedsattInnteksevne)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.NedsattInntektsevne)
-            }.orShowIf(kombinasjonNedsattInntektsevne.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.KombinasjonNedsattInntektsevne)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KombinasjonNedsattInntektsevne)
-            }.orShowIf(ufoeretidspunkt.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Ufoeretidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Ufoeretidspunkt)
-            }.orShowIf(fastsettelseIFU.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.FastsettelseIFU)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFU)
-            }.orShowIf(fastsettelseIEU.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.FastsettelseIEU)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIEU)
-            }.orShowIf(fastsettelseUfoeregrad.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.FastsettelseUfoeregrad)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseUfoeregrad)
-            }.orShowIf(beregningAvUfoeretrygd.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.BeregningAvUfoeretrygd)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.BeregningAvUfoeretrygd)
-            }.orShowIf(trygdetid.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Trygdetid)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Trygdetid)
-            }.orShowIf(ungufoer.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Ungufoer)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.UngUfoer)
-            }.orShowIf(automatiskInntektsreduksjon.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.AutomatiskInntektsreduksjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.AutomatiskInntektsreduksjon)
-            }.orShowIf(etteropgjoer.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Etteropgjoer)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Etteroppgjoer)
-            }.orShowIf(etteroppgjoerBarnetillegg.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.EtteroppgjoerBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.EtteroppgjoerBarnetillegg)
-            }.orShowIf(barnetillegg.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Barnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Barnetillegg)
-            }.orShowIf(reduksjonAvBarnetillegg.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.ReduksjonAvBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.ReduksjonAvBarnetillegg)
-            }.orShowIf(yrkesskade.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Yrkesskade)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade)
-            }.orShowIf(oppholdsinstitusjon.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Oppholdsinstitusjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OppholdIinstitusjon)
-            }.orShowIf(straffegjennomfoering.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Straffegjennomfoering)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Straffegjennomfoering)
-            }.orShowIf(virkningstidspunkt.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Virkningstidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Virkningstidspunkt)
-            }.orShowIf(tilbakekreving.equalTo(true)) {
+            }.orShowIf(Paragraf.isOneOf(Paragraf.Tilbakekreving)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Tilbakekreving)
             }
 
