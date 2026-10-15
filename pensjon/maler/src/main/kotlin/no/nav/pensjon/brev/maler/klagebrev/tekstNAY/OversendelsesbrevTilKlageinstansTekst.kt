@@ -825,7 +825,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             title1 { text(bokmal { +"Vurdering av klagen" }) }
 
-            paragraph { text(bokmal { +fritekst("Fjern tekst om Avslag eller Delvis innvilget") }) }
+            paragraph { text(bokmal { +"Fjern tekst om Avslag eller Delvis innvilget" },ITALIC) }
 
             title1 { text(bokmal { +"Avslag" }) }
             paragraph {
