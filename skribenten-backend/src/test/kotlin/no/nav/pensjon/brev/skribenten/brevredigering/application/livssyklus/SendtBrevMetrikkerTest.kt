@@ -6,13 +6,16 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.joinAll
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.Metrics
+import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.FakeSamhandlerService
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
@@ -46,12 +49,16 @@ class SendtBrevMetrikkerTest {
         tssId: TssId? = null,
         manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil? = null,
         avsenderEnhet: String = "1234",
+        brevkode: Brevkode<*> = Testbrevkoder.INFORMASJONSBREV,
+        valgteVedlegg: List<AlltidValgbartVedleggBrevkode> = emptyList(),
     ) = SendtBrevMetrikker.SendtBrevMaaling(
         mottakerType = mottakerType,
         tssId = tssId,
         manueltAdressertTil = manueltAdressertTil,
         distribusjonstype = Distribusjon.SENTRALPRINT,
         avsenderEnhet = EnhetId(avsenderEnhet),
+        brevkode = brevkode,
+        valgteVedlegg = valgteVedlegg
     )
 
     @Test
