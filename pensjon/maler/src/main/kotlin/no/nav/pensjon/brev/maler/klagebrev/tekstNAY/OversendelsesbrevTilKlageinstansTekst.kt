@@ -1102,7 +1102,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     },ITALIC)
                 }
 
-                paragraph {
+                paragraph {F
                     text(bokmal {
                         +"I vedtaket av "
                         +fritekst("dato") + " ble klager innvilget/ avslått fra "
