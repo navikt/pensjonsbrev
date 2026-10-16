@@ -914,12 +914,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  // Velger tekstnoden i stedet for span-elementet, slik at markeringen får tekst-offsets (0..lengde).
+  // Da gjenkjenner useDragSelectUnifier den som en hel-literal-markering og lar contenteditable stå.
+  // Diff-dekorerte literaler har flere barn og redigeres ikke (diff-modus slås av ved redigering),
+  // så der markeres hele elementet.
   const setLiteralSelection = (element: HTMLSpanElement) => {
     const selection = globalThis.getSelection();
     if (selection) {
       const range = document.createRange();
       selection.removeAllRanges();
-      range.selectNodeContents(element);
+      range.selectNodeContents(hasDiffDecoration ? element : element.childNodes[0]);
       selection.addRange(range);
     }
   };

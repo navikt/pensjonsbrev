@@ -8,6 +8,7 @@
 
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -17,6 +18,7 @@ import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGr
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { ElementTags, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
 import {
   cell,
@@ -109,6 +111,33 @@ function setupComplex(stateOverride?: LetterEditorState) {
             <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
           </div>
         ))}
+      </EditorStateContext.Provider>,
+    ),
+  };
+}
+
+function UnifiedEditorSurface({ state }: { state: LetterEditorState }) {
+  const [host, setHost] = useState<HTMLDivElement | null>(null);
+  useDragSelectUnifier(host);
+  return (
+    <div ref={setHost}>
+      {state.redigertBrev.blocks.map((block, blockIndex) => (
+        <div className={block.type} key={blockIndex}>
+          <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function setupWithUnifier(state: LetterEditorState) {
+  return {
+    user: userEvent.setup(),
+    ...render(
+      <EditorStateContext.Provider
+        value={{ freeze: false, error: false, editorState: state, setEditorState, undo, redo }}
+      >
+        <UnifiedEditorSurface state={state} />
       </EditorStateContext.Provider>,
     ),
   };
@@ -475,6 +504,24 @@ describe("onClickHandler", () => {
 
     expect(notPrevented).toBe(false);
     expect(globalThis.getSelection()?.toString()).toBe("middle literal");
+  });
+
+  test("triple-clicking a literal keeps it editable with the drag-select unifier mounted", async () => {
+    const state = letter(paragraph(["first", "middle", "last"].map((name) => literal({ text: `${name} literal` }))));
+    const { user } = setupWithUnifier(state);
+    const middle = screen.getByText("middle literal");
+
+    await user.tripleClick(middle);
+    // Browsers queue selectionchange as a task, so it may arrive after pointerup has restored editing.
+    // happy-dom dispatches it synchronously, so replay it here to model the late delivery.
+    document.dispatchEvent(new Event("selectionchange"));
+
+    expect(globalThis.getSelection()?.toString()).toBe("middle literal");
+    expect(middle.getAttribute("contenteditable")).toBe("true");
+    expect(document.querySelector("[data-ce-orig]")).toBeNull();
+
+    await user.keyboard("x");
+    expect(middle.textContent).toBe("x");
   });
 
   test("triple-clicking literals in headings, list items, and table cells selects only that literal", async () => {
