@@ -1,14 +1,60 @@
 package no.nav.pensjon.brev.maler.klagebrev
 
+import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
+import no.nav.pensjon.brev.api.model.TemplateDescription.*
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.exstreamFunctions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entallSelector
+import no.nav.pensjon.brev.maler.FeatureToggles.*
+import no.nav.pensjon.brev.model.Brevkategori.*
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.*
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object KlageBegrunnelseForVedtakUT : RedigerbarTemplate<EmptyRedigerbarBrevdata
+@TemplateModelHelpers
+object KlageBegrunnelseForVedtakUT : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
-override val featureToggle = no.nav.pensjon.brev.maler.FeatureToggles.brevmalKlageBegrunnelseForVedtakUT.toggle
+    override val featureToggle = brevmalKlageBegrunnelseForVedtakUT.toggle
 
-override val kode = "UT_KLAGE_BEGRUNNELSE_FOR_VEDTAK"
-    override val kategori = no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
-    override val brevkontekst = no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
-    override val sakstyper = setOf(no.nav.pensjon.brev.api.model.Sakstype.UFOREP)> {
+    override val kode = UT_KLAGE_BEGRUNNELSE_FOR_VEDTAK
+    override val kategori = KLAGE_OG_ANKE
+    override val brevkontekst = ALLE
+    override val sakstyper = setOf(UFOREP)
+
+    override val template = createTemplate(
+        languages = languages(Language.Bokmal),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Klage - begrunnelse for vedtak",
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+        )
+    ) {
+        title { text(bokmal { +"Begrunnelse for vedtak" }) }
+
+        outline {
+
+            paragraph {
+                text(bokmal {
+                    +"Vi viser til henvendelsen din av "
+                    +fritekst("dato") + " hvor du ber om en ytterligere begrunnelse for vedtaket av "
+                    +fritekst("dato") + "."
+                })
+            }
+
+            paragraph { text(bokmal { +"Saksbehandlers begrunnelse" }, ITALIC) }
+            paragraph { text(bokmal { +"Vi håper at denne forklaringen gav en bedre forståelse av vedtaket." }) }
+            paragraph {
+                text(bokmal { +"Tilføyes dersom klagefristen ikke er utgått: " }, ITALIC)
+                text(bokmal { +"Vi minner om at fristen for å klage er seks uker fra den datoen du mottok vedtaket." })
+            }
+        }
+    }
 }
