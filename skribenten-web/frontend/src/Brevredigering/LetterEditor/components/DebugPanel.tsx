@@ -11,7 +11,7 @@ import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEdi
 import { getCaretRect, getRange, getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { type AnyBlock, type Content, type Item, TITLE_INDEX } from "~/types/brevbakerTypes";
 
-const MIN_HEIGHT = 120;
+const MIN_HEIGHT = 40;
 const RESIZE_STEP = 16;
 
 export default function DebugPanel() {
@@ -376,7 +376,7 @@ const ContentInfo = ({
         </HStack>
       </Accordion.Header>
       <Accordion.Content>
-        <ContentBody content={content} focus={focus} />
+        <ContentBody content={content} focus={focus?.contentIndex === index ? focus : undefined} />
       </Accordion.Content>
     </Accordion.Item>
   );

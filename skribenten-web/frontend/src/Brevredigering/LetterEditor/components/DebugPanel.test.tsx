@@ -9,7 +9,7 @@ import { TITLE_INDEX } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
 
 const initialHeight = Math.round(globalThis.innerHeight * 0.3);
-const minimumHeight = 120;
+const minimumHeight = 40;
 const maximumHeight = Math.max(minimumHeight, Math.floor(globalThis.innerHeight * 0.8));
 
 const createEditorState = () => letter(paragraph([literal({ text: "Test text" }), literal({ text: "More text" })]));
@@ -131,6 +131,40 @@ describe("DebugPanel focused entry", () => {
     const targets = container.querySelectorAll("[data-debug-focus-target]");
     expect(targets).toHaveLength(1);
     expect(targets[0].textContent).toContain("Second item");
+  });
+
+  test("targets only the focused list when a block contains several lists", () => {
+    const editorState = letter(
+      paragraph([
+        itemList({
+          items: [
+            item(literal({ text: "List A first" }), literal({ text: "List A first continues" })),
+            item(literal({ text: "List A second" }), literal({ text: "List A second continues" })),
+          ],
+        }),
+        itemList({
+          items: [
+            item(literal({ text: "List B first" }), literal({ text: "List B first continues" })),
+            item(literal({ text: "List B second" }), literal({ text: "List B second continues" })),
+          ],
+        }),
+      ]),
+    );
+
+    const { container } = renderDebugPanel({
+      ...editorState,
+      focus: {
+        ...editorState.focus,
+        blockIndex: 0,
+        contentIndex: 1,
+        itemIndex: 0,
+        itemContentIndex: 0,
+      },
+    });
+
+    const targets = container.querySelectorAll("[data-debug-focus-target]");
+    expect(targets).toHaveLength(1);
+    expect(targets[0].textContent).toContain("List B first");
   });
 
   test("shows and scrolls to a focused title literal", () => {
