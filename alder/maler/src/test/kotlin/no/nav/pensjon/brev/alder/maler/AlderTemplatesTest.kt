@@ -8,6 +8,5 @@ class AlderTemplatesTest : BrevmodulTest(
     templates = AlderTemplates,
     auto = Aldersbrevkoder.AutoBrev.entries,
     redigerbare = Aldersbrevkoder.Redigerbar.entries,
-    fixtures = Fixtures,
-    filterForPDF = listOf()
+    fixtures = Fixtures
 )

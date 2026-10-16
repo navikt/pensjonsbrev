@@ -109,6 +109,8 @@ import no.nav.pensjon.brev.alder.maler.avslag.*
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.*
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.*
 import no.nav.pensjon.brev.alder.maler.endring.*
+import no.nav.pensjon.brev.alder.maler.feilutbetaltbelop.VedtakFeilutbetaltBeloepTilbakekrevesIkke
+import no.nav.pensjon.brev.alder.maler.feilutbetaltbelop.createVedtakFeilutbetaltBeloepTilbakekrevesIkkeDto
 import no.nav.pensjon.brev.alder.maler.info.BekreftelseAvUtsendtKravTilUtlandet
 import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.*
 import no.nav.pensjon.brev.alder.maler.innvilgelse.*
@@ -210,6 +212,7 @@ object Fixtures : LetterDataFactory {
             VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge::class -> createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() as T
             VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge::class -> createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto() as T
             VedtakEndringVedFlyttingMellomLand::class -> createVedtakEndringVedFlyttingMellomLandDto() as T
+            VedtakFeilutbetaltBeloepTilbakekrevesIkke::class -> createVedtakFeilutbetaltBeloepTilbakekrevesIkkeDto() as T
             VedtakGjpForlengetArskull6061::class -> createGjenlevenderett2027Dto() as T
             VedtakGjpForlengetArskull6061Utland::class -> createGjenlevenderett2027Dto() as T
             VedtakGjpForlengetArskull6270::class -> createGjenlevenderett2027Dto() as T

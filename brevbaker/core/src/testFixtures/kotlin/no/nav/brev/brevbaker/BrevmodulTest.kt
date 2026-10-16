@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -43,7 +44,6 @@ abstract class BrevmodulTest(
     val auto: Collection<Brevkode.Automatisk>,
     val redigerbare: Collection<Brevkode.Redigerbart>,
     val fixtures: LetterDataFactory,
-    val filterForPDF: List<Brevkode<*>>
 ) {
     @Test
     open fun `alle autobrev fins i templates`() {
@@ -85,9 +85,6 @@ abstract class BrevmodulTest(
     }
 
     @Suppress("unused") // Brukt i MethodSource
-    private fun filtrerPdf() = finnMaler { filterForPDF.isEmpty() || filterForPDF.contains(it.kode) }
-
-    @Suppress("unused") // Brukt i MethodSource
     private fun filtrerVedlegg() = (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
         .map { it.template }
         .flatMap { template ->
@@ -123,27 +120,6 @@ abstract class BrevmodulTest(
             }
     }
 
-    @Tag(TestTags.MANUAL_TEST)
-    @ParameterizedTest(name = "{1}, {3}")
-    @MethodSource("filtrerPdf")
-    fun <T : BrevbakerBrevdata> testPdf(
-        template: LetterTemplate<LanguageSupport, T>,
-        brevkode: Brevkode<*>,
-        fixtures: T,
-        spraak: Language,
-    ) {
-        if (!template.language.supports(spraak)) {
-            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
-            return
-        }
-        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
-
-        letter.renderTestPDF(
-            filnavn(brevkode, spraak),
-            pdfByggerService = PdfByggerTestService(),
-        )
-    }
-
     @Tag(TestTags.INTEGRATION_TEST)
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
@@ -170,6 +146,7 @@ abstract class BrevmodulTest(
             filnavn(brevkode, spraak),
             path = Path.of("build", "test_pdf_typst"),
             pdfByggerService = PdfByggerTestService(),
+            objectMapper = internalObjectMapper()
         )
     }
 

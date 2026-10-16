@@ -30,7 +30,6 @@ class EtterlatteTemplatesTest : BrevmodulTest(
     auto = EtterlatteBrevKode.entries,
     redigerbare = setOf(),
     fixtures = Fixtures,
-    filterForPDF = listOf(),
 ) {
 
     @Test

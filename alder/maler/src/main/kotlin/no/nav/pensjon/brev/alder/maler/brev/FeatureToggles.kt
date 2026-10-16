@@ -8,6 +8,7 @@ enum class FeatureToggles(
     afpPrivatUfore("afpPrivatUfore"),
     avslagAfpGammel("avslagAfpGammel"),
     avslagAfpPrivat("avslagAfpPrivat"),
+    feilutbetaltBelopTilbakekrevesIkke("feilutbetaltBelopTilbakekrevesIkke"),
     innvilgelseAvAfp("innvilgelseAvAfp"),
     innvilgelseAvAfpOffentligSektor("innvilgelseAvAfpOffentligSektor"),
     omregningAlderUfore2016("omregningAlderUfore2016"),

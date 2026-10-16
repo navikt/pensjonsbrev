@@ -9,5 +9,4 @@ class UfoereProductionTemplatesTest : BrevmodulTest(
     auto = Ufoerebrevkoder.AutoBrev.entries,
     redigerbare = Ufoerebrevkoder.Redigerbar.entries,
     fixtures = Fixtures,
-    filterForPDF = listOf(),
 )
