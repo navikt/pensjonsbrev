@@ -1,9 +1,8 @@
 import DOMPurify from "dompurify";
-import { type Draft } from "immer";
+import { current, type Draft, produce } from "immer";
 
 import {
   addElements,
-  cleanseText,
   findAdjoiningContent,
   fontTypeOf,
   isAtStartOfBlock,
@@ -21,10 +20,26 @@ import {
   newTitle,
   removeElements,
   splitLiteralAtOffset,
+  splitMixedListBlock,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
+import { getRtfClipboardData, parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
+import {
+  cleansePastedText,
+  type ItemElement,
+  mergeNeighbouringText,
+  type ParagraphElement,
+  type Table,
+  type TableCell,
+  type TableRow,
+  type Text,
+  type Title1Element,
+  type Title2Element,
+  type Title3Element,
+  type TraversedElement,
+} from "~/Brevredigering/LetterEditor/actions/traversedElement";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import {
@@ -42,14 +57,25 @@ import {
   type ColumnSpec,
   type Content,
   FontType,
+  type ItemList,
   ListType,
   type LiteralValue,
   type Row,
   type TextContent,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
+import { getPasteMetadata } from "~/utils/pasteTracking";
 
-import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTableCellIndex, isTextContent } from "../model/utils";
+import {
+  effectiveListType,
+  isEmptyBlock,
+  isEmptyItem,
+  isItemList,
+  isLiteral,
+  isParagraph,
+  isTableCellIndex,
+  isTextContent,
+} from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   withPatches((draft, literalIndex, offset, clipboard) => {
@@ -60,13 +86,8 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };
 
-    if (clipboard.types.includes("text/html")) {
-      insertHtmlClipboardInLetter(draft, clipboard);
-    } else if (clipboard.types.includes("text/plain")) {
-      insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
-    } else {
-      log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
-    }
+    const insertion = resolveClipboardInsertion(draft, draft.focus, clipboard);
+    if (insertion) insertInLetter(draft, insertion);
   });
 
 export const pasteReplacingSelection: Action<LetterEditorState, [selection: SelectionIndex, clipboard: DataTransfer]> =
@@ -77,23 +98,129 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
     if (!isValidIndex(draft.redigertBrev, selection.start) || !isValidIndex(draft.redigertBrev, selection.end)) {
       return;
     }
+    // What fits depends on where the caret ends up after deletion (deleting a whole table leaves it in a paragraph),
+    // so the clipboard is resolved against a tentative deletion, and the selection is only deleted if something fits.
+    const afterDeletion = produce(current(draft), (tentative) => deleteSelectionRecipe(tentative, selection));
+    const insertion = resolveClipboardInsertion(afterDeletion, afterDeletion.focus, clipboard);
+    if (!insertion) return;
+
     deleteSelectionRecipe(draft, selection);
 
     // After deletion, draft.focus is set to the collapsed position where the selection was.
     // Now paste at that position.
-    if (clipboard.types.includes("text/html")) {
-      insertHtmlClipboardInLetter(draft, clipboard);
-    } else if (clipboard.types.includes("text/plain")) {
-      insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
-    } else {
-      log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
-    }
+    insertInLetter(draft, insertion);
   });
 
+type ClipboardInsertion = { kind: "elements"; elements: TraversedElement[] } | { kind: "text"; text: string };
+
+/**
+ * Picks what to insert before the letter is changed: HTML, then RTF, then plain text, using the first
+ * one that has something insertable at `focus`. Returns undefined if nothing can be inserted.
+ */
+function resolveClipboardInsertion(
+  draft: LetterEditorState,
+  focus: Focus,
+  clipboard: DataTransfer,
+): ClipboardInsertion | undefined {
+  const insertable = (insertion: ClipboardInsertion | undefined) => insertion && fitToFocus(draft, focus, insertion);
+
+  if (clipboard.types.includes("text/html")) {
+    const fromHtml = insertable({
+      kind: "elements",
+      elements: parseHtmlToTraversedElements(clipboard.getData("text/html")),
+    });
+    if (fromHtml) return fromHtml;
+  }
+
+  const rtf = getRtfClipboardData(clipboard);
+  if (rtf !== undefined) {
+    const fromRtf = insertable(rtfInsertion(rtf));
+    if (fromRtf) return fromRtf;
+  }
+
+  if (clipboard.types.includes("text/plain")) {
+    return insertable({ kind: "text", text: clipboard.getData("text/plain") });
+  }
+  if (rtf === undefined && !clipboard.types.includes("text/html")) {
+    log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
+  }
+  return undefined;
+}
+
+/**
+ * What `insertion` becomes at `focus`, or undefined if it can't be inserted there.
+ *
+ * A table cell only takes bold and italic text: paragraphs are joined, and anything with more structure
+ * (headings, lists, tables) is rejected as a whole and the paste falls back to plain text, instead of losing or
+ * mangling parts of it.
+ * Elsewhere, tables can only be inserted in a paragraph or a list item, where they end the list
+ * (`breakOutOfListBeforeTable`); anything else goes wherever text can.
+ */
+function fitToFocus(
+  draft: LetterEditorState,
+  focus: Focus,
+  insertion: ClipboardInsertion,
+): ClipboardInsertion | undefined {
+  if (insertion.kind === "text") return insertion.text.length > 0 ? insertion : undefined;
+  const { elements } = insertion;
+  if (elements.length === 0) return undefined;
+  if (isTableCellIndex(focus)) {
+    const inlineText = inlineTextOf(elements);
+    return inlineText ? { kind: "elements", elements: inlineText } : undefined;
+  }
+  if (
+    elements.every((element) => element.type === "TABLE") &&
+    !canInsertTableAt(draft, focus) &&
+    !isItemContentIndex(focus)
+  ) {
+    return undefined;
+  }
+  return insertion;
+}
+
+/**
+ * The text runs of text and paragraphs, with paragraphs joined by a space since cells have no line breaks.
+ * Undefined for anything else, or if there is no text.
+ */
+function inlineTextOf(elements: TraversedElement[]): Text[] | undefined {
+  const runs: Text[] = [];
+  let previous: TraversedElement | undefined;
+  for (const element of elements) {
+    if (element.type !== "TEXT" && element.type !== "P") return undefined;
+    const content = element.type === "P" ? element.content : [element];
+    const last = runs.at(-1);
+    const startsParagraph = element.type === "P" || previous?.type === "P";
+    if (startsParagraph && last && content.some((run) => run.text.trim().length > 0)) {
+      // On the previous run, so it keeps that font and same-font paragraphs merge into one literal.
+      runs[runs.length - 1] = { ...last, text: `${last.text} ` };
+    }
+    runs.push(...content);
+    previous = element;
+  }
+  const merged = mergeNeighbouringText(runs);
+  return merged.some((run) => run.text.trim().length > 0) ? merged : undefined;
+}
+
+function canInsertTableAt(draft: LetterEditorState, focus: Focus): boolean {
+  return (
+    isBlockContentIndex(focus) && !isTableCellIndex(focus) && isParagraph(draft.redigertBrev.blocks[focus.blockIndex])
+  );
+}
+
+function insertInLetter(draft: Draft<LetterEditorState>, insertion: ClipboardInsertion) {
+  if (insertion.kind === "text") {
+    insertTextInLetter(draft, insertion.text, FontType.PLAIN, false);
+  } else {
+    insertParsedElements(draft, insertion.elements);
+  }
+}
+
+/** Logs the pasted formats, their lengths and metadata, never the content: letters may contain personopplysninger. */
 export function logPastedClipboard(clipboardData: DataTransfer) {
-  log("available paste types - ", clipboardData.types);
-  log(`pasted html content - ${clipboardData.getData("text/html")}`);
-  log(`pasted plain content - ${clipboardData.getData("text/plain")}`);
+  const lengths = Object.fromEntries(
+    Array.from(clipboardData.types, (type) => [type, clipboardData.getData(type).length]),
+  );
+  log("pasted clipboard - ", { lengths, ...getPasteMetadata(clipboardData) });
 }
 
 /**
@@ -247,26 +374,50 @@ function shouldModifyExistingLiteral(
   return (isNew(literal) || offset > 0 || !multipartPaste) && fontType === fontTypeOf(literal);
 }
 
-/**
- * Pasting funksjonalitet skal etterligne hvordan det fungerer i microsoft word.
- * Merk da at det er forskjellige regler hvis man limer inn i start/midten/slutt, på en literal, eller punktliste,
- * og om det kopierte innholdet er bare literal eller punktliste, eller begge.
- *
- */
-function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
-  const parsedAndCombinedHtml = parseAndCombineHTML(clipboard);
+/** What the RTF has to insert; undefined if nothing, so the caller can fall back to plain text. */
+function rtfInsertion(rtf: string): ClipboardInsertion | undefined {
+  const parsed = parseRtfClipboard(rtf);
+  switch (parsed.mode) {
+    case "html": {
+      return { kind: "elements", elements: parseHtmlToTraversedElements(parsed.html) };
+    }
+    case "elements": {
+      return { kind: "elements", elements: parsed.elements };
+    }
+    case "text": {
+      return { kind: "text", text: parsed.text };
+    }
+    case "empty": {
+      return undefined;
+    }
+    case "unsupported": {
+      log("unable to interpret rtf clipboard content", parsed.error);
+      return undefined;
+    }
+  }
+}
 
-  if (parsedAndCombinedHtml.length === 0) {
-    //trenger ikke å lime inn tomt innhold
-    return;
-  } else if (parsedAndCombinedHtml.every((element) => element.type === "TEXT")) {
-    for (const element of parsedAndCombinedHtml) {
+/**
+ * Pasting should behave as it does in Microsoft Word.
+ * The rules differ depending on whether the paste is at the start, middle, or end of a literal or list,
+ * and whether the copied content contains only a literal, only a list, or both.
+ *
+ * Returns false if nothing was inserted.
+ */
+function insertParsedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]): boolean {
+  let inserted: boolean;
+  if (elements.length === 0) {
+    inserted = false;
+  } else if (elements.every((element) => element.type === "TEXT")) {
+    for (const element of elements) {
       insertTextInLetter(draft, element.text, element.font, false);
     }
+    inserted = true;
   } else {
-    insertTraversedElements(draft, parsedAndCombinedHtml);
+    inserted = insertTraversedElements(draft, elements);
   }
-  draft.saveStatus = "DIRTY";
+  if (inserted) draft.saveStatus = "DIRTY";
+  return inserted;
 }
 
 // Ensure that every table row has exactly the same number of cells (colCount)
@@ -308,20 +459,19 @@ function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
   };
 }
 
-// Insert a parsed table element at current focus.
-function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
-  if (isTableCellIndex(draft.focus)) {
-    return;
-  }
-  if ((tableElement.headerCells?.length ?? 0) === 0 && tableElement.rows.length === 0) {
-    return;
+function hasCells(tableElement: Table): boolean {
+  return (tableElement.headerCells?.length ?? 0) > 0 || tableElement.rows.length > 0;
+}
+
+// Insert a parsed table element at current focus. Returns false if nothing was inserted.
+function insertTable(draft: Draft<LetterEditorState>, tableElement: Table): boolean {
+  if (!canInsertTableAt(draft, draft.focus) || !hasCells(tableElement)) {
+    return false;
   }
 
   const headerCells = tableElement.headerCells ?? [];
-  // Determine the column count if there’s no header.
-  const bodyColMax = Math.max(1, ...tableElement.rows.map((row) => row.cells.length));
-  //if there’s a header, use its length; otherwise, use the widest body row.
-  const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
+  // The widest row decides the column count; shorter header and body rows are padded with empty cells.
+  const colCount = Math.max(1, headerCells.length, ...tableElement.rows.map((row) => row.cells.length));
   // If there are no header cells, we promote the first row to header.
   // This is to ensure that the table has a header row if it was pasted without one (pasted from Word for example)
   const hasHeader = headerCells.length > 0;
@@ -336,9 +486,9 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
       };
     });
 
-  const headerSpecSource = hasHeader
-    ? getHeaderSpec(headerCells)
-    : getHeaderSpec(normalizeCells(tableElement.rows[0]?.cells ?? [], colCount));
+  const headerSpecSource = getHeaderSpec(
+    normalizeCells(hasHeader ? headerCells : (tableElement.rows[0]?.cells ?? []), colCount),
+  );
 
   const colSpec = newColSpec(colCount, headerSpecSource);
   const bodyRows = shouldPromoteFirstRowToHeader ? tableElement.rows.slice(1) : tableElement.rows;
@@ -347,31 +497,43 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
 
   const table = createTable(colSpec, rows);
 
-  if (isBlockContentIndex(draft.focus) && isParagraph(draft.redigertBrev.blocks[draft.focus.blockIndex])) {
-    // Split current literal at cursor so trailing text stays after table.
+  // Split current literal at cursor so trailing text stays after table. At the start of a paragraph the table goes in
+  // front of its content instead; arrow up from the table makes room for the caret before it if needed.
+  if (!isAtStartOfBlock(draft.focus)) {
     splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
-    const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
-
-    const tableIndex = draft.focus.contentIndex;
-    addElements([table], tableIndex, currentBlock.content, currentBlock.deletedContent);
-
-    const focusRowIndex = rows.length > 0 ? 0 : -1;
-
-    draft.focus = {
-      blockIndex: draft.focus.blockIndex,
-      contentIndex: tableIndex,
-      rowIndex: focusRowIndex,
-      cellIndex: 0,
-      cellContentIndex: 0,
-      cursorPosition: 0,
-    };
-
-    draft.saveStatus = "DIRTY";
   }
+  const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+
+  const tableIndex = draft.focus.contentIndex;
+  addElements([table], tableIndex, currentBlock.content, currentBlock.deletedContent);
+
+  const focusRowIndex = rows.length > 0 ? 0 : -1;
+
+  draft.focus = {
+    blockIndex: draft.focus.blockIndex,
+    contentIndex: tableIndex,
+    rowIndex: focusRowIndex,
+    cellIndex: 0,
+    cellContentIndex: 0,
+    cursorPosition: 0,
+  };
+
+  draft.saveStatus = "DIRTY";
+  return true;
 }
 
-function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
-  for (const element of elements) {
+/** Returns false if none of the elements could be inserted. */
+function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]): boolean {
+  let inserted = false;
+  let trailingBlock: Draft<AnyBlock> | undefined;
+  for (const [index, element] of elements.entries()) {
+    const previous = index > 0 ? elements[index - 1] : undefined;
+    if (previous?.type === "ITEM" && element.type !== "TEXT" && !continuesPastedList(draft, element)) {
+      trailingBlock = breakOutOfPastedList(draft) ?? trailingBlock;
+    } else if (previous?.type === "TABLE") {
+      trailingBlock = moveFocusAfterPastedTable(draft) ?? trailingBlock;
+    }
+
     switch (element.type) {
       case "TEXT": {
         insertTextInLetter(draft, element.text, element.font);
@@ -398,11 +560,184 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "TABLE": {
-        insertTable(draft, element);
-        break;
+        if (isItemContentIndex(draft.focus) && hasCells(element)) {
+          trailingBlock = breakOutOfListBeforeTable(draft) ?? trailingBlock;
+        }
+        if (insertTable(draft, element)) inserted = true;
+        continue;
       }
     }
+    inserted = true;
   }
+
+  if (trailingBlock) removeCursorParagraphBefore(draft, trailingBlock);
+  return inserted;
+}
+
+/** A pasted item continues the current list unless it belongs to a different list type. */
+function continuesPastedList(draft: Draft<LetterEditorState>, element: TraversedElement): boolean {
+  if (element.type !== "ITEM") return false;
+  if (element.nested || element.listType === undefined || !isItemContentIndex(draft.focus)) return true;
+
+  const itemList = draft.redigertBrev.blocks[draft.focus.blockIndex]?.content[draft.focus.contentIndex];
+  return !isItemList(itemList) || (itemList.editedListType ?? itemList.listType) === element.listType;
+}
+
+/**
+ * After a pasted item, focus is in a new, empty item. If the next element is a block, a
+ * table, or an item in a new list, remove the empty item and continue in a separate block after the list.
+ * Returns the block containing the content that followed the list, if it was moved.
+ */
+function breakOutOfPastedList(draft: Draft<LetterEditorState>): Draft<AnyBlock> | undefined {
+  const focus = draft.focus;
+  if (!isItemContentIndex(focus)) return undefined;
+
+  const itemList = draft.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex];
+  if (!isItemList(itemList) || focus.itemIndex !== itemList.items.length - 1 || focus.itemIndex === 0) return undefined;
+  if (!isEmptyItem(itemList.items[focus.itemIndex])) return undefined;
+
+  removeElements(focus.itemIndex, 1, {
+    content: itemList.items,
+    deletedContent: itemList.deletedItems,
+    id: itemList.id,
+  });
+  return focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
+}
+
+/**
+ * After a pasted table, focus is inside the table; move it to a separate block after the table.
+ * Returns the block containing the content that followed the table, if it was moved.
+ */
+function moveFocusAfterPastedTable(draft: Draft<LetterEditorState>): Draft<AnyBlock> | undefined {
+  const focus = draft.focus;
+  if (!isTableCellIndex(focus) || !isTable(draft.redigertBrev.blocks[focus.blockIndex]?.content[focus.contentIndex]))
+    return undefined;
+
+  return focusNewBlockAfter(draft, focus.blockIndex, focus.contentIndex);
+}
+
+/**
+ * A table can't go in a list, so a table pasted in an item ends the list at the cursor: the items from the cursor on
+ * move to a list of their own after the table, and focus moves to a new paragraph in between. Returns the block
+ * containing the content that followed, if it was moved.
+ */
+function breakOutOfListBeforeTable(draft: Draft<LetterEditorState>): Draft<AnyBlock> | undefined {
+  const focus = draft.focus;
+  if (!isItemContentIndex(focus)) return undefined;
+  const { blockIndex, contentIndex } = focus;
+  const blocks = draft.redigertBrev.blocks;
+  const block = blocks[blockIndex];
+  const itemList = block?.content[contentIndex];
+  if (!isItemList(itemList)) return undefined;
+
+  const splitIndex = splitItemAtCursor(draft, itemList);
+  const items = { content: itemList.items, deletedContent: itemList.deletedItems, id: itemList.id };
+
+  if (splitIndex === 0) {
+    // The whole list follows the table.
+    if (contentIndex > 0) return focusNewBlockAfter(draft, blockIndex, contentIndex - 1);
+    addElements(
+      [newParagraph({ content: [newLiteral({ editedText: "" })] })],
+      blockIndex,
+      blocks,
+      draft.redigertBrev.deletedBlocks,
+    );
+    draft.focus = { blockIndex, contentIndex: 0, cursorPosition: 0 };
+    return blocks[blockIndex + 1];
+  }
+
+  // An empty item at the cursor, e.g. one left by a pasted paragraph or an emptied selection, would otherwise end up
+  // as an empty first item after the table.
+  const itemAtCursor = itemList.items[splitIndex];
+  if (itemAtCursor && isEmptyItem(itemAtCursor)) removeElements(splitIndex, 1, items);
+
+  const movedItems = removeElements(splitIndex, itemList.items.length - splitIndex, items);
+  if (movedItems.length > 0) {
+    addElements(
+      [newItemList({ items: movedItems, listType: effectiveListType(itemList) })],
+      contentIndex + 1,
+      block.content,
+      block.deletedContent,
+    );
+  }
+  const trailingBlock = focusNewBlockAfter(draft, blockIndex, contentIndex);
+  // The moved list is new, so it must be alone in its block.
+  if (trailingBlock) splitMixedListBlock(draft, blockIndex + 2);
+  return trailingBlock;
+}
+
+/** Splits the focused item at the cursor and returns the index of the first item after it. */
+function splitItemAtCursor(draft: Draft<LetterEditorState>, itemList: Draft<ItemList>): number {
+  const focus = draft.focus as Draft<ItemContentIndex & Focus>;
+  const { itemIndex, itemContentIndex } = focus;
+  const cursorPosition = focus.cursorPosition ?? 0;
+  if (isAtStartOfItem(focus)) return itemIndex;
+
+  const content = itemList.items[itemIndex]?.content ?? [];
+  const atEndOfItem =
+    itemContentIndex >= content.length - 1 && cursorPosition >= (text(content[itemContentIndex]) ?? "").length;
+  if (atEndOfItem) return itemIndex + 1;
+
+  splitRecipe(draft, focus, cursorPosition);
+  // splitRecipe refuses some splits (e.g. next to an empty item); the table then goes after the whole item.
+  return isItemContentIndex(draft.focus) && draft.focus.itemIndex > itemIndex ? draft.focus.itemIndex : itemIndex + 1;
+}
+
+/**
+ * Sets focus at the start of a new block immediately after `contentIndex`. If there is a literal there, split
+ * the block at that point. If there is other content (a list, table, or variable), move it to a separate block
+ * and place focus in an empty paragraph before it, so the rest of the paste goes in between. Returns the moved
+ * block so the cursor paragraph can be removed afterward.
+ */
+function focusNewBlockAfter(
+  draft: Draft<LetterEditorState>,
+  blockIndex: number,
+  contentIndex: number,
+): Draft<AnyBlock> | undefined {
+  const blocks = draft.redigertBrev.blocks;
+  const block = blocks[blockIndex];
+  const afterIndex = { blockIndex, contentIndex: contentIndex + 1 };
+
+  if (isLiteral(block.content[afterIndex.contentIndex])) {
+    draft.focus = { ...afterIndex, cursorPosition: 0 };
+    splitRecipe(draft, afterIndex, 0);
+    return undefined;
+  }
+
+  // removeElements records moved template ids in the source block, so the split persists (see letter-editor-actions SKILL.md).
+  const trailingContent = removeElements(afterIndex.contentIndex, block.content.length, block);
+  const trailingBlock = trailingContent.length > 0 ? newParagraph({ content: trailingContent }) : undefined;
+  addElements(
+    [newParagraph({ content: [newLiteral({ editedText: "" })] }), ...(trailingBlock ? [trailingBlock] : [])],
+    blockIndex + 1,
+    blocks,
+    draft.redigertBrev.deletedBlocks,
+  );
+  draft.focus = { blockIndex: blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+  return trailingBlock && blocks[blockIndex + 2];
+}
+
+/**
+ * Once the paste is complete, removes the empty cursor paragraph before content moved by `focusNewBlockAfter`
+ * and places the cursor at the end of the last pasted paragraph.
+ */
+function removeCursorParagraphBefore(draft: Draft<LetterEditorState>, trailingBlock: Draft<AnyBlock>) {
+  const focus = draft.focus;
+  const blocks = draft.redigertBrev.blocks;
+  const cursorBlock = blocks[focus.blockIndex];
+  if (!isBlockContentIndex(focus) || focus.blockIndex === 0 || blocks[focus.blockIndex + 1] !== trailingBlock) return;
+  if (!isParagraph(cursorBlock) || cursorBlock.id !== null || !isEmptyBlock(cursorBlock)) return;
+
+  const previousBlock = blocks[focus.blockIndex - 1];
+  const lastContent = previousBlock.content.at(-1);
+  if (!isLiteral(lastContent)) return;
+
+  removeElements(focus.blockIndex, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks });
+  draft.focus = {
+    blockIndex: focus.blockIndex - 1,
+    contentIndex: previousBlock.content.length - 1,
+    cursorPosition: text(lastContent).length,
+  };
 }
 
 function insertBlock(
@@ -478,21 +813,21 @@ function toggleItemListAndSplitAtCursor(
 ) {
   let itemContent: TextContent[] = [];
 
-  // Finn første indeks for all sammenhengende TextContent før der vi limer inn.
+  // Find the first index of the contiguous TextContent before the paste location.
   const sentenceIndex = findAdjoiningContent(
     draft.focus.contentIndex,
     currentBlock.content.slice(0, draft.focus.contentIndex + 1),
     isTextContent,
   );
 
-  // Om count er 1 så er det kun gjeldende content-element, så vi trenger ikke å inkludere flere.
+  // If count is 1, only the current content element is included, so there is nothing else to include.
   if (sentenceIndex.count > 1) {
     itemContent = removeElements(sentenceIndex.startIndex, sentenceIndex.count - 1, currentBlock).filter(isTextContent);
-    // Vi har fjernet fra og med startIndex frem til draft.focus.contentIndex som betyr at den nye indeksen til current er startIndex
+    // We removed content from startIndex up to draft.focus.contentIndex, so the current element is now at startIndex.
     draft.focus.contentIndex = sentenceIndex.startIndex;
   }
 
-  // Split currentContent om vi limer inn et sted som ikke er i starten av den, og legg den til i itemContent og resten tilbake til blokken.
+  // If the paste is not at the start of currentContent, split it and add the first part to itemContent, leaving the rest in the block.
   const currentContent = currentBlock.content[draft.focus.contentIndex];
   if (isLiteral(currentContent) && (draft.focus.cursorPosition! ?? 0) > 0) {
     removeElements(draft.focus.contentIndex, 1, currentBlock);
@@ -505,17 +840,17 @@ function toggleItemListAndSplitAtCursor(
     itemContent.push(currentContent);
   }
 
-  // Sørg for at vårt nye item har noe content.
+  // Ensure the new item has content.
   if (itemContent.length === 0) {
     itemContent.push(newLiteral({ editedText: "" }));
   }
   const theItem = newItem({ content: itemContent });
 
-  // Sett inn item i eksisterende liste før current content, eller lag en ny liste og theItem inn i den.
+  // Insert the item into the existing list before the current content, or create a new list containing it.
   const prevNonTextContent = sentenceIndex.startIndex > 0 ? currentBlock.content[sentenceIndex.startIndex - 1] : null;
   if (isItemList(prevNonTextContent)) {
     addElements([theItem], prevNonTextContent.items.length, prevNonTextContent.items, prevNonTextContent.deletedItems);
-    // Sett fokus til det theItem som vi har satt inn i eksisterende ItemList.
+    // Set focus to the item inserted into the existing ItemList.
     draft.focus = {
       ...draft.focus,
       contentIndex: sentenceIndex.startIndex - 1,
@@ -537,58 +872,9 @@ function toggleItemListAndSplitAtCursor(
   }
 }
 
-interface Text {
-  type: "TEXT";
-  font: FontType;
-  text: string;
-}
-
-interface ItemElement {
-  type: "ITEM";
-  content: Text[];
-  listType?: ListType;
-}
-
-interface ParagraphElement {
-  type: "P";
-  content: Text[];
-}
-interface Title1Element {
-  type: "H1";
-  content: Text[];
-}
-
-interface Title2Element {
-  type: "H2";
-  content: Text[];
-}
-
-interface Title3Element {
-  type: "H3";
-  content: Text[];
-}
-
-interface TableCell {
-  content: Text[];
-}
-
-interface TableRow {
-  cells: TableCell[];
-}
-
-interface Table {
-  type: "TABLE";
-  rows: TableRow[];
-  headerCells?: TableCell[];
-}
-
-type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Title3Element | Table;
-
-/** Return clipboard HTML or plain text, sanitised through DOMPurify. */
-function getCleanClipboardMarkup(dt: DataTransfer): string {
-  const raw = dt.types.includes("text/html") ? dt.getData("text/html") : dt.getData("text/plain");
-
-  return DOMPurify.sanitize(raw, {
+/** Sanitises pasted HTML through DOMPurify. */
+function sanitizePastedHtml(html: string): string {
+  return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
       "p",
       "br",
@@ -614,9 +900,8 @@ function getCleanClipboardMarkup(dt: DataTransfer): string {
   });
 }
 
-function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
-  const cleanHtml = getCleanClipboardMarkup(clipboard);
-  const document = new DOMParser().parseFromString(cleanHtml, "text/html");
+function parseHtmlToTraversedElements(html: string): TraversedElement[] {
+  const document = new DOMParser().parseFromString(sanitizePastedHtml(html), "text/html");
 
   const elements = traverseChildren(document.body, FontType.PLAIN);
   return moveOuterTextIntoNeighbouringParagraphs(elements);
@@ -869,7 +1154,7 @@ function traverseLiChildren(li: Element, font: FontType): ItemElement[] {
       case "ITEM": {
         // Nested list item — flush any accumulated direct text as the parent item first.
         flushDirectText();
-        result.push(child);
+        result.push({ ...child, nested: true });
         break;
       }
       case "P":
@@ -935,22 +1220,6 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): Paragrap
 
   flushBuffer();
   return result;
-}
-
-function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
-  return elements.reduce<T[]>((acc, curr) => {
-    const previous = acc.at(-1);
-
-    if (previous?.type === "TEXT" && curr.type === "TEXT" && previous?.font === curr.font) {
-      return [...acc.slice(0, -1), { ...previous, text: cleansePastedText(previous.text + curr.text) }];
-    } else {
-      return acc.concat(curr);
-    }
-  }, []);
-}
-
-function cleansePastedText(str: string): string {
-  return cleanseText(str).replaceAll(/\s+/g, " ");
 }
 
 function log(message: string, ...obj: unknown[]) {
