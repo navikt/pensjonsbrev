@@ -160,6 +160,10 @@ describe("walkRtf", () => {
     expect(textOf(walk("a\\-b"))).toBe("ab");
   });
 
+  test("a control symbol counts as one fallback character", () => {
+    expect(textOf(walk("\\uc1\\u173\\-rest"))).toBe("\u00ADrest");
+  });
+
   test("leaves \\line to the consumer as a control event", () => {
     expect(walk("{\\rtf1 a\\line b}")).toEqual([
       { kind: "groupStart", destination: "body" },
@@ -223,6 +227,10 @@ describe("walkRtf - symbol fonts", () => {
 
   test("maps Word for Mac's \\uN in the private use area, and skips the fallback", () => {
     expect(textIn("{\\f3 \\u-3913\\'b7}")).toBe("•");
+  });
+
+  test("keeps other \\uN as it is, since it is already Unicode", () => {
+    expect(textIn("{\\f3 \\u169?\\u215?\\u8226?}")).toBe("©×•");
   });
 
   test("maps list markers in a symbol font", () => {

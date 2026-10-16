@@ -43,6 +43,7 @@ describe("tokenizeRtf", () => {
     expect(tokenizeRtf("\\~\\_\\-\\\\\\{\\}\\*")).toEqual([
       text("\u00A0"),
       text("-"),
+      control("-"),
       text("\\"),
       text("{"),
       text("}"),

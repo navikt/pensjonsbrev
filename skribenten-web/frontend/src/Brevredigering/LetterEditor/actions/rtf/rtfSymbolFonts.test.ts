@@ -102,4 +102,10 @@ describe("symbol tables", () => {
   test("keeps characters above 0xFF that are not in the private use range", () => {
     expect(mapSymbolText(tableOf("Symbol"), "€\u2022", (byte) => cp1252([byte]))).toBe("€\u2022");
   });
+
+  test("maps only the private use range in text from \\uN, which is already Unicode", () => {
+    expect(mapSymbolText(tableOf("Symbol"), "©×\uF061\uF0B7", (byte) => cp1252([byte]), { unicode: true })).toBe(
+      "©×α•",
+    );
+  });
 });

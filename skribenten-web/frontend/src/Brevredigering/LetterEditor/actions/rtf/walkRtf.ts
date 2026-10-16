@@ -98,10 +98,10 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
     return { kind: "text", value, destination };
   }
 
-  /** Text and `\uN` in a symbol font. */
-  function fontText(value: string): RtfEvent | undefined {
+  /** Text and `\uN` in a symbol font. `\uN` is already Unicode, so only its private use area is mapped. */
+  function fontText(value: string, { unicode = false } = {}): RtfEvent | undefined {
     const table = symbolTable();
-    return text(table ? mapSymbolText(table, value, (byte) => options.decodeBytes([byte])) : value);
+    return text(table ? mapSymbolText(table, value, (byte) => options.decodeBytes([byte]), { unicode }) : value);
   }
 
   // Bytes are flushed before every other token, so before a font change or the end of a group.
@@ -230,7 +230,7 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
           // Only a low surrogate can follow a pending high one here; without one it is ill-formed.
           const pair = isLowSurrogate(token.param) ? pendingHighSurrogate : "";
           pendingHighSurrogate = undefined;
-          const event = pair === undefined ? text(REPLACEMENT_CHARACTER) : fontText(pair + unit);
+          const event = pair === undefined ? text(REPLACEMENT_CHARACTER) : fontText(pair + unit, { unicode: true });
           if (event) yield event;
           break;
         }

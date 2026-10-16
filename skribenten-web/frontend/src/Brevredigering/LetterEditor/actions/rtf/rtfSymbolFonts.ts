@@ -206,13 +206,22 @@ export function parseSymbolFonts(tokens: readonly RtfToken[]): SymbolFonts {
   return { defaultFont: defaultFontOf(tokens), tables };
 }
 
-/** Maps text in a symbol font by byte value; characters above 0xFF other than U+F020–U+F0FF are kept. */
-export function mapSymbolText(table: SymbolTable, text: string, decodeByte: (byte: number) => string): string {
+/**
+ * Maps text in a symbol font by byte value; characters above 0xFF other than U+F020–U+F0FF are kept.
+ * With `unicode`, the text comes from `\uN` and is already Unicode, so only U+F020–U+F0FF is mapped.
+ */
+export function mapSymbolText(
+  table: SymbolTable,
+  text: string,
+  decodeByte: (byte: number) => string,
+  { unicode = false } = {},
+): string {
   let result = "";
   for (const character of text) {
     const code = character.codePointAt(0)!;
-    const byte = code >= 0xf0_20 && code <= 0xf0_ff ? code - 0xf0_00 : code;
-    if (byte > 0xff) result += character;
+    const isPrivateUse = code >= 0xf0_20 && code <= 0xf0_ff;
+    const byte = isPrivateUse ? code - 0xf0_00 : code;
+    if (byte > 0xff || (unicode && !isPrivateUse)) result += character;
     else result += table(byte) ?? (byte === code ? character : decodeByte(byte));
   }
   return result;

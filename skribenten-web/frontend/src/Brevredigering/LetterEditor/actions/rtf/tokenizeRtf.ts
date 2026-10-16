@@ -116,9 +116,13 @@ function readControlSymbol(symbol: string | undefined): RtfToken | undefined {
     case "\n": {
       return { type: "control", word: "par", hasParam: false, param: 0 };
     }
-    default: {
-      // `\-` (optional hyphen), `\|`, `\:` and unknown symbols have no visible text.
+    case undefined: {
       return undefined;
+    }
+    default: {
+      // `\-` (optional hyphen), `\|`, `\:` and unknown symbols have no visible text, but are kept as controls
+      // since they count as a character when skipping the fallback after `\uN`.
+      return { type: "control", word: symbol, hasParam: false, param: 0 };
     }
   }
 }
