@@ -4,6 +4,8 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import java.time.Month
 
+//TODO er vi sikker på de som ikke er nullable her?
+//todo husk logikken bak yrkesskade
 data class VilkarsvurderingFullstendig(
     val virkningstidpunkt: LocalDate,
     val virkningstidspunktBegrunnelse: VirkningstidspunktBegrunnelse?,
@@ -18,20 +20,19 @@ data class VilkarsvurderingFullstendig(
     val ieuInntekt: Kroner,
     val ieuBegrunnelse: InntektEtterUforhetBegrunnelse?,
 
-    val ungUforResultat: VilkarResultat?,
+    val ungUforResultat: VilkarResultat,
 
-    val nedsattInntektsevneResultat: VilkarResultat?,
+    val nedsattInntektsevneResultat: VilkarResultat,
 
-    val yrkesskade: YrkesskadeVilkar?,
+    val yrkesskadeResultat: VilkarResultat,
+    val yrkesskadeBegrunnelse: YrkesskadeBegrunnelse?,
+    val yrkesskade: Yrkesskade?,
 ) {
     val virkningstidspunktMnd: Month = virkningstidpunkt.month
 
-    data class YrkesskadeVilkar(
+    data class Yrkesskade(
         val skadetidspunkt: LocalDate,
         val yrkesskadegrad: Int,
-        val yrkesskadeBegrunnelse: String,
-        val yrkesskadeResultat: VilkarResultat,
-        val inntektVedSkadetidspunktBegrunnelse: InntektVedSkadetidspunktBegrunnelse,
         val inntektVedSkadetidspunkt: Kroner,
     )
 
@@ -47,7 +48,7 @@ data class VilkarsvurderingFullstendig(
         STDBEGR_12_8_1_1, STDBEGR_12_8_1_2, STDBEGR_12_8_1_3
     }
 
-    enum class InntektVedSkadetidspunktBegrunnelse {
-        STDBEGR_12_17_3_1, STDBEGR_12_17_3_2
+    enum class YrkesskadeBegrunnelse {
+        STDBEGR_12_17_1_I_1, STDBEGR_12_17_1_I_2, STDBEGR_12_17_1_O_1, STDBEGR_12_17_1_O_2, STDBEGR_12_17_1_O_3
     }
 }

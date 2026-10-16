@@ -5,5 +5,10 @@ import java.time.LocalDate
 data class Kravhode(
     val virkFom: LocalDate,
     val mottattDato: LocalDate,
-    val arsak: String,
+    val arsak: Arsak,
 )
+{
+    enum class Arsak {
+        OMGJ_ETTER_KLAGE, OMGJ_ETTER_ANKE, ANNEN
+    }
+}

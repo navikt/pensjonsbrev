@@ -12,11 +12,11 @@ data class Beregning(
     //beløp
     val totalNetto: Kroner,//vedtaksdata_beregningsdata_beregningufore_totalnetto
     val belopHarOkt: Boolean, //tidligere nullable, null blir nå false  vedtaksdata_beregningsdata_beregningufore_belopokt
-    val beregningsresultattilrevurderingtotalnetto: Kroner?,//todo Usikker på nullable eller om den bør være her i det hele tatt  vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto
+    val beregningsresultatTilRevurderingTotalNetto: Kroner?,//todo Usikker på nullable eller om den bør være her i det hele tatt  vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto
 
     val bunnfradrag: Kroner,//vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag
-    val bunnfradragNesteAr: Kroner?,//tror denne er nullable og det ikke alltid er satt fra preg  vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear
-    val reduksjonsprosent: Kroner,//vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad
+    val bunnfradragNesteAr: Kroner,//tror denne er nullable og det ikke alltid er satt fra preg  vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear
+    val reduksjonsprosent: Double,//vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad
 
     //todo evt egen yrkesskade
     val yrkesskadegrad: Int?,//TODO eller eget objekt for yrk? vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad
