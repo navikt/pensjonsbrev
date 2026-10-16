@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { type Draft } from "immer";
+import { current, type Draft, produce } from "immer";
 
 import {
   addElements,
@@ -98,8 +98,10 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
     if (!isValidIndex(draft.redigertBrev, selection.start) || !isValidIndex(draft.redigertBrev, selection.end)) {
       return;
     }
-    // The selection is only deleted if the clipboard has something we can insert where it starts.
-    const insertion = resolveClipboardInsertion(draft, selection.start, clipboard);
+    // What fits depends on where the caret ends up after deletion (deleting a whole table leaves it in a paragraph),
+    // so the clipboard is resolved against a tentative deletion, and the selection is only deleted if something fits.
+    const afterDeletion = produce(current(draft), (tentative) => deleteSelectionRecipe(tentative, selection));
+    const insertion = resolveClipboardInsertion(afterDeletion, afterDeletion.focus, clipboard);
     if (!insertion) return;
 
     deleteSelectionRecipe(draft, selection);
@@ -116,7 +118,7 @@ type ClipboardInsertion = { kind: "elements"; elements: TraversedElement[] } | {
  * one that has something insertable at `focus`. Returns undefined if nothing can be inserted.
  */
 function resolveClipboardInsertion(
-  draft: Draft<LetterEditorState>,
+  draft: LetterEditorState,
   focus: Focus,
   clipboard: DataTransfer,
 ): ClipboardInsertion | undefined {
@@ -155,7 +157,7 @@ function resolveClipboardInsertion(
  * (`breakOutOfListBeforeTable`); anything else goes wherever text can.
  */
 function fitToFocus(
-  draft: Draft<LetterEditorState>,
+  draft: LetterEditorState,
   focus: Focus,
   insertion: ClipboardInsertion,
 ): ClipboardInsertion | undefined {
@@ -199,7 +201,7 @@ function inlineTextOf(elements: TraversedElement[]): Text[] | undefined {
   return merged.some((run) => run.text.trim().length > 0) ? merged : undefined;
 }
 
-function canInsertTableAt(draft: Draft<LetterEditorState>, focus: Focus): boolean {
+function canInsertTableAt(draft: LetterEditorState, focus: Focus): boolean {
   return (
     isBlockContentIndex(focus) && !isTableCellIndex(focus) && isParagraph(draft.redigertBrev.blocks[focus.blockIndex])
   );

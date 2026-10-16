@@ -157,6 +157,48 @@ describe("Actions.pasteReplacingSelection", () => {
   });
 
   describe("paste replacing selection in table cell", () => {
+    const wholeTable: SelectionIndex = {
+      start: { blockIndex: 0, contentIndex: 1, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 },
+      end: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 1, cellContentIndex: 0, cursorPosition: 5 },
+    };
+    const tableLetter = () =>
+      letter(
+        paragraph([
+          literal({ text: "" }),
+          table(
+            [cell(literal({ text: "H1" })), cell(literal({ text: "H2" }))],
+            [row(cell(literal({ text: "cell content" })), cell(literal({ text: "other" })))],
+          ),
+          literal({ text: "" }),
+        ]),
+      );
+
+    test.each([
+      ["HTML", { "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table>" }],
+      [
+        "RTF",
+        { "text/rtf": "{\\rtf1\\ansi \\trowd\\cellx1000\\pard\\intbl A\\cell\\row\\trowd\\cellx1000 b\\cell\\row}" },
+      ],
+    ])("a table from %s replaces a whole selected table", (_, clipboard) => {
+      const result = Actions.pasteReplacingSelection(
+        tableLetter(),
+        wholeTable,
+        new MockDataTransfer({ ...clipboard, "text/plain": "A\nb" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: A", "  tr: b"]);
+    });
+
+    test("paragraphs replacing a whole selected table stay paragraphs", () => {
+      const result = Actions.pasteReplacingSelection(
+        tableLetter(),
+        wholeTable,
+        new MockDataTransfer({ "text/html": "<p>En</p><p>To</p>", "text/plain": "En\nTo" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["P: En", "P: To"]);
+    });
+
     test("replaces selected text in a table cell", () => {
       const state = letter(
         paragraph([
