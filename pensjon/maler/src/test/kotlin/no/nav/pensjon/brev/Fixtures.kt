@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansU
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
+import no.nav.pensjon.brev.maler.klagebrev.UtsattKlagefristUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
@@ -105,6 +106,7 @@ object Fixtures : LetterDataFactory {
             KlageOrienteringOmOversendelseTilKlageinstans::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             OversendelsesbrevTilKlageinstansUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageInnhentingAvOpplysningerUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            UtsattKlagefristUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             EndretBarnetilleggUfoerertrygdAuto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUfoeretrygdPGAInntektAuto::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUforetrygdPGAInntektNesteAr::class -> createEndretUTPgaInntektDtoV2() as T
