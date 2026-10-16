@@ -28,6 +28,7 @@ enum class FeatureToggles(private val key: String) {
     brevmalUtInnvilgelseMedEndring("brevmalUtInnvilgelseMedEndring"),
     brevmalUtOmregningUfoerepensjonTilUfoeretrygd("brevmalOmregningUfoerepensjonTilUfoeretrygd"),
     brevmalUtVedtakBlankMal("brevmalUtVedtakBlankMal"),
+    brevmalUtsattKlagefristUT("brevmalUtsattKlagefristUT"),
     brukertestbrev2025("brukertestbrev2025"),
     orienteringOmForlengetSaksbehandlingstid("orienteringOmForlengetSaksbehandlingstid"),
     oversettelseAvDokumenter("oversettelseAvDokumenter"),
