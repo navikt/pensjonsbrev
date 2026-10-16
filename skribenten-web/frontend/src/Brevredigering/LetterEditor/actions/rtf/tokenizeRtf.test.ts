@@ -67,13 +67,13 @@ describe("tokenizeRtf", () => {
     expect(tokenizeRtf("a\r\nb")).toEqual([text("a"), text("b")]);
   });
 
-  test("skips binary payload for \\binN without tokenizing it", () => {
+  test("keeps \\binN but skips its binary payload without tokenizing it", () => {
     // The 5-byte payload contains RTF-special characters ({, }, \) that must not become tokens.
-    expect(tokenizeRtf("\\bin5{}\\\\xAfter")).toEqual([text("After")]);
+    expect(tokenizeRtf("\\bin5{}\\\\xAfter")).toEqual([control("bin", 5), text("After")]);
   });
 
   test("stops at \\bin data that runs past the end of the input", () => {
-    expect(tokenizeRtf("{Før\\bin99 {}\\par}")).toEqual([{ type: "groupStart" }, text("Før")]);
+    expect(tokenizeRtf("{Før\\bin99 {}\\par}")).toEqual([{ type: "groupStart" }, text("Før"), control("bin", 99)]);
   });
 
   test.each([

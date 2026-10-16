@@ -79,6 +79,13 @@ describe("parseRtfClipboard", () => {
       elements: [{ type: "P", content: [{ type: "TEXT", font: FontType.PLAIN, text: "Hei" }] }],
     });
   });
+
+  test("counts \\binN and its data as one fallback character after \\uN", () => {
+    expect(parseRtfClipboard("{\\rtf1\\ansi\\uc1\\u945\\bin1?tail}")).toEqual({
+      mode: "elements",
+      elements: [{ type: "TEXT", font: FontType.PLAIN, text: "αtail" }],
+    });
+  });
 });
 
 describe("getRtfClipboardData", () => {

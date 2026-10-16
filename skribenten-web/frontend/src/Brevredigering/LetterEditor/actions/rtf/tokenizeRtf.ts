@@ -64,12 +64,12 @@ export function tokenizeRtf(rtf: string): RtfToken[] {
       if (isLetter(next)) {
         const { token, end } = readControlWord(rtf, index + 1);
         index = end;
+        tokens.push(token);
         if (token.word === "bin" && token.hasParam) {
+          // The payload is skipped, but `\binN` is kept since it and its data count as one `\uN` fallback character.
           // Binary data running past the end means the clipboard was truncated; keep what came before it.
           if (token.param > rtf.length - index) break;
           index += Math.max(0, token.param);
-        } else {
-          tokens.push(token);
         }
       } else if (next === "'") {
         // A malformed escape becomes "?" and consumes only its valid hex digits, so it never yields a control character.
