@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.felles.Reduksjonsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.felles.Tillegg
 import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.felles.Vedtak
+import no.nav.pensjon.brev.api.model.maler.felles.VilkarsvurderingFullstendig
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
@@ -48,6 +49,7 @@ data class OkningUforegradDto(
         val reduksjonsgrunnlag: Reduksjonsgrunnlag? = null,
         val tillegg: Tillegg? = null,
         val barnetillegg: Barnetillegg? = null,
+        val vilkarsvurdering: VilkarsvurderingFullstendig? = null,
     ) : FagsystemBrevdata
 
     data class Trygdetidsgrunnlag(

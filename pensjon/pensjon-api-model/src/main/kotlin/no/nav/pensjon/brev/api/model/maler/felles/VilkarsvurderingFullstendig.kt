@@ -28,7 +28,7 @@ data class VilkarsvurderingFullstendig(
     val yrkesskadeBegrunnelse: YrkesskadeBegrunnelse?,
     val yrkesskade: Yrkesskade?,
 ) {
-    val virkningstidspunktMnd: Month = virkningstidpunkt.month
+    fun virkningstidspunktMnd() = virkningstidpunkt.month
 
     data class Yrkesskade(
         val skadetidspunkt: LocalDate,
