@@ -1,6 +1,7 @@
 import { fontTypeOf, text } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Text, type TraversedElement } from "~/Brevredigering/LetterEditor/actions/traversedElement";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { effectiveListType } from "~/Brevredigering/LetterEditor/model/utils";
 import { type Content, FontType, ListType, type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
 
 /** Compact text projection of the letter: `H1: …`, `P: …`, `• …`/`1. …`, `TABLE`/`th:`/`tr:`, `**bold**`, `_italic_`. */
@@ -30,7 +31,7 @@ export function projectLetter(state: LetterEditorState): string[] {
     for (const content of block.content as Content[]) {
       if (content.type === "ITEM_LIST") {
         flushText();
-        const marker = content.listType === ListType.NUMMERERT_LISTE ? "1." : "•";
+        const marker = effectiveListType(content) === ListType.NUMMERERT_LISTE ? "1." : "•";
         lines.push(...content.items.map((listItem) => `${marker} ${runs(listItem.content)}`));
       } else if (content.type === "TABLE") {
         flushText();

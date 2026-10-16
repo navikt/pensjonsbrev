@@ -3805,6 +3805,27 @@ describe("LetterEditorActions.paste - blocks after lists and tables", () => {
     expect(projectLetter(result)).toEqual(["P: før", "TABLE", "  th: A", "  tr: b", "P: c", "P: etter"]);
   });
 
+  test("a list the user switched to numbered stays numbered", () => {
+    const state = letter(
+      paragraph({
+        id: 1,
+        content: [
+          itemList({ id: 10, editedListType: ListType.NUMMERERT_LISTE, items: [item(literal({ id: 11, text: "a" }))] }),
+        ],
+      }),
+    );
+    const clipboard = new MockDataTransfer({ "text/plain": "x" });
+
+    const result = Actions.paste(
+      state,
+      { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+      1,
+      clipboard,
+    );
+
+    expect(projectLetter(result)).toEqual(["1. ax"]);
+  });
+
   describe("content after the list or table in the same block stays after the pasted content", () => {
     const listFollowedBy = (...trailing: Content[]) =>
       letter(
