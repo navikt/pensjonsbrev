@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
+import no.nav.pensjon.brev.maler.klagebrev.UtsattKlagefristUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
@@ -162,6 +163,7 @@ object ProductionTemplates : AllTemplates {
         OversettelseAvDokumenter,
         SamletMeldingOmPensjonsvedtakV2,
         TilbakekrevingAvFeilutbetaltBeloep,
+        UtsattKlagefristUT,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
