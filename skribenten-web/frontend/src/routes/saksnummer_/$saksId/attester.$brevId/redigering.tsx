@@ -279,13 +279,15 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   // instead of leaving the attestant waiting for the autosave debounce.
   const handleDiffToggle = async (toggle: keyof DiffToggles, checked: boolean) => {
     attestantDiff.setToggle(toggle, checked);
+    const nextToggles = { ...attestantDiff.toggles, [toggle]: checked };
     trackEvent("diff modus endret", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
       spraak: props.brev.info.spraak,
       kilde: "manuell",
       bryter: toggle,
-      diffModus: checked,
+      bryterPaa: checked,
+      diffModus: nextToggles.lagtTil || nextToggles.slettet,
       defaultDiffModus: defaultDiffMode,
     });
 
