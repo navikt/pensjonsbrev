@@ -48,7 +48,7 @@ describe("useAttestantLetterDiff", () => {
       wrapper,
     });
 
-    act(() => result.current.setDiffMode(true));
+    act(() => result.current.setToggle("lagtTil", true));
     await waitFor(() => expect(result.current.status).toBe("ready"));
     expect(queryFn).toHaveBeenLastCalledWith(1, initialProps.savedLetter);
 
@@ -57,7 +57,7 @@ describe("useAttestantLetterDiff", () => {
     const autosaved = { ...initialProps, savedLetter: letterFor("autosaved"), savedHash: "hash-2" };
     rerender(autosaved);
 
-    act(() => result.current.setDiffMode(true));
+    act(() => result.current.setToggle("lagtTil", true));
     await waitFor(() => expect(result.current.status).toBe("ready"));
     expect(queryFn).toHaveBeenLastCalledWith(1, autosaved.savedLetter);
     expect(result.current.diffHash).toBe("hash-2");
@@ -77,7 +77,7 @@ describe("useAttestantLetterDiff", () => {
       wrapper,
     });
 
-    act(() => result.current.setDiffMode(true));
+    act(() => result.current.setToggle("lagtTil", true));
     expect(result.current.status).toBe("loading");
     expect(result.current.activeDiff).toBeUndefined();
     expect(queryFn).not.toHaveBeenCalled();
@@ -102,7 +102,7 @@ describe("useAttestantLetterDiff", () => {
 
     expect(result.current.defaultDiffMode).toBe(false);
 
-    act(() => result.current.setDiffMode(true));
+    act(() => result.current.setToggle("lagtTil", true));
     rerender({ ...initialProps, savedHash: "hash-2" });
 
     // defaultDiffMode must stay the same regardless of subsequent manual or automatic toggling.
@@ -126,7 +126,7 @@ describe("useAttestantLetterDiff", () => {
       wrapper,
     });
 
-    act(() => result.current.setDiffMode(true));
+    act(() => result.current.setToggle("lagtTil", true));
     await waitFor(() => expect(result.current.status).toBe("ready"));
     expect(result.current.activeDiff).toBeDefined();
 
@@ -137,5 +137,28 @@ describe("useAttestantLetterDiff", () => {
     expect(result.current.activeDiff).toBeUndefined();
     expect(result.current.diffHash).toBeUndefined();
     expect(result.current.status).toBe("loading");
+  });
+
+  it("derives which changes to show from the two independent toggles, and turns both off when disabled", () => {
+    const { result } = renderHook(
+      () => useAttestantLetterDiff({ brevId: 1, savedLetter: letterFor("x"), savedHash: "hash-1", isSaved: true }),
+      { wrapper },
+    );
+
+    act(() => result.current.setToggle("lagtTil", true));
+    expect(result.current).toMatchObject({ isDiffMode: true, showInsertions: true, showDeletions: false });
+
+    act(() => {
+      result.current.setToggle("lagtTil", false);
+      result.current.setToggle("slettet", true);
+    });
+    expect(result.current).toMatchObject({ isDiffMode: true, showInsertions: false, showDeletions: true });
+
+    act(() => result.current.setToggle("lagtTil", true));
+    expect(result.current).toMatchObject({ showInsertions: true, showDeletions: true });
+
+    act(() => result.current.disableDiffMode());
+    expect(result.current.toggles).toEqual({ lagtTil: false, slettet: false });
+    expect(result.current).toMatchObject({ isDiffMode: false, status: "disabled" });
   });
 });

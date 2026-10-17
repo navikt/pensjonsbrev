@@ -8,7 +8,13 @@ import TilbakestillMalModal from "~/components/TilbakestillMalModal";
  * The provider preserves the letter's editor state and autosave instance across document switches.
  * The document coordinator waits for pending saves before switching to an attachment.
  */
-const ManagedLetterEditor = (props: { freeze: boolean; error: boolean; canReset?: boolean; showDebug?: boolean }) => {
+const ManagedLetterEditor = (props: {
+  freeze: boolean;
+  error: boolean;
+  canReset?: boolean;
+  showDebug?: boolean;
+  subMenu?: React.ReactNode;
+}) => {
   const { editorState, setEditorState, saveFailed, resetLetter, resetting } = useManagedLetterEditorContext();
 
   return (
@@ -23,6 +29,7 @@ const ManagedLetterEditor = (props: { freeze: boolean; error: boolean; canReset?
       }
       setEditorState={setEditorState}
       showDebug={props.showDebug ?? false}
+      subMenu={props.subMenu}
     />
   );
 };
