@@ -80,8 +80,10 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
 
     val markup = Letter2Markup.render(this)
     val hash = hash(markup, objectMapper)
-    sti.resolve("hash.txt").takeIf { it.exists() }?.takeUnless { it.readBytes().contentEquals(hash) }
-        ?: return this
+
+    if (sti.resolve("hash.txt").takeIf { it.exists() }?.takeIf { it.readBytes().contentEquals(hash) } != null) {
+        return this
+    }
     Files.write(sti.resolve("hash.txt"), hash)
 
     markup

@@ -1,6 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package no.nav.brev.brevbaker.document
 
 import no.nav.brev.brevbaker.document.dsl.document
+import no.nav.brev.brevbaker.document.dsl.documentMottaker
+import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.document.dsl.documentSaksnummer
 import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.title2
@@ -80,6 +84,52 @@ class DocumentDslTest {
     }
 
     @Test
+    fun `navn kan vaere like langt som verdens lengste navn`() {
+        val dokument = document(
+            tittel = "Min tittel",
+            gjelderNavn = "a".repeat(747),
+            annenMottakerNavn = "b".repeat(747),
+        ) { paragraph("Innhold") }
+
+        assertEquals(747, dokument.gjelderNavn?.length)
+        assertEquals(747, dokument.annenMottakerNavn?.length)
+    }
+
+    @Test
+    fun `navn lengre enn verdens lengste navn avvises`() {
+        assertThrows<IllegalArgumentException> {
+            document(tittel = "Min tittel", gjelderNavn = "a".repeat(748)) { paragraph("Innhold") }
+        }
+        assertThrows<IllegalArgumentException> {
+            document(tittel = "Min tittel", annenMottakerNavn = "a".repeat(748)) { paragraph("Innhold") }
+        }
+    }
+
+    @Test
+    fun `for lang tittel avvises`() {
+        document(tittel = "a".repeat(300)) { paragraph("Innhold") }
+        assertThrows<IllegalArgumentException> {
+            document(tittel = "a".repeat(301)) { paragraph("Innhold") }
+        }
+    }
+
+    @Test
+    fun `for lang personidentifikator avvises`() {
+        document(tittel = "Min tittel", gjelderPersonidentifikator = "12345678901") { paragraph("Innhold") }
+        assertThrows<IllegalArgumentException> {
+            document(tittel = "Min tittel", gjelderPersonidentifikator = "123456789012") { paragraph("Innhold") }
+        }
+    }
+
+    @Test
+    fun `for langt saksnummer avvises`() {
+        documentSaksnummer("1".repeat(20))
+        assertThrows<IllegalArgumentException> {
+            documentSaksnummer("1".repeat(21))
+        }
+    }
+
+    @Test
     fun `dokumentet maa ha innhold`() {
         assertThrows<IllegalArgumentException> {
             document(tittel = "Min tittel") { }
@@ -94,5 +144,22 @@ class DocumentDslTest {
         }.clean()
 
         assertEquals(1, dokument.blocks.size)
+    }
+
+    @Test
+    fun `legacy saksinformasjon bygges som foer`() {
+        val dokument = document(
+            tittel = "Min tittel",
+            saksinformasjon = documentSaksinformasjon(
+                saksnummer = "9876543",
+                visFooter = true,
+                mottaker = documentMottaker(gjelderNavn = "Ola Nordmann", gjelderPersonidentifikator = "12345678901"),
+            ),
+        ) { paragraph("Innhold") }
+
+        assertEquals("9876543", dokument.saksinformasjon?.saksnummer?.value)
+        assertEquals("Ola Nordmann", dokument.saksinformasjon?.mottaker?.gjelderNavn)
+        assertNull(dokument.gjelderNavn)
+        assertNull(dokument.saksnummer)
     }
 }

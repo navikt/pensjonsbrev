@@ -7,7 +7,7 @@
 
 #let template(lettertitle: [], input: (:), languageSettings: (:), doc) = pageSetup(
   title: lettertitle,
-  footer: footer(input, languageSettings),
+  footer: footer(input.saksnummer, languageSettings),
   {
     section-start(1)
 
