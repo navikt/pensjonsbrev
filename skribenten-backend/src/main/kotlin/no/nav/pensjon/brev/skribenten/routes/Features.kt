@@ -18,7 +18,10 @@ fun Route.featureToggleRoute() {
         get("/{featureName}") {
             val featureName = call.parameters["featureName"]?.takeIf { it.length < 128 }
             if (featureName.isNullOrBlank()) {
-                call.respond(HttpStatusCode.BadRequest, "featureName mangler")
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    "featureName er for langt eller null, lengde: ${featureName?.length}"
+                )
                 return@get
             }
 
