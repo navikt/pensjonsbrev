@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonFraFolketrygden2
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtOpprydding
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtVarselBrev
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocGjenlevendEtter1970
+import no.nav.pensjon.brev.alder.maler.adhoc.AdhocGjenlevendepensjonOpphoer
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilBeroertBruker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilMottaker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
@@ -77,6 +78,7 @@ import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringVedFlyttingMellomLand
+import no.nav.pensjon.brev.alder.maler.feilutbetaltbelop.VedtakFeilutbetaltBeloepTilbakekrevesIkke
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonAvdodAuto
 import no.nav.pensjon.brev.alder.maler.info.BekreftelseAvUtsendtKravTilUtlandet
 import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygd
@@ -108,6 +110,7 @@ object AlderTemplates : AllTemplates {
             AdhocAlderspensjonFraFolketrygden2,
             AdhocAlderspensjonGjtOpprydding,
             AdhocAlderspensjonGjtVarselBrev,
+            AdhocGjenlevendepensjonOpphoer,
             AdhocGjenlevendEtter1970,
             AdhocSkjermingstilleggFeilBeroertBruker,
             AdhocSkjermingstilleggFeilMottaker,
@@ -198,6 +201,7 @@ object AlderTemplates : AllTemplates {
             VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
             VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
             VedtakEndringVedFlyttingMellomLand,
+            VedtakFeilutbetaltBeloepTilbakekrevesIkke,
             VedtakOmOmgjoering,
             VedtakStansAlderspensjonFlyttingMellomLand,
         )

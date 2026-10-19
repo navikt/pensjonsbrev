@@ -123,8 +123,20 @@ object Pen {
             val tssId: TssId? = null,
             val norskAdresse: NorskAdresse? = null,
             val utenlandskAdresse: UtenlandsAdresse? = null,
+            val organisasjon: Organisasjon? = null,
         ) {
-            enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
+            enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE, ORGNR }
+            data class Organisasjon(val orgNr: String) {
+                init {
+                    require(erGyldig(orgNr)) { "Organisasjonsnummer må være ni siffer" }
+                }
+
+                companion object {
+                    private val NI_SIFFER = Regex("\\d{9}")
+                    fun erGyldig(orgNr: String): Boolean = NI_SIFFER.matches(orgNr)
+                }
+            }
+
             data class NorskAdresse(
                 val navn: Navn,
                 val postnummer: NorskPostnummer,

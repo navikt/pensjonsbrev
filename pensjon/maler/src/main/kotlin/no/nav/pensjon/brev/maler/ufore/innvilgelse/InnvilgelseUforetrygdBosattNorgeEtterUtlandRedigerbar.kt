@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.innvilgelse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.vedtakFattetDatoEllerIdag
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdBosattNorgeEtterUtlandDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdBosattNorgeEtterUtlandDto.*
@@ -28,14 +29,16 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.Month
 
 @TemplateModelHelpers
 object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUforetrygdBosattNorgeEtterUtlandDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtBosattNorgeEtterUtland.toggle
 
+    // PE_UT_04_107
     override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_NORGE_UTLAND
-    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
@@ -49,8 +52,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilga søknaden din om uføretrygd " },
+                bokmal { +"Nav har gjort en endelig beregning av uføretrygden din" },
+                nynorsk { +"Nav har gjort ein endeleg berekning av uføretrygda di" },
             )
         }
         outline {
@@ -68,16 +71,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
 
             paragraph {
                 text(
-                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                )
-                text(
-                    bokmal { +"<Eller>" },
-                    nynorsk { +"<Eller>" },
-                )
-                text(
-                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
-                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din." },
+                    bokmal { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din. " },
+                    nynorsk { +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen fører ikke til endringer i uføretrygden din. " },
                 )
             }
 
@@ -172,8 +167,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
             showIf(trygdetideosland) {
                 paragraph {
                     text(
-                        bokmal { +"Uføretrygden din har vært foreløpig beregnet etter folketrygdlovens regler. Etter EØS- avtalens regler har du rett til en alternativ beregning." },
-                        nynorsk { +"Uføretrygda di har vore førebels rekna ut etter folketrygdlova sine reglar. Etter EØS-avtalen sine reglar har du rett til ei alternativ rekning." },
+                        bokmal { +"Uføretrygden din har vært foreløpig beregnet etter folketrygdlovens regler. Etter EØS- avtalens regler har du rett til en alternativ beregning. " },
+                        nynorsk { +"Uføretrygda di har vore førebels rekna ut etter folketrygdlova sine reglar. Etter EØS-avtalen sine reglar har du rett til ei alternativ rekning. " },
                     )
                     text(
                         bokmal { +"Vi har sammenlignet hvor mye du får i uføretrygd beregnet både etter folketrygdlovens regler og EØS-avtalens regler. Du får den beregningen som er mest gunstig for deg. Uføretrygden din er derfor beregnet etter reglene i folketrygdloven." },
@@ -226,8 +221,8 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
             }
             paragraph {
                 text(
-                    bokmal { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra " + fritekst("utenlandsk trygdemyndighet") + "." },
-                    nynorsk { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra " + fritekst("utenlandsk trygdemyndighet") + "." },
+                    bokmal { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». " },
+                    nynorsk { +"Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». " },
                 )
             }
 
@@ -266,21 +261,47 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
                 }
             }
                 .orShowIf((uforegrad.equalTo(100) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().equalTo(0))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er bunnfradraget ditt." },
-                            nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_bunnfradrag_faktisk().format() + ". Dette er botnfrådraget ditt." },
-                        )
+                    ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { virkningstidspunkt ->
+                        paragraph {
+                            text(
+                                bokmal { +"Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet vil du kunne tjene 1 G uten å bli redusert. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
+                                nynorsk { +"Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet vil du kunne tene 1 G utan å bli redusert. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
+                            )
+                            showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                                text(
+                                    bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                    nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                )
+                            }.orShow {
+                                text(
+                                    bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                    nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                )
+                            }
+                        }
                     }
                 }
 
             //IF(  (FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) < 100  AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) > 0)  OR  (FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt ) > 0 AND  FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) = 100) ) THEN      INCLUDE ENDIF
             showIf((((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).lessThan(100) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).greaterThan(0)) or ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()).greaterThan(0) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).equalTo(100)))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Bunnfradraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Botnfrådraget ditt blir derfor " + pe.ut_bunnfradrag_faktisk().format() + "." },
-                    )
+                ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { virkningstidspunkt ->
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet øker dette beløpet til 1 G. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
+                            nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet aukar dette beløpet til 1 G. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
+                        )
+                        showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                            text(
+                                bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                                nynorsk { +"Neste år er dette " + pe.ut_bunnfradrag_faktisk().format() + ". " },
+                            )
+                        }
+                    }
                 }
             }
             paragraph {

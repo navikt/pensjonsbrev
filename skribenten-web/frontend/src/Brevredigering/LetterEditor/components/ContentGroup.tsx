@@ -664,6 +664,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         const pasteMetadata = getPasteMetadata(event.clipboardData);
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
+          spraak: editorState.info.spraak,
           enhetsId: editorState.info.avsenderEnhet.enhetNr,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
@@ -683,6 +684,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           const pasteMetadata = getPasteMetadata(event.clipboardData);
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,
+            spraak: editorState.info.spraak,
             enhetsId: editorState.info.avsenderEnhet.enhetNr,
             antallTegn: pasteLength,
             merEnn200: pasteLength > 200,

@@ -62,7 +62,7 @@ class SendBrevMetrikkTest : BrevredigeringHandlerTestBase() {
             .counter()?.count() ?: 0.0
 
     private fun handlerMed(maalinger: Maalinger) =
-        SendBrevHandler(brevtilgang, brevService, brevmalService, maalinger.metrikker)
+        SendBrevHandler(brevtilgang, brevService, brevmalService, maalinger.metrikker, samhandlerService)
 
     private suspend fun sendKlartBrev(
         maalinger: Maalinger,

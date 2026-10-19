@@ -52,7 +52,7 @@ object Constants {
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
         const val KLAGE_URL = "${Constants.KLAGE_URL}/en"
         const val KONTONUMMER_URL = "${Constants.KONTONUMMER_URL}/en"
-        const val KONTAKT_URL = "${Constants.KONTAKT_URL}/en"
+        const val KONTAKT_URL = "${Constants.NAV_URL}/contact"
         const val SKRIVTILOSS_URL = "${Constants.SKRIVTILOSS_URL}/en"
         const val UTBETALING_INFO = "${Constants.Utland.UTBETALING_INFO}/en"
         const val UTBETALINGSDATOER_URL = "${Constants.UTBETALINGSDATOER_URL}/en"

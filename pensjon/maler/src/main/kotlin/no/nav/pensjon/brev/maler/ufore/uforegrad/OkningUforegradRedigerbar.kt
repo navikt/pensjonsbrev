@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.uforegrad
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.vedtakFattetDatoEllerIdag
 import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
@@ -827,23 +828,23 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             showIf(!pesysData.harVTA) {
                 paragraph {
                     text(
-                        bokmal { +"Når uføregraden øker, vil du få ny venteperiode på 2 år med et fribeløp på 0,4 G, før fribeløpet igjen vil øke til 1 G. Neste år kan du ha en årlig inntekt på 0,4 G" },
-                        nynorsk { +"Når uføregraden aukar, vil du få ny venteperiode på 2 år med eit fribeløp på 0,4 G, før fribeløpet igjen vil auke til 1 G. Neste år kan du ha ei årleg inntekt på 0,4 G" },
+                        bokmal { +"Fra " + virkningstidpunkt.format() + " vil du få en ny venteperiode på 2 år med et fribeløp på 40 prosent av folketrygdens grunnbeløp (G), før fribeløpet igjen vil øke til 1 G. Fribeløpet kan du tjene" },
+                        nynorsk { +"Frå " + virkningstidpunkt.format() + " vil du få ein ny venteperiode på 2 år med eit fribeløp på 40 prosent av folketrygdens grunnbeløp (G), før fribeløpet igjen vil auke til 1 G. Fribeløpet kan du tene" },
                     )
                     showIf(uforegradFraBeregning.notEqualTo(100)) {
                         text(
-                            bokmal { +", i tillegg til oppjustert inntekt etter uførhet," },
-                            nynorsk { +", i tillegg til oppjustert inntekt etter uførleik," },
+                            bokmal { +" i tillegg til oppjustert inntekt etter uførhet," },
+                            nynorsk { +" i tillegg til oppjustert inntekt etter uførleik," },
                         )
                     }
                     text(
-                        bokmal { +" uten at uføretrygden din blir redusert. " },
-                        nynorsk { +" utan at uføretrygda di blir redusert. " },
+                        bokmal { +" uten at uføretrygden din blir redusert. Dette heter bunnfradrag. " },
+                        nynorsk { +" utan at uføretrygda di blir redusert. Dette heiter botnfrådrag. " },
                     )
-                    showIf(virkningstidpunkt.month.notEqualTo(Month.DECEMBER.value)) {
+                    showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
                         text(
-                            bokmal { +"Ut inneværende kalenderår beholder du det nåværende bunnfradraget ditt, som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
-                            nynorsk { +"Ut inneverande kalenderår beheld du det noverande botnfrådraget ditt, som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
+                            bokmal { +"Selv om fribeløpet endrer seg beholder du det nåværende bunnfradraget ditt ut inneværende kalenderår. Det nåværende bunnfradraget ditt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
+                            nynorsk { +"Sjølv om fribeløpet endrar seg, beheld du det noverande botnfrådraget ditt ut inneverande kalenderår. Det noverande botnfrådraget ditt er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().format() + ". " },
                         )
                     }.orShow {
                         text(

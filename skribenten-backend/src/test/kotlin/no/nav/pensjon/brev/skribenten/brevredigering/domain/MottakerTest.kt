@@ -43,6 +43,7 @@ class MottakerTest {
             Mottaker.new(brevredigering.id.value) {
                 type = MottakerType.SAMHANDLER
                 tssId = TssId("12345")
+                adresse = lagSamhandlerAdresse("12345")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
@@ -59,16 +60,31 @@ class MottakerTest {
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = TssId("12345")
+                    adresse = lagSamhandlerAdresse("12345")
                     manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
                 Mottaker.new(brevredigering.id.value) {
                     type = MottakerType.SAMHANDLER
                     tssId = TssId("123456")
+                    adresse = lagSamhandlerAdresse("123456")
                     manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
             }
         }
     }
+
+    private fun lagSamhandlerAdresse(tssId: String): Mottaker.Adresse = Mottaker.Adresse(
+        type = MottakerType.SAMHANDLER,
+        tssId = TssId(tssId),
+        navn = null,
+        postnummer = null,
+        poststed = null,
+        adresselinje1 = null,
+        adresselinje2 = null,
+        adresselinje3 = null,
+        landkode = null,
+        manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+    )
 
     @Test
     fun `kan endre mottaker gjennom brevredigering`() {
@@ -77,6 +93,7 @@ class MottakerTest {
             Mottaker.new(brevredigeringId) {
                 type = MottakerType.SAMHANDLER
                 tssId = TssId("12345")
+                adresse = lagSamhandlerAdresse("12345")
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
@@ -117,7 +134,7 @@ class MottakerTest {
                     attesterendeSaksbehandlerNavn = "i",
                     navAvsenderEnhet = "j",
                 ),
-                emptySet(),
+                emptyList(),
             ),
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             vedtaksId = null,

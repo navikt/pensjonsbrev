@@ -5,6 +5,8 @@ import no.nav.pensjon.brev.alder.maler.felles.*
 import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseFelles
 import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
@@ -383,5 +385,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
         }
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon, pesysData.maanedligPensjonFoerSkattAlderspensjonDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlderDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.opplysningerBruktIBeregningenAlderAP2025Dto)
     }
 }

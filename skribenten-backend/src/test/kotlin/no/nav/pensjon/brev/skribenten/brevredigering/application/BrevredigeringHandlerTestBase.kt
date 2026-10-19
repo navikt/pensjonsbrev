@@ -198,7 +198,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val metrikkRegistry = SimpleMeterRegistry()
     protected val metrikkScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     protected val sendtBrevMetrikker by lazy { SendtBrevMetrikker(samhandlerService, metrikkRegistry, metrikkScope) }
-    protected val sendBrevHandler by lazy { SendBrevHandler(brevtilgang, brevService, brevmalService, sendtBrevMetrikker) }
+    protected val sendBrevHandler by lazy { SendBrevHandler(brevtilgang, brevService, brevmalService, sendtBrevMetrikker, samhandlerService) }
     protected val slettBrevHandler by lazy { SlettBrevHandler(brevtilgang, slettBrevPolicy) }
 
     companion object Fixtures {
