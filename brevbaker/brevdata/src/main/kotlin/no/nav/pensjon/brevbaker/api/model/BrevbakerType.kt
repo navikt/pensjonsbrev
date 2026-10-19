@@ -14,16 +14,34 @@ object BrevbakerType {
     @JvmInline
     value class Telefonnummer(val value: String) {
         override fun toString() = value
+
+        init {
+            require(value.length <= 32) {
+                "Telefonnummer må være mindre enn eller lik 32 tegn, var ${value.length}"
+            }
+        }
     }
 
     @JvmInline
     value class Pid(val value: String) {
         override fun toString() = value
+
+        init {
+            require(value.length <= 32) {
+                "Pid må være mindre enn eller lik 32 tegn, var ${value.length}"
+            }
+        }
     }
 
     @JvmInline
     value class Foedselsnummer(val value: String) {
         override fun toString() = value
+
+        init {
+            require(value.length <= 32) {
+                "Foedselsnummer må være mindre enn eller lik 32 tegn, var ${value.length}"
+            }
+        }
     }
 
     @JvmInline
@@ -55,6 +73,7 @@ object BrevbakerType {
     value class VedleggId(val id: String) {
         init {
             require(id.isNotBlank()) { "VedleggId kan ikke være blank" }
+            require(id.length <= 128) { "VedleggId må være mindre enn eller lik 128 tegn, var ${id.length}" }
         }
     }
 
