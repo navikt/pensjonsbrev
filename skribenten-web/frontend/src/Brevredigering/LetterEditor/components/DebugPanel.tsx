@@ -13,6 +13,8 @@ import { type AnyBlock, type Content, type Item, TITLE_INDEX } from "~/types/bre
 
 const MIN_HEIGHT = 40;
 const RESIZE_STEP = 16;
+// Slightly longer than Aksel's 250ms ExpansionCard/Accordion transitions.
+const FOCUS_SCROLL_SETTLE_MS = 400;
 
 export default function DebugPanel() {
   const { freeze, editorState } = useEditor();
@@ -94,19 +96,37 @@ export default function DebugPanel() {
 
   useEffect(() => {
     const tree = document.querySelector<HTMLElement>(".debug-panel-tree");
-    const target = tree?.querySelector<HTMLElement>("[data-debug-focus-target]");
-    if (!tree || !target) return;
+    if (!tree) return;
 
-    const treeRect = tree.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
-    const visibleTop = treeRect.top + tree.clientTop;
-    const visibleBottom = visibleTop + tree.clientHeight;
+    const scrollToFocusTarget = () => {
+      const target = tree.querySelector<HTMLElement>("[data-debug-focus-target]");
+      if (!target) return;
 
-    if (targetRect.top < visibleTop) {
-      tree.scrollTop -= visibleTop - targetRect.top;
-    } else if (targetRect.bottom > visibleBottom) {
-      tree.scrollTop += targetRect.bottom - visibleBottom;
-    }
+      const treeRect = tree.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const visibleTop = treeRect.top + tree.clientTop;
+      const visibleBottom = visibleTop + tree.clientHeight;
+
+      if (targetRect.top < visibleTop) {
+        tree.scrollTop -= visibleTop - targetRect.top;
+      } else if (targetRect.bottom > visibleBottom) {
+        tree.scrollTop += targetRect.bottom - visibleBottom;
+      }
+    };
+
+    scrollToFocusTarget();
+
+    // Aksel animates expanding/collapsing cards, so the target only reaches its final position once those transitions end.
+    tree.addEventListener("transitionend", scrollToFocusTarget);
+    const stopFollowing = setTimeout(() => {
+      tree.removeEventListener("transitionend", scrollToFocusTarget);
+      scrollToFocusTarget();
+    }, FOCUS_SCROLL_SETTLE_MS);
+
+    return () => {
+      clearTimeout(stopFollowing);
+      tree.removeEventListener("transitionend", scrollToFocusTarget);
+    };
   }, [editorState.focus]);
 
   useEffect(() => {

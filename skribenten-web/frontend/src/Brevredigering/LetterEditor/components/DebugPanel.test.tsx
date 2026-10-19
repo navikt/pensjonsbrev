@@ -104,6 +104,46 @@ describe("DebugPanel focused entry", () => {
     expect(tree.parentElement).toBe(panel);
   });
 
+  test("re-scrolls to the focused entry when expand/collapse transitions settle", () => {
+    vi.useFakeTimers();
+    try {
+      const editorState = createEditorState();
+      const { container, rerenderWithEditorState } = renderDebugPanel({
+        ...editorState,
+        focus: { ...editorState.focus, blockIndex: 0, contentIndex: 0 },
+      });
+      const tree = container.querySelector<HTMLElement>(".debug-panel-tree")!;
+
+      let targetTop = 120;
+      Object.defineProperty(tree, "clientHeight", { configurable: true, value: 100 });
+      vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+        if (this === tree) return new DOMRect(0, 0, 200, 100);
+        if (this.hasAttribute("data-debug-focus-target")) return new DOMRect(0, targetTop, 200, 20);
+        return new DOMRect(0, 0, 200, 20);
+      });
+
+      rerenderWithEditorState({
+        ...editorState,
+        focus: { ...editorState.focus, blockIndex: 0, contentIndex: 1 },
+      });
+      expect(tree.scrollTop).toBe(40);
+
+      targetTop = 200;
+      fireEvent.transitionEnd(tree);
+      expect(tree.scrollTop).toBe(160);
+
+      targetTop = 130;
+      vi.advanceTimersByTime(400);
+      expect(tree.scrollTop).toBe(210);
+
+      targetTop = 300;
+      fireEvent.transitionEnd(tree);
+      expect(tree.scrollTop).toBe(210);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   test("targets the focused literal inside the selected list item", () => {
     const editorState = letter(
       paragraph([
