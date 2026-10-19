@@ -5,11 +5,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.*
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.exstreamFunctions.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entallSelector
 import no.nav.pensjon.brev.maler.FeatureToggles.*
 import no.nav.pensjon.brev.model.Brevkategori.*
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate

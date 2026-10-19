@@ -82,19 +82,12 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
                     +fritekst("dato") + "."
                 })
             }
-            paragraph {
-                text(bokmal {
-                    +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over "
-                    +fritekst("Nav saksbehandlingsenhet") + " vedtak av "
-                    +fritekst("vedtaksdato") + "."
-                })
-            }
 
             title1 { text(bokmal { +"Behandlingstid" }) }
             paragraph {
                 text(bokmal {
                     +"Det påklagede vedtaket er et foreløpig vedtak. "
-                    +"Klagen din gjelder spørsmål som vi ikke kan ta stilling til før vi har fått nødvendig informasjon fra utlandet. "
+                    +"Klagen din gjelder spørsmål som vi ikke kan ta stilling til før vi har fått nødvendig informasjon. "
                     +"Når vi har mottatt denne informasjonen vil vi se på saken din på nytt. "
                     +"Du vil få beskjed fra oss om resultatet i saken når det er klart."
                 })
