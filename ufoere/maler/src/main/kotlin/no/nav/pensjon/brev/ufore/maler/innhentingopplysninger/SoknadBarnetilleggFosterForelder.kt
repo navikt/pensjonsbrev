@@ -50,7 +50,7 @@ object SoknadBarnetilleggFosterForelder : RedigerbarTemplate<EmptyRedigerbarBrev
                 text(bokmal { +"Arbeidsgodtgjørelsen skattlegges som lønn og anses som personinntekt. Det er personinntekt etter skatteloven § 12-2 som har betydning for reduksjon av barnetillegg på grunn av inntekt etter folketrygdloven § 12-16. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
+                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL}. Dersom du sender opplysningene med posten, må de sendes inn sammen med vedlagt forside til oppgitt adresse på forsidearket snarest mulig. " })
             }
             paragraph {
                 text(bokmal { +"Vi ber om at du sender opplysningene til oss innen " + fritekst("dato") + ". " })
