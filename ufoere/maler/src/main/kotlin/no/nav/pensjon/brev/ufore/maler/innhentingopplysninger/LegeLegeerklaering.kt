@@ -46,7 +46,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet Nav 08-07.08. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen " + fritekst("X uker (se felles rutine for innhenting av helseopplysninger; 3 uker for erklæringer som ikke krever egen undersøkelse av pasienten, 6 uker for erklæringer som krever slik undersøkelse). ") + "Erklæringen sendes til skanning med vedlagte førsteside, eller elektronisk. " })
+                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen " + fritekst("X uker. ") + "Erklæringen sendes til skanning med vedlagte førsteside, eller elektronisk. " })
             }
             paragraph {
                 text(bokmal { +"Erklæringen godgjøres etter honorartakst L40. " })
