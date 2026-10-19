@@ -1,14 +1,12 @@
 package no.nav.pensjon.brev.skribenten.common
 
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
-import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.services.LeaderService
-import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.isNull
 import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
-import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -89,18 +87,10 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
     }
 }
 
-fun JobConfig.slettKladder() {
-    logger.info("Sletter uredigerte kladd 99033 fra da pensjonskalkulator brukte saksbehandlervalg som workaround")
-    transaction {
-        BrevredigeringTable.deleteWhere { BrevredigeringTable.id eq BrevId(99033) and BrevredigeringTable.sistReservert.isNull() }
-    }
-    logger.info("Ferdig med sletting av kladder")
-}
-
 fun JobConfig.updateBrevredigeringJson() {
     val alleBrevIder = transaction {
         BrevredigeringTable.select(BrevredigeringTable.id)
-            .where { BrevredigeringTable.saksbehandlerValgKryptert.isNull() }.map { it[BrevredigeringTable.id] }
+            .where { BrevredigeringTable.saksbehandlerValg.isNull() }.map { it[BrevredigeringTable.id] }
     }
     val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
     var antallOppdaterte = 0
@@ -108,7 +98,11 @@ fun JobConfig.updateBrevredigeringJson() {
     alleBrevIder.forEach { brevId ->
         transaction {
             val rad = BrevredigeringTable
-                .select(BrevredigeringTable.sistReservert, BrevredigeringTable.saksbehandlerValg)
+                .select(
+                    BrevredigeringTable.sistReservert,
+                    BrevredigeringTable.redigertBrevKryptert,
+                    BrevredigeringTable.redigertBrevKryptertHash
+                )
                 .where { BrevredigeringTable.id eq brevId }
                 .forUpdate(ForUpdateOption.ForUpdate)
                 .singleOrNull() ?: return@transaction
@@ -118,7 +112,9 @@ fun JobConfig.updateBrevredigeringJson() {
             }
             logger.debug("Oppdaterer {}", brevId)
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
-                update[BrevredigeringTable.saksbehandlerValgKryptert] = rad[BrevredigeringTable.saksbehandlerValg]
+                val redigertBrev = rad[BrevredigeringTable.redigertBrevKryptert]
+                update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
+                update[BrevredigeringTable.redigertBrevKryptertHash] = Hash.read(redigertBrev)
             }
             antallOppdaterte++
         }
