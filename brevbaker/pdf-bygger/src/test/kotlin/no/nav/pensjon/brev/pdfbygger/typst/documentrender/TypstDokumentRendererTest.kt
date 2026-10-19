@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
@@ -5,6 +7,7 @@ import no.nav.brev.brevbaker.document.dsl.document
 import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
 import no.nav.brev.brevbaker.document.dsl.documentMottaker
 import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
+import no.nav.brev.brevbaker.document.dsl.documentSaksnummer
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.item
 import no.nav.brev.brevbaker.markup.dsl.itemList
@@ -31,16 +34,7 @@ class TypstDokumentRendererTest {
         return output.toString(Charsets.UTF_8)
     }
 
-    private val mottaker = documentMottaker(
-        gjelderNavn = PdfByggerTestData.gjelderNavn,
-        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
-    )
-
-    private val saksinformasjon = documentSaksinformasjon(
-        saksnummer = PdfByggerTestData.saksnummer,
-        visFooter = true,
-        mottaker = mottaker,
-    )
+    private val saksnummer = documentSaksnummer(PdfByggerTestData.saksnummer, visFooter = true)
 
     @Test
     fun `alle elementer synlige`() {
@@ -48,7 +42,9 @@ class TypstDokumentRendererTest {
             documentPDFRequest(
                 document(
                     tittel = "Mitt dokument",
-                    saksinformasjon = saksinformasjon,
+                    gjelderNavn = PdfByggerTestData.gjelderNavn,
+                    gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                    saksnummer = saksnummer,
                     dokumentDato = PdfByggerTestData.dokumentDato,
                 ) {
                     title2("Overskrift")
@@ -65,8 +61,8 @@ class TypstDokumentRendererTest {
         assertThat(typst).contains("showLogo: true")
         assertThat(typst).contains("showCaseDetails: true")
         assertThat(typst).contains("showDocumentDate: true")
-        assertThat(typst).contains("showFooter: true")
-        assertThat(typst).contains(""""${PdfByggerTestData.saksnummer}"""")
+        assertThat(typst).contains("""footerSaksnummer: "${PdfByggerTestData.saksnummer}"""")
+        assertThat(typst).contains("""    saksnummer: "${PdfByggerTestData.saksnummer}"""")
         assertThat(typst).contains("1. januar 2020")
         assertThat(typst).contains("""title1[#str("Overskrift")]""")
         assertThat(typst).contains("<endOfDocument>")
@@ -87,9 +83,9 @@ class TypstDokumentRendererTest {
         assertThat(typst).contains("showLogo: false")
         assertThat(typst).contains("showCaseDetails: false")
         assertThat(typst).contains("showDocumentDate: false")
-        assertThat(typst).contains("showFooter: false")
+        assertThat(typst).contains("footerSaksnummer: none")
         assertThat(typst).contains("gjelderNavn: none")
-        assertThat(typst).contains("saksnummer: none")
+        assertThat(typst).contains("    saksnummer: none")
         assertThat(typst).contains("dokumentDato: none")
         // Tittelen settes alltid i PDF-metadataene, selv når den ikke vises på siden.
         assertThat(typst).contains("""title: "Bare innhold"""")
@@ -112,31 +108,64 @@ class TypstDokumentRendererTest {
     }
 
     @Test
-    fun `saksinformasjon uten mottaker gir footer uten saksinformasjonsblokk`() {
+    fun `kun saksnummer gir saksinformasjon med bare saksnummer`() {
         val typst = render(
             documentPDFRequest(
                 document(
                     tittel = "Dokument",
-                    saksinformasjon = documentSaksinformasjon(
-                        saksnummer = PdfByggerTestData.saksnummer,
-                        visFooter = true,
-                    ),
+                    saksnummer = saksnummer,
                 ) { paragraph("Et avsnitt.") },
                 Markup.Spraak.BOKMAL,
             )
         )
 
-        assertThat(typst).contains("showCaseDetails: false")
-        assertThat(typst).contains("showFooter: true")
-        assertThat(typst).contains(""""${PdfByggerTestData.saksnummer}"""")
+        assertThat(typst).contains("showCaseDetails: true")
+        assertThat(typst).contains("""footerSaksnummer: "${PdfByggerTestData.saksnummer}"""")
+        assertThat(typst).contains("""    saksnummer: "${PdfByggerTestData.saksnummer}"""")
         assertThat(typst).contains("gjelderNavn: none")
+        assertThat(typst).contains("gjelderFoedselsnummer: none")
+    }
+
+    @Test
+    fun `saksinformasjon uten saksnummer gir footer uten saksnummer`() {
+        val typst = render(
+            documentPDFRequest(
+                document(
+                    tittel = "Dokument",
+                    gjelderNavn = PdfByggerTestData.gjelderNavn,
+                ) { paragraph("Et avsnitt.") },
+                Markup.Spraak.BOKMAL,
+            )
+        )
+
+        assertThat(typst).contains("showCaseDetails: true")
+        assertThat(typst).contains("footerSaksnummer: none")
+        assertThat(typst).doesNotContain("gjelderNavn: none")
+        assertThat(typst).contains("    saksnummer: none")
+    }
+
+    @Test
+    fun `saksnummer uten visFooter vises ikke i footer`() {
+        val typst = render(
+            documentPDFRequest(
+                document(
+                    tittel = "Dokument",
+                    saksnummer = documentSaksnummer(PdfByggerTestData.saksnummer),
+                ) { paragraph("Et avsnitt.") },
+                Markup.Spraak.BOKMAL,
+            )
+        )
+
+        assertThat(typst).contains("showCaseDetails: true")
+        assertThat(typst).contains("""    saksnummer: "${PdfByggerTestData.saksnummer}"""")
+        assertThat(typst).contains("footerSaksnummer: none")
     }
 
     @Test
     fun `nynorsk gir nynorske ledetekster`() {
         val typst = render(
             documentPDFRequest(
-                document(tittel = "Dokument", saksinformasjon = saksinformasjon) {
+                document(tittel = "Dokument", gjelderNavn = PdfByggerTestData.gjelderNavn, saksnummer = saksnummer) {
                     paragraph("Eit avsnitt.")
                 },
                 Markup.Spraak.NYNORSK,
@@ -145,5 +174,69 @@ class TypstDokumentRendererTest {
 
         assertThat(typst).contains("languageSettings")
         assertThat(typst).contains("showCaseDetails: true")
+    }
+
+    @Test
+    fun `legacy saksinformasjon med mottaker gir samme saksinformasjon som foer`() {
+        val typst = render(
+            documentPDFRequest(
+                document(
+                    tittel = "Dokument",
+                    saksinformasjon = documentSaksinformasjon(
+                        saksnummer = PdfByggerTestData.saksnummer,
+                        visFooter = true,
+                        mottaker = documentMottaker(
+                            gjelderNavn = PdfByggerTestData.gjelderNavn,
+                            gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                            annenMottakerNavn = "Annen Mottaker",
+                        ),
+                    ),
+                    dokumentDato = PdfByggerTestData.dokumentDato,
+                ) { paragraph("Et avsnitt.") },
+                Markup.Spraak.BOKMAL,
+            )
+        )
+
+        assertThat(typst).contains("showCaseDetails: true")
+        assertThat(typst).doesNotContain("gjelderNavn: none")
+        assertThat(typst).contains("""annenMottakerNavn: "Annen Mottaker"""")
+        assertThat(typst).doesNotContain("gjelderFoedselsnummer: none")
+        assertThat(typst).contains("""    saksnummer: "${PdfByggerTestData.saksnummer}"""")
+        assertThat(typst).contains("""footerSaksnummer: "${PdfByggerTestData.saksnummer}"""")
+    }
+
+    @Test
+    fun `legacy saksinformasjon uten mottaker viser saksnummer kun i footer`() {
+        val typst = render(
+            documentPDFRequest(
+                document(
+                    tittel = "Dokument",
+                    saksinformasjon = documentSaksinformasjon(PdfByggerTestData.saksnummer, visFooter = true),
+                    dokumentDato = PdfByggerTestData.dokumentDato,
+                ) { paragraph("Et avsnitt.") },
+                Markup.Spraak.BOKMAL,
+            )
+        )
+
+        assertThat(typst).contains("showCaseDetails: false")
+        assertThat(typst).contains("showDocumentDate: true")
+        assertThat(typst).contains("    saksnummer: none")
+        assertThat(typst).contains("""footerSaksnummer: "${PdfByggerTestData.saksnummer}"""")
+    }
+
+    @Test
+    fun `legacy saksinformasjon uten visFooter gir footer uten saksnummer`() {
+        val typst = render(
+            documentPDFRequest(
+                document(
+                    tittel = "Dokument",
+                    saksinformasjon = documentSaksinformasjon(PdfByggerTestData.saksnummer),
+                ) { paragraph("Et avsnitt.") },
+                Markup.Spraak.BOKMAL,
+            )
+        )
+
+        assertThat(typst).contains("showCaseDetails: false")
+        assertThat(typst).contains("footerSaksnummer: none")
     }
 }
