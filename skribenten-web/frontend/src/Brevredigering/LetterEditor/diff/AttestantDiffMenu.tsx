@@ -76,7 +76,7 @@ export const AttestantDiffMenu = ({
             placement="bottom-end"
           >
             <Popover.Content>
-              <VStack gap="space-4">
+              <VStack gap="space-16">
                 <BodyShort size="small">
                   <span className="attestant-diff-inserted">Slik vises ord som er lagt til manuelt</span>
                 </BodyShort>
