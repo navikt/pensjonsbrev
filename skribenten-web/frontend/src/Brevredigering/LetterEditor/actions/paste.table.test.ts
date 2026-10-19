@@ -187,4 +187,27 @@ describe("paste handler inserts TABLE", () => {
         tbl.header.colSpec[3].headerContent.text[0].editedText === "",
     ).toBe(true);
   });
+
+  it("keeps body cells wider than the <th> header row and pads the header", () => {
+    const updatedState = paste(
+      createEmptyLetterState(),
+      { blockIndex: 0, contentIndex: 0 },
+      0,
+      createClipboardWithHtml("<table><tr><th>H1</th></tr><tr><td>A</td><td>B</td><td>C</td></tr></table>"),
+    );
+    const tbl = select<Table>(updatedState, {
+      blockIndex: updatedState.focus.blockIndex,
+      contentIndex: updatedState.focus.contentIndex,
+    });
+    expect(tbl.header.colSpec.map((spec) => spec.headerContent.text.map((t) => isLiteral(t) && t.editedText))).toEqual([
+      ["H1"],
+      [""],
+      [""],
+    ]);
+    expect(tbl.rows[0].cells.map((c) => c.text.map((t) => isLiteral(t) && t.editedText))).toEqual([
+      ["A"],
+      ["B"],
+      ["C"],
+    ]);
+  });
 });
