@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori.*
@@ -16,6 +17,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
@@ -42,6 +44,8 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
 
 
     ) {
+        val klageren = saksbehandlervalg("klageren", "Velg hvem som er Klageren:").enum<Klageren>()
+
         title { text(bokmal { +"Klage - " + fritekst("ytelse") + " - orientering om saksbehandlingstid" }) }
 
         outline {
@@ -63,10 +67,11 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
                 })
             }
             paragraph {
-                text(
-                    bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + fritekst("Nav saksbehandlingsenhet") + " vedtak av " + fritekst("vedtaksdato") + "." },
-                    english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + fritekst("Nav saksbehandlingsenhet") + " decision of " + fritekst("vedtaksdato") + "." }
-                )
+                text(bokmal {
+                    +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over "
+                    +fritekst("Nav saksbehandlingsenhet") + " vedtak av "
+                    +fritekst("vedtaksdato") + "."
+                })
             }
 
             title1 { text(bokmal { +"Behandlingstid" }) }
@@ -78,13 +83,21 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
                     +"Du vil få beskjed fra oss om resultatet i saken når det er klart."
                 })
             }
+
             title1 { text(bokmal { +"Meld fra om endringer" }) }
             paragraph {
-                text(
-                    bokmal { +"Vi ber om at du holder oss orientert om forhold som kan ha betydning for avgjørelsen av saken din. "
-                        +"Det kan være endringer i medisinske forhold, arbeid, inntekt, sivilstand og lignende." }
+                text(bokmal {
+                    +"Vi ber om at du holder oss orientert om forhold som kan ha betydning for avgjørelsen av saken din. "
+                    +"Det kan være endringer i medisinske forhold, arbeid, inntekt, sivilstand og lignende."
+                })
 
             }
+        }
+
+        enum class Klageren(override val displayText: String) : SaksbehandlerValgEnum {
+            BRUKER("Bruker"),
+            VERGEFULLMEKTIG("Verge/Fullmektig"),
+            ADVOKATFULLMEKTIG("Advokatfirma/Fullmektig")
         }
     }
 }
