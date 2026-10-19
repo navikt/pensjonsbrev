@@ -24,6 +24,7 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
+import { getRtfClipboardData, parseRtfClipboard } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import {
   cleansePastedText,
@@ -63,6 +64,7 @@ import {
   type TextContent,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
+import { getPasteMetadata } from "~/utils/pasteTracking";
 
 import {
   effectiveListType,
@@ -112,8 +114,8 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
 type ClipboardInsertion = { kind: "elements"; elements: TraversedElement[] } | { kind: "text"; text: string };
 
 /**
- * Picks what to insert before the letter is changed: HTML, then plain text, using the first one that
- * has something insertable at `focus`. Returns undefined if nothing can be inserted.
+ * Picks what to insert before the letter is changed: HTML, then RTF, then plain text, using the first
+ * one that has something insertable at `focus`. Returns undefined if nothing can be inserted.
  */
 function resolveClipboardInsertion(
   draft: LetterEditorState,
@@ -130,10 +132,16 @@ function resolveClipboardInsertion(
     if (fromHtml) return fromHtml;
   }
 
+  const rtf = getRtfClipboardData(clipboard);
+  if (rtf !== undefined) {
+    const fromRtf = insertable(rtfInsertion(rtf));
+    if (fromRtf) return fromRtf;
+  }
+
   if (clipboard.types.includes("text/plain")) {
     return insertable({ kind: "text", text: clipboard.getData("text/plain") });
   }
-  if (!clipboard.types.includes("text/html")) {
+  if (rtf === undefined && !clipboard.types.includes("text/html")) {
     log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
   }
   return undefined;
@@ -207,10 +215,12 @@ function insertInLetter(draft: Draft<LetterEditorState>, insertion: ClipboardIns
   }
 }
 
+/** Logs the pasted formats, their lengths and metadata, never the content: letters may contain personopplysninger. */
 export function logPastedClipboard(clipboardData: DataTransfer) {
-  log("available paste types - ", clipboardData.types);
-  log(`pasted html content - ${clipboardData.getData("text/html")}`);
-  log(`pasted plain content - ${clipboardData.getData("text/plain")}`);
+  const lengths = Object.fromEntries(
+    Array.from(clipboardData.types, (type) => [type, clipboardData.getData(type).length]),
+  );
+  log("pasted clipboard - ", { lengths, ...getPasteMetadata(clipboardData) });
 }
 
 /**
@@ -362,6 +372,29 @@ function shouldModifyExistingLiteral(
   fontType: FontType,
 ): boolean {
   return (isNew(literal) || offset > 0 || !multipartPaste) && fontType === fontTypeOf(literal);
+}
+
+/** What the RTF has to insert; undefined if nothing, so the caller can fall back to plain text. */
+function rtfInsertion(rtf: string): ClipboardInsertion | undefined {
+  const parsed = parseRtfClipboard(rtf);
+  switch (parsed.mode) {
+    case "html": {
+      return { kind: "elements", elements: parseHtmlToTraversedElements(parsed.html) };
+    }
+    case "elements": {
+      return { kind: "elements", elements: parsed.elements };
+    }
+    case "text": {
+      return { kind: "text", text: parsed.text };
+    }
+    case "empty": {
+      return undefined;
+    }
+    case "unsupported": {
+      log("unable to interpret rtf clipboard content", parsed.error);
+      return undefined;
+    }
+  }
 }
 
 /**

@@ -3977,8 +3977,16 @@ describe("LetterEditorActions.paste - a table in a list item ends the list", () 
     );
   const inItem = (itemIndex: number) => ({ blockIndex: 0, contentIndex: 0, itemIndex, itemContentIndex: 0 });
 
-  test("text before an HTML table stays in the item, and the table is not lost", () => {
-    const clipboard = { "text/html": `<p>Før</p>${htmlTable}` };
+  test.each([
+    ["HTML", { "text/html": `<p>Før</p>${htmlTable}` }],
+    [
+      "RTF",
+      {
+        "text/rtf":
+          "{\\rtf1\\ansi \\pard Før\\par\\trowd\\cellx1000\\pard\\intbl A\\cell\\row\\trowd\\cellx1000\\pard\\intbl b\\cell\\row}",
+      },
+    ],
+  ])("text before the table stays in the item, and the table is not lost (%s)", (_, clipboard) => {
     const result = Actions.paste(list(), inItem(2), 3, new MockDataTransfer(clipboard));
 
     expect(projectLetter(result)).toEqual(["• en", "• to", "• treFør", ...pastedTable]);
