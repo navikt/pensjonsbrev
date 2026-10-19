@@ -10,32 +10,39 @@ data class Document internal constructor(
     val tittel: String,
     val visTittel: Boolean,
     val visLogo: Boolean,
+    @Deprecated("Bruk gjelderNavn, gjelderPersonidentifikator, annenMottakerNavn og saksnummer")
     val saksinformasjon: DocumentSaksinformasjon?,
     val dokumentDato: LocalDate?,
     val blocks: List<Block>,
+    val gjelderNavn: String?,
+    val gjelderPersonidentifikator: Markup.Personidentifikator?,
+    val annenMottakerNavn: String?,
+    val saksnummer: DocumentSaksnummer?,
+) {
+    init {
+        @Suppress("DEPRECATION")
+        require(saksinformasjon == null || listOf(gjelderNavn, gjelderPersonidentifikator, annenMottakerNavn, saksnummer).all { it == null }) {
+            "saksinformasjon kan ikke kombineres med gjelderNavn, gjelderPersonidentifikator, annenMottakerNavn eller saksnummer"
+        }
+    }
+}
+
+@ConsistentCopyVisibility
+data class DocumentSaksnummer internal constructor(
+    val saksnummer: Markup.Saksnummer,
+    val visFooter: Boolean,
 )
 
-/**
- * Saksinformasjonen som er knyttet til et [Document].
- *
- * Strukturen er laget slik at valgene ikke kan settes uten dataene de trenger: [visFooter] krever
- * saksnummer, som alltid er med her, og saksinformasjonsblokken øverst i dokumentet vises kun når
- * [mottaker] er satt.
- */
+@Deprecated("Bruk DocumentSaksnummer og feltene direkte på Document")
 @ConsistentCopyVisibility
 data class DocumentSaksinformasjon internal constructor(
     val saksnummer: Markup.Saksnummer,
     val visFooter: Boolean,
+    @Suppress("DEPRECATION")
     val mottaker: DocumentMottaker?,
 )
 
-/**
- * Mottakeropplysningene som vises i saksinformasjonsblokken øverst i et [Document].
- *
- * Tilsvarer `Saksinformasjon` for brev, men uten saksnummer og dokumentdato: saksnummeret ligger i
- * [DocumentSaksinformasjon], og datoen er et eget element som kan vises uavhengig av
- * saksinformasjonen.
- */
+@Deprecated("Bruk gjelderNavn, gjelderPersonidentifikator og annenMottakerNavn direkte på Document")
 @ConsistentCopyVisibility
 data class DocumentMottaker internal constructor(
     val gjelderNavn: String,

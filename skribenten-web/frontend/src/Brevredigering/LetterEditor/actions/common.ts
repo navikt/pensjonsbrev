@@ -1184,6 +1184,10 @@ export function collectFritekstLiterals(letter: EditedDocument): LiteralValue[] 
   return collectAllLiteralValues(letter).filter((literal) => isFritekst(literal));
 }
 
+export const isUneditedFritekst = (literal: LiteralValue): boolean =>
+  isFritekst(literal) &&
+  (literal.editedText === null || literal.editedText === undefined || literal.editedText === literal.text);
+
 export const countUneditedFritekstPlaceholders = (letter: EditedDocument): number => {
   return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;
 };
