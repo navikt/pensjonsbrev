@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import DebugPanel from "~/Brevredigering/LetterEditor/components/DebugPanel";
@@ -7,6 +7,12 @@ import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
+
+const { getSelectionFocusMock } = vi.hoisted(() => ({ getSelectionFocusMock: vi.fn() }));
+vi.mock("~/Brevredigering/LetterEditor/services/caretUtils", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("~/Brevredigering/LetterEditor/services/caretUtils")>()),
+  getSelectionFocus: getSelectionFocusMock,
+}));
 
 const initialHeight = Math.round(globalThis.innerHeight * 0.3);
 const minimumHeight = 40;
@@ -72,6 +78,35 @@ describe("DebugPanel resize handle", () => {
     fireEvent.pointerDown(handle, { pointerId: 1, clientY: 200 });
     fireEvent.pointerMove(document.defaultView!, { pointerId: 1, clientY: -1000 });
     expect(handle.getAttribute("aria-valuenow")).toBe(String(maximumHeight));
+  });
+});
+
+describe("DebugPanel selection", () => {
+  test("shows selection metadata only while there is a selection", () => {
+    const root = document.createElement("div");
+    root.setAttribute("data-editor-root", "");
+    document.body.append(root);
+    try {
+      const { container } = renderDebugPanel();
+      expect(container.querySelector("[data-debug-selection]")).toBeNull();
+
+      getSelectionFocusMock.mockReturnValue({
+        start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 1, cursorPosition: 2 },
+      });
+      act(() => {
+        document.dispatchEvent(new Event("selectionchange"));
+      });
+      expect(container.querySelector("[data-debug-selection]")).not.toBeNull();
+
+      getSelectionFocusMock.mockReturnValue(undefined);
+      act(() => {
+        document.dispatchEvent(new Event("selectionchange"));
+      });
+      expect(container.querySelector("[data-debug-selection]")).toBeNull();
+    } finally {
+      root.remove();
+    }
   });
 });
 

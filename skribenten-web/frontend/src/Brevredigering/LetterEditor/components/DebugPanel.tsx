@@ -90,8 +90,7 @@ export default function DebugPanel() {
 
   const selectionChangeListener = () => {
     const root = document.querySelector<HTMLElement>("[data-editor-root]");
-    const mapped = root ? getSelectionFocus(root) : undefined;
-    if (mapped) setMappedSelection(mapped);
+    setMappedSelection(root ? (getSelectionFocus(root) ?? null) : null);
   };
 
   useEffect(() => {
@@ -220,20 +219,18 @@ export default function DebugPanel() {
             tabIndex={0}
           />
           <VStack data-debug-panel-stats flexShrink="0" padding="space-16">
-            <HStack gap="space-16">
-              {mappedSelection ? (
-                <VStack>
-                  <HStack gap="space-16">
-                    SELECTION &lt;:
-                    <FocusInfo focus={mappedSelection.start} />
-                  </HStack>
-                  <HStack gap="space-16">
-                    SELECTION &gt;:
-                    <FocusInfo focus={mappedSelection.end} />
-                  </HStack>
-                </VStack>
-              ) : null}
-            </HStack>
+            {mappedSelection && (
+              <VStack data-debug-selection>
+                <HStack gap="space-16">
+                  SELECTION &lt;:
+                  <FocusInfo focus={mappedSelection.start} />
+                </HStack>
+                <HStack gap="space-16">
+                  SELECTION &gt;:
+                  <FocusInfo focus={mappedSelection.end} />
+                </HStack>
+              </VStack>
+            )}
             <HStack gap="space-16">
               FOCUS:
               <FocusInfo focus={editorState.focus} />
