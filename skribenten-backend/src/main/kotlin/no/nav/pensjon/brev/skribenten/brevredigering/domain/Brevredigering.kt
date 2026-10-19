@@ -64,6 +64,7 @@ interface Brevredigering {
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
     val vedleggHash: Hash<VedleggSnapshot>
     val leggVedFoersteside: Boolean?
+    val brevmalHash: StableHash?
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -124,6 +125,9 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistReservert by BrevredigeringTable.sistReservert
         private set
     override var journalpostId by BrevredigeringTable.journalpostId
+        private set
+
+    override var brevmalHash by BrevredigeringTable.brevmalHash
         private set
 
     override var leggVedFoersteside by BrevredigeringTable.leggVedFoersteside
