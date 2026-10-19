@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDto
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_URL
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -87,7 +88,7 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                 }
             }
             paragraph {
-                text(bokmal { +"Du må sende dokumentasjonen til oss enten digitalt via selvbetjeningsløsningen på Nav.no, eller i posten. Sender du skjemaet i posten, må du legge ved forsidearket som vi har lagt ved i dette brevet. Adressen er oppgitt på forsidearket." })
+                text(bokmal { +"Du må sende dokumentasjonen til oss enten digitalt via selvbetjeningsløsningen på $NAV_URL, eller i posten. Sender du skjemaet i posten, må du legge ved forsidearket som vi har lagt ved i dette brevet. Adressen er oppgitt på forsidearket." })
             }
             paragraph {
                 text(bokmal { +"Ved tap av delvis inntektsevne, gis det en gradert ytelse som svarer til den del av inntektsevnen/arbeidsevnen som er tapt. " })
