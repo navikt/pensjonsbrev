@@ -19,7 +19,7 @@ data class LetterMarkupWithDataUsageImpl(
     override val markup: LetterMarkup,
     override val letterDataUsage: Set<LetterMarkupWithDataUsage.Property>,
     override val brevtype: LetterMetadata.Brevtype,
-    override val stableHashCode: StableHashCode,
+    override val stableHashCode: StableHashCode?,
 ) : LetterMarkupWithDataUsage {
 
     @InterneDataklasser

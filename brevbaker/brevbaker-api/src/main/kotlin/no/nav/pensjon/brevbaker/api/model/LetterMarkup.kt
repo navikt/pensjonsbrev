@@ -9,7 +9,7 @@ interface LetterMarkupWithDataUsage {
     val markup: LetterMarkup
     val letterDataUsage: Set<Property>
     val brevtype: LetterMetadata.Brevtype
-    val stableHashCode: StableHashCode
+    val stableHashCode: StableHashCode?
 
     interface Property {
         val typeName: String

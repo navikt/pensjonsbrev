@@ -194,7 +194,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
-            brevmalHash: StableHashCode,
+            brevmalHash: StableHashCode?,
             distribusjonstype: Distribusjon = Distribusjon.SENTRALPRINT,
         ): BrevredigeringEntity = new {
             this.saksId = saksId

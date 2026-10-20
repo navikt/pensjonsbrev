@@ -38,6 +38,8 @@ class OppdaterBrevHandler(
 
             val pesysdata = brevdataService.hentBrevdata(brev)
             val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
+            // TODO: Her skal vi sjekke om vi skal oppdatere
+            rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
             brev.mergeRendretBrev(rendretBrev.markup)
             brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
