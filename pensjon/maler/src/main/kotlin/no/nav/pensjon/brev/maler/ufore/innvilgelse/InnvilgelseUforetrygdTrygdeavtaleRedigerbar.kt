@@ -5,10 +5,10 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.vedtakFattetDatoEllerIdag
 import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdTrygdeavtaleDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.pesysData
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.pesysData.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUf
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -36,7 +35,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
+object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretrygdTrygdeavtaleDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtInnvilgelseTrygdeavtale.toggle
 
@@ -167,8 +166,8 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
                 paragraph {
                     text (
-                        bokmal { + "Dette forskuddet er beregnet etter reglene i EØS-avtalen, på bakgrunn av trygdetid i Norge og trygdetid i andre EØS-land. Vi utbetaler dette forskuddet fram til vi har mottatt alle nødvendige opplysninger fra utlandet og kan foreta en endelig beregning av uføretrygden din. Beløpet kan bli det samme eller det kan bli endret når det endelige vedtaket er klart. Da får du samtidig informasjon om eventuell ytelse fra utlandet. " },
-                        nynorsk { + "Dette forskotet er rekna ut etter reglane i EØS-avtalen, på bakgrunn av trygdetid i Noreg og trygdetid i andre EØS-land. Vi utbetaler dette forskotet fram til vi har fått alle nødvendige opplysningar frå utlandet og kan gjere ei endeleg rekning av uføretrygda di. Beløpet kan bli det same eller det kan bli endra når det endelege vedtaket er klart. Då får du samtidig informasjon om eventuell ytelse frå utlandet. " },
+                        bokmal { + "Dette forskuddet er beregnet etter reglene i EØS-avtalen, på bakgrunn av trygdetid i Norge og trygdetid i andre EØS-land. Vi utbetaler dette forskuddet fram til vi har mottatt alle nødvendige opplysninger fra utlandet og kan foreta en endelig beregning av uføretrygden din. Beløpet du får utbetalt kan bli det samme eller det kan bli endret når det endelige vedtaket er klart. Da får du samtidig informasjon om eventuell ytelse fra utlandet. " },
+                        nynorsk { + "Dette forskotet er rekna ut etter reglane i EØS-avtalen, på bakgrunn av trygdetid i Noreg og trygdetid i andre EØS-land. Vi utbetaler dette forskotet fram til vi har fått alle nødvendige opplysningar frå utlandet og kan gjere ei endeleg rekning av uføretrygda di. Beløpet du får utbetalt kan bli det same eller det kan bli endra når det endelege vedtaket er klart. Då får du samtidig informasjon om eventuell ytelse frå utlandet. " },
                     )
                 }
             }
@@ -274,7 +273,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             }
             paragraph {
                 text(
-                    bokmal { +"Etter bestemmelsene i EØS-avtalen / trygdeavtale med " + fritekst("land") + ", kan vi gi unntak fra folketrygdlovens vilkår om medlemskap ved å legge sammen trygdetid i Norge og trygdetid i andre land. Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har fastsatt basert påetter sin nasjonale lovgivning. " },
+                    bokmal { +"Etter bestemmelsene i EØS-avtalen / trygdeavtale med " + fritekst("land") + ", kan vi gi unntak fra folketrygdlovens vilkår om medlemskap ved å legge sammen trygdetid i Norge og trygdetid i andre land. Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har fastsatt basert på sin nasjonale lovgivning. " },
                     nynorsk { +"Etter bestemmelsane i EØS-avtalen / trygdeavtale med " + fritekst("land") + ", kan vi gi unntak frå folketrygdlovens vilkår om medlemskap ved å leggje saman trygdetid i Noreg og trygdetid i andre land. Nav må forhalde seg til trygdetida som trygdemyndigheitene i andre land har fastsett basert på sin nasjonale lovgiving. " },
                 )
             }

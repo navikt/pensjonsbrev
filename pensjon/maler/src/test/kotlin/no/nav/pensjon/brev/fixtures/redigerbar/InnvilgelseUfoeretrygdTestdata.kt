@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.BrevLandmodell
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnDto
@@ -10,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetry
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndringDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdMellombehandlingDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdTrygdeavtaleDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
@@ -413,12 +416,12 @@ fun createOkningUforegradDto() =
     )
 
 fun createInnvilgelseUfoeretrygdTrygdeavtaleDto() =
-    InnvilgelseUfoeretrygdDto(
+    InnvilgelseUfoeretrygdTrygdeavtaleDto(
         saksbehandlerValg = lagSaksbehandlervalg(
             "barnetilleggInfo" to true,
             "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT.name,
         ),
-        pesysData = InnvilgelseUfoeretrygdDto.PesysData(
+        pesysData = InnvilgelseUfoeretrygdTrygdeavtaleDto.PesysData(
             pe = createPEgruppe10(),
             vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
@@ -469,7 +472,7 @@ fun createInnvilgelseUfoeretrygdTrygdeavtaleDto() =
                     barn = listOf(BarnDto(antallBarn = 3, fodselsdato = LocalDate.of(1992, Month.JUNE, 3)))
                 ),
             ),
-            sisteTrygdetidsgrunnlag = InnvilgelseUfoeretrygdDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
+            trygdetidsgrunnlag = listOf(InnvilgelseUfoeretrygdTrygdeavtaleDto.Trygdetidsgrunnlag(land = Landkode("NO"), fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30))),
             hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
             harVTA = false
         ),
