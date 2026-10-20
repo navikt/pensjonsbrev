@@ -112,24 +112,22 @@ class SendBrevHandler(
     }
 
     private suspend fun hentSamhandlerOrgMottaker(tssId: TssId): Pen.SendRedigerbartBrevRequest.Mottaker? {
-        return if (Features.samhandlerOrgnummer.isEnabled()) {
-            val response = samhandlerService.hentSamhandler(tssId)
-            val samhandler = response.success
+        val response = samhandlerService.hentSamhandler(tssId)
+        val samhandler = response.success
 
-            if (samhandler == null) {
-                logger.warn("Klarte ikke å hente samhandler for sending ({}). Bruker TSS_ID som mottaker.", response.failure)
-                null
-            } else {
-                samhandler.offentligId
-                    .takeIf { samhandler.idType == "ORG" && Organisasjon.erGyldig(it) }
-                    ?.let { orgNr ->
-                        Pen.SendRedigerbartBrevRequest.Mottaker(
-                            type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
-                            organisasjon = Organisasjon(orgNr),
-                        )
-                    }
-            }
-        } else null
+        return if (samhandler == null) {
+            logger.warn("Klarte ikke å hente samhandler for sending ({}). Bruker TSS_ID som mottaker.", response.failure)
+            null
+        } else {
+            samhandler.offentligId
+                .takeIf { samhandler.idType == "ORG" && Organisasjon.erGyldig(it) }
+                ?.let { orgNr ->
+                    Pen.SendRedigerbartBrevRequest.Mottaker(
+                        type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
+                        organisasjon = Organisasjon(orgNr),
+                    )
+                }
+        }
     }
 
     /**

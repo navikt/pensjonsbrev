@@ -1,18 +1,21 @@
 package no.nav.pensjon.brev.maler.ufore.barnetillegg
 
+import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.selectors.barnetilleggFellesbarn.*
 import no.nav.pensjon.brev.api.model.maler.selectors.barnetilleggSaerkullsbarn.*
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.selectors.opphoerBarnetilleggAutoDto.*
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.*
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.ektefelletilleggUtbeltalt
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.gjenlevendetilleggUtbetalt
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.harUtbetalingsgrad
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.ufore.fraser.Barnetillegg
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
-import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
@@ -21,9 +24,9 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerType.kroner.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerType.kroner.value
 
 // BrevKode: PE_UT_07_200
 @TemplateModelHelpers
@@ -79,7 +82,6 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
             )
 
             includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(ufoeretrygd.utbetaltPerMaaned.greaterThan(0)))
-            includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
             includePhrase(Vedtak.BegrunnelseOverskrift())
             includePhrase(
                 Barnetillegg.BarnHarFylt18AAR(
