@@ -88,6 +88,7 @@ interface Brevredigering {
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
+    fun settBrevmalHash(stableHashCode: StableHashCode)
 }
 
 class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredigering {
@@ -442,4 +443,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             },
             leggVedFoersteside = leggVedFoersteside
         )
+
+    override fun settBrevmalHash(stableHashCode: StableHashCode) {
+        this.brevmalHash = stableHashCode
+    }
 }
