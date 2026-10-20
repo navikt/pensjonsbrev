@@ -47,7 +47,7 @@ object AntattDod : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 text(bokmal { +"Hvis informasjonen vi har fått er feil, må du legitimere deg på et Nav-kontor eller sende inn en leveattest stemplet på norsk utenriksstasjon snarest, og senest " + fritekst("Dato") + ". Hvis vi ikke får en bekreftelse på at du lever, vil uføretrygden din opphøre etter folketrygdloven §§ 21-7 og 22-12. " },
-                    nynorsk { +"Hvis informasjonen vi har fått er feil, må du legitimere deg på eit Nav-kontor eller sende inn ei leveattest stempla på norsk utanriksstasjon snarast, og seinast " + fritekst("Dato") + ". Hvis vi ikkje får ei stadfesting på at du lever, vil uføretrygda di opphøyre etter folketrygdlova §§ 21-7 og 22-12. " })
+                    nynorsk { +"Dersom informasjonen vi har fått er feil, må du legitimere deg på eit Nav-kontor eller sende inn ein leveattest stempla på norsk utanriksstasjon snarast, og seinast " + fritekst("Dato") + ". Dersom vi ikkje får ei stadfesting på at du lever, vil uføretrygda di opphøyre etter folketrygdlova §§ 21-7 og 22-12. " })
             }
             paragraph {
                 text(bokmal { +"Hvis du som etterlatt etter " + fritekst("Navn") + " leser dette brevet, ber vi deg om å varsle norske myndigheter om dødsfallet. " },
