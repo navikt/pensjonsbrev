@@ -1,11 +1,16 @@
 package no.nav.pensjon.brev.maler.klagebrev.tekstNAY
 
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
 import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 
 
 object OversendelsesbrevTilKlageinstansTekst {
@@ -806,7 +811,9 @@ object OversendelsesbrevTilKlageinstansTekst {
     }
 
     //§ 12-17 Yrkesskade
-    object Yrkesskade : RedigerbarOutlinePhrase<LangBokmal>() {
+    data class Yrkesskade(
+        val avslag: Expression<Avslag?>
+    ) : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
             paragraph {
@@ -825,26 +832,34 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             title1 { text(bokmal { +"Vurdering av klagen" }) }
 
-            paragraph { text(bokmal { +"Fjern tekst om Avslag eller Delvis innvilget" },ITALIC) }
-
-            title1 { text(bokmal { +"Avslag" }) }
-            paragraph {
-                text(bokmal {
-                    +"I henhold til retningslinjene til folketrygdloven § 12-17 må det foretas en vurdering av om det mest sannsynlig er en årsakssammenheng mellom den godkjente yrkesskaden/ yrkessykdommen og hele eller noen deler av uførheten. "
-                    +"Dersom det mest sannsynlig ikke er noen årsakssammenheng, skal søknaden avslås."
-                })
-            }
-            title1 { text(bokmal { +"Delvis innvilget" }) }
-            paragraph {
-                text(bokmal {
-                    +"Når uførheten delvis skyldes godkjent yrkesskade/yrkessykdom og delvis skyldes annen sykdom fastsettes en særskilt uføregrad for den delen av uførheten som skyldes yrkesskade/yrkessykdom. "
-                    +"I noen tilfeller vil det ikke være mulig å fastslå om det er yrkesskadens/yrkessykdommens følger eller andre sykdommer som er den mest dominerende årsak til den totale uførheten. "
-                    +"Fordelingen vil i disse tilfellene bli 50/50. "
-                    +"Dersom yrkesskaden forverrer allerede foreliggende sykdomsforhold som alene ikke ville medført uførhet, skal det gjøres en fordeling mellom årsakene."
-                })
+            paragraph { text(bokmal { +"Fjern tekst om Avslag eller Delvis innvilget" }, ITALIC) }
+            ifNotNull(avslag) {
+                showIf(avslag.isOneOf(Avslag.Avslag)) {
+                    title1 { text(bokmal { +"Avslag" }) }
+                    paragraph {
+                        text(bokmal {
+                            +"I henhold til retningslinjene til folketrygdloven § 12-17 må det foretas en vurdering av om det mest sannsynlig er en årsakssammenheng mellom den godkjente yrkesskaden/ yrkessykdommen og hele eller noen deler av uførheten. "
+                            +"Dersom det mest sannsynlig ikke er noen årsakssammenheng, skal søknaden avslås."
+                        })
+                    }
+                }.orShow {
+                    title1 { text(bokmal { +"Delvis innvilget" }) }
+                    paragraph {
+                        text(bokmal {
+                            +"Når uførheten delvis skyldes godkjent yrkesskade/yrkessykdom og delvis skyldes annen sykdom fastsettes en særskilt uføregrad for den delen av uførheten som skyldes yrkesskade/yrkessykdom. "
+                            +"I noen tilfeller vil det ikke være mulig å fastslå om det er yrkesskadens/yrkessykdommens følger eller andre sykdommer som er den mest dominerende årsak til den totale uførheten. "
+                            +"Fordelingen vil i disse tilfellene bli 50/50. "
+                            +"Dersom yrkesskaden forverrer allerede foreliggende sykdomsforhold som alene ikke ville medført uførhet, skal det gjøres en fordeling mellom årsakene."
+                        })
+                    }
+                }
             }
 
             includePhrase(KlippInnFraVedtak)
+        }
+        enum class Avslag(override val displayText: String) : SaksbehandlerValgEnum {
+            Avslag("Avslag"),
+            DelvisAvslag("Delvis avslag"),
         }
     }
 

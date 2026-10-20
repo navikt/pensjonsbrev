@@ -14,8 +14,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Paragraf.Oversittetklagefrist
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst
+import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Yrkesskade.Avslag
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -47,6 +49,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
     ) {
 
         val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
+        val avslag = saksbehandlervalg("avslag", "Avslag").enum<Avslag>()
 
         title { text(bokmal { +"Oversendelse til $NAV_KLAGEINSTANS - Uføretrygd" }) }
 
@@ -141,7 +144,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             }.orShowIf(paragraf.isOneOf(Paragraf.ReduksjonAvBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.ReduksjonAvBarnetillegg)
             }.orShowIf(paragraf.isOneOf(Paragraf.Yrkesskade)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade)
+                includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade(avslag))
             }.orShowIf(paragraf.isOneOf(Paragraf.Oppholdsinstitusjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OppholdIinstitusjon)
             }.orShowIf(paragraf.isOneOf(Paragraf.Straffegjennomfoering)) {
