@@ -39,12 +39,15 @@ class OppdaterBrevHandler(
 
             val pesysdata = brevdataService.hentBrevdata(brev)
             val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-            val endretHash = (rendretBrev.stableHashCode != brev.brevmalHash)
+            val originalBrevmalHash = brev.brevmalHash
+            val endretHash = (rendretBrev.stableHashCode != originalBrevmalHash)
             rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
-            if (brev.brevmalHash == null || !endretHash || !Features.isEnabled(Features.sjekkFoerOppdaterKladd)) {
+            if (originalBrevmalHash == null || !endretHash || !Features.isEnabled(Features.sjekkFoerOppdaterKladd)) {
                 // TODO: Fjern brevmalHash-null-sjekken i if-klausulen når vi har definert det på alle kladder
                 brev.mergeRendretBrev(rendretBrev.markup)
                 brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+            } else {
+                brev.oppdaterVariabler(rendretBrev.markup)
             }
 
             success(brev.tilDto(rendretBrev.letterDataUsage))

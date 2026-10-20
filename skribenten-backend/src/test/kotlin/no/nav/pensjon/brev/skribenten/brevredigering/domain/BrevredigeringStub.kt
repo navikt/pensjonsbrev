@@ -66,4 +66,5 @@ open class BrevredigeringStub : Brevredigering {
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
     override fun settBrevmalHash(stableHashCode: StableHashCode) = notYetStubbed()
+    override fun oppdaterVariabler(rendretBrev: LetterMarkup) = notYetStubbed()
 }

@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.letter.updateSakspartOgSignatur
+import no.nav.pensjon.brev.skribenten.letter.updateVariables
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
@@ -89,6 +90,7 @@ interface Brevredigering {
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
     fun settBrevmalHash(stableHashCode: StableHashCode)
+    fun oppdaterVariabler(rendretBrev: LetterMarkup)
 }
 
 class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredigering {
@@ -274,6 +276,11 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
         redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
+        settRendretBrev(rendretBrev)
+    }
+
+    override fun oppdaterVariabler(rendretBrev: LetterMarkup) {
+        redigertBrev = redigertBrev.updateVariables(rendretBrev)
         settRendretBrev(rendretBrev)
     }
 
