@@ -243,6 +243,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 // forklaringberegningGjtKap9_148_01
                 showIf(
                     pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+                    and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt
                 ) {
                     paragraph {
                         text(
@@ -251,7 +252,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             english { + "You receive a survivor’s supplement in the retirement pension because you have pension rights after " + pesysData.avdod.navn + "." }
                         )
                     }
-                    showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt) {
+
                         // nyBeregningAPØkning_001
                         paragraph {
                             text(
@@ -275,7 +276,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 english { + "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself." }
                             )
                         }
-                    }
 
                     // forklaringberegningGjtKap19_148_10
                     showIf(
