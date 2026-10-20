@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.vir
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdTrygdeavtaleDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.trygdetidsgrunnlag.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
@@ -57,6 +58,11 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
         val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
         val flytterTilNorge = saksbehandlervalg("flytterTilNorge", "Bruker flytter til Norge").bool()
         val flytterTilbakeTilNorge = saksbehandlervalg("flytterTilbakeTilNorge", "Bruker flytter tilbake til Norge").bool()
+        val paragraf_12_2_forste_ledd = saksbehandlervalg("paragraf_12_2_forste_ledd", "§12-2 første ledd").bool()
+        val paragraf_12_2_andre_ledd_a = saksbehandlervalg("paragraf_12_2_andre_ledd_a", "§12-2 andre ledd a)").bool()
+        val paragraf_12_2_andre_ledd_b = saksbehandlervalg("paragraf_12_2_andre_ledd_b", "§12-2 andre ledd b)").bool()
+        val paragraf_12_2_tredje_ledd = saksbehandlervalg("paragraf_12_2_tredje_ledd", "§12-2 tredje ledd").bool()
+        val hjemmelTredjelandsborger = saksbehandlervalg("hjemmelTredjelandsborger", "Hjemmel tredjelandsborger og Nordisk konvensjon").bool()
 
 
         val pe = pesysData.pe
@@ -278,11 +284,34 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 )
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Dette er trygdetiden din før uføretidspunktet: " },
-                    nynorsk { +"Dette er trygdetida di før uføretidspunktet: " },
-                )
+            showIf(pesysData.trygdetidsgrunnlag.isNotEmpty()) {
+                paragraph {
+                    text(
+                        bokmal { +"Dette er trygdetiden din før uføretidspunktet: " },
+                        nynorsk { +"Dette er trygdetida di før uføretidspunktet: " },
+                    )
+                    table(
+                        header = {
+                            column {
+                                text(bokmal { +"Land" }, nynorsk { +"Land" })
+                            }
+                            column {
+                                text(bokmal { +"Fra og med" }, nynorsk { +"Frå og med" })
+                            }
+                            column {
+                                text(bokmal { +"Til og med" }, nynorsk { +"Til og med" })
+                            }
+                        }
+                    ) {
+                        forEach(pesysData.trygdetidsgrunnlag) { trygdetid ->
+                            row {
+                                cell { eval(trygdetid.land.format()) }
+                                cell { eval(trygdetid.fom.format()) }
+                                cell { eval(trygdetid.tom.format()) }
+                            }
+                        }
+                    }
+                }
             }
             paragraph {
                 text(
@@ -291,6 +320,38 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 )
             }
 
+            showIf(paragraf_12_2_forste_ledd) {
+                paragraph {
+                    text(
+                        bokmal { + "Du har sammenhengende trygdetid i Norge og utlandet i de siste fem årene fram til uføretidspunktet, og fyller hovedregelen om forutgående medlemskap gjennom sammenlegging. " },
+                        nynorsk { + "Du har samanhengande trygdetid i Noreg og utlandet i dei siste fem åra fram til uføretidspunktet, og fyller hovudregelen om førehandsgodkjent medlemskap gjennom samanslåing. " },
+                    )
+                }
+            }.orShowIf(paragraf_12_2_andre_ledd_a) {
+                paragraph {
+                    text(
+                        bokmal { + "Du har ikke sammenhengende trygdetid i Norge og utlandet de siste fem årene fram til uføretidspunktet, og fyller fortsatt ikke hovedregelen om forutgående medlemskap. Du fyller imidlertid en unntaksregel om medlemskap gjennom sammenlegging, fordi du ble ufør før fylte 26 år, og trygdemyndighetene i utlandet bekrefter at du på uføretidspunktet i " + fritekst("måned og år") + " tilhørte deres trygdeordning. " },
+                        nynorsk { + "Du har ikkje samanhengande trygdetid i Noreg og utlandet dei siste fem åra fram til uføretidspunktet, og fyller framleis ikkje hovudregelen om førehandsgodkjent medlemskap. Du fyller likevel ei unntaksregel om medlemskap gjennom samanslåing, fordi du vart ufør før fylte 26 år, og trygdemyndigheitene i utlandet stadfestar at du på uføretidspunktet i " + fritekst("månad og år") + " høyrde til deira trygdeordning. " },
+                    )
+                }
+            }.orShowIf(paragraf_12_2_andre_ledd_b) {
+                paragraph {
+                    text(
+                        bokmal { + "Du har ikke sammenhengende trygdetid i Norge og utlandet de siste fem årene fram til uføretidspunktet, og fyller fortsatt ikke hovedregelen om forutgående medlemskap. Du fyller imidlertid en unntaksregel om medlemskap gjennom sammenlegging, fordi når vi legger sammen alle periodene med trygdetid i Norge og utlandet, har du mindre enn fem år uten medlemskap etter fylte 16 år. " },
+                        nynorsk { + "Du har ikkje samanhengande trygdetid i Noreg og utlandet dei siste fem åra fram til uføretidspunktet, og fyller framleis ikkje hovudregelen om førehandsgodkjent medlemskap. Du fyller likevel ei unntaksregel om medlemskap gjennom samanslåing, fordi når vi legg saman alle periodane med trygdetid i Noreg og utlandet, har du mindre enn fem år utan medlemskap etter fylte 16 år. " },
+                    )
+                }
+            }.orShowIf(paragraf_12_2_tredje_ledd) {
+                paragraph {
+                    text(
+                        bokmal { + "Du har ikke sammenhengende trygdetid i Norge og utlandet de siste fem årene fram til uføretidspunktet, og fyller fortsatt ikke hovedregelen om forutgående medlemskap. Du fyller imidlertid en unntaksregel om medlemskap gjennom sammenlegging, fordi du har en opptjening i Norge og i utlandet før du ble ufør som " + fritekst("til sammen svarer til minst halvparten av full minsteytelse/utgjør minst 20 års trygdetid. Du har 19 år og X måneder med trygdetid, noe som rundes opp til 20 år.") },
+                        nynorsk { + "Du har ikkje samanhengande trygdetid i Noreg og utlandet dei siste fem åra fram til uføretidspunktet, og fyller framleis ikkje hovudregelen om førehandsgodkjent medlemskap. Du fyller likevel ei unntaksregel om medlemskap gjennom samanslåing, fordi du har ei opptening i Noreg og i utlandet før du vart ufør som " + fritekst("til saman svarar til minst halvparten av full minsteyting/utgjer minst 20 års trygdetid. Du har 19 år og X månader med trygdetid, noko som rundast opp til 20 år.") },
+                    )
+                }
+            }
+
+
+            // TODO: Når skal klage-tekst vises?
             includePhrase(Innvilgelse.InnvilgetEtterKlage(
                 kravarsak = kravarsak,
             ))
@@ -300,6 +361,15 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                     bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(true)) + "." },
                     nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(true)) + "." },
                 )
+            }
+
+            showIf(hjemmelTredjelandsborger) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket er også gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
+                        nynorsk { +"Vedtaket er òg gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i etter forordning 883/2004 artikkel 6 og artikkel 52. " }, // TODO: Blir dette riktig nynorsk? "i henhold til" = "i etter"?
+                    )
+                }
             }
 
             includePhrase(Innvilgelse.UnntaksregelNedsattInntektsevne(
