@@ -99,13 +99,13 @@ class UpdateEditedAttachmentTest {
     @Test
     fun `deletedBlocks are filtered against blocks still present in the template`() {
         val rendered = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Beholdt"))))
-        val edited = editedAttachment(deleted = setOf(1, 2)) {
+        val edited = editedAttachment(deleted = listOf(1, 2)) {
             title1(id = 3) { literal(id = 31, text = "Egen tittel", editedText = "Egen tittel redigert") }
         }
 
         val result = edited.updateEditedAttachment(rendered)
 
-        assertEquals(setOf(1), result.deletedBlocks)
+        assertEquals(listOf(1), result.deletedBlocks)
     }
 
     @Test

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
@@ -28,6 +29,7 @@ fun createInnvilgelseUfoeretrygdDto() =
         ),
         pesysData = InnvilgelseUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
+            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
             oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
@@ -56,7 +58,7 @@ fun createInnvilgelseUfoeretrygdDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
@@ -93,6 +95,7 @@ fun createInnvilgelseUfoeretrygdUtlandDto() =
         ),
         pesysData = InnvilgelseUfoeretrygdUtlandDto.PesysData(
             pe = createPEgruppe10(),
+            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
                 ufoeretrygdPerioder = listOf(
@@ -120,7 +123,7 @@ fun createInnvilgelseUfoeretrygdUtlandDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
@@ -151,6 +154,7 @@ fun createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() =
         saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = InnvilgelseUforetrygdBosattNorgeEtterUtlandDto.PesysData(
             pe = createPEgruppe10(),
+            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
                 ufoeretrygdPerioder = listOf(
@@ -178,7 +182,7 @@ fun createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
@@ -214,6 +218,7 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
         ),
         pesysData = InnvilgelseUfoeretrygdMellombehandlingDto.PesysData(
             pe = createPEgruppe10(),
+            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
                 ufoeretrygdPerioder = listOf(
@@ -241,7 +246,7 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
@@ -274,6 +279,7 @@ fun createInnvilgelseUforetrygdMedEndringDto() =
         ),
         pesysData = InnvilgelseUforetrygdMedEndringDto.PesysData(
             pe = createPEgruppe10(),
+            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
                 ufoeretrygdPerioder = listOf(
@@ -301,7 +307,7 @@ fun createInnvilgelseUforetrygdMedEndringDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
@@ -334,6 +340,7 @@ fun createOkningUforegradDto() =
         ),
         pesysData = OkningUforegradDto.PesysData(
             pe = createPEgruppe10(),
+            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
             kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
             oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
@@ -362,7 +369,7 @@ fun createOkningUforegradDto() =
                     )
                 )
             ),
-            createDineRettigheterOgPlikterUforeDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
                 BarnetilleggUTDto(antallBarn = 2, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
@@ -398,6 +405,9 @@ fun createOkningUforegradDto() =
                 )
             ),
             harVTA = false,
-            fribelop = Kroner(5000)
+            fribelop = Kroner(5000),
+            forrigeUforegrad = 50,
+            forrigeUforetidspunkt = LocalDate.of(2025, 12, 1),
+
         ),
     )

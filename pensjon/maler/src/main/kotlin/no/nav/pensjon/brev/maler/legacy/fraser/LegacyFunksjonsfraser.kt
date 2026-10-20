@@ -62,18 +62,6 @@ object LegacyFunksjonsfraser {
         }
     }
 
-    data class PE_UT_ikke(val pe: Expression<PEgruppe10>) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
-        override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto())) {
-                text(
-                    bokmal { + "ikke " },
-                    nynorsk { + "ikkje " },
-                    english { + "not " }
-                )
-            }
-        }
-    }
-
     data class PE_UT_bruttoetterreduksjonbt_hoyere_lavere(val pe: Expression<PEgruppe10>) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
         override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(
@@ -94,6 +82,5 @@ object LegacyFunksjonsfraser {
                 )
             }
         }
-
     }
 }

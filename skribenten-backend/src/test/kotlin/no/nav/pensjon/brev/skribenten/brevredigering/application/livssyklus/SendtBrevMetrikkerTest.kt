@@ -8,6 +8,7 @@ import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.skribenten.Metrics
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
@@ -18,20 +19,23 @@ import org.junit.jupiter.api.Test
 
 class SendtBrevMetrikkerTest {
 
-    private val samhandlerService = FakeSamhandlerService(
-        navn = mapOf("80000000003" to "Samhandler uten identtype"),
-        typer = mapOf("80000123456" to "ADVO", "80000999999" to "LE"),
+    private val samhandlerService =
+        FakeSamhandlerService(
+            navn = mapOf(TssId("80000000003") to "Samhandler uten identtype"),
+        typer = mapOf(TssId("80000123456") to "ADVO", TssId("80000999999") to "LE"),
         idTyper = mapOf(
-            "80000123456" to "ORG",
-            "80000999999" to "FNR",
-            "80000000001" to "ORGNR",
-            "80000000002" to "UTOR",
+            TssId("80000123456") to "ORG",
+            TssId("80000999999") to "FNR",
+            TssId("80000000001") to "ORGNR",
+            TssId("80000000002") to "UTOR",
+            TssId("80000000004") to "ORG",
         ),
         offentligIder = mapOf(
-            "80000123456" to ORGNR,
-            "80000999999" to "12345678910",
-            "80000000001" to ANNET_ORGNR,
-            "80000000002" to "SE556036079301",
+            TssId("80000123456") to ORGNR,
+            TssId("80000999999") to "12345678910",
+            TssId("80000000001") to ANNET_ORGNR,
+            TssId("80000000002") to "SE556036079301",
+            TssId("80000000004") to "12345",
         ),
     )
 
@@ -39,7 +43,7 @@ class SendtBrevMetrikkerTest {
 
     private fun maaling(
         mottakerType: MottakerType? = null,
-        tssId: String? = null,
+        tssId: TssId? = null,
         manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil? = null,
         avsenderEnhet: String = "1234",
     ) = SendtBrevMetrikker.SendtBrevMaaling(
@@ -54,7 +58,8 @@ class SendtBrevMetrikkerTest {
     suspend fun `eksponeres i prometheus-format med alle labels`() {
         val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
-        metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
+        metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = TssId("80000123456")))
+            .join()
 
         assertThat(registry.scrape()).contains(
             """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="ORG",mottaker="SAMHANDLER",samhandler_type="ADVO"} 1.0"""
@@ -65,7 +70,8 @@ class SendtBrevMetrikkerTest {
     suspend fun `samhandlerens id havner aldri i metrikken`() {
         val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
-        metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
+        metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = TssId("80000123456")))
+            .join()
 
         assertThat(registry.scrape())
             .doesNotContain("80000123456")
@@ -97,14 +103,14 @@ class SendtBrevMetrikkerTest {
         find(SendtBrevMetrikker.orgMetricName).counters()
             .associate { it.id.getTag("org_bucket")!! to it.count() }
 
-    private suspend fun tellSamhandler(registry: MeterRegistry, tssId: String?) =
+    private suspend fun tellSamhandler(registry: MeterRegistry, tssId: TssId?) =
         metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = tssId)).join()
 
     @Test
     suspend fun `organisasjonsnummer gir id_type ORG og telles i en hash-boette`() {
         val registry = SimpleMeterRegistry()
 
-        tellSamhandler(registry, "80000123456")
+        tellSamhandler(registry, TssId("80000123456"))
 
         assertThat(registry.idTypeFor("80000123456")).isEqualTo(SendtBrevMetrikker.SamhandlerIdType.ORG.name)
         assertThat(registry.orgBoetter()).containsExactly(entry(SendtBrevMetrikker.orgBoette(ORGNR).toString(), 1.0))
@@ -114,27 +120,36 @@ class SendtBrevMetrikkerTest {
     suspend fun `foedselsnummer gir id_type FNR og telles ikke i noen boette`() {
         val registry = SimpleMeterRegistry()
 
-        tellSamhandler(registry, "80000999999")
+        tellSamhandler(registry, TssId("80000999999"))
 
         assertThat(registry.idTypeFor("80000999999")).isEqualTo(SendtBrevMetrikker.SamhandlerIdType.FNR.name)
         assertThat(registry.orgBoetter()).isEmpty()
     }
 
     @Test
-    suspend fun `ORGNR godtas paa lik linje med ORG`() {
+    suspend fun `ORGNR gir id_type ANNEN og telles ikke i boette`() {
         val registry = SimpleMeterRegistry()
 
-        tellSamhandler(registry, "80000000001")
+        tellSamhandler(registry, TssId("80000000001"))
 
-        assertThat(registry.idTypeFor("80000000001")).isEqualTo(SendtBrevMetrikker.SamhandlerIdType.ORG.name)
-        assertThat(registry.orgBoetter()).containsExactly(entry(SendtBrevMetrikker.orgBoette(ANNET_ORGNR).toString(), 1.0))
+        assertThat(registry.idTypeFor("80000000001")).isEqualTo(SendtBrevMetrikker.SamhandlerIdType.ANNEN.name)
+        assertThat(registry.orgBoetter()).isEmpty()
+    }
+
+    @Test
+    suspend fun `ORG med ugyldig organisasjonsnummer telles ikke i boette`() {
+        val registry = SimpleMeterRegistry()
+
+        tellSamhandler(registry, TssId("80000000004"))
+
+        assertThat(registry.orgBoetter()).isEmpty()
     }
 
     @Test
     suspend fun `andre identtyper gir ANNEN og telles ikke i noen boette`() {
         val registry = SimpleMeterRegistry()
 
-        tellSamhandler(registry, "80000000002")
+        tellSamhandler(registry, TssId("80000000002"))
 
         assertThat(registry.idTypeFor("80000000002")).isEqualTo(SendtBrevMetrikker.SamhandlerIdType.ANNEN.name)
         assertThat(registry.orgBoetter()).isEmpty()
@@ -144,7 +159,7 @@ class SendtBrevMetrikkerTest {
     suspend fun `samhandler uten identtype eller type gir UKJENT paa begge labelene`() {
         val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
-        tellSamhandler(registry, "80000000003")
+        tellSamhandler(registry, TssId("80000000003"))
 
         assertThat(registry.scrape()).contains(
             """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT"} 1.0"""
@@ -156,7 +171,7 @@ class SendtBrevMetrikkerTest {
     suspend fun `ukjent samhandler gir UKJENT uten boettetelling`() {
         val registry = SimpleMeterRegistry()
 
-        tellSamhandler(registry, "finnes-ikke")
+        tellSamhandler(registry, TssId("finnes-ikke"))
 
         assertThat(registry.idTypeFor("finnes-ikke")).isEqualTo(SendtBrevMetrikker.UKJENT)
         assertThat(registry.orgBoetter()).isEmpty()
@@ -176,11 +191,11 @@ class SendtBrevMetrikkerTest {
     suspend fun `feilende oppslag gir UKJENT i stedet for aa kaste`() {
         val registry = SimpleMeterRegistry()
         val feilende = object : FakeSamhandlerService() {
-            override suspend fun hentSamhandler(idTSSEkstern: String) = throw RuntimeException("TSS er nede")
+            override suspend fun hentSamhandler(idTSSEkstern: TssId) = throw RuntimeException("TSS er nede")
         }
 
         SendtBrevMetrikker(feilende, registry)
-            .tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
+            .tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = TssId("80000123456"))).join()
 
         assertThat(registry.idTypeFor("80000123456")).isEqualTo(SendtBrevMetrikker.UKJENT)
         assertThat(registry.orgBoetter()).isEmpty()
@@ -190,11 +205,11 @@ class SendtBrevMetrikkerTest {
     suspend fun `feilet oppslag er UKJENT paa begge samhandlerlabelene og ikke IKKE_RELEVANT`() {
         val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
         val feilende = object : FakeSamhandlerService() {
-            override suspend fun hentSamhandler(idTSSEkstern: String) = throw RuntimeException("TSS er nede")
+            override suspend fun hentSamhandler(idTSSEkstern: TssId) = throw RuntimeException("TSS er nede")
         }
 
         SendtBrevMetrikker(feilende, registry)
-            .tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = "80000123456")).join()
+            .tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = TssId("80000123456"))).join()
 
         assertThat(registry.scrape()).contains(
             """skribenten_brev_sendt_total{adressert_til="IKKE_RELEVANT",avsender_enhet="1234",distribusjon="SENTRALPRINT",id_type="UKJENT",mottaker="SAMHANDLER",samhandler_type="UKJENT"} 1.0"""
@@ -205,8 +220,8 @@ class SendtBrevMetrikkerTest {
     suspend fun `samme organisasjonsnummer havner alltid i samme boette`() {
         val registry = SimpleMeterRegistry()
 
-        tellSamhandler(registry, "80000123456")
-        tellSamhandler(registry, "80000123456")
+        tellSamhandler(registry, TssId("80000123456"))
+        tellSamhandler(registry, TssId("80000123456"))
 
         assertThat(registry.orgBoetter()).containsExactly(entry(SendtBrevMetrikker.orgBoette(ORGNR).toString(), 2.0))
     }

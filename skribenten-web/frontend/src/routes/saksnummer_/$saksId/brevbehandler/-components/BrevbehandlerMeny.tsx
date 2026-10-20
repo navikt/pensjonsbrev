@@ -213,6 +213,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       trackEvent("brev klar status endret", {
         brevId: response.id,
         brevkode: response.brevkode,
+        spraak: response.spraak,
         brevtype,
         klarStatus,
         erKlar: isKlar,
@@ -252,6 +253,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       trackEvent("brev distribusjonstype endret", {
         brevId: response.id,
         brevkode: response.brevkode,
+        spraak: response.spraak,
         distribusjonstype: distribusjonstype === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint",
         enhetsId,
       });

@@ -36,7 +36,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Avslag uføretrygd - 12-2 Utland",
+            displayTitle = "Avslag uføretrygd forutgående medlemskap – Trygdeavtale",
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         ),

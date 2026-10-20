@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.ufore.innvilgelse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.vedtakFattetDatoEllerIdag
+import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdUtlandDto.pesysData
@@ -276,6 +278,7 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
                 pe = pe,
                 uforegrad = uforegrad,
                 ieuInntekt = ieuInntekt,
+                vedtakFattetDatoEllerIdag = pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
                 harVTA = pesysData.harVTA
             ))
@@ -286,8 +289,6 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
                     nynorsk { + "Botnfrådraget gjeld berre for den norske uføretrygda di. Har du spørsmål om botnfrådraget i eit anna land, må du kontakte trygdestyresmaktene i det landet det gjeld." },
                 )
             }
-
-            includePhrase(Innvilgelse.MeldeFraOmInntekt)
 
             paragraph {
                 text (
@@ -327,12 +328,15 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
                 totalNettoUforeberegning = totalNettoUforeberegning,
             ))
 
-            includePhrase(Innvilgelse.Straffegjennomfoering(
-                pe = pe,
-                instoppholdType = instoppholdType,
-                ektefelletilleggInnvilget = ektefelletilleggInnvilget,
-                gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
-            ))
+            showIf(instoppholdType.equalTo("reduksjon_fo")) {
+                includePhrase(
+                    Ufoeretrygd.Straffegjennomfoering(
+                        pe = pe,
+                        ektefelletilleggInnvilget = ektefelletilleggInnvilget,
+                        gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                    )
+                )
+            }
 
             includePhrase(
                 BarnetilleggOgInntekt(
@@ -363,6 +367,7 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
             includePhrase(Innvilgelse.EtterbetalingUforetrygd(
                 pe = pe,
                 uforegrad = uforegrad,
+                virkningsdatoTidligereMnd = pesysData.vedtaksinfo.virkningsdatoTidligereMnd,
             ))
 
             showIf(refusjon){
@@ -395,7 +400,7 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
 
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
             includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))

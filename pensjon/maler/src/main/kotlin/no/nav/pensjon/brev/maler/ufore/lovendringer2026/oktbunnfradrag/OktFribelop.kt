@@ -27,13 +27,23 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object OktFribelop {
 
-    data class Outline(val data: Expression<VedtakOmOktFribelopData>) : OutlinePhrase<LangBokmalNynorsk>() {
+    data class Outline(val data: Expression<VedtakOmOktFribelopData>, val erAuto: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             paragraph {
                 text(
-                    bokmal { +"Stortinget har vedtatt en lovendring som trer i kraft fra 1. oktober 2026 med virkning fra 1. januar 2026. Lovendringen sier at fribeløpet øker fra 0,4 G til 1 G for de som har hatt uføretrygd i 2 år eller mer, uten økning i uføregraden. " },
-                    nynorsk { +"Stortinget har vedteke ei lovendring som trer i kraft frå 1. oktober 2026 med verknad frå 1. januar 2026. Lovendringa seier at fribeløpet aukar frå 0,4 G til 1 G for dei som har hatt uføretrygd i 2 år eller meir, utan auke i uføregraden. " },
+                    bokmal { +"Stortinget har vedtatt en lovendring som trer i kraft fra 1. oktober 2026 med virkning fra 1. januar 2026. Lovendringen sier at fribeløpet øker fra 0,4 G til 1 G for de som har hatt uføretrygd i 2 år eller mer" },
+                    nynorsk { +"Stortinget har vedteke ei lovendring som trer i kraft frå 1. oktober 2026 med verknad frå 1. januar 2026. Lovendringa seier at fribeløpet aukar frå 0,4 G til 1 G for dei som har hatt uføretrygd i 2 år eller meir " },
+                )
+                showIf(!erAuto) {
+                    text(
+                        bokmal { +", uten økning i uføregraden" },
+                        nynorsk { +", utan auke i uføregraden" },
+                    )
+                }
+                text(
+                    bokmal { +". " },
+                    nynorsk { +"." },
                 )
             }
             paragraph {
@@ -71,7 +81,7 @@ object OktFribelop {
                         nynorsk { +"Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal auke til 1 G. " },
                     )
                 }
-                includePhrase(FribelopPerioder(data.fribelopPerioder, data.vektetFribelop, data.bunnfradrag))
+                includePhrase(FribelopPerioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
                 showIf(not(data.normertPensjonsdatoFor2028)) {
                     paragraph {
                         text(
@@ -152,7 +162,7 @@ object OktFribelop {
         }
     }
 
-    class FribelopPerioder(private val perioder: Expression<List<FribelopPeriode>>, private val vektetFribelop: Expression<Double>, private val bunnfradrag: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
+    class FribelopPerioder(private val perioder: Expression<List<FribelopPeriode>>, private val vektetFribelop: Expression<Double>, private val vektetFribelopKr: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 table(header = {
@@ -205,8 +215,8 @@ object OktFribelop {
             }
             paragraph {
                 text(
-                    bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Gjennomsnittlig fribeløp i år blir " + vektetFribelop.format() + " G, som er " + bunnfradrag.format() + "." },
-                    nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Gjennomsnittleg fribeløp i år vert " + vektetFribelop.format() + " G, som er " + bunnfradrag.format() + "." },
+                    bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Gjennomsnittlig fribeløp i år blir " + vektetFribelop.format() + " G, som er " + vektetFribelopKr.format() + "." },
+                    nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Gjennomsnittleg fribeløp i år vert " + vektetFribelop.format() + " G, som er " + vektetFribelopKr.format() + "." },
                 )
             }
         }

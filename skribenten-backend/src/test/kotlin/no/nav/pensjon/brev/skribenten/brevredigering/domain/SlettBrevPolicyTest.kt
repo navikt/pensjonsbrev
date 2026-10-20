@@ -21,7 +21,7 @@ class SlettBrevPolicyTest {
     }
 
     private val pid = BrevbakerType.Pid("12345678910")
-    private val behandlingsnumre = listOf(Behandlingsnummer("ABC123"))
+    private val behandlingsnumre = listOf(Behandlingsnummer("A123"))
 
     private fun policyMedPersonContext(personContext: Pdl.PersonContext?) = SlettBrevPolicy(PdlServiceFake(personContext))
 

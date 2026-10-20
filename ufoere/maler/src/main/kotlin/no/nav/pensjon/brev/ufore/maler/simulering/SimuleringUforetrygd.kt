@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.simulering
 
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -8,12 +9,12 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
-import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.simulering.SimuleringUforetrygdDto
 import no.nav.pensjon.brev.ufore.api.model.maler.simulering.selectors.simuleringUforetrygdDto.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.simulering.selectors.simuleringUforetrygdData.*
@@ -29,7 +30,7 @@ object SimuleringUforetrygd : RedigerbarTemplate<SimuleringUforetrygdDto> {
     override val kode = Ufoerebrevkoder.Redigerbar.UT_S_SIMULERING
     override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper = setOf(Sakstype.UFOREP)
+    override val sakstyper: Set<ISakstype> = emptySet()
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal),
@@ -109,7 +110,7 @@ object SimuleringUforetrygd : RedigerbarTemplate<SimuleringUforetrygdDto> {
                     }
                     row {
                         cell { text(bokmal { +"Uføretidspunkt" }) }
-                        cell { text(bokmal { +pesysData.uforetidspunkt.format() }) }
+                        cell { text(bokmal { +pesysData.uforetidspunkt.formatMonthYear() }) }
                     }
                     row {
                         cell { text(bokmal { +"Uføregrad" }) }

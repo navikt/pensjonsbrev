@@ -28,7 +28,7 @@ Et brev som får journalpost, men feiler under distribusjon, telles ikke — tal
 
 | `id_type`
 | `FNR`, `ORG`, `ANNEN`, `IKKE_RELEVANT`, `UKJENT`
-| Hva samhandleren er identifisert med. `ORG` dekker både kodene `ORG` og `ORGNR`, siden vi ikke har fått bekreftet hvilken TSS bruker. `ANNEN` er alt annet (`UTOR`, `DNR`, `EOS`, `INST` …), mens `UKJENT` betyr at oppslaget feilet eller at identtypen manglet i svaret.
+| Hva samhandleren er identifisert med. `ANNEN` er alt annet (`ORGNR`, `UTOR`, `DNR`, `EOS`, `INST` …), mens `UKJENT` betyr at oppslaget feilet eller at identtypen manglet i svaret.
 
 | `adressert_til`
 | `BRUKER`, `ANNEN`, `IKKE_RELEVANT`
@@ -55,7 +55,7 @@ I stedet plasseres hvert nummer i én av 128 hash-bøtter:
 org_bucket = (de fire første bytene av SHA-256(orgnr) som usignert 32-bit) mod 128
 ----
 
-Telleren økes kun når `id_type` er `ORG`.
+Telleren økes kun når samhandleren har `id_type` satt til `ORG` og et organisasjonsnummer på ni siffer — samme krav som når organisasjonsnummeret sendes til PEN.
 Fødselsnumre bøttes bevisst ikke: en hash av et fødselsnummer regnes som en pseudonymisert personopplysning, og vi trenger den ikke.
 
 SHA-256 og ikke `String.hashCode()`: sistnevnte er svakt fordelt for numeriske strenger av lik lengde, altså nøyaktig det et organisasjonsnummer er.

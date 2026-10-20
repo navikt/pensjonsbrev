@@ -2,47 +2,17 @@ package no.nav.pensjon.brev.maler.ufore.barnetillegg
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.pe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.fraser.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.SjekkUtbetalingene
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.SkattForDegSomBorIUtlandet
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.Skattekort
-import no.nav.pensjon.brev.maler.legacy.fraser.*
-import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_personbostedsland
-import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
-import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
-import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles
-import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull
-import no.nav.pensjon.brev.maler.legacy.ut_btsbinnvilget_ikke_btfbinnvilget
-import no.nav.pensjon.brev.maler.legacy.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv
-import no.nav.pensjon.brev.maler.legacy.ut_tbu1286_del1
-import no.nav.pensjon.brev.maler.legacy.ut_virkningfomar
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbbrutto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.format
@@ -113,8 +83,12 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                     bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
                 )
             }
-            includePhrase(TBU1091_Generated)
-            includePhrase(TBU1092_Generated)
+
+            title1 {
+                text (
+                    bokmal { + "Begrunnelse for vedtaket" },
+                )
+            }
             //[TBU4065]
 
             paragraph {
@@ -262,7 +236,11 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                         text(
                             bokmal { + "Dette barnetillegget er derfor " }
                         )
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_ikke(pe))
+                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto())) {
+                            text(
+                                bokmal { + "ikke " },
+                            )
+                        }
                         text(
                             bokmal { + "redusert ut fra inntekt. " }
                         )
@@ -384,13 +362,17 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
 
             // IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))) {
-                includePhrase(TBU5007_Generated)
+                paragraph {
+                    text(
+                        bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
+                    )
+                }
             }
 
             // TBU1288
             includePhrase(TBU1288_Generated)
             // TBU1223 og TBU1224
-            includePhrase(MeldeFraOmEndringer)
+            includePhrase(MeldeFraOmEndringer())
             // TBU1100
             includePhrase(Felles.RettTilAAKlage)
             // TBU1074 og TBU1075

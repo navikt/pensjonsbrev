@@ -14,6 +14,7 @@ import io.ktor.utils.io.core.*
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
@@ -29,10 +30,10 @@ import kotlin.time.Duration
 
 interface SamhandlerService {
     suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto
-    suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto
-    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
-    suspend fun hentSamhandlerType(idTSSEkstern: String): String?
-    suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto
+    suspend fun hentSamhandler(idTSSEkstern: TssId): HentSamhandlerResponseDto
+    suspend fun hentSamhandlerNavn(idTSSEkstern: TssId): String?
+    suspend fun hentSamhandlerType(idTSSEkstern: TssId): String?
+    suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId): HentSamhandlerAdresseResponseDto
 }
 
 class SamhandlerServiceHttp(
@@ -78,7 +79,7 @@ class SamhandlerServiceHttp(
         }
     }
 
-    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
+    override suspend fun hentSamhandler(idTSSEkstern: TssId): HentSamhandlerResponseDto =
         cache.cached(
             omraade = Cacheomraade.SAMHANDLER,
             key = idTSSEkstern,
@@ -87,7 +88,7 @@ class SamhandlerServiceHttp(
             val response = samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
                 metricsRoute("api/samhandler/hentSamhandlerEnkel/{idTSSEkstern}")
                 url {
-                    appendPathSegments(idTSSEkstern)
+                    appendPathSegments(idTSSEkstern.value)
                 }
                 contentType(Json)
                 accept(Json)
@@ -101,15 +102,17 @@ class SamhandlerServiceHttp(
             }
         }
 
-    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = hentSamhandler(idTSSEkstern).success?.navn
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: TssId): String? = hentSamhandler(idTSSEkstern).success?.navn
 
-    override suspend fun hentSamhandlerType(idTSSEkstern: String): String? = hentSamhandler(idTSSEkstern).success?.samhandlerType
+    override suspend fun hentSamhandlerType(idTSSEkstern: TssId): String? =
+        hentSamhandler(idTSSEkstern).success?.samhandlerType
 
-    override suspend fun hentSamhandlerAdresse(idTSSEkstern: String) = cache.cached(Cacheomraade.SAMHANDLER_ADRESSE, idTSSEkstern) {
+    override suspend fun hentSamhandlerAdresse(idTSSEkstern: TssId) =
+        cache.cached(Cacheomraade.SAMHANDLER_ADRESSE, idTSSEkstern) {
         samhandlerProxyClient.get("/api/samhandler/hentSamhandlerPostadresse/") {
             metricsRoute("api/samhandler/hentSamhandlerPostadresse/{idTSSEkstern}")
             url {
-                appendPathSegments(idTSSEkstern)
+                appendPathSegments(idTSSEkstern.value)
             }
             contentType(Json)
             accept(Json)

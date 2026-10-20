@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -71,9 +72,9 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     nynorsk { +"Vi samanliknar inntekta di før og etter at du blei ufør for å avgjere i kor stor grad inntektsevna di er nedsett." })
             }
             paragraph {
-                text(bokmal { +"Uføretidspunktet ditt er satt til " + pesysData.uforetidspunkt.format() + ". " +
+                text(bokmal { +"Uføretidspunktet ditt er satt til " + pesysData.uforetidspunkt.formatMonthYear() + ". " +
                         "På dette tidspunktet vurderer vi at dine helseutfordringer førte til at din arbeidsevne ble varig nedsatt. " },
-                    nynorsk { +"Uføretidspunktet ditt er sett til " + pesysData.uforetidspunkt.format() + ". " +
+                    nynorsk { +"Uføretidspunktet ditt er sett til " + pesysData.uforetidspunkt.formatMonthYear() + ". " +
                         "På dette tidspunktet vurderer vi at helseutfordringane dine førte til at arbeidsevna di blei varig nedsett. " })
             }
 

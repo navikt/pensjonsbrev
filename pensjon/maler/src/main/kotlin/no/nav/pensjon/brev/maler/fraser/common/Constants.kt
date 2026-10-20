@@ -55,4 +55,5 @@ object Constants {
     const val UTBETALINGER_URL = "$NAV_URL/utbetalinger"
     const val SAKSBEHANDLINGSTID_URL = "$NAV_URL/saksbehandlingstider"
     const val NAV_KLAGEINSTANS = "Nav klageinstans"
+    const val NAV_KONTAKTSENTER = "Nav kontaktsenter"
 }
