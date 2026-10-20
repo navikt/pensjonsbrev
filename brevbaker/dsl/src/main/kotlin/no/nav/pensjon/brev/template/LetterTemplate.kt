@@ -29,7 +29,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     StableHash.of(letterDataType.qualifiedName ?: ""),
     StableHash.of(language),
     StableHash.of(outline),
-    StableHash.of(attachments.map { it.template }),
+    StableHash.of(attachments.map { StableHash.of(it.template, it.predicate, StableHash.of(it.editableId?.id ?: "")) }),
 ) {
     init {
         if (title.isEmpty()) {
