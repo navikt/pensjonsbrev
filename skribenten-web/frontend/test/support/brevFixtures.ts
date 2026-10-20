@@ -20,7 +20,7 @@ export const brevResponse = ({
   redigertBrevHash = "redigertBrevHash",
   saksbehandlerValg = {},
   valgteVedlegg = null,
-                               brevmalEndret = false,
+  brevmalEndret = false,
 }: {
   info?: BrevInfo;
   redigertBrev?: EditedLetter;
