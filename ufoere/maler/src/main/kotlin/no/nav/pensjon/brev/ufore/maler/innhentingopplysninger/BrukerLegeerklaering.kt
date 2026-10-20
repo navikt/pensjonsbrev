@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -27,7 +29,7 @@ object BrukerLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Brev til brukeren ved innhenting av medisinske opplysninger",
             distribusjonstype = VIKTIG,
@@ -36,20 +38,25 @@ object BrukerLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Innhenting av legeerklæring" })
+            text (bokmal { + "Innhenting av legeerklæring" },
+                nynorsk { + "Innhenting av legeerklæring" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi trenger din hjelp til å få helseopplysninger om deg fra din fastlege. " })
+                text(bokmal { +"Vi trenger din hjelp til å få helseopplysninger om deg fra din fastlege. " },
+                    nynorsk { +"Vi treng di hjelp til å få helseopplysningar om deg frå fastlegen din. " })
             }
             paragraph {
-                text(bokmal { +"Du har søkt om uføretrygd " + fritekst("(eller ung ufør/yrkesskadefordel)") + ". For at vi skal kunne behandle søknaden din " + fritekst("(eller vurdere din rett til ung ufør/yrkesskadefordel)") + ", trenger vi oppdaterte " + fritekst("(stryk ev. «oppdaterte»)") + " medisinske opplysninger. " })
+                text(bokmal { +"Du har søkt om uføretrygd " + fritekst("(eller ung ufør/yrkesskadefordel)") + ". For at vi skal kunne behandle søknaden din " + fritekst("(eller vurdere din rett til ung ufør/yrkesskadefordel)") + ", trenger vi oppdaterte " + fritekst("(stryk ev. «oppdaterte»)") + " medisinske opplysninger. " },
+                    nynorsk { +"Du har søkt om uføretrygd " + fritekst("(eller ung ufør/yrkesskadefordel)") + ". For at vi skal kunne behandle søknaden din " + fritekst("(eller vurdere din rett til ung ufør/yrkesskadefordel)") + ", treng vi oppdaterte " + fritekst("(stryk ev. «oppdaterte»)") + " medisinske opplysningar. " })
             }
             paragraph {
-                text(bokmal { +"Vi har flere ganger bedt fastlegen din om å sende oss " + fritekst("legeerklæring/medisinske opplysninger") + ", uten å ha fått dette. Vi ber deg derfor om å kontakte din fastlege og minne om at " + fritekst("legeerklæring/medisinske opplysninger") + " må sendes til Nav så snart som mulig. " })
+                text(bokmal { +"Vi har flere ganger bedt fastlegen din om å sende oss " + fritekst("legeerklæring/medisinske opplysninger") + ", uten å ha fått dette. Vi ber deg derfor om å kontakte din fastlege og minne om at " + fritekst("legeerklæring/medisinske opplysninger") + " må sendes til Nav så snart som mulig. " },
+                    nynorsk { +"Vi har fleire gonger bede fastlegen din om å sende oss " + fritekst("legeerklæring/medisinske opplysninger") + ", utan å ha fått dette. Vi ber deg derfor om å kontakte fastlegen din og minne om at " + fritekst("legeerklæring/medisinske opplysninger") + " må sendast til Nav så snart som mogleg. " })
             }
             paragraph {
-                text(bokmal { +"Dersom vi ikke får " + fritekst("legeerklæringen/medisinske opplysninger") + " innen to uker, vil vi behandle saken ut fra opplysningene vi har. " })
+                text(bokmal { +"Dersom vi ikke får " + fritekst("legeerklæringen/medisinske opplysninger") + " innen to uker, vil vi behandle saken ut fra opplysningene vi har. " },
+                    nynorsk { +"Dersom vi ikkje får " + fritekst("legeerklæringen/medisinske opplysninger") + " innan to veker, vil vi behandle saka ut frå opplysningane vi har. " })
             }
 
             includePhrase(Felles.MeldFraOmEndringer)

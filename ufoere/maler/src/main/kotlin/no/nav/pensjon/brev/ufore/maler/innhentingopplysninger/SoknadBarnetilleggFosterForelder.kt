@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -28,7 +30,7 @@ object SoknadBarnetilleggFosterForelder : RedigerbarTemplate<EmptyRedigerbarBrev
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Barnetillegg og fosterbarn",
             distribusjonstype = VIKTIG,
@@ -37,29 +39,37 @@ object SoknadBarnetilleggFosterForelder : RedigerbarTemplate<EmptyRedigerbarBrev
     )
     {
         title {
-            text (bokmal { + "Din søknad om barnetillegg i uføretrygd" })
+            text (bokmal { + "Din søknad om barnetillegg i uføretrygd" },
+                nynorsk { + "Din søknad om barnetillegg i uføretrygd" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Du har søkt om barnetillegg for barn som du er fosterforelder til. For at vi skal kunne vurdere og beregne barnetillegget, ber vi om at du sender inn bekreftelse på hva du får i godtgjørelse fra det offentlige. " })
+                text(bokmal { +"Du har søkt om barnetillegg for barn som du er fosterforelder til. For at vi skal kunne vurdere og beregne barnetillegget, ber vi om at du sender inn bekreftelse på hva du får i godtgjørelse fra det offentlige. " },
+                    nynorsk { +"Du har søkt om barnetillegg for barn som du er fosterforelder til. For at vi skal kunne vurdere og berekne barnetillegget, ber vi om at du sender inn bekreftelse på kva du får i godtgjersle frå det offentlege. " })
             }
             paragraph {
-                text(bokmal { +"Det kan gis fosterhjemsgodtgjørelse til personer som har fosterbarn. Fosterhjemsgodtgjørelse består av utgiftsdekning og arbeidsgodtgjørelse. " })
+                text(bokmal { +"Det kan gis fosterhjemsgodtgjørelse til personer som har fosterbarn. Fosterhjemsgodtgjørelse består av utgiftsdekning og arbeidsgodtgjørelse. " },
+                    nynorsk { +"Det kan gjevast fosterheimsgodtgjersle til personar som har fosterbarn. Fosterheimsgodtgjersle består av utgiftsdekning og arbeidsgodtgjersle. " })
             }
             paragraph {
-                text(bokmal { +"Arbeidsgodtgjørelsen skattlegges som lønn og anses som personinntekt. Det er personinntekt etter skatteloven § 12-2 som har betydning for reduksjon av barnetillegg på grunn av inntekt etter folketrygdloven § 12-16. " })
+                text(bokmal { +"Arbeidsgodtgjørelsen skattlegges som lønn og anses som personinntekt. Det er personinntekt etter skatteloven § 12-2 som har betydning for reduksjon av barnetillegg på grunn av inntekt etter folketrygdloven § 12-16. " },
+                    nynorsk { +"Arbeidsgodtgjersla skattleggast som løn og vert rekna som personinntekt. Det er personinntekt etter skattelova § 12-2 som har tyding for reduksjon av barnetillegg på grunn av inntekt etter folketrygdlova § 12-16. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
+                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " },
+                    nynorsk { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklast og raskast å ettersende digitalt. Du finn skjemaoversikta og rettleiing på nettsidene våre ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender opplysningene til oss innen " + fritekst("dato") + ". " })
+                text(bokmal { +"Vi ber om at du sender opplysningene til oss innen " + fritekst("dato") + ". " },
+                    nynorsk { +"Vi ber om at du sender opplysningane til oss innan " + fritekst("dato") + ". " })
             }
             paragraph {
-                text(bokmal { +"Hvis vi ikke får nødvendige opplysninger innen fristen, kan vi avslå søknaden på grunn av manglende opplysninger. " })
+                text(bokmal { +"Hvis vi ikke får nødvendige opplysninger innen fristen, kan vi avslå søknaden på grunn av manglende opplysninger. " },
+                    nynorsk { +"Dersom vi ikkje får nødvendige opplysningar innan fristen, kan vi avslå søknaden på grunn av manglande opplysningar. " })
             }
             paragraph {
-                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })
+                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " },
+                    nynorsk { +"I folketrygdlova § 21-3 finn du informasjon om opplysningsplikta di til Nav. " })
             }
 
             includePhrase(Felles.MeldFraOmEndringer)

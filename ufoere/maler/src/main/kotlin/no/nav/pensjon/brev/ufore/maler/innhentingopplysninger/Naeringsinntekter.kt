@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -29,7 +31,7 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhenting av opplysninger om næringsinntekter",
             distribusjonstype = VIKTIG,
@@ -40,63 +42,80 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
         val ikkeMottattInntektsskjema = saksbehandlervalg("ikkeMottattInntektsskjema", "Ikke mottatt inntektsskjema").bool()
 
         title {
-            text (bokmal { + "Vi trenger opplysninger om dine næringsinntekter " })
+            text (bokmal { + "Vi trenger opplysninger om dine næringsinntekter " },
+                nynorsk { + "Vi treng opplysningar om dine næringsinntekter " })
         }
         outline {
             paragraph {
-                text(bokmal { + fritekst("Veiledning til saksbehandler: Gjør en selvstendig vurdering av hvilken dokumentasjon og informasjon som er nødvendig for å behandle saken. Rediger malen og tilpass til det du trenger.") })
+                text(bokmal { + fritekst("Veiledning til saksbehandler: Gjør en selvstendig vurdering av hvilken dokumentasjon og informasjon som er nødvendig for å behandle saken. Rediger malen og tilpass til det du trenger.") },
+                    nynorsk { + fritekst("Veiledning til saksbehandler: Gjør en selvstendig vurdering av hvilken dokumentasjon og informasjon som er nødvendig for å behandle saken. Rediger malen og tilpass til det du trenger.") })
             }
             paragraph {
-                text(bokmal { +"Som et ledd i behandlingen av uføresaken din trenger vi bekreftede opplysninger om inntekten din. " })
+                text(bokmal { +"Som et ledd i behandlingen av uføresaken din trenger vi bekreftede opplysninger om inntekten din. " },
+                    nynorsk { +"Som eit ledd i handsaminga av uføresaka di treng vi bekrefta opplysningar om inntekta di. " })
             }
 
             showIf(ikkeMottattInntektsskjema) {
                 paragraph {
-                    text(bokmal { +"Du eier og driver " + fritekst("navn på firma") + ", og vi ber om at du fyller ut inntektsskjema for selvstendig næringsdrivende. " })
+                    text(bokmal { +"Du eier og driver " + fritekst("navn på firma") + ", og vi ber om at du fyller ut inntektsskjema for selvstendig næringsdrivende. " },
+                        nynorsk { +"Du eig og driv " + fritekst("navn på firma") + ", og vi ber om at du fyller ut inntektsskjema for sjølvstendig næringsdrivande. " })
                 }
                 paragraph {
-                    text(bokmal { +"Skjemaet finner du på nav.no/fyllut/nav120607 " })
+                    text(bokmal { +"Skjemaet finner du på nav.no/fyllut/nav120607 " },
+                        nynorsk { +"Skjemaet finn du på nav.no/fyllut/nav120607 " })
                 }
             }.orShow {
                 paragraph {
-                    text(bokmal { +"Du eier og driver " + fritekst("navn på firma") + ", og vi har derfor behov for flere opplysninger for å få vurdert din inntektsevne. " })
+                    text(bokmal { +"Du eier og driver " + fritekst("navn på firma") + ", og vi har derfor behov for flere opplysninger for å få vurdert din inntektsevne. " },
+                        nynorsk { +"Du eig og driv " + fritekst("navn på firma") + ", og vi har derfor behov for fleire opplysningar for å få vurdert inntektsevna di. " })
                 }
             }
 
             paragraph {
-                text(bokmal { +"Dersom selskapet er avsluttet, så ber vi om dokumentasjon på dette; gjerne i form av melding om sletting fra Brønnøysundregisteret. " })
+                text(bokmal { +"Dersom selskapet er avsluttet, så ber vi om dokumentasjon på dette; gjerne i form av melding om sletting fra Brønnøysundregisteret. " },
+                    nynorsk { +"Dersom selskapet er avslutta, så ber vi om dokumentasjon på dette; gjerne i form av melding om sletting frå Brønnøysundregisteret. " })
             }
             paragraph {
-                text(bokmal { +"Dersom selskapet ikke er avsluttet og slettet, så ber vi om: " })
+                text(bokmal { +"Dersom selskapet ikke er avsluttet og slettet, så ber vi om: " },
+                    nynorsk { +"Dersom selskapet ikkje er avslutta og sletta, så ber vi om: " })
                 list {
                     item {
-                        text(bokmal { + "Dine personlige selvangivelser for årene " + fritekst("fom-tom") })
+                        text(bokmal { + "Dine personlige selvangivelser for årene " + fritekst("fom-tom") },
+                            nynorsk { + "Dine personlege sjølvangivelser for åra " + fritekst("fom-tom") })
                     }
                     item {
-                        text(bokmal { + "Næringsspesifikasjon levert i Altinn/skatteetaten fra " + fritekst("år") + ", og:" })
+                        text(bokmal { + "Næringsspesifikasjon levert i Altinn/skatteetaten fra " + fritekst("år") + ", og:" },
+                            nynorsk { + "Næringsspesifikasjon levert i Altinn/skatteetaten frå " + fritekst("år") + ", og:" })
                     }
                     item {
-                        text(bokmal { + "Næringsoppgaver for årene " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") })
+                        text(bokmal { + "Næringsoppgaver for årene " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") },
+                            nynorsk { + "Næringsoppgåver for åra " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") })
                     }
                     item {
-                        text(bokmal { + "Personinntektsskjema for " + fritekst("fom-tom (Gjelder kun selvstendig næringsdrivende, og brukes ikke etter 2022)") })
+                        text(bokmal { + "Personinntektsskjema for " + fritekst("fom-tom (Gjelder kun selvstendig næringsdrivende, og brukes ikke etter 2022)") },
+                            nynorsk { + "Personinntektsskjema for " + fritekst("fom-tom (Gjelder kun sjølvstendig næringsdrivande, og brukes ikkje etter 2022)") })
                     }
                     item {
-                        text(bokmal { + "Foreløpig resultatregnskap hittil i år og forventet fremtidig pensjonsgivende inntekt" })
+                        text(bokmal { + "Foreløpig resultatregnskap hittil i år og forventet fremtidig pensjonsgivende inntekt" },
+                            nynorsk { + "Førebels resultatrekneskap hittil i år og forventa framtidig pensjonsgjevande inntekt" })
                     }
                 }
             }
             paragraph {
-                text(bokmal { +"Sender du dokumentasjonen med posten, må du legge ved en forside som du finner på ${Constants.NAV_URL}" })
+                text(bokmal { +"Sender du dokumentasjonen med posten, må du legge ved en forside som du finner på ${Constants.NAV_URL}" },
+                    nynorsk { +"Sender du dokumentasjonen med posten, må du legge ved ei forside som du finn på ${Constants.NAV_URL}" })
             }
             paragraph {
-                text(bokmal { +"Ved tap av delvis inntektsevne, gis det en gradert ytelse som svarer til den del av inntektsevnen/arbeidsevnen som er tapt. " })
+                text(bokmal { +"Ved tap av delvis inntektsevne, gis det en gradert ytelse som svarer til den del av inntektsevnen/arbeidsevnen som er tapt. " },
+                    nynorsk { +"Ved tap av delvis inntektsevne, vert det gitt ei gradert ytelse som svarer til den del av inntektsevna/arbeidsevna som er tapt. " })
             }
             paragraph {
-                text(bokmal { +"For å kunne vurdere dette må vi ha bekreftede inntektsopplysninger der det fremgår hvilken inntekt du forventer å få fremover. " })
+                text(bokmal { +"For å kunne vurdere dette må vi ha bekreftede inntektsopplysninger der det fremgår hvilken inntekt du forventer å få fremover. " },
+                    nynorsk { +"For å kunne vurdere dette må vi ha bekrefta inntektsopplysningar der det kjem fram kva inntekt du forventar å få framover. " })
             }
             paragraph {
-                text(bokmal { +"Fristen for å sende inn nødvendige opplysninger settes til " + fritekst("dato") + ". "})
+                text(bokmal { +"Fristen for å sende inn nødvendige opplysninger settes til " + fritekst("dato") + ". "},
+                    nynorsk { +"Fristen for å sende inn nødvendige opplysningar vert sett til " + fritekst("dato") + ". " })
             }
 
             includePhrase(Felles.MeldFraOmEndringer)

@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -28,7 +30,7 @@ object UtsattKlagefrist : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Utsatt klagefrist",
             distribusjonstype = VIKTIG,
@@ -37,20 +39,25 @@ object UtsattKlagefrist : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Utsatt klagefrist" })
+            text (bokmal { + "Utsatt klagefrist" },
+                nynorsk { + "Utsett klagefrist" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Du har bedt oss om utsatt klagefrist. " })
+                text(bokmal { +"Du har bedt oss om utsatt klagefrist. " },
+                    nynorsk { +"Du har bede oss om utsett klagefrist. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber deg om å sende oss en utfyllende klage og eventuell tilleggsinformasjon innen to uker. Hvis vi ikke har fått utfyllende klage innen fristen, vil vi behandle klagen ut fra de opplysningene vi har i saken. " })
+                text(bokmal { +"Vi ber deg om å sende oss en utfyllende klage og eventuell tilleggsinformasjon innen to uker. Hvis vi ikke har fått utfyllende klage innen fristen, vil vi behandle klagen ut fra de opplysningene vi har i saken. " },
+                    nynorsk { +"Vi ber deg om å sende oss ein utfyllande klage og eventuell tilleggsinformasjon innan to veker. Dersom vi ikkje har fått utfyllande klage innan fristen, vil vi behandle klagen ut frå dei opplysningane vi har i saka. " })
             }
             paragraph {
-                text(bokmal { +"Trenger du mer tid, kan du sende oss en søknad og be om ytterligere utsettelse av klagefristen. Du må gi oss en begrunnelse for hvorfor du trenger mer tid. Vi gjør da en vurdering på om vi kan gi deg utsatt frist. " })
+                text(bokmal { +"Trenger du mer tid, kan du sende oss en søknad og be om ytterligere utsettelse av klagefristen. Du må gi oss en begrunnelse for hvorfor du trenger mer tid. Vi gjør da en vurdering på om vi kan gi deg utsatt frist. " },
+                    nynorsk { +"Treng du meir tid, kan du sende oss ein søknad og be om ytterlegare utsetjing av klagefristen. Du må gje oss ei grunngjeving for kvifor du treng meir tid. Vi gjer då ei vurdering på om vi kan gje deg utsett frist. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
+                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " },
+                    nynorsk { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklast og raskast å ettersende digitalt. Du finn skjemaoversikta og rettleiing på nettsidene våre ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
             }
 
             includePhrase(Felles.HarDuSporsmal)

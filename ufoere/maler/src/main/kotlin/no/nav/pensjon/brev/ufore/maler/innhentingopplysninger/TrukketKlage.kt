@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -26,7 +28,7 @@ object TrukketKlage : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Bekreftelse på trukket klage",
             distribusjonstype = VIKTIG,
@@ -35,14 +37,17 @@ object TrukketKlage : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Bekreftelse på trukket klage" })
+            text (bokmal { + "Bekreftelse på trukket klage" },
+                nynorsk { + "Bekreftelse på trukket klage" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi viser til din klage på vedtak datert " + fritekst("dato") + "." })
+                text(bokmal { +"Vi viser til din klage på vedtak datert " + fritekst("dato") + "." },
+                    nynorsk { +"Vi viser til din klage på vedtak datert " + fritekst("dato") + "." })
             }
             paragraph {
-                text(bokmal { +"Vi har fått bekreftelse på at du trekker klagen. Vi har nå registrert klagen din som trukket i våre systemer. " })
+                text(bokmal { +"Vi har fått bekreftelse på at du trekker klagen. Vi har nå registrert klagen din som trukket i våre systemer. " },
+                    nynorsk { +"Vi har fått bekreftelse på at du trekkjer klagen. Vi har no registrert klagen din som trekt i våre system." })
             }
         }
     }
