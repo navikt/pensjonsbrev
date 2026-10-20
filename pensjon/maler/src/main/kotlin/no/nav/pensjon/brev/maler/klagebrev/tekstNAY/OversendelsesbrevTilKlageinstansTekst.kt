@@ -1,11 +1,16 @@
 package no.nav.pensjon.brev.maler.klagebrev.tekstNAY
 
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
 import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 
 
 object OversendelsesbrevTilKlageinstansTekst {
@@ -83,7 +88,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Vi viser til klagen av "
                     +fritekst("dato") + " på vedtak av "
                     +fritekst("dato") + ", der "
-                    +fritekst("beskrive kort hva avslaget gjelder/vedtaket gjelder. Eks: (...), der klager fikk avslag på sitt krav om uføretrygd")
+                    +fritekst("Beskrive kort hva avslaget gjelder/vedtaket gjelder. Eks: (...), der klager fikk avslag på sitt krav om uføretrygd.")
                     +". Klagefristen er overholdt."
                 })
             }
@@ -95,11 +100,13 @@ object OversendelsesbrevTilKlageinstansTekst {
             title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
-                    +"<Gjør rede for problemstillingen i saken. "
-                    +"Det skal komme frem hvilke lovbestemmelser som gjøres gjeldende i saken / hva sier loven. "
-                    +"Det skal skrives en begrunnelse for hvorfor klager ikke fyller vilkårene. "
-                    +"Klagers anførsler skal kommenteres / imøtegås. "
-                    +"Drøftelsen skal avsluttes med en konklusjon.>"
+                    +fritekst(
+                        "Gjør rede for problemstillingen i saken. "
+                                + "Det skal komme frem hvilke lovbestemmelser som gjøres gjeldende i saken/ hva sier loven? "
+                                + "Det skal skrives en begrunnelse for hvorfor klager ikke fyller vilkårene. "
+                                + "Klagers anførsler skal kommenteres/imøtegås. "
+                                + "Drøftelsen skal avsluttes med en konklusjon."
+                    )
                 })
             }
         }
@@ -150,9 +157,9 @@ object OversendelsesbrevTilKlageinstansTekst {
                 })
             }
             paragraph {
-                text(bokmal { +"Begrunn fastsatt uføretidspunkt / Klager har ikke påklaget fastsatt uføretidspunkt." }, ITALIC)
+                text(bokmal { +fritekst("Begrunn fastsatt uføretidspunkt / Klager har ikke påklaget fastsatt uføretidspunkt.") })
                 newline()
-                text(bokmal { +"Begrunn fastsatt tidspunkt for medlemskap." }, ITALIC)
+                text(bokmal { +fritekst("Begrunn fastsatt tidspunkt for medlemskap.") })
             }
 
             includePhrase(KlippInnFraVedtak)
@@ -195,11 +202,9 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
             paragraph {
                 text(bokmal {
-                    +"Siden klager ikke er ferdig behandlet, "
-                    +"er det for tidlig å ta stilling til om inntektsevnen kan bedres ved at klager gjennomfører "
-                })
-                text(bokmal { +"(ev. ytterligere)" }, ITALIC)
-                text(bokmal { +" arbeidsrettede tiltak." })
+                    "Siden klager ikke er ferdig behandlet, "
+                    +"er det for tidlig å ta stilling til om inntektsevnen kan bedres ved at klager gjennomfører eventuelle ytterligere arbeidsrettede tiltak."
+                }, ITALIC)
             }
 
             includePhrase(KlippInnFraVedtak)
@@ -318,13 +323,13 @@ object OversendelsesbrevTilKlageinstansTekst {
                 text(bokmal {
                     +"Uføretidspunktet skal som hovedregel fastsettes til det tidspunktet da personens inntektsevne ble varig nedsatt med minst halvparten på grunn av sykdom, skade eller lyte. "
                     +"Uføretidspunktet er fastsatt til "
-                    +fritekst("dato") + "."
+                    +fritekst("dato") + ". "
                 })
-                text(bokmal { +"Hvis uføretidspunktet er påklaget, hent mal fra § 12-8." }, ITALIC)
+                text(bokmal { +fritekst("Hvis uføretidspunktet er påklaget, hent mal fra § 12-8.") })
             }
             paragraph {
                 text(bokmal {
-                    +"Inntekt før uførhet (IFU) skal fastsettes til vedkommende sin normale inntektssituasjon før uføretidspunktet i full stilling. "
+                    +"Inntekt før uførhet (IFU) skal fastsettes til vedkommende sin normale årsinntekt i full stilling før uføretidspunktet. "
                     +"IFU er fastsatt til "
                     +fritekst("kr") + " kroner. Oppjustert til i dag utgjør dette "
                     +fritekst("kr") + " kroner."
@@ -454,7 +459,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Det skal alltid vurderes om uføregraden kan settes lavere enn 100 prosent."
                 })
             }
-            paragraph { text(bokmal { +"Inntekt før uførhet (IFU) skal fastsettes til vedkommende sin normale inntektssituasjon før uføretidspunktet i full stilling" }) }
+            paragraph { text(bokmal { +"Inntekt før uførhet (IFU) skal fastsettes til vedkommende sin normale inntektssituasjon før uføretidspunktet i full stilling." }) }
             paragraph {
                 text(bokmal {
                     +"Inntekt etter uførhet (IEU) skal fastsettes til den inntekten som vedkommende forutsetter å kunne skaffe seg ved å utnytte restinntektsevnen. "
@@ -522,9 +527,10 @@ object OversendelsesbrevTilKlageinstansTekst {
             title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
-                    +"Trygdetid regnes fra fylte 16 år, eller fra en ble medlem av folketrygden til og med året en fyller 66 år, for at det skal innvilges full uføretrygd må samlet trygdetid tilsvare 40 år. "
+                    +"Trygdetid regnes fra fylte 16 år, eller fra en ble medlem av folketrygden til og med året en fyller 66 år. "
+                    +"For at det skal innvilges full uføretrygd må samlet trygdetid tilsvare 40 år. "
                     +"Uføretrygdens størrelse skal imidlertid avkortes dersom trygdetiden er kortere enn 40 år. "
-                    +"Ved fastsettelse av trygdetid skille det mellom faktisk trygdetid som er perioden før uføretidspunktet, og fremtidig trygdetid som er fra uføretidspunktet og frem til fylte 66 år."
+                    +"Ved fastsettelse av trygdetid skilles det mellom faktisk trygdetid som er perioden før uføretidspunktet, og fremtidig trygdetid som er fra uføretidspunktet og frem til fylte 66 år."
                 })
             }
             paragraph { text(bokmal { +"Dersom mindre enn 4/5 av opptjeningstiden kan regnes som trygdetid reduseres den fremtidige trygdetiden." }) }
@@ -532,14 +538,14 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal {
                     +"I det påklagde vedtaket er klager gitt en trygdetid på "
-                    +fritekst("xxxx år") + "."
+                    +fritekst("antall") + " år ."
                     +"Dersom den fastsatte trygdetiden er mindre enn 40 år reduseres uføretrygdens størrelse. "
                     +"Det vil si at klager som har en trygdetid på "
-                    +fritekst("xxxx år") + ", vil får en uføretrygd med en uføregrad på 100 prosent som tilsvarer "
+                    +fritekst("antall") + " år, vil får en uføretrygd med en uføregrad på 100 prosent som tilsvarer "
                     +fritekst("xx/40") + "."
                 })
             }
-            paragraph { text(bokmal { +"<Ved bruk av unntaksreglene, se verktøykassen>" }, ITALIC) }
+            paragraph { text(bokmal { +fritekst("Ved bruk av unntaksreglene, se verktøykassen") }) }
 
             includePhrase(KlippInnFraVedtak)
         }
@@ -669,7 +675,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                 })
             }
             paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt etter kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
-            paragraph { text(bokmal { +"<Husk å bruke ny hjemmel § 12-14 EO - arbeidsforsøk, der det er aktuelt!>" }) }
+            paragraph { text(bokmal { +fritekst("Husk å bruke ny hjemmel § 12-14 EO - arbeidsforsøk, der det er aktuelt!") }) }
 
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
@@ -708,9 +714,10 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal {
                     +"Vi viser til klagen av "
-                    +fritekst("dato") + " på varsel/vedtak av "
+                    +fritekst("dato") + " på "
+                    +fritekst("varsel/vedtak") + " av "
                     +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
-                    +fritekst("antall kr") + " kroner for mye i barnetillegg i "
+                    +fritekst("antall") + " kroner for mye i barnetillegg i "
                     +fritekst("år") + ". Vedtaket ble iverksatt "
                     +fritekst("dato") + ". Klagefristen er overholdt."
                 })
@@ -804,7 +811,9 @@ object OversendelsesbrevTilKlageinstansTekst {
     }
 
     //§ 12-17 Yrkesskade
-    object Yrkesskade : RedigerbarOutlinePhrase<LangBokmal>() {
+    data class Yrkesskade(
+        val avslag: Expression<Avslag?>
+    ) : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
             paragraph {
@@ -822,24 +831,34 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(KlagersAnfoersler)
 
             title1 { text(bokmal { +"Vurdering av klagen" }) }
-            title1 { text(bokmal { +"Avslag" }) }
-            paragraph {
-                text(bokmal {
-                    +"I henhold til retningslinjene til folketrygdloven § 12-17 må det foretas en vurdering av om det mest sannsynlig er en årsakssammenheng mellom den godkjente yrkesskaden/ yrkessykdommen og hele eller noen deler av uførheten. "
-                    +"Dersom det mest sannsynlig ikke er noen årsakssammenheng, skal søknaden avslås."
-                })
-            }
-            title1 { text(bokmal { +"Delvis innvilget" }) }
-            paragraph {
-                text(bokmal {
-                    +"Når uførheten delvis skyldes godkjent yrkesskade/yrkessykdom og delvis skyldes annen sykdom fastsettes en særskilt uføregrad for den delen av uførheten som skyldes yrkesskade/yrkessykdom. "
-                    +"I noen tilfeller vil det ikke være mulig å fastslå om det er yrkesskadens/yrkessykdommens følger eller andre sykdommer som er den mest dominerende årsak til den totale uførheten. "
-                    +"Fordelingen vil i disse tilfellene bli 50/50. "
-                    +"Dersom yrkesskaden forverrer allerede foreliggende sykdomsforhold som alene ikke ville medført uførhet, skal det gjøres en fordeling mellom årsakene."
-                })
+
+            ifNotNull(avslag) {
+                showIf(avslag.isOneOf(Avslag.Avslag)) {
+                    title1 { text(bokmal { +"Avslag" }) }
+                    paragraph {
+                        text(bokmal {
+                            +"I henhold til retningslinjene til folketrygdloven § 12-17 må det foretas en vurdering av om det mest sannsynlig er en årsakssammenheng mellom den godkjente yrkesskaden/ yrkessykdommen og hele eller noen deler av uførheten. "
+                            +"Dersom det mest sannsynlig ikke er noen årsakssammenheng, skal søknaden avslås."
+                        })
+                    }
+                }.orShow {
+                    title1 { text(bokmal { +"Delvis innvilget" }) }
+                    paragraph {
+                        text(bokmal {
+                            +"Når uførheten delvis skyldes godkjent yrkesskade/yrkessykdom og delvis skyldes annen sykdom fastsettes en særskilt uføregrad for den delen av uførheten som skyldes yrkesskade/yrkessykdom. "
+                            +"I noen tilfeller vil det ikke være mulig å fastslå om det er yrkesskadens/yrkessykdommens følger eller andre sykdommer som er den mest dominerende årsak til den totale uførheten. "
+                            +"Fordelingen vil i disse tilfellene bli 50/50. "
+                            +"Dersom yrkesskaden forverrer allerede foreliggende sykdomsforhold som alene ikke ville medført uførhet, skal det gjøres en fordeling mellom årsakene."
+                        })
+                    }
+                }
             }
 
             includePhrase(KlippInnFraVedtak)
+        }
+        enum class Avslag(override val displayText: String) : SaksbehandlerValgEnum {
+            Avslag("Avslag"),
+            DelvisAvslag("Delvis avslag"),
         }
     }
 
@@ -1028,9 +1047,11 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
             paragraph {
                 text(bokmal {
-                    +"Begrunn fastsatt tidspunkt for medlemskap. Husk å vise til aktuelle kilder. "
-                    +"Omtal trygdetid i andre EØS-land og lovvalgsreglene hvis det bidrar til begrunnelsen."
-                }, ITALIC)
+                    +fritekst(
+                        "Begrunn fastsatt tidspunkt for medlemskap. Husk å vise til aktuelle kilder. "
+                                + "Omtal trygdetid i andre EØS-land og lovvalgsreglene hvis det bidrar til begrunnelsen."
+                    )
+                })
             }
 
             includePhrase(KlippInnFraVedtak)
@@ -1079,18 +1100,18 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
 
             title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph { text(bokmal { +"I forvaltningsloven § 31 heter det:" }) }
+            paragraph { text(bokmal { +"I forvaltningsloven § 31 heter det:" }, ITALIC) }
             paragraph { text(bokmal { +"Selv om klageren har oversittet klagefristen, kan klagen tas under behandling såframt" }, ITALIC) }
             paragraph { text(bokmal { +"a. Parten eller hans fullmektig ikke kan lastes for å ha oversittet fristen eller for å ha drøyd med klage etterpå, eller b. Det av særlige grunner er rimelig at klagen blir prøvd." }, ITALIC) }
             paragraph { text(bokmal { +"Ved vurdering av om klage bør tas opp til behandling, skal det også legges vekt på om endring av vedtaket kan medføre skade eller ulempe for andre." }, ITALIC) }
             paragraph { text(bokmal { +"Klagen kan ikke tas under behandling som klagesak dersom det er gått mer enn ett år siden vedtaket ble truffet." }, ITALIC) }
-            paragraph { text(bokmal { +"Og i forvaltningsloven § 33 andre heter det:" }) }
+            paragraph { text(bokmal { +"Og i forvaltningsloven § 33 andre heter det:" }, ITALIC) }
             paragraph {
                 text(bokmal {
                     +"Underinstansen skal foreta de undersøkelser klagen gir grunn til. "
                     +"Den kan oppheve eller endre vedtaket dersom den finner klagen begrunnet. "
                     +"Dersom vilkårene for å behandle klagen ikke foreligger, skal underinstansen avvise saken, jfr. dog § 31."
-                })
+                }, ITALIC)
             }
 
             paragraph {

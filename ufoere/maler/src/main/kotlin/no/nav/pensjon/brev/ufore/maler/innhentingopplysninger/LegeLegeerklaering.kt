@@ -51,8 +51,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     nynorsk { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførleik Nav 08-07.08. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen fire uker. Erklæringen sendes elektronisk. " },
-                    nynorsk { +"Vi ber om at du sender oss erklæringen snarast mogleg og seinast innan fire veker. Erklæringen sendes elektronisk. " })
+                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen " + fritekst("X uker. ") + "Erklæringen sendes til skanning med vedlagte førsteside, eller elektronisk. " })
             }
             paragraph {
                 text(bokmal { +"Erklæringen godgjøres etter honorartakst L40. " },
@@ -67,7 +66,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     nynorsk { +"Pålegget om utlevering av opplysningar kan påklagast etter forvaltningslova § 14. Klagegangen gjeld berre lovlegheita av pålegget. Fristen for å klage er tre dagar etter at pålegget er motteke. Klagen kan fremjast munnleg eller skriftleg. " })
             }
 
-            includePhrase(Felles.HarDuSporsmal)
+            includePhrase(Felles.HarDuSporsmalLegeBehandler)
         }
     }
 }

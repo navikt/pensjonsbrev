@@ -50,7 +50,7 @@ class BrevmalService(
         renderMarkup(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
-            saksbehandlerValg = brev.saksbehandlerValgKryptert,
+            saksbehandlerValg = brev.saksbehandlerValg,
             pesysData = pesysData,
         )
 
@@ -59,7 +59,7 @@ class BrevmalService(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
             fagsystemBrevdata = pesysData.brevdata,
-            saksbehandlervalg = brev.saksbehandlerValgKryptert.somSaksbehandlervalgIDSL(),
+            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
             felles = pesysData.felles,
         )
 
@@ -71,7 +71,7 @@ class BrevmalService(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
             fagsystemBrevdata = pesysData.brevdata,
-            saksbehandlervalg = brev.saksbehandlerValgKryptert.somSaksbehandlervalgIDSL(),
+            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
             felles = pesysData.felles,
             vedleggId = vedleggId,
         )

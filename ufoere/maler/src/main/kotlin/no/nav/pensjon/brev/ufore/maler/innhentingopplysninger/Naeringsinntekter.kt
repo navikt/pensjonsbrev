@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDto
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_URL
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -102,8 +103,7 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                 }
             }
             paragraph {
-                text(bokmal { +"Sender du dokumentasjonen med posten, må du legge ved en forside som du finner på ${Constants.NAV_URL}" },
-                    nynorsk { +"Sender du dokumentasjonen med posten, må du legge ved ei forside som du finn på ${Constants.NAV_URL}" })
+                text(bokmal { +"Du må sende dokumentasjonen til oss enten digitalt via selvbetjeningsløsningen på $NAV_URL, eller i posten. Sender du skjemaet i posten, må du legge ved forsidearket som vi har lagt ved i dette brevet. Adressen er oppgitt på forsidearket." })
             }
             paragraph {
                 text(bokmal { +"Ved tap av delvis inntektsevne, gis det en gradert ytelse som svarer til den del av inntektsevnen/arbeidsevnen som er tapt. " },
@@ -114,10 +114,11 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                     nynorsk { +"For å kunne vurdere dette må vi ha bekrefta inntektsopplysningar der det kjem fram kva inntekt du forventar å få framover. " })
             }
             paragraph {
-                text(bokmal { +"Fristen for å sende inn nødvendige opplysninger settes til " + fritekst("dato") + ". "},
-                    nynorsk { +"Fristen for å sende inn nødvendige opplysningar vert sett til " + fritekst("dato") + ". " })
+                text(bokmal { +"Fristen for å sende inn nødvendige opplysninger settes til " + fritekst("dato") + ". Kontakt oss innen denne fristen hvis du trenger lengre tid."})
             }
-
+            paragraph {
+                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })
+            }
             includePhrase(Felles.MeldFraOmEndringer)
             includePhrase(Felles.HarDuSporsmal)
         }

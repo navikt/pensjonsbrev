@@ -116,7 +116,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           wrap={false}
         >
           <Box height="24px" width="24px">
-            <PersonIcon fontSize="24px" />
+            <PersonIcon aria-hidden="true" fontSize="24px" />
           </Box>
           <BodyShort size="medium">
             {datoDel} {personnummerDel}

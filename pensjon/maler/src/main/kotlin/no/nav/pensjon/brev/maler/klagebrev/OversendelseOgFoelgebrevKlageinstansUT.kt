@@ -89,7 +89,7 @@ object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerb
             }.orShowIf(forskrift.isOneOf(ReduksjonAvBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.ReduksjonAvBarnetillegg)
             }.orShowIf(forskrift.isOneOf(Yrkesskade)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade)
+              //  includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade)
             }.orShowIf(forskrift.isOneOf(Oppholdsinstitusjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OppholdIinstitusjon)
             }.orShowIf(forskrift.isOneOf(Straffegjennomfoering)) {

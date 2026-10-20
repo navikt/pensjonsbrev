@@ -51,8 +51,10 @@ object BrukerLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     nynorsk { +"Du har søkt om uføretrygd " + fritekst("(eller ung ufør/yrkesskadefordel)") + ". For at vi skal kunne behandle søknaden din " + fritekst("(eller vurdere din rett til ung ufør/yrkesskadefordel)") + ", treng vi oppdaterte " + fritekst("(stryk ev. «oppdaterte»)") + " medisinske opplysningar. " })
             }
             paragraph {
-                text(bokmal { +"Vi har flere ganger bedt fastlegen din om å sende oss " + fritekst("legeerklæring/medisinske opplysninger") + ", uten å ha fått dette. Vi ber deg derfor om å kontakte din fastlege og minne om at " + fritekst("legeerklæring/medisinske opplysninger") + " må sendes til Nav så snart som mulig. " },
-                    nynorsk { +"Vi har fleire gonger bede fastlegen din om å sende oss " + fritekst("legeerklæring/medisinske opplysninger") + ", utan å ha fått dette. Vi ber deg derfor om å kontakte fastlegen din og minne om at " + fritekst("legeerklæring/medisinske opplysninger") + " må sendast til Nav så snart som mogleg. " })
+                text(bokmal { +"Vi har derfor sendt brev til din fastlege " + fritekst("Navn") + " der vi har bedt om å få tilsendt legeerklæring/medisinske opplysninger. Til tross for påminnelse har vi ikke hørt noe fra din lege."})
+            }
+            paragraph{
+                text(bokmal{ +"Medisinske opplysninger er nødvendig for å kunne vurdere om du fyller vilkårene for rett til uføretrygd " + fritekst("(ung ufør/yrkesskade)") + ". Vi ber deg derfor om å kontakte din lege og minne om at legeerklæring/medisinske opplysninger må sendes til Nav så snart som mulig."})
             }
             paragraph {
                 text(bokmal { +"Dersom vi ikke får " + fritekst("legeerklæringen/medisinske opplysninger") + " innen to uker, vil vi behandle saken ut fra opplysningene vi har. " },

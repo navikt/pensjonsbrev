@@ -70,8 +70,7 @@ object SoknadBarnetilleggUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     nynorsk { +"Hvis du overfører jamleg pengar for å forsørgje barnet, må vi få kopi av bankutskrift og dokumentasjon på kven du sender desse pengane til. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " },
-                    nynorsk { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklast og raskast å ettersende digitalt. Du finn skjemaoversikta og rettleiing på nettsidene våre ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
+                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL}. Dersom du sender opplysningene med posten, må de sendes inn sammen med vedlagt forside til oppgitt adresse på forsidearket snarest mulig." })
             }
             paragraph {
                 text(bokmal { +"Vi ber om at opplysningene sendes oss innen " + fritekst("dato") + ". " },
