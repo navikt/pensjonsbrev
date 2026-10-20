@@ -424,7 +424,7 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
     case ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION: {
       return (
         <span className="expression">
-          <ExprToText expr={content.expression} />
+          <TextValueExpr expr={content.expression} />
         </span>
       );
     }
@@ -1087,13 +1087,38 @@ function ExprPopover({ ariaLabel, content, children }: { ariaLabel: string; cont
   );
 }
 
+function isEmptyStringLiteral(expr: Expr): boolean {
+  return expr.exprType === ExprType.LITERAL && expr.kind === "STRING" && expr.value === "";
+}
+
+/**
+ * Eksempelverdien til et uttrykk som vises som selve brevteksten: et felt med kjent
+ * eksempelverdi, evt. med tom streng som `?:`-fallback (`felt ?: ""`). Kun i tekstposisjon -
+ * i f.eks. et predikat ville "mangler 12345678901" vært misvisende.
+ */
+function textValueExample(expr: Expr): string | null {
+  const value = expr.exprType === ExprType.NULL_COALESCE && isEmptyStringLiteral(expr.fallback) ? expr.value : expr;
+  return value.exprType === ExprType.FIELD_PATH ? (value.exampleText ?? null) : null;
+}
+
+function TextValueExpr({ expr }: { expr: Expr }) {
+  const example = textValueExample(expr);
+  if (example === null) {
+    return <ExprToText expr={expr} />;
+  }
+  return (
+    <ExprPopover ariaLabel="Vis fullt uttrykk" content={<ExprToText expr={expr} />}>
+      <span className="expr-literal">{example}</span>
+    </ExprPopover>
+  );
+}
+
 export function ExprToText({ expr }: { expr: Expr }) {
   const insidePopover = useContext(InsideExprPopoverContext);
   switch (expr.exprType) {
     case ExprType.LITERAL: {
-      // Strengliteraler vises med anførselstegn, slik at f.eks. en tom streng-fallback i
-      // `ifNull("")` fortsatt er synlig i teksten (NullCoalesce sin fallback ville ellers
-      // fremstått som et usynlig/tomt felt).
+      // Strengliteraler vises med anførselstegn, slik at f.eks. en tom streng i en sammenligning
+      // fortsatt er synlig (ellers ville den fremstått som et usynlig/tomt felt).
       if (expr.kind === "STRING") {
         return <span className="expr-literal">"{expr.value}"</span>;
       }
@@ -1224,6 +1249,10 @@ export function ExprToText({ expr }: { expr: Expr }) {
       return <ConditionalExprBlock ifElse={expr.ifElse} ifTrue={expr.ifTrue} predicate={expr.predicate} />;
     }
     case ExprType.NULL_COALESCE: {
+      // En tom streng som fallback gir ingen synlig tekst i brevet, og er kun støy i oppskriften.
+      if (isEmptyStringLiteral(expr.fallback)) {
+        return <ExprToText expr={expr.value} />;
+      }
       return (
         <span>
           <MaybeParens expr={expr.value} /> <span className="expr-operator">?:</span>{" "}

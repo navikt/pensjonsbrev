@@ -7,6 +7,7 @@ import {
   type ContentOrControlStructureV2,
   ElementTypeV2,
   type Expr,
+  type ExprFieldPath,
   ExprType,
   type OutlineContentV2,
 } from "~/api/brevbakerTypesV2";
@@ -66,8 +67,65 @@ describe("ExprToText FieldPath med Computed-base", () => {
     // Ingen prosafrase ("element nr. ... i ...") som ikke tydeliggjør grensen mellom
     // funksjonskallet og de påfølgende segmentene.
     expect(rendered).not.toContain("element nr.");
-    // Tom streng-fallback skal fortsatt være synlig (kvotert).
-    expect(rendered).toContain("&quot;&quot;");
+    // Tom streng-fallback gir ingen synlig tekst og skal ikke vises.
+    expect(rendered).not.toContain("?:");
+    expect(rendered).not.toContain("&quot;&quot;");
+  });
+
+  it("viser en ikke-tom fallback fortsatt eksplisitt", () => {
+    const expr: Expr = {
+      exprType: ExprType.NULL_COALESCE,
+      value: fieldPath("navn"),
+      fallback: { exprType: ExprType.LITERAL, value: "ukjent", kind: "STRING" },
+    };
+    expect(text(render(expr))).toContain("navn ?: &quot;ukjent&quot;");
+  });
+});
+
+describe("ExprToText eksempelverdi for tekstfelt", () => {
+  const avtaleland: Expr = {
+    exprType: ExprType.NULL_COALESCE,
+    value: { ...(fieldPath("avtaleland") as ExprFieldPath), exampleText: "Sverige" },
+    fallback: { exprType: ExprType.LITERAL, value: "", kind: "STRING" },
+  };
+
+  function paragraphText(expression: Expr): string {
+    return renderToStaticMarkup(
+      <DocumentV2
+        templateDocumentation={{
+          title: [],
+          outline: [
+            {
+              controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+              content: {
+                elementType: ElementTypeV2.PARAGRAPH,
+                paragraph: [
+                  {
+                    controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+                    content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION, expression },
+                  },
+                ],
+              },
+            },
+          ],
+          include: fieldPath("dummy"),
+          attachmentData: fieldPath("dummy"),
+        }}
+      />,
+    );
+  }
+
+  it("viser eksempelverdien i tekstposisjon, med feltstien tilgjengelig via popover", () => {
+    const html = paragraphText(avtaleland);
+    expect(buttonText(html)).toBe("Sverige");
+    expect(html).toContain('aria-label="Vis fullt uttrykk"');
+    expect(text(html)).toContain("avtaleland");
+  });
+
+  it("viser ikke eksempelverdien i et predikat", () => {
+    const html = render({ exprType: ExprType.COMPARISON, left: avtaleland, op: "EQUAL", right: fieldPath("x") });
+    expect(html).not.toContain("Sverige");
+    expect(html).not.toContain("expr-popover-trigger");
   });
 });
 
