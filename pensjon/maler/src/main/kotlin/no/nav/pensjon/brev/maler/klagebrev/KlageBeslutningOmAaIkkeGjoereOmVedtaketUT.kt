@@ -36,7 +36,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
         title {
             text(bokmal {
                 +"Beslutning om at vedtak "
-                +fritekst(+"dato") + " ikke gjøres om - vedtaket [er gyldig og] vil fortsatt gjelde for deg"
+                +fritekst("dato") + " ikke gjøres om - vedtaket [er gyldig og] vil fortsatt gjelde for deg"
             })
         }
 
@@ -55,7 +55,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
             paragraph {
                 text(bokmal {
                     +fritekst(
-                        +"Skriv en kort beskrivelse av hvorfor resultatet i den tidligere saken ble som det ble. "
+                        "Skriv en kort beskrivelse av hvorfor resultatet i den tidligere saken ble som det ble. "
                                 + "Beskriv hva som har skjedd i saken. "
                                 + "Vis til hva som er gjort i eventuelle tidligere omgjøringsvurderinger."
                     )
@@ -73,7 +73,8 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
             paragraph {
                 text(bokmal {
                     +fritekst(
-                        +"List opp det eller de viktigste argumentene i kravet. Bruk gjerne punkter med ett argument for hvert punkt."
+                        "List opp det eller de viktigste argumentene i kravet. "
+                                + "Bruk gjerne punkter med ett argument for hvert punkt."
                     )
                 })
                 list {
@@ -87,7 +88,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
             paragraph {
                 text(bokmal {
                     +fritekst(
-                        +"List opp de dokumentene som er mest relevante for vurderingen av saken (legeerklæringer, inntektsopplysninger osv.) "
+                        "List opp de dokumentene som er mest relevante for vurderingen av saken (legeerklæringer, inntektsopplysninger osv.) "
                                 + "Bruk gjerne punkter."
                     )
                 })
@@ -101,7 +102,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
             title1 { text(bokmal { +"Vurdering" }) }
             paragraph {
                 text(bokmal {
-                    +fritekst(+"De vanligste grunnene til at et vedtak kan gjøres om:")
+                    +fritekst("De vanligste grunnene til at et vedtak kan gjøres om:")
                 })
                 list {
                     item { text(bokmal { +fritekst("Saksbehandlingsfeil") }) }
@@ -109,7 +110,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
                     item { text(bokmal { +fritekst("Vedtaket skyldes feil eller manglende opplysninger.") }) }
                 }
             }
-            paragraph { text(bokmal { +fritekst(+"Ta med det som er relevant for saken.") }) }
+            paragraph { text(bokmal { +fritekst("Ta med det som er relevant for saken.") }) }
             paragraph {
                 text(bokmal {
                     +"I kravet ditt om omgjøring skriver du at vedtaket er feil fordi "
@@ -167,7 +168,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
             includePhrase(Felles.RettTilInnsynRedigerbarebrev)
 
             title1 { text(bokmal { +"Fri rettshjelp" }) }
-            paragraph{text(bokmal { +"Du kan få informasjon om fri rettshjelp hos Statsforvalteren eller advokat." }) }
+            paragraph { text(bokmal { +"Du kan få informasjon om fri rettshjelp hos Statsforvalteren eller advokat." }) }
 
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
