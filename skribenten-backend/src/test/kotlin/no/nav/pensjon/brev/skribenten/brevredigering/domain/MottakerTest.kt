@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.template.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -127,7 +128,7 @@ class MottakerTest {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             vedtaksId = null,
             timestamp = Instant.now(),
-            brevmalHash = StableHash(12234)
+            brevmalHash = StableHashCode(12234)
         )
     }
 

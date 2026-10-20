@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
 import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
+import no.nav.pensjon.brev.template.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -46,7 +47,7 @@ open class BrevredigeringStub : Brevredigering {
     override val redigerteVedlegg: List<Dto.RedigertVedlegg> get() = notYetStubbed()
     override val vedleggHash: Hash<VedleggSnapshot> get() = notYetStubbed()
     override val leggVedFoersteside: Boolean? get() = notYetStubbed()
-    override val brevmalHash: StableHash? get() = notYetStubbed()
+    override val brevmalHash: StableHashCode? get() = notYetStubbed()
 
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()

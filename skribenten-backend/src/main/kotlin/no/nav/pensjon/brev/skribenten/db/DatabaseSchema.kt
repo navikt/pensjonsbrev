@@ -3,17 +3,16 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.StableHash
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.template.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.ReferenceOption
@@ -63,7 +62,8 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val attestertAvNavIdent: Column<NavIdent?> = varchar("attestertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
     val leggVedFoersteside: Column<Boolean?> = bool("leggvedfoersteside").nullable()
-    val brevmalHash: Column<StableHash?> = integer("brevmalHash").transform(::StableHash, StableHash::value).nullable()
+    val brevmalHash: Column<StableHashCode?> =
+        integer("brevmalHash").transform(::StableHashCode, StableHashCode::value).nullable()
 }
 
 object DocumentTable : LongIdTable() {

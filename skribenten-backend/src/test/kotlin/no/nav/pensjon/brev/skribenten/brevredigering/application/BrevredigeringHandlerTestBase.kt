@@ -36,6 +36,7 @@ import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brev.template.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
@@ -602,7 +603,7 @@ abstract class BrevredigeringHandlerTestBase {
                         it,
                         emptySet(),
                         if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
-                        Random.nextInt()
+                        StableHashCode(Random.nextInt())
                     )
                 }
 

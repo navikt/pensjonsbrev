@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.letter.updateSakspartOgSignatur
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
+import no.nav.pensjon.brev.template.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -64,7 +65,7 @@ interface Brevredigering {
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
     val vedleggHash: Hash<VedleggSnapshot>
     val leggVedFoersteside: Boolean?
-    val brevmalHash: StableHash?
+    val brevmalHash: StableHashCode?
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -192,7 +193,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
-            brevmalHash: StableHash,
+            brevmalHash: StableHashCode,
             distribusjonstype: Distribusjon = Distribusjon.SENTRALPRINT,
         ): BrevredigeringEntity = new {
             this.saksId = saksId

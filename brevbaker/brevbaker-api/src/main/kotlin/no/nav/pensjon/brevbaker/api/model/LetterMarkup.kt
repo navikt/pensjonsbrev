@@ -1,6 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.Listetype
+import no.nav.pensjon.brev.template.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import java.time.LocalDate
 
@@ -8,7 +9,7 @@ interface LetterMarkupWithDataUsage {
     val markup: LetterMarkup
     val letterDataUsage: Set<Property>
     val brevtype: LetterMetadata.Brevtype
-    val stableHashCode: Int
+    val stableHashCode: StableHashCode
 
     interface Property {
         val typeName: String
