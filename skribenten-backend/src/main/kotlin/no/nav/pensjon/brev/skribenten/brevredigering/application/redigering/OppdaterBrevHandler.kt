@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
@@ -38,10 +39,13 @@ class OppdaterBrevHandler(
 
             val pesysdata = brevdataService.hentBrevdata(brev)
             val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-            // TODO: Her skal vi sjekke om vi skal oppdatere
+            val endretHash = (rendretBrev.stableHashCode != brev.brevmalHash)
             rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
-            brev.mergeRendretBrev(rendretBrev.markup)
-            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+            if (brev.brevmalHash == null || !endretHash || !Features.isEnabled(Features.sjekkFoerOppdaterKladd)) {
+                // TODO: Fjern brevmalHash-null-sjekken i if-klausulen når vi har definert det på alle kladder
+                brev.mergeRendretBrev(rendretBrev.markup)
+                brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+            }
 
             success(brev.tilDto(rendretBrev.letterDataUsage))
         }
