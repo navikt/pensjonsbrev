@@ -51,7 +51,7 @@ object AntattDod : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 text(bokmal { +"Hvis du som etterlatt etter " + fritekst("Navn") + " leser dette brevet, ber vi deg om å varsle norske myndigheter om dødsfallet. " },
-                    nynorsk { +"Hvis du som etterlatt etter " + fritekst("Navn") + " les dette brevet, ber vi deg om å varsle norske styresmakter om dødsfallet. " })
+                    nynorsk { +"Dersom du som etterlaten etter " + fritekst("Navn") + " les dette brevet, ber vi deg om å varsle norske styresmakter om dødsfallet. " })
             }
         }
     }
