@@ -40,9 +40,10 @@ class HentBrevAttesteringHandler(
 
                 val pesysdata = brevdataService.hentBrevdata(brev)
                 val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
+                val endretHash = rendretBrev.stableHashCode != brev.brevmalHash
                 brev.oppdaterSakspartOgSignatur(rendretBrev.markup)
 
-                success(brev.tilDto(rendretBrev.letterDataUsage))
+                success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = endretHash))
             }
         }
 }
