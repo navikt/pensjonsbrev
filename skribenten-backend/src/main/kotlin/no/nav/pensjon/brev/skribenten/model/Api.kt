@@ -125,6 +125,7 @@ object Api {
         val saksbehandlerValg: SaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
+        val brevmalEndret: Boolean,
     )
 
     data class ReservasjonResponse(

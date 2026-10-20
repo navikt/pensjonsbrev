@@ -20,12 +20,14 @@ export const brevResponse = ({
   redigertBrevHash = "redigertBrevHash",
   saksbehandlerValg = {},
   valgteVedlegg = null,
+                               brevmalEndret = false,
 }: {
   info?: BrevInfo;
   redigertBrev?: EditedLetter;
   redigertBrevHash?: string;
   saksbehandlerValg?: SaksbehandlerValg;
   valgteVedlegg?: BrevResponse["valgteVedlegg"];
+  brevmalEndret?: boolean;
 } = {}): BrevResponse => ({
   info,
   redigertBrev,
@@ -33,6 +35,7 @@ export const brevResponse = ({
   saksbehandlerValg,
   propertyUsage: null,
   valgteVedlegg,
+  brevmalEndret,
 });
 
 export const editedLetter = ({

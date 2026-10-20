@@ -4158,6 +4158,7 @@ export interface components {
         };
         /** ApiBrevResponse */
         ApiBrevResponse: {
+            brevmalEndret: boolean;
             info: components["schemas"]["ApiBrevInfo"];
             propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
             redigertBrev: components["schemas"]["EditLetter"];
