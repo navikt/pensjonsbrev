@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.StableHash
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
@@ -81,6 +82,7 @@ class OpprettBrevHandler(
                 statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
                 redigertBrev = rendretBrev.markup.toEdit(),
                 brevtype = parametre.brevtype,
+                brevmalHash = rendretBrev.stableHashCode.let { StableHash(it) } // TODO: dette skurrar litt. Innkorporer verdiobjektet i StablehHash-interfacet, kanskje?
             )
 
             if (request.reserverForRedigering) {

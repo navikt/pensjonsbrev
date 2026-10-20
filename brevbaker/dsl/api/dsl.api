@@ -704,7 +704,7 @@ public abstract interface class no/nav/pensjon/brev/template/LanguageSupport$Sin
 public abstract interface class no/nav/pensjon/brev/template/LanguageSupport$Triple : no/nav/pensjon/brev/template/LanguageSupport$Double {
 }
 
-public final class no/nav/pensjon/brev/template/LetterTemplate {
+public final class no/nav/pensjon/brev/template/LetterTemplate : no/nav/pensjon/brev/template/StableHash {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getLanguage ()Lno/nav/pensjon/brev/template/LanguageSupport;
@@ -715,6 +715,7 @@ public final class no/nav/pensjon/brev/template/LetterTemplate {
 	public final fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
 	public final fun medEkstraVedlegg (Ljava/util/List;)Lno/nav/pensjon/brev/template/LetterTemplate;
+	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -925,25 +926,6 @@ public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/
 }
 
 public abstract interface class no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
-}
-
-public abstract interface class no/nav/pensjon/brev/template/StableHash {
-	public static final field Companion Lno/nav/pensjon/brev/template/StableHash$Companion;
-	public abstract fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/StableHash$Companion {
-	public final fun hash (Lno/nav/pensjon/brev/template/StableHash;[Lno/nav/pensjon/brev/template/StableHash;)I
-	public final fun of (Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/lang/Number;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/lang/String;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/time/LocalDate;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/util/List;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/util/Map;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Lno/nav/pensjon/brev/template/StableHash;[Lno/nav/pensjon/brev/template/StableHash;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Z)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun ofStringMap (Ljava/util/Map;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun with (Lno/nav/pensjon/brev/template/StableHash;Ljava/lang/String;)Lno/nav/pensjon/brev/template/StableHash;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/TemplateModelSelector : no/nav/pensjon/brev/template/StableHash {

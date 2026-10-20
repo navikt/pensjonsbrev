@@ -8,6 +8,7 @@ interface LetterMarkupWithDataUsage {
     val markup: LetterMarkup
     val letterDataUsage: Set<Property>
     val brevtype: LetterMetadata.Brevtype
+    val stableHashCode: Int
 
     interface Property {
         val typeName: String

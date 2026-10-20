@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.StableHash
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
@@ -32,6 +33,7 @@ class TilbakestillBrevHandler(
             val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
             brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), PrincipalInContext.require().navIdent)
             brev.settRendretBrev(rendretBrev.markup)
+            brev.settBrevmalHash(rendretBrev.stableHashCode)
             brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
             success(brev.tilDto(rendretBrev.letterDataUsage))

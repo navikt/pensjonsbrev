@@ -192,6 +192,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
+            brevmalHash: StableHash,
             distribusjonstype: Distribusjon = Distribusjon.SENTRALPRINT,
         ): BrevredigeringEntity = new {
             this.saksId = saksId
@@ -210,6 +211,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.redigertBrev = redigertBrev
             this.rendretBrev = redigertBrev
             this.brevtype = brevtype
+            this.brevmalHash = brevmalHash
         }
     }
 

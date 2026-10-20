@@ -52,6 +52,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
+import kotlin.random.Random
 
 /**
  * Har valgt å gjøre det på denne måten underveis for å understøtte steg-for-steg refaktorering med blanding mellom ny og gammel stil.
@@ -596,7 +597,14 @@ abstract class BrevredigeringHandlerTestBase {
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
-                .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
+                .let {
+                    LetterMarkupWithDataUsageImpl(
+                        it,
+                        emptySet(),
+                        if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
+                        Random.nextInt()
+                    )
+                }
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,

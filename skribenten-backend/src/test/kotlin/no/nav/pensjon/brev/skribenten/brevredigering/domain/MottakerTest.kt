@@ -127,6 +127,7 @@ class MottakerTest {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             vedtaksId = null,
             timestamp = Instant.now(),
+            brevmalHash = StableHash(12234)
         )
     }
 
