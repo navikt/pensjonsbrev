@@ -103,7 +103,8 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                 }
             }
             paragraph {
-                text(bokmal { +"Du må sende dokumentasjonen til oss enten digitalt via selvbetjeningsløsningen på $NAV_URL, eller i posten. Sender du skjemaet i posten, må du legge ved forsidearket som vi har lagt ved i dette brevet. Adressen er oppgitt på forsidearket." })
+                text(bokmal { +"Du må sende dokumentasjonen til oss enten digitalt via selvbetjeningsløsningen på $NAV_URL, eller i posten. Sender du skjemaet i posten, må du legge ved forsidearket som vi har lagt ved i dette brevet. Adressen er oppgitt på forsidearket." },
+                    nynorsk { +"Du må sende dokumentasjonen til oss anten digitalt via sjølvbetjeningsløysinga på $NAV_URL, eller i posten. Sender du skjemaet i posten, må du leggje ved forsidearket som vi har lagt ved i dette brevet. Adressa er oppgitt på forsidearket." })
             }
             paragraph {
                 text(bokmal { +"Ved tap av delvis inntektsevne, gis det en gradert ytelse som svarer til den del av inntektsevnen/arbeidsevnen som er tapt. " },
@@ -114,10 +115,12 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                     nynorsk { +"For å kunne vurdere dette må vi ha bekrefta inntektsopplysningar der det kjem fram kva inntekt du forventar å få framover. " })
             }
             paragraph {
-                text(bokmal { +"Fristen for å sende inn nødvendige opplysninger settes til " + fritekst("dato") + ". Kontakt oss innen denne fristen hvis du trenger lengre tid."})
+                text(bokmal { +"Fristen for å sende inn nødvendige opplysninger settes til " + fritekst("dato") + ". Kontakt oss innen denne fristen hvis du trenger lengre tid."},
+                    nynorsk { +"Fristen for å sende inn nødvendige opplysningar vert sett til " + fritekst("dato") + ". Kontakt oss innan denne fristen dersom du treng lengre tid." })
             }
             paragraph {
-                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })
+                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " },
+                    nynorsk { +"I folketrygdlova § 21-3 finn du informasjon om opplysningsplikta di til Nav. " })
             }
             includePhrase(Felles.MeldFraOmEndringer)
             includePhrase(Felles.HarDuSporsmal)

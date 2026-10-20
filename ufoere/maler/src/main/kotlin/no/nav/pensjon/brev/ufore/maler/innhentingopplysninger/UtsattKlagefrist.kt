@@ -39,7 +39,8 @@ object UtsattKlagefrist : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Mottatt foreløpig klage" })
+            text (bokmal { + "Mottatt foreløpig klage" },
+                nynorsk { + "Mottatt førebels klage" })
         }
         outline {
             paragraph {
@@ -55,7 +56,8 @@ object UtsattKlagefrist : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     nynorsk { +"Treng du meir tid, kan du sende oss ein søknad og be om ytterlegare utsetjing av klagefristen. Du må gje oss ei grunngjeving for kvifor du treng meir tid. Vi gjer då ei vurdering på om vi kan gje deg utsett frist. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL}. Dersom du sender opplysningene med posten, må de sendes inn sammen med vedlagt forside til oppgitt adresse på forsidearket snarest mulig. " })
+                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL}. Dersom du sender opplysningene med posten, må de sendes inn sammen med vedlagt forside til oppgitt adresse på forsidearket snarest mulig. " },
+                    nynorsk { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklast og raskast å ettersende digitalt. Du finn skjemaoversikta og rettleiing på nettsidene våre ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL}. Dersom du sender opplysningane med posten, må dei sendast inn saman med vedlagt forside til oppgitt adresse på forsidearket snarast mogleg. " })
             }
 
             includePhrase(Felles.HarDuSporsmal)

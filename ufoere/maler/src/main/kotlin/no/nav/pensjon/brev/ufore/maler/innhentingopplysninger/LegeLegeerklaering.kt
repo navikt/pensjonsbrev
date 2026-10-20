@@ -51,7 +51,8 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     nynorsk { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførleik Nav 08-07.08. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen " + fritekst("X uker. ") + "Erklæringen sendes til skanning med vedlagte førsteside, eller elektronisk. " })
+                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen " + fritekst("X uker. ") + "Erklæringen sendes til skanning med vedlagte førsteside, eller elektronisk. " },
+                    nynorsk { +"Vi ber om at du sender oss erklæringa snarast mogleg og seinast innan " + fritekst("X veker. ") + "Erklæringa vert sendt til skanning med vedlagde førsteside, eller elektronisk. " })
             }
             paragraph {
                 text(bokmal { +"Erklæringen godgjøres etter honorartakst L40. " },
