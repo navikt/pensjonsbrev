@@ -832,7 +832,6 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             title1 { text(bokmal { +"Vurdering av klagen" }) }
 
-            paragraph { text(bokmal { +"Fjern tekst om Avslag eller Delvis innvilget" }, ITALIC) }
             ifNotNull(avslag) {
                 showIf(avslag.isOneOf(Avslag.Avslag)) {
                     title1 { text(bokmal { +"Avslag" }) }
