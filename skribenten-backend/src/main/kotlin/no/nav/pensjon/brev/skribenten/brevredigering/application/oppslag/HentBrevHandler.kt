@@ -36,6 +36,7 @@ class HentBrevHandler(
                     // TODO: Fjern brevmalHash-null-sjekken i if-klausulen når vi har definert det på alle kladder
                     brev.mergeRendretBrev(rendretBrev.markup)
                     brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+                    rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
                 } else {
                     brev.oppdaterVariabler(rendretBrev.markup)
                 }
