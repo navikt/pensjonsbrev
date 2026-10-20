@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import com.fasterxml.jackson.databind.JsonNode
 import io.ktor.client.request.*
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
@@ -12,8 +13,7 @@ import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.document.dsl.document
 import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
-import no.nav.brev.brevbaker.document.dsl.documentMottaker
-import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
+import no.nav.brev.brevbaker.document.dsl.documentSaksnummer
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
 import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
@@ -212,14 +212,9 @@ class PdfByggerAppTest {
         val request = documentPDFRequest(
             document(
                 tittel = "Et dokument",
-                saksinformasjon = documentSaksinformasjon(
-                    saksnummer = PdfByggerTestData.saksnummer,
-                    visFooter = true,
-                    mottaker = documentMottaker(
-                        gjelderNavn = PdfByggerTestData.gjelderNavn,
-                        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
-                    ),
-                ),
+                gjelderNavn = PdfByggerTestData.gjelderNavn,
+                gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                saksnummer = documentSaksnummer(PdfByggerTestData.saksnummer, visFooter = true),
                 dokumentDato = PdfByggerTestData.dokumentDato,
             ) {
                 paragraph("Hei, dette er et dokument.")
@@ -247,5 +242,126 @@ class PdfByggerAppTest {
             val output = mapper.readValue(response.bodyAsText(), PDFCompilationOutput::class.java)
             assertTrue(expectedPdfBytes.contentEquals(output.bytes), "PDF-bytes skal returneres uendret til klienten")
         }
+    }
+
+    private fun produserDokument(body: String): Pair<HttpStatusCode, List<String>> {
+        val typstSources = ArrayList<String>()
+        val fakeCompileService = object : TypstCompileService() {
+            override suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+                val captured = ByteArrayOutputStream()
+                OutputStreamWriter(captured, Charsets.UTF_8).use { writer ->
+                    writeLetter(TypstFileWriter(writer))
+                }
+                typstSources.add(captured.toString(Charsets.UTF_8))
+                return PDFCompilationResponse.Success(PDFCompilationOutput(byteArrayOf(0x25, 0x50, 0x44, 0x46)))
+            }
+        }
+        var status = HttpStatusCode.InternalServerError
+        testApplication {
+            environment {
+                config = MapApplicationConfig()
+            }
+            application {
+                setUp(fakeCompileService)
+            }
+            status = client.post("/produserDokument") {
+                contentType(ContentType.Application.Json)
+                setBody(body)
+            }.status
+        }
+        return status to typstSources
+    }
+
+    private val blocksJson: String by lazy {
+        val dokument = document(tittel = "Et dokument") { paragraph("Hei, dette er et dokument.") }
+        mapper.writeValueAsString(mapper.valueToTree<JsonNode>(dokument).get("blocks"))
+    }
+
+    @Test
+    fun `produserDokument godtar legacy saksinformasjon fra produksjon`() {
+        val legacyJson = """
+            {
+              "document": {
+                "tittel": "Et dokument",
+                "visTittel": true,
+                "visLogo": true,
+                "saksinformasjon": {
+                  "saksnummer": "${PdfByggerTestData.saksnummer}",
+                  "visFooter": true,
+                  "mottaker": {
+                    "gjelderNavn": "Ola Nordmann",
+                    "gjelderPersonidentifikator": "${PdfByggerTestData.gjelderPersonidentifikator}",
+                    "annenMottakerNavn": null
+                  }
+                },
+                "dokumentDato": "2020-01-01",
+                "blocks": $blocksJson
+              },
+              "spraak": "BOKMAL"
+            }
+        """.trimIndent()
+
+        val (status, typst) = produserDokument(legacyJson)
+
+        assertEquals(HttpStatusCode.OK, status)
+        val source = typst.single()
+        assertTrue(source.contains("showCaseDetails: true"))
+        assertTrue(source.contains("gjelderNavn: \"Ola Nordmann\""))
+        assertTrue(source.contains("    saksnummer: \"${PdfByggerTestData.saksnummer}\""))
+        assertTrue(source.contains("footerSaksnummer: \"${PdfByggerTestData.saksnummer}\""))
+    }
+
+    @Test
+    fun `produserDokument godtar legacy saksinformasjon uten mottaker`() {
+        val legacyJson = """
+            {
+              "document": {
+                "tittel": "Et dokument",
+                "visTittel": true,
+                "visLogo": true,
+                "saksinformasjon": {
+                  "saksnummer": "${PdfByggerTestData.saksnummer}",
+                  "visFooter": false,
+                  "mottaker": null
+                },
+                "dokumentDato": null,
+                "blocks": $blocksJson
+              },
+              "spraak": "BOKMAL"
+            }
+        """.trimIndent()
+
+        val (status, typst) = produserDokument(legacyJson)
+
+        assertEquals(HttpStatusCode.OK, status)
+        val source = typst.single()
+        assertTrue(source.contains("showCaseDetails: false"))
+        assertTrue(source.contains("footerSaksnummer: none"))
+    }
+
+    @Test
+    fun `produserDokument avviser legacy saksinformasjon kombinert med nye felter`() {
+        val json = """
+            {
+              "document": {
+                "tittel": "Et dokument",
+                "visTittel": true,
+                "visLogo": true,
+                "gjelderNavn": "Ola Nordmann",
+                "saksinformasjon": {
+                  "saksnummer": "${PdfByggerTestData.saksnummer}",
+                  "visFooter": true,
+                  "mottaker": null
+                },
+                "blocks": $blocksJson
+              },
+              "spraak": "BOKMAL"
+            }
+        """.trimIndent()
+
+        val (status, typst) = produserDokument(json)
+
+        assertEquals(HttpStatusCode.BadRequest, status)
+        assertTrue(typst.isEmpty())
     }
 }
