@@ -93,7 +93,8 @@ class ExternalAPIRouteTest {
         redigertBrevHash = Hash("abc"),
         saksbehandlerValg = SaksbehandlervalgMap(),
         propertyUsage = null,
-        valgteVedlegg = null
+        valgteVedlegg = null,
+        brevmalEndret = false,
     )
 
     private val opprettBrevRequestJson = """

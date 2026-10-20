@@ -63,7 +63,11 @@ open class BrevredigeringStub : Brevredigering {
     override fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
-    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
+    override fun toDto(
+        brevreservasjonPolicy: BrevreservasjonPolicy,
+        coverage: Set<LetterMarkupWithDataUsage.Property>?,
+        brevmalEndret: Boolean,
+    ): Dto.Brevredigering = notYetStubbed()
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
     override fun settBrevmalHash(stableHashCode: StableHashCode) = notYetStubbed()
     override fun oppdaterVariabler(rendretBrev: LetterMarkup) = notYetStubbed()

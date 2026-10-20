@@ -180,8 +180,11 @@ class Brevtilgang(
  * Gir tilgang til brevet og til DTO-mapping, uten at hver usecase må injisere [BrevreservasjonPolicy].
  */
 class BrevScope(val brev: BrevredigeringEntity, private val brevreservasjonPolicy: BrevreservasjonPolicy) {
-    fun BrevredigeringEntity.tilDto(coverage: Set<LetterMarkupWithDataUsage.Property>? = null): Dto.Brevredigering =
-        toDto(brevreservasjonPolicy, coverage)
+    fun BrevredigeringEntity.tilDto(
+        coverage: Set<LetterMarkupWithDataUsage.Property>? = null,
+        brevmalEndret: Boolean = false,
+    ): Dto.Brevredigering =
+        toDto(brevreservasjonPolicy, coverage, brevmalEndret)
 
     fun BrevredigeringEntity.tilBrevInfo(): Dto.BrevInfo =
         toBrevInfo(brevreservasjonPolicy)

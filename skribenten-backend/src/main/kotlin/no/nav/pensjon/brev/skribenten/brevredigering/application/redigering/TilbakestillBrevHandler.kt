@@ -31,10 +31,11 @@ class TilbakestillBrevHandler(
             val pesysdata = brevdataService.hentBrevdata(brev)
             val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
             brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), PrincipalInContext.require().navIdent)
+            val endretHash = rendretBrev.stableHashCode != brev.brevmalHash
             rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
             brev.settRendretBrev(rendretBrev.markup)
             brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
-            success(brev.tilDto(rendretBrev.letterDataUsage))
+            success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = endretHash))
         }
 }

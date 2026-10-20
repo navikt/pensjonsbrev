@@ -91,6 +91,6 @@ class OpprettBrevHandler(
                 brev.settMottaker(request.mottaker, pesysData.felles.annenMottakerNavn)
             }
 
-            success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
+            success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage, brevmalEndret = true))
         }
 }
