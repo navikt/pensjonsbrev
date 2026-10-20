@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -33,11 +34,16 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
+        val gyldig = saksbehandlervalg("gyldig", "Vedtak er gyldig").bool()
+
         title {
             text(bokmal {
                 +"Beslutning om at vedtak "
-                +fritekst("dato") + " ikke gjøres om - vedtaket [er gyldig og] vil fortsatt gjelde for deg"
-            })
+                +fritekst("dato") + " ikke gjøres om - vedtaket " })
+            showIf(gyldig) {
+                text(bokmal { +"er gyldig og " })
+            }
+            text(bokmal { +"vil fortsatt gjelde for deg" })
         }
 
         outline {
@@ -46,7 +52,14 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
                 text(bokmal {
                     +"Nav har besluttet at vedtak "
                     +fritekst("dato") + " ikke gjøres om. "
-                    +"Vedtaket [er gyldig og] vil fortsatt gjelde for deg. "
+                    +"Vedtaket "
+                })
+                showIf(gyldig) {
+                    text(bokmal {
+                        +"er gyldig og "
+                    })
+                }
+                text(bokmal {+"vil fortsatt gjelde for deg. "
                     +"Beslutningen er gjort etter forvaltningsloven § 35."
                 })
             }
