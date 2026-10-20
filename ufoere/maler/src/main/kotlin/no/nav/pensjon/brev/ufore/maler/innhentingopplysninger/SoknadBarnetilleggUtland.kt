@@ -67,7 +67,7 @@ object SoknadBarnetilleggUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 text(bokmal { +"Hvis du overfører jevnlig penger for å forsørge barnet, må vi få kopi av bankutskrift og dokumentasjon på hvem du sender disse pengene til. " },
-                    nynorsk { +"Hvis du overfører jamleg pengar for å forsørgje barnet, må vi få kopi av bankutskrift og dokumentasjon på kven du sender desse pengane til. " })
+                    nynorsk { +"Dersom du overfører jamleg pengar for å forsørgje barnet, må vi få kopi av bankutskrift og dokumentasjon på kven du sender desse pengane til. " })
             }
             paragraph {
                 text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " },
