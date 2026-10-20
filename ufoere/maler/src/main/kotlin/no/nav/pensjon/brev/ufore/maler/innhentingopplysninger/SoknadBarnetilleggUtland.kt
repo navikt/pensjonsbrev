@@ -63,7 +63,7 @@ object SoknadBarnetilleggUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 text(bokmal { +"Hvis fødselsattesten ikke er på engelsk eller et av de nordiske språkene, må vi ha en oversatt verifisert versjon i tillegg. " },
-                    nynorsk { +"Hvis fødselsattesten ikkje er på engelsk eller eit av dei nordiske språka, må vi ha ein omsett verifisert versjon i tillegg. " })
+                    nynorsk { +"Dersom fødselsattesten ikkje er på engelsk eller eit av dei nordiske språka, må vi ha ein omsett verifisert versjon i tillegg. " })
             }
             paragraph {
                 text(bokmal { +"Hvis du overfører jevnlig penger for å forsørge barnet, må vi få kopi av bankutskrift og dokumentasjon på hvem du sender disse pengene til. " },
