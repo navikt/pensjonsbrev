@@ -1,20 +1,13 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -49,8 +42,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val brevkode: Column<RedigerbarBrevkode> = varchar("brevkode", length = 50).transform(::RedigerbarBrevkode, RedigerbarBrevkode::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
-    val saksbehandlerValg = json<SaksbehandlervalgMap>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
-    val saksbehandlerValgKryptert = kryptertDto<SaksbehandlervalgMap>("saksbehandlerValgKryptert")
+    val saksbehandlerValg = kryptertDto<SaksbehandlervalgMap>("saksbehandlerValgKryptert")
     val statiskFagsystemBrevdata: Column<StatiskFagsystemBrevdata?> =
         kryptertDto<StatiskFagsystemBrevdata>("statiskFagsystemBrevdata")
         .nullable()
@@ -82,21 +74,7 @@ object DocumentTable : LongIdTable() {
 
 object MottakerTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
-    val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
-    val tssId: Column<TssId?> = varchar("tssId", 50).transform(::TssId, TssId::value).nullable()
     val adresse: Column<Mottaker.Adresse> = kryptertDto<Mottaker.Adresse>("mottaker")
-    val navn: Column<Navn?> = varchar("navn", 128).transform(::Navn, Navn::value).nullable()
-    val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
-    val poststed: Column<Poststed?> = varchar("poststed", 50).transform(::Poststed, Poststed::value).nullable()
-    val adresselinje1: Column<Adresselinje?> =
-        varchar("adresselinje1", 128).transform(::Adresselinje, Adresselinje::value).nullable()
-    val adresselinje2: Column<Adresselinje?> =
-        varchar("adresselinje2", 128).transform(::Adresselinje, Adresselinje::value).nullable()
-    val adresselinje3: Column<Adresselinje?> =
-        varchar("adresselinje3", 128).transform(::Adresselinje, Adresselinje::value).nullable()
-    val landkode: Column<Landkode?> = varchar("landkode", 2).transform(::Landkode, Landkode::landkode).nullable()
-    val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
-        .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

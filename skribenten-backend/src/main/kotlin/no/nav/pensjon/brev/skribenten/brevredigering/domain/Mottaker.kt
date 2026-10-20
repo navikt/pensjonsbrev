@@ -12,16 +12,6 @@ import org.jetbrains.exposed.v1.dao.EntityClass
 enum class MottakerType { SAMHANDLER, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
 
 class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
-    var type by MottakerTable.type
-    var tssId by MottakerTable.tssId
-    var navn by MottakerTable.navn
-    var postnummer by MottakerTable.postnummer
-    var poststed by MottakerTable.poststed
-    var adresselinje1 by MottakerTable.adresselinje1
-    var adresselinje2 by MottakerTable.adresselinje2
-    var adresselinje3 by MottakerTable.adresselinje3
-    var manueltAdressertTil by MottakerTable.manueltAdressertTil
-    var landkode by MottakerTable.landkode
     var adresse by MottakerTable.adresse
 
     companion object : EntityClass<BrevId, Mottaker>(MottakerTable) {
@@ -62,17 +52,6 @@ class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeri
     }
 
     fun oppdater(mottaker: Dto.Mottaker): Mottaker {
-        type = mottaker.type
-        tssId = mottaker.tssId
-        navn = mottaker.navn
-        postnummer = mottaker.postnummer
-        poststed = mottaker.poststed
-        adresselinje1 = mottaker.adresselinje1
-        adresselinje2 = mottaker.adresselinje2
-        adresselinje3 = mottaker.adresselinje3
-        landkode = mottaker.landkode
-        manueltAdressertTil = mottaker.manueltAdressertTil
-
         adresse = Adresse.fraDto(mottaker)
 
         return this
