@@ -606,6 +606,33 @@ describe("LetterEditorActions.split", () => {
         expect(result.redigertBrev.blocks[0].deletedContent).not.toContain(beforeLitId);
       });
 
+      test("departed duplicate occurrences are recorded even when their id survives or was previously deleted", () => {
+        const state = letter(
+          paragraph({
+            id: 100,
+            deletedContent: [150],
+            content: [
+              literal({ id: 150, text: "before" }),
+              itemList({
+                id: 200,
+                items: [
+                  item({ id: 300, content: [literal({ text: "item1" })] }),
+                  item({ id: 301, content: [literal({ text: "" })] }),
+                  item({ id: 302, content: [literal({ text: "item3" })] }),
+                ],
+              }),
+              literal({ id: 150, text: "after" }),
+              literal({ id: 150, text: "also after" }),
+            ],
+          }),
+        );
+
+        const result = Actions.split(state, { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }, 0);
+
+        expect(result.redigertBrev.blocks[0].content).toEqual(state.redigertBrev.blocks[0].content.slice(0, 1));
+        expect(result.redigertBrev.blocks[0].deletedContent).toEqual([150, 200, 150, 150]);
+      });
+
       test("pre-existing deletedItems are propagated to both the before-list and the after-list", () => {
         const deletedId = 9001;
         const state = letter(

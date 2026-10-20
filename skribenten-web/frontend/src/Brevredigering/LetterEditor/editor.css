@@ -14,6 +14,11 @@
   }
 }
 
+.editor[data-focus-ring="true"] {
+  outline: 2px solid var(--ax-border-accent-strong);
+  outline-offset: -2px;
+}
+
 .letter-title {
   margin-bottom: var(--ax-space-20);
   font-weight: 700;

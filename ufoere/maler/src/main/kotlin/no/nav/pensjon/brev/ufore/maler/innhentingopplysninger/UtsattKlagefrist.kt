@@ -30,14 +30,14 @@ object UtsattKlagefrist : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Utsatt klagefrist",
+            displayTitle = "Mottatt foreløpig klage",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
     )
     {
         title {
-            text (bokmal { + "Utsatt klagefrist" })
+            text (bokmal { + "Mottatt foreløpig klage" })
         }
         outline {
             paragraph {
@@ -50,7 +50,7 @@ object UtsattKlagefrist : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Trenger du mer tid, kan du sende oss en søknad og be om ytterligere utsettelse av klagefristen. Du må gi oss en begrunnelse for hvorfor du trenger mer tid. Vi gjør da en vurdering på om vi kan gi deg utsatt frist. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
+                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL}. Dersom du sender opplysningene med posten, må de sendes inn sammen med vedlagt forside til oppgitt adresse på forsidearket snarest mulig. " })
             }
 
             includePhrase(Felles.HarDuSporsmal)

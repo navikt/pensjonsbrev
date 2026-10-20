@@ -49,7 +49,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
                     content = listOf(Edit.ParagraphContent.Text.Literal(id = 21, text = tekst, editedText = editedTekst, parentId = 2)),
                 )
             ),
-            deletedBlocks = emptySet(),
+            deletedBlocks = emptyList(),
             includeSakspart = false,
         )
 

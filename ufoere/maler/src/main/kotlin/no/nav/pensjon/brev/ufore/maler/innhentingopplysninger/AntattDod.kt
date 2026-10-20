@@ -28,7 +28,7 @@ object AntattDod : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Antatt død",
+            displayTitle = "Varsel om opphør av uføretrygd",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),

@@ -209,6 +209,7 @@ const SendBrevModal = (props: {
       trackEvent("brev sendt", {
         brevId: Number(props.brevId),
         brevkode: cachedBrevData?.info.brevkode,
+        spraak: cachedBrevData?.info.spraak,
         type: "attestering",
         enhetsId: cachedBrevData?.info.avsenderEnhet.enhetNr,
       });

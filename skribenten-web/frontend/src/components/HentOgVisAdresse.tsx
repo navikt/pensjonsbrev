@@ -1,10 +1,11 @@
 import { HStack, Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
-import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
+import { getKontaktAdresse } from "~/api/skribenten-api-endpoints";
 import AdresseVisning, { type AdresseVisningTag } from "~/components/AdresseVisning";
 import { ApiError } from "~/components/ApiError";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
+import { useSamhandlerMottaker } from "~/hooks/useSamhandlerMottaker";
 import { type KontaktAdresseResponse, type SamhandlerPostadresse } from "~/types/apiTypes";
 import {
   erAdresseKontaktAdresse,
@@ -40,10 +41,7 @@ const AdresseSkeleton = ({ withTitle }: { withTitle?: boolean }) => (
 );
 
 const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; showMottakerTitle?: boolean }) => {
-  const samhandlerAdresse = useQuery({
-    ...hentSamhandlerAdresse(properties.samhandlerId as string),
-    enabled: !!properties.samhandlerId,
-  });
+  const samhandlerMottaker = useSamhandlerMottaker(properties.samhandlerId);
 
   const adresseQuery = useQuery({
     ...getKontaktAdresse(properties.sakId),
@@ -68,11 +66,19 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
       )}
       {properties.samhandlerId && (
         <>
-          {samhandlerAdresse.isPending && <AdresseSkeleton withTitle={properties.showMottakerTitle} />}
-          {samhandlerAdresse.error && <ApiError error={samhandlerAdresse.error} title="Fant ikke adresse" />}
-          {samhandlerAdresse.isSuccess && (
+          {samhandlerMottaker.isPending && <AdresseSkeleton withTitle={properties.showMottakerTitle} />}
+          {samhandlerMottaker.error && <ApiError error={samhandlerMottaker.error} title="Fant ikke mottaker" />}
+          {samhandlerMottaker.data?.type === "organisasjon" && (
+            <AdresseVisning
+              adresselinjer={[samhandlerMottaker.data.samhandler.offentligId]}
+              navn={samhandlerMottaker.data.samhandler.navn}
+              tags={[MOTTAKER_TAG_SAMHANDLER]}
+              withTitle={properties.showMottakerTitle}
+            />
+          )}
+          {samhandlerMottaker.data?.type === "adresse" && (
             <ResolvedAdresse
-              adresse={samhandlerAdresse.data}
+              adresse={samhandlerMottaker.data.adresse}
               erSamhandler
               saksId={properties.sakId}
               withTitle={properties.showMottakerTitle}

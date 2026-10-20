@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSk
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -38,7 +39,7 @@ object VedtakOmOktFribelopAuto : AutobrevTemplate<VedtakOmOktFribelopAutoDto> {
             )
         }
         outline {
-            includePhrase(OktFribelop.Outline(data))
+            includePhrase(OktFribelop.Outline(data, true.expr()))
         }
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, data.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe, data.pe.inkluderopplysningerbruktiberegningen())

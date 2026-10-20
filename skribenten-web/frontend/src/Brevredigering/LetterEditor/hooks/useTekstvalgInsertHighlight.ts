@@ -26,7 +26,7 @@ type PendingToggle = {
  * Flash-highlights the content a tekstvalg toggle inserted, and moves the cursor to the end of it.
  *
  * The highlight is derived from the editor state the user is actually looking at, so content is
- * never flashed from a save response that `onSaveSuccess` discarded (which happens when the user
+ * never flashed from a save response that the autosave store discarded (which happens when the user
  * types while the save is in flight).
  *
  * `lagretRedigertBrev` is the server-known letter (e.g. `brev.redigertBrev` from the query cache,
@@ -76,7 +76,6 @@ export function useTekstvalgInsertHighlight({
     const pending = pendingToggleRef.current;
     if (!pending) return;
 
-    // The user typed while the save was in flight, so `onSaveSuccess` discarded the response.
     // Drop the pending toggle instead of highlighting later, which would move the cursor
     // out from under someone who is still typing.
     if (saveStatus === "DIRTY") {

@@ -2,10 +2,12 @@ import React, { useLayoutEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
+  collectAllLiteralValues,
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
   isTable,
+  isUneditedFritekst,
   text as textOf,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
@@ -50,7 +52,6 @@ import {
 import {
   type Content,
   type EditedDocument,
-  ElementTags,
   FontType,
   ListType,
   type LiteralValue,
@@ -66,9 +67,9 @@ import {
   adjacentTableEntryFocus,
   determineTableCellDeleteAction,
   exitTable,
+  getTableArrowNavigationFocus,
   isAtLastTableCell,
   nextTableFocus,
-  verticalTableStep,
 } from "../services/tableCaretUtils";
 import { isMac } from "../utils";
 
@@ -258,9 +259,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
   // hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
-  const erFritekst =
-    content.tags.includes(ElementTags.FRITEKST) &&
-    (content.editedText === null || content.editedText === undefined || content.editedText === content.text);
+  const erFritekst = isUneditedFritekst(content);
+  const isTitleTabEntry =
+    !freeze &&
+    literalIndex.blockIndex === TITLE_INDEX &&
+    literalIndex.contentIndex === editorState.redigertBrev.title.text.findIndex((text) => text.type === "LITERAL") &&
+    !collectAllLiteralValues(editorState.redigertBrev).some(isUneditedFritekst);
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
@@ -481,9 +485,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const block = editorState.redigertBrev.blocks[f.blockIndex];
       const content = block.content[f.contentIndex];
 
-      if (isTable(content)) {
+      if (isTable(content) && contentEditableReference.current) {
+        const next = getTableArrowNavigationFocus(contentEditableReference.current, f, content, "up");
+        if (next === undefined) return;
         event.preventDefault();
-        const next = verticalTableStep(f, content, "up");
         if (next === "exit") {
           setEditorState(exitTable("backward"));
         } else {
@@ -544,9 +549,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const block = editorState.redigertBrev.blocks[f.blockIndex];
       const content = block.content[f.contentIndex];
 
-      if (isTable(content)) {
+      if (isTable(content) && contentEditableReference.current) {
+        const next = getTableArrowNavigationFocus(contentEditableReference.current, f, content, "down");
+        if (next === undefined) return;
         event.preventDefault();
-        const next = verticalTableStep(f, content, "down");
         if (next === "exit") {
           setEditorState(exitTable("forward"));
         } else {
@@ -662,6 +668,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         const pasteMetadata = getPasteMetadata(event.clipboardData);
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
+          spraak: editorState.info.spraak,
           enhetsId: editorState.info.avsenderEnhet.enhetNr,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
@@ -681,6 +688,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           const pasteMetadata = getPasteMetadata(event.clipboardData);
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,
+            spraak: editorState.info.spraak,
             enhetsId: editorState.info.avsenderEnhet.enhetNr,
             antallTegn: pasteLength,
             merEnn200: pasteLength > 200,
@@ -937,7 +945,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onMouseDown={handleOnMouseDown}
       onPaste={handleOnPaste}
       ref={contentEditableReference}
-      tabIndex={erFritekst ? 0 : -1}
+      tabIndex={erFritekst || isTitleTabEntry ? 0 : -1}
     />
   );
 }

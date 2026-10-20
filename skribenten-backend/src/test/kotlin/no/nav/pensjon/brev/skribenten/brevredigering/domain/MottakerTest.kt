@@ -41,14 +41,12 @@ class MottakerTest {
         val brevredigering = createBrevredigering()
         transaction {
             Mottaker.new(brevredigering.id.value) {
-                type = MottakerType.SAMHANDLER
-                tssId = "12345"
-                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+                adresse = lagSamhandlerAdresse("12345")
             }
         }
         val mottaker = transaction { Mottaker[brevredigering.id] }
-        assertEquals("12345", mottaker.tssId)
-        assertEquals(MottakerType.SAMHANDLER, mottaker.type)
+        assertEquals(TssId("12345"), mottaker.adresse.tssId)
+        assertEquals(MottakerType.SAMHANDLER, mottaker.adresse.type)
     }
 
     @Test
@@ -57,34 +55,46 @@ class MottakerTest {
         assertThrows<ExposedSQLException> {
             transaction {
                 Mottaker.new(brevredigering.id.value) {
-                    type = MottakerType.SAMHANDLER
-                    tssId = "12345"
-                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+                    adresse = lagSamhandlerAdresse("12345")
                 }
                 Mottaker.new(brevredigering.id.value) {
-                    type = MottakerType.SAMHANDLER
-                    tssId = "123456"
-                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+                    adresse = lagSamhandlerAdresse("123456")
                 }
             }
         }
     }
+
+    private fun lagSamhandlerAdresse(tssId: String): Mottaker.Adresse = Mottaker.Adresse(
+        type = MottakerType.SAMHANDLER,
+        tssId = TssId(tssId),
+        navn = null,
+        postnummer = null,
+        poststed = null,
+        adresselinje1 = null,
+        adresselinje2 = null,
+        adresselinje3 = null,
+        landkode = null,
+        manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+    )
 
     @Test
     fun `kan endre mottaker gjennom brevredigering`() {
         val brevredigeringId = createBrevredigering().id.value
         transaction {
             Mottaker.new(brevredigeringId) {
-                type = MottakerType.SAMHANDLER
-                tssId = "12345"
-                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
+                adresse = lagSamhandlerAdresse("12345")
             }
         }
-        transaction { BrevredigeringEntity[brevredigeringId].settMottaker(Dto.Mottaker.samhandler("abc"),"ABC") }
+        transaction {
+            BrevredigeringEntity[brevredigeringId].settMottaker(
+                Dto.Mottaker.samhandler(TssId("abc")),
+                "ABC"
+            )
+        }
         val mottaker = transaction { Mottaker[brevredigeringId] }
 
-        assertEquals(MottakerType.SAMHANDLER, mottaker.type)
-        assertEquals("abc", mottaker.tssId)
+        assertEquals(MottakerType.SAMHANDLER, mottaker.adresse.type)
+        assertEquals(TssId("abc"), mottaker.adresse.tssId)
     }
 
     private fun createBrevredigering() = transaction {
@@ -112,7 +122,7 @@ class MottakerTest {
                     attesterendeSaksbehandlerNavn = "i",
                     navAvsenderEnhet = "j",
                 ),
-                emptySet(),
+                emptyList(),
             ),
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             vedtaksId = null,
@@ -124,9 +134,9 @@ class MottakerTest {
     fun `gir feilmelding for norsk adresse med femsifra postnummer`() {
         assertThrows<IllegalArgumentException> {
             Dto.Mottaker.norskAdresse(
-                navn = "Peder Ås",
+                navn = Navn("Peder Ås"),
                 postnummer = NorskPostnummer("12345"),
-                poststed = "Lillevik",
+                poststed = Poststed("Lillevik"),
                 adresselinje1 = null,
                 adresselinje2 = null,
                 adresselinje3 = null,
@@ -139,9 +149,9 @@ class MottakerTest {
     fun `gir feilmelding for norsk adresse med tresifra postnummer`() {
         assertThrows<IllegalArgumentException> {
             Dto.Mottaker.norskAdresse(
-                navn = "Peder Ås",
+                navn = Navn("Peder Ås"),
                 postnummer = NorskPostnummer("123"),
-                poststed = "Lillevik",
+                poststed = Poststed("Lillevik"),
                 adresselinje1 = null,
                 adresselinje2 = null,
                 adresselinje3 = null,
@@ -153,9 +163,9 @@ class MottakerTest {
     @Test
     fun `takler norsk adresse med firesifra postnummer`() {
         Dto.Mottaker.norskAdresse(
-            navn = "Peder Ås",
+            navn = Navn("Peder Ås"),
             postnummer = NorskPostnummer("1234"),
-            poststed = "Lillevik",
+            poststed = Poststed("Lillevik"),
             adresselinje1 = null,
             adresselinje2 = null,
             adresselinje3 = null,

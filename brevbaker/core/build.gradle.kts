@@ -45,6 +45,7 @@ dependencies {
     kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
     implementation(libs.kotlinx.serialization.json)
+    testFixturesImplementation(libs.kotlinx.html)
 
     testImplementation(libs.bundles.junit)
 

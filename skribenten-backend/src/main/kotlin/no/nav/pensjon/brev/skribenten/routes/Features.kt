@@ -16,9 +16,12 @@ fun Route.featureToggleRoute() {
     route("/features") {
         // UnleashService legger automatisk på "pensjonsbrev.skribenten."-prefikset
         get("/{featureName}") {
-            val featureName = call.parameters["featureName"]
+            val featureName = call.parameters["featureName"]?.takeIf { it.length < 128 }
             if (featureName.isNullOrBlank()) {
-                call.respond(HttpStatusCode.BadRequest, "featureName mangler")
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    "featureName er for langt eller null, lengde: ${featureName?.length}"
+                )
                 return@get
             }
 

@@ -15,15 +15,17 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.selectors.barnepensjo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonAvslagFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
+import java.time.LocalDate
 
 data class BarnepensjonAvslagRedigerbartUtfallData(
     val avdoedNavn: String = "<Klarte ikke å finne navn automatisk, du må sette inn her>",
     val erSluttbehandling: Boolean = false,
+    val avdoedDoedsdato: LocalDate? = null,
 )
 
 data class BarnepensjonAvslagRedigerbartUtfallDTO(
-    override val data: BarnepensjonAvslagRedigerbartUtfallData = BarnepensjonAvslagRedigerbartUtfallData(),
-): RedigerbartUtfallBrevDTO
+    override val data: BarnepensjonAvslagRedigerbartUtfallData,
+) : RedigerbartUtfallBrevDTO
 
 
 @TemplateModelHelpers
@@ -47,7 +49,13 @@ object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<BarnepensjonAvsl
         }
 
         outline {
-            includePhrase(BarnepensjonAvslagFraser.Vedtak(data.erSluttbehandling, data.avdoedNavn))
+            includePhrase(
+                BarnepensjonAvslagFraser.Vedtak(
+                    erSluttbehandling = data.erSluttbehandling,
+                    avdoedNavn = data.avdoedNavn,
+                    avdoedDoedsdato = data.avdoedDoedsdato,
+                ),
+            )
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(BarnepensjonFellesFraser.FyllInn)
         }

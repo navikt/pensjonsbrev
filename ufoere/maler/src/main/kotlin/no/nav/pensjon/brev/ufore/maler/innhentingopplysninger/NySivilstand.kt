@@ -52,7 +52,7 @@ object NySivilstand : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Får du barnetillegg, og du og barnet ikke har felles folkeregistrert adresse, må du sende oss dokumentasjon på faktisk forsørgelse. Dokumentasjon på forsørgelse kan være avtale om bidrag og/eller samvær som må være undertegnet av begge foreldrene. " })
             }
             paragraph {
-                text(bokmal { +"Selv om uføretrygden din ikke blir endret som følge av sivilstandsendringen, er du fortsatt pliktig til å melde ifra til Nav om endringer, slik det fremgår av folketrygdloven § 21-3. " })
+                text(bokmal { +"Selv om uføretrygden din ikke blir endret som følge av sivilstandsendringen, må du melde fra til oss om alle hendelser som kan få betydning for uføretrygden din. Dette fremgår av folketrygdloven § 21-3. " })
             }
 
             includePhrase(Felles.HarDuSporsmal)

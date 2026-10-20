@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.alder.model.endring
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -22,7 +24,9 @@ data class VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val beloepEndring: BeloepEndring,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-        val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?
+        val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?,
+        val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
+        val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
     ) : FagsystemBrevdata {
 
         data class BeregnetPensjonPerManedVedVirk(

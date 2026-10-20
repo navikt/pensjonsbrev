@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.routes.samhandler.dto
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
+
 data class HentSamhandlerResponseDto(val success: Success?, val failure: FailureType?) {
     data class Success(
         val navn: String,
@@ -14,6 +16,6 @@ data class HentSamhandlerResponseDto(val success: Success?, val failure: Failure
     }
 }
 class HentSamhandlerRequestDto(
-    val idTSSEkstern: String,
+    val idTSSEkstern: TssId,
     val hentDetaljert: Boolean,
 )

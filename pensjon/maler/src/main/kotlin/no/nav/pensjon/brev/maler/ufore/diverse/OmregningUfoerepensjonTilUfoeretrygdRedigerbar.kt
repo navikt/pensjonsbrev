@@ -4,8 +4,10 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.omregningUfoerepensjonTilUfoeretrygdDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.omregningUfoerepensjonTilUfoeretrygdDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.omregningUfoerepensjonTilUfoeretrygdDto.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.omregningUfoerepensjonTilUfoeretrygdDto.pesysData.harVTA
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.omregningUfoerepensjonTilUfoeretrygdDto.pesysData.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.omregningUfoerepensjonTilUfoeretrygdDto.pesysData.pe
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
@@ -13,101 +15,21 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2370_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2371_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU3105_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU3106_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU3107_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU3108_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU3109_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU3110_Generated
 import no.nav.pensjon.brev.maler.fraser.generated.TBU3112_Generated
-import no.nav.pensjon.brev.maler.fraser.generated.TBU3114_Generated
-import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1133_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1201_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1203_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1216_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_1_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2275_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2364_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2368_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2490_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU3801_Generated
-import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_personbostedsland
-import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_uforehistorikkgarantigrad
-import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
-import no.nav.pensjon.brev.maler.legacy.saksdata_sakapogup
-import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall
-import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles
-import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull
-import no.nav.pensjon.brev.maler.legacy.ut_bruttoetterreduksjonbt_hoeyere_lavere
-import no.nav.pensjon.brev.maler.legacy.ut_forsorgeransvar_ingen_er_false
-import no.nav.pensjon.brev.maler.legacy.ut_forsorgeransvar_ingen_er_true
-import no.nav.pensjon.brev.maler.legacy.ut_forsorgeransvar_siste_er_true
-import no.nav.pensjon.brev.maler.legacy.ut_fradrag_hoeyere_lavere
-import no.nav.pensjon.brev.maler.legacy.ut_ikke
-import no.nav.pensjon.brev.maler.legacy.ut_inntekt_hoeyere_lavere
-import no.nav.pensjon.brev.maler.legacy.ut_bunnfradrag_faktisk
-import no.nav.pensjon.brev.maler.legacy.ut_tbu4071_btfbinnvilget
+import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbbrutto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_belopredusert
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtbrutto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtnetto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoperar
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_total
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_totalnetto
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_reaktiviseringsforskriften
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_virkningfom
+import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -139,6 +61,10 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
         outline {
             val pe = pesysData.pe
+
+            val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+            val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
+            val instoppholdType = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype()
 
             //IF(PE_VedtaksData_VirkningFOM <= DateValue("01/01/2015")) THEN      INCLUDE ENDIF
             showIf(pe.vedtaksdata_virkningfom().lessThanOrEqual(LocalDate.of(2015, 1, 1))) {
@@ -638,7 +564,11 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
-                    includePhrase(TBU2275_Generated)
+                    title1 {
+                        text (
+                            bokmal { + "For deg som mottar ektefelletillegg" },
+                        )
+                    }
                     //TBU2493
                     paragraph { text(bokmal { +"Du mottar i dag ektefelletillegg i uførepensjonen din. Den retten du hadde til ektefelletillegg per 31. desember 2014 blir regnet om til et fast beløp. Du beholder dette ut perioden som vedtaket om ektefelletillegget gjelder for." }) }
                 }
@@ -655,12 +585,20 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTnetto = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTbrutto AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtnetto().equalTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtbrutto()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                    includePhrase(TBU1216_Generated)
+                    paragraph {
+                        text (
+                            bokmal { + "Gjenlevendetillegget ditt er ikke redusert." },
+                        )
+                    }
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN      INCLUDE ENDIF
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag())) {
-                    includePhrase(TBU2368_Generated(pe))
+                    paragraph {
+                        text (
+                            bokmal { + "Du har en inntekt tilsvarende " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + ". Gjenlevendetillegget er redusert ut fra dette." },
+                        )
+                    }
                 }
 
                 //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
@@ -709,7 +647,11 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = false  AND PE_UT_Forsorgeransvar_ingen_er_true() AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
                 showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt()) and pe.ut_forsorgeransvar_ingen_er_true() and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs")) {
-                    includePhrase(TBU3106_Generated)
+                    paragraph {
+                        text (
+                            bokmal { + "Uføretrygden din er lavere enn 45 prosent av folketrygdens grunnbeløp. Du vil derfor ikke få redusert utbetaling av uføretrygden din når du er innlagt på institusjon." },
+                        )
+                    }
                 }
 
                 //IF(PE_UT_Forsorgeransvar_ingen_er_false() AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs" AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = 0) THEN      INCLUDE ENDIF
@@ -719,7 +661,11 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = false  AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter <> 0  AND PE_UT_Forsorgeransvar_ingen_er_true() AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
                 showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt()) and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().notEqualTo(0) and pe.ut_forsorgeransvar_ingen_er_true() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs")) {
-                    includePhrase(TBU3108_Generated)
+                    paragraph {
+                        text (
+                            bokmal { + "Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres." },
+                        )
+                    }
                 }
 
                 //IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter <> 0  AND PE_UT_Forsorgeransvar_ingen_er_false() AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
@@ -729,7 +675,11 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = true AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
                 showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt() and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs")) {
-                    includePhrase(TBU3110_Generated(pe))
+                    paragraph {
+                        text (
+                            bokmal { + "Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din skal reduseres til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + "." },
+                        )
+                    }
                 }
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = true  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = 0  AND PE_UT_Forsorgeransvar_ingen_er_true()) THEN      INCLUDE ENDIF
@@ -758,58 +708,8 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                 }
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"
-                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo")) {
-                    includePhrase(TBU3114_Generated)
-                }
-
-                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"
-                showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo")) {
-                    //TBU3115
-                    paragraph {
-                        text(bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring." })
-
-                        //IF(FF_GetArrayElement_Boolean(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphReduksjonsperiodeListe_InstOpphReduksjonsperiode_Forsorgeransvar) = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) {
-                            text(bokmal { +" " })
-                        }
-
-                        //IF(PE_UT_Forsorgeransvar_siste_er_true()) THEN      INCLUDE ENDIF
-                        showIf(pe.ut_forsorgeransvar_siste_er_true()) {
-                            text(bokmal { +"Da du forsørger barn" })
-                        }
-
-                        //IF(FF_GetArrayElement_Boolean(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphReduksjonsperiodeListe_InstOpphReduksjonsperiode_Forsorgeransvar) = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
-                            text(bokmal { +" og/eller ektefelle" })
-                        }
-
-                        //IF(PE_UT_Forsorgeransvar_siste_er_true()) THEN      INCLUDE ENDIF
-                        showIf(pe.ut_forsorgeransvar_siste_er_true()) {
-                            text(bokmal { +", vil utbetaling av uføretrygden din reduseres med 50 prosent. " })
-                        }
-
-                        text(bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " })
-
-                        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true OR PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                            text(bokmal { +"Dersom du mottar " })
-                        }
-
-                        //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
-                            text(bokmal { +"ektefelletillegg" })
-                        }
-
-                        //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
-                        showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                            text(bokmal { +"gjenlevendetillegg" })
-                        }
-
-                        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true OR PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                            text(bokmal { +" vil dette tillegget også bli redusert." })
-                        }
-                    }
+                showIf(instoppholdType.equalTo("reduksjon_fo")) {
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense AND FF_GetArrayElement_Integer(PE_Grunnlag_Persongrunnlagsliste_UforehistorikkGarantigrad) <> 0) THEN      INCLUDE ENDIF
@@ -847,12 +747,20 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                     //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
                     showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
-                        includePhrase(TBU1201_Generated)
+                        title1 {
+                            text (
+                                bokmal { + "Skal du kombinere uføretrygd og inntekt?" },
+                            )
+                        }
                     }
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad > 0) THEN      INCLUDE ENDIF
                     showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().greaterThan(0)) {
-                        includePhrase(TBU1203_Generated)
+                        title1 {
+                            text (
+                                bokmal { + "For deg som kombinerer uføretrygd og inntekt" },
+                            )
+                        }
                     }
 
                     //[TBU2502]
@@ -897,7 +805,11 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                         text(bokmal { +"." })
                     }
 
-                    includePhrase(TBU2364_Generated)
+                    title1 {
+                        text (
+                            bokmal { + "Du må melde fra om eventuell inntekt" },
+                        )
+                    }
 
                     //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)   ) THEN      INCLUDE ENDIF
                     showIf(not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
@@ -920,10 +832,18 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                     //PE_SaksData_SakAPogUP = true
                     showIf(pe.saksdata_sakapogup()) {
-                        includePhrase(TBU2370_Generated)
-                        includePhrase(TBU2371_Generated)
+                        title1 {
+                            text (
+                                bokmal { + "For deg som kombinerer uføretrygd og alderspensjon" },
+                            )
+                        }
+                        paragraph {
+                            text (
+                                bokmal { + "Du mottar alderspensjon fra folketrygden. Når du kombinerer uføretrygd og alderspensjon kan disse til sammen ikke utgjøre mer enn 100 prosent." },
+                            )
+                        }
                     }
-                    includePhrase(TBU2212_Generated(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
+                    includePhrase(Ufoeretrygd.MeldeFraOmEndringer(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
                     includePhrase(Felles.RettTilAAKlage)
                     includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
                     includePhrase(Ufoeretrygd.SjekkUtbetalingene)

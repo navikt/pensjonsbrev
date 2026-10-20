@@ -5,6 +5,8 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.isNull
+import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -85,32 +87,41 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
     }
 }
 
-
 fun JobConfig.updateBrevredigeringJson() {
-    transaction {
-        val alleBrev = BrevredigeringTable.select(
-            BrevredigeringTable.id,
-            BrevredigeringTable.sistReservert,
-            BrevredigeringTable.redigertBrevKryptert,
-            BrevredigeringTable.redigertBrevKryptertHash,
-        ).toList()
-        val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
-        val kanOppdateres = alleBrev
-            .filter { it[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) ?: false }
+    val alleBrevIder = transaction {
+        BrevredigeringTable.select(BrevredigeringTable.id)
+            .where { BrevredigeringTable.saksbehandlerValg.isNull() }.map { it[BrevredigeringTable.id] }
+    }
+    val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
+    var antallOppdaterte = 0
 
-        kanOppdateres.forEach {
-            val brevId = it[BrevredigeringTable.id]
+    alleBrevIder.forEach { brevId ->
+        transaction {
+            val rad = BrevredigeringTable
+                .select(
+                    BrevredigeringTable.sistReservert,
+                    BrevredigeringTable.redigertBrevKryptert,
+                    BrevredigeringTable.redigertBrevKryptertHash
+                )
+                .where { BrevredigeringTable.id eq brevId }
+                .forUpdate(ForUpdateOption.ForUpdate)
+                .singleOrNull() ?: return@transaction
+
+            if (rad[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) == false) {
+                return@transaction
+            }
             logger.debug("Oppdaterer {}", brevId)
-            val redigertBrev = it[BrevredigeringTable.redigertBrevKryptert]
             BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) { update ->
+                val redigertBrev = rad[BrevredigeringTable.redigertBrevKryptert]
                 update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
                 update[BrevredigeringTable.redigertBrevKryptertHash] = Hash.read(redigertBrev)
             }
+            antallOppdaterte++
         }
+    }
 
-        if (alleBrev.size != kanOppdateres.size) {
-            logger.info("Oppdaterte ${kanOppdateres.size} av ${alleBrev.size} brevredigeringer med ikke-aktive reservasjoner.")
-            completed = false
-        }
+    if (alleBrevIder.size != antallOppdaterte) {
+        logger.info("Oppdaterte $antallOppdaterte av ${alleBrevIder.size} brevredigeringer med ikke-aktive reservasjoner.")
+        completed = false
     }
 }
