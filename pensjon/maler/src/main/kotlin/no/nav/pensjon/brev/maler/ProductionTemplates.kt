@@ -67,6 +67,7 @@ import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdBosattNo
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMedEndringRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMellombehandlingRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdTrygdeavtaleRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdUtlandRedigerbar
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026Auto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
@@ -146,6 +147,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingDokumentasjonFraBruker,
         InnhentingOpplysningerFraBruker,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
+        InnvilgelseUforetrygdTrygdeavtaleRedigerbar,
         InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar,
         InnvilgelseUforetrygdMedEndringRedigerbar,
         InnvilgelseUforetrygdMellombehandlingRedigerbar,
