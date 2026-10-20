@@ -38,7 +38,7 @@ object TrukketKlage : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     {
         title {
             text (bokmal { + "Bekreftelse på trukket klage" },
-                nynorsk { + "Bekreftelse på trukket klage" })
+                nynorsk { + "Stadfesting på trekt klage" })
         }
         outline {
             paragraph {
@@ -47,7 +47,7 @@ object TrukketKlage : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 text(bokmal { +"Vi har fått bekreftelse på at du trekker klagen. Vi har nå registrert klagen din som trukket i våre systemer. " },
-                    nynorsk { +"Vi har fått bekreftelse på at du trekkjer klagen. Vi har no registrert klagen din som trekt i våre system." })
+                    nynorsk { +"Vi har fått stadfesting på at du trekkjer klagen. Vi har no registrert klagen din som trekt i våre system." })
             }
         }
     }
