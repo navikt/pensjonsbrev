@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { act, renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor } from "@testing-library/react";
 import axios from "axios";
 import { type ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -16,18 +16,16 @@ function createWrapper() {
   };
 }
 
-describe.each([false, true])("useSamhandlerMottaker (DEV=%s)", (isDevelopment) => {
+describe("useSamhandlerMottaker", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    vi.stubEnv("DEV", isDevelopment);
-    vi.spyOn(axios, "get").mockResolvedValue({ data: { enabled: true } });
     vi.spyOn(axios, "post").mockImplementation(async (url) => ({
       data: url.endsWith("/hentSamhandler") ? { success: samhandler } : { adresse },
     }));
   });
 
   afterEach(() => {
-    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
   });
 
   it("fetches the organization number without fetching an address", async () => {
@@ -35,7 +33,6 @@ describe.each([false, true])("useSamhandlerMottaker (DEV=%s)", (isDevelopment) =
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({ type: "organisasjon", samhandler });
-    expect(axios.get).toHaveBeenCalledWith(expect.stringContaining("/features/samhandlerOrgnummer"));
     expect(axios.post).toHaveBeenCalledExactlyOnceWith(expect.stringContaining("/hentSamhandler"), {
       idTSSEkstern: "80000781720",
       hentDetaljert: false,
@@ -66,33 +63,6 @@ describe.each([false, true])("useSamhandlerMottaker (DEV=%s)", (isDevelopment) =
     });
   });
 
-  it.each(["disabled", "unavailable"])("keeps address behavior when the toggle is %s", async (state) => {
-    if (state === "disabled") {
-      vi.mocked(axios.get).mockResolvedValue({ data: { enabled: false } });
-    } else {
-      vi.mocked(axios.get).mockRejectedValue(new Error("Toggle unavailable"));
-    }
-    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: createWrapper() });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toEqual({ type: "adresse", adresse });
-    expect(axios.post).toHaveBeenCalledExactlyOnceWith(expect.stringContaining("/hentSamhandlerAdresse"), {
-      idTSSEkstern: "80000781720",
-    });
-  });
-
-  it("waits for the toggle before starting any recipient lookup", async () => {
-    const toggle = Promise.withResolvers<{ data: { enabled: boolean } }>();
-    vi.mocked(axios.get).mockReturnValue(toggle.promise);
-    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: createWrapper() });
-
-    expect(result.current.isPending).toBe(true);
-    expect(axios.post).not.toHaveBeenCalled();
-    await act(async () => toggle.resolve({ data: { enabled: true } }));
-    await waitFor(() => expect(result.current.data?.type).toBe("organisasjon"));
-    expect(axios.post).toHaveBeenCalledTimes(1);
-  });
-
   it.each([{ failure: "GENERISK" }, { success: null }])(
     "reports a failed lookup without falling back to an address",
     async (data) => {
@@ -107,7 +77,6 @@ describe.each([false, true])("useSamhandlerMottaker (DEV=%s)", (isDevelopment) =
   it("does not fetch without a samhandler recipient", () => {
     renderHook(() => useSamhandlerMottaker(), { wrapper: createWrapper() });
 
-    expect(axios.get).not.toHaveBeenCalled();
     expect(axios.post).not.toHaveBeenCalled();
   });
 
