@@ -38,7 +38,7 @@ object TrukketKlage : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     {
         title {
             text (bokmal { + "Bekreftelse på trukket klage" },
-                nynorsk { + "Bekreftelse på trukket klage" })
+                nynorsk { + "Stadfesting på trekt klage" })
         }
         outline {
             paragraph {
