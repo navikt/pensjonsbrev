@@ -131,6 +131,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmFjerningAvOmsorgsopptjening::class -> createVedtakOmFjerningAvOmsorgsopptjeningDto() as T
             VedtakOmInnvilgelseAvOmsorgspoeng::class -> createVedtakOmInnvilgelseAvOmsorgspoengDto() as T
             InnvilgelseUforetrygdRedigerbar::class -> createInnvilgelseUfoeretrygdDto() as T
+            InnvilgelseUforetrygdTrygdeavtaleRedigerbar::class -> createInnvilgelseUfoeretrygdTrygdeavtaleDto() as T
             InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar::class -> createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() as T
             InnvilgelseUforetrygdMedEndringRedigerbar::class -> createInnvilgelseUforetrygdMedEndringDto() as T
             OkningUforegradRedigerbar::class -> createOkningUforegradDto() as T
