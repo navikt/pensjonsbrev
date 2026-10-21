@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageins
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Yrkesskade.Avslag
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
