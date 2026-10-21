@@ -285,7 +285,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     override fun oppdaterVariabler(rendretBrev: LetterMarkup) {
         redigertBrev = redigertBrev.updateVariables(rendretBrev)
-        settRendretBrev(rendretBrev)
+        this.rendretBrev = this.rendretBrev?.updateVariables(rendretBrev)
     }
 
     override fun settRendretBrev(rendretBrev: LetterMarkup) {

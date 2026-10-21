@@ -19,10 +19,6 @@ fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
     renderedLetter.toEdit().let { rendered ->
         UpdateEditedLetter(rendered.variablesValueMap()).mergeLetter(this, rendered)
     }
-fun Edit.Letter.updateVariables(renderedLetter: LetterMarkup): Edit.Letter =
-    renderedLetter.toEdit().let { rendered ->
-        UpdateEditedLetter(rendered.variablesValueMap()).mergeLetter(this, this)
-    }
 
 
 fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Attachment): Edit.Attachment =
