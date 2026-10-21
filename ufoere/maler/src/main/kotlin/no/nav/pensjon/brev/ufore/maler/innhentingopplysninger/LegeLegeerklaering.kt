@@ -56,7 +56,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 text(bokmal { +"Erklæringen godgjøres etter honorartakst L40. " },
-                    nynorsk { +"Erklæringen godtgjøres etter honorartakst L40. " })
+                    nynorsk { +"Erklæringa blir godtgjord etter honorartakst L40. " })
             }
             paragraph {
                 text(bokmal { +"Folketrygdloven § 21-4 andre ledd gir Nav rett til å innhente nødvendige opplysninger. Dette gjelder selv om opplysningene er taushetsbelagte. Dette går frem av § 21-4 sjette ledd.  " },
