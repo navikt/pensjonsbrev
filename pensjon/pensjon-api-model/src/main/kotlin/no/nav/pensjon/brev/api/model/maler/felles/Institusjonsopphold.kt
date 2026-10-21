@@ -7,13 +7,10 @@ data class Institusjonsopphold(
     val erAnvendt: Boolean,//vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt
     val type: JustertPeriodeCode?,//vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype
     val fasteUtgifter: Kroner?,//vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter
-    val reduksjonsperioder: List<Reduksjonsperiode>//ut_forsorgeransvar_ingen_er_true
+    val reduksjonsperioder: List<Reduksjonsperiode>,//ut_forsorgeransvar_ingen_er_true
+    val allePerioderHarForsorgeransvar: Boolean,// = reduksjonsperioder.all { it.forsorgeransvar }
+    val ingenPerioderHarForsorgeransvar: Boolean// = reduksjonsperioder.none { it.forsorgeransvar }
 ) {
-    fun allePerioderHarForsorgeransvar() = reduksjonsperioder.all { it.forsorgeransvar }
-
-    fun ingenPerioderHarForsorgeransvar() = reduksjonsperioder.none { it.forsorgeransvar }
-
-    fun sistePeriodeHarForsorgeransvar() = reduksjonsperioder.maxBy {it.fomDato}.forsorgeransvar
 
     data class Reduksjonsperiode(
         val forsorgeransvar: Boolean,

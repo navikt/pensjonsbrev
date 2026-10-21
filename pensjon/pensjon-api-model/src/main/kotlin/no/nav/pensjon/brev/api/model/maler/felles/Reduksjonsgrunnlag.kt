@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api.model.maler.felles
 
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-//TODO: verifisert i prod at ingen er null
 data class Reduksjonsgrunnlag(
     val sumUtBt: Kroner,// vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumutbt
     val gradertOppjustertIFU: Kroner,// vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu

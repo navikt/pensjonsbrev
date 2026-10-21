@@ -6,7 +6,8 @@ data class Kravhode(
     val virkFom: LocalDate,
     val mottattDato: LocalDate,
     val arsak: Arsak,
-)
+    val konvertertFraUforepensjon: Boolean,
+    )
 {
     enum class Arsak {
         OMGJ_ETTER_KLAGE, OMGJ_ETTER_ANKE, ANNEN

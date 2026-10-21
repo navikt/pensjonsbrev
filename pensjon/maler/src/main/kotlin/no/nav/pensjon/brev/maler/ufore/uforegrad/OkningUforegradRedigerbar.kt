@@ -136,10 +136,10 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             val forekomstBtInnv = pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv()//OK
 
             //krav
-            val kravOnsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(localDateNow)//todo denne kan vi fjerne og bruke vedtak
+            val kravOnsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(localDateNow)
             val kravMotattDato = pe.vedtaksdata_kravhode_kravmottatdato()//OK
             val kravarsaktype = pe.vedtaksdata_kravhode_kravarsaktype()//OK
-            val konvertertup = pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()//todo denne brukes ikke mye, ligge på hver enkelt dto?
+            val konvertertup = pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()
 
             //vedtak
             val vedtakvirkfom = pe.vedtaksdata_virkningfom()//OK
@@ -170,7 +170,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             val epsBorMed = pe.sivilstand_ektefelle_partner_samboer_bormed_ut()//OK
 
             // ymse
-            val harLopendeAlderspensjon = pe.vedtaksdata_harLopendealderspensjon()//todo ligge rett på?
+            val harLopendeAlderspensjon = pe.vedtaksdata_harLopendealderspensjon()
 
 
 
