@@ -330,8 +330,8 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                 row {
                     cell {
                         text(
-                            bokmal { +"Forholdstall" },
-                            nynorsk { +"Forholdstal" },
+                            bokmal { +"AFP kompensasjonstillegg forholdstall" },
+                            nynorsk { +"AFP-kompensasjonstillegg forholdstal" },
                             english { +"AFP compensatory allowance factor" },
                         )
                     }
