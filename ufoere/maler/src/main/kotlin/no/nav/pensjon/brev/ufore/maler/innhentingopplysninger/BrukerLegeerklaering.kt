@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -27,7 +29,7 @@ object BrukerLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Brev til brukeren ved innhenting av medisinske opplysninger",
             distribusjonstype = VIKTIG,
@@ -36,23 +38,29 @@ object BrukerLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Innhenting av legeerklæring" })
+            text (bokmal { + "Innhenting av legeerklæring" },
+                nynorsk { + "Innhenting av legeerklæring" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi trenger din hjelp til å få helseopplysninger om deg fra din fastlege. " })
+                text(bokmal { +"Vi trenger din hjelp til å få helseopplysninger om deg fra din fastlege. " },
+                    nynorsk { +"Vi treng di hjelp til å få helseopplysningar om deg frå fastlegen din. " })
             }
             paragraph {
-                text(bokmal { +"Du har søkt om uføretrygd " + fritekst("(eller ung ufør/yrkesskadefordel)") + ". For at vi skal kunne behandle søknaden din " + fritekst("(eller vurdere din rett til ung ufør/yrkesskadefordel)") + ", trenger vi oppdaterte " + fritekst("(stryk ev. «oppdaterte»)") + " medisinske opplysninger. " })
+                text(bokmal { +"Du har søkt om uføretrygd " + fritekst("(eller ung ufør/yrkesskadefordel)") + ". For at vi skal kunne behandle søknaden din " + fritekst("(eller vurdere din rett til ung ufør/yrkesskadefordel)") + ", trenger vi oppdaterte " + fritekst("(stryk ev. «oppdaterte»)") + " medisinske opplysninger. " },
+                    nynorsk { +"Du har søkt om uføretrygd " + fritekst("(eller ung ufør/yrkesskadefordel)") + ". For at vi skal kunne behandle søknaden din " + fritekst("(eller vurdere din rett til ung ufør/yrkesskadefordel)") + ", treng vi oppdaterte " + fritekst("(stryk ev. «oppdaterte»)") + " medisinske opplysningar. " })
             }
             paragraph {
-                text(bokmal { +"Vi har derfor sendt brev til din fastlege " + fritekst("Navn") + " der vi har bedt om å få tilsendt legeerklæring/medisinske opplysninger. Til tross for påminnelse har vi ikke hørt noe fra din lege."})
+                text(bokmal { +"Vi har derfor sendt brev til din fastlege " + fritekst("Navn") + " der vi har bedt om å få tilsendt legeerklæring/medisinske opplysninger. Til tross for påminnelse har vi ikke hørt noe fra din lege."},
+                    nynorsk { +"Vi har derfor sendt brev til fastlegen din " + fritekst("Navn") + " der vi har bede om å få tilsendt legeerklæring/medisinske opplysningar. Til trass for påminning har vi ikkje høyrt noko frå fastlegen din." })
             }
             paragraph{
-                text(bokmal{ +"Medisinske opplysninger er nødvendig for å kunne vurdere om du fyller vilkårene for rett til uføretrygd " + fritekst("(ung ufør/yrkesskade)") + ". Vi ber deg derfor om å kontakte din lege og minne om at legeerklæring/medisinske opplysninger må sendes til Nav så snart som mulig."})
+                text(bokmal{ +"Medisinske opplysninger er nødvendig for å kunne vurdere om du fyller vilkårene for rett til uføretrygd " + fritekst("(ung ufør/yrkesskade)") + ". Vi ber deg derfor om å kontakte din lege og minne om at legeerklæring/medisinske opplysninger må sendes til Nav så snart som mulig."},
+                    nynorsk{ +"Medisinske opplysningar er naudsynt for å kunne vurdere om du fyller vilkåra for rett til uføretrygd " + fritekst("(ung ufør/yrkesskade)") + ". Vi ber deg derfor om å kontakte fastlegen din og minne om at legeerklæring/medisinske opplysningar må sendast til Nav så snart som mogleg." })
             }
             paragraph {
-                text(bokmal { +"Dersom vi ikke får " + fritekst("legeerklæringen/medisinske opplysninger") + " innen to uker, vil vi behandle saken ut fra opplysningene vi har. " })
+                text(bokmal { +"Dersom vi ikke får " + fritekst("legeerklæringen/medisinske opplysninger") + " innen to uker, vil vi behandle saken ut fra opplysningene vi har. " },
+                    nynorsk { +"Dersom vi ikkje får " + fritekst("legeerklæringen/medisinske opplysninger") + " innan to veker, vil vi behandle saka ut frå opplysningane vi har. " })
             }
 
             includePhrase(Felles.MeldFraOmEndringer)

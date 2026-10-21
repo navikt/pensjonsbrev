@@ -13,6 +13,7 @@ enum class FeatureToggles(private val key: String) {
     brevmalAvslagGjenlevendepensjonUtland("brevmalAvslagGjenlevendepensjonUtland"),
     brevmalAvslagUfoerepensjon("brevmalAvslagUfoerepensjon"),
     brevmalInnvilgelseGjenlevendepensjonBosattNorgeEtterUtland("brevmalInnvilgelseGjenlevendepensjonBosattNorgeEtterUtland"),
+    brevmalKlageBeslutningOmAaIkkeGjoereOmVedtaketUT("brevmalKlageBeslutningOmAaIkkeGjoereOmVedtaketUT"),
     brevmalKlageBegrunnelseForVedtakUT("brevmalKlageBegrunnelseForVedtakUT"),
     brevmalKlageInnhentingAvOpplysningerUT("brevmalKlageInnhentingAvOpplysningerUT"),
     brevmalKlageOrienteringOmOversendelseTilKlageinstans("klageOrienteringOmOversendelseTilKlageinstans"),
