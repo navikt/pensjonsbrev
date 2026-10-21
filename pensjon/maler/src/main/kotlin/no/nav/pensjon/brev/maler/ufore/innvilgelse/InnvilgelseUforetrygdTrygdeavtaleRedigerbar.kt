@@ -122,6 +122,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             }
         }
 
+        // TODO: Her kan vi nok ikke bruke nasjonal varianten, men trenger å hensynta rettighet som ung ufør. Vi tar ikke med klage-varianten her!
         outline {
             includePhrase(Innvilgelse.InnvilgetSoeknad(
                 ungUforResultat = ungUforResultat,
@@ -344,17 +345,11 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             }.orShowIf(paragraf_12_2_tredje_ledd) {
                 paragraph {
                     text(
-                        bokmal { + "Du har ikke sammenhengende trygdetid i Norge og utlandet de siste fem årene fram til uføretidspunktet, og fyller fortsatt ikke hovedregelen om forutgående medlemskap. Du fyller imidlertid en unntaksregel om medlemskap gjennom sammenlegging, fordi du har en opptjening i Norge og i utlandet før du ble ufør som " + fritekst("til sammen svarer til minst halvparten av full minsteytelse/utgjør minst 20 års trygdetid. Du har 19 år og X måneder med trygdetid, noe som rundes opp til 20 år.") },
-                        nynorsk { + "Du har ikkje samanhengande trygdetid i Noreg og utlandet dei siste fem åra fram til uføretidspunktet, og fyller framleis ikkje hovudregelen om førehandsgodkjent medlemskap. Du fyller likevel ei unntaksregel om medlemskap gjennom samanslåing, fordi du har ei opptening i Noreg og i utlandet før du vart ufør som " + fritekst("til saman svarar til minst halvparten av full minsteyting/utgjer minst 20 års trygdetid. Du har 19 år og X månader med trygdetid, noko som rundast opp til 20 år.") },
+                        bokmal { + "Du har ikke sammenhengende trygdetid i Norge og utlandet de siste fem årene fram til uføretidspunktet, og fyller fortsatt ikke hovedregelen om forutgående medlemskap. Du fyller imidlertid en unntaksregel om medlemskap gjennom sammenlegging, fordi du har en opptjening i Norge og i utlandet før du ble ufør som til sammen " + fritekst("svarer til minst halvparten av full minsteytelse/utgjør minst 20 års trygdetid. Du har 19 år og X måneder med trygdetid, noe som rundes opp til 20 år.") },
+                        nynorsk { + "Du har ikkje samanhengande trygdetid i Noreg og utlandet dei siste fem åra fram til uføretidspunktet, og fyller framleis ikkje hovudregelen om førehandsgodkjent medlemskap. Du fyller likevel ei unntaksregel om medlemskap gjennom samanslåing, fordi du har ei opptening i Noreg og i utlandet før du vart ufør som til saman " + fritekst("svarar til minst halvparten av full minsteyting/utgjer minst 20 års trygdetid. Du har 19 år og X månader med trygdetid, noko som rundast opp til 20 år.") },
                     )
                 }
             }
-
-
-            // TODO: Når skal klage-tekst vises?
-            includePhrase(Innvilgelse.InnvilgetEtterKlage(
-                kravarsak = kravarsak,
-            ))
 
             paragraph {
                 text(
@@ -382,12 +377,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 ungUforResultat = ungUforResultat,
                 pe = pe,
                 vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
-            ))
-
-            includePhrase(Innvilgelse.UnntaksregelMedlemskap(
-                pe = pe,
-                yrkesskadeResultat = yrkesskadeResultat,
-                ungUforResultat = ungUforResultat,
             ))
 
             includePhrase(Innvilgelse.YrkesskadeEllerYrkessykdom(
@@ -490,6 +479,8 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 pe = pe,
             ))
 
+
+            // TODO: Må ha inn informasjon: Omgjøring til gunst - antagelig saksbehandlervalg
             includePhrase(Innvilgelse.EtterbetalingUforetrygd(
                 pe = pe,
                 uforegrad = uforegrad,
