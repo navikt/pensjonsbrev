@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OP
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDto
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_URL
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -41,6 +40,11 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
     )
     {
         val ikkeMottattInntektsskjema = saksbehandlervalg("ikkeMottattInntektsskjema", "Ikke mottatt inntektsskjema").bool()
+        val beOmPersonligeSelvangivelser = saksbehandlervalg("beOmPersonligeSelvangivelser", "Dine personlige selvangivelser").bool()
+        val beOmNaeringsspesifiskasjon = saksbehandlervalg("beOmNaeringsspesifiskasjon", "Næringsspesifikasjon levert i Altinn").bool()
+        val beOmNaeringsoppgaver = saksbehandlervalg("beOmNaeringsoppgaver", "Næringsoppgave (gjelder kun før 2021)").bool()
+        val beOmPersoninntektsskjema = saksbehandlervalg("beOmPersoninntektsskjema", "Personinntektsskjema (kun selvstendig næringsdrivende før 2022)").bool()
+        val beOmForelopigResultatregnskap = saksbehandlervalg("beOmForelopigResultatregnskap", "Foreløpig resultatregnskap og fremtidig PGI").bool()
 
         title {
             text (bokmal { + "Vi trenger opplysninger om dine næringsinntekter " },
@@ -76,29 +80,47 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                 text(bokmal { +"Dersom selskapet er avsluttet, så ber vi om dokumentasjon på dette; gjerne i form av melding om sletting fra Brønnøysundregisteret. " },
                     nynorsk { +"Dersom selskapet er avslutta, så ber vi om dokumentasjon på dette; gjerne i form av melding om sletting frå Brønnøysundregisteret. " })
             }
-            paragraph {
-                text(bokmal { +"Dersom selskapet ikke er avsluttet og slettet, så ber vi om: " },
-                    nynorsk { +"Dersom selskapet ikkje er avslutta og sletta, så ber vi om: " })
-                list {
-                    item {
-                        text(bokmal { + "Dine personlige selvangivelser for årene " + fritekst("fom-tom") },
-                            nynorsk { + "Dine personlege sjølvmeldingar for åra " + fritekst("fom-tom") })
-                    }
-                    item {
-                        text(bokmal { + "Næringsspesifikasjon levert i Altinn/skatteetaten fra " + fritekst("år") + ", og:" },
-                            nynorsk { + "Næringsspesifikasjon levert i Altinn/skatteetaten frå " + fritekst("år") + ", og:" })
-                    }
-                    item {
-                        text(bokmal { + "Næringsoppgaver for årene " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") },
-                            nynorsk { + "Næringsoppgåver for åra " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") })
-                    }
-                    item {
-                        text(bokmal { + "Personinntektsskjema for " + fritekst("fom-tom (Gjelder kun selvstendig næringsdrivende, og brukes ikke etter 2022)") },
-                            nynorsk { + "Personinntektsskjema for " + fritekst("fom-tom (Gjelder kun sjølvstendig næringsdrivande, og brukes ikkje etter 2022)") })
-                    }
-                    item {
-                        text(bokmal { + "Foreløpig resultatregnskap hittil i år og forventet fremtidig pensjonsgivende inntekt" },
-                            nynorsk { + "Førebels resultatrekneskap hittil i år og forventa framtidig pensjonsgjevande inntekt" })
+            showIf(beOmPersonligeSelvangivelser or beOmNaeringsspesifiskasjon or beOmNaeringsoppgaver or beOmPersoninntektsskjema or beOmForelopigResultatregnskap) {
+                paragraph {
+                    text(
+                        bokmal { +"Dersom selskapet ikke er avsluttet og slettet, så ber vi om: " },
+                        nynorsk { +"Dersom selskapet ikkje er avslutta og sletta, så ber vi om: " })
+                    list {
+                        showIf(beOmPersonligeSelvangivelser) {
+                            item {
+                                text(
+                                    bokmal { +"dine personlige selvangivelser for årene " + fritekst("fom-tom") },
+                                    nynorsk { +"dine personlege sjølvmeldingar for åra " + fritekst("fom-tom") })
+                            }
+                        }
+                        showIf(beOmNaeringsspesifiskasjon) {
+                            item {
+                                text(
+                                    bokmal { +"næringsspesifikasjon levert i Altinn/skatteetaten fra " + fritekst("år") },
+                                    nynorsk { +"næringsspesifikasjon levert i Altinn/skatteetaten frå " + fritekst("år") })
+                            }
+                        }
+                        showIf(beOmNaeringsoppgaver) {
+                            item {
+                                text(
+                                    bokmal { +"næringsoppgaver for årene " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") },
+                                    nynorsk { +"næringsoppgåver for åra " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") })
+                            }
+                        }
+                        showIf(beOmPersoninntektsskjema) {
+                            item {
+                                text(
+                                    bokmal { +"personinntektsskjema for " + fritekst("fom-tom (Gjelder kun selvstendig næringsdrivende, og brukes ikke etter 2022)") },
+                                    nynorsk { +"personinntektsskjema for " + fritekst("fom-tom (Gjelder kun sjølvstendig næringsdrivande, og brukes ikkje etter 2022)") })
+                            }
+                        }
+                        showIf(beOmForelopigResultatregnskap) {
+                            item {
+                                text(
+                                    bokmal { +"foreløpig resultatregnskap hittil i år og forventet fremtidig pensjonsgivende inntekt" },
+                                    nynorsk { +"førebels resultatrekneskap hittil i år og forventa framtidig pensjonsgjevande inntekt" })
+                            }
+                        }
                     }
                 }
             }
