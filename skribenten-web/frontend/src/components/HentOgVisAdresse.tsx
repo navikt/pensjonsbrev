@@ -68,15 +68,15 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
         <>
           {samhandlerMottaker.isPending && <AdresseSkeleton withTitle={properties.showMottakerTitle} />}
           {samhandlerMottaker.error && <ApiError error={samhandlerMottaker.error} title="Fant ikke mottaker" />}
-          {samhandlerMottaker.data?.type === "organisasjon" && (
+          {samhandlerMottaker.data?.samhandler.organisasjonsnummer && (
             <AdresseVisning
-              adresselinjer={[samhandlerMottaker.data.samhandler.offentligId]}
+              adresselinjer={[samhandlerMottaker.data.samhandler.organisasjonsnummer]}
               navn={samhandlerMottaker.data.samhandler.navn}
               tags={[MOTTAKER_TAG_SAMHANDLER]}
               withTitle={properties.showMottakerTitle}
             />
           )}
-          {samhandlerMottaker.data?.type === "adresse" && (
+          {samhandlerMottaker.data?.adresse && (
             <ResolvedAdresse
               adresse={samhandlerMottaker.data.adresse}
               erSamhandler
