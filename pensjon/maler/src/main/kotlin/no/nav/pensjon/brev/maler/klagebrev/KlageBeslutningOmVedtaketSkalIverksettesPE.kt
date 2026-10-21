@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -30,18 +31,77 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
-        title { text(bokmal { +"Beslutning om at vedtak " + fritekst("dato") + " skal iverksettes" }) }
+        val iverksettes = saksbehandlervalg("iverksettes", "Vedtaket skal iverksettes").bool()
+        val oekonomiskeForhold =
+            saksbehandlervalg("oekonomiskeForhold", "Økonomiske forhold kan ikke vektlegges").bool()
+
+        title {
+            text(bokmal { +"Vi har besluttet at vedtaket " })
+            showIf(iverksettes) {
+                text(bokmal { +"skal " })
+            }.orShow {
+                text(bokmal { +"skal ikke " })
+            }
+            text(bokmal { +"iverksettes" })
+        }
 
         outline {
 
             paragraph {
                 text(bokmal {
-                    +"Nav har besluttet at vedtak "
-                    +fritekst("dato") + " skal iverksettes. "
-                    +"Vedtaket vil derfor bli gjennomført som planlagt."
+                    +"Du har bedt om at vedtak datert "
+                    +fritekst("dato") + " ikke iverksettes før "
+                    +fritekst("klagefristen er ute / klagen er avgjort") + "."
                 })
             }
-        }
+            paragraph {
+                text(bokmal { +"Søknaden er " })
+                showIf(iverksettes) {
+                    text(bokmal { +"avslått." })
+                }.orShow {
+                    text(bokmal { +"innvilget." })
+                }
+            }
 
+            title1 { text(bokmal { +"Rettslig grunnlag" }) }
+            paragraph {
+                text(bokmal {
+                    +"En klage har som hovedregel ikke oppsettende virkning. "
+                    +"Dette innebærer at vedtaket skal gjennomføres, selv om du klager på det."
+                })
+            }
+            paragraph {
+                text(bokmal {
+                    +"Vedtaksorganet kan likevel beslutte at vedtaket ikke skal iverksettes før klagefristen er ute, "
+                    +"eller klagen er avgjort. Det følger av forvaltningsloven § 42."
+                })
+            }
+            paragraph {
+                text(bokmal {
+                    +"I vurderingen av om vedtaket likevel skal gis oppsettende virkning, "
+                    +"skal det legges vekt på hva som antas å bli utfallet av klagebehandlingen. "
+                })
+                showIf(oekonomiskeForhold) {
+                    text(bokmal {
+                        +"Økonomiske forhold kan som hovedregel ikke vektlegges i vurderingen av om vedtaket skal gis oppsettende virkning."
+                    })
+                }
+            }
+
+            title1 { text(bokmal { +"Vurdering og konklusjon" }) }
+            paragraph{
+                text(bokmal {
+                    +fritekst("Skriv en konkret begrunnelse med utgangspunkt i rettslig grunnlag. "
+                            +"Aktuelle momenter: hva klagen er begrunnet med, "
+                            +"hvor sannsynlig det er at klagen vil medføre omgjøring av det påklagede vedtaket m.m.")
+                })
+            }
+            paragraph{
+                text(bokmal {
+                    +"Vi mener at det ikke er tilstrekkelig grunnlag // er grunnlag for å utsette iverksettelse av vedtaket vårt av <dato> fram til klagen er endelig avgjort."
+                })
+            }
+
+        }
     }
-}
+    }
