@@ -81,7 +81,7 @@ object FlereOpplysningerFirmaInntekt : RedigerbarTemplate<EmptyRedigerbarBrevdat
                     item {text(bokmal { +"Beskriv dine arbeidsoppgaver som styremedlem, samt uttak av styrehonorar." },
                         nynorsk { +"Skildre arbeidsoppgåvene dine som styremedlem, samt uttak av styrehonorar." }) }
                     item {text(bokmal { +"Hvor mye forventer du å tjene fremover? Her er det viktig at alle inntekter oppgis, både pensjonsgivende og kapital-inntekter." },
-                        nynorsk { +"Kor mykje forventar du å tene framover? Her er det viktig at alle inntekter oppgjevast, både pensjonsgjevande og kapital-inntekter." }) }
+                        nynorsk { +"Kor mykje forventar du å tene framover? Her er det viktig at alle inntekter blir oppgjevne, både pensjonsgjevande og kapital-inntekter." }) }
                     item {text(bokmal { +"Skal du eller andre ta ut utbytte fra firmaet? Eventuelt hvor mye forventer du at det tas ut i " + fritekst("år") + "?" },
                         nynorsk { +"Skal du eller andre ta ut utbyte frå firmaet? Eventuelt kor mykje forventar du at det vert teke ut i " + fritekst("år") + "?" }) }
                 }
