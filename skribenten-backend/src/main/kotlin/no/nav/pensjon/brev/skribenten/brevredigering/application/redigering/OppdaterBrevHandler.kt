@@ -48,6 +48,7 @@ class OppdaterBrevHandler(
                 rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
             } else {
                 brev.oppdaterVariabler(rendretBrev.markup)
+                brev.oppdaterVariablerIVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
             }
 
             success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = endretHash))

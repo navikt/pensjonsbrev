@@ -78,6 +78,33 @@ class UpdateVariablesTest {
     }
 
     @Test
+    fun `oppdaterer variabler i vedlegg uten aa ta inn strukturelle endringer`() {
+        fun vedlegg(tittel: String, verdi: String, vararg ekstra: Edit.Block, deleted: List<Int> = emptyList()) =
+            Edit.Attachment(
+                title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(1, "Vedlegg "), Variable(id = 2, text = tittel))),
+                blocks = editLetterBlocks {
+                    paragraph(id = 10) {
+                        literal(id = 11, text = "Beløp: ")
+                        variable(id = 12, text = verdi)
+                    }
+                } + ekstra,
+                deletedBlocks = deleted,
+                includeSakspart = true,
+            )
+
+        val edited = vedlegg("gammel", "100 kr", deleted = listOf(20))
+        val rendered = vedlegg(
+            "ny", "200 kr",
+            *editLetterBlocks {
+                paragraph(id = 20) { literal(id = 21, text = "slettet avsnitt") }
+                paragraph(id = 30) { literal(id = 31, text = "nytt avsnitt i malen") }
+            }.toTypedArray(),
+        ).copy(includeSakspart = false).toMarkup()
+
+        assertEquals(vedlegg("ny", "200 kr", deleted = listOf(20)), edited.updateVariables(rendered))
+    }
+
+    @Test
     fun `variabel som mangler i rendret brev beholdes med gammel verdi`() {
         val edited = editedLetter {
             paragraph(id = 1) { variable(id = 11, text = "gammel verdi") }

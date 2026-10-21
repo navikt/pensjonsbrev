@@ -95,6 +95,7 @@ interface Brevredigering {
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
     fun settBrevmalHash(stableHashCode: StableHashCode)
     fun oppdaterVariabler(rendretBrev: LetterMarkup)
+    fun oppdaterVariablerIVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
 }
 
 class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredigering {
@@ -296,6 +297,13 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
             hentRedigertVedlegg(vedleggId)
                 ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg)) }
+        }
+    }
+
+    override fun oppdaterVariablerIVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
+        rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
+            hentRedigertVedlegg(vedleggId)
+                ?.let { settRedigertVedlegg(vedleggId, it.updateVariables(rendretVedlegg)) }
         }
     }
 

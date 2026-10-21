@@ -12,6 +12,14 @@ fun Edit.Letter.updateVariables(renderedLetter: LetterMarkup): Edit.Letter =
         UpdateVariables(rendered.variablesValueMap() + rendered.title.variablesValueMap()).updateLetter(this)
     }
 
+/**
+ * Same as [Edit.Letter.updateVariables], but for an edited attachment.
+ */
+fun Edit.Attachment.updateVariables(renderedAttachment: LetterMarkup.Attachment): Edit.Attachment =
+    renderedAttachment.toEdit().let { rendered ->
+        UpdateVariables(rendered.variablesValueMap() + rendered.title.variablesValueMap()).updateAttachment(this)
+    }
+
 private fun Edit.Title.variablesValueMap(): Map<Int, String> =
     text.filterIsInstance<Edit.ParagraphContent.Text.Variable>().mapNotNull { v -> v.id?.let { it to v.text } }.toMap()
 
@@ -19,9 +27,18 @@ private fun Edit.Title.variablesValueMap(): Map<Int, String> =
 private class UpdateVariables(private val variableValues: Map<Int, String>) {
     fun updateLetter(letter: Edit.Letter): Edit.Letter =
         letter.copy(
-            title = letter.title.copy(text = letter.title.text.map(::update)),
+            title = update(letter.title),
             blocks = letter.blocks.map(::update),
         )
+
+    fun updateAttachment(attachment: Edit.Attachment): Edit.Attachment =
+        attachment.copy(
+            title = update(attachment.title),
+            blocks = attachment.blocks.map(::update),
+        )
+
+    private fun update(title: Edit.Title): Edit.Title =
+        title.copy(text = title.text.map(::update))
 
     private fun update(block: Edit.Block): Edit.Block =
         when (block) {
