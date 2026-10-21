@@ -54,4 +54,38 @@ describe("paste across list and table boundaries", () => {
       expect(tailBlock.content[0]).toMatchObject({ id: 20, parentId: 1 });
     }
   });
+
+  test.each(["<p></p>", "<p>after</p>", "<table><tr><td>next</td></tr></table>"])(
+    "an empty-cell table survives before a list when followed by %s",
+    (afterTable) => {
+      const state = letter(
+        paragraph({
+          id: 1,
+          content: [
+            literal({ id: 2, text: "before" }),
+            itemList({ id: 10, items: [item(literal("a")), item(literal("b"))] }),
+          ],
+        }),
+      );
+      const result = Actions.paste(
+        state,
+        { blockIndex: 0, contentIndex: 1, itemIndex: 0, itemContentIndex: 0 },
+        0,
+        new MockDataTransfer({ "text/html": `<table><tr><td></td></tr></table>${afterTable}` }),
+      );
+
+      expect(projectLetter(result)).toEqual([
+        "P: before",
+        "TABLE",
+        "  th: ",
+        ...(afterTable.includes("after") ? ["P: after"] : afterTable.includes("next") ? ["TABLE", "  th: next"] : []),
+        "• a",
+        "• b",
+      ]);
+      expect(result.redigertBrev.blocks[0].id).toBe(1);
+      expect(result.redigertBrev.blocks[0].deletedContent).toContain(10);
+      expect(isValidIndex(result.redigertBrev, result.focus)).toBe(true);
+      expect(result.saveStatus).toBe("DIRTY");
+    },
+  );
 });

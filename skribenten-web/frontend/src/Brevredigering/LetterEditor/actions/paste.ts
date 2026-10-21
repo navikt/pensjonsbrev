@@ -666,8 +666,14 @@ function focusNewBlockAfter(
   const afterIndex = { blockIndex, contentIndex: contentIndex + 1 };
 
   if (isLiteral(block.content[afterIndex.contentIndex])) {
-    draft.focus = { ...afterIndex, cursorPosition: 0 };
-    splitRecipe(draft, afterIndex, 0);
+    const content = removeElements(afterIndex.contentIndex, block.content.length, block);
+    addElements(
+      [newParagraph({ content, deletedContent: [...block.deletedContent] })],
+      blockIndex + 1,
+      blocks,
+      draft.redigertBrev.deletedBlocks,
+    );
+    draft.focus = { blockIndex: blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
     return undefined;
   }
 
@@ -693,7 +699,13 @@ function removeCursorParagraphBefore(draft: Draft<LetterEditorState>, trailingBl
   const blocks = draft.redigertBrev.blocks;
   const cursorBlock = blocks[focus.blockIndex];
   if (!isBlockContentIndex(focus) || focus.blockIndex === 0 || blocks[focus.blockIndex + 1] !== trailingBlock) return;
-  if (!isParagraph(cursorBlock) || cursorBlock.id !== null || !isEmptyBlock(cursorBlock)) return;
+  if (
+    !isParagraph(cursorBlock) ||
+    cursorBlock.id !== null ||
+    !cursorBlock.content.every(isLiteral) ||
+    !isEmptyBlock(cursorBlock)
+  )
+    return;
 
   const previousBlock = blocks[focus.blockIndex - 1];
   const lastContent = previousBlock.content.at(-1);
