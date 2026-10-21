@@ -13,7 +13,7 @@ import {
 } from "~/types/brev";
 import { type AnyBlock, type EditedLetter, type Sakspart, type Signatur, type Title } from "~/types/brevbakerTypes";
 import { type Nullable } from "~/types/Nullable";
-import {BrevmalendringType} from "~/types/skribenten-api";
+import { type BrevmalendringType } from "~/types/skribenten-api";
 
 export const brevResponse = ({
   info = brevInfo(),
@@ -21,7 +21,7 @@ export const brevResponse = ({
   redigertBrevHash = "redigertBrevHash",
   saksbehandlerValg = {},
   valgteVedlegg = null,
-  brevmalEndret = 'INGEN_ENDRING',
+  brevmalEndret = "INGEN_ENDRING",
 }: {
   info?: BrevInfo;
   redigertBrev?: EditedLetter;
