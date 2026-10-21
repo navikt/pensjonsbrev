@@ -2,7 +2,7 @@ package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
-import no.nav.pensjon.brev.template.StableHashCode
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*

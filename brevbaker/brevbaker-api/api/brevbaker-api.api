@@ -34,6 +34,20 @@ public final class no/nav/brev/brevbaker/PDFRequest {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/brev/brevbaker/StableHashCode {
+	public static final synthetic fun box-impl (I)Lno/nav/brev/brevbaker/StableHashCode;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public final fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
 public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no/nav/pensjon/brev/api/model/maler/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Ljava/util/Map;Lno/nav/pensjon/brev/api/model/maler/BestillRedigerbartBrevRequest;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -178,39 +192,6 @@ public final class no/nav/pensjon/brev/api/model/maler/BestillRedigerbartBrevReq
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/BrevRequest {
-}
-
-public abstract interface class no/nav/pensjon/brev/template/StableHash {
-	public static final field Companion Lno/nav/pensjon/brev/template/StableHash$Companion;
-	public abstract fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/StableHash$Companion {
-	public final fun hash (Lno/nav/pensjon/brev/template/StableHash;[Lno/nav/pensjon/brev/template/StableHash;)I
-	public final fun of (Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/lang/Number;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/lang/String;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/time/LocalDate;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/util/List;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Ljava/util/Map;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Lno/nav/pensjon/brev/template/StableHash;[Lno/nav/pensjon/brev/template/StableHash;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun of (Z)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun ofStringMap (Ljava/util/Map;)Lno/nav/pensjon/brev/template/StableHash;
-	public final fun with (Lno/nav/pensjon/brev/template/StableHash;Ljava/lang/String;)Lno/nav/pensjon/brev/template/StableHash;
-}
-
-public final class no/nav/pensjon/brev/template/StableHashCode {
-	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brev/template/StableHashCode;
-	public static fun constructor-impl (I)I
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (ILjava/lang/Object;)Z
-	public static final fun equals-impl0 (II)Z
-	public final fun getValue ()I
-	public fun hashCode ()I
-	public static fun hashCode-impl (I)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (I)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()I
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode : no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
@@ -530,7 +511,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupW
 	public abstract fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public abstract fun getLetterDataUsage ()Ljava/util/Set;
 	public abstract fun getMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public abstract fun getStableHashCode-PA3luIY ()Lno/nav/pensjon/brev/template/StableHashCode;
+	public abstract fun getStableHashCode-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage$Property {

@@ -90,7 +90,3 @@ private class StringMapStableHash<K : StableHash?>(val map: Map<K, String>) : St
 
 private fun Iterable<StableHash?>.stableHashCode(initial: Int): Int =
     fold(initial) { hash, e -> 31 * hash + (e?.stableHashCode() ?: 0) }
-
-
-@JvmInline
-value class StableHashCode(val value: Int)

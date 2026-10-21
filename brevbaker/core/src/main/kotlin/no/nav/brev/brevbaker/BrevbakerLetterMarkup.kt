@@ -19,7 +19,6 @@ import no.nav.brev.brevbaker.markup.outline.Text as MarkupText
 import no.nav.brev.brevbaker.markup.dsl.extended.dataUsageProperty
 import no.nav.brev.brevbaker.markup.dsl.extended.letterMarkupExtended
 import no.nav.brev.brevbaker.markup.dsl.extended.letterMarkupWithDataUsage
-import no.nav.pensjon.brev.template.StableHashCode
 
 internal object BrevbakerLetterMarkup {
     fun <T : BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup = Letter2Markup.renderLetterOnly(letter.toScope(), letter.template)
