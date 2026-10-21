@@ -193,14 +193,6 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
         }
     }
 
-    title2 {
-        text(
-            bokmal { +"Slik har vi beregnet din AFP" },
-            nynorsk { +"Slik har vi berekna AFP-en din" },
-            english { +"How we calculated your AFP" },
-        )
-    }
-
     paragraph {
         text(
             bokmal { +"AFP livsvarig del: " },
@@ -252,8 +244,8 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
         showIf(brutto.greaterThan(0)) {
             paragraph {
                 text(
-                    bokmal { +"Kompensasjonstillegg:" },
-                    nynorsk { +"Kompensasjonstillegg:" },
+                    bokmal { +"Kompensasjonstillegg: " },
+                    nynorsk { +"Kompensasjonstillegg: " },
                     english { +"AFP compensatory allowance: " },
                     fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
@@ -326,8 +318,8 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                 row {
                     cell {
                         text(
-                            bokmal { +"Referansebeløp" },
-                            nynorsk { +"Referansebeløp" },
+                            bokmal { +"AFP kompensasjonstillegg referansebeløp" },
+                            nynorsk { +"AFP-kompensasjonstillegg referansebeløp" },
                             english { +"AFP compensatory allowance reference amount" },
                         )
                     }
