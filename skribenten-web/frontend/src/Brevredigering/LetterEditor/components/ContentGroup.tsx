@@ -335,8 +335,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   }, [
     text,
     shouldBeFocused,
-    editorState.focus.cursorPosition,
-    editorState.focus.selectAll,
+    // A successful replacement can change focus without changing its cursor offset or the displayed text.
+    editorState.focus,
     freeze,
     setEditorState,
     erFritekst,
@@ -698,7 +698,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
 
         applyAction(Actions.pasteReplacingSelection, setEditorState, selection, event.clipboardData);
-        globalThis.getSelection()?.removeAllRanges();
       }
     }
   };
