@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
 
 import no.nav.pensjon.brev.skribenten.Features
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -41,7 +42,8 @@ class HentBrevHandler(
                     brev.oppdaterVariabler(rendretBrev.markup)
                     brev.oppdaterVariablerIVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
                 }
-                success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = endretHash))
+                val brevmalendringType = if (endretHash) BrevmalendringType.MARKUP_ENDRET else BrevmalendringType.INGEN_ENDRING
+                success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = brevmalendringType))
             }
         }
 }

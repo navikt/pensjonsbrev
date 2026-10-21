@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
@@ -31,11 +32,10 @@ class TilbakestillBrevHandler(
             val pesysdata = brevdataService.hentBrevdata(brev)
             val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
             brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), PrincipalInContext.require().navIdent)
-            val endretHash = rendretBrev.stableHashCode != brev.brevmalHash
             rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
             brev.settRendretBrev(rendretBrev.markup)
             brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
-            success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = endretHash))
+            success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = BrevmalendringType.NY_MARKUP))
         }
 }

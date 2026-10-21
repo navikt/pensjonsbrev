@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.model
 import com.fasterxml.jackson.annotation.*
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
@@ -125,7 +126,7 @@ object Api {
         val saksbehandlerValg: SaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
-        val brevmalEndret: Boolean,
+        val brevmalEndret: BrevmalendringType,
     )
 
     data class ReservasjonResponse(

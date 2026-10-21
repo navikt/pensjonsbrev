@@ -182,10 +182,17 @@ class Brevtilgang(
 class BrevScope(val brev: BrevredigeringEntity, private val brevreservasjonPolicy: BrevreservasjonPolicy) {
     fun BrevredigeringEntity.tilDto(
         coverage: Set<LetterMarkupWithDataUsage.Property>? = null,
-        brevmalEndret: Boolean = false,
+        brevmalEndret: BrevmalendringType = BrevmalendringType.INGEN_ENDRING,
     ): Dto.Brevredigering =
         toDto(brevreservasjonPolicy, coverage, brevmalEndret)
 
     fun BrevredigeringEntity.tilBrevInfo(): Dto.BrevInfo =
         toBrevInfo(brevreservasjonPolicy)
+}
+
+enum class BrevmalendringType {
+    INGEN_ENDRING,
+    NY_MARKUP,
+    MARKUP_ENDRET,
+    KUNNE_IKKE_OPPDATERE_ALLE_VEDLEGG
 }

@@ -3917,6 +3917,11 @@ export interface components {
             melding: string;
             tittel: string;
         };
+        /**
+         * BrevmalendringType
+         * @enum {string}
+         */
+        BrevmalendringType: "INGEN_ENDRING" | "NY_MARKUP" | "MARKUP_ENDRET" | "KUNNE_IKKE_OPPDATERE_ALLE_VEDLEGG";
         /** LetterMarkupWithDataUsageProperty */
         LetterMarkupWithDataUsageProperty: {
             propertyName: string;
@@ -4158,7 +4163,7 @@ export interface components {
         };
         /** ApiBrevResponse */
         ApiBrevResponse: {
-            brevmalEndret: boolean;
+            brevmalEndret: components["schemas"]["BrevmalendringType"];
             info: components["schemas"]["ApiBrevInfo"];
             propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
             redigertBrev: components["schemas"]["EditLetter"];
@@ -4727,6 +4732,7 @@ export type ApiBrevInfo = components['schemas']['ApiBrevInfo'];
 export type SaksbehandlervalgVerdi = components['schemas']['SaksbehandlervalgVerdi'];
 export type ApiOpprettBrevRequest = components['schemas']['ApiOpprettBrevRequest'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
+export type BrevmalendringType = components['schemas']['BrevmalendringType'];
 export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
 export type Listetype = components['schemas']['Listetype'];
 export type EditParagraphContentTextFontType = components['schemas']['EditParagraphContentTextFontType'];

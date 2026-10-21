@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
@@ -91,6 +92,6 @@ class OpprettBrevHandler(
                 brev.settMottaker(request.mottaker, pesysData.felles.annenMottakerNavn)
             }
 
-            success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage, brevmalEndret = true))
+            success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage, brevmalEndret = BrevmalendringType.NY_MARKUP))
         }
 }

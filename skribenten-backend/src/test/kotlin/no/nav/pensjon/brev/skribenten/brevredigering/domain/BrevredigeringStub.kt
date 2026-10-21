@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.domain
 import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -66,7 +67,7 @@ open class BrevredigeringStub : Brevredigering {
     override fun toDto(
         brevreservasjonPolicy: BrevreservasjonPolicy,
         coverage: Set<LetterMarkupWithDataUsage.Property>?,
-        brevmalEndret: Boolean,
+        brevmalEndret: BrevmalendringType,
     ): Dto.Brevredigering = notYetStubbed()
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
     override fun settBrevmalHash(stableHashCode: StableHashCode) = notYetStubbed()

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.domain
 import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -90,7 +91,7 @@ interface Brevredigering {
     fun toDto(
         brevreservasjonPolicy: BrevreservasjonPolicy,
         coverage: Set<LetterMarkupWithDataUsage.Property>?,
-        brevmalEndret: Boolean,
+        brevmalEndret: BrevmalendringType,
     ): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
     fun settBrevmalHash(stableHashCode: StableHashCode)
@@ -421,7 +422,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override fun toDto(
         brevreservasjonPolicy: BrevreservasjonPolicy,
         coverage: Set<LetterMarkupWithDataUsage.Property>?,
-        brevmalEndret: Boolean,
+        brevmalEndret: BrevmalendringType,
     ): Dto.Brevredigering =
         Dto.Brevredigering(
             info = toBrevInfo(brevreservasjonPolicy),
