@@ -43,7 +43,7 @@ object AntattDod : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         outline {
             paragraph {
                 text(bokmal { +"Vi har fått melding om at " + fritekst("Navn") + " kan være antatt død. Vi har ikke fått en formell dødsmelding fra folkeregisteret, og derfor er vi usikre på om informasjonen vi har fått er riktig. " },
-                    nynorsk { +"Vi har fått melding om at " + fritekst("Navn") + " kan vere antatt død. Vi har ikkje fått ei formell dødsmelding frå folkeregisteret, og derfor er vi usikre på om informasjonen vi har fått er riktig. " })
+                    nynorsk { +"Vi har fått melding om at " + fritekst("Navn") + " truleg kan vere død. Vi har ikkje fått ei formell dødsmelding frå folkeregisteret, og derfor er vi usikre på om informasjonen vi har fått er riktig. " })
             }
             paragraph {
                 text(bokmal { +"Hvis informasjonen vi har fått er feil, må du legitimere deg på et Nav-kontor eller sende inn en leveattest stemplet på norsk utenriksstasjon snarest, og senest " + fritekst("Dato") + ". Hvis vi ikke får en bekreftelse på at du lever, vil uføretrygden din opphøre etter folketrygdloven §§ 21-7 og 22-12. " },
