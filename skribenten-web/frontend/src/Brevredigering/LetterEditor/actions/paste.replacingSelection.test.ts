@@ -281,6 +281,32 @@ describe("Actions.pasteReplacingSelection", () => {
       expect(result.redigertBrev).toEqual(state.redigertBrev);
     });
 
+    test.each(["<table></table>", "<table />", "<table><tr></tr></table>"])(
+      "a table without cells falls back to text/plain: %s",
+      (html) => {
+        const state = letter(paragraph([literal({ text: "Hello World" })]));
+
+        const result = Actions.pasteReplacingSelection(
+          state,
+          selectHello,
+          new MockDataTransfer({ "text/html": html, "text/plain": "Replacement" }),
+        );
+
+        expect(projectLetter(result)).toEqual(["P: Replacement World"]);
+      },
+    );
+
+    test.each(["<table></table>", "<table />", "<table><tr></tr></table>"])(
+      "a table without cells or plain-text fallback preserves the selection: %s",
+      (html) => {
+        const state = letter(paragraph([literal({ text: "Hello World" })]));
+
+        const result = Actions.pasteReplacingSelection(state, selectHello, new MockDataTransfer({ "text/html": html }));
+
+        expect(result).toEqual(state);
+      },
+    );
+
     const tableState = () =>
       letter(
         paragraph([
@@ -297,6 +323,16 @@ describe("Actions.pasteReplacingSelection", () => {
       end: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 12 },
     };
     const htmlTable = "<table><tr><td>A</td><td>B</td></tr></table>";
+
+    test("a table without cells does not prevent formatted HTML from being inserted in a cell", () => {
+      const result = Actions.pasteReplacingSelection(
+        tableState(),
+        selectInCell,
+        new MockDataTransfer({ "text/html": "<table></table><p><b>fet</b></p>", "text/plain": "fallback" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell **fet** | other"]);
+    });
 
     test("a table while the selection is inside a table cell", () => {
       const state = tableState();

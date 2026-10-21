@@ -3771,6 +3771,54 @@ describe("LetterEditorActions.paste - nested list flattening", () => {
   });
 });
 
+describe("LetterEditorActions.paste - tables without cells", () => {
+  test("falls back to plain text without a selection", () => {
+    const state = letter(paragraph([literal({ text: "before after" })]));
+
+    const result = Actions.paste(
+      state,
+      { blockIndex: 0, contentIndex: 0 },
+      7,
+      new MockDataTransfer({ "text/html": "<table></table>", "text/plain": "fallback" }),
+    );
+
+    expect(projectLetter(result)).toEqual(["P: before fallbackafter"]);
+  });
+
+  test.each([
+    "<p>one</p><table></table><p>two</p>",
+    "<ul><li>one</li><table></table><li>two</li></ul>",
+    "<ul><li>one</li></ul><table></table><ul><li>two</li></ul>",
+  ])("ignores a cell-less table between valid HTML elements: %s", (html) => {
+    const state = letter(paragraph([literal({ text: "before after" })]));
+    const focus = { blockIndex: 0, contentIndex: 0 };
+    const result = Actions.paste(state, focus, 7, new MockDataTransfer({ "text/html": html }));
+    const withoutTable = Actions.paste(
+      state,
+      focus,
+      7,
+      new MockDataTransfer({ "text/html": html.replace("<table></table>", "") }),
+    );
+
+    expect(result.redigertBrev).toEqual(withoutTable.redigertBrev);
+    expect(result.focus).toEqual(withoutTable.focus);
+    expect(result.saveStatus).toEqual(withoutTable.saveStatus);
+  });
+
+  test("keeps tables that contain empty cells", () => {
+    const state = letter(paragraph([literal({ text: "" })]));
+
+    const result = Actions.paste(
+      state,
+      { blockIndex: 0, contentIndex: 0 },
+      0,
+      new MockDataTransfer({ "text/html": "<table><tr><td></td></tr></table>", "text/plain": "fallback" }),
+    );
+
+    expect(projectLetter(result)).toEqual(["TABLE", "  th: "]);
+  });
+});
+
 describe("LetterEditorActions.paste - blocks after lists and tables", () => {
   test("a numbered list after a bullet list becomes its own list, and a paragraph after it leaves the list", () => {
     const state = letter(paragraph({ id: 1, content: [literal({ text: "" })] }));

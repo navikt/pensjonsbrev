@@ -154,7 +154,7 @@ function fitToFocus(
   insertion: ClipboardInsertion,
 ): ClipboardInsertion | undefined {
   if (insertion.kind === "text") return insertion.text.length > 0 ? insertion : undefined;
-  const { elements } = insertion;
+  const elements = insertion.elements.filter((element) => element.type !== "TABLE" || hasCells(element));
   if (elements.length === 0) return undefined;
   if (isTableCellIndex(focus)) {
     const inlineText = inlineTextOf(elements);
@@ -167,7 +167,7 @@ function fitToFocus(
   ) {
     return undefined;
   }
-  return insertion;
+  return { kind: "elements", elements };
 }
 
 /**
