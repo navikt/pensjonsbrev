@@ -45,7 +45,7 @@ object SoknadBarnetilleggFosterForelder : RedigerbarTemplate<EmptyRedigerbarBrev
         outline {
             paragraph {
                 text(bokmal { +"Du har søkt om barnetillegg for barn som du er fosterforelder til. For at vi skal kunne vurdere og beregne barnetillegget, ber vi om at du sender inn bekreftelse på hva du får i godtgjørelse fra det offentlige. " },
-                    nynorsk { +"Du har søkt om barnetillegg for barn som du er fosterforelder til. For at vi skal kunne vurdere og berekne barnetillegget, ber vi om at du sender inn bekreftelse på kva du får i godtgjersle frå det offentlege. " })
+                    nynorsk { +"Du har søkt om barnetillegg for barn som du er fosterforelder til. For at vi skal kunne vurdere og berekne barnetillegget, ber vi om at du sender inn stadfesting på kva du får i godtgjersle frå det offentlege. " })
             }
             paragraph {
                 text(bokmal { +"Det kan gis fosterhjemsgodtgjørelse til personer som har fosterbarn. Fosterhjemsgodtgjørelse består av utgiftsdekning og arbeidsgodtgjørelse. " },
