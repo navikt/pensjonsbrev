@@ -52,6 +52,45 @@ class Felles {
         }
     }
 
+    object DetteKanDuGjoreNaUtland : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Dette kan du gjøre nå" },
+                    nynorsk { + "Dette kan du gjere no" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Du har fått arbeidsavklaringspenger, og vil som hovedregel ikke lenger få dette når vi avslår søknaden din om uføretrygd."},
+                    nynorsk { + "Du har fått arbeidsavklaringspengar, og vil som hovudregel ikkje lenger få dette når vi avslår søknaden din om uføretrygd." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Det er viktig at du tar kontakt med veilederen din i Nav for å undersøke om du trenger mer avklaring og kan fortsette å få arbeidsavklaringspenger. Du kan også få hjelp til å forstå avslaget."},
+                    nynorsk { + "Det er viktig at du tar kontakt med rettleiaren din i Nav for å undersøke om du treng meir avklaring og kan fortsette å få arbeidsavklaringspengar. Du kan også få hjelp til å forstå avslaget." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Veileder kan også hjelpe deg å finne ut om det er andre pengestøtter fra Nav som kan være aktuelle for deg."},
+                    nynorsk { +
+                    "Rettleiar kan også hjelpe deg å finne ut om det er andre pengestøttar frå Nav som kan vere aktuelle for deg." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Nav oppfølging utland (evt din oppfølgingsenhet el.) har fått beskjed om at vi har avslått søknaden din."},
+                    nynorsk { +"Nav oppfølging utland (evt din oppfølgingsenhet el.) har fått beskjed om at vi har avslått søknaden din." }
+                )
+            }
+        }
+    }
+
     object RettTilAKlageLang : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
