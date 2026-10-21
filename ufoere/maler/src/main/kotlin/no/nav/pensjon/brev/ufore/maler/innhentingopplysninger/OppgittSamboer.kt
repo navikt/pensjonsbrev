@@ -59,7 +59,7 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
             }.orShow {
                 paragraph {
                     text(bokmal { +"Ifølge opplysninger i Folkeregisteret er dere ikke bosatt på samme adresse. " },
-                        nynorsk { +"Ifølgje opplysningar i Folkeregisteret er de ikkje busett på same adresse. " })
+                        nynorsk { +"Ifølgje opplysningar i Folkeregisteret er de ikkje busette på same adresse. " })
                 }
                 paragraph {
                     text(bokmal { +"Vi ber om at dere oppdaterer opplysninger i Folkeregisteret så snart som mulig med riktig flyttedato. Du kan melde flytting her: ${Constants.SKATTEETATEN_MELD_FLYTTING}" },
