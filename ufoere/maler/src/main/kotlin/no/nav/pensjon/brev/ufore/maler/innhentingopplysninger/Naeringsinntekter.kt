@@ -108,7 +108,7 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
             }
             paragraph {
                 text(bokmal { +"Ved tap av delvis inntektsevne, gis det en gradert ytelse som svarer til den del av inntektsevnen/arbeidsevnen som er tapt. " },
-                    nynorsk { +"Ved tap av delvis inntektsevne, vert det gitt ei gradert ytelse som svarer til den del av inntektsevna/arbeidsevna som er tapt. " })
+                    nynorsk { +"Ved tap av delvis inntektsevne, vert det gitt ei gradert yting som svarar til den del av inntektsevna/arbeidsevna som er tapt. " })
             }
             paragraph {
                 text(bokmal { +"For å kunne vurdere dette må vi ha bekreftede inntektsopplysninger der det fremgår hvilken inntekt du forventer å få fremover. " },
