@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  type BestillDelautomatiskBrevRequest,
   type LetterMetadata,
   type OrderEblankettRequest,
   type OrderExstreamLetterRequest,
@@ -24,11 +25,32 @@ export const byggExstreamOnSubmitRequest = (argz: {
     idTSSEkstern: argz.idTSSEkstern ?? null,
     vedtaksId: argz.vedtaksId ?? null,
     brevtittel: argz.formValues.brevtittel ?? null,
-    //dersom den finnes, er språk det som er brukerens foretrukne språk (med mindre saksbehandler overridet) & malen støtter språket
-    //ellers vil vi plukke bokmål, om brevet støtter det, eller den første språkkoden i listen i template
-    spraak:
-      argz.formValues.spraak ??
-      (argz.template.spraak.includes(SpraakKode.Bokmaal) ? SpraakKode.Bokmaal : argz.template.spraak[0]),
+    spraak: spraakEllerDefault(argz.template, argz.formValues.spraak),
+  };
+};
+
+//dersom den finnes, er språk det som er brukerens foretrukne språk (med mindre saksbehandler overridet) & malen støtter språket
+//ellers vil vi plukke bokmål, om brevet støtter det, eller den første språkkoden i listen i template
+const spraakEllerDefault = (template: LetterMetadata, spraak: Nullable<SpraakKode>): SpraakKode =>
+  spraak ?? (template.spraak.includes(SpraakKode.Bokmaal) ? SpraakKode.Bokmaal : template.spraak[0]);
+
+export const erDelautomatiskBrev = (template: LetterMetadata) => template.delautomatisk === true;
+
+export const byggDelautomatiskOnSubmitRequest = (argz: {
+  template: LetterMetadata;
+  idTSSEkstern: Nullable<string>;
+  vedtaksId: Nullable<number>;
+  formValues: {
+    enhetsId: string;
+    spraak: Nullable<SpraakKode>;
+  };
+}): BestillDelautomatiskBrevRequest => {
+  return {
+    brevkode: argz.template.id,
+    enhetsId: argz.formValues.enhetsId,
+    idTSSEkstern: argz.idTSSEkstern ?? null,
+    vedtaksId: argz.vedtaksId ?? null,
+    spraak: spraakEllerDefault(argz.template, argz.formValues.spraak),
   };
 };
 

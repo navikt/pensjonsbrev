@@ -7,7 +7,14 @@
 import axios, { AxiosError, type AxiosResponse } from "axios";
 
 import {
+  brukMockForDelautomatiskeBrev,
+  leggTilMockBrevmalKoder,
+  mockBestillDelautomatiskBrev,
+} from "~/api/delautomatiskeBrevMock";
+import {
   type Avtaleland,
+  type BestillDelautomatiskBrevRequest,
+  type BestillDelautomatiskBrevResponse,
   type BestillOgRedigerBrevResponse,
   type BrukerStatusDto,
   type FinnSamhandlerRequestDto,
@@ -115,8 +122,12 @@ export const orderLetterKeys = {
 
 export const getSakContext = (saksId: string, vedtaksId: string | undefined) => ({
   queryKey: saksnummerKeys.id(saksId, vedtaksId),
-  queryFn: async () =>
-    (await axios.get<SakContextDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`, { params: { vedtaksId } })).data,
+  queryFn: async () => {
+    const sakContext = (
+      await axios.get<SakContextDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`, { params: { vedtaksId } })
+    ).data;
+    return { ...sakContext, brevmalKoder: leggTilMockBrevmalKoder(sakContext.brevmalKoder) };
+  },
   staleTime: 5000,
 });
 
@@ -181,6 +192,21 @@ export async function orderEblankett(saksId: string, orderLetterRequest: OrderEb
   );
 
   return convertBestillOgRedigerBrevResponse(response);
+}
+
+export async function bestillDelautomatiskBrev(saksId: string, request: BestillDelautomatiskBrevRequest) {
+  const response = brukMockForDelautomatiskeBrev
+    ? await mockBestillDelautomatiskBrev(request)
+    : await axios.post<BestillDelautomatiskBrevResponse>(
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/delautomatisk`,
+        request,
+      );
+
+  if (response.data.failureType) {
+    throw convertResponseToAxiosError({ message: response.data.failureType, response });
+  }
+
+  return response.data.journalpostId ?? null;
 }
 
 function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRedigerBrevResponse>) {

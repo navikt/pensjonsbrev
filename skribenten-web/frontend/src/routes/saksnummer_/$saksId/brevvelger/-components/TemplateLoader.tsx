@@ -8,9 +8,10 @@ import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import { type SubmitTemplateOptions } from "../route";
 import BrevmalBrevbaker from "./brevmal/BrevmalBrevbaker";
+import BrevmalDelautomatisk from "./brevmal/BrevmalDelautomatisk";
 import BrevmalForExstream from "./brevmal/BrevmalExstream";
 import Eblankett from "./brevmal/EBlankett";
-import { hentDefaultValueForSpråk } from "./brevmal/TemplateUtils";
+import { erDelautomatiskBrev, hentDefaultValueForSpråk } from "./brevmal/TemplateUtils";
 import FavoriteButton from "./FavoriteButton";
 
 export const TemplateLoader = (props: {
@@ -72,6 +73,20 @@ function Brevmal({
 
   if (letterTemplate.dokumentkategoriCode === "E_BLANKETT") {
     return <Eblankett letterTemplate={letterTemplate} setOnFormSubmitClick={setOnFormSubmitClick} />;
+  }
+
+  if (erDelautomatiskBrev(letterTemplate)) {
+    return (
+      <BrevmalDelautomatisk
+        defaultValues={defaultValues}
+        displayLanguages={displayLanguages}
+        key={templateId}
+        letterTemplate={letterTemplate}
+        preferredLanguage={preferredLanguage}
+        saksId={saksId}
+        setOnFormSubmitClick={setOnFormSubmitClick}
+      />
+    );
   }
 
   switch (letterTemplate.brevsystem) {

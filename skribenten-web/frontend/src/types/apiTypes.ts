@@ -7,7 +7,8 @@ import type * as generated from "./skribenten-api";
 export type SakDto = generated.Fagsak;
 export type SakContextDto = generated.ApiSakContext;
 export type BrukerStatusDto = generated.ApiBrukerStatus;
-export type LetterMetadata = generated.ApiBrevmal;
+// TODO: `delautomatisk` er midlertidig til backend-API for del-automatiske brev er klart og typene er generert
+export type LetterMetadata = generated.ApiBrevmal & { delautomatisk?: boolean };
 export type PreferredLanguage = generated.KrrServiceKontaktinfoResponse;
 
 export type BrevSystem = generated.BrevSystem;
@@ -29,6 +30,9 @@ export type OrderExstreamLetterRequest = generated.ApiBestillExstreamBrevRequest
 export type OrderEblankettRequest = generated.ApiBestillEblankettRequest;
 export type BestillOgRedigerBrevResponse = generated.ApiBestillOgRedigerBrevResponse;
 export type FailureType = generated.ApiBestillOgRedigerBrevResponseFailureType;
+// TODO: midlertidige typer for del-automatiske brev, erstattes av genererte typer når backend-API er klart
+export type BestillDelautomatiskBrevRequest = Omit<OrderExstreamLetterRequest, "brevtittel">;
+export type BestillDelautomatiskBrevResponse = Omit<BestillOgRedigerBrevResponse, "url">;
 
 export type FinnSamhandlerRequestDto = generated.FinnSamhandlerRequestDto;
 export type FinnSamhandlerResponseDto = generated.FinnSamhandlerResponseDto;
