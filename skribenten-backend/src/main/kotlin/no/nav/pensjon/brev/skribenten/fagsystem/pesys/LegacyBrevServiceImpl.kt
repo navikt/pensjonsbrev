@@ -82,7 +82,7 @@ class LegacyBrevServiceImpl(
                 saksId = saksId,
                 spraak = SpraakKode.NB,
                 brevtittel = brevMetadata.dekode,
-                landkode = request.landkode,
+                landkode = "NOR",
                 mottakerText = request.mottakerText,
                 saksbehandler = navansatt
             )

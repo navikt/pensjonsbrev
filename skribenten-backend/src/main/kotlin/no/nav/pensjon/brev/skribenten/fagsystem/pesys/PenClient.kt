@@ -37,7 +37,6 @@ interface PenClient {
     suspend fun hentSak(saksId: SaksId): Pen.SakSelection?
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
     suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse?
-    suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult?
     suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
@@ -147,11 +146,6 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         client.get("brev/dokument/exstream/${journalpostId.id}") {
             metricsRoute("brev/dokument/exstream/{journalpostId}")
         }.bodyOrThrow()
-
-    override suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
-        client.get("brev/skribenten/avtaleland") {
-            metricsRoute("brev/skribenten/avtaleland")
-        }.bodyOrThrow() ?: emptyList()
 
     override suspend fun ping() =
         ping("PEN") { client.get("/pen/actuator/health/readiness") { metricsRoute("/pen/actuator/health/readiness") } }

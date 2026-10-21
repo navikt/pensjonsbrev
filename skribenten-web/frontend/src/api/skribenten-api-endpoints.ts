@@ -7,7 +7,6 @@
 import axios, { AxiosError, type AxiosResponse } from "axios";
 
 import {
-  type Avtaleland,
   type BestillOgRedigerBrevResponse,
   type BrukerStatusDto,
   type FinnSamhandlerRequestDto,
@@ -75,10 +74,6 @@ export const getFeatureToggle = (featureName: string) => ({
   staleTime: Number.POSITIVE_INFINITY,
 });
 
-export const avtalelandKeys = {
-  all: ["AVTALE_LAND"] as const,
-};
-
 export const enheterKeys = {
   all: ["ENHETER"] as const,
 };
@@ -141,11 +136,6 @@ export const getKontaktAdresse = (saksId: string) => ({
 export const getFavoritter = {
   queryKey: favoritterKeys.all,
   queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`)).data,
-};
-
-export const getAvtaleLand = {
-  queryKey: avtalelandKeys.all,
-  queryFn: async () => (await axios.get<Avtaleland[]>(`${SKRIBENTEN_API_BASE_PATH}/kodeverk/avtaleland`)).data,
 };
 
 export const getEnheter = {

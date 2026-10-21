@@ -39,10 +39,6 @@ export async function setupSakStubs(page: Page) {
     return route.fulfill({ path: "test/e2e/fixtures/adresse.json", contentType: "application/json" });
   });
 
-  await page.route("**/bff/skribenten-backend/kodeverk/avtaleland", (route) => {
-    return route.fulfill({ path: "test/e2e/fixtures/avtaleland.json", contentType: "application/json" });
-  });
-
   await page.route("**/bff/skribenten-backend/me/enheter", (route) => {
     return route.fulfill({ path: "test/e2e/fixtures/enheter.json", contentType: "application/json" });
   });

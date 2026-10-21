@@ -22,9 +22,6 @@ class FagsakService(private val penClient: PenClient) {
                 tema = sak.tema,
             )
         }
-
-    suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
-        penClient.hentAvtaleland()
 }
 
 @JvmInline

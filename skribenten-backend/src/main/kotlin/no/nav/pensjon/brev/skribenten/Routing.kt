@@ -46,7 +46,6 @@ fun Application.configureRouting() {
 
             landRoute()
             brevmal()
-            kodeverkRoute()
             sakRoute()
             brev()
             samhandlerRoute()

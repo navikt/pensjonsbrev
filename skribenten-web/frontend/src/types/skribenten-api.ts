@@ -190,40 +190,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/kodeverk/avtaleland": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["PenAvtaleland"][];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/sak/{saksId}": {
         parameters: {
             query?: never;
@@ -3642,11 +3608,6 @@ export interface components {
                 };
             };
         };
-        /** PenAvtaleland */
-        PenAvtaleland: {
-            kode: string;
-            navn: string;
-        };
         /** FagsakNavn */
         FagsakNavn: {
             etternavn: string;
@@ -3701,7 +3662,6 @@ export interface components {
         ApiBestillEblankettRequest: {
             brevkode: string;
             enhetsId: string;
-            landkode: string;
             mottakerText: string;
         };
         /**
@@ -4647,7 +4607,6 @@ export type TemplateModelSpecificationFieldTypeScalarKind = components['schemas'
 export type TemplateModelSpecificationFieldTypeScalar = components['schemas']['TemplateModelSpecificationFieldTypeScalar'];
 export type TemplateModelSpecificationFieldType = components['schemas']['TemplateModelSpecificationFieldType'];
 export type TemplateModelSpecification = components['schemas']['TemplateModelSpecification'];
-export type PenAvtaleland = components['schemas']['PenAvtaleland'];
 export type FagsakNavn = components['schemas']['FagsakNavn'];
 export type Fagsak = components['schemas']['Fagsak'];
 export type ApiSakContext = components['schemas']['ApiSakContext'];

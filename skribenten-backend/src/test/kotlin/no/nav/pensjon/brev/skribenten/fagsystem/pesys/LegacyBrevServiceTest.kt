@@ -90,7 +90,10 @@ class LegacyBrevServiceTest {
     )
 
     private val brevmetadataService = FakeBrevmetadataService(
-        maler = mapOf("exstream" to exstreamBrevMetadata),
+        maler = mapOf(
+            "exstream" to exstreamBrevMetadata,
+            "eblankett" to exstreamBrevMetadata.copy(brevkodeIBrevsystem = "eblankett", dokumentkategori = DokumentkategoriCode.E_BLANKETT),
+        ),
     )
 
     private val safService = object : SafServiceStub() {
@@ -108,9 +111,11 @@ class LegacyBrevServiceTest {
             )
     }
 
+    private var sisteBestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest? = null
+
     private val penService = object : PenClientStub() {
         override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
-            Pen.BestillExstreamBrevResponse(forventaJournalpostId)
+            Pen.BestillExstreamBrevResponse(forventaJournalpostId).also { sisteBestillExstreamBrevRequest = bestillExstreamBrevRequest }
 
         override suspend fun redigerExstreamBrev(journalpostId: JournalpostId) =
             if (journalpostId == forventaJournalpostId) {
@@ -186,16 +191,16 @@ class LegacyBrevServiceTest {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerEblankett(
                     gjelderPid = Pid("9999"), request = Api.BestillEblankettRequest(
-                        brevkode = "exstream",
+                        brevkode = "eblankett",
                         enhetsId = principalSinNAVEnhet.id,
                         mottakerText = "en tekst",
-                        landkode = "NO",
                     ),
                     saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isNull()
             assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_EXSTREAM_URL)
+            assertThat(sisteBestillExstreamBrevRequest?.sakskontekst?.land).isEqualTo("NOR")
         }
     }
 
@@ -208,7 +213,6 @@ class LegacyBrevServiceTest {
                         brevkode = "exstream",
                         enhetsId = EnhetId("9999"),
                         mottakerText = "en tekst",
-                        landkode = "NO",
                     ),
                     saksId = SaksId(3333L)
                 )

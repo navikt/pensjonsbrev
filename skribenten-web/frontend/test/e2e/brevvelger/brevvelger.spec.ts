@@ -216,14 +216,6 @@ test.describe("Brevvelger spec", () => {
     await page.locator("select[name=enhetsId]").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
 
     await expect(
-      page.locator("label").filter({ hasText: "Land" }).locator("..").locator(".aksel-error-message"),
-    ).toBeVisible();
-    await page.locator("select[name=landkode]").selectOption({ label: "Storbritannia" });
-    await expect(
-      page.locator("label").filter({ hasText: "Land" }).locator("..").locator(".aksel-error-message"),
-    ).not.toBeVisible();
-
-    await expect(
       page.getByTestId("mottaker-text-textfield").locator("..").locator(".aksel-error-message"),
     ).toBeVisible();
     await page.getByTestId("mottaker-text-textfield").pressSequentially("Haaland");
@@ -239,7 +231,6 @@ test.describe("Brevvelger spec", () => {
 
     expect(requestBody).toMatchObject({
       brevkode: "E001",
-      landkode: "GBR",
       mottakerText: "Haaland",
       enhetsId: "4405",
     });
