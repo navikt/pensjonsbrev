@@ -71,7 +71,7 @@ object FlereOpplysningerFirmaInntekt : RedigerbarTemplate<EmptyRedigerbarBrevdat
                     item {text(bokmal { +"Arbeidsavtale for den aktuelle stillingen." },
                         nynorsk { +"Arbeidsavtale for den aktuelle stillinga." }) }
                     item {text(bokmal { +"Hva skyldes inntektsendringen som inntraff i " + fritekst("dato") + ".? Hvis dette skyldes formell stillingsendring ber vi om at det vedlegges dokumentasjon på dette." },
-                        nynorsk { +"Kva skuldast inntektsendringen som inntraff i " + fritekst("dato") + ".? Hvis dette skuldast formell stillingsendring ber vi om at det vedleggast dokumentasjon på dette." }) }
+                        nynorsk { +"Kva skuldast inntektsendringa som skjedde " + fritekst("dato") + "? Dersom dette skuldast ei formell stillingsendring, ber vi om at det blir lagt ved dokumentasjon på dette." }) }
                     item {text(bokmal { +"Dersom du ikke lenger skal arbeide fullt, er det da ansatt en annen person i din stilling? Vi ber om kopi av arbeidsavtalen på denne personen. (eventuell hvem har overtatt dine arbeidsoppgaver)" },
                         nynorsk { +"Dersom du ikkje lenger skal arbeide fullt, er det då tilsett ein annan person i stillinga di? Vi ber om kopi av arbeidsavtalen på denne personen. (eventuelt kven har overteke arbeidsoppgåvene dine)" }) }
                     item {text(bokmal { +"Timelistene dine fra " + fritekst("år") + " og " + fritekst("år") + "." },
