@@ -357,9 +357,7 @@ test.describe("Endrer på mottaker", () => {
     await page.getByTestId("endre-mottaker-modal").getByText("Advokat 1 As").first().click();
 
     await expect(page.getByRole("rowheader", { name: "Organisasjonsnummer" })).toBeVisible();
-    await expect(
-      page.getByRole("cell", { name: samhandlerResponse.samhandlere[0].offentligId, exact: true }),
-    ).toBeVisible();
+    await expect(page.getByRole("cell", { name: samhandlerOrganisasjonsnummer, exact: true })).toBeVisible();
     await expect(page.getByText("Postboks 603 Sentrum")).not.toBeVisible();
     await page.getByTestId("lagre-samhandler").click();
 
