@@ -1,10 +1,6 @@
-@file:Suppress("DEPRECATION")
-
 package no.nav.brev.brevbaker.document
 
 import no.nav.brev.brevbaker.document.dsl.document
-import no.nav.brev.brevbaker.document.dsl.documentMottaker
-import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.document.dsl.documentSaksnummer
 import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.title2
@@ -144,22 +140,5 @@ class DocumentDslTest {
         }.clean()
 
         assertEquals(1, dokument.blocks.size)
-    }
-
-    @Test
-    fun `legacy saksinformasjon bygges som foer`() {
-        val dokument = document(
-            tittel = "Min tittel",
-            saksinformasjon = documentSaksinformasjon(
-                saksnummer = "9876543",
-                visFooter = true,
-                mottaker = documentMottaker(gjelderNavn = "Ola Nordmann", gjelderPersonidentifikator = "12345678901"),
-            ),
-        ) { paragraph("Innhold") }
-
-        assertEquals("9876543", dokument.saksinformasjon?.saksnummer?.value)
-        assertEquals("Ola Nordmann", dokument.saksinformasjon?.mottaker?.gjelderNavn)
-        assertNull(dokument.gjelderNavn)
-        assertNull(dokument.saksnummer)
     }
 }

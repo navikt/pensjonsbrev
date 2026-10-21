@@ -41,15 +41,12 @@ class MottakerTest {
         val brevredigering = createBrevredigering()
         transaction {
             Mottaker.new(brevredigering.id.value) {
-                type = MottakerType.SAMHANDLER
-                tssId = TssId("12345")
                 adresse = lagSamhandlerAdresse("12345")
-                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         val mottaker = transaction { Mottaker[brevredigering.id] }
-        assertEquals(TssId("12345"), mottaker.tssId)
-        assertEquals(MottakerType.SAMHANDLER, mottaker.type)
+        assertEquals(TssId("12345"), mottaker.adresse.tssId)
+        assertEquals(MottakerType.SAMHANDLER, mottaker.adresse.type)
     }
 
     @Test
@@ -58,16 +55,10 @@ class MottakerTest {
         assertThrows<ExposedSQLException> {
             transaction {
                 Mottaker.new(brevredigering.id.value) {
-                    type = MottakerType.SAMHANDLER
-                    tssId = TssId("12345")
                     adresse = lagSamhandlerAdresse("12345")
-                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
                 Mottaker.new(brevredigering.id.value) {
-                    type = MottakerType.SAMHANDLER
-                    tssId = TssId("123456")
                     adresse = lagSamhandlerAdresse("123456")
-                    manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
                 }
             }
         }
@@ -91,10 +82,7 @@ class MottakerTest {
         val brevredigeringId = createBrevredigering().id.value
         transaction {
             Mottaker.new(brevredigeringId) {
-                type = MottakerType.SAMHANDLER
-                tssId = TssId("12345")
                 adresse = lagSamhandlerAdresse("12345")
-                manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
         transaction {
@@ -105,8 +93,8 @@ class MottakerTest {
         }
         val mottaker = transaction { Mottaker[brevredigeringId] }
 
-        assertEquals(MottakerType.SAMHANDLER, mottaker.type)
-        assertEquals(TssId("abc"), mottaker.tssId)
+        assertEquals(MottakerType.SAMHANDLER, mottaker.adresse.type)
+        assertEquals(TssId("abc"), mottaker.adresse.tssId)
     }
 
     private fun createBrevredigering() = transaction {

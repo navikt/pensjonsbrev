@@ -2,22 +2,82 @@ import { Global } from "@emotion/react";
 import { Accordion, BodyShort, Box, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
 import { type AkselColor } from "@navikt/ds-react/types/theme";
 import type React from "react";
-import { type Dispatch, useEffect, useState } from "react";
+import { type Dispatch, useEffect, useRef, useState } from "react";
 
 import { isItemContentIndex, isNew, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type Focus, type LetterEditorState, type SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { getCaretRect, getRange, getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import { type AnyBlock, type Content, type Item } from "~/types/brevbakerTypes";
+import { type AnyBlock, type Content, type Item, TITLE_INDEX } from "~/types/brevbakerTypes";
+
+const MIN_HEIGHT = 40;
+const RESIZE_STEP = 16;
+// Slightly longer than Aksel's 250ms ExpansionCard/Accordion transitions.
+const FOCUS_SCROLL_SETTLE_MS = 400;
 
 export default function DebugPanel() {
   const { freeze, editorState } = useEditor();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [caretOffset, setCaretOffset] = useState(0);
   const [caretRect, setCaretRect] = useState<DOMRect>();
-
+  const [height, setHeight] = useState<number>();
+  const dragRef = useRef<{ pointerId: number; startY: number; startHeight: number } | null>(null);
   const [mappedSelection, setMappedSelection] = useState<SelectionIndex | null>(null);
+
+  const getMaxHeight = () => Math.max(MIN_HEIGHT, Math.floor(globalThis.innerHeight * 0.8));
+  const getInitialHeight = () => Math.round(globalThis.innerHeight * 0.3);
+  const clampHeight = (nextHeight: number) => Math.min(getMaxHeight(), Math.max(MIN_HEIGHT, nextHeight));
+
+  const resizeWithKeyboard = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const currentHeight = height ?? getInitialHeight();
+    let nextHeight: number | undefined;
+
+    switch (event.key) {
+      case "ArrowUp":
+        nextHeight = currentHeight + RESIZE_STEP;
+        break;
+      case "ArrowDown":
+        nextHeight = currentHeight - RESIZE_STEP;
+        break;
+      case "Home":
+        nextHeight = MIN_HEIGHT;
+        break;
+      case "End":
+        nextHeight = getMaxHeight();
+        break;
+    }
+
+    if (nextHeight !== undefined) {
+      event.preventDefault();
+      setHeight(clampHeight(nextHeight));
+    }
+  };
+
+  useEffect(() => {
+    const onPointerMove = (event: PointerEvent) => {
+      const drag = dragRef.current;
+      if (!drag || event.pointerId !== drag.pointerId) return;
+      setHeight(clampHeight(drag.startHeight + drag.startY - event.clientY));
+    };
+    const onPointerUp = (event: PointerEvent) => {
+      if (event.pointerId === dragRef.current?.pointerId) dragRef.current = null;
+    };
+    const onWindowResize = () => {
+      setHeight((currentHeight) => (currentHeight === undefined ? currentHeight : clampHeight(currentHeight)));
+    };
+
+    globalThis.addEventListener("pointermove", onPointerMove);
+    globalThis.addEventListener("pointerup", onPointerUp);
+    globalThis.addEventListener("pointercancel", onPointerUp);
+    globalThis.addEventListener("resize", onWindowResize);
+    return () => {
+      globalThis.removeEventListener("pointermove", onPointerMove);
+      globalThis.removeEventListener("pointerup", onPointerUp);
+      globalThis.removeEventListener("pointercancel", onPointerUp);
+      globalThis.removeEventListener("resize", onWindowResize);
+    };
+  }, []);
 
   const mouseMoveEventListener = (event: MouseEvent) => {
     setMousePosition({ x: event.pageX, y: event.pageY });
@@ -30,9 +90,43 @@ export default function DebugPanel() {
 
   const selectionChangeListener = () => {
     const root = document.querySelector<HTMLElement>("[data-editor-root]");
-    const mapped = root ? getSelectionFocus(root) : undefined;
-    if (mapped) setMappedSelection(mapped);
+    setMappedSelection(root ? (getSelectionFocus(root) ?? null) : null);
   };
+
+  useEffect(() => {
+    const tree = document.querySelector<HTMLElement>(".debug-panel-tree");
+    if (!tree) return;
+
+    const scrollToFocusTarget = () => {
+      const target = tree.querySelector<HTMLElement>("[data-debug-focus-target]");
+      if (!target) return;
+
+      const treeRect = tree.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const visibleTop = treeRect.top + tree.clientTop;
+      const visibleBottom = visibleTop + tree.clientHeight;
+
+      if (targetRect.top < visibleTop) {
+        tree.scrollTop -= visibleTop - targetRect.top;
+      } else if (targetRect.bottom > visibleBottom) {
+        tree.scrollTop += targetRect.bottom - visibleBottom;
+      }
+    };
+
+    scrollToFocusTarget();
+
+    // Aksel animates expanding/collapsing cards, so the target only reaches its final position once those transitions end.
+    tree.addEventListener("transitionend", scrollToFocusTarget);
+    const stopFollowing = setTimeout(() => {
+      tree.removeEventListener("transitionend", scrollToFocusTarget);
+      scrollToFocusTarget();
+    }, FOCUS_SCROLL_SETTLE_MS);
+
+    return () => {
+      clearTimeout(stopFollowing);
+      tree.removeEventListener("transitionend", scrollToFocusTarget);
+    };
+  }, [editorState.focus]);
 
   useEffect(() => {
     document.addEventListener("mousemove", mouseMoveEventListener);
@@ -50,6 +144,36 @@ export default function DebugPanel() {
     <>
       <Global
         styles={{
+          ".debug-panel": {
+            position: "relative",
+          },
+          ".debug-panel-resize-handle": {
+            cursor: "ns-resize",
+            height: "8px",
+            left: 0,
+            position: "absolute",
+            right: 0,
+            touchAction: "none",
+            top: 0,
+            zIndex: 1,
+            "&::after": {
+              backgroundColor: "var(--ax-border-neutral-subtle)",
+              borderRadius: "2px",
+              content: '""',
+              height: "2px",
+              left: "calc(50% - 16px)",
+              position: "absolute",
+              top: "3px",
+              width: "32px",
+            },
+            "&:hover::after": {
+              backgroundColor: "var(--ax-border-neutral)",
+            },
+            "&:focus-visible": {
+              outline: "2px solid var(--ax-border-focus)",
+              outlineOffset: "-2px",
+            },
+          },
           ".editor": {
             "[contenteditable]": {
               "&:focus-within": {
@@ -66,15 +190,37 @@ export default function DebugPanel() {
         background="neutral-soft"
         borderColor="neutral-subtle"
         borderWidth={"1 0 0 0"}
+        className="debug-panel"
         flexShrink="0"
-        height="40vh"
-        overflowY="auto"
-        padding="space-16"
+        height={height === undefined ? "30vh" : `${height}px`}
+        overflowY="hidden"
       >
         <VStack>
-          <HStack gap="space-16">
-            {mappedSelection ? (
-              <VStack>
+          {/* biome-ignore lint/a11y/useSemanticElements: This adjustable separator exposes resize values and keyboard controls. */}
+          <div
+            aria-label="Endre høyden på debugpanelet"
+            aria-orientation="horizontal"
+            aria-valuemax={getMaxHeight()}
+            aria-valuemin={MIN_HEIGHT}
+            aria-valuenow={height ?? getInitialHeight()}
+            className="debug-panel-resize-handle"
+            onKeyDown={resizeWithKeyboard}
+            onPointerDown={(event) => {
+              if (event.button !== 0) return;
+              event.preventDefault();
+              dragRef.current = {
+                pointerId: event.pointerId,
+                startY: event.clientY,
+                startHeight:
+                  event.currentTarget.parentElement?.getBoundingClientRect().height || height || getInitialHeight(),
+              };
+            }}
+            role="separator"
+            tabIndex={0}
+          />
+          <VStack data-debug-panel-stats flexShrink="0" padding="space-16">
+            {mappedSelection && (
+              <VStack data-debug-selection>
                 <HStack gap="space-16">
                   SELECTION &lt;:
                   <FocusInfo focus={mappedSelection.start} />
@@ -84,31 +230,35 @@ export default function DebugPanel() {
                   <FocusInfo focus={mappedSelection.end} />
                 </HStack>
               </VStack>
-            ) : null}
-          </HStack>
-          <HStack gap="space-16">
-            FOCUS:
-            <FocusInfo focus={editorState.focus} />
-          </HStack>
-          <HStack gap="space-16">
-            FREEZE:{" "}
-            <BodyShort color={freeze ? "red" : "black"} weight="semibold">
-              {freeze.toString()}
-            </BodyShort>
-            SAVESTATUS: <BodyShort weight="semibold">{editorState.saveStatus}</BodyShort>
-          </HStack>
-          <HStack gap="space-16">
-            MOUSE:
-            <BodyShort weight="semibold">X: {mousePosition.x}</BodyShort>
-            <BodyShort weight="semibold">Y: {mousePosition.y}</BodyShort>
-          </HStack>
-          <HStack gap="space-16">
-            CARET:
-            <BodyShort weight="semibold">offset: {caretOffset}</BodyShort>
-            <BodyShort weight="semibold">X: {caretRect?.x}</BodyShort>
-            <BodyShort weight="semibold">Y: {caretRect?.y}</BodyShort>
-          </HStack>
-          <LetterTree state={editorState} />
+            )}
+            <HStack gap="space-16">
+              FOCUS:
+              <FocusInfo focus={editorState.focus} />
+            </HStack>
+            <HStack gap="space-16">
+              FREEZE:{" "}
+              <BodyShort color={freeze ? "red" : "black"} weight="semibold">
+                {freeze.toString()}
+              </BodyShort>
+              SAVESTATUS: <BodyShort weight="semibold">{editorState.saveStatus}</BodyShort>
+            </HStack>
+            <HStack gap="space-16">
+              MOUSE:
+              <BodyShort weight="semibold">X: {mousePosition.x}</BodyShort>
+              <BodyShort weight="semibold">Y: {mousePosition.y}</BodyShort>
+            </HStack>
+            <HStack gap="space-16">
+              CARET:
+              <BodyShort weight="semibold">offset: {caretOffset}</BodyShort>
+              <BodyShort weight="semibold">X: {caretRect?.x}</BodyShort>
+              <BodyShort weight="semibold">Y: {caretRect?.y}</BodyShort>
+            </HStack>
+          </VStack>
+          <Box asChild className="debug-panel-tree" flexGrow="1" minHeight="0" overflowY="auto">
+            <VStack padding="space-16">
+              <LetterTree state={editorState} />
+            </VStack>
+          </Box>
         </VStack>
       </Box>
     </>
@@ -131,8 +281,19 @@ const FocusInfo = ({ focus }: { focus: Focus }) => {
 };
 
 const LetterTree = ({ state: { focus, redigertBrev } }: { state: LetterEditorState }) => {
+  const focusedTitleContent =
+    focus.blockIndex === TITLE_INDEX ? redigertBrev.title.text[focus.contentIndex] : undefined;
+
   return (
     <>
+      {focusedTitleContent && (
+        <div data-debug-focus-target="true">
+          <HStack gap="space-16">
+            <BodyShort weight="semibold">{focusedTitleContent.type}</BodyShort>
+            <BodyShort>{textOf(focusedTitleContent)}</BodyShort>
+          </HStack>
+        </div>
+      )}
       {redigertBrev.blocks.map((block, index) => (
         <BlockInfo block={block} focus={focus} index={index} key={index} />
       ))}
@@ -160,6 +321,7 @@ const BlockInfo = ({ block, focus, index }: { block: AnyBlock; focus: Focus; ind
     .join("");
 
   const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus.blockIndex, index);
+  const blockFocus = focus.blockIndex === index ? focus : undefined;
 
   return (
     <ExpansionCard
@@ -170,7 +332,7 @@ const BlockInfo = ({ block, focus, index }: { block: AnyBlock; focus: Focus; ind
       size="small"
     >
       <ExpansionCard.Header>
-        <ExpansionCard.Title>
+        <ExpansionCard.Title size="small">
           <HStack gap="space-16">
             <span>{block.type}</span>
             <span>Index: {index}</span>
@@ -183,7 +345,13 @@ const BlockInfo = ({ block, focus, index }: { block: AnyBlock; focus: Focus; ind
         <ExpansionCard.Content>
           <Accordion size="small">
             {block.content.map((content, index) => (
-              <ContentInfo content={content} focus={focus} index={index} key={index} />
+              <ContentInfo
+                content={content}
+                focus={blockFocus}
+                index={index}
+                isFocused={blockFocus?.contentIndex === index && !isItemContentIndex(blockFocus)}
+                key={index}
+              />
             ))}
           </Accordion>
         </ExpansionCard.Content>
@@ -192,7 +360,17 @@ const BlockInfo = ({ block, focus, index }: { block: AnyBlock; focus: Focus; ind
   );
 };
 
-const ContentInfo = ({ content, focus, index }: { content: Content; focus?: Focus; index: number }) => {
+const ContentInfo = ({
+  content,
+  focus,
+  index,
+  isFocused,
+}: {
+  content: Content;
+  focus?: Focus;
+  index: number;
+  isFocused: boolean;
+}) => {
   const extract = isTextContent(content) ? textExtract(textOf(content)) : "";
 
   const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus?.contentIndex, index);
@@ -203,7 +381,7 @@ const ContentInfo = ({ content, focus, index }: { content: Content; focus?: Focu
       onOpenChange={setIsOpen}
       open={isOpen}
     >
-      <Accordion.Header>
+      <Accordion.Header data-debug-focus-target={isFocused ? "true" : undefined}>
         <HStack gap="space-16">
           <span>{content.type}</span>
           <span>Index: {index}</span>
@@ -215,7 +393,7 @@ const ContentInfo = ({ content, focus, index }: { content: Content; focus?: Focu
         </HStack>
       </Accordion.Header>
       <Accordion.Content>
-        <ContentBody content={content} focus={focus} />
+        <ContentBody content={content} focus={focus?.contentIndex === index ? focus : undefined} />
       </Accordion.Content>
     </Accordion.Item>
   );
@@ -242,15 +420,12 @@ const ContentBody = ({ content, focus }: { content: Content; focus?: Focus }) =>
 };
 
 const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: Item }) => {
-  const itemContentFocus =
-    focus && isItemContentIndex(focus)
-      ? { blockIndex: focus.blockIndex, contentIndex: focus.itemContentIndex }
-      : undefined;
+  const focusedItem = isItemContentIndex(focus) && focus.itemIndex === index;
+  const itemContentFocus = focusedItem
+    ? { blockIndex: focus.blockIndex, contentIndex: focus.itemContentIndex }
+    : undefined;
 
-  const [isOpen, setIsOpen] = useToggleWithFocusUpdate(
-    isItemContentIndex(focus) ? focus.itemContentIndex : undefined,
-    index,
-  );
+  const [isOpen, setIsOpen] = useToggleWithFocusUpdate(isItemContentIndex(focus) ? focus.itemIndex : undefined, index);
 
   const itemText = item.content.map(textOf).join("");
 
@@ -270,7 +445,13 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
       <Accordion.Content>
         <Accordion size="small">
           {item.content.map((content, index) => (
-            <ContentInfo content={content} focus={itemContentFocus} index={index} key={index} />
+            <ContentInfo
+              content={content}
+              focus={itemContentFocus}
+              index={index}
+              isFocused={itemContentFocus?.contentIndex === index}
+              key={index}
+            />
           ))}
         </Accordion>
       </Accordion.Content>

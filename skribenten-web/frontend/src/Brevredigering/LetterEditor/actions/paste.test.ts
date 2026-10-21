@@ -20,6 +20,7 @@ import {
   type VariableValue,
 } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph, select, variable } from "~test/support/letterEditorTestUtils";
+import { MockDataTransfer } from "~test/support/pasteTestUtils";
 
 describe("LetterEditorActions.paste", () => {
   describe("format: text/plain", () => {
@@ -3768,34 +3769,3 @@ describe("LetterEditorActions.paste - nested list flattening", () => {
     ).toBe("B");
   });
 });
-
-class MockDataTransfer implements DataTransfer {
-  private readonly data: { [format: string]: string } = {};
-
-  get types() {
-    return Object.keys(this.data);
-  }
-  getData(format: string): string {
-    return this.data[format];
-  }
-  setData(format: string, data: string): void {
-    this.data[format] = data;
-  }
-
-  constructor(data: { [format: string]: string }) {
-    this.data = { ...data };
-  }
-
-  dropEffect: "none" | "copy" | "link" | "move" = "none";
-  effectAllowed: "none" | "copy" | "link" | "move" | "all" | "copyLink" | "copyMove" | "linkMove" | "uninitialized" =
-    "uninitialized";
-  files = [] as unknown as FileList;
-  items = [] as unknown as DataTransferItemList;
-
-  clearData(): void {
-    throw new Error("Method not implemented.");
-  }
-  setDragImage(): void {
-    throw new Error("Method not implemented.");
-  }
-}

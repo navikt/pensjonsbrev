@@ -16,6 +16,7 @@ import {
   table,
   variable,
 } from "~test/support/letterEditorTestUtils";
+import { MockDataTransfer } from "~test/support/pasteTestUtils";
 
 describe("Actions.pasteReplacingSelection", () => {
   describe("paste plain text replacing selection in a single literal", () => {
@@ -245,34 +246,3 @@ describe("Actions.pasteReplacingSelection", () => {
     });
   });
 });
-
-class MockDataTransfer implements DataTransfer {
-  private data: Record<string, string> = {};
-
-  get types(): string[] {
-    return Object.keys(this.data);
-  }
-  getData(format: string): string {
-    return this.data[format] ?? "";
-  }
-  setData(format: string, data: string): void {
-    this.data[format] = data;
-  }
-
-  constructor(data: Record<string, string>) {
-    Object.assign(this.data, data);
-  }
-
-  dropEffect: "none" | "copy" | "link" | "move" = "none";
-  effectAllowed: "none" | "copy" | "link" | "move" | "all" | "copyLink" | "copyMove" | "linkMove" | "uninitialized" =
-    "uninitialized";
-  files = [] as unknown as FileList;
-  items = [] as unknown as DataTransferItemList;
-
-  clearData(): void {
-    throw new Error("Method not implemented.");
-  }
-  setDragImage(): void {
-    throw new Error("Method not implemented.");
-  }
-}

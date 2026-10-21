@@ -3,7 +3,6 @@ import { type Draft } from "immer";
 
 import {
   addElements,
-  cleanseText,
   findAdjoiningContent,
   fontTypeOf,
   isAtStartOfBlock,
@@ -25,6 +24,20 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
+import {
+  cleansePastedText,
+  type ItemElement,
+  mergeNeighbouringText,
+  type ParagraphElement,
+  type Table,
+  type TableCell,
+  type TableRow,
+  type Text,
+  type Title1Element,
+  type Title2Element,
+  type Title3Element,
+  type TraversedElement,
+} from "~/Brevredigering/LetterEditor/actions/traversedElement";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import {
@@ -537,53 +550,6 @@ function toggleItemListAndSplitAtCursor(
   }
 }
 
-interface Text {
-  type: "TEXT";
-  font: FontType;
-  text: string;
-}
-
-interface ItemElement {
-  type: "ITEM";
-  content: Text[];
-  listType?: ListType;
-}
-
-interface ParagraphElement {
-  type: "P";
-  content: Text[];
-}
-interface Title1Element {
-  type: "H1";
-  content: Text[];
-}
-
-interface Title2Element {
-  type: "H2";
-  content: Text[];
-}
-
-interface Title3Element {
-  type: "H3";
-  content: Text[];
-}
-
-interface TableCell {
-  content: Text[];
-}
-
-interface TableRow {
-  cells: TableCell[];
-}
-
-interface Table {
-  type: "TABLE";
-  rows: TableRow[];
-  headerCells?: TableCell[];
-}
-
-type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Title3Element | Table;
-
 /** Return clipboard HTML or plain text, sanitised through DOMPurify. */
 function getCleanClipboardMarkup(dt: DataTransfer): string {
   const raw = dt.types.includes("text/html") ? dt.getData("text/html") : dt.getData("text/plain");
@@ -935,22 +901,6 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): Paragrap
 
   flushBuffer();
   return result;
-}
-
-function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
-  return elements.reduce<T[]>((acc, curr) => {
-    const previous = acc.at(-1);
-
-    if (previous?.type === "TEXT" && curr.type === "TEXT" && previous?.font === curr.font) {
-      return [...acc.slice(0, -1), { ...previous, text: cleansePastedText(previous.text + curr.text) }];
-    } else {
-      return acc.concat(curr);
-    }
-  }, []);
-}
-
-function cleansePastedText(str: string): string {
-  return cleanseText(str).replaceAll(/\s+/g, " ");
 }
 
 function log(message: string, ...obj: unknown[]) {
