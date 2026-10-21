@@ -64,7 +64,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 text(bokmal { +"Pålegget om utlevering av opplysninger kan påklages etter forvaltningsloven § 14. Klageadgangen gjelder kun lovligheten av pålegget. Fristen for å klage er tre dager etter at pålegget er mottatt. Klagen kan fremsettes muntlig eller skriftlig. " },
-                    nynorsk { +"Pålegget om utlevering av opplysningar kan påklagast etter forvaltningslova § 14. Klagegangen gjeld berre lovlegheita av pålegget. Fristen for å klage er tre dagar etter at pålegget er motteke. Klagen kan fremjast munnleg eller skriftleg. " })
+                    nynorsk { +"Pålegget om utlevering av opplysningar kan påklagast etter forvaltningslova § 14. Klageretten gjeld berre lovlegheita av pålegget. Fristen for å klage er tre dagar etter at pålegget er motteke. Klagen kan fremjast munnleg eller skriftleg. " })
             }
 
             includePhrase(Felles.HarDuSporsmalLegeBehandler)
