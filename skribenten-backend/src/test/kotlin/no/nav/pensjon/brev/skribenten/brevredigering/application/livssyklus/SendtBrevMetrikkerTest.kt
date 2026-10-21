@@ -22,9 +22,14 @@ class SendtBrevMetrikkerTest {
     private val samhandlerService =
         FakeSamhandlerService(
             navn = mapOf(TssId("80000000003") to "Samhandler uten identtype"),
-        typer = mapOf(TssId("80000123456") to "ADVO", TssId("80000999999") to "LE"),
+        typer = mapOf(
+            TssId("80000123456") to "ADVO",
+            TssId("80000123457") to "ADVO",
+            TssId("80000999999") to "LE",
+        ),
         idTyper = mapOf(
             TssId("80000123456") to "ORG",
+            TssId("80000123457") to "ORG",
             TssId("80000999999") to "FNR",
             TssId("80000000001") to "ORGNR",
             TssId("80000000002") to "UTOR",
@@ -32,6 +37,7 @@ class SendtBrevMetrikkerTest {
         ),
         offentligIder = mapOf(
             TssId("80000123456") to ORGNR,
+            TssId("80000123457") to "00$ORGNR",
             TssId("80000999999") to "12345678910",
             TssId("80000000001") to ANNET_ORGNR,
             TssId("80000000002") to "SE556036079301",
@@ -107,13 +113,14 @@ class SendtBrevMetrikkerTest {
         metrikker(registry).tellSendtBrev(maaling(mottakerType = MottakerType.SAMHANDLER, tssId = tssId)).join()
 
     @Test
-    suspend fun `organisasjonsnummer gir id_type ORG og telles i en hash-boette`() {
+    suspend fun `organisasjonsnummer med og uten TSS-prefiks telles i samme hash-boette`() {
         val registry = SimpleMeterRegistry()
 
         tellSamhandler(registry, TssId("80000123456"))
+        tellSamhandler(registry, TssId("80000123457"))
 
         assertThat(registry.idTypeFor("80000123456")).isEqualTo(SendtBrevMetrikker.SamhandlerIdType.ORG.name)
-        assertThat(registry.orgBoetter()).containsExactly(entry(SendtBrevMetrikker.orgBoette(ORGNR).toString(), 1.0))
+        assertThat(registry.orgBoetter()).containsExactly(entry(SendtBrevMetrikker.orgBoette(ORGNR).toString(), 2.0))
     }
 
     @Test
