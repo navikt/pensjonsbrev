@@ -82,7 +82,7 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                 list {
                     item {
                         text(bokmal { + "Dine personlige selvangivelser for årene " + fritekst("fom-tom") },
-                            nynorsk { + "Dine personlege sjølvangivelser for åra " + fritekst("fom-tom") })
+                            nynorsk { + "Dine personlege sjølvmeldingar for åra " + fritekst("fom-tom") })
                     }
                     item {
                         text(bokmal { + "Næringsspesifikasjon levert i Altinn/skatteetaten fra " + fritekst("år") + ", og:" },
