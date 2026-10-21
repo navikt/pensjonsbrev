@@ -42,7 +42,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(request.mottaker).isEqualTo(
             Pen.SendRedigerbartBrevRequest.Mottaker(
                 type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
-                organisasjon = Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon(SAMHANDLER_ORGNR),
+                organisasjon = Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon(OrgNr(SAMHANDLER_ORGNR)),
             )
         )
         assertThat(distribuer).isEqualTo(distribusjon == Distribusjon.SENTRALPRINT)
@@ -56,7 +56,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         val request = penService.utfoerteSendBrevKall.single().first
         assertThat(request.mottaker?.type).isEqualTo(Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR)
-        assertThat(request.mottaker?.organisasjon?.orgNr).isEqualTo(SAMHANDLER_ORGNR)
+        assertThat(request.mottaker?.organisasjon?.orgNr?.value).isEqualTo(SAMHANDLER_ORGNR)
     }
 
     @ParameterizedTest

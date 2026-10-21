@@ -141,24 +141,7 @@ object Pen {
             val organisasjon: Organisasjon? = null,
         ) {
             enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE, ORGNR }
-            data class Organisasjon(val orgNr: String) {
-                init {
-                    require(erGyldig(orgNr)) { "Organisasjonsnummer må være ni siffer" }
-                }
-
-                companion object {
-                    private val NI_SIFFER = Regex("\\d{9}")
-                    private val TSS_ORGNR = Regex("00(\\d{9})")
-
-                    fun erGyldig(orgNr: String): Boolean = NI_SIFFER.matches(orgNr)
-
-                    fun normaliser(orgNr: String): String? =
-                        when {
-                            erGyldig(orgNr) -> orgNr
-                            else -> TSS_ORGNR.matchEntire(orgNr)?.groupValues?.get(1)
-                        }
-                }
-            }
+            data class Organisasjon(val orgNr: OrgNr)
 
             data class NorskAdresse(
                 val navn: Navn,
