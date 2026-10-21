@@ -40,7 +40,7 @@ object UtsattKlagefrist : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     {
         title {
             text (bokmal { + "Mottatt foreløpig klage" },
-                nynorsk { + "Mottatt førebels klage" })
+                nynorsk { + "Motteken førebels klage" })
         }
         outline {
             paragraph {
