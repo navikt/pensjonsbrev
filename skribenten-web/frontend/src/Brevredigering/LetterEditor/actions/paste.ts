@@ -493,9 +493,10 @@ function insertTable(draft: Draft<LetterEditorState>, tableElement: Table): bool
 function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]): boolean {
   let inserted = false;
   let trailingBlock: Draft<AnyBlock> | undefined;
+  let pastedListType: ListType | undefined;
   for (const [index, element] of elements.entries()) {
     const previous = index > 0 ? elements[index - 1] : undefined;
-    if (previous?.type === "ITEM" && element.type !== "TEXT" && !continuesPastedList(draft, element)) {
+    if (previous?.type === "ITEM" && element.type !== "TEXT" && !continuesPastedList(pastedListType, element)) {
       trailingBlock = breakOutOfPastedList(draft) ?? trailingBlock;
     } else if (previous?.type === "TABLE") {
       trailingBlock = moveFocusAfterPastedTable(draft) ?? trailingBlock;
@@ -523,6 +524,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "ITEM": {
+        if (!element.nested && element.listType !== undefined) pastedListType = element.listType;
         insertItem(draft, element);
         break;
       }
@@ -541,13 +543,15 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
   return inserted;
 }
 
-/** A pasted item continues the current list unless it belongs to a different list type. */
-function continuesPastedList(draft: Draft<LetterEditorState>, element: TraversedElement): boolean {
+/** Compare source list types, since the first pasted item may have adopted the destination's style. */
+function continuesPastedList(pastedListType: ListType | undefined, element: TraversedElement): boolean {
   if (element.type !== "ITEM") return false;
-  if (element.nested || element.listType === undefined || !isItemContentIndex(draft.focus)) return true;
-
-  const itemList = draft.redigertBrev.blocks[draft.focus.blockIndex]?.content[draft.focus.contentIndex];
-  return !isItemList(itemList) || (itemList.editedListType ?? itemList.listType) === element.listType;
+  return (
+    element.nested ||
+    element.listType === undefined ||
+    pastedListType === undefined ||
+    pastedListType === element.listType
+  );
 }
 
 /**

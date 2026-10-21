@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { isValidIndex } from "~/Brevredigering/LetterEditor/actions/common";
-import { type ItemList } from "~/types/brevbakerTypes";
+import { type ItemList, ListType } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
 import { MockDataTransfer, projectLetter } from "~test/support/pasteTestUtils";
 
@@ -88,4 +88,88 @@ describe("paste across list and table boundaries", () => {
       expect(result.saveStatus).toBe("DIRTY");
     },
   );
+});
+
+describe("pasted list styles follow source boundaries", () => {
+  test.each([
+    [ListType.PUNKTLISTE, "ol", "•"],
+    [ListType.NUMMERERT_LISTE, "ul", "1."],
+  ])("adapts the whole source list to the destination %s", (listType, tag, marker) => {
+    const state = letter(
+      paragraph({
+        id: 1,
+        content: [itemList({ id: 10, listType, items: [item(literal("a"))] })],
+      }),
+    );
+    const result = Actions.paste(
+      state,
+      { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+      1,
+      new MockDataTransfer({ "text/html": `<${tag}><li>A</li><li>B</li></${tag}>` }),
+    );
+
+    expect(projectLetter(result)).toEqual([`${marker} aA`, `${marker} B`, `${marker} `]);
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ id: 10, listType });
+    expect(isValidIndex(result.redigertBrev, result.focus)).toBe(true);
+  });
+
+  test("uses the edited destination list type without changing its template type", () => {
+    const state = letter(
+      paragraph({
+        id: 1,
+        content: [
+          itemList({
+            id: 10,
+            listType: ListType.PUNKTLISTE,
+            editedListType: ListType.NUMMERERT_LISTE,
+            items: [item(literal("a"))],
+          }),
+        ],
+      }),
+    );
+    const result = Actions.paste(
+      state,
+      { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+      1,
+      new MockDataTransfer({ "text/html": "<ul><li>A</li><li>B</li></ul>" }),
+    );
+
+    expect(projectLetter(result)).toEqual(["1. aA", "1. B", "1. "]);
+    expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({
+      listType: ListType.PUNKTLISTE,
+      editedListType: ListType.NUMMERERT_LISTE,
+    });
+  });
+
+  test("nested list styles do not split the surrounding source list", () => {
+    const state = letter(paragraph([itemList({ items: [item(literal("a"))] })]));
+    const result = Actions.paste(
+      state,
+      { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+      1,
+      new MockDataTransfer({
+        "text/html": "<ol><li>A<ul><li>nested</li></ul></li><li>B</li></ol>",
+      }),
+    );
+
+    expect(projectLetter(result)).toEqual(["• aA", "• nested", "• B", "• "]);
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+  });
+
+  test("a different top-level source list still starts a separate list", () => {
+    const state = letter(paragraph([itemList({ items: [item(literal("a"))] })]));
+    const result = Actions.paste(
+      state,
+      { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+      1,
+      new MockDataTransfer({
+        "text/html": "<ol><li>A</li><li>B</li></ol><ul><li>C</li><li>D</li></ul>",
+      }),
+    );
+
+    expect(projectLetter(result)).toEqual(["• aA", "• B", "• C", "• D", "• "]);
+    expect(result.redigertBrev.blocks).toHaveLength(2);
+    expect(isValidIndex(result.redigertBrev, result.focus)).toBe(true);
+  });
 });
