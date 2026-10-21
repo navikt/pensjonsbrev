@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -28,7 +30,7 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Barnetillegg Barn som ikke bor hos bruker",
             distribusjonstype = VIKTIG,
@@ -37,26 +39,33 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Din søknad om barnetillegg i uføretrygd" })
+            text (bokmal { + "Din søknad om barnetillegg i uføretrygd" },
+                nynorsk { + "Din søknad om barnetillegg i uføretrygd" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Du har søkt om barnetillegg for barn som ikke bor hos deg. For å kunne behandle din søknad, trenger vi at du sender oss dokumentasjon på forsørgelse av barn. " })
+                text(bokmal { +"Du har søkt om barnetillegg for barn som ikke bor hos deg. For å kunne behandle din søknad, trenger vi at du sender oss dokumentasjon på forsørgelse av barn. " },
+                    nynorsk { +"Du har søkt om barnetillegg for barn som ikkje bur hos deg. For å kunne behandle søknaden din, treng vi at du sender oss dokumentasjon på forsørging av barn. " })
             }
             paragraph {
-                text(bokmal { +"Dokumentasjon på forsørgelse kan være avtale om delt bosted, samværsavtale, avtale om bidrag. Dokumentasjonen må ha dato og være undertegnet av begge foreldrene. " })
+                text(bokmal { +"Dokumentasjon på forsørgelse kan være avtale om delt bosted, samværsavtale, avtale om bidrag. Dokumentasjonen må ha dato og være undertegnet av begge foreldrene. " },
+                    nynorsk { +"Dokumentasjon på forsørging kan vere avtale om delt bustad, samværsavtale, avtale om bidrag. Dokumentasjonen må ha dato og vere underteikna av begge foreldra. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
+                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " },
+                    nynorsk { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklast og raskast å ettersende digitalt. Du finn skjemaoversikta og rettleiing på nettsidene våre ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender opplysningene til oss innen to uker etter at du har fått dette brevet. " })
+                text(bokmal { +"Vi ber om at du sender opplysningene til oss innen to uker etter at du har fått dette brevet. " },
+                    nynorsk { +"Vi ber om at du sender opplysningane til oss innan to veker etter at du har fått dette brevet. " })
             }
             paragraph {
-                text(bokmal { +"Dersom vi ikke får nødvendige opplysninger innen frist, kan søknaden din bli avslått på grunn av manglende opplysninger. " })
+                text(bokmal { +"Dersom vi ikke får nødvendige opplysninger innen frist, kan søknaden din bli avslått på grunn av manglende opplysninger. " },
+                    nynorsk { +"Dersom vi ikkje får nødvendige opplysningar innan frist, kan søknaden din bli avslått på grunn av manglande opplysningar. " })
             }
             paragraph {
-                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })
+                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " },
+                    nynorsk { +"I folketrygdlova § 21-3 finn du informasjon om opplysningsplikta di til Nav. " })
             }
 
             includePhrase(Felles.MeldFraOmEndringer)

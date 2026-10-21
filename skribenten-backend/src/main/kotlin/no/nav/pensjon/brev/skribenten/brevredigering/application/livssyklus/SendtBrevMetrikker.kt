@@ -79,8 +79,11 @@ class SendtBrevMetrikker(
 
         // Samme krav som SendBrevHandler stiller for å sende organisasjonsnummer til PEN.
         samhandler?.getOrNull()
-            ?.takeIf { it.idType() == SamhandlerIdType.ORG && Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon.erGyldig(it.offentligId) }
-            ?.let { tellOrganisasjon(it.offentligId) }
+            ?.takeIf { it.idType() == SamhandlerIdType.ORG }
+            ?.let { samhandler ->
+                Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon.normaliser(samhandler.offentligId)
+                    ?.let(::tellOrganisasjon)
+            }
     }
 
     // Tom labelverdi leses som fraværende i Prometheus, og serien ville da falt ut av `sum by (samhandler_type)`.

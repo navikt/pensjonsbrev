@@ -120,7 +120,8 @@ class SendBrevHandler(
             null
         } else {
             samhandler.offentligId
-                .takeIf { samhandler.idType == "ORG" && Organisasjon.erGyldig(it) }
+                .takeIf { samhandler.idType == "ORG" }
+                ?.let(Organisasjon::normaliser)
                 ?.let { orgNr ->
                     Pen.SendRedigerbartBrevRequest.Mottaker(
                         type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,

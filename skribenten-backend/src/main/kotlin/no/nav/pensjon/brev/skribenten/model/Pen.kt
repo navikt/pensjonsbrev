@@ -137,7 +137,15 @@ object Pen {
 
                 companion object {
                     private val NI_SIFFER = Regex("\\d{9}")
+                    private val TSS_ORGNR = Regex("00(\\d{9})")
+
                     fun erGyldig(orgNr: String): Boolean = NI_SIFFER.matches(orgNr)
+
+                    fun normaliser(orgNr: String): String? =
+                        when {
+                            erGyldig(orgNr) -> orgNr
+                            else -> TSS_ORGNR.matchEntire(orgNr)?.groupValues?.get(1)
+                        }
                 }
             }
 
