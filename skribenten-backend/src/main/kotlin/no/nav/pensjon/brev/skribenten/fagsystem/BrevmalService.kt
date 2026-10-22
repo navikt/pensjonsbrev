@@ -144,8 +144,10 @@ class BrevmalService(
                 .filter { it.brevkode !in ekskluderteBrev }
         }
 
-    private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> =
-        withContext(Dispatchers.IO) {
+    private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> {
+        val visAutobrev = Features.visAutobrev.isEnabled()
+
+        return withContext(Dispatchers.IO) {
             val brevbaker = async { hentBrevbakerMaler() }
             val legacy = async {
                 brevmetadataService.getAllBrev().asSequence()
@@ -156,9 +158,10 @@ class BrevmalService(
             //     det blir forkastet før funksjonen returnerer.
             return@withContext brevbaker.await().asSequence().map { LetterMetadata.Brevbaker(it) } +
                     legacy.await().map { LetterMetadata.Legacy(it, Pen.sakstypeForLegacybrev) }
-        }.filter { it.isRedigerbart }
+        }.filter { visAutobrev || it.isRedigerbart }
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }
+    }
 
     private suspend fun hentBrevbakerMaler(): List<TemplateDescription.Redigerbar> =
         getTemplates() ?: emptyList()
