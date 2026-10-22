@@ -45,6 +45,9 @@ class LegacyBrevServiceImpl(
 
     override suspend fun bestillExstreamAutobrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillExstreamAutobrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        if (!brevMetadata.isAutomatiskExstream()) {
+            throw io.ktor.server.plugins.BadRequestException("Brevmalen er ikke et automatisk Exstream-brev")
+        }
         val result = bestillExstreamBrev(gjelderPid, request, saksId, brevMetadata)
 
         return Api.BestillExstreamAutobrevResponse(journalpostId = result.journalpostId, failureType = result.failureType)
