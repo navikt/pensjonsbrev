@@ -10,6 +10,7 @@ import {
   type ExprFieldPath,
   ExprType,
   type OutlineContentV2,
+  type ParagraphContentV2,
 } from "~/api/brevbakerTypesV2";
 import { DocumentV2, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationV2View";
 
@@ -542,5 +543,95 @@ describe("DocumentV2 lister", () => {
     const html = renderList("PUNKTLISTE");
     expect(html).toContain("<ul>");
     expect(html).not.toContain("<ol>");
+  });
+});
+
+describe("DocumentV2 betingelser i avsnitt", () => {
+  const lit = (text: string): ContentOrControlStructureV2<ParagraphContentV2> => ({
+    controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+    content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL, text },
+  });
+
+  function renderParagraph(paragraph: ContentOrControlStructureV2<ParagraphContentV2>[]): string {
+    return renderToStaticMarkup(
+      <DocumentV2
+        templateDocumentation={{
+          title: [],
+          outline: [
+            {
+              controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+              content: { elementType: ElementTypeV2.PARAGRAPH, paragraph },
+            },
+          ],
+          include: fieldPath("dummy"),
+          attachmentData: fieldPath("dummy"),
+        }}
+      />,
+    );
+  }
+
+  it("rendrer en tekst-betingelse midt i et avsnitt inline, uten blokk som bryter linjen", () => {
+    const html = renderParagraph([
+      lit("Du får "),
+      {
+        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [lit("barnetillegg")],
+        elseIf: [],
+        showElse: [lit("ingenting")],
+      },
+      lit(" fra oss."),
+    ]);
+
+    expect(html).toContain("inline-conditional");
+    expect(html).not.toContain('class="conditional');
+    expect(html).not.toContain("<details");
+    expect(text(html)).toContain("barnetillegg");
+    expect(text(html)).toContain("ingenting");
+    // Betingelsene ligger i popover-innholdet, ikke som synlig tekst i flyten.
+    expect(html).toContain('aria-label="If"');
+    expect(html).toContain('aria-label="Else"');
+    expect(html).toContain("harBarn");
+  });
+
+  it("behandler et avsnitt med en betingelse som eneste barn som en betinget avsnitt-blokk", () => {
+    const html = renderParagraph([
+      {
+        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [lit("Med barn.")],
+        elseIf: [],
+        showElse: [lit("Uten barn.")],
+      },
+    ]);
+
+    expect(html).not.toContain("inline-conditional");
+    expect(html).toContain('class="conditional conditional-multi-branch"');
+    // Hver gren er sitt eget avsnitt inni den betingede blokken.
+    const showIf = /<div class="show-if">(.*?)<\/div><div class="show-else">/s.exec(html);
+    expect(showIf).not.toBeNull();
+    expect(showIf?.[1]).toContain("Med barn.");
+    expect(html).toMatch(/class="show-else">.*Uten barn\./s);
+  });
+
+  it("beholder blokkvisning når en gren inneholder annet enn løpende tekst", () => {
+    const html = renderParagraph([
+      lit("Se: "),
+      {
+        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [
+          {
+            controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+            content: { elementType: ElementTypeV2.PARAGRAPH_ITEMLIST, type: "PUNKTLISTE", items: [] },
+          },
+        ],
+        elseIf: [],
+        showElse: [],
+      },
+    ]);
+
+    expect(html).not.toContain("inline-conditional");
+    expect(html).toContain('class="conditional"');
   });
 });
