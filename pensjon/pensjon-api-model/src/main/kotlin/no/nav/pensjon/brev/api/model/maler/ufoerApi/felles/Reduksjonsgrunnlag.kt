@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.felles
+package no.nav.pensjon.brev.api.model.maler.ufoerApi.felles
 
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
