@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BodyLong, Button, Modal } from "@navikt/ds-react";
+import { BodyLong, Button, Modal, TextField } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -7,10 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { type z } from "zod";
 
-import { bestillDelautomatiskBrev, orderLetterKeys } from "~/api/skribenten-api-endpoints";
+import { bestillExstreamAutobrev, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
-import { type BestillDelautomatiskBrevRequest, type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
+import { type LetterMetadata, type OrderExstreamLetterRequest, type SpraakKode } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
 import { trackEvent } from "~/utils/umami";
 
@@ -20,7 +20,7 @@ import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
 import SelectLanguage from "./components/SelectLanguage";
-import { byggDelautomatiskOnSubmitRequest, createValidationSchema } from "./TemplateUtils";
+import { byggExstreamOnSubmitRequest, createValidationSchema } from "./TemplateUtils";
 
 export default function BrevmalDelautomatisk({
   letterTemplate,
@@ -45,8 +45,7 @@ export default function BrevmalDelautomatisk({
   const navigate = useNavigate({ from: Route.fullPath });
   const { leggTilDelautomatiskBrevResultat } = useSendtBrev();
   const formRef = useRef<HTMLFormElement>(null);
-  const [bestillingTilBekreftelse, setBestillingTilBekreftelse] =
-    useState<Nullable<BestillDelautomatiskBrevRequest>>(null);
+  const [bestillingTilBekreftelse, setBestillingTilBekreftelse] = useState<Nullable<OrderExstreamLetterRequest>>(null);
 
   const gåTilKvittering = () =>
     navigate({
@@ -55,8 +54,8 @@ export default function BrevmalDelautomatisk({
       search: { enhetsId: urlEnhetsId, vedtaksId },
     });
 
-  const bestillMutation = useMutation<Nullable<number>, AxiosError<Error> | Error, BestillDelautomatiskBrevRequest>({
-    mutationFn: (payload) => bestillDelautomatiskBrev(saksId, payload),
+  const bestillMutation = useMutation<Nullable<number>, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
+    mutationFn: (payload) => bestillExstreamAutobrev(saksId, payload),
     onSuccess: (journalpostId, variables) => {
       trackEvent("brev sendt", {
         brevkode: letterTemplate.id,
@@ -123,13 +122,14 @@ export default function BrevmalDelautomatisk({
             const parsedVedtaksId = Number.parseInt(vedtaksId ?? "", 10);
 
             setBestillingTilBekreftelse(
-              byggDelautomatiskOnSubmitRequest({
+              byggExstreamOnSubmitRequest({
                 template: letterTemplate,
                 idTSSEkstern: idTSSEkstern ?? null,
                 vedtaksId: Number.isNaN(parsedVedtaksId) ? null : parsedVedtaksId,
                 formValues: {
                   enhetsId: submittedValues.enhetsId,
                   spraak: submittedValues.spraak ?? null,
+                  brevtittel: submittedValues.brevtittel ?? null,
                 },
               }),
             );
@@ -137,6 +137,17 @@ export default function BrevmalDelautomatisk({
         >
           <EndreMottaker saksId={saksId} />
           <SelectEnhet />
+          {letterTemplate.redigerbarBrevtittel && (
+            <TextField
+              {...methods.register("brevtittel")}
+              autoComplete="on"
+              data-testid="brev-title-textfield"
+              description="Gi brevet en kort og forklarende tittel."
+              error={methods.formState.errors.brevtittel?.message}
+              label="Endre tittel"
+              size="small"
+            />
+          )}
           <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
         </BrevmalFormWrapper>
       </FormProvider>

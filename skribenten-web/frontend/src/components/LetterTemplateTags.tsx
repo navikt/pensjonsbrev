@@ -23,7 +23,7 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
           }
         }
       })()}
-      {letterTemplate.delautomatisk && (
+      {letterTemplate.automatiskExstream && (
         <Tag data-color="info" size="small" variant="moderate">
           Del-automatisk
         </Tag>

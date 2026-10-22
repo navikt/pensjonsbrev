@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios, { type AxiosResponse } from "axios";
 
-import { leggTilMockBrevmaler } from "~/api/delautomatiskeBrevMock";
 import { SKRIBENTEN_API_BASE_PATH } from "~/api/skribenten-api-endpoints";
 import { type UnifiedLetterDiff } from "~/Brevredigering/LetterEditor/diff/diffModel";
 import { type LetterMetadata } from "~/types/apiTypes";
@@ -21,8 +20,7 @@ export const brevmetadataKeys = {
 
 export const getBrevmetadata = {
   queryKey: brevmetadataKeys.all,
-  queryFn: async () =>
-    leggTilMockBrevmaler((await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/brevmal`)).data),
+  queryFn: async () => (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/brevmal`)).data,
 };
 
 export const brevmalKeys = {
