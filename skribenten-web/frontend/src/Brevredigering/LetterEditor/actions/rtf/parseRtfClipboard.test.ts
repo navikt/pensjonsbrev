@@ -35,6 +35,20 @@ describe("parseRtfClipboard", () => {
     });
   });
 
+  test.each(["", "   ", "\\tab\\par  ", "{\\*\\htmltag    }"])(
+    "returns empty for blank encapsulated HTML: %s",
+    (body) => {
+      expect(parseRtfClipboard(`{\\rtf1\\ansi\\fromhtml1 ${body}}`)).toEqual({ mode: "empty" });
+    },
+  );
+
+  test("preserves nonblank HTML without trimming or interpreting its markup", () => {
+    expect(parseRtfClipboard("{\\rtf1\\ansi\\fromhtml1{\\*\\htmltag  <p></p> }}")).toEqual({
+      mode: "html",
+      html: " <p></p> ",
+    });
+  });
+
   test("returns the encapsulated text for \\fromtext", () => {
     expect(parseRtfClipboard("{\\rtf1\\ansi\\fromtext Linje 1\\par Linje 2}")).toEqual({
       mode: "text",

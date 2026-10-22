@@ -66,7 +66,9 @@ export function parseRtfClipboard(rtf: string): ParsedRtfClipboard {
     const tokens = tokenizeRtf(rtf);
     const decodeBytes = createByteDecoder(tokens);
     const encapsulated = extractEncapsulatedContent(tokens, decodeBytes);
-    if (encapsulated?.format === "html") return { mode: "html", html: encapsulated.html };
+    if (encapsulated?.format === "html") {
+      return encapsulated.html.trim().length > 0 ? { mode: "html", html: encapsulated.html } : { mode: "empty" };
+    }
     if (encapsulated?.format === "text") {
       return encapsulated.text.trim().length > 0 ? { mode: "text", text: encapsulated.text } : { mode: "empty" };
     }
