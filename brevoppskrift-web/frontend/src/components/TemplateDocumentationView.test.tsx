@@ -3,16 +3,16 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import {
-  ContentOrControlStructureTypeV2,
-  type ContentOrControlStructureV2,
-  ElementTypeV2,
+  type ContentOrControlStructure,
+  ContentOrControlStructureType,
+  ElementType,
   type Expr,
   type ExprFieldPath,
   ExprType,
-  type OutlineContentV2,
-  type ParagraphContentV2,
-} from "~/api/brevbakerTypesV2";
-import { DocumentV2, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationV2View";
+  type OutlineContent,
+  type ParagraphContent,
+} from "~/api/templateDocumentationTypes";
+import { Document, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationView";
 
 function render(expr: Expr): string {
   return renderToStaticMarkup(<ExprToText expr={expr} />);
@@ -92,18 +92,19 @@ describe("ExprToText eksempelverdi for tekstfelt", () => {
 
   function paragraphText(expression: Expr): string {
     return renderToStaticMarkup(
-      <DocumentV2
+      <Document
         templateDocumentation={{
           title: [],
           outline: [
             {
-              controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+              controlStructureType: ContentOrControlStructureType.CONTENT,
               content: {
-                elementType: ElementTypeV2.PARAGRAPH,
+                elementType: ElementType.PARAGRAPH,
+                index: 0,
                 paragraph: [
                   {
-                    controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-                    content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION, expression },
+                    controlStructureType: ContentOrControlStructureType.CONTENT,
+                    content: { elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION, expression },
                   },
                 ],
               },
@@ -399,30 +400,48 @@ describe("ExprToText Format med eksempeltekst", () => {
   });
 });
 
-function textLiteralParagraph(text: string): ContentOrControlStructureV2<OutlineContentV2> {
+function textLiteralParagraph(text: string): ContentOrControlStructure<OutlineContent> {
   return {
-    controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+    controlStructureType: ContentOrControlStructureType.CONTENT,
     content: {
-      elementType: ElementTypeV2.PARAGRAPH,
+      elementType: ElementType.PARAGRAPH,
+      index: 0,
       paragraph: [
         {
-          controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-          content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL, text },
+          controlStructureType: ContentOrControlStructureType.CONTENT,
+          content: { elementType: ElementType.PARAGRAPH_TEXT_LITERAL, text },
         },
       ],
     },
   };
 }
 
-describe("DocumentV2 block-level Conditional (If/Else If)", () => {
+describe("Document search indexes", () => {
+  it("exposes the block index on the rendered paragraph", () => {
+    const html = renderToStaticMarkup(
+      <Document
+        templateDocumentation={{
+          title: [],
+          outline: [textLiteralParagraph("Søkbar tekst")],
+          attachments: [],
+          templateModelSpecification: { types: {}, letterModelTypeName: "" },
+        }}
+      />,
+    );
+
+    expect(html).toContain('data-block-index="0"');
+  });
+});
+
+describe("Document block-level Conditional (If/Else If)", () => {
   it("skjuler predikatet bak en lukket <details>/<summary>-disclosure, men viser selve den betingede teksten direkte", () => {
     const html = renderToStaticMarkup(
-      <DocumentV2
+      <Document
         templateDocumentation={{
           title: [],
           outline: [
             {
-              controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+              controlStructureType: ContentOrControlStructureType.CONDITIONAL,
               predicate: fieldPath("harBarn"),
               showIf: [textLiteralParagraph("Du har barnetillegg.")],
               elseIf: [],
@@ -450,12 +469,12 @@ describe("DocumentV2 block-level Conditional (If/Else If)", () => {
 
   it("rendrer 'Else If' med samme kollapsede disclosure-mønster", () => {
     const html = renderToStaticMarkup(
-      <DocumentV2
+      <Document
         templateDocumentation={{
           title: [],
           outline: [
             {
-              controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+              controlStructureType: ContentOrControlStructureType.CONDITIONAL,
               predicate: fieldPath("harBarn"),
               showIf: [textLiteralParagraph("Med barnetillegg.")],
               elseIf: [
@@ -498,27 +517,28 @@ describe("isLeafPrimitive", () => {
   });
 });
 
-describe("DocumentV2 lister", () => {
-  function itemListParagraph(type: "PUNKTLISTE" | "NUMMERERT_LISTE"): ContentOrControlStructureV2<OutlineContentV2> {
+describe("Document lister", () => {
+  function itemListParagraph(type: "PUNKTLISTE" | "NUMMERERT_LISTE"): ContentOrControlStructure<OutlineContent> {
     return {
-      controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+      controlStructureType: ContentOrControlStructureType.CONTENT,
       content: {
-        elementType: ElementTypeV2.PARAGRAPH,
+        elementType: ElementType.PARAGRAPH,
+        index: 0,
         paragraph: [
           {
-            controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+            controlStructureType: ContentOrControlStructureType.CONTENT,
             content: {
-              elementType: ElementTypeV2.PARAGRAPH_ITEMLIST,
+              elementType: ElementType.PARAGRAPH_ITEMLIST,
               type,
               items: [
                 {
-                  controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+                  controlStructureType: ContentOrControlStructureType.CONTENT,
                   content: {
-                    elementType: ElementTypeV2.PARAGRAPH_ITEMLIST_ITEM,
+                    elementType: ElementType.PARAGRAPH_ITEMLIST_ITEM,
                     text: [
                       {
-                        controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-                        content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL, text: "Et punkt" },
+                        controlStructureType: ContentOrControlStructureType.CONTENT,
+                        content: { elementType: ElementType.PARAGRAPH_TEXT_LITERAL, text: "Et punkt" },
                       },
                     ],
                   },
@@ -533,7 +553,7 @@ describe("DocumentV2 lister", () => {
 
   function renderList(type: "PUNKTLISTE" | "NUMMERERT_LISTE"): string {
     return renderToStaticMarkup(
-      <DocumentV2
+      <Document
         templateDocumentation={{
           title: [],
           outline: [itemListParagraph(type)],
@@ -558,21 +578,21 @@ describe("DocumentV2 lister", () => {
   });
 });
 
-describe("DocumentV2 betingelser i avsnitt", () => {
-  const lit = (text: string): ContentOrControlStructureV2<ParagraphContentV2> => ({
-    controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-    content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL, text },
+describe("Document betingelser i avsnitt", () => {
+  const lit = (text: string): ContentOrControlStructure<ParagraphContent> => ({
+    controlStructureType: ContentOrControlStructureType.CONTENT,
+    content: { elementType: ElementType.PARAGRAPH_TEXT_LITERAL, text },
   });
 
-  function renderParagraph(paragraph: ContentOrControlStructureV2<ParagraphContentV2>[]): string {
+  function renderParagraph(paragraph: ContentOrControlStructure<ParagraphContent>[]): string {
     return renderToStaticMarkup(
-      <DocumentV2
+      <Document
         templateDocumentation={{
           title: [],
           outline: [
             {
-              controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-              content: { elementType: ElementTypeV2.PARAGRAPH, paragraph },
+              controlStructureType: ContentOrControlStructureType.CONTENT,
+              content: { elementType: ElementType.PARAGRAPH, index: 0, paragraph },
             },
           ],
           include: fieldPath("dummy"),
@@ -586,7 +606,7 @@ describe("DocumentV2 betingelser i avsnitt", () => {
     const html = renderParagraph([
       lit("Du får "),
       {
-        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
         predicate: fieldPath("harBarn"),
         showIf: [lit("barnetillegg")],
         elseIf: [],
@@ -609,7 +629,7 @@ describe("DocumentV2 betingelser i avsnitt", () => {
   it("behandler et avsnitt med en betingelse som eneste barn som en betinget avsnitt-blokk", () => {
     const html = renderParagraph([
       {
-        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
         predicate: fieldPath("harBarn"),
         showIf: [lit("Med barn.")],
         elseIf: [],
@@ -630,12 +650,12 @@ describe("DocumentV2 betingelser i avsnitt", () => {
     const html = renderParagraph([
       lit("Se: "),
       {
-        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
         predicate: fieldPath("harBarn"),
         showIf: [
           {
-            controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-            content: { elementType: ElementTypeV2.PARAGRAPH_ITEMLIST, type: "PUNKTLISTE", items: [] },
+            controlStructureType: ContentOrControlStructureType.CONTENT,
+            content: { elementType: ElementType.PARAGRAPH_ITEMLIST, type: "PUNKTLISTE", items: [] },
           },
         ],
         elseIf: [],

@@ -2,43 +2,42 @@ package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.render.TemplateDocumentationV2.Expr
-import no.nav.pensjon.brev.template.render.TemplateDocumentationV2.Expr.*
+import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expr
+import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expr.*
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 /**
  * Oversettelse av [Expression] (predikater i showIf/ForEach.items, og tekstuttrykk skrevet ut i
- * brevet) til [Expr] — den delen av [TemplateDocumentationRendererV2] som gjør selve uttrykkene
+ * brevet) til [Expr] — den delen av [TemplateDocumentationRenderer] som gjør selve uttrykkene
  * menneskelig lesbare (flate assosiative kjeder, samlede feltkjeder, eksplisitte
  * komparasjon/negasjon/null-coalescing-noder, formatterings-eksempler osv). Se klassedokumentasjonen
- * på `TemplateDocumentationRendererV2` for helhetsbildet.
+ * på `TemplateDocumentationRenderer` for helhetsbildet.
  *
  * `internal`-funksjonene her ([renderExpr], [flattenAssociative], [mergeLiterals]) er
- * implementasjonsdetaljer delt med innholds-traverseringen i `TemplateDocumentationRendererV2.kt`
+ * implementasjonsdetaljer delt med innholds-traverseringen i `TemplateDocumentationRenderer.kt`
  * (f.eks. `renderTextExpression`), men ikke ment som offentlig API utenfor modulen.
  */
-private typealias AssignedReplacementsV2 = Map<Expression.FromScope.Assigned<*>, Expression<*>>
+private typealias AssignedReplacements = Map<Expression.FromScope.Assigned<*>, Expression<*>>
 
 internal fun renderExpr(
     expr: Expression<*>,
-    assignments: AssignedReplacementsV2,
+    assignments: AssignedReplacements,
     forEachDepth: Int,
     lang: Language,
 ): Expr =
     when (expr) {
         is Expression.Literal -> Literal(expr.value.toString(), inferScalarKind(expr.value))
 
-        is Expression.FromScope.Language -> FieldPath(TemplateDocumentationV2.DataSource.Scope("language"), emptyList(), leafType = null)
-        is Expression.FromScope.Felles -> FieldPath(TemplateDocumentationV2.DataSource.Scope("felles"), emptyList(), leafType = null)
-        is Expression.FromScope.Argument -> FieldPath(TemplateDocumentationV2.DataSource.Scope("argument"), emptyList(), leafType = null)
+        is Expression.FromScope.Language -> FieldPath(TemplateDocumentation.DataSource.Scope("language"), emptyList(), leafType = null)
+        is Expression.FromScope.Felles -> FieldPath(TemplateDocumentation.DataSource.Scope("felles"), emptyList(), leafType = null)
+        is Expression.FromScope.Argument -> FieldPath(TemplateDocumentation.DataSource.Scope("argument"), emptyList(), leafType = null)
         is Expression.FromScope.Assigned ->
             assignments[expr]
                 ?.let { renderExpr(it, assignments, forEachDepth, lang) }
                 // Løkkevariabelen i den nærmeste omsluttende forEach. Uten reflection over
                 // Item-typen kan vi ikke gi et semantisk navn, men depth gjør at nøstede
-                // løkker i det minste kan skilles fra hverandre (til forskjell fra v1 der
-                // alle heter "X").
-                ?: FieldPath(TemplateDocumentationV2.DataSource.ForEachVar("item", forEachDepth), emptyList(), leafType = null)
+                // løkker i det minste kan skilles fra hverandre.
+                ?: FieldPath(TemplateDocumentation.DataSource.ForEachVar("item", forEachDepth), emptyList(), leafType = null)
 
         is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr.value, expr.operation, assignments, forEachDepth, lang)
         is Expression.BinaryInvoke<*, *, *> -> renderBinaryInvoke(expr.first, expr.second, expr.operation, assignments, forEachDepth, lang)
@@ -112,11 +111,11 @@ private fun loadKotlinClass(qualifiedName: String): kotlin.reflect.KClass<*>? {
 private fun renderUnaryInvoke(
     value: Expression<*>,
     operation: UnaryOperation<*, *>,
-    assignments: AssignedReplacementsV2,
+    assignments: AssignedReplacements,
     forEachDepth: Int,
     lang: Language,
 ): Expr {
-    // `?` i safeCall bæres ikke videre til dokumentasjonen (samme forenkling som v1).
+    // `?` i safeCall bæres ikke videre til dokumentasjonen.
     if (operation is UnaryOperation.SafeCall<*, *>) {
         return renderUnaryInvoke(value, operation.operation, assignments, forEachDepth, lang)
     }
@@ -125,7 +124,7 @@ private fun renderUnaryInvoke(
     if (operation is UnaryOperation.Not && value is Expression.BinaryInvoke<*, *, *> && value.operation is BinaryOperation.Equal<*>) {
         return Comparison(
             left = renderExpr(value.first, assignments, forEachDepth, lang),
-            op = TemplateDocumentationV2.CompareOp.NOT_EQUAL,
+            op = TemplateDocumentation.CompareOp.NOT_EQUAL,
             right = renderExpr(value.second, assignments, forEachDepth, lang),
         )
     }
@@ -164,7 +163,7 @@ private fun renderUnaryInvoke(
             // `(a ?: b).felt`) — DataSource.Computed lar oss fortsatt bygge en lesbar
             // FieldPath-kjede i stedet for en bakvendt FunctionCall(".felt", [base]).
             else -> FieldPath(
-                TemplateDocumentationV2.DataSource.Computed(base),
+                TemplateDocumentation.DataSource.Computed(base),
                 listOf(segment),
                 leafType = selector.propertyType,
                 leafOwnerType = selector.className,
@@ -186,8 +185,8 @@ private fun renderUnaryInvoke(
         is UnaryOperation.BrukerFulltNavn -> FunctionCall("fulltNavn", listOf(rendered))
         is UnaryOperation.MapValue<*, *> -> FunctionCall(operation.mapper.name, listOf(rendered))
         is UnaryOperation.MapCollection<*, *> -> FunctionCall("map", listOf(rendered))
-        is UnaryOperation.RedigerbarData -> EditableField(TemplateDocumentationV2.EditableKind.REDIGERBAR_DATA, value = rendered, fallback = null)
-        is UnaryOperation.Fritekst -> EditableField(TemplateDocumentationV2.EditableKind.FRITEKST, value = rendered, fallback = null)
+        is UnaryOperation.RedigerbarData -> EditableField(TemplateDocumentation.EditableKind.REDIGERBAR_DATA, value = rendered, fallback = null)
+        is UnaryOperation.Fritekst -> EditableField(TemplateDocumentation.EditableKind.FRITEKST, value = rendered, fallback = null)
         is UnaryOperation.Select -> error("handled above")
         is UnaryOperation.SafeCall -> error("handled above")
     }
@@ -198,11 +197,11 @@ private fun renderBinaryInvoke(
     first: Expression<*>,
     second: Expression<*>,
     operation: BinaryOperation<*, *, *>,
-    assignments: AssignedReplacementsV2,
+    assignments: AssignedReplacements,
     forEachDepth: Int,
     lang: Language,
 ): Expr {
-    // `?` i safeCall bæres ikke videre til dokumentasjonen (samme forenkling som v1).
+    // `?` i safeCall bæres ikke videre til dokumentasjonen.
     if (operation is BinaryOperation.SafeCall<*, *, *>) {
         return renderBinaryInvoke(first, second, operation.operation, assignments, forEachDepth, lang)
     }
@@ -219,15 +218,15 @@ private fun renderBinaryInvoke(
     }
 
     if (operation is BinaryOperation.And) {
-        return AssociativeOp(TemplateDocumentationV2.AssocOp.AND, (flattenAssociative(first) { it is BinaryOperation.And } + flattenAssociative(second) { it is BinaryOperation.And })
+        return AssociativeOp(TemplateDocumentation.AssocOp.AND, (flattenAssociative(first) { it is BinaryOperation.And } + flattenAssociative(second) { it is BinaryOperation.And })
             .map { renderExpr(it, assignments, forEachDepth, lang) })
     }
     if (operation is BinaryOperation.Or) {
-        return AssociativeOp(TemplateDocumentationV2.AssocOp.OR, (flattenAssociative(first) { it is BinaryOperation.Or } + flattenAssociative(second) { it is BinaryOperation.Or })
+        return AssociativeOp(TemplateDocumentation.AssocOp.OR, (flattenAssociative(first) { it is BinaryOperation.Or } + flattenAssociative(second) { it is BinaryOperation.Or })
             .map { renderExpr(it, assignments, forEachDepth, lang) })
     }
     if (operation is BinaryOperation.IntPlus) {
-        return AssociativeOp(TemplateDocumentationV2.AssocOp.PLUS, (flattenAssociative(first) { it is BinaryOperation.IntPlus } + flattenAssociative(second) { it is BinaryOperation.IntPlus })
+        return AssociativeOp(TemplateDocumentation.AssocOp.PLUS, (flattenAssociative(first) { it is BinaryOperation.IntPlus } + flattenAssociative(second) { it is BinaryOperation.IntPlus })
             .map { renderExpr(it, assignments, forEachDepth, lang) })
     }
     if (operation is BinaryOperation.Concat) {
@@ -236,14 +235,14 @@ private fun renderBinaryInvoke(
             .map { it as StringExpression }
             .mergeLiterals()
         return if (pieces.size == 1) renderExpr(pieces.first(), assignments, forEachDepth, lang)
-        else AssociativeOp(TemplateDocumentationV2.AssocOp.CONCAT, pieces.map { renderExpr(it, assignments, forEachDepth, lang) })
+        else AssociativeOp(TemplateDocumentation.AssocOp.CONCAT, pieces.map { renderExpr(it, assignments, forEachDepth, lang) })
     }
 
-    if (operation is BinaryOperation.Equal<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.EQUAL, renderExpr(second, assignments, forEachDepth, lang))
-    if (operation is BinaryOperation.GreaterThan<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.GREATER_THAN, renderExpr(second, assignments, forEachDepth, lang))
-    if (operation is BinaryOperation.GreaterThanOrEqual<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.GREATER_THAN_OR_EQUAL, renderExpr(second, assignments, forEachDepth, lang))
-    if (operation is BinaryOperation.LessThan<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.LESS_THAN, renderExpr(second, assignments, forEachDepth, lang))
-    if (operation is BinaryOperation.LessThanOrEqual<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.LESS_THAN_OR_EQUAL, renderExpr(second, assignments, forEachDepth, lang))
+    if (operation is BinaryOperation.Equal<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentation.CompareOp.EQUAL, renderExpr(second, assignments, forEachDepth, lang))
+    if (operation is BinaryOperation.GreaterThan<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentation.CompareOp.GREATER_THAN, renderExpr(second, assignments, forEachDepth, lang))
+    if (operation is BinaryOperation.GreaterThanOrEqual<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentation.CompareOp.GREATER_THAN_OR_EQUAL, renderExpr(second, assignments, forEachDepth, lang))
+    if (operation is BinaryOperation.LessThan<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentation.CompareOp.LESS_THAN, renderExpr(second, assignments, forEachDepth, lang))
+    if (operation is BinaryOperation.LessThanOrEqual<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentation.CompareOp.LESS_THAN_OR_EQUAL, renderExpr(second, assignments, forEachDepth, lang))
 
     if (operation is BinaryOperation.IfNull<*>) {
         return NullCoalesce(renderExpr(first, assignments, forEachDepth, lang), renderExpr(second, assignments, forEachDepth, lang))
@@ -251,7 +250,7 @@ private fun renderBinaryInvoke(
 
     if (operation is BinaryOperation.BrevdataEllerFritekst) {
         return EditableField(
-            kind = TemplateDocumentationV2.EditableKind.BREVDATA_ELLER_FRITEKST,
+            kind = TemplateDocumentation.EditableKind.BREVDATA_ELLER_FRITEKST,
             value = renderExpr(first, assignments, forEachDepth, lang),
             fallback = renderExpr(second, assignments, forEachDepth, lang),
         )
@@ -285,7 +284,7 @@ private fun renderBinaryInvoke(
 /**
  * Genererer et 100% korrekt eksempel på hvordan en [LocalizedFormatter] faktisk ville
  * formattert en verdi i et ferdig brev, ved å kalle den ekte `apply`-metoden direkte med en
- * syntetisk eksempelverdi og riktig språk — se drøfting i template-documentation-v2-design.md
+ * syntetisk eksempelverdi og riktig språk.
  * seksjon om Format-visning. Vi reimplementerer bevisst IKKE formatteringslogikk her (ville
  * garantert drifte fra sannheten i brevrendering over tid); i stedet velger vi kun en
  * plausibel input-verdi av riktig type per kjent formatter og lar formatteren gjøre jobben.
@@ -330,8 +329,8 @@ private val EXAMPLE_LANDKODE: no.nav.brev.BrevLandmodell.Landkode = no.nav.brev.
 /**
  * Flater ut en venstre-assosiativ kjede av [expr] slik at f.eks. `a and b and c`, som i
  * DSL-en bygges som `BinaryInvoke(BinaryInvoke(a, b, And), c, And)`, blir `[a, b, c]` i
- * stedet for et nøstet tre. Generaliserer v1s `flattenLiteralConcat` til å gjelde alle
- * assosiative operasjoner (AND, OR, CONCAT, PLUS).
+ * stedet for et nøstet tre. Assosiative operasjoner (AND, OR, CONCAT, PLUS) flates alle ut
+ * med denne funksjonen.
  */
 internal fun flattenAssociative(expr: Expression<*>, isSameOperation: (Operation) -> Boolean): List<Expression<*>> =
     if (expr is Expression.BinaryInvoke<*, *, *> && isSameOperation(expr.operation)) {

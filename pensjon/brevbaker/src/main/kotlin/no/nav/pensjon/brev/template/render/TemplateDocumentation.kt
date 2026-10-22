@@ -8,17 +8,16 @@ import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 /**
- * Datamodellen produsert av [TemplateDocumentationRendererV2]. Se designnotatet
- * "template-documentation-v2-design.md" for bakgrunn og motivasjon for modellen.
+ * Datamodellen produsert av [TemplateDocumentationRenderer].
  *
  * Selve rendering-logikken (byggingen av denne modellen fra en [no.nav.pensjon.brev.template.LetterTemplate])
  * ligger i to andre filer i samme pakke:
- *  - `TemplateDocumentationRendererV2.kt` — traversering av innholdsstrukturen (titler, avsnitt,
+ *  - `TemplateDocumentationRenderer.kt` — traversering av innholdsstrukturen (titler, avsnitt,
  *    tabeller, lister osv).
- *  - `TemplateDocumentationRendererV2Expr.kt` — oversettelse av [no.nav.pensjon.brev.template.Expression]
+ *  - `TemplateDocumentationRendererExpr.kt` — oversettelse av [no.nav.pensjon.brev.template.Expression]
  *    (predikater og tekstuttrykk) til [Expr].
  */
-data class TemplateDocumentationV2(
+data class TemplateDocumentation(
     val title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,
     val outline: List<ContentOrControlStructure<Element.OutlineContent>>,
     val attachments: List<Attachment>,
@@ -71,10 +70,10 @@ data class TemplateDocumentationV2(
     @JsonPropertyOrder("elementType")
     sealed class Element {
         sealed class OutlineContent : Element() {
-            data class Title1(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Title2(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Title3(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Paragraph(val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent()
+            data class Title1(val text: List<ContentOrControlStructure<ParagraphContent.Text>>, val index: Int = 0) : OutlineContent()
+            data class Title2(val text: List<ContentOrControlStructure<ParagraphContent.Text>>, val index: Int = 0) : OutlineContent()
+            data class Title3(val text: List<ContentOrControlStructure<ParagraphContent.Text>>, val index: Int = 0) : OutlineContent()
+            data class Paragraph(val paragraph: List<ContentOrControlStructure<ParagraphContent>>, val index: Int = 0) : OutlineContent()
         }
 
         sealed class ParagraphContent : Element() {
@@ -100,8 +99,7 @@ data class TemplateDocumentationV2(
 
     /**
      * Generalisert uttrykksmodell — dekker både predikater (showIf/ForEach.items) og
-     * tekstuttrykk skrevet ut i brevet, siden begge er strukturelt samme problem
-     * (se designnotat "template-documentation-v2-design.md"). Et "predikat" er ganske enkelt
+     * tekstuttrykk skrevet ut i brevet, siden begge er strukturelt samme problem. Et "predikat" er ganske enkelt
      * en [Expr] man vet evaluerer til Boolean (typisk [Comparison], [AssociativeOp] med
      * AND/OR, [Not] eller enkelte [FunctionCall]).
      */
@@ -150,10 +148,10 @@ data class TemplateDocumentationV2(
          */
         data class Format(val value: Expr, val formatterName: String, val exampleText: String?) : Expr()
 
-        /** Erstatter v1s `Invoke(IfElse, first, Tuple(ifTrue, ifElse))`-innpakking. */
+        /** Betinget uttrykk med predikat og verdier for sant/usant. */
         data class Conditional(val predicate: Expr, val ifTrue: Expr, val ifElse: Expr) : Expr()
 
-        /** `?:` / `IfNull` — vist eksplisitt fremfor skjult slik v1 gjorde for `?: false`. */
+        /** `?:` / `IfNull` — vist eksplisitt i dokumentasjonen. */
         data class NullCoalesce(val value: Expr, val fallback: Expr) : Expr()
 
         @JsonInclude(JsonInclude.Include.NON_NULL)

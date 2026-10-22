@@ -207,9 +207,9 @@ function DataField({
   const { highlightedDataField, highlightedDataFieldOwner } = useSearch({ from: "/template/$malType/$templateId" });
   const reference = useRef<HTMLSpanElement>(null);
 
-  // Uten highlightedDataFieldOwner (slik v1 lenker felt) matches feltnavnet globalt på
-  // tvers av alle data-klasser, som tidligere. Når highlightedDataFieldOwner er satt
-  // (v2s FieldPath-lenker, som kjenner feltets eierklasse via leafOwnerType), skal
+  // Uten highlightedDataFieldOwner matches feltnavnet globalt på tvers av alle data-klasser.
+  // Når highlightedDataFieldOwner er satt (FieldPath-lenker som kjenner feltets eierklasse via
+  // leafOwnerType), skal
   // treffet begrenses til akkurat den klassen, slik at felt med samme navn i andre
   // klasser ikke highlightes ved en feiltakelse. Begge sider er normalisert med
   // trimClassName() (ownerClassName av DataClasses, highlightedDataFieldOwner av FieldPathLink).
