@@ -16,7 +16,7 @@ import {
   table,
   variable,
 } from "~test/support/letterEditorTestUtils";
-import { MockDataTransfer } from "~test/support/pasteTestUtils";
+import { MockDataTransfer, projectLetter } from "~test/support/pasteTestUtils";
 
 describe("Actions.pasteReplacingSelection", () => {
   describe("paste plain text replacing selection in a single literal", () => {
@@ -157,6 +157,45 @@ describe("Actions.pasteReplacingSelection", () => {
   });
 
   describe("paste replacing selection in table cell", () => {
+    const wholeTable: SelectionIndex = {
+      start: { blockIndex: 0, contentIndex: 1, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 },
+      end: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 1, cellContentIndex: 0, cursorPosition: 5 },
+    };
+    const tableLetter = () =>
+      letter(
+        paragraph([
+          literal({ text: "" }),
+          table(
+            [cell(literal({ text: "H1" })), cell(literal({ text: "H2" }))],
+            [row(cell(literal({ text: "cell content" })), cell(literal({ text: "other" })))],
+          ),
+          literal({ text: "" }),
+        ]),
+      );
+
+    test("an HTML table replaces a whole selected table", () => {
+      const result = Actions.pasteReplacingSelection(
+        tableLetter(),
+        wholeTable,
+        new MockDataTransfer({
+          "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table>",
+          "text/plain": "A\nb",
+        }),
+      );
+
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: A", "  tr: b"]);
+    });
+
+    test("paragraphs replacing a whole selected table stay paragraphs", () => {
+      const result = Actions.pasteReplacingSelection(
+        tableLetter(),
+        wholeTable,
+        new MockDataTransfer({ "text/html": "<p>En</p><p>To</p>", "text/plain": "En\nTo" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["P: En", "P: To"]);
+    });
+
     test("replaces selected text in a table cell", () => {
       const state = letter(
         paragraph([
@@ -225,6 +264,168 @@ describe("Actions.pasteReplacingSelection", () => {
       expect(allItemTexts).toContain("item");
       expect(allItemTexts).toContain("MERGED");
       expect(allItemTexts).toContain("text");
+    });
+  });
+
+  describe("keeps the selection when the clipboard has nothing to insert", () => {
+    const selectHello: SelectionIndex = {
+      start: { blockIndex: 0, contentIndex: 0, cursorPosition: 0 },
+      end: { blockIndex: 0, contentIndex: 0, cursorPosition: 5 },
+    };
+
+    test("empty text/plain", () => {
+      const state = letter(paragraph([literal({ text: "Hello World" })]));
+
+      const result = Actions.pasteReplacingSelection(state, selectHello, new MockDataTransfer({ "text/plain": "" }));
+
+      expect(result.redigertBrev).toEqual(state.redigertBrev);
+    });
+
+    test.each(["<table></table>", "<table />", "<table><tr></tr></table>"])(
+      "a table without cells falls back to text/plain: %s",
+      (html) => {
+        const state = letter(paragraph([literal({ text: "Hello World" })]));
+
+        const result = Actions.pasteReplacingSelection(
+          state,
+          selectHello,
+          new MockDataTransfer({ "text/html": html, "text/plain": "Replacement" }),
+        );
+
+        expect(projectLetter(result)).toEqual(["P: Replacement World"]);
+      },
+    );
+
+    test.each(["<table></table>", "<table />", "<table><tr></tr></table>"])(
+      "a table without cells or plain-text fallback preserves the selection: %s",
+      (html) => {
+        const state = letter(paragraph([literal({ text: "Hello World" })]));
+
+        const result = Actions.pasteReplacingSelection(state, selectHello, new MockDataTransfer({ "text/html": html }));
+
+        expect(result).toEqual(state);
+      },
+    );
+
+    const tableState = () =>
+      letter(
+        paragraph([
+          literal({ text: "" }),
+          table(
+            [cell(literal({ text: "H1" })), cell(literal({ text: "H2" }))],
+            [row(cell(literal({ text: "cell content" })), cell(literal({ text: "other" })))],
+          ),
+          literal({ text: "" }),
+        ]),
+      );
+    const selectInCell: SelectionIndex = {
+      start: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 5 },
+      end: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 12 },
+    };
+    const htmlTable = "<table><tr><td>A</td><td>B</td></tr></table>";
+
+    test("a table without cells does not prevent formatted HTML from being inserted in a cell", () => {
+      const result = Actions.pasteReplacingSelection(
+        tableState(),
+        selectInCell,
+        new MockDataTransfer({ "text/html": "<table></table><p><b>fet</b></p>", "text/plain": "fallback" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell **fet** | other"]);
+    });
+
+    test("a table while the selection is inside a table cell", () => {
+      const state = tableState();
+
+      const result = Actions.pasteReplacingSelection(
+        state,
+        selectInCell,
+        new MockDataTransfer({ "text/html": htmlTable }),
+      );
+
+      expect(result.redigertBrev).toEqual(state.redigertBrev);
+    });
+
+    test("a table inside a table cell falls back to text/plain", () => {
+      const state = tableState();
+
+      const result = Actions.pasteReplacingSelection(
+        state,
+        selectInCell,
+        new MockDataTransfer({ "text/html": htmlTable, "text/plain": "A\tB" }),
+      );
+
+      const cellText = select<Table>(result, { blockIndex: 0, contentIndex: 1 }).rows[0].cells[0].text;
+      expect(cellText.map((content) => text(content as LiteralValue)).join("")).toEqual("cell A\tB");
+    });
+
+    const mixedHtml = `<p>Før</p>${htmlTable}`;
+
+    test.each([
+      ["mixed text and a table (HTML)", { "text/html": mixedHtml }],
+      ["a heading", { "text/html": "<h2>Før A\tB</h2>" }],
+      ["a list", { "text/html": "<ul><li>Før</li><li>A\tB</li></ul>" }],
+      ["paragraphs and a list", { "text/html": "<p>Før</p><ul><li>A\tB</li></ul>" }],
+    ])("%s inside a table cell falls back to text/plain", (_, clipboard) => {
+      const result = Actions.pasteReplacingSelection(
+        tableState(),
+        selectInCell,
+        new MockDataTransfer({ ...clipboard, "text/plain": "Før A\tB" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell Før A\tB | other"]);
+    });
+
+    test("HTML structured content inside a table cell without text/plain", () => {
+      const state = tableState();
+
+      const result = Actions.pasteReplacingSelection(
+        state,
+        selectInCell,
+        new MockDataTransfer({ "text/html": mixedHtml }),
+      );
+
+      expect(result.redigertBrev).toEqual(state.redigertBrev);
+    });
+
+    test.each([
+      ["HTML text", { "text/html": "<b>fet</b> og <i>kursiv</i>" }],
+      ["an HTML paragraph", { "text/html": "<p><b>fet</b> og <i>kursiv</i></p>" }],
+    ])("%s inside a table cell keeps bold and italic", (_, clipboard) => {
+      const result = Actions.pasteReplacingSelection(
+        tableState(),
+        selectInCell,
+        new MockDataTransfer({ ...clipboard, "text/plain": "fet og kursiv" }),
+      );
+
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell **fet** og _kursiv_ | other"]);
+    });
+
+    const pasteInCell = (clipboard: Record<string, string>) =>
+      Actions.pasteReplacingSelection(tableState(), selectInCell, new MockDataTransfer(clipboard));
+    const cellLiterals = (result: ReturnType<typeof pasteInCell>) =>
+      select<Table>(result, { blockIndex: 0, contentIndex: 1 }).rows[0].cells[0].text.map((content) =>
+        text(content as LiteralValue),
+      );
+
+    test("HTML paragraphs inside a table cell are joined with a space and keep their formatting", () => {
+      const clipboard = { "text/html": "<p><b>fet</b></p><p><i>kursiv</i></p>" };
+      const result = pasteInCell({ ...clipboard, "text/plain": "fet\nkursiv" });
+
+      // The joining space takes the previous paragraph's font.
+      expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell **fet **_kursiv_ | other"]);
+    });
+
+    test("same-font paragraphs inside a table cell become one literal", () => {
+      const result = pasteInCell({ "text/html": "<p>En</p><p>To</p>", "text/plain": "En\nTo" });
+
+      expect(cellLiterals(result)).toEqual(["cell En To"]);
+    });
+
+    test("an empty paragraph between paragraphs inside a table cell adds no extra space", () => {
+      const result = pasteInCell({ "text/html": "<p>En</p><p>&nbsp;</p><p>To</p>", "text/plain": "En\n\nTo" });
+
+      expect(cellLiterals(result).join("")).toEqual("cell En To");
     });
   });
 
