@@ -1,18 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert, BodyLong, BodyShort, Button, Heading, Label, Modal, Spacer, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { Alert, BodyLong, BodyShort, Button, Heading, Modal, Spacer } from "@navikt/ds-react";
+import { useMutation } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { type z } from "zod";
 
-import { bestillDelautomatiskBrev, getEnheter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
+import { bestillDelautomatiskBrev, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
-import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type BestillDelautomatiskBrevRequest, type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
-import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { trackEvent } from "~/utils/umami";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
@@ -58,7 +56,6 @@ export default function BrevmalDelautomatisk({
         dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
         enhetsId: variables.enhetsId,
       });
-      setBestillingTilBekreftelse(null);
     },
     mutationKey: orderLetterKeys.brevsystem("delautomatisk"),
   });
@@ -66,7 +63,7 @@ export default function BrevmalDelautomatisk({
   const validationSchema = createValidationSchema(letterTemplate);
 
   useEffect(() => {
-    setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit(), label: "Bestill" });
+    setOnFormSubmitClick({ onClick: () => formRef.current?.requestSubmit(), label: "Bestill og send brev" });
   }, [setOnFormSubmitClick]);
 
   type FormIn = z.input<typeof validationSchema>;
@@ -97,7 +94,6 @@ export default function BrevmalDelautomatisk({
           onSubmit={methods.handleSubmit((submittedValues) => {
             const parsedVedtaksId = Number.parseInt(vedtaksId ?? "", 10);
 
-            bestillMutation.reset();
             setBestillingTilBekreftelse(
               byggDelautomatiskOnSubmitRequest({
                 template: letterTemplate,
@@ -129,81 +125,42 @@ export default function BrevmalDelautomatisk({
           </BodyShort>
         </Alert>
       )}
+      {bestillMutation.error && <ApiError error={bestillMutation.error} title="Bestilling feilet" />}
 
       {bestillingTilBekreftelse && (
         <BekreftBestillingModal
-          bestilling={bestillingTilBekreftelse}
-          error={bestillMutation.error}
-          isPending={bestillMutation.isPending}
-          letterTemplate={letterTemplate}
-          onBekreft={() => bestillMutation.mutate(bestillingTilBekreftelse)}
+          onBekreft={() => {
+            bestillMutation.mutate(bestillingTilBekreftelse);
+            setBestillingTilBekreftelse(null);
+          }}
           onClose={() => setBestillingTilBekreftelse(null)}
-          saksId={saksId}
         />
       )}
     </>
   );
 }
 
-const BekreftBestillingModal = (props: {
-  saksId: string;
-  letterTemplate: LetterMetadata;
-  bestilling: BestillDelautomatiskBrevRequest;
-  isPending: boolean;
-  error: Nullable<AxiosError<Error> | Error>;
-  onBekreft: () => void;
-  onClose: () => void;
-}) => {
-  const enheter = useQuery(getEnheter).data ?? [];
-  const enhetNavn = enheter.find((enhet) => enhet.id === props.bestilling.enhetsId)?.navn ?? props.bestilling.enhetsId;
-  const mottaker = props.bestilling.idTSSEkstern
-    ? { type: "Samhandler" as const, tssId: props.bestilling.idTSSEkstern, navn: null }
-    : null;
-
+const BekreftBestillingModal = (props: { onBekreft: () => void; onClose: () => void }) => {
   return (
     <Modal
       data-testid="bekreft-delautomatisk-brev-modal"
-      header={{ heading: "Vil du sende brevet?", size: "small", closeButton: false }}
-      onClose={() => {
-        if (!props.isPending) props.onClose();
-      }}
+      header={{ heading: "Vil du bestille og sende brevet?", closeButton: false }}
+      onClose={props.onClose}
       open
       portal
       width="small"
     >
       <Modal.Body>
-        <VStack gap="space-16">
-          <BodyLong size="small">
-            Brevet sendes automatisk til mottaker uten mulighet for redigering. Du kan ikke angre denne handlingen.
-          </BodyLong>
-          <VStack gap="space-4">
-            <Label size="small">Brev</Label>
-            <BodyShort size="small">{props.letterTemplate.name}</BodyShort>
-          </VStack>
-          <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle />
-          <VStack gap="space-4">
-            <Label size="small">Språk</Label>
-            <BodyShort size="small">{SPRAAK_ENUM_TO_TEXT[props.bestilling.spraak]}</BodyShort>
-          </VStack>
-          <VStack gap="space-4">
-            <Label size="small">Avsenderenhet</Label>
-            <BodyShort size="small">{enhetNavn}</BodyShort>
-          </VStack>
-          {props.error && <ApiError error={props.error} title="Bestilling feilet" />}
-        </VStack>
+        <BodyLong>
+          Brevet blir sendt til angitt mottaker, og lagt til i dokumentoversikten. Du kan ikke angre denne handlingen.
+        </BodyLong>
       </Modal.Body>
       <Modal.Footer>
-        <Button
-          data-testid="send-delautomatisk-brev"
-          loading={props.isPending}
-          onClick={props.onBekreft}
-          size="small"
-          type="button"
-        >
-          {props.error ? "Prøv igjen" : "Send brev"}
+        <Button data-testid="send-delautomatisk-brev" onClick={props.onBekreft} type="button">
+          Ja, bestill og send brevet
         </Button>
-        <Button disabled={props.isPending} onClick={props.onClose} size="small" type="button" variant="secondary">
-          Avbryt
+        <Button onClick={props.onClose} type="button" variant="secondary">
+          Nei
         </Button>
       </Modal.Footer>
     </Modal>
