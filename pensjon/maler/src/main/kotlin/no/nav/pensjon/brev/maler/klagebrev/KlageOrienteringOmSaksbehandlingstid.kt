@@ -52,20 +52,14 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
 
         outline {
 
-            showIf(klageren.isOneOf(BRUKER)) {
-                paragraph {
-                    text(bokmal { +"Klageren: " }, BOLD)
+            paragraph {
+                text(bokmal { +"Klageren: " }, BOLD)
+                showIf(klageren.isOneOf(BRUKER)) {
                     text(bokmal { +felles.bruker.fulltNavn() + " " })
                     text(bokmal { +felles.bruker.foedselsnummer.format() })
-                }
-            }.orShowIf(klageren.isOneOf(VERGEFULLMEKTIG)) {
-                paragraph {
-                    text(bokmal { +"Klageren: " })
+                }.orShowIf(klageren.isOneOf(VERGEFULLMEKTIG)) {
                     text(bokmal { +fritekst("navn / fødselsnummer") })
-                }
-            }.orShowIf(klageren.isOneOf(ADVOKATFULLMEKTIG)) {
-                paragraph {
-                    text(bokmal { +"Klageren: " })
+                }.orShowIf(klageren.isOneOf(ADVOKATFULLMEKTIG)) {
                     text(bokmal { +fritekst("navn / firmanavn / organisasjonsnummer") })
                 }
             }

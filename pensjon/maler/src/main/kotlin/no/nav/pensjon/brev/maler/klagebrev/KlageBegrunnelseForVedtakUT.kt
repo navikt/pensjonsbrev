@@ -8,12 +8,13 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles.*
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.*
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -27,13 +28,15 @@ object KlageBegrunnelseForVedtakUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
     override val sakstyper = setOf(UFOREP)
 
     override val template = createTemplate(
-        languages = languages(Language.Bokmal),
+        languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Klage - begrunnelse for vedtak",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val klageFristUtgaatt = saksbehandlervalg("klageFristUtgaatt", "Klagefristen er utgått").bool()
+
         title { text(bokmal { +"Begrunnelse for vedtak" }) }
 
         outline {
@@ -48,9 +51,10 @@ object KlageBegrunnelseForVedtakUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
 
             paragraph { text(bokmal { +"Saksbehandlers begrunnelse" }, ITALIC) }
             paragraph { text(bokmal { +"Vi håper at denne forklaringen gav en bedre forståelse av vedtaket." }) }
-            paragraph {
-                text(bokmal { +"Tilføyes dersom klagefristen ikke er utgått: " }, ITALIC)
-                text(bokmal { +"Vi minner om at fristen for å klage er seks uker fra den datoen du mottok vedtaket." })
+            showIf(klageFristUtgaatt) {
+                paragraph {
+                    text(bokmal { +"Vi minner om at fristen for å klage er seks uker fra den datoen du mottok vedtaket." })
+                }
             }
         }
     }
