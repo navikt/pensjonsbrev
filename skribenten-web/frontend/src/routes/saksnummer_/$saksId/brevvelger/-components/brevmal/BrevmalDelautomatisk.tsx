@@ -1,14 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Alert, BodyLong, BodyShort, Button, Heading, Modal, Spacer } from "@navikt/ds-react";
+import { BodyLong, Button, Modal } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
 import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { type z } from "zod";
 
 import { bestillDelautomatiskBrev, orderLetterKeys } from "~/api/skribenten-api-endpoints";
-import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
+import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
 import { type BestillDelautomatiskBrevRequest, type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
 import { trackEvent } from "~/utils/umami";
@@ -41,13 +42,22 @@ export default function BrevmalDelautomatisk({
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
   const { enhetsId: urlEnhetsId, vedtaksId, idTSSEkstern } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const { leggTilDelautomatiskBrevResultat } = useSendtBrev();
   const formRef = useRef<HTMLFormElement>(null);
   const [bestillingTilBekreftelse, setBestillingTilBekreftelse] =
     useState<Nullable<BestillDelautomatiskBrevRequest>>(null);
 
+  const gåTilKvittering = () =>
+    navigate({
+      to: "/saksnummer/$saksId/kvittering",
+      params: { saksId },
+      search: { enhetsId: urlEnhetsId, vedtaksId },
+    });
+
   const bestillMutation = useMutation<Nullable<number>, AxiosError<Error> | Error, BestillDelautomatiskBrevRequest>({
     mutationFn: (payload) => bestillDelautomatiskBrev(saksId, payload),
-    onSuccess: (_, variables) => {
+    onSuccess: (journalpostId, variables) => {
       trackEvent("brev sendt", {
         brevkode: letterTemplate.id,
         spraak: variables.spraak,
@@ -56,6 +66,24 @@ export default function BrevmalDelautomatisk({
         dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
         enhetsId: variables.enhetsId,
       });
+      leggTilDelautomatiskBrevResultat({
+        status: "success",
+        brevtittel: letterTemplate.name,
+        idTSSEkstern: variables.idTSSEkstern ?? null,
+        journalpostId,
+        error: null,
+      });
+      gåTilKvittering();
+    },
+    onError: (error, variables) => {
+      leggTilDelautomatiskBrevResultat({
+        status: "error",
+        brevtittel: letterTemplate.name,
+        idTSSEkstern: variables.idTSSEkstern ?? null,
+        journalpostId: null,
+        error,
+      });
+      gåTilKvittering();
     },
     mutationKey: orderLetterKeys.brevsystem("delautomatisk"),
   });
@@ -112,20 +140,6 @@ export default function BrevmalDelautomatisk({
           <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
         </BrevmalFormWrapper>
       </FormProvider>
-
-      <Spacer />
-      {bestillMutation.isSuccess && (
-        <Alert data-testid="delautomatisk-brev-sendt" size="small" variant="success">
-          <Heading level="3" size="xsmall">
-            Brevet er bestilt
-          </Heading>
-          <BodyShort size="small">
-            Brevet sendes automatisk til mottaker.
-            {bestillMutation.data !== null && ` Journalpost-ID: ${bestillMutation.data}.`}
-          </BodyShort>
-        </Alert>
-      )}
-      {bestillMutation.error && <ApiError error={bestillMutation.error} title="Bestilling feilet" />}
 
       {bestillingTilBekreftelse && (
         <BekreftBestillingModal

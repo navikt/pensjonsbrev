@@ -2,6 +2,7 @@ import { Box, Button, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { VerticalDivider } from "~/components/Divider";
+import KvittertDelautomatiskBrev from "~/components/kvitterteBrev/KvittertDelautomatiskBrev";
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import { type KvittertBrev, toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
@@ -17,7 +18,7 @@ function Kvittering() {
   const { enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const { sendteBrev } = useSendtBrev();
+  const { sendteBrev, sendteDelautomatiskeBrev } = useSendtBrev();
   const { brevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
 
   const sendtBrevList: KvittertBrev[] = Object.values(sendteBrev).map((resultat) =>
@@ -47,7 +48,12 @@ function Kvittering() {
     <Box asChild background="default" height="100%" marginInline="auto" width="fit-content">
       <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
         <Box overflow="auto" paddingBlock="space-20" paddingInline="space-16">
-          <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
+          <VStack gap="space-8">
+            {sendteDelautomatiskeBrev.map((resultat, index) => (
+              <KvittertDelautomatiskBrev key={`delautomatisk-${index}`} resultat={resultat} saksId={saksId} />
+            ))}
+            <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
+          </VStack>
         </Box>
         <VerticalDivider />
         <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="space-0">

@@ -25,7 +25,7 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
       })()}
       {letterTemplate.delautomatisk && (
         <Tag data-color="info" size="small" variant="moderate">
-          Sendes automatisk
+          Del-automatisk
         </Tag>
       )}
     </HStack>
