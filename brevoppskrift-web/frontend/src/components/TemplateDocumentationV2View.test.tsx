@@ -68,9 +68,9 @@ describe("ExprToText FieldPath med Computed-base", () => {
     // Ingen prosafrase ("element nr. ... i ...") som ikke tydeliggjør grensen mellom
     // funksjonskallet og de påfølgende segmentene.
     expect(rendered).not.toContain("element nr.");
-    // Tom streng-fallback gir ingen synlig tekst og skal ikke vises.
-    expect(rendered).not.toContain("?:");
-    expect(rendered).not.toContain("&quot;&quot;");
+    // ExprToText er felles for predikater og popovere, der fallbacken påvirker meningen.
+    expect(rendered).toContain("?:");
+    expect(rendered).toContain("&quot;&quot;");
   });
 
   it("viser en ikke-tom fallback fortsatt eksplisitt", () => {
@@ -121,6 +121,18 @@ describe("ExprToText eksempelverdi for tekstfelt", () => {
     expect(buttonText(html)).toBe("Sverige");
     expect(html).toContain('aria-label="Vis fullt uttrykk"');
     expect(text(html)).toContain("avtaleland");
+    // Fallbacken skjules i selve teksten, men popoveren viser det fulle uttrykket.
+    expect(buttonText(html)).not.toContain("?:");
+    expect(html).toContain("?:");
+  });
+
+  it("skjuler tom fallback i tekstposisjon også uten eksempelverdi, men ikke i predikater", () => {
+    const utenEksempel: Expr = { ...avtaleland, value: fieldPath("avtaleland") };
+    const html = paragraphText(utenEksempel);
+    expect(html).not.toContain("?:");
+    expect(text(html)).toContain("avtaleland");
+    const predicate = render({ exprType: ExprType.COMPARISON, left: utenEksempel, op: "EQUAL", right: fieldPath("x") });
+    expect(text(predicate)).toContain("avtaleland ?: &quot;&quot;");
   });
 
   it("viser ikke eksempelverdien i et predikat", () => {

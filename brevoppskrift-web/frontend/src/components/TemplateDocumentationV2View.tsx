@@ -1,7 +1,17 @@
 import { css } from "@emotion/react";
 import { BodyLong, Box, Heading, Popover, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
-import { createContext, Fragment, type ReactNode, useCallback, useContext, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  Fragment,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { type LetterModelSpecification } from "~/api/brevbakerTypes";
 import {
@@ -1164,23 +1174,39 @@ const InsideExprPopoverContext = createContext(false);
 function ExprPopover({ ariaLabel, content, children }: { ariaLabel: string; content: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const show = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    setOpen(true);
+  }, []);
+  // Forsinkelsen lar peker/fokus flytte seg fra trigger til innholdet (f.eks. en feltlenke) uten at det lukkes.
+  const hideSoon = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpen(false), 200);
+  }, []);
+  const close = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    setOpen(false);
+  }, []);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   return (
     <>
       <button
         aria-label={ariaLabel}
         className="expr-popover-trigger"
-        onBlur={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+        onBlur={hideSoon}
+        onFocus={show}
+        onMouseEnter={show}
+        onMouseLeave={hideSoon}
         ref={anchorRef}
         type="button"
       >
         {children}
       </button>
-      <Popover anchorEl={anchorRef.current} onClose={() => setOpen(false)} open={open} placement="top">
-        <Popover.Content>
+      <Popover anchorEl={anchorRef.current} onClose={close} open={open} placement="top">
+        <Popover.Content onBlur={hideSoon} onFocus={show} onMouseEnter={show} onMouseLeave={hideSoon}>
           <InsideExprPopoverContext.Provider value={true}>
             <span className="expression">{content}</span>
           </InsideExprPopoverContext.Provider>
@@ -1195,25 +1221,22 @@ function isEmptyStringLiteral(expr: Expr): boolean {
 }
 
 /**
- * Eksempelverdien til et uttrykk som vises som selve brevteksten: et felt med kjent
- * eksempelverdi, evt. med tom streng som `?:`-fallback (`felt ?: ""`). Kun i tekstposisjon -
- * i f.eks. et predikat ville "mangler 12345678901" vært misvisende.
+ * Uttrykk som vises som selve brevteksten. En tom streng som `?:`-fallback gir ingen synlig
+ * tekst og skjules derfor kun her; i predikater og popovere endrer den meningen og vises.
+ * Felt med kjent eksempelverdi vises som eksempeltekst, med fullt uttrykk i popover.
  */
-function textValueExample(expr: Expr): string | null {
-  const value = expr.exprType === ExprType.NULL_COALESCE && isEmptyStringLiteral(expr.fallback) ? expr.value : expr;
-  return value.exprType === ExprType.FIELD_PATH ? (value.exampleText ?? null) : null;
-}
-
 function TextValueExpr({ expr }: { expr: Expr }) {
-  const example = textValueExample(expr);
-  if (example === null) {
-    return <ExprToText expr={expr} />;
+  const hasEmptyFallback = expr.exprType === ExprType.NULL_COALESCE && isEmptyStringLiteral(expr.fallback);
+  const value = hasEmptyFallback ? expr.value : expr;
+  const example = value.exprType === ExprType.FIELD_PATH ? value.exampleText : undefined;
+  if (example) {
+    return (
+      <ExprPopover ariaLabel="Vis fullt uttrykk" content={<ExprToText expr={expr} />}>
+        <span className="expr-literal">{example}</span>
+      </ExprPopover>
+    );
   }
-  return (
-    <ExprPopover ariaLabel="Vis fullt uttrykk" content={<ExprToText expr={expr} />}>
-      <span className="expr-literal">{example}</span>
-    </ExprPopover>
-  );
+  return <ExprToText expr={value} />;
 }
 
 export function ExprToText({ expr }: { expr: Expr }) {
@@ -1352,10 +1375,6 @@ export function ExprToText({ expr }: { expr: Expr }) {
       return <ConditionalExprBlock ifElse={expr.ifElse} ifTrue={expr.ifTrue} predicate={expr.predicate} />;
     }
     case ExprType.NULL_COALESCE: {
-      // En tom streng som fallback gir ingen synlig tekst i brevet, og er kun støy i oppskriften.
-      if (isEmptyStringLiteral(expr.fallback)) {
-        return <ExprToText expr={expr.value} />;
-      }
       return (
         <span>
           <MaybeParens expr={expr.value} /> <span className="expr-operator">?:</span>{" "}
