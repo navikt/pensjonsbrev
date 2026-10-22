@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.OrgNr
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
@@ -79,11 +79,8 @@ class SendtBrevMetrikker(
 
         // Samme krav som SendBrevHandler stiller for å sende organisasjonsnummer til PEN.
         samhandler?.getOrNull()
-            ?.takeIf { it.idType() == SamhandlerIdType.ORG }
-            ?.let { samhandler ->
-                Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon.normaliser(samhandler.offentligId)
-                    ?.let(::tellOrganisasjon)
-            }
+            ?.organisasjonsnummer
+            ?.let(::tellOrganisasjon)
     }
 
     // Tom labelverdi leses som fraværende i Prometheus, og serien ville da falt ut av `sum by (samhandler_type)`.
@@ -99,13 +96,13 @@ class SendtBrevMetrikker(
         }
 
     // Bøtta er et anslag på spredningen mellom organisasjoner, ikke en identifikator. Se sendtbrevmetrikk.adoc.
-    private fun tellOrganisasjon(orgNr: String) {
+    private fun tellOrganisasjon(orgNr: OrgNr) {
         Counter.builder(orgMetricName)
             .description(
                 "Brev sendt til samhandlere identifisert med organisasjonsnummer, fordelt på en hash-bøtte." +
                     " Bøtta er et anslag på spredningen mellom organisasjoner, ikke en identifikator."
             )
-            .tag("org_bucket", orgBoette(orgNr).toString())
+            .tag("org_bucket", orgBoette(orgNr.value).toString())
             .register(registry)
             .increment()
     }
