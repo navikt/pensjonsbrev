@@ -10,6 +10,7 @@ import {
   findFirstUneditedFritekstFocus,
   isFromTemplate,
   isNew,
+  newParagraph,
   removeElements,
   splitMixedListBlock,
   text,
@@ -412,6 +413,46 @@ describe("absorbListIntoList", () => {
 });
 
 describe("splitMixedListBlock", () => {
+  test("isolates a new list in a block created in the same producer", () => {
+    const state = letter(paragraph([literal("original")]));
+    const result = produce(state, (draft) => {
+      draft.redigertBrev.blocks.push(
+        newParagraph({
+          content: [{ ...itemList({ items: [item(literal("x"))] }), id: null }, literal("after")],
+        }),
+      );
+      draft.focus = { blockIndex: 1, contentIndex: 1, cursorPosition: 1 };
+      splitMixedListBlock(draft, 1);
+    });
+
+    expect(result.redigertBrev.blocks).toHaveLength(3);
+    expect(result.redigertBrev.blocks[1].content).toHaveLength(1);
+    expect(result.redigertBrev.blocks[1].content[0].type).toBe("ITEM_LIST");
+    expect(text(result.redigertBrev.blocks[2].content[0] as LiteralValue)).toBe("after");
+    expect(result.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 1 });
+  });
+
+  test("merges lists with new arrays created in the same producer", () => {
+    const state = letter(paragraph([literal("original")]));
+    const result = produce(state, (draft) => {
+      draft.redigertBrev.blocks.push(
+        newParagraph({
+          content: [
+            { ...itemList({ items: [item(literal("a"))], deletedItems: [100] }), id: null },
+            { ...itemList({ items: [item(literal("b"))], deletedItems: [200] }), id: null },
+          ],
+        }),
+      );
+      splitMixedListBlock(draft, 1);
+    });
+
+    expect(result.redigertBrev.blocks).toHaveLength(2);
+    expect(result.redigertBrev.blocks[1].content).toHaveLength(1);
+    const merged = result.redigertBrev.blocks[1].content[0] as ItemList;
+    expect(merged.items.map((_, i) => literalText(merged, i))).toEqual(["a", "b"]);
+    expect(merged.deletedItems).toEqual([100, 200]);
+  });
+
   test("is a no-op for a block with a single content element", () => {
     const state = letter(paragraph([itemList({ items: [item(literal("a"))] })]));
     let ret: number | undefined;
