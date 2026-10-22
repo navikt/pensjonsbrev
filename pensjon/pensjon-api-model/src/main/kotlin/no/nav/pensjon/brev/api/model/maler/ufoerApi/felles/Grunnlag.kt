@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.ufoerApi.felles
 
 
 data class Grunnlag(
-    val borIUtlandet: Boolean,//pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and (pe.grunnlag_persongrunnlagsliste_personbostedsland()).notEqualTo("")
+    val borIUtlandet: Boolean,
     val epsBrukerBorMed: Eps?,
 ) {
 

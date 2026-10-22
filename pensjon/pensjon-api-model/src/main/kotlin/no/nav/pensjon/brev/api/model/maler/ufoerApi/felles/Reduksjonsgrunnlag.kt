@@ -3,12 +3,12 @@ package no.nav.pensjon.brev.api.model.maler.ufoerApi.felles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 data class Reduksjonsgrunnlag(
-    val sumUtBt: Kroner,// vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumutbt
-    val gradertOppjustertIFU: Kroner,// vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu
-    val barnetilleggRegelverkType: BarnetilleggRegelverkTypeCode,//vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype
-    val sumBruttoFoerReduksjonBt: Kroner,//vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt
-    val sumBruttoEtterReduksjonBt: Kroner,//vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt
-    val andelYtelseAvOIFU: Double//vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu
+    val sumUtBt: Kroner,
+    val gradertOppjustertIFU: Kroner,
+    val barnetilleggRegelverkType: BarnetilleggRegelverkTypeCode,
+    val sumBruttoFoerReduksjonBt: Kroner,
+    val sumBruttoEtterReduksjonBt: Kroner,
+    val andelYtelseAvOIFU: Double
 ) {
     enum class BarnetilleggRegelverkTypeCode {
         NYE_REGLER_2016, OVERGANGSREGLER_2016, INGEN_TAK_JULI2022

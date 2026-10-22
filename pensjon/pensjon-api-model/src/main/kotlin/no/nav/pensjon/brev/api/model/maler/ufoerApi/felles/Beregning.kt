@@ -4,23 +4,22 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class Beregning(
-    val virkFom: LocalDate,//denne var nullable, men er ikke egentlig det  vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom
-    val uforegrad: Int,//vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
+    val virkFom: LocalDate,
+    val uforegrad: Int,
     val uforetidspunkt: LocalDate,
-    val utbetalingsgrad: Int,//vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad
+    val utbetalingsgrad: Int,
 
-    //beløp
-    val totalNetto: Kroner,//vedtaksdata_beregningsdata_beregningufore_totalnetto
-    val belopHarOkt: Boolean, //tidligere nullable, null blir nå false  vedtaksdata_beregningsdata_beregningufore_belopokt
+    val totalNetto: Kroner,
+    val belopHarOkt: Boolean,
     val beregningsresultatTilRevurderingTotalNetto: Kroner?,
 
-    val bunnfradrag: Kroner,//vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag
-    val bunnfradragNesteAr: Kroner,//tror denne er nullable og det ikke alltid er satt fra preg  vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear
-    val reduksjonsprosent: Double,//vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad
+    val bunnfradrag: Kroner,
+    val bunnfradragNesteAr: Kroner,
+    val reduksjonsprosent: Double,
 
-    val yrkesskadegrad: Int?,// vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad
-    val yrkesskadeBest: Boolean,//vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest
-    val inntektSkadetidspunkt: Kroner?,//vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet
+    val yrkesskadegrad: Int?,
+    val yrkesskadeBest: Boolean,
+    val inntektSkadetidspunkt: Kroner?,
 
-    val grunnbelop: Kroner,//vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop
+    val grunnbelop: Kroner,
 )
