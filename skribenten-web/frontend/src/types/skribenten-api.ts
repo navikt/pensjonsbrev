@@ -3921,7 +3921,7 @@ export interface components {
          * BrevmalendringType
          * @enum {string}
          */
-        BrevmalendringType: "INGEN_ENDRING" | "NY_MARKUP" | "MARKUP_ENDRET" | "KUNNE_IKKE_OPPDATERE_ALLE_VEDLEGG";
+        BrevmalendringType: "INGEN_ENDRING" | "NY_MARKUP" | "MARKUP_ENDRET" | "KUNNE_IKKE_OPPDATERE_ALLE_VARIABLER";
         /** LetterMarkupWithDataUsageProperty */
         LetterMarkupWithDataUsageProperty: {
             propertyName: string;
