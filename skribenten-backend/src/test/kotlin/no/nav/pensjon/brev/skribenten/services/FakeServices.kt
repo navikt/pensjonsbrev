@@ -197,6 +197,7 @@ open class SafServiceStub : SafService {
 
 open class LegacyBrevServiceStub : LegacyBrevService {
     override suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
+    override suspend fun bestillExstreamAutobrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillExstreamAutobrevResponse = notYetStubbed()
     override suspend fun bestillOgRedigerEblankett(gjelderPid: Pid, request: Api.BestillEblankettRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
 }
 
