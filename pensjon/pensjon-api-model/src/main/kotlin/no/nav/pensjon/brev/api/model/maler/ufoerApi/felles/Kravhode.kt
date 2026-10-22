@@ -1,0 +1,15 @@
+package no.nav.pensjon.brev.api.model.maler.ufoerApi.felles
+
+import java.time.LocalDate
+
+data class Kravhode(
+    val virkFom: LocalDate,
+    val mottattDato: LocalDate,
+    val arsak: Arsak,
+    val konvertertFraUforepensjon: Boolean,
+    )
+{
+    enum class Arsak {
+        OMGJ_ETTER_KLAGE, OMGJ_ETTER_ANKE, ANNEN
+    }
+}

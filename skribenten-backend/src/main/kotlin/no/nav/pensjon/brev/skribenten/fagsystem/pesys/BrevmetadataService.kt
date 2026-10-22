@@ -133,6 +133,9 @@ data class BrevdataDto(
         U, //Utgende dokument
     }
 
+    fun isAutomatiskExstream(): Boolean =
+        brevsystem == BrevSystem.GAMMEL && !redigerbart
+
     fun isRedigerbarBrevtittel(): Boolean =
         brevkodeIBrevsystem == Brevkoder.FRITEKSTBREV_KODE
                 || (dokType == DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)

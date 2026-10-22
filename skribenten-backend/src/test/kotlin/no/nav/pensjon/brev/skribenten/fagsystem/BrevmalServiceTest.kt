@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.POSTERINGSGRUNNL
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.LetterMetadata as SkribentenLetterMetadata
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.FakeBrevbakerService
@@ -162,6 +163,18 @@ class BrevmalServiceTest {
             .anyMatch { it.id == POSTERINGSGRUNNLAG_KODE && !it.redigerbarBrevtittel }
             .anyMatch { it.id == POSTERINGSGRUNNLAG_VIRK0101_KODE && !it.redigerbarBrevtittel }
             .anyMatch { it.id == POSTERINGSGRUNNLAG_VIRK0102_KODE && !it.redigerbarBrevtittel }
+    }
+
+    @Test
+    fun `exstream autobrev uten spraak antas aa vaere bokmaal`() {
+        val autobrev = testOkSakBrev.copy(sprak = null, redigerbart = false)
+        assertThat(SkribentenLetterMetadata.Legacy(autobrev, Sakstype("UFOREP")).toApi().spraak).containsExactly(SpraakKode.NB)
+    }
+
+    @Test
+    fun `redigerbart exstream brev uten spraak faar ingen spraak`() {
+        val redigerbart = testOkSakBrev.copy(sprak = null)
+        assertThat(SkribentenLetterMetadata.Legacy(redigerbart, Sakstype("UFOREP")).toApi().spraak).isEmpty()
     }
 
     @Test

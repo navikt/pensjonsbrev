@@ -5,6 +5,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
@@ -136,13 +137,17 @@ class BrevmalService(
                 if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
             }
 
+            val visAutobrev = Features.visAutobrev.isEnabled()
+
             return@withContext (brevbaker.await() + legacy.await() + eblanketter.await())
-                .filter { it.isRedigerbart }
+                .filter { visAutobrev || it.isRedigerbart }
                 .filter { it.brevkode !in ekskluderteBrev }
         }
 
-    private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> =
-        withContext(Dispatchers.IO) {
+    private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> {
+        val visAutobrev = Features.visAutobrev.isEnabled()
+
+        return withContext(Dispatchers.IO) {
             val brevbaker = async { hentBrevbakerMaler() }
             val legacy = async {
                 brevmetadataService.getAllBrev().asSequence()
@@ -153,9 +158,10 @@ class BrevmalService(
             //     det blir forkastet før funksjonen returnerer.
             return@withContext brevbaker.await().asSequence().map { LetterMetadata.Brevbaker(it) } +
                     legacy.await().map { LetterMetadata.Legacy(it, Pen.sakstypeForLegacybrev) }
-        }.filter { it.isRedigerbart }
+        }.filter { visAutobrev || it.isRedigerbart }
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }
+    }
 
     private suspend fun hentBrevbakerMaler(): List<TemplateDescription.Redigerbar> =
         getTemplates() ?: emptyList()
