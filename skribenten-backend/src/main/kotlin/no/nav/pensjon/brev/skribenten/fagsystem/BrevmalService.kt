@@ -5,6 +5,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
@@ -136,8 +137,10 @@ class BrevmalService(
                 if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
             }
 
+            val visAutobrev = Features.visAutobrev.isEnabled()
+
             return@withContext (brevbaker.await() + legacy.await() + eblanketter.await())
-                .filter { it.isRedigerbart }
+                .filter { visAutobrev || it.isRedigerbart }
                 .filter { it.brevkode !in ekskluderteBrev }
         }
 

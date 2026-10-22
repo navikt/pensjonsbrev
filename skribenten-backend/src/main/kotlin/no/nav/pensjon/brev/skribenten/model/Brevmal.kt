@@ -54,6 +54,7 @@ interface LetterMetadata {
                 dokumentkategoriCode = this.dokumentkategori,
                 redigerbart = redigerbart,
                 redigerbarBrevtittel = isRedigerbarBrevtittel(),
+                automatiskExstream = isAutomatiskExstream(),
             )
         }
 
@@ -83,6 +84,7 @@ interface LetterMetadata {
                 dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
                 redigerbart = true,
                 redigerbarBrevtittel = false,
+                automatiskExstream = false,
             )
         }
 

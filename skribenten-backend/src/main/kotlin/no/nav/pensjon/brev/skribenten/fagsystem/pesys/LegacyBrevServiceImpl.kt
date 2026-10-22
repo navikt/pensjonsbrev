@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 
 interface LegacyBrevService {
     suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse
+    suspend fun bestillExstreamAutobrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillExstreamAutobrevResponse
     suspend fun bestillOgRedigerEblankett(gjelderPid: Pid, request: Api.BestillEblankettRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse
 }
 
@@ -35,6 +36,26 @@ class LegacyBrevServiceImpl(
 
     override suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        val result = bestillExstreamBrev(gjelderPid, request, saksId, brevMetadata)
+
+        return if (result.failureType == null && result.journalpostId != null && brevMetadata.redigerbart) {
+            redigerExstreamBrev(result.journalpostId)
+        } else result
+    }
+
+    override suspend fun bestillExstreamAutobrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillExstreamAutobrevResponse {
+        val brevMetadata = brevmetadataService.getMal(request.brevkode)
+        val result = bestillExstreamBrev(gjelderPid, request, saksId, brevMetadata)
+
+        return Api.BestillExstreamAutobrevResponse(journalpostId = result.journalpostId, failureType = result.failureType)
+    }
+
+    private suspend fun bestillExstreamBrev(
+        gjelderPid: Pid,
+        request: Api.BestillExstreamBrevRequest,
+        saksId: SaksId,
+        brevMetadata: BrevdataDto,
+    ): Api.BestillOgRedigerBrevResponse {
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
         val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent)
 
@@ -43,7 +64,7 @@ class LegacyBrevServiceImpl(
         } else if (navansatt == null) {
             Api.BestillOgRedigerBrevResponse(failureType = NAVANSATT_MANGLER_NAVN)
         } else {
-            val result = bestillExstreamBrevPen(
+            bestillExstreamBrevPen(
                 brevkode = request.brevkode,
                 enhetsId = request.enhetsId,
                 gjelderPid = gjelderPid,
@@ -55,10 +76,6 @@ class LegacyBrevServiceImpl(
                 vedtaksId = request.vedtaksId,
                 saksbehandler = navansatt
             )
-
-            if (result.failureType == null && result.journalpostId != null && brevMetadata.redigerbart) {
-                redigerExstreamBrev(result.journalpostId)
-            } else result
         }
     }
 
@@ -67,9 +84,9 @@ class LegacyBrevServiceImpl(
         request: Api.BestillEblankettRequest,
         saksId: SaksId,
     ): Api.BestillOgRedigerBrevResponse = coroutineScope {
-        val brevMetadataDeffered = async { brevmetadataService.getMal(request.brevkode) }
+        val brevMetadataDeferred = async { brevmetadataService.getMal(request.brevkode) }
         val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent)
-        val brevMetadata = brevMetadataDeffered.await()
+        val brevMetadata = brevMetadataDeferred.await()
 
         if (navansatt == null) {
             Api.BestillOgRedigerBrevResponse(failureType = NAVANSATT_MANGLER_NAVN)

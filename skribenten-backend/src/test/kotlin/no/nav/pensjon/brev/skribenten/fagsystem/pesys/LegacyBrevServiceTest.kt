@@ -180,6 +180,48 @@ class LegacyBrevServiceTest {
 
 
     @Test
+    fun `bestill exstream autobrev returnerer kun journalpostId`() {
+        runBlocking {
+            Features.override(Features.vergeForExstream, false)
+            val bestillBrevResult = withPrincipal(principal) {
+                legacyBrevService.bestillExstreamAutobrev(
+                    gjelderPid = Pid("9999"), request = Api.BestillExstreamBrevRequest(
+                        brevkode = "exstream",
+                        spraak = SpraakKode.NB,
+                        vedtaksId = null,
+                        idTSSEkstern = null,
+                        brevtittel = null,
+                        enhetsId = principalSinNAVEnhet.id
+                    ),
+                    saksId = SaksId(3333L)
+                )
+            }
+            assertThat(bestillBrevResult).isEqualTo(Api.BestillExstreamAutobrevResponse(journalpostId = forventaJournalpostId))
+        }
+    }
+
+    @Test
+    fun `bestill exstream autobrev feiler ved manglende tilgang`() {
+        runBlocking {
+            val bestillBrevResult = withPrincipal(principal) {
+                legacyBrevService.bestillExstreamAutobrev(
+                    gjelderPid = Pid("9999"), request = Api.BestillExstreamBrevRequest(
+                        brevkode = "exstream",
+                        spraak = SpraakKode.NB,
+                        vedtaksId = null,
+                        idTSSEkstern = null,
+                        brevtittel = null,
+                        enhetsId = EnhetId("9999")
+                    ),
+                    saksId = SaksId(3333L)
+                )
+            }
+            assertThat(bestillBrevResult.journalpostId).isNull()
+            assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
+        }
+    }
+
+    @Test
     fun `kan bestille exstream eblankett med riktig tilgang`() {
         runBlocking {
             Features.override(Features.vergeForExstream, false)
