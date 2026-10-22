@@ -19,6 +19,7 @@ import {
   type ExprLiteral,
   ExprType,
   type ForEachV2,
+  type ParagraphContentV2,
   type RowV2,
   type TableV2,
   type TemplateDocumentationV2,
@@ -75,9 +76,7 @@ function renderTableRowCells(row: RowV2, gridRow: number, key: string): ReactNod
     <Fragment key={key}>
       {row.cells.map((cell, index) => (
         <span className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
-          {cell.text.map((t, textIndex) => (
-            <ContentOrControlStructureComponentV2 cocs={t} key={textIndex} />
-          ))}
+          <CocsListV2 items={cell.text} />
         </span>
       ))}
     </Fragment>
@@ -319,9 +318,7 @@ function TableV2View({ content }: { content: TableV2 }) {
       >
         {content.header.cells.map((cell, index) => (
           <b className="cell" key={index} style={{ gridColumn: index + 1, gridRow: 1 }}>
-            {cell.text.map((t, textIndex) => (
-              <ContentOrControlStructureComponentV2 cocs={t} key={textIndex} />
-            ))}
+            <CocsListV2 items={cell.text} />
           </b>
         ))}
         {contentItems}
@@ -362,9 +359,86 @@ export function DocumentV2({
   );
 }
 
-function ContentOrControlStructureComponentV2<E extends ElementV2>({ cocs }: { cocs: ContentOrControlStructureV2<E> }) {
+/**
+ * Er hele grenen ren løpende tekst (tekstliteraler/-uttrykk, evt. nøstede betingelser av samme
+ * slag)? Kun da kan en `Conditional` rendres inline midt i teksten uten å bryte linjen.
+ */
+function isInlineText<E extends ElementV2>(items: ContentOrControlStructureV2<E>[]): boolean {
+  return items.every(isInlineItem);
+}
+
+function isInlineItem<E extends ElementV2>(item: ContentOrControlStructureV2<E>): boolean {
+  if (item.controlStructureType === ContentOrControlStructureTypeV2.CONDITIONAL) {
+    return isInlineConditional(item);
+  }
+  return (
+    item.controlStructureType === ContentOrControlStructureTypeV2.CONTENT &&
+    (item.content.elementType === ElementTypeV2.PARAGRAPH_TEXT_LITERAL ||
+      item.content.elementType === ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION)
+  );
+}
+
+function isInlineConditional<E extends ElementV2>(conditional: ConditionalV2<E>): boolean {
+  return (
+    isInlineText(conditional.showIf) &&
+    conditional.elseIf.every((elseIf) => isInlineText(elseIf.showIf)) &&
+    isInlineText(conditional.showElse)
+  );
+}
+
+/**
+ * Et avsnitt der en betingelse er eneste barn er i praksis en betinget avsnitt-blokk, og skal
+ * vises som det: betingelsen utenfor (med markør i margen), og hver gren som sitt eget avsnitt.
+ * Uten dette ville betingelsen blitt rendret som en blokk INNI avsnittet, med innholdet adskilt
+ * fra avsnittets egen ramme.
+ */
+function liftConditionalOutOfParagraph(conditional: ConditionalV2<ParagraphContentV2>): ConditionalV2<ElementV2> {
+  const wrap = (branch: ContentOrControlStructureV2<ParagraphContentV2>[]): ContentOrControlStructureV2<ElementV2>[] =>
+    branch.length === 0
+      ? []
+      : [
+          {
+            controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+            content: { elementType: ElementTypeV2.PARAGRAPH, paragraph: branch },
+          },
+        ];
+  return {
+    ...conditional,
+    showIf: wrap(conditional.showIf),
+    elseIf: conditional.elseIf.map((elseIf) => ({ ...elseIf, showIf: wrap(elseIf.showIf) })),
+    showElse: wrap(conditional.showElse),
+  };
+}
+
+/**
+ * Rendrer søsken i en tekst-/avsnittsflyt. En betingelse som bare styrer løpende tekst og står
+ * sammen med annet innhold (typisk ett ord midt i en setning) rendres inline, slik at den ikke
+ * bryter linjen. Står betingelsen alene beholdes blokkvisningen med markør i margen.
+ */
+function CocsListV2<E extends ElementV2>({
+  items,
+  inline = false,
+}: {
+  items: ContentOrControlStructureV2<E>[];
+  inline?: boolean;
+}) {
+  return items.map((cocs, index) => (
+    <ContentOrControlStructureComponentV2 cocs={cocs} inline={inline || items.length > 1} key={index} />
+  ));
+}
+
+function ContentOrControlStructureComponentV2<E extends ElementV2>({
+  cocs,
+  inline = false,
+}: {
+  cocs: ContentOrControlStructureV2<E>;
+  inline?: boolean;
+}) {
   switch (cocs.controlStructureType) {
     case ContentOrControlStructureTypeV2.CONDITIONAL: {
+      if (inline && isInlineConditional(cocs)) {
+        return <InlineConditionalV2 conditional={cocs} />;
+      }
       return <ConditionalComponentV2 conditional={cocs} />;
     }
     case ContentOrControlStructureTypeV2.CONTENT: {
@@ -394,27 +468,21 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
     case ElementTypeV2.TITLE1: {
       return (
         <Heading level="2" size="medium" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+          <CocsListV2 items={content.text} />
         </Heading>
       );
     }
     case ElementTypeV2.TITLE2: {
       return (
         <Heading level="3" size="small" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+          <CocsListV2 items={content.text} />
         </Heading>
       );
     }
     case ElementTypeV2.TITLE3: {
       return (
         <Heading level="4" size="xsmall" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+          <CocsListV2 items={content.text} />
         </Heading>
       );
     }
@@ -429,11 +497,13 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
       );
     }
     case ElementTypeV2.PARAGRAPH: {
+      const [only] = content.paragraph;
+      if (content.paragraph.length === 1 && only.controlStructureType === ContentOrControlStructureTypeV2.CONDITIONAL) {
+        return <ConditionalComponentV2 conditional={liftConditionalOutOfParagraph(only)} />;
+      }
       return (
         <BodyLong as="div" spacing>
-          {content.paragraph.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+          <CocsListV2 items={content.paragraph} />
         </BodyLong>
       );
     }
@@ -448,9 +518,7 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
         <>
           {content.cells.map((cell, index) => (
             <span className="cell" key={index}>
-              {cell.text.map((t, index) => (
-                <ContentOrControlStructureComponentV2 cocs={t} key={index} />
-              ))}
+              <CocsListV2 items={cell.text} />
             </span>
           ))}
         </>
@@ -469,9 +537,7 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
     case ElementTypeV2.PARAGRAPH_ITEMLIST_ITEM: {
       return (
         <li>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+          <CocsListV2 items={content.text} />
         </li>
       );
     }
@@ -486,9 +552,7 @@ function ConditionalComponentV2<E extends ElementV2>({ conditional }: { conditio
     <div className={hasMultipleBranches ? "conditional conditional-multi-branch" : "conditional"}>
       <div className="show-if">
         <ConditionalPredicateDisclosure label="If" predicate={conditional.predicate} />
-        {conditional.showIf.map((cocs, index) => (
-          <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-        ))}
+        <CocsListV2 items={conditional.showIf} />
       </div>
       {conditional.elseIf.map((elseIf, index) => (
         <ShowElseIfV2 elseIf={elseIf} key={index} />
@@ -498,13 +562,54 @@ function ConditionalComponentV2<E extends ElementV2>({ conditional }: { conditio
   );
 }
 
+/**
+ * Inline-variant av en betingelse (se `CocsListV2`): teksten flyter videre i setningen, og hver
+ * gren får en liten markør foran seg som avslører betingelsen i en popover - samme mønster som
+ * den kompakte ternære visningen, men med grenene som vanlig tekst i stedet for en liten
+ * knapp, siden grenene selv kan inneholde uttrykk (og knapper kan ikke nøstes).
+ */
+function InlineConditionalV2<E extends ElementV2>({ conditional }: { conditional: ConditionalV2<E> }) {
+  const branches: { label: string; predicate?: Expr; body: ContentOrControlStructureV2<E>[] }[] = [
+    { body: conditional.showIf, label: "If", predicate: conditional.predicate },
+    ...conditional.elseIf.map((elseIf) => ({ body: elseIf.showIf, label: "Else If", predicate: elseIf.predicate })),
+    { body: conditional.showElse, label: "Else" },
+  ];
+  return (
+    <span className="inline-conditional">
+      {branches
+        .filter((branch) => branch.body.length > 0)
+        .map((branch, index) => (
+          <span className="inline-conditional-branch" key={index}>
+            <span className="inline-conditional-marker">
+              <ExprPopover
+                ariaLabel={branch.label}
+                content={
+                  <>
+                    <code>{branch.label}</code>
+                    {branch.predicate && (
+                      <>
+                        {" "}
+                        <ExprToText expr={branch.predicate} />
+                      </>
+                    )}
+                  </>
+                }
+              >
+                ▸
+              </ExprPopover>
+            </span>
+            <CocsListV2 inline items={branch.body} />
+          </span>
+        ))}
+    </span>
+  );
+}
+
 function ShowElseIfV2<E extends ElementV2>({ elseIf }: { elseIf: ElseIfV2<E> }) {
   return (
     <div className="show-if">
       <ConditionalPredicateDisclosure label="Else If" predicate={elseIf.predicate} />
-      {elseIf.showIf.map((cocs, index) => (
-        <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-      ))}
+      <CocsListV2 items={elseIf.showIf} />
     </div>
   );
 }
@@ -547,9 +652,7 @@ function ShowElseV2<E extends ElementV2>({ cocs }: { cocs: ContentOrControlStruc
   return (
     <div className="show-else">
       <ConditionalPredicateDisclosure label="Else" />
-      {cocs.map((a, index) => (
-        <ContentOrControlStructureComponentV2 cocs={a} key={index} />
-      ))}
+      <CocsListV2 items={cocs} />
     </div>
   );
 }
