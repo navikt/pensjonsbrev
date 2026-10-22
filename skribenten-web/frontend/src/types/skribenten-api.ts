@@ -4572,6 +4572,7 @@ export interface components {
             idType: string;
             navn: string;
             offentligId: string;
+            organisasjonsnummer?: string | null;
             samhandlerType: string;
         };
         /** HentSamhandlerResponseDto */

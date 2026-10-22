@@ -299,7 +299,7 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                             english { +"Life expectancy adjustment factor" },
                         )
                     }
-                    cell { text(bokmal { + forholdstall.format() }, nynorsk { + forholdstall.format() }, english { + forholdstall.format() }) }
+                    cell { eval(forholdstall.format(scale = 3)) }
                 }
             }
             ifNotNull(justeringsbeloep) { justeringsbeloep ->
@@ -330,12 +330,12 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                 row {
                     cell {
                         text(
-                            bokmal { +"Forholdstall" },
-                            nynorsk { +"Forholdstal" },
+                            bokmal { +"AFP kompensasjonstillegg forholdstall" },
+                            nynorsk { +"AFP-kompensasjonstillegg forholdstal" },
                             english { +"AFP compensatory allowance factor" },
                         )
                     }
-                    cell { text(bokmal { + forholdstall.format() }, nynorsk { + forholdstall.format() }, english { + forholdstall.format() }) }
+                    cell { eval(forholdstall.format(scale = 3)) }
                 }
             }
         }
