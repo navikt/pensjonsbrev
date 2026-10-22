@@ -12,6 +12,22 @@ const override = (listId: number, ls: number) => `{\\listoverride\\listid${listI
 const parse = (header: string) => parseListLevelFormats(tokenizeRtf(`{\\rtf1\\ansi${header}\\pard Tekst\\par}`));
 
 describe("parseListLevelFormats", () => {
+  test.each([
+    ["listtable", "{"],
+    ["listtable", "{\\unknown\\value1"],
+    ["listoverridetable", "{"],
+    ["listoverridetable", "{\\unknown\\value1"],
+  ])("handles deep %s nesting starting with %s without losing sibling entries", (destination, groupStart) => {
+    const depth = 100_000;
+    const nested = groupStart.repeat(depth) + "}".repeat(depth);
+    const formats = parse(
+      `{\\*\\listtable${destination === "listtable" ? nested : ""}${list(1, 23)}}` +
+        `{\\*\\listoverridetable${destination === "listoverridetable" ? nested : ""}${override(1, 1)}}`,
+    );
+
+    expect(formats).toEqual(new Map([[1, [23]]]));
+  });
+
   test("maps each \\ls to the level formats of its list", () => {
     const formats = parse(
       `{\\*\\listtable${list(10, 23, 0, 4)}${list(20, 0)}}` +

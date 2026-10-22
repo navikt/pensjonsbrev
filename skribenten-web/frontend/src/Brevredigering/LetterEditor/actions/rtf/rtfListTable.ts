@@ -31,22 +31,17 @@ function scanDestination(
   if (start === -1) return;
 
   // The destination of each open group, from its first control word other than `\*`.
-  const path: (string | undefined)[] = [destination];
+  const path: string[] = [destination];
   for (let index = start + 1; index < tokens.length && path.length > 0; index++) {
     const token = tokens[index];
     if (token.type === "groupStart") {
-      path.push(undefined);
+      path.push("");
     } else if (token.type === "groupEnd") {
-      visit.onGroupEnd(path.map((word) => word ?? ""));
+      visit.onGroupEnd(path);
       path.pop();
     } else if (token.type === "control" && token.word !== "*") {
-      if (path.at(-1) === undefined) path[path.length - 1] = token.word;
-      else
-        visit.onControl(
-          path.map((word) => word ?? ""),
-          token.word,
-          token.hasParam ? token.param : undefined,
-        );
+      if (path.at(-1) === "") path[path.length - 1] = token.word;
+      else visit.onControl(path, token.word, token.hasParam ? token.param : undefined);
     }
   }
 }
