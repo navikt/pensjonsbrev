@@ -45,7 +45,7 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             showIf(vedtaketIverksettes) {
                 text(bokmal { +"skal " })
             }.orShow {
-                text(bokmal { +"skal ikke " })
+                text(bokmal { +"ikke skal " })
             }
             text(bokmal { +"iverksettes" })
         }
