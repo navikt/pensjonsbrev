@@ -63,15 +63,15 @@ class Felles {
             paragraph {
                 text(
                     bokmal { +
-                    "Du har fått arbeidsavklaringspenger, og vil som hovedregel ikke lenger få dette når vi avslår søknaden din om uføretrygd."},
-                    nynorsk { + "Du har fått arbeidsavklaringspengar, og vil som hovudregel ikkje lenger få dette når vi avslår søknaden din om uføretrygd." }
+                    "Når vi avslår søknaden din om uføretrygd, får du som hovedregel ikke lenger arbeidsavklaringspenger."},
+                    nynorsk { + "Når vi avslår søknaden din om uføretrygd, får du som hovudregel ikkje lenger arbeidsavklaringspengar." }
                 )
             }
             paragraph {
                 text(
                     bokmal { +
                     "Det er viktig at du tar kontakt med veilederen din i Nav for å undersøke om du trenger mer avklaring og kan fortsette å få arbeidsavklaringspenger. Du kan også få hjelp til å forstå avslaget."},
-                    nynorsk { + "Det er viktig at du tar kontakt med rettleiaren din i Nav for å undersøke om du treng meir avklaring og kan fortsette å få arbeidsavklaringspengar. Du kan også få hjelp til å forstå avslaget." }
+                    nynorsk { + "Det er viktig at du tek kontakt med rettleiaren din i Nav for å undersøkje om du treng meir avklaring og kan halde fram med å få arbeidsavklaringspengar. Du kan også få hjelp til å forstå avslaget." }
                 )
             }
             paragraph {
@@ -84,8 +84,8 @@ class Felles {
             }
             paragraph {
                 text(
-                    bokmal { +"Nav oppfølging utland (evt din oppfølgingsenhet el.) har fått beskjed om at vi har avslått søknaden din."},
-                    nynorsk { +"Nav oppfølging utland (evt din oppfølgingsenhet el.) har fått beskjed om at vi har avslått søknaden din." }
+                    bokmal { +"Nav oppfølging utland (evt din oppfølgingsenhet) har fått beskjed om at vi har avslått søknaden din."},
+                    nynorsk { +"Nav oppfølging utland (evt dei som følgjer deg opp) har fått beskjed om at vi har avslått søknaden din." }
                 )
             }
         }

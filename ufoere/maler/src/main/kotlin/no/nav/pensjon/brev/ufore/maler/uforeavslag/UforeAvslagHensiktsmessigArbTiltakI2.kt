@@ -93,8 +93,10 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
                     nynorsk { +"Vedtaket har vi gjort etter folketrygdlova §§ 12-5 til 12-7." })
             }
 
-            showIf(pesysData.bosattUtland and visAapAvsnitt) {
-                includePhrase(Felles.DetteKanDuGjoreNaUtland)
+            showIf(pesysData.bosattUtland) {
+                showIf(visAapAvsnitt) {
+                    includePhrase(Felles.DetteKanDuGjoreNaUtland)
+                }
             }.orShow {
                 includePhrase(Felles.DetteKanDuGjoreNa)
             }
