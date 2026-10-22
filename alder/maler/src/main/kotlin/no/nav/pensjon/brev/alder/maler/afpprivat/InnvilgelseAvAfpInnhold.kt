@@ -125,11 +125,11 @@ data class InnvilgelseAvAfpInnhold(
 
             paragraph {
                 text(
-                    bokmal { +"Du må ha tatt ut minst 20 prosent alderspensjon i minst en måned for å ha rett AFP i privat sektor. " +
+                    bokmal { +"Du må ta ut minst 20 prosent alderspensjon i minst en måned for å ha rett AFP i privat sektor. " +
                             "Deretter kan du endre uttaksgraden for alderspensjonen til 0 prosent uten at det påvirker AFP-en din.  " },
-                    nynorsk { +"Du må ha tatt ut minst 20 prosent alderspensjon i minst ein månad for å ha rett AFP i privat sektor. " +
+                    nynorsk { +"Du må ta ut minst 20 prosent alderspensjon i minst ein månad for å ha rett AFP i privat sektor. " +
                             "Deretter kan du endre uttaksgraden for alderspensjonen til 0 prosent utan at det påverkar AFP-en din.  " },
-                    english { +"You must have drawn at least 20 percent of your retirement pension for at least one month to qualify for AFP in the private sector. " +
+                    english { +"You must draw at least 20 percent of your retirement pension for at least one month to qualify for AFP in the private sector. " +
                             "You may then change your retirement pension withdrawal rate to 0 percent without affecting your AFP. " },
                 )
             }
