@@ -55,7 +55,7 @@ class SendtBrevMetrikker(
             distribusjonstype = brev.distribusjonstype,
             avsenderEnhet = brev.avsenderEnhetId,
             brevkode = brev.brevkode,
-            valgteVedlegg = brev.valgteVedlegg
+            valgteVedlegg = brev.valgteVedlegg.sortedBy { it.kode }
         )
     }
 
