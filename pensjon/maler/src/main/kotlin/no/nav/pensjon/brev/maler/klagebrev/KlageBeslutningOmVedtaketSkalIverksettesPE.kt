@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.PE_KLAGE_BESLUTNING_OM_VEDTAKET_SKAL_IVERKSETTES
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -31,13 +32,14 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
-        val iverksettes = saksbehandlervalg("iverksettes", "Vedtaket skal iverksettes").bool()
+        val vedtaketIverksettes = saksbehandlervalg("vedtaketIverksettes", "Vedtaket skal iverksettes").bool()
         val oekonomiskeForhold =
             saksbehandlervalg("oekonomiskeForhold", "Økonomiske forhold kan ikke vektlegges").bool()
+        val tilbakekreving = saksbehandlervalg("tilbakekreving", "Hvis saken gjelder tilbakekreving, og vi gir avslag på utsatt iverksettelse").bool()
 
         title {
             text(bokmal { +"Vi har besluttet at vedtaket " })
-            showIf(iverksettes) {
+            showIf(vedtaketIverksettes) {
                 text(bokmal { +"skal " })
             }.orShow {
                 text(bokmal { +"skal ikke " })
@@ -56,7 +58,7 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             }
             paragraph {
                 text(bokmal { +"Søknaden er " })
-                showIf(iverksettes) {
+                showIf(vedtaketIverksettes) {
                     text(bokmal { +"avslått." })
                 }.orShow {
                     text(bokmal { +"innvilget." })
@@ -89,19 +91,46 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             }
 
             title1 { text(bokmal { +"Vurdering og konklusjon" }) }
-            paragraph{
+            paragraph {
                 text(bokmal {
-                    +fritekst("Skriv en konkret begrunnelse med utgangspunkt i rettslig grunnlag. "
-                            +"Aktuelle momenter: hva klagen er begrunnet med, "
-                            +"hvor sannsynlig det er at klagen vil medføre omgjøring av det påklagede vedtaket m.m.")
+                    +fritekst(
+                        "Skriv en konkret begrunnelse med utgangspunkt i rettslig grunnlag. "
+                                + "Aktuelle momenter: hva klagen er begrunnet med, "
+                                + "hvor sannsynlig det er at klagen vil medføre omgjøring av det påklagede vedtaket m.m."
+                    )
                 })
             }
-            paragraph{
+            paragraph {
+                text(bokmal { +"Vi mener at det " })
+                showIf(vedtaketIverksettes) {
+                    text(bokmal {
+                        +"ikke er tilstrekkelig grunnlag "
+                    })
+                }.orShow {
+                    text(bokmal { +"er grunnlag " })
+                }
+                text(bokmal { +"for å utsette iverksettelse av vedtaket vårt av "
+                    +fritekst("dato") + " fram til klagen er endelig avgjort." })
+            }
+            showIf(tilbakekreving) {
+                paragraph {
+                    text(bokmal {
+                        +"Du kan be Skatteetaten om en nedbetalingsavtale hvis det er vanskelig for deg å betale tilbake det feilutbetalte beløpet samlet."
+                    })
+                }
+            }
+
+            title1{ text(bokmal { +"Prosessuell beslutning uten klagerett" }) }
+            paragraph {
                 text(bokmal {
-                    +"Vi mener at det ikke er tilstrekkelig grunnlag // er grunnlag for å utsette iverksettelse av vedtaket vårt av <dato> fram til klagen er endelig avgjort."
+                    +"Denne avgjørelsen er ikke et vedtak som gjelder individuelle rettigheter eller plikter (enkeltvedtak), "
+                    +"men en prosessuell beslutning. Du kan ikke klage på denne beslutningen. "
+                    +"Det følger av forvaltningsloven §§ 2 og 28."
                 })
             }
 
+            includePhrase(Felles.RettTilInnsynRedigerbarebrev)
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }
-    }
+}
