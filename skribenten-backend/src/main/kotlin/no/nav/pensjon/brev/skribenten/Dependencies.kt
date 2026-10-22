@@ -38,6 +38,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.Diff
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.EndreMottakerHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.LeggVedFoerstesideHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.VeksleKlarStatusHandler
@@ -172,6 +173,7 @@ fun Application.configureDependencies() {
         provide(LagreAttestertVedleggHandler::class)
         provide(LagreP1DataHandler::class)
         provide(LeggTilFavorittHandler::class)
+        provide(OppdaterBrevService::class)
         provide(OppdaterBrevHandler::class)
         provide(OpprettBrevHandler::class)
         provide(ReserverBrevHandler::class)

@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -19,6 +17,7 @@ class OppdaterBrevHandler(
     private val brevtilgang: Brevtilgang,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
+    private val oppdaterBrevService: OppdaterBrevService,
 ) {
 
     data class Request(
@@ -40,19 +39,9 @@ class OppdaterBrevHandler(
 
             val pesysdata = brevdataService.hentBrevdata(brev)
             val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-            val originalBrevmalHash = brev.brevmalHash
-            val endretHash = rendretBrev.stableHashCode != originalBrevmalHash
-            if (originalBrevmalHash == null || !endretHash || !Features.isEnabled(Features.sjekkFoerOppdaterKladd)) {
-                // TODO: Fjern brevmalHash-null-sjekken i if-klausulen når vi har definert det på alle kladder
-                brev.mergeRendretBrev(rendretBrev.markup)
-                brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
-                rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
-            } else {
-                brev.oppdaterVariabler(rendretBrev.markup)
-                brev.oppdaterVariablerIVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
-            }
 
-            val brevmalendringType = if (endretHash) BrevmalendringType.MARKUP_ENDRET else BrevmalendringType.INGEN_ENDRING
+            val brevmalendringType = oppdaterBrevService.oppdaterBrevmal(brev, rendretBrev, pesysdata)
+
             success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = brevmalendringType))
         }
 }

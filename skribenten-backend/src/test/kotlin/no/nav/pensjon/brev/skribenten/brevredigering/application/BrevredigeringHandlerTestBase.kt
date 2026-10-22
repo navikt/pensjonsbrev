@@ -152,10 +152,11 @@ abstract class BrevredigeringHandlerTestBase {
     protected val hentBrevInfoHandler by lazy { HentBrevInfoHandler(brevtilgang) }
     protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(transactional, brevreservasjonPolicy) }
     protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(transactional, brevreservasjonPolicy) }
-    protected val hentBrev by lazy { HentBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val oppdaterBrevService by lazy { OppdaterBrevService(brevmalService) }
+    protected val hentBrev by lazy { HentBrevHandler(brevtilgang, brevmalService, brevdataService, oppdaterBrevService) }
     protected val attesterBrev by lazy { AttesterBrevHandler(brevtilgang, ferdigRedigertPolicy, brevmalService, brevdataService, navAnsattService) }
     protected val lagreAttestertBrev by lazy { LagreAttestertBrevHandler(brevtilgang, brevmalService, brevdataService) }
-    protected val oppdaterBrev by lazy { OppdaterBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val oppdaterBrev by lazy { OppdaterBrevHandler(brevtilgang, brevmalService, brevdataService, oppdaterBrevService) }
     protected val opprettBrev by lazy {
         OpprettBrevHandler(
             transactional = transactional,
