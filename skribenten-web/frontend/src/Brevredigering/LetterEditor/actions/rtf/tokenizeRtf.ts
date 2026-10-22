@@ -107,7 +107,7 @@ function readControlSymbol(symbol: string | undefined): RtfToken | undefined {
       return { type: "control", word: "~", hasParam: false, param: 0 };
     }
     case "_": {
-      return { type: "text", value: "-" };
+      return { type: "control", word: "_", hasParam: false, param: 0 };
     }
     case "*": {
       return { type: "control", word: "*", hasParam: false, param: 0 };

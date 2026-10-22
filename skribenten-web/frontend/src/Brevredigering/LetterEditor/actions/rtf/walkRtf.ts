@@ -104,7 +104,8 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
     return text(table ? mapSymbolText(table, value, (byte) => options.decodeBytes([byte]), { unicode }) : value);
   }
 
-  // Bytes are flushed before every other token, so before a font change or the end of a group.
+  // A literal ASCII character can be the trailing byte of a multibyte hex escape.
+  // Flush at controls and group boundaries, before the font or destination changes.
   function flushBytes(): RtfEvent | undefined {
     if (pendingBytes.length === 0) return undefined;
     const table = symbolTable();
@@ -137,7 +138,7 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
   }
 
   for (const [index, rawToken] of tokens.entries()) {
-    if (rawToken.type !== "hexByte") {
+    if (rawToken.type !== "hexByte" && rawToken.type !== "text") {
       const flushed = flushBytes();
       if (flushed) yield flushed;
     }
@@ -195,7 +196,19 @@ export function* walkRtf(tokens: readonly RtfToken[], options: WalkRtfOptions): 
         const group = current();
         decideBranch(group, token);
         if (group.ignorable) group.destination = "skip";
-        const event = fontText(token.value);
+        let value = token.value;
+        if (pendingBytes.length > 0) {
+          let byteLength = 0;
+          while (byteLength < value.length && value.charCodeAt(byteLength) <= 0x7f) {
+            pendingBytes.push(value.charCodeAt(byteLength));
+            byteLength++;
+          }
+          if (byteLength === value.length) break;
+          const flushed = flushBytes();
+          if (flushed) yield flushed;
+          value = value.slice(byteLength);
+        }
+        const event = fontText(value);
         if (event) yield event;
         break;
       }

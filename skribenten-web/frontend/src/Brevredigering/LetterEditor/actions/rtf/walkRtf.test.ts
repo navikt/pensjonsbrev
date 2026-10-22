@@ -120,6 +120,24 @@ describe("walkRtf", () => {
     ]);
   });
 
+  test.each([
+    ["\\'83A", "ア"],
+    ["\\'83A\\'83B", "アィ"],
+    ["\\'83\\'41", "ア"],
+    ["\\'83Aæ😀", "アæ😀"],
+    ["æ😀\\'83A", "æ😀ア"],
+    ["\\'83A\\u945?\\'83A", "アαア"],
+    ["\\uc2\\u945\\'83A\\'83A", "αア"],
+    ["\\'83A\\~\\'83A", "ア\u00A0ア"],
+    ["\\'83\\_A", "\uFFFD-A"],
+    ["\\'83\\tab A", "\uFFFD\tA"],
+    ["\\'83{A}", "\uFFFDA"],
+    ["{\\*\\unknown \\'83A}visible", "visible"],
+  ])("decodes mixed Shift-JIS bytes without crossing semantic boundaries: %s", (body, expected) => {
+    const tokens = tokenizeRtf(`{\\rtf1\\ansi\\ansicpg932 ${body}}`);
+    expect(textOf([...walkRtf(tokens, { ...NATIVE, decodeBytes: createByteDecoder(tokens) })])).toBe(expected);
+  });
+
   test("decodes unicode escapes and skips the default 1-character fallback", () => {
     // \u8226 is the bullet character (•), followed by a "?" fallback for old readers.
     expect(walk("\\u8226?")).toEqual([{ kind: "text", value: "•", destination: "body" }, { kind: "documentEnd" }]);

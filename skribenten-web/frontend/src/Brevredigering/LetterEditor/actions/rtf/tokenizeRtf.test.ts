@@ -42,7 +42,7 @@ describe("tokenizeRtf", () => {
   test("tokenizes control symbols", () => {
     expect(tokenizeRtf("\\~\\_\\-\\\\\\{\\}\\*")).toEqual([
       control("~"),
-      text("-"),
+      control("_"),
       control("-"),
       text("\\"),
       text("{"),
