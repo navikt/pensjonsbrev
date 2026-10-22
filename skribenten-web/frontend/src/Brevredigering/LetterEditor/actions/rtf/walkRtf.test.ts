@@ -208,6 +208,11 @@ describe("walkRtf - symbol fonts", () => {
     expect(textIn("{\\f3 \\'b7 a}")).toBe("• α");
   });
 
+  test("keeps nonbreaking-space controls separate from symbol-font bytes", () => {
+    expect(textIn("\\f3 a\\~a\\'a0")).toBe("α\u00A0α€");
+    expect(textIn("\\f3\\u945\\~a")).toBe("αα");
+  });
+
   test("restores the outer font at the end of the group", () => {
     expect(textIn("{\\f3 a}a\\'b7")).toBe("αa·");
   });

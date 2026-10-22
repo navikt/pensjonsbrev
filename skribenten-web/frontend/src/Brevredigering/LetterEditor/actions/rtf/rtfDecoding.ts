@@ -4,6 +4,7 @@ import { type RtfToken } from "~/Brevredigering/LetterEditor/actions/rtf/tokeniz
 
 /** Control words that stand for a single character. `\line` is left to the consumers, which treat it differently. */
 export const RTF_SYMBOL_WORDS: ReadonlyMap<string, string> = new Map([
+  ["~", "\u00A0"],
   ["tab", "\t"],
   ["lquote", "\u2018"],
   ["rquote", "\u2019"],
