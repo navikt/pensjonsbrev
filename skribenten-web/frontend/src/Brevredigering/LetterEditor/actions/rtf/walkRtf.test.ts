@@ -225,6 +225,10 @@ describe("walkRtf - symbol fonts", () => {
     expect(textIn("a", "\\deff3")).toBe("α");
   });
 
+  test("uses font zero initially and after \\plain when \\deff is omitted", () => {
+    expect(textOf(walk("{\\rtf1{\\fonttbl{\\f0 Symbol;}{\\f1 Calibri;}}a\\f1 a\\plain a}"))).toBe("αaα");
+  });
+
   test("maps Word for Mac's \\uN in the private use area, and skips the fallback", () => {
     expect(textIn("{\\f3 \\u-3913\\'b7}")).toBe("•");
   });

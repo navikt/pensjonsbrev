@@ -203,7 +203,7 @@ export function parseSymbolFonts(tokens: readonly RtfToken[]): SymbolFonts {
       if (rest.length > 0) endEntry();
     }
   }
-  return { defaultFont: defaultFontOf(tokens), tables };
+  return { defaultFont: defaultFontOf(tokens) ?? 0, tables };
 }
 
 /**

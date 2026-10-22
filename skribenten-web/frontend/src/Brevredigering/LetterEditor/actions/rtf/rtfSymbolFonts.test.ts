@@ -48,6 +48,10 @@ describe("parseSymbolFonts", () => {
   test("has no default font or tables without a font table", () => {
     expect(fontsOf("{\\rtf1\\ansi Tekst}")).toEqual({ defaultFont: undefined, tables: new Map() });
   });
+
+  test("defaults to font zero when a font table omits \\deff", () => {
+    expect(fontsOf("{\\rtf1{\\fonttbl{\\f0 Symbol;}}a}").defaultFont).toBe(0);
+  });
 });
 
 describe("symbol tables", () => {
