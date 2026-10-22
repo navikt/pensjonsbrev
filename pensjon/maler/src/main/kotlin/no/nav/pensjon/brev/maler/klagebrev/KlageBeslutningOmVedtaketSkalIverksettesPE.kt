@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.PE_KLAGE_BESLUTNING_OM_VEDTAKET_SKAL_IVERKSETTES
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.template.Language
@@ -18,6 +19,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+
+    override val featureToggle = FeatureToggles.brevmalKlageBeslutningOmVedtaketSkalIverksettes.toggle
 
     override val kode = PE_KLAGE_BESLUTNING_OM_VEDTAKET_SKAL_IVERKSETTES
     override val kategori = KLAGE_OG_ANKE
