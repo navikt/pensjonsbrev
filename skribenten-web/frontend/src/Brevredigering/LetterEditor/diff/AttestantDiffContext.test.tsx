@@ -69,6 +69,75 @@ describe("AttestantDiffContext", () => {
     expect(screen.getByTestId("deleted-blocks").textContent).toBe("0");
   });
 
+  describe("insertion and deletion filters", () => {
+    const mixedDiff: UnifiedLetterDiff = {
+      editedBlocks: {
+        0: {
+          contentEdits: {
+            0: {
+              type: "TEXT",
+              edit: {
+                inserts: [{ startOffset: 0, endOffset: 1 }],
+                deletes: [{ startOffset: 1, endOffset: 4, text: "old" }],
+              },
+            },
+          },
+          deletedContent: {},
+        },
+      },
+      deletedBlocks: { 1: [deletedBlock] },
+      type: "UNIFIED",
+    };
+
+    function SegmentProbe() {
+      const segments = useDiffSegmentsForLiteral(literalA, "AA");
+      const deletedBlocksAtOne = useDeletedBlocks(1);
+      return (
+        <div>
+          <span data-testid="segments">{segments ? segments.map((segment) => segment.type).join(",") : "none"}</span>
+          <span data-testid="deleted-blocks">{deletedBlocksAtOne.length}</span>
+        </div>
+      );
+    }
+
+    const renderWith = (showInsertions: boolean, showDeletions: boolean) =>
+      render(
+        <AttestantDiffProvider
+          diff={mixedDiff}
+          diffHash="hash-1"
+          disableDiffMode={() => {}}
+          showDeletions={showDeletions}
+          showInsertions={showInsertions}
+        >
+          <SegmentProbe />
+        </AttestantDiffProvider>,
+      );
+
+    it("shows both insertions and deletions when both are enabled", () => {
+      renderWith(true, true);
+      expect(screen.getByTestId("segments").textContent).toBe("inserted,unchanged,deleted");
+      expect(screen.getByTestId("deleted-blocks").textContent).toBe("1");
+    });
+
+    it("shows only insertions when deletions are disabled", () => {
+      renderWith(true, false);
+      expect(screen.getByTestId("segments").textContent).toBe("inserted,unchanged");
+      expect(screen.getByTestId("deleted-blocks").textContent).toBe("0");
+    });
+
+    it("shows only deletions, keeping their position, when insertions are disabled", () => {
+      renderWith(false, true);
+      expect(screen.getByTestId("segments").textContent).toBe("unchanged,unchanged,deleted");
+      expect(screen.getByTestId("deleted-blocks").textContent).toBe("1");
+    });
+
+    it("leaves the literal undecorated when nothing remains to highlight", () => {
+      renderWith(false, false);
+      expect(screen.getByTestId("segments").textContent).toBe("none");
+      expect(screen.getByTestId("deleted-blocks").textContent).toBe("0");
+    });
+  });
+
   it("hides literals with malformed ranges and warns instead of decorating them", () => {
     const malformedDiff: UnifiedLetterDiff = {
       editedBlocks: {

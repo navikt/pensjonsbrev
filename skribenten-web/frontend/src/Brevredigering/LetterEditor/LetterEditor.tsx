@@ -41,6 +41,7 @@ export const LetterEditor = ({
   setEditorState,
   showDebug,
   renderTilbakestillModal,
+  diffToggleMenu,
 }: {
   freeze: boolean;
   error: boolean;
@@ -49,6 +50,7 @@ export const LetterEditor = ({
   showDebug: boolean;
   /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
   renderTilbakestillModal?: (args: { open: boolean; onClose: () => void }) => React.ReactNode;
+  diffToggleMenu?: React.ReactNode;
 }) => {
   const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
@@ -144,6 +146,7 @@ export const LetterEditor = ({
           setVilTilbakestilleMal={renderTilbakestillModal ? setVilTilbakestilleMal : undefined}
           undo={undo}
         />
+        {diffToggleMenu}
         <VStack align="center" flexGrow="1" minHeight="0" overflowY="auto">
           <Box
             className="editor"
