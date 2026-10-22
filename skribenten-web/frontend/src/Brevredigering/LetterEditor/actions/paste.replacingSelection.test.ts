@@ -173,14 +173,17 @@ describe("Actions.pasteReplacingSelection", () => {
         ]),
       );
 
-    test("an HTML table replaces a whole selected table", () => {
+    test.each([
+      ["HTML", { "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table>" }],
+      [
+        "RTF",
+        { "text/rtf": "{\\rtf1\\ansi \\trowd\\cellx1000\\pard\\intbl A\\cell\\row\\trowd\\cellx1000 b\\cell\\row}" },
+      ],
+    ])("a table from %s replaces a whole selected table", (_, clipboard) => {
       const result = Actions.pasteReplacingSelection(
         tableLetter(),
         wholeTable,
-        new MockDataTransfer({
-          "text/html": "<table><tr><th>A</th></tr><tr><td>b</td></tr></table>",
-          "text/plain": "A\nb",
-        }),
+        new MockDataTransfer({ ...clipboard, "text/plain": "A\nb" }),
       );
 
       expect(projectLetter(result)).toEqual(["TABLE", "  th: A", "  tr: b"]);
@@ -273,6 +276,16 @@ describe("Actions.pasteReplacingSelection", () => {
       end: { blockIndex: 0, contentIndex: 0, cursorPosition: 5 },
     };
 
+    test("empty RTF without text/plain", () => {
+      const state = letter(paragraph([literal({ text: "Hello World" })]));
+      const clipboard = new MockDataTransfer({ "text/rtf": "{\\rtf1\\ansi {\\fonttbl{\\f0 Arial;}}\\par}" });
+
+      const result = Actions.pasteReplacingSelection(state, selectHello, clipboard);
+
+      expect(result.redigertBrev).toEqual(state.redigertBrev);
+      expect(result.saveStatus).toEqual(state.saveStatus);
+    });
+
     test("empty text/plain", () => {
       const state = letter(paragraph([literal({ text: "Hello World" })]));
 
@@ -359,10 +372,26 @@ describe("Actions.pasteReplacingSelection", () => {
       expect(cellText.map((content) => text(content as LiteralValue)).join("")).toEqual("cell A\tB");
     });
 
+    test("an RTF table inside a table cell falls back to text/plain", () => {
+      const state = tableState();
+      const rtfTable = "{\\rtf1\\ansi \\trowd\\cellx1000\\cellx2000 A\\cell B\\cell\\row}";
+
+      const result = Actions.pasteReplacingSelection(
+        state,
+        selectInCell,
+        new MockDataTransfer({ "text/rtf": rtfTable, "text/plain": "A\tB" }),
+      );
+
+      const cellText = select<Table>(result, { blockIndex: 0, contentIndex: 1 }).rows[0].cells[0].text;
+      expect(cellText.map((content) => text(content as LiteralValue)).join("")).toEqual("cell A\tB");
+    });
+
     const mixedHtml = `<p>Før</p>${htmlTable}`;
+    const mixedRtf = "{\\rtf1\\ansi \\pard Før\\par\\trowd\\cellx1000\\cellx2000\\pard\\intbl A\\cell B\\cell\\row}";
 
     test.each([
       ["mixed text and a table (HTML)", { "text/html": mixedHtml }],
+      ["mixed text and a table (RTF)", { "text/rtf": mixedRtf }],
       ["a heading", { "text/html": "<h2>Før A\tB</h2>" }],
       ["a list", { "text/html": "<ul><li>Før</li><li>A\tB</li></ul>" }],
       ["paragraphs and a list", { "text/html": "<p>Før</p><ul><li>A\tB</li></ul>" }],
@@ -376,13 +405,13 @@ describe("Actions.pasteReplacingSelection", () => {
       expect(projectLetter(result)).toEqual(["TABLE", "  th: H1 | H2", "  tr: cell Før A\tB | other"]);
     });
 
-    test("HTML structured content inside a table cell without text/plain", () => {
+    test("structured content inside a table cell without text/plain", () => {
       const state = tableState();
 
       const result = Actions.pasteReplacingSelection(
         state,
         selectInCell,
-        new MockDataTransfer({ "text/html": mixedHtml }),
+        new MockDataTransfer({ "text/html": mixedHtml, "text/rtf": mixedRtf }),
       );
 
       expect(result.redigertBrev).toEqual(state.redigertBrev);
@@ -391,6 +420,7 @@ describe("Actions.pasteReplacingSelection", () => {
     test.each([
       ["HTML text", { "text/html": "<b>fet</b> og <i>kursiv</i>" }],
       ["an HTML paragraph", { "text/html": "<p><b>fet</b> og <i>kursiv</i></p>" }],
+      ["an RTF paragraph", { "text/rtf": "{\\rtf1\\ansi \\pard{\\b fet} og {\\i kursiv}\\par}" }],
     ])("%s inside a table cell keeps bold and italic", (_, clipboard) => {
       const result = Actions.pasteReplacingSelection(
         tableState(),
@@ -408,8 +438,10 @@ describe("Actions.pasteReplacingSelection", () => {
         text(content as LiteralValue),
       );
 
-    test("HTML paragraphs inside a table cell are joined with a space and keep their formatting", () => {
-      const clipboard = { "text/html": "<p><b>fet</b></p><p><i>kursiv</i></p>" };
+    test.each([
+      ["HTML", { "text/html": "<p><b>fet</b></p><p><i>kursiv</i></p>" }],
+      ["RTF", { "text/rtf": "{\\rtf1\\ansi \\pard{\\b fet}\\par\\pard{\\i kursiv}\\par}" }],
+    ])("paragraphs from %s inside a table cell are joined with a space and keep their formatting", (_, clipboard) => {
       const result = pasteInCell({ ...clipboard, "text/plain": "fet\nkursiv" });
 
       // The joining space takes the previous paragraph's font.
