@@ -287,7 +287,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       kilde: "manuell",
       bryter: toggle,
       bryterPaa: checked,
-      diffModus: nextToggles.lagtTil || nextToggles.slettet,
+      diffModus: nextToggles.inserted || nextToggles.deleted,
       defaultDiffModus: defaultDiffMode,
     });
 
@@ -499,10 +499,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     showInsertions={attestantDiff.showInsertions}
                   >
                     <ManagedLetterEditor
-                      error={error}
-                      freeze={freeze}
-                      showDebug={showDebug}
-                      subMenu={
+                      diffToggleMenu={
                         diffFeatureToggle.data?.enabled === true && (
                           <AttestantDiffMenu
                             onToggle={(toggle, checked) => void handleDiffToggle(toggle, checked)}
@@ -511,6 +508,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                           />
                         )
                       }
+                      error={error}
+                      freeze={freeze}
+                      showDebug={showDebug}
                     />
                   </AttestantDiffProvider>
                 )}

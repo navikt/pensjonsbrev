@@ -5,8 +5,8 @@ import { useId, useState } from "react";
 import { type AttestantLetterDiffStatus, type DiffToggles } from "~/hooks/useAttestantLetterDiff";
 
 const SWITCHES: { toggle: keyof DiffToggles; label: string }[] = [
-  { toggle: "lagtTil", label: "Marker tekst som er lagt til" },
-  { toggle: "slettet", label: "Vis slettet tekst" },
+  { toggle: "inserted", label: "Marker tekst som er lagt til" },
+  { toggle: "deleted", label: "Vis slettet tekst" },
 ];
 
 export const AttestantDiffMenu = ({

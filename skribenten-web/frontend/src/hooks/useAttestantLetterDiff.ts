@@ -7,9 +7,9 @@ import { type EditedLetter } from "~/types/brevbakerTypes";
 
 export type AttestantLetterDiffStatus = "disabled" | "loading" | "ready" | "empty" | "error";
 
-export type DiffToggles = { lagtTil: boolean; slettet: boolean };
+export type DiffToggles = { inserted: boolean; deleted: boolean };
 
-const ALL_OFF: DiffToggles = { lagtTil: false, slettet: false };
+const ALL_OFF: DiffToggles = { inserted: false, deleted: false };
 
 export function useAttestantLetterDiff({
   brevId,
@@ -23,8 +23,8 @@ export function useAttestantLetterDiff({
   isSaved: boolean;
 }) {
   const [toggles, setToggles] = useState<DiffToggles>(ALL_OFF);
-  const showInsertions = toggles.lagtTil;
-  const showDeletions = toggles.slettet;
+  const showInsertions = toggles.inserted;
+  const showDeletions = toggles.deleted;
   const isDiffMode = showInsertions || showDeletions;
   // Captures the diff state as it was when the page first loaded, for tracking purposes.
   const defaultDiffMode = useRef(isDiffMode).current;

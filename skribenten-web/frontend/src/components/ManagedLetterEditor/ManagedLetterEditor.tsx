@@ -13,12 +13,13 @@ const ManagedLetterEditor = (props: {
   error: boolean;
   canReset?: boolean;
   showDebug?: boolean;
-  subMenu?: React.ReactNode;
+  diffToggleMenu?: React.ReactNode;
 }) => {
   const { editorState, setEditorState, saveFailed, resetLetter, resetting } = useManagedLetterEditorContext();
 
   return (
     <LetterEditor
+      diffToggleMenu={props.diffToggleMenu}
       editorState={editorState}
       error={props.error || saveFailed}
       freeze={props.freeze || resetting}
@@ -29,7 +30,6 @@ const ManagedLetterEditor = (props: {
       }
       setEditorState={setEditorState}
       showDebug={props.showDebug ?? false}
-      subMenu={props.subMenu}
     />
   );
 };
