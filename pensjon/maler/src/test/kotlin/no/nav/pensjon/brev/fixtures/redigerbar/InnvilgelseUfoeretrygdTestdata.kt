@@ -525,10 +525,12 @@ fun createOkningUforegradV2Dto() =
                 yrkesskadeBest = false,
                 inntektSkadetidspunkt = Kroner(1010),
                 grunnbelop = Kroner(1010),
+                anvendtTrygdetid = 40,
             ),
             grunnlag = Grunnlag(
                 borIUtlandet = false,
                 epsBrukerBorMed = Grunnlag.Eps.EKTEFELLE,
+                anvendtSivilstand = Grunnlag.AnvendtSivilstandCode.BOR_MED_EKTEFELLE,
             ),
             institusjonsopphold = Institusjonsopphold(
                 erAnvendt = false,
@@ -542,6 +544,8 @@ fun createOkningUforegradV2Dto() =
                 ),
                 allePerioderHarForsorgeransvar = true,
                 ingenPerioderHarForsorgeransvar = false,
+                forstePeriodeHarForsorgeransvar = true,
+                sistePeriodeHarForsorgeransvar = false,
             ),
             reduksjonsgrunnlag = Reduksjonsgrunnlag(
                 sumUtBt = Kroner(8511),
