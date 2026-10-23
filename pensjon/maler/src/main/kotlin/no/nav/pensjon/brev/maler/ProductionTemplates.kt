@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klagebrev.KlageBegrunnelseForVedtakUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmAaIkkeGjoereOmVedtaketUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmVedtaketSkalIverksettesPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
@@ -151,6 +152,7 @@ object ProductionTemplates : AllTemplates {
         InnvilgelseUforetrygdUtlandRedigerbar,
         KlageBegrunnelseForVedtakUT,
         KlageBeslutningOmAaIkkeGjoereOmVedtaketUT,
+        KlageBeslutningOmVedtaketSkalIverksettesPE,
         KlageInnhentingAvOpplysningerUT,
         KlageOrienteringOmOversendelseTilKlageinstans,
         KlageOrienteringOmSaksbehandlingstid,
