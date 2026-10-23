@@ -1,20 +1,48 @@
+import { getRtfClipboardData, RTF_TYPES } from "~/Brevredigering/LetterEditor/actions/rtf/parseRtfClipboard";
+
 export type PasteFormat = "HTML" | "RTF" | "ren tekst";
 
 export interface PasteMetadata {
   innholdsformat: PasteFormat;
   htmlTagger?: string;
+  rtfDokumentSpraak?: string;
+  /** Which application produced the RTF, as a fixed label; never text from the RTF itself. */
+  rtfKilde?: string;
+  /** The version from `\generator`, only for known applications and only if it is a plain version number. */
+  rtfKildeVersjon?: string;
+  /** `\ansicpgN` from the RTF header, to learn whether non-Western code pages reach the RTF paste path. */
+  rtfKodetabell?: string;
 }
 
-const MAX_HTML_LENGTH_FOR_TAG_EXTRACTION = 100_000;
+type Clipboard = Pick<DataTransfer, "getData" | "types">;
 
-export function getPasteMetadata(clipboard: Pick<DataTransfer, "getData" | "types">): PasteMetadata {
+const MAX_HTML_LENGTH_FOR_TAG_EXTRACTION = 100_000;
+/** `\deflang` and `\generator` are in the RTF header, so only the start of large documents is read. */
+const MAX_RTF_HEADER_LENGTH = 100_000;
+
+/** Whether the clipboard has anything to paste; RTF-only clipboards have no text/plain. */
+export function hasPasteContent(clipboard: Clipboard): boolean {
+  return (
+    clipboard.getData("text/plain").length > 0 ||
+    clipboard.getData("text/html").length > 0 ||
+    getRtfClipboardData(clipboard) !== undefined
+  );
+}
+
+export function getPasteMetadata(clipboard: Clipboard): PasteMetadata {
   const types = Array.from(clipboard.types);
   const hasHtml = types.includes("text/html");
-  const hasRtf = types.includes("text/rtf") || types.includes("application/rtf");
+  const hasRtf = RTF_TYPES.some((type) => types.includes(type));
+  const rtfHeader = hasRtf ? getRtfClipboardData(clipboard)?.slice(0, MAX_RTF_HEADER_LENGTH) : undefined;
+  const rtfSource = rtfHeader === undefined ? undefined : detectRtfSource(rtfHeader);
 
   return {
     innholdsformat: hasHtml ? "HTML" : hasRtf ? "RTF" : "ren tekst",
     htmlTagger: hasHtml ? extractHtmlTags(clipboard.getData("text/html")) : undefined,
+    rtfDokumentSpraak: rtfHeader === undefined ? undefined : detectRtfDocumentLanguage(rtfHeader),
+    rtfKilde: rtfSource?.kilde,
+    rtfKildeVersjon: rtfSource?.versjon,
+    rtfKodetabell: rtfHeader === undefined ? undefined : detectRtfCodePage(rtfHeader),
   };
 }
 
@@ -34,4 +62,62 @@ function extractHtmlTags(html: string): string | undefined {
   } catch {
     return undefined;
   }
+}
+
+const LCID_LABELS: ReadonlyMap<number, string> = new Map([
+  [1033, "en-US"],
+  [2057, "en-GB"],
+  [1044, "nb-NO"],
+  [2068, "nn-NO"],
+]);
+
+export function detectRtfDocumentLanguage(rtf: string): string | undefined {
+  const match = /\\deflang(\d+)/.exec(rtf) ?? /\\lang(\d+)/.exec(rtf);
+  if (!match) return undefined;
+
+  const lcid = Number.parseInt(match[1], 10);
+  return LCID_LABELS.get(lcid) ?? `unknown (${lcid})`;
+}
+
+export interface RtfSource {
+  kilde: string;
+  versjon?: string;
+}
+
+const KNOWN_GENERATORS: ReadonlyArray<readonly [RegExp, string]> = [
+  [/^(?:Riched20|Msftedit)\b/, "RichEdit (WordPad e.l.)"],
+  [/^Microsoft Word\b/, "Word"],
+];
+const GENERATOR_VERSION = /^\d{1,5}(?:\.\d{1,5}){0,3}$/;
+
+/**
+ * Which application produced the RTF, to learn which sources actually reach the RTF paste path. `\generator` is
+ * free text from the document, so it is only matched against known applications and never passed on as is.
+ */
+export function detectRtfSource(rtf: string): RtfSource | undefined {
+  const header = rtfHeaderGroup(rtf);
+  if (/\\fromhtml1/.test(header)) return { kilde: "Outlook (HTML)" };
+  if (/\\fromtext/.test(header)) return { kilde: "Outlook (tekst)" };
+  if (/\\cocoartf/.test(header)) return { kilde: "TextEdit (macOS)" };
+
+  const generator = /\{\\\*\\generator ([^;}]*)/.exec(rtf)?.[1]?.trim();
+  if (!generator) return undefined;
+
+  for (const [pattern, kilde] of KNOWN_GENERATORS) {
+    const match = pattern.exec(generator);
+    if (match) {
+      const version = generator.slice(match[0].length).trim();
+      return { kilde, versjon: GENERATOR_VERSION.test(version) ? version : undefined };
+    }
+  }
+  return { kilde: "Annen" };
+}
+
+export function detectRtfCodePage(rtf: string): string | undefined {
+  return /\\ansicpg(\d{1,5})(?!\d)/.exec(rtfHeaderGroup(rtf))?.[1];
+}
+
+/** The document's own control words, before its first group (the font table etc.). */
+function rtfHeaderGroup(rtf: string): string {
+  return /^\{\\rtf1?[^{}]*/.exec(rtf)?.[0] ?? "";
 }

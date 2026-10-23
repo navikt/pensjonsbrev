@@ -62,6 +62,7 @@ import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.*
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.*
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.*
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
+import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbarV2
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -133,6 +134,7 @@ object Fixtures : LetterDataFactory {
             KlageOrienteringOmSaksbehandlingstid::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             LetterExample::class -> createLetterExampleDto() as T
             OkningUforegradRedigerbar::class -> createOkningUforegradDto() as T
+            OkningUforegradRedigerbarV2::class -> createOkningUforegradV2Dto() as T
             OmregningUfoerepensjonTilUfoeretrygdRedigerbar::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
             OmsorgEgenAuto::class -> createOmsorgEgenAutoDto() as T
             OmsorgEgenManuell::class -> createOmsorgManuellDto() as T
