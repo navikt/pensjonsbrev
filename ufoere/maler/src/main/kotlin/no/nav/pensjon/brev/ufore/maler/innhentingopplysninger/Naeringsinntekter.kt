@@ -103,15 +103,15 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                         showIf(beOmNaeringsoppgaver) {
                             item {
                                 text(
-                                    bokmal { +"næringsoppgaver for årene " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") },
-                                    nynorsk { +"næringsoppgåver for åra " + fritekst("fom-tom (gjelder kun dersom vi må ha opplysninger før 2021)") })
+                                    bokmal { +"næringsoppgaver for årene " + fritekst("fom-tom") },
+                                    nynorsk { +"næringsoppgåver for åra " + fritekst("fom-tom") })
                             }
                         }
                         showIf(beOmPersoninntektsskjema) {
                             item {
                                 text(
-                                    bokmal { +"personinntektsskjema for " + fritekst("fom-tom (Gjelder kun selvstendig næringsdrivende, og brukes ikke etter 2022)") },
-                                    nynorsk { +"personinntektsskjema for " + fritekst("fom-tom (Gjelder kun sjølvstendig næringsdrivande, og brukes ikkje etter 2022)") })
+                                    bokmal { +"personinntektsskjema for " + fritekst("fom-tom") },
+                                    nynorsk { +"personinntektsskjema for " + fritekst("fom-tom") })
                             }
                         }
                         showIf(beOmForelopigResultatregnskap) {
