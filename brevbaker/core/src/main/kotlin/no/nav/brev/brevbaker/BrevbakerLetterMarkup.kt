@@ -32,9 +32,8 @@ internal object BrevbakerLetterMarkup {
     @OptIn(InterneDataklasser::class)
     fun <T : BrevbakerBrevdata> renderLetterMarkupWithDataUsage(letter: Letter<T>): LetterMarkupWithDataUsage =
         SelectorUsage().let { usage ->
-            val markup = Letter2Markup.renderLetterOnly(letter.toScope(usage), letter.template)
             LetterMarkupWithDataUsageImpl(
-                markup,
+                Letter2Markup.renderLetterOnly(letter.toScope(usage), letter.template),
                 usage.propertyUsage,
                 letter.template.letterMetadata.brevtype,
                 stableHashCode = StableHashCode(letter.template.stableHashCode())
