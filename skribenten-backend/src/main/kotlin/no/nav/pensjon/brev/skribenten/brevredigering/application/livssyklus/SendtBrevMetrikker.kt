@@ -11,6 +11,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.Metrics
 import no.nav.pensjon.brev.skribenten.auth.currentPrincipalContext
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
@@ -22,6 +23,7 @@ import no.nav.pensjon.brev.skribenten.model.OrgNr
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import org.slf4j.LoggerFactory
 import java.nio.ByteBuffer
 import java.security.MessageDigest
@@ -43,6 +45,8 @@ class SendtBrevMetrikker(
         val manueltAdressertTil: Dto.Mottaker.ManueltAdressertTil?,
         val distribusjonstype: Distribusjon,
         val avsenderEnhet: EnhetId,
+        val brevkode: Brevkode<*>,
+        val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>,
     ) {
         constructor(brev: Brevredigering) : this(
             mottakerType = brev.mottaker?.type,
@@ -50,6 +54,8 @@ class SendtBrevMetrikker(
             manueltAdressertTil = brev.mottaker?.manueltAdressertTil,
             distribusjonstype = brev.distribusjonstype,
             avsenderEnhet = brev.avsenderEnhetId,
+            brevkode = brev.brevkode,
+            valgteVedlegg = brev.valgteVedlegg.sortedBy { it.kode }
         )
     }
 
@@ -60,7 +66,10 @@ class SendtBrevMetrikker(
         val kontekst = currentPrincipalContext() +
             (currentCoroutineContext()[KtorCallIdContextElement] ?: EmptyCoroutineContext)
 
-        return scope.launch(kontekst) { tell(maaling) }
+        return scope.launch(kontekst) {
+            tell(maaling)
+            tellValgteVedlegg(maaling)
+        }
     }
 
     private suspend fun tell(maaling: SendtBrevMaaling) {
@@ -82,6 +91,13 @@ class SendtBrevMetrikker(
             ?.organisasjonsnummer
             ?.let(::tellOrganisasjon)
     }
+    private fun tellValgteVedlegg(maaling: SendtBrevMaaling) =
+        Counter.builder("skribenten_valgte_vedlegg")
+            .description("Valgte vedlegg, fordelt på brevkode")
+            .tag("brevkode", maaling.brevkode.kode())
+            .tag("valgte_vedlegg", maaling.valgteVedlegg.joinToString(",") { it.kode })
+            .register(registry)
+            .increment()
 
     // Tom labelverdi leses som fraværende i Prometheus, og serien ville da falt ut av `sum by (samhandler_type)`.
     private fun Result<String?>.getOrUkjent(): String =

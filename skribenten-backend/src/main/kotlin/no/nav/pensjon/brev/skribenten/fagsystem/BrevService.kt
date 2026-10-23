@@ -16,6 +16,9 @@ class BrevService(private val penClient: PenClient, private val legacyBrevServic
     suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse =
         legacyBrevService.bestillOgRedigerExstreamBrev(gjelderPid, request, saksId)
 
+    suspend fun bestillExstreamAutobrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillExstreamAutobrevResponse =
+        legacyBrevService.bestillExstreamAutobrev(gjelderPid, request, saksId)
+
      suspend fun bestillOgRedigerEblankett(gjelderPid: Pid, request: Api.BestillEblankettRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse =
          legacyBrevService.bestillOgRedigerEblankett(gjelderPid, request, saksId)
 

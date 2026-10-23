@@ -48,12 +48,13 @@ interface LetterMetadata {
             Api.Brevmal(
                 name = dekode,
                 id = brevkodeIBrevsystem,
-                spraak = sprak ?: emptyList(),
+                spraak = sprak ?: if (isAutomatiskExstream()) listOf(SpraakKode.NB) else emptyList(),
                 brevsystem = BrevSystem.EXSTREAM,
                 brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.let { Pen.finnVisningstekst(it) } ?: this.brevkategori?.toKategoriTekst(),
                 dokumentkategoriCode = this.dokumentkategori,
                 redigerbart = redigerbart,
                 redigerbarBrevtittel = isRedigerbarBrevtittel(),
+                automatiskExstream = isAutomatiskExstream(),
             )
         }
 
@@ -83,6 +84,7 @@ interface LetterMetadata {
                 dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
                 redigerbart = true,
                 redigerbarBrevtittel = false,
+                automatiskExstream = false,
             )
         }
 

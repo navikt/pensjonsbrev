@@ -9,10 +9,13 @@ import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoring
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
+import no.nav.pensjon.brev.maler.klagebrev.KlageBegrunnelseForVedtakUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmAaIkkeGjoereOmVedtaketUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmVedtaketSkalIverksettesPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
@@ -70,6 +73,7 @@ import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.Ved
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026OktIfuAuto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmOktBunnfradragInstAuto
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
+import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbarV2
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.vedlegg.alltidValgbare.skjemaForBankopplysninger
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
@@ -147,11 +151,15 @@ object ProductionTemplates : AllTemplates {
         InnvilgelseUforetrygdMellombehandlingRedigerbar,
         InnvilgelseUforetrygdRedigerbar,
         InnvilgelseUforetrygdUtlandRedigerbar,
+        KlageBegrunnelseForVedtakUT,
         KlageBeslutningOmAaIkkeGjoereOmVedtaketUT,
+        KlageBeslutningOmVedtaketSkalIverksettesPE,
         KlageInnhentingAvOpplysningerUT,
         KlageOrienteringOmOversendelseTilKlageinstans,
         KlageOrienteringOmSaksbehandlingstid,
+        KlageUtsattKlagefristUT,
         OkningUforegradRedigerbar,
+        OkningUforegradRedigerbarV2,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,
         OmsorgEgenManuell,
         OpphoerGjenlevendepensjon,
