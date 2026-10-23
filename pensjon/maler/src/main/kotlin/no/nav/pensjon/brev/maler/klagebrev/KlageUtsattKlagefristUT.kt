@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles.*
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -56,7 +57,7 @@ object KlageUtsattKlagefristUT : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 text(bokmal {
                     +"Utfyllende klage må sendes inn til skanning sammen med vedlagte forside til adresse oppgitt på forsidearket. "
-                    +"På Nav.no kan du sende inn tilleggsopplysninger elektronisk ved bruk av BankID."
+                    +"På $NAV_URL kan du sende inn tilleggsopplysninger elektronisk ved bruk av BankID."
                 })
             }
         }
