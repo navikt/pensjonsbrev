@@ -99,8 +99,8 @@ export default defineConfig(({ command }) => ({
     cors: {
       origin: [
         "http://localhost:8088",
-        "https://pensjon-brevoppskrift.intern.dev.nav.no",
-        "https://pensjon-brevoppskrift.ansatt.dev.nav.no",
+        "https://pensjon-skribenten-web-q2.intern.dev.nav.no",
+        "https://pensjon-skribenten-web-q2.ansatt.dev.nav.no",
       ],
     },
   },
