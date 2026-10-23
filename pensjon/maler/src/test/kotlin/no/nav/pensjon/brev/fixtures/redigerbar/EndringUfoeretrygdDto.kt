@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
