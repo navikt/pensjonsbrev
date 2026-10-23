@@ -96,6 +96,12 @@ export default defineConfig(({ command }) => ({
   },
   server: {
     origin: "http://localhost:5173",
-    cors: true,
+    cors: {
+      origin: [
+        "http://localhost:8088",
+        "https://pensjon-brevoppskrift.intern.dev.nav.no",
+        "https://pensjon-brevoppskrift.ansatt.dev.nav.no",
+      ],
+    },
   },
 }));
