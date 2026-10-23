@@ -35,7 +35,7 @@ object KlageBegrunnelseForVedtakUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        val klageFristHarIkkeUtgaatt = saksbehandlervalg("klageFristHarIkkeUtgaatt", "Hvis klagefristen har ikke utgått").bool()
+        val klageFristHarIkkeUtgaatt = saksbehandlervalg("klageFristHarIkkeUtgaatt", "Hvis klagefristen ikke har utgått").bool()
 
         title { text(bokmal { +"Begrunnelse for vedtak" }) }
 
