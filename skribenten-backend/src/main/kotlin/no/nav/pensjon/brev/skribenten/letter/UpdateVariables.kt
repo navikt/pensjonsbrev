@@ -24,7 +24,10 @@ private fun Edit.Title.variablesValueMap(): Map<Int, String> =
     text.filterIsInstance<Edit.ParagraphContent.Text.Variable>().mapNotNull { v -> v.id?.let { it to v.text } }.toMap()
 
 
-private class UpdateVariables(private val variableValues: Map<Int, String>) {
+internal class UpdateVariables(
+    private val variableValues: Map<Int, String>,
+    private val missingVariableAsLiteral: Boolean = false,
+) {
     fun updateLetter(letter: Edit.Letter): Edit.Letter =
         letter.copy(
             title = update(letter.title),
@@ -37,10 +40,10 @@ private class UpdateVariables(private val variableValues: Map<Int, String>) {
             blocks = attachment.blocks.map(::update),
         )
 
-    private fun update(title: Edit.Title): Edit.Title =
+    fun update(title: Edit.Title): Edit.Title =
         title.copy(text = title.text.map(::update))
 
-    private fun update(block: Edit.Block): Edit.Block =
+    fun update(block: Edit.Block): Edit.Block =
         when (block) {
             is Edit.Block.Title1 -> block.copy(content = block.content.map(::update))
             is Edit.Block.Title2 -> block.copy(content = block.content.map(::update))
@@ -48,22 +51,47 @@ private class UpdateVariables(private val variableValues: Map<Int, String>) {
             is Edit.Block.Paragraph -> block.copy(content = block.content.map(::update))
         }
 
-    private fun update(content: Edit.ParagraphContent): Edit.ParagraphContent =
+    fun update(content: Edit.ParagraphContent): Edit.ParagraphContent =
         when (content) {
             is Edit.ParagraphContent.Text -> update(content)
-            is Edit.ParagraphContent.ItemList -> content.copy(items = content.items.map { it.copy(content = it.content.map(::update)) })
-            is Edit.ParagraphContent.Table -> content.copy(
-                header = content.header.copy(colSpec = content.header.colSpec.map { it.copy(headerContent = update(it.headerContent)) }),
-                rows = content.rows.map { row -> row.copy(cells = row.cells.map(::update)) },
-            )
+            is Edit.ParagraphContent.ItemList -> update(content)
+            is Edit.ParagraphContent.Table -> update(content)
         }
 
-    private fun update(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
+    fun update(itemList: Edit.ParagraphContent.ItemList): Edit.ParagraphContent.ItemList =
+        itemList.copy(items = itemList.items.map(::update))
+
+    fun update(item: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
+        item.copy(content = item.content.map(::update))
+
+    fun update(table: Edit.ParagraphContent.Table): Edit.ParagraphContent.Table =
+        table.copy(
+            header = table.header.copy(colSpec = table.header.colSpec.map(::update)),
+            rows = table.rows.map(::update),
+        )
+
+    fun update(columnSpec: Edit.ParagraphContent.Table.ColumnSpec): Edit.ParagraphContent.Table.ColumnSpec =
+        columnSpec.copy(headerContent = update(columnSpec.headerContent))
+
+    fun update(row: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
+        row.copy(cells = row.cells.map(::update))
+
+    fun update(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         cell.copy(text = cell.text.map(::update))
 
-    private fun update(text: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
+    fun update(text: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
         when (text) {
-            is Edit.ParagraphContent.Text.Variable -> text.id?.let(variableValues::get)?.let { text.copy(text = it) } ?: text
+            is Edit.ParagraphContent.Text.Variable -> text.id?.let(variableValues::get)?.let { text.copy(text = it) }
+                ?: if (missingVariableAsLiteral) {
+                    Edit.ParagraphContent.Text.Literal(
+                        id = text.id,
+                        text = text.text,
+                        fontType = text.fontType,
+                        parentId = text.parentId,
+                    )
+                } else {
+                    text
+                }
             is Edit.ParagraphContent.Text.Literal, is Edit.ParagraphContent.Text.NewLine -> text
         }
 }
