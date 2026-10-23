@@ -92,6 +92,19 @@ fun Route.sakRoute() {
                     )
                 }
 
+                post("/autobrev") {
+                    val request = call.receive<Api.BestillExstreamBrevRequest>()
+                    val sak = call.attributes[SakKey]
+
+                    call.respond(
+                        brevService.bestillExstreamAutobrev(
+                            gjelderPid = sak.pid,
+                            request = request,
+                            saksId = sak.saksId,
+                        )
+                    )
+                }
+
                 post("/eblankett") {
                     val request = call.receive<Api.BestillEblankettRequest>()
                     val sak = call.attributes[SakKey]

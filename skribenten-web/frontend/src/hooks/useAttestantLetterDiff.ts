@@ -5,7 +5,11 @@ import { getBrevDiff } from "~/api/brev-queries";
 import { pickValueForCurrentHash } from "~/Brevredigering/LetterEditor/diff/diffQueryState";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
-type AttestantLetterDiffStatus = "disabled" | "loading" | "ready" | "empty" | "error";
+export type AttestantLetterDiffStatus = "disabled" | "loading" | "ready" | "empty" | "error";
+
+export type DiffToggles = { inserted: boolean; deleted: boolean };
+
+const ALL_OFF: DiffToggles = { inserted: false, deleted: false };
 
 export function useAttestantLetterDiff({
   brevId,
@@ -18,12 +22,20 @@ export function useAttestantLetterDiff({
   savedHash: string;
   isSaved: boolean;
 }) {
-  const [isDiffMode, setDiffMode] = useState(false);
+  const [toggles, setToggles] = useState<DiffToggles>(ALL_OFF);
+  const showInsertions = toggles.inserted;
+  const showDeletions = toggles.deleted;
+  const isDiffMode = showInsertions || showDeletions;
   // Captures the diff state as it was when the page first loaded, for tracking purposes.
   const defaultDiffMode = useRef(isDiffMode).current;
 
+  const setToggle = useCallback(
+    (toggle: keyof DiffToggles, checked: boolean) => setToggles((current) => ({ ...current, [toggle]: checked })),
+    [],
+  );
+
   // Diff decorations and editing are mutually exclusive, so editing disables diff mode.
-  const disableDiffMode = useCallback(() => setDiffMode(false), []);
+  const disableDiffMode = useCallback(() => setToggles(ALL_OFF), []);
 
   const diffQuery = useQuery({
     queryKey: getBrevDiff.queryKey(brevId, savedHash),
@@ -59,8 +71,11 @@ export function useAttestantLetterDiff({
   const renderMarkers = isDiffMode && isSaved && activeDiff !== undefined;
 
   return {
+    toggles,
+    setToggle,
     isDiffMode,
-    setDiffMode,
+    showInsertions,
+    showDeletions,
     defaultDiffMode,
     disableDiffMode,
     status,

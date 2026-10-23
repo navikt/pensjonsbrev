@@ -346,6 +346,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sak/{saksId}/bestillBrev/exstream/autobrev": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ApiBestillExstreamBrevRequest"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiBestillExstreamAutobrevResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sak/{saksId}/bestillBrev/exstream/eblankett": {
         parameters: {
             query?: never;
@@ -3523,6 +3563,7 @@ export interface components {
         SpraakKode: "EN" | "NB" | "NN" | "FR" | "SE";
         /** ApiBrevmal */
         ApiBrevmal: {
+            automatiskExstream: boolean;
             brevkategori?: string | null;
             brevsystem: components["schemas"]["BrevSystem"];
             dokumentkategoriCode?: components["schemas"]["BrevdataDtoDokumentkategoriCode"] | null;
@@ -3696,6 +3737,11 @@ export interface components {
             failureType?: components["schemas"]["ApiBestillOgRedigerBrevResponseFailureType"] | null;
             journalpostId?: number | null;
             url?: string | null;
+        };
+        /** ApiBestillExstreamAutobrevResponse */
+        ApiBestillExstreamAutobrevResponse: {
+            failureType?: components["schemas"]["ApiBestillOgRedigerBrevResponseFailureType"] | null;
+            journalpostId?: number | null;
         };
         /** ApiBestillEblankettRequest */
         ApiBestillEblankettRequest: {
@@ -4656,6 +4702,7 @@ export type ApiBrukerStatus = components['schemas']['ApiBrukerStatus'];
 export type ApiBestillExstreamBrevRequest = components['schemas']['ApiBestillExstreamBrevRequest'];
 export type ApiBestillOgRedigerBrevResponseFailureType = components['schemas']['ApiBestillOgRedigerBrevResponseFailureType'];
 export type ApiBestillOgRedigerBrevResponse = components['schemas']['ApiBestillOgRedigerBrevResponse'];
+export type ApiBestillExstreamAutobrevResponse = components['schemas']['ApiBestillExstreamAutobrevResponse'];
 export type ApiBestillEblankettRequest = components['schemas']['ApiBestillEblankettRequest'];
 export type KontaktAdresseDtoAdressetype = components['schemas']['KontaktAdresseDtoAdressetype'];
 export type KontaktAdresseDto = components['schemas']['KontaktAdresseDto'];
