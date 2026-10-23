@@ -52,10 +52,6 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
         }
         outline {
             paragraph {
-                text(bokmal { + fritekst("Veiledning til saksbehandler: Gjør en selvstendig vurdering av hvilken dokumentasjon og informasjon som er nødvendig for å behandle saken. Rediger malen og tilpass til det du trenger.") },
-                    nynorsk { + fritekst("Veiledning til saksbehandler: Gjør en selvstendig vurdering av hvilken dokumentasjon og informasjon som er nødvendig for å behandle saken. Rediger malen og tilpass til det du trenger.") })
-            }
-            paragraph {
                 text(bokmal { +"Som et ledd i behandlingen av uføresaken din trenger vi bekreftede opplysninger om inntekten din. " },
                     nynorsk { +"Som eit ledd i handsaminga av uføresaka di treng vi bekrefta opplysningar om inntekta di. " })
             }
