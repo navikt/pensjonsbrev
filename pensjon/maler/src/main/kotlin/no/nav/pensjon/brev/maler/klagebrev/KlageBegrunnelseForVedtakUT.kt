@@ -35,7 +35,7 @@ object KlageBegrunnelseForVedtakUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        val klageFristUtgaatt = saksbehandlervalg("klageFristUtgaatt", "Klagefristen er utgått").bool()
+        val klageFristHarIkkeUtgaatt = saksbehandlervalg("klageFristHarIkkeUtgaatt", "Hvis klagefristen ikke har utgått").bool()
 
         title { text(bokmal { +"Begrunnelse for vedtak" }) }
 
@@ -49,9 +49,9 @@ object KlageBegrunnelseForVedtakUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
                 })
             }
 
-            paragraph { text(bokmal { +"Saksbehandlers begrunnelse" }, ITALIC) }
+            paragraph { text(bokmal { +fritekst("Saksbehandlers begrunnelse") }) }
             paragraph { text(bokmal { +"Vi håper at denne forklaringen gav en bedre forståelse av vedtaket." }) }
-            showIf(klageFristUtgaatt) {
+            showIf(klageFristHarIkkeUtgaatt) {
                 paragraph {
                     text(bokmal { +"Vi minner om at fristen for å klage er seks uker fra den datoen du mottok vedtaket." })
                 }
