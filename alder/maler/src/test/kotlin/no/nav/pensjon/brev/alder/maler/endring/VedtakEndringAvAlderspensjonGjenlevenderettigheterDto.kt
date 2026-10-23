@@ -42,6 +42,7 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 regelverkType = AlderspensjonRegelverkType.AP2011,
                 uttaksgrad = 85,
                 gjenlevendetilleggKap19Innvilget = true,
+                gjenlevendetilleggKap19Utbetalt = false,
                 gjenlevenderettAnvendt = true,
                 gjenlevendetilleggInnvilget = true,
                 saertilleggInnvilget = true,

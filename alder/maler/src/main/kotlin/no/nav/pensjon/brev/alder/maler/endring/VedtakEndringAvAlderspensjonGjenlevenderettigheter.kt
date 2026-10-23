@@ -243,6 +243,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 // forklaringberegningGjtKap9_148_01
                 showIf(
                     pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+                    and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt
                 ) {
                     paragraph {
                         text(
@@ -251,7 +252,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             english { + "You receive a survivor’s supplement in the retirement pension because you have pension rights after " + pesysData.avdod.navn + "." }
                         )
                     }
-                    showIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)) {
+
                         // nyBeregningAPØkning_001
                         paragraph {
                             text(
@@ -260,22 +261,21 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 english { + "This leads to an increase in your retirement pension." }
                             )
                         }
-                    }
 
-                    title1 {
-                        text(
-                            bokmal { + "Slik blir gjenlevendetillegget ditt beregnet" },
-                            nynorsk { + "Slik blir attlevandetillegget ditt rekna ut" },
-                            english { + "This is how your survivor’s supplement is calculated" }
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv." },
-                            nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening og oppteninga frå den avdøde. Attlevandetillegget er skilnaden mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv." },
-                            english { + "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself." }
-                        )
-                    }
+                        title1 {
+                            text(
+                                bokmal { + "Slik blir gjenlevendetillegget ditt beregnet" },
+                                nynorsk { + "Slik blir attlevandetillegget ditt rekna ut" },
+                                english { + "This is how your survivor’s supplement is calculated" }
+                            )
+                        }
+                        paragraph {
+                            text(
+                                bokmal { + "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv." },
+                                nynorsk { + "Alderspensjonen er basert på di eiga pensjonsopptening og oppteninga frå den avdøde. Attlevandetillegget er skilnaden mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv." },
+                                english { + "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself." }
+                            )
+                        }
 
                     // forklaringberegningGjtKap19_148_10
                     showIf(
@@ -316,7 +316,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
 
                 // forklaringberegningGjtKap19_148_13
-                showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
+                showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt) {
                     paragraph {
                         text(
                             bokmal { + "Dette gjenlevendetillegget skal ikke reguleres når pensjonene øker 1. mai hvert år." },
@@ -340,7 +340,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
 
                     // referansebeløpGjtKap19ErNull_001
-                    showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)) {
+                    showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt)) {
                         title1 {
                             text(
                                 bokmal { + "Hvorfor blir ikke pensjonen din høyere med gjenlevenderettigheter?" },
@@ -357,9 +357,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         }
                         paragraph {
                             text(
-                                bokmal { + "I ditt tilfelle er alderspensjonen du har tjent opp selv høyere. Derfor får du ikke gjenlevendetillegg." },
-                                nynorsk { + "I ditt tilfelle er alderspensjonen du har tent opp sjølv høgare. Derfor får du ikkje attlevandetillegg." },
-                                english { + "In your case, the retirement pension you have earned in your own right is higher. Therefore, you are not entitled to a survivor's supplement." }
+                                bokmal { + "I ditt tilfelle er alderspensjonen du har tjent opp selv høyere. Derfor får du ikke utbetalt gjenlevendetillegg." },
+                                nynorsk { + "I ditt tilfelle er alderspensjonen du har tent opp sjølv høgare. Derfor får du ikkje utbetalt attlevandetillegg." },
+                                english { + "In your case, the retirement pension you have earned in your own right is higher. Therefore, you will not receive the survivor's supplement." }
                             )
                         }
                     }
@@ -424,6 +424,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             showIf(
                 pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
                         and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+                        and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt
                         and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget)
             ) {
                 paragraph {
@@ -445,6 +446,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             showIf(
                 pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
                         and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+                        and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Utbetalt
                         and pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget
             ) {
                 paragraph {
