@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AUTHENTICATION_REALM_NAME
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForAlleSakerService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
@@ -93,7 +94,8 @@ class ExternalAPIRouteTest {
         redigertBrevHash = Hash("abc"),
         saksbehandlerValg = SaksbehandlervalgMap(),
         propertyUsage = null,
-        valgteVedlegg = null
+        valgteVedlegg = null,
+        brevmalEndret = BrevmalendringType.INGEN_ENDRING,
     )
 
     private val opprettBrevRequestJson = """

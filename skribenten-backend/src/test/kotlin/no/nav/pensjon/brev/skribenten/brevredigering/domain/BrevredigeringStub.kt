@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -46,6 +48,7 @@ open class BrevredigeringStub : Brevredigering {
     override val redigerteVedlegg: List<Dto.RedigertVedlegg> get() = notYetStubbed()
     override val vedleggHash: Hash<VedleggSnapshot> get() = notYetStubbed()
     override val leggVedFoersteside: Boolean? get() = notYetStubbed()
+    override val brevmalHash: StableHashCode? get() = notYetStubbed()
 
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()
@@ -61,6 +64,13 @@ open class BrevredigeringStub : Brevredigering {
     override fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
-    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
+    override fun toDto(
+        brevreservasjonPolicy: BrevreservasjonPolicy,
+        coverage: Set<LetterMarkupWithDataUsage.Property>?,
+        brevmalEndret: BrevmalendringType,
+    ): Dto.Brevredigering = notYetStubbed()
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
+    override fun settBrevmalHash(stableHashCode: StableHashCode) = notYetStubbed()
+    override fun oppdaterVariabler(rendretBrev: LetterMarkup) = notYetStubbed()
+    override fun oppdaterVariablerIVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) = notYetStubbed()
 }

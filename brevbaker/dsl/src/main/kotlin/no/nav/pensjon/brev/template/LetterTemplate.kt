@@ -24,6 +24,9 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>>? = null,
     val letterMetadata: LetterMetadata,
+) : StableHash by StableHash.of(
+    StableHash.of(title),
+    StableHash.of(outline)
 ) {
     init {
         if (title.isEmpty()) {

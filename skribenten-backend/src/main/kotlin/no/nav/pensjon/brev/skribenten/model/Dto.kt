@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
@@ -29,7 +30,8 @@ object Dto {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
-        val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?
+        val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
+        val brevmalEndret: BrevmalendringType,
     )
 
     data class BrevInfo(

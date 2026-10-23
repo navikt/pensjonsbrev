@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
@@ -52,6 +53,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
+import kotlin.random.Random
 
 /**
  * Har valgt å gjøre det på denne måten underveis for å understøtte steg-for-steg refaktorering med blanding mellom ny og gammel stil.
@@ -150,10 +152,11 @@ abstract class BrevredigeringHandlerTestBase {
     protected val hentBrevInfoHandler by lazy { HentBrevInfoHandler(brevtilgang) }
     protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(transactional, brevreservasjonPolicy) }
     protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(transactional, brevreservasjonPolicy) }
-    protected val hentBrev by lazy { HentBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val oppdaterBrevService by lazy { OppdaterBrevService(brevmalService) }
+    protected val hentBrev by lazy { HentBrevHandler(brevtilgang, brevmalService, brevdataService, oppdaterBrevService) }
     protected val attesterBrev by lazy { AttesterBrevHandler(brevtilgang, ferdigRedigertPolicy, brevmalService, brevdataService, navAnsattService) }
     protected val lagreAttestertBrev by lazy { LagreAttestertBrevHandler(brevtilgang, brevmalService, brevdataService) }
-    protected val oppdaterBrev by lazy { OppdaterBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val oppdaterBrev by lazy { OppdaterBrevHandler(brevtilgang, brevmalService, brevdataService, oppdaterBrevService) }
     protected val opprettBrev by lazy {
         OpprettBrevHandler(
             transactional = transactional,
@@ -596,7 +599,14 @@ abstract class BrevredigeringHandlerTestBase {
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
-                .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
+                .let {
+                    LetterMarkupWithDataUsageImpl(
+                        it,
+                        emptySet(),
+                        if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
+                        StableHashCode(Random.nextInt())
+                    )
+                }
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,

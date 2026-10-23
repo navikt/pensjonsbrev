@@ -17,6 +17,7 @@ class OppdaterBrevHandler(
     private val brevtilgang: Brevtilgang,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
+    private val oppdaterBrevService: OppdaterBrevService,
 ) {
 
     data class Request(
@@ -38,9 +39,9 @@ class OppdaterBrevHandler(
 
             val pesysdata = brevdataService.hentBrevdata(brev)
             val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-            brev.mergeRendretBrev(rendretBrev.markup)
-            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
-            success(brev.tilDto(rendretBrev.letterDataUsage))
+            val brevmalendringType = oppdaterBrevService.oppdaterBrevmal(brev, rendretBrev, pesysdata)
+
+            success(brev.tilDto(rendretBrev.letterDataUsage, brevmalEndret = brevmalendringType))
         }
 }
