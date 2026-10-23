@@ -1,30 +1,13 @@
 import { css } from "@emotion/react";
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HGrid, Select, ToggleGroup, VStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { Box, Button, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
-import {
-  getTemplateDescription,
-  getTemplateDocumentation,
-  getTemplateDocumentationV2,
-  type MalType,
-} from "~/api/brevbaker-api-endpoints";
-import {
-  type Attachment,
-  type Conditional,
-  type ContentOrControlStructure,
-  ContentOrControlStructureType,
-  type Element,
-  ElementType,
-  type ElseIf,
-  type Expression,
-  type ForEach,
-  type TemplateDocumentation,
-} from "~/api/brevbakerTypes";
-import { DataClassesPanel, trimClassName } from "~/components/DataClasses";
-import { DocumentV2, KnownDataClassesProvider } from "~/components/TemplateDocumentationV2View";
+import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
+import { type TemplateDocumentation } from "~/api/templateDocumentationTypes";
+import { DataClassesPanel } from "~/components/DataClasses";
+import { Document, KnownDataClassesProvider } from "~/components/TemplateDocumentationView";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -70,7 +53,6 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     highlightedDataField?: string;
     highlightedDataFieldOwner?: string;
     index?: number;
-    docVersion?: "v1" | "v2";
   } => {
     const indexRaw = search.index?.toString();
     const index = indexRaw !== undefined && /^\d+$/.test(indexRaw) ? Number(indexRaw) : undefined;
@@ -80,7 +62,6 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
       highlightedDataField: search.highlightedDataField?.toString(),
       highlightedDataFieldOwner: search.highlightedDataFieldOwner?.toString(),
       index,
-      docVersion: search.docVersion === "v2" ? "v2" : "v1",
     };
   },
   component: TemplateExplorer,
@@ -89,7 +70,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
-  const { index, docVersion = "v1" } = Route.useSearch();
+  const { index } = Route.useSearch();
   const previewRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
@@ -138,7 +119,6 @@ function TemplateExplorer() {
             Oppskrift for {templateId}
           </Heading>
           <SelectLanguage />
-          <SelectDocVersion />
           <div
             css={css`
               width: 100%;
@@ -151,7 +131,7 @@ function TemplateExplorer() {
             `}
             ref={previewRef}
           >
-            {docVersion === "v2" ? <TemplateDocumentationV2Section /> : <TemplateDocumentationV1Section />}
+            <TemplateDocumentationSection documentation={documentation} />
           </div>
         </VStack>
       </HGrid>
@@ -159,64 +139,14 @@ function TemplateExplorer() {
   );
 }
 
-function TemplateDocumentationV1Section() {
-  const { documentation } = Route.useLoaderData();
-
+function TemplateDocumentationSection({ documentation }: { documentation: TemplateDocumentation }) {
   return (
-    <>
+    <KnownDataClassesProvider templateModelSpecification={documentation.templateModelSpecification}>
       <Document templateDocumentation={documentation} />
       {documentation.attachments.map((attachment, index) => (
         <Document key={index} templateDocumentation={attachment} />
       ))}
-    </>
-  );
-}
-
-function TemplateDocumentationV2Section() {
-  const { malType, templateId } = Route.useParams();
-  const { language } = Route.useSearch();
-  const { description } = Route.useLoaderData();
-  const resolvedLanguage = language ?? description.languages[0];
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: getTemplateDocumentationV2.queryKey(malType, templateId, resolvedLanguage ?? ""),
-    queryFn: () => getTemplateDocumentationV2.queryFn(malType, templateId, resolvedLanguage ?? ""),
-    enabled: Boolean(resolvedLanguage),
-  });
-
-  if (isLoading) {
-    return <BodyLong>Laster v2-dokumentasjon …</BodyLong>;
-  }
-  if (isError || !data) {
-    return <BodyLong>Kunne ikke laste v2-dokumentasjon for denne malen/språket.</BodyLong>;
-  }
-
-  return (
-    <KnownDataClassesProvider templateModelSpecification={data.templateModelSpecification}>
-      <DocumentV2 templateDocumentation={data} />
-      {data.attachments.map((attachment, index) => (
-        <DocumentV2 key={index} templateDocumentation={attachment} />
-      ))}
     </KnownDataClassesProvider>
-  );
-}
-
-function SelectDocVersion() {
-  const { docVersion = "v1" } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
-
-  return (
-    <ToggleGroup
-      css={css`
-        margin-bottom: var(--ax-space-16);
-      `}
-      onChange={(value) => navigate({ search: (s) => ({ ...s, docVersion: value as "v1" | "v2" }), replace: true })}
-      size="small"
-      value={docVersion}
-    >
-      <ToggleGroup.Item label="v1" value="v1" />
-      <ToggleGroup.Item label="v2" value="v2" />
-    </ToggleGroup>
   );
 }
 
@@ -243,327 +173,4 @@ function SelectLanguage() {
       ))}
     </Select>
   );
-}
-
-function Document({ templateDocumentation }: { templateDocumentation: TemplateDocumentation | Attachment }) {
-  return (
-    <Box background="default" className="letter-page" padding="space-48">
-      <Heading level="1" size="large" spacing>
-        {templateDocumentation.title.map((cocs, index) => {
-          return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
-        })}
-      </Heading>
-      <div>
-        {templateDocumentation.outline.map((cocs, index) => {
-          return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
-        })}
-      </div>
-    </Box>
-  );
-}
-
-function ContentOrControlStructureComponent<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E> }) {
-  switch (cocs.controlStructureType) {
-    case ContentOrControlStructureType.CONDITIONAL: {
-      return <ConditionalComponent conditional={cocs} />;
-    }
-    case ContentOrControlStructureType.CONTENT: {
-      return <ContentComponent content={cocs.content} />;
-    }
-    case ContentOrControlStructureType.FOR_EACH: {
-      return <ForEachComponent content={cocs} />;
-    }
-  }
-}
-
-function ForEachComponent({ content }: { content: ForEach<Element> }) {
-  return (
-    <>
-      <div className="expression">
-        <code>For hver X i:</code> <ExpressionToText expression={content.items} />
-      </div>
-      {content.body.map((b, index) => (
-        <ContentOrControlStructureComponent cocs={b} key={index} />
-      ))}
-    </>
-  );
-}
-
-function ContentComponent({ content }: { content: Element }) {
-  switch (content.elementType) {
-    case ElementType.TITLE1: {
-      return (
-        <Heading data-block-index={content.index} level="2" size="medium" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponent cocs={cocs} key={index} />
-          ))}
-        </Heading>
-      );
-    }
-    case ElementType.TITLE2: {
-      return (
-        <Heading data-block-index={content.index} level="3" size="small" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponent cocs={cocs} key={index} />
-          ))}
-        </Heading>
-      );
-    }
-    case ElementType.TITLE3: {
-      return (
-        <Heading data-block-index={content.index} level="4" size="xsmall" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponent cocs={cocs} key={index} />
-          ))}
-        </Heading>
-      );
-    }
-    case ElementType.PARAGRAPH_TEXT_LITERAL: {
-      return <span className="paragraph-text-literal">{content.text}</span>;
-    }
-    case ElementType.PARAGRAPH_TEXT_EXPRESSION: {
-      return (
-        <span className="expression">
-          <ExpressionToText expression={content.expression} />
-        </span>
-      );
-    }
-    case ElementType.PARAGRAPH: {
-      return (
-        <BodyLong as="div" data-block-index={content.index} spacing>
-          {content.paragraph.map((cocs, index) => (
-            <ContentOrControlStructureComponent cocs={cocs} key={index} />
-          ))}
-        </BodyLong>
-      );
-    }
-    case ElementType.PARAGRAPH_TABLE: {
-      return (
-        <div
-          css={css`
-            display: grid;
-            gap: 1px;
-            grid-template-columns: repeat(${content.header.cells.length}, 1fr);
-            border: 1px solid black;
-            background: black;
-            overflow: auto;
-
-            .cell {
-              background: white;
-            }
-
-            /* Indent cells that are conditional to an expression */
-
-            .expression + .cell {
-              padding-left: var(--ax-space-16);
-            }
-
-            .conditional,
-            .show-if,
-            .show-else {
-              display: contents;
-            }
-
-            .expression {
-              grid-column: span ${content.header.cells.length};
-            }
-          `}
-        >
-          {content.header.cells.map((cell, index) => (
-            <b className="cell" key={index}>
-              {cell.text.map((t, index) => (
-                <ContentOrControlStructureComponent cocs={t} key={index} />
-              ))}
-            </b>
-          ))}
-          {content.rows.map((r, index) => (
-            <ContentOrControlStructureComponent cocs={r} key={index} />
-          ))}
-        </div>
-      );
-    }
-    case ElementType.PARAGRAPH_TABLE_ROW: {
-      return content.cells.map((cell, index) => (
-        <span className="cell" key={index}>
-          {cell.text.map((t, index) => (
-            <ContentOrControlStructureComponent cocs={t} key={index} />
-          ))}
-        </span>
-      ));
-    }
-    case ElementType.PARAGRAPH_ITEMLIST: {
-      return (
-        <ul>
-          {content.items.map((cocs, index) => (
-            <ContentOrControlStructureComponent cocs={cocs} key={index} />
-          ))}
-        </ul>
-      );
-    }
-    case ElementType.PARAGRAPH_ITEMLIST_ITEM: {
-      return (
-        <li>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponent cocs={cocs} key={index} />
-          ))}
-        </li>
-      );
-    }
-  }
-}
-
-function ConditionalComponent<E extends Element>({ conditional }: { conditional: Conditional<E> }) {
-  return (
-    <div className="conditional">
-      <div className="show-if">
-        <div className="expression">
-          <code>If </code>
-          <ExpressionToText expression={conditional.predicate} />
-        </div>
-        <ShowIf cocs={conditional.showIf} />
-      </div>
-      {conditional.elseIf.map((elseIf, index) => (
-        <ShowElseIf elseIf={elseIf} key={index} />
-      ))}
-      <ShowElse cocs={conditional.showElse} />
-    </div>
-  );
-}
-
-function ShowElseIf<E extends Element>({ elseIf }: { elseIf: ElseIf<E> }) {
-  return (
-    <div className="show-if">
-      <div className="expression">
-        <code>Else If </code>
-        <ExpressionToText expression={elseIf.predicate} />
-      </div>
-      {elseIf.showIf.map((cocs, index) => (
-        <ContentOrControlStructureComponent cocs={cocs} key={index} />
-      ))}
-    </div>
-  );
-}
-
-function ShowIf<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
-  return (
-    <>
-      {cocs.map((a, index) => (
-        <ContentOrControlStructureComponent cocs={a} key={index} />
-      ))}
-    </>
-  );
-}
-
-function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
-  if (cocs.length === 0) {
-    return null;
-  }
-  return (
-    <div className="show-else">
-      <div className="expression">
-        <code>Else</code>
-      </div>
-      {cocs.map((a, index) => (
-        <ContentOrControlStructureComponent cocs={a} key={index} />
-      ))}
-    </div>
-  );
-}
-
-function ExpressionToText({ expression }: { expression: Expression }) {
-  if ("scopeName" in expression) {
-    switch (expression.scopeName) {
-      case "forEach_item": {
-        return "X"; // TODO: forskjellig navn for nøstede forEach
-      }
-      case "argument": {
-        return "";
-      }
-      default: {
-        return expression.scopeName;
-      }
-    }
-  }
-  if ("value" in expression) return expression.value;
-
-  const firstExpressionResolved = <ExpressionToText expression={expression.first} />;
-  const secondExpressionResolved = expression.second ? <ExpressionToText expression={expression.second} /> : "";
-  switch (expression.operator.syntax) {
-    case "FUNCTION": {
-      return (
-        <span>
-          {expression.operator.text}
-          <span
-            css={css`
-              color: purple;
-            `}
-          >
-            (
-          </span>
-          {firstExpressionResolved}
-          {secondExpressionResolved}
-          <span
-            css={css`
-              color: purple;
-            `}
-          >
-            )
-          </span>
-        </span>
-      );
-    }
-    case "POSTFIX": {
-      const isDeepestPostFix = "scopeName" in expression.first && expression.first?.scopeName === "argument";
-      const content = (
-        <>
-          {firstExpressionResolved}
-          {expression.operator.text}
-        </>
-      );
-
-      if (isDeepestPostFix) {
-        const isPrimitive = expression.type?.includes("kotlin") || expression.type?.includes("java"); // TODO: too basic?
-        return (
-          <Link
-            from={Route.fullPath}
-            preload={false}
-            replace
-            search={(s) => ({
-              ...s,
-              highlightedDataClass: isPrimitive ? undefined : trimClassName(expression.type ?? ""),
-              highlightedDataField: isPrimitive ? expression.operator.text.replace(".", "") : undefined,
-            })}
-          >
-            {content}
-          </Link>
-        );
-      }
-
-      return <span>{content}</span>;
-    }
-    case "INFIX": {
-      return (
-        <span>
-          {firstExpressionResolved}{" "}
-          <span
-            css={css`
-              color: red;
-            `}
-          >
-            {expression.operator.text}
-          </span>{" "}
-          {secondExpressionResolved}
-        </span>
-      );
-    }
-    case "PREFIX": {
-      return (
-        <span>
-          {expression.operator.text}
-          {firstExpressionResolved}
-          {secondExpressionResolved}
-        </span>
-      );
-    }
-  }
 }
