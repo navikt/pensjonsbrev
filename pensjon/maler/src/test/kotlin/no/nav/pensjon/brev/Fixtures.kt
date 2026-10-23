@@ -25,10 +25,13 @@ import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.TestVedleggDto
 import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
+import no.nav.pensjon.brev.maler.klagebrev.KlageBegrunnelseForVedtakUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmAaIkkeGjoereOmVedtaketUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmVedtaketSkalIverksettesPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
@@ -61,6 +64,7 @@ import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.*
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats.*
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.*
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
+import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbarV2
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -125,12 +129,16 @@ object Fixtures : LetterDataFactory {
             InnvilgelseUforetrygdMellombehandlingRedigerbar::class -> createInnvilgelseUforetrygdMellombehandlingDto() as T
             InnvilgelseUforetrygdRedigerbar::class -> createInnvilgelseUfoeretrygdDto() as T
             InnvilgelseUforetrygdUtlandRedigerbar::class -> createInnvilgelseUfoeretrygdUtlandDto() as T
+            KlageBegrunnelseForVedtakUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageBeslutningOmAaIkkeGjoereOmVedtaketUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            KlageBeslutningOmVedtaketSkalIverksettesPE::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageInnhentingAvOpplysningerUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageOrienteringOmOversendelseTilKlageinstans::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageOrienteringOmSaksbehandlingstid::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            KlageUtsattKlagefristUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             LetterExample::class -> createLetterExampleDto() as T
             OkningUforegradRedigerbar::class -> createOkningUforegradDto() as T
+            OkningUforegradRedigerbarV2::class -> createOkningUforegradV2Dto() as T
             OmregningUfoerepensjonTilUfoeretrygdRedigerbar::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
             OmsorgEgenAuto::class -> createOmsorgEgenAutoDto() as T
             OmsorgEgenManuell::class -> createOmsorgManuellDto() as T

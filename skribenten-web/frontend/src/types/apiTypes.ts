@@ -34,6 +34,7 @@ export type FinnSamhandlerRequestDto = generated.FinnSamhandlerRequestDto;
 export type FinnSamhandlerResponseDto = generated.FinnSamhandlerResponseDto;
 export type HentSamhandlerRequestDto = generated.HentSamhandlerRequestDto;
 export type HentSamhandlerResponseDto = generated.HentSamhandlerResponseDto;
+export type HentSamhandlerResponseDtoSuccess = generated.HentSamhandlerResponseDtoSuccess;
 export type HentSamhandlerAdresseRequestDto = generated.HentSamhandlerAdresseRequestDto;
 export type HentSamhandlerAdresseResponseDto = generated.HentSamhandlerAdresseResponseDto;
 export type SamhandlerPostadresse = generated.HentSamhandlerAdresseResponseDtoSamhandlerPostadresse;

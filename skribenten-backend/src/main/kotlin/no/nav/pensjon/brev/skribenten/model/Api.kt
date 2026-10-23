@@ -188,6 +188,7 @@ object Api {
         val dokumentkategoriCode: BrevdataDto.DokumentkategoriCode?,
         val redigerbart: Boolean,
         val redigerbarBrevtittel: Boolean,
+        val automatiskExstream: Boolean,
     )
 
     data class BestillExstreamBrevRequest(
@@ -220,6 +221,11 @@ object Api {
             NAVANSATT_MANGLER_NAVN,
         }
     }
+
+    data class BestillExstreamAutobrevResponse(
+        val journalpostId: JournalpostId? = null,
+        val failureType: BestillOgRedigerBrevResponse.FailureType? = null,
+    )
 
     data class OppdaterFoerstesideRequest(
         val leggVedFoersteside: Boolean,

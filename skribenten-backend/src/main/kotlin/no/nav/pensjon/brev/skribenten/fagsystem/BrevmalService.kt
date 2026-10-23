@@ -138,14 +138,18 @@ class BrevmalService(
                 if (visEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
             }
 
+            val visAutobrev = Features.visAutobrev.isEnabled()
+
             return@withContext (brevbaker.await() + legacy.await() + eblanketter.await())
-                .filter { it.isRedigerbart }
+                .filter { visAutobrev || it.isRedigerbart }
                 .filter { it.brevkode !in ekskluderteBrev }
         }
     }
 
     private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> {
         val visEblanketter = includeEblanketter && Features.eblanketter.isEnabled()
+        val visAutobrev = Features.visAutobrev.isEnabled()
+
         return withContext(Dispatchers.IO) {
             val brevbaker = async { hentBrevbakerMaler() }
             val legacy = async {
@@ -157,7 +161,7 @@ class BrevmalService(
             //     det blir forkastet før funksjonen returnerer.
             return@withContext brevbaker.await().asSequence().map { LetterMetadata.Brevbaker(it) } +
                     legacy.await().map { LetterMetadata.Legacy(it, Pen.sakstypeForLegacybrev) }
-        }.filter { it.isRedigerbart }
+        }.filter { visAutobrev || it.isRedigerbart }
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }
     }

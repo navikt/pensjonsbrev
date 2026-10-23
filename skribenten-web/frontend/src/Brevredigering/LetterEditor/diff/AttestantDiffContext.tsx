@@ -21,28 +21,43 @@ import {
 type AttestantDiffContextValue = {
   diff: UnifiedLetterDiff | undefined;
   diffHash: string | undefined;
+  showInsertions: boolean;
+  showDeletions: boolean;
   /** Disables diff rendering when the attestant begins editing the letter. */
   disableDiffMode: () => void;
 };
 
 const EMPTY_DELETED: never[] = [];
 
-const NO_DIFF: AttestantDiffContextValue = { diff: undefined, diffHash: undefined, disableDiffMode: () => {} };
+const NO_DIFF: AttestantDiffContextValue = {
+  diff: undefined,
+  diffHash: undefined,
+  showInsertions: false,
+  showDeletions: false,
+  disableDiffMode: () => {},
+};
 
 const AttestantDiffContext = createContext<AttestantDiffContextValue>(NO_DIFF);
 
 export const AttestantDiffProvider = ({
   diff,
   diffHash,
+  showInsertions = true,
+  showDeletions = true,
   disableDiffMode,
   children,
 }: {
   diff: UnifiedLetterDiff | undefined;
   diffHash: string | undefined;
+  showInsertions?: boolean;
+  showDeletions?: boolean;
   disableDiffMode: () => void;
   children: ReactNode;
 }) => {
-  const value = useMemo(() => ({ diff, diffHash, disableDiffMode }), [diff, diffHash, disableDiffMode]);
+  const value = useMemo(
+    () => ({ diff, diffHash, showInsertions, showDeletions, disableDiffMode }),
+    [diff, diffHash, showInsertions, showDeletions, disableDiffMode],
+  );
 
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
 };
@@ -58,7 +73,8 @@ function useActiveDiff(): UnifiedLetterDiff | undefined {
 
 function useDeleted<T>(select: (diff: UnifiedLetterDiff) => T[]): T[] {
   const diff = useActiveDiff();
-  return diff ? select(diff) : (EMPTY_DELETED as unknown as T[]);
+  const { showDeletions } = useAttestantDiff();
+  return diff && showDeletions ? select(diff) : (EMPTY_DELETED as unknown as T[]);
 }
 
 /** Returns blocks deleted before the surviving block at `blockIndex`. */
@@ -114,7 +130,7 @@ export const useDeletedCellContent = (
   );
 
 export function useDiffSegmentsForLiteral(literalIndex: LiteralIndex, currentText: string): DiffSegment[] | null {
-  const { diff, diffHash } = useAttestantDiff();
+  const { diff, diffHash, showInsertions, showDeletions } = useAttestantDiff();
   const key = diffKey(literalIndex);
 
   return useMemo<DiffSegment[] | null>(() => {
@@ -134,6 +150,12 @@ export function useDiffSegmentsForLiteral(literalIndex: LiteralIndex, currentTex
       return null;
     }
 
-    return result.segments;
-  }, [currentText, diff, diffHash, key]);
+    const segments = result.segments
+      .filter((segment) => showDeletions || segment.type !== "deleted")
+      .map((segment) =>
+        showInsertions || segment.type !== "inserted" ? segment : { type: "unchanged" as const, text: segment.text },
+      );
+
+    return segments.some((segment) => segment.type !== "unchanged") ? segments : null;
+  }, [currentText, diff, diffHash, key, showInsertions, showDeletions]);
 }

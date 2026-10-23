@@ -54,6 +54,7 @@ object Features {
     val vergeForExstream = UnleashToggle("vergeForExstream")
     val foersteside = UnleashToggle("foersteside")
     val eblanketter = UnleashToggle("eblanketter")
+    val visAutobrev = UnleashToggle("visAutobrev")
 
     var toggleService: FeatureToggleService? = null
         private set
