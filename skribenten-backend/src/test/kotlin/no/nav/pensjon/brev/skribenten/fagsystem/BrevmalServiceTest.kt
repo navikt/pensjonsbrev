@@ -28,13 +28,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.parallel.Execution
-import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.parallel.Isolated
 
 val TEST_VEDTAKS_ID = VedtaksId(1234)
 
 @OptIn(InternKonstruktoer::class)
-@Execution(ExecutionMode.SAME_THREAD)
+// TODO: Fjern @Isolated når testen ikke lenger bruker Features.override
+@Isolated
 class BrevmalServiceTest {
     private val brevbakerbrev = listOf(
         TemplateDescription.Redigerbar(
