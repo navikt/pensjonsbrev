@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.openapi
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.server.config.ApplicationConfig
@@ -55,6 +56,19 @@ class OpenApiSpecTest {
         val specJson = specResponse.bodyAsText()
         assert(specJson.startsWith("{") || specJson.startsWith("[")) {
             "Expected JSON but got: ${specJson.take(500)}"
+        }
+        val spec = ObjectMapper().readTree(specJson)
+        val methods = setOf("get", "put", "post", "delete", "options", "head", "patch", "trace")
+        val missingResponses = spec.path("paths").fields().asSequence()
+            .flatMap { (path, pathItem) ->
+                pathItem.fields().asSequence()
+                    .filter { (method, _) -> method in methods }
+                    .filter { (_, operation) -> !operation.path("responses").isObject || operation.path("responses").isEmpty }
+                    .map { (method, _) -> "$method $path" }
+            }
+            .toList()
+        assert(missingResponses.isEmpty()) {
+            "OpenAPI operations missing responses: ${missingResponses.joinToString()}"
         }
         File("build/openapi-spec.json").writeText(specJson)
     }
