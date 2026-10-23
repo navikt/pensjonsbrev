@@ -7,8 +7,10 @@ import {
   type ContentOrControlStructureV2,
   ElementTypeV2,
   type Expr,
+  type ExprFieldPath,
   ExprType,
   type OutlineContentV2,
+  type ParagraphContentV2,
 } from "~/api/brevbakerTypesV2";
 import { DocumentV2, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationV2View";
 
@@ -66,8 +68,77 @@ describe("ExprToText FieldPath med Computed-base", () => {
     // Ingen prosafrase ("element nr. ... i ...") som ikke tydeliggjør grensen mellom
     // funksjonskallet og de påfølgende segmentene.
     expect(rendered).not.toContain("element nr.");
-    // Tom streng-fallback skal fortsatt være synlig (kvotert).
+    // ExprToText er felles for predikater og popovere, der fallbacken påvirker meningen.
+    expect(rendered).toContain("?:");
     expect(rendered).toContain("&quot;&quot;");
+  });
+
+  it("viser en ikke-tom fallback fortsatt eksplisitt", () => {
+    const expr: Expr = {
+      exprType: ExprType.NULL_COALESCE,
+      value: fieldPath("navn"),
+      fallback: { exprType: ExprType.LITERAL, value: "ukjent", kind: "STRING" },
+    };
+    expect(text(render(expr))).toContain("navn ?: &quot;ukjent&quot;");
+  });
+});
+
+describe("ExprToText eksempelverdi for tekstfelt", () => {
+  const avtaleland: Expr = {
+    exprType: ExprType.NULL_COALESCE,
+    value: { ...(fieldPath("avtaleland") as ExprFieldPath), exampleText: "Sverige" },
+    fallback: { exprType: ExprType.LITERAL, value: "", kind: "STRING" },
+  };
+
+  function paragraphText(expression: Expr): string {
+    return renderToStaticMarkup(
+      <DocumentV2
+        templateDocumentation={{
+          title: [],
+          outline: [
+            {
+              controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+              content: {
+                elementType: ElementTypeV2.PARAGRAPH,
+                paragraph: [
+                  {
+                    controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+                    content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION, expression },
+                  },
+                ],
+              },
+            },
+          ],
+          include: fieldPath("dummy"),
+          attachmentData: fieldPath("dummy"),
+        }}
+      />,
+    );
+  }
+
+  it("viser eksempelverdien i tekstposisjon, med feltstien tilgjengelig via popover", () => {
+    const html = paragraphText(avtaleland);
+    expect(buttonText(html)).toBe("Sverige");
+    expect(html).toContain('aria-label="Vis fullt uttrykk"');
+    expect(text(html)).toContain("avtaleland");
+    // Fallbacken skjules i selve teksten, men popoveren viser det fulle uttrykket.
+    expect(buttonText(html)).not.toContain("?:");
+    expect(html).toContain("?:");
+  });
+
+  it("skjuler tom fallback i tekstposisjon også uten eksempelverdi, men ikke i predikater", () => {
+    const utenEksempel: Expr = { ...avtaleland, value: fieldPath("avtaleland") };
+    const html = paragraphText(utenEksempel);
+    expect(html).not.toContain("?:");
+    expect(text(html)).toContain("avtaleland");
+    const predicate = render({ exprType: ExprType.COMPARISON, left: utenEksempel, op: "EQUAL", right: fieldPath("x") });
+    expect(text(predicate)).toContain("avtaleland ?: &quot;&quot;");
+  });
+
+  it("viser ikke eksempelverdien i et predikat", () => {
+    const html = render({ exprType: ExprType.COMPARISON, left: avtaleland, op: "EQUAL", right: fieldPath("x") });
+    expect(html).not.toContain("Sverige");
+    expect(html).not.toContain("expr-popover-trigger");
   });
 });
 
@@ -221,6 +292,78 @@ describe("ExprToText kompakt Conditional-visning for rene literal-grener", () =>
     expect(buttonText(html)).not.toContain("erGift");
     expect(html).toContain('aria-label="Vis betingelse"');
     expect(html).toContain("erGift");
+  });
+});
+
+describe("ExprToText kompakt Conditional-visning for formatterte grener", () => {
+  it("rendrer eksempeltekst1|eksempeltekst2 når begge grener er Format med exampleText", () => {
+    // Strukturen fra OpplysningerBruktIBeregningTabell sin Uføretidspunkt-rad:
+    // ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.format())
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("erMndEtterFoedsel"),
+      ifTrue: {
+        exprType: ExprType.FORMAT,
+        value: fieldPath("foedselsdato"),
+        formatterName: "MonthYearFormatter",
+        exampleText: "mars 2024",
+      },
+      ifElse: {
+        exprType: ExprType.FORMAT,
+        value: fieldPath("uforetidspunkt"),
+        formatterName: "ShortDateFormat",
+        exampleText: "17.03.2024",
+      },
+    };
+
+    const html = render(expr);
+    expect(buttonText(html)).toBe("mars 2024|17.03.2024");
+    // Verken predikatet eller feltstiene skal ta plass i selve raden.
+    expect(buttonText(html)).not.toContain("erMndEtterFoedsel");
+    expect(buttonText(html)).not.toContain("foedselsdato");
+    expect(html).toContain('aria-label="Vis betingelse"');
+    // Med uttrykks-grener må popoveren vise HELE if/then/else-strukturen, slik at leseren ser
+    // hvilket felt hver eksempelverdi stammer fra - ikke bare predikatet.
+    expect(html).toContain("expr-block");
+    expect(text(html)).toContain("erMndEtterFoedsel");
+    expect(text(html)).toContain("foedselsdato");
+    expect(text(html)).toContain("formatert som måned og år");
+    // Format-grenene inni popoveren skal rendres i full form, ikke som nye popover-markører.
+    expect((html.match(/expr-popover-trigger/g) ?? []).length).toBe(1);
+  });
+
+  it("rendrer [eksempeltekst] når else-grenen er tom streng", () => {
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("harUforetidspunkt"),
+      ifTrue: {
+        exprType: ExprType.FORMAT,
+        value: fieldPath("uforetidspunkt"),
+        formatterName: "ShortDateFormat",
+        exampleText: "17.03.2024",
+      },
+      ifElse: { exprType: ExprType.LITERAL, value: "", kind: "STRING" },
+    };
+
+    expect(buttonText(render(expr))).toBe("[17.03.2024]");
+  });
+
+  it("faller tilbake til if/then/else-blokk når en gren mangler kompakt tekst", () => {
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("erGift"),
+      ifTrue: {
+        exprType: ExprType.FORMAT,
+        value: fieldPath("ukjentFelt"),
+        formatterName: "UkjentFormatter",
+        exampleText: null,
+      },
+      ifElse: { exprType: ExprType.LITERAL, value: "nei", kind: "STRING" },
+    };
+
+    const html = render(expr);
+    expect(html).not.toContain("expr-popover-trigger");
+    expect((html.match(/class="expr-block-row"/g) ?? []).length).toBe(3);
   });
 });
 
@@ -412,5 +555,95 @@ describe("DocumentV2 lister", () => {
     const html = renderList("PUNKTLISTE");
     expect(html).toContain("<ul>");
     expect(html).not.toContain("<ol>");
+  });
+});
+
+describe("DocumentV2 betingelser i avsnitt", () => {
+  const lit = (text: string): ContentOrControlStructureV2<ParagraphContentV2> => ({
+    controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+    content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL, text },
+  });
+
+  function renderParagraph(paragraph: ContentOrControlStructureV2<ParagraphContentV2>[]): string {
+    return renderToStaticMarkup(
+      <DocumentV2
+        templateDocumentation={{
+          title: [],
+          outline: [
+            {
+              controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+              content: { elementType: ElementTypeV2.PARAGRAPH, paragraph },
+            },
+          ],
+          include: fieldPath("dummy"),
+          attachmentData: fieldPath("dummy"),
+        }}
+      />,
+    );
+  }
+
+  it("rendrer en tekst-betingelse midt i et avsnitt inline, uten blokk som bryter linjen", () => {
+    const html = renderParagraph([
+      lit("Du får "),
+      {
+        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [lit("barnetillegg")],
+        elseIf: [],
+        showElse: [lit("ingenting")],
+      },
+      lit(" fra oss."),
+    ]);
+
+    expect(html).toContain("inline-conditional");
+    expect(html).not.toContain('class="conditional');
+    expect(html).not.toContain("<details");
+    expect(text(html)).toContain("barnetillegg");
+    expect(text(html)).toContain("ingenting");
+    // Betingelsene ligger i popover-innholdet, ikke som synlig tekst i flyten.
+    expect(html).toContain('aria-label="If"');
+    expect(html).toContain('aria-label="Else"');
+    expect(html).toContain("harBarn");
+  });
+
+  it("behandler et avsnitt med en betingelse som eneste barn som en betinget avsnitt-blokk", () => {
+    const html = renderParagraph([
+      {
+        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [lit("Med barn.")],
+        elseIf: [],
+        showElse: [lit("Uten barn.")],
+      },
+    ]);
+
+    expect(html).not.toContain("inline-conditional");
+    expect(html).toContain('class="conditional conditional-multi-branch"');
+    // Hver gren er sitt eget avsnitt inni den betingede blokken.
+    const showIf = /<div class="show-if">(.*?)<\/div><div class="show-else">/s.exec(html);
+    expect(showIf).not.toBeNull();
+    expect(showIf?.[1]).toContain("Med barn.");
+    expect(html).toMatch(/class="show-else">.*Uten barn\./s);
+  });
+
+  it("beholder blokkvisning når en gren inneholder annet enn løpende tekst", () => {
+    const html = renderParagraph([
+      lit("Se: "),
+      {
+        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [
+          {
+            controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+            content: { elementType: ElementTypeV2.PARAGRAPH_ITEMLIST, type: "PUNKTLISTE", items: [] },
+          },
+        ],
+        elseIf: [],
+        showElse: [],
+      },
+    ]);
+
+    expect(html).not.toContain("inline-conditional");
+    expect(html).toContain('class="conditional"');
   });
 });

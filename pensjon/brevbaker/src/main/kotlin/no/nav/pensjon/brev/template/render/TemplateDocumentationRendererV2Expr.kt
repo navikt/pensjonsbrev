@@ -81,6 +81,20 @@ private fun isValueClassUnwrap(selector: TemplateModelSelector<*, *>): Boolean =
     selector.propertyName == "value" ||
         valueClassUnwrapCache.getOrPut(selector.className) { loadKotlinClass(selector.className)?.isValue == true }
 
+/**
+ * Eksempelverdier for kjente tekstfelt som ellers ikke har noen formatter å utlede et eksempel
+ * fra (se [formatterExampleText]) - legacy-modellen bruker ren `String?` selv for f.eks.
+ * fødselsnummer. Nøklet på feltnavn, og kun brukt for String-felt slik at et likelydende
+ * felt av annen type ikke får et misvisende eksempel.
+ */
+private val FIELD_EXAMPLE_TEXTS: Map<String, String> = mapOf(
+    "fodselsnummer" to EXAMPLE_FOEDSELSNUMMER,
+    "avtaleland" to "Sverige",
+)
+
+private fun fieldExampleText(selector: TemplateModelSelector<*, *>): String? =
+    if (selector.propertyType.removeSuffix("?") in setOf("kotlin.String", "String")) FIELD_EXAMPLE_TEXTS[selector.propertyName] else null
+
 private fun loadKotlinClass(qualifiedName: String): kotlin.reflect.KClass<*>? {
     var candidate = qualifiedName
     while (true) {
@@ -144,6 +158,7 @@ private fun renderUnaryInvoke(
                 segments = base.segments + segment,
                 leafType = selector.propertyType,
                 leafOwnerType = selector.className,
+                exampleText = fieldExampleText(selector),
             )
             // Feltaksess på et beregnet uttrykk (f.eks. `getOrNull(...).felt`,
             // `(a ?: b).felt`) — DataSource.Computed lar oss fortsatt bygge en lesbar
@@ -153,6 +168,7 @@ private fun renderUnaryInvoke(
                 listOf(segment),
                 leafType = selector.propertyType,
                 leafOwnerType = selector.className,
+                exampleText = fieldExampleText(selector),
             )
         }
     }

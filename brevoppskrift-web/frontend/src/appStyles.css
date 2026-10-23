@@ -168,6 +168,22 @@ body {
   padding: 0 0 1px;
 }
 
+/* Betingelse som styrer løpende tekst midt i en setning (se InlineConditionalV2): teksten flyter
+   inline, og hver gren har en liten ▸-markør som åpner betingelsen i en popover. Samme
+   bakgrunn som blokk-varianten (`.conditional`) som grupperingshint. Markørknappen får ikke
+   den stiplede understrekingen til `.expr-popover-trigger`, siden den ellers ville lest som en
+   del av brevteksten. */
+.inline-conditional {
+  background: var(--ax-accent-100);
+}
+
+.inline-conditional-marker .expr-popover-trigger {
+  border-bottom: none;
+  color: var(--ax-text-danger);
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
 /* If/Else If sin betingelse (predikat) er kollapset som standard bak en native
    <details>/<summary>-disclosure (se ConditionalPredicateDisclosure) for å spare plass -
    predikatet er som regel mindre interessant enn den betingede teksten under. <summary> vises
