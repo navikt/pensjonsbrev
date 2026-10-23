@@ -1,0 +1,138 @@
+[
+  {
+    "navn": "Belgia",
+    "kode": "BEL"
+  },
+  {
+    "navn": "Bulgaria",
+    "kode": "BGR"
+  },
+  {
+    "navn": "Danmark",
+    "kode": "DNK"
+  },
+  {
+    "navn": "Den Tsjekkiske Rep.",
+    "kode": "CZE"
+  },
+  {
+    "navn": "Estland",
+    "kode": "EST"
+  },
+  {
+    "navn": "Finland",
+    "kode": "FIN"
+  },
+  {
+    "navn": "Frankrike",
+    "kode": "FRA"
+  },
+  {
+    "navn": "Færøyene",
+    "kode": "FRO"
+  },
+  {
+    "navn": "Grønland",
+    "kode": "GRL"
+  },
+  {
+    "navn": "Hellas",
+    "kode": "GRC"
+  },
+  {
+    "navn": "Irland",
+    "kode": "IRL"
+  },
+  {
+    "navn": "Island",
+    "kode": "ISL"
+  },
+  {
+    "navn": "Italia",
+    "kode": "ITA"
+  },
+  {
+    "navn": "Kroatia",
+    "kode": "HRV"
+  },
+  {
+    "navn": "Kypros",
+    "kode": "CYP"
+  },
+  {
+    "navn": "Latvia",
+    "kode": "LVA"
+  },
+  {
+    "navn": "Liechtenstein",
+    "kode": "LIE"
+  },
+  {
+    "navn": "Litauen",
+    "kode": "LTU"
+  },
+  {
+    "navn": "Luxembourg",
+    "kode": "LUX"
+  },
+  {
+    "navn": "Malta",
+    "kode": "MLT"
+  },
+  {
+    "navn": "Nederland",
+    "kode": "NLD"
+  },
+  {
+    "navn": "Norge",
+    "kode": "NOR"
+  },
+  {
+    "navn": "Polen",
+    "kode": "POL"
+  },
+  {
+    "navn": "Portugal",
+    "kode": "PRT"
+  },
+  {
+    "navn": "Romania",
+    "kode": "ROU"
+  },
+  {
+    "navn": "Slovakia",
+    "kode": "SVK"
+  },
+  {
+    "navn": "Slovenia",
+    "kode": "SVN"
+  },
+  {
+    "navn": "Spania",
+    "kode": "ESP"
+  },
+  {
+    "navn": "Storbritannia",
+    "kode": "GBR"
+  },
+  {
+    "navn": "Sveits",
+    "kode": "CHE"
+  },
+  {
+    "navn": "Sverige",
+    "kode": "SWE"
+  },
+  {
+    "navn": "Tyskland",
+    "kode": "DEU"
+  },
+  {
+    "navn": "Ungarn",
+    "kode": "HUN"
+  },
+  {
+    "navn": "Østerrike",
+    "kode": "AUT"
+  }
+]

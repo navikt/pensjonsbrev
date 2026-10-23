@@ -35,6 +35,17 @@ object Pen {
         }
     }
 
+    data class Avtaleland(val navn: String, val kode: String) {
+        init {
+            require(navn.isNotBlank()) { "Avtaleland navn kan ikke være blank" }
+            require(kode.isNotBlank()) { "Avtaleland kode kan ikke være blank" }
+            require(kode.length == 3) { "Avtaleland kode må være 3 tegn" }
+            require(navn.length <= 128) {
+                "Avtaleland navn kan ikke være lengre enn 128 tegn"
+            }
+        }
+    }
+
     data class BestillExstreamBrevResponse(
         val journalpostId: JournalpostId,
     ) {

@@ -14,10 +14,12 @@ import { trackEvent } from "~/utils/umami";
 import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
+import SelectAvtaleland from "./components/SelectAvtaleland";
 import SelectEnhet from "./components/SelectEnhet";
 import { byggEBlankettOnSubmitRequest } from "./TemplateUtils";
 
 const eblankettValidationSchema = z.object({
+  landkode: z.string().min(1, "Obligatorisk"),
   mottakerText: z.string().min(1, "Vennligst fyll inn mottaker"),
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
@@ -34,6 +36,7 @@ export default function Eblankett({
 
   const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
     defaultValues: {
+      landkode: "",
       mottakerText: "",
     },
     resolver: zodResolver(eblankettValidationSchema),
@@ -83,6 +86,7 @@ export default function Eblankett({
             label="Mottaker"
             size="small"
           />
+          <SelectAvtaleland />
           <SelectEnhet />
         </BrevmalFormWrapper>
 

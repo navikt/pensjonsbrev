@@ -202,6 +202,7 @@ object Api {
 
     data class BestillEblankettRequest(
         val brevkode: String,
+        val landkode: String,
         val mottakerText: String,
         val enhetsId: EnhetId,
     )

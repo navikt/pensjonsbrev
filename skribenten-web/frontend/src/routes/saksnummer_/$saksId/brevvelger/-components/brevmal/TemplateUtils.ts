@@ -35,11 +35,13 @@ export const byggExstreamOnSubmitRequest = (argz: {
 export const byggEBlankettOnSubmitRequest = (argz: {
   template: LetterMetadata;
   formValues: {
+    landkode: string;
     mottakerText: string;
     enhetsId: string;
   };
 }): OrderEblankettRequest => {
   return {
+    landkode: argz.formValues.landkode,
     mottakerText: argz.formValues.mottakerText,
     enhetsId: argz.formValues.enhetsId,
     brevkode: argz.template.id,

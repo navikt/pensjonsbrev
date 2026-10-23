@@ -62,4 +62,5 @@ export const SamhandlerTypeCodes = Object.keys(SAMHANDLER_ENUM_TO_TEXT) as [
 ];
 
 export type KontaktAdresseResponse = generated.KontaktAdresseDto;
+export type Avtaleland = generated.PenAvtaleland;
 export type NavAnsattEnhet = generated.NavAnsattEnhet;

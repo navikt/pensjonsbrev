@@ -266,13 +266,14 @@ class LegacyBrevServiceTest {
                         brevkode = "eblankett",
                         enhetsId = principalSinNAVEnhet.id,
                         mottakerText = "en tekst",
+                        landkode = "GBR",
                     ),
                     saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isNull()
             assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_EXSTREAM_URL)
-            assertThat(sisteBestillExstreamBrevRequest?.sakskontekst?.land).isEqualTo("NOR")
+            assertThat(sisteBestillExstreamBrevRequest?.sakskontekst?.land).isEqualTo("GBR")
         }
     }
 
@@ -285,6 +286,7 @@ class LegacyBrevServiceTest {
                         brevkode = "exstream",
                         enhetsId = EnhetId("9999"),
                         mottakerText = "en tekst",
+                        landkode = "GBR",
                     ),
                     saksId = SaksId(3333L)
                 )
