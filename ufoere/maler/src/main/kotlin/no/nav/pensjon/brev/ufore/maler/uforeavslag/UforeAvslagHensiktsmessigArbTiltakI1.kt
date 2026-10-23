@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -40,6 +41,7 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
     )
     {
         val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
+        val visAapAvsnitt = saksbehandlervalg("VisAapAvsnitt", "Bruk avsnitt om AAP").bool()
 
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"},
@@ -95,7 +97,13 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
                     nynorsk { +"Vedtaket har vi gjort etter folketrygdlova §§ 12-5 til 12-7." })
             }
 
-            includePhrase(Felles.DetteKanDuGjoreNa)
+            showIf(pesysData.bosattUtland) {
+                showIf(visAapAvsnitt) {
+                    includePhrase(Felles.DetteKanDuGjoreNaUtland)
+                }
+            }.orShow {
+                includePhrase(Felles.DetteKanDuGjoreNa)
+            }
             includePhrase(Felles.RettTilAKlageLang)
             includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)
