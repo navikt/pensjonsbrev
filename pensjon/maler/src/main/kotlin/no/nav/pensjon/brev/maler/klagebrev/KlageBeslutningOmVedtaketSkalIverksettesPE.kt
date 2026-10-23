@@ -37,7 +37,7 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
-        val soeknadenInnvilget = saksbehandlervalg("SoeknadenInnvilget", "Soknaden er innvilget").bool()
+        val soeknadenInnvilget = saksbehandlervalg("SoeknadenInnvilget", "Søknaden er innvilget").bool()
         val oekonomiskeForhold =
             saksbehandlervalg("oekonomiskeForhold", "Økonomiske forhold kan ikke vektlegges").bool()
         val tilbakekreving = saksbehandlervalg("tilbakekreving", "Hvis saken gjelder tilbakekreving, og vi gir avslag på utsatt iverksettelse").bool()
