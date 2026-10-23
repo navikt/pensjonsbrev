@@ -32,11 +32,16 @@ const KvittertDelautomatiskBrev = (props: { saksId: string; resultat: Delautomat
       <ExpansionCard.Content data-testid="kvittert-delautomatisk-brev">
         {resultat.status === "success" ? (
           <VStack align="start" gap="space-16">
-            <HentOgVisAdresse
-              sakId={props.saksId}
-              samhandlerId={resultat.idTSSEkstern ?? undefined}
-              showMottakerTitle
-            />
+            <VStack gap="space-4">
+              <BodyShort size="small" weight="semibold">
+                Mottaker
+              </BodyShort>
+              <HentOgVisAdresse
+                sakId={props.saksId}
+                samhandlerId={resultat.idTSSEkstern ?? undefined}
+                visTags={false}
+              />
+            </VStack>
             {resultat.journalpostId && (
               <Oppsummeringspar size="small" tittel="Journalpost" verdi={resultat.journalpostId} />
             )}

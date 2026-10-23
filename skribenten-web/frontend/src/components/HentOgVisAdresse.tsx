@@ -40,7 +40,13 @@ const AdresseSkeleton = ({ withTitle }: { withTitle?: boolean }) => (
   </VStack>
 );
 
-const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; showMottakerTitle?: boolean }) => {
+const HentOgVisAdresse = (properties: {
+  sakId: string;
+  samhandlerId?: string;
+  showMottakerTitle?: boolean;
+  visTags?: boolean;
+}) => {
+  const visTags = properties.visTags ?? true;
   const samhandlerMottaker = useSamhandlerMottaker(properties.samhandlerId);
 
   const adresseQuery = useQuery({
@@ -59,6 +65,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
               adresse={adresseQuery.data}
               erSamhandler={false}
               saksId={properties.sakId}
+              visTags={visTags}
               withTitle={properties.showMottakerTitle}
             />
           )}
@@ -72,7 +79,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
             <AdresseVisning
               adresselinjer={[samhandlerMottaker.data.samhandler.organisasjonsnummer]}
               navn={samhandlerMottaker.data.samhandler.navn}
-              tags={[MOTTAKER_TAG_SAMHANDLER]}
+              tags={visTags ? [MOTTAKER_TAG_SAMHANDLER] : undefined}
               withTitle={properties.showMottakerTitle}
             />
           )}
@@ -81,6 +88,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
               adresse={samhandlerMottaker.data.adresse}
               erSamhandler
               saksId={properties.sakId}
+              visTags={visTags}
               withTitle={properties.showMottakerTitle}
             />
           )}
@@ -93,6 +101,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
 const ResolvedKontaktAdresse = (properties: {
   saksId: string;
   adresse: KontaktAdresseResponse;
+  visTags: boolean;
   withTitle?: boolean;
 }) => {
   const sakGjelderNavn = useSakGjelderNavnFormatert({ saksId: properties.saksId });
@@ -101,7 +110,7 @@ const ResolvedKontaktAdresse = (properties: {
     <AdresseVisning
       adresselinjer={properties.adresse.adresselinjer.map(humanizeName)}
       navn={sakGjelderNavn ?? ""}
-      tags={mapKontaktAdresseTags(properties.adresse)}
+      tags={properties.visTags ? mapKontaktAdresseTags(properties.adresse) : undefined}
       withTitle={properties.withTitle}
     />
   );
@@ -111,6 +120,7 @@ const ResolvedAdresse = (properties: {
   saksId: string;
   adresse: SamhandlerPostadresse | KontaktAdresseResponse;
   erSamhandler: boolean;
+  visTags: boolean;
   withTitle?: boolean;
 }) => {
   if (erAdresseKontaktAdresse(properties.adresse)) {
@@ -118,6 +128,7 @@ const ResolvedAdresse = (properties: {
       <ResolvedKontaktAdresse
         adresse={properties.adresse}
         saksId={properties.saksId}
+        visTags={properties.visTags}
         withTitle={properties.withTitle}
       />
     );
@@ -127,7 +138,7 @@ const ResolvedAdresse = (properties: {
     <AdresseVisning
       adresselinjer={mapSamhandlerAdresseLinjer(properties.adresse)}
       navn={properties.adresse.navn}
-      tags={properties.erSamhandler ? [MOTTAKER_TAG_SAMHANDLER] : undefined}
+      tags={properties.visTags && properties.erSamhandler ? [MOTTAKER_TAG_SAMHANDLER] : undefined}
       withTitle={properties.withTitle}
     />
   );
