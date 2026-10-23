@@ -303,15 +303,17 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                 }
             }
             ifNotNull(justeringsbeloep) { justeringsbeloep ->
-                row {
-                    cell {
-                        text(
-                            bokmal { +"Justeringsbeløp" },
-                            nynorsk { +"Justeringsbeløp" },
-                            english { +"Adjustment amount" },
-                        )
+                showIf(justeringsbeloep.greaterThan(0)) {
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Justeringsbeløp" },
+                                nynorsk { +"Justeringsbeløp" },
+                                english { +"Adjustment amount" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(justeringsbeloep)) }
                     }
-                    cell { includePhrase(KronerText(justeringsbeloep)) }
                 }
             }
             ifNotNull(referansebeloep) { referansebelop ->
