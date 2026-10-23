@@ -68,7 +68,9 @@ class SendtBrevMetrikker(
 
         return scope.launch(kontekst) {
             tell(maaling)
-            tellValgteVedlegg(maaling)
+            if (maaling.valgteVedlegg.isNotEmpty()) {
+                tellValgteVedlegg(maaling)
+            }
         }
     }
 
