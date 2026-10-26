@@ -27,10 +27,6 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     private val brevbaker = Brevbaker(pdfByggerService)
     private val letterFactory: LetterFactory<Kode> = LetterFactory(alltidValgbareVedlegg)
 
-    init {
-        varmOppBrevdata(templates)
-    }
-
     override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
 

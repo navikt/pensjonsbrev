@@ -17,19 +17,8 @@ import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import org.slf4j.LoggerFactory
-import kotlin.time.measureTime
-
-private val logger = LoggerFactory.getLogger(LetterFactory::class.java)
 
 private val objectMapper = brevbakerJacksonObjectMapper()
-
-internal fun varmOppBrevdata(maler: Collection<BrevTemplate<*, *>>) {
-    val varighet = measureTime {
-        maler.forEach { objectMapper.canDeserialize(objectMapper.constructType(it.template.letterDataType.java)) }
-    }
-    logger.info("Oppvarming av brevdata for ${maler.size} maler ferdig på ${varighet.inWholeMilliseconds} ms")
-}
 
 class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>) {
     private val vedleggLibrary = AlltidValgbartVedleggLibrary(alltidValgbareVedlegg)

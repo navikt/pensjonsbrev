@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.serialization.jackson.*
@@ -28,7 +29,7 @@ import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.DocumentationETag
 import no.nav.pensjon.brev.routing.brevRouting
-import no.nav.pensjon.brev.routing.varmOppApiTyper
+import no.nav.pensjon.brev.routing.varmOpp
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
 import kotlin.time.Duration.Companion.minutes
@@ -117,10 +118,11 @@ fun Application.brevbakerModule(
         }
     }
 
+    lateinit var objectMapper: ObjectMapper
     install(ContentNegotiation) {
         jackson {
             brevbakerConfig()
-            varmOppApiTyper()
+            objectMapper = this
         }
         register(ContentType.Text.Html, LetterResponseFileConverter)
         register(ContentType.Application.Pdf, LetterResponseFileConverter)
@@ -147,6 +149,7 @@ fun Application.brevbakerModule(
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
+    varmOpp(templates.hentRedigerbareMaler(), objectMapper, pdfbyggerService)
     brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), pdfbyggerService, templates)
 }
 
