@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.aldersovergang.fraser
 
+import no.nav.pensjon.brev.alder.maler.felles.Constants.ALDERSPENSJON_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL_INNLOGGET
 import no.nav.pensjon.brev.alder.maler.felles.Constants.FORSOERGINGSTILLEGG_URL
@@ -24,97 +25,58 @@ data class InnledningInfoYtelse(
     val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.GJP_FULL)) {
+        showIf(ytelseForAldersovergangKode.isOneOf(YtelseForAldersovergangKode.GJP_FULL,YtelseForAldersovergangKode.GJP_AVKORT)) {
             paragraph {
                 text(
-                    bokmal { +"Gjenlevendepensjonen din opphører fra og med måneden etter at du fyller 67 år." },
-                    nynorsk { +"Attlevandepensjonen din opphøyrer frå og med månaden etter at du fyller 67 år." },
-                    english { +"Your survivor's pension will be terminated from the month after you turn 67." },
+                    bokmal { +"Som hovedregel har du rett til å ta ut alderspensjon fra måneden etter at du fyller 67 år. " +
+                            "Du kan ha rett til å ta ut alderspensjon tidligere. " +
+                            "Nav vil vurdere om du har rettigheter som gjenlevende som kan gi deg høyere alderspensjon. " },
+                    nynorsk { +"Som hovudregel har du rett til å ta ut alderspensjon frå månaden etter at du fyller 67 år. " +
+                            "Du kan ha rett til å ta ut alderspensjon tidlegare. " +
+                            "Nav vil vurdere om du har rettar som attlevande som kan gi deg høgare alderspensjon. " },
+                    english { +"Generally, you are entitled to draw a retirement pension from the month after you turn 67. " +
+                            "You may be entitled to start drawing your retirement pension earlier. " +
+                            "Nav will assess whether you have survivors’ rights that could give you a higher retirement pension. " },
                 )
             }
             paragraph {
                 text(
                     bokmal {
-                        +"Gjenlevendepensjon er en pensjon beregnet med avdødes pensjonsrettigheter. " +
-                                "Nav har ikke nok informasjon til å vurdere din rett til alderspensjon. Du må derfor søke om alderspensjon."
+                        +"Du må selv søke om alderspensjon på $DIN_PENSJON_URL. " +
+                                "Du kan søke om alderspensjon 4 måneder før det tidspunktet du ønsker at utbetalingen skal starte. "
                     },
                     nynorsk {
-                        +"Attlevandepensjonen er ein pensjon som blir berekna med avdødes pensjonsrettar. " +
-                                "Nav har ikkje nok informasjon til å vurdere din rett til alderspensjon. Du må derfor søkje om alderspensjon."
+                        +"Du må sjølv søkje om alderspensjon på $DIN_PENSJON_URL. " +
+                                "Du kan søkje om alderspensjon 4 månader før det tidspunktet du ønskjer at utbetalinga skal starte. "
                     },
                     english {
-                        +"The survivor's pension is a pension which is based on the deceased's pension rights. " +
-                                "Nav does not have sufficient information to assess your eligibility for retirement pension. " +
-                                "Therefore, you will need to submit an application."
+                        +"You must apply for a retirement pension at $DIN_PENSJON_URL. " +
+                                "You can apply up to four months before the date you want your pension payments to start. "
                     },
                 )
             }
             paragraph {
                 text(
-                    bokmal {
-                        +
-                        "Du kan søke elektronisk via $DIN_PENSJON_URL. Hvis du ikke kan benytte denne løsningen, " +
-                                "så finner du søknadsskjema for alderspensjon på $NAV_URL."
-                    },
-                    nynorsk {
-                        +
-                        "Du kan søkje elektronisk via $DIN_PENSJON_URL. Dersom du ikkje kan bruke denne løysinga, " +
-                                "så finn du søknadsskjema  for alderspensjon på $NAV_URL."
-                    },
-                    english {
-                        +
-                        "You can apply electronically by logging on to $DIN_PENSJON_URL, or use the application form " +
-                                "for retirement pension, which is also found at $NAV_URL."
-                    },
+                    bokmal {+"Vi kan tidligst innvilge søknaden din fra og med måneden etter at du søkte. "},
+                    nynorsk {+"Vi kan tidlegast innvilge søknaden din frå og med månaden etter at du søkte. "},
+                    english {+"We can grant your retirement pension no earlier than the month after you apply. "},
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Vi kan tidligst innvilge søknaden din fra og med måneden etter at du søkte. " },
-                    nynorsk { +"Vi kan tidlegast innvilge søknaden din frå og med månaden etter at du søkte." },
-                    english { +"We can at the earliest grant your application the month after you applied." },
+                    bokmal { +"Du kan velge å ta ut hele eller deler av alderspensjonen din (20, 40, 50, 60, 80 eller 100 prosent). " +
+                            "Du kan også vente med å ta ut alderspensjon. " },
+                    nynorsk { +"Du kan velje å ta ut heile eller delar av alderspensjonen din (20, 40, 50, 60, 80 eller 100 prosent). " +
+                            "Du kan også vente med å ta ut alderspensjon. " },
+                    english { +"You can start drawing all or part of your retirement pension at a rate of 20, 40, 50, 60, 80 or 100 percent. " +
+                            "You can also postpone drawing your retirement pension. " },
                 )
             }
             paragraph {
                 text(
-                    bokmal {
-                        +
-                        "Du kan velge å ta ut hele eller deler av alderspensjonen din (20, 40, 50, 60, 80 eller 100 prosent). " +
-                                "Du kan også vente med å ta ut alderspensjon."
-                    },
-                    nynorsk {
-                        +
-                        "Du kan  velje å ta ut heile eller delar av alderspensjonen din (20, 40, 50, 60, 80 eller 100 prosent). " +
-                                "Du kan også vente med å ta ut alderspensjon."
-                    },
-                    english {
-                        +
-                        "You can start drawing all or a part of your retirement pension at a rate of 20, 40, 50, 60, 80 or 100 percent. " +
-                                "You can also postpone drawing your retirement pension."
-                    },
-                )
-            }
-        }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.GJP_AVKORT)) {
-            paragraph {
-                text(
-                    bokmal {
-                        +
-                        "Gjenlevendepensjonen din opphører fra og med måneden etter at du fyller 67 år. " +
-                                "Fra samme tidspunkt har alle som hovedregel rett til å ta ut alderspensjon. " +
-                                "Dersom du velger å ta ut alderspensjon vil den bli beregnet med dine gjenlevenderettigheter."
-                    },
-                    nynorsk {
-                        +
-                        "Attlevandepensjonen din blir avslutta frå og med månaden etter at du fyller 67 år. " +
-                                "Frå same tidspunkt har alle som hovudregel rett til å ta ut alderspensjon. " +
-                                "Dersom du vel å ta ut alderspensjon vil den bli berekna med dine attlevanderettar."
-                    },
-                    english {
-                        +"Your survivor's pension will cease the month after you turn 67. " +
-                                "Generally, everyone is entitled to draw a retirement pension from the National " +
-                                "Insurance Scheme starting the month after they reach the age of 67. " +
-                                "If you decide to draw retirement pension, your survivor’s rights will be included."
-                    },
+                    bokmal {+"Du finner mer informasjon på $ALDERSPENSJON_URL. "},
+                    nynorsk {+"Du finn meir informasjon på $ALDERSPENSJON_URL. "},
+                    english {+"You can find more information at $ALDERSPENSJON_URL. "},
                 )
             }
         }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.UT)) {
