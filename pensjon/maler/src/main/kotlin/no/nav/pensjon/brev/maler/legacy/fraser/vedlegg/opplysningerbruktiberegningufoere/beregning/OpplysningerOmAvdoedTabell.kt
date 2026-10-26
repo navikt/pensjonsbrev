@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.oppfyllerDoedsfallsvilkaar
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
@@ -25,7 +26,7 @@ data class OpplysningerOmAvdoedTabell(
                 pe.erIkkeSoknadOmBarnetillegg() and
                 pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and
                 pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and
-                (not(utelatVedDoedsfall) or pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))
+                pe.oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall)
         ){
 
             ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) { virkFom ->

@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.exstreamFunctions.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.*
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.oppfyllerDoedsfallsvilkaar
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseUtbetalingVedInntektsendringTittel
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseUtbetalingVedInntektsendringDetaljer
 import no.nav.pensjon.brev.model.format
@@ -19,8 +20,7 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
     val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        val visForKravarsak = not(utelatVedDoedsfall) or
-            (utelatVedDoedsfall and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))
+        val visForKravarsak = pe.oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall)
 
         showIf(pe.skalViseUtbetalingVedInntektsendringTittel() and visForKravarsak){
 

@@ -54,6 +54,12 @@ fun Expression<PEgruppe10>.trygdetidBilateralListe() =
 fun Expression<PEgruppe10>.skalViseOmregningUPtilUT(): Expression<Boolean> =
     pebrevkode().equalTo("PE_UT_04_300") or pebrevkode().equalTo("PE_UT_14_300")
 
+fun Expression<PEgruppe10>.oppfyllerDoedsfallsvilkaar(
+    utelatVedDoedsfall: Expression<Boolean>,
+): Expression<Boolean> =
+    not(utelatVedDoedsfall) or
+        (utelatVedDoedsfall and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))
+
 /**
  * Gate for generell ektefelletillegg-tekst (tittel, "faller bort" og "behold ut vedtaksperioden").
  * Kombinerer datavilkår med eksplisitte innholdsvalg fra kallstedet.
@@ -65,7 +71,7 @@ fun Expression<PEgruppe10>.skalViseEktefelletilleggGenerell(
 ): Expression<Boolean> =
     visGenerellForklaring and
         erIkkeSoknadOmBarnetillegg() and
-        (not(utelatVedDoedsfall) or (utelatVedDoedsfall and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
+        oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall)
 
 /**
  * DATASTYRT gate: kravårsaken er ikke "søknad om barnetillegg". Dette er ekte vedtaksdata og
@@ -101,7 +107,7 @@ fun Expression<PEgruppe10>.skalViseRettTilBarnetillegg(
     (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or
         vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and
         visForklaringForBrevtype and
-        (not(utelatVedDoedsfall) or (utelatVedDoedsfall and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
+        oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall)
 
 /**
  * DATASTYRT gate: anvendt trygdetid er lavere enn full opptjening (40 år), slik at trygdetiden må
@@ -152,7 +158,7 @@ fun Expression<PEgruppe10>.skalViseInntekterBruktIBeregning(): Expression<Boolea
         not(vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) and
         erIkkeSoknadOmBarnetillegg() and
         pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300", "PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300") and
-        (pebrevkode().notEqualTo("PE_UT_04_102") or vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))
+        oppfyllerDoedsfallsvilkaar(pebrevkode().equalTo("PE_UT_04_102"))
 
 /** Gate for tabellen med norsk trygdetid (under "Dette er trygdetiden din"). */
 fun Expression<PEgruppe10>.skalViseTrygdetidNorTabell(erMndEtterFoedsel: Expression<Boolean>): Expression<Boolean> =
@@ -182,7 +188,7 @@ fun Expression<PEgruppe10>.skalViseInntektsgrenseOgAvkortning(): Expression<Bool
 
 /** Gate for "Etteroppgjør av uføretrygd og barnetillegg" (TBU052V-TBU073V). */
 fun Expression<PEgruppe10>.skalViseEtteroppgjoer(): Expression<Boolean> =
-    (vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pebrevkode().notEqualTo("PE_UT_04_108") and pebrevkode().notEqualTo("PE_UT_04_109") and pebrevkode().notEqualTo("PE_UT_07_200") and (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))) or pebrevkode().equalTo("PE_UT_06_300")
+    (vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pebrevkode().notEqualTo("PE_UT_04_108") and pebrevkode().notEqualTo("PE_UT_04_109") and pebrevkode().notEqualTo("PE_UT_07_200") and oppfyllerDoedsfallsvilkaar(pebrevkode().equalTo("PE_UT_04_102"))) or pebrevkode().equalTo("PE_UT_06_300")
 
 // --- Seksjon: "Slik beregner vi utbetaling av uføretrygden når inntekten din endres" ---
 
