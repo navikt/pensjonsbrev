@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { type z } from "zod";
 
-import { bestillExstreamAutobrev, orderLetterKeys } from "~/api/skribenten-api-endpoints";
+import { orderExstreamAutobrev, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
 import { type LetterMetadata, type OrderExstreamLetterRequest, type SpraakKode } from "~/types/apiTypes";
@@ -43,19 +43,20 @@ export default function BrevmalDelautomatisk({
 }) {
   const { enhetsId: urlEnhetsId, vedtaksId, idTSSEkstern } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const { leggTilDelautomatiskBrevResultat } = useSendtBrev();
+  const { addDelautomatiskBrevResult } = useSendtBrev();
   const formRef = useRef<HTMLFormElement>(null);
-  const [bestillingTilBekreftelse, setBestillingTilBekreftelse] = useState<Nullable<OrderExstreamLetterRequest>>(null);
+  const [orderAwaitingConfirmation, setOrderAwaitingConfirmation] =
+    useState<Nullable<OrderExstreamLetterRequest>>(null);
 
-  const gåTilKvittering = () =>
+  const navigateToKvittering = () =>
     navigate({
       to: "/saksnummer/$saksId/kvittering",
       params: { saksId },
       search: { enhetsId: urlEnhetsId, vedtaksId },
     });
 
-  const bestillMutation = useMutation<Nullable<number>, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
-    mutationFn: (payload) => bestillExstreamAutobrev(saksId, payload),
+  const orderLetterMutation = useMutation<Nullable<number>, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
+    mutationFn: (payload) => orderExstreamAutobrev(saksId, payload),
     onSuccess: (journalpostId, variables) => {
       trackEvent("brev sendt", {
         brevkode: letterTemplate.id,
@@ -65,24 +66,24 @@ export default function BrevmalDelautomatisk({
         dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
         enhetsId: variables.enhetsId,
       });
-      leggTilDelautomatiskBrevResultat({
+      addDelautomatiskBrevResult({
         status: "success",
         brevtittel: letterTemplate.name,
         idTSSEkstern: variables.idTSSEkstern ?? null,
         journalpostId,
         error: null,
       });
-      gåTilKvittering();
+      navigateToKvittering();
     },
     onError: (error, variables) => {
-      leggTilDelautomatiskBrevResultat({
+      addDelautomatiskBrevResult({
         status: "error",
         brevtittel: letterTemplate.name,
         idTSSEkstern: variables.idTSSEkstern ?? null,
         journalpostId: null,
         error,
       });
-      gåTilKvittering();
+      navigateToKvittering();
     },
     mutationKey: orderLetterKeys.brevsystem("delautomatisk"),
   });
@@ -121,7 +122,7 @@ export default function BrevmalDelautomatisk({
           onSubmit={methods.handleSubmit((submittedValues) => {
             const parsedVedtaksId = Number.parseInt(vedtaksId ?? "", 10);
 
-            setBestillingTilBekreftelse(
+            setOrderAwaitingConfirmation(
               byggExstreamOnSubmitRequest({
                 template: letterTemplate,
                 idTSSEkstern: idTSSEkstern ?? null,
@@ -152,23 +153,23 @@ export default function BrevmalDelautomatisk({
         </BrevmalFormWrapper>
       </FormProvider>
 
-      {bestillingTilBekreftelse && (
+      {orderAwaitingConfirmation && (
         <BekreftBestillingModal
-          onBekreft={() => {
-            bestillMutation.mutate(bestillingTilBekreftelse);
-            setBestillingTilBekreftelse(null);
+          onClose={() => setOrderAwaitingConfirmation(null)}
+          onConfirm={() => {
+            orderLetterMutation.mutate(orderAwaitingConfirmation);
+            setOrderAwaitingConfirmation(null);
           }}
-          onClose={() => setBestillingTilBekreftelse(null)}
         />
       )}
     </>
   );
 }
 
-const BekreftBestillingModal = (props: { onBekreft: () => void; onClose: () => void }) => {
+const BekreftBestillingModal = (props: { onConfirm: () => void; onClose: () => void }) => {
   return (
     <Modal
-      data-testid="bekreft-delautomatisk-brev-modal"
+      data-testid="confirm-delautomatisk-brev-modal"
       header={{ heading: "Vil du bestille og sende brevet?", closeButton: false }}
       onClose={props.onClose}
       open
@@ -181,7 +182,7 @@ const BekreftBestillingModal = (props: { onBekreft: () => void; onClose: () => v
         </BodyLong>
       </Modal.Body>
       <Modal.Footer>
-        <Button data-testid="send-delautomatisk-brev" onClick={props.onBekreft} type="button">
+        <Button data-testid="send-delautomatisk-brev" onClick={props.onConfirm} type="button">
           Ja, bestill og send brevet
         </Button>
         <Button onClick={props.onClose} type="button" variant="secondary">

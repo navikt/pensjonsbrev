@@ -4,20 +4,20 @@ import { useState } from "react";
 
 import HentOgVisAdresse from "~/components/HentOgVisAdresse";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
-import { type DelautomatiskBrevResultat } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
+import { type DelautomatiskBrevResult } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
 
 import { ApiError } from "../ApiError";
 import { KvittertBrevHeaderLayout } from "./KvittertBrevHeader";
 
-const KvittertDelautomatiskBrev = (props: { saksId: string; resultat: DelautomatiskBrevResultat }) => {
+const KvittertDelautomatiskBrev = (props: { saksId: string; result: DelautomatiskBrevResult }) => {
   const [open, setOpen] = useState(true);
-  const { resultat } = props;
+  const { result } = props;
 
   return (
-    <ExpansionCard aria-label={resultat.brevtittel} onToggle={setOpen} open={open}>
+    <ExpansionCard aria-label={result.brevtittel} onToggle={setOpen} open={open}>
       <KvittertBrevHeaderLayout
         tag={
-          resultat.status === "success" ? (
+          result.status === "success" ? (
             <Tag data-color="success" size="small" variant="moderate">
               Sendt til mottaker
             </Tag>
@@ -27,27 +27,23 @@ const KvittertDelautomatiskBrev = (props: { saksId: string; resultat: Delautomat
             </Tag>
           )
         }
-        tittel={resultat.brevtittel}
+        title={result.brevtittel}
       />
       <ExpansionCard.Content data-testid="kvittert-delautomatisk-brev">
-        {resultat.status === "success" ? (
+        {result.status === "success" ? (
           <VStack align="start" gap="space-16">
             <VStack gap="space-4">
               <BodyShort size="small" weight="semibold">
                 Mottaker
               </BodyShort>
-              <HentOgVisAdresse
-                sakId={props.saksId}
-                samhandlerId={resultat.idTSSEkstern ?? undefined}
-                visTags={false}
-              />
+              <HentOgVisAdresse sakId={props.saksId} samhandlerId={result.idTSSEkstern ?? undefined} showTags={false} />
             </VStack>
-            {resultat.journalpostId && (
-              <Oppsummeringspar size="small" tittel="Journalpost" verdi={resultat.journalpostId} />
+            {result.journalpostId && (
+              <Oppsummeringspar size="small" tittel="Journalpost" verdi={result.journalpostId} />
             )}
           </VStack>
-        ) : resultat.error instanceof AxiosError ? (
-          <ApiError error={resultat.error} title="Kunne ikke sende brev" />
+        ) : result.error instanceof AxiosError ? (
+          <ApiError error={result.error} title="Kunne ikke sende brev" />
         ) : (
           <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
         )}

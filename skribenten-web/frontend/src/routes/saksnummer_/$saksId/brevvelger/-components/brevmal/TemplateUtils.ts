@@ -32,7 +32,7 @@ export const byggExstreamOnSubmitRequest = (argz: {
   };
 };
 
-export const erDelautomatiskBrev = (template: LetterMetadata) => template.automatiskExstream;
+export const isDelautomatiskBrev = (template: LetterMetadata) => template.automatiskExstream;
 
 export const byggEBlankettOnSubmitRequest = (argz: {
   template: LetterMetadata;

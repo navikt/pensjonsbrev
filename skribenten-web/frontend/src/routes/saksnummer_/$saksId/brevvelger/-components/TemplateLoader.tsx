@@ -11,7 +11,7 @@ import BrevmalBrevbaker from "./brevmal/BrevmalBrevbaker";
 import BrevmalDelautomatisk from "./brevmal/BrevmalDelautomatisk";
 import BrevmalForExstream from "./brevmal/BrevmalExstream";
 import Eblankett from "./brevmal/EBlankett";
-import { erDelautomatiskBrev, hentDefaultValueForSpråk } from "./brevmal/TemplateUtils";
+import { hentDefaultValueForSpråk, isDelautomatiskBrev } from "./brevmal/TemplateUtils";
 import FavoriteButton from "./FavoriteButton";
 
 export const TemplateLoader = (props: {
@@ -75,7 +75,7 @@ function Brevmal({
     return <Eblankett letterTemplate={letterTemplate} setOnFormSubmitClick={setOnFormSubmitClick} />;
   }
 
-  if (erDelautomatiskBrev(letterTemplate)) {
+  if (isDelautomatiskBrev(letterTemplate)) {
     return (
       <BrevmalDelautomatisk
         defaultValues={defaultValues}

@@ -29,7 +29,7 @@ export type OrderExstreamLetterRequest = generated.ApiBestillExstreamBrevRequest
 export type OrderEblankettRequest = generated.ApiBestillEblankettRequest;
 export type BestillOgRedigerBrevResponse = generated.ApiBestillOgRedigerBrevResponse;
 export type FailureType = generated.ApiBestillOgRedigerBrevResponseFailureType;
-export type BestillExstreamAutobrevResponse = generated.ApiBestillExstreamAutobrevResponse;
+export type OrderExstreamAutobrevResponse = generated.ApiBestillExstreamAutobrevResponse;
 
 export type FinnSamhandlerRequestDto = generated.FinnSamhandlerRequestDto;
 export type FinnSamhandlerResponseDto = generated.FinnSamhandlerResponseDto;

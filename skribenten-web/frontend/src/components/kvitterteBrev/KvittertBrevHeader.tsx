@@ -14,12 +14,12 @@ const KvittertBrevHeader = (props: {
     brevInfo: props.brevInfo,
   });
 
-  return <KvittertBrevHeaderLayout tag={tag} tittel={tittel} />;
+  return <KvittertBrevHeaderLayout tag={tag} title={tittel} />;
 };
 
 export default KvittertBrevHeader;
 
-export const KvittertBrevHeaderLayout = (props: { tag: React.ReactNode; tittel: string }) => (
+export const KvittertBrevHeaderLayout = (props: { tag: React.ReactNode; title: string }) => (
   <ExpansionCard.Header>
     <ExpansionCard.Title
       as="h2"
@@ -30,7 +30,7 @@ export const KvittertBrevHeaderLayout = (props: { tag: React.ReactNode; tittel: 
     >
       <VStack align="start" gap="space-8" justify="start">
         {props.tag}
-        {props.tittel}
+        {props.title}
       </VStack>
     </ExpansionCard.Title>
   </ExpansionCard.Header>

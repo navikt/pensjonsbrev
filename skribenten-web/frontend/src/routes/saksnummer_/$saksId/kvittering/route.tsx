@@ -18,16 +18,16 @@ function Kvittering() {
   const { enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const { sendteBrev, sendteDelautomatiskeBrev } = useSendtBrev();
+  const { sendteBrev, delautomatiskBrevResults } = useSendtBrev();
   const { brevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
 
-  const sendtBrevList: KvittertBrev[] = Object.values(sendteBrev).map((resultat) =>
+  const sendtBrevList: KvittertBrev[] = Object.values(sendteBrev).map((result) =>
     toKvittertBrev({
-      status: resultat.status,
+      status: result.status,
       context: "sendBrev",
-      brevFørHandling: resultat.brevInfo,
-      bestillBrevResponse: resultat.status === "success" ? resultat.response! : null,
-      bestillBrevError: resultat.status === "error" ? (resultat.error ?? null) : null,
+      brevFørHandling: result.brevInfo,
+      bestillBrevResponse: result.status === "success" ? result.response! : null,
+      bestillBrevError: result.status === "error" ? (result.error ?? null) : null,
       attesterResponse: null,
     }),
   );
@@ -49,8 +49,8 @@ function Kvittering() {
       <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
         <Box overflow="auto" paddingBlock="space-20" paddingInline="space-16">
           <VStack gap="space-8">
-            {sendteDelautomatiskeBrev.map((resultat, index) => (
-              <KvittertDelautomatiskBrev key={`delautomatisk-${index}`} resultat={resultat} saksId={saksId} />
+            {delautomatiskBrevResults.map((result, index) => (
+              <KvittertDelautomatiskBrev key={`delautomatisk-${index}`} result={result} saksId={saksId} />
             ))}
             <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
           </VStack>
