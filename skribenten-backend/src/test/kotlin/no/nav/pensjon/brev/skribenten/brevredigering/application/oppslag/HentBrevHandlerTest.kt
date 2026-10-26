@@ -38,6 +38,9 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `kladd med lagret brevmalHash som avviker fra rendret rapporteres som endret`() {
         val opprettet = opprettBrev(reserverForRedigering = false).resultOrFail()
+        brevbakerService.renderMarkupResultat = {
+            letter.copy(blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "nytt avsnitt i malen"))))
+        }
 
         assertThat(hentBrev(brevId = opprettet.info.id, reserverForRedigering = true)).isSuccess {
             assertThat(it.brevmalEndret).isEqualTo(BrevmalendringType.MARKUP_ENDRET)

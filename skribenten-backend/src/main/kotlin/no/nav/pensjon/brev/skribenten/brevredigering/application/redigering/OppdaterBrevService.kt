@@ -8,7 +8,10 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.variablesMissingIn
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 
-class OppdaterBrevService(private val brevmalService: BrevmalService) {
+class OppdaterBrevService(
+    private val brevmalService: BrevmalService,
+    private val sjekkFoerOppdaterKladd: suspend () -> Boolean = { Features.isEnabled(Features.sjekkFoerOppdaterKladd) },
+) {
     suspend fun oppdaterBrevmal(
         brev: Brevredigering,
         rendretBrev: LetterMarkupWithDataUsage,
@@ -21,7 +24,7 @@ class OppdaterBrevService(private val brevmalService: BrevmalService) {
         val endretHash = originalBrevmalHash != null && rendretBrevmalHash != null && rendretBrevmalHash != originalBrevmalHash
         val harVariablerSomIkkeKanOppdateres = brev.rendretBrev?.variablesMissingIn(rendretBrev.markup)?.isNotEmpty() ?: false
 
-        if (!endretHash || !Features.isEnabled(Features.sjekkFoerOppdaterKladd)) {
+        if (!endretHash || !sjekkFoerOppdaterKladd()) {
             brev.mergeRendretBrev(rendretBrev.markup)
             brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
             rendretBrevmalHash?.let { brev.settBrevmalHash(it) }

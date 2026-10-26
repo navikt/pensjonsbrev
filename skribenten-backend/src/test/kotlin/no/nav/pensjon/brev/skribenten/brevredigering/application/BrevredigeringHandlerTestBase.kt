@@ -53,7 +53,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
-import kotlin.random.Random
 
 /**
  * Har valgt å gjøre det på denne måten underveis for å understøtte steg-for-steg refaktorering med blanding mellom ny og gammel stil.
@@ -604,7 +603,7 @@ abstract class BrevredigeringHandlerTestBase {
                         it,
                         emptySet(),
                         if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
-                        StableHashCode(Random.nextInt())
+                        StableHashCode(it.blocks.map { block -> block.id }.hashCode())
                     )
                 }
 
