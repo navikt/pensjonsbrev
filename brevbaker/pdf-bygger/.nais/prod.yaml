@@ -1,7 +1,8 @@
 app-name: "pensjon-pdf-bygger"
 brevbaker-app: "pensjon-brevbaker"
-ingresses: []
 minReplicas: 6
+ingresses:
+  - "https://pensjon-pdf-bygger.intern.nav.no"
 
 inbound:
   - name: pensjon-selvbetjening-soknad-alder-backend
