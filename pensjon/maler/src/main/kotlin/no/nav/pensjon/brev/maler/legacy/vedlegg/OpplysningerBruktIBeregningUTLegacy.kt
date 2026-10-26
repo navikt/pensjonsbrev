@@ -74,7 +74,12 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             )
         }
 
-        includePhrase(OpplysningerBruktIBeregningTabell(pe))
+        includePhrase(
+            OpplysningerBruktIBeregningTabell(
+                pe = pe,
+                visSivilstatusUansett = pe.skalViseOmregningUPtilUT(),
+            )
+        )
         includePhrase(OpplysningerOmAvdoedTabell(pe))
 
         // ============================================================
