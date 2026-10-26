@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
@@ -17,11 +18,8 @@ class OppdaterBrevService(
         rendretBrev: LetterMarkupWithDataUsage,
         pesysdata: BrevdataResponse.Data,
     ): BrevmalendringType {
-        val originalBrevmalHash = brev.brevmalHash
         val rendretBrevmalHash = rendretBrev.stableHashCode
-        // Mangler en av hashene vet vi ikke om malen er endret, og behandler det som uendret.
-        // TODO: Fjern null-håndteringen for originalBrevmalHash når vi har definert det på alle kladder
-        val endretHash = originalBrevmalHash != null && rendretBrevmalHash != null && rendretBrevmalHash != originalBrevmalHash
+        val endretHash = erMalEndret(brev.brevmalHash, rendretBrevmalHash)
         val harVariablerSomIkkeKanOppdateres = brev.rendretBrev?.variablesMissingIn(rendretBrev.markup)?.isNotEmpty() ?: false
 
         if (!endretHash || !sjekkFoerOppdaterKladd()) {
@@ -39,4 +37,16 @@ class OppdaterBrevService(
             else -> BrevmalendringType.INGEN_ENDRING
         }
     }
+
+    /**
+     * Om redigerte vedlegg kun skal få oppdaterte variabler, og ikke malendringer, slik som brevet i [oppdaterBrevmal].
+     */
+    suspend fun skalKunOppdatereVariabler(brev: Brevredigering, pesysdata: BrevdataResponse.Data): Boolean =
+        brev.brevmalHash != null && sjekkFoerOppdaterKladd() &&
+            erMalEndret(brev.brevmalHash, brevmalService.renderMarkup(brev, pesysdata).stableHashCode)
+
+    // Mangler en av hashene vet vi ikke om malen er endret, og behandler det som uendret.
+    // TODO: Fjern null-håndteringen for originalBrevmalHash når vi har definert det på alle kladder
+    private fun erMalEndret(originalBrevmalHash: StableHashCode?, rendretBrevmalHash: StableHashCode?): Boolean =
+        originalBrevmalHash != null && rendretBrevmalHash != null && rendretBrevmalHash != originalBrevmalHash
 }

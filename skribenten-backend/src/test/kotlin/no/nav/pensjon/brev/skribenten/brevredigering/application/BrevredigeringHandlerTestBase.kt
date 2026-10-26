@@ -168,7 +168,7 @@ abstract class BrevredigeringHandlerTestBase {
     }
     protected val tilbakestillBrev by lazy { TilbakestillBrevHandler(brevtilgang, brevmalService, brevdataService) }
     protected val endreValgteVedlegg by lazy { EndreValgteVedleggHandler(brevtilgang) }
-    protected val redigerbareVedleggService by lazy { RedigerbareVedleggService(brevmalService, brevdataService) }
+    protected val redigerbareVedleggService by lazy { RedigerbareVedleggService(brevmalService, brevdataService, oppdaterBrevService) }
     protected val endreRedigertVedlegg by lazy { EndreRedigertVedleggHandler(brevtilgang, redigerbareVedleggService) }
     protected val tilbakestillRedigertVedlegg by lazy { TilbakestillRedigertVedleggHandler(brevtilgang, redigerbareVedleggService) }
     protected val hentRedigertVedlegg by lazy { HentRedigertVedleggHandler(brevtilgang, redigerbareVedleggService) }
