@@ -80,7 +80,14 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 visSivilstatusUansett = pe.skalViseOmregningUPtilUT(),
             )
         )
-        includePhrase(OpplysningerOmAvdoedTabell(pe))
+        showIf(pe.erIkkeInntektsendringBrevkode() and pe.harIkkeBarnetilleggBrevkode()) {
+            includePhrase(
+                OpplysningerOmAvdoedTabell(
+                    pe = pe,
+                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                )
+            )
+        }
 
         // ============================================================
         // Slik beregner vi uføretrygden din
