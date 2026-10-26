@@ -21,6 +21,13 @@ export default defineConfig({
   },
   server: {
     origin: "http://localhost:5173",
+    cors: {
+      origin: [
+        "http://localhost:8088",
+        "https://pensjon-brevoppskrift.intern.dev.nav.no",
+        "https://pensjon-brevoppskrift.ansatt.dev.nav.no",
+      ],
+    },
   },
   // The search worker imports fuse.js, so its bundle gets code-split. Vite's
   // build default for workers is "iife", which cannot import chunks.
