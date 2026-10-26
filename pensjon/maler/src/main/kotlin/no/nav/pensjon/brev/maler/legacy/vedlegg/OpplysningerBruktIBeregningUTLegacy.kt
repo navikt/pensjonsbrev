@@ -187,7 +187,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         }
 
         showIf(pe.skalViseInntektsgrenseOgAvkortning()) {
-            includePhrase(InntektsgrenseOgAvkortning(pe))
+            includePhrase(
+                InntektsgrenseOgAvkortning(
+                    pe = pe,
+                    visForklaringOmInntektEtterUfoerhet = pe.pebrevkode().notEqualTo("PE_UT_04_108") and
+                        pe.pebrevkode().notEqualTo("PE_UT_04_109"),
+                )
+            )
         }
 
         // ============================================================
