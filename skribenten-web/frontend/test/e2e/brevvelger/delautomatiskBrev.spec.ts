@@ -90,11 +90,12 @@ test.describe("Del-automatiske brev", () => {
     await expect(page.getByText(autobrev.name)).toBeVisible();
     await expect(card.getByText("Mottaker", { exact: true })).toBeVisible();
     await expect(card.getByText("Tydelig Bakke")).toBeVisible();
-    await expect(card.getByText("Bruker", { exact: true })).toBeVisible();
+    await expect(card.getByText("Mauråsveien 29")).toHaveCount(0);
+    await expect(card.getByText("Bruker", { exact: true })).toHaveCount(0);
     await expect(card.getByText("453864999")).toBeVisible();
   });
 
-  test("Viser verge-tagg i kvittering når brukeren har verge", async ({ page }) => {
+  test("Viser verken verge eller adresse i kvittering når brukeren har verge", async ({ page }) => {
     await page.route("**/bff/skribenten-backend/sak/123456/adresse", (route) =>
       route.fulfill({
         json: {
@@ -111,12 +112,12 @@ test.describe("Del-automatiske brev", () => {
     await selectAutobrevAndOrder(page);
 
     const card = page.getByTestId("kvittert-delautomatisk-brev");
-    await expect(card.getByText("Vergeveien 1")).toBeVisible();
-    await expect(card.getByText("Verge", { exact: true })).toBeVisible();
-    await expect(card.getByText("Bruker", { exact: true })).toHaveCount(0);
+    await expect(card.getByText("Tydelig Bakke")).toBeVisible();
+    await expect(card.getByText("Vergeveien 1")).toHaveCount(0);
+    await expect(card.getByText("Verge", { exact: true })).toHaveCount(0);
   });
 
-  test("Viser samhandler-tagg i kvittering når samhandler er mottaker", async ({ page }) => {
+  test("Viser samhandlerens navn i kvittering når samhandler er mottaker", async ({ page }) => {
     let requestBody: Record<string, unknown> | undefined;
     await page.route("**/bff/skribenten-backend/hentSamhandler", (route) =>
       route.fulfill({
@@ -164,7 +165,8 @@ test.describe("Del-automatiske brev", () => {
     expect(requestBody).toMatchObject({ idTSSEkstern: "80000000001" });
     const card = page.getByTestId("kvittert-delautomatisk-brev");
     await expect(card.getByText("Testsamhandler AS")).toBeVisible();
-    await expect(card.getByText("Samhandler", { exact: true })).toBeVisible();
+    await expect(card.getByText("Samhandlerveien 2")).toHaveCount(0);
+    await expect(card.getByText("Samhandler", { exact: true })).toHaveCount(0);
   });
 
   test("Viser feil i kvittering når bestilling feiler", async ({ page }) => {

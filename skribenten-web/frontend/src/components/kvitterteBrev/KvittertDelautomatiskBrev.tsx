@@ -2,7 +2,8 @@ import { BodyShort, ExpansionCard, Tag, VStack } from "@navikt/ds-react";
 import { AxiosError } from "axios";
 import { useState } from "react";
 
-import HentOgVisAdresse from "~/components/HentOgVisAdresse";
+import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
+import { useSamhandlerMottaker } from "~/hooks/useSamhandlerMottaker";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
 import { type DelautomatiskBrevResult } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
 
@@ -12,6 +13,9 @@ import { KvittertBrevHeaderLayout } from "./KvittertBrevHeader";
 const KvittertDelautomatiskBrev = (props: { saksId: string; result: DelautomatiskBrevResult }) => {
   const [open, setOpen] = useState(true);
   const { result } = props;
+  const sakGjelderNavn = useSakGjelderNavnFormatert({ saksId: props.saksId });
+  const samhandlerMottaker = useSamhandlerMottaker(result.idTSSEkstern ?? undefined);
+  const recipientName = result.idTSSEkstern ? samhandlerMottaker.data?.samhandler.navn : sakGjelderNavn;
 
   return (
     <ExpansionCard aria-label={result.brevtittel} onToggle={setOpen} open={open}>
@@ -32,12 +36,7 @@ const KvittertDelautomatiskBrev = (props: { saksId: string; result: Delautomatis
       <ExpansionCard.Content data-testid="kvittert-delautomatisk-brev">
         {result.status === "success" ? (
           <VStack align="start" gap="space-16">
-            <VStack gap="space-4">
-              <BodyShort size="small" weight="semibold">
-                Mottaker
-              </BodyShort>
-              <HentOgVisAdresse sakId={props.saksId} samhandlerId={result.idTSSEkstern ?? undefined} />
-            </VStack>
+            <Oppsummeringspar size="small" tittel="Mottaker" verdi={recipientName ?? "Fant ikke mottakerens navn"} />
             {result.journalpostId && (
               <Oppsummeringspar size="small" tittel="Journalpost" verdi={result.journalpostId} />
             )}
