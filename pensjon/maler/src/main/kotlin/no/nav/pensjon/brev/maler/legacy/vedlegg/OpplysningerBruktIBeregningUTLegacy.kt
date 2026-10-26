@@ -190,8 +190,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(
                 InntektsgrenseOgAvkortning(
                     pe = pe,
-                    visForklaringOmInntektEtterUfoerhet = pe.pebrevkode().notEqualTo("PE_UT_04_108") and
-                        pe.pebrevkode().notEqualTo("PE_UT_04_109"),
+                    visForklaringOmInntektEtterUfoerhet = pe.erIkkeNyBeregningAvBarnetilleggBrevkode(),
                 )
             )
         }
@@ -207,7 +206,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         includePhrase(SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(pe))
 
-        includePhrase(SlikBeregnerViReduksjonenAvUfoeretrygden(pe))
+        showIf(pe.erIkkeNyBeregningAvBarnetilleggBrevkode()) {
+            includePhrase(SlikBeregnerViReduksjonenAvUfoeretrygden(pe))
+        }
 
         includePhrase(SlikBlirDinUtbetalingFoerSkatt(pe))
 

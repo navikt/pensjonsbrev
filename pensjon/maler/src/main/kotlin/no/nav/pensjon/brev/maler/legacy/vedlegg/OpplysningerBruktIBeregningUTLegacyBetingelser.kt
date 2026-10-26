@@ -74,6 +74,9 @@ fun Expression<PEgruppe10>.skalViseEktefelletilleggGenerell(): Expression<Boolea
 fun Expression<PEgruppe10>.erIkkeSoknadOmBarnetillegg(): Expression<Boolean> =
     vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
 
+fun Expression<PEgruppe10>.erIkkeNyBeregningAvBarnetilleggBrevkode(): Expression<Boolean> =
+    pebrevkode().notEqualTo("PE_UT_04_108") and pebrevkode().notEqualTo("PE_UT_04_109")
+
 /**
  * BREVKODE-STYRT gate: brevet er ikke et barnetillegg-brev (04_108/04_109/07_200/06_300).
  * Ren brevkode-routing – forsvinner ved variant-splitting (barnetillegg-variantene inkluderer/
