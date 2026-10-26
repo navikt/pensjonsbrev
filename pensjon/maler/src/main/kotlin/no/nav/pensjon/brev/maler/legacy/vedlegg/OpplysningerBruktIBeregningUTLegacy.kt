@@ -245,7 +245,14 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         includePhrase(SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
 
-        includePhrase(SlikBeregnerViGjenlevendetilleggetDitt(pe))
+        includePhrase(
+            SlikBeregnerViGjenlevendetilleggetDitt(
+                pe = pe,
+                visOmregningsforklaring = pe.skalViseOmregningUPtilUT(),
+                visGenerellForklaring = pe.erIkkeInntektsendringBrevkode() and
+                    pe.harInntektsendringBrevkodeUtenBarnetillegg(),
+            )
+        )
 
         includePhrase(ForDegSomMottarEktefelletillegg(pe))
 

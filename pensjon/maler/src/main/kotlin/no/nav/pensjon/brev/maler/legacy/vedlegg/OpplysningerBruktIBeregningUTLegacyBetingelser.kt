@@ -234,17 +234,13 @@ fun Expression<PEgruppe10>.harGjenlevendetilleggInnvilget(): Expression<Boolean>
 
 /**
  * Vilkår for det GENERELLE (uføretrygd-baserte) gjenlevendetillegg-avsnittet, gitt at tillegget er
- * innvilget. Brukes som `orShowIf`-fallback ETTER `skalViseOmregningUPtilUT()`, så `not(omregning)`
- * (04_300/14_300) er implisitt her – ikke gjentatt. Kombinerer DATA (`erIkkeSoknadOmBarnetillegg`,
- * `nyttgjenlevendetillegg`) med BREVKODE-gates: ikke inntektsbrev (05_100/07_100) og ikke
- * barnetillegg-brev (04_108/04_109/07_200 – UTEN 04_102-leddet, jf. avviket ved
- * `harInntektsendringBrevkodeUtenBarnetillegg`). Brevkode-leddene forsvinner ved variant-splitting.
+ * innvilget. Brukes som `orShowIf`-fallback etter omregningsforklaringen.
+ * Kombinerer datavilkår med et eksplisitt innholdsvalg fra kallstedet.
  */
-fun Expression<PEgruppe10>.harGenereltGjenlevendetilleggKrav(): Expression<Boolean> =
+fun Expression<PEgruppe10>.harGenereltGjenlevendetilleggKrav(visGenerellForklaring: Expression<Boolean>): Expression<Boolean> =
     erIkkeSoknadOmBarnetillegg() and
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and
-        erIkkeInntektsendringBrevkode() and
-        pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200")
+        visGenerellForklaring
 
 // --- Seksjon: "Slik beregner vi uføretrygden din" (fullt beregningsbrev, A-klyngen) ---
 
