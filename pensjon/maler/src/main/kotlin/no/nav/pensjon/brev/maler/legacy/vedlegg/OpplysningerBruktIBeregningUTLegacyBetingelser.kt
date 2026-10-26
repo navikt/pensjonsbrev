@@ -203,26 +203,6 @@ fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringDetaljer(): Expre
 
 // --- Seksjon: "For deg som mottar ektefelletillegg" (midtre avsnitt + minstepensjon) ---
 
-/**
- * BREVKODE-STYRT: barnetillegg-brevkodene 04_108/04_109/06_300 (som `harIkkeBarnetilleggBrevkode`,
- * men UTEN 07_200). Midtavsnittet i ForDegSomMottarEktefelletillegg viser bevisst ektefelletillegg-
- * teksten også for 07_200 (opphør av barnetillegg, auto) – avviket er bevart ordrett fra legacy.
- * Forsvinner/reduseres ved variant-splitting.
- */
-fun Expression<PEgruppe10>.harIkkeBarnetilleggBrevkodeUtenOpphoer(): Expression<Boolean> =
-    pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_06_300")
-
-/** Gate for omregnings-/behold-tekst. Forutsetter at ektefelletillegg er innvilget. */
-fun Expression<PEgruppe10>.skalViseEktefelletilleggMidtreAvsnitt(
-    visOmregningsforklaring: Expression<Boolean>,
-    visMidtreForklaring: Expression<Boolean>,
-    utelatVedDoedsfall: Expression<Boolean>,
-): Expression<Boolean> =
-    visOmregningsforklaring or
-        (visMidtreForklaring and
-            erIkkeSoknadOmBarnetillegg() and
-            (not(utelatVedDoedsfall) or (utelatVedDoedsfall and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))))
-
 /** Gate for minstepensjons-avsnittet (3,76 G). Forutsetter at ektefelletillegg er innvilget. */
 fun Expression<PEgruppe10>.skalViseEktefelletilleggMinstepensjon(visMinstepensjonsforklaring: Expression<Boolean>): Expression<Boolean> =
     visMinstepensjonsforklaring and

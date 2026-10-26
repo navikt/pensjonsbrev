@@ -3,26 +3,24 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegn
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseEktefelletilleggGenerell
-import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseEktefelletilleggMidtreAvsnitt
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseEktefelletilleggMinstepensjon
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 
 data class ForDegSomMottarEktefelletillegg(
     val pe: Expression<PEgruppe10>,
     val visGenerellForklaring: Expression<Boolean>,
-    val visMidtreForklaring: Expression<Boolean>,
     val visOmregningsforklaring: Expression<Boolean>,
     val visMinstepensjonsforklaring: Expression<Boolean>,
     val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         val skalViseGenerellTekst = pe.skalViseEktefelletilleggGenerell(visGenerellForklaring, utelatVedDoedsfall)
-        val skalViseMidtreAvsnitt =
-            pe.skalViseEktefelletilleggMidtreAvsnitt(visOmregningsforklaring, visMidtreForklaring, utelatVedDoedsfall)
+        val skalViseMidtreAvsnitt = visOmregningsforklaring or skalViseGenerellTekst
         val skalViseMinstepensjonsavsnitt = pe.skalViseEktefelletilleggMinstepensjon(visMinstepensjonsforklaring)
 
         showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) {
