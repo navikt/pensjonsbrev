@@ -15,14 +15,16 @@ class OppdaterBrevService(private val brevmalService: BrevmalService) {
         pesysdata: BrevdataResponse.Data,
     ): BrevmalendringType {
         val originalBrevmalHash = brev.brevmalHash
-        val endretHash = rendretBrev.stableHashCode != originalBrevmalHash
+        val rendretBrevmalHash = rendretBrev.stableHashCode
+        // Mangler en av hashene vet vi ikke om malen er endret, og behandler det som uendret.
+        // TODO: Fjern null-håndteringen for originalBrevmalHash når vi har definert det på alle kladder
+        val endretHash = originalBrevmalHash != null && rendretBrevmalHash != null && rendretBrevmalHash != originalBrevmalHash
         val harVariablerSomIkkeKanOppdateres = brev.rendretBrev?.variablesMissingIn(rendretBrev.markup)?.isNotEmpty() ?: false
 
-        if (originalBrevmalHash == null || !endretHash || !Features.isEnabled(Features.sjekkFoerOppdaterKladd)) {
-            // TODO: Fjern brevmalHash-null-sjekken i if-klausulen når vi har definert det på alle kladder
+        if (!endretHash || !Features.isEnabled(Features.sjekkFoerOppdaterKladd)) {
             brev.mergeRendretBrev(rendretBrev.markup)
             brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
-            rendretBrev.stableHashCode?.let { brev.settBrevmalHash(it) }
+            rendretBrevmalHash?.let { brev.settBrevmalHash(it) }
         } else {
             brev.oppdaterVariabler(rendretBrev.markup)
             brev.oppdaterVariablerIVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
