@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDt
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.virkningFom
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.virkningTom
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.forholdstallUttak
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.foersteEtterbetalingFom
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.justeringsbeloep
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.kompensasjonstilleggBrutto
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.kompensasjonstilleggForholdstall
@@ -39,12 +40,12 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
     includeSakspart = false,
 ) {
     showIf(etterbetaling.isNotEmpty()) {
-        forEach(etterbetaling) { etterbetaling ->
+        ifNotNull(foersteEtterbetalingFom) { fom ->
             title2 {
                 text(
-                    bokmal { +"Oversikt over hva du får fra " + etterbetaling.virkningFom.format() },
-                    nynorsk { +"Oversikt over kva du får frå " + etterbetaling.virkningFom.format() },
-                    english { +"Overview of what you will receive from" + etterbetaling.virkningFom.format()},
+                    bokmal { +"Oversikt over hva du får fra " + fom.format() },
+                    nynorsk { +"Oversikt over kva du får frå " + fom.format() },
+                    english { +"Overview of what you will receive from " + fom.format()},
                 )
             }
             paragraph {
@@ -54,7 +55,8 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                     english { +"If there have been changes to any of the information on which the calculation is based, or if your pension has been adjusted during this period, the amount you receive may change. " },
                 )
             }
-
+        }
+        forEach(etterbetaling) { etterbetaling ->
             paragraph {
                 table(
                     header = {
