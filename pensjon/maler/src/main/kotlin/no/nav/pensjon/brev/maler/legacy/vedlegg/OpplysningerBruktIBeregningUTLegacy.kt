@@ -109,7 +109,14 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         }
 
         // Minsteytelse
-        includePhrase(ForDegSomHarRettTilMinsteytelse(pe))
+        showIf(pe.pebrevkode().isNotAnyOf("PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_103", "PE_UT_04_108", "PE_UT_07_200", "PE_UT_06_300")) {
+            includePhrase(
+                ForDegSomHarRettTilMinsteytelse(
+                    pe = pe,
+                    visUtlandsforklaringUansett = pe.pebrevkode().equalTo("f_bh_bo_utland"),
+                )
+            )
+        }
 
         showIf(pe.skalViseOmregningUPtilUT()){
             includePhrase(SlikBeregnerViUPTilUT(pe))
