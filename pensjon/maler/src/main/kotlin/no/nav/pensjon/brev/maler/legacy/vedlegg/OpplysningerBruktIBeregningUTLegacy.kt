@@ -114,7 +114,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         }
 
         showIf(pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
-            includePhrase(Grunnbeloep(pe))
+            showIf(pe.erIkkeInntektsendringBrevkode()) {
+                includePhrase(Grunnbeloep)
+            }
             includePhrase(YrkesskadeForklaring(pe))
         }
 
