@@ -14,6 +14,7 @@ import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmit";
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
+import { AttestantDiffAnnouncement } from "~/Brevredigering/LetterEditor/diff/AttestantDiffAnnouncement";
 import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
 import { AttestantDiffMenu } from "~/Brevredigering/LetterEditor/diff/AttestantDiffMenu";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
@@ -217,6 +218,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const diffFeatureToggle = useQuery(getFeatureToggle("diff"));
+  const [diffMenuElement, setDiffMenuElement] = useState<HTMLDivElement | null>(null);
+  const [diffTogglesElement, setDiffTogglesElement] = useState<HTMLDivElement | null>(null);
+  const [diffAnnouncementDismissed, setDiffAnnouncementDismissed] = useState(false);
+  const dismissDiffAnnouncement = useCallback(() => setDiffAnnouncementDismissed(true), []);
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(props.brev.info.id),
@@ -501,11 +506,21 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     <ManagedLetterEditor
                       diffToggleMenu={
                         diffFeatureToggle.data?.enabled === true && (
-                          <AttestantDiffMenu
-                            onToggle={(toggle, checked) => void handleDiffToggle(toggle, checked)}
-                            status={attestantDiff.status}
-                            toggles={attestantDiff.toggles}
-                          />
+                          <>
+                            <AttestantDiffMenu
+                              onToggle={(toggle, checked) => void handleDiffToggle(toggle, checked)}
+                              ref={setDiffMenuElement}
+                              status={attestantDiff.status}
+                              toggles={attestantDiff.toggles}
+                              togglesRef={setDiffTogglesElement}
+                            />
+                            <AttestantDiffAnnouncement
+                              dismissed={diffAnnouncementDismissed}
+                              menu={diffMenuElement}
+                              onDismiss={dismissDiffAnnouncement}
+                              toggles={diffTogglesElement}
+                            />
+                          </>
                         )
                       }
                       error={error}

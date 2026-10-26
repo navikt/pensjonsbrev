@@ -1,6 +1,6 @@
 import { QuestionmarkCircleIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, GlobalAlert, HStack, Loader, Popover, Switch, VStack } from "@navikt/ds-react";
-import { useId, useState } from "react";
+import { type Ref, useId, useState } from "react";
 
 import { type AttestantLetterDiffStatus, type DiffToggles } from "~/hooks/useAttestantLetterDiff";
 
@@ -13,10 +13,14 @@ export const AttestantDiffMenu = ({
   toggles,
   status,
   onToggle,
+  ref,
+  togglesRef,
 }: {
   toggles: DiffToggles;
   status: AttestantLetterDiffStatus;
   onToggle: (toggle: keyof DiffToggles, checked: boolean) => void;
+  ref?: Ref<HTMLDivElement>;
+  togglesRef?: Ref<HTMLDivElement>;
 }) => {
   const [alertDismissed, setAlertDismissed] = useState(false);
   const [legendAnchor, setLegendAnchor] = useState<HTMLButtonElement | null>(null);
@@ -32,6 +36,7 @@ export const AttestantDiffMenu = ({
         flexShrink="0"
         paddingBlock="space-4"
         paddingInline="space-8"
+        ref={ref}
         width="100%"
       >
         <HStack
@@ -41,7 +46,7 @@ export const AttestantDiffMenu = ({
           justify="space-between"
           wrap={false}
         >
-          <HStack align="center" gap="space-0 space-24">
+          <HStack align="center" gap="space-0 space-24" ref={togglesRef}>
             {SWITCHES.map(({ toggle, label }) => (
               <Switch
                 checked={toggles[toggle]}
