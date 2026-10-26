@@ -87,6 +87,22 @@ fun Expression<PEgruppe10>.erIkkeNyBeregningAvBarnetilleggBrevkode(): Expression
 fun Expression<PEgruppe10>.harIkkeBarnetilleggBrevkode(): Expression<Boolean> =
     pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")
 
+fun Expression<PEgruppe10>.harBrevkodeForRettTilBarnetillegg(): Expression<Boolean> =
+    pebrevkode().isOneOf(
+        "PE_UT_04_101", "PE_UT_04_102", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300",
+        "PE_UT_06_100", "PE_UT_04_103", "PE_UT_04_106", "PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200",
+    )
+
+/** TBU501V: innvilget barnetillegg og dødsfallsunntak, med brevtypevalg fra kallstedet. */
+fun Expression<PEgruppe10>.skalViseRettTilBarnetillegg(
+    visForklaringForBrevtype: Expression<Boolean>,
+    utelatVedDoedsfall: Expression<Boolean>,
+): Expression<Boolean> =
+    (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or
+        vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and
+        visForklaringForBrevtype and
+        (not(utelatVedDoedsfall) or (utelatVedDoedsfall and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
+
 /**
  * DATASTYRT gate: anvendt trygdetid er lavere enn full opptjening (40 år), slik at trygdetiden må
  * forklares i brevet. Ekte vedtaksdata – skal overleve porten til `vedtaksdata` (i motsetning til

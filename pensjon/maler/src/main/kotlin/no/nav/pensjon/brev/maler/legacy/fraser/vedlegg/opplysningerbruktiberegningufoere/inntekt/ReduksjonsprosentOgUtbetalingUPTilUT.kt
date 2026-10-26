@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.maler.legacy.ut_etteroppgjor_bt_utbetalt
 import no.nav.pensjon.brev.maler.legacy.ut_nettoakk_pluss_nettorestar
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseReduksjonsprosentavsnitt
 import no.nav.pensjon.brev.maler.legacy.ut_tbu069v
-import no.nav.pensjon.brev.maler.legacy.ut_tbu501v
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseRettTilBarnetillegg
 import no.nav.pensjon.brev.maler.legacy.ut_tbu605
 import no.nav.pensjon.brev.maler.legacy.ut_tbu605v_eller_til_din
 import no.nav.pensjon.brev.maler.legacy.ut_tbu606v_tbu608v
@@ -115,6 +115,8 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
     val pe: Expression<PEgruppe10>,
     val erBeregningsendring: Expression<Boolean>,
     val visMinstepensjonsforklaring: Expression<Boolean>,
+    val visForklaringOmRettTilBarnetillegg: Expression<Boolean>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         val kravarsaktype = pe.vedtaksdata_kravhode_kravarsaktype()
@@ -161,6 +163,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
         val erMinsteIfu33G = ifuBegrunnelse.equalTo("stdbegr_12_8_2_3")
         val virkningsdato = pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000, 1, 1))
         val erOvergangsperiodeBarnetillegg = virkningsdato.greaterThanOrEqual(LocalDate.of(2016, 1, 1)) and virkningsdato.lessThan(LocalDate.of(2021, 1, 1))
+        val skalViseBarnetilleggsforklaring = pe.skalViseRettTilBarnetillegg(visForklaringOmRettTilBarnetillegg, utelatVedDoedsfall)
 
         showIf(erMinsteIfu){
             title1 {
@@ -520,7 +523,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu501v())) {
+        showIf((skalViseBarnetilleggsforklaring)) {
             title1 {
                 text(
                     bokmal { +"For deg som har rett til barnetillegg" },
@@ -555,38 +558,38 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
                     )
                 }
             }
-        }
 
-        showIf((pe.ut_tbu501v() and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000, 1, 1)).greaterThanOrEqual(LocalDate.of(2016, 1, 1)) and andelYtelseAvOifu.greaterThan(95.0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().notEqualTo("overgangsregler_2016"))){
-            paragraph {
-                text (
-                    bokmal { + "Uføretrygd" },
-                    nynorsk { + "Uføretrygd" },
-                )
-
-                showIf((harGjenlevendetillegg)){
-                    text (
-                        bokmal { + ", gjenlevendetillegg" },
-                        nynorsk { + ", attlevendetillegg" },
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000, 1, 1)).greaterThanOrEqual(LocalDate.of(2016, 1, 1)) and andelYtelseAvOifu.greaterThan(95.0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().notEqualTo("overgangsregler_2016"))) {
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygd" },
+                        nynorsk { +"Uføretrygd" },
                     )
-                }
-                text (
-                    bokmal { + " og barnetillegg kan ikke utgjøre mer enn 95 prosent av inntekten din før du ble ufør. 95 prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Fordi uføretrygden og barnetillegget til sammen er høyere enn dette beløpet," },
-                    nynorsk { + " og barnetillegg kan ikkje utgjere meir enn 95 prosent av inntekta di før du blei ufør. 95 prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Fordi uføretrygda og barnetillegget til saman er høgare enn dette beløpet," },
-                )
 
-                showIf((andelYtelseAvOifu.greaterThan(95.0) and (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().greaterThan(0) or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().greaterThan(0)))){
-                    text (
-                        bokmal { + " blir barnetillegget ditt redusert." },
-                        nynorsk { + " blir barnetillegget ditt redusert." },
+                    showIf((harGjenlevendetillegg)) {
+                        text(
+                            bokmal { +", gjenlevendetillegg" },
+                            nynorsk { +", attlevendetillegg" },
+                        )
+                    }
+                    text(
+                        bokmal { +" og barnetillegg kan ikke utgjøre mer enn 95 prosent av inntekten din før du ble ufør. 95 prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Fordi uføretrygden og barnetillegget til sammen er høyere enn dette beløpet," },
+                        nynorsk { +" og barnetillegg kan ikkje utgjere meir enn 95 prosent av inntekta di før du blei ufør. 95 prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Fordi uføretrygda og barnetillegget til saman er høgare enn dette beløpet," },
                     )
-                }
 
-                showIf(((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))){
-                    text (
-                        bokmal { + " blir barnetillegget ditt ikke utbetalt." },
-                        nynorsk { + " blir ikkje barnetillegget ditt utbetalt." },
-                    )
+                    showIf((andelYtelseAvOifu.greaterThan(95.0) and (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().greaterThan(0) or pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().greaterThan(0)))) {
+                        text(
+                            bokmal { +" blir barnetillegget ditt redusert." },
+                            nynorsk { +" blir barnetillegget ditt redusert." },
+                        )
+                    }
+
+                    showIf(((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))) {
+                        text(
+                            bokmal { +" blir barnetillegget ditt ikke utbetalt." },
+                            nynorsk { +" blir ikkje barnetillegget ditt utbetalt." },
+                        )
+                    }
                 }
             }
         }

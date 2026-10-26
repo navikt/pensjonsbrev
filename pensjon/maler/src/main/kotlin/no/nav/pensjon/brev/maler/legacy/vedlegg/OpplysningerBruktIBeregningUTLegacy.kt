@@ -215,6 +215,8 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                     pe = pe,
                     erBeregningsendring = pe.erBeregningsendringsBrevkode(),
                     visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
+                    visForklaringOmRettTilBarnetillegg = pe.harBrevkodeForRettTilBarnetillegg(),
+                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
                 )
             )
         }
@@ -254,7 +256,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         showIf(pe.erInntektsendringMedEndretBarnetillegg()) {
             includePhrase(SlikRedusererViBarnetilleggetUtFraInntekt(pe))
         }
-        includePhrase(ForDegSomHarRettTilBarnetillegg(pe))
+        includePhrase(
+            ForDegSomHarRettTilBarnetillegg(
+                pe = pe,
+                visForklaringForBrevtype = pe.harBrevkodeForRettTilBarnetillegg(),
+                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+            )
+        )
 
         includePhrase(SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
 
