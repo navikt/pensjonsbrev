@@ -129,12 +129,13 @@ class BrevmalService(
         return filter { it.isRelevantRegelverk(sakstype, erKravPaaGammeltRegelverk) }
     }
 
-    private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
-        withContext(Dispatchers.IO) {
+    private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> {
+        val visEblanketter = includeEblanketter && Features.eblanketter.isEnabled()
+        return withContext(Dispatchers.IO) {
             val brevbaker = async { hentBrevbakerMaler().asSequence().filter { it.sakstyper.map { type -> type.kode }.contains(sakstype.kode) }.map { LetterMetadata.Brevbaker(it) } }
             val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
             val eblanketter = async {
-                if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
+                if (visEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
             }
 
             val visAutobrev = Features.visAutobrev.isEnabled()
@@ -143,15 +144,17 @@ class BrevmalService(
                 .filter { visAutobrev || it.isRedigerbart }
                 .filter { it.brevkode !in ekskluderteBrev }
         }
+    }
 
     private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> {
+        val visEblanketter = includeEblanketter && Features.eblanketter.isEnabled()
         val visAutobrev = Features.visAutobrev.isEnabled()
 
         return withContext(Dispatchers.IO) {
             val brevbaker = async { hentBrevbakerMaler() }
             val legacy = async {
                 brevmetadataService.getAllBrev().asSequence()
-                    .filter { includeEblanketter || it.dokumentkategori != BrevdataDto.DokumentkategoriCode.E_BLANKETT }
+                    .filter { visEblanketter || it.dokumentkategori != BrevdataDto.DokumentkategoriCode.E_BLANKETT }
             }
 
             // NB: setter sakstype til GENRL for legacy brev her siden vi ikke har sakstype info når vi henter alle maler,
