@@ -5,8 +5,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevmal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.letter.variablesValueMap
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brev.skribenten.letter.variablesMissingIn
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 
 class OppdaterBrevService(private val brevmalService: BrevmalService) {
@@ -17,6 +16,7 @@ class OppdaterBrevService(private val brevmalService: BrevmalService) {
     ): BrevmalendringType {
         val originalBrevmalHash = brev.brevmalHash
         val endretHash = rendretBrev.stableHashCode != originalBrevmalHash
+        val harVariablerSomIkkeKanOppdateres = brev.rendretBrev?.variablesMissingIn(rendretBrev.markup)?.isNotEmpty() ?: false
 
         if (originalBrevmalHash == null || !endretHash || !Features.isEnabled(Features.sjekkFoerOppdaterKladd)) {
             // TODO: Fjern brevmalHash-null-sjekken i if-klausulen når vi har definert det på alle kladder
@@ -28,23 +28,10 @@ class OppdaterBrevService(private val brevmalService: BrevmalService) {
             brev.oppdaterVariablerIVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
         }
 
-        val eksisterendeVariabler = brev.rendretBrev?.variablesValueMap()?.keys?.sorted() ?: emptyList()
-        val nyeVariabler = rendretBrev.finnVariablerBrukt()
-
-        val brevmalendringType = when {
+        return when {
             endretHash -> BrevmalendringType.MARKUP_ENDRET
-            eksisterendeVariabler != nyeVariabler -> BrevmalendringType.KUNNE_IKKE_OPPDATERE_ALLE_VARIABLER
+            harVariablerSomIkkeKanOppdateres -> BrevmalendringType.KUNNE_IKKE_OPPDATERE_ALLE_VARIABLER
             else -> BrevmalendringType.INGEN_ENDRING
         }
-        return brevmalendringType
     }
-
-    private fun LetterMarkupWithDataUsage.finnVariablerBrukt(): List<Int> = markup.blocks
-        .asSequence()
-        .filterIsInstance<LetterMarkup.Block.Paragraph>()
-        .flatMap { it.content }
-        .filterIsInstance<LetterMarkup.ParagraphContent.Text.Variable>()
-        .map { it.id }
-        .sorted()
-        .toList()
 }

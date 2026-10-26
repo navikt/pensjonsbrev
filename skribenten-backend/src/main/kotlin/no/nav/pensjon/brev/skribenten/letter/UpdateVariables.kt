@@ -8,9 +8,17 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
  * Variables not present in the fresh rendering keep their previous value.
  */
 fun Edit.Letter.updateVariables(renderedLetter: LetterMarkup): Edit.Letter =
-    renderedLetter.toEdit().let { rendered ->
-        UpdateVariables(rendered.variablesValueMap() + rendered.title.variablesValueMap()).updateLetter(this)
-    }
+    UpdateVariables(renderedLetter.toEdit().allVariablesValueMap()).updateLetter(this)
+
+/**
+ * IDs of variables in this letter (including title, lists and tables) that have no value in the fresh rendering,
+ * i.e. variables whose value cannot be updated.
+ */
+fun Edit.Letter.variablesMissingIn(renderedLetter: LetterMarkup): Set<Int> =
+    allVariablesValueMap().keys - renderedLetter.toEdit().allVariablesValueMap().keys
+
+private fun Edit.Letter.allVariablesValueMap(): Map<Int, String> =
+    variablesValueMap() + title.variablesValueMap()
 
 /**
  * Same as [Edit.Letter.updateVariables], but for an edited attachment.

@@ -115,4 +115,46 @@ class UpdateVariablesTest {
 
         assertEquals(edited, edited.updateVariables(rendered))
     }
+
+    @Test
+    fun `finner ingen manglende variabler naar alle finnes i rendret brev, ogsaa i tittel, lister og tabeller`() {
+        fun brev() =
+            editedLetter {
+                title1(id = 1) { variable(id = 13, text = "tittelblokk") }
+                paragraph(id = 2) {
+                    variable(id = 21, text = "avsnitt")
+                    itemList(id = 22) {
+                        item(id = 221) { variable(id = 2211, text = "punkt") }
+                    }
+                    table(id = 23) {
+                        header(id = 231) { colSpec(id = 2311, cellId = 23111) { variable(id = 231111, text = "header") } }
+                        row(id = 232) { cell(id = 2321) { variable(id = 23211, text = "celle") } }
+                    }
+                }
+            }.let { it.copy(title = Edit.Title(listOf(Variable(id = 9, text = "tittel")))) }
+
+        assertEquals(emptySet<Int>(), brev().variablesMissingIn(brev().toMarkup()))
+    }
+
+    @Test
+    fun `finner variabler i redigert brev som mangler i rendret brev`() {
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                variable(id = 11, text = "finnes")
+                variable(id = 12, text = "fjernet fra malen")
+            }
+            paragraph {
+                literal(text = "Fritekst ")
+                variable(id = 13, text = "fjernet fra malen")
+            }
+        }
+        val rendered = editedLetter {
+            paragraph(id = 1) {
+                variable(id = 11, text = "finnes")
+                variable(id = 14, text = "ny variabel i malen")
+            }
+        }.toMarkup()
+
+        assertEquals(setOf(12, 13), edited.variablesMissingIn(rendered))
+    }
 }
