@@ -160,6 +160,17 @@ fun Expression<PEgruppe10>.skalViseInntekterBruktIBeregning(): Expression<Boolea
         pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300", "PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300") and
         oppfyllerDoedsfallsvilkaar(pebrevkode().equalTo("PE_UT_04_102"))
 
+/** Datavilkår for avdødes inntektsgrunnlag, med brevtypevalg fra kallstedet. */
+fun Expression<PEgruppe10>.skalViseInntektsgrunnlagAvdoed(
+    utelatVedDoedsfall: Expression<Boolean>,
+): Expression<Boolean> =
+    (vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and
+        erIkkeSoknadOmBarnetillegg() and
+        vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and
+        not(vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) and
+        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_opptjeningutliste_opptjeningut_ar().notEqualTo(0)) and
+        oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall)
+
 /** Gate for tabellen med norsk trygdetid (under "Dette er trygdetiden din"). */
 fun Expression<PEgruppe10>.skalViseTrygdetidNorTabell(erMndEtterFoedsel: Expression<Boolean>): Expression<Boolean> =
     not(erMndEtterFoedsel) and

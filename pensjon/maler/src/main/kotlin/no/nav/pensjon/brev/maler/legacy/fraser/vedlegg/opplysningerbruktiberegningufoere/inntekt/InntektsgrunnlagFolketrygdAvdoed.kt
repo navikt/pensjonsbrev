@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegn
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.selectors.opptjeningUT.*
-import no.nav.pensjon.brev.maler.legacy.ut_avdod
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseInntektsgrunnlagAvdoed
 import no.nav.pensjon.brev.maler.legacy.ut_inntektslandtruehvorbruktliktrue_avdod
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_opptjeningutliste
@@ -22,13 +22,14 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 data class InntektsgrunnlagFolketrygdAvdoed(
     val pe: Expression<PEgruppe10>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
         // det å bruke data som ikke finnes i exstream ville ha ført til at hele tabellen forsvant, så dette oppnår samme resultat.
         ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()){ virkFom ->
 
-            showIf(pe.ut_avdod() and pe.ut_inntektslandtruehvorbruktliktrue_avdod() ){
+            showIf(pe.skalViseInntektsgrunnlagAvdoed(utelatVedDoedsfall) and pe.ut_inntektslandtruehvorbruktliktrue_avdod() ){
                 paragraph {
                     text (
                         bokmal { + "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra " + virkFom.format() },

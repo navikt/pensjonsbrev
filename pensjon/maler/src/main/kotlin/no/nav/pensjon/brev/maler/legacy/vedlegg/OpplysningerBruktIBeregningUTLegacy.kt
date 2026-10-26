@@ -145,11 +145,38 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(InntektsgrunnlagUtland(pe))
             includePhrase(InntektsgrunnlagUtlandUthevetNotat(pe))
 
-            includePhrase(InntektsgrunnlagFolketrygdAvdoed(pe))
-            includePhrase(InntektsgrunnlagFolketrygdAvdoedUthevetNotat(pe))
+            showIf(
+                pe.erIkkeInntektsendringBrevkode() and
+                    pe.pebrevkode().notEqualTo("PE_UT_04_114") and
+                    pe.harIkkeBarnetilleggBrevkode()
+            ) {
+                val utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102")
+                includePhrase(
+                    InntektsgrunnlagFolketrygdAvdoed(
+                        pe = pe,
+                        utelatVedDoedsfall = utelatVedDoedsfall,
+                    )
+                )
+                includePhrase(
+                    InntektsgrunnlagFolketrygdAvdoedUthevetNotat(
+                        pe = pe,
+                        utelatVedDoedsfall = utelatVedDoedsfall,
+                    )
+                )
 
-            includePhrase(InntektsgrunnlagUtlandAvdoed(pe))
-            includePhrase(InntektsgrunnlagUtlandAvdoedUthevetNotat(pe))
+                includePhrase(
+                    InntektsgrunnlagUtlandAvdoed(
+                        pe = pe,
+                        utelatVedDoedsfall = utelatVedDoedsfall,
+                    )
+                )
+                includePhrase(
+                    InntektsgrunnlagUtlandAvdoedUthevetNotat(
+                        pe = pe,
+                        utelatVedDoedsfall = utelatVedDoedsfall,
+                    )
+                )
+            }
         }
 
         // ============================================================
