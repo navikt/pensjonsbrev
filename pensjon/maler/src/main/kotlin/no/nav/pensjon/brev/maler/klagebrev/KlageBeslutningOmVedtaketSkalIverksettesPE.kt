@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -35,17 +37,17 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
-        val vedtaketIverksettes = saksbehandlervalg("vedtaketIverksettes", "Vedtaket skal iverksettes").bool()
+        val soeknadenInnvilget = saksbehandlervalg("SoeknadenInnvilget", "Søknaden er innvilget").bool()
         val oekonomiskeForhold =
             saksbehandlervalg("oekonomiskeForhold", "Økonomiske forhold kan ikke vektlegges").bool()
         val tilbakekreving = saksbehandlervalg("tilbakekreving", "Hvis saken gjelder tilbakekreving, og vi gir avslag på utsatt iverksettelse").bool()
 
         title {
             text(bokmal { +"Vi har besluttet at vedtaket " })
-            showIf(vedtaketIverksettes) {
-                text(bokmal { +"skal " })
-            }.orShow {
+            showIf(soeknadenInnvilget) {
                 text(bokmal { +"ikke skal " })
+            }.orShow {
+                text(bokmal { +"skal " })
             }
             text(bokmal { +"iverksettes" })
         }
@@ -61,10 +63,10 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             }
             paragraph {
                 text(bokmal { +"Søknaden er " })
-                showIf(vedtaketIverksettes) {
-                    text(bokmal { +"avslått." })
-                }.orShow {
+                showIf(soeknadenInnvilget) {
                     text(bokmal { +"innvilget." })
+                }.orShow {
+                    text(bokmal { +"avslått." })
                 }
             }
 
@@ -86,7 +88,7 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
                     +"I vurderingen av om vedtaket likevel skal gis oppsettende virkning, "
                     +"skal det legges vekt på hva som antas å bli utfallet av klagebehandlingen. "
                 })
-                showIf(oekonomiskeForhold) {
+                showIf(not(soeknadenInnvilget) and oekonomiskeForhold) {
                     text(bokmal {
                         +"Økonomiske forhold kan som hovedregel ikke vektlegges i vurderingen av om vedtaket skal gis oppsettende virkning."
                     })
@@ -105,17 +107,17 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             }
             paragraph {
                 text(bokmal { +"Vi mener at det " })
-                showIf(vedtaketIverksettes) {
+                showIf(soeknadenInnvilget) {
                     text(bokmal {
-                        +"ikke er tilstrekkelig grunnlag "
+                        +"er grunnlag "
                     })
                 }.orShow {
-                    text(bokmal { +"er grunnlag " })
+                    text(bokmal { +"ikke er tilstrekkelig grunnlag " })
                 }
                 text(bokmal { +"for å utsette iverksettelse av vedtaket vårt av "
                     +fritekst("dato") + " fram til klagen er endelig avgjort." })
             }
-            showIf(tilbakekreving) {
+            showIf(not(soeknadenInnvilget) and tilbakekreving) {
                 paragraph {
                     text(bokmal {
                         +"Du kan be Skatteetaten om en nedbetalingsavtale hvis det er vanskelig for deg å betale tilbake det feilutbetalte beløpet samlet."
