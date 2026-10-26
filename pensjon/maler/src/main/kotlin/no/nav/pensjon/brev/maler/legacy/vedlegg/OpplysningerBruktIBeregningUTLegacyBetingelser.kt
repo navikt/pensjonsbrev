@@ -292,7 +292,10 @@ fun Expression<PEgruppe10>.bunnfradragUnderInntektstak(): Expression<Boolean> =
  * variant-splitting; resten er datastyrt og overlever porten.
  */
 fun Expression<PEgruppe10>.skalViseReduksjonsprosentavsnitt(): Expression<Boolean> =
-    (erBeregningsendringsBrevkode() or erInntektsendringMedEndretUtbetaling()) and
+    skalViseReduksjonsprosentavsnitt(erBeregningsendringsBrevkode())
+
+fun Expression<PEgruppe10>.skalViseReduksjonsprosentavsnitt(erBeregningsendring: Expression<Boolean>): Expression<Boolean> =
+    (erBeregningsendring or erInntektsendringMedEndretUtbetaling()) and
         erIkkeSoknadOmBarnetillegg() and
         bunnfradragUnderInntektstak()
 

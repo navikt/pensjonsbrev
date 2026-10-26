@@ -206,7 +206,14 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(ReduksjonsprosentOgUtbetalingUPTilUT(pe))
         }
 
-        includePhrase(SlikHarViFastsattReduksjonsprosentenDin(pe))
+        includePhrase(
+            SlikHarViFastsattReduksjonsprosentenDin(
+                pe = pe,
+                erBeregningsendring = pe.erBeregningsendringsBrevkode(),
+                visDetaljertReduksjonsberegning = pe.erIkkeEndringEllerOekningBrevkode() and
+                    pe.erIkkeInntektsendringBrevkode(),
+            )
+        )
 
         showIf(pe.harInntektsendringBrevkodeUtenBarnetillegg()) {
             includePhrase(
