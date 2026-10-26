@@ -214,7 +214,12 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(SlikBeregnerViReduksjonenAvUfoeretrygden(pe))
         }
 
-        includePhrase(SlikBlirDinUtbetalingFoerSkatt(pe))
+        includePhrase(
+            SlikBlirDinUtbetalingFoerSkatt(
+                pe = pe,
+                visOrdinaereUtbetalingsavsnitt = pe.harIkkeBarnetilleggBrevkode(),
+            )
+        )
 
         // ============================================================
         // Barnetillegg og andre tillegg
