@@ -34,7 +34,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
-        val gyldig = saksbehandlervalg("gyldig", "Vedtak er gyldig").bool()
+        val gyldig = saksbehandlervalg("gyldig", "Vedtaket er gyldig").bool()
 
         title {
             text(bokmal {
