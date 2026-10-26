@@ -2,8 +2,16 @@ import { type Page } from "@playwright/test";
 
 /**
  * Sets up common API route stubs for a sak.
+ *
+ * By default the brevvelger e-blankett walkthrough is closed whenever it appears, so tests that are not
+ * about it can use brevvelger as usual. Pass `lukkEblankettNyhet: false` to test the walkthrough itself.
  */
-export async function setupSakStubs(page: Page) {
+export async function setupSakStubs(page: Page, { lukkEblankettNyhet = true } = {}) {
+  if (lukkEblankettNyhet) {
+    await page.addLocatorHandler(page.locator('[data-feature-announcement="brevvelger-eblanketter"]'), () =>
+      page.keyboard.press("Escape"),
+    );
+  }
   await page.route("**/bff/skribenten-backend/sak/**", (route) => {
     // Default 404 for any sak route not explicitly handled below
     if (

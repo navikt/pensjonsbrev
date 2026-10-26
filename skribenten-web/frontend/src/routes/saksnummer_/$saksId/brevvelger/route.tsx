@@ -18,7 +18,7 @@ import { type UseQueryResult, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import Fuse from "fuse.js";
 import { groupBy, partition, sortBy } from "lodash";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type Ref, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 
 import { getBrevmetadata } from "~/api/brev-queries";
@@ -36,6 +36,9 @@ import { trackEvent } from "~/utils/umami";
 import { baseSearchSchema } from "../route";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
+import { EblankettAnnouncement } from "./-components/EblankettAnnouncement";
+
+const EBLANKETTER = "E-blanketter";
 
 const brevvelgerSearchSchema = baseSearchSchema.extend({
   brevId: z.coerce.number().optional(),
@@ -112,11 +115,54 @@ const BrevvelgerMainContent = (props: {
   brevmalKoder: string[];
   brevmetadata: Record<string, LetterMetadata>;
   alleSaksbrevQuery: UseQueryResult<BrevInfo[], Error>;
-  setOnSubmitClick: (v: SubmitTemplateOptions) => void;
+  setOnSubmitClick: (v: Nullable<SubmitTemplateOptions>) => void;
 }) => {
   const { brevId, templateId, enhetsId } = Route.useSearch();
   const { brevmalKoder, brevmetadata } = props;
   const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({});
+
+  const eblanketterCategoryRef = useRef<HTMLButtonElement>(null);
+  const announcedEblankettRef = useRef<HTMLButtonElement>(null);
+  const brevmalPanelRef = useRef<HTMLDivElement>(null);
+  const announcedEblankettId = useMemo(
+    () =>
+      sortBy(
+        brevmalKoder
+          .map((kode) => brevmetadata[kode])
+          .filter((brevmal): brevmal is LetterMetadata => brevmal?.dokumentkategoriCode === "E_BLANKETT"),
+        (brevmal) => brevmal.name,
+      )[0]?.id,
+    [brevmalKoder, brevmetadata],
+  );
+  // Kladder and favoritter load separately and add categories above E-blanketter. Starting before they are
+  // in place would let the list grow after Joyride has scrolled, moving the target away from its tooltip.
+  const favoritterQuery = useQuery(getFavoritter);
+  const brevvelgerFerdigLastet = props.alleSaksbrevQuery.isFetched && favoritterQuery.isFetched;
+
+  // The walkthrough shows its e-blankett on top of the user's own selection instead of changing the URL,
+  // so nothing it does survives a reload, and ending it simply reveals the user's selection again.
+  const [walkthroughEblankettId, setWalkthroughEblankettId] = useState<string>();
+  const shownTemplateId = walkthroughEblankettId ?? templateId;
+  const shownBrevId = walkthroughEblankettId ? undefined : brevId;
+  const eblanketterOpenBeforeWalkthrough = useRef<boolean | null>(null);
+
+  const showAnnouncedEblankett = () => {
+    if (!announcedEblankettId) return;
+    eblanketterOpenBeforeWalkthrough.current ??= openAccordions[EBLANKETTER] ?? false;
+    setOpenAccordions((prev) => ({ ...prev, [EBLANKETTER]: true }));
+    setWalkthroughEblankettId(announcedEblankettId);
+  };
+
+  const restoreStateBeforeWalkthrough = () => {
+    const eblanketterOpen = eblanketterOpenBeforeWalkthrough.current;
+    if (eblanketterOpen === null) return;
+    eblanketterOpenBeforeWalkthrough.current = null;
+    setOpenAccordions((prev) => ({ ...prev, [EBLANKETTER]: eblanketterOpen }));
+    setWalkthroughEblankettId(undefined);
+    // A selected brevmal or kladd registers its own submit action again when it is shown; with nothing
+    // selected, the e-blankett's action must not linger behind a "Fortsett" button.
+    if (!templateId && brevId === undefined) props.setOnSubmitClick(null);
+  };
 
   const closeAccordionWhereTemplateWasAdded = useCallback(
     (templateId: string) => {
@@ -141,8 +187,10 @@ const BrevvelgerMainContent = (props: {
             </Heading>
             <Brevmaler
               alleSaksbrev={props.alleSaksbrevQuery}
+              announcedEblankett={{ id: announcedEblankettId, ref: announcedEblankettRef }}
               brevmalKoder={brevmalKoder}
               brevmetadata={brevmetadata}
+              eblanketterCategoryRef={eblanketterCategoryRef}
               handleOpenAccordionChange={(categoryKey) =>
                 setOpenAccordions((prev) => ({
                   ...prev,
@@ -150,17 +198,29 @@ const BrevvelgerMainContent = (props: {
                 }))
               }
               openAccordions={openAccordions}
+              shownBrevId={shownBrevId}
+              shownTemplateId={shownTemplateId}
             />
           </VStack>
         </Box>
         <BrevmalPanel
-          brevId={brevId}
+          brevId={shownBrevId}
           brevmetadata={brevmetadata}
           enhetsId={enhetsId ?? ""}
           onAddFavorittSuccess={(templateId) => closeAccordionWhereTemplateWasAdded(templateId)}
+          ref={brevmalPanelRef}
           saksId={props.saksId}
           setOnFormSubmitClick={props.setOnSubmitClick}
-          templateId={templateId}
+          templateId={shownTemplateId}
+        />
+        <EblankettAnnouncement
+          categoryRef={eblanketterCategoryRef}
+          eblankettId={announcedEblankettId}
+          eblankettRef={announcedEblankettRef}
+          onEnd={restoreStateBeforeWalkthrough}
+          onShowEblankett={showAnnouncedEblankett}
+          panelRef={brevmalPanelRef}
+          ready={brevvelgerFerdigLastet}
         />
       </HStack>
     </Box>
@@ -173,15 +233,24 @@ function Brevmaler({
   alleSaksbrev,
   openAccordions,
   handleOpenAccordionChange,
+  eblanketterCategoryRef,
+  announcedEblankett,
+  shownTemplateId,
+  shownBrevId,
 }: {
   brevmalKoder: string[];
   brevmetadata: Record<string, LetterMetadata>;
   alleSaksbrev: UseQueryResult<BrevInfo[], Error>;
   openAccordions: Record<string, boolean>;
   handleOpenAccordionChange: (categoryKey: string) => void;
+  eblanketterCategoryRef: Ref<HTMLButtonElement>;
+  announcedEblankett: { id: string | undefined; ref: Ref<HTMLButtonElement> };
+  /** The brevmal or kladd shown in the panel, which is highlighted in the list. */
+  shownTemplateId: string | undefined;
+  shownBrevId: number | undefined;
 }) {
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
-  const { templateId, enhetsId } = Route.useSearch();
+  const { enhetsId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const favoritter = useQuery(getFavoritter).data ?? [];
@@ -230,13 +299,13 @@ function Brevmaler({
   const brevmalerGroupedByType: Record<string, LetterMetadata[]> = {
     ...(matchingFavoritter.length > 0 ? { Favoritter: matchingFavoritter } : {}),
     ...groupedBrevmaler,
-    ...(eblanketter.length > 0 ? { "E-blanketter": eblanketter } : {}),
+    ...(eblanketter.length > 0 ? { [EBLANKETTER]: eblanketter } : {}),
   };
 
   const sortedCategoryKeys = [
     matchingFavoritter.length > 0 ? ["Favoritter"] : [],
     sortBy(Object.keys(groupedBrevmaler), (type) => type),
-    eblanketter.length > 0 ? ["E-blanketter"] : [],
+    eblanketter.length > 0 ? [EBLANKETTER] : [],
   ].flat();
 
   const filters = ["Skribenten", "Vedtaksbrev"];
@@ -286,7 +355,9 @@ function Brevmaler({
             indent={false}
             size="small"
           >
-            {alleSaksbrev.isSuccess && <Kladder alleBrevPåSaken={alleSaksbrev.data} brevmetadata={brevmetadata} />}
+            {alleSaksbrev.isSuccess && (
+              <Kladder alleBrevPåSaken={alleSaksbrev.data} brevmetadata={brevmetadata} shownBrevId={shownBrevId} />
+            )}
 
             {Object.keys(brevmalerGroupedByType).length === 0 && (
               <Alert data-testid="ingen-treff-alert" size="small" variant="info">
@@ -309,6 +380,7 @@ function Brevmaler({
                       justifyContent: "space-between",
                       color: "var(--ax-text-neutral)",
                     }}
+                    ref={type === EBLANKETTER ? eblanketterCategoryRef : undefined}
                   >
                     <Label size="small">{type}</Label>
                   </Accordion.Header>
@@ -324,7 +396,7 @@ function Brevmaler({
                       {brevmalerGroupedByType[type].map((template) => (
                         <BrevmalButton
                           extraStyles={
-                            template.id === templateId
+                            template.id === shownTemplateId
                               ? {
                                   backgroundColor: "var(--ax-bg-accent-moderate-pressed)",
                                 }
@@ -350,6 +422,11 @@ function Brevmaler({
                               }),
                             });
                           }}
+                          ref={
+                            type === EBLANKETTER && template.id === announcedEblankett.id
+                              ? announcedEblankett.ref
+                              : undefined
+                          }
                           title={template.name}
                         />
                       ))}
@@ -365,8 +442,11 @@ function Brevmaler({
   );
 }
 
-const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<string, LetterMetadata> }) => {
-  const { brevId } = Route.useSearch();
+const Kladder = (props: {
+  alleBrevPåSaken: BrevInfo[];
+  brevmetadata: Record<string, LetterMetadata>;
+  shownBrevId: number | undefined;
+}) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const kladder = props.alleBrevPåSaken.filter(erBrevKladdEllerUnderRedigering);
 
@@ -388,7 +468,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
               <BrevmalButton
                 description={`Opprettet ${formatStringDate(brev.opprettet)}`}
                 extraStyles={
-                  brev.id === brevId
+                  brev.id === props.shownBrevId
                     ? {
                         backgroundColor: "var(--ax-bg-accent-moderate-pressed)",
                       }
@@ -440,6 +520,7 @@ const BrevmalButton = (props: {
   extraStyles?: CSSObject | undefined;
   icon: React.ReactNode;
   title: React.ReactNode;
+  ref?: Ref<HTMLButtonElement>;
 }) => {
   return (
     <Button
@@ -453,6 +534,7 @@ const BrevmalButton = (props: {
       }}
       data-testid="brevmal-button"
       onClick={props.onClick}
+      ref={props.ref}
       variant="tertiary"
     >
       <HStack align="center" gap="space-8" wrap={false}>

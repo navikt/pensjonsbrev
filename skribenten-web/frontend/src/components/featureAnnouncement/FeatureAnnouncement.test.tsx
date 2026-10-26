@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
-import { describe, expect, onTestFinished, test } from "vitest";
+import { useMemo, useRef, useState } from "react";
+import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { FeatureAnnouncement, type FeatureAnnouncementStep } from "./FeatureAnnouncement";
 
@@ -197,6 +197,79 @@ describe("<FeatureAnnouncement />", () => {
 
     act(() => annenNyhet.remove());
     await findAnnouncement();
+  });
+
+  test("kjører before-hook og venter på mål som først vises etterpå, også med tomme refs", async () => {
+    const user = userEvent.setup();
+    const onDismiss = vi.fn();
+    const Walkthrough = () => {
+      const firstRef = useRef<HTMLDivElement>(null);
+      const laterRef = useRef<HTMLDivElement>(null);
+      const [showLater, setShowLater] = useState(false);
+      // Both refs are still empty when the steps are created; Joyride must still find the elements later.
+      const steps = useMemo<FeatureAnnouncementStep[]>(
+        () => [
+          { target: firstRef, title: "Første nyhet", content: "Første forklaring" },
+          {
+            target: laterRef,
+            title: "Andre nyhet",
+            content: "Andre forklaring",
+            before: () => setShowLater(true),
+          },
+        ],
+        [],
+      );
+      return (
+        <>
+          <div ref={firstRef}>Først</div>
+          {showLater && <div ref={laterRef}>Vises etter before-hook</div>}
+          <FeatureAnnouncement id="test-nyhet" onDismiss={onDismiss} steps={steps} when />
+        </>
+      );
+    };
+    render(<Walkthrough />);
+    await findAnnouncement();
+    expect(screen.queryByText("Vises etter before-hook")).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Neste" }));
+
+    await findAnnouncement("Andre nyhet");
+    expect(screen.queryByText("Vises etter before-hook")).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "Skjønner!" }));
+    await waitFor(() => expect(queryAnnouncement()).toBeNull());
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  test("varsler om lukking én gang når hele gjennomgangen lukkes med Escape", async () => {
+    const user = userEvent.setup();
+    const onDismiss = vi.fn();
+    const Walkthrough = () => {
+      const [target, setTarget] = useState<HTMLElement | null>(null);
+      const steps = useMemo<FeatureAnnouncementStep[]>(
+        () =>
+          target
+            ? [
+                { target, title: "Første nyhet", content: "Første forklaring" },
+                { target, title: "Andre nyhet", content: "Andre forklaring" },
+              ]
+            : [],
+        [target],
+      );
+      return (
+        <>
+          <div ref={setTarget}>Mål</div>
+          <FeatureAnnouncement id="test-nyhet" onDismiss={onDismiss} steps={steps} when={target !== null} />
+        </>
+      );
+    };
+    render(<Walkthrough />);
+    await findAnnouncement();
+
+    await user.keyboard("{Escape}");
+    await settle();
+
+    expect(queryAnnouncement()).toBeNull();
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
   test("kontrollert lukking gjelder også etter at komponenten monteres på nytt", async () => {

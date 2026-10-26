@@ -1,15 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  ACTIONS,
-  EVENTS,
-  LIFECYCLE,
-  ORIGIN,
-  type Placement,
-  STATUS,
-  type Step,
-  type StepTarget,
-  useJoyride,
-} from "react-joyride";
+import { ACTIONS, EVENTS, ORIGIN, type Placement, STATUS, type Step, type StepTarget, useJoyride } from "react-joyride";
 
 import {
   FEATURE_ANNOUNCEMENT_ATTRIBUTE,
@@ -31,6 +21,18 @@ export type FeatureAnnouncementStep = {
   spotlightPadding?: number;
   /** Defaults to Aksel radius-8. Use 0 for a rectangular region. */
   spotlightRadius?: number;
+  /**
+   * Element to scroll into view instead of the target, e.g. when the target sits inside a container that
+   * clips overflow (and so looks scrollable to Joyride) rather than in the list that actually scrolls.
+   */
+  scrollTarget?: StepTarget;
+  /**
+   * Prepares the UI before the step is shown (e.g. opens a menu or selects an item). The page stays
+   * dimmed while it runs; afterwards the announcement waits for `target` to become visible.
+   */
+  before?: () => Promise<void> | void;
+  /** How long to wait for `target` to become visible, in ms. The step is skipped if it does not. */
+  targetWaitTimeout?: number;
 };
 
 type FeatureAnnouncementProps = {
@@ -69,7 +71,11 @@ export const FeatureAnnouncement = ({
   const dismissed = dismissedProp ?? internalDismissed;
   const onDismissReference = useRef(onDismiss);
   onDismissReference.current = onDismiss;
+  // Several Joyride events can report the same close, so make sure the caller is only notified once.
+  const dismissedReference = useRef(false);
   const dismiss = useCallback(() => {
+    if (dismissedReference.current) return;
+    dismissedReference.current = true;
     setInternalDismissed(true);
     onDismissReference.current?.();
   }, []);
@@ -82,14 +88,21 @@ export const FeatureAnnouncement = ({
     () =>
       steps.map((step, index) => ({
         id: `${id}-${index}`,
-        target: step.target,
+        target: toLiveTarget(step.target),
         // Setting the spotlight target explicitly keeps its padding out of the tooltip's offset.
-        spotlightTarget: step.spotlightTarget ?? step.target,
+        spotlightTarget: toLiveTarget(step.spotlightTarget ?? step.target),
         spotlightPadding: step.spotlightPadding ?? 4,
         spotlightRadius: step.spotlightRadius ?? 8,
+        ...(step.scrollTarget && { scrollTarget: toLiveTarget(step.scrollTarget) }),
         title: step.title,
         content: step.content,
         placement: step.placement ?? "bottom",
+        // Joyride only waits for a target when a step has no `before` hook, so every step gets one that
+        // runs the step's own preparation and then waits for the target itself. Joyride then scrolls to it.
+        before: async () => {
+          await step.before?.();
+          await waitUntilVisible(step.target, step.targetWaitTimeout ?? DEFAULT_TARGET_WAIT_MS);
+        },
         data: { announcementId: id } satisfies FeatureAnnouncementStepData,
       })),
     [id, steps],
@@ -101,6 +114,8 @@ export const FeatureAnnouncement = ({
     continuous: steps.length > 1,
     // Joyride restarts from initialStepIndex whenever `run` turns true again, e.g. after a blocking dialog closes.
     initialStepIndex: resumeIndex,
+    // Joyride scrolls each step's target into view, but skips the first step unless asked to.
+    scrollToFirstStep: true,
     tooltipComponent: FeatureAnnouncementTooltip,
     arrowComponent: FeatureAnnouncementArrow,
     loaderComponent: null,
@@ -123,7 +138,6 @@ export const FeatureAnnouncement = ({
       offset: 8,
       overlayClickAction: "close",
       skipBeacon: true,
-      skipScroll: true,
       // Below Aksel popovers (1000) so e.g. the help popover is not covered.
       zIndex: 900,
     },
@@ -135,19 +149,52 @@ export const FeatureAnnouncement = ({
     },
   });
 
-  const tooltipVisible = run && state.status === STATUS.RUNNING && state.lifecycle === LIFECYCLE.TOOLTIP;
+  // Also while a step is being prepared (page dimmed, tooltip not shown yet), so Escape always works.
+  const isRunning = run && state.status === STATUS.RUNNING;
 
   useEffect(() => {
-    if (!tooltipVisible) return;
+    if (!isRunning) return;
     const dismissOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") dismiss();
     };
     document.addEventListener("keydown", dismissOnEscape);
     return () => document.removeEventListener("keydown", dismissOnEscape);
-  }, [tooltipVisible, dismiss]);
+  }, [isRunning, dismiss]);
 
   return run ? Tour : null;
 };
+
+const DEFAULT_TARGET_WAIT_MS = 1000;
+const TARGET_POLL_MS = 50;
+
+const resolveTarget = (target: StepTarget): HTMLElement | null => {
+  if (typeof target === "string") return document.querySelector<HTMLElement>(target);
+  if (typeof target === "function") return target();
+  if ("current" in target) return target.current;
+  return target;
+};
+
+// Joyride deep-copies steps, which freezes a React ref at whatever it pointed to when the steps were
+// created (often null). A function is copied by reference, so it always reads the ref's current element.
+const toLiveTarget = (target: StepTarget): StepTarget =>
+  typeof target === "object" && "current" in target ? () => target.current : target;
+
+// Matches Joyride's own check: rendered and not hidden by `display` or `visibility` (e.g. a closed accordion).
+const isVisible = (element: HTMLElement | null): element is HTMLElement =>
+  element?.isConnected === true && (element.checkVisibility?.({ visibilityProperty: true }) ?? true);
+
+/** Resolves with the target once it is visible, or with null after the timeout. */
+const waitUntilVisible = (target: StepTarget, timeoutMs: number) =>
+  new Promise<HTMLElement | null>((resolve) => {
+    const startedAt = Date.now();
+    const check = () => {
+      const element = resolveTarget(target);
+      if (isVisible(element)) return resolve(element);
+      if (Date.now() - startedAt >= timeoutMs) return resolve(null);
+      setTimeout(check, TARGET_POLL_MS);
+    };
+    check();
+  });
 
 const hasOtherOverlay = (id: string) =>
   document.querySelector(
