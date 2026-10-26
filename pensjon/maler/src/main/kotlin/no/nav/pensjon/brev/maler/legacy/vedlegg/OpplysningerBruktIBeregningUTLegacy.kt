@@ -254,7 +254,18 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             )
         )
 
-        includePhrase(ForDegSomMottarEktefelletillegg(pe))
+        includePhrase(
+            ForDegSomMottarEktefelletillegg(
+                pe = pe,
+                visGenerellForklaring = pe.pebrevkode().notEqualTo("PE_UT_04_101") and
+                    pe.harIkkeBarnetilleggBrevkode(),
+                visMidtreForklaring = pe.pebrevkode().notEqualTo("PE_UT_04_101") and
+                    pe.harIkkeBarnetilleggBrevkodeUtenOpphoer(),
+                visOmregningsforklaring = pe.skalViseOmregningUPtilUT(),
+                visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
+                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+            )
+        )
 
         // ============================================================
         // Etteroppgjør av uføretrygd og barnetillegg

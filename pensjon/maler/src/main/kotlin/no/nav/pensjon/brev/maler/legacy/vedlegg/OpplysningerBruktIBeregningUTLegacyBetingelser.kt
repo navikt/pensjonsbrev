@@ -56,15 +56,16 @@ fun Expression<PEgruppe10>.skalViseOmregningUPtilUT(): Expression<Boolean> =
 
 /**
  * Gate for generell ektefelletillegg-tekst (tittel, "faller bort" og "behold ut vedtaksperioden").
- * Ordrett kopi av betingelsen som lå duplisert 3× i ForDegSomMottarEktefelletillegg (kun `pe.`-prefiks
- * fjernet) – strukturelt identisk, så rendret output er uendret.
+ * Kombinerer datavilkår med eksplisitte innholdsvalg fra kallstedet.
+ * Forutsetter at ektefelletillegg er innvilget.
  */
-fun Expression<PEgruppe10>.skalViseEktefelletilleggGenerell(): Expression<Boolean> =
-    pebrevkode().notEqualTo("PE_UT_04_101") and
-        vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and
+fun Expression<PEgruppe10>.skalViseEktefelletilleggGenerell(
+    visGenerellForklaring: Expression<Boolean>,
+    utelatVedDoedsfall: Expression<Boolean>,
+): Expression<Boolean> =
+    visGenerellForklaring and
         erIkkeSoknadOmBarnetillegg() and
-        harIkkeBarnetilleggBrevkode() and
-        (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
+        (not(utelatVedDoedsfall) or (utelatVedDoedsfall and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
 
 /**
  * DATASTYRT gate: kravårsaken er ikke "søknad om barnetillegg". Dette er ekte vedtaksdata og
@@ -211,20 +212,21 @@ fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringDetaljer(): Expre
 fun Expression<PEgruppe10>.harIkkeBarnetilleggBrevkodeUtenOpphoer(): Expression<Boolean> =
     pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_06_300")
 
-/** Gate for det midtre avsnittet i "For deg som mottar ektefelletillegg" (omregnings-/behold-tekst). */
-fun Expression<PEgruppe10>.skalViseEktefelletilleggMidtreAvsnitt(): Expression<Boolean> =
-    (skalViseOmregningUPtilUT() and vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) or
-        (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and
-            pebrevkode().notEqualTo("PE_UT_04_101") and
+/** Gate for omregnings-/behold-tekst. Forutsetter at ektefelletillegg er innvilget. */
+fun Expression<PEgruppe10>.skalViseEktefelletilleggMidtreAvsnitt(
+    visOmregningsforklaring: Expression<Boolean>,
+    visMidtreForklaring: Expression<Boolean>,
+    utelatVedDoedsfall: Expression<Boolean>,
+): Expression<Boolean> =
+    visOmregningsforklaring or
+        (visMidtreForklaring and
             erIkkeSoknadOmBarnetillegg() and
-            harIkkeBarnetilleggBrevkodeUtenOpphoer() and
-            (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))))
+            (not(utelatVedDoedsfall) or (utelatVedDoedsfall and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))))
 
-/** Gate for minstepensjons-avsnittet (3,76 G) i "For deg som mottar ektefelletillegg". */
-fun Expression<PEgruppe10>.skalViseEktefelletilleggMinstepensjon(): Expression<Boolean> =
-    pebrevkode().equalTo("PE_UT_04_300") and
-        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().equalTo(3.76) and
-        vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+/** Gate for minstepensjons-avsnittet (3,76 G). Forutsetter at ektefelletillegg er innvilget. */
+fun Expression<PEgruppe10>.skalViseEktefelletilleggMinstepensjon(visMinstepensjonsforklaring: Expression<Boolean>): Expression<Boolean> =
+    visMinstepensjonsforklaring and
+        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().equalTo(3.76)
 
 // --- Seksjon: "Slik beregner vi gjenlevendetillegget ditt" (generell vs. omregning up→ut) ---
 
