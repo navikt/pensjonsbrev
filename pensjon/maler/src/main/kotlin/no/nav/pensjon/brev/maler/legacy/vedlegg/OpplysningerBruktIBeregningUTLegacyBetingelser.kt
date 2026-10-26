@@ -176,23 +176,21 @@ fun Expression<PEgruppe10>.erInntektsendringMedEndretUtbetaling(): Expression<Bo
             .notEqualTo(vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())
 
 /**
- * BREVKODE-STYRT gate for inntektsendrings-seksjonen: ikke barnetillegg-brev (04_108/04_109/07_200)
- * og 04_102 kun når kravårsaken ikke er dødsfall. NB: 06_300 er bevisst IKKE ekskludert her (i
+ * BREVKODE-STYRT gate for inntektsendrings-seksjonen: ikke barnetillegg-brev (04_108/04_109/07_200).
+ * NB: 06_300 er bevisst IKKE ekskludert her (i
  * motsetning til `harIkkeBarnetilleggBrevkode` som ekskluderer hele 4-settet) – avviket er bevart
- * ordrett fra legacy. `tilst_dod`-leddet er egentlig data, men beholdes inline for å være strukturelt
- * identisk med originalen. Forsvinner/reduseres ved variant-splitting.
+ * ordrett fra legacy. Dødsfall-unntaket for 04_102 styres separat i submalen.
+ * Forsvinner/reduseres ved variant-splitting.
  */
 fun Expression<PEgruppe10>.harInntektsendringBrevkodeUtenBarnetillegg(): Expression<Boolean> =
     pebrevkode().notEqualTo("PE_UT_04_108") and
         pebrevkode().notEqualTo("PE_UT_04_109") and
-        pebrevkode().notEqualTo("PE_UT_07_200") and
-        (pebrevkode().notEqualTo("PE_UT_04_102") or (pebrevkode().equalTo("PE_UT_04_102") and vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))
+        pebrevkode().notEqualTo("PE_UT_07_200")
 
 /** Gate for tittel + intro i inntektsendrings-utbetalingsseksjonen. */
 fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringTittel(): Expression<Boolean> =
     erInntektsendringMedEndretUtbetaling() and
-        bunnfradragUnderInntektstak() and
-        harInntektsendringBrevkodeUtenBarnetillegg()
+        bunnfradragUnderInntektstak()
 
 /** Gate for detalj-avsnittene (reduksjon + bunnfradrag) i samme seksjon (identisk gate for begge). */
 fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringDetaljer(): Expression<Boolean> =
@@ -200,8 +198,7 @@ fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringDetaljer(): Expre
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
             .greaterThanOrEqual(vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()) and
         bunnfradragUnderInntektstak() and
-        vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0) and
-        harInntektsendringBrevkodeUtenBarnetillegg()
+        vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0)
 
 // --- Seksjon: "For deg som mottar ektefelletillegg" (midtre avsnitt + minstepensjon) ---
 

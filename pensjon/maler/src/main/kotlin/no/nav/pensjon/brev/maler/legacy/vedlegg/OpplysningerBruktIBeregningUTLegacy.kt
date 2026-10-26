@@ -208,7 +208,14 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         includePhrase(SlikHarViFastsattReduksjonsprosentenDin(pe))
 
-        includePhrase(SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(pe))
+        showIf(pe.harInntektsendringBrevkodeUtenBarnetillegg()) {
+            includePhrase(
+                SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
+                    pe = pe,
+                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                )
+            )
+        }
 
         showIf(pe.erIkkeNyBeregningAvBarnetilleggBrevkode()) {
             includePhrase(SlikBeregnerViReduksjonenAvUfoeretrygden(pe))

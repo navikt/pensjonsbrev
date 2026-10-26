@@ -16,9 +16,13 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
     val pe: Expression<PEgruppe10>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            showIf(pe.skalViseUtbetalingVedInntektsendringTittel()){
+        val visForKravarsak = not(utelatVedDoedsfall) or
+            (utelatVedDoedsfall and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))
+
+        showIf(pe.skalViseUtbetalingVedInntektsendringTittel() and visForKravarsak){
 
             title1 {
                 text (
@@ -35,7 +39,7 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
             }
         }
 
-        showIf(pe.skalViseUtbetalingVedInntektsendringDetaljer()){
+        showIf(pe.skalViseUtbetalingVedInntektsendringDetaljer() and visForKravarsak){
             paragraph {
                 text (
                     bokmal { + "Uføretrygden reduseres med " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
@@ -48,11 +52,6 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
                         .format() + " prosent." },
                 )
             }
-        }
-
-        showIf(
-            pe.skalViseUtbetalingVedInntektsendringDetaljer()
-        ){
             paragraph {
                 text (
                     bokmal { + "Du har et bunnfradrag på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
