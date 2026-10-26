@@ -36,7 +36,7 @@ const KvittertDelautomatiskBrev = (props: { saksId: string; result: Delautomatis
               <BodyShort size="small" weight="semibold">
                 Mottaker
               </BodyShort>
-              <HentOgVisAdresse sakId={props.saksId} samhandlerId={result.idTSSEkstern ?? undefined} showTags={false} />
+              <HentOgVisAdresse sakId={props.saksId} samhandlerId={result.idTSSEkstern ?? undefined} />
             </VStack>
             {result.journalpostId && (
               <Oppsummeringspar size="small" tittel="Journalpost" verdi={result.journalpostId} />

@@ -90,8 +90,81 @@ test.describe("Del-automatiske brev", () => {
     await expect(page.getByText(autobrev.name)).toBeVisible();
     await expect(card.getByText("Mottaker", { exact: true })).toBeVisible();
     await expect(card.getByText("Tydelig Bakke")).toBeVisible();
-    await expect(card.getByText("Bruker", { exact: true })).toHaveCount(0);
+    await expect(card.getByText("Bruker", { exact: true })).toBeVisible();
     await expect(card.getByText("453864999")).toBeVisible();
+  });
+
+  test("Viser verge-tagg i kvittering når brukeren har verge", async ({ page }) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/adresse", (route) =>
+      route.fulfill({
+        json: {
+          adresseString: "Vergeveien 1, 0150 OSLO",
+          adresselinjer: ["Vergeveien 1", "0150 OSLO"],
+          type: "VERGE_PERSON_POSTADRESSE",
+        },
+      }),
+    );
+    await page.route(AUTOBREV_ORDER_URL, (route) =>
+      route.fulfill({ path: "test/e2e/fixtures/bestillBrevExstreamAutobrev.json", contentType: "application/json" }),
+    );
+
+    await selectAutobrevAndOrder(page);
+
+    const card = page.getByTestId("kvittert-delautomatisk-brev");
+    await expect(card.getByText("Vergeveien 1")).toBeVisible();
+    await expect(card.getByText("Verge", { exact: true })).toBeVisible();
+    await expect(card.getByText("Bruker", { exact: true })).toHaveCount(0);
+  });
+
+  test("Viser samhandler-tagg i kvittering når samhandler er mottaker", async ({ page }) => {
+    let requestBody: Record<string, unknown> | undefined;
+    await page.route("**/bff/skribenten-backend/hentSamhandler", (route) =>
+      route.fulfill({
+        json: {
+          success: {
+            navn: "Testsamhandler AS",
+            samhandlerType: "ADVO",
+            idType: "ORG",
+            offentligId: "999999999",
+            organisasjonsnummer: null,
+          },
+          failure: null,
+        },
+      }),
+    );
+    await page.route("**/bff/skribenten-backend/hentSamhandlerAdresse", (route) =>
+      route.fulfill({
+        json: {
+          adresse: {
+            navn: "Testsamhandler AS",
+            linje1: "Samhandlerveien 2",
+            postnr: "0151",
+            poststed: "OSLO",
+            land: "NOR",
+          },
+          failureType: null,
+        },
+      }),
+    );
+    await page.route(AUTOBREV_ORDER_URL, async (route) => {
+      requestBody = route.request().postDataJSON();
+      return route.fulfill({
+        path: "test/e2e/fixtures/bestillBrevExstreamAutobrev.json",
+        contentType: "application/json",
+      });
+    });
+
+    await page.goto("/saksnummer/123456/brevvelger?enhetsId=4405&idTSSEkstern=80000000001");
+    await page.getByTestId("brevmal-search").pressSequentially(autobrev.name);
+    await page.getByTestId("brevmal-button").filter({ hasText: autobrev.name }).click();
+    await page.getByTestId("order-letter").click();
+    await page.getByTestId("send-delautomatisk-brev").click();
+    await page.waitForURL(/\/saksnummer\/123456\/kvittering/);
+
+    expect(requestBody).toMatchObject({ idTSSEkstern: "80000000001" });
+    const card = page.getByTestId("kvittert-delautomatisk-brev");
+    await expect(card.getByText("Testsamhandler AS")).toBeVisible();
+    await expect(card.getByText("Samhandler", { exact: true })).toBeVisible();
   });
 
   test("Viser feil i kvittering når bestilling feiler", async ({ page }) => {
