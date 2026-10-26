@@ -81,7 +81,15 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // Slik beregner vi uføretrygden din
         // ============================================================
         showIf (pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) {
-            includePhrase(SlikBeregnerViUfoeretrygdenKonvertert(pe))
+            showIf(pe.erFulltBeregningsbrev()) {
+                includePhrase(
+                    SlikBeregnerViUfoeretrygdenKonvertert(
+                        pe = pe,
+                        visForklaringVedEndring = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                        visForklaringVedOektUfoeregrad = pe.pebrevkode().equalTo("PE_UT_04_114"),
+                    )
+                )
+            }
         }.orShow {
             includePhrase(SlikBeregnerViUfoeretrygden(pe))
         }
@@ -206,4 +214,3 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
         }
     }
-
