@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.render.modelSpecification
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -42,6 +43,13 @@ class AllTemplatesTest {
 
         malKoder.sorted().zipWithNext { a, b ->
             assert(a != b) { "Alle brevmaler må bruke egne unike brevkoder! Brevkode $a brukes i flere brev." }
+        }
+    }
+
+    @Test
+    fun `alle redigerbare maler kan beregne stableHashCode`() {
+        pensjonOgUfoereProductionTemplates.hentRedigerbareMaler().forEach {
+            assertDoesNotThrow("Kunne ikke beregne stableHashCode for ${it.kode.kode()}") { it.template.stableHashCode() }
         }
     }
 

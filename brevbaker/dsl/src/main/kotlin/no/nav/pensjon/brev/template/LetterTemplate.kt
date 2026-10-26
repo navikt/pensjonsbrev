@@ -26,7 +26,8 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val letterMetadata: LetterMetadata,
 ) : StableHash by StableHash.of(
     StableHash.of(title),
-    StableHash.of(outline)
+    StableHash.of(outline),
+    StableHash.of(attachments.filter { it.editableId != null }.map { it.template }),
 ) {
     init {
         if (title.isEmpty()) {
