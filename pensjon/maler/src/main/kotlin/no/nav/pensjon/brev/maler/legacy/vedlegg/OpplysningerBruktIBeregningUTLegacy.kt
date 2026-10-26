@@ -103,7 +103,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 )
             }
         }.orShow {
-            includePhrase(SlikBeregnerViUfoeretrygden(pe))
+            showIf(pe.erFulltBeregningsbrev()) {
+                includePhrase(SlikBeregnerViUfoeretrygden(pe))
+            }
         }
 
         // Minsteytelse
