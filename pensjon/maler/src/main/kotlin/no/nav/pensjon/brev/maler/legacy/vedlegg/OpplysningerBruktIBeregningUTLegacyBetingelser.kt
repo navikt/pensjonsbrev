@@ -266,12 +266,8 @@ fun Expression<PEgruppe10>.bunnfradragUnderInntektstak(): Expression<Boolean> =
  * TBU056V (Exstream): gate for reduksjonsprosent-/inntektsavsnittene. Dekomponert til navngitte deler
  * (identisk output): enten er dette en beregningsendrings-brevkode, ELLER en reell inntektsendring med
  * endret utbetaling (DATA) – og brevet er ikke en søknad om barnetillegg (DATA), og inntektstaket er
- * over bunnfradraget (DATA). Kun `erBeregningsendringsBrevkode()` er brevkode-styrt og forsvinner ved
- * variant-splitting; resten er datastyrt og overlever porten.
+ * over bunnfradraget (DATA). Brevtypevalget kommer fra kallstedet; resten er datastyrt og overlever porten.
  */
-fun Expression<PEgruppe10>.skalViseReduksjonsprosentavsnitt(): Expression<Boolean> =
-    skalViseReduksjonsprosentavsnitt(erBeregningsendringsBrevkode())
-
 fun Expression<PEgruppe10>.skalViseReduksjonsprosentavsnitt(erBeregningsendring: Expression<Boolean>): Expression<Boolean> =
     (erBeregningsendring or erInntektsendringMedEndretUtbetaling()) and
         erIkkeSoknadOmBarnetillegg() and

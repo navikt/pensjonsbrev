@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.maler.legacy.barnetilleggfelles_justeringsbelopperaru
 import no.nav.pensjon.brev.maler.legacy.barnetilleggserkull_justeringsbelopperarutenminus
 import no.nav.pensjon.brev.maler.legacy.foedselsdatoTilBarnTilleggErInnvilgetFor
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_personbostedsland
-import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.vedlegg.erInntektsendringMedEndretBarnetillegg
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
@@ -113,11 +112,12 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 
 //[TBU028V-TBU020V]
 data class ReduksjonsprosentOgUtbetalingUPTilUT (
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val erBeregningsendring: Expression<Boolean>,
+    val visMinstepensjonsforklaring: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         val kravarsaktype = pe.vedtaksdata_kravhode_kravarsaktype()
-        val brevkode = pe.pebrevkode()
         val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
         val anvendtTrygdetid = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
         val yrkesskaderesultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()
@@ -196,7 +196,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf(pe.skalViseReduksjonsprosentavsnitt()) {
+        showIf(pe.skalViseReduksjonsprosentavsnitt(erBeregningsendring)) {
             title1 {
                 text (
                     bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },
@@ -1577,7 +1577,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((brevkode.equalTo("PE_UT_04_300") and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().equalTo(3.76) and harEktefelletillegg)){
+        showIf((visMinstepensjonsforklaring and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().equalTo(3.76) and harEktefelletillegg)){
             paragraph {
                 text (
                     bokmal { + "Du har minstepensjon og tillegg for ektefelle som har fylt 60 år. Du har derfor rett til å motta uføretrygd som minst tilsvarer 3,76 ganger folketrygdens grunnbeløp. Dette grunnlaget justeres ut fra uføregraden og trygdetiden din, og du beholder dette ut vedtaksperioden for ektefelletillegget. Etter dette vil vi beregne uføretrygden etter ordinære regler." },

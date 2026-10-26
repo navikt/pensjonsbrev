@@ -210,7 +210,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // Reduksjonsprosent og utbetaling
         // ============================================================
         showIf(pe.skalViseOmregningUPtilUT()) {
-            includePhrase(ReduksjonsprosentOgUtbetalingUPTilUT(pe))
+            includePhrase(
+                ReduksjonsprosentOgUtbetalingUPTilUT(
+                    pe = pe,
+                    erBeregningsendring = pe.erBeregningsendringsBrevkode(),
+                    visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
+                )
+            )
         }
 
         includePhrase(
