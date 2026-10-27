@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDt
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.virkningFom
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.etterbetaling.virkningTom
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.forholdstallUttak
-import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.foersteEtterbetalingFom
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.justeringsbeloep
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.kompensasjonstilleggBrutto
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.kompensasjonstilleggForholdstall
@@ -23,8 +22,10 @@ import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.getOrNull
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNotEmpty
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -39,6 +40,8 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
     },
     includeSakspart = false,
 ) {
+    val foersteEtterbetalingFom = etterbetaling.getOrNull().safe { virkningFom }
+
     showIf(etterbetaling.isNotEmpty()) {
         ifNotNull(foersteEtterbetalingFom) { fom ->
             title2 {
