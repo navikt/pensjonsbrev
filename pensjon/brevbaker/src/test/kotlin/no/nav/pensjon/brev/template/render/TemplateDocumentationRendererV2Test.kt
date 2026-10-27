@@ -278,4 +278,32 @@ class TemplateDocumentationRendererV2Test {
             conditional,
         )
     }
+
+    private data class PersonArg(val fodselsnummer: String?, val antall: Int?)
+
+    @Test
+    fun `FieldPath faar eksempeltekst for kjente tekstfelt, men ikke for andre typer`() {
+        fun selector(name: String, type: String) = object : TemplateModelSelector<PersonArg, Any?> {
+            override val className = "PersonArg"
+            override val propertyName = name
+            override val propertyType = type
+            override val selector: PersonArg.() -> Any? = { null }
+        }
+
+        fun fieldPathFor(name: String, type: String): Expr.FieldPath {
+            @Suppress("UNCHECKED_CAST")
+            val sel = selector(name, type) as TemplateModelSelector<PersonArg, String?>
+            val templ = outlineTestTemplate<PersonArg> {
+                paragraph { text(bokmal { +argument.select(sel).ifNull("") }) }
+            }
+            @Suppress("UNCHECKED_CAST")
+            val text = ((TemplateDocumentationRendererV2.render(templ, Bokmal, templ.modelSpecification()).outline.first() as Content<Paragraph>)
+                .content.paragraph.first() as Content<Text>).content
+            return ((text as Text.Expression).expression as Expr.NullCoalesce).value as Expr.FieldPath
+        }
+
+        assertEquals("12345678901", fieldPathFor("fodselsnummer", "kotlin.String?").exampleText)
+        assertEquals(null, fieldPathFor("fodselsnummer", "kotlin.Int?").exampleText)
+        assertEquals(null, fieldPathFor("navn", "kotlin.String?").exampleText)
+    }
 }
