@@ -56,12 +56,12 @@ object KlageOrienteringOmSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerb
 
             paragraph {
                 text(bokmal { +"Klageren: " }, BOLD)
-                showIf(klageren.isOneOf(BRUKER)) {
+                showIf(klageren.isOneOf(ABRUKER)) {
                     text(bokmal { +felles.bruker.fulltNavn() + " " })
                     text(bokmal { +felles.bruker.foedselsnummer.format() })
-                }.orShowIf(klageren.isOneOf(VERGEFULLMEKTIG)) {
+                }.orShowIf(klageren.isOneOf(BVERGEFULLMEKTIG)) {
                     text(bokmal { +fritekst("navn / fødselsnummer") })
-                }.orShowIf(klageren.isOneOf(ADVOKATFULLMEKTIG)) {
+                }.orShowIf(klageren.isOneOf(CADVOKATFULLMEKTIG)) {
                     text(bokmal { +fritekst("navn / firmanavn / organisasjonsnummer") })
                 }
             }
@@ -109,8 +109,8 @@ object KlageOrienteringOmSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerb
     }
 
     enum class Klageren(override val displayText: String) : SaksbehandlerValgEnum {
-        BRUKER("Bruker"),
-        VERGEFULLMEKTIG("Verge/Fullmektig"),
-        ADVOKATFULLMEKTIG("Advokatfirma/Fullmektig")
+        ABRUKER("Bruker"),
+        BVERGEFULLMEKTIG("Verge/Fullmektig"),
+        CADVOKATFULLMEKTIG("Advokatfirma/Fullmektig")
     }
 }
