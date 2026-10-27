@@ -99,6 +99,9 @@ fun Expression<PEgruppe10>.harBrevkodeForRettTilBarnetillegg(): Expression<Boole
         "PE_UT_06_100", "PE_UT_04_103", "PE_UT_04_106", "PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200",
     )
 
+fun Expression<PEgruppe10>.harBrevkodeForBarnetilleggetsStoerrelse(): Expression<Boolean> =
+    harBrevkodeForRettTilBarnetillegg() or pebrevkode().equalTo("PE_UT_06_300")
+
 /** TBU501V: innvilget barnetillegg og dødsfallsunntak, med brevtypevalg fra kallstedet. */
 fun Expression<PEgruppe10>.skalViseRettTilBarnetillegg(
     visForklaringForBrevtype: Expression<Boolean>,
@@ -108,6 +111,13 @@ fun Expression<PEgruppe10>.skalViseRettTilBarnetillegg(
         vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and
         visForklaringForBrevtype and
         oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall)
+
+/** TBU069V: størrelsesforklaring, unntatt når barnetillegget faller bort i etteroppgjøret. */
+fun Expression<PEgruppe10>.skalViseBarnetilleggetsStoerrelse(
+    visForklaringForBrevtype: Expression<Boolean>,
+    utelatVedDoedsfall: Expression<Boolean>,
+): Expression<Boolean> =
+    skalViseRettTilBarnetillegg(visForklaringForBrevtype, utelatVedDoedsfall) and ut_etteroppgjor_bt_utbetalt()
 
 /**
  * DATASTYRT gate: anvendt trygdetid er lavere enn full opptjening (40 år), slik at trygdetiden må

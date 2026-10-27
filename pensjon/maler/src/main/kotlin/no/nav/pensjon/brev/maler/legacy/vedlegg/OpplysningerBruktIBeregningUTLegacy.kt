@@ -243,6 +243,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                     erBeregningsendring = pe.erBeregningsendringsBrevkode(),
                     visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
                     visForklaringOmRettTilBarnetillegg = pe.harBrevkodeForRettTilBarnetillegg(),
+                    visStoerrelsesforklaring = pe.harBrevkodeForBarnetilleggetsStoerrelse(),
                     utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
                 )
             )
@@ -291,7 +292,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             )
         )
 
-        includePhrase(SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
+        includePhrase(
+            SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
+                pe = pe,
+                visStoerrelsesforklaring = pe.harBrevkodeForBarnetilleggetsStoerrelse(),
+                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+            )
+        )
 
         includePhrase(
             SlikBeregnerViGjenlevendetilleggetDitt(

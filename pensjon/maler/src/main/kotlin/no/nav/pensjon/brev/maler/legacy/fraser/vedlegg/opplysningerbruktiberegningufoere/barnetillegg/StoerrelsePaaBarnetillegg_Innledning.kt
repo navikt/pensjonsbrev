@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegn
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseBarnetilleggetsStoerrelse
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -10,12 +11,15 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class StoerrelsePaaBarnetillegg_Innledning(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val visStoerrelsesforklaring: Expression<Boolean>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        val skalViseStoerrelsesforklaring = pe.skalViseBarnetilleggetsStoerrelse(visStoerrelsesforklaring, utelatVedDoedsfall)
         val btsbInnvilgetUtenBtfb =
-            pe.ut_tbu069v() and (not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())
-        showIf(pe.ut_tbu069v()) {
+            skalViseStoerrelsesforklaring and (not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())
+        showIf(skalViseStoerrelsesforklaring) {
             title1 {
                 text(
                     bokmal { + "Slik beregner vi størrelsen på barnetillegget" },
@@ -24,7 +28,7 @@ data class StoerrelsePaaBarnetillegg_Innledning(
             }
         }
 
-        showIf((pe.ut_tbu069v())) {
+        showIf((skalViseStoerrelsesforklaring)) {
             paragraph {
                 text(
                     bokmal { + "Størrelsen på barnetillegget er avhengig av samlet inntekt. " },
@@ -33,7 +37,7 @@ data class StoerrelsePaaBarnetillegg_Innledning(
             }
         }
 
-        showIf((pe.ut_tbu069v())) {
+        showIf((skalViseStoerrelsesforklaring)) {
             paragraph {
                 text(
                     bokmal { + "Barnetillegget kan bli redusert ut fra:" },
@@ -82,7 +86,7 @@ data class StoerrelsePaaBarnetillegg_Innledning(
         }
 
         showIf(
-            (pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
+            (skalViseStoerrelsesforklaring and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
                 pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
             )))
         ) {
@@ -95,7 +99,7 @@ data class StoerrelsePaaBarnetillegg_Innledning(
         }
 
         showIf(
-            (pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
+            (skalViseStoerrelsesforklaring and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
                 pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
             )))
         ) {
@@ -118,7 +122,7 @@ data class StoerrelsePaaBarnetillegg_Innledning(
         }
 
         showIf(
-            (pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
+            (skalViseStoerrelsesforklaring and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(
                 pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
             )))
         ) {
@@ -167,7 +171,7 @@ data class StoerrelsePaaBarnetillegg_Innledning(
             }
         }
 
-        showIf((pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))) {
+        showIf((skalViseStoerrelsesforklaring and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))) {
             paragraph {
                 text(
                     bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
@@ -176,7 +180,7 @@ data class StoerrelsePaaBarnetillegg_Innledning(
             }
         }
 
-        showIf((pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))) {
+        showIf((skalViseStoerrelsesforklaring and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))) {
             paragraph {
                 text(
                     bokmal { + "For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldre, fastsetter vi størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn som ikke bor sammen med begge foreldrene er 3,1 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
