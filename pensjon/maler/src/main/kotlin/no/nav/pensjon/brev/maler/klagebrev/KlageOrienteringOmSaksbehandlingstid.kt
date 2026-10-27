@@ -48,7 +48,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
 
     ) {
         val klageren = saksbehandlervalg("aklageren", "Velg hvem som er Klageren:").enum<Klageren>()
-        val foreloepigVedtak = saksbehandlervalg("bforeloepigVedtak", "Velg om det er et foreløpig vedtak (utland)").bool()
+        val foreloepigVedtak = saksbehandlervalg("bforeloepigVedtak", "Velg om det klages på et foreløpig vedtak (utland)").bool()
 
         title { text(bokmal { +"Klage - " + fritekst("ytelse") + " - orientering om saksbehandlingstid" }) }
 
