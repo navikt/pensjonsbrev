@@ -1,6 +1,6 @@
 import { css, keyframes } from "@emotion/react";
 import { SparklesIcon, XMarkIcon } from "@navikt/aksel-icons";
-import { BodyLong, BodyShort, Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
+import { BodyLong, BodyShort, Box, Button, Detail, Heading, HStack, ProgressBar, VStack } from "@navikt/ds-react";
 import { useId } from "react";
 import { type ArrowRenderProps, type TooltipRenderProps } from "react-joyride";
 
@@ -88,23 +88,18 @@ export const FeatureAnnouncementArrow = ({ base, placement, size }: ArrowRenderP
   );
 };
 
-const ProgressDots = ({ index, size }: { index: number; size: number }) => (
-  <HStack align="center" gap="space-6">
-    <span className="aksel-sr-only">
-      Steg {index + 1} av {size}
-    </span>
-    {Array.from({ length: size }, (_, dot) => (
-      <Box
-        aria-hidden
-        background={dot === index ? "meta-purple-strong" : "neutral-moderate"}
-        borderRadius="full"
-        height="0.375rem"
-        key={dot}
-        width={dot === index ? "1rem" : "0.375rem"}
-      />
-    ))}
-  </HStack>
-);
+/** Joyride-style "Steg 1 av 3", with an Aksel ProgressBar (recommended by Aksel as a step indicator). */
+const StepProgress = ({ index, size }: { index: number; size: number }) => {
+  const labelId = useId();
+  return (
+    <VStack gap="space-4" width="6rem">
+      <Detail id={labelId} textColor="subtle">
+        Steg {index + 1} av {size}
+      </Detail>
+      <ProgressBar aria-labelledby={labelId} data-color="meta-purple" size="small" value={index + 1} valueMax={size} />
+    </VStack>
+  );
+};
 
 export const FeatureAnnouncementTooltip = ({
   backProps,
@@ -155,9 +150,12 @@ export const FeatureAnnouncementTooltip = ({
             </BodyShort>
           </HStack>
           {isWalkthrough && (
+            // Icon-only: only Joyride's label and handler are passed on, not its visible "Lukk" text.
             <Button
-              {...skipProps}
+              aria-label={skipProps["aria-label"]}
+              data-action={skipProps["data-action"]}
               icon={<XMarkIcon aria-hidden />}
+              onClick={skipProps.onClick}
               size="small"
               title={undefined}
               type="button"
@@ -176,8 +174,9 @@ export const FeatureAnnouncementTooltip = ({
           </BodyLong>
         </VStack>
         <HStack align="center" gap="space-8" justify={isWalkthrough ? "space-between" : "end"}>
-          {isWalkthrough && <ProgressDots index={index} size={size} />}
-          <HStack gap="space-8">
+          {isWalkthrough && <StepProgress index={index} size={size} />}
+          {/* Aksel's focus ring reaches 6px outside a button, so keep clear space between them. */}
+          <HStack gap="space-16">
             {index > 0 && (
               <Button {...backProps} size="small" title={undefined} type="button" variant="secondary">
                 {FEATURE_ANNOUNCEMENT_LOCALE.back}

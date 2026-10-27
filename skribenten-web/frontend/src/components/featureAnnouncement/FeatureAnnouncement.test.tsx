@@ -138,13 +138,18 @@ describe("<FeatureAnnouncement />", () => {
 
     await findAnnouncement();
     expect(screen.queryByText("Steg 1 av 2")).not.toBeNull();
+    const progress = screen.getByRole("progressbar", { name: "Steg 1 av 2" });
+    expect(progress.getAttribute("aria-valuenow")).toBe("1");
+    expect(progress.getAttribute("aria-valuemax")).toBe("2");
     await user.click(screen.getByRole("button", { name: "Neste" }));
 
     await findAnnouncement("Andre nyhet");
     await user.click(screen.getByRole("button", { name: "Forrige" }));
 
     await findAnnouncement();
-    await user.click(screen.getByRole("button", { name: "Lukk" }));
+    const lukk = screen.getByRole("button", { name: "Lukk" });
+    expect(lukk.textContent).toBe("");
+    await user.click(lukk);
     await waitFor(() => expect(queryAnnouncement()).toBeNull());
   });
 
