@@ -19,6 +19,6 @@ class OppvarmingTest {
     @Test
     fun `oppvarming med produksjonsmaler fullfoerer uten feil`() {
         val objectMapper = jacksonObjectMapper().apply { brevbakerConfig() }
-        assertTrue(varmOpp(pensjonOgUfoereProductionTemplates.hentRedigerbareMaler(), objectMapper, pdfByggerService))
+        assertTrue(objectMapper.varmOpp(pensjonOgUfoereProductionTemplates.hentRedigerbareMaler(), pdfByggerService))
     }
 }

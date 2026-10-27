@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.serialization.jackson.*
@@ -118,11 +117,17 @@ fun Application.brevbakerModule(
         }
     }
 
-    lateinit var objectMapper: ObjectMapper
+    val pdfbyggerService = PensjonPdfByggerService(
+        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
+        pdfByggerScope = brevbakerConfig.property("pdfByggerScope").getString(),
+        azureADConfig = if (!developmentMode) brevbakerConfig.config("azureAD") else null,
+    )
+    monitor.subscribe(ApplicationStopped) { pdfbyggerService.close() }
+
     install(ContentNegotiation) {
         jackson {
             brevbakerConfig()
-            objectMapper = this
+            varmOpp(templates.hentRedigerbareMaler(), pdfbyggerService)
         }
         register(ContentType.Text.Html, LetterResponseFileConverter)
         register(ContentType.Application.Pdf, LetterResponseFileConverter)
@@ -139,17 +144,9 @@ fun Application.brevbakerModule(
     } else null.also { log.warn("Running in development mode, skal ikke skje i produksjon") }
 
 
-    val pdfbyggerService = PensjonPdfByggerService(
-        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
-        pdfByggerScope = brevbakerConfig.property("pdfByggerScope").getString(),
-        azureADConfig = if (!developmentMode) brevbakerConfig.config("azureAD") else null,
-    )
-    monitor.subscribe(ApplicationStopped) { pdfbyggerService.close() }
-
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    varmOpp(templates.hentRedigerbareMaler(), objectMapper, pdfbyggerService)
     brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), pdfbyggerService, templates)
 }
 

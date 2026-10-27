@@ -22,9 +22,8 @@ import kotlin.time.measureTime
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.routing.Oppvarming")
 
-internal fun varmOpp(
+internal fun ObjectMapper.varmOpp(
     maler: Set<RedigerbarTemplate<*>>,
-    objectMapper: ObjectMapper,
     pdfByggerService: PDFByggerService,
 ): Boolean {
     val mal = maler.firstOrNull { it.template.letterDataType == EmptyRedigerbarBrevdata::class }
@@ -56,16 +55,16 @@ internal fun varmOpp(
                 ),
                 language = mal.template.language.all().first().toCode(),
             )
-            val mottatt = objectMapper.readValue(
-                objectMapper.writeValueAsBytes(bestilling),
+            val mottatt = readValue(
+                writeValueAsBytes(bestilling),
                 jacksonTypeRef<BestillBrevRequest<Brevkode.Redigerbart>>(),
             )
             @Suppress("UNCHECKED_CAST")
             val brev = LetterFactory<Brevkode.Redigerbart>(emptySet())
                 .createLetter(mottatt, mal as BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>)
             val brevbaker = Brevbaker(pdfByggerService)
-            objectMapper.writeValueAsBytes(brevbaker.renderLetterMarkupWithDataUsage(brev))
-            objectMapper.writeValueAsBytes(brevbaker.renderLetterMarkupWithDataUsageV2(brev))
+            writeValueAsBytes(brevbaker.renderLetterMarkupWithDataUsage(brev))
+            writeValueAsBytes(brevbaker.renderLetterMarkupWithDataUsageV2(brev))
         }
         logger.info("Oppvarming med ${mal.kode.kode()} ferdig på ${varighet.inWholeMilliseconds} ms")
         true
