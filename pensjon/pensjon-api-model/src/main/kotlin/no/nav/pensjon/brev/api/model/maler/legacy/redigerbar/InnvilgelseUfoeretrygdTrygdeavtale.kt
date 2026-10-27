@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
-import no.nav.brev.BrevLandmodell
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
-import no.nav.pensjon.brev.api.model.maler.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner

@@ -127,6 +127,7 @@ object Fixtures : LetterDataFactory {
             InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar::class -> createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() as T
             InnvilgelseUforetrygdMedEndringRedigerbar::class -> createInnvilgelseUforetrygdMedEndringDto() as T
             InnvilgelseUforetrygdMellombehandlingRedigerbar::class -> createInnvilgelseUforetrygdMellombehandlingDto() as T
+            InnvilgelseUforetrygdTrygdeavtaleRedigerbar::class -> createInnvilgelseUfoeretrygdTrygdeavtaleDto() as T
             InnvilgelseUforetrygdRedigerbar::class -> createInnvilgelseUfoeretrygdDto() as T
             InnvilgelseUforetrygdUtlandRedigerbar::class -> createInnvilgelseUfoeretrygdUtlandDto() as T
             KlageBegrunnelseForVedtakUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T

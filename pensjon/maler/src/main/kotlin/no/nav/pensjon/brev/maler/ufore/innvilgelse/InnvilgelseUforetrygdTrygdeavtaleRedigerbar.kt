@@ -3,13 +3,15 @@ package no.nav.pensjon.brev.maler.ufore.innvilgelse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.vedtakFattetDatoEllerIdag
-import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdTrygdeavtaleDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.trygdetidsgrunnlag.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.trygdetidsgrunnlag.fom
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.trygdetidsgrunnlag.land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdTrygdeavtaleDto.trygdetidsgrunnlag.tom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtaksinfo.vedtakFattetDatoEllerIdag
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
@@ -525,9 +527,10 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             showIf(instoppholdType.equalTo("reduksjon_fo")) {
                 includePhrase(
                     Ufoeretrygd.Straffegjennomfoering(
-                        pe = pe,
                         ektefelletilleggInnvilget = ektefelletilleggInnvilget,
                         gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                        sisteForsorgeransvarErTrue = pe.ut_forsorgeransvar_siste_er_true(),
+                        forsteForsorgeransvarErTrue = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar(),
                     )
                 )
             }
