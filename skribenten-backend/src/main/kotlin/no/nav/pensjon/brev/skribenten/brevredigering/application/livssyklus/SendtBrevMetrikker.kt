@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerRespon
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
 import java.nio.ByteBuffer
 import java.security.MessageDigest
@@ -47,6 +48,7 @@ class SendtBrevMetrikker(
         val avsenderEnhet: EnhetId,
         val brevkode: Brevkode<*>,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>,
+        val redigerteVedlegg: List<BrevbakerType.VedleggId>,
     ) {
         constructor(brev: Brevredigering) : this(
             mottakerType = brev.mottaker?.type,
@@ -55,7 +57,8 @@ class SendtBrevMetrikker(
             distribusjonstype = brev.distribusjonstype,
             avsenderEnhet = brev.avsenderEnhetId,
             brevkode = brev.brevkode,
-            valgteVedlegg = brev.valgteVedlegg.sortedBy { it.kode }
+            valgteVedlegg = brev.valgteVedlegg.sortedBy { it.kode },
+            redigerteVedlegg = brev.redigerteVedlegg.map { it.vedleggId }
         )
     }
 
@@ -69,6 +72,7 @@ class SendtBrevMetrikker(
         return scope.launch(kontekst) {
             tell(maaling)
             tellValgteVedlegg(maaling)
+            tellRedigerteVedlegg(maaling)
         }
     }
 
@@ -98,6 +102,18 @@ class SendtBrevMetrikker(
             .tag("valgte_vedlegg", maaling.valgteVedlegg.joinToString(",") { it.kode })
             .register(registry)
             .increment()
+
+    private fun tellRedigerteVedlegg(maaling: SendtBrevMaaling) {
+        if (maaling.redigerteVedlegg.isEmpty()) {
+            return
+        }
+        Counter.builder("skribenten_redigerte_vedlegg")
+            .description("Redigerte vedlegg, fordelt på brevkode")
+            .tag("brevkode", maaling.brevkode.kode())
+            .tag("redigerte_vedlegg", maaling.redigerteVedlegg.joinToString(",") { it.id })
+            .register(registry)
+            .increment()
+    }
 
     // Tom labelverdi leses som fraværende i Prometheus, og serien ville da falt ut av `sum by (samhandler_type)`.
     private fun Result<String?>.getOrUkjent(): String =
