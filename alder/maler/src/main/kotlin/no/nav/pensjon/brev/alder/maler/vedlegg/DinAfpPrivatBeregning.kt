@@ -22,8 +22,10 @@ import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.getOrNull
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNotEmpty
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -38,13 +40,15 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
     },
     includeSakspart = false,
 ) {
+    val foersteEtterbetalingFom = etterbetaling.getOrNull().safe { virkningFom }
+
     showIf(etterbetaling.isNotEmpty()) {
-        forEach(etterbetaling) { etterbetaling ->
+        ifNotNull(foersteEtterbetalingFom) { fom ->
             title2 {
                 text(
-                    bokmal { +"Oversikt over hva du får fra " + etterbetaling.virkningFom.format() },
-                    nynorsk { +"Oversikt over kva du får frå " + etterbetaling.virkningFom.format() },
-                    english { +"Overview of what you will receive from" + etterbetaling.virkningFom.format()},
+                    bokmal { +"Oversikt over hva du får fra " + fom.format() },
+                    nynorsk { +"Oversikt over kva du får frå " + fom.format() },
+                    english { +"Overview of what you will receive from " + fom.format()},
                 )
             }
             paragraph {
@@ -54,7 +58,8 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                     english { +"If there have been changes to any of the information on which the calculation is based, or if your pension has been adjusted during this period, the amount you receive may change. " },
                 )
             }
-
+        }
+        forEach(etterbetaling) { etterbetaling ->
             paragraph {
                 table(
                     header = {
