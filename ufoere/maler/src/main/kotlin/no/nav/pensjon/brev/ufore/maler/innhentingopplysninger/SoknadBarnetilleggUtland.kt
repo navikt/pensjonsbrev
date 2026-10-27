@@ -67,7 +67,7 @@ object SoknadBarnetilleggUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Hvis du overfører jevnlig penger for å forsørge barnet, må vi få kopi av bankutskrift og dokumentasjon på hvem du sender disse pengene til. " },
                     nynorsk { +"Dersom du overfører jamleg pengar for å forsørgje barnet, må vi få kopi av bankutskrift og dokumentasjon på kven du sender desse pengane til. " })
             }
-            includePhrase(Felles.EttersendeDokumentasjon)
+            includePhrase(Felles.EttersendeDokumentasjonMedForside)
             paragraph {
                 text(bokmal { +"Vi ber om at opplysningene sendes oss innen " + fritekst("dato") + ". " },
                     nynorsk { +"Vi ber om at opplysningane vert sendt oss innan " + fritekst("dato") + ". " })
