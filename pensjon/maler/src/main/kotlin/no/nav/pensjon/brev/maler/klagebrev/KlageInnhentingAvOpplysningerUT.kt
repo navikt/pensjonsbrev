@@ -61,6 +61,11 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
                 })
             }
 
+            ifNotNull(innhentingAvOpplysninger) {
+                paragraph {
+                    text(bokmal { +"For at vi skal kunne behandle klagen din, ber vi deg om å " })
+                }
+            }
             paragraph {
                 text(bokmal { +"Vi ber derfor om at du " })
                 showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.vedtakDuKlagerOver)) {
