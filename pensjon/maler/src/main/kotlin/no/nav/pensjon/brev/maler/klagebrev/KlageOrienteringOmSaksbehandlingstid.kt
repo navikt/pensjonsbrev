@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -46,7 +47,8 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
 
 
     ) {
-        val klageren = saksbehandlervalg("klageren", "Velg hvem som er Klageren:").enum<Klageren>()
+        val klageren = saksbehandlervalg("aklageren", "Velg hvem som er Klageren:").enum<Klageren>()
+        val foreloepigVedtak = saksbehandlervalg("bforeloepigVedtak", "Velg om det er et foreløpig vedtak (utland)").bool()
 
         title { text(bokmal { +"Klage - " + fritekst("ytelse") + " - orientering om saksbehandlingstid" }) }
 
@@ -78,13 +80,22 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
             }
 
             title1 { text(bokmal { +"Behandlingstid" }) }
-            paragraph {
-                text(bokmal {
-                    +"Det påklagede vedtaket er et foreløpig vedtak. "
-                    +"Klagen din gjelder spørsmål som vi ikke kan ta stilling til før vi har fått nødvendig informasjon. "
-                    +"Når vi har mottatt denne informasjonen vil vi se på saken din på nytt. "
-                    +"Du vil få beskjed fra oss om resultatet i saken når det er klart."
-                })
+            showIf(foreloepigVedtak.equalTo(true)) {
+                paragraph {
+                    text(bokmal {
+                        +"Det påklagede vedtaket er et foreløpig vedtak. "
+                        +"Klagen din gjelder spørsmål som vi ikke kan ta stilling til før vi har fått nødvendig informasjon fra utlandet. "
+                        +"Når vi har mottatt denne informasjonen vil vi se på saken din på nytt. "
+                        +"Du vil få beskjed fra oss om resultatet i saken når det er klart."
+                    })
+                }
+            }.orShow {
+                paragraph {
+                    text(bokmal {
+                        +"Saksbehandlingstiden er vanligvis " + fritekst("antall dager/uker/måneder") + ". "
+                        +"Hvis saken din ikke er ferdigbehandlet av oss i løpet av denne tiden, vil du få nærmere beskjed."
+                    })
+                }
             }
 
             title1 { text(bokmal { +"Meld fra om endringer" }) }
