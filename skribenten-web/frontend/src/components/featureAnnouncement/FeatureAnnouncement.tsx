@@ -69,7 +69,10 @@ export const FeatureAnnouncement = ({
   const dismissed = dismissedProp ?? internalDismissed;
   const onDismissReference = useRef(onDismiss);
   onDismissReference.current = onDismiss;
+  const hasDismissed = useRef(false);
   const dismiss = useCallback(() => {
+    if (hasDismissed.current) return;
+    hasDismissed.current = true;
     setInternalDismissed(true);
     onDismissReference.current?.();
   }, []);

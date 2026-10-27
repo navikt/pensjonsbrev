@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
-import { describe, expect, onTestFinished, test } from "vitest";
+import { describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { FeatureAnnouncement, type FeatureAnnouncementStep } from "./FeatureAnnouncement";
 
@@ -10,11 +10,13 @@ const Harness = ({
   multiStep = false,
   showTarget = true,
   spotlight,
+  onDismiss,
 }: {
   when?: boolean;
   multiStep?: boolean;
   showTarget?: boolean;
   spotlight?: boolean;
+  onDismiss?: () => void;
 }) => {
   const [first, setFirst] = useState<HTMLElement | null>(null);
   const [second, setSecond] = useState<HTMLElement | null>(null);
@@ -30,7 +32,13 @@ const Harness = ({
         </div>
       )}
       <div ref={setSecond}>Hjelp</div>
-      <FeatureAnnouncement id="test-nyhet" spotlight={spotlight} steps={steps} when={when && first !== null} />
+      <FeatureAnnouncement
+        id="test-nyhet"
+        onDismiss={onDismiss}
+        spotlight={spotlight}
+        steps={steps}
+        when={when && first !== null}
+      />
       <div contentEditable data-testid="editor" suppressContentEditableWarning>
         Brevtekst
       </div>
@@ -149,13 +157,15 @@ describe("<FeatureAnnouncement />", () => {
   });
 
   test("dimmer siden, skjult for skjermlesere, og lukkes ved klikk på den dimmede flaten", async () => {
-    render(<Harness />);
+    const onDismiss = vi.fn();
+    render(<Harness onDismiss={onDismiss} />);
     await findAnnouncement();
     expect(document.querySelector('[data-testid="overlay"]')?.getAttribute("aria-hidden")).toBe("true");
 
     clickDimmedPage();
 
     await waitFor(() => expect(queryAnnouncement()).toBeNull());
+    expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
   test("klikk på den dimmede flaten lukker hele gjennomgangen", async () => {
