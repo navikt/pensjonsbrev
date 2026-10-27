@@ -4,15 +4,18 @@ import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.UT_KLAGE_INNHENTING_AV_OPPLYSNINGER
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -34,6 +37,8 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val innhentingAvOpplysninger = saksbehandlervalg("innhentingAvOpplysninger", "Tilpass etter hva som er mangelen i klagen:").enum<InnhentingAvOpplysninger>()
+
         title {
             text(bokmal { +"Nav har behov for flere opplysninger" })
         }
@@ -57,14 +62,20 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             }
 
             paragraph {
-                text(bokmal {
-                    +fritekst(
-                        "Tilpass etter hva som er mangelen i klagen. "
-                                + "Vi ber derfor om at du underskriver på vedlagt kopi av klagen / "
-                                + "opplyser om hvilket vedtak du klager på / "
-                                + "opplyser om hvilken endring du ønsker i vedtaket/ hvorfor vedtaket er feil."
-                    )
-                })
+                text(bokmal { +"Vi ber derfor om at du " })
+
+                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.kopiAvKlagen)) {
+                    text(bokmal { +"skriver på vedlagt kopi av klagen." })
+                }
+                showIf(saksbehandlervalg("innhentingAvOpplysninger", "Velg brev Innhenting av opplysninger:").enum<InnhentingAvOpplysninger>().equalTo(InnhentingAvOpplysninger.vedtakDuKlagerOver)) {
+                    text(bokmal { +"opplyser om hvilket vedtak du klager på." })
+                }
+                showIf(saksbehandlervalg("innhentingAvOpplysninger", "Velg brev Innhenting av opplysninger:").enum<InnhentingAvOpplysninger>().equalTo(InnhentingAvOpplysninger.endringDuOensker)) {
+                    text(bokmal { +"opplyser om hvilken endring du ønsker i vedtaket." })
+                }
+                showIf(saksbehandlervalg("innhentingAvOpplysninger", "Velg brev Innhenting av opplysninger:").enum<InnhentingAvOpplysninger>().equalTo(InnhentingAvOpplysninger.hvorforVedtaketErFeil)) {
+                    text(bokmal { +"opplyser om hvorfor vedtaket er feil." })
+                }
             }
 
             paragraph {
@@ -90,4 +101,10 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             }
         }
     }
-}
+        enum class InnhentingAvOpplysninger(ovveride val displayText: String) : SaksbehandlerValgEnum {
+            kopiAvKlagen("Vi ber derfor om at du skriver på vedlagt kopi av klagen."),
+            vedtakDuKlagerOver("Vi ber derfor om at du opplyser om hvilket vedtak du klager på."),
+            endringDuOensker("Vi ber derfor om at du opplyser om hvilken endring du ønsker i vedtaket."),
+            hvorforVedtaketErFeil("Vi ber derfor om at du opplyser om hvorfor vedtaket er feil."),
+        }
+    }
