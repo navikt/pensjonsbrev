@@ -17,7 +17,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => ({
 }));
 
 const ATTESTANT_REDIGERING = "/saksnummer_/$saksId/attester/$brevId/redigering";
-const TITTEL = "Se hva saksbehandler har endret";
+const TITTEL = "Se manuelle endringer i brevet";
 
 const Harness = ({ showMenu = true }: { showMenu?: boolean }) => {
   const [menu, setMenu] = useState<HTMLDivElement | null>(null);

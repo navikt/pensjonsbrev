@@ -6,7 +6,7 @@ import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
 const defaultBrev = brevResponse({ info: brevInfo({ saksId: 123456 }) });
 const ATTESTERING_URL = "**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true";
-const NYHET = "Se hva saksbehandler har endret";
+const NYHET = "Se manuelle endringer i brevet";
 
 const givenUser = (page: Page, erAttestant: boolean) =>
   page.route("**/bff/skribenten-backend/me/userinfo", (route) =>

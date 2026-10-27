@@ -10,7 +10,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 export const ATTESTANT_DIFF_ANNOUNCEMENT_ID = "attestant-diff";
 
 /**
- * Introduces the diff toggles to attestants. Render it right after `AttestantDiffMenu`, once the letter
+ * Introduces/announces the diff toggles to attestants. Render it right after `AttestantDiffMenu`, once the letter
  * is loaded, and pass the rendered menu and its toggle group (or null while they are not rendered).
  * The tooltip points at the toggles, while the whole menu is highlighted.
  * Dismissal is owned by the caller so it survives the letter editor remounting (e.g. via a vedlegg).
@@ -26,8 +26,8 @@ export const AttestantDiffAnnouncement = ({
   dismissed: boolean;
   onDismiss: () => void;
 }) => {
-  const erAttestant = useUserInfo()?.erAttestant === true;
-  const erPaaAttestantRedigering =
+  const isAttestant = useUserInfo()?.erAttestant === true;
+  const isOnAttestantEditingRoute =
     useMatch({ from: "/saksnummer_/$saksId/attester/$brevId/redigering", shouldThrow: false }) !== undefined;
 
   const steps = useMemo<FeatureAnnouncementStep[]>(
@@ -39,9 +39,9 @@ export const AttestantDiffAnnouncement = ({
               spotlightTarget: menu,
               spotlightPadding: 0,
               spotlightRadius: 0,
-              title: "Se hva saksbehandler har endret",
+              title: "Se manuelle endringer i brevet",
               content:
-                "Slå på bryterne for å se hva saksbehandler har lagt til eller slettet sammenlignet med den opprinnelige brevmalen.",
+                "Slå på bryterne for å se hva som er lagt til eller slettet sammenlignet med den opprinnelige brevmalen.",
               placement: "bottom-start",
             },
           ]
@@ -55,7 +55,7 @@ export const AttestantDiffAnnouncement = ({
       id={ATTESTANT_DIFF_ANNOUNCEMENT_ID}
       onDismiss={onDismiss}
       steps={steps}
-      when={erAttestant && erPaaAttestantRedigering && menu !== null && toggles !== null}
+      when={isAttestant && isOnAttestantEditingRoute && menu !== null && toggles !== null}
     />
   );
 };
