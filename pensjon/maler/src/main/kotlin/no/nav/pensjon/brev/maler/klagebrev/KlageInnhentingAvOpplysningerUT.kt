@@ -63,19 +63,19 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
 
             paragraph {
                 text(bokmal { +"Vi ber derfor om at du " })
-
-                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.kopiAvKlagen)) {
-                    text(bokmal { +"skriver på vedlagt kopi av klagen." })
+                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.vedtakDuKlagerOver)) {
+                    list { item { text(bokmal { +InnhentingAvOpplysninger.vedtakDuKlagerOver.displayText }) } }
                 }
-                showIf(saksbehandlervalg("innhentingAvOpplysninger", "Velg brev Innhenting av opplysninger:").enum<InnhentingAvOpplysninger>().equalTo(InnhentingAvOpplysninger.vedtakDuKlagerOver)) {
-                    text(bokmal { +"opplyser om hvilket vedtak du klager på." })
+                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.hvorforVedtaketErFeil)) {
+                    list { item { text(bokmal { +InnhentingAvOpplysninger.hvorforVedtaketErFeil.displayText }) } }
                 }
-                showIf(saksbehandlervalg("innhentingAvOpplysninger", "Velg brev Innhenting av opplysninger:").enum<InnhentingAvOpplysninger>().equalTo(InnhentingAvOpplysninger.endringDuOensker)) {
-                    text(bokmal { +"opplyser om hvilken endring du ønsker i vedtaket." })
+                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.endringDuOensker)) {
+                    list { item { text(bokmal { +InnhentingAvOpplysninger.endringDuOensker.displayText }) } }
                 }
-                showIf(saksbehandlervalg("innhentingAvOpplysninger", "Velg brev Innhenting av opplysninger:").enum<InnhentingAvOpplysninger>().equalTo(InnhentingAvOpplysninger.hvorforVedtaketErFeil)) {
-                    text(bokmal { +"opplyser om hvorfor vedtaket er feil." })
+                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.underskrivKopiAvKlagen)) {
+                    list { item { text(bokmal { +InnhentingAvOpplysninger.underskrivKopiAvKlagen.displayText }) } }
                 }
+                text(bokmal { + "." })
             }
 
             paragraph {
@@ -101,10 +101,11 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             }
         }
     }
-        enum class InnhentingAvOpplysninger(ovveride val displayText: String) : SaksbehandlerValgEnum {
-            kopiAvKlagen("Vi ber derfor om at du skriver på vedlagt kopi av klagen."),
-            vedtakDuKlagerOver("Vi ber derfor om at du opplyser om hvilket vedtak du klager på."),
-            endringDuOensker("Vi ber derfor om at du opplyser om hvilken endring du ønsker i vedtaket."),
-            hvorforVedtaketErFeil("Vi ber derfor om at du opplyser om hvorfor vedtaket er feil."),
-        }
+
+    enum class InnhentingAvOpplysninger(override val displayText: String) : SaksbehandlerValgEnum {
+        vedtakDuKlagerOver("opplyser om hvilket vedtak du klager på"),
+        hvorforVedtaketErFeil("opplyser om hvorfor vedtaket er feil"),
+        endringDuOensker("opplyser om hvilken endring du ønsker i vedtaket"),
+        underskrivKopiAvKlagen("underskriver på vedlagt kopi av klagen"),
     }
+}
