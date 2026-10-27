@@ -61,11 +61,6 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
                 })
             }
 
-            ifNotNull(innhentingAvOpplysninger) {
-                paragraph {
-                    text(bokmal { +"For at vi skal kunne behandle klagen din, ber vi deg om å " })
-                }
-            }
             paragraph {
                 text(bokmal { +"Vi ber derfor om at du " })
                 showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.vedtakDuKlagerOver)) {
@@ -107,9 +102,9 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
     }
 
     enum class InnhentingAvOpplysninger(override val displayText: String) : SaksbehandlerValgEnum {
-        vedtakDuKlagerOver("opplyser om hvilket vedtak du klager på"),
-        hvorforVedtaketErFeil("opplyser om hvorfor vedtaket er feil"),
-        endringDuOensker("opplyser om hvilken endring du ønsker i vedtaket"),
-        underskrivKopiAvKlagen("underskriver på vedlagt kopi av klagen"),
+        vedtakDuKlagerOver("opplyse om hvilket vedtak du klager på"),
+        hvorforVedtaketErFeil("opplyse om hvorfor vedtaket er feil"),
+        endringDuOensker("opplyse om hvilken endring du ønsker i vedtaket"),
+        underskrivKopiAvKlagen("underskrive på vedlagt kopi av klagen"),
     }
 }
