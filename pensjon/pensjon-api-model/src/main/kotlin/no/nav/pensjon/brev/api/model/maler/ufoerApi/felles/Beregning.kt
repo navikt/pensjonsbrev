@@ -22,4 +22,6 @@ data class Beregning(
     val inntektSkadetidspunkt: Kroner?,
 
     val grunnbelop: Kroner,
+
+    val anvendtTrygdetid: Int
 )

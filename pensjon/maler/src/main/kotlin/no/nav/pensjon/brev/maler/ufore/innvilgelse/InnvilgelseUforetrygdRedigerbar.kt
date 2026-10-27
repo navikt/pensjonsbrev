@@ -261,9 +261,10 @@ object InnvilgelseUforetrygdRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretry
             showIf(instoppholdType.equalTo("reduksjon_fo")) {
                 includePhrase(
                     Ufoeretrygd.Straffegjennomfoering(
-                        pe = pe,
                         ektefelletilleggInnvilget = ektefelletilleggInnvilget,
                         gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                        sisteForsorgeransvarErTrue = pe.ut_forsorgeransvar_siste_er_true(),
+                        forsteForsorgeransvarErTrue = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar(),
                     )
                 )
             }

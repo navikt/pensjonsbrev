@@ -3,16 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Barnetillegg
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Beregning
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Grunnlag
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Institusjonsopphold
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Kravhode
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Reduksjonsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Tillegg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.UforeVedtaksinfo
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Vedtak
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
@@ -40,16 +31,6 @@ data class OkningUforegradDto(
         val harVTA: Boolean,
         val forrigeUforegrad: Int,
         val forrigeUforetidspunkt: LocalDate,
-
-        val krav: Kravhode? = null,
-        val vedtak: Vedtak? = null,
-        val beregning: Beregning? = null,
-        val grunnlag: Grunnlag? = null,
-        val institusjonsopphold: Institusjonsopphold? = null,
-        val reduksjonsgrunnlag: Reduksjonsgrunnlag? = null,
-        val tillegg: Tillegg? = null,
-        val barnetillegg: Barnetillegg? = null,
-        val vilkarsvurdering: VilkarsvurderingFullstendig? = null,
     ) : FagsystemBrevdata
 
     data class Trygdetidsgrunnlag(
