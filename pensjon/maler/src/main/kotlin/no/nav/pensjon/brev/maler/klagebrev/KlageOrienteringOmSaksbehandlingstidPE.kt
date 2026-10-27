@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
-import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid.Klageren.*
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE.Klageren.*
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
@@ -28,7 +28,7 @@ import kotlin.collections.Set
 
 
 @TemplateModelHelpers
-object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object KlageOrienteringOmSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmSaksbehandlingstid.toggle
 

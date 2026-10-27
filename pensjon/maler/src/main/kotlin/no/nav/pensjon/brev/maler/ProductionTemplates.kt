@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmAaIkkeGjoereOmVedtak
 import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmVedtaketSkalIverksettesPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
-import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
@@ -156,7 +156,7 @@ object ProductionTemplates : AllTemplates {
         KlageBeslutningOmVedtaketSkalIverksettesPE,
         KlageInnhentingAvOpplysningerUT,
         KlageOrienteringOmOversendelseTilKlageinstans,
-        KlageOrienteringOmSaksbehandlingstid,
+        KlageOrienteringOmSaksbehandlingstidPE,
         KlageUtsattKlagefristUT,
         OkningUforegradRedigerbar,
         OkningUforegradRedigerbarV2,
