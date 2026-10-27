@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -52,6 +53,8 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Informasjon om renter på etterbetaling").bool()
+
         val pe = pesysData.pe
 
         val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
@@ -1815,7 +1818,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
-                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato, visTekstOmRenter ))
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
