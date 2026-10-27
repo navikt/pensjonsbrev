@@ -224,6 +224,23 @@ class TemplateModelSpecificationFactoryTest {
         )
     }
 
+    enum class SortertEnum(override val displayText: String, override val rekkefoelge: Int?) : SaksbehandlerValgEnum {
+        C_UTEN("C", null),
+        B_ANDRE("B", 2),
+        A_UTEN("A", null),
+        D_FOERSTE("D", 1),
+    }
+
+    @OptIn(InternKonstruktoer::class)
+    @Test
+    fun `enum saksbehandlervalg sorteres etter rekkefoelge og deretter navn`() {
+        val spec = TemplateModelSpecificationFactory(WithSaksbehandlervalg::class)
+            .build(mapOf("sortert" to SaksbehandlervalgVerdi.Enum("sortert", "Sortert", SortertEnum::class)))
+        val enumSpec = spec.types[SaksbehandlervalgIDSL::class.qualifiedName!!]!!["sortert"] as FieldType.Enum
+
+        assertThat(enumSpec.values.map { it.value }).containsExactly("D_FOERSTE", "B_ANDRE", "A_UTEN", "C_UTEN")
+    }
+
     @Test
     fun `fails when SaksbehandlervalgIDSL is present but no saksbehandlervalg map is provided`() {
         assertThrows<IllegalArgumentException> {
