@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.FakeSamhandlerService
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
@@ -57,6 +58,7 @@ class SendtBrevMetrikkerTest {
         avsenderEnhet: String = "1234",
         brevkode: Brevkode<*> = Testbrevkoder.INFORMASJONSBREV,
         valgteVedlegg: List<AlltidValgbartVedleggBrevkode> = emptyList(),
+        redigerteVedlegg: List<BrevbakerType.VedleggId> = emptyList(),
     ) = SendtBrevMetrikker.SendtBrevMaaling(
         mottakerType = mottakerType,
         tssId = tssId,
@@ -64,7 +66,8 @@ class SendtBrevMetrikkerTest {
         distribusjonstype = Distribusjon.SENTRALPRINT,
         avsenderEnhet = EnhetId(avsenderEnhet),
         brevkode = brevkode,
-        valgteVedlegg = valgteVedlegg
+        valgteVedlegg = valgteVedlegg,
+        redigerteVedlegg = redigerteVedlegg
     )
 
     @Test
