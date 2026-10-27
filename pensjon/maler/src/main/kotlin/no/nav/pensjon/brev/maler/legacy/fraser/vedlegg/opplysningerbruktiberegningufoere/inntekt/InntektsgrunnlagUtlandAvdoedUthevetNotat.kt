@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegn
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseInntektsgrunnlagAvdoed
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -10,10 +11,11 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.text
 
 data class InntektsgrunnlagUtlandAvdoedUthevetNotat(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        showIf(pe.ut_avdod() and pe.ut_inntektslandtruehvorbruktlikfalse_avdod()){
+        showIf(pe.skalViseInntektsgrunnlagAvdoed(utelatVedDoedsfall) and pe.ut_inntektslandtruehvorbruktlikfalse_avdod()){
             paragraph {
                 text (
                     bokmal { + "Inntektene som er uthevet er valgt siden dette gir det beste resultatet for deg." },
