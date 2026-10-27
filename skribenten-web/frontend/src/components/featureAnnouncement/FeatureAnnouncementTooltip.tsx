@@ -25,12 +25,6 @@ const popIn = keyframes`
   to { transform: none; }
 `;
 
-const twinkle = keyframes`
-  0%, 100% { transform: none; }
-  40% { transform: rotate(-12deg) scale(1.15); }
-  70% { transform: rotate(8deg) scale(0.95); }
-`;
-
 const tooltipMotion = (side: string) => css`
   --feature-announcement-shift: ${side === "top" ? "4px" : "-4px"};
 
@@ -38,15 +32,6 @@ const tooltipMotion = (side: string) => css`
 
   @media (prefers-reduced-motion: no-preference) {
     animation: ${popIn} 220ms cubic-bezier(0.2, 0.9, 0.3, 1.15) both;
-  }
-`;
-
-const sparkleMotion = css`
-  display: inline-flex;
-  color: var(--ax-text-meta-purple);
-
-  @media (prefers-reduced-motion: no-preference) {
-    animation: ${twinkle} 700ms ease-in-out 250ms both;
   }
 `;
 
@@ -147,7 +132,7 @@ export const FeatureAnnouncementTooltip = ({
       >
         <HStack align="center" gap="space-8" justify="space-between" minHeight="2rem" wrap={false}>
           <HStack align="center" gap="space-8" wrap={false}>
-            <span css={sparkleMotion}>
+            <span css={{ display: "inline-flex", color: "var(--ax-text-meta-purple)" }}>
               <SparklesIcon aria-hidden fontSize="1.5rem" />
             </span>
             <BodyShort css={{ color: "var(--ax-text-meta-purple)" }} weight="semibold">
