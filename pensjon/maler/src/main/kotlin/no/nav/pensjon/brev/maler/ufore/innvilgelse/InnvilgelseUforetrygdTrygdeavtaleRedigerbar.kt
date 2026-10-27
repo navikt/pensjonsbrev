@@ -76,7 +76,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
         val pe = pesysData.pe
 
         val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
-        val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(localDateNow)
         val virkningfom = pe.vedtaksdata_virkningfom()
         val virkningbegrunnelseStdbegr_22_12_1_5 = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse().equalTo("stdbegr_22_12_1_5")
         val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
@@ -93,7 +92,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
         val txtOgEllerEktefelle = ifElse (ektefelletilleggInnvilget, " og/eller ektefelle", "")
 
         val ungUforResultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()
-        val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
 
         val beregningsvilkarYrkesskadegrad = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad()
         val yrkesskadeResultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()
@@ -106,7 +104,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
         val totalNettoUforeberegning = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
 
         val kravGjelder = pe.vedtaksdata_kravhode_kravgjelder()
-        val bosattUtland = kravGjelder.equalTo("f_bh_bo_utl")
+        val bosattUtland = kravGjelder.equalTo("f_bh_bo_utl") // TODO: Denne vil aldri slå til, sjekk om vi fortsatt trenger teksten denne representerer i brevet.
         val oppfyltvedsammenlegging = pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging()
         val txtEllerEtAvtaleland = ifElse(bosattUtland and oppfyltvedsammenlegging, " eller et avtaleland", "")
 
@@ -565,8 +563,8 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du må selv registrere beløpet du forventer å få utbetalt fra utlandet neste år i inntektsplanleggeren på nav.no i desember. Se «Du må melde fra om eventuell inntekt». " },
-                        nynorsk { +"Du må sjølv registrere beløpet du forventar å få utbetalt frå utlandet neste år i inntektsplanleggeren på nav.no i desember. Sjå «Du må melde frå om eventuell inntekt». " },
+                        bokmal { +"Du må selv registrere beløpet du forventer å få utbetalt fra utlandet neste år i inntektsplanleggeren på nav.no i desember. Se «Du må melde fra om endringer». " },
+                        nynorsk { +"Du må sjølv registrere beløpet du forventar å få utbetalt frå utlandet neste år i inntektsplanleggeren på nav.no i desember. Sjå «Du må melde frå om endringar». " },
                     )
                 }
             }
