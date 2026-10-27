@@ -4,14 +4,12 @@ import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.UT_KLAGE_INNHENTING_AV_OPPLYSNINGER
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -37,7 +35,14 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        val innhentingAvOpplysninger = saksbehandlervalg("innhentingAvOpplysninger", "Tilpass etter hva som er mangelen i klagen:").enum<InnhentingAvOpplysninger>()
+        val vedtakDuKlagerOverString = "Opplyse om hvilket vedtak du klager på"
+        val vedtakDuKlagerOver = saksbehandlervalg("vedtakDuKlagerOver", vedtakDuKlagerOverString).bool()
+        val hvorforVedtaketErFeilString = "Opplyse om hvorfor vedtaket er feil"
+        val hvorforVedtaketErFeil = saksbehandlervalg("hvorforVedtaketErFeil", hvorforVedtaketErFeilString).bool()
+        val endringDuOenskerString = "Opplyse om hvilken endring du ønsker i vedtaket"
+        val endringDuOensker = saksbehandlervalg("endringDuOensker", endringDuOenskerString).bool()
+        val underskrivKopiAvKlagenString = "Opplyse om at du har underskrevet en kopi av klagen"
+        val underskrivKopiAvKlagen = saksbehandlervalg("underskrivKopiAvKlagen", underskrivKopiAvKlagenString).bool()
 
         title {
             text(bokmal { +"Nav har behov for flere opplysninger" })
@@ -62,18 +67,18 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             }
 
             paragraph {
-                text(bokmal { +"Vi ber derfor om at du " })
-                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.vedtakDuKlagerOver)) {
-                    list { item { text(bokmal { +InnhentingAvOpplysninger.vedtakDuKlagerOver.displayText }) } }
+                text(bokmal { +"For at vi kan håndtere klagen din, ber vi derfor om at du: " })
+                showIf(vedtakDuKlagerOver) {
+                    list { item { text(bokmal { +vedtakDuKlagerOverString }) } }
                 }
-                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.hvorforVedtaketErFeil)) {
-                    list { item { text(bokmal { +InnhentingAvOpplysninger.hvorforVedtaketErFeil.displayText }) } }
+                showIf(hvorforVedtaketErFeil) {
+                    list { item { text(bokmal { +hvorforVedtaketErFeilString }) } }
                 }
-                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.endringDuOensker)) {
-                    list { item { text(bokmal { +InnhentingAvOpplysninger.endringDuOensker.displayText }) } }
+                showIf(endringDuOensker) {
+                    list { item { text(bokmal { +endringDuOenskerString }) } }
                 }
-                showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.underskrivKopiAvKlagen)) {
-                    list { item { text(bokmal { +InnhentingAvOpplysninger.underskrivKopiAvKlagen.displayText }) } }
+                showIf(underskrivKopiAvKlagen) {
+                    list { item { text(bokmal { +underskrivKopiAvKlagenString }) } }
                 }
             }
 
@@ -99,12 +104,5 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
                 text(bokmal { +"Klagen din kan bli avvist dersom vi ikke mottar klagen innen fristen." })
             }
         }
-    }
-
-    enum class InnhentingAvOpplysninger(override val displayText: String) : SaksbehandlerValgEnum {
-        vedtakDuKlagerOver("opplyse om hvilket vedtak du klager på"),
-        hvorforVedtaketErFeil("opplyse om hvorfor vedtaket er feil"),
-        endringDuOensker("opplyse om hvilken endring du ønsker i vedtaket"),
-        underskrivKopiAvKlagen("underskrive på vedlagt kopi av klagen"),
     }
 }
