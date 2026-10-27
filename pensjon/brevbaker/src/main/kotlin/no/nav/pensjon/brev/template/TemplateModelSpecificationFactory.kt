@@ -64,7 +64,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
             values = clazz.java.enumConstants
                 .sortedWith(compareBy<Enum<*>, Int?>(nullsLast()) { (it as SaksbehandlerValgEnum).rekkefoelge }.thenBy { it.name })
                 .map { FieldType.EnumEntry(it.name, (it as SaksbehandlerValgEnum).displayText) }
-                .toSet(),
+                .distinct(),
             displayText = displayText,
         )
     }
@@ -146,5 +146,5 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private fun enumVerdier(theClassifier: KClass<*>) =
         theClassifier.java.enumConstants
             .map { FieldType.EnumEntry((it as Enum<*>).name) }
-            .toSet()
+            .distinct()
 }

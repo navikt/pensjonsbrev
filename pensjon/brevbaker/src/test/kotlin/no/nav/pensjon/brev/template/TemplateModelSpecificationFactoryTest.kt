@@ -119,7 +119,7 @@ class TemplateModelSpecificationFactoryTest {
         assertThat(spec["anEnum"]).isEqualTo(
             FieldType.Enum(
                 false,
-                setOf(FieldType.EnumEntry("FLAG1"), FieldType.EnumEntry("FLAG2"))
+                listOf(FieldType.EnumEntry("FLAG1"), FieldType.EnumEntry("FLAG2"))
             )
         )
     }
@@ -218,7 +218,7 @@ class TemplateModelSpecificationFactoryTest {
         assertThat(valgSpec["enumValg"]).isEqualTo(
             FieldType.Enum(
                 true,
-                setOf(FieldType.EnumEntry("ALTERNATIV_EN", "Alternativ en"), FieldType.EnumEntry("ALTERNATIV_TO", "Alternativ to")),
+                listOf(FieldType.EnumEntry("ALTERNATIV_EN", "Alternativ en"), FieldType.EnumEntry("ALTERNATIV_TO", "Alternativ to")),
                 "Enum display"
             )
         )
