@@ -17,6 +17,7 @@ import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
@@ -177,7 +178,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         brevkode: Brevkode.Redigerbart,
         avsenderEnhetsId: EnhetId
     ): BrevdataResponse.Data =
-        cache.cached(Cacheomraade.HENT_BREVDATA, key = "${saksId.id}-${vedtaksId?.id}-${brevkode.kode()}-${avsenderEnhetsId.value}", ttl = { 30.seconds }) {
+        cache.cached(Cacheomraade.HENT_BREVDATA, key = "${saksId.id}-${vedtaksId?.id}-${brevkode.kode()}-${avsenderEnhetsId.value}-${PrincipalInContext.require().navIdent}", ttl = { 30.seconds }) {
             client.get("brev/skribenten/sak/${saksId.id}/brevdata/${brevkode.kode()}") {
                 metricsRoute("brev/skribenten/sak/{saksId}/brevdata/{brevkode}")
                 mapOf(
