@@ -58,7 +58,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
         )
     ) {
         val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
-        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Etterbetaling - vis tekst om renter").bool()
+        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Informasjon om renter på etterbetaling").bool()
 
         title {
             text(

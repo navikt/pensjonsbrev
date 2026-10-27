@@ -53,7 +53,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
-        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Etterbetaling - vis tekst om renter").bool()
+        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Informasjon om renter på etterbetaling").bool()
 
         val pe = pesysData.pe
 
