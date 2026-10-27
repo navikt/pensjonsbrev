@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
@@ -68,12 +69,13 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
         val hjemmelTredjelandsborger = saksbehandlervalg("hjemmelTredjelandsborger", "Hjemmel tredjelandsborger og Nordisk konvensjon").bool()
         val etterBetalingRenter = saksbehandlervalg("etterBetalingRenter", "Info om renter på etterbetaling").bool()
         val sluttbehandling = saksbehandlervalg("sluttbehandling", "Sluttbehandling").bool()
+        val barnetilleggIkkeBehandlet = saksbehandlervalg("barnetilleggIkkeBehandlet", "Barnetillegg ikke behandlet").bool()
+        val behovsprøvingAvBarnetilleggUtenlandskPensjon = saksbehandlervalg("barnetilleggUtenlandskPensjon", "Behovsprøving av barnetillegg - utenlandsk pensjon").bool()
 
 
         val pe = pesysData.pe
 
         val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
-        val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(localDateNow)
         val virkningfom = pe.vedtaksdata_virkningfom()
         val virkningbegrunnelseStdbegr_22_12_1_5 = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse().equalTo("stdbegr_22_12_1_5")
         val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
@@ -90,7 +92,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
         val txtOgEllerEktefelle = ifElse (ektefelletilleggInnvilget, " og/eller ektefelle", "")
 
         val ungUforResultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()
-        val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
 
         val beregningsvilkarYrkesskadegrad = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad()
         val yrkesskadeResultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()
@@ -103,7 +104,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
         val totalNettoUforeberegning = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
 
         val kravGjelder = pe.vedtaksdata_kravhode_kravgjelder()
-        val bosattUtland = kravGjelder.equalTo("f_bh_bo_utl")
+        val bosattUtland = kravGjelder.equalTo("f_bh_bo_utl") // TODO: Denne vil aldri slå til, sjekk om vi fortsatt trenger teksten denne representerer i brevet.
         val oppfyltvedsammenlegging = pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging()
         val txtEllerEtAvtaleland = ifElse(bosattUtland and oppfyltvedsammenlegging, " eller et avtaleland", "")
 
@@ -486,8 +487,8 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
                 paragraph {
                     text (
-                        bokmal { + "Vi har mottatt melding fra " + fritekst("land") + " om at de har innvilget/avslått søknaden din om uføreytelse/alderspensjon. De har fattet vedtaket etter egne nasjonale regler, og du vil få utbetalt ytelsen/pensjonen direkte fra dem. Du kan lese mer om dette i det utenlandske vedtaket som du skal ha mottatt. " },
-                        nynorsk { + "Vi har mottatt melding frå " + fritekst("land") + " om at dei har innvilga/avslått søknaden din om uføreytelse/alderspensjon. Dei har fatta vedtaket etter eigne nasjonale reglar, og du vil få utbetalt ytelsen/pensjonen direkte frå dei. Du kan lese meir om dette i det utanlandske vedtaket som du skal ha mottatt. " },
+                        bokmal { + "Vi har mottatt melding fra " + fritekst("land") + " om at de har " + fritekst("innvilget/avslått") + " søknaden din om uføreytelse/alderspensjon. De har fattet vedtaket etter egne nasjonale regler" + fritekst(", og du vil få utbetalt ytelsen/pensjonen direkte fra dem") + ". Du kan lese mer om dette i det utenlandske vedtaket som du skal ha mottatt. " },
+                        nynorsk { + "Vi har mottatt melding frå " + fritekst("land") + " om at dei har " + fritekst("innvilga/avslått") + " søknaden din om uføreytelse/alderspensjon. Dei har fatta vedtaket etter eigne nasjonale reglar" + fritekst(", og du vil få utbetalt ytelsen/pensjonen direkte frå dei") + ". Du kan lese meir om dette i det utanlandske vedtaket som du skal ha mottatt. " },
                     )
                 }
                 paragraph {
@@ -535,6 +536,40 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 )
             }
 
+            showIf(behovsprøvingAvBarnetilleggUtenlandskPensjon) {
+                title1 {
+                    text(
+                        bokmal { +"Behovsprøving av barnetillegg" },
+                        nynorsk { +"Behovsprøving av barnetillegg" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du mottar barnetillegg for barn som du forsørger. Barnetillegget er behovsprøvd, og alle typer inntekter kan få betydning for beregningen av det, også ytelser fra utlandet. " },
+                        nynorsk { +"Du mottek barnetillegg for barn som du forsørgjer. Barnetillegget er behovsprøvd, og alle typar inntekter kan få tyding for rekninga av det, òg ytingar frå utlandet. " },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Vi har mottatt melding om at du er innvilget ytelse fra " + fritekst("land") + ". Det du har fått etterbetalt, holder vi utenfor behovsprøvingen av barnetillegget. " },
+                        nynorsk { +"Vi har fått melding om at du er innvilga yting frå " + fritekst("land") + ". Det du har fått etterbetalt, held vi utanfor behovsprøvingen av barnetillegget. " },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Vi har lagt til grunn at du i år får utbetalt " + fritekst("beløp i utenlandsk valuta") + ". Beløpet tilsvarer " + fritekst("beløp i NOK") + ". " },
+                        nynorsk { +"Vi har lagt til grunn at du i år får utbetalt " + fritekst("beløp i utanlandsk valuta") + ". Beløpet tilsvarar " + fritekst("beløp i NOK") + ". " },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du må selv registrere beløpet du forventer å få utbetalt fra utlandet neste år i inntektsplanleggeren på nav.no i desember. Se «Du må melde fra om endringer». " },
+                        nynorsk { +"Du må sjølv registrere beløpet du forventar å få utbetalt frå utlandet neste år i inntektsplanleggeren på nav.no i desember. Sjå «Du må melde frå om endringar». " },
+                    )
+                }
+            }
+
+            // TODO: Må kanskje inn med et eget avsnitt imellom her om inntekt fra Norge og utland?
             includePhrase(Innvilgelse.BarnetilleggOgInntekt(
                 pe = pe,
                 btInnvilget = btInnvilget,
@@ -544,6 +579,21 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 btFellesNetto0 = btFellesNetto0,
                 periodisertInntekt = periodisertInntekt
             ))
+
+            showIf(barnetilleggIkkeBehandlet) {
+                title1 {
+                    text(
+                        bokmal { +"Barnetillegg som ikke er behandlet" },
+                        nynorsk { +"Barnetillegg som ikkje er behandla" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Hvis du forsørger barn under 18 år kan du ha krav på barnetillegg i uføretrygden. Dersom du ønsker å få vurdert retten din til barnetillegg må du søke om dette. Søknadskjema ‘SKJEMA NAV 12-15.01 Søknad om barnetillegg for deg som har uføretrygd’ finner du på $NAV_URL. Dokumentasjon på eventuell forsørgelse for barn du ikke bor sammen med må vedlegges. Slik dokumentasjon kan være en skriftlig avtale undertegnet av begge barnas foreldre på at du har privat bidragsavtale og/eller formalisert samværsavtale. " },
+                        nynorsk { +"Om du forsørgjer barn under 18 år kan du ha krav på barnetillegg i uføretrygda. Dersom du ønskjer å få vurdert retten din til barnetillegg må du søkje om dette. Søknadsskjema ‘SKJEMA NAV 12-15.01 Søknad om barnetillegg for deg som har uføretrygd’ finn du på $NAV_URL. Dokumentasjon på eventuell forsørging for barn du ikkje bur saman med må leggast ved. Slik dokumentasjon kan vere ein skriftleg avtale underteikna av begge barna sine foreldre på at du har privat bidragsavtale og/eller formalisert samværsavtale. " },
+                    )
+                }
+            }
 
             includePhrase(Innvilgelse.BarnetilleggOgUtland(
                 pe = pe,
@@ -585,6 +635,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
             }
 
+            // TODO: Er denne aktuell her?
             showIf(kravGjelder.equalTo("f_bh_med_utl")){
                 includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
             }
