@@ -52,6 +52,45 @@ class Felles {
         }
     }
 
+    object DetteKanDuGjoreNaUtland : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Dette kan du gjøre nå" },
+                    nynorsk { + "Dette kan du gjere no" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Når vi avslår søknaden din om uføretrygd, får du som hovedregel ikke lenger arbeidsavklaringspenger."},
+                    nynorsk { + "Når vi avslår søknaden din om uføretrygd, får du som hovudregel ikkje lenger arbeidsavklaringspengar." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Det er viktig at du tar kontakt med veilederen din i Nav for å undersøke om du trenger mer avklaring og kan fortsette å få arbeidsavklaringspenger. Du kan også få hjelp til å forstå avslaget."},
+                    nynorsk { + "Det er viktig at du tek kontakt med rettleiaren din i Nav for å undersøkje om du treng meir avklaring og kan halde fram med å få arbeidsavklaringspengar. Du kan også få hjelp til å forstå avslaget." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Veileder kan også hjelpe deg å finne ut om det er andre pengestøtter fra Nav som kan være aktuelle for deg."},
+                    nynorsk { +
+                    "Rettleiar kan også hjelpe deg å finne ut om det er andre pengestøttar frå Nav som kan vere aktuelle for deg." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Nav oppfølging utland (evt din oppfølgingsenhet) har fått beskjed om at vi har avslått søknaden din."},
+                    nynorsk { +"Nav oppfølging utland (evt dei som følgjer deg opp) har fått beskjed om at vi har avslått søknaden din." }
+                )
+            }
+        }
+    }
+
     object RettTilAKlageLang : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -202,6 +241,28 @@ class Felles {
                             "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
                             "Dersom du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE " +
                             "kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID."
+                    }
+                )
+            }
+        }
+    }
+    object HarDuSporsmalLegeBehandler : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Har du spørsmål?" },
+                    nynorsk { + "Har du spørsmål?" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Du finner mer informasjon på ${Constants.LEGE_URL}. " +
+                            "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe vår telefon for lege og behandler på ${Constants.NAV_KONTAKTSENTER_TELEFON_LEGE} " +
+                            "hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                    },
+                    nynorsk { + "Du finn meir informasjon på ${Constants.LEGE_URL}. " +
+                            "Dersom du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe vår telefon for lege og behandlar på ${Constants.NAV_KONTAKTSENTER_TELEFON_LEGE} " +
+                            "kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
                     }
                 )
             }

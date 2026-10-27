@@ -1,4 +1,4 @@
-import { current, type Draft, produce } from "immer";
+import { current, type Draft, isDraft, produce } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
@@ -353,7 +353,7 @@ export function splitMixedListBlock(draft: Draft<LetterEditorState>, blockIndex:
   // Only id:null (user-created) lists must be isolated in their own block.
   // Template lists (id != null) may co-exist with other content — do not split them out.
   if (block.content.length <= 1) return 1;
-  const contentSnap = current(block.content) as Content[];
+  const contentSnap = isDraft(block.content) ? current(block.content) : block.content;
   const isNewList = (c: Content): c is ItemList => isItemList(c) && isNew(c);
   if (!contentSnap.some(isNewList)) return 1;
 
@@ -554,8 +554,8 @@ function mergeSameTypeListsInBlock(
     const first = content[i];
     const second = content[i + 1];
     if (isItemList(first) && isItemList(second) && effectiveListType(first) === effectiveListType(second)) {
-      const secondItems = current(second.items) as Item[];
-      const secondDeletedItems = current(second.deletedItems) as number[];
+      const secondItems = isDraft(second.items) ? current(second.items) : second.items;
+      const secondDeletedItems = isDraft(second.deletedItems) ? current(second.deletedItems) : second.deletedItems;
 
       // Remove second from the block; records second.id in deletedContent if applicable.
       removeElements(i + 1, 1, { content, deletedContent, id: blockId });
@@ -1183,6 +1183,10 @@ export function collectAllLiteralValues(letter: EditedDocument): LiteralValue[] 
 export function collectFritekstLiterals(letter: EditedDocument): LiteralValue[] {
   return collectAllLiteralValues(letter).filter((literal) => isFritekst(literal));
 }
+
+export const isUneditedFritekst = (literal: LiteralValue): boolean =>
+  isFritekst(literal) &&
+  (literal.editedText === null || literal.editedText === undefined || literal.editedText === literal.text);
 
 export const countUneditedFritekstPlaceholders = (letter: EditedDocument): number => {
   return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;

@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringH
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import kotlinx.coroutines.CancellationException
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.skribenten.Features
-import no.nav.pensjon.brev.skribenten.override
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
@@ -20,57 +18,50 @@ import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.parallel.Isolated
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.ValueSource
 import java.time.LocalDate
 
-@Isolated
 class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @BeforeEach
     fun nullstillSending() {
-        // TODO: Fjern `@Isolated` når toggle fjernes.
-        Features.override(Features.samhandlerOrgnummer, false)
         penService.utfoerteSendBrevKall.clear()
-    }
-
-    @AfterEach
-    fun nullstillToggle() {
-        Features.override(Features.samhandlerOrgnummer, false)
     }
 
     @ParameterizedTest
     @EnumSource(Distribusjon::class)
-    suspend fun `sender orgnummer naar toggle er paa`(distribusjon: Distribusjon) {
-        Features.override(Features.samhandlerOrgnummer, true)
+    suspend fun `sender orgnummer naar samhandler har gyldig organisasjonsnummer`(distribusjon: Distribusjon) {
         sendMedOppslag(distribusjon = distribusjon) { samhandlerService.hentSamhandler(it) }
 
         val (request, distribuer) = penService.utfoerteSendBrevKall.single()
         assertThat(request.mottaker).isEqualTo(
             Pen.SendRedigerbartBrevRequest.Mottaker(
                 type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
-                organisasjon = Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon(SAMHANDLER_ORGNR),
+                organisasjon = Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon(OrgNr(SAMHANDLER_ORGNR)),
             )
         )
         assertThat(distribuer).isEqualTo(distribusjon == Distribusjon.SENTRALPRINT)
     }
 
     @Test
-    suspend fun `toggle av bruker TSS_ID uten organisasjonsoppslag`() {
-        sendMedOppslag { error("Skal ikke hente samhandler ved sending naar toggle er av") }
-        assertTssMottaker()
+    suspend fun `normaliserer TSS orgnummer med 00-prefiks foer sending til PEN`() {
+        sendMedOppslag { samhandlerService.hentSamhandler(it).let { response ->
+            response.copy(success = response.success!!.copy(offentligId = "00$SAMHANDLER_ORGNR"))
+        } }
+
+        val request = penService.utfoerteSendBrevKall.single().first
+        assertThat(request.mottaker?.type).isEqualTo(Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR)
+        assertThat(request.mottaker?.organisasjon?.orgNr?.value).isEqualTo(SAMHANDLER_ORGNR)
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["FNR", "UTOR", "ORGNR", "UNKNOWN"])
     suspend fun `andre idTyper bruker TSS_ID`(idType: String) {
-        Features.override(Features.samhandlerOrgnummer, true)
         sendMedOppslag { samhandlerService.hentSamhandler(it).let { response ->
             response.copy(success = response.success!!.copy(idType = idType))
         } }
@@ -80,7 +71,6 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @ParameterizedTest
     @ValueSource(strings = ["", "   ", "12345678", "1234567890", "12345678a", " 987654321"])
     suspend fun `ugyldig orgnummer bruker TSS_ID`(offentligId: String) {
-        Features.override(Features.samhandlerOrgnummer, true)
         sendMedOppslag { samhandlerService.hentSamhandler(it).let { response ->
             response.copy(success = response.success!!.copy(offentligId = offentligId))
         } }
@@ -90,14 +80,12 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @ParameterizedTest
     @EnumSource(HentSamhandlerResponseDto.FailureType::class)
     suspend fun `feilrespons fra samhandler bruker TSS_ID`(failure: HentSamhandlerResponseDto.FailureType) {
-        Features.override(Features.samhandlerOrgnummer, true)
         sendMedOppslag { HentSamhandlerResponseDto(null, failure) }
         assertTssMottaker()
     }
 
     @Test
     suspend fun `kansellert oppslag sender ikke til PEN`() {
-        Features.override(Features.samhandlerOrgnummer, true)
         assertThrows<CancellationException> {
             sendMedOppslag { throw CancellationException("Kansellert") }
         }
@@ -105,16 +93,14 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `standardmottaker er uendret naar toggle er paa`() {
-        Features.override(Features.samhandlerOrgnummer, true)
+    suspend fun `standardmottaker er uendret`() {
         sendMedOppslag(mottaker = null) { error("Standardmottaker skal ikke slaas opp") }
         assertThat(penService.utfoerteSendBrevKall.single().first.mottaker).isNull()
     }
 
     @ParameterizedTest
     @ValueSource(booleans = [false, true])
-    suspend fun `manuelle adresser er uendret naar toggle er paa`(utenlandsk: Boolean) {
-        Features.override(Features.samhandlerOrgnummer, true)
+    suspend fun `manuelle adresser er uendret`(utenlandsk: Boolean) {
         val mottaker = if (utenlandsk) {
             Dto.Mottaker.utenlandskAdresse(
                 navn = Navn("Mottaker"),
@@ -165,7 +151,6 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `PEN-feil ved organisasjon gir ikke nytt sendeforsoek med TSS_ID`() {
-        Features.override(Features.samhandlerOrgnummer, true)
         penService.sendBrevException = PenServiceException("PEN er utilgjengelig")
 
         assertThrows<PenServiceException> {

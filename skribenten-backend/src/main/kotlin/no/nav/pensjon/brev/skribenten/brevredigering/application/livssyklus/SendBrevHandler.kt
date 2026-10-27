@@ -17,12 +17,12 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
+import no.nav.pensjon.brev.skribenten.model.OrgNr
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
-import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon
 import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger(SendBrevHandler::class.java)
@@ -112,24 +112,21 @@ class SendBrevHandler(
     }
 
     private suspend fun hentSamhandlerOrgMottaker(tssId: TssId): Pen.SendRedigerbartBrevRequest.Mottaker? {
-        return if (Features.samhandlerOrgnummer.isEnabled()) {
-            val response = samhandlerService.hentSamhandler(tssId)
-            val samhandler = response.success
+        val response = samhandlerService.hentSamhandler(tssId)
+        val samhandler = response.success
 
-            if (samhandler == null) {
-                logger.warn("Klarte ikke å hente samhandler for sending ({}). Bruker TSS_ID som mottaker.", response.failure)
-                null
-            } else {
-                samhandler.offentligId
-                    .takeIf { samhandler.idType == "ORG" && Organisasjon.erGyldig(it) }
-                    ?.let { orgNr ->
-                        Pen.SendRedigerbartBrevRequest.Mottaker(
-                            type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
-                            organisasjon = Organisasjon(orgNr),
-                        )
-                    }
-            }
-        } else null
+        return if (samhandler == null) {
+            logger.warn("Klarte ikke å hente samhandler for sending ({}). Bruker TSS_ID som mottaker.", response.failure)
+            null
+        } else {
+            samhandler.organisasjonsnummer
+                ?.let { organisasjon ->
+                    Pen.SendRedigerbartBrevRequest.Mottaker(
+                        type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.ORGNR,
+                        organisasjon = Pen.SendRedigerbartBrevRequest.Mottaker.Organisasjon(organisasjon),
+                    )
+                }
+        }
     }
 
     /**

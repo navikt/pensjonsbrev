@@ -1,39 +1,41 @@
 package no.nav.pensjon.brev.ufore
 
 import no.nav.brev.brevbaker.*
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.VedleggData
+import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.simulering.SimuleringUforetrygdData
-import no.nav.pensjon.brev.ufore.api.model.maler.simulering.SimuleringUforetrygdDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
-import java.time.LocalDate
-import java.time.Month
-import kotlin.reflect.KClass
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.ufore.api.model.maler.simulering.SimuleringUforetrygdData
+import no.nav.pensjon.brev.ufore.api.model.maler.simulering.SimuleringUforetrygdDto
 import no.nav.pensjon.brev.ufore.api.model.maler.svartid.OrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.ufore.api.model.maler.svartid.VarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.ufore.maler.feilutbetaling.*
+import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakFeilutbetaling
+import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekreving
+import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekrevingForeldelse
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.*
-import no.nav.pensjon.brev.ufore.maler.hvilenderett.*
-import no.nav.pensjon.brev.ufore.maler.info.*
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettInfo4Aar
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHoer
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
+import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
+import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
 import no.nav.pensjon.brev.ufore.maler.simulering.SimuleringUforetrygd
 import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidAuto
 import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidRedigerbar
 import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
+import java.time.LocalDate
+import java.time.Month
+import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
 
@@ -132,7 +134,12 @@ object Fixtures : LetterDataFactory {
     private fun lagInnhentingOpplysningerNaeringsinntekt() = InnhentingOpplysningerNaeringsinntektDto(
         pesysData = EmptyFagsystemdata,
         saksbehandlerValg = lagSaksbehandlervalg(
-            "ikkeMottattInntektsskjema" to true
+            "ikkeMottattInntektsskjema" to true,
+            "beOmPersonligeSelvangivelser" to true,
+            "beOmNaeringsspesifiskasjon" to true,
+            "beOmNaeringsoppgaver" to true,
+            "beOmPersoninntektsskjema" to true,
+            "beOmForelopigResultatregnskap" to true
         )
     )
 

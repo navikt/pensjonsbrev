@@ -12,36 +12,30 @@ object DocumentModel {
         tittel: String,
         visTittel: Boolean,
         visLogo: Boolean,
-        saksinformasjon: DocumentSaksinformasjon?,
+        gjelderNavn: String?,
+        gjelderPersonidentifikator: Markup.Personidentifikator?,
+        annenMottakerNavn: String?,
+        saksnummer: DocumentSaksnummer?,
         dokumentDato: LocalDate?,
         blocks: List<Block>,
     ): Document = Document(
         tittel = tittel,
         visTittel = visTittel,
         visLogo = visLogo,
-        saksinformasjon = saksinformasjon,
+        gjelderNavn = gjelderNavn,
+        gjelderPersonidentifikator = gjelderPersonidentifikator,
+        annenMottakerNavn = annenMottakerNavn,
+        saksnummer = saksnummer,
         dokumentDato = dokumentDato,
         blocks = blocks,
     )
 
-    fun documentSaksinformasjon(
+    fun documentSaksnummer(
         saksnummer: Markup.Saksnummer,
         visFooter: Boolean,
-        mottaker: DocumentMottaker?,
-    ): DocumentSaksinformasjon = DocumentSaksinformasjon(
+    ): DocumentSaksnummer = DocumentSaksnummer(
         saksnummer = saksnummer,
         visFooter = visFooter,
-        mottaker = mottaker,
-    )
-
-    fun documentMottaker(
-        gjelderNavn: String,
-        gjelderPersonidentifikator: Markup.Personidentifikator,
-        annenMottakerNavn: String?,
-    ): DocumentMottaker = DocumentMottaker(
-        gjelderNavn = gjelderNavn,
-        gjelderPersonidentifikator = gjelderPersonidentifikator,
-        annenMottakerNavn = annenMottakerNavn,
     )
 
     fun documentPDFRequest(document: Document, spraak: Markup.Spraak): DocumentPDFRequest =

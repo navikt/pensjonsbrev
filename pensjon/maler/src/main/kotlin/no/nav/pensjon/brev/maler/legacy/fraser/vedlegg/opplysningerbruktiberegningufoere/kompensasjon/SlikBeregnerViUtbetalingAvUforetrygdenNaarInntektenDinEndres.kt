@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.exstreamFunctions.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.*
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.oppfyllerDoedsfallsvilkaar
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseUtbetalingVedInntektsendringTittel
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseUtbetalingVedInntektsendringDetaljer
 import no.nav.pensjon.brev.model.format
@@ -16,9 +17,12 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
     val pe: Expression<PEgruppe10>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            showIf(pe.skalViseUtbetalingVedInntektsendringTittel()){
+        val visForKravarsak = pe.oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall)
+
+        showIf(pe.skalViseUtbetalingVedInntektsendringTittel() and visForKravarsak){
 
             title1 {
                 text (
@@ -35,7 +39,7 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
             }
         }
 
-        showIf(pe.skalViseUtbetalingVedInntektsendringDetaljer()){
+        showIf(pe.skalViseUtbetalingVedInntektsendringDetaljer() and visForKravarsak){
             paragraph {
                 text (
                     bokmal { + "Uføretrygden reduseres med " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
@@ -48,11 +52,6 @@ data class SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
                         .format() + " prosent." },
                 )
             }
-        }
-
-        showIf(
-            pe.skalViseUtbetalingVedInntektsendringDetaljer()
-        ){
             paragraph {
                 text (
                     bokmal { + "Du har et bunnfradrag på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()

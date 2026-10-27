@@ -17,7 +17,10 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
-data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNynorsk>() {
+data class OpplysningerBruktIBeregningTabell(
+    val pe: Expression<PEgruppe10>,
+    val visSivilstatusUansett: Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(
@@ -234,7 +237,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
 
                 }
 
-                showIf(((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode().equalTo("PE_UT_14_300")) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().notEqualTo(0.0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().not()))){
+                showIf(visSivilstatusUansett or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().notEqualTo(0.0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().not())){
                     row {
                         cell {
                             text(

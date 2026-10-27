@@ -2,10 +2,12 @@ import React, { useLayoutEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
+  collectAllLiteralValues,
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
   isTable,
+  isUneditedFritekst,
   text as textOf,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
@@ -50,13 +52,12 @@ import {
 import {
   type Content,
   type EditedDocument,
-  ElementTags,
   FontType,
   ListType,
   type LiteralValue,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
-import { getPasteMetadata } from "~/utils/pasteTracking";
+import { getPasteMetadata, hasPasteContent } from "~/utils/pasteTracking";
 import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
@@ -258,9 +259,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
   // hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
-  const erFritekst =
-    content.tags.includes(ElementTags.FRITEKST) &&
-    (content.editedText === null || content.editedText === undefined || content.editedText === content.text);
+  const erFritekst = isUneditedFritekst(content);
+  const isTitleTabEntry =
+    !freeze &&
+    literalIndex.blockIndex === TITLE_INDEX &&
+    literalIndex.contentIndex === editorState.redigertBrev.title.text.findIndex((text) => text.type === "LITERAL") &&
+    !collectAllLiteralValues(editorState.redigertBrev).some(isUneditedFritekst);
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
@@ -331,8 +335,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   }, [
     text,
     shouldBeFocused,
-    editorState.focus.cursorPosition,
-    editorState.focus.selectAll,
+    // A successful replacement can change focus without changing its cursor offset or the displayed text.
+    editorState.focus,
     freeze,
     setEditorState,
     erFritekst,
@@ -660,7 +664,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (offset >= 0) {
       const pastedText = event.clipboardData.getData("text/plain");
       const pasteLength = pastedText.length;
-      if (pasteLength > 0) {
+      if (hasPasteContent(event.clipboardData)) {
         const pasteMetadata = getPasteMetadata(event.clipboardData);
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
@@ -680,7 +684,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       if (selection) {
         const pastedText = event.clipboardData.getData("text/plain");
         const pasteLength = pastedText.length;
-        if (pasteLength > 0) {
+        if (hasPasteContent(event.clipboardData)) {
           const pasteMetadata = getPasteMetadata(event.clipboardData);
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,
@@ -694,7 +698,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
 
         applyAction(Actions.pasteReplacingSelection, setEditorState, selection, event.clipboardData);
-        globalThis.getSelection()?.removeAllRanges();
       }
     }
   };
@@ -845,6 +848,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnMouseDown = (e: React.MouseEvent) => {
     pasteViaContextMenuRef.current = false;
+    // Native trippelklikk markerer hele avsnittet ved mousedown, noe som avgrenses til første literal i blokken.
+    // Blokker dette og marker heller hele literalen det ble klikket i.
+    if (!erFritekst && e.detail === 3) {
+      e.preventDefault();
+      setLiteralSelection(e.currentTarget as HTMLSpanElement);
+      return;
+    }
     if (!erFritekst) return;
 
     // Tøm markering for å restarte dra-og-marker
@@ -907,6 +917,20 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  // Velger tekstnoden i stedet for span-elementet, slik at markeringen får tekst-offsets (0..lengde).
+  // Da gjenkjenner useDragSelectUnifier den som en hel-literal-markering og lar contenteditable stå.
+  // Diff-dekorerte literaler har flere barn og redigeres ikke (diff-modus slås av ved redigering),
+  // så der markeres hele elementet.
+  const setLiteralSelection = (element: HTMLSpanElement) => {
+    const selection = globalThis.getSelection();
+    if (selection) {
+      const range = document.createRange();
+      selection.removeAllRanges();
+      range.selectNodeContents(hasDiffDecoration ? element : element.childNodes[0]);
+      selection.addRange(range);
+    }
+  };
+
   return (
     /**
      * biome-ignore lint/a11y/noStaticElementInteractions: Behandles som redigerbar, og derfor
@@ -941,7 +965,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onMouseDown={handleOnMouseDown}
       onPaste={handleOnPaste}
       ref={contentEditableReference}
-      tabIndex={erFritekst ? 0 : -1}
+      tabIndex={erFritekst || isTitleTabEntry ? 0 : -1}
     />
   );
 }

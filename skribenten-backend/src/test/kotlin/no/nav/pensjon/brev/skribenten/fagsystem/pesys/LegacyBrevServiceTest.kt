@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
+import io.ktor.server.plugins.BadRequestException
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.MockPrincipal
@@ -12,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
 
@@ -89,8 +91,18 @@ class LegacyBrevServiceTest {
         brevgruppe = "brevgruppe",
     )
 
+    private val exstreamAutobrevMetadata = exstreamBrevMetadata.copy(
+        redigerbart = false,
+        dekode = "exstream-autobrev",
+        brevkodeIBrevsystem = "exstream-autobrev",
+    )
+
     private val brevmetadataService = FakeBrevmetadataService(
-        maler = mapOf("exstream" to exstreamBrevMetadata),
+        maler = mapOf(
+            "exstream" to exstreamBrevMetadata,
+            "exstream-autobrev" to exstreamAutobrevMetadata,
+            "eblankett" to exstreamBrevMetadata.copy(brevkodeIBrevsystem = "eblankett", dokumentkategori = DokumentkategoriCode.E_BLANKETT),
+        ),
     )
 
     private val safService = object : SafServiceStub() {
@@ -108,9 +120,11 @@ class LegacyBrevServiceTest {
             )
     }
 
+    private var sisteBestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest? = null
+
     private val penService = object : PenClientStub() {
         override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
-            Pen.BestillExstreamBrevResponse(forventaJournalpostId)
+            Pen.BestillExstreamBrevResponse(forventaJournalpostId).also { sisteBestillExstreamBrevRequest = bestillExstreamBrevRequest }
 
         override suspend fun redigerExstreamBrev(journalpostId: JournalpostId) =
             if (journalpostId == forventaJournalpostId) {
@@ -180,22 +194,86 @@ class LegacyBrevServiceTest {
 
 
     @Test
+    fun `bestill exstream autobrev returnerer kun journalpostId`() {
+        runBlocking {
+            Features.override(Features.vergeForExstream, false)
+            val bestillBrevResult = withPrincipal(principal) {
+                legacyBrevService.bestillExstreamAutobrev(
+                    gjelderPid = Pid("9999"), request = Api.BestillExstreamBrevRequest(
+                        brevkode = "exstream-autobrev",
+                        spraak = SpraakKode.NB,
+                        vedtaksId = null,
+                        idTSSEkstern = null,
+                        brevtittel = null,
+                        enhetsId = principalSinNAVEnhet.id
+                    ),
+                    saksId = SaksId(3333L)
+                )
+            }
+            assertThat(bestillBrevResult).isEqualTo(Api.BestillExstreamAutobrevResponse(journalpostId = forventaJournalpostId))
+        }
+    }
+
+    @Test
+    fun `bestill exstream autobrev feiler ved manglende tilgang`() {
+        runBlocking {
+            val bestillBrevResult = withPrincipal(principal) {
+                legacyBrevService.bestillExstreamAutobrev(
+                    gjelderPid = Pid("9999"), request = Api.BestillExstreamBrevRequest(
+                        brevkode = "exstream-autobrev",
+                        spraak = SpraakKode.NB,
+                        vedtaksId = null,
+                        idTSSEkstern = null,
+                        brevtittel = null,
+                        enhetsId = EnhetId("9999")
+                    ),
+                    saksId = SaksId(3333L)
+                )
+            }
+            assertThat(bestillBrevResult.journalpostId).isNull()
+            assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
+        }
+    }
+
+    @Test
+    fun `bestill exstream autobrev avviser redigerbare brevmaler`() {
+        runBlocking {
+            assertThrows<BadRequestException> {
+                withPrincipal(principal) {
+                    legacyBrevService.bestillExstreamAutobrev(
+                        gjelderPid = Pid("9999"), request = Api.BestillExstreamBrevRequest(
+                            brevkode = "exstream",
+                            spraak = SpraakKode.NB,
+                            vedtaksId = null,
+                            idTSSEkstern = null,
+                            brevtittel = null,
+                            enhetsId = principalSinNAVEnhet.id
+                        ),
+                        saksId = SaksId(3333L)
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
     fun `kan bestille exstream eblankett med riktig tilgang`() {
         runBlocking {
             Features.override(Features.vergeForExstream, false)
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerEblankett(
                     gjelderPid = Pid("9999"), request = Api.BestillEblankettRequest(
-                        brevkode = "exstream",
+                        brevkode = "eblankett",
                         enhetsId = principalSinNAVEnhet.id,
                         mottakerText = "en tekst",
-                        landkode = "NO",
+                        landkode = "GBR",
                     ),
                     saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isNull()
             assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_EXSTREAM_URL)
+            assertThat(sisteBestillExstreamBrevRequest?.sakskontekst?.land).isEqualTo("GBR")
         }
     }
 
@@ -208,7 +286,7 @@ class LegacyBrevServiceTest {
                         brevkode = "exstream",
                         enhetsId = EnhetId("9999"),
                         mottakerText = "en tekst",
-                        landkode = "NO",
+                        landkode = "GBR",
                     ),
                     saksId = SaksId(3333L)
                 )

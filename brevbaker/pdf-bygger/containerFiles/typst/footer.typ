@@ -1,7 +1,7 @@
 #import "content/state.typ": sectionCounter
 
 
-#let footer(input, languageSettings) = context {
+#let footer(saksnummer, languageSettings) = context {
   let currentPageNumber = counter(page).get().first()
 
   let currentSection = sectionCounter.at(here()).first()
@@ -14,7 +14,11 @@
   set text(9pt)
   set align(right)
   if(currentPageNumber <= pageNumberAtEndOfSection) {
-    [#languageSettings.saksnummerprefix #input.saksnummer #h(1fr)
-    #languageSettings.sideprefix #currentPageNumber #languageSettings.sideinfix #pageNumberAtEndOfSection]
+    if saksnummer != none {
+      [#languageSettings.saksnummerprefix #saksnummer #h(1fr)
+      #languageSettings.sideprefix #currentPageNumber #languageSettings.sideinfix #pageNumberAtEndOfSection]
+    } else {
+      [#languageSettings.sideprefix #currentPageNumber #languageSettings.sideinfix #pageNumberAtEndOfSection]
+    }
   }
 }

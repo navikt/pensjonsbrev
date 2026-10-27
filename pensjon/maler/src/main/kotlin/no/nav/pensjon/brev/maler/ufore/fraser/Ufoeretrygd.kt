@@ -9,12 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetill
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
-import no.nav.pensjon.brev.maler.legacy.BarnetilleggFlereBarnFormatter
-import no.nav.pensjon.brev.maler.legacy.BarnetilleggOpphorFormatter
-import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
-import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
-import no.nav.pensjon.brev.maler.legacy.ut_forsorgeransvar_siste_er_true
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar
+import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.model.format
@@ -22,7 +17,6 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -196,19 +190,6 @@ object Ufoeretrygd {
                         english { +"Your disability benefit will still be paid no later than the 20th of every month." }
                     )
                 }
-            }
-        }
-    }
-
-    // TBU1128
-    object ViktigAALeseHeleBrevet : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal { +"I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet." },
-                    nynorsk { +"I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet." },
-                    english { +"In this letter we will explain your rights and obligations. Therefore, it is important that you read the whole letter." }
-                )
             }
         }
     }
@@ -711,6 +692,12 @@ object Ufoeretrygd {
                 text(
                     bokmal { +"Du får etterbetalt uføretrygd fra " + virkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
                     nynorsk { +"Du får etterbetalt uføretrygd frå " + virkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju yrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du kan ha rett på renter i etterbetalingen. Du får et eget vedtak om dette når vi har vurdert saken. " },
+                    nynorsk { +"Du kan ha rett på renter i etterbetalinga. Du får eit eige vedtak om dette når vi har vurdert saka. " },
                 )
             }
         }

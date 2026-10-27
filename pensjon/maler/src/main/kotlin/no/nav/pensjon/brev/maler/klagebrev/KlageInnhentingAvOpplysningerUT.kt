@@ -29,7 +29,7 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Klage - Innhenting av opplysninger",
+            displayTitle = "Klage - innhenting av opplysninger",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

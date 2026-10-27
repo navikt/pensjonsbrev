@@ -179,9 +179,6 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
             //TBU2303
             paragraph { text(bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned." }) }
 
-            //TBU1091
-            paragraph { text(bokmal { +"I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet." }) }
-
             //TBU1092
             title1 { text(bokmal { +"Begrunnelse for vedtaket" }) }
 

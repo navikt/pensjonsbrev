@@ -3,7 +3,15 @@ import "./editor.css";
 import { CheckmarkIcon, XMarkIcon } from "@navikt/aksel-icons";
 import { Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
-import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
+import React, {
+  createContext,
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 
 import { isLetterDocument } from "~/Brevredigering/LetterEditor/actions/common";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -33,6 +41,7 @@ export const LetterEditor = ({
   setEditorState,
   showDebug,
   renderTilbakestillModal,
+  diffToggleMenu,
 }: {
   freeze: boolean;
   error: boolean;
@@ -41,6 +50,7 @@ export const LetterEditor = ({
   showDebug: boolean;
   /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
   renderTilbakestillModal?: (args: { open: boolean; onClose: () => void }) => React.ReactNode;
+  diffToggleMenu?: React.ReactNode;
 }) => {
   const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
@@ -49,6 +59,8 @@ export const LetterEditor = ({
   const highlightedIds = useInsertedTekstValgHighlight();
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
+  const [showFocusRing, setShowFocusRing] = useState(false);
+  const tabHandledByEditor = useRef(false);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
 
   useDragSelectUnifier(editorRoot, !freeze);
@@ -134,8 +146,26 @@ export const LetterEditor = ({
           setVilTilbakestilleMal={renderTilbakestillModal ? setVilTilbakestilleMal : undefined}
           undo={undo}
         />
+        {diffToggleMenu}
         <VStack align="center" flexGrow="1" minHeight="0" overflowY="auto">
-          <Box className="editor" css={freeze ? { cursor: "wait" } : {}} height="100%">
+          <Box
+            className="editor"
+            css={freeze ? { cursor: "wait" } : {}}
+            data-focus-ring={showFocusRing}
+            flexShrink="0"
+            minHeight="100%"
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setShowFocusRing(false);
+            }}
+            onKeyDown={(event) => {
+              tabHandledByEditor.current = event.key === "Tab" && event.defaultPrevented;
+            }}
+            onKeyUp={(event) => {
+              if (event.key === "Tab" && !tabHandledByEditor.current) setShowFocusRing(true);
+              tabHandledByEditor.current = false;
+            }}
+            onPointerDown={() => setShowFocusRing(false)}
+          >
             {isLetterDocument(letter) && <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />}
             <Heading
               className="letter-title"

@@ -14,7 +14,7 @@ import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.MISTET_NOEN_URL
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_AKTIVITET_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.selectors.omstillingstoenadInformasjonDoedsfallDTO.*
@@ -143,7 +143,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                             text(
                                 bokmal { +"dere var samboere i mer enn 5 år, og tidligere var gift med hverandre " },
                                 nynorsk { +"du og avdøde var sambuarar meir enn 5 år, og tidlegare var gift med kvarandre" },
-                                english { +"you were cohabiting for more than 5 years, and you were previously married to each other." },
+                                english { +"you were cohabiting for more than 5 years, and you were previously married to each other" },
                             )
                         }
                     }
@@ -162,7 +162,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                             text(
                                 bokmal { +"ekteskapet varte i minst 25 år (eller 15 år hvis dere har eller har hatt felles barn), og du var helt eller i hovedsak forsørget av den avdøde" },
                                 nynorsk { +"ekteskapet varte i minst 25 år (eller 15 år dersom du og avdøde har eller har hatt felles barn), og du var heilt eller i hovudsak forsørgd av den avdøde" },
-                                english { +"the marriage lasted for at least 25 years (or 15 years if you have or have had children together), and you were wholly or mainly dependent on the deceased." },
+                                english { +"the marriage lasted for at least 25 years (or 15 years if you have or have had children together), and you were wholly or mainly dependent on the deceased" },
                             )
                         }
                     }
@@ -239,9 +239,9 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                 }
                 paragraph {
                     text(
-                        bokmal { +"På $OMS_ANDRE_STOENADER_URL kan du lese mer om aktivitetsplikten og hva som kan skje med stønaden din hvis du ikke oppfyller den." },
-                        nynorsk { +"På $OMS_ANDRE_STOENADER_URL kan du lese meir om aktivitetsplikta og kva som kan skje med stønaden din dersom du ikkje oppfyller den." },
-                        english { +"You can read more about the activity requirement and what may happen to your allowance if you do not meet it at $OMS_ANDRE_STOENADER_URL." },
+                        bokmal { +"På $OMS_AKTIVITET_URL kan du lese mer om aktivitetsplikten og hva som kan skje med stønaden din hvis du ikke oppfyller den." },
+                        nynorsk { +"På $OMS_AKTIVITET_URL kan du lese meir om aktivitetsplikta og kva som kan skje med stønaden din dersom du ikkje oppfyller den." },
+                        english { +"You can read more about the activity requirement and what may happen to your allowance if you do not meet it at $OMS_AKTIVITET_URL." },
                     )
                 }
 
@@ -334,7 +334,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
 
                 title2 {
                     text(
-                        bokmal { +"Andre stønader til du kan ha rett på" },
+                        bokmal { +"Andre stønader du kan ha rett på" },
                         nynorsk { +"Andre ytingar du kan ha rett til" },
                         english { +"Other benefits you may be entitled to" },
                     )
