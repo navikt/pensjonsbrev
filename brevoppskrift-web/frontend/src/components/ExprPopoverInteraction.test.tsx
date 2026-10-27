@@ -10,15 +10,15 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import {
-  ContentOrControlStructureTypeV2,
-  type ContentOrControlStructureV2,
-  ElementTypeV2,
+  type ContentOrControlStructure,
+  ContentOrControlStructureType,
+  ElementType,
   type Expr,
   type ExprFieldPath,
   ExprType,
-  type ParagraphContentV2,
-} from "~/api/brevbakerTypesV2";
-import { DocumentV2 } from "~/components/TemplateDocumentationV2View";
+  type ParagraphContent,
+} from "~/api/templateDocumentationTypes";
+import { Document } from "~/components/TemplateDocumentationView";
 
 const field: ExprFieldPath = {
   exprType: ExprType.FIELD_PATH,
@@ -29,24 +29,24 @@ const field: ExprFieldPath = {
   exampleText: "12345678901",
 };
 
-type Item = ContentOrControlStructureV2<ParagraphContentV2>;
+type Item = ContentOrControlStructure<ParagraphContent>;
 
 const text = (value: string): Item => ({
-  controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-  content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL, text: value } as never,
+  controlStructureType: ContentOrControlStructureType.CONTENT,
+  content: { elementType: ElementType.PARAGRAPH_TEXT_LITERAL, text: value } as never,
 });
 
 async function renderParagraph(paragraph: Item[]) {
   const root = createRootRoute();
   const route = createRoute({
     component: () => (
-      <DocumentV2
+      <Document
         templateDocumentation={{
           title: [],
           outline: [
             {
-              controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-              content: { elementType: ElementTypeV2.PARAGRAPH, paragraph },
+              controlStructureType: ContentOrControlStructureType.CONTENT,
+              content: { elementType: ElementType.PARAGRAPH, index: 0, paragraph },
             },
           ],
           include: field,
@@ -93,8 +93,8 @@ describe("ExprPopover", () => {
     };
     const router = await renderParagraph([
       {
-        controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
-        content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION, expression },
+        controlStructureType: ContentOrControlStructureType.CONTENT,
+        content: { elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION, expression },
       },
     ]);
     await expectLinkReachableAndNavigable(screen.getByRole("button", { name: "Vis fullt uttrykk" }), router);
@@ -104,7 +104,7 @@ describe("ExprPopover", () => {
     const router = await renderParagraph([
       text("før "),
       {
-        controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
         predicate: field,
         showIf: [text("a")],
         elseIf: [],
