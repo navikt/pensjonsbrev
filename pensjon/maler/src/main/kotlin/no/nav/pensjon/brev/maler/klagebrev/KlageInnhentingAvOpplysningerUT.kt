@@ -75,7 +75,6 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
                 showIf(innhentingAvOpplysninger.isOneOf(InnhentingAvOpplysninger.underskrivKopiAvKlagen)) {
                     list { item { text(bokmal { +InnhentingAvOpplysninger.underskrivKopiAvKlagen.displayText }) } }
                 }
-                text(bokmal { + "." })
             }
 
             paragraph {
