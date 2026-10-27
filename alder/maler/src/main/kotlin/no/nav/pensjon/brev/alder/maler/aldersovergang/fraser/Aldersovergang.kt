@@ -298,7 +298,6 @@ data class InfoVelgeAP(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
             ytelseForAldersovergangKode.isOneOf(
-                YtelseForAldersovergangKode.GJP_AVKORT,
                 YtelseForAldersovergangKode.INGEN_YT,
                 YtelseForAldersovergangKode.FAM_PL,
             ),
@@ -363,7 +362,6 @@ data class InfoOnsketUttakAP(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
             ytelseForAldersovergangKode.isOneOf(
-                YtelseForAldersovergangKode.GJP_AVKORT,
                 YtelseForAldersovergangKode.INGEN_YT,
             ),
         ) {
@@ -571,6 +569,7 @@ data class InfoSoekeAP(
         showIf(
             ytelseForAldersovergangKode.isNotAnyOf(
                 YtelseForAldersovergangKode.GJP_FULL,
+                YtelseForAldersovergangKode.GJP_AVKORT,
                 YtelseForAldersovergangKode.UT,
             ),
         ) {
