@@ -185,7 +185,7 @@ object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehan
             paragraph {
                 text(
                     bokmal { + "Utenlandske trygdemyndigheter vurderer søknaden din om uføretrygd etter eget lovverk og egen forvaltningspraksis. Nav kan bare formidle informasjon, vi påvirker ikke avgjørelsene deres. " },
-                    nynorsk { + "Utenlandske trygdemyndigheter vurderer søknaden din om uføretrygd etter eget lovverk og egen forvaltningspraksis. Nav kan bare formidle informasjon, vi påverkar ikkje avgjerdene deira. " },
+                    nynorsk { + "Utanlandske trygdemyndigheiter vurderer søknaden din om uføretrygd etter eige lovverk og eigen forvaltningspraksis. Nav kan berre formidle informasjon, vi påverkar ikkje avgjerdene deira. " },
                 )
             }
             includePhrase(OrienteringOmSaksbehandlingstidFraser.MeldeFraOmEndringer)
