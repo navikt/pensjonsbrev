@@ -58,6 +58,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
         )
     ) {
         val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Etterbetaling - vis tekst om renter").bool()
 
         title {
             text(
@@ -89,20 +90,18 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
 
             val grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()//OK
 
-                //reduksjonsgrunnlag
-                val reduksjonsgrunnlagSumutbt = pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumutbt()//OK
-                val reduksjonsgrunnlagGradertoppjustertifu = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu()//OK
-                val reduksjonsgrunnlagBarentilleggRegelverkstype = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype()//OK
-                val reduksjonsgrunnlagSumbruttoetterreduksjonbt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt()//OK
-                val reduksjonsgrunnlagSumbruttoforreduksjonbt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt()//OK
-                val reduksjonsgrunnlagAndelYtelseAvOifu = pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu()//OK
+            //reduksjonsgrunnlag
+            val reduksjonsgrunnlagSumutbt = pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumutbt()//OK
+            val reduksjonsgrunnlagGradertoppjustertifu = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu()//OK
+            val reduksjonsgrunnlagBarentilleggRegelverkstype = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype()//OK
+            val reduksjonsgrunnlagSumbruttoetterreduksjonbt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt()//OK
+            val reduksjonsgrunnlagSumbruttoforreduksjonbt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt()//OK
+            val reduksjonsgrunnlagAndelYtelseAvOifu = pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu()//OK
 
-                // tillegg
-                val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()//OK
-                val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()//OK
-                val nyttGjenlevendetillegg = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg()//OK
-
-
+            // tillegg
+            val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()//OK
+            val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()//OK
+            val nyttGjenlevendetillegg = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg()//OK
 
             //inst
             val instopphanvendt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt()//OK
@@ -1607,7 +1606,7 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato < PE_VedtakFattetDato_minus_1mnd) THEN      INCLUDE ENDIF
             showIf((harBeløpØkt and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
-                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(kravOnsketvirkningsdato))
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(kravOnsketvirkningsdato, visTekstOmRenter))
             }
 
             showIf(bostedutland) {

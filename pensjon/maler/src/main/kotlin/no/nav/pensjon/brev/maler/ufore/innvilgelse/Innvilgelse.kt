@@ -1584,11 +1584,12 @@ object Innvilgelse {
         val pe: Expression<PEgruppe10>,
         val uforegrad: Expression<Int>,
         val virkningsdatoTidligereMnd: Expression<Boolean>,
+        val visTekstOmRenter: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegrad) and virkningsdatoTidligereMnd) {
                 ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { onsketvirkningsdato ->
-                    includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
+                    includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato, visTekstOmRenter))
                 }
             }
         }

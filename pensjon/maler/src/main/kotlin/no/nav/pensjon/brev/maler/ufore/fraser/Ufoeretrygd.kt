@@ -681,6 +681,7 @@ object Ufoeretrygd {
 
     data class EtterbetalingUforetrygd(
         val virkningsdato: Expression<LocalDate>,
+        val visTekstOmRenter: Expression<Boolean> = false.expr()
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -694,6 +695,14 @@ object Ufoeretrygd {
                     bokmal { +"Du får etterbetalt uføretrygd fra " + virkningsdato.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
                     nynorsk { +"Du får etterbetalt uføretrygd frå " + virkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju yrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
                 )
+            }
+            showIf(visTekstOmRenter) {
+                paragraph {
+                    text(
+                        bokmal { +"Du kan ha rett på renter i etterbetalingen. Du får et eget vedtak om dette når vi har vurdert saken. " },
+                        nynorsk { +"Du kan ha rett på renter i etterbetalinga. Du får eit eige vedtak om dette når vi har vurdert saka. " },
+                    )
+                }
             }
         }
     }
