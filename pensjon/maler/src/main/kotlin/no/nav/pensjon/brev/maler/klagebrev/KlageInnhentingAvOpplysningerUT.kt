@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -34,6 +35,15 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val vedtakDuKlagerOverString = "Opplyse om hvilket vedtak du klager på"
+        val vedtakDuKlagerOver = saksbehandlervalg("vedtakDuKlagerOver", vedtakDuKlagerOverString).bool()
+        val hvorforVedtaketErFeilString = "Opplyse om hvorfor vedtaket er feil"
+        val hvorforVedtaketErFeil = saksbehandlervalg("hvorforVedtaketErFeil", hvorforVedtaketErFeilString).bool()
+        val endringDuOenskerString = "Opplyse om hvilken endring du ønsker i vedtaket"
+        val endringDuOensker = saksbehandlervalg("endringDuOensker", endringDuOenskerString).bool()
+        val underskrivKopiAvKlagenString = "Opplyse om at du har underskrevet en kopi av klagen"
+        val underskrivKopiAvKlagen = saksbehandlervalg("underskrivKopiAvKlagen", underskrivKopiAvKlagenString).bool()
+
         title {
             text(bokmal { +"Nav har behov for flere opplysninger" })
         }
@@ -57,14 +67,19 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             }
 
             paragraph {
-                text(bokmal {
-                    +fritekst(
-                        "Tilpass etter hva som er mangelen i klagen. "
-                                + "Vi ber derfor om at du underskriver på vedlagt kopi av klagen / "
-                                + "opplyser om hvilket vedtak du klager på / "
-                                + "opplyser om hvilken endring du ønsker i vedtaket/ hvorfor vedtaket er feil."
-                    )
-                })
+                text(bokmal { +"For at vi skal kunne behandle klagen din, må du: " })
+                showIf(vedtakDuKlagerOver) {
+                    list { item { text(bokmal { +vedtakDuKlagerOverString }) } }
+                }
+                showIf(hvorforVedtaketErFeil) {
+                    list { item { text(bokmal { +hvorforVedtaketErFeilString }) } }
+                }
+                showIf(endringDuOensker) {
+                    list { item { text(bokmal { +endringDuOenskerString }) } }
+                }
+                showIf(underskrivKopiAvKlagen) {
+                    list { item { text(bokmal { +underskrivKopiAvKlagenString }) } }
+                }
             }
 
             paragraph {
