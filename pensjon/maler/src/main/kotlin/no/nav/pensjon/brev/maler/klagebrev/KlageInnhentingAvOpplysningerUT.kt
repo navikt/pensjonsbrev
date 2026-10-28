@@ -67,7 +67,7 @@ object KlageInnhentingAvOpplysningerUT : RedigerbarTemplate<EmptyRedigerbarBrevd
             }
 
             paragraph {
-                text(bokmal { +"For at vi kan håndtere klagen din, ber vi derfor om at du: " })
+                text(bokmal { +"For at vi skal kunne behandle klagen din, må du: " })
                 showIf(vedtakDuKlagerOver) {
                     list { item { text(bokmal { +vedtakDuKlagerOverString }) } }
                 }
