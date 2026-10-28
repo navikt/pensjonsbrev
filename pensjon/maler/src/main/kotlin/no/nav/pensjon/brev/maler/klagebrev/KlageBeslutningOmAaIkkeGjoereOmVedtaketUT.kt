@@ -38,7 +38,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
 
         title {
             text(bokmal {
-                +"Beslutning om at vedtak "
+                +"Beslutning om at vedtak av "
                 +fritekst("dato") + " ikke gjøres om - vedtaket " })
             showIf(gyldig) {
                 text(bokmal { +"er gyldig og " })
@@ -50,7 +50,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
 
             paragraph {
                 text(bokmal {
-                    +"Nav har besluttet at vedtak "
+                    +"Nav har besluttet at vedtak av "
                     +fritekst("dato") + " ikke gjøres om. "
                     +"Vedtaket "
                 })
@@ -76,7 +76,7 @@ object KlageBeslutningOmAaIkkeGjoereOmVedtaketUT : RedigerbarTemplate<EmptyRedig
             }
             paragraph {
                 text(bokmal {
-                    +"I vedtak "
+                    +"I vedtak av "
                     +fritekst("dato") + " avgjorde vi kravet ditt om "
                     +fritekst("fyll inn") + "."
                 })

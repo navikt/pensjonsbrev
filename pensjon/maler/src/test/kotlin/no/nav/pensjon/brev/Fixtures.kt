@@ -30,7 +30,7 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmAaIkkeGjoereOmVedtak
 import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmVedtaketSkalIverksettesPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
-import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
@@ -127,6 +127,7 @@ object Fixtures : LetterDataFactory {
             InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar::class -> createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() as T
             InnvilgelseUforetrygdMedEndringRedigerbar::class -> createInnvilgelseUforetrygdMedEndringDto() as T
             InnvilgelseUforetrygdMellombehandlingRedigerbar::class -> createInnvilgelseUforetrygdMellombehandlingDto() as T
+            InnvilgelseUforetrygdTrygdeavtaleRedigerbar::class -> createInnvilgelseUfoeretrygdTrygdeavtaleDto() as T
             InnvilgelseUforetrygdRedigerbar::class -> createInnvilgelseUfoeretrygdDto() as T
             InnvilgelseUforetrygdUtlandRedigerbar::class -> createInnvilgelseUfoeretrygdUtlandDto() as T
             KlageBegrunnelseForVedtakUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
@@ -134,7 +135,7 @@ object Fixtures : LetterDataFactory {
             KlageBeslutningOmVedtaketSkalIverksettesPE::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageInnhentingAvOpplysningerUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageOrienteringOmOversendelseTilKlageinstans::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
-            KlageOrienteringOmSaksbehandlingstid::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            KlageOrienteringOmSaksbehandlingstidPE::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageUtsattKlagefristUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             LetterExample::class -> createLetterExampleDto() as T
             OkningUforegradRedigerbar::class -> createOkningUforegradDto() as T

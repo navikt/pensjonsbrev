@@ -81,6 +81,7 @@ object Ufoerebrevkoder {
         UT_S_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS,
         UT_S_SIMULERING,
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
+        UT_UTSENDELSE_TIL_UTENLANDSKE_TRYGDEMYND,
         ;
 
         override fun kode(): String = this.name

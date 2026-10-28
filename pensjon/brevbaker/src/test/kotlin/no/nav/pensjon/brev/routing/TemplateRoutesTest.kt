@@ -16,8 +16,8 @@ import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
-import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
+import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateTextExtractor
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brev.testBrevbakerApp
@@ -168,14 +168,24 @@ class TemplateRoutesTest {
     @Test
     fun `can get template documentation of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
         val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/doc/BOKMAL")
+
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(
             TemplateDocumentationRenderer.render(
                 InformasjonOmSaksbehandlingstid.template,
                 Language.Bokmal,
-                InformasjonOmSaksbehandlingstid.template.modelSpecification()
-            ), response.body<TemplateDocumentation>()
+                InformasjonOmSaksbehandlingstid.template.modelSpecification(),
+            ),
+            response.body<TemplateDocumentation>(),
         )
+    }
+
+    @Test
+    fun `versioned documentation route is removed`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+        val response =
+            client.get("/templates/autobrev/${ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name}/doc/v2/BOKMAL")
+
+        assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
     @Test

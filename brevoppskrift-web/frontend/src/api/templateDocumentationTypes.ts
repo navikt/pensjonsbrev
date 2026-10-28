@@ -1,24 +1,22 @@
-// Typer for TemplateDocumentationRendererV2 (backend: pensjon/brevbaker,
-// no.nav.pensjon.brev.template.render.TemplateDocumentationV2). Holdes som en selvstendig,
-// duplisert typefil ved siden av brevbakerTypes.ts (v1) fremfor å dele typer generisk over
-// uttrykkstypen, slik at v1 og v2 kan divergere fritt slik de gjør i backend.
+// Typer for TemplateDocumentationRenderer (backend: pensjon/brevbaker,
+// no.nav.pensjon.brev.template.render.TemplateDocumentation).
 import { type LetterModelSpecification } from "~/api/brevbakerTypes";
 
-export type TemplateDocumentationV2 = {
-  title: ContentOrControlStructureV2<TextV2>[];
-  outline: ContentOrControlStructureV2<OutlineContentV2>[];
-  attachments: AttachmentV2[];
+export type TemplateDocumentation = {
+  title: ContentOrControlStructure<Text>[];
+  outline: ContentOrControlStructure<OutlineContent>[];
+  attachments: Attachment[];
   templateModelSpecification: LetterModelSpecification;
 };
 
-export type AttachmentV2 = {
-  title: ContentOrControlStructureV2<TextV2>[];
-  outline: ContentOrControlStructureV2<OutlineContentV2>[];
+export type Attachment = {
+  title: ContentOrControlStructure<Text>[];
+  outline: ContentOrControlStructure<OutlineContent>[];
   include: Expr;
   attachmentData: Expr;
 };
 
-export enum ElementTypeV2 {
+export enum ElementType {
   TITLE1 = "TITLE1",
   TITLE2 = "TITLE2",
   TITLE3 = "TITLE3",
@@ -31,81 +29,85 @@ export enum ElementTypeV2 {
   PARAGRAPH_TABLE_ROW = "PARAGRAPH_TABLE_ROW",
 }
 
-export type ElementV2 = OutlineContentV2 | ParagraphContentV2;
-export type OutlineContentV2 = Title1V2 | Title2V2 | Title3V2 | ParagraphV2;
+export type Element = OutlineContent | ParagraphContent;
+export type OutlineContent = Title1 | Title2 | Title3 | Paragraph;
 
-export type Title1V2 = {
-  elementType: ElementTypeV2.TITLE1;
-  text: ContentOrControlStructureV2<TextV2>[];
+export type Title1 = {
+  elementType: ElementType.TITLE1;
+  index: number;
+  text: ContentOrControlStructure<Text>[];
 };
-export type Title2V2 = {
-  elementType: ElementTypeV2.TITLE2;
-  text: ContentOrControlStructureV2<TextV2>[];
+export type Title2 = {
+  elementType: ElementType.TITLE2;
+  index: number;
+  text: ContentOrControlStructure<Text>[];
 };
-export type Title3V2 = {
-  elementType: ElementTypeV2.TITLE3;
-  text: ContentOrControlStructureV2<TextV2>[];
+export type Title3 = {
+  elementType: ElementType.TITLE3;
+  index: number;
+  text: ContentOrControlStructure<Text>[];
 };
-export type ParagraphV2 = {
-  elementType: ElementTypeV2.PARAGRAPH;
-  paragraph: ContentOrControlStructureV2<ParagraphContentV2>[];
+export type Paragraph = {
+  elementType: ElementType.PARAGRAPH;
+  index: number;
+  paragraph: ContentOrControlStructure<ParagraphContent>[];
 };
 
-export type ParagraphContentV2 = TextV2 | ItemListV2 | ItemV2 | TableV2 | RowV2;
-export type TextV2 = TextLiteralV2 | TextExpressionV2;
-export type TextLiteralV2 = { text: string; elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL };
-export type TextExpressionV2 = { expression: Expr; elementType: ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION };
+export type ParagraphContent = Text | ItemList | Item | Table | Row;
+export type Text = TextLiteral | TextExpression;
+export type TextLiteral = { text: string; elementType: ElementType.PARAGRAPH_TEXT_LITERAL };
+export type TextExpression = { expression: Expr; elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION };
 /** Speiler backends `no.nav.brev.Listetype`. */
-export type ListetypeV2 = "PUNKTLISTE" | "NUMMERERT_LISTE";
-export type ItemListV2 = {
-  elementType: ElementTypeV2.PARAGRAPH_ITEMLIST;
-  items: ContentOrControlStructureV2<ItemV2>[];
-  type: ListetypeV2;
+export type Listetype = "PUNKTLISTE" | "NUMMERERT_LISTE";
+export type ItemList = {
+  elementType: ElementType.PARAGRAPH_ITEMLIST;
+  items: ContentOrControlStructure<Item>[];
+  type: Listetype;
 };
-export type ItemV2 = {
-  elementType: ElementTypeV2.PARAGRAPH_ITEMLIST_ITEM;
-  text: ContentOrControlStructureV2<TextV2>[];
+export type Item = {
+  elementType: ElementType.PARAGRAPH_ITEMLIST_ITEM;
+  text: ContentOrControlStructure<Text>[];
 };
-export type TableV2 = {
-  header: RowV2;
-  rows: ContentOrControlStructureV2<RowV2>[];
-  elementType: ElementTypeV2.PARAGRAPH_TABLE;
+export type Table = {
+  header: Row;
+  rows: ContentOrControlStructure<Row>[];
+  elementType: ElementType.PARAGRAPH_TABLE;
 };
-export type RowV2 = {
-  cells: CellV2[];
-  elementType: ElementTypeV2.PARAGRAPH_TABLE_ROW;
+export type Row = {
+  cells: Cell[];
+  elementType: ElementType.PARAGRAPH_TABLE_ROW;
 };
-export type CellV2 = {
-  text: ContentOrControlStructureV2<TextV2>[];
+export type Cell = {
+  text: ContentOrControlStructure<Text>[];
 };
 
-export enum ContentOrControlStructureTypeV2 {
+export enum ContentOrControlStructureType {
   CONTENT = "CONTENT",
   CONDITIONAL = "CONDITIONAL",
   FOR_EACH = "FOR_EACH",
 }
 
-export type ContentOrControlStructureV2<E> = ContentV2<E> | ConditionalV2<E> | ForEachV2<E>;
+export type ContentOrControlStructure<E> = Content<E> | Conditional<E> | ForEach<E>;
 
-export type ContentV2<E> = {
+export type Content<E> = {
   content: E;
-  controlStructureType: ContentOrControlStructureTypeV2.CONTENT;
+  controlStructureType: ContentOrControlStructureType.CONTENT;
 };
-export type ConditionalV2<E> = {
-  controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL;
+export type Conditional<E> = {
+  controlStructureType: ContentOrControlStructureType.CONDITIONAL;
   predicate: Expr;
-  showIf: ContentOrControlStructureV2<E>[];
-  elseIf: ElseIfV2<E>[];
-  showElse: ContentOrControlStructureV2<E>[];
+  showIf: ContentOrControlStructure<E>[];
+  elseIf: ElseIf<E>[];
+  showElse: ContentOrControlStructure<E>[];
 };
-export type ElseIfV2<E> = {
+export type ElseIf<E> = {
   predicate: Expr;
-  showIf: ContentOrControlStructureV2<E>[];
+  showIf: ContentOrControlStructure<E>[];
 };
-export type ForEachV2<E> = {
-  controlStructureType: ContentOrControlStructureTypeV2.FOR_EACH;
+export type ForEach<E> = {
+  controlStructureType: ContentOrControlStructureType.FOR_EACH;
   items: Expr;
-  body: ContentOrControlStructureV2<E>[];
+  body: ContentOrControlStructure<E>[];
 };
 
 // --- Expr ------------------------------------------------------------------
@@ -123,7 +125,7 @@ export enum ExprType {
   EDITABLE_FIELD = "EDITABLE_FIELD",
 }
 
-export type ScalarKindV2 = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE";
+export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE";
 
 export type Expr =
   | ExprLiteral
@@ -140,7 +142,7 @@ export type Expr =
 export type ExprLiteral = {
   exprType: ExprType.LITERAL;
   value: string;
-  kind: ScalarKindV2 | null;
+  kind: ScalarKind | null;
 };
 
 export type ExprFieldPath = {
@@ -149,6 +151,7 @@ export type ExprFieldPath = {
   segments: string[];
   leafType: string | null;
   leafOwnerType?: string | null;
+  exampleText?: string | null;
 };
 
 export type AssocOp = "AND" | "OR" | "CONCAT" | "PLUS";
@@ -197,7 +200,7 @@ export type ExprFormat = {
   exampleText: string | null;
 };
 
-/** Erstatter v1s `Invoke(IfElse, first, Tuple(ifTrue, ifElse))`-innpakking. */
+/** Betinget uttrykk med predikat og verdier for sant/usant. */
 export type ExprConditional = {
   exprType: ExprType.CONDITIONAL_EXPR;
   predicate: Expr;
@@ -205,7 +208,7 @@ export type ExprConditional = {
   ifElse: Expr;
 };
 
-/** `?:` / `IfNull` — vist eksplisitt fremfor skjult slik v1 gjorde for `?: false`. */
+/** `?:` / `IfNull` — vist eksplisitt i dokumentasjonen. */
 export type ExprNullCoalesce = {
   exprType: ExprType.NULL_COALESCE;
   value: Expr;

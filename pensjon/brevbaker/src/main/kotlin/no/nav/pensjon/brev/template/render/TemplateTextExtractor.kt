@@ -3,18 +3,15 @@ package no.nav.pensjon.brev.template.render
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import no.nav.pensjon.brev.template.BinaryOperation.Documentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.ContentOrControlStructure
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Element
-import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression
+import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expr
 
 /**
  * A line is rendered (and indexed by the search frontend) as a sequence of
  * segments. Literal text is searchable; variables are shown as a placeholder but
  * are never searchable. The JSON shape mirrors the frontend `LineSegment`
- * discriminated union (`{type:"text",value}` / `{type:"var",label}`), so the
- * brevoppskrift search index can consume the extracted lines directly without
- * having to flatten the documentation tree itself.
+ * discriminated union (`{type:"text",value}` / `{type:"var",label}`).
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(
@@ -32,37 +29,37 @@ data class TemplateTextBlock(val index: Int, val segments: List<TextSegment>)
 object TemplateTextExtractor {
 
     private const val MAX_VAR_LABEL_LENGTH = 40
-
-    // Sentinel marks where a variable sits while we normalise whitespace on the
-    // raw string. It is not whitespace, so it survives collapsing, and is
-    // extremely unlikely to occur in real letter text.
     private const val VAR_SENTINEL = "\u0001"
-
     private val WHITESPACE = Regex("\\s+")
 
     fun extract(documentation: TemplateDocumentation): List<TemplateTextBlock> =
-        documentLines(documentation.title, documentation.outline) + documentation.attachments.flatMap { documentLines(it.title, it.outline) }
+        elementLines(documentation.outline) +
+            documentation.attachments.flatMap { elementLines(it.outline) }
 
     private fun normalize(value: String): String = value.replace(WHITESPACE, " ").trim()
 
-    private fun variableName(expression: Expression?): String =
+    private fun variableName(expression: Expr?): String =
         when (expression) {
             null -> ""
-            is Expression.LetterData ->
-                if (expression.scopeName == "argument" || expression.scopeName == "forEach_item") "" else expression.scopeName
-            is Expression.Literal -> expression.value
-            is Expression.Invoke -> {
-                val field =
-                    if (expression.operator.syntax == Documentation.Notation.POSTFIX && expression.operator.text.startsWith(".")) {
-                        expression.operator.text.substring(1).trim()
-                    } else {
-                        ""
+            is Expr.Literal -> expression.value
+            is Expr.FieldPath ->
+                expression.segments.lastOrNull()
+                    ?: when (val source = expression.source) {
+                        is TemplateDocumentation.DataSource.Scope -> source.name.takeUnless { it == "argument" }.orEmpty()
+                        is TemplateDocumentation.DataSource.ForEachVar -> ""
+                        is TemplateDocumentation.DataSource.Computed -> variableName(source.expr)
                     }
-                field.ifEmpty { variableName(expression.first).ifEmpty { variableName(expression.second) } }
-            }
+            is Expr.AssociativeOp -> expression.operands.firstNotNullOfOrNull { variableName(it).takeIf(String::isNotEmpty) }.orEmpty()
+            is Expr.Comparison -> variableName(expression.left).ifEmpty { variableName(expression.right) }
+            is Expr.Not -> variableName(expression.term)
+            is Expr.FunctionCall -> expression.args.firstNotNullOfOrNull { variableName(it).takeIf(String::isNotEmpty) }.orEmpty()
+            is Expr.Format -> variableName(expression.value)
+            is Expr.Conditional -> variableName(expression.predicate).ifEmpty { variableName(expression.ifTrue) }
+            is Expr.NullCoalesce -> variableName(expression.value).ifEmpty { variableName(expression.fallback) }
+            is Expr.EditableField -> variableName(expression.value).ifEmpty { variableName(expression.fallback) }
         }
 
-    private fun describeExpression(expression: Expression): String {
+    private fun describeExpression(expression: Expr): String {
         val label = normalize(variableName(expression))
         if (label.isEmpty()) {
             return "variabel"
@@ -70,9 +67,6 @@ object TemplateTextExtractor {
         return if (label.length > MAX_VAR_LABEL_LENGTH) "${label.substring(0, MAX_VAR_LABEL_LENGTH)}…" else label
     }
 
-    /** Recursively flattens a control-structure array to its CONTENT elements,
-     * descending into conditionals (all branches) and for-each bodies while
-     * preserving document order. */
     private fun <E : Element> flatten(items: List<ContentOrControlStructure<E>>): List<E> =
         items.flatMap { cocs ->
             when (cocs) {
@@ -83,8 +77,6 @@ object TemplateTextExtractor {
             }
         }
 
-    /** The raw text of a line (with a [VAR_SENTINEL] placeholder per variable) and
-     * the variable labels in the order they appear. */
     private data class LineParts(val raw: String, val labels: List<String>) {
         val isVisible: Boolean get() = normalize(raw).isNotEmpty()
     }
@@ -125,8 +117,6 @@ object TemplateTextExtractor {
     private fun tableLines(table: Element.ParagraphContent.Table): List<List<TextSegment>> =
         (listOf(table.header) + flatten(table.rows)).mapNotNull(::rowLine)
 
-    /** Inline text (literals/expressions) accumulates into a single line; lists and
-     * tables break that run and contribute their own lines, all in document order. */
     private fun paragraphLines(items: List<ContentOrControlStructure<Element.ParagraphContent>>): List<List<TextSegment>> {
         fun lineOf(run: List<Element.ParagraphContent.Text>) = listOfNotNull(partsOf(run).toSegments())
 
@@ -152,21 +142,13 @@ object TemplateTextExtractor {
                 is Element.OutlineContent.Title1 -> titleBlock(element.index, element.text)
                 is Element.OutlineContent.Title2 -> titleBlock(element.index, element.text)
                 is Element.OutlineContent.Title3 -> titleBlock(element.index, element.text)
-                is Element.OutlineContent.Paragraph -> paragraphLines(element.paragraph).map { TemplateTextBlock(element.index, it) }
+                is Element.OutlineContent.Paragraph ->
+                    paragraphLines(element.paragraph).map { TemplateTextBlock(element.index, it) }
                 else -> emptyList()
             }
         }
     }
-
-    private fun documentLines(
-        // `title` carries Text elements, which `elementLines` ignores (only Title/
-        // Paragraph outline elements produce lines) — matching the frontend.
-        title: List<ContentOrControlStructure<Element.ParagraphContent.Text>>,
-        outline: List<ContentOrControlStructure<Element.OutlineContent>>,
-    ): List<TemplateTextBlock> =
-        elementLines(title) + elementLines(outline)
 }
 
-/** Trims leading/trailing whitespace only at the requested edges of the part. */
 private fun String.trimEdges(start: Boolean, end: Boolean): String =
     (if (start) trimStart() else this).let { if (end) it.trimEnd() else it }
