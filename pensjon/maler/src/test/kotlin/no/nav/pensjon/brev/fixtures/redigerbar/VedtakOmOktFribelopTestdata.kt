@@ -18,6 +18,7 @@ fun createVedtakOmOktFribelopData() =
         pe = createPEgruppe10(),
         datoOkningBunnfradrag = LocalDate.of(2026, 10, 1),
         vektetFribelop = 1.0,
+        vektetFribelopKr = Kroner(95584),
         fribelopPerioder = listOf(
             FribelopPeriode(
                 fom = LocalDate.of(2026, 1, 1),

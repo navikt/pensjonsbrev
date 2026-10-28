@@ -1,19 +1,6 @@
-import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import {
-  BodyShort,
-  Box,
-  Button,
-  Heading,
-  Hide,
-  HStack,
-  Label,
-  Loader,
-  LocalAlert,
-  Switch,
-  VStack,
-} from "@navikt/ds-react";
+import { BodyShort, Box, Button, Heading, Label, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -28,6 +15,7 @@ import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmi
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
+import { AttestantDiffMenu } from "~/Brevredigering/LetterEditor/diff/AttestantDiffMenu";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
@@ -48,7 +36,7 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import { useAttestantLetterDiff } from "~/hooks/useAttestantLetterDiff";
+import { type DiffToggles, useAttestantLetterDiff } from "~/hooks/useAttestantLetterDiff";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -73,10 +61,6 @@ const vedtakSidemenySchema = z.object({
 });
 
 type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
-
-const diffAlertTitleStyle = css`
-  font-size: var(--ax-font-size-small);
-`;
 
 const queryRetries = 3;
 const shouldSkipRetry = (status: number | undefined) =>
@@ -272,13 +256,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       trackEvent("diff modus endret", {
         brevId: props.brev.info.id,
         brevkode: props.brev.info.brevkode,
+        spraak: props.brev.info.spraak,
         kilde: "automatisk",
         diffModus: false,
         defaultDiffModus: defaultDiffMode,
       });
     }
     disableDiffMode();
-  }, [disableDiffMode, defaultDiffMode, props.brev.info.id, props.brev.info.brevkode]);
+  }, [disableDiffMode, defaultDiffMode, props.brev.info.id, props.brev.info.brevkode, props.brev.info.spraak]);
 
   // Safety net for saveStatus transitions to DIRTY that don't go through an explicit disableDiffMode
   // call first (e.g. editing the underskrift field, or keeping/deleting a block missing from the mal).
@@ -292,13 +277,17 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   // Diffing needs a saved letter to compare against, so enabling diff mode flushes pending edits
   // instead of leaving the attestant waiting for the autosave debounce.
-  const handleDiffModeChange = async (checked: boolean) => {
-    attestantDiff.setDiffMode(checked);
+  const handleDiffToggle = async (toggle: keyof DiffToggles, checked: boolean) => {
+    attestantDiff.setToggle(toggle, checked);
+    const nextToggles = { ...attestantDiff.toggles, [toggle]: checked };
     trackEvent("diff modus endret", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
       kilde: "manuell",
-      diffModus: checked,
+      bryter: toggle,
+      bryterPaa: checked,
+      diffModus: nextToggles.inserted || nextToggles.deleted,
       defaultDiffModus: defaultDiffMode,
     });
 
@@ -391,6 +380,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     trackEvent("tid brukt i attestering", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
       varighetSekunder,
       varighetMinutter: Math.round(varighetSekunder / 60),
       enhetsId: props.brev.info.avsenderEnhet.enhetNr,
@@ -398,6 +388,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     trackEvent("brev attestert", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
+      spraak: props.brev.info.spraak,
       enhetsId: props.brev.info.avsenderEnhet.enhetNr,
     });
     navigate({
@@ -475,63 +466,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                       </VStack>
                       <Divider />
                       <VStack gap="space-20">
-                        <Hide above="sm" asChild>
-                          <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
-                        </Hide>
-                        <Hide above="sm" asChild>
-                          <Switch size="small">Vis slettet tekst</Switch>
-                        </Hide>
-                        {diffFeatureToggle.data?.enabled === true && (
-                          <>
-                            <Switch
-                              checked={attestantDiff.isDiffMode}
-                              onChange={(event) => void handleDiffModeChange(event.target.checked)}
-                              size="small"
-                            >
-                              Marker tekst som er lagt til og slettet
-                            </Switch>
-                            {attestantDiff.status === "ready" && (
-                              <VStack gap="space-4">
-                                <BodyShort size="small">
-                                  <span className="attestant-diff-inserted">
-                                    Slik vises ord som er lagt til manuelt
-                                  </span>
-                                </BodyShort>
-                                <BodyShort size="small">
-                                  <span className="attestant-diff-deleted">Slik vises ord som er slettet manuelt</span>
-                                </BodyShort>
-                              </VStack>
-                            )}
-                            {attestantDiff.status === "loading" && (
-                              <HStack align="center" gap="space-8">
-                                <Loader size="small" title="Markerer endringer" />
-                                <BodyShort size="small">Markerer endringer ...</BodyShort>
-                              </HStack>
-                            )}
-                            {attestantDiff.status === "error" && (
-                              <LocalAlert size="small" status="error">
-                                <LocalAlert.Header>
-                                  <LocalAlert.Title css={diffAlertTitleStyle}>
-                                    Endringene kunne ikke vises
-                                  </LocalAlert.Title>
-                                </LocalAlert.Header>
-                                <LocalAlert.Content>
-                                  Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
-                                </LocalAlert.Content>
-                              </LocalAlert>
-                            )}
-                            {attestantDiff.status === "empty" && (
-                              <LocalAlert size="small" status="warning">
-                                <LocalAlert.Header>
-                                  <LocalAlert.Title css={diffAlertTitleStyle}>
-                                    Ingen endringer fra malen ble funnet
-                                  </LocalAlert.Title>
-                                </LocalAlert.Header>
-                              </LocalAlert>
-                            )}
-                          </>
-                        )}
-                        <Divider />
                         <UnderskriftTextField
                           controlled
                           error={form.formState.errors.attestantSignatur?.message}
@@ -561,8 +495,23 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     diff={attestantDiff.activeDiff}
                     diffHash={attestantDiff.diffHash}
                     disableDiffMode={trackedDisableDiffMode}
+                    showDeletions={attestantDiff.showDeletions}
+                    showInsertions={attestantDiff.showInsertions}
                   >
-                    <ManagedLetterEditor error={error} freeze={freeze} showDebug={showDebug} />
+                    <ManagedLetterEditor
+                      diffToggleMenu={
+                        diffFeatureToggle.data?.enabled === true && (
+                          <AttestantDiffMenu
+                            onToggle={(toggle, checked) => void handleDiffToggle(toggle, checked)}
+                            status={attestantDiff.status}
+                            toggles={attestantDiff.toggles}
+                          />
+                        )
+                      }
+                      error={error}
+                      freeze={freeze}
+                      showDebug={showDebug}
+                    />
                   </AttestantDiffProvider>
                 )}
                 saksId={props.saksId}

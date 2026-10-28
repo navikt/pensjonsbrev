@@ -9,8 +9,13 @@ import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoring
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.klagebrev.AnkeOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.maler.klagebrev.AnkeTilsvarTilAnkendePart
+import no.nav.pensjon.brev.maler.klagebrev.KlageBegrunnelseForVedtakUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmAaIkkeGjoereOmVedtaketUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmVedtaketSkalIverksettesPE
+import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
-import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE
+import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
@@ -18,7 +23,7 @@ import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
-import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektV2
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektAuto
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0
@@ -62,12 +67,14 @@ import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdBosattNo
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMedEndringRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMellombehandlingRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdTrygdeavtaleRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdUtlandRedigerbar
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026Auto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026OktIfuAuto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.VedtakOmOktBunnfradragInstAuto
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
+import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbarV2
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.vedlegg.alltidValgbare.skjemaForBankopplysninger
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
@@ -87,7 +94,7 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
         EndretBarnetilleggUfoerertrygdAuto,
-        EndretUfoeretrygdPGAInntektV2,
+        EndretUfoeretrygdPGAInntektAuto,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
         VedtakOmEtterbetalingOpphor2026Auto,
@@ -131,9 +138,8 @@ object ProductionTemplates : AllTemplates {
         BrukerTestBrev,
         BrukerTestVedtaksbrev,
         DelvisEksportAvUforetrygdRedigerbar,
-        EndringUforetrygdRedigerbar,
         EndretUfoeretrygdPGAInntektRedigerbar,
-        VedtakOmEtterbetalingOpphor2026Redigerbar,
+        EndringUforetrygdRedigerbar,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,
@@ -141,40 +147,48 @@ object ProductionTemplates : AllTemplates {
         InnhentingDokumentasjonFraBruker,
         InnhentingOpplysningerFraBruker,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
-        InnvilgelseUforetrygdRedigerbar,
-        InnvilgelseUforetrygdUtlandRedigerbar,
-        InnvilgelseUforetrygdMellombehandlingRedigerbar,
+        InnvilgelseUforetrygdTrygdeavtaleRedigerbar,
         InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar,
         InnvilgelseUforetrygdMedEndringRedigerbar,
+        InnvilgelseUforetrygdMellombehandlingRedigerbar,
+        InnvilgelseUforetrygdRedigerbar,
+        InnvilgelseUforetrygdUtlandRedigerbar,
+        KlageBegrunnelseForVedtakUT,
+        KlageBeslutningOmAaIkkeGjoereOmVedtaketUT,
+        KlageBeslutningOmVedtaketSkalIverksettesPE,
+        KlageInnhentingAvOpplysningerUT,
         KlageOrienteringOmOversendelseTilKlageinstans,
-        KlageOrienteringOmSaksbehandlingstid,
-        OversendelseOgFoelgebrevKlageinstansUT,
-        OversendelsesbrevTilKlageinstansPE,
-        OversendelsesbrevTilKlageinstansUT,
+        KlageOrienteringOmSaksbehandlingstidPE,
+        KlageUtsattKlagefristUT,
         OkningUforegradRedigerbar,
+        OkningUforegradRedigerbarV2,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,
         OmsorgEgenManuell,
         OpphoerGjenlevendepensjon,
         OrienteringOmForlengetSaksbehandlingstid,
         OrienteringOmSvartidKlageUT,
+        OversendelseOgFoelgebrevKlageinstansUT,
+        OversendelsesbrevTilKlageinstansPE,
+        OversendelsesbrevTilKlageinstansUT,
         OversettelseAvDokumenter,
+        ReverseringLavereMinstesatsRedigerbar,
         SamletMeldingOmPensjonsvedtakV2,
         TilbakekrevingAvFeilutbetaltBeloep,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakAvslagPaaOmsorgsopptjening,
+        VedtakBlankMalRedigerbar,
+        VedtakOmEndringBTEPSRedigerbar,
+        VedtakOmEtterbetalingOpphor2026Redigerbar,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,
+        VedtakOmLavereReduksjonsprosentRedigerbar,
         VedtakOmOktBunnfradragRedigerbar,
         VedtakOmOktFribelopRedigerbar,
-        VedtakOmOktMinsteIFURedigerbar,
-        VedtakOmLavereReduksjonsprosentRedigerbar,
         VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
-        ReverseringLavereMinstesatsRedigerbar,
-        VedtakOmEndringBTEPSRedigerbar,
-        VedtakBlankMalRedigerbar,
+        VedtakOmOktMinsteIFURedigerbar,
     )
 
     override fun hentAutobrevmaler() = autobrev

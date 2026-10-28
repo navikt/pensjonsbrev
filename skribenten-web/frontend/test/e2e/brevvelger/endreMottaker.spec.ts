@@ -1,6 +1,9 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import samhandlerResponse from "~test/e2e/fixtures/finnSamhandler.json" with { type: "json" };
 import { setupSakStubs } from "~test/e2e/support/helpers";
+
+const samhandlerOrganisasjonsnummer = "998849713";
 
 async function expectOrderLetterSuccess(page: Page, expectedUrl: string) {
   const successMessage = page.getByTestId("order-letter-success-message");
@@ -34,8 +37,16 @@ test.describe("Endrer på mottaker", () => {
   test.beforeEach(async ({ page }) => {
     await setupSakStubs(page);
 
-    await page.route("**/bff/skribenten-backend/features/samhandlerOrgnummer", (route) =>
-      route.fulfill({ json: { enabled: false } }),
+    await page.route("**/bff/skribenten-backend/hentSamhandler", (route) =>
+      route.fulfill({
+        json: {
+          success: {
+            ...samhandlerResponse.samhandlere[0],
+            organisasjonsnummer: samhandlerOrganisasjonsnummer,
+          },
+          failure: null,
+        },
+      }),
     );
 
     await page.route("**/bff/skribenten-backend/hentSamhandlerAdresse", async (route) => {
@@ -70,11 +81,41 @@ test.describe("Endrer på mottaker", () => {
   });
 
   for (const scenario of [
-    { name: "orgnummer", enabled: true, idType: "ORG", mobile: false },
-    { name: "orgnummer i smal visning", enabled: true, idType: "ORG", mobile: true },
-    { name: "adresse med toggle av", enabled: false, idType: "ORG", mobile: false },
-    { name: "adresse for person", enabled: true, idType: "FNR", mobile: false },
-    { name: "adresse for utenlandsk organisasjon", enabled: true, idType: "UTOR", mobile: false },
+    {
+      name: "orgnummer",
+      idType: "ORG",
+      offentligId: "999888777",
+      organisasjonsnummer: "999888777",
+      mobile: false,
+    },
+    {
+      name: "prefiksert orgnummer",
+      idType: "ORG",
+      offentligId: "00999888777",
+      organisasjonsnummer: "999888777",
+      mobile: false,
+    },
+    {
+      name: "orgnummer i smal visning",
+      idType: "ORG",
+      offentligId: "999888777",
+      organisasjonsnummer: "999888777",
+      mobile: true,
+    },
+    {
+      name: "adresse for person",
+      idType: "FNR",
+      offentligId: "12345678910",
+      organisasjonsnummer: null,
+      mobile: false,
+    },
+    {
+      name: "adresse for utenlandsk organisasjon",
+      idType: "UTOR",
+      offentligId: "SE556036079301",
+      organisasjonsnummer: null,
+      mobile: false,
+    },
   ]) {
     test(`viser ${scenario.name} i søkeresultat og mottakeroppsummering`, async ({ page }) => {
       if (scenario.mobile) {
@@ -83,15 +124,13 @@ test.describe("Endrer på mottaker", () => {
       const samhandler = {
         navn: "ADVOKAT 1 AS",
         samhandlerType: "ADVO",
-        offentligId: "999888777",
+        offentligId: scenario.offentligId,
+        organisasjonsnummer: scenario.organisasjonsnummer,
         idType: scenario.idType,
         idTSSEkstern: "80000781720",
       };
       let adresseOppslag = 0;
       let samhandlerOppslag = 0;
-      await page.route("**/bff/skribenten-backend/features/samhandlerOrgnummer", (route) =>
-        route.fulfill({ json: { enabled: scenario.enabled } }),
-      );
       await page.route("**/bff/skribenten-backend/finnSamhandler", (route) =>
         route.fulfill({ json: { samhandlere: [samhandler], failureType: null } }),
       );
@@ -120,10 +159,10 @@ test.describe("Endrer på mottaker", () => {
       const modal = page.getByTestId("endre-mottaker-modal");
       await modal.getByText("Advokat 1 As").first().click();
 
-      const visOrgnummer = scenario.enabled && scenario.idType === "ORG";
+      const visOrgnummer = scenario.organisasjonsnummer !== null;
       if (visOrgnummer) {
         await expect(modal.getByRole("rowheader", { name: "Organisasjonsnummer" })).toBeVisible();
-        await expect(modal.getByRole("cell", { name: samhandler.offentligId, exact: true })).toBeVisible();
+        await expect(modal.getByRole("cell", { name: scenario.organisasjonsnummer, exact: true })).toBeVisible();
         await expect(modal.getByText("Postboks 603 Sentrum")).not.toBeVisible();
         await expect(modal.getByRole("rowheader", { name: "Postnummer" })).not.toBeVisible();
       } else {
@@ -134,7 +173,7 @@ test.describe("Endrer på mottaker", () => {
       await expect(modal).not.toBeVisible();
 
       if (visOrgnummer) {
-        const orgnummer = page.getByText(samhandler.offentligId, { exact: true });
+        const orgnummer = page.getByText(scenario.organisasjonsnummer, { exact: true });
         await expect(orgnummer).toBeVisible();
         await expect(page.getByText("Organisasjonsnummer", { exact: false })).not.toBeVisible();
         await expect(page.getByText("Postboks 603 Sentrum")).not.toBeVisible();
@@ -146,9 +185,6 @@ test.describe("Endrer på mottaker", () => {
         await expect(page.getByText("Postboks 603 Sentrum")).toBeVisible();
         await expect(page.getByText(samhandler.offentligId, { exact: true })).not.toBeVisible();
         expect(adresseOppslag).toBeGreaterThan(0);
-        if (!scenario.enabled) {
-          expect(samhandlerOppslag).toBe(0);
-        }
       }
     });
   }
@@ -201,11 +237,9 @@ test.describe("Endrer på mottaker", () => {
     // Select first samhandler by clicking the name (selects and expands the row)
     await page.getByTestId("endre-mottaker-modal").getByText("Advokat 1 As").first().click();
 
-    // Assert address details shown in expanded row
-    await expect(page.getByText("Postboks 603 Sentrum")).toBeVisible();
-    await expect(page.getByText("4003")).toBeVisible();
-    await expect(page.getByText("Stavanger")).toBeVisible();
-    await expect(page.getByRole("cell", { name: "Nor", exact: true })).toBeVisible();
+    await expect(page.getByRole("rowheader", { name: "Organisasjonsnummer" })).toBeVisible();
+    await expect(page.getByRole("cell", { name: samhandlerOrganisasjonsnummer, exact: true })).toBeVisible();
+    await expect(page.getByText("Postboks 603 Sentrum")).not.toBeVisible();
     await page.getByTestId("lagre-samhandler").click();
 
     // Assert we have switched to samhandler
@@ -262,11 +296,9 @@ test.describe("Endrer på mottaker", () => {
     // Select first samhandler by clicking the name (selects and expands the row)
     await page.getByTestId("endre-mottaker-modal").getByText("Advokat 1 As").first().click();
 
-    // Assert address details shown in expanded row
-    await expect(page.getByText("Postboks 603 Sentrum")).toBeVisible();
-    await expect(page.getByText("4003")).toBeVisible();
-    await expect(page.getByText("Stavanger")).toBeVisible();
-    await expect(page.getByRole("cell", { name: "Nor", exact: true })).toBeVisible();
+    await expect(page.getByRole("rowheader", { name: "Organisasjonsnummer" })).toBeVisible();
+    await expect(page.getByRole("cell", { name: samhandlerOrganisasjonsnummer, exact: true })).toBeVisible();
+    await expect(page.getByText("Postboks 603 Sentrum")).not.toBeVisible();
     await page.getByTestId("lagre-samhandler").click();
 
     // Assert we have switched to samhandler
@@ -324,11 +356,9 @@ test.describe("Endrer på mottaker", () => {
     // Select first samhandler by clicking the name (selects and expands the row)
     await page.getByTestId("endre-mottaker-modal").getByText("Advokat 1 As").first().click();
 
-    // Assert address details shown in expanded row
-    await expect(page.getByText("Postboks 603 Sentrum")).toBeVisible();
-    await expect(page.getByText("4003")).toBeVisible();
-    await expect(page.getByText("Stavanger")).toBeVisible();
-    await expect(page.getByRole("cell", { name: "Nor", exact: true })).toBeVisible();
+    await expect(page.getByRole("rowheader", { name: "Organisasjonsnummer" })).toBeVisible();
+    await expect(page.getByRole("cell", { name: samhandlerOrganisasjonsnummer, exact: true })).toBeVisible();
+    await expect(page.getByText("Postboks 603 Sentrum")).not.toBeVisible();
     await page.getByTestId("lagre-samhandler").click();
 
     // Assert we have switched to samhandler

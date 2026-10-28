@@ -5,6 +5,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
@@ -50,7 +51,7 @@ class BrevmalService(
         renderMarkup(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
-            saksbehandlerValg = brev.saksbehandlerValgKryptert,
+            saksbehandlerValg = brev.saksbehandlerValg,
             pesysData = pesysData,
         )
 
@@ -59,7 +60,7 @@ class BrevmalService(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
             fagsystemBrevdata = pesysData.brevdata,
-            saksbehandlervalg = brev.saksbehandlerValgKryptert.somSaksbehandlervalgIDSL(),
+            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
             felles = pesysData.felles,
         )
 
@@ -71,7 +72,7 @@ class BrevmalService(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
             fagsystemBrevdata = pesysData.brevdata,
-            saksbehandlervalg = brev.saksbehandlerValgKryptert.somSaksbehandlervalgIDSL(),
+            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
             felles = pesysData.felles,
             vedleggId = vedleggId,
         )
@@ -128,34 +129,42 @@ class BrevmalService(
         return filter { it.isRelevantRegelverk(sakstype, erKravPaaGammeltRegelverk) }
     }
 
-    private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
-        withContext(Dispatchers.IO) {
+    private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> {
+        val visEblanketter = includeEblanketter && Features.eblanketter.isEnabled()
+        return withContext(Dispatchers.IO) {
             val brevbaker = async { hentBrevbakerMaler().asSequence().filter { it.sakstyper.map { type -> type.kode }.contains(sakstype.kode) }.map { LetterMetadata.Brevbaker(it) } }
             val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
             val eblanketter = async {
-                if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
+                if (visEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
             }
 
+            val visAutobrev = Features.visAutobrev.isEnabled()
+
             return@withContext (brevbaker.await() + legacy.await() + eblanketter.await())
-                .filter { it.isRedigerbart }
+                .filter { visAutobrev || it.isRedigerbart }
                 .filter { it.brevkode !in ekskluderteBrev }
         }
+    }
 
-    private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> =
-        withContext(Dispatchers.IO) {
+    private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> {
+        val visEblanketter = includeEblanketter && Features.eblanketter.isEnabled()
+        val visAutobrev = Features.visAutobrev.isEnabled()
+
+        return withContext(Dispatchers.IO) {
             val brevbaker = async { hentBrevbakerMaler() }
             val legacy = async {
                 brevmetadataService.getAllBrev().asSequence()
-                    .filter { includeEblanketter || it.dokumentkategori != BrevdataDto.DokumentkategoriCode.E_BLANKETT }
+                    .filter { visEblanketter || it.dokumentkategori != BrevdataDto.DokumentkategoriCode.E_BLANKETT }
             }
 
             // NB: setter sakstype til GENRL for legacy brev her siden vi ikke har sakstype info når vi henter alle maler,
             //     det blir forkastet før funksjonen returnerer.
             return@withContext brevbaker.await().asSequence().map { LetterMetadata.Brevbaker(it) } +
                     legacy.await().map { LetterMetadata.Legacy(it, Pen.sakstypeForLegacybrev) }
-        }.filter { it.isRedigerbart }
+        }.filter { visAutobrev || it.isRedigerbart }
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }
+    }
 
     private suspend fun hentBrevbakerMaler(): List<TemplateDescription.Redigerbar> =
         getTemplates() ?: emptyList()

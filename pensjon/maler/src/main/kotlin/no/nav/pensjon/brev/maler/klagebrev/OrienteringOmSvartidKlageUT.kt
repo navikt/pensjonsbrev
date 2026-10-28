@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER
@@ -56,7 +55,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
 
         outline {
             showIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Klage)) {
-                paragraph { text(bokmal { +"Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst("datoVedtak") + "." }) }
+                paragraph { text(bokmal { +"Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst("dato") + "." }) }
 
                 title1 { text(bokmal { +"Behandlingstid" }) }
                 paragraph {
@@ -69,7 +68,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
             }.orShowIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Omgjoering)) {
                 paragraph {
                     text(bokmal {
-                        +"Vi har den " + fritekst("dato") + " mottatt kravet ditt om omgjøring av vedtaket vårt av " + fritekst("datoVedtak") + ". "
+                        +"Vi har den " + fritekst("dato") + " mottatt kravet ditt om omgjøring av vedtaket vårt av " + fritekst("dato") + ". "
                         +"Du ber om omgjøring av " + fritekst("eks. uføretidspunktet/ung ufør") + "."
                     })
                 }

@@ -1,32 +1,38 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { getFeatureToggle, hentSamhandler, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
-import { Identtype } from "~/components/endreMottaker/EndreMottakerUtils";
+import { hentSamhandler, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
+import { type HentSamhandlerResponseDtoSuccess, type SamhandlerPostadresse } from "~/types/apiTypes";
+
+type SamhandlerMottaker =
+  | {
+      samhandler: HentSamhandlerResponseDtoSuccess & {
+        organisasjonsnummer: NonNullable<HentSamhandlerResponseDtoSuccess["organisasjonsnummer"]>;
+      };
+      adresse?: never;
+    }
+  | {
+      samhandler: HentSamhandlerResponseDtoSuccess & { organisasjonsnummer?: null };
+      adresse: SamhandlerPostadresse;
+    };
 
 export function useSamhandlerMottaker(idTSSEkstern?: string) {
-  const feature = useQuery({
-    ...getFeatureToggle("samhandlerOrgnummer"),
-    enabled: !!idTSSEkstern,
-  });
-  const visOrgnummer = feature.data?.enabled === true;
-
   return useQuery({
-    queryKey: ["SAMHANDLER_MOTTAKER", idTSSEkstern, visOrgnummer],
-    enabled: !!idTSSEkstern && !feature.isPending,
-    queryFn: async () => {
+    queryKey: ["SAMHANDLER_MOTTAKER", idTSSEkstern],
+    enabled: !!idTSSEkstern,
+    queryFn: async (): Promise<SamhandlerMottaker> => {
       const id = idTSSEkstern!;
-      if (visOrgnummer) {
-        const samhandler = await hentSamhandler.queryFn({ idTSSEkstern: id, hentDetaljert: false });
-        if (!samhandler) {
-          throw new Error("Fant ikke samhandler");
-        }
-        if (samhandler.idType === Identtype.NORSK_ORGNR && samhandler.offentligId.trim() !== "") {
-          return { type: "organisasjon" as const, samhandler };
-        }
+      const samhandler = await hentSamhandler.queryFn({ idTSSEkstern: id, hentDetaljert: false });
+      if (!samhandler) {
+        throw new Error("Fant ikke samhandler");
+      }
+      if (samhandler.organisasjonsnummer) {
+        return {
+          samhandler: { ...samhandler, organisasjonsnummer: samhandler.organisasjonsnummer },
+        };
       }
 
       const adresse = await hentSamhandlerAdresse(id).queryFn();
-      return { type: "adresse" as const, adresse };
+      return { samhandler: { ...samhandler, organisasjonsnummer: null }, adresse };
     },
   });
 }

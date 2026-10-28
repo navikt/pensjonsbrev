@@ -13,11 +13,16 @@ enum class FeatureToggles(private val key: String) {
     brevmalAvslagGjenlevendepensjonUtland("brevmalAvslagGjenlevendepensjonUtland"),
     brevmalAvslagUfoerepensjon("brevmalAvslagUfoerepensjon"),
     brevmalInnvilgelseGjenlevendepensjonBosattNorgeEtterUtland("brevmalInnvilgelseGjenlevendepensjonBosattNorgeEtterUtland"),
+    brevmalKlageBeslutningOmAaIkkeGjoereOmVedtaketUT("brevmalKlageBeslutningOmAaIkkeGjoereOmVedtaketUT"),
+    brevmalKlageBegrunnelseForVedtakUT("brevmalKlageBegrunnelseForVedtakUT"),
+    brevmalKlageBeslutningOmVedtaketSkalIverksettes("brevmalKlageBeslutningOmVedtaketSkalIverksettes"),
+    brevmalKlageInnhentingAvOpplysningerUT("brevmalKlageInnhentingAvOpplysningerUT"),
     brevmalKlageOrienteringOmOversendelseTilKlageinstans("klageOrienteringOmOversendelseTilKlageinstans"),
     brevmalKlageOrienteringOmSaksbehandlingstid("brevmalKlageOrienteringOmSaksbehandlingstid"),
     brevmalKlageOversendelseOgFoelgebrevKlageinstansUT("brevmalKlageOversendelseOgFoelgebrevKlageinstansUT"),
     brevmalKlageOversendelsesbrevTilKlageinstansPE("brevmalKlageOversendelsesbrevTilKlageinstansPE"),
     brevmalKlageOversendelsesbrevTilKlageinstansUT("brevmalKlageOversendelsesbrevTilKlageinstansUT"),
+    brevmalKlageUtsattKlagefristUT("brevmalKlageUtsattKlagefristUT"),
     brevmalOpphoerGjenlevendepensjon("brevmalOpphoerGjenlevendepensjon"),
     brevmalOrienteringOmSvartidKlageUT("brevmalOrienteringOmSvartidKlageUT"),
     brevmalUtAvslag("brevmalUtAvslag"),
@@ -25,15 +30,18 @@ enum class FeatureToggles(private val key: String) {
     brevmalUtDelvisEksport("brevmalUtDelvisEksport"),
     brevmalUtEndretPgaInntekt("brevmalUtEndretPgaInntekt"),
     brevmalUtInnvilgelseMedEndring("brevmalUtInnvilgelseMedEndring"),
+    brevmalUtInnvilgelseTrygdeavtale("brevmalUtInnvilgelseTrygdeavtale"),
     brevmalUtOmregningUfoerepensjonTilUfoeretrygd("brevmalOmregningUfoerepensjonTilUfoeretrygd"),
     brevmalUtVedtakBlankMal("brevmalUtVedtakBlankMal"),
+    brevmalUtsattKlagefristUT("brevmalUtsattKlagefristUT"),
     brukertestbrev2025("brukertestbrev2025"),
     orienteringOmForlengetSaksbehandlingstid("orienteringOmForlengetSaksbehandlingstid"),
     oversettelseAvDokumenter("oversettelseAvDokumenter"),
     samletMeldingOmPensjonsvedtak("samletMeldingOmPensjonsvedtak"),
     vedtakAvslagPaaOmsorgsopptjening("vedtakAvslagPaaOmsorgsopptjening"),
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
-    vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng");
+    vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng"),
+    okningUforegradV2("okninguforegrad.v2");
 
 
     val toggle = FeatureToggle(key)

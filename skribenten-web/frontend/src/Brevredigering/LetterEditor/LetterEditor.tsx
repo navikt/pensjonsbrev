@@ -3,6 +3,7 @@ import "./editor.css";
 import { CheckmarkIcon, XMarkIcon } from "@navikt/aksel-icons";
 import { Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
+import isEqual from "lodash/isEqual";
 import React, {
   createContext,
   type Dispatch,
@@ -10,6 +11,7 @@ import React, {
   useCallback,
   useContext,
   useLayoutEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -42,6 +44,7 @@ export const LetterEditor = ({
   setEditorState,
   showDebug,
   renderTilbakestillModal,
+  diffToggleMenu,
 }: {
   freeze: boolean;
   error: boolean;
@@ -50,6 +53,7 @@ export const LetterEditor = ({
   showDebug: boolean;
   /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
   renderTilbakestillModal?: (args: { open: boolean; onClose: () => void }) => React.ReactNode;
+  diffToggleMenu?: React.ReactNode;
 }) => {
   const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
@@ -58,6 +62,8 @@ export const LetterEditor = ({
   const highlightedIds = useInsertedTekstValgHighlight();
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
+  const [showFocusRing, setShowFocusRing] = useState(false);
+  const tabHandledByEditor = useRef(false);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
 
   useDragSelectUnifier(editorRoot, !freeze);
@@ -71,7 +77,10 @@ export const LetterEditor = ({
   useLayoutEffect(() => {
     if (!pendingSelection || !editorRoot || freeze) return;
     selectSelectionIndex(editorRoot, pendingSelection);
-    setEditorState((state) => ({ ...state, focus: pendingSelection.start }));
+    const { start, end } = pendingSelection;
+    const collapsed = isEqual(start, end);
+    // Som ved en markering gjort av brukeren: uten cursorPosition respekterer EditableText DOM-markeringen.
+    setEditorState((state) => ({ ...state, focus: collapsed ? start : { ...start, cursorPosition: undefined } }));
   }, [pendingSelection, editorRoot, freeze, setEditorState]);
 
   const sporMissingFromTemplateHandling = useCallback(
@@ -153,8 +162,26 @@ export const LetterEditor = ({
           setVilTilbakestilleMal={renderTilbakestillModal ? setVilTilbakestilleMal : undefined}
           undo={undo}
         />
+        {diffToggleMenu}
         <VStack align="center" flexGrow="1" minHeight="0" overflowY="auto">
-          <Box className="editor" css={freeze ? { cursor: "wait" } : {}} height="100%">
+          <Box
+            className="editor"
+            css={freeze ? { cursor: "wait" } : {}}
+            data-focus-ring={showFocusRing}
+            flexShrink="0"
+            minHeight="100%"
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) setShowFocusRing(false);
+            }}
+            onKeyDown={(event) => {
+              tabHandledByEditor.current = event.key === "Tab" && event.defaultPrevented;
+            }}
+            onKeyUp={(event) => {
+              if (event.key === "Tab" && !tabHandledByEditor.current) setShowFocusRing(true);
+              tabHandledByEditor.current = false;
+            }}
+            onPointerDown={() => setShowFocusRing(false)}
+          >
             {isLetterDocument(letter) && <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />}
             <Heading
               className="letter-title"

@@ -2,11 +2,12 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseUfoeretrygdTrygdeavtaleDto
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdTrygdeavtaleRedigerbar
 import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -71,5 +72,15 @@ class InnvilgelseUfoeretrygdTest {
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_INNVILGELSE_UFOERTRYGD_EOS_MINSTEYTELSE")
+    }
+
+    @Test
+    fun `trygdeavtale`() {
+        LetterTestImpl(
+            InnvilgelseUforetrygdTrygdeavtaleRedigerbar.template,
+            createInnvilgelseUfoeretrygdTrygdeavtaleDto(),
+            Language.Bokmal,
+            Fixtures.fellesAuto
+        ).renderTestPDF("UT_INNVILGELSE_UFOERETRYGD_TRYGDEAVTALE")
     }
 }

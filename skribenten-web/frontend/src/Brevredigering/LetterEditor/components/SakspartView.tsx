@@ -10,7 +10,7 @@ export const SakspartView = ({ sakspart, spraak }: { sakspart: Sakspart; spraak:
     <HGrid
       columns="minmax(10rem, max-content) 1fr min-content"
       css={{
-        opacity: "0.5",
+        color: "var(--ax-text-neutral-subtle)",
         fontSize: "16px",
         lineHeight: "1.3125rem",
         marginBottom: "var(--ax-space-40)",

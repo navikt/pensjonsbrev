@@ -8,3 +8,6 @@ inbound:
   - name: pensjon-selvbetjening-soknad-alder-backend
     namespace: pensjonselvbetjening
     cluster: dev-gcp
+  - name: pensjon-pen-q2
+    namespace: pensjon-q2
+    cluster: dev-fss

@@ -8,9 +8,11 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe1
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.selectors.personSak.foedselsdato
 import no.nav.pensjon.brev.maler.ufore.fraser.erUforetidspunktMaanedEtterFoedsel
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.SlikBeregnerViUPTilUT
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.barnetillegg.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.OpplysningerBruktIBeregningTabell
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.OpplysningerOmAvdoedTabell
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntekt.ReduksjonsprosentOgUtbetalingUPTilUT
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.SlikBeregnerViUfoeretrygden
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.SlikBeregnerViUfoeretrygdenKonvertert
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.etteroppgjoer.EtteroppgjoerAvUforetrygdOgBarnetillegg
@@ -20,7 +22,7 @@ import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegni
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikBeregnerViReduksjonenAvUfoeretrygden
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikBlirDinUtbetalingFoerSkatt
-import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikHarViFastsattKompensasjonsgradenDin
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.SlikHarViFastsattReduksjonsprosentenDin
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.minsteytelse.ForDegSomHarRettTilMinsteytelse
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.trygdetid.*
 import no.nav.pensjon.brev.model.format
@@ -72,26 +74,58 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             )
         }
 
-        includePhrase(OpplysningerBruktIBeregningTabell(pe))
-        includePhrase(OpplysningerOmAvdoedTabell(pe))
+        includePhrase(
+            OpplysningerBruktIBeregningTabell(
+                pe = pe,
+                visSivilstatusUansett = pe.skalViseOmregningUPtilUT(),
+            )
+        )
+        showIf(pe.erIkkeInntektsendringBrevkode() and pe.harIkkeBarnetilleggBrevkode()) {
+            includePhrase(
+                OpplysningerOmAvdoedTabell(
+                    pe = pe,
+                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                )
+            )
+        }
 
         // ============================================================
         // Slik beregner vi uføretrygden din
         // ============================================================
         showIf (pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) {
-            includePhrase(SlikBeregnerViUfoeretrygdenKonvertert(pe))
+            showIf(pe.erFulltBeregningsbrev()) {
+                includePhrase(
+                    SlikBeregnerViUfoeretrygdenKonvertert(
+                        pe = pe,
+                        visForklaringVedEndring = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                        visForklaringVedOektUfoeregrad = pe.pebrevkode().equalTo("PE_UT_04_114"),
+                    )
+                )
+            }
         }.orShow {
-            includePhrase(SlikBeregnerViUfoeretrygden(pe))
+            showIf(pe.erFulltBeregningsbrev()) {
+                includePhrase(SlikBeregnerViUfoeretrygden(pe))
+            }
         }
 
         // Minsteytelse
-        includePhrase(ForDegSomHarRettTilMinsteytelse(pe))
+        showIf(pe.pebrevkode().isNotAnyOf("PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_103", "PE_UT_04_108", "PE_UT_07_200", "PE_UT_06_300")) {
+            includePhrase(
+                ForDegSomHarRettTilMinsteytelse(
+                    pe = pe,
+                    visUtlandsforklaringUansett = pe.pebrevkode().equalTo("f_bh_bo_utland"),
+                )
+            )
+        }
 
-        // TODO TBU028V-TBU020V trengs for brev PE_UT_04_300 og PE_UT_14_300
-        // (Vedtak - omregning av uførepensjon til uføretrygd auto & manuell)
+        showIf(pe.skalViseOmregningUPtilUT()){
+            includePhrase(SlikBeregnerViUPTilUT(pe))
+        }
 
         showIf(pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
-            includePhrase(Grunnbeloep(pe))
+            showIf(pe.erIkkeInntektsendringBrevkode()) {
+                includePhrase(Grunnbeloep)
+            }
             includePhrase(YrkesskadeForklaring(pe))
         }
 
@@ -111,11 +145,38 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(InntektsgrunnlagUtland(pe))
             includePhrase(InntektsgrunnlagUtlandUthevetNotat(pe))
 
-            includePhrase(InntektsgrunnlagFolketrygdAvdoed(pe))
-            includePhrase(InntektsgrunnlagFolketrygdAvdoedUthevetNotat(pe))
+            showIf(
+                pe.erIkkeInntektsendringBrevkode() and
+                    pe.pebrevkode().notEqualTo("PE_UT_04_114") and
+                    pe.harIkkeBarnetilleggBrevkode()
+            ) {
+                val utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102")
+                includePhrase(
+                    InntektsgrunnlagFolketrygdAvdoed(
+                        pe = pe,
+                        utelatVedDoedsfall = utelatVedDoedsfall,
+                    )
+                )
+                includePhrase(
+                    InntektsgrunnlagFolketrygdAvdoedUthevetNotat(
+                        pe = pe,
+                        utelatVedDoedsfall = utelatVedDoedsfall,
+                    )
+                )
 
-            includePhrase(InntektsgrunnlagUtlandAvdoed(pe))
-            includePhrase(InntektsgrunnlagUtlandAvdoedUthevetNotat(pe))
+                includePhrase(
+                    InntektsgrunnlagUtlandAvdoed(
+                        pe = pe,
+                        utelatVedDoedsfall = utelatVedDoedsfall,
+                    )
+                )
+                includePhrase(
+                    InntektsgrunnlagUtlandAvdoedUthevetNotat(
+                        pe = pe,
+                        utelatVedDoedsfall = utelatVedDoedsfall,
+                    )
+                )
+            }
         }
 
         // ============================================================
@@ -164,36 +225,93 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         }
 
         showIf(pe.skalViseInntektsgrenseOgAvkortning()) {
-            includePhrase(InntektsgrenseOgAvkortning(pe))
+            includePhrase(
+                InntektsgrenseOgAvkortning(
+                    pe = pe,
+                    visForklaringOmInntektEtterUfoerhet = pe.erIkkeNyBeregningAvBarnetilleggBrevkode(),
+                )
+            )
         }
 
         // ============================================================
-        // Kompensasjonsgrad og utbetaling
+        // Reduksjonsprosent og utbetaling
         // ============================================================
-        // TODO vises kun om brevkode er PE_UT_14_300 or PE_UT_04_300
-        //includePhrase(TBU052V_TBU073V_Del_1_InntektenDinFoerDuBleUfoer())
+        showIf(pe.skalViseOmregningUPtilUT()) {
+            includePhrase(
+                ReduksjonsprosentOgUtbetalingUPTilUT(
+                    pe = pe,
+                    erBeregningsendring = pe.erBeregningsendringsBrevkode(),
+                    visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
+                    visForklaringOmRettTilBarnetillegg = pe.harBrevkodeForRettTilBarnetillegg(),
+                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                )
+            )
+        }
 
-        includePhrase(SlikHarViFastsattKompensasjonsgradenDin(pe))
+        includePhrase(
+            SlikHarViFastsattReduksjonsprosentenDin(
+                pe = pe,
+                erBeregningsendring = pe.erBeregningsendringsBrevkode(),
+                visDetaljertReduksjonsberegning = pe.erIkkeEndringEllerOekningBrevkode() and
+                    pe.erIkkeInntektsendringBrevkode(),
+            )
+        )
 
-        includePhrase(SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(pe))
+        showIf(pe.harInntektsendringBrevkodeUtenBarnetillegg()) {
+            includePhrase(
+                SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
+                    pe = pe,
+                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                )
+            )
+        }
 
-        includePhrase(SlikBeregnerViReduksjonenAvUfoeretrygden(pe))
+        showIf(pe.erIkkeNyBeregningAvBarnetilleggBrevkode()) {
+            includePhrase(SlikBeregnerViReduksjonenAvUfoeretrygden(pe))
+        }
 
-        includePhrase(SlikBlirDinUtbetalingFoerSkatt(pe))
+        includePhrase(
+            SlikBlirDinUtbetalingFoerSkatt(
+                pe = pe,
+                visOrdinaereUtbetalingsavsnitt = pe.harIkkeBarnetilleggBrevkode(),
+            )
+        )
 
         // ============================================================
         // Barnetillegg og andre tillegg
         // ============================================================
-        showIf(pe.pe_ut_tbu601v_tbu604v()) {
+        showIf(pe.erInntektsendringMedEndretBarnetillegg()) {
             includePhrase(SlikRedusererViBarnetilleggetUtFraInntekt(pe))
         }
-        includePhrase(ForDegSomHarRettTilBarnetillegg(pe))
+        includePhrase(
+            ForDegSomHarRettTilBarnetillegg(
+                pe = pe,
+                visForklaringForBrevtype = pe.harBrevkodeForRettTilBarnetillegg(),
+                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+            )
+        )
 
         includePhrase(SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
 
-        includePhrase(SlikBeregnerViGjenlevendetilleggetDitt(pe))
+        includePhrase(
+            SlikBeregnerViGjenlevendetilleggetDitt(
+                pe = pe,
+                visOmregningsforklaring = pe.skalViseOmregningUPtilUT(),
+                visGenerellForklaring = pe.erIkkeInntektsendringBrevkode() and
+                    pe.harInntektsendringBrevkodeUtenBarnetillegg(),
+            )
+        )
 
-        includePhrase(ForDegSomMottarEktefelletillegg(pe))
+        includePhrase(
+            ForDegSomMottarEktefelletillegg(
+                pe = pe,
+                visGenerellForklaring = pe.pebrevkode().notEqualTo("PE_UT_04_101") and
+                    pe.harIkkeBarnetilleggBrevkode(),
+                visOmregningsforklaring = pe.skalViseOmregningUPtilUT(),
+                visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
+                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+            )
+        )
 
         // ============================================================
         // Etteroppgjør av uføretrygd og barnetillegg
@@ -202,4 +320,3 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
         }
     }
-

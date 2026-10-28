@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -27,7 +29,7 @@ object EktefelleUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Orientering om ektefelle i utlandet",
             distribusjonstype = VIKTIG,
@@ -36,11 +38,13 @@ object EktefelleUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Orientering om sivilstand" })
+            text (bokmal { + "Orientering om sivilstand" },
+                nynorsk { + "Orientering om sivilstand" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har fått informasjon om at du har ektefelle som bor i utlandet. Hvis din ektefelle skal flytte til Norge, er det viktig at du gir oss beskjed med en gang, slik at vi beregner riktig utbetaling av din uføretrygd. Vi ber deg i så fall gi oss informasjon med " + fritekst("flyttedato/planlagt flyttedato") + ". " })
+                text(bokmal { +"Vi har fått informasjon om at du har ektefelle som bor i utlandet. Hvis din ektefelle skal flytte til Norge, er det viktig at du gir oss beskjed med en gang, slik at vi beregner riktig utbetaling av din uføretrygd. Vi ber deg i så fall gi oss informasjon med " + fritekst("flyttedato/planlagt flyttedato") + ". Dette er viktig for å forhindre eventuell feilutbetaling. " },
+                    nynorsk { +"Vi har fått informasjon om at du har ektefelle som bur i utlandet. Dersom ektefellen din skal flytte til Noreg, er det viktig at du gir oss beskjed med ein gong, slik at vi reknar ut riktig utbetaling av uføretrygda di. Vi ber deg i så fall gi oss informasjon med " + fritekst("flyttedato/planlagt flyttedato") + ". Dette er viktig for å forhindre eventuell feilutbetaling. " })
             }
 
             includePhrase(Felles.HarDuSporsmal)

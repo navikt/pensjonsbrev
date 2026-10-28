@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.endring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.barn_flyttet_ikke_avt_land
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land
@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -52,6 +53,8 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Informasjon om renter på etterbetaling").bool()
+
         val pe = pesysData.pe
 
         val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
@@ -482,7 +485,12 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
 
             showIf((not(endringIBelopUt) and ((pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("nor") or (pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("")))) {
-                includePhrase(TBU2223_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                        nynorsk { + "Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad." },
+                    )
+                }
             }
 
             title1 {
@@ -973,7 +981,12 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf(instoppholdtype.equalTo("reduksjon_fo")) {
                 showIf(kravarsak.notEqualTo("instopphold")) {
-                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(
+                        ektefelletilleggInnvilget = ektefelletilleggInnvilget,
+                        gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                        sisteForsorgeransvarErTrue = pe.ut_forsorgeransvar_siste_er_true(),
+                        forsteForsorgeransvarErTrue = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar(),
+                    ))
                 }
             }
 
@@ -1285,11 +1298,21 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
-                includePhrase(TBU2362_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Vi har derfor redusert utbetalingen av uføretrygden din for resten av kalenderåret." },
+                        nynorsk { + "Vi har derfor redusert utbetaling av uføretrygda di for resten av kalenderåret." },
+                    )
+                }
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
-                includePhrase(TBU2363_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Vi har derfor økt utbetalingen av uføretrygden din for resten av kalenderåret." },
+                        nynorsk { + "Vi har derfor auka utbetaling av uføretrygda di for resten av kalenderåret." },
+                    )
+                }
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
@@ -1795,7 +1818,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
-                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato, visTekstOmRenter ))
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {

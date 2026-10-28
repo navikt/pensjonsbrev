@@ -37,7 +37,7 @@ interface LetterMetadata {
                 BrevdataDto.BrevkontekstCode.ALLTID -> TemplateDescription.Brevkontekst.ALLE
                 BrevdataDto.BrevkontekstCode.SAK -> TemplateDescription.Brevkontekst.SAK
                 BrevdataDto.BrevkontekstCode.VEDTAK -> TemplateDescription.Brevkontekst.VEDTAK
-                null -> null
+                null -> if (data.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT) TemplateDescription.Brevkontekst.ALLE else null
             }
         override val isRedigerbart: Boolean get() = data.redigerbart
         override fun isForSakstype(sakstype: Sakstype) = sakstype == hasSakstype
@@ -48,12 +48,13 @@ interface LetterMetadata {
             Api.Brevmal(
                 name = dekode,
                 id = brevkodeIBrevsystem,
-                spraak = sprak ?: emptyList(),
+                spraak = sprak ?: if (isAutomatiskExstream()) listOf(SpraakKode.NB) else emptyList(),
                 brevsystem = BrevSystem.EXSTREAM,
                 brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.let { Pen.finnVisningstekst(it) } ?: this.brevkategori?.toKategoriTekst(),
                 dokumentkategoriCode = this.dokumentkategori,
                 redigerbart = redigerbart,
                 redigerbarBrevtittel = isRedigerbarBrevtittel(),
+                automatiskExstream = isAutomatiskExstream(),
             )
         }
 
@@ -83,6 +84,7 @@ interface LetterMetadata {
                 dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
                 redigerbart = true,
                 redigerbarBrevtittel = false,
+                automatiskExstream = false,
             )
         }
 

@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -27,7 +29,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Brev til fastlege – innhenting av legeerklæring ved krav om uføretrygd",
             distribusjonstype = VIKTIG,
@@ -36,29 +38,36 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Innhenting av legeerklæring - Uføretrygd" })
+            text (bokmal { + "Innhenting av legeerklæring - Uføretrygd" },
+                nynorsk { + "Innhenting av legeerklæring - Uføretrygd" })
         }
         outline {
             paragraph {
-                text(bokmal { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " })
+                text(bokmal { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " },
+                    nynorsk { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet Nav 08-07.08. " })
+                text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet Nav 08-07.08. " },
+                    nynorsk { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførleik Nav 08-07.08. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen fire uker. Erklæringen sendes elektronisk. " })
+                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen " + fritekst("X uker. ") + "Erklæringen sendes til skanning med vedlagte førsteside, eller elektronisk. " },
+                    nynorsk { +"Vi ber om at du sender oss erklæringa snarast mogleg og seinast innan " + fritekst("X veker. ") + "Erklæringa vert sendt til skanning med vedlagde førsteside, eller elektronisk. " })
             }
             paragraph {
-                text(bokmal { +"Erklæringen godgjøres etter honorartakst L40. " })
+                text(bokmal { +"Erklæringen godgjøres etter honorartakst L40. " },
+                    nynorsk { +"Erklæringa blir godtgjord etter honorartakst L40. " })
             }
             paragraph {
-                text(bokmal { +"Folketrygdloven § 21-4 andre ledd gir Nav rett til å innhente nødvendige opplysninger. Dette gjelder selv om opplysningene er taushetsbelagte. Dette går frem av § 21-4 sjette ledd.  " })
+                text(bokmal { +"Folketrygdloven § 21-4 andre ledd gir Nav rett til å innhente nødvendige opplysninger. Dette gjelder selv om opplysningene er taushetsbelagte. Dette går frem av § 21-4 sjette ledd.  " },
+                    nynorsk { +"Folketrygdlova § 21-4 andre ledd gir Nav rett til å innhente nødvendige opplysningar. Dette gjeld sjølv om opplysningane er teiepliktbelagte. Dette går fram av § 21-4 sjette ledd.  " })
             }
             paragraph {
-                text(bokmal { +"Pålegget om utlevering av opplysninger kan påklages etter forvaltningsloven § 14. Klageadgangen gjelder kun lovligheten av pålegget. Fristen for å klage er tre dager etter at pålegget er mottatt. Klagen kan fremsettes muntlig eller skriftlig. " })
+                text(bokmal { +"Pålegget om utlevering av opplysninger kan påklages etter forvaltningsloven § 14. Klageadgangen gjelder kun lovligheten av pålegget. Fristen for å klage er tre dager etter at pålegget er mottatt. Klagen kan fremsettes muntlig eller skriftlig. " },
+                    nynorsk { +"Pålegget om utlevering av opplysningar kan påklagast etter forvaltningslova § 14. Klageretten gjeld berre lovlegheita av pålegget. Fristen for å klage er tre dagar etter at pålegget er motteke. Klagen kan fremjast munnleg eller skriftleg. " })
             }
 
-            includePhrase(Felles.HarDuSporsmal)
+            includePhrase(Felles.HarDuSporsmalLegeBehandler)
         }
     }
 }

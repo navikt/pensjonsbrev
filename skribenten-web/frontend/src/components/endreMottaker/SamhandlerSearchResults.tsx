@@ -182,20 +182,19 @@ function SamhandlerMottakerDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) 
 }
 
 function MottakerDetaljer({ mottaker }: { mottaker: NonNullable<ReturnType<typeof useSamhandlerMottaker>["data"]> }) {
-  const rows: { label: string; value: Nullable<string> }[] =
-    mottaker.type === "organisasjon"
-      ? [
-          { label: "Navn", value: mottaker.samhandler.navn },
-          { label: "Organisasjonsnummer", value: mottaker.samhandler.offentligId },
-        ]
-      : [
-          { label: "Navn", value: mottaker.adresse.navn },
-          { label: "Adresselinje 1", value: mottaker.adresse.linje1 ?? null },
-          { label: "Adresselinje 2", value: mottaker.adresse.linje2 ?? null },
-          { label: "Postnummer", value: mottaker.adresse.postnr ?? null },
-          { label: "Poststed", value: mottaker.adresse.poststed ?? null },
-          { label: "Land", value: mottaker.adresse.land ?? null },
-        ];
+  const rows: { label: string; value: Nullable<string> }[] = mottaker.adresse
+    ? [
+        { label: "Navn", value: mottaker.adresse.navn },
+        { label: "Adresselinje 1", value: mottaker.adresse.linje1 ?? null },
+        { label: "Adresselinje 2", value: mottaker.adresse.linje2 ?? null },
+        { label: "Postnummer", value: mottaker.adresse.postnr ?? null },
+        { label: "Poststed", value: mottaker.adresse.poststed ?? null },
+        { label: "Land", value: mottaker.adresse.land ?? null },
+      ]
+    : [
+        { label: "Navn", value: mottaker.samhandler.navn },
+        { label: "Organisasjonsnummer", value: mottaker.samhandler.organisasjonsnummer },
+      ];
 
   return (
     <Table size="small">

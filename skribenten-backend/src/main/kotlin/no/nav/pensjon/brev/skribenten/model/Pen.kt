@@ -26,10 +26,25 @@ object Pen {
         val behandlingsnumre: List<Behandlingsnummer>,
         val tema: Tema,
     ) {
-        data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+        data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String) {
+            init {
+                require(fornavn.length < 128) { "Fornavn må være mindre enn 128 bokstaver" }
+                require((mellomnavn?.length ?: 0) < 128) { "Mellomnavn må være mindre enn 128 bokstaver" }
+                require(etternavn.length < 128) { "Etternavn må være mindre enn 128 bokstaver" }
+            }
+        }
     }
 
-    data class Avtaleland(val navn: String, val kode: String)
+    data class Avtaleland(val navn: String, val kode: String) {
+        init {
+            require(navn.isNotBlank()) { "Avtaleland navn kan ikke være blank" }
+            require(kode.isNotBlank()) { "Avtaleland kode kan ikke være blank" }
+            require(kode.length == 3) { "Avtaleland kode må være 3 tegn" }
+            require(navn.length <= 128) {
+                "Avtaleland navn kan ikke være lengre enn 128 tegn"
+            }
+        }
+    }
 
     data class BestillExstreamBrevResponse(
         val journalpostId: JournalpostId,
@@ -126,16 +141,7 @@ object Pen {
             val organisasjon: Organisasjon? = null,
         ) {
             enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE, ORGNR }
-            data class Organisasjon(val orgNr: String) {
-                init {
-                    require(erGyldig(orgNr)) { "Organisasjonsnummer må være ni siffer" }
-                }
-
-                companion object {
-                    private val NI_SIFFER = Regex("\\d{9}")
-                    fun erGyldig(orgNr: String): Boolean = NI_SIFFER.matches(orgNr)
-                }
-            }
+            data class Organisasjon(val orgNr: OrgNr)
 
             data class NorskAdresse(
                 val navn: Navn,
