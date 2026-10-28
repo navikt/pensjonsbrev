@@ -1,16 +1,23 @@
 package no.nav.pensjon.brev.skribenten.routes
 
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.Parameters
 import io.ktor.server.application.Application
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.getOrFail
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.BekreftNyhetsvarselHandler
 import no.nav.pensjon.brev.skribenten.FjernFavorittHandler
+import no.nav.pensjon.brev.skribenten.HentBekreftedeNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.HentFavoritterHandler
 import no.nav.pensjon.brev.skribenten.LeggTilFavorittHandler
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.NyhetsvarselId
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 
@@ -49,5 +56,27 @@ fun Route.meRoute() {
         get("/enheter") {
             call.respond(navansattService.hentNavAnsattEnhetListe(principal().navIdent))
         }
+
+        val hentBekreftedeNyhetsvarslerHandler: HentBekreftedeNyhetsvarslerHandler by app.dependencies
+        get("/bekreftedeNyhetsvarsler") {
+            val bekreftede = hentBekreftedeNyhetsvarslerHandler(HentBekreftedeNyhetsvarslerHandler.Request(principal().navIdent))
+            respondSuccess(bekreftede?.asSuccess()) { respond(it) }
+        }
+
+        val bekreftNyhetsvarselHandler: BekreftNyhetsvarselHandler by app.dependencies
+        put("/bekreftedeNyhetsvarsler/{nyhetsvarselId}") {
+            val bekreft = bekreftNyhetsvarselHandler(
+                BekreftNyhetsvarselHandler.Request(principal().navIdent, call.parameters.nyhetsvarselId())
+            )
+            respondSuccess(bekreft?.asSuccess()) { respond(HttpStatusCode.NoContent) }
+        }
     }
 }
+
+private val gyldigNyhetsvarselId = Regex("^[a-z0-9-]{1,100}$")
+
+private fun Parameters.nyhetsvarselId(): NyhetsvarselId =
+    getOrFail("nyhetsvarselId")
+        .takeIf { gyldigNyhetsvarselId.matches(it) }
+        ?.let(::NyhetsvarselId)
+        ?: throw BadRequestException("Ugyldig nyhetsvarselId")
