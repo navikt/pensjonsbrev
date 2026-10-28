@@ -101,6 +101,7 @@ object UfoereTemplates : AllTemplates {
         SimuleringUforetrygd,
         OrienteringOmSaksbehandlingstidRedigerbar,
         UtsendelseTilUtlandRedigerbar,
+        EOSLegeerklaering,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(

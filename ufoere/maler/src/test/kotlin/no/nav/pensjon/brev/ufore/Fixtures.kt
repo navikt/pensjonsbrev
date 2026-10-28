@@ -98,6 +98,7 @@ object Fixtures : LetterDataFactory {
             EktefelleUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             UtsattKlagefrist::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             AntattDod::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            EOSLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             SoknadBarnetilleggUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             BrukerLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             LegeLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
