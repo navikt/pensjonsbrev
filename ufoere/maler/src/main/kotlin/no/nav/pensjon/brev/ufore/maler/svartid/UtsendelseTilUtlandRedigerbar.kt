@@ -73,7 +73,7 @@ object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehan
                     nynorsk { + "Fordi du har budd og/eller arbeidd i eit land Noreg har trygdeavtale med, videresender vi søknaden din saman med opplysningar om den norske trygdetida di til trygdemyndigheitene i " + fritekst("land") + ". " },
                 )
             }
-            paragraph() {
+            paragraph {
                 text(
                     bokmal { + "Søknaden din om uføretrygd er sendt til de utenlandske trygdemyndighetene i dag. Søknadsdatoen din i utlandet vil bli den samme som i Norge. " },
                     nynorsk { + "Søknaden din om uføretrygd er sendt til dei utanlandske trygdemyndigheitene i dag. Søknadsdatoen din i utlandet vil bli den same som i Noreg. " },
