@@ -71,6 +71,14 @@ export async function setupSakStubs(page: Page) {
     });
   });
 
+  await page.route("**/bff/skribenten-backend/me/bekreftedeNyhetsvarsler", (route) => {
+    return route.fulfill({ json: [] });
+  });
+
+  await page.route("**/bff/skribenten-backend/me/bekreftedeNyhetsvarsler/*", (route) => {
+    return route.fulfill({ status: 204 });
+  });
+
   await page.route("**/bff/api/logg", (route) => {
     return route.fulfill({ status: 200 });
   });

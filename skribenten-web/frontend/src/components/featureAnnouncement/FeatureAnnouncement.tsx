@@ -1,3 +1,6 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { isAfter, parseISO, startOfToday } from "date-fns";
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ACTIONS,
@@ -10,6 +13,9 @@ import {
   type StepTarget,
   useJoyride,
 } from "react-joyride";
+
+import { acknowledgeAnnouncement, getAcknowledgedAnnouncements } from "~/api/skribenten-api-endpoints";
+import { logError } from "~/utils/logger";
 
 import {
   FEATURE_ANNOUNCEMENT_ATTRIBUTE,
@@ -34,17 +40,14 @@ export type FeatureAnnouncementStep = {
 };
 
 type FeatureAnnouncementProps = {
-  /** Unique per announcement; used to tell this announcement apart from other active ones. */
+  /** Unique per announcement and stored when the user acknowledges it: lowercase letters, digits and hyphens. */
   id: string;
+  /** Last day (YYYY-MM-DD) the announcement is shown, typically 30 days after release. */
+  showUntil: string;
   /** Pass a memoized array: a new identity restarts the step configuration in Joyride. */
   steps: FeatureAnnouncementStep[];
   /** All contextual conditions (role, route, data and targets available) combined by the caller. */
   when: boolean;
-  /**
-   * Optional controlled dismissal, for when the announcement can unmount and remount within the same
-   * view (e.g. when switching between documents) and must not reopen.
-   */
-  dismissed?: boolean;
   onDismiss?: () => void;
   /** Dims the page around each step's target. Defaults to true. */
   spotlight?: boolean;
@@ -53,31 +56,43 @@ type FeatureAnnouncementProps = {
 /**
  * Modal, contextual announcement of a feature. One step gives a single announcement, several steps give
  * a short walkthrough. Focus moves into the announcement and returns to where the user was when it closes.
- * Dismissal (button, Escape or a click on the dimmed page) lasts for as long as the component stays mounted.
+ * Closing it (button, Escape or a click on the dimmed page) acknowledges it for the user, so it is not shown again.
  */
 export const FeatureAnnouncement = ({
   id,
+  showUntil,
   steps,
   when,
-  dismissed: dismissedProp,
   onDismiss,
   spotlight = true,
 }: FeatureAnnouncementProps) => {
-  const [internalDismissed, setInternalDismissed] = useState(false);
   const [resumeIndex, setResumeIndex] = useState(0);
+  const queryClient = useQueryClient();
 
-  const dismissed = dismissedProp ?? internalDismissed;
+  const expired = isAfter(startOfToday(), parseISO(showUntil));
+  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
+  const acknowledged = acknowledgedQuery.data?.includes(id) === true;
+  const { mutate: saveAcknowledgement } = useMutation({
+    mutationFn: () => acknowledgeAnnouncement(id),
+    retry: 2,
+    onError: (error) =>
+      logError(error, error instanceof AxiosError ? error.response?.status : undefined).catch(() =>
+        console.error("Unable to log error message"),
+      ),
+  });
+
   const onDismissReference = useRef(onDismiss);
   onDismissReference.current = onDismiss;
   const hasDismissed = useRef(false);
   const dismiss = useCallback(() => {
     if (hasDismissed.current) return;
     hasDismissed.current = true;
-    setInternalDismissed(true);
+    queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) => [...previous, id]);
+    saveAcknowledgement();
     onDismissReference.current?.();
-  }, []);
+  }, [id, queryClient, saveAcknowledgement]);
 
-  const pending = when && !dismissed && steps.length > 0;
+  const pending = when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
   const blocked = useIsBlockedByOtherOverlay(id, pending);
   const run = pending && !blocked;
 

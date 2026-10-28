@@ -220,8 +220,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const diffFeatureToggle = useQuery(getFeatureToggle("diff"));
   const [diffMenuElement, setDiffMenuElement] = useState<HTMLDivElement | null>(null);
   const [diffTogglesElement, setDiffTogglesElement] = useState<HTMLDivElement | null>(null);
-  const [diffAnnouncementDismissed, setDiffAnnouncementDismissed] = useState(false);
-  const dismissDiffAnnouncement = useCallback(() => setDiffAnnouncementDismissed(true), []);
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(props.brev.info.id),
@@ -514,12 +512,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                               toggles={attestantDiff.toggles}
                               togglesRef={setDiffTogglesElement}
                             />
-                            <AttestantDiffAnnouncement
-                              dismissed={diffAnnouncementDismissed}
-                              menu={diffMenuElement}
-                              onDismiss={dismissDiffAnnouncement}
-                              toggles={diffTogglesElement}
-                            />
+                            <AttestantDiffAnnouncement menu={diffMenuElement} toggles={diffTogglesElement} />
                           </>
                         )
                       }
