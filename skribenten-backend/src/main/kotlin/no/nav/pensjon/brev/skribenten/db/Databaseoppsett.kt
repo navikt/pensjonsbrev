@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
+import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.sql.DataSource
 import kotlin.time.Duration.Companion.minutes
@@ -53,13 +54,20 @@ internal inline fun <reified T : Any> Table.readJsonBinary(json: ByteArray): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
+private val logger = LoggerFactory.getLogger("databaseoppsett")
+
 fun dataSourceFactory(config: SkribentenConfig): HikariDataSource = with(config.database) {
-    initDatabase(
-        jdbcUrl = "jdbc:postgresql://$host:$port/$name",
-        username = username,
-        password = password,
-        maxPoolSize = maxPoolSize,
-    )
+    try {
+        initDatabase(
+            jdbcUrl = "jdbc:postgresql://$host:$port/$name",
+            username = username,
+            password = password,
+            maxPoolSize = maxPoolSize,
+        )
+    } catch (e: Exception) {
+        logger.error("Database startup failed", e)
+        throw e
+    }
 }
 
 fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSize: Int = 2): HikariDataSource =
