@@ -3,7 +3,15 @@ import "./editor.css";
 import { CheckmarkIcon, XMarkIcon } from "@navikt/aksel-icons";
 import { Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
-import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
+import React, {
+  createContext,
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useState,
+} from "react";
 
 import { isLetterDocument } from "~/Brevredigering/LetterEditor/actions/common";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -22,6 +30,7 @@ import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
+import { selectSelectionIndex } from "./services/caretUtils";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
@@ -54,6 +63,16 @@ export const LetterEditor = ({
   useDragSelectUnifier(editorRoot, !freeze);
 
   useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
+
+  // Restores a caret/selection requested by an action (e.g. after a font type change). Runs after the literals' own
+  // layout effects, so the range can span several literals. Focus is reset to the start of the range afterwards, overriding
+  // the focus event fired while restoring, so the literals don't move the caret again.
+  const pendingSelection = editorState.focus.pendingSelection;
+  useLayoutEffect(() => {
+    if (!pendingSelection || !editorRoot || freeze) return;
+    selectSelectionIndex(editorRoot, pendingSelection);
+    setEditorState((state) => ({ ...state, focus: pendingSelection.start }));
+  }, [pendingSelection, editorRoot, freeze, setEditorState]);
 
   const sporMissingFromTemplateHandling = useCallback(
     (eventName: MissingFromTemplateEventName, blockIndex: number) =>

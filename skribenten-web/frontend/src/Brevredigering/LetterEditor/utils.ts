@@ -5,6 +5,7 @@ import { FontType } from "~/types/brevbakerTypes";
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
 import { type LetterEditorState } from "./model/state";
+import { getSelectionIndex } from "./services/caretUtils";
 
 export enum Typography {
   PARAGRAPH = "PARAGRAPH",
@@ -76,12 +77,17 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
           // Omdirigerer både ctrl-f og ctrl-b, for å unngå innebygd fet tekst-snarvei i nettleser
           if (event.key === "f" || event.key === "b") {
             event.preventDefault();
-            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
+            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD, getSelectionIndex(event.currentTarget));
           }
           // Omdirigerer ikke ctrl-k, siden det er en generell nettleser-snarvei for å fokusere addresselinjen
           else if (event.key === "i") {
             event.preventDefault();
-            applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
+            applyAction(
+              Actions.switchFontType,
+              setEditorState,
+              FontType.ITALIC,
+              getSelectionIndex(event.currentTarget),
+            );
           }
           // Blokker innebygget ctrl-u for å hindre understreking, som vi ikke støtter
           else if (event.key === "u") {
@@ -92,10 +98,15 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
         if (event.metaKey) {
           if (event.key === "b") {
             event.preventDefault();
-            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
+            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD, getSelectionIndex(event.currentTarget));
           } else if (event.key === "i") {
             event.preventDefault();
-            applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
+            applyAction(
+              Actions.switchFontType,
+              setEditorState,
+              FontType.ITALIC,
+              getSelectionIndex(event.currentTarget),
+            );
           } else if (event.key === "u") {
             // block cmd-u from applying underline
             event.preventDefault();

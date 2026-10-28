@@ -878,3 +878,161 @@ test.describe("Verktøylinje i overskrifter", () => {
     await expect(page.getByTestId("toolbar-table-button")).toBeEnabled();
   });
 });
+
+/** Finner skjermkoordinatene til tegnet ved `offset` i tekstnoden som har nøyaktig teksten `nodeText`. */
+async function charPosition(page: Page, nodeText: string, offset: number) {
+  return page.evaluate(
+    ({ nodeText, offset }) => {
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+      while (walker.nextNode()) {
+        const node = walker.currentNode as Text;
+        if (node.data === nodeText) {
+          const range = document.createRange();
+          range.setStart(node, Math.min(offset, node.length - 1));
+          range.setEnd(node, Math.min(offset, node.length - 1) + 1);
+          const rect = range.getBoundingClientRect();
+          const x = offset >= node.length ? rect.right : rect.left;
+          return { x: x + (offset >= node.length ? -1 : 1), y: rect.top + rect.height / 2 };
+        }
+      }
+      throw new Error(`Could not find text node "${nodeText}"`);
+    },
+    { nodeText, offset },
+  );
+}
+
+/** Markerer med musa fra `from` til `to`, slik at markeringen kan krysse flere literals. */
+async function dragSelect(page: Page, from: { text: string; offset: number }, to: { text: string; offset: number }) {
+  const start = await charPosition(page, from.text, from.offset);
+  const end = await charPosition(page, to.text, to.offset);
+  await page.mouse.move(start.x, start.y);
+  await page.mouse.down();
+  await page.mouse.move(end.x, end.y, { steps: 10 });
+  await page.mouse.up();
+}
+
+const selectedText = (page: Page) => page.evaluate(() => document.getSelection()?.toString());
+
+test.describe("Markering over flere literals", () => {
+  const cellFirst = "Første del ";
+  const cellSecond = "andre del";
+  const otherCell = "Annen celle";
+  const paragraphFirst = "Avsnitt start ";
+  const paragraphSecond = "avsnitt slutt";
+
+  const multiLiteralLetter = editedLetter({
+    title: { text: [makeLiteral(1, null, "Brev med flere literals")], deletedContent: [] },
+    sakspart: baseSakspart(),
+    blocks: [
+      paragraph({
+        id: 1,
+        content: [
+          table(
+            [cell(makeLiteral(100, null, "Overskrift"))],
+            [
+              row(cell(makeLiteral(101, null, cellFirst), makeLiteral(102, null, cellSecond))),
+              row(cell(makeLiteral(103, null, otherCell))),
+            ],
+          ),
+          makeLiteral(104, 1, "Mellom"),
+        ],
+      }),
+      paragraph({
+        id: 2,
+        content: [makeLiteral(201, 2, paragraphFirst), makeLiteral(202, 2, paragraphSecond)],
+      }),
+    ],
+    signatur: baseSignatur(),
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(page, makeBrevResponse(multiLiteralLetter));
+    await navigateToEditor(page);
+    await expect(page.getByTestId("letter-table")).toBeVisible();
+  });
+
+  test("markering over to literals i en celle gjøres fet og forblir markert", async ({ page }) => {
+    await dragSelect(page, { text: cellFirst, offset: 7 }, { text: cellSecond, offset: 5 });
+    await expect.poll(() => selectedText(page)).toBe("del andre");
+
+    await page.getByTestId("fonttype-bold-button").click();
+
+    const tableCell = page.getByTestId("table-cell-0-0");
+    await expect(tableCell.getByText("Første", { exact: true })).toHaveCSS("font-weight", "400");
+    await expect(tableCell.getByText("del", { exact: true }).first()).toHaveCSS("font-weight", "700");
+    await expect(tableCell.getByText("andre", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect(tableCell.getByText("del", { exact: true }).last()).toHaveCSS("font-weight", "400");
+    await expect.poll(() => selectedText(page)).toBe("del andre");
+
+    // Samme knapp igjen gjør hele markeringen normal
+    await page.getByTestId("fonttype-bold-button").click();
+    await expect(tableCell.getByText("andre", { exact: true })).toHaveCSS("font-weight", "400");
+    await expect(tableCell.getByText("del", { exact: true }).first()).toHaveCSS("font-weight", "400");
+    await expect.poll(() => selectedText(page)).toBe("del andre");
+  });
+
+  test("markering over flere avsnitt gir ingen endring, og markeringen beholdes", async ({ page }) => {
+    await dragSelect(page, { text: "Mellom", offset: 2 }, { text: paragraphFirst, offset: 7 });
+    await expect.poll(() => selectedText(page)).toMatch(/^llom\s+Avsnitt$/);
+    const before = await selectedText(page);
+
+    await page.getByTestId("fonttype-bold-button").click();
+
+    await expect(page.getByText("Mellom", { exact: true })).toHaveCSS("font-weight", "400");
+    await expect(page.getByText(paragraphFirst, { exact: true })).toHaveCSS("font-weight", "400");
+    expect(await selectedText(page)).toBe(before);
+  });
+
+  test("markering over to literals i et avsnitt gjøres kursiv og forblir markert", async ({ page }) => {
+    await dragSelect(page, { text: paragraphFirst, offset: 8 }, { text: paragraphSecond, offset: 7 });
+    await expect.poll(() => selectedText(page)).toBe("start avsnitt");
+
+    await page.keyboard.press("Control+i");
+
+    await expect(page.getByText("start", { exact: true })).toHaveCSS("font-style", "italic");
+    await expect(page.getByText("avsnitt", { exact: true })).toHaveCSS("font-style", "italic");
+    await expect(page.getByText("Avsnitt", { exact: true })).toHaveCSS("font-style", "normal");
+    await expect(page.getByText("slutt", { exact: true })).toHaveCSS("font-style", "normal");
+    await expect.poll(() => selectedText(page)).toBe("start avsnitt");
+  });
+
+  test("skriving over markering i flere literals i en celle erstatter hele markeringen", async ({ page }) => {
+    await dragSelect(page, { text: cellFirst, offset: 7 }, { text: cellSecond, offset: 5 });
+    await expect.poll(() => selectedText(page)).toBe("del andre");
+
+    await page.keyboard.type("ny");
+
+    await expect(page.getByTestId("table-cell-0-0")).toHaveText("Første ny del");
+  });
+
+  test("Enter over markering i flere literals sletter markeringen og deler avsnittet", async ({ page }) => {
+    await dragSelect(page, { text: paragraphFirst, offset: 8 }, { text: paragraphSecond, offset: 7 });
+    await expect.poll(() => selectedText(page)).toBe("start avsnitt");
+
+    await page.keyboard.press("Enter");
+
+    await expect(page.locator(".PARAGRAPH").nth(1)).toHaveText(/^Avsnitt\s*$/);
+    await expect(page.locator(".PARAGRAPH").nth(2)).toHaveText(/^\s*slutt$/);
+  });
+
+  test("etter markering over flere literals kan man skrive videre og klikke andre steder", async ({ page }) => {
+    await dragSelect(page, { text: paragraphFirst, offset: 8 }, { text: paragraphSecond, offset: 7 });
+    await expect.poll(() => selectedText(page)).toBe("start avsnitt");
+    await page.getByTestId("fonttype-bold-button").click();
+    await expect(page.getByText("avsnitt", { exact: true })).toHaveCSS("font-weight", "700");
+
+    // Skriving erstatter hele markeringen og gjør teksten redigerbar igjen
+    await page.keyboard.type("XY");
+    await expect(page.locator("[data-editor-root][data-unified]")).toHaveCount(0);
+    // Som ved Delete fulgt av skriving kan ett av de to mellomrommene forsvinne (eksisterende whitespace-oppførsel)
+    await expect(page.locator(".PARAGRAPH").nth(1)).toHaveText(/^Avsnitt XY ?slutt$/);
+
+    // Klikk et annet sted gir vanlig markør som man kan skrive ved
+    await dragSelect(page, { text: cellFirst, offset: 0 }, { text: cellSecond, offset: 3 });
+    await expect.poll(() => selectedText(page)).toBe("Første del and");
+    await page.getByText("Mellom", { exact: true }).click();
+    await page.keyboard.press("End");
+    await page.keyboard.type("Y");
+    await expect(page.getByText("MellomY", { exact: true })).toBeVisible();
+  });
+});

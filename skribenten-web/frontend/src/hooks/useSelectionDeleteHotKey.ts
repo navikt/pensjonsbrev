@@ -1,8 +1,20 @@
 import { useEffect } from "react";
+import { flushSync } from "react-dom";
 
 import { type SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 
+const isDeleteKey = (event: KeyboardEvent) => event.key === "Backspace" || event.key === "Delete";
+// Single characters, and Enter which splits the text at the caret
+const isTypingKey = (event: KeyboardEvent) => event.key.length === 1 || event.key === "Enter";
+
+const literalOf = (node: Node) =>
+  (node instanceof Element ? node : node.parentElement)?.closest("[data-literal-index]") ?? null;
+
+/**
+ * Deletes a selection with Backspace/Delete. Typing over a selection that spans several literals deletes it first,
+ * so the key replaces the whole selection (the browser alone would only replace the part in the first literal).
+ */
 export function useSelectionDeleteHotkey(
   rootEl: HTMLElement | null,
   onDelete: (focus: SelectionIndex) => void,
@@ -12,7 +24,8 @@ export function useSelectionDeleteHotkey(
     if (!enabled) return;
 
     const handler = (event: KeyboardEvent) => {
-      if (event.key !== "Backspace" && event.key !== "Delete") return;
+      const deleting = isDeleteKey(event);
+      if (!deleting && !isTypingKey(event)) return;
 
       if (
         event.repeat ||
@@ -31,9 +44,16 @@ export function useSelectionDeleteHotkey(
 
       const range = selection.getRangeAt(0);
       if (!(root.contains(range.startContainer) || root.contains(range.endContainer))) return;
+      if (!deleting && literalOf(range.startContainer) === literalOf(range.endContainer)) return;
 
       const focus = getSelectionFocus(root);
       if (!focus) return;
+
+      if (!deleting) {
+        // Render the deletion and its caret synchronously, then let the browser type the key there.
+        flushSync(() => onDelete(focus));
+        return;
+      }
 
       event.preventDefault();
       event.stopPropagation();

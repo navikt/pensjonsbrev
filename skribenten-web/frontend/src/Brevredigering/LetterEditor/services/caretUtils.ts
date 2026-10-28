@@ -3,6 +3,7 @@ import { inRange, minBy } from "lodash";
 import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
 import { type LiteralIndex, type SelectionIndex as SelectionFocus } from "~/Brevredigering/LetterEditor/model/state";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
+import { restoreEditables, unifyEditables } from "~/hooks/useDragSelectUnifier";
 
 type Coordinates = {
   x: number;
@@ -44,12 +45,6 @@ export const getCursorOffsetOrRange = () => {
 };
 
 /**
- * Focus cursor at the given offset in the node.
- *
- * @param node the node to focus cursor to
- * @param offset the offset in the node
- */
-/**
  * Moves DOM focus back to the editable element holding the current selection/caret (e.g. after a
  * toolbar button took focus), without changing the selection.
  */
@@ -63,21 +58,86 @@ export function refocusEditableAtSelection() {
   }
 }
 
-export function selectTextRange(node: ChildNode, start: number, end: number) {
-  try {
-    const range = document.createRange();
-    range.setStart(node, start);
-    range.setEnd(node, end);
-    node.parentElement?.focus();
+function findLiteralElement(root: HTMLElement, index: LiteralIndex): HTMLElement | undefined {
+  const key = JSON.stringify(literalIndexKey(index));
+  for (const el of root.querySelectorAll<HTMLElement>("[data-literal-index]")) {
+    const parsed = parseLiteralIndex(el);
+    if (parsed && JSON.stringify(literalIndexKey(parsed)) === key) return el;
+  }
+  return undefined;
+}
 
-    const selection = globalThis.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
+function literalIndexKey(index: LiteralIndex) {
+  if (isTableCellIndex(index)) {
+    return [index.blockIndex, index.contentIndex, index.rowIndex, index.cellIndex, index.cellContentIndex];
+  }
+  if (isItemContentIndex(index)) {
+    return [index.blockIndex, index.contentIndex, index.itemIndex, index.itemContentIndex];
+  }
+  return [index.blockIndex, index.contentIndex];
+}
+
+function textPosition(el: HTMLElement, offset: number): { node: Node; offset: number } {
+  const node = el.firstChild ?? el;
+  const content = node.textContent ?? "";
+  const zwspOffset = content.startsWith(ZERO_WIDTH_SPACE) ? 1 : 0;
+  return { node, offset: Math.min(offset + zwspOffset, content.length) };
+}
+
+/**
+ * Selects the given model range in the DOM (a caret when start equals end), and focuses the editable
+ * element at its start. The range may span several literals. Returns false if the literals are not rendered.
+ */
+export function selectSelectionIndex(root: HTMLElement, selection: SelectionFocus): boolean {
+  const startEl = findLiteralElement(root, selection.start);
+  const endEl = findLiteralElement(root, selection.end);
+  if (!startEl || !endEl) return false;
+
+  const start = textPosition(startEl, selection.start.cursorPosition);
+  const end = textPosition(endEl, selection.end.cursorPosition);
+  if (startEl !== endEl) {
+    // The browser only keeps a selection across several editables while they are unified (see useDragSelectUnifier).
+    // Restore first, so editables rendered since the last unification are included.
+    restoreEditables(root);
+    unifyEditables(root);
+  }
+  try {
+    if (document.activeElement !== startEl) startEl.focus({ preventScroll: true });
+    globalThis.getSelection()?.setBaseAndExtent(start.node, start.offset, end.node, end.offset);
+    return true;
   } catch (error) {
-    console.warn("Could not set selection for node", node, error);
+    console.warn("Could not restore selection", selection, error);
+    return false;
   }
 }
 
+/**
+ * Maps the current DOM caret or selection to a model SelectionIndex (start equals end for a caret).
+ */
+export function getSelectionIndex(root?: HTMLElement): SelectionFocus | undefined {
+  const selection = globalThis.getSelection();
+  if (!selection || selection.rangeCount === 0) return undefined;
+
+  const range = selection.getRangeAt(0);
+  if (!range.collapsed) return getSelectionFocus(root);
+
+  const literalEl = closestLiteralEl(range.startContainer);
+  const index = literalEl ? parseLiteralIndex(literalEl) : undefined;
+  if (!literalEl || !index) return undefined;
+
+  const position = {
+    ...index,
+    cursorPosition: charOffsetWithinLiteral(literalEl, range.startContainer, range.startOffset),
+  };
+  return { start: position, end: position };
+}
+
+/**
+ * Focus cursor at the given offset in the node.
+ *
+ * @param node the node to focus cursor to
+ * @param offset the offset in the node
+ */
 export function focusAtOffset(node: ChildNode, offset: number) {
   if (node && offset >= 0) {
     try {

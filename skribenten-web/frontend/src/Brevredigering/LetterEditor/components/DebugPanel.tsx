@@ -123,7 +123,7 @@ const FocusInfo = ({ focus }: { focus: Focus }) => {
           <BodyShort as="span" weight="semibold">
             {key.replaceAll("Index", "")}:{" "}
           </BodyShort>
-          <span>{value}</span>
+          <span>{typeof value === "object" ? JSON.stringify(value) : value}</span>
         </div>
       ))}
     </>

@@ -8,7 +8,7 @@ import Actions from "../actions";
 import { isFocusInTableHeader, isFocusInTitle } from "../actions/common";
 import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
 import { applyAction } from "../lib/actions";
-import { refocusEditableAtSelection } from "../services/caretUtils";
+import { getSelectionIndex, refocusEditableAtSelection } from "../services/caretUtils";
 import { tooltipText } from "../utils";
 
 const EditorFonts = () => {
@@ -19,9 +19,10 @@ const EditorFonts = () => {
   const boldDisabled = disabled || isFocusInTableHeader(editorState);
 
   const switchFontType = (fontType: FontType) => {
+    const selection = getSelectionIndex(editorRoot());
     // Must run before the action: the resulting focus event would otherwise overwrite the focus set by the action.
     refocusEditableAtSelection();
-    applyAction(Actions.switchFontType, setEditorState, fontType);
+    applyAction(Actions.switchFontType, setEditorState, fontType, selection);
   };
 
   return (
@@ -80,5 +81,12 @@ const FontButton = (props: {
         {props.text}
       </Button>
     </Tooltip>
+  );
+};
+
+const editorRoot = () => {
+  const node = globalThis.getSelection()?.anchorNode;
+  return (
+    (node instanceof HTMLElement ? node : node?.parentElement)?.closest<HTMLElement>("[data-editor-root]") ?? undefined
   );
 };
