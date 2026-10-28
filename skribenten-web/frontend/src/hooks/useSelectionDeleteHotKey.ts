@@ -38,6 +38,8 @@ export function useSelectionDeleteHotkey(
 
       const root = rootEl;
       if (!root) return;
+      // Only keys pressed in the editor; e.g. Space on a focused toolbar button must not delete the selection
+      if (!(event.target instanceof Node && root.contains(event.target))) return;
 
       const selection = globalThis.getSelection?.();
       if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return;

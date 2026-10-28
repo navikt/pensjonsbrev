@@ -1005,6 +1005,22 @@ test.describe("Markering over flere literals", () => {
     await expect(page.getByTestId("table-cell-0-0")).toHaveText("Første ny del");
   });
 
+  for (const key of ["Space", "Enter", "Backspace"]) {
+    test(`${key} på fokusert fet-knapp sletter ikke markering over flere literals`, async ({ page }) => {
+      await dragSelect(page, { text: cellFirst, offset: 7 }, { text: cellSecond, offset: 5 });
+      await expect.poll(() => selectedText(page)).toBe("del andre");
+
+      await page.getByTestId("fonttype-bold-button").focus();
+      await page.keyboard.press(key);
+
+      const tableCell = page.getByTestId("table-cell-0-0");
+      await expect(tableCell).toHaveText("Første del andre del");
+      if (key !== "Backspace") {
+        await expect(tableCell.getByText("andre", { exact: true })).toHaveCSS("font-weight", "700");
+      }
+    });
+  }
+
   test("Enter over markering i flere literals sletter markeringen og deler avsnittet", async ({ page }) => {
     await dragSelect(page, { text: paragraphFirst, offset: 8 }, { text: paragraphSecond, offset: 7 });
     await expect.poll(() => selectedText(page)).toBe("start avsnitt");
