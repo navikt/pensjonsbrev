@@ -53,7 +53,7 @@ class NyhetsvarselHandlersTest {
     @Test
     suspend fun `bekrefter nyhetsvarsel og henter det ut igjen`() {
         val navIdent = nyNavIdent()
-        val nyhetsvarselId = NyhetsvarselId("attestant-diff")
+        val nyhetsvarselId = NyhetsvarselId("diff-toggles")
 
         assertThat(bekreftNyhetsvarselHandler(BekreftNyhetsvarselHandler.Request(navIdent, nyhetsvarselId))).isSuccess()
 
@@ -63,7 +63,7 @@ class NyhetsvarselHandlersTest {
     @Test
     suspend fun `bekrefter flere nyhetsvarsler for samme bruker`() {
         val navIdent = nyNavIdent()
-        val diff = NyhetsvarselId("attestant-diff")
+        val diff = NyhetsvarselId("diff-toggles")
         val eblanketter = NyhetsvarselId("brevvelger-eblanketter")
 
         bekreftNyhetsvarselHandler(BekreftNyhetsvarselHandler.Request(navIdent, diff))
@@ -75,7 +75,7 @@ class NyhetsvarselHandlersTest {
     @Test
     suspend fun `aa bekrefte samme nyhetsvarsel flere ganger lagrer det en gang og beholder foerste tidspunkt`() {
         val navIdent = nyNavIdent()
-        val nyhetsvarselId = NyhetsvarselId("attestant-diff")
+        val nyhetsvarselId = NyhetsvarselId("diff-toggles")
 
         assertThat(bekreftNyhetsvarselHandler(BekreftNyhetsvarselHandler.Request(navIdent, nyhetsvarselId))).isSuccess()
         val foersteBekreftelse = bekreftetTidspunkter(navIdent).single()
@@ -91,7 +91,7 @@ class NyhetsvarselHandlersTest {
         val bekrefter = nyNavIdent()
         val annenBruker = nyNavIdent()
 
-        bekreftNyhetsvarselHandler(BekreftNyhetsvarselHandler.Request(bekrefter, NyhetsvarselId("attestant-diff")))
+        bekreftNyhetsvarselHandler(BekreftNyhetsvarselHandler.Request(bekrefter, NyhetsvarselId("diff-toggles")))
 
         assertThat(hentBekreftede(annenBruker)).isEmpty()
     }

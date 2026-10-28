@@ -130,11 +130,11 @@ describe("<AttestantDiffAnnouncement />", () => {
     await settle();
 
     expect(queryAnnouncement()).toBeNull();
-    expect(acknowledgeMock).toHaveBeenCalledWith("attestant-diff");
+    expect(acknowledgeMock).toHaveBeenCalledWith("diff-toggles");
   });
 
   test("vises ikke når attestanten allerede har bekreftet nyheten", async () => {
-    fetchAcknowledgedMock.mockResolvedValue(["attestant-diff"]);
+    fetchAcknowledgedMock.mockResolvedValue(["diff-toggles"]);
     render(<Harness />);
     await settle();
 

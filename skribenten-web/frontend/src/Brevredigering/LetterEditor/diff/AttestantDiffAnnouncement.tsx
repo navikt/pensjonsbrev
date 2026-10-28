@@ -7,7 +7,7 @@ import {
 } from "~/components/featureAnnouncement/FeatureAnnouncement";
 import { useUserInfo } from "~/hooks/useUserInfo";
 
-export const ATTESTANT_DIFF_ANNOUNCEMENT_ID = "attestant-diff";
+export const ATTESTANT_DIFF_ANNOUNCEMENT_ID = "diff-toggles";
 export const ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL = "2026-11-30";
 
 /**

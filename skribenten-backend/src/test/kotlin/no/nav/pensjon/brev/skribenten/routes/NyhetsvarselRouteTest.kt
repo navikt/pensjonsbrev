@@ -108,24 +108,24 @@ class NyhetsvarselRouteTest {
 
     @Test
     fun `bekrefter nyhetsvarsel og henter det ut igjen som streng`() = meTestApplication(nyNavIdent()) { client ->
-        val bekreft = client.put("/me/bekreftedeNyhetsvarsler/attestant-diff")
+        val bekreft = client.put("/me/bekreftedeNyhetsvarsler/diff-toggles")
 
         assertThat(bekreft.status).isEqualTo(HttpStatusCode.NoContent)
-        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("""["attestant-diff"]""")
+        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("""["diff-toggles"]""")
     }
 
     @Test
     fun `aa bekrefte samme nyhetsvarsel flere ganger gir fortsatt bare ett`() = meTestApplication(nyNavIdent()) { client ->
-        assertThat(client.put("/me/bekreftedeNyhetsvarsler/attestant-diff").status).isEqualTo(HttpStatusCode.NoContent)
-        assertThat(client.put("/me/bekreftedeNyhetsvarsler/attestant-diff").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.NoContent)
 
-        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("""["attestant-diff"]""")
+        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("""["diff-toggles"]""")
     }
 
     @Test
     fun `brukere ser bare sine egne bekreftede nyhetsvarsler`() {
         meTestApplication(nyNavIdent()) { client ->
-            client.put("/me/bekreftedeNyhetsvarsler/attestant-diff")
+            client.put("/me/bekreftedeNyhetsvarsler/diff-toggles")
         }
         meTestApplication(nyNavIdent()) { client ->
             assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("[]")
@@ -145,6 +145,6 @@ class NyhetsvarselRouteTest {
         val utenInnlogging = createClient { }
 
         assertThat(utenInnlogging.get("/me/bekreftedeNyhetsvarsler").status).isEqualTo(HttpStatusCode.Unauthorized)
-        assertThat(utenInnlogging.put("/me/bekreftedeNyhetsvarsler/attestant-diff").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.Unauthorized)
     }
 }
