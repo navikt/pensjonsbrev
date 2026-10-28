@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
 
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
@@ -17,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -560,5 +562,93 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(info).hasSize(1)
         assertThat(penService.utfoerteHentPesysBrevdataKall).isNotEmpty()
+    }
+
+    private val vedleggServiceMedSjekk by lazy {
+        RedigerbareVedleggService(brevmalService, brevdataService, OppdaterBrevService(brevmalService) { true })
+    }
+    private val hentVedleggMedSjekk by lazy { HentRedigertVedleggHandler(brevtilgang, vedleggServiceMedSjekk) }
+    private val endreVedleggMedSjekk by lazy { EndreRedigertVedleggHandler(brevtilgang, vedleggServiceMedSjekk) }
+    private val hentRedigerbareVedleggMedSjekk by lazy { HentRedigerbareVedleggHandler(brevtilgang, vedleggServiceMedSjekk) }
+
+    private suspend fun opprettBrevMedLagretVedleggOgEndreMal(endreBrevmal: Boolean): BrevId {
+        brevbakerService.renderMarkupResultat = { letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Brev")))) }
+        val brev = opprettBrev().resultOrFail()
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().medRedigertTekst("Redigert")
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", redigert)).isSuccess()
+
+        if (endreBrevmal) {
+            brevbakerService.renderMarkupResultat = {
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Brev"))), ParagraphImpl(2, true, listOf(LiteralImpl(21, "Nytt"))))
+            }
+        }
+        brevbakerService.renderRedigerbareVedleggResultat =
+            mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre", tittel = "Ny maltittel"))
+        return brev.info.id
+    }
+
+    @Test
+    suspend fun `henting merger ikke inn malendringer i vedlegg naar brevmalen er endret og sjekk er paa`() {
+        val brevId = opprettBrevMedLagretVedleggOgEndreMal(endreBrevmal = true)
+
+        val vedlegg = withPrincipal(saksbehandler1Principal) {
+            hentVedleggMedSjekk(HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId("vedlegg1")))
+        }.resultOrFail()
+
+        assertThat(vedlegg.blocks.map { it.id }).containsExactly(1)
+        assertThat(vedlegg.foersteLiteral().editedText).isEqualTo("Redigert")
+    }
+
+    @Test
+    suspend fun `lagring merger ikke inn malendringer i vedlegg naar brevmalen er endret og sjekk er paa`() {
+        val brevId = opprettBrevMedLagretVedleggOgEndreMal(endreBrevmal = true)
+
+        val lagret = withPrincipal(saksbehandler1Principal) {
+            endreVedleggMedSjekk(
+                EndreRedigertVedleggHandler.Request(
+                    brevId = brevId,
+                    saksId = sak1.saksId,
+                    vedleggId = VedleggId("vedlegg1"),
+                    redigertVedlegg = lagretVedlegg(brevId),
+                )
+            )
+        }.resultOrFail()
+
+        assertThat(lagret.blocks.map { it.id }).containsExactly(1)
+        assertThat(lagretVedlegg(brevId).blocks.map { it.id }).containsExactly(1)
+    }
+
+    @Test
+    suspend fun `hentRedigerbareVedlegg merger ikke inn malendringer naar brevmalen er endret og sjekk er paa`() {
+        val brevId = opprettBrevMedLagretVedleggOgEndreMal(endreBrevmal = true)
+
+        val info = withPrincipal(saksbehandler1Principal) {
+            hentRedigerbareVedleggMedSjekk(HentRedigerbareVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId))
+        }.resultOrFail()
+
+        assertThat(info.single().tittel).isEqualTo("Mal tittel")
+    }
+
+    @Test
+    suspend fun `vedlegg merges mot malen naar sjekk er paa men brevmalen er uendret`() {
+        val brevId = opprettBrevMedLagretVedleggOgEndreMal(endreBrevmal = false)
+
+        val vedlegg = withPrincipal(saksbehandler1Principal) {
+            hentVedleggMedSjekk(HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId("vedlegg1")))
+        }.resultOrFail()
+        val info = withPrincipal(saksbehandler1Principal) {
+            hentRedigerbareVedleggMedSjekk(HentRedigerbareVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId))
+        }.resultOrFail()
+
+        assertThat(vedlegg.blocks.map { it.id }).containsExactly(1, 2)
+        assertThat(info.single().tittel).isEqualTo("Ny maltittel")
+    }
+
+    @Test
+    suspend fun `vedlegg merges mot malen naar brevmalen er endret men sjekk er av`() {
+        val brevId = opprettBrevMedLagretVedleggOgEndreMal(endreBrevmal = true)
+
+        assertThat(hentVedlegg(brevId, "vedlegg1").resultOrFail().blocks.map { it.id }).containsExactly(1, 2)
     }
 }

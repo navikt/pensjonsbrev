@@ -1,0 +1,160 @@
+package no.nav.pensjon.brev.skribenten.letter
+
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+
+class UpdateVariablesTest {
+
+    @Test
+    fun `oppdaterer variabler uten aa ta inn strukturelle endringer fra rendret brev`() {
+        val edited = editedLetter(deleted = listOf(3)) {
+            title1(id = 1) {
+                literal(id = 11, text = "Tittel ")
+                variable(id = 12, text = "gammel tittelverdi")
+            }
+            paragraph(id = 2, deletedContent = listOf(23)) {
+                literal(id = 21, text = "Uendret ")
+                variable(id = 22, text = "100 kr")
+            }
+            paragraph {
+                literal(text = "Ny fritekst ")
+                variable(id = 51, text = "gammel")
+            }
+        }
+        val rendered = editedLetter {
+            title1(id = 1) {
+                literal(id = 11, text = "Endret maltekst ")
+                variable(id = 12, text = "ny tittelverdi")
+            }
+            paragraph(id = 2) {
+                literal(id = 21, text = "Uendret ")
+                variable(id = 22, text = "200 kr")
+                literal(id = 23, text = "slettet innhold")
+                literal(id = 24, text = "nytt innhold i malen")
+            }
+            paragraph(id = 3) { literal(id = 31, text = "slettet avsnitt") }
+            paragraph(id = 4) { literal(id = 41, text = "nytt avsnitt i malen") }
+            paragraph(id = 5) { variable(id = 51, text = "ny") }
+        }.toMarkup()
+
+        val expected = editedLetter(deleted = listOf(3)) {
+            title1(id = 1) {
+                literal(id = 11, text = "Tittel ")
+                variable(id = 12, text = "ny tittelverdi")
+            }
+            paragraph(id = 2, deletedContent = listOf(23)) {
+                literal(id = 21, text = "Uendret ")
+                variable(id = 22, text = "200 kr")
+            }
+            paragraph {
+                literal(text = "Ny fritekst ")
+                variable(id = 51, text = "ny")
+            }
+        }
+
+        assertEquals(expected, edited.updateVariables(rendered))
+    }
+
+    @Test
+    fun `oppdaterer variabler i brevtittel, punktlister og tabeller`() {
+        fun brev(tittel: String, punkt: String, header: String, celle: String) =
+            editedLetter {
+                paragraph(id = 1) {
+                    itemList(id = 11) {
+                        item(id = 111) { variable(id = 1111, text = punkt) }
+                    }
+                    table(id = 12) {
+                        header(id = 121) { colSpec(id = 1211, cellId = 12111) { variable(id = 121111, text = header) } }
+                        row(id = 122) { cell(id = 1221) { variable(id = 12211, text = celle) } }
+                    }
+                }
+            }.let { it.copy(title = Edit.Title(listOf(Variable(id = 9, text = tittel)))) }
+
+        val edited = brev("gammel tittel", "gammelt punkt", "gammel header", "gammel celle")
+        val rendered = brev("ny tittel", "nytt punkt", "ny header", "ny celle").toMarkup()
+
+        assertEquals(brev("ny tittel", "nytt punkt", "ny header", "ny celle"), edited.updateVariables(rendered))
+    }
+
+    @Test
+    fun `oppdaterer variabler i vedlegg uten aa ta inn strukturelle endringer`() {
+        fun vedlegg(tittel: String, verdi: String, vararg ekstra: Edit.Block, deleted: List<Int> = emptyList()) =
+            Edit.Attachment(
+                title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(1, "Vedlegg "), Variable(id = 2, text = tittel))),
+                blocks = editLetterBlocks {
+                    paragraph(id = 10) {
+                        literal(id = 11, text = "Beløp: ")
+                        variable(id = 12, text = verdi)
+                    }
+                } + ekstra,
+                deletedBlocks = deleted,
+                includeSakspart = true,
+            )
+
+        val edited = vedlegg("gammel", "100 kr", deleted = listOf(20))
+        val rendered = vedlegg(
+            "ny", "200 kr",
+            *editLetterBlocks {
+                paragraph(id = 20) { literal(id = 21, text = "slettet avsnitt") }
+                paragraph(id = 30) { literal(id = 31, text = "nytt avsnitt i malen") }
+            }.toTypedArray(),
+        ).copy(includeSakspart = false).toMarkup()
+
+        assertEquals(vedlegg("ny", "200 kr", deleted = listOf(20)), edited.updateVariables(rendered))
+    }
+
+    @Test
+    fun `variabel som mangler i rendret brev beholdes med gammel verdi`() {
+        val edited = editedLetter {
+            paragraph(id = 1) { variable(id = 11, text = "gammel verdi") }
+        }
+        val rendered = editedLetter {
+            paragraph(id = 1) { literal(id = 12, text = "ny maltekst") }
+        }.toMarkup()
+
+        assertEquals(edited, edited.updateVariables(rendered))
+    }
+
+    @Test
+    fun `finner ingen manglende variabler naar alle finnes i rendret brev, ogsaa i tittel, lister og tabeller`() {
+        fun brev() =
+            editedLetter {
+                title1(id = 1) { variable(id = 13, text = "tittelblokk") }
+                paragraph(id = 2) {
+                    variable(id = 21, text = "avsnitt")
+                    itemList(id = 22) {
+                        item(id = 221) { variable(id = 2211, text = "punkt") }
+                    }
+                    table(id = 23) {
+                        header(id = 231) { colSpec(id = 2311, cellId = 23111) { variable(id = 231111, text = "header") } }
+                        row(id = 232) { cell(id = 2321) { variable(id = 23211, text = "celle") } }
+                    }
+                }
+            }.let { it.copy(title = Edit.Title(listOf(Variable(id = 9, text = "tittel")))) }
+
+        assertEquals(emptySet<Int>(), brev().variablesMissingIn(brev().toMarkup()))
+    }
+
+    @Test
+    fun `finner variabler i redigert brev som mangler i rendret brev`() {
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                variable(id = 11, text = "finnes")
+                variable(id = 12, text = "fjernet fra malen")
+            }
+            paragraph {
+                literal(text = "Fritekst ")
+                variable(id = 13, text = "fjernet fra malen")
+            }
+        }
+        val rendered = editedLetter {
+            paragraph(id = 1) {
+                variable(id = 11, text = "finnes")
+                variable(id = 14, text = "ny variabel i malen")
+            }
+        }.toMarkup()
+
+        assertEquals(setOf(12, 13), edited.variablesMissingIn(rendered))
+    }
+}

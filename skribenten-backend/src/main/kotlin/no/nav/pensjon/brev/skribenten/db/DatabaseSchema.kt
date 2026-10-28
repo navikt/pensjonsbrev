@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
@@ -61,6 +62,8 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val attestertAvNavIdent: Column<NavIdent?> = varchar("attestertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
     val leggVedFoersteside: Column<Boolean?> = bool("leggvedfoersteside").nullable()
+    val brevmalHash: Column<StableHashCode?> =
+        integer("brevmalHash").transform(::StableHashCode, StableHashCode::value).nullable()
 }
 
 object DocumentTable : LongIdTable() {

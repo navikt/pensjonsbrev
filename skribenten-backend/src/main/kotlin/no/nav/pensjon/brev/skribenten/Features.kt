@@ -55,6 +55,7 @@ object Features {
     val foersteside = UnleashToggle("foersteside")
     val eblanketter = UnleashToggle("eblanketter")
     val visAutobrev = UnleashToggle("visAutobrev")
+    val sjekkFoerOppdaterKladd = UnleashToggle("sjekkFoerOppdaterKladd")
 
     var toggleService: FeatureToggleService? = null
         private set

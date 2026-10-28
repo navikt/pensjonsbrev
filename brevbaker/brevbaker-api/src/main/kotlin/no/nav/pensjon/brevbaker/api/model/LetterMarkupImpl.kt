@@ -2,6 +2,7 @@ package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
@@ -17,7 +18,8 @@ import java.time.LocalDate
 data class LetterMarkupWithDataUsageImpl(
     override val markup: LetterMarkup,
     override val letterDataUsage: Set<LetterMarkupWithDataUsage.Property>,
-    override val brevtype: LetterMetadata.Brevtype
+    override val brevtype: LetterMetadata.Brevtype,
+    override val stableHashCode: StableHashCode?,
 ) : LetterMarkupWithDataUsage {
 
     @InterneDataklasser

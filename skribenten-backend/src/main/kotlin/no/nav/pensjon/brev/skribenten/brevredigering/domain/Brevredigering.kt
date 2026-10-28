@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.BrevmalendringType
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -9,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.letter.updateSakspartOgSignatur
+import no.nav.pensjon.brev.skribenten.letter.updateVariables
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
@@ -64,6 +67,7 @@ interface Brevredigering {
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
     val vedleggHash: Hash<VedleggSnapshot>
     val leggVedFoersteside: Boolean?
+    val brevmalHash: StableHashCode?
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -84,8 +88,15 @@ interface Brevredigering {
     fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
-    fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
+    fun toDto(
+        brevreservasjonPolicy: BrevreservasjonPolicy,
+        coverage: Set<LetterMarkupWithDataUsage.Property>?,
+        brevmalEndret: BrevmalendringType,
+    ): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
+    fun settBrevmalHash(stableHashCode: StableHashCode)
+    fun oppdaterVariabler(rendretBrev: LetterMarkup)
+    fun oppdaterVariablerIVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
 }
 
 class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredigering {
@@ -124,6 +135,9 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistReservert by BrevredigeringTable.sistReservert
         private set
     override var journalpostId by BrevredigeringTable.journalpostId
+        private set
+
+    override var brevmalHash by BrevredigeringTable.brevmalHash
         private set
 
     override var leggVedFoersteside by BrevredigeringTable.leggVedFoersteside
@@ -188,6 +202,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
+            brevmalHash: StableHashCode?,
             distribusjonstype: Distribusjon = Distribusjon.SENTRALPRINT,
         ): BrevredigeringEntity = new {
             this.saksId = saksId
@@ -206,6 +221,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.redigertBrev = redigertBrev
             this.rendretBrev = redigertBrev
             this.brevtype = brevtype
+            this.brevmalHash = brevmalHash
         }
     }
 
@@ -269,6 +285,11 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         settRendretBrev(rendretBrev)
     }
 
+    override fun oppdaterVariabler(rendretBrev: LetterMarkup) {
+        redigertBrev = redigertBrev.updateVariables(rendretBrev).updateSakspartOgSignatur(rendretBrev)
+        this.rendretBrev = this.rendretBrev?.updateVariables(rendretBrev)?.updateSakspartOgSignatur(rendretBrev)
+    }
+
     override fun settRendretBrev(rendretBrev: LetterMarkup) {
         this.rendretBrev = rendretBrev.toEdit()
     }
@@ -277,6 +298,13 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
             hentRedigertVedlegg(vedleggId)
                 ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg)) }
+        }
+    }
+
+    override fun oppdaterVariablerIVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
+        rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
+            hentRedigertVedlegg(vedleggId)
+                ?.let { settRedigertVedlegg(vedleggId, it.updateVariables(rendretVedlegg)) }
         }
     }
 
@@ -391,14 +419,19 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         return true
     }
 
-    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
+    override fun toDto(
+        brevreservasjonPolicy: BrevreservasjonPolicy,
+        coverage: Set<LetterMarkupWithDataUsage.Property>?,
+        brevmalEndret: BrevmalendringType,
+    ): Dto.Brevredigering =
         Dto.Brevredigering(
             info = toBrevInfo(brevreservasjonPolicy),
             redigertBrev = redigertBrev,
             redigertBrevHash = redigertBrevHash,
             saksbehandlerValg = saksbehandlerValg,
             propertyUsage = coverage,
-            valgteVedlegg = valgteVedlegg
+            valgteVedlegg = valgteVedlegg,
+            brevmalEndret = brevmalEndret
         )
 
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo =
@@ -435,4 +468,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             },
             leggVedFoersteside = leggVedFoersteside
         )
+
+    override fun settBrevmalHash(stableHashCode: StableHashCode) {
+        this.brevmalHash = stableHashCode
+    }
 }

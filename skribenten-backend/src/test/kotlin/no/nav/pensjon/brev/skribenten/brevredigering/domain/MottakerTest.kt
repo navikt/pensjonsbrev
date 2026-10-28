@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -127,6 +128,7 @@ class MottakerTest {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             vedtaksId = null,
             timestamp = Instant.now(),
+            brevmalHash = StableHashCode(12234)
         )
     }
 
