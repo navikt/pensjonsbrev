@@ -37,7 +37,11 @@ export type FeatureAnnouncementStep = {
   spotlightPadding?: number;
   /** Defaults to Aksel radius-8. Use 0 for a rectangular region. */
   spotlightRadius?: number;
+  /** Element to scroll into view instead of the target, e.g. when the target is inside a container that clips overflow. */
+  scrollTarget?: StepTarget;
 };
+
+const ANNOUNCEMENT_ID_PATTERN = /^[a-z0-9-]{1,100}$/;
 
 type FeatureAnnouncementProps = {
   /** Unique per announcement and stored when the user acknowledges it: lowercase letters, digits and hyphens. */
@@ -69,8 +73,9 @@ export const FeatureAnnouncement = ({
   const [resumeIndex, setResumeIndex] = useState(0);
   const queryClient = useQueryClient();
 
+  const validId = ANNOUNCEMENT_ID_PATTERN.test(id);
   const expired = isAfter(startOfToday(), parseISO(showUntil));
-  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
+  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: validId && when && !expired });
   const acknowledged = acknowledgedQuery.data?.includes(id) === true;
   const { mutate: saveAcknowledgement } = useMutation({
     mutationFn: () => acknowledgeAnnouncement(id),
@@ -84,15 +89,18 @@ export const FeatureAnnouncement = ({
   const onDismissReference = useRef(onDismiss);
   onDismissReference.current = onDismiss;
   const hasDismissed = useRef(false);
+  const hasBeenShown = useRef(false);
   const dismiss = useCallback(() => {
     if (hasDismissed.current) return;
     hasDismissed.current = true;
-    queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) => [...previous, id]);
-    saveAcknowledgement();
+    if (hasBeenShown.current) {
+      queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) => [...previous, id]);
+      saveAcknowledgement();
+    }
     onDismissReference.current?.();
   }, [id, queryClient, saveAcknowledgement]);
 
-  const pending = when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
+  const pending = validId && when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
   const blocked = useIsBlockedByOtherOverlay(id, pending);
   const run = pending && !blocked;
 
@@ -100,11 +108,12 @@ export const FeatureAnnouncement = ({
     () =>
       steps.map((step, index) => ({
         id: `${id}-${index}`,
-        target: step.target,
+        target: toLiveTarget(step.target),
         // Setting the spotlight target explicitly keeps its padding out of the tooltip's offset.
-        spotlightTarget: step.spotlightTarget ?? step.target,
+        spotlightTarget: toLiveTarget(step.spotlightTarget ?? step.target),
         spotlightPadding: step.spotlightPadding ?? 4,
         spotlightRadius: step.spotlightRadius ?? 8,
+        ...(step.scrollTarget && { scrollTarget: toLiveTarget(step.scrollTarget) }),
         title: step.title,
         content: step.content,
         placement: step.placement ?? "bottom",
@@ -119,11 +128,13 @@ export const FeatureAnnouncement = ({
     continuous: steps.length > 1,
     // Joyride restarts from initialStepIndex whenever `run` turns true again, e.g. after a blocking dialog closes.
     initialStepIndex: resumeIndex,
+    // Joyride scrolls each step's target into view, but skips the first step unless asked to.
+    scrollToFirstStep: true,
     tooltipComponent: FeatureAnnouncementTooltip,
     arrowComponent: FeatureAnnouncementArrow,
     loaderComponent: null,
     locale: FEATURE_ANNOUNCEMENT_LOCALE,
-    // The editor pane scrolls independently of the page, so position relative to the viewport.
+    // Position relative to the viewport, so targets inside scrolling panes (like the letter editor) work.
     floatingOptions: { strategy: "fixed" },
     styles: {
       // Aksel's backdrop token, toned down: the announcement should draw attention, not feel like an error.
@@ -141,12 +152,14 @@ export const FeatureAnnouncement = ({
       offset: 8,
       overlayClickAction: "close",
       skipBeacon: true,
-      skipScroll: true,
       // Below Aksel popovers (1000) so e.g. the help popover is not covered.
       zIndex: 900,
     },
     onEvent: (data) => {
-      if (data.type === EVENTS.TOOLTIP) setResumeIndex(data.index);
+      if (data.type === EVENTS.TOOLTIP) {
+        hasBeenShown.current = true;
+        setResumeIndex(data.index);
+      }
       // A click on the dimmed page closes the whole announcement, also in the middle of a walkthrough.
       const closedByOverlay = data.action === ACTIONS.CLOSE && data.origin === ORIGIN.OVERLAY;
       if (data.type === EVENTS.TOUR_END || closedByOverlay) dismiss();
@@ -164,8 +177,17 @@ export const FeatureAnnouncement = ({
     return () => document.removeEventListener("keydown", dismissOnEscape);
   }, [tooltipVisible, dismiss]);
 
+  if (!validId && import.meta.env.DEV) {
+    throw new Error(`FeatureAnnouncement: id "${id}" must match ${ANNOUNCEMENT_ID_PATTERN} to be saved by the backend`);
+  }
+
   return run ? Tour : null;
 };
+
+// Joyride copies the steps, which freezes a React ref at its value when the steps were created (often null).
+// A function is kept by reference, so it always reads the ref's current element.
+const toLiveTarget = (target: StepTarget): StepTarget =>
+  typeof target === "object" && "current" in target ? () => target.current : target;
 
 const hasOtherOverlay = (id: string) =>
   document.querySelector(

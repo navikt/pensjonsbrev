@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { AxiosError, type AxiosResponse } from "axios";
 import { addDays, format } from "date-fns";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import { beforeEach, describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { FeatureAnnouncement, type FeatureAnnouncementStep } from "./FeatureAnnouncement";
@@ -338,6 +338,70 @@ describe("<FeatureAnnouncement />", () => {
 
     act(() => otherAnnouncement.remove());
     await findAnnouncement();
+  });
+
+  test("finner mål som sendes inn som React-refs, også når elementet først vises etter at nyheten har startet", async () => {
+    const RefHarness = () => {
+      const targetRef = useRef<HTMLDivElement>(null);
+      const [showTarget, setShowTarget] = useState(false);
+      const steps = useMemo<FeatureAnnouncementStep[]>(
+        () => [{ target: targetRef, title: "Første nyhet", content: "Første forklaring" }],
+        [],
+      );
+      return (
+        <>
+          <button onClick={() => setShowTarget(true)} type="button">
+            Vis mål
+          </button>
+          {showTarget && <div ref={targetRef}>Mål</div>}
+          <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when />
+        </>
+      );
+    };
+    const user = userEvent.setup();
+    renderWithQueryClient(<RefHarness />);
+    await waitFor(() => expect(fetchAcknowledgedMock).toHaveBeenCalled());
+    await settle(100);
+
+    await user.click(screen.getByRole("button", { name: "Vis mål" }));
+
+    await findAnnouncement();
+    expect(acknowledgeMock).not.toHaveBeenCalled();
+  });
+
+  test("lagrer ikke bekreftelsen når målet aldri vises, så nyheten kan vises ved neste besøk", async () => {
+    const MissingTarget = () => {
+      const steps = useMemo<FeatureAnnouncementStep[]>(
+        () => [{ target: () => null, title: "Første nyhet", content: "Første forklaring" }],
+        [],
+      );
+      return <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when />;
+    };
+    renderWithQueryClient(<MissingTarget />);
+    await waitFor(() => expect(fetchAcknowledgedMock).toHaveBeenCalled());
+
+    await settle(1500);
+
+    expect(queryAnnouncement()).toBeNull();
+    expect(acknowledgeMock).not.toHaveBeenCalled();
+  });
+
+  test("kaster en feil i utvikling for en id backend ikke kan lagre", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    onTestFinished(() => consoleError.mockRestore());
+    const InvalidId = () => {
+      const [target, setTarget] = useState<HTMLElement | null>(null);
+      const steps = target ? [{ target, title: "Første nyhet", content: "Første forklaring" }] : [];
+      return (
+        <>
+          <div ref={setTarget}>Mål</div>
+          <FeatureAnnouncement id="Ny_Funksjon" showUntil="2999-12-31" steps={steps} when />
+        </>
+      );
+    };
+
+    expect(() => renderWithQueryClient(<InvalidId />)).toThrow('id "Ny_Funksjon"');
+    expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
   });
 
   test("skjules når målet forsvinner og rydder opp ved avmontering", async () => {
