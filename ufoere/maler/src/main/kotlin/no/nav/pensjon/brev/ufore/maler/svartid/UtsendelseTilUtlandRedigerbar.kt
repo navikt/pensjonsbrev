@@ -60,8 +60,8 @@ object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehan
                 showIf(malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.KUN_EOS_INNVILGELSE_NORGE) or malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.KUN_EOS_AVSLAG_NORGE) or malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.PARAGRAF_12_2_SENT_EOS)) {
                     paragraph {
                         text(
-                            bokmal { + "Etter reglene i EØS-avtalen er et krav om uføreytelse i Norge også å anse som et krav om uføreytelse i andre EØS-land du kan ha opparbeidet deg trygdetid i. " },
-                            nynorsk { + "Etter reglane i EØS-avtalen er eit krav om uføreytelse i Noreg òg å rekne som eit krav om uføreytelse i andre EØS-land du kan ha opparbeidd deg trygdetid i. " },
+                            bokmal { + "Etter reglene i EØS-avtalen er det slik at et krav om uføreytelse i Norge også skal anses som et krav om uføreytelse i andre EØS-land der du kan ha opparbeidet deg trygdetid. " },
+                            nynorsk { + "Etter reglane i EØS-avtalen er det slik at eit krav om uføreytelse i Noreg også skal reknast som eit krav om uføreytelse i andre EØS-land der du kan ha opparbeidd deg trygdetid. " },
                         )
                     }
                 }
