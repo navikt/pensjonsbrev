@@ -28,6 +28,7 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
+import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
@@ -68,7 +69,13 @@ export const LetterEditor = ({
 
   useDragSelectUnifier(editorRoot, !freeze);
 
-  useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
+  const { disableDiffMode } = useAttestantDiff();
+  useSelectionDeleteHotkey(
+    editorRoot,
+    (focus) => applyAction(Actions.deleteSelection, setEditorState, focus),
+    !freeze,
+    disableDiffMode,
+  );
 
   // Restores a caret/selection requested by an action (e.g. after a font type change). Runs after the literals' own
   // layout effects, so the range can span several literals. Focus is reset to the start of the range afterwards, overriding

@@ -11,14 +11,22 @@ const isTypingKey = (event: KeyboardEvent) => event.key.length === 1 || event.ke
 const literalOf = (node: Node) =>
   (node instanceof Element ? node : node.parentElement)?.closest("[data-literal-index]") ?? null;
 
+/** Diff-decorated literals also show deleted text, so DOM offsets in them do not match the letter model. */
+const touchesDiffDecoration = (root: HTMLElement, range: Range) =>
+  [...root.querySelectorAll("[data-diff-version]")].some((element) => range.intersectsNode(element));
+
 /**
  * Deletes a selection with Backspace/Delete. Typing over a selection that spans several literals deletes it first,
  * so the key replaces the whole selection (the browser alone would only replace the part in the first literal).
+ *
+ * If the selection touches diff decorations, the key only calls `onDiffEditIntent`, like the first edit in a
+ * decorated literal: diff mode is turned off without changing the letter.
  */
 export function useSelectionDeleteHotkey(
   rootEl: HTMLElement | null,
   onDelete: (focus: SelectionIndex) => void,
   enabled = true,
+  onDiffEditIntent?: () => void,
 ) {
   useEffect(() => {
     if (!enabled) return;
@@ -48,6 +56,13 @@ export function useSelectionDeleteHotkey(
       if (!(root.contains(range.startContainer) || root.contains(range.endContainer))) return;
       if (!deleting && literalOf(range.startContainer) === literalOf(range.endContainer)) return;
 
+      if (touchesDiffDecoration(root, range)) {
+        event.preventDefault();
+        event.stopPropagation();
+        onDiffEditIntent?.();
+        return;
+      }
+
       const focus = getSelectionFocus(root);
       if (!focus) return;
 
@@ -69,5 +84,5 @@ export function useSelectionDeleteHotkey(
 
     document.addEventListener("keydown", handler, true);
     return () => document.removeEventListener("keydown", handler, true);
-  }, [rootEl, onDelete, enabled]);
+  }, [rootEl, onDelete, enabled, onDiffEditIntent]);
 }
