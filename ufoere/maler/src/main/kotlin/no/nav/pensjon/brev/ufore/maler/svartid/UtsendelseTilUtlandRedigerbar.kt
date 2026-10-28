@@ -88,8 +88,8 @@ object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehan
                     }
                     paragraph(uniqueness = "kunEOSInnvilgelseNorge") {
                         text(
-                            bokmal { +"Du vil motta vedtak og eventuell utbetaling av utenlandsk ytelse fra utenlandske trygdemyndigheter. Nav vil sende deg et samlet vedtak med en endelig beregning som oppsummerer vedtakene både fra Norge og " + fritekst("land") + ". " },
-                            nynorsk { +"Du vil motta vedtak og eventuell utbetaling av utanlandsk ytelse frå utanlandske trygdemyndigheiter. Nav vil sende deg eit samla vedtak med ei endeleg berekning som oppsummerer vedtaka både frå Noreg og " + fritekst("land") + ". " },
+                            bokmal { +"Du vil motta vedtak og eventuell utbetaling av utenlandsk ytelse fra utenlandske trygdemyndigheter. Vi vil sende deg et samlet vedtak med en endelig beregning som oppsummerer vedtakene både fra Norge og " + fritekst("land") + ". " },
+                            nynorsk { +"Du vil motta vedtak og eventuell utbetaling av utanlandsk ytelse frå utanlandske trygdemyndigheiter. Vi vil sende deg eit samla vedtak med ei endeleg berekning som oppsummerer vedtaka både frå Noreg og " + fritekst("land") + ". " },
                         )
                     }
                 }.orShowIf(malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.KUN_EOS_AVSLAG_NORGE)) {
@@ -101,34 +101,34 @@ object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehan
                     }
                     paragraph(uniqueness = "kunEOSAvslagNorge") {
                         text(
-                            bokmal { +"Du vil motta vedtak og eventuell utbetaling av utenlandsk ytelse fra utenlandske trygdemyndigheter. Nav vil sende deg et samlet vedtak med en endelig beregning som oppsummerer vedtakene både fra Norge og " + fritekst("land") + ". " },
-                            nynorsk { +"Du vil motta vedtak og eventuell utbetaling av utanlandsk ytelse frå utanlandske trygdemyndigheiter. Nav vil sende deg eit samla vedtak med ei endeleg berekning som oppsummerer vedtaka både frå Noreg og " + fritekst("land") + ". " },
+                            bokmal { +"Du vil motta vedtak og eventuell utbetaling av utenlandsk ytelse fra utenlandske trygdemyndigheter. Vi vil sende deg et samlet vedtak med en endelig beregning som oppsummerer vedtakene både fra Norge og " + fritekst("land") + ". " },
+                            nynorsk { +"Du vil motta vedtak og eventuell utbetaling av utanlandsk ytelse frå utanlandske trygdemyndigheiter. Vi vil sende deg eit samla vedtak med ei endeleg berekning som oppsummerer vedtaka både frå Noreg og " + fritekst("land") + ". " },
                         )
                     }
                 }.orShowIf(malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.PARAGRAF_12_2_SENT_EOS)) {
                     paragraph {
                         text(
-                            bokmal { +"Nav har i brev " + fritekst("dato") + " funnet at vilkårene i folketrygdlovens § 12-2 ikke er oppfylt etter nasjonale regler. Nav må avvente bekreftelse på den utenlandske trygdetiden din, før vi kan avgjøre om du har rett på norsk uføretrygd etter bestemmelsene i EØS-avtalens forordning 883/2004. Nav arbeid og ytelser skal ta stilling til om vilkårene i § 12-2 kan oppfylles gjennom medregning av medlemstid for tilsvarende perioder i " + fritekst("land") + " så snart Nav mottar bekreftelse på medlemskapsperioder fra dette landet. " },
-                            nynorsk { +"Nav har i brev " + fritekst("dato") + " funne at vilkåra i folketrygdlovens § 12-2 ikkje er oppfylte etter nasjonale reglar. Nav må avvente stadfesting av den utanlandske trygdetida di, før vi kan avgjere om du har rett på norsk uføretrygd etter bestemmelsane i EØS-avtalens forordning 883/2004. Nav arbeid og ytingar skal ta stilling til om vilkåra i § 12-2 kan oppfyllast gjennom medrekning av medlemstid for tilsvarande periodar i " + fritekst("land") + " så snart Nav mottar stadfesting av medlemskapsperiodar frå dette landet. " },
+                            bokmal { +"I brev av " + fritekst("dato") + " har vi vurdert at vilkårene i folketrygdlovens § 12-2 ikke er oppfylt etter nasjonale regler. Vi må avvente bekreftelse på den utenlandske trygdetiden din, før vi kan avgjøre om du har rett på norsk uføretrygd etter bestemmelsene i EØS-avtalens forordning 883/2004. Deretter skal vi ta stilling til om vilkårene i § 12-2 kan oppfylles gjennom medregning av medlemstid for tilsvarende perioder i " + fritekst("land") + " så snart vi mottar bekreftelse på medlemskapsperioder fra dette landet. " },
+                            nynorsk { +"I brev av " + fritekst("dato") + " har vi vurdert at vilkåra i folketrygdlovens § 12-2 ikkje er oppfylte etter nasjonale reglar. Vi må avvente stadfesting av den utanlandske trygdetida di, før vi kan avgjere om du har rett på norsk uføretrygd etter bestemmelsane i EØS-avtalens forordning 883/2004. Deretter skal vi ta stilling til om vilkåra i § 12-2 kan oppfyllast gjennom medrekning av medlemstid for tilsvarande periodar i " + fritekst("land") + " så snart vi mottar stadfesting av medlemskapsperiodar frå dette landet. " },
                         )
                     }
                     paragraph(uniqueness = "paragraf12_2SentEOS") {
                         text(
-                            bokmal { +"Når alle nødvendige opplysninger, inkludert vedtak, er mottatt fra utlandet, vil Nav arbeid og ytelser fatte endelig vedtak om norsk uføretrygd. Du vil motta eget vedtak og eventuell utbetaling av ytelse fra utenlandske trygdemyndigheter. " },
-                            nynorsk { +"Når alle nødvendige opplysningar, inkludert vedtak, er motteke frå utlandet, vil Nav arbeid og ytingar fatte endeleg vedtak om norsk uføretrygd. Du vil motta eige vedtak og eventuell utbetaling av yting frå utanlandske trygdemyndigheiter. " },
+                            bokmal { +"Når alle nødvendige opplysninger, inkludert vedtak, er mottatt fra utlandet, vil vi fatte endelig vedtak om norsk uføretrygd. Du vil motta eget vedtak og eventuell utbetaling av ytelse fra utenlandske trygdemyndigheter. " },
+                            nynorsk { +"Når alle nødvendige opplysningar, inkludert vedtak, er motteke frå utlandet, vil vi fatte endeleg vedtak om norsk uføretrygd. Du vil motta eige vedtak og eventuell utbetaling av yting frå utanlandske trygdemyndigheiter. " },
                         )
                     }
                 }.orShowIf(malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.PARAGRAF_12_2_SENT_AVTALELAND)) {
                     paragraph {
                         text(
-                            bokmal { +"Nav har i brev " + fritekst("dato") + " funnet at vilkårene i folketrygdlovens § 12-2 ikke er oppfylt etter nasjonale regler. Nav må avvente bekreftelse på den utenlandske trygdetiden din, før vi kan avgjøre om du har rett på norsk uføretrygd etter bestemmelsene i " + fritekst("fyll inn trygdeavtale") + ". Nav arbeid og ytelser skal ta stilling til om vilkårene i § 12-2 kan oppfylles gjennom medregning av medlemstid for tilsvarende perioder i " + fritekst("land") + " så snart Nav mottar bekreftelse på medlemskapsperioder fra dette landet. " },
-                            nynorsk { +"Nav har i brev " + fritekst("dato") + " funne at vilkåra i folketrygdlovens § 12-2 ikkje er oppfylte etter nasjonale reglar. Nav må avvente stadfesting av den utanlandske trygdetida di, før vi kan avgjere om du har rett på norsk uføretrygd etter bestemmelsane i " + fritekst("fyll inn trygdeavtale") + ". Nav arbeid og ytingar skal ta stilling til om vilkåra i § 12-2 kan oppfyllast gjennom medrekning av medlemstid for tilsvarande periodar i " + fritekst("land") + " så snart Nav mottar stadfesting av medlemskapsperiodar frå dette landet. " },
+                            bokmal { +"Vi har i brev av " + fritekst("dato") + " vurdert at vilkårene i folketrygdlovens § 12-2 ikke er oppfylt etter nasjonale regler. Vi må avvente bekreftelse på den utenlandske trygdetiden din, før vi kan avgjøre om du har rett på norsk uføretrygd etter bestemmelsene i " + fritekst("fyll inn trygdeavtale") + ". Deretter tar vi stilling til om vilkårene i § 12-2 kan oppfylles gjennom medregning av medlemstid for tilsvarende perioder i " + fritekst("land") + " så snart vi mottar bekreftelse på medlemskapsperioder fra dette landet. " },
+                            nynorsk { +"Vi har i brev av " + fritekst("dato") + " vurdert at vilkåra i folketrygdlovens § 12-2 ikkje er oppfylte etter nasjonale reglar. Vi må avvente stadfesting av den utanlandske trygdetida di, før vi kan avgjere om du har rett på norsk uføretrygd etter bestemmelsane i " + fritekst("fyll inn trygdeavtale") + ". Deretter tar vi stilling til om vilkåra i § 12-2 kan oppfyllast gjennom medrekning av medlemstid for tilsvarande periodar i " + fritekst("land") + " så snart vi mottar stadfesting av medlemskapsperiodar frå dette landet. " },
                         )
                     }
                     paragraph(uniqueness = "paragraf12_2SentAvtaleland") {
                         text(
-                            bokmal { +"Når alle nødvendige opplysninger, inkludert vedtak, er mottatt fra utlandet, vil Nav arbeid og ytelser fatte endelig vedtak om norsk uføretrygd. Du vil motta eget vedtak og eventuell utbetaling av ytelse fra utenlandske trygdemyndigheter. " },
-                            nynorsk { +"Når alle nødvendige opplysningar, inkludert vedtak, er motteke frå utlandet, vil Nav arbeid og ytingar fatte endeleg vedtak om norsk uføretrygd. Du vil motta eige vedtak og eventuell utbetaling av yting frå utanlandske trygdemyndigheiter. " },
+                            bokmal { +"Når alle nødvendige opplysninger, inkludert vedtak, er mottatt fra utlandet, vil vi fatte endelig vedtak om norsk uføretrygd. Du vil motta eget vedtak og eventuell utbetaling av ytelse fra utenlandske trygdemyndigheter. " },
+                            nynorsk { +"Når alle nødvendige opplysningar, inkludert vedtak, er motteke frå utlandet, vil vi fatte endeleg vedtak om norsk uføretrygd. Du vil motta eige vedtak og eventuell utbetaling av yting frå utanlandske trygdemyndigheiter. " },
                         )
                     }
                 }.orShowIf(malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.KUN_AVTALELAND_INNVILGELSE)) {
@@ -174,8 +174,8 @@ object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehan
             }
             paragraph {
                 text(
-                    bokmal { + "Utenlandske trygdemyndigheter vurderer søknaden din om uføretrygd etter eget lovverk og egen forvaltningspraksis. Nav kan bare formidle informasjon, vi påvirker ikke avgjørelsene deres. " },
-                    nynorsk { + "Utanlandske trygdemyndigheiter vurderer søknaden din om uføretrygd etter eige lovverk og eigen forvaltningspraksis. Nav kan berre formidle informasjon, vi påverkar ikkje avgjerdene deira. " },
+                    bokmal { + "Utenlandske trygdemyndigheter vurderer søknaden din om uføretrygd etter eget lovverk og egen forvaltningspraksis. Vi kan bare formidle informasjon, vi påvirker ikke avgjørelsene deres. " },
+                    nynorsk { + "Utanlandske trygdemyndigheiter vurderer søknaden din om uføretrygd etter eige lovverk og eigen forvaltningspraksis. Vi kan berre formidle informasjon, vi påverkar ikkje avgjerdene deira. " },
                 )
             }
             includePhrase(OrienteringOmSaksbehandlingstidFraser.MeldeFraOmEndringer)
