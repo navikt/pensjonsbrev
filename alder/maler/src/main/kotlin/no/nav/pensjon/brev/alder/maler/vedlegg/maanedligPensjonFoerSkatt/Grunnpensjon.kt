@@ -81,104 +81,117 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     paragraph {
                         text(
                             bokmal { + "Grunnpensjonen er fastsatt til 100 prosent av grunnbeløpet etter reglene som gjelder for din pensjon." },
-                            nynorsk { + "Grunnpensjonen er fastsatt til 100 prosent av grunnbeløpet etter reglene som gjelder for din pensjon." },
-                            english { + "Grunnpensjonen er fastsatt til 100 prosent av grunnbeløpet etter reglene som gjelder for din pensjon." }
+                            nynorsk { + "Grunnpensjonen er fastsett til 100 prosent av grunnbeløpet etter reglane for pensjonen din." },
+                            english { + "The basic pension has been set at 100 per cent of the National Insurance basic amount in accordance with the rules applicable to your pension." }
                         )
                     }
                 }
 
-                showIf(not(forsteVirkFoer1998)) {
-                    showIf(
-                        bruker.sivilstand.isOneOf(
-                            ENSLIG,
-                            ENKE,
-                            GLAD_EKT,
-                            GLAD_PART,
-                            SEPARERT,
-                            SEPARERT_PARTNER,
-                        ) or (bruker.sivilstand.isOneOf(GIFT, PARTNER) and beregnetSomEnsligPgaInstopphold)
-                    ) {
-                        paragraph {
-                            text(
-                                bokmal { + "Du får full grunnpensjon fordi du er enslig pensjonist. Det utgjør " + grunnpensjonSats + " prosent av grunnbeløpet." },
-                                nynorsk { + "Du får full grunnpensjon fordi du er einsleg pensjonist. Det utgjer " + grunnpensjonSats + " prosent av grunnbeløpet." },
-                                english { + "As a single pensioner you will receive full basic pension. This is equivalent to " + grunnpensjonSats + " percent of the National Insurance basic amount." },
-                            )
-                        }
+                showIf(
+                            bruker.sivilstand.isOneOf(
+                                ENSLIG,
+                                ENKE,
+                                GLAD_EKT,
+                                GLAD_PART,
+                                SEPARERT,
+                                SEPARERT_PARTNER,
+                            ) or (bruker.sivilstand.isOneOf(GIFT, PARTNER) and beregnetSomEnsligPgaInstopphold)
+                ) {
+                    paragraph {
+                        text(
+                            bokmal { +"Du får full grunnpensjon fordi du er enslig pensjonist. Det utgjør " + grunnpensjonSats + " prosent av grunnbeløpet." },
+                            nynorsk { +"Du får full grunnpensjon fordi du er einsleg pensjonist. Det utgjer " + grunnpensjonSats + " prosent av grunnbeløpet." },
+                            english { +"As a single pensioner you will receive full basic pension. This is equivalent to " + grunnpensjonSats + " percent of the National Insurance basic amount." },
+                        )
                     }
+                }
 
-                    showIf(
-                        epsMottarPensjon
-                                and epsBorSammenMedBruker
-                                and not(beregnetSomEnsligPgaInstopphold)
-                    ) {
-                        paragraph {
-                            text(
-                                bokmal { + "Grunnpensjonen er justert til " +
-                                            grunnpensjonSats + " prosent av beløpet fordi " +
-                                            bruker.sivilstand.bestemtForm() + " din mottar uføretrygd, pensjon eller omstillingsstønad fra folketrygden eller AFP som det godskrives pensjonspoeng for." },
+                showIf(
+                    epsMottarPensjon
+                            and epsBorSammenMedBruker
+                            and not(beregnetSomEnsligPgaInstopphold)
+                ) {
+                    paragraph {
+                        text(
+                            bokmal { + "Grunnpensjonen er justert til " +
+                                        grunnpensjonSats + " prosent av beløpet fordi " +
+                                        bruker.sivilstand.bestemtForm() + " din mottar uføretrygd, pensjon eller omstillingsstønad fra folketrygden eller AFP som det godskrives pensjonspoeng for."
+                            },
 
-                                nynorsk { + "Grunnpensjonen er justert til " +
-                                            grunnpensjonSats + " prosent av beløpet fordi " +
-                                            bruker.sivilstand.bestemtForm() + " din mottar uføretrygd, pensjon eller omstillingsstønad frå folketrygda eller AFP som det blir godskrive pensjonspoeng for." },
+                            nynorsk { + "Grunnpensjonen er justert til " +
+                                        grunnpensjonSats + " prosent av beløpet fordi " +
+                                        bruker.sivilstand.bestemtForm() + " din mottar uføretrygd, pensjon eller omstillingsstønad frå folketrygda eller AFP som det blir godskrive pensjonspoeng for."
+                            },
 
-                                english { + "The basic pension is adjusted to " +
-                                            grunnpensjonSats + " percent of this amount because your " +
-                                            bruker.sivilstand.bestemtForm() + " is receiving disability benefit, a national insurance pension or adjustment allowance, or contractual early retirement pension (AFP) which earns pension points." },
-                            )
-                        }
+                            english { + "The basic pension is adjusted to " +
+                                        grunnpensjonSats + " percent of this amount because your " +
+                                        bruker.sivilstand.bestemtForm() + " is receiving disability benefit, a national insurance pension or adjustment allowance, or contractual early retirement pension (AFP) which earns pension points."
+                            },
+                        )
                     }
+                }
 
-                    showIf(epsBorSammenMedBruker and epsHarInntektOver2G and not(epsMottarPensjon)) {
-                        paragraph {
-                            text(
-                                bokmal { + "Grunnpensjonen er justert til " +
-                                            grunnpensjonSats +
-                                            " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
-                                            " din har årlig inntekt over to ganger grunnbeløpet."
-                                },
+                showIf(
+                    epsBorSammenMedBruker
+                            and epsHarInntektOver2G
+                            and not(epsMottarPensjon)
+                            and not (forsteVirkFoer1998)
+                ) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Grunnpensjonen er justert til " +
+                                        grunnpensjonSats +
+                                        " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
+                                        " din har årlig inntekt over to ganger grunnbeløpet."
+                            },
 
-                                nynorsk { + "Grunnpensjonen er justert til " +
-                                            grunnpensjonSats +
-                                            " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
-                                            " din har årleg inntekt over to gonger grunnbeløpet."
-                                },
+                            nynorsk {
+                                +"Grunnpensjonen er justert til " +
+                                        grunnpensjonSats +
+                                        " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
+                                        " din har årleg inntekt over to gonger grunnbeløpet."
+                            },
 
-                                english { + "The basic pension is adjusted to " +
-                                            grunnpensjonSats +
-                                            " percent of this amount because your " + bruker.sivilstand.bestemtForm() +
-                                            " has an annual income that exceeds twice the national insurance basic amount."
-                                },
-                            )
-                        }
+                            english {
+                                +"The basic pension is adjusted to " +
+                                        grunnpensjonSats +
+                                        " percent of this amount because your " + bruker.sivilstand.bestemtForm() +
+                                        " has an annual income that exceeds twice the national insurance basic amount."
+                            },
+                        )
                     }
+                }
 
-                    showIf(
-                        epsBorSammenMedBruker
-                                and not(epsHarInntektOver2G)
-                                and not(epsMottarPensjon)
-                                and not(institusjonsoppholdGjeldende.safe { aldersEllerSykehjem }.ifNull(false))
-                                and not(institusjonsoppholdGjeldende.safe { helseinstitusjon }.ifNull(false))
-                                and not(institusjonsoppholdGjeldende.safe { fengsel }.ifNull(false))
-                    ) {
-                        paragraph {
-                            text(
-                                bokmal { + "Du får full grunnpensjon fordi " + bruker.sivilstand.bestemtForm() +
-                                            " din har årlig inntekt under to ganger grunnbeløpet. Det utgjør " + grunnpensjonSats +
-                                            " prosent av grunnbeløpet."
-                                },
+                showIf(
+                    epsBorSammenMedBruker
+                            and not(epsHarInntektOver2G)
+                            and not(epsMottarPensjon)
+                            and not(institusjonsoppholdGjeldende.safe { aldersEllerSykehjem }.ifNull(false))
+                            and not(institusjonsoppholdGjeldende.safe { helseinstitusjon }.ifNull(false))
+                            and not(institusjonsoppholdGjeldende.safe { fengsel }.ifNull(false))
+                            and not (forsteVirkFoer1998)
+                ) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Du får full grunnpensjon fordi " + bruker.sivilstand.bestemtForm() +
+                                        " din har årlig inntekt under to ganger grunnbeløpet. Det utgjør " + grunnpensjonSats +
+                                        " prosent av grunnbeløpet."
+                            },
 
-                                nynorsk { + "Du får full grunnpensjon fordi " + bruker.sivilstand.bestemtForm() +
-                                            " din har årleg inntekt lågare enn to gonger grunnbeløpet. Det utgjer " + grunnpensjonSats +
-                                            " prosent av grunnbeløpet."
-                                },
+                            nynorsk {
+                                +"Du får full grunnpensjon fordi " + bruker.sivilstand.bestemtForm() +
+                                        " din har årleg inntekt lågare enn to gonger grunnbeløpet. Det utgjer " + grunnpensjonSats +
+                                        " prosent av grunnbeløpet."
+                            },
 
-                                english { + "You will receive full basic pension because the annual income of your " + bruker.sivilstand.bestemtForm() +
-                                            " is lower than twice the national insurance basic amount. This is equivalent to " + grunnpensjonSats +
-                                            " percent of the national insurance basic amount."
-                                },
-                            )
-                        }
+                            english {
+                                +"You will receive full basic pension because the annual income of your " + bruker.sivilstand.bestemtForm() +
+                                        " is lower than twice the national insurance basic amount. This is equivalent to " + grunnpensjonSats +
+                                        " percent of the national insurance basic amount."
+                            },
+                        )
                     }
                 }
             }
@@ -250,19 +263,25 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     text(
                         bokmal { + "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er " + grunnbeloep +
                                 ". Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. " +
-                                "Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
-                                " prosent av beløpet fordi samboeren din har årlig inntekt over to ganger grunnbeløpet." },
+                                "Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. " },
 
                         nynorsk { + "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er " + grunnbeloep +
                                 ". Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. " +
-                                "Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
-                                " prosent av beløpet fordi sambuaren din har årleg inntekt over to gonger grunnbeløpet." },
+                                "Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. " },
 
                         english { + "is calculated on the basis of the national insurance basic amount (G), which is currently " + grunnbeloep +
                                 ". The basic pension for a widowed old age pensioner can be calculated on the basis of the pensioner's own or the deceased's period of national insurance coverage. " +
-                                "Your basic pension has been calculated on the basis of the deceased's period of national insurance coverage as this is more beneficial for you. The basic pension is adjusted to " + grunnpensjonSats +
-                                " percent of this amount because your cohabitant has an annual income that exceeds twice the national insurance basic amount." },
+                                "Your basic pension has been calculated on the basis of the deceased's period of national insurance coverage as this is more beneficial for you. " },
                     )
+                }
+                showIf(not(forsteVirkFoer1998)) {
+                    paragraph {
+                        text(
+                            bokmal { + "Grunnpensjonen er justert til " + grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt over to ganger grunnbeløpet." },
+                            nynorsk { + "Grunnpensjonen er justert til " + grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt over to gonger grunnbeløpet." },
+                            english { + "The basic pension is adjusted to " + grunnpensjonSats + " percent of this amount because your cohabitant has an annual income that exceeds twice the national insurance basic amount." }
+                        )
+                    }
                 }
             }
 
@@ -276,15 +295,21 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     includePhrase(GrunnpensjonBold)
                     text(
                         bokmal { + "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er " + grunnbeloep +
-                                ". Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
-                                " prosent av beløpet fordi samboeren din har årlig inntekt under to ganger grunnbeløpet." },
+                                ". Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. " },
                         nynorsk { + "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er " + grunnbeloep +
-                                ". Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er justert til " + grunnpensjonSats +
-                                " prosent av beløpet fordi sambuaren din har årleg inntekt lågare enn to gonger grunnbeløpet." },
+                                ". Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. " },
                         english { + "is calculated on the basis of the national insurance basic amount (G), which is currently " + grunnbeloep +
-                                ". When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you. The basic pension is adjusted to " + grunnpensjonSats +
-                                " percent of this amount because the annual income of your cohabitant is lower than twice the national insurance basic amount." },
+                                ". When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you. " },
                     )
+                }
+                showIf(not(forsteVirkFoer1998)) {
+                    paragraph {
+                        text(
+                            bokmal { + "Grunnpensjonen er justert til " + grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt under to ganger grunnbeløpet." },
+                            nynorsk { + "Grunnpensjonen er justert til " + grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt lågare enn to gonger grunnbeløpet." },
+                            english { + "The basic pension is adjusted to " + grunnpensjonSats + " percent of this amount because your cohabitant is lower than twice the national insurance basic amount." }
+                        )
+                    }
                 }
             }
 
@@ -368,6 +393,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         and epsHarInntektOver2G
                         and not(epsMottarPensjon)
                         and not(institusjonsoppholdGjeldende.safe { ensligPaInst }.ifNull(false))
+                        and not (forsteVirkFoer1998)
             ) {
                 paragraph {
                     text(
@@ -434,17 +460,23 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         includePhrase(GrunnpensjonBold)
                         text(
                             bokmal { + "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er " + grunnbeloep +
-                                    ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Videre er grunnpensjonen justert til " +
-                                    grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt over to ganger grunnbeløpet." },
+                                    ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. " },
 
                             nynorsk { + "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er " + grunnbeloep +
-                                    ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Vidare er grunnpensjonen justert til " +
-                                    grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt over to gonger grunnbeløpet." },
+                                    ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. " },
 
                             english { + "is calculated on the basis of the national insurance basic amount (G), which is currently " + grunnbeloep +
-                                    ". Your period of national insurance coverage is the years that you lived and/or worked in Norway after the age of 16. The basic pension for a widowed old age pensioner can be calculated on the basis of the pensioner's own or the deceased's period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance coverage as this is more beneficial for you. The deceased's period of national insurance coverage was less than 40 years meaning your basic pension will be reduced proportionately.  The basic pension has also been adjusted to " +
-                                    grunnpensjonSats + " percent of the reduced amount because your cohabitant has an annual income that exceeds twice the national insurance basic amount (G)." },
+                                    ". Your period of national insurance coverage is the years that you lived and/or worked in Norway after the age of 16. The basic pension for a widowed old age pensioner can be calculated on the basis of the pensioner's own or the deceased's period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance coverage as this is more beneficial for you. The deceased's period of national insurance coverage was less than 40 years meaning your basic pension will be reduced proportionately. " },
                         )
+                    }
+                    showIf(not(forsteVirkFoer1998)) {
+                        paragraph {
+                            text(
+                                bokmal { + "Grunnpensjonen er justert til " + grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt over to ganger grunnbeløpet." },
+                                nynorsk { + "Grunnpensjonen er justert til " + grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt over to gonger grunnbeløpet." },
+                                english { + "The basic pension is adjusted to " + grunnpensjonSats + " percent of this amount because your cohabitant has an annual income that exceeds twice the national insurance basic amount (G)." }
+                            )
+                        }
                     }
                 }
                 showIf(not(epsHarInntektOver2G) and not(epsMottarPensjon)) {
@@ -452,17 +484,23 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         includePhrase(GrunnpensjonBold)
                         text(
                             bokmal { + "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er " + grunnbeloep +
-                                    ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Videre er grunnpensjonen justert til " +
-                                    grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt under to ganger grunnbeløpet." },
+                                    ". Du får trygdetid for de årene du har bodd og/eller arbeidet i Norge etter fylte 16 år. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. " },
 
                             nynorsk { + "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er " + grunnbeloep +
-                                    ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. Vidare er grunnpensjonen justert til " +
-                                    grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt lågare enn to gonger grunnbeløpet." },
+                                    ". Du får trygdetid for dei åra du har budd og/eller arbeidd i Noreg etter fylte 16 år. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg. Grunnpensjonen er redusert fordi avdøde også hadde mindre enn 40 års trygdetid. " },
 
                             english { + "is calculated on the basis of the national insurance basic amount (G), which is currently " + grunnbeloep +
-                                    ". Your period of national insurance cover is the years that you lived and/or worked in Norway after the age of 16. When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you. The deceased's period of national insurance cover was less than 40 years meaning your basic pension will be reduced proportionately. The basic pension has also been adjusted to " +
-                                    grunnpensjonSats + " percent of this amount because the annual income of your cohabitant is lower than twice the national insurance basic amount." },
+                                    ". Your period of national insurance cover is the years that you lived and/or worked in Norway after the age of 16. When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you. The deceased's period of national insurance cover was less than 40 years meaning your basic pension will be reduced proportionately. " },
                         )
+                    }
+                    showIf(not(forsteVirkFoer1998)) {
+                        paragraph {
+                            text(
+                                bokmal { + "Videre er grunnpensjonen justert til " + grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt under to ganger grunnbeløpet." },
+                                nynorsk { + "Vidare er grunnpensjonen justert til " + grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt lågare enn to gonger grunnbeløpet." },
+                                english { + "The basic pension has also been adjusted to " + grunnpensjonSats + " percent of this amount because the annual income of your cohabitant is lower than twice the national insurance basic amount." }
+                            )
+                        }
                     }
                 }
             }
