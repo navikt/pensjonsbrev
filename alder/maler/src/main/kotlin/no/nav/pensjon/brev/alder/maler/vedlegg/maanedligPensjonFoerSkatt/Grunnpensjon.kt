@@ -292,7 +292,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         text(
                             bokmal { + "Grunnpensjonen er justert til " + grunnpensjonSats + " prosent av beløpet fordi samboeren din har årlig inntekt under to ganger grunnbeløpet." },
                             nynorsk { + "Grunnpensjonen er justert til " + grunnpensjonSats + " prosent av beløpet fordi sambuaren din har årleg inntekt lågare enn to gonger grunnbeløpet." },
-                            english { + "The basic pension is adjusted to " + grunnpensjonSats + " percent of this amount because your cohabitant is lower than twice the national insurance basic amount." }
+                            english { + "The basic pension is adjusted to " + grunnpensjonSats + " percent of this amount because the annual income of your cohabitant is lower than twice the national insurance basic amount." }
                         )
                     }
                 }
