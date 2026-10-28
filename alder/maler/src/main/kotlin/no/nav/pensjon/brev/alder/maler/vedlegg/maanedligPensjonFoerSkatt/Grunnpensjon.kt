@@ -88,20 +88,20 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                 }
 
                 showIf(
-                            bruker.sivilstand.isOneOf(
-                                ENSLIG,
-                                ENKE,
-                                GLAD_EKT,
-                                GLAD_PART,
-                                SEPARERT,
-                                SEPARERT_PARTNER,
-                            ) or (bruker.sivilstand.isOneOf(GIFT, PARTNER) and beregnetSomEnsligPgaInstopphold)
+                    bruker.sivilstand.isOneOf(
+                        ENSLIG,
+                        ENKE,
+                        GLAD_EKT,
+                        GLAD_PART,
+                        SEPARERT,
+                        SEPARERT_PARTNER,
+                    ) or (bruker.sivilstand.isOneOf(GIFT, PARTNER) and beregnetSomEnsligPgaInstopphold)
                 ) {
                     paragraph {
                         text(
-                            bokmal { +"Du får full grunnpensjon fordi du er enslig pensjonist. Det utgjør " + grunnpensjonSats + " prosent av grunnbeløpet." },
-                            nynorsk { +"Du får full grunnpensjon fordi du er einsleg pensjonist. Det utgjer " + grunnpensjonSats + " prosent av grunnbeløpet." },
-                            english { +"As a single pensioner you will receive full basic pension. This is equivalent to " + grunnpensjonSats + " percent of the National Insurance basic amount." },
+                            bokmal { + "Du får full grunnpensjon fordi du er enslig pensjonist. Det utgjør " + grunnpensjonSats + " prosent av grunnbeløpet." },
+                            nynorsk { + "Du får full grunnpensjon fordi du er einsleg pensjonist. Det utgjer " + grunnpensjonSats + " prosent av grunnbeløpet." },
+                            english { + "As a single pensioner you will receive full basic pension. This is equivalent to " + grunnpensjonSats + " percent of the National Insurance basic amount." },
                         )
                     }
                 }
@@ -114,19 +114,16 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     paragraph {
                         text(
                             bokmal { + "Grunnpensjonen er justert til " +
-                                        grunnpensjonSats + " prosent av beløpet fordi " +
-                                        bruker.sivilstand.bestemtForm() + " din mottar uføretrygd, pensjon eller omstillingsstønad fra folketrygden eller AFP som det godskrives pensjonspoeng for."
-                            },
+                                    grunnpensjonSats + " prosent av beløpet fordi " +
+                                    bruker.sivilstand.bestemtForm() + " din mottar uføretrygd, pensjon eller omstillingsstønad fra folketrygden eller AFP som det godskrives pensjonspoeng for." },
 
                             nynorsk { + "Grunnpensjonen er justert til " +
-                                        grunnpensjonSats + " prosent av beløpet fordi " +
-                                        bruker.sivilstand.bestemtForm() + " din mottar uføretrygd, pensjon eller omstillingsstønad frå folketrygda eller AFP som det blir godskrive pensjonspoeng for."
-                            },
+                                    grunnpensjonSats + " prosent av beløpet fordi " +
+                                    bruker.sivilstand.bestemtForm() + " din mottar uføretrygd, pensjon eller omstillingsstønad frå folketrygda eller AFP som det blir godskrive pensjonspoeng for." },
 
                             english { + "The basic pension is adjusted to " +
-                                        grunnpensjonSats + " percent of this amount because your " +
-                                        bruker.sivilstand.bestemtForm() + " is receiving disability benefit, a national insurance pension or adjustment allowance, or contractual early retirement pension (AFP) which earns pension points."
-                            },
+                                    grunnpensjonSats + " percent of this amount because your " +
+                                    bruker.sivilstand.bestemtForm() + " is receiving disability benefit, a national insurance pension or adjustment allowance, or contractual early retirement pension (AFP) which earns pension points." },
                         )
                     }
                 }
@@ -139,26 +136,20 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                 ) {
                     paragraph {
                         text(
-                            bokmal {
-                                +"Grunnpensjonen er justert til " +
-                                        grunnpensjonSats +
-                                        " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
-                                        " din har årlig inntekt over to ganger grunnbeløpet."
-                            },
+                            bokmal { + "Grunnpensjonen er justert til " +
+                                    grunnpensjonSats +
+                                    " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
+                                    " din har årlig inntekt over to ganger grunnbeløpet." },
 
-                            nynorsk {
-                                +"Grunnpensjonen er justert til " +
-                                        grunnpensjonSats +
-                                        " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
-                                        " din har årleg inntekt over to gonger grunnbeløpet."
-                            },
+                            nynorsk { + "Grunnpensjonen er justert til " +
+                                    grunnpensjonSats +
+                                    " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
+                                    " din har årleg inntekt over to gonger grunnbeløpet." },
 
-                            english {
-                                +"The basic pension is adjusted to " +
-                                        grunnpensjonSats +
-                                        " percent of this amount because your " + bruker.sivilstand.bestemtForm() +
-                                        " has an annual income that exceeds twice the national insurance basic amount."
-                            },
+                            english { + "The basic pension is adjusted to " +
+                                    grunnpensjonSats +
+                                    " percent of this amount because your " + bruker.sivilstand.bestemtForm() +
+                                    " has an annual income that exceeds twice the national insurance basic amount." },
                         )
                     }
                 }
@@ -174,23 +165,17 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                 ) {
                     paragraph {
                         text(
-                            bokmal {
-                                +"Du får full grunnpensjon fordi " + bruker.sivilstand.bestemtForm() +
-                                        " din har årlig inntekt under to ganger grunnbeløpet. Det utgjør " + grunnpensjonSats +
-                                        " prosent av grunnbeløpet."
-                            },
+                            bokmal { + "Du får full grunnpensjon fordi " + bruker.sivilstand.bestemtForm() +
+                                    " din har årlig inntekt under to ganger grunnbeløpet. Det utgjør " + grunnpensjonSats +
+                                    " prosent av grunnbeløpet." },
 
-                            nynorsk {
-                                +"Du får full grunnpensjon fordi " + bruker.sivilstand.bestemtForm() +
-                                        " din har årleg inntekt lågare enn to gonger grunnbeløpet. Det utgjer " + grunnpensjonSats +
-                                        " prosent av grunnbeløpet."
-                            },
+                            nynorsk { + "Du får full grunnpensjon fordi " + bruker.sivilstand.bestemtForm() +
+                                    " din har årleg inntekt lågare enn to gonger grunnbeløpet. Det utgjer " + grunnpensjonSats +
+                                    " prosent av grunnbeløpet." },
 
-                            english {
-                                +"You will receive full basic pension because the annual income of your " + bruker.sivilstand.bestemtForm() +
-                                        " is lower than twice the national insurance basic amount. This is equivalent to " + grunnpensjonSats +
-                                        " percent of the national insurance basic amount."
-                            },
+                            english { + "You will receive full basic pension because the annual income of your " + bruker.sivilstand.bestemtForm() +
+                                    " is lower than twice the national insurance basic amount. This is equivalent to " + grunnpensjonSats +
+                                    " percent of the national insurance basic amount." },
                         )
                     }
                 }
