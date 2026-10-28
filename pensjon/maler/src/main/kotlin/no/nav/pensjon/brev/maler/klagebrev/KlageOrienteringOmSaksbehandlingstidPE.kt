@@ -108,9 +108,9 @@ object KlageOrienteringOmSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerb
         }
     }
 
-    enum class Klageren(override val displayText: String) : SaksbehandlerValgEnum {
-        BRUKER("Bruker"),
-        VERGEFULLMEKTIG("Verge/Fullmektig"),
-        ADVOKATFULLMEKTIG("Advokatfirma/Fullmektig")
+    enum class Klageren(override val displayText: String, override val rekkefoelge: Int) : SaksbehandlerValgEnum {
+        BRUKER("Bruker", 1),
+        VERGEFULLMEKTIG("Verge/Fullmektig", 2),
+        ADVOKATFULLMEKTIG("Advokatfirma/Fullmektig", 3)
     }
 }
