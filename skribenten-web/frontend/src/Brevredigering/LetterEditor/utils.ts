@@ -113,8 +113,8 @@ export const useEditorKeyboardShortcuts = (
 
 /**
  * Switches the font type of the current selection, or of the word at the caret. In attestant diff mode the
- * decorated text includes deleted text, so offsets cannot be mapped to the letter: like the first edit, the
- * change then only disables diff mode, without changing the letter.
+ * selection is mapped to the letter without the deleted text, and diff mode is disabled in the same update, so
+ * the restored selection lands in plain text.
  */
 export function switchFontTypeAtSelection(
   setEditorState: CallbackReceiver<LetterEditorState>,
@@ -123,11 +123,8 @@ export function switchFontTypeAtSelection(
   disableDiffMode: () => void,
   beforeAction?: () => void,
 ) {
-  if (selectionTouchesDiffDecoration(root)) {
-    disableDiffMode();
-    return;
-  }
   const selection = getSelectionIndex(root);
+  if (selectionTouchesDiffDecoration(root)) disableDiffMode();
   beforeAction?.();
   applyAction(Actions.switchFontType, setEditorState, fontType, selection);
 }

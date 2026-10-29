@@ -1,28 +1,40 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { FontType } from "~/types/brevbakerTypes";
+import { letter, literal, paragraph } from "~test/support/letterEditorTestUtils";
 
+import { type LetterEditorState } from "./model/state";
 import { switchFontTypeAtSelection } from "./utils";
 
+// Modellteksten er "Ny tekst"; "gammel " er slettet tekst som bare vises i diff-modus.
 function setup(decorated: boolean) {
   const root = document.createElement("div");
-  root.setAttribute("data-editor-root", "");
-  const literal = document.createElement("span");
-  literal.setAttribute("contenteditable", "true");
-  literal.setAttribute("data-literal-index", JSON.stringify({ blockIndex: 0, contentIndex: 0 }));
-  if (decorated) literal.dataset.diffVersion = "1";
-  literal.textContent = "gammel ABCDEF";
-  root.append(literal);
+  const literalEl = document.createElement("span");
+  literalEl.contentEditable = "true";
+  literalEl.dataset.literalIndex = JSON.stringify({ blockIndex: 0, contentIndex: 0 });
+  if (decorated) {
+    literalEl.dataset.diffVersion = "1";
+    const deleted = document.createElement("span");
+    deleted.dataset.diffDeletion = "";
+    deleted.textContent = "gammel ";
+    literalEl.append("Ny ", deleted, "tekst");
+  } else {
+    literalEl.append("Ny tekst");
+  }
+  root.append(literalEl);
   document.body.append(root);
-  return { root, textNode: literal.firstChild! };
+  return { root, last: literalEl.lastChild! };
 }
 
-function select(node: Node, start: number, end = start) {
-  const range = document.createRange();
-  range.setStart(node, start);
-  range.setEnd(node, end);
-  globalThis.getSelection()?.removeAllRanges();
-  globalThis.getSelection()?.addRange(range);
+function run(root: HTMLElement) {
+  let state: LetterEditorState = letter(paragraph([literal("Ny tekst")]));
+  const setEditorState = vi.fn((update: (previous: LetterEditorState) => LetterEditorState) => {
+    state = update(state);
+  });
+  const disableDiffMode = vi.fn();
+  const beforeAction = vi.fn();
+  switchFontTypeAtSelection(setEditorState, FontType.BOLD, root, disableDiffMode, beforeAction);
+  return { state: () => state, disableDiffMode, beforeAction };
 }
 
 afterEach(() => {
@@ -31,34 +43,37 @@ afterEach(() => {
 });
 
 describe("switchFontTypeAtSelection", () => {
-  test.each([
-    ["markering", 7, 9],
-    ["markør", 8, 8],
-  ])("%s i diff-markert literal slår bare av diff-modus", (_, start, end) => {
-    const { root, textNode } = setup(true);
-    select(textNode, start, end);
-    const setEditorState = vi.fn();
-    const disableDiffMode = vi.fn();
-    const beforeAction = vi.fn();
+  test("i diff-modus endres fonttype uten slettet tekst, og diff-modus slås av", () => {
+    const { root, last } = setup(true);
+    globalThis.getSelection()?.setBaseAndExtent(last, 0, last, 5);
 
-    switchFontTypeAtSelection(setEditorState, FontType.BOLD, root, disableDiffMode, beforeAction);
+    const { state, disableDiffMode, beforeAction } = run(root);
 
     expect(disableDiffMode).toHaveBeenCalledTimes(1);
-    expect(setEditorState).not.toHaveBeenCalled();
-    expect(beforeAction).not.toHaveBeenCalled();
+    expect(beforeAction).toHaveBeenCalledTimes(1);
+    const content = state().redigertBrev.blocks[0].content;
+    expect(
+      content.map((c) => [
+        c.type === "LITERAL" && (c.editedText ?? c.text),
+        c.type === "LITERAL" && (c.editedFontType ?? c.fontType),
+      ]),
+    ).toEqual([
+      ["Ny ", FontType.PLAIN],
+      ["tekst", FontType.BOLD],
+    ]);
+    expect(state().focus.pendingSelection).toEqual({
+      start: { blockIndex: 0, contentIndex: 1, cursorPosition: 0 },
+      end: { blockIndex: 0, contentIndex: 1, cursorPosition: 5 },
+    });
   });
 
-  test("markering uten diff-markering endrer fonttype", () => {
-    const { root, textNode } = setup(false);
-    select(textNode, 7, 9);
-    const setEditorState = vi.fn();
-    const disableDiffMode = vi.fn();
-    const beforeAction = vi.fn();
+  test("uten diff-markering slås ikke diff-modus av", () => {
+    const { root, last } = setup(false);
+    globalThis.getSelection()?.setBaseAndExtent(last, 3, last, 8);
 
-    switchFontTypeAtSelection(setEditorState, FontType.BOLD, root, disableDiffMode, beforeAction);
+    const { state, disableDiffMode } = run(root);
 
     expect(disableDiffMode).not.toHaveBeenCalled();
-    expect(beforeAction).toHaveBeenCalledTimes(1);
-    expect(setEditorState).toHaveBeenCalledTimes(1);
+    expect(state().saveStatus).toBe("DIRTY");
   });
 });

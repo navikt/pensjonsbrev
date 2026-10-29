@@ -134,7 +134,11 @@ export function getSelectionIndex(root?: HTMLElement): SelectionFocus | undefine
   if (!selection || selection.rangeCount === 0) return undefined;
 
   const range = selection.getRangeAt(0);
-  if (!range.collapsed) return getSelectionFocus(root);
+  if (!range.collapsed) {
+    const selectionFocus = getSelectionFocus(root);
+    // Undefined also when the whole selection is deleted text in the attestant diff: then it collapses to its start.
+    if (selectionFocus || !closestLiteralEl(range.startContainer)) return selectionFocus;
+  }
 
   const literalEl = closestLiteralEl(range.startContainer);
   const index = literalEl ? parseLiteralIndex(literalEl) : undefined;
@@ -443,8 +447,18 @@ function closestLiteralEl(n: Node | null): HTMLElement | null {
   return el ? el.closest<HTMLElement>("[data-literal-index]") : null;
 }
 
+const DIFF_DELETION = "[data-diff-deletion]";
+
+/** Text of the letter model in `el`: deleted text shown by the attestant diff is not part of the letter. */
+function modelText(el: Node): string {
+  if (!(el instanceof Element) || !el.querySelector(DIFF_DELETION)) return el.textContent ?? "";
+  const copy = el.cloneNode(true) as Element;
+  for (const deletion of copy.querySelectorAll(DIFF_DELETION)) deletion.remove();
+  return copy.textContent ?? "";
+}
+
 function getTextLengthExcludingZWSP(el: HTMLElement): number {
-  const text = el.textContent ?? "";
+  const text = modelText(el);
   return text.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, text.length - 1) : text.length;
 }
 
@@ -463,12 +477,19 @@ export function parseLiteralIndex(el: HTMLElement): LiteralIndex | undefined {
   }
 }
 
+/**
+ * Offset in the letter model of a DOM point in the literal. Deleted text shown by the attestant diff is not
+ * counted, so a point inside a deleted segment maps to where that segment is shown: a selection starting there
+ * starts at the following text, and one ending there ends at the preceding text.
+ */
 export function charOffsetWithinLiteral(literalEl: HTMLElement, container: Node, offset: number): number {
   const range = document.createRange();
   range.setStart(literalEl, 0);
   range.setEnd(container, offset);
-  let len = range.toString().length;
-  const txt = literalEl.textContent ?? "";
+  const before = document.createElement("div");
+  before.append(range.cloneContents());
+  let len = modelText(before).length;
+  const txt = modelText(literalEl);
   if (txt.startsWith(ZERO_WIDTH_SPACE)) len = Math.max(0, len - 1);
   const max = txt.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, txt.length - 1) : txt.length;
   return Math.min(Math.max(len, 0), max);
