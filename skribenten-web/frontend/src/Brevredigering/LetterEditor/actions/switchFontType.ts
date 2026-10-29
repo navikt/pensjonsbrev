@@ -96,24 +96,35 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType, sele
       .map((segment) => switchFontTypeOfSegment(container, segment, targetFontType))
       .reverse();
 
-    const shifts = changed.map((c) => c.insertedBefore + c.insertedAfter);
-    const contentIndexOf = (i: number) =>
-      changed[i].index + changed[i].insertedBefore + shifts.slice(0, i).reduce((sum, n) => sum + n, 0);
-
-    const first = changed[0];
-    const last = changed.at(-1)!;
-    const caretOffset = first.caretOffset;
-
-    const newStart = withIndexInContainer(start, contentIndexOf(0), caretOffset ?? 0);
-    const newEnd =
-      caretOffset !== undefined
-        ? newStart
-        : withIndexInContainer(start, contentIndexOf(changed.length - 1), last.length);
+    // Endepunktene flyttes gjennom splittingen, så markeringen fortsatt dekker det samme (også variabler og linjeskift).
+    const newStart = withIndexInContainer(
+      start,
+      ...mapThroughSplits(changed, indexInContainer(start), start.cursorPosition),
+    );
+    const newEnd = withIndexInContainer(start, ...mapThroughSplits(changed, indexInContainer(end), end.cursorPosition));
 
     draft.focus = { ...newStart, pendingSelection: { start: newStart, end: newEnd } };
     draft.saveStatus = "DIRTY";
   },
 );
+
+type ChangedSegment = ReturnType<typeof switchFontTypeOfSegment>;
+
+/** Gir ny [indeks, offset] for en posisjon i beholderen etter at segmentene er splittet. */
+function mapThroughSplits(changed: ChangedSegment[], index: number, offset: number): [number, number] {
+  let shift = 0;
+  for (const segment of changed) {
+    if (segment.index < index) {
+      shift += segment.insertedBefore + segment.insertedAfter;
+    } else if (segment.index === index) {
+      const { from, to, insertedBefore } = segment;
+      if (offset < from) return [index + shift, offset];
+      if (offset <= to) return [index + shift + insertedBefore, offset - from];
+      return [index + shift + insertedBefore + 1, offset - to];
+    }
+  }
+  return [index + shift, offset];
+}
 
 function normalizeSelection(
   draft: Draft<LetterEditorState>,
@@ -198,8 +209,6 @@ type Segment = {
   literal: Draft<LiteralValue>;
   from: number;
   to: number;
-  /** Markørens posisjon relativt til starten av segmentet, når endringen kom fra en markør uten markering. */
-  caretOffset?: number;
 };
 
 function markedSegments(
@@ -239,7 +248,7 @@ function currentWordSegment(container: TextContainer, index: number, cursorPosit
   let to = Math.min(cursorPosition, literalText.length);
   while (to < literalText.length && literalText[to]?.trim() !== "") to++;
 
-  return from < to ? [{ index, literal, from, to, caretOffset: cursorPosition - from }] : [];
+  return from < to ? [{ index, literal, from, to }] : [];
 }
 
 /**
@@ -273,8 +282,8 @@ function switchFontTypeOfSegment(container: TextContainer, segment: Segment, fon
     index,
     insertedBefore: before.length > 0 ? 1 : 0,
     insertedAfter: after.length > 0 ? 1 : 0,
-    length: marked.length,
-    caretOffset: segment.caretOffset,
+    from,
+    to,
   };
 }
 

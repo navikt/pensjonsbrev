@@ -289,6 +289,49 @@ describe("switchFontType i avsnitt", () => {
       [" og", FontType.BOLD],
       [" velkommen", FontType.PLAIN],
     ]);
+    expect(result.focus.pendingSelection).toEqual(range(at(blockIndex(0), 0), at(blockIndex(2), 3)));
+  });
+
+  test("markering som slutter i en variabel beholdes over variabelen", () => {
+    const state = letter(paragraph([literal("Hei "), variable("Navn"), literal(" og velkommen")]));
+
+    const result = switchFontType(state, FontType.BOLD, range(at(blockIndex(0), 0), at(blockIndex(1), 4)));
+
+    expect(textAndFont(contentOf(result))).toEqual([
+      ["Hei ", FontType.BOLD],
+      ["Navn", FontType.PLAIN],
+      [" og velkommen", FontType.PLAIN],
+    ]);
+    expect(result.focus.pendingSelection).toEqual(range(at(blockIndex(0), 0), at(blockIndex(1), 4)));
+  });
+
+  test("markering som starter i en variabel og slutter midt i en literal følger splittingen", () => {
+    const state = letter(paragraph([literal("Hei "), variable("Navn"), literal(" og velkommen")]));
+
+    const result = switchFontType(state, FontType.BOLD, range(at(blockIndex(1), 2), at(blockIndex(2), 3)));
+
+    expect(textAndFont(contentOf(result))).toEqual([
+      ["Hei ", FontType.PLAIN],
+      ["Navn", FontType.PLAIN],
+      [" og", FontType.BOLD],
+      [" velkommen", FontType.PLAIN],
+    ]);
+    expect(result.focus.pendingSelection).toEqual(range(at(blockIndex(1), 2), at(blockIndex(2), 3)));
+  });
+
+  test("endepunkter etter en splittet literal forskyves", () => {
+    const state = letter(paragraph([literal("Hei du "), variable("Navn"), literal(" og velkommen")]));
+
+    const result = switchFontType(state, FontType.BOLD, range(at(blockIndex(0), 4), at(blockIndex(2), 3)));
+
+    expect(textAndFont(contentOf(result))).toEqual([
+      ["Hei ", FontType.PLAIN],
+      ["du ", FontType.BOLD],
+      ["Navn", FontType.PLAIN],
+      [" og", FontType.BOLD],
+      [" velkommen", FontType.PLAIN],
+    ]);
+    expect(result.focus.pendingSelection).toEqual(range(at(blockIndex(1), 0), at(blockIndex(3), 3)));
   });
 
   test("markering over en liste i avsnittet gjør ingen endring", () => {

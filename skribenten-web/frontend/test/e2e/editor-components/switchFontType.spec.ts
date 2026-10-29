@@ -941,6 +941,10 @@ test.describe("Markering over flere literals", () => {
         id: 2,
         content: [makeLiteral(201, 2, paragraphFirst), makeLiteral(202, 2, paragraphSecond)],
       }),
+      paragraph({
+        id: 3,
+        content: [makeLiteral(301, 3, "Hei "), makeVariable(302, 3, "Navn"), makeLiteral(303, 3, " og velkommen")],
+      }),
     ],
     signatur: baseSignatur(),
   });
@@ -981,6 +985,17 @@ test.describe("Markering over flere literals", () => {
     await expect(page.getByText("Mellom", { exact: true })).toHaveCSS("font-weight", "400");
     await expect(page.getByText(paragraphFirst, { exact: true })).toHaveCSS("font-weight", "400");
     expect(await selectedText(page)).toBe(before);
+  });
+
+  test("markering som slutter i en variabel forblir markert over variabelen", async ({ page }) => {
+    await dragSelect(page, { text: "Hei ", offset: 0 }, { text: "Navn", offset: 4 });
+    await expect.poll(() => selectedText(page)).toMatch(/^Hei\s*Navn$/);
+    const before = await selectedText(page);
+
+    await page.getByTestId("fonttype-bold-button").click();
+
+    await expect(page.getByText("Hei", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect.poll(() => selectedText(page)).toBe(before);
   });
 
   test("markering over to literals i et avsnitt gjøres kursiv og forblir markert", async ({ page }) => {
