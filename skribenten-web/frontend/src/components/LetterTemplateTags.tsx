@@ -25,7 +25,7 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
       })()}
       {letterTemplate.automatiskExstream && (
         <Tag data-color="info" size="small" variant="moderate">
-          Del-automatisk
+          Automatisk
         </Tag>
       )}
     </HStack>

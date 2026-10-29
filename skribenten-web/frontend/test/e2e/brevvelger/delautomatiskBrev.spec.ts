@@ -28,7 +28,7 @@ async function selectAutobrevAndOrder(page: Page) {
   await page.waitForURL(/\/saksnummer\/123456\/kvittering/);
 }
 
-test.describe("Del-automatiske brev", () => {
+test.describe("Automatiske brev", () => {
   test.beforeEach(async ({ page }) => {
     await setupSakStubs(page);
     await page.route("**/bff/skribenten-backend/brevmal", (route) =>
@@ -39,7 +39,7 @@ test.describe("Del-automatiske brev", () => {
     );
   });
 
-  test("Bestill og send del-automatisk brev", async ({ page }) => {
+  test("Bestill og send automatisk brev", async ({ page }) => {
     let requestBody: Record<string, unknown> | undefined;
     const orderLetterUrls: string[] = [];
     page.on("request", (request) => {
@@ -59,7 +59,7 @@ test.describe("Del-automatiske brev", () => {
     await page.getByTestId("brevmal-search").pressSequentially(autobrev.name);
     await page.getByTestId("brevmal-button").filter({ hasText: autobrev.name }).click();
 
-    await expect(page.getByText("Del-automatisk", { exact: true })).toBeVisible();
+    await expect(page.getByText("Automatisk", { exact: true })).toBeVisible();
     await expect(page.getByTestId("order-letter")).toHaveText("Bestill og send brev");
 
     await page.locator("select[name=spraak]").selectOption({ label: "Nynorsk" });
@@ -242,12 +242,12 @@ test.describe("Del-automatiske brev", () => {
     await expect(page.getByTestId("functional-error-alert")).toContainText("Brukeren mangler adresse.");
   });
 
-  test("Vanlige Exstream-brev bruker fortsatt Fortsett uten del-automatisk-tag", async ({ page }) => {
+  test("Vanlige Exstream-brev bruker fortsatt Fortsett uten Automatisk-tag", async ({ page }) => {
     await page.goto("/saksnummer/123456/brevvelger");
     await page.getByTestId("category-item").filter({ hasText: "Feilutbetaling" }).click();
     await page.getByTestId("brevmal-button").filter({ hasText: "Varsel - tilbakekreving" }).click();
 
     await expect(page.getByTestId("order-letter")).toHaveText("Fortsett");
-    await expect(page.getByText("Del-automatisk", { exact: true })).toHaveCount(0);
+    await expect(page.getByText("Automatisk", { exact: true })).toHaveCount(0);
   });
 });
