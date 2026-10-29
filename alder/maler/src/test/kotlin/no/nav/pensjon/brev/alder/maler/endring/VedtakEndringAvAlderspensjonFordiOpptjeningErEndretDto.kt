@@ -25,7 +25,7 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
             alderspensjonVedVirk = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.AlderspensjonVedVirk(
                 totalPensjon = Kroner(1000),
                 uforeKombinertMedAlder = true,
-                regelverkType = AlderspensjonRegelverkType.AP2025,
+                regelverkType = AlderspensjonRegelverkType.AP2016,
                 fullUttaksgrad = true
             ),
             ytelseskomponentInformasjon = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.YtelseskomponentInformasjon(
