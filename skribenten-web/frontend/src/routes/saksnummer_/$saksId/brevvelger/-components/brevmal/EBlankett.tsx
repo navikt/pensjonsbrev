@@ -24,23 +24,38 @@ const eblankettValidationSchema = z.object({
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
-export default function Eblankett({
+export default function EBlankett({
   letterTemplate,
+  defaultValues,
+  saksId,
   setOnFormSubmitClick,
 }: {
   letterTemplate: LetterMetadata;
+  defaultValues: { enhetsId: string };
+  saksId: string;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
-  const { saksId } = Route.useParams();
+  const { enhetsId: urlEnhetsId } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
 
   const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
     defaultValues: {
-      landkode: "",
+      landkode: "NOR",
       mottakerText: "",
+      enhetsId: defaultValues.enhetsId,
     },
     resolver: zodResolver(eblankettValidationSchema),
   });
+
+  const { getValues, setValue } = methods;
+
+  useEffect(() => {
+    const enhetsId = urlEnhetsId ?? "";
+
+    if (getValues("enhetsId") !== enhetsId) {
+      setValue("enhetsId", enhetsId);
+    }
+  }, [urlEnhetsId, getValues, setValue]);
 
   const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
     mutationFn: (payload) => orderEblankett(saksId, payload),
@@ -51,6 +66,7 @@ export default function Eblankett({
         brevsystem: "exstream",
         dokumentkategori: letterTemplate.dokumentkategoriCode || "E_BLANKETT",
         enhetsId: variables.enhetsId,
+        landkode: variables.landkode,
       });
       window.open(callbackUrl);
     },
