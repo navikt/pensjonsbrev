@@ -3,9 +3,9 @@ import { type Dispatch, type SetStateAction, useCallback } from "react";
 import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
-import { applyAction } from "./lib/actions";
+import { applyAction, type CallbackReceiver } from "./lib/actions";
 import { type LetterEditorState } from "./model/state";
-import { getSelectionIndex } from "./services/caretUtils";
+import { getSelectionIndex, selectionTouchesDiffDecoration } from "./services/caretUtils";
 
 export enum Typography {
   PARAGRAPH = "PARAGRAPH",
@@ -41,7 +41,10 @@ export const tooltipText = {
   tilbakestill: "Tilbakestill mal",
 } as const;
 
-export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
+export const useEditorKeyboardShortcuts = (
+  setEditorState: Dispatch<SetStateAction<LetterEditorState>>,
+  disableDiffMode: () => void,
+) => {
   return useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.defaultPrevented || event.repeat) return;
@@ -77,17 +80,12 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
           // Omdirigerer både ctrl-f og ctrl-b, for å unngå innebygd fet tekst-snarvei i nettleser
           if (event.key === "f" || event.key === "b") {
             event.preventDefault();
-            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD, getSelectionIndex(event.currentTarget));
+            switchFontTypeAtSelection(setEditorState, FontType.BOLD, event.currentTarget, disableDiffMode);
           }
           // Omdirigerer ikke ctrl-k, siden det er en generell nettleser-snarvei for å fokusere addresselinjen
           else if (event.key === "i") {
             event.preventDefault();
-            applyAction(
-              Actions.switchFontType,
-              setEditorState,
-              FontType.ITALIC,
-              getSelectionIndex(event.currentTarget),
-            );
+            switchFontTypeAtSelection(setEditorState, FontType.ITALIC, event.currentTarget, disableDiffMode);
           }
           // Blokker innebygget ctrl-u for å hindre understreking, som vi ikke støtter
           else if (event.key === "u") {
@@ -98,15 +96,10 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
         if (event.metaKey) {
           if (event.key === "b") {
             event.preventDefault();
-            applyAction(Actions.switchFontType, setEditorState, FontType.BOLD, getSelectionIndex(event.currentTarget));
+            switchFontTypeAtSelection(setEditorState, FontType.BOLD, event.currentTarget, disableDiffMode);
           } else if (event.key === "i") {
             event.preventDefault();
-            applyAction(
-              Actions.switchFontType,
-              setEditorState,
-              FontType.ITALIC,
-              getSelectionIndex(event.currentTarget),
-            );
+            switchFontTypeAtSelection(setEditorState, FontType.ITALIC, event.currentTarget, disableDiffMode);
           } else if (event.key === "u") {
             // block cmd-u from applying underline
             event.preventDefault();
@@ -114,6 +107,27 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
         }
       }
     },
-    [setEditorState],
+    [setEditorState, disableDiffMode],
   );
 };
+
+/**
+ * Switches the font type of the current selection, or of the word at the caret. In attestant diff mode the
+ * decorated text includes deleted text, so offsets cannot be mapped to the letter: like the first edit, the
+ * change then only disables diff mode, without changing the letter.
+ */
+export function switchFontTypeAtSelection(
+  setEditorState: CallbackReceiver<LetterEditorState>,
+  fontType: FontType,
+  root: HTMLElement | undefined,
+  disableDiffMode: () => void,
+  beforeAction?: () => void,
+) {
+  if (selectionTouchesDiffDecoration(root)) {
+    disableDiffMode();
+    return;
+  }
+  const selection = getSelectionIndex(root);
+  beforeAction?.();
+  applyAction(Actions.switchFontType, setEditorState, fontType, selection);
+}

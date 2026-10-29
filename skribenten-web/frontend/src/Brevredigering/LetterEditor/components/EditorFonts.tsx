@@ -4,12 +4,11 @@ import { type ReactNode } from "react";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { FontType } from "~/types/brevbakerTypes";
 
-import Actions from "../actions";
 import { isFocusInTableHeader, isFocusInTitle } from "../actions/common";
 import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
-import { applyAction } from "../lib/actions";
-import { getSelectionIndex, refocusEditableAtSelection } from "../services/caretUtils";
-import { tooltipText } from "../utils";
+import { useAttestantDiff } from "../diff/AttestantDiffContext";
+import { refocusEditableAtSelection } from "../services/caretUtils";
+import { switchFontTypeAtSelection, tooltipText } from "../utils";
 
 const EditorFonts = () => {
   const { editorState, freeze, setEditorState } = useEditor();
@@ -18,11 +17,11 @@ const EditorFonts = () => {
   // Tabelloverskrifter er allerede fete
   const boldDisabled = disabled || isFocusInTableHeader(editorState);
 
+  const { disableDiffMode } = useAttestantDiff();
+
   const switchFontType = (fontType: FontType) => {
-    const selection = getSelectionIndex(editorRoot());
-    // Must run before the action: the resulting focus event would otherwise overwrite the focus set by the action.
-    refocusEditableAtSelection();
-    applyAction(Actions.switchFontType, setEditorState, fontType, selection);
+    // Refocusing must run before the action: the resulting focus event would otherwise overwrite the focus set by it.
+    switchFontTypeAtSelection(setEditorState, fontType, editorRoot(), disableDiffMode, refocusEditableAtSelection);
   };
 
   return (

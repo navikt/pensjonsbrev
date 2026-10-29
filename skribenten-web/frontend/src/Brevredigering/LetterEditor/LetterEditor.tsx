@@ -59,7 +59,8 @@ export const LetterEditor = ({
   const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
-  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
+  const { disableDiffMode } = useAttestantDiff();
+  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState, disableDiffMode);
   const highlightedIds = useInsertedTekstValgHighlight();
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
@@ -69,7 +70,6 @@ export const LetterEditor = ({
 
   useDragSelectUnifier(editorRoot, !freeze);
 
-  const { disableDiffMode } = useAttestantDiff();
   useSelectionDeleteHotkey(
     editorRoot,
     (focus) => applyAction(Actions.deleteSelection, setEditorState, focus),

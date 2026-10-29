@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { flushSync } from "react-dom";
 
 import { type SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
-import { getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import { getSelectionFocus, rangeTouchesDiffDecoration } from "~/Brevredigering/LetterEditor/services/caretUtils";
 
 const isDeleteKey = (event: KeyboardEvent) => event.key === "Backspace" || event.key === "Delete";
 // Single characters, and Enter which splits the text at the caret
@@ -10,10 +10,6 @@ const isTypingKey = (event: KeyboardEvent) => event.key.length === 1 || event.ke
 
 const literalOf = (node: Node) =>
   (node instanceof Element ? node : node.parentElement)?.closest("[data-literal-index]") ?? null;
-
-/** Diff-decorated literals also show deleted text, so DOM offsets in them do not match the letter model. */
-const touchesDiffDecoration = (root: HTMLElement, range: Range) =>
-  [...root.querySelectorAll("[data-diff-version]")].some((element) => range.intersectsNode(element));
 
 /**
  * Deletes a selection with Backspace/Delete. Typing over a selection that spans several literals deletes it first,
@@ -56,7 +52,7 @@ export function useSelectionDeleteHotkey(
       if (!(root.contains(range.startContainer) || root.contains(range.endContainer))) return;
       if (!deleting && literalOf(range.startContainer) === literalOf(range.endContainer)) return;
 
-      if (touchesDiffDecoration(root, range)) {
+      if (rangeTouchesDiffDecoration(root, range)) {
         event.preventDefault();
         event.stopPropagation();
         onDiffEditIntent?.();

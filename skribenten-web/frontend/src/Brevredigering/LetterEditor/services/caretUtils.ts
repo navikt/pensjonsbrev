@@ -58,6 +58,21 @@ export function refocusEditableAtSelection() {
   }
 }
 
+/**
+ * True when the range touches a diff-decorated literal. These also show deleted text, so DOM offsets in them
+ * do not match the letter model, and the range must not be mapped to model positions.
+ */
+export function rangeTouchesDiffDecoration(root: HTMLElement, range: Range): boolean {
+  return [...root.querySelectorAll("[data-diff-version]")].some((element) => rangeIntersectsNodeSafe(range, element));
+}
+
+/** True when the current caret or selection touches a diff-decorated literal in `root`. */
+export function selectionTouchesDiffDecoration(root: HTMLElement | undefined): boolean {
+  const selection = globalThis.getSelection();
+  if (!root || !selection || selection.rangeCount === 0) return false;
+  return rangeTouchesDiffDecoration(root, selection.getRangeAt(0));
+}
+
 function findLiteralElement(root: HTMLElement, index: LiteralIndex): HTMLElement | undefined {
   const key = JSON.stringify(literalIndexKey(index));
   for (const el of root.querySelectorAll<HTMLElement>("[data-literal-index]")) {
