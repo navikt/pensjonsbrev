@@ -80,9 +80,9 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                 showIf(forsteVirkFoer1998) {
                     paragraph {
                         text(
-                            bokmal { + "Grunnpensjonen er fastsatt til 100 prosent av grunnbeløpet etter reglene som gjelder for din pensjon." },
-                            nynorsk { + "Grunnpensjonen er fastsett til 100 prosent av grunnbeløpet etter reglane for pensjonen din." },
-                            english { + "The basic pension has been set at 100 per cent of the National Insurance basic amount in accordance with the rules applicable to your pension." }
+                            bokmal { + "Grunnpensjonen er fastsatt til " + grunnpensjonSats + " prosent av grunnbeløpet etter reglene som gjelder for din pensjon." },
+                            nynorsk { + "Grunnpensjonen er fastsett til " + grunnpensjonSats + " prosent av grunnbeløpet etter reglane for pensjonen din." },
+                            english { + "The basic pension has been set at " + grunnpensjonSats + " per cent of the National Insurance basic amount in accordance with the rules applicable to your pension." }
                         )
                     }
                 }
