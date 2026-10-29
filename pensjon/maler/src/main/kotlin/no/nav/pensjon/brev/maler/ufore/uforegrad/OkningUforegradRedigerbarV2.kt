@@ -118,16 +118,6 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
         outline {
             val pe = pesysData.pe
 
-            val beregning: Expression<Beregning> = pesysData.beregning
-            val vedtak: Expression<Vedtak> = pesysData.vedtak
-            val krav: Expression<Kravhode> = pesysData.krav
-            val vilkarsvurdering: Expression<VilkarsvurderingFullstendig> = pesysData.vilkarsvurdering
-            val instopphold: Expression<Institusjonsopphold?> = pesysData.institusjonsopphold
-            val reduksjonsgrunnlag: Expression<Reduksjonsgrunnlag?> = pesysData.reduksjonsgrunnlag
-            val grunnlag: Expression<Grunnlag> = pesysData.grunnlag
-            val tillegg: Expression<Tillegg> = pesysData.tillegg
-            val barnetillegg: Expression<Barnetillegg> = pesysData.barnetillegg
-
             fun Expression<OkningUforegradV2Dto.PesysData>.faktiskBunnfradrag() =
                 ifElse(not (localDateNow.year.equalTo(vedtak.virkFom.year) and vedtak.virkFom.month.equalTo(Month.DECEMBER.value))
                         or beregning.bunnfradragNesteAr.equalTo(0),
@@ -136,107 +126,107 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 )
 
             //Beregning
-            val uforegradFraBeregning = beregning.uforegrad
-            val yrkesskadegradFraBeregning = beregning.yrkesskadegrad.ifNull(0)
-            val utbetalingsgrad = beregning.utbetalingsgrad
+            val uforegradFraBeregning = pesysData.beregning.uforegrad
+            val yrkesskadegradFraBeregning = pesysData.beregning.yrkesskadegrad.ifNull(0)
+            val utbetalingsgrad = pesysData.beregning.utbetalingsgrad
 
-            val beregningVirkFom = beregning.virkFom
-            val beregningUforetidspunkt = beregning.uforetidspunkt
+            val beregningVirkFom = pesysData.beregning.virkFom
+            val beregningUforetidspunkt = pesysData.beregning.uforetidspunkt
 
-            val uforetotalnetto = beregning.totalNetto
-            val harBeløpØkt = beregning.belopHarOkt
-            val beregningsresultattilrevurderingtotalnetto = beregning.beregningsresultatTilRevurderingTotalNetto.ifNull(Kroner(0))
+            val uforetotalnetto = pesysData.beregning.totalNetto
+            val harBeløpØkt = pesysData.beregning.belopHarOkt
+            val beregningsresultattilrevurderingtotalnetto = pesysData.beregning.beregningsresultatTilRevurderingTotalNetto.ifNull(Kroner(0))
 
-            val bunnfradrag = beregning.bunnfradrag
+            val bunnfradrag = pesysData.beregning.bunnfradrag
             val bunnfradragFaktisk = pesysData.faktiskBunnfradrag()
-            val reduksjonsprosent = beregning.reduksjonsprosent
+            val reduksjonsprosent = pesysData.beregning.reduksjonsprosent
 
-            val yrkesskadebest = beregning.yrkesskadeBest
-            val inntektSkadetidspunkt = beregning.inntektSkadetidspunkt.ifNull(Kroner(0))
+            val yrkesskadebest = pesysData.beregning.yrkesskadeBest
+            val inntektSkadetidspunkt = pesysData.beregning.inntektSkadetidspunkt.ifNull(Kroner(0))
 
-            val grunnbelop = beregning.grunnbelop
+            val grunnbelop = pesysData.beregning.grunnbelop
 
             // reduksjonsgrunnlag
-            val reduksjonsgrunnlagSumutbt = reduksjonsgrunnlag.safe { sumUtBt }.ifNull(Kroner(0))
-            val reduksjonsgrunnlagGradertoppjustertifu = reduksjonsgrunnlag.safe { gradertOppjustertIFU }.ifNull(Kroner(0))
-            val reduksjonsgrunnlagBarnetilleggRegelverkstype = reduksjonsgrunnlag.safe { barnetilleggRegelverkType }
-            val reduksjonsgrunnlagSumbruttoetterreduksjonbt = reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0))
-            val reduksjonsgrunnlagSumbruttoforreduksjonbt = reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0))
-            val reduksjonsgrunnlagAndelYtelseAvOifu = reduksjonsgrunnlag.safe { andelYtelseAvOIFU }.ifNull(0.0)
+            val reduksjonsgrunnlagSumutbt = pesysData.reduksjonsgrunnlag.safe { sumUtBt }.ifNull(Kroner(0))
+            val reduksjonsgrunnlagGradertoppjustertifu = pesysData.reduksjonsgrunnlag.safe { gradertOppjustertIFU }.ifNull(Kroner(0))
+            val reduksjonsgrunnlagBarnetilleggRegelverkstype = pesysData.reduksjonsgrunnlag.safe { barnetilleggRegelverkType }
+            val reduksjonsgrunnlagSumbruttoetterreduksjonbt = pesysData.reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0))
+            val reduksjonsgrunnlagSumbruttoforreduksjonbt = pesysData.reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0))
+            val reduksjonsgrunnlagAndelYtelseAvOifu = pesysData.reduksjonsgrunnlag.safe { andelYtelseAvOIFU }.ifNull(0.0)
 
             // tillegg
-            val ektefelletilleggInnvilget = tillegg.ektefelletilleggInnvilget
-            val gjenlevendetilleggInnvilget = tillegg.gjenlevendetilleggInnvilget
-            val nyttGjenlevendetillegg = tillegg.nyttGjenlevendetillegg
+            val ektefelletilleggInnvilget = pesysData.tillegg.ektefelletilleggInnvilget
+            val gjenlevendetilleggInnvilget = pesysData.tillegg.gjenlevendetilleggInnvilget
+            val nyttGjenlevendetillegg = pesysData.tillegg.nyttGjenlevendetillegg
 
             //inst
-            val instopphanvendt = instopphold.safe { erAnvendt }.ifNull(false)
-            val instoppholdtype = instopphold.safe { type }
-            val forsorgeransvarIngenPerioder = instopphold.safe { ingenPerioderHarForsorgeransvar }.ifNull(true.expr())
-            val forsorgeransvarAllePerioder = instopphold.safe { allePerioderHarForsorgeransvar }.ifNull(false.expr())
-            val fasteUtgifterInst = instopphold.safe { fasteUtgifter }.ifNull(Kroner(0))
+            val instopphanvendt = pesysData.institusjonsopphold.safe { erAnvendt }.ifNull(false)
+            val instoppholdtype = pesysData.institusjonsopphold.safe { type }
+            val forsorgeransvarIngenPerioder = pesysData.institusjonsopphold.safe { ingenPerioderHarForsorgeransvar }.ifNull(true.expr())
+            val forsorgeransvarAllePerioder = pesysData.institusjonsopphold.safe { allePerioderHarForsorgeransvar }.ifNull(false.expr())
+            val fasteUtgifterInst = pesysData.institusjonsopphold.safe { fasteUtgifter }.ifNull(Kroner(0))
 
             //Beregning barnetillegg
-            val btSerkullInnvilget = barnetillegg.btSerkullsbarn.safe { innvilget }.ifNull(false)
-            val btFellesInnvilget = barnetillegg.btFellesbarn.safe { innvilget }.ifNull(false)
-            val btSerkullNetto = barnetillegg.btSerkullsbarn.safe { netto }.ifNull(Kroner(0))
-            val btFellesNetto = barnetillegg.btFellesbarn.safe { netto }.ifNull(Kroner(0))
-            val btSerkullBrutto = barnetillegg.btSerkullsbarn.safe { brutto }.ifNull(Kroner(0))
-            val barnetilleggserkull_btsbbrutto = barnetillegg.btSerkullsbarn.safe { brutto }.ifNull(Kroner(0))
-            val btfbbrutto = barnetillegg.btFellesbarn.safe { brutto }.ifNull(Kroner(0))
+            val btSerkullInnvilget = pesysData.barnetillegg.btSerkullsbarn.safe { innvilget }.ifNull(false)
+            val btFellesInnvilget = pesysData.barnetillegg.btFellesbarn.safe { innvilget }.ifNull(false)
+            val btSerkullNetto = pesysData.barnetillegg.btSerkullsbarn.safe { netto }.ifNull(Kroner(0))
+            val btFellesNetto = pesysData.barnetillegg.btFellesbarn.safe { netto }.ifNull(Kroner(0))
+            val btSerkullBrutto = pesysData.barnetillegg.btSerkullsbarn.safe { brutto }.ifNull(Kroner(0))
+            val barnetilleggserkull_btsbbrutto = pesysData.barnetillegg.btSerkullsbarn.safe { brutto }.ifNull(Kroner(0))
+            val btfbbrutto = pesysData.barnetillegg.btFellesbarn.safe { brutto }.ifNull(Kroner(0))
 
-            val btsbJusteringsbelopPerAr = barnetillegg.btSerkullsbarn.safe { justeringsbelopPerAr }.ifNull(Kroner(0))
-            val btfbJusteringsbelopPerAr = barnetillegg.btFellesbarn.safe { justeringsbelopPerAr }.ifNull(Kroner(0))
+            val btsbJusteringsbelopPerAr = pesysData.barnetillegg.btSerkullsbarn.safe { justeringsbelopPerAr }.ifNull(Kroner(0))
+            val btfbJusteringsbelopPerAr = pesysData.barnetillegg.btFellesbarn.safe { justeringsbelopPerAr }.ifNull(Kroner(0))
 
-            val btfbinntektannenforelder = barnetillegg.btFellesbarn.safe { inntektAnnenForelder }.ifNull(Kroner(0))
-            val btfbbrukersinntekttilavkortning = barnetillegg.btFellesbarn.safe { brukersInntektTilAvkorting }.ifNull(Kroner(0))
-            val btfbInntektstak = barnetillegg.btFellesbarn.safe { inntektstak }.ifNull(Kroner(0))
-            val btfbbelopfratrukketannenforeldersinntekt = barnetillegg.btFellesbarn.safe { belopFratrukketAnnenForeldersInntekt }.ifNull(Kroner(0))
-            val barnetilleggserkull_avkortningsinformasjon_inntektstak = barnetillegg.btSerkullsbarn.safe { inntektstak }.ifNull(Kroner(0))
-            val btfbfradrag = barnetillegg.btFellesbarn.safe { fradrag }.ifNull(Kroner(0))
-            val btsbfradrag = barnetillegg.btSerkullsbarn.safe { fradrag }.ifNull(Kroner(0))
-            val btfbFribelop = barnetillegg.btFellesbarn.safe { fribelop }.ifNull(Kroner(0))
-            val btsbfribelop = barnetillegg.btSerkullsbarn.safe { fribelop }.ifNull(Kroner(0))
-            val btfbinntektbruktiavkorting = barnetillegg.btFellesbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
-            val btsbInntektBruktIAvkorting = barnetillegg.btSerkullsbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
-            val forekomstBtInnv = barnetillegg.antallForekomsterAvBarnetillegg
+            val btfbinntektannenforelder = pesysData.barnetillegg.btFellesbarn.safe { inntektAnnenForelder }.ifNull(Kroner(0))
+            val btfbbrukersinntekttilavkortning = pesysData.barnetillegg.btFellesbarn.safe { brukersInntektTilAvkorting }.ifNull(Kroner(0))
+            val btfbInntektstak = pesysData.barnetillegg.btFellesbarn.safe { inntektstak }.ifNull(Kroner(0))
+            val btfbbelopfratrukketannenforeldersinntekt = pesysData.barnetillegg.btFellesbarn.safe { belopFratrukketAnnenForeldersInntekt }.ifNull(Kroner(0))
+            val barnetilleggserkull_avkortningsinformasjon_inntektstak = pesysData.barnetillegg.btSerkullsbarn.safe { inntektstak }.ifNull(Kroner(0))
+            val btfbfradrag = pesysData.barnetillegg.btFellesbarn.safe { fradrag }.ifNull(Kroner(0))
+            val btsbfradrag = pesysData.barnetillegg.btSerkullsbarn.safe { fradrag }.ifNull(Kroner(0))
+            val btfbFribelop = pesysData.barnetillegg.btFellesbarn.safe { fribelop }.ifNull(Kroner(0))
+            val btsbfribelop = pesysData.barnetillegg.btSerkullsbarn.safe { fribelop }.ifNull(Kroner(0))
+            val btfbinntektbruktiavkorting = pesysData.barnetillegg.btFellesbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
+            val btsbInntektBruktIAvkorting = pesysData.barnetillegg.btSerkullsbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
+            val forekomstBtInnv = pesysData.barnetillegg.antallForekomsterAvBarnetillegg
 
             //krav
-            val kravOnsketvirkningsdato = krav.virkFom
-            val kravMotattDato = krav.mottattDato
-            val kravarsaktype = krav.arsak
+            val kravOnsketvirkningsdato = pesysData.krav.virkFom
+            val kravMotattDato = pesysData.krav.mottattDato
+            val kravarsaktype = pesysData.krav.arsak
             val konvertertup = pesysData.krav.konvertertFraUforepensjon
 
             //vedtak
-            val vedtakvirkfom = vedtak.virkFom
+            val vedtakvirkfom = pesysData.vedtak.virkFom
 
             //vilkårsvurdering
-            val uforetidspunkt = vilkarsvurdering.uforetidspunkt
-            val uforegradFraVilkar = vilkarsvurdering.uforegrad
+            val uforetidspunkt = pesysData.vilkarsvurdering.uforetidspunkt
+            val uforegradFraVilkar = pesysData.vilkarsvurdering.uforegrad
 
-            val virkningstidspunkt = vilkarsvurdering.virkningstidspunkt
+            val virkningstidspunkt = pesysData.vilkarsvurdering.virkningstidspunkt
 
-            val skadetidspunkt = vilkarsvurdering.yrkesskade.safe { skadetidspunkt }.ifNull(localDateNow)
-            val yrkesskadegradFraVilkar = vilkarsvurdering.yrkesskade.safe { yrkesskadegrad }.ifNull(0)
-            val yrkesskadebegrunnelse = vilkarsvurdering.yrkesskadeBegrunnelse
-            val yrkesskaderesultat = vilkarsvurdering.yrkesskadeResultat
+            val skadetidspunkt = pesysData.vilkarsvurdering.yrkesskade.safe { skadetidspunkt }.ifNull(localDateNow)
+            val yrkesskadegradFraVilkar = pesysData.vilkarsvurdering.yrkesskade.safe { yrkesskadegrad }.ifNull(0)
+            val yrkesskadebegrunnelse = pesysData.vilkarsvurdering.yrkesskadeBegrunnelse
+            val yrkesskaderesultat = pesysData.vilkarsvurdering.yrkesskadeResultat
 
-            val ifuinntekt = vilkarsvurdering.ifuInntekt
-            val ifubegrunnelse = vilkarsvurdering.ifuBegrunnelse
-            val ieuinntekt = vilkarsvurdering.ieuInntekt
-            val ieuBegrunnelse = vilkarsvurdering.ieuBegrunnelse
-            val unguforeresultat = vilkarsvurdering.ungUforResultat
-            val nedsattInntektsevneResultat = vilkarsvurdering.nedsattInntektsevneResultat
-            val virkningBegrunnelse = vilkarsvurdering.virkningstidspunktBegrunnelse
+            val ifuinntekt = pesysData.vilkarsvurdering.ifuInntekt
+            val ifubegrunnelse = pesysData.vilkarsvurdering.ifuBegrunnelse
+            val ieuinntekt = pesysData.vilkarsvurdering.ieuInntekt
+            val ieuBegrunnelse = pesysData.vilkarsvurdering.ieuBegrunnelse
+            val unguforeresultat = pesysData.vilkarsvurdering.ungUforResultat
+            val nedsattInntektsevneResultat = pesysData.vilkarsvurdering.nedsattInntektsevneResultat
+            val virkningBegrunnelse = pesysData.vilkarsvurdering.virkningstidspunktBegrunnelse
 
             //TODO: denne må formateres
-            val mnVirkningstidspunkt = vilkarsvurdering.virkningstidspunkt.month
+            val mnVirkningstidspunkt = pesysData.vilkarsvurdering.virkningstidspunkt.month
 
-            val ivsbegrunnelse = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunktBegrunnelse }
-            val ivsinntekt = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunkt }.ifNull(Kroner(0))
+            val ivsbegrunnelse = pesysData.vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunktBegrunnelse }
+            val ivsinntekt = pesysData.vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunkt }.ifNull(Kroner(0))
 
             //grunnlag
-            val bostedutland = grunnlag.borIUtlandet
+            val bostedutland = pesysData.grunnlag.borIUtlandet
 
             // ymse
             val harLopendeAlderspensjon = pesysData.harAlderspensjonLopendeEllerTilBehandling
@@ -257,27 +247,27 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             val btsbInnvilgetOgJusteringsbelop0 = btSerkullInnvilget and btsbJusteringsbelopPerAr.notEqualTo(0)
             val btsbInnvilgetIkkeBtfbinnvilget = btSerkullInnvilget and not(btFellesInnvilget)
             val sumUtBtHoyereLavere = reduksjonsgrunnlagSumutbt.greaterThan(reduksjonsgrunnlagGradertoppjustertifu)
-            val barnetBarnaFellesEntallFlertall = ifElse(barnetillegg.btFellesbarn.safe { antallBarn }.ifNull(0).equalTo(1) and Expression.FromScope.Language.equalTo(English.expr()), "s".expr(), "".expr())
+            val barnetBarnaFellesEntallFlertall = ifElse(pesysData.barnetillegg.btFellesbarn.safe { antallBarn }.ifNull(0).equalTo(1) and Expression.FromScope.Language.equalTo(English.expr()), "s".expr(), "".expr())
 
             //tekster
             val barnetBarnaSerkull =
-                barnetillegg.btSerkullsbarn.safe { antallBarn }.ifNull(0).let {
+                pesysData.barnetillegg.btSerkullsbarn.safe { antallBarn }.ifNull(0).let {
                     ifElse(it.greaterThan(1), "barna".expr(),
                     ifElse(it.equalTo(1), "barnet".expr(), "".expr())
                     )
             }
-            val epsBorMedNnEntall = ifElse(grunnlag.epsBrukerBorMed.equalTo(Eps.EKTEFELLE), "ektefellen".expr(),
-                ifElse(grunnlag.epsBrukerBorMed.equalTo(Eps.PARTNER), "partnaren".expr(),
-                    ifElse(grunnlag.epsBrukerBorMed.equalTo(Eps.SAMBOER), "sambuaren".expr(), "".expr())
+            val epsBorMedNnEntall = ifElse(pesysData.grunnlag.epsBrukerBorMed.equalTo(Eps.EKTEFELLE), "ektefellen".expr(),
+                ifElse(pesysData.grunnlag.epsBrukerBorMed.equalTo(Eps.PARTNER), "partnaren".expr(),
+                    ifElse(pesysData.grunnlag.epsBrukerBorMed.equalTo(Eps.SAMBOER), "sambuaren".expr(), "".expr())
                 )
             )
-            val epsBorMedBmEntall = ifElse(grunnlag.epsBrukerBorMed.equalTo(Eps.EKTEFELLE), "ektefelle".expr(),
-                ifElse(grunnlag.epsBrukerBorMed.equalTo(Eps.PARTNER), "partner".expr(),
-                    ifElse(grunnlag.epsBrukerBorMed.equalTo(Eps.SAMBOER), "samboer".expr(), "".expr())
+            val epsBorMedBmEntall = ifElse(pesysData.grunnlag.epsBrukerBorMed.equalTo(Eps.EKTEFELLE), "ektefelle".expr(),
+                ifElse(pesysData.grunnlag.epsBrukerBorMed.equalTo(Eps.PARTNER), "partner".expr(),
+                    ifElse(pesysData.grunnlag.epsBrukerBorMed.equalTo(Eps.SAMBOER), "samboer".expr(), "".expr())
                 )
             )
             val barnetBarnaFelles =
-                barnetillegg.btFellesbarn.safe { antallBarn }.ifNull(0).let {
+                pesysData.barnetillegg.btFellesbarn.safe { antallBarn }.ifNull(0).let {
                     ifElse(it.greaterThan(1), "barna".expr(),
                         ifElse(it.equalTo(1), "barnet".expr(), "".expr())
                     )
@@ -287,7 +277,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 ifElse(Expression.FromScope.Language.equalTo(Bokmal.expr()), "ikke ".expr(), "ikkje ".expr()),
                 "".expr()
             )
-            val txtOgEllerEktefelle = ifElse(tillegg.ektefelletilleggInnvilget, " og/eller ektefelle".expr(), "".expr())
+            val txtOgEllerEktefelle = ifElse(pesysData.tillegg.ektefelletilleggInnvilget, " og/eller ektefelle".expr(), "".expr())
 
 
             //ikke pe
@@ -1196,8 +1186,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 includePhrase(Ufoeretrygd.Straffegjennomfoering(
                     ektefelletilleggInnvilget = ektefelletilleggInnvilget,
                     gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
-                    sisteForsorgeransvarErTrue = instopphold.safe { sistePeriodeHarForsorgeransvar }.ifNull(false),
-                    forsteForsorgeransvarErTrue = instopphold.safe { forstePeriodeHarForsorgeransvar}.ifNull(false),
+                    sisteForsorgeransvarErTrue = pesysData.institusjonsopphold.safe { sistePeriodeHarForsorgeransvar }.ifNull(false),
+                    forsteForsorgeransvarErTrue = pesysData.institusjonsopphold.safe { forstePeriodeHarForsorgeransvar}.ifNull(false),
                 ))
             }
 
@@ -1245,16 +1235,16 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
             showIf((reduksjonsgrunnlagBarnetilleggRegelverkstype.equalTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and reduksjonsgrunnlagAndelYtelseAvOifu.greaterThan(95.0))) {
                 includePhrase(TBU3802_Generated_Ny(
-                    virkningstidpunktAr = beregning.virkFom.year,
+                    virkningstidpunktAr = pesysData.beregning.virkFom.year,
                     andelYtelseAvOifu = reduksjonsgrunnlagAndelYtelseAvOifu,
                     gradertOppjustertIfu = reduksjonsgrunnlagGradertoppjustertifu,
                     sumUtBtHoyereLavere = sumUtBtHoyereLavere,
                     sumBruttoForReduksjonBt = reduksjonsgrunnlagSumbruttoforreduksjonbt,
                     sumBruttoEtterReduksjonBt = reduksjonsgrunnlagSumbruttoetterreduksjonbt,
                     sumUtBt = reduksjonsgrunnlagSumutbt,
-                    anvendtTrygdetid = beregning.anvendtTrygdetid,
+                    anvendtTrygdetid = pesysData.beregning.anvendtTrygdetid,
                     btfbInnvilget = btFellesInnvilget,
-                    epsBorMed = grunnlag.epsBrukerBorMed,
+                    epsBorMed = pesysData.grunnlag.epsBrukerBorMed,
                 ))
             }
 
@@ -1265,8 +1255,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(((not(btFellesInnvilget) and btSerkullInnvilget))) {
                     includePhrase(TBU2338_Generated_Ny(
                         btsbNetto = btSerkullNetto,
-                        beregningSivilstandAnvendt = grunnlag.anvendtSivilstand,
-                        epsBorMed = grunnlag.epsBrukerBorMed,
+                        beregningSivilstandAnvendt = pesysData.grunnlag.anvendtSivilstand,
+                        epsBorMed = pesysData.grunnlag.epsBrukerBorMed,
                     ))
                 }
 
@@ -1277,7 +1267,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         btfbInnvilget = btFellesInnvilget,
                         barnetBarnaFelles = barnetBarnaFelles,
                         barnetBarnaFellesEnEntallFlertall = barnetBarnaFellesEntallFlertall,
-                        epsBorMed = grunnlag.epsBrukerBorMed,
+                        epsBorMed = pesysData.grunnlag.epsBrukerBorMed,
                     ))
                 }
 
