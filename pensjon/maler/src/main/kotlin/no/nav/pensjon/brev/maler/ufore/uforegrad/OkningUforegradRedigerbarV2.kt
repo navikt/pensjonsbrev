@@ -60,8 +60,10 @@ import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUf
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope.RedigerbartVedlegg
@@ -107,13 +109,20 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             outline {
 
                 //Beregning
+                val beregningsresultattilrevurderingtotalnetto = beregning.beregningsresultatTilRevurderingTotalNetto.ifNull(Kroner(0))
+
+                //beregning yrkesskade
                 val yrkesskadegradFraBeregning = beregning.yrkesskadegrad.ifNull(0)
                 val inntektSkadetidspunkt = beregning.inntektSkadetidspunkt.ifNull(Kroner(0))
 
-                val beregningsresultattilrevurderingtotalnetto = beregning.beregningsresultatTilRevurderingTotalNetto.ifNull(Kroner(0))
 
+                //vilkårsvurdering yrkesskade
+                val skadetidspunkt = vilkarsvurdering.yrkesskade.safe { skadetidspunkt }.ifNull(localDateNow)
+                val yrkesskadegradFraVilkar = vilkarsvurdering.yrkesskade.safe { yrkesskadegrad }.ifNull(0)
+                val ivsbegrunnelse = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunktBegrunnelse }
+                val ivsinntekt = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunkt }.ifNull(Kroner(0))
 
-                // reduksjonsgrunnlag
+                // reduksjonsgrunnlag ok
                 val btRedusertTil0 = not(reduksjonsgrunnlag.isNull()) and reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0)).greaterThan(0) and reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0)).equalTo(0)
 
                 //Beregning barnetillegg
@@ -141,17 +150,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 val btsbInntektBruktIAvkorting = barnetillegg.btSerkullsbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
                 val flereSerkullsbarn = barnetillegg.btSerkullsbarn.safe { antallBarn }.ifNull(0).greaterThan(1)
 
-                //vilkårsvurdering
-                val skadetidspunkt = vilkarsvurdering.yrkesskade.safe { skadetidspunkt }.ifNull(localDateNow)
-                val yrkesskadegradFraVilkar = vilkarsvurdering.yrkesskade.safe { yrkesskadegrad }.ifNull(0)
-                val ivsbegrunnelse = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunktBegrunnelse }
-                val ivsinntekt = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunkt }.ifNull(Kroner(0))
-
-                //TODO: denne må formateres
-                val mnVirkningstidspunkt = vilkarsvurdering.virkningstidspunkt.month
-
-
-                //Sammenstiller andre data
+                //Sammenstiller andre data ok
                 val btInnvilget = btFellesInnvilget or btSerkullInnvilget
                 val harBareBt = btInnvilget and not(tillegg.ektefelletilleggInnvilget) and not(tillegg.gjenlevendetilleggInnvilget)
                 val harBareGjt = not(btInnvilget) and not(tillegg.ektefelletilleggInnvilget) and tillegg.gjenlevendetilleggInnvilget
@@ -165,7 +164,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 val btsbInnvilgetIkkeBtfbinnvilget = btSerkullInnvilget and not(btFellesInnvilget)
                 val btMedFlereBarn = barnetillegg.btFellesbarn.safe { antallBarn }.ifNull(0).greaterThan(1)
 
-                //tekster
+                //tekster ok
                 val epsBorMedNnEntall = ifElse(
                     grunnlag.epsBrukerBorMed.equalTo(Eps.EKTEFELLE), "ektefellen".expr(),
                     ifElse(
@@ -660,8 +659,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(((vilkarsvurdering.nedsattInntektsevneResultat).equalTo(VilkarResultat.OPPFYLT) and (vilkarsvurdering.virkningstidspunktBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_2))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + mnVirkningstidspunkt.format() + "." },
-                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til " + fritekst("Dato for opphør") + ", og uføretrygd blir betalt ut for dei dagane som er att i " + mnVirkningstidspunkt.format() + "." },
+                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + vilkarsvurdering.virkningstidspunkt.format(MaanedFormatter) + "." },
+                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til " + fritekst("Dato for opphør") + ", og uføretrygd blir betalt ut for dei dagane som er att i " + vilkarsvurdering.virkningstidspunkt.format(MaanedFormatter) + "." },
                         )
                     }
                 }
@@ -1657,5 +1656,13 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             includeAttachmentRedigerbar(VedleggId("okningUforegradBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
             includeAttachment(vedleggDineRettigheterOgPlikterUfore, dineRettigheterOgPlikterUfore)
         }
+    }
+
+    //TODO: ha denne generell?
+    private object MaanedFormatter : LocalizedFormatter<LocalDate>() {
+        override fun apply(first: LocalDate, second: Language): String =
+            MonthFormatter.apply(first.month, second)
+
+        override fun stableHashCode(): Int = "OkningUforegradRedigerbarV2.MaanedFormatter".hashCode()
     }
 }
