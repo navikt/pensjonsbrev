@@ -42,7 +42,7 @@ data class OkningUforegradV2Dto(
         val vedtak: Vedtak,
         val beregning: Beregning,
         val grunnlag: Grunnlag,
-        val institusjonsopphold: Institusjonsopphold? = null,
+        val institusjonsopphold: Institusjonsopphold,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag? = null,
         val tillegg: Tillegg,
         val barnetillegg: Barnetillegg,

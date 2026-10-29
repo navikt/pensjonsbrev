@@ -536,7 +536,7 @@ fun createOkningUforegradV2Dto() =
             institusjonsopphold = Institusjonsopphold(
                 erAnvendt = false,
                 type = null,
-                fasteUtgifter = null,
+                fasteUtgifter = Kroner(30),
                 reduksjonsperioder = listOf(
                     Institusjonsopphold.Reduksjonsperiode(
                         forsorgeransvar = true,

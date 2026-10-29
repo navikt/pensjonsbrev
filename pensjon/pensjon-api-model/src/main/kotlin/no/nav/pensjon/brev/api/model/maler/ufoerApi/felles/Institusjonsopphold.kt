@@ -6,7 +6,7 @@ import java.time.LocalDate
 data class Institusjonsopphold(
     val erAnvendt: Boolean,
     val type: JustertPeriodeCode?,
-    val fasteUtgifter: Kroner?,
+    val fasteUtgifter: Kroner,
     val reduksjonsperioder: List<Reduksjonsperiode>,
     val allePerioderHarForsorgeransvar: Boolean,
     val ingenPerioderHarForsorgeransvar: Boolean,

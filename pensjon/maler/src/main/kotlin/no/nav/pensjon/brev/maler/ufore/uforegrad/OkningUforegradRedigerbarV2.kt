@@ -119,10 +119,10 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                 //Beregning
                 val yrkesskadegradFraBeregning = beregning.yrkesskadegrad.ifNull(0)
+                val inntektSkadetidspunkt = beregning.inntektSkadetidspunkt.ifNull(Kroner(0))
 
                 val beregningsresultattilrevurderingtotalnetto = beregning.beregningsresultatTilRevurderingTotalNetto.ifNull(Kroner(0))
 
-                val inntektSkadetidspunkt = beregning.inntektSkadetidspunkt.ifNull(Kroner(0))
 
                 // reduksjonsgrunnlag
                 val reduksjonsgrunnlagSumutbt = reduksjonsgrunnlag.safe { sumUtBt }.ifNull(Kroner(0))
@@ -131,13 +131,6 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 val reduksjonsgrunnlagSumbruttoetterreduksjonbt = reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0))
                 val reduksjonsgrunnlagSumbruttoforreduksjonbt = reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0))
                 val reduksjonsgrunnlagAndelYtelseAvOifu = reduksjonsgrunnlag.safe { andelYtelseAvOIFU }.ifNull(0.0)
-
-                //inst
-                val instopphanvendt = institusjonsopphold.safe { erAnvendt }.ifNull(false)
-                val instoppholdtype = institusjonsopphold.safe { type }
-                val forsorgeransvarIngenPerioder = institusjonsopphold.safe { ingenPerioderHarForsorgeransvar }.ifNull(true.expr())
-                val forsorgeransvarAllePerioder = institusjonsopphold.safe { allePerioderHarForsorgeransvar }.ifNull(false.expr())
-                val fasteUtgifterInst = institusjonsopphold.safe { fasteUtgifter }.ifNull(Kroner(0))
 
                 //Beregning barnetillegg
                 val btSerkullInnvilget = barnetillegg.btSerkullsbarn.safe { innvilget }.ifNull(false)
@@ -343,43 +336,43 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS) and instopphanvendt)) {
-                    paragraph {
-                        text(
-                            bokmal { +"Vi har redusert utbetalingen av uføretrygden din, fordi du er innlagt på institusjon." },
-                            nynorsk { +"Vi har redusert utbetalinga av uføretrygda di, fordi du er innlagd på institusjon." },
-                        )
+                showIf(institusjonsopphold.type.equalTo(JustertPeriodeCode.REDUKSJON_HS)) {
+                    showIf(institusjonsopphold.erAnvendt) {
+                        paragraph {
+                            text(
+                                bokmal { +"Vi har redusert utbetalingen av uføretrygden din, fordi du er innlagt på institusjon." },
+                                nynorsk { +"Vi har redusert utbetalinga av uføretrygda di, fordi du er innlagd på institusjon." },
+                            )
+                        }
+                    }.orShow {
+                        paragraph {
+                            text(
+                                bokmal { +"Du er innlagt på institusjon, men vi kommer likevel ikke til å redusere utbetalingen av uføretrygden din." },
+                                nynorsk { +"Du er innlagd på institusjon, men vi kjem likevel ikkje til å redusere utbetalinga av uføretrygda di." },
+                            )
+                        }
                     }
                 }
 
-                showIf((instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS) and not(instopphanvendt))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du er innlagt på institusjon, men vi kommer likevel ikke til å redusere utbetalingen av uføretrygden din." },
-                            nynorsk { +"Du er innlagd på institusjon, men vi kjem likevel ikkje til å redusere utbetalinga av uføretrygda di." },
-                        )
+                showIf(institusjonsopphold.type.equalTo(JustertPeriodeCode.REDUKSJON_FO)) {
+                    showIf(institusjonsopphold.erAnvendt) {
+                        paragraph {
+                            text(
+                                bokmal { +"Vi har redusert utbetalingen av uføretrygden din, fordi du er under straffegjennomføring." },
+                                nynorsk { +"Vi har redusert utbetalinga av uføretrygda di, fordi du er under straffegjennomføring." },
+                            )
+                        }
+                    }.orShow {
+                        paragraph {
+                            text(
+                                bokmal { +"Du er under straffegjennomføring, men vi kommer likevel ikke til å redusere utbetalingen av uføretrygden din." },
+                                nynorsk { +"Du er under straffegjennomføring, men vi kjem likevel ikkje til å redusere utbetalinga av uføretrygda di." },
+                            )
+                        }
                     }
                 }
 
-                showIf((instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_FO) and instopphanvendt)) {
-                    paragraph {
-                        text(
-                            bokmal { +"Vi har redusert utbetalingen av uføretrygden din, fordi du er under straffegjennomføring." },
-                            nynorsk { +"Vi har redusert utbetalinga av uføretrygda di, fordi du er under straffegjennomføring." },
-                        )
-                    }
-                }
-
-                showIf((instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_FO) and not(instopphanvendt))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du er under straffegjennomføring, men vi kommer likevel ikke til å redusere utbetalingen av uføretrygden din." },
-                            nynorsk { +"Du er under straffegjennomføring, men vi kjem likevel ikkje til å redusere utbetalinga av uføretrygda di." },
-                        )
-                    }
-                }
-
-                showIf(not(instopphanvendt)) {
+                showIf(not(institusjonsopphold.erAnvendt)) {
                     paragraph {
                         text(
                             bokmal { +"Du får " + beregning.totalNetto.format() + " i uføretrygd" },
@@ -401,26 +394,28 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             nynorsk { +" per månad før skatt." },
                         )
                     }
-                }.orShowIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_FO) and forsorgeransvarIngenPerioder) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men den kommer ikke til utbetaling fordi du er under straffegjennomføring." },
-                            nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men ho blir ikkje betalt ut fordi du er under straffegjennomføring." },
-                        )
-                    }
-                }.orShowIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS)) {
+                }.orShowIf(institusjonsopphold.type.equalTo(JustertPeriodeCode.REDUKSJON_HS)) {
                     paragraph {
                         text(
                             bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalingen er redusert fordi du er innlagt på institusjon. I denne perioden vil du få utbetalt " + beregning.totalNetto.format() + "." },
                             nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalinga er redusert fordi du er innlagd på institusjon. I denne perioden får du betalt ut " + beregning.totalNetto.format() + "." },
                         )
                     }
-                }.orShowIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_FO) and forsorgeransvarAllePerioder) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalingen er redusert fordi du er under straffegjennomføring. I denne perioden vil du få utbetalt " + beregning.totalNetto.format() + "." },
-                            nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalinga er redusert fordi du er under straffegjennomføring. I denne perioden får du betalt ut " + beregning.totalNetto.format() + "." },
-                        )
+                }.orShowIf(institusjonsopphold.type.equalTo(JustertPeriodeCode.REDUKSJON_FO)) {
+                    showIf(institusjonsopphold.ingenPerioderHarForsorgeransvar) {
+                        paragraph {
+                            text(
+                                bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men den kommer ikke til utbetaling fordi du er under straffegjennomføring." },
+                                nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men ho blir ikkje betalt ut fordi du er under straffegjennomføring." },
+                            )
+                        }
+                    }.orShowIf(institusjonsopphold.allePerioderHarForsorgeransvar) {
+                        paragraph {
+                            text(
+                                bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalingen er redusert fordi du er under straffegjennomføring. I denne perioden vil du få utbetalt " + beregning.totalNetto.format() + "." },
+                                nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalinga er redusert fordi du er under straffegjennomføring. I denne perioden får du betalt ut " + beregning.totalNetto.format() + "." },
+                            )
+                        }
                     }
                 }
 
@@ -1028,108 +1023,97 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS)) {
+                showIf(institusjonsopphold.type.equalTo(JustertPeriodeCode.REDUKSJON_HS)) {
                     title1 {
                         text(
                             bokmal { +"Utbetaling av uføretrygd for deg som er innlagt på institusjon" },
                             nynorsk { +"Utbetaling av uføretrygd når du er innlagd på institusjon" },
                         )
                     }
-                }
 
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  AND  (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = true  OR  PE_UT_Forsorgeransvar_ingen_er_false() OR  PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = true)) THEN      INCLUDE ENDIF
-                showIf((instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS) and (instopphanvendt or forsorgeransvarAllePerioder or fasteUtgifterInst.notEqualTo(Kroner(0))))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Vi reduserer ikke utbetalingen av uføretrygden din verken i innleggelsesmåneden eller de tre påfølgende månedene når du er innlagt på institusjon. Uføretrygden din blir deretter redusert og skal under oppholdet utgjøre 14 prosent av uføretrygden inntil institusjonsoppholdet avsluttes. Totalt sett skal utbetalingen likevel utgjøre minst 45 prosent av folketrygdens grunnbeløp, før skatt. " },
-                            nynorsk { +"Vi reduserer ikkje utbetalinga av uføretrygda di verken i innleggingsmånaden eller dei tre påfølgjande månadene når du er innlagd på institusjon. Uføretrygda di blir deretter redusert og skal under opphaldet utgjere 14 prosent av uføretrygda inntil institusjonsopphaldet blir avslutta. Totalt sett skal utbetalinga likevel utgjere minst 45 prosent av grunnbeløpet i folketrygda før skatt. " },
-                        )
-
-                        showIf((tillegg.ektefelletilleggInnvilget)) {
+                    showIf(((institusjonsopphold.erAnvendt or institusjonsopphold.allePerioderHarForsorgeransvar or institusjonsopphold.fasteUtgifter.notEqualTo(Kroner(0))))) {
+                        paragraph {
                             text(
-                                bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert." },
-                                nynorsk { +"Dersom du får ektefelletillegg vil dette tillegget også bli redusert." },
+                                bokmal { +"Vi reduserer ikke utbetalingen av uføretrygden din verken i innleggelsesmåneden eller de tre påfølgende månedene når du er innlagt på institusjon. Uføretrygden din blir deretter redusert og skal under oppholdet utgjøre 14 prosent av uføretrygden inntil institusjonsoppholdet avsluttes. Totalt sett skal utbetalingen likevel utgjøre minst 45 prosent av folketrygdens grunnbeløp, før skatt. " },
+                                nynorsk { +"Vi reduserer ikkje utbetalinga av uføretrygda di verken i innleggingsmånaden eller dei tre påfølgjande månadene når du er innlagd på institusjon. Uføretrygda di blir deretter redusert og skal under opphaldet utgjere 14 prosent av uføretrygda inntil institusjonsopphaldet blir avslutta. Totalt sett skal utbetalinga likevel utgjere minst 45 prosent av grunnbeløpet i folketrygda før skatt. " },
                             )
-                        }.orShowIf((tillegg.gjenlevendetilleggInnvilget)) {
+
+                            showIf((tillegg.ektefelletilleggInnvilget)) {
+                                text(
+                                    bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert. " },
+                                    nynorsk { +"Dersom du får ektefelletillegg vil dette tillegget også bli redusert. " },
+                                )
+                            }.orShowIf((tillegg.gjenlevendetilleggInnvilget)) {
+                                text(
+                                    bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert. " },
+                                    nynorsk { +"Dersom du får attlevandetillegg vil dette tillegget også bli redusert. " },
+                                )
+                            }
+                        }
+                        paragraph {
                             text(
-                                bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert." },
-                                nynorsk { +"Dersom du får attlevandetillegg vil dette tillegget også bli redusert." },
+                                bokmal { +"Dersom du har faste og nødvendige utgifter til bolig, kan vi vurdere om uføretrygden din kan reduseres mindre. Du må sende inn dokumentasjon på dine utgifter til Nav. Forsørger du barn" + txtOgEllerEktefelle + " under innleggelsen på institusjonen, vil vi ikke redusere uføretrygden din. " },
+                                nynorsk { +"Dersom du har faste og nødvendige utgifter til bustad, vil vi vurdere en lågare reduksjon av uføretrygda di. Du må sende inn dokumentasjon på utgiftene dine til Nav. Viss du forsørgjer barn" + txtOgEllerEktefelle + " mens du er lagd inn på institusjonen, reduserer vi ikkje uføretrygda di. " }
                             )
                         }
                     }
-                }
 
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  AND  (PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = true  OR  PE_UT_Forsorgeransvar_ingen_er_false() OR  PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = true)) THEN      INCLUDE ENDIF
-                showIf((instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS) and (instopphanvendt or forsorgeransvarAllePerioder or fasteUtgifterInst.notEqualTo(Kroner(0))))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Dersom du har faste og nødvendige utgifter til bolig, kan vi vurdere om uføretrygden din kan reduseres mindre. Du må sende inn dokumentasjon på dine utgifter til Nav. Forsørger du barn" + txtOgEllerEktefelle + " under innleggelsen på institusjonen, vil vi ikke redusere uføretrygden din." },
-                            nynorsk { +"Dersom du har faste og nødvendige utgifter til bustad, vil vi vurdere en lågare reduksjon av uføretrygda di. Du må sende inn dokumentasjon på utgiftene dine til Nav. Viss du forsørgjer barn" + txtOgEllerEktefelle + " mens du er lagd inn på institusjonen, reduserer vi ikkje uføretrygda di." }
-                        )
+                    showIf(institusjonsopphold.fasteUtgifter.equalTo(0)) {
+                        showIf((not(institusjonsopphold.erAnvendt) and institusjonsopphold.ingenPerioderHarForsorgeransvar)) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Uføretrygden din er lavere enn 45 prosent av folketrygdens grunnbeløp. Du vil derfor ikke få redusert utbetaling av uføretrygden din når du er innlagt på institusjon. " },
+                                    nynorsk { +"Uføretrygda di er lågare enn 45 prosent av grunnbeløpet i folketrygda. Du får derfor ikkje redusert utbetaling av uføretrygda di når du er innlagd på institusjon. " },
+                                )
+                            }
+                        }
+
+                        showIf((institusjonsopphold.allePerioderHarForsorgeransvar)) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Du forsørger barn" + txtOgEllerEktefelle + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres. " },
+                                    nynorsk { +"Du forsørgjer barn" + txtOgEllerEktefelle + " under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di ikkje skal reduserast. " },
+                                )
+                            }
+                        }
+
+                        showIf((institusjonsopphold.erAnvendt and institusjonsopphold.ingenPerioderHarForsorgeransvar)) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Du forsørger ikke barn " + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + beregning.totalNetto.format() + ". " },
+                                    nynorsk { +"Du forsørgjer ikkje barn " + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + beregning.totalNetto.format() + ". " },
+                                )
+                            }
+                        }
+                    }.orShow {
+                        showIf((not(institusjonsopphold.erAnvendt) and institusjonsopphold.ingenPerioderHarForsorgeransvar)) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres. " },
+                                    nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har kome fram til at utbetalinga di derfor ikkje skal reduserast. " },
+                                )
+                            }
+                        }
+
+                        showIf((institusjonsopphold.allePerioderHarForsorgeransvar)) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig, og du forsørger barn" + txtOgEllerEktefelle + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres. " },
+                                    nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad, og du forsørgjer barn" + txtOgEllerEktefelle + " under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di ikkje skal reduserast. " },
+                                )
+                            }
+                        }
+
+                        showIf((institusjonsopphold.erAnvendt)) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din skal reduseres til " + beregning.totalNetto.format() + ". " },
+                                    nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har kome fram til at utbetalinga di skal reduserast til " + beregning.totalNetto.format() + ". " },
+                                )
+                            }
+                        }
                     }
-                }
-
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = false AND PE_UT_Forsorgeransvar_ingen_er_true() AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
-                showIf((not(instopphanvendt) and forsorgeransvarIngenPerioder and fasteUtgifterInst.equalTo(0) and instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Uføretrygden din er lavere enn 45 prosent av folketrygdens grunnbeløp. Du vil derfor ikke få redusert utbetaling av uføretrygden din når du er innlagt på institusjon." },
-                            nynorsk { +"Uføretrygda di er lågare enn 45 prosent av grunnbeløpet i folketrygda. Du får derfor ikkje redusert utbetaling av uføretrygda di når du er innlagd på institusjon." },
-                        )
-                    }
-                }
-
-                //IF(PE_UT_Forsorgeransvar_ingen_er_false() AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs" AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = 0) THEN      INCLUDE ENDIF
-                showIf((forsorgeransvarAllePerioder and instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS) and fasteUtgifterInst.equalTo(0))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du forsørger barn" + txtOgEllerEktefelle + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres." },
-                            nynorsk { +"Du forsørgjer barn" + txtOgEllerEktefelle + " under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di ikkje skal reduserast." },
-                        )
-                    }
-                }
-
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = false  AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter <> 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  AND PE_UT_Forsorgeransvar_ingen_er_true()) THEN      INCLUDE ENDIF
-                showIf((not(instopphanvendt) and fasteUtgifterInst.notEqualTo(0) and instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS) and forsorgeransvarIngenPerioder)) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres." },
-                            nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har kome fram til at utbetalinga di derfor ikkje skal reduserast." },
-                        )
-                    }
-                }
-
-                //IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter <> 0 AND PE_UT_Forsorgeransvar_ingen_er_false() AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
-                showIf((fasteUtgifterInst.notEqualTo(0) and forsorgeransvarAllePerioder and instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig, og du forsørger barn" + txtOgEllerEktefelle + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres." },
-                            nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad, og du forsørgjer barn" + txtOgEllerEktefelle + " under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di ikkje skal reduserast." },
-                        )
-                    }
-                }
-
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = true AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
-                showIf((instopphanvendt and fasteUtgifterInst.notEqualTo(0) and instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din skal reduseres til " + beregning.totalNetto.format() + "." },
-                            nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har kome fram til at utbetalinga di skal reduserast til " + beregning.totalNetto.format() + "." },
-                        )
-                    }
-                }
-
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = true  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = 0  AND PE_UT_Forsorgeransvar_ingen_er_true()) THEN      INCLUDE ENDIF
-                showIf((instopphanvendt and instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS) and fasteUtgifterInst.equalTo(0) and forsorgeransvarIngenPerioder)) {
-                    paragraph {
-                        text(
-                            bokmal { +"Du forsørger ikke barn " + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + beregning.totalNetto.format() + "." },
-                            nynorsk { +"Du forsørgjer ikkje barn " + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + beregning.totalNetto.format() + "." },
-                        )
-                    }
-                }
-
-                showIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_FO)) {
+                }.orShowIf(institusjonsopphold.type.equalTo(JustertPeriodeCode.REDUKSJON_FO)) {
                     includePhrase(
                         Ufoeretrygd.Straffegjennomfoering(
                             ektefelletilleggInnvilget = tillegg.ektefelletilleggInnvilget,
