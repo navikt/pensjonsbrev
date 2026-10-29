@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.brev.BrevLandmodell
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
@@ -433,9 +432,6 @@ fun createOkningUforegradV2Dto() =
         ),
         pesysData = OkningUforegradV2Dto.PesysData(
             pe = createPEgruppe10(),
-            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
-            kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
-            oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
                 ufoeretrygdPerioder = listOf(
                     UfoeretrygdPerMaaned(
@@ -497,14 +493,13 @@ fun createOkningUforegradV2Dto() =
                     gradsokning = true
                 )
             ),
-            harVTA = false,
-            fribelop = Kroner(5000),
             forrigeUforegrad = 50,
             forrigeUforetidspunkt = LocalDate.of(2025, 12, 1),
             harAlderspensjonLopendeEllerTilBehandling = true,
             krav = Kravhode(
                 virkFom = LocalDate.of(2020, Month.JANUARY, 1),
                 mottattDato = LocalDate.of(2020, Month.JANUARY, 1),
+                kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
                 arsak = Kravhode.Arsak.ANNEN,
                 konvertertFraUforepensjon = false,
                 ),
@@ -524,6 +519,8 @@ fun createOkningUforegradV2Dto() =
                 bunnfradrag = Kroner(1913),
                 bunnfradragNesteAr = Kroner(1919),
                 reduksjonsprosent = 5.0,
+                fribelop = Kroner(5000),
+                oifuVedVirkningstidspunkt = Kroner(10000),
                 yrkesskadegrad = 0,
                 yrkesskadeBest = false,
                 inntektSkadetidspunkt = Kroner(1010),
@@ -534,7 +531,8 @@ fun createOkningUforegradV2Dto() =
                 borIUtlandet = false,
                 epsBrukerBorMed = Grunnlag.Eps.EKTEFELLE,
                 anvendtSivilstand = Grunnlag.AnvendtSivilstandCode.BOR_MED_EKTEFELLE,
-            ),
+                harVTA = false,
+                ),
             institusjonsopphold = Institusjonsopphold(
                 erAnvendt = false,
                 type = null,

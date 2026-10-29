@@ -44,8 +44,6 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.institusjon
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.kravhode.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.reduksjonsgrunnlag.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.tillegg.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtaksinfo.vedtakFattetDatoEllerIdag
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.uforeVedtaksinfo.virkningsdatoTidligereMnd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vedtak.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vilkarsvurderingFullstendig.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vilkarsvurderingFullstendig.yrkesskade.*
@@ -54,6 +52,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektB
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.anvendtTrygdetid
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.fribelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.oifuVedVirkningstidspunkt
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -129,7 +129,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             val barnetillegg: Expression<Barnetillegg> = pesysData.barnetillegg
 
             fun Expression<OkningUforegradV2Dto.PesysData>.faktiskBunnfradrag() =
-                ifElse(not (localDateNow.year.equalTo(vedtak.virkFom.year) and vedtak.virkFom.month.equalTo(Month.DECEMBER))
+                ifElse(not (localDateNow.year.equalTo(vedtak.virkFom.year) and vedtak.virkFom.month.equalTo(Month.DECEMBER.value))
                         or beregning.bunnfradragNesteAr.equalTo(0),
                     beregning.bunnfradrag,
                     beregning.bunnfradragNesteAr
@@ -291,7 +291,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
 
             //ikke pe
-            val oifuKroner = pesysData.oifuVedVirkningstidspunkt.ifNull(Kroner(0))
+            val oifuKroner = pesysData.beregning.oifuVedVirkningstidspunkt.ifNull(Kroner(0))
             val oifuMerEnnIfu = oifuKroner.greaterThan(ifuinntekt)
 
             paragraph {
@@ -798,8 +798,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             showIf(((virkningBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_5))) {
                 paragraph {
                     text(
-                        bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtakvirkfom.format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + pesysData.kravFremsattDato.ifNull(kravMotattDato).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
-                        nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtakvirkfom.format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + pesysData.kravFremsattDato.ifNull(kravMotattDato).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
+                        bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtakvirkfom.format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + pesysData.krav.kravFremsattDato.ifNull(kravMotattDato).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
+                        nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtakvirkfom.format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + pesysData.krav.kravFremsattDato.ifNull(kravMotattDato).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
                     )
                 }
             }
@@ -1008,7 +1008,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     nynorsk { +"Det er mogleg for deg å ha inntekt ved sida av uføretrygda di. " },
                 )
             }
-            showIf(!pesysData.harVTA) {
+            showIf(!pesysData.grunnlag.harVTA) {
                 paragraph {
                     text(
                         bokmal { +"Fra " + virkningstidspunkt.format() + " vil du få en ny venteperiode på 2 år med et fribeløp på 40 prosent av folketrygdens grunnbeløp (G), før fribeløpet igjen vil øke til 1 G. Fribeløpet kan du tjene" },
@@ -1024,7 +1024,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         bokmal { +" uten at uføretrygden din blir redusert. Dette heter bunnfradrag. " },
                         nynorsk { +" utan at uføretrygda di blir redusert. Dette heiter botnfrådrag. " },
                     )
-                    showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER)) {
+                    showIf(pesysData.vedtak.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
                         text(
                             bokmal { +"Selv om fribeløpet endrer seg beholder du det nåværende bunnfradraget ditt ut inneværende kalenderår. Det nåværende bunnfradraget ditt er " + bunnfradrag.format() + ". " },
                             nynorsk { +"Sjølv om fribeløpet endrar seg, beheld du det noverande botnfrådraget ditt ut inneverande kalenderår. Det noverande botnfrådraget ditt er " + bunnfradrag.format() + ". " },
@@ -1043,10 +1043,10 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             nynorsk { +"Slik reknar vi ut fribeløpet ditt i år: " },
                         )
                     }
-                    includePhrase(Fribelopsperioder(pesysData.fribelopsperioder, pesysData.fribelop))
+                    includePhrase(Fribelopsperioder(pesysData.fribelopsperioder, pesysData.beregning.fribelop))
                 }
             }.orShow {
-                showIf(pesysData.harVTA) {
+                showIf(pesysData.grunnlag.harVTA) {
                     paragraph {
                         text(
                             bokmal { +"Fordi du er i varig tilrettelagt arbeid kan du ha en årlig inntekt på folketrygdens grunnbeløp uten at uføretrygden din blir redusert. I dag er dette " + bunnfradrag.format() + ". Dette er bunnfradraget ditt." },
@@ -1714,7 +1714,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato < PE_VedtakFattetDato_minus_1mnd) THEN      INCLUDE ENDIF
-            showIf((harBeløpØkt and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
+            showIf((harBeløpØkt and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtak.virkningsdatoTidligereMnd)) {
                 includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(kravOnsketvirkningsdato, visTekstOmRenter))
             }
 

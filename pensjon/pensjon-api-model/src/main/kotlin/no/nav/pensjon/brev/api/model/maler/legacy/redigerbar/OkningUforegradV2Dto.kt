@@ -10,13 +10,11 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Institusjonsopphold
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Kravhode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Reduksjonsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Tillegg
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Vedtak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class OkningUforegradV2Dto(
@@ -26,18 +24,15 @@ data class OkningUforegradV2Dto(
 
     data class PesysData(
         val pe: PEgruppe10,
-        val vedtaksinfo: UforeVedtaksinfo,
-        val kravFremsattDato: LocalDate?,
-        val oifuVedVirkningstidspunkt: Kroner?,
+
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
+
         val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
         val nyeAvslagBarnetillegg: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val sisteTrygdetidsgrunnlag: OkningUforegradDto.Trygdetidsgrunnlag?,
         val hjemler: Set<String>,
         val fribelopsperioder: List<OkningUforegradDto.Fribelopsperiode>,
-        val fribelop: Kroner,
-        val harVTA: Boolean,
         val forrigeUforegrad: Int,
         val forrigeUforetidspunkt: LocalDate,
 
