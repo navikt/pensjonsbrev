@@ -998,6 +998,25 @@ test.describe("Markering over flere literals", () => {
     await expect.poll(() => selectedText(page)).toBe(before);
   });
 
+  test("markering som starter i en variabel beholder fokus i editoren ved tastaturaktivering", async ({ page }) => {
+    // Dras baklengs, siden en dra-markering ikke kan starte i en variabel
+    await dragSelect(page, { text: " og velkommen", offset: 3 }, { text: "Navn", offset: 0 });
+    await expect.poll(() => selectedText(page)).toMatch(/^Navn\s*og$/);
+    const before = await selectedText(page);
+
+    await page.getByTestId("fonttype-bold-button").focus();
+    await page.keyboard.press("Enter");
+
+    await expect(page.getByText(" og", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect.poll(() => selectedText(page)).toBe(before);
+    await expect.poll(() => page.evaluate(() => !!document.activeElement?.closest("[data-editor-root]"))).toBe(true);
+
+    // Skriving erstatter markeringen, siden tastetrykket kommer fra editoren. Som ved Delete fulgt av skriving
+    // kan ett av to tilstøtende mellomrom forsvinne (eksisterende whitespace-oppførsel).
+    await page.keyboard.type("X");
+    await expect(page.locator(".PARAGRAPH").nth(2)).toHaveText(/^Hei\s*X ?velkommen$/);
+  });
+
   test("markering over to literals i et avsnitt gjøres kursiv og forblir markert", async ({ page }) => {
     await dragSelect(page, { text: paragraphFirst, offset: 8 }, { text: paragraphSecond, offset: 7 });
     await expect.poll(() => selectedText(page)).toBe("start avsnitt");

@@ -100,6 +100,17 @@ function textPosition(el: HTMLElement, offset: number): { node: Node; offset: nu
 }
 
 /**
+ * The first literal from `startEl` to `endEl` that can take focus. Variables and line breaks cannot, so a range
+ * starting in one is focused at the next text literal, keeping keyboard focus in the editor.
+ */
+function focusableLiteralInRange(root: HTMLElement, startEl: HTMLElement, endEl: HTMLElement) {
+  const literals = [...root.querySelectorAll<HTMLElement>("[data-literal-index]")];
+  const from = literals.indexOf(startEl);
+  const to = literals.indexOf(endEl);
+  return literals.slice(from, to + 1).find((el) => el.hasAttribute("tabindex"));
+}
+
+/**
  * Selects the given model range in the DOM (a caret when start equals end), and focuses the editable
  * element at its start. The range may span several literals. Returns false if the literals are not rendered.
  */
@@ -117,7 +128,8 @@ export function selectSelectionIndex(root: HTMLElement, selection: SelectionFocu
     unifyEditables(root);
   }
   try {
-    if (document.activeElement !== startEl) startEl.focus({ preventScroll: true });
+    const focusTarget = focusableLiteralInRange(root, startEl, endEl);
+    if (focusTarget && document.activeElement !== focusTarget) focusTarget.focus({ preventScroll: true });
     globalThis.getSelection()?.setBaseAndExtent(start.node, start.offset, end.node, end.offset);
     return true;
   } catch (error) {
