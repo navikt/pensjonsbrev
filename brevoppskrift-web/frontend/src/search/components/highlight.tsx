@@ -102,6 +102,22 @@ function VariableChip({ label }: { label: string }) {
   );
 }
 
+/** How a match is marked. Snippets in the result list are short, so bold is
+ *  enough; in a whole document the marks have to stand out while scrolling. */
+export type HighlightVariant = "snippet" | "document";
+const MARK_STYLES = {
+  snippet: css`
+    background: transparent;
+    color: inherit;
+    font-weight: var(--ax-font-weight-bold);
+  `,
+  document: css`
+    background: var(--ax-bg-warning-moderate);
+    color: inherit;
+    border-radius: var(--ax-radius-2);
+    box-shadow: inset 0 -2px 0 var(--ax-border-warning);
+  `,
+};
 /**
  * Renders text with the matched parts of the needle wrapped in `<mark>`.
  *
@@ -113,7 +129,17 @@ function VariableChip({ label }: { label: string }) {
  * location is. Terms with no match at all in this particular text are left
  * unhighlighted.
  */
-function HighlightText({ text, needle, exact }: { text: string; needle: string; exact?: boolean }) {
+export function HighlightText({
+  text,
+  needle,
+  exact,
+  variant = "snippet",
+}: {
+  text: string;
+  needle: string;
+  exact?: boolean;
+  variant?: HighlightVariant;
+}) {
   const ranges = mergeRanges(exact ? exactRanges(text, normalizeForExactMatch(needle)) : termRanges(text, needle));
   if (ranges.length === 0) {
     return <>{text}</>;
@@ -126,14 +152,7 @@ function HighlightText({ text, needle, exact }: { text: string; needle: string; 
       nodes.push(<Fragment key={`plain-${i}`}>{text.slice(cursor, start)}</Fragment>);
     }
     nodes.push(
-      <mark
-        css={{
-          background: "transparent",
-          color: "inherit",
-          fontWeight: "var(--ax-font-weight-bold)",
-        }}
-        key={`mark-${i}`}
-      >
+      <mark css={MARK_STYLES[variant]} key={`mark-${i}`}>
         {text.slice(start, end)}
       </mark>,
     );

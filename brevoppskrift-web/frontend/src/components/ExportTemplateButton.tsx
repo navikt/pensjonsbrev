@@ -1,3 +1,4 @@
+import { FloppydiskIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";
 import { useState } from "react";
 
@@ -32,8 +33,16 @@ export function ExportTemplateButton(props: TemplateExport) {
 
   return (
     <>
-      <Button loading={exporting} onClick={download} type="button" variant="secondary">
-        Last ned brevoppskrift som Word
+      <Button
+        icon={<FloppydiskIcon aria-hidden />}
+        loading={exporting}
+        onClick={download}
+        size="small"
+        title="Last ned brevoppskrift som Word"
+        type="button"
+        variant="secondary"
+      >
+        Last ned
       </Button>
       {error !== undefined && (
         <div role="alert">

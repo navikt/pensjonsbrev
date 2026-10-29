@@ -52,7 +52,7 @@ function renderSearch(queryClient: QueryClient, client: SearchClient = createLoc
   const history: TemplateSearch[] = [];
   const rendered = renderHook(
     () => {
-      const search = useTemplateSearch(refs, client);
+      const search = useTemplateSearch(refs, { searchClient: client });
       history.push(search);
       return search;
     },

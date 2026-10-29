@@ -1,5 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRootRouteWithContext, createRouter, RouterProvider } from "@tanstack/react-router";
+import {
+  type AnyRootRoute,
+  createRootRouteWithContext,
+  createRoute,
+  createRouter,
+  RouterProvider,
+} from "@tanstack/react-router";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -58,13 +64,23 @@ function mockCorpus() {
   getAllTemplateDocumentation.queryFn.mockResolvedValue(autobrevContent);
 }
 
+/** Stands in for the template page, so opening a result has somewhere to go. */
+function templateRoute(rootRoute: AnyRootRoute) {
+  return createRoute({
+    getParentRoute: () => rootRoute,
+    path: "/template/$malType/$templateId",
+    validateSearch: (search: Record<string, unknown>) => search,
+    component: () => <p>Malsiden</p>,
+  });
+}
+
 /** Mounts the real `/templates` route standalone. `createFileRoute` leaves the
  *  exported `Route` unbound (no id/path/parent) — the app only wires those via
  *  the codegen'd `routeTree.gen.ts` (`TemplatesRouteImport.update({ id, path,
  *  getParentRoute })`). We mirror that exact wiring here instead of using
  *  `Route` as-is, otherwise the router throws
  *  "Duplicate routes found with id: __root__". */
-async function renderTemplatesRoute() {
+async function renderTemplatesRoute(search: Record<string, unknown> = {}) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const rootRoute = createRootRouteWithContext<{ queryClient: QueryClient }>()({});
   const templatesRoute = TemplatesRouteImport.update({
@@ -74,11 +90,11 @@ async function renderTemplatesRoute() {
     // biome-ignore lint/suspicious/noExplicitAny: mirrors the `as any` cast routeTree.gen.ts uses for this same `.update(...)` call.
   } as any);
   const router = createRouter({
-    routeTree: rootRoute.addChildren([templatesRoute]),
+    routeTree: rootRoute.addChildren([templatesRoute, templateRoute(rootRoute)]),
     context: { queryClient },
     history: undefined,
   });
-  await router.navigate({ to: "/templates" });
+  await router.navigate({ to: "/templates", search });
   await router.load();
 
   const result = render(
@@ -91,7 +107,7 @@ async function renderTemplatesRoute() {
     expect(result.container.innerHTML).not.toBe("<div></div>");
   });
 
-  return { user: userEvent.setup(), ...result };
+  return { user: userEvent.setup(), router, ...result };
 }
 
 describe("<AllTemplates /> (route: /templates)", () => {
@@ -306,5 +322,99 @@ describe("<AllTemplates /> (route: /templates)", () => {
 
     expect(screen.queryByText(/Skriv minst/i)).toBeNull();
     expect(screen.queryByTitle("Henter maler")).toBeNull();
+  });
+
+  describe("search context in the URL", () => {
+    const many = Array.from({ length: 12 }, (_, i) => `A${String(i).padStart(2, "0")}`);
+    function mockManyHits() {
+      getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) =>
+        Promise.resolve(
+          malType === "autobrev"
+            ? many.map((name) => ({ name, letterDataClass: "AutobrevDto", languages: ["BOKMAL"] }))
+            : [],
+        ),
+      );
+      getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+        Promise.resolve(
+          malType === "autobrev"
+            ? many.map((brevkode) => ({
+                brevkode,
+                language: "BOKMAL",
+                lines: [{ index: 7, segments: [{ type: "text", value: "Hei" }] }],
+              }))
+            : [],
+        ),
+      );
+    }
+    const isCurrentPage = (page: string) =>
+      screen.getByRole("button", { name: page }).getAttribute("aria-current") === "true";
+
+    it("restores the query, match mode and tab from the URL", async () => {
+      mockCorpus();
+
+      await renderTemplatesRoute({ q: "A1", exact: true, tab: "brev" });
+
+      expect(screen.getByRole<HTMLInputElement>("searchbox").value).toBe("A1");
+      expect(screen.getByRole<HTMLInputElement>("checkbox", { name: "Vis kun nøyaktige treff" }).checked).toBe(true);
+      expect(screen.getByRole("tab", { name: /^Brev/ }).getAttribute("aria-selected")).toBe("true");
+      expect(await screen.findByText(/Søket traff tittel, navn eller brevkode/)).toBeTruthy();
+    });
+
+    it("writes the settled query to the URL without adding history entries", async () => {
+      mockCorpus();
+      const { user, router } = await renderTemplatesRoute();
+      const historyLength = globalThis.history.length;
+
+      await user.type(screen.getByRole("searchbox"), "Hei");
+      await user.click(screen.getByRole("checkbox", { name: "Vis kun nøyaktige treff" }));
+
+      await waitFor(() => expect(router.state.location.search).toMatchObject({ q: "Hei", exact: true }));
+      expect(globalThis.history.length).toBe(historyLength);
+    });
+
+    it("opens at the page showing the selected result, and marks it", async () => {
+      mockManyHits();
+
+      await renderTemplatesRoute({ q: "Hei", selected: "autobrev/A11/BOKMAL" });
+
+      await waitFor(() => expect(isCurrentPage("2")).toBe(true));
+      const link = screen.getByRole("link", { name: "A11" });
+      expect(link.getAttribute("aria-current")).toBe("true");
+      expect(link.closest("[data-selected-result]")).not.toBeNull();
+      expect(document.querySelectorAll("[data-selected-result]")).toHaveLength(1);
+    });
+
+    it("starts a new search on page 1 with nothing selected", async () => {
+      mockManyHits();
+      const { user, router } = await renderTemplatesRoute({ q: "Hei", selected: "autobrev/A11/BOKMAL" });
+      await waitFor(() => expect(isCurrentPage("2")).toBe(true));
+
+      await user.type(screen.getByRole("searchbox"), "{Backspace}");
+
+      await waitFor(() => expect(router.state.location.search).toEqual({ q: "He" }));
+      expect(document.querySelector("[data-selected-result]")).toBeNull();
+    });
+
+    it("links each result with the search, and records the opened one so Back returns to it", async () => {
+      mockManyHits();
+      const { user, router } = await renderTemplatesRoute({ q: "Hei" });
+      const link = await screen.findByRole("link", { name: "A00" });
+
+      const href = new URL(link.getAttribute("href") ?? "", "http://localhost");
+      expect(href.pathname).toBe("/template/autobrev/A00");
+      expect(Object.fromEntries(href.searchParams)).toEqual({
+        q: "Hei",
+        language: "BOKMAL",
+        index: "7",
+      });
+
+      await user.click(link);
+      await screen.findByText("Malsiden");
+
+      act(() => router.history.back());
+      await waitFor(() => expect(router.state.location.pathname).toBe("/templates"));
+      expect(router.state.location.search).toEqual({ q: "Hei", selected: "autobrev/A00/BOKMAL" });
+      await waitFor(() => expect(screen.getByRole("link", { name: "A00" }).getAttribute("aria-current")).toBe("true"));
+    });
   });
 });

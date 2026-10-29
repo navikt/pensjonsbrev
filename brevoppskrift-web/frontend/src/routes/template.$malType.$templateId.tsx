@@ -1,14 +1,33 @@
 import { css } from "@emotion/react";
-import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import { Box, Button, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
-import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { Heading, HGrid, HStack, Spacer, VStack } from "@navikt/ds-react";
+import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
+import { useMemo, useRef, useState } from "react";
 
 import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
 import { type TemplateDocumentation } from "~/api/templateDocumentationTypes";
 import { DataClassesPanel } from "~/components/DataClasses";
 import { ExportTemplateButton } from "~/components/ExportTemplateButton";
+import { LanguageToggle } from "~/components/LanguageToggle";
 import { Document, KnownDataClassesProvider } from "~/components/TemplateDocumentationView";
+import {
+  criteriaOf,
+  type ResultRef,
+  type TemplateSearchContextParams,
+  validateTemplateSearchContext,
+} from "~/search/searchContext";
+import { type SearchHighlight, SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
+import { BackButton, SearchHitToolbar } from "~/templateSearch/SearchHitToolbar";
+import { useScrollToBlock } from "~/templateSearch/useScrollToBlock";
+import { useTemplateHits } from "~/templateSearch/useTemplateHits";
+
+type TemplateSearchParams = TemplateSearchContextParams & {
+  language?: string;
+  highlightedDataClass?: string;
+  highlightedDataField?: string;
+  highlightedDataFieldOwner?: string;
+  /** The block to open at, a matching block when opened from a search. */
+  index?: number;
+};
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -30,9 +49,10 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }
 
     if (!deps.language && !preload) {
+      // Keeps the rest of the search params, so a search context survives.
       throw redirect({
         to: "/template/$malType/$templateId",
-        search: { language: defaultLanguage },
+        search: (prev) => ({ ...prev, language: defaultLanguage }),
         params,
       });
     }
@@ -46,15 +66,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 
     return { documentation, description };
   },
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): {
-    language?: string;
-    highlightedDataClass?: string;
-    highlightedDataField?: string;
-    highlightedDataFieldOwner?: string;
-    index?: number;
-  } => {
+  validateSearch: (search: Record<string, unknown>): TemplateSearchParams => {
     const indexRaw = search.index?.toString();
     const index = indexRaw !== undefined && /^\d+$/.test(indexRaw) ? Number(indexRaw) : undefined;
     return {
@@ -63,6 +75,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
       highlightedDataField: search.highlightedDataField?.toString(),
       highlightedDataFieldOwner: search.highlightedDataFieldOwner?.toString(),
       index,
+      ...validateTemplateSearchContext(search),
     };
   },
   component: TemplateExplorer,
@@ -70,42 +83,59 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 
 function TemplateExplorer() {
   const { documentation, description } = Route.useLoaderData();
-  const { templateId } = Route.useParams();
-  const { index, language } = Route.useSearch();
+  const { malType, templateId } = Route.useParams();
+  const { index, language: languageParam, q, exact, tab } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
   const previewRef = useRef<HTMLDivElement>(null);
+  const language = languageParam ?? description.languages[0];
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
-  useEffect(() => {
-    const container = previewRef.current;
-    if (!container) {
-      return;
-    }
+  const criteria = useMemo(() => criteriaOf({ q, exact, tab }), [q, exact, tab]);
+  const current = useMemo<ResultRef>(() => ({ malType, id: templateId, language }), [malType, templateId, language]);
+  const hits = useTemplateHits(criteria, current, index);
+  // Local on purpose: every visit, refresh and shared link starts with marking
+  // on. Kept while moving between results, since the route stays mounted.
+  const [marking, setMarking] = useState(true);
 
-    for (const prev of container.querySelectorAll(".search-target")) {
-      prev.classList.remove("search-target");
-    }
-
-    if (index === undefined) {
-      return;
-    }
-
-    const raf = requestAnimationFrame(() => {
-      const el = container.querySelector(`[data-block-index="${CSS.escape(String(index))}"]`);
-      if (el) {
-        el.classList.add("search-target");
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    });
-    return () => cancelAnimationFrame(raf);
-  }, [index, documentation]);
+  const highlight = useMemo<SearchHighlight | undefined>(
+    () =>
+      marking && hits?.status === "ready"
+        ? {
+            needle: hits.highlight.needle,
+            exact: hits.highlight.exactOnly,
+            matchingBlocks: new Set(hits.matchingBlocks),
+            activeBlock: hits.activeBlock,
+          }
+        : undefined,
+    [marking, hits],
+  );
+  // Without a search, a plain `index` link still scrolls to its block.
+  const scrollTarget = criteria ? (hits?.status === "ready" ? hits.activeBlock : undefined) : index;
+  useScrollToBlock(previewRef, scrollTarget, documentation);
 
   return (
     <VStack height="100%" overflow="hidden">
-      <Box asChild flexShrink="0" marginBlock="space-8" marginInline="space-16 auto">
-        <Button as={Link} icon={<ArrowLeftIcon />} size="small" to="/templates" variant="secondary">
-          Tilbake til mal-oversikten
-        </Button>
-      </Box>
+      <HStack align="center" flexShrink="0" gap="space-16" marginBlock="space-8" marginInline="space-16" wrap>
+        <BackButton criteria={criteria} current={current} />
+        {criteria && hits ? (
+          <SearchHitToolbar
+            criteria={criteria}
+            hits={hits}
+            marking={marking}
+            onMarkingChange={setMarking}
+            onSelectBlock={(block) => navigate({ replace: true, search: (s) => ({ ...s, index: block }) })}
+          />
+        ) : null}
+        <LanguageToggle
+          available={description.languages}
+          onChange={(value) => navigate({ replace: true, search: (s) => ({ ...s, language: value }) })}
+          value={language}
+        />
+        <Heading level="1" size="small">
+          {templateId}
+        </Heading>
+        <Spacer />
+        <ExportTemplateButton documentation={documentation} language={language} templateId={templateId} />
+      </HStack>
       <HGrid columns="auto 1fr" flexGrow="1" minHeight="0" overflow="hidden">
         <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
         <VStack
@@ -116,28 +146,30 @@ function TemplateExplorer() {
           paddingInline="space-16"
           width="100%"
         >
-          <Heading size="medium" spacing>
-            Oppskrift for {templateId}
-          </Heading>
-          <SelectLanguage />
-          <ExportTemplateButton
-            documentation={documentation}
-            language={language ?? description.languages[0]}
-            templateId={templateId}
-          />
           <div
             css={css`
               width: 100%;
 
-              .search-target {
-                outline: 3px solid var(--ax-warning-400);
+              [data-search-hit] {
                 border-radius: var(--ax-radius-4);
                 scroll-margin-top: var(--ax-space-64);
+              }
+
+              [data-search-hit="match"] {
+                outline: 1px solid var(--ax-border-warning-subtle);
+                outline-offset: var(--ax-space-2);
+              }
+
+              [data-search-hit="active"] {
+                outline: 3px solid var(--ax-border-warning);
+                outline-offset: var(--ax-space-2);
               }
             `}
             ref={previewRef}
           >
-            <TemplateDocumentationSection documentation={documentation} />
+            <SearchHighlightProvider highlight={highlight}>
+              <TemplateDocumentationSection documentation={documentation} />
+            </SearchHighlightProvider>
           </div>
         </VStack>
       </HGrid>
@@ -153,30 +185,5 @@ function TemplateDocumentationSection({ documentation }: { documentation: Templa
         <Document key={index} templateDocumentation={attachment} />
       ))}
     </KnownDataClassesProvider>
-  );
-}
-
-function SelectLanguage() {
-  const { description } = Route.useLoaderData();
-  const { language } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
-
-  return (
-    <Select
-      css={css`
-        width: 200px;
-        margin-bottom: var(--ax-space-32);
-      `}
-      label="Språk"
-      onChange={(event) => navigate({ replace: true, search: (s) => ({ ...s, language: event.target.value }) })}
-      size="medium"
-      value={language}
-    >
-      {description.languages.map((language) => (
-        <option key={language} value={language}>
-          {language}
-        </option>
-      ))}
-    </Select>
   );
 }
