@@ -118,25 +118,11 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
 
                 //Beregning
-                val uforegradFraBeregning = beregning.uforegrad
                 val yrkesskadegradFraBeregning = beregning.yrkesskadegrad.ifNull(0)
-                val utbetalingsgrad = beregning.utbetalingsgrad
 
-                val beregningVirkFom = beregning.virkFom
-                val beregningUforetidspunkt = beregning.uforetidspunkt
-
-                val uforetotalnetto = beregning.totalNetto
-                val harBeløpØkt = beregning.belopHarOkt
                 val beregningsresultattilrevurderingtotalnetto = beregning.beregningsresultatTilRevurderingTotalNetto.ifNull(Kroner(0))
 
-                val bunnfradrag = beregning.bunnfradrag
-                val bunnfradragFaktisk = faktiskBunnfradrag()
-                val reduksjonsprosent = beregning.reduksjonsprosent
-
-                val yrkesskadebest = beregning.yrkesskadeBest
                 val inntektSkadetidspunkt = beregning.inntektSkadetidspunkt.ifNull(Kroner(0))
-
-                val grunnbelop = beregning.grunnbelop
 
                 // reduksjonsgrunnlag
                 val reduksjonsgrunnlagSumutbt = reduksjonsgrunnlag.safe { sumUtBt }.ifNull(Kroner(0))
@@ -145,11 +131,6 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 val reduksjonsgrunnlagSumbruttoetterreduksjonbt = reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0))
                 val reduksjonsgrunnlagSumbruttoforreduksjonbt = reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0))
                 val reduksjonsgrunnlagAndelYtelseAvOifu = reduksjonsgrunnlag.safe { andelYtelseAvOIFU }.ifNull(0.0)
-
-                // tillegg
-                val ektefelletilleggInnvilget = tillegg.ektefelletilleggInnvilget
-                val gjenlevendetilleggInnvilget = tillegg.gjenlevendetilleggInnvilget
-                val nyttGjenlevendetillegg = tillegg.nyttGjenlevendetillegg
 
                 //inst
                 val instopphanvendt = institusjonsopphold.safe { erAnvendt }.ifNull(false)
@@ -181,33 +162,12 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 val btsbfribelop = barnetillegg.btSerkullsbarn.safe { fribelop }.ifNull(Kroner(0))
                 val btfbinntektbruktiavkorting = barnetillegg.btFellesbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
                 val btsbInntektBruktIAvkorting = barnetillegg.btSerkullsbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
-                val forekomstBtInnv = barnetillegg.antallForekomsterAvBarnetillegg
-
-                //krav
-                val kravOnsketvirkningsdato = krav.virkFom
-                val kravMotattDato = krav.mottattDato
-                val kravarsaktype = krav.arsak
-                val konvertertup = krav.konvertertFraUforepensjon
-
-                //vedtak
-                val vedtakvirkfom = vedtak.virkFom
 
                 //vilkårsvurdering
-                val uforetidspunkt = vilkarsvurdering.uforetidspunkt
-                val uforegradFraVilkar = vilkarsvurdering.uforegrad
-
-                val virkningstidspunkt = vilkarsvurdering.virkningstidspunkt
 
                 val skadetidspunkt = vilkarsvurdering.yrkesskade.safe { skadetidspunkt }.ifNull(localDateNow)
                 val yrkesskadegradFraVilkar = vilkarsvurdering.yrkesskade.safe { yrkesskadegrad }.ifNull(0)
-                val yrkesskadebegrunnelse = vilkarsvurdering.yrkesskadeBegrunnelse
-                val yrkesskaderesultat = vilkarsvurdering.yrkesskadeResultat
 
-                val ifuinntekt = vilkarsvurdering.ifuInntekt
-                val ifubegrunnelse = vilkarsvurdering.ifuBegrunnelse
-                val ieuinntekt = vilkarsvurdering.ieuInntekt
-                val ieuBegrunnelse = vilkarsvurdering.ieuBegrunnelse
-                val unguforeresultat = vilkarsvurdering.ungUforResultat
                 val nedsattInntektsevneResultat = vilkarsvurdering.nedsattInntektsevneResultat
                 val virkningBegrunnelse = vilkarsvurdering.virkningstidspunktBegrunnelse
 
@@ -217,22 +177,16 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 val ivsbegrunnelse = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunktBegrunnelse }
                 val ivsinntekt = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunkt }.ifNull(Kroner(0))
 
-                //grunnlag
-                val bostedutland = grunnlag.borIUtlandet
-
-                // ymse
-                val harLopendeAlderspensjon = harAlderspensjonLopendeEllerTilBehandling
+                val oifuKroner = beregning.oifuVedVirkningstidspunkt.ifNull(Kroner(0))
+                val oifuMerEnnIfu = oifuKroner.greaterThan(vilkarsvurdering.ifuInntekt)
 
                 //Sammenstiller andre data
                 val btInnvilget = btFellesInnvilget or btSerkullInnvilget
-                val btSerkullNetto0 = btSerkullNetto.equalTo(0)
-                val btFellesNetto0 = btFellesNetto.equalTo(0)
-                val btfbjusteringsbelopperar0 = btfbJusteringsbelopPerAr.equalTo(0)
-                val kunBt = btInnvilget and not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget)
-                val kunGjt = not(btInnvilget) and not(ektefelletilleggInnvilget) and gjenlevendetilleggInnvilget
-                val kunEt = ektefelletilleggInnvilget and not(btInnvilget) and not(gjenlevendetilleggInnvilget)
-                val btOgGt = btInnvilget and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget)
-                val btOgEt = btInnvilget and ektefelletilleggInnvilget and not(gjenlevendetilleggInnvilget)
+                val harBareBt = btInnvilget and not(tillegg.ektefelletilleggInnvilget) and not(tillegg.gjenlevendetilleggInnvilget)
+                val harBareGjt = not(btInnvilget) and not(tillegg.ektefelletilleggInnvilget) and tillegg.gjenlevendetilleggInnvilget
+                val harBareEt = tillegg.ektefelletilleggInnvilget and not(btInnvilget) and not(tillegg.gjenlevendetilleggInnvilget)
+                val harBtOgGjt = btInnvilget and tillegg.gjenlevendetilleggInnvilget and not(tillegg.ektefelletilleggInnvilget)
+                val harBtOgEt = btInnvilget and tillegg.ektefelletilleggInnvilget and not(tillegg.gjenlevendetilleggInnvilget)
                 val btsbInnvbtfbInnvJusteringsbelopSerkullIkke0 = btSerkullInnvilget and btFellesInnvilget and btsbJusteringsbelopPerAr.notEqualTo(0)
                 val btsbInnvbtfbInnvJusteringsbelopFellesIkke0 = btSerkullInnvilget and btFellesInnvilget and btfbJusteringsbelopPerAr.notEqualTo(0)
                 val btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 = btSerkullInnvilget and btFellesInnvilget and ((btSerkullNetto.notEqualTo(0) and btsbJusteringsbelopPerAr.equalTo(0)) or (btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0)))
@@ -277,28 +231,23 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 )
                 val txtOgEllerEktefelle = ifElse(tillegg.ektefelletilleggInnvilget, " og/eller ektefelle".expr(), "".expr())
 
-
-                //ikke pe
-                val oifuKroner = beregning.oifuVedVirkningstidspunkt.ifNull(Kroner(0))
-                val oifuMerEnnIfu = oifuKroner.greaterThan(ifuinntekt)
-
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + kravMotattDato.format() + ". " },
-                        nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + kravMotattDato.format() + ". " },
+                        bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + krav.mottattDato.format() + ". " },
+                        nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + krav.mottattDato.format() + ". " },
                     )
-                    showIf(kravarsaktype.isNotAnyOf(Arsak.OMGJ_ETTER_KLAGE, Arsak.OMGJ_ETTER_ANKE)) {
+                    showIf(krav.arsak.isNotAnyOf(Arsak.OMGJ_ETTER_KLAGE, Arsak.OMGJ_ETTER_ANKE)) {
                         text(
-                            bokmal { +"Uføregraden din øker fra " + forrigeUforegrad.format() + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidspunkt.format() + ". " },
-                            nynorsk { +"Uføregraden din aukar frå " + forrigeUforegrad.format() + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidspunkt.format() + ". " },
+                            bokmal { +"Uføregraden din øker fra " + forrigeUforegrad.format() + " til " + beregning.uforegrad.format() + " prosent fra " + vilkarsvurdering.virkningstidspunkt.format() + ". " },
+                            nynorsk { +"Uføregraden din aukar frå " + forrigeUforegrad.format() + " til " + beregning.uforegrad.format() + " prosent frå " + vilkarsvurdering.virkningstidspunkt.format() + ". " },
                         )
                     }.orShow {
                         text(
-                            bokmal { +"Du har fått medhold i klagen din, og får " + uforegradFraBeregning.format() + " prosent uføretrygd fra " + vedtakvirkfom.format() + ". " },
-                            nynorsk { +"Du har fått medhald i klaga di, og får " + uforegradFraBeregning.format() + " prosent uføretrygd frå " + vedtakvirkfom.format() + ". " },
+                            bokmal { +"Du har fått medhold i klagen din, og får " + beregning.uforegrad.format() + " prosent uføretrygd fra " + vedtak.virkFom.format() + ". " },
+                            nynorsk { +"Du har fått medhald i klaga di, og får " + beregning.uforegrad.format() + " prosent uføretrygd frå " + vedtak.virkFom.format() + ". " },
                         )
                     }
-                    showIf(((unguforeresultat).equalTo(VilkarResultat.OPPFYLT))) {
+                    showIf(((vilkarsvurdering.ungUforResultat).equalTo(VilkarResultat.OPPFYLT))) {
                         text(
                             bokmal { +"Hele uføretrygden din er innvilget med rettighet som ung ufør. " },
                             nynorsk { +"Heile uføretrygda di er innvilga med rett som ung ufør. " },
@@ -306,7 +255,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskadegradFraVilkar).equalTo((uforegradFraVilkar)))) {
+                showIf(((yrkesskadegradFraVilkar).equalTo((vilkarsvurdering.uforegrad)))) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at hele uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." },
@@ -316,7 +265,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) < FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) > 0 AND (FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "ikke_oppfylt") ) THEN      INCLUDE ENDIF
-                showIf(((yrkesskadegradFraVilkar).lessThan((uforegradFraVilkar)) and (yrkesskadegradFraVilkar).greaterThan(0) and ((yrkesskaderesultat).equalTo(VilkarResultat.OPPFYLT) or (yrkesskaderesultat).equalTo(VilkarResultat.IKKE_OPPFYLT)))) {
+                showIf(((yrkesskadegradFraVilkar).lessThan((vilkarsvurdering.uforegrad)) and (yrkesskadegradFraVilkar).greaterThan(0) and ((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) or (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT)))) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at " + yrkesskadegradFraVilkar.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." },
@@ -325,7 +274,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskaderesultat).equalTo(VilkarResultat.IKKE_OPPFYLT) and (yrkesskadebegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_1))) {
+                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_1))) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at uførheten din ikke skyldes en godkjent yrkesskade eller yrkessykdom." },
@@ -334,7 +283,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskaderesultat).equalTo(VilkarResultat.IKKE_OPPFYLT)) and ((yrkesskadebegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_2))) {
+                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT)) and ((vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_2))) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at det er andre sykdomsforhold enn din godkjente yrkesskade eller yrkessykdom som er årsak til den økte uførheten din." },
@@ -352,7 +301,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         includePhrase(Felles.TextOrList(nyeInnvilgedeBarnetillegg.map(BarnetilleggFormatter), 0))
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND  (((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)   AND   (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0))   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false))  ) THEN      INCLUDE ENDIF
-                        showIf((btFellesInnvilget and (((btSerkullInnvilget and btSerkullNetto0) and (btFellesInnvilget and btFellesNetto0)) or (btSerkullInnvilget and btSerkullNetto0 and not(btFellesInnvilget)) or (btFellesInnvilget and btFellesNetto0 and not(btSerkullInnvilget))))) {
+                        showIf((btFellesInnvilget and (((btSerkullInnvilget and btSerkullNetto.equalTo(0)) and (btFellesInnvilget and btFellesNetto.equalTo(0))) or (btSerkullInnvilget and btSerkullNetto.equalTo(0) and not(btFellesInnvilget)) or (btFellesInnvilget and btFellesNetto.equalTo(0) and not(btSerkullInnvilget))))) {
                             text(
                                 bokmal { +"Tillegget blir ikke utbetalt fordi inntekten til deg og din ektefelle er over grensen for å få utbetalt barnetillegg. " },
                                 nynorsk { +"Tillegget blir ikkje utbetalt fordi inntekta di og inntekta til ektefellen din er over grensa for å få utbetalt barnetillegg. " },
@@ -360,7 +309,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
 
                         //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)  AND  (((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)   AND   (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0))   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false))  ) THEN      INCLUDE ENDIF
-                        showIf(((btSerkullInnvilget and not(btFellesInnvilget)) and (((btSerkullInnvilget and btSerkullNetto0) and (btFellesInnvilget and btFellesNetto0)) or (btSerkullInnvilget and btSerkullNetto0 and not(btFellesInnvilget)) or (btFellesInnvilget and btFellesNetto0 and not(btSerkullInnvilget))))) {
+                        showIf(((btSerkullInnvilget and not(btFellesInnvilget)) and (((btSerkullInnvilget and btSerkullNetto.equalTo(0)) and (btFellesInnvilget and btFellesNetto.equalTo(0))) or (btSerkullInnvilget and btSerkullNetto.equalTo(0) and not(btFellesInnvilget)) or (btFellesInnvilget and btFellesNetto.equalTo(0) and not(btSerkullInnvilget))))) {
                             text(
                                 bokmal { +"Tillegget blir ikke utbetalt fordi inntekten din er over grensen for å få utbetalt barnetillegg." },
                                 nynorsk { +"Tillegget blir ikkje betalt ut fordi inntekta di er over grensa for å få utbetalt barnetillegg." },
@@ -385,7 +334,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(gjenlevendetilleggInnvilget) {
+                showIf(tillegg.gjenlevendetilleggInnvilget) {
                     paragraph {
                         text(
                             bokmal { +"Du er innvilget gjenlevendetillegg i uføretrygden din." },
@@ -433,18 +382,18 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(not(instopphanvendt)) {
                     paragraph {
                         text(
-                            bokmal { +"Du får " + uforetotalnetto.format() + " i uføretrygd" },
-                            nynorsk { +"Du får " + uforetotalnetto.format() + " i uføretrygd" },
+                            bokmal { +"Du får " + beregning.totalNetto.format() + " i uføretrygd" },
+                            nynorsk { +"Du får " + beregning.totalNetto.format() + " i uføretrygd" },
                         )
-                        showIf(kunBt) {
+                        showIf(harBareBt) {
                             text(bokmal { +" og barnetillegg" }, nynorsk { +" og barnetillegg" })
-                        }.orShowIf(kunGjt) {
+                        }.orShowIf(harBareGjt) {
                             text(bokmal { +" og gjenlevendetillegg" }, nynorsk { +" og attlevandetillegg" })
-                        }.orShowIf(btOgGt) {
+                        }.orShowIf(harBtOgGjt) {
                             text(bokmal { +", barne- og gjenlevendetillegg" }, nynorsk { +", barne- og attlevandetillegg" })
-                        }.orShowIf(kunEt) {
+                        }.orShowIf(harBareEt) {
                             text(bokmal { +" og ektefelletillegg" }, nynorsk { +" og ektefelletillegg" })
-                        }.orShowIf(btOgEt) {
+                        }.orShowIf(harBtOgEt) {
                             text(bokmal { +", barne- og ektefelletillegg" }, nynorsk { +", barne- og ektefelletillegg" })
                         }
                         text(
@@ -462,22 +411,22 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }.orShowIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS)) {
                     paragraph {
                         text(
-                            bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalingen er redusert fordi du er innlagt på institusjon. I denne perioden vil du få utbetalt " + uforetotalnetto.format() + "." },
-                            nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalinga er redusert fordi du er innlagd på institusjon. I denne perioden får du betalt ut " + uforetotalnetto.format() + "." },
+                            bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalingen er redusert fordi du er innlagt på institusjon. I denne perioden vil du få utbetalt " + beregning.totalNetto.format() + "." },
+                            nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalinga er redusert fordi du er innlagd på institusjon. I denne perioden får du betalt ut " + beregning.totalNetto.format() + "." },
                         )
                     }
                 }.orShowIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_FO) and forsorgeransvarAllePerioder) {
                     paragraph {
                         text(
-                            bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalingen er redusert fordi du er under straffegjennomføring. I denne perioden vil du få utbetalt " + uforetotalnetto.format() + "." },
-                            nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalinga er redusert fordi du er under straffegjennomføring. I denne perioden får du betalt ut " + uforetotalnetto.format() + "." },
+                            bokmal { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalingen er redusert fordi du er under straffegjennomføring. I denne perioden vil du få utbetalt " + beregning.totalNetto.format() + "." },
+                            nynorsk { +"Du har rett til å få " + beregningsresultattilrevurderingtotalnetto.format() + " i uføretrygd, men utbetalinga er redusert fordi du er under straffegjennomføring. I denne perioden får du betalt ut " + beregning.totalNetto.format() + "." },
                         )
                     }
                 }
 
                 // TODO: Ny tekst for utland (som i innvilgelseUtland
                 //IF(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland(1) = "" OR PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland(1) = "nor") THEN      INCLUDE ENDIF
-                showIf(bostedutland) {
+                showIf(grunnlag.borIUtlandet) {
                     paragraph {
                         text(
                             bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling i " + fritekst("måned og år") + "." },
@@ -546,7 +495,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
                 }
 
-                showIf(kravarsaktype.equalTo(Arsak.OMGJ_ETTER_KLAGE)) {
+                showIf(krav.arsak.equalTo(Arsak.OMGJ_ETTER_KLAGE)) {
                     paragraph {
                         text(
                             bokmal { +"Søknaden din om økt uføretrygd er innvilget etter klage og vi anser klagen som ferdig behandlet. Dersom du ønsker å opprettholde klagen, må du gi tilbakemelding til Nav innen 3 uker." },
@@ -562,7 +511,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
                 }
 
-                showIf((yrkesskaderesultat.equalTo(VilkarResultat.OPPFYLT) or yrkesskaderesultat.equalTo(VilkarResultat.IKKE_OPPFYLT))) {
+                showIf((vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) or vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT))) {
                     title1 {
                         text(
                             bokmal { +"Uførhet som skyldes yrkesskade eller yrkessykdom" },
@@ -571,7 +520,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskadegradFraBeregning.equalTo(uforegradFraBeregning) and yrkesskadebegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1))) {
+                showIf((yrkesskadegradFraBeregning.equalTo(beregning.uforegrad) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1))) {
                     paragraph {
                         text(
                             bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert at hele din nedsatte inntektsevne skyldes den godkjente yrkesskaden eller yrkessykdommen." },
@@ -581,7 +530,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = true AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1) = "stdbegr_12_17_1_o_1" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-                showIf((yrkesskadegradFraBeregning.equalTo(uforegradFraBeregning) and yrkesskadebest and yrkesskadebegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(konvertertup))) {
+                showIf((yrkesskadegradFraBeregning.equalTo(beregning.uforegrad) and beregning.yrkesskadeBest and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon))) {
                     paragraph {
                         text(
                             bokmal { +"Dette betyr at uføretrygden din vil bli beregnet etter særbestemmelser som gir deg en høyere uføretrygd." },
@@ -591,7 +540,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) = FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = false AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1) = "stdbegr_12_17_1_o_1" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-                showIf(((yrkesskadegradFraVilkar).equalTo((uforegradFraVilkar)) and not(yrkesskadebest) and yrkesskadebegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(konvertertup))) {
+                showIf(((yrkesskadegradFraVilkar).equalTo((vilkarsvurdering.uforegrad)) and not(beregning.yrkesskadeBest) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon))) {
                     paragraph {
                         text(
                             bokmal { +"Dette betyr at uføretrygden din vil bli beregnet etter særbestemmelser, dersom dette er til fordel for deg." },
@@ -607,7 +556,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) < FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) > 0 AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1) = "stdbegr_12_17_1_o_2") THEN      INCLUDE ENDIF
-                showIf(((yrkesskadegradFraVilkar).lessThan((uforegradFraVilkar)) and (yrkesskadegradFraVilkar).greaterThan(0) and (yrkesskaderesultat).equalTo(VilkarResultat.OPPFYLT) and yrkesskadebegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_2))) {
+                showIf(((yrkesskadegradFraVilkar).lessThan((vilkarsvurdering.uforegrad)) and (yrkesskadegradFraVilkar).greaterThan(0) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_2))) {
                     paragraph(uniqueness = "12_17_1_o_2") {
                         text(
                             bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert om yrkesskaden eller yrkessykdommen er årsak til den økte uførheten din." },
@@ -621,7 +570,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         )
                     }
 
-                    showIf((yrkesskadebest and not(konvertertup))) {
+                    showIf((beregning.yrkesskadeBest and not(krav.konvertertFraUforepensjon))) {
                         paragraph {
                             text(
                                 bokmal { +"Derfor vil denne delen av uføretrygden din bli beregnet etter særbestemmelser som gir deg en høyere uføretrygd." },
@@ -630,7 +579,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
                     }
 
-                    showIf((not(yrkesskadebest) and not(konvertertup))) {
+                    showIf((not(beregning.yrkesskadeBest) and not(krav.konvertertFraUforepensjon))) {
                         paragraph {
                             text(
                                 bokmal { +"Denne delen av uføretrygden din vil bli beregnet etter særbestemmelser, dersom dette er til fordel for deg." },
@@ -646,7 +595,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskaderesultat.equalTo(VilkarResultat.OPPFYLT) and (yrkesskadebegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3))) {
+                showIf((vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3))) {
                     paragraph {
                         text(
                             bokmal { +"Du er tidligere innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom. Vi har ut fra opplysninger i saken din vurdert om yrkesskaden eller yrkessykdommen din også er årsak til at uførheten din har økt, eller om dette skyldes andre sykdomsforhold." },
@@ -661,7 +610,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskaderesultat).equalTo(VilkarResultat.OPPFYLT) and (ivsbegrunnelse).equalTo(InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_1))) {
+                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and (ivsbegrunnelse).equalTo(InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_1))) {
                     paragraph {
                         text(
                             bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + ivsinntekt.format() + "." },
@@ -670,7 +619,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskaderesultat).equalTo(VilkarResultat.OPPFYLT) and (ivsbegrunnelse).equalTo(InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_2))) {
+                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and (ivsbegrunnelse).equalTo(InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_2))) {
                     paragraph {
                         text(
                             bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + inntektSkadetidspunkt.format() + ". Vi har justert denne inntekten opp fordi den skal tilsvare inntekten du ville hatt som frisk på skadetidspunktet." },
@@ -679,7 +628,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskaderesultat.equalTo(VilkarResultat.IKKE_OPPFYLT) and yrkesskadebegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_2))) {
+                showIf((vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_2))) {
                     paragraph(uniqueness = "12_17_1_i_2") {
                         text(
                             bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert om yrkesskaden eller yrkessykdommen er årsak til den økte uførheten din." },
@@ -695,7 +644,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = true AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse) = "stdbegr_12_17_1_o_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-                showIf((yrkesskadegradFraBeregning.lessThan(uforegradFraBeregning) and yrkesskadegradFraBeregning.greaterThan(0) and yrkesskadebest and (yrkesskadebegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (yrkesskaderesultat).equalTo(VilkarResultat.OPPFYLT) and not(konvertertup))) {
+                showIf((yrkesskadegradFraBeregning.lessThan(beregning.uforegrad) and yrkesskadegradFraBeregning.greaterThan(0) and beregning.yrkesskadeBest and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon))) {
                     paragraph {
                         text(
                             bokmal { +"Deler av uføretrygden din vil fortsatt bli beregnet etter særbestemmelser, noe som gir deg en høyere uføretrygd." },
@@ -705,7 +654,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = false AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse) = "stdbegr_12_17_1_o_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-                showIf((yrkesskadegradFraBeregning.lessThan(uforegradFraBeregning) and yrkesskadegradFraBeregning.greaterThan(0) and not(yrkesskadebest) and (yrkesskadebegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (yrkesskaderesultat).equalTo(VilkarResultat.OPPFYLT) and not(konvertertup))) {
+                showIf((yrkesskadegradFraBeregning.lessThan(beregning.uforegrad) and yrkesskadegradFraBeregning.greaterThan(0) and not(beregning.yrkesskadeBest) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon))) {
                     //[TBU3732NN, TBU3732]
 
                     paragraph {
@@ -717,7 +666,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = false AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse) = "stdbegr_12_17_1_o_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt") THEN      INCLUDE ENDIF
-                showIf((yrkesskadegradFraBeregning.lessThan(uforegradFraBeregning) and yrkesskadegradFraBeregning.greaterThan(0) and not(yrkesskadebest) and (yrkesskadebegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (yrkesskaderesultat).equalTo(VilkarResultat.OPPFYLT))) {
+                showIf((yrkesskadegradFraBeregning.lessThan(beregning.uforegrad) and yrkesskadegradFraBeregning.greaterThan(0) and not(beregning.yrkesskadeBest) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT))) {
                     paragraph(uniqueness = "12_17_1_o_3") {
                         text(
                             bokmal { +"Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },
@@ -726,7 +675,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskaderesultat).equalTo(VilkarResultat.IKKE_OPPFYLT) and (yrkesskadebegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_1))) {
+                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_1))) {
                     paragraph {
                         text(
                             bokmal { +"Du har ikke en godkjent yrkesskade eller yrkessykdom. Uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom. " + fritekst("Konkret begrunnelse") + "." },
@@ -744,8 +693,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(((nedsattInntektsevneResultat).equalTo(VilkarResultat.OPPFYLT) and (virkningBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_1))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtakvirkfom.format() + ". Dette kaller vi virkningstidspunktet. Fram til dette vil du få arbeidsavklaringspenger." },
-                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtakvirkfom.format() + ". Dette kallar vi verknadstidspunktet. Fram til dette kjem du til å få arbeidsavklaringspengar." },
+                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Fram til dette vil du få arbeidsavklaringspenger." },
+                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. Fram til dette kjem du til å få arbeidsavklaringspengar." },
                         )
                     }
                     paragraph {
@@ -759,8 +708,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(((nedsattInntektsevneResultat).equalTo(VilkarResultat.OPPFYLT) and (virkningBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_2))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtakvirkfom.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + mnVirkningstidspunkt.format() + "." },
-                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtakvirkfom.format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til " + fritekst("Dato for opphør") + ", og uføretrygd blir betalt ut for dei dagane som er att i " + mnVirkningstidspunkt.format() + "." },
+                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + mnVirkningstidspunkt.format() + "." },
+                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til " + fritekst("Dato for opphør") + ", og uføretrygd blir betalt ut for dei dagane som er att i " + mnVirkningstidspunkt.format() + "." },
                         )
                     }
                 }
@@ -768,8 +717,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(((virkningBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_3))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtakvirkfom.format() + ". Dette kaller vi virkningstidspunktet. Du vil få sykepenger fram til " + fritekst("dato for opphør") + ". I denne måneden får du utbetalt den delen av sykepengene med det beløp som overstiger uføretrygden." },
-                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtakvirkfom.format() + ". Dette kallar vi verknadstidspunktet. Du får sjukepengar fram til " + fritekst("Dato for opphør") + ". I denne månaden får du utbetalt den delen av sjukepengane som overstig uføretrygda." },
+                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Du vil få sykepenger fram til " + fritekst("dato for opphør") + ". I denne måneden får du utbetalt den delen av sykepengene med det beløp som overstiger uføretrygden." },
+                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. Du får sjukepengar fram til " + fritekst("Dato for opphør") + ". I denne månaden får du utbetalt den delen av sjukepengane som overstig uføretrygda." },
                         )
                     }
                 }
@@ -777,8 +726,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(((virkningBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_4))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtakvirkfom.format() + ". Dette kaller vi virkningstidspunktet. For å ha rett til uføretrygd må du ha fylt 18 år. Du får derfor uføretrygd fra måneden etter at du fyller 18 år." },
-                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtakvirkfom.format() + ". Dette kallar vi verknadstidspunktet. For å ha rett til uføretrygd må du ha fylt 18 år. Du får derfor uføretrygd frå månaden etter at du fyller 18 år." },
+                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. For å ha rett til uføretrygd må du ha fylt 18 år. Du får derfor uføretrygd fra måneden etter at du fyller 18 år." },
+                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. For å ha rett til uføretrygd må du ha fylt 18 år. Du får derfor uføretrygd frå månaden etter at du fyller 18 år." },
                         )
                     }
                 }
@@ -786,8 +735,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(((virkningBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_5))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtakvirkfom.format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + krav.kravFremsattDato.ifNull(kravMotattDato).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
-                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtakvirkfom.format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + krav.kravFremsattDato.ifNull(kravMotattDato).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
+                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + krav.kravFremsattDato.ifNull(krav.mottattDato).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
+                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + krav.kravFremsattDato.ifNull(krav.mottattDato).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
                         )
                     }
                 }
@@ -795,8 +744,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(((virkningBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_13))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtakvirkfom.format() + ". Dette kaller vi virkningstidspunktet. Du har rett til uføretrygd fra den måneden vilkårene er oppfylt." },
-                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtakvirkfom.format() + ". Dette kallar vi verknadstidpunktet. Du har rett til uføretrygd frå den månaden vilkåra er oppfylde." },
+                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Du har rett til uføretrygd fra den måneden vilkårene er oppfylt." },
+                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidpunktet. Du har rett til uføretrygd frå den månaden vilkåra er oppfylde." },
                         )
                     }
                 }
@@ -810,8 +759,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                 paragraph {
                     text(
-                        bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + forrigeUforetidspunkt.formatMonthYear() + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
-                        nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + forrigeUforetidspunkt.formatMonthYear() + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.formatMonthYear() + "." },
+                        bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + forrigeUforetidspunkt.formatMonthYear() + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + "." },
+                        nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + forrigeUforetidspunkt.formatMonthYear() + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + "." },
                     )
                 }
 
@@ -823,7 +772,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforetidspunkt <> FF_GetArrayElement_Date(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforetidspunkt)) THEN      INCLUDE ENDIF
-                showIf((beregningUforetidspunkt.notEqualTo((uforetidspunkt)))) {
+                showIf((beregning.uforetidspunkt.notEqualTo((vilkarsvurdering.uforetidspunkt)))) {
                     paragraph {
                         text(
                             bokmal { +"Du får fortsatt beregnet uføretrygden din ut fra tidligere uføretidspunkt, fordi dette gir deg en høyere uføretrygd." },
@@ -833,7 +782,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(DateDiff("d", PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforetidspunkt,   FF_GetArrayElement_Date(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforetidspunkt)) = 0) THEN      INCLUDE ENDIF
-                showIf((beregningUforetidspunkt.equalTo(uforetidspunkt))) {
+                showIf((beregning.uforetidspunkt.equalTo(vilkarsvurdering.uforetidspunkt))) {
                     paragraph {
                         text(
                             bokmal { +"Du får beregnet uføretrygden din ut fra nytt uføretidspunkt, fordi dette gir deg en høyere uføretrygd." },
@@ -855,11 +804,11 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
                 }
 
-                showIf(((ifubegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_1) and (ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf(((vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_1) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
                     paragraph {
                         text(
-                            bokmal { +"Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
-                            nynorsk { +"Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
+                            bokmal { +"Inntekten din før du ble ufør er fastsatt til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
+                            nynorsk { +"Inntekta di før du blei ufør, er fastsett til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
                         )
                         showIf(oifuMerEnnIfu) {
                             text(
@@ -870,11 +819,11 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((ifubegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_3) and (ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf(((vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_3) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
                     paragraph {
                         text(
-                            bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." },
-                            nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
+                            bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." },
+                            nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør er fastsett til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
                         )
                         showIf(oifuMerEnnIfu) {
                             text(
@@ -885,11 +834,11 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((ifubegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_5) and (ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf(((vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_5) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
                     paragraph {
                         text(
-                            bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
-                            nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,5 gonger grunnbeløpet." },
+                            bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
+                            nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør er fastsett til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,5 gonger grunnbeløpet." },
                         )
                         showIf(oifuMerEnnIfu) {
                             text(
@@ -901,11 +850,11 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF((FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat,1) = true) AND (FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse,1) = "stdbegr_12_8_2_4")  AND (FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUBegrunnelse,1) <> "stdbegr_12_8_1_3"))  THEN      INCLUDE ENDIF
-                showIf((unguforeresultat.equalTo(VilkarResultat.OPPFYLT)) and (ifubegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_4)) and (ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf((vilkarsvurdering.ungUforResultat.equalTo(VilkarResultat.OPPFYLT)) and (vilkarsvurdering.ifuBegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_4)) and (vilkarsvurdering.ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
                     paragraph {
                         text(
-                            bokmal { +"Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + ". Vi har innvilget deg rettighet som ung ufør, og inntekten din før du ble ufør skal derfor tilsvare minst 4,5 ganger grunnbeløpet." },
-                            nynorsk { +"Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + ". Vi har innvilga deg rettar som ung ufør, og inntekta di før du blei ufør skal derfor svare til minst 4,5 gonger grunnbeløpet." },
+                            bokmal { +"Inntekten din før du ble ufør er fastsatt til " + vilkarsvurdering.ifuInntekt.format() + ". Vi har innvilget deg rettighet som ung ufør, og inntekten din før du ble ufør skal derfor tilsvare minst 4,5 ganger grunnbeløpet." },
+                            nynorsk { +"Inntekta di før du blei ufør, er fastsett til " + vilkarsvurdering.ifuInntekt.format() + ". Vi har innvilga deg rettar som ung ufør, og inntekta di før du blei ufør skal derfor svare til minst 4,5 gonger grunnbeløpet." },
                         )
                         showIf(oifuMerEnnIfu) {
                             text(
@@ -917,30 +866,30 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF((FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) <> "" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUBegrunnelse) <> "") AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100  AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt) = 0  AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUBegrunnelse) <> "stdbegr_12_8_1_3"  AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) <> "stdbegr_12_8_2_2"  AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) <> "stdbegr_12_8_2_9"  ) THEN      INCLUDE ENDIF
-                showIf((((ifubegrunnelse).notEqualTo(null) or (ieuBegrunnelse).notEqualTo(null)) and uforegradFraBeregning.equalTo(100) and (ieuinntekt).equalTo(0) and (ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3) and (ifubegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) and (ifubegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
+                showIf((((vilkarsvurdering.ifuBegrunnelse).notEqualTo(null) or (vilkarsvurdering.ieuBegrunnelse).notEqualTo(null)) and beregning.uforegrad.equalTo(100) and (vilkarsvurdering.ieuInntekt).equalTo(0) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3) and (vilkarsvurdering.ifuBegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) and (vilkarsvurdering.ifuBegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har ikke inntekt i dag, og vi har derfor fastsatt uføregraden din til " + uforegradFraBeregning.format() + " prosent." },
-                            nynorsk { +"Du har ikkje inntekt i dag, og vi har derfor fastsett uføregraden din til " + uforegradFraBeregning.format() + " prosent." },
+                            bokmal { +"Du har ikke inntekt i dag, og vi har derfor fastsatt uføregraden din til " + beregning.uforegrad.format() + " prosent." },
+                            nynorsk { +"Du har ikkje inntekt i dag, og vi har derfor fastsett uføregraden din til " + beregning.uforegrad.format() + " prosent." },
                         )
                     }
                 }
 
                 //IF( ( FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) <> "" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUBegrunnelse) <> "" ) AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) OR ( PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100 AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt) > 0 )) AND  FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUBegrunnelse) <> "stdbegr_12_8_1_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) <> "stdbegr_12_8_2_2"  AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) <> "stdbegr_12_8_2_9" ) THEN      INCLUDE ENDIF
-                showIf((((ifubegrunnelse).notEqualTo(null) or (ieuBegrunnelse).notEqualTo(null)) and ((uforegradFraBeregning.greaterThan(0) and uforegradFraBeregning.lessThan(100)) or (uforegradFraBeregning.equalTo(100) and (ieuinntekt).greaterThan(0))) and (ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3) and (ifubegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) and (ifubegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
+                showIf((((vilkarsvurdering.ifuBegrunnelse).notEqualTo(null) or (vilkarsvurdering.ieuBegrunnelse).notEqualTo(null)) and ((beregning.uforegrad.greaterThan(0) and beregning.uforegrad.lessThan(100)) or (beregning.uforegrad.equalTo(100) and (vilkarsvurdering.ieuInntekt).greaterThan(0))) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3) and (vilkarsvurdering.ifuBegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) and (vilkarsvurdering.ifuBegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har en inntekt på " + ieuinntekt.format() + ", og vi har derfor fastsatt uføregraden din til " + uforegradFraBeregning.format() + " prosent." },
-                            nynorsk { +"Du har ei inntekt på " + ieuinntekt.format() + ", og vi har derfor fastsett uføregraden din til " + uforegradFraBeregning.format() + " prosent." },
+                            bokmal { +"Du har en inntekt på " + vilkarsvurdering.ieuInntekt.format() + ", og vi har derfor fastsatt uføregraden din til " + beregning.uforegrad.format() + " prosent." },
+                            nynorsk { +"Du har ei inntekt på " + vilkarsvurdering.ieuInntekt.format() + ", og vi har derfor fastsett uføregraden din til " + beregning.uforegrad.format() + " prosent." },
                         )
                     }
                 }
 
-                showIf((ieuBegrunnelse.equalTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf((vilkarsvurdering.ieuBegrunnelse.equalTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
                     paragraph {
                         text(
-                            bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
-                            nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                            bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                            nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
                         )
                         showIf(oifuMerEnnIfu) {
                             text(
@@ -951,17 +900,17 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                     paragraph {
                         text(
-                            bokmal { +"Det er dokumentert at du har inntektsmuligheter som du ikke benytter. Disse tar vi med når vi fastsetter inntekten din etter at du ble ufør. Inntekten din etter at du ble ufør er fastsatt til " + ieuinntekt.format() + ", og uføregraden din er derfor fastsatt til " + uforegradFraBeregning.format() + " prosent." },
-                            nynorsk { +"Det er dokumentert at du har inntektsmoglegheiter som du ikkje nyttar. Desse tek vi med når vi fastset inntekta di etter at du blei ufør. Inntekta di etter at du blei ufør, er fastsett til " + ieuinntekt.format() + ", og uføregraden din er derfor fastsett til " + uforegradFraBeregning.format() + " prosent." },
+                            bokmal { +"Det er dokumentert at du har inntektsmuligheter som du ikke benytter. Disse tar vi med når vi fastsetter inntekten din etter at du ble ufør. Inntekten din etter at du ble ufør er fastsatt til " + vilkarsvurdering.ieuInntekt.format() + ", og uføregraden din er derfor fastsatt til " + beregning.uforegrad.format() + " prosent." },
+                            nynorsk { +"Det er dokumentert at du har inntektsmoglegheiter som du ikkje nyttar. Desse tek vi med når vi fastset inntekta di etter at du blei ufør. Inntekta di etter at du blei ufør, er fastsett til " + vilkarsvurdering.ieuInntekt.format() + ", og uføregraden din er derfor fastsett til " + beregning.uforegrad.format() + " prosent." },
                         )
                     }
                 }
 
-                showIf(((ifubegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) or (ifubegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
+                showIf(((vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) or (vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
                     paragraph {
                         text(
-                            bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + ifuinntekt.format() + ". Inntekten din før du ble ufør er fastsatt ut fra stillingsandelen din, og forventet inntekt på " + ieuinntekt.format() + ". Inntekten din etter at du ble ufør er derfor fastsatt til " + ieuinntekt.format() + " og uføregraden din blir " + uforegradFraBeregning.format() + " prosent." },
-                            nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + ifuinntekt.format() + ". Inntekta di før du blei ufør, er fastsett ut frå stillingsdelen din og forventa inntekt på " + ieuinntekt.format() + ". Inntekta di etter at du blei ufør, er derfor fastsett til " + ieuinntekt.format() + ", og uføregraden din blir " + uforegradFraBeregning.format() + " prosent." },
+                            bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + vilkarsvurdering.ifuInntekt.format() + ". Inntekten din før du ble ufør er fastsatt ut fra stillingsandelen din, og forventet inntekt på " + vilkarsvurdering.ieuInntekt.format() + ". Inntekten din etter at du ble ufør er derfor fastsatt til " + vilkarsvurdering.ieuInntekt.format() + " og uføregraden din blir " + beregning.uforegrad.format() + " prosent." },
+                            nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + vilkarsvurdering.ifuInntekt.format() + ". Inntekta di før du blei ufør, er fastsett ut frå stillingsdelen din og forventa inntekt på " + vilkarsvurdering.ieuInntekt.format() + ". Inntekta di etter at du blei ufør, er derfor fastsett til " + vilkarsvurdering.ieuInntekt.format() + ", og uføregraden din blir " + beregning.uforegrad.format() + " prosent." },
                         )
                     }
                 }
@@ -974,7 +923,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     text(bokmal { +"." }, nynorsk { +"." })
                 }
 
-                showIf(uforegradFraBeregning.equalTo(100)) {
+                showIf(beregning.uforegrad.equalTo(100)) {
                     title1 {
                         text(
                             bokmal { +"Skal du kombinere uføretrygd og inntekt?" },
@@ -999,10 +948,10 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(!grunnlag.harVTA) {
                     paragraph {
                         text(
-                            bokmal { +"Fra " + virkningstidspunkt.format() + " vil du få en ny venteperiode på 2 år med et fribeløp på 40 prosent av folketrygdens grunnbeløp (G), før fribeløpet igjen vil øke til 1 G. Fribeløpet kan du tjene" },
-                            nynorsk { +"Frå " + virkningstidspunkt.format() + " vil du få ein ny venteperiode på 2 år med eit fribeløp på 40 prosent av folketrygdens grunnbeløp (G), før fribeløpet igjen vil auke til 1 G. Fribeløpet kan du tene" },
+                            bokmal { +"Fra " + vilkarsvurdering.virkningstidspunkt.format() + " vil du få en ny venteperiode på 2 år med et fribeløp på 40 prosent av folketrygdens grunnbeløp (G), før fribeløpet igjen vil øke til 1 G. Fribeløpet kan du tjene" },
+                            nynorsk { +"Frå " + vilkarsvurdering.virkningstidspunkt.format() + " vil du få ein ny venteperiode på 2 år med eit fribeløp på 40 prosent av folketrygdens grunnbeløp (G), før fribeløpet igjen vil auke til 1 G. Fribeløpet kan du tene" },
                         )
-                        showIf(uforegradFraBeregning.notEqualTo(100)) {
+                        showIf(beregning.uforegrad.notEqualTo(100)) {
                             text(
                                 bokmal { +" i tillegg til oppjustert inntekt etter uførhet," },
                                 nynorsk { +" i tillegg til oppjustert inntekt etter uførleik," },
@@ -1014,13 +963,13 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         )
                         showIf(vedtak.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
                             text(
-                                bokmal { +"Selv om fribeløpet endrer seg beholder du det nåværende bunnfradraget ditt ut inneværende kalenderår. Det nåværende bunnfradraget ditt er " + bunnfradrag.format() + ". " },
-                                nynorsk { +"Sjølv om fribeløpet endrar seg, beheld du det noverande botnfrådraget ditt ut inneverande kalenderår. Det noverande botnfrådraget ditt er " + bunnfradrag.format() + ". " },
+                                bokmal { +"Selv om fribeløpet endrer seg beholder du det nåværende bunnfradraget ditt ut inneværende kalenderår. Det nåværende bunnfradraget ditt er " + beregning.bunnfradrag.format() + ". " },
+                                nynorsk { +"Sjølv om fribeløpet endrar seg, beheld du det noverande botnfrådraget ditt ut inneverande kalenderår. Det noverande botnfrådraget ditt er " + beregning.bunnfradrag.format() + ". " },
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Bunnfradraget ditt neste år er " + bunnfradragFaktisk.format() + ". " },
-                                nynorsk { +"Botnfrådraget ditt neste år er " + bunnfradragFaktisk.format() + ". " },
+                                bokmal { +"Bunnfradraget ditt neste år er " + faktiskBunnfradrag().format() + ". " },
+                                nynorsk { +"Botnfrådraget ditt neste år er " + faktiskBunnfradrag().format() + ". " },
                             )
                         }
                     }
@@ -1037,8 +986,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     showIf(grunnlag.harVTA) {
                         paragraph {
                             text(
-                                bokmal { +"Fordi du er i varig tilrettelagt arbeid kan du ha en årlig inntekt på folketrygdens grunnbeløp uten at uføretrygden din blir redusert. I dag er dette " + bunnfradrag.format() + ". Dette er bunnfradraget ditt." },
-                                nynorsk { +"Fordi du er i varig tilrettelagt arbeid kan du ha ei årleg inntekt på folketrygdens grunnbeløp utan at uføretrygda di blir redusert. I dag er dette " + bunnfradrag.format() + ". Dette er botnfrådraget ditt." },
+                                bokmal { +"Fordi du er i varig tilrettelagt arbeid kan du ha en årlig inntekt på folketrygdens grunnbeløp uten at uføretrygden din blir redusert. I dag er dette " + beregning.bunnfradrag.format() + ". Dette er bunnfradraget ditt." },
+                                nynorsk { +"Fordi du er i varig tilrettelagt arbeid kan du ha ei årleg inntekt på folketrygdens grunnbeløp utan at uføretrygda di blir redusert. I dag er dette " + beregning.bunnfradrag.format() + ". Dette er botnfrådraget ditt." },
                             )
                         }
                     }
@@ -1054,23 +1003,23 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 paragraph {
                     text(
                         bokmal {
-                            +"For deg utgjør reduksjonsprosenten " + reduksjonsprosent.format() + " prosent. Det er bare den delen av inntekten din som overstiger bunnfradraget ditt "
-                            +"vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + reduksjonsprosent.format() + " prosent av den inntekten du har over bunnfradraget ditt trekkes fra uføretrygden din."
+                            +"For deg utgjør reduksjonsprosenten " + beregning.reduksjonsprosent.format() + " prosent. Det er bare den delen av inntekten din som overstiger bunnfradraget ditt "
+                            +"vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + beregning.reduksjonsprosent.format() + " prosent av den inntekten du har over bunnfradraget ditt trekkes fra uføretrygden din."
                         },
                         nynorsk {
-                            +"For deg utgjer reduksjonsprosenten " + reduksjonsprosent.format() + " prosent. Det er berre den delen av inntekta di som overstig botnfrådraget ditt "
-                            +"vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + reduksjonsprosent.format() + " prosent av inntekta du har over botnfrådraget ditt blir trekt frå uføretrygda di."
+                            +"For deg utgjer reduksjonsprosenten " + beregning.reduksjonsprosent.format() + " prosent. Det er berre den delen av inntekta di som overstig botnfrådraget ditt "
+                            +"vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + beregning.reduksjonsprosent.format() + " prosent av inntekta du har over botnfrådraget ditt blir trekt frå uføretrygda di."
                         },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + uforegradFraBeregning.format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn bunnfradraget ditt." },
-                        nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + uforegradFraBeregning.format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn botnfrådraget ditt." },
+                        bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + beregning.uforegrad.format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn bunnfradraget ditt." },
+                        nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + beregning.uforegrad.format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn botnfrådraget ditt." },
                     )
                 }
 
-                showIf(bostedutland) {
+                showIf(grunnlag.borIUtlandet) {
                     paragraph {
                         text(
                             bokmal { +"Bunnfradraget gjelder bare for den norske uføretrygden din. Har du spørsmål om bunnfradraget i et annet land, må du kontakte trygdemyndighetene i det landet det gjelder." },
@@ -1096,12 +1045,12 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             nynorsk { +"Vi reduserer ikkje utbetalinga av uføretrygda di verken i innleggingsmånaden eller dei tre påfølgjande månadene når du er innlagd på institusjon. Uføretrygda di blir deretter redusert og skal under opphaldet utgjere 14 prosent av uføretrygda inntil institusjonsopphaldet blir avslutta. Totalt sett skal utbetalinga likevel utgjere minst 45 prosent av grunnbeløpet i folketrygda før skatt. " },
                         )
 
-                        showIf((ektefelletilleggInnvilget)) {
+                        showIf((tillegg.ektefelletilleggInnvilget)) {
                             text(
                                 bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert." },
                                 nynorsk { +"Dersom du får ektefelletillegg vil dette tillegget også bli redusert." },
                             )
-                        }.orShowIf((gjenlevendetilleggInnvilget)) {
+                        }.orShowIf((tillegg.gjenlevendetilleggInnvilget)) {
                             text(
                                 bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert." },
                                 nynorsk { +"Dersom du får attlevandetillegg vil dette tillegget også bli redusert." },
@@ -1164,8 +1113,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf((instopphanvendt and fasteUtgifterInst.notEqualTo(0) and instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din skal reduseres til " + uforetotalnetto.format() + "." },
-                            nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har kome fram til at utbetalinga di skal reduserast til " + uforetotalnetto.format() + "." },
+                            bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din skal reduseres til " + beregning.totalNetto.format() + "." },
+                            nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har kome fram til at utbetalinga di skal reduserast til " + beregning.totalNetto.format() + "." },
                         )
                     }
                 }
@@ -1174,8 +1123,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf((instopphanvendt and instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_HS) and fasteUtgifterInst.equalTo(0) and forsorgeransvarIngenPerioder)) {
                     paragraph {
                         text(
-                            bokmal { +"Du forsørger ikke barn " + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + uforetotalnetto.format() + "." },
-                            nynorsk { +"Du forsørgjer ikkje barn " + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + uforetotalnetto.format() + "." },
+                            bokmal { +"Du forsørger ikke barn " + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + beregning.totalNetto.format() + "." },
+                            nynorsk { +"Du forsørgjer ikkje barn " + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + beregning.totalNetto.format() + "." },
                         )
                     }
                 }
@@ -1183,8 +1132,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_FO)) {
                     includePhrase(
                         Ufoeretrygd.Straffegjennomfoering(
-                            ektefelletilleggInnvilget = ektefelletilleggInnvilget,
-                            gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                            ektefelletilleggInnvilget = tillegg.ektefelletilleggInnvilget,
+                            gjenlevendetilleggInnvilget = tillegg.gjenlevendetilleggInnvilget,
                             sisteForsorgeransvarErTrue = institusjonsopphold.safe { sistePeriodeHarForsorgeransvar }.ifNull(false),
                             forsteForsorgeransvarErTrue = institusjonsopphold.safe { forstePeriodeHarForsorgeransvar }.ifNull(false),
                         )
@@ -1201,7 +1150,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumUTBT > PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType <> "overgangsregler_2016" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
-                showIf((reduksjonsgrunnlagSumutbt.greaterThan(reduksjonsgrunnlagGradertoppjustertifu) and reduksjonsgrunnlagBarnetilleggRegelverkstype.notEqualTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and beregningVirkFom.legacyGreaterThanOrEqual(LocalDate.of(2016, 1, 1)))) {
+                showIf((reduksjonsgrunnlagSumutbt.greaterThan(reduksjonsgrunnlagGradertoppjustertifu) and reduksjonsgrunnlagBarnetilleggRegelverkstype.notEqualTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and beregning.virkFom.legacyGreaterThanOrEqual(LocalDate.of(2016, 1, 1)))) {
                     paragraph {
                         text(
                             bokmal { +"Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn 95 prosent av inntekten din før du ble ufør. 95 prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + reduksjonsgrunnlagGradertoppjustertifu.format() + ". Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Årlig barnetillegg før reduksjon ut fra inntekt blir " },
@@ -1309,7 +1258,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             InntektBarnetillegg(
                                 btFellesInnvilget = btFellesInnvilget,
                                 btSerkullInnvilget = btSerkullInnvilget,
-                                grunnbelop = grunnbelop,
+                                grunnbelop = beregning.grunnbelop,
                                 pe = pe,
                                 periodisertInntekt = periodisertInntekt
                             )
@@ -1325,13 +1274,13 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                             showIf((btfbbelopfratrukketannenforeldersinntekt.greaterThan(0))) {
                                 text(
-                                    bokmal { +"Folketrygdens grunnbeløp på inntil " + grunnbelop.format() + " er holdt utenfor inntekten til din " + epsBorMedBmEntall + ". " },
-                                    nynorsk { +"Grunnbeløpet i folketrygda på inntil " + grunnbelop.format() + " er halde utanfor inntekta til " + epsBorMedNnEntall + " din. " }
+                                    bokmal { +"Folketrygdens grunnbeløp på inntil " + beregning.grunnbelop.format() + " er holdt utenfor inntekten til din " + epsBorMedBmEntall + ". " },
+                                    nynorsk { +"Grunnbeløpet i folketrygda på inntil " + beregning.grunnbelop.format() + " er halde utanfor inntekta til " + epsBorMedNnEntall + " din. " }
                                 )
                             }
 
                             //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 )) THEN      INCLUDE ENDIF
-                            showIf(((not(btSerkullInnvilget) and btfbjusteringsbelopperar0 and btFellesNetto.notEqualTo(0)))) {
+                            showIf(((not(btSerkullInnvilget) and btfbJusteringsbelopPerAr.equalTo(0) and btFellesNetto.notEqualTo(0)))) {
                                 showIf(btfbinntektbruktiavkorting.greaterThan(btfbFribelop)) {
                                     text(
                                         bokmal { +"Til sammen er inntektene høyere enn fribeløpet ditt på " + btfbFribelop.format() + ". Barnetillegget ditt er derfor " },
@@ -1346,7 +1295,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0 )) THEN      INCLUDE ENDIF
-                            showIf(((not(btSerkullInnvilget) and btfbjusteringsbelopperar0 and btFellesNetto.notEqualTo(0) and btfbfradrag.equalTo(0)))) {
+                            showIf(((not(btSerkullInnvilget) and btfbJusteringsbelopPerAr.equalTo(0) and btFellesNetto.notEqualTo(0) and btfbfradrag.equalTo(0)))) {
                                 text(
                                     bokmal { +"ikke " },
                                     nynorsk { +"ikkje " },
@@ -1354,7 +1303,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 )) THEN      INCLUDE ENDIF
-                            showIf(((not(btSerkullInnvilget) and btfbjusteringsbelopperar0 and btFellesNetto.notEqualTo(0)))) {
+                            showIf(((not(btSerkullInnvilget) and btfbJusteringsbelopPerAr.equalTo(0) and btFellesNetto.notEqualTo(0)))) {
                                 text(
                                     bokmal { +"redusert. " },
                                     nynorsk { +"redusert. " },
@@ -1369,7 +1318,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto  = 0 ))THEN     INCLUDE ENDIF
-                            showIf(((btfbJusteringsbelopPerAr.notEqualTo(0) and not(btSerkullInnvilget) and btFellesNetto0))) {
+                            showIf(((btfbJusteringsbelopPerAr.notEqualTo(0) and not(btSerkullInnvilget) and btFellesNetto.equalTo(0)))) {
                                 text(
                                     bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
                                     nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
@@ -1412,7 +1361,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
-                            showIf(((btSerkullNetto0 and btsbJusteringsbelopPerAr.equalTo(0) and btsbInnvilgetIkkeBtfbinnvilget))) {
+                            showIf(((btSerkullNetto.equalTo(0) and btsbJusteringsbelopPerAr.equalTo(0) and btsbInnvilgetIkkeBtfbinnvilget))) {
                                 text(
                                     bokmal { +"Inntekten din er " + btsbInntektBruktIAvkorting.format() + ". " },
                                     nynorsk { +"Inntekta di er " + btsbInntektBruktIAvkorting.format() + "." },
@@ -1426,7 +1375,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                 )
                             }
 
-                            showIf(((btsbInnvilgetOgJusteringsbelop0 and btSerkullNetto0))) {
+                            showIf(((btsbInnvilgetOgJusteringsbelop0 and btSerkullNetto.equalTo(0)))) {
                                 text(
                                     bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
                                     nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
@@ -1461,7 +1410,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btfbjusteringsbelopperar0)) {
+                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
                                 text(
                                     bokmal { +"Til sammen er " },
                                     nynorsk { +"Til saman er " },
@@ -1469,7 +1418,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <>  0 AND ( (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0) ) AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and ((btsbfradrag.equalTo(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.greaterThan(0) and btfbfradrag.greaterThan(0))) and btfbjusteringsbelopperar0)) {
+                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and ((btsbfradrag.equalTo(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.greaterThan(0) and btfbfradrag.greaterThan(0))) and btfbJusteringsbelopPerAr.equalTo(0))) {
                                 text(
                                     bokmal { +"også " },
                                     nynorsk { +"også " },
@@ -1477,7 +1426,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btfbjusteringsbelopperar0)) {
+                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
                                 showIf(btfbinntektbruktiavkorting.greaterThan(btfbFribelop)) {
                                     text(
                                         bokmal { +"inntektene til deg og din " + epsBorMedBmEntall + " høyere enn " + btfbFribelop.format() + ", som er fribeløpet for barnetillegget til " + barnetBarnaFelles + " som bor med begge sine foreldre. " },
@@ -1492,7 +1441,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF( PE_UT_TBU1286_del1() AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and ((btsbfradrag.greaterThan(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.equalTo(0) and btfbfradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbjusteringsbelopperar0)) {
+                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and ((btsbfradrag.greaterThan(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.equalTo(0) and btfbfradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
                                 text(
                                     bokmal { +"Dette barnetillegget er derfor " },
                                     nynorsk { +"Dette barnetillegget er derfor " },
@@ -1500,7 +1449,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBbrutto  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.equalTo(btfbbrutto) and ((btsbfradrag.greaterThan(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.equalTo(0) and btfbfradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbjusteringsbelopperar0)) {
+                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.equalTo(btfbbrutto) and ((btsbfradrag.greaterThan(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.equalTo(0) and btfbfradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
                                 text(
                                     bokmal { +"ikke " },
                                     nynorsk { +"ikkje " },
@@ -1508,7 +1457,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF( PE_UT_TBU1286_del1() AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and ((btsbfradrag.greaterThan(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.equalTo(0) and btfbfradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbjusteringsbelopperar0)) {
+                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and ((btsbfradrag.greaterThan(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.equalTo(0) and btfbfradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
                                 text(
                                     bokmal { +"redusert ut fra inntekt. " },
                                     nynorsk { +"redusert ut frå inntekt. " },
@@ -1516,7 +1465,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0  ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btSerkullNetto.notEqualTo(0) and ((btsbfradrag.equalTo(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.greaterThan(0) and btfbfradrag.greaterThan(0))) and btsbJusteringsbelopPerAr.equalTo(0) and btfbjusteringsbelopperar0)) {
+                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btSerkullNetto.notEqualTo(0) and ((btsbfradrag.equalTo(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.greaterThan(0) and btfbfradrag.greaterThan(0))) and btsbJusteringsbelopPerAr.equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
                                 text(
                                     bokmal { +"Barnetilleggene er derfor" },
                                     nynorsk { +"Barnetillegga er derfor" },
@@ -1526,7 +1475,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             //IF( PE_UT_TBU1286_del1() AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBbrutto  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBbrutto)  AND  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0)  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
                             showIf(
                                 (btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and (btFellesNetto.equalTo(btfbbrutto) and btSerkullNetto.equalTo(barnetilleggserkull_btsbbrutto)) and (btFellesNetto.notEqualTo(0) and btSerkullNetto.notEqualTo(0)) and ((btsbfradrag.equalTo(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.greaterThan(0) and btfbfradrag.greaterThan(0))) and btsbJusteringsbelopPerAr
-                                    .equalTo(0) and btfbjusteringsbelopperar0)
+                                    .equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0))
                             ) {
                                 text(
                                     bokmal { +" ikke" },
@@ -1535,7 +1484,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
 
                             //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0  ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btSerkullNetto.notEqualTo(0) and ((btsbfradrag.equalTo(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.greaterThan(0) and btfbfradrag.greaterThan(0))) and btsbJusteringsbelopPerAr.equalTo(0) and btfbjusteringsbelopperar0)) {
+                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btSerkullNetto.notEqualTo(0) and ((btsbfradrag.equalTo(0) and btfbfradrag.equalTo(0)) or (btsbfradrag.greaterThan(0) and btfbfradrag.greaterThan(0))) and btsbJusteringsbelopPerAr.equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
                                 text(
                                     bokmal { +" redusert ut fra inntekt. " },
                                     nynorsk { +" redusert ut frå inntekt. " },
@@ -1557,7 +1506,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                 )
                             }
 
-                            showIf(((btsbInnvbtfbInnvJusteringsbelopFellesIkke0 and btFellesNetto0))) {
+                            showIf(((btsbInnvbtfbInnvJusteringsbelopFellesIkke0 and btFellesNetto.equalTo(0)))) {
                                 text(
                                     bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
                                     nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. " },
@@ -1578,7 +1527,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                 )
                             }
 
-                            showIf(((btsbInnvbtfbInnvJusteringsbelopSerkullIkke0 and btSerkullNetto0))) {
+                            showIf(((btsbInnvbtfbInnvJusteringsbelopSerkullIkke0 and btSerkullNetto.equalTo(0)))) {
                                 text(
                                     bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
                                     nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
@@ -1588,7 +1537,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     //IF( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) ) THEN      INCLUDE ENDIF
-                    showIf((btSerkullInnvilget and btSerkullNetto0 and btsbJusteringsbelopPerAr.equalTo(0) and (btFellesNetto.notEqualTo(0) or not(btFellesInnvilget)))) {
+                    showIf((btSerkullInnvilget and btSerkullNetto.equalTo(0) and btsbJusteringsbelopPerAr.equalTo(0) and (btFellesNetto.notEqualTo(0) or not(btFellesInnvilget)))) {
                         paragraph {
                             text(
                                 bokmal { +"Barnetillegget " },
@@ -1620,7 +1569,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     //IF( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false) ) THEN      INCLUDE ENDIF
-                    showIf((btFellesInnvilget and btFellesNetto0 and btfbjusteringsbelopperar0 and (btSerkullNetto.notEqualTo(0) or not(btSerkullInnvilget)))) {
+                    showIf((btFellesInnvilget and btFellesNetto.equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0) and (btSerkullNetto.notEqualTo(0) or not(btSerkullInnvilget)))) {
                         paragraph {
                             text(
                                 bokmal { +"Barnetillegget" },
@@ -1641,7 +1590,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0)  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0)  )  THEN      INCLUDE ENDIF
-                    showIf(((btSerkullInnvilget and btSerkullNetto0 and btsbJusteringsbelopPerAr.equalTo(0)) and (btFellesInnvilget and btFellesNetto0 and btfbjusteringsbelopperar0))) {
+                    showIf(((btSerkullInnvilget and btSerkullNetto.equalTo(0) and btsbJusteringsbelopPerAr.equalTo(0)) and (btFellesInnvilget and btFellesNetto.equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0)))) {
                         paragraph {
                             text(
                                 bokmal { +"Barnetillegget for " + barnetBarnaFelles + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " + btfbInntektstak.format() + ". Barnetillegget for " + barnetBarnaSerkull + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + barnetilleggserkull_avkortningsinformasjon_inntektstak.format() + ". Inntektene er over grensen for å få utbetalt barnetillegg." },
@@ -1663,7 +1612,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
-                showIf(forekomstBtInnv.greaterThan(0)) {
+                showIf(barnetillegg.antallForekomsterAvBarnetillegg.greaterThan(0)) {
                     includePhrase(TBU5005_Generated)
                     paragraph {
                         text(
@@ -1673,7 +1622,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(gjenlevendetilleggInnvilget) {
+                showIf(tillegg.gjenlevendetilleggInnvilget) {
                     title1 {
                         text(
                             bokmal { +"For deg som mottar gjenlevendetillegg" },
@@ -1686,7 +1635,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             nynorsk { +"Du er innvilga uføretrygd med attlevandetillegg. Tillegget er rekna ut etter utrekningsgrunnlaget og trygdetida både for deg og for den avdøde ektefellen din. Tener du meir enn botnfrådraget ditt, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med. " },
                         )
 
-                        showIf(nyttGjenlevendetillegg) {
+                        showIf(tillegg.nyttGjenlevendetillegg) {
                             text(
                                 bokmal { +"Tillegget er tidsbegrenset til fem år fra virkningstidspunktet. " },
                                 nynorsk { +"Tillegget er tidsbegrensa til fem år frå verknadstidspunktet. " },
@@ -1695,7 +1644,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(gjenlevendetilleggInnvilget) {
+                showIf(tillegg.gjenlevendetilleggInnvilget) {
                     paragraph(uniqueness = "gjenlevendetillegg") {
                         text(
                             bokmal { +"Du kan lese mer om dette i vedlegget " },
@@ -1705,16 +1654,16 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         text(bokmal { +"." }, nynorsk { +"." })
                     }
                 }
-                showIf(harLopendeAlderspensjon) {
+                showIf(harAlderspensjonLopendeEllerTilBehandling) {
                     includePhrase(Ufoeretrygd.KombinereUforetrygdAldersPensjon)
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato < PE_VedtakFattetDato_minus_1mnd) THEN      INCLUDE ENDIF
-                showIf((harBeløpØkt and utbetalingsgrad.equalTo(uforegradFraBeregning) and vedtak.virkningsdatoTidligereMnd)) {
-                    includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(kravOnsketvirkningsdato, visTekstOmRenter))
+                showIf((beregning.belopHarOkt and beregning.utbetalingsgrad.equalTo(beregning.uforegrad) and vedtak.virkningsdatoTidligereMnd)) {
+                    includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(krav.virkFom, visTekstOmRenter))
                 }
 
-                showIf(bostedutland) {
+                showIf(grunnlag.borIUtlandet) {
                     includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
                     paragraph {
                         text(
@@ -1745,7 +1694,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                 includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
                 includePhrase(Felles.RettTilAAKlage)
-                showIf(bostedutland) {
+                showIf(grunnlag.borIUtlandet) {
                     paragraph {
                         text(
                             bokmal { +"Du kan sende klagen direkte til Nav eller gjennom " + fritekst("utenlandsk trygdemyndighet") + "." },
@@ -1756,7 +1705,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
                 includePhrase(Ufoeretrygd.SjekkUtbetalingene)
                 includePhrase(Ufoeretrygd.Skattekort)
-                includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(!bostedutland))
+                includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(!grunnlag.borIUtlandet))
                 includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
             }
 
