@@ -41,10 +41,8 @@ export type FeatureAnnouncementStep = {
   scrollTarget?: StepTarget;
 };
 
-const ANNOUNCEMENT_ID_PATTERN = /^[a-z0-9-]{1,100}$/;
-
 type FeatureAnnouncementProps = {
-  /** Unique per announcement and stored when the user acknowledges it: lowercase letters, digits and hyphens. */
+  /** Unique per announcement and stored when the user acknowledges it, e.g. "diff-toggles". At most 100 characters. */
   id: string;
   /** Last day (YYYY-MM-DD) the announcement is shown, typically 30 days after release. */
   showUntil: string;
@@ -73,9 +71,8 @@ export const FeatureAnnouncement = ({
   const [resumeIndex, setResumeIndex] = useState(0);
   const queryClient = useQueryClient();
 
-  const validId = ANNOUNCEMENT_ID_PATTERN.test(id);
   const expired = isAfter(startOfToday(), parseISO(showUntil));
-  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: validId && when && !expired });
+  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
   const acknowledged = acknowledgedQuery.data?.includes(id) === true;
   const { mutate: saveAcknowledgement } = useMutation({
     mutationFn: () => acknowledgeAnnouncement(id),
@@ -100,7 +97,7 @@ export const FeatureAnnouncement = ({
     onDismissReference.current?.();
   }, [id, queryClient, saveAcknowledgement]);
 
-  const pending = validId && when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
+  const pending = when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
   const blocked = useIsBlockedByOtherOverlay(id, pending);
   const run = pending && !blocked;
 
@@ -176,10 +173,6 @@ export const FeatureAnnouncement = ({
     document.addEventListener("keydown", dismissOnEscape);
     return () => document.removeEventListener("keydown", dismissOnEscape);
   }, [tooltipVisible, dismiss]);
-
-  if (!validId && import.meta.env.DEV) {
-    throw new Error(`FeatureAnnouncement: id "${id}" must match ${ANNOUNCEMENT_ID_PATTERN} to be saved by the backend`);
-  }
 
   return run ? Tour : null;
 };

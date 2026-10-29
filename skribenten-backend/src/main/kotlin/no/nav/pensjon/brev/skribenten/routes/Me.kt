@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.Parameters
 import io.ktor.server.application.Application
-import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -66,17 +64,9 @@ fun Route.meRoute() {
         val bekreftNyhetsvarselHandler: BekreftNyhetsvarselHandler by app.dependencies
         put("/bekreftedeNyhetsvarsler/{nyhetsvarselId}") {
             val bekreft = bekreftNyhetsvarselHandler(
-                BekreftNyhetsvarselHandler.Request(principal().navIdent, call.parameters.nyhetsvarselId())
+                BekreftNyhetsvarselHandler.Request(principal().navIdent, NyhetsvarselId(call.parameters.getOrFail("nyhetsvarselId")))
             )
             respondSuccess(bekreft?.asSuccess()) { respond(HttpStatusCode.NoContent) }
         }
     }
 }
-
-private val gyldigNyhetsvarselId = Regex("^[a-z0-9-]{1,100}$")
-
-private fun Parameters.nyhetsvarselId(): NyhetsvarselId =
-    getOrFail("nyhetsvarselId")
-        .takeIf { gyldigNyhetsvarselId.matches(it) }
-        ?.let(::NyhetsvarselId)
-        ?: throw BadRequestException("Ugyldig nyhetsvarselId")

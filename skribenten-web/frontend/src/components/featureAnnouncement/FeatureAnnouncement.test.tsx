@@ -386,24 +386,6 @@ describe("<FeatureAnnouncement />", () => {
     expect(acknowledgeMock).not.toHaveBeenCalled();
   });
 
-  test("kaster en feil i utvikling for en id backend ikke kan lagre", () => {
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-    onTestFinished(() => consoleError.mockRestore());
-    const InvalidId = () => {
-      const [target, setTarget] = useState<HTMLElement | null>(null);
-      const steps = target ? [{ target, title: "Første nyhet", content: "Første forklaring" }] : [];
-      return (
-        <>
-          <div ref={setTarget}>Mål</div>
-          <FeatureAnnouncement id="Ny_Funksjon" showUntil="2999-12-31" steps={steps} when />
-        </>
-      );
-    };
-
-    expect(() => renderWithQueryClient(<InvalidId />)).toThrow('id "Ny_Funksjon"');
-    expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
-  });
-
   test("skjules når målet forsvinner og rydder opp ved avmontering", async () => {
     const user = userEvent.setup();
     const { rerender, unmount } = renderWithQueryClient(<Harness />);

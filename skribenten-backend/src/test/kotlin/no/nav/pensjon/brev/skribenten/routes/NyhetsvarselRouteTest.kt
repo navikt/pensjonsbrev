@@ -133,14 +133,6 @@ class NyhetsvarselRouteTest {
     }
 
     @Test
-    fun `svarer med bad request for ugyldig nyhetsvarselId`() = meTestApplication(nyNavIdent()) { client ->
-        assertThat(client.put("/me/bekreftedeNyhetsvarsler/Attestant_Diff").status).isEqualTo(HttpStatusCode.BadRequest)
-        assertThat(client.put("/me/bekreftedeNyhetsvarsler/${"a".repeat(101)}").status).isEqualTo(HttpStatusCode.BadRequest)
-
-        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("[]")
-    }
-
-    @Test
     fun `svarer med unauthorized uten innlogget bruker`() = meTestApplication(nyNavIdent()) { _ ->
         val utenInnlogging = createClient { }
 
