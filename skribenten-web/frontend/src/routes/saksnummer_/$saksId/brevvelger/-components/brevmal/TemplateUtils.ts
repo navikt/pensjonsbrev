@@ -32,6 +32,8 @@ export const byggExstreamOnSubmitRequest = (argz: {
   };
 };
 
+export const isDelautomatiskBrev = (template: LetterMetadata) => template.automatiskExstream;
+
 export const byggEBlankettOnSubmitRequest = (argz: {
   template: LetterMetadata;
   formValues: {
