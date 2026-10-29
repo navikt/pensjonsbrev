@@ -1,10 +1,10 @@
-import { Tag } from "@navikt/ds-react";
+import { HStack, Tag } from "@navikt/ds-react";
 
 import { BrevSystem, type LetterMetadata } from "~/types/apiTypes";
 
 function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
-    <>
+    <HStack gap="space-8">
       {(() => {
         switch (letterTemplate.brevsystem) {
           case BrevSystem.Brevbaker: {
@@ -23,7 +23,12 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
           }
         }
       })()}
-    </>
+      {letterTemplate.automatiskExstream && (
+        <Tag data-color="info" size="small" variant="moderate">
+          Automatisk
+        </Tag>
+      )}
+    </HStack>
   );
 }
 
