@@ -33,8 +33,10 @@ import {
   type Row,
   type Table,
   type TemplateDocumentation,
+  type Text,
 } from "~/api/templateDocumentationTypes";
 import { trimClassName } from "~/components/DataClasses";
+import { HighlightedLiteral, SearchBlock, useSearchBlockAttributes } from "~/templateSearch/SearchHighlightContext";
 
 /**
  * Navnene (normalisert med `trimClassName`) på data-klassene som faktisk finnes i malens
@@ -473,28 +475,20 @@ function ForEachComponent({ content }: { content: ForEach<Element> }) {
 function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
-      return (
-        <Heading data-block-index={content.index} level="2" size="medium" spacing>
-          <CocsList items={content.text} />
-        </Heading>
-      );
+      return <TitleBlock index={content.index} level="2" size="medium" text={content.text} />;
     }
     case ElementType.TITLE2: {
-      return (
-        <Heading data-block-index={content.index} level="3" size="small" spacing>
-          <CocsList items={content.text} />
-        </Heading>
-      );
+      return <TitleBlock index={content.index} level="3" size="small" text={content.text} />;
     }
     case ElementType.TITLE3: {
-      return (
-        <Heading data-block-index={content.index} level="4" size="xsmall" spacing>
-          <CocsList items={content.text} />
-        </Heading>
-      );
+      return <TitleBlock index={content.index} level="4" size="xsmall" text={content.text} />;
     }
     case ElementType.PARAGRAPH_TEXT_LITERAL: {
-      return <span className="paragraph-text-literal">{content.text}</span>;
+      return (
+        <span className="paragraph-text-literal">
+          <HighlightedLiteral text={content.text} />
+        </span>
+      );
     }
     case ElementType.PARAGRAPH_TEXT_EXPRESSION: {
       return (
@@ -508,11 +502,7 @@ function ContentComponent({ content }: { content: Element }) {
       if (content.paragraph.length === 1 && only.controlStructureType === ContentOrControlStructureType.CONDITIONAL) {
         return <ConditionalComponent conditional={liftConditionalOutOfParagraph(only, content.index)} />;
       }
-      return (
-        <BodyLong as="div" data-block-index={content.index} spacing>
-          <CocsList items={content.paragraph} />
-        </BodyLong>
-      );
+      return <ParagraphBlock index={content.index} items={content.paragraph} />;
     }
     case ElementType.PARAGRAPH_TABLE: {
       return <TableView content={content} />;
@@ -549,6 +539,38 @@ function ContentComponent({ content }: { content: Element }) {
       );
     }
   }
+}
+
+/** A heading block. Search hits are marked through `useSearchBlockAttributes`. */
+function TitleBlock({
+  index,
+  level,
+  size,
+  text,
+}: {
+  index: number;
+  level: "2" | "3" | "4";
+  size: "medium" | "small" | "xsmall";
+  text: ContentOrControlStructure<Text>[];
+}) {
+  return (
+    <Heading {...useSearchBlockAttributes(index)} level={level} size={size} spacing>
+      <SearchBlock index={index}>
+        <CocsList items={text} />
+      </SearchBlock>
+    </Heading>
+  );
+}
+
+/** A paragraph block, including any lists and tables inside it. */
+function ParagraphBlock({ index, items }: { index: number; items: ContentOrControlStructure<ParagraphContent>[] }) {
+  return (
+    <BodyLong as="div" {...useSearchBlockAttributes(index)} spacing>
+      <SearchBlock index={index}>
+        <CocsList items={items} />
+      </SearchBlock>
+    </BodyLong>
+  );
 }
 
 function ConditionalComponent<E extends Element>({ conditional }: { conditional: Conditional<E> }) {

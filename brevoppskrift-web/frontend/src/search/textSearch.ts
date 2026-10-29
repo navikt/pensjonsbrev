@@ -17,13 +17,15 @@ export type TemplateText = {
 
 /**
  * A content hit: the best-matching line in a template (its neighbours are
- * reachable via `template.lines`) plus the total number of matching lines.
+ * reachable via `template.lines`) plus every matching line, in document order.
  * `score` follows Fuse.js convention: 0 is a perfect match, 1 is the worst.
  */
 export type ContentHit = {
   template: TemplateText;
   lineIndex: number;
   matchCount: number;
+  /** Every matching line, ascending. `matchCount` is its length. */
+  matchedLineIndexes: number[];
   score: number;
 };
 
@@ -187,7 +189,7 @@ type ContentMatch = {
 };
 
 /** Collapses the matched lines into one hit per template: the best-scoring
- *  line, plus how many lines matched in total. */
+ *  line, plus every line that matched. */
 function toContentHits(matches: ContentMatch[]): ContentHit[] {
   const byTemplate = new Map<string, ContentHit>();
   for (const { record, score } of matches) {
@@ -196,15 +198,21 @@ function toContentHits(matches: ContentMatch[]): ContentHit[] {
     const existing = byTemplate.get(key);
     if (existing) {
       existing.matchCount++;
+      existing.matchedLineIndexes.push(lineIndex);
       if (score < existing.score) {
         existing.score = score;
         existing.lineIndex = lineIndex;
       }
     } else {
-      byTemplate.set(key, { template, lineIndex, matchCount: 1, score });
+      byTemplate.set(key, { template, lineIndex, matchCount: 1, matchedLineIndexes: [lineIndex], score });
     }
   }
-  return [...byTemplate.values()].sort(
+  const hits = [...byTemplate.values()];
+  for (const hit of hits) {
+    // Fuse returns matches by score, not in document order.
+    hit.matchedLineIndexes.sort((a, b) => a - b);
+  }
+  return hits.sort(
     (a, b) =>
       a.score - b.score || b.matchCount - a.matchCount || a.template.title.localeCompare(b.template.title, "no"),
   );

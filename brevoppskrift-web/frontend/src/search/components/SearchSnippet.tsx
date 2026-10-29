@@ -1,27 +1,40 @@
 import { css } from "@emotion/react";
 import { BodyShort, Box, Detail, HStack } from "@navikt/ds-react";
-import { Link } from "@tanstack/react-router";
 
 import { languageLabel } from "~/search/components/format";
 import { LineContent, truncateLine } from "~/search/components/highlight";
+import { ResultLink, selectedRowCss } from "~/search/components/ResultLink";
+import { type ResultRef, resultRefOf, type SearchCriteria } from "~/search/searchContext";
 import { type ContentHit } from "~/search/textSearch";
 
 const SNIPPET_CHARS = 160;
-export function SearchSnippet({ hit, needle, exact }: { hit: ContentHit; needle?: string; exact?: boolean }) {
+export function SearchSnippet({
+  hit,
+  criteria,
+  selected = false,
+  onOpen,
+}: {
+  hit: ContentHit;
+  /** The search these hits came from. Its query is also the needle to mark. */
+  criteria: SearchCriteria;
+  selected?: boolean;
+  onOpen?: (result: ResultRef) => Promise<void>;
+}) {
   const { template, lineIndex, matchCount } = hit;
   const start = Math.max(0, lineIndex - 1);
   const visibleLines = template.lines.slice(start, lineIndex + 2);
   return (
-    <div>
+    <div css={selectedRowCss} data-selected-result={selected || undefined}>
       <HStack align="baseline" gap="space-8" wrap>
-        <Link
-          params={{ malType: template.malType, templateId: template.id }}
-          preload="intent"
-          search={{ language: template.language, index: template.indexes[lineIndex] }}
-          to="/template/$malType/$templateId"
+        <ResultLink
+          block={template.indexes[lineIndex]}
+          criteria={criteria}
+          current={selected}
+          onOpen={onOpen}
+          result={resultRefOf(template)}
         >
           <BodyShort weight="semibold">{template.title}</BodyShort>
-        </Link>
+        </ResultLink>
         <Detail textColor="subtle">
           {template.id} · {languageLabel(template.language)} · {matchCount} treff i malen
         </Detail>
@@ -47,9 +60,9 @@ export function SearchSnippet({ hit, needle, exact }: { hit: ContentHit; needle?
               truncate
             >
               <LineContent
-                exact={exact}
+                exact={criteria.exact}
                 line={isPrimary ? line : truncateLine(line, SNIPPET_CHARS)}
-                needle={isPrimary ? needle : undefined}
+                needle={isPrimary ? criteria.q : undefined}
               />
             </BodyShort>
           );

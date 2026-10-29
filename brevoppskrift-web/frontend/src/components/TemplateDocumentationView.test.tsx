@@ -13,6 +13,7 @@ import {
   type ParagraphContent,
 } from "~/api/templateDocumentationTypes";
 import { Document, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationView";
+import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
 
 function render(expr: Expr): string {
   return renderToStaticMarkup(<ExprToText expr={expr} />);
@@ -430,6 +431,54 @@ describe("Document search indexes", () => {
     );
 
     expect(html).toContain('data-block-index="0"');
+  });
+});
+
+describe("Document search marking", () => {
+  function paragraph(index: number, text: string): ContentOrControlStructure<OutlineContent> {
+    const block = textLiteralParagraph(text);
+    return block.controlStructureType === ContentOrControlStructureType.CONTENT
+      ? { ...block, content: { ...block.content, index } }
+      : block;
+  }
+  const documentation = {
+    title: [],
+    outline: [
+      paragraph(0, "Du får barnetillegg."),
+      paragraph(1, "Om barnetillegg og annet."),
+      paragraph(2, "Noe helt annet."),
+    ],
+    attachments: [],
+    templateModelSpecification: { types: {}, letterModelTypeName: "" },
+  };
+
+  it("marks hits only in matching blocks, and the active block apart from the others", () => {
+    const html = renderToStaticMarkup(
+      <SearchHighlightProvider
+        highlight={{ needle: "barnetillegg", exact: false, matchingBlocks: new Set([1, 2]), activeBlock: 2 }}
+      >
+        <Document templateDocumentation={documentation} />
+      </SearchHighlightProvider>,
+    );
+
+    expect(html).not.toMatch(/data-block-index="0"[^>]*data-search-hit/);
+    expect(html).toMatch(/data-block-index="1"[^>]*data-search-hit="match"/);
+    expect(html).toMatch(/data-block-index="2"[^>]*data-search-hit="active"/);
+    // Block 0 has the word too, but is not a hit, so only block 1's is marked.
+    expect(html.match(/<mark[^>]*>barnetillegg<\/mark>/g)).toHaveLength(1);
+  });
+
+  it("renders exactly as without search when there is no highlight", () => {
+    const plain = renderToStaticMarkup(<Document templateDocumentation={documentation} />);
+    const withoutHighlight = renderToStaticMarkup(
+      <SearchHighlightProvider highlight={undefined}>
+        <Document templateDocumentation={documentation} />
+      </SearchHighlightProvider>,
+    );
+
+    expect(withoutHighlight).toBe(plain);
+    expect(plain).not.toContain("<mark");
+    expect(plain).not.toContain("data-search-hit");
   });
 });
 

@@ -1,12 +1,27 @@
-import { css } from "@emotion/react";
 import { Detail, HStack, VStack } from "@navikt/ds-react";
-import { Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import { languageLabel } from "~/search/components/format";
 import { LineContent } from "~/search/components/highlight";
+import { ResultLink, selectedRowCss } from "~/search/components/ResultLink";
+import { isSelectedResult } from "~/search/resultNavigation";
+import { type ResultRef, resultRefOf, type SearchCriteria } from "~/search/searchContext";
 import { type BrevHit, type TemplateText } from "~/search/textSearch";
-export function BrevResultList({ hits, needle, exact }: { hits: BrevHit[]; needle?: string; exact?: boolean }) {
+
+/** Title hits, one row per template with all its matching languages. */
+export function BrevResultList({
+  hits,
+  criteria,
+  selected,
+  onOpen,
+}: {
+  hits: BrevHit[];
+  /** The search these hits came from. Its query is also the needle to mark. */
+  criteria: SearchCriteria;
+  /** The result last opened; any language of its template marks the row. */
+  selected?: ResultRef;
+  onOpen?: (result: ResultRef) => Promise<void>;
+}) {
   const rows = useMemo(() => {
     const byTemplate = new Map<string, { template: TemplateText; languages: string[] }>();
     for (const { template } of hits) {
@@ -24,28 +39,31 @@ export function BrevResultList({ hits, needle, exact }: { hits: BrevHit[]; needl
   }, [hits]);
   return (
     <VStack gap="space-8">
-      {rows.map(({ template, languages }) => (
-        <HStack align="baseline" gap="space-8" key={`${template.malType}/${template.id}`} wrap>
-          <Link
-            css={css`
-              mark {
-                background: transparent;
-                color: inherit;
-                font-weight: var(--ax-font-weight-bold);
-              }
-            `}
-            params={{ malType: template.malType, templateId: template.id }}
-            preload="intent"
-            search={{ language: template.language }}
-            to="/template/$malType/$templateId"
+      {rows.map(({ template, languages }) => {
+        const result = resultRefOf(template);
+        const isSelected = isSelectedResult(result, selected, true);
+        return (
+          <HStack
+            align="baseline"
+            css={selectedRowCss}
+            data-selected-result={isSelected || undefined}
+            gap="space-8"
+            key={`${template.malType}/${template.id}`}
+            wrap
           >
-            <LineContent exact={exact} line={[{ type: "text", value: template.title }]} needle={needle} />
-          </Link>
-          <Detail textColor="subtle">
-            {template.id} · {languages.map(languageLabel).join(", ")}
-          </Detail>
-        </HStack>
-      ))}
+            <ResultLink criteria={criteria} current={isSelected} onOpen={onOpen} result={result}>
+              <LineContent
+                exact={criteria.exact}
+                line={[{ type: "text", value: template.title }]}
+                needle={criteria.q}
+              />
+            </ResultLink>
+            <Detail textColor="subtle">
+              {template.id} · {languages.map(languageLabel).join(", ")}
+            </Detail>
+          </HStack>
+        );
+      })}
     </VStack>
   );
 }
