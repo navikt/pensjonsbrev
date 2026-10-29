@@ -17,7 +17,7 @@ data class Beregning(
     val bunnfradrag: Kroner,
     val bunnfradragNesteAr: Kroner,
     val reduksjonsprosent: Double,
-    val oifuVedVirkningstidspunkt: Kroner?,
+    val oifu: Kroner,
 
     val yrkesskadegrad: Int?,
     val yrkesskadeBest: Boolean,
