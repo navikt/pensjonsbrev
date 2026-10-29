@@ -95,6 +95,50 @@ test.describe("Del-automatiske brev", () => {
     await expect(card.getByText("453864999")).toBeVisible();
   });
 
+  for (const latestFails of [false, true]) {
+    test(`Kun siste kvittering er ekspandert når siste bestilling ${latestFails ? "feiler" : "lykkes"}`, async ({
+      page,
+    }) => {
+      let orderCount = 0;
+      await page.route(AUTOBREV_ORDER_URL, (route) => {
+        orderCount++;
+        return route.fulfill({
+          json:
+            latestFails && orderCount === 2
+              ? { journalpostId: null, failureType: "ENHET_UNAUTHORIZED" }
+              : { journalpostId: 453864999 + orderCount, failureType: null },
+          headers: { "x-request-id": "test-request-id" },
+        });
+      });
+
+      await selectAutobrevAndOrder(page);
+      const cards = page.getByRole("region", { name: autobrev.name, exact: true });
+      await expect(cards).toHaveCount(1);
+      await expect(cards.first().getByRole("button", { expanded: true })).toBeVisible();
+
+      await page.getByRole("button", { name: "Lage nytt brev på denne saken" }).click();
+      await page.getByTestId("brevmal-search").fill(autobrev.name);
+      await page.getByTestId("brevmal-button").filter({ hasText: autobrev.name }).click();
+      await page.getByTestId("order-letter").click();
+      await page.getByTestId("send-delautomatisk-brev").click();
+      await page.waitForURL(/\/saksnummer\/123456\/kvittering/);
+
+      await expect(cards).toHaveCount(2);
+      await expect(cards.first().getByRole("button", { expanded: false })).toBeVisible();
+      await expect(cards.last().getByRole("button", { expanded: true })).toBeVisible();
+      if (latestFails) {
+        await expect(cards.last().getByTestId("generic-error-alert")).toBeVisible();
+      } else {
+        await expect(cards.last().getByText("453865001")).toBeVisible();
+      }
+
+      await cards.first().getByRole("button", { expanded: false }).click();
+      await expect(cards.first().getByText("453865000")).toBeVisible();
+      await cards.first().getByRole("button", { expanded: true }).click();
+      await expect(cards.first().getByRole("button", { expanded: false })).toBeVisible();
+    });
+  }
+
   test("Viser verken verge eller adresse i kvittering når brukeren har verge", async ({ page }) => {
     await page.route("**/bff/skribenten-backend/sak/123456/adresse", (route) =>
       route.fulfill({

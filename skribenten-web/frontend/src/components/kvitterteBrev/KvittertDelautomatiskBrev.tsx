@@ -10,8 +10,12 @@ import { type DelautomatiskBrevResult } from "~/routes/saksnummer_/$saksId/kvitt
 import { ApiError } from "../ApiError";
 import { KvittertBrevHeaderLayout } from "./KvittertBrevHeader";
 
-const KvittertDelautomatiskBrev = (props: { saksId: string; result: DelautomatiskBrevResult }) => {
-  const [open, setOpen] = useState(true);
+const KvittertDelautomatiskBrev = (props: {
+  saksId: string;
+  result: DelautomatiskBrevResult;
+  initiallyOpen: boolean;
+}) => {
+  const [open, setOpen] = useState(props.initiallyOpen);
   const { result } = props;
   const sakGjelderNavn = useSakGjelderNavnFormatert({ saksId: props.saksId });
   const samhandlerMottaker = useSamhandlerMottaker(result.idTSSEkstern ?? undefined);

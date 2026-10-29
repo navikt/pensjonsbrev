@@ -50,7 +50,12 @@ function Kvittering() {
         <Box overflow="auto" paddingBlock="space-20" paddingInline="space-16">
           <VStack gap="space-8">
             {delautomatiskBrevResults.map((result, index) => (
-              <KvittertDelautomatiskBrev key={`delautomatisk-${index}`} result={result} saksId={saksId} />
+              <KvittertDelautomatiskBrev
+                initiallyOpen={index === delautomatiskBrevResults.length - 1}
+                key={`delautomatisk-${index}`}
+                result={result}
+                saksId={saksId}
+              />
             ))}
             <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
           </VStack>
