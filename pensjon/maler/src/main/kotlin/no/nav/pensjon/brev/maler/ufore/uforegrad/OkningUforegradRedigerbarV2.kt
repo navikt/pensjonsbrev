@@ -125,12 +125,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
 
                 // reduksjonsgrunnlag
-                val reduksjonsgrunnlagSumutbt = reduksjonsgrunnlag.safe { sumUtBt }.ifNull(Kroner(0))
-                val reduksjonsgrunnlagGradertoppjustertifu = reduksjonsgrunnlag.safe { gradertOppjustertIFU }.ifNull(Kroner(0))
-                val reduksjonsgrunnlagBarnetilleggRegelverkstype = reduksjonsgrunnlag.safe { barnetilleggRegelverkType }
-                val reduksjonsgrunnlagSumbruttoetterreduksjonbt = reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0))
-                val reduksjonsgrunnlagSumbruttoforreduksjonbt = reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0))
-                val reduksjonsgrunnlagAndelYtelseAvOifu = reduksjonsgrunnlag.safe { andelYtelseAvOIFU }.ifNull(0.0)
+                val btRedusertTil0 = not(reduksjonsgrunnlag.isNull()) and reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0)).greaterThan(0) and reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0)).equalTo(0)
 
                 //Beregning barnetillegg
                 val btSerkullInnvilget = barnetillegg.btSerkullsbarn.safe { innvilget }.ifNull(false)
@@ -185,7 +180,6 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 val btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 = btSerkullInnvilget and btFellesInnvilget and ((btSerkullNetto.notEqualTo(0) and btsbJusteringsbelopPerAr.equalTo(0)) or (btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0)))
                 val btsbInnvilgetOgJusteringsbelop0 = btSerkullInnvilget and btsbJusteringsbelopPerAr.notEqualTo(0)
                 val btsbInnvilgetIkkeBtfbinnvilget = btSerkullInnvilget and not(btFellesInnvilget)
-                val sumUtBtHoyereLavere = reduksjonsgrunnlagSumutbt.greaterThan(reduksjonsgrunnlagGradertoppjustertifu)
                 val barnetBarnaFellesEntallFlertall = ifElse(barnetillegg.btFellesbarn.safe { antallBarn }.ifNull(0).equalTo(1) and Expression.FromScope.Language.equalTo(English.expr()), "s".expr(), "".expr())
 
                 //tekster
@@ -1133,60 +1127,56 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumUTBT > PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType <> "overgangsregler_2016" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
-                showIf((reduksjonsgrunnlagSumutbt.greaterThan(reduksjonsgrunnlagGradertoppjustertifu) and reduksjonsgrunnlagBarnetilleggRegelverkstype.notEqualTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and beregning.virkFom.legacyGreaterThanOrEqual(LocalDate.of(2016, 1, 1)))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn 95 prosent av inntekten din før du ble ufør. 95 prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + reduksjonsgrunnlagGradertoppjustertifu.format() + ". Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Årlig barnetillegg før reduksjon ut fra inntekt blir " },
-                            nynorsk { +"Uføretrygda di og barnetillegget ditt kan til saman ikkje utgjere meir enn 95 prosent av inntekta di før du blei ufør. 95 prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + reduksjonsgrunnlagGradertoppjustertifu.format() + ". Uføretrygda di og barnetillegget ditt er til saman høgare enn dette. Brutto årleg barnetillegg før reduksjon ut frå inntekt blir " },
+                ifNotNull(reduksjonsgrunnlag) { redGrunnlag ->
+                    showIf((redGrunnlag.sumUtBt.greaterThan(redGrunnlag.gradertOppjustertIFU) and redGrunnlag.barnetilleggRegelverkType.notEqualTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and beregning.virkFom.legacyGreaterThanOrEqual(LocalDate.of(2016, 1, 1)))) {
+                        paragraph {
+                            text(
+                                bokmal { +"Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn 95 prosent av inntekten din før du ble ufør. 95 prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + redGrunnlag.gradertOppjustertIFU.format() + ". Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Årlig barnetillegg før reduksjon ut fra inntekt blir " },
+                                nynorsk { +"Uføretrygda di og barnetillegget ditt kan til saman ikkje utgjere meir enn 95 prosent av inntekta di før du blei ufør. 95 prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + redGrunnlag.gradertOppjustertIFU.format() + ". Uføretrygda di og barnetillegget ditt er til saman høgare enn dette. Brutto årleg barnetillegg før reduksjon ut frå inntekt blir " },
+                            )
+
+                            showIf((redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(redGrunnlag.sumBruttoEtterReduksjonBt) and redGrunnlag.sumBruttoEtterReduksjonBt.greaterThan(0))) {
+                                text(
+                                    bokmal { +"derfor redusert til " + redGrunnlag.sumBruttoEtterReduksjonBt.format() + ". " },
+                                    nynorsk { +"derfor redusert til " + redGrunnlag.sumBruttoEtterReduksjonBt.format() + ". " },
+                                )
+                            }
+
+                            showIf((redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(0) and redGrunnlag.sumBruttoEtterReduksjonBt.equalTo(0))) {
+                                text(
+                                    bokmal { +"ikke utbetalt. " },
+                                    nynorsk { +"ikkje utbetalt. " },
+                                )
+                            }
+
+                            showIf((redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(redGrunnlag.sumBruttoEtterReduksjonBt) and redGrunnlag.sumBruttoEtterReduksjonBt.greaterThan(0))) {
+                                text(
+                                    bokmal { +"Har du inntekt ved siden av uføretrygden vil dette også kunne ha betydning for størrelsen på barnetillegget ditt." },
+                                    nynorsk { +"Har du inntekt ved sida av uføretrygda, kan dette også ha noko å seie for storleiken på barnetillegget ditt." },
+                                )
+                            }
+                        }
+                    }
+
+                    showIf((redGrunnlag.barnetilleggRegelverkType.equalTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and redGrunnlag.andelYtelseAvOIFU.greaterThan(95.0))) {
+                        includePhrase(
+                            TBU3802_Generated_Ny(
+                                virkningstidpunktAr = beregning.virkFom.year,
+                                andelYtelseAvOifu = redGrunnlag.andelYtelseAvOIFU,
+                                gradertOppjustertIfu = redGrunnlag.gradertOppjustertIFU,
+                                sumUtBtHoyereLavere = redGrunnlag.sumUtBt.greaterThan(redGrunnlag.gradertOppjustertIFU),
+                                sumBruttoForReduksjonBt = redGrunnlag.sumBruttoFoerReduksjonBt,
+                                sumBruttoEtterReduksjonBt = redGrunnlag.sumBruttoEtterReduksjonBt,
+                                sumUtBt = redGrunnlag.sumUtBt,
+                                anvendtTrygdetid = beregning.anvendtTrygdetid,
+                                btfbInnvilget = btFellesInnvilget,
+                                epsBorMed = grunnlag.epsBrukerBorMed,
+                            )
                         )
-
-                        //IF( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT > 0) THEN     INCLUDE END IF
-                        showIf((reduksjonsgrunnlagSumbruttoforreduksjonbt.greaterThan(reduksjonsgrunnlagSumbruttoetterreduksjonbt) and reduksjonsgrunnlagSumbruttoetterreduksjonbt.greaterThan(0))) {
-                            text(
-                                bokmal { +"derfor redusert til " + reduksjonsgrunnlagSumbruttoetterreduksjonbt.format() + ". " },
-                                nynorsk { +"derfor redusert til " + reduksjonsgrunnlagSumbruttoetterreduksjonbt.format() + ". " },
-                            )
-                        }
-
-                        showIf((reduksjonsgrunnlagSumbruttoforreduksjonbt.greaterThan(0) and reduksjonsgrunnlagSumbruttoetterreduksjonbt.equalTo(0))) {
-                            text(
-                                bokmal { +"ikke utbetalt. " },
-                                nynorsk { +"ikkje utbetalt. " },
-                            )
-                        }
-
-                        //IF( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT > 0) THEN     INCLUDE END IF
-                        showIf((reduksjonsgrunnlagSumbruttoforreduksjonbt.greaterThan(reduksjonsgrunnlagSumbruttoetterreduksjonbt) and reduksjonsgrunnlagSumbruttoetterreduksjonbt.greaterThan(0))) {
-                            text(
-                                bokmal { +"Har du inntekt ved siden av uføretrygden vil dette også kunne ha betydning for størrelsen på barnetillegget ditt." },
-                                nynorsk { +"Har du inntekt ved sida av uføretrygda, kan dette også ha noko å seie for storleiken på barnetillegget ditt." },
-                            )
-                        }
                     }
                 }
 
-                showIf((reduksjonsgrunnlagBarnetilleggRegelverkstype.equalTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and reduksjonsgrunnlagAndelYtelseAvOifu.greaterThan(95.0))) {
-                    includePhrase(
-                        TBU3802_Generated_Ny(
-                            virkningstidpunktAr = beregning.virkFom.year,
-                            andelYtelseAvOifu = reduksjonsgrunnlagAndelYtelseAvOifu,
-                            gradertOppjustertIfu = reduksjonsgrunnlagGradertoppjustertifu,
-                            sumUtBtHoyereLavere = sumUtBtHoyereLavere,
-                            sumBruttoForReduksjonBt = reduksjonsgrunnlagSumbruttoforreduksjonbt,
-                            sumBruttoEtterReduksjonBt = reduksjonsgrunnlagSumbruttoetterreduksjonbt,
-                            sumUtBt = reduksjonsgrunnlagSumutbt,
-                            anvendtTrygdetid = beregning.anvendtTrygdetid,
-                            btfbInnvilget = btFellesInnvilget,
-                            epsBorMed = grunnlag.epsBrukerBorMed,
-                        )
-                    )
-                }
-
-                //IF (   NOT   (     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0     AND     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0   ) ) THEN   INCLUDE ENDIF
-                showIf((not(reduksjonsgrunnlagSumbruttoforreduksjonbt.greaterThan(0) and reduksjonsgrunnlagSumbruttoetterreduksjonbt.equalTo(0)))) {
-
-                    //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)   ) THEN      INCLUDE ENDIF
+                showIf(not(btRedusertTil0)) {
                     showIf(((not(btFellesInnvilget) and btSerkullInnvilget))) {
                         includePhrase(
                             TBU2338_Generated_Ny(
