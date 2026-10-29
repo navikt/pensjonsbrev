@@ -110,7 +110,7 @@ class SendtBrevMetrikker(
         Counter.builder("skribenten_redigerte_vedlegg")
             .description("Redigerte vedlegg, fordelt på brevkode")
             .tag("brevkode", maaling.brevkode.kode())
-            .tag("redigerte_vedlegg", maaling.redigerteVedlegg.joinToString(",") { it.id })
+            .tag("redigerte_vedlegg", maaling.redigerteVedlegg.sortedBy { it.id }.joinToString(",") { it.id })
             .register(registry)
             .increment()
     }
