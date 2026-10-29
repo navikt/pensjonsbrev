@@ -14,25 +14,27 @@ const KvittertBrevHeader = (props: {
     brevInfo: props.brevInfo,
   });
 
-  return (
-    <ExpansionCard.Header>
-      <ExpansionCard.Title
-        as="h2"
-        css={css`
-          font-size: var(--ax-font-size-heading-xsmall);
-        `}
-        size="small"
-      >
-        <VStack align="start" gap="space-8" justify="start">
-          {tag}
-          {tittel}
-        </VStack>
-      </ExpansionCard.Title>
-    </ExpansionCard.Header>
-  );
+  return <KvittertBrevHeaderLayout tag={tag} title={tittel} />;
 };
 
 export default KvittertBrevHeader;
+
+export const KvittertBrevHeaderLayout = (props: { tag: React.ReactNode; title: string }) => (
+  <ExpansionCard.Header>
+    <ExpansionCard.Title
+      as="h2"
+      css={css`
+        font-size: var(--ax-font-size-heading-xsmall);
+      `}
+      size="small"
+    >
+      <VStack align="start" gap="space-8" justify="start">
+        {props.tag}
+        {props.title}
+      </VStack>
+    </ExpansionCard.Title>
+  </ExpansionCard.Header>
+);
 
 const hentTagOgTittelForHeader = (args: {
   apiStatus: "error" | "success";

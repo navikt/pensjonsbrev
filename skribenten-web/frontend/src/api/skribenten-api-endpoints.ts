@@ -18,6 +18,7 @@ import {
   type KontaktAdresseResponse,
   type NavAnsattEnhet,
   type OrderEblankettRequest,
+  type OrderExstreamAutobrevResponse,
   type OrderExstreamLetterRequest,
   type PreferredLanguage,
   type SakContextDto,
@@ -181,6 +182,19 @@ export async function orderEblankett(saksId: string, orderLetterRequest: OrderEb
   );
 
   return convertBestillOgRedigerBrevResponse(response);
+}
+
+export async function orderExstreamAutobrev(saksId: string, request: OrderExstreamLetterRequest) {
+  const response = await axios.post<OrderExstreamAutobrevResponse>(
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/exstream/autobrev`,
+    request,
+  );
+
+  if (response.data.failureType) {
+    throw convertResponseToAxiosError({ message: response.data.failureType, response });
+  }
+
+  return response.data.journalpostId ?? null;
 }
 
 function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRedigerBrevResponse>) {

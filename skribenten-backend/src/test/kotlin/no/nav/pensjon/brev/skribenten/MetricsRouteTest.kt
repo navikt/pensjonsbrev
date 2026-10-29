@@ -119,6 +119,7 @@ class MetricsRouteTest {
                 avsenderEnhet = EnhetId("4321"),
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 valgteVedlegg = emptyList(),
+                redigerteVedlegg = emptyList(),
             )
         ).join()
 
