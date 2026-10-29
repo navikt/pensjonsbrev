@@ -43,6 +43,7 @@ tasks.compileTestKotlin {
 
 tasks {
     test {
+        maxParallelForks = 1
         useJUnitPlatform {
             excludeTags = setOf("integration-test", "manual-test")
         }

@@ -28,7 +28,7 @@ import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.DocumentationETag
 import no.nav.pensjon.brev.routing.brevRouting
-import no.nav.pensjon.brev.routing.varmOpp
+import no.nav.pensjon.brev.routing.startOppvarming
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
 import kotlin.time.Duration.Companion.minutes
@@ -127,7 +127,7 @@ fun Application.brevbakerModule(
     install(ContentNegotiation) {
         jackson {
             brevbakerConfig()
-            varmOpp(templates.hentRedigerbareMaler(), pdfbyggerService)
+            this@brevbakerModule.startOppvarming(this)
         }
         register(ContentType.Text.Html, LetterResponseFileConverter)
         register(ContentType.Application.Pdf, LetterResponseFileConverter)

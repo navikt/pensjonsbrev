@@ -1,77 +1,68 @@
 package no.nav.pensjon.brev.routing
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import no.nav.brev.brevbaker.Brevbaker
-import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.pensjon.brev.api.LetterFactory
-import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
+import com.fasterxml.jackson.module.kotlin.readValue
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStarted
+import io.ktor.util.AttributeKey
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import no.nav.brev.InterneDataklasser
+import no.nav.brev.brevbaker.markup.LetterMarkup
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
-import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.toCode
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 import org.slf4j.LoggerFactory
-import java.time.LocalDate
-import kotlin.time.measureTime
+import kotlin.time.TimeSource
 
-private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.routing.Oppvarming")
+@OptIn(InterneDataklasser::class)
+internal class Oppvarming(private val jsonMapper: ObjectMapper) {
+    private val logger = LoggerFactory.getLogger(Oppvarming::class.java)
 
-internal fun ObjectMapper.varmOpp(
-    maler: Set<RedigerbarTemplate<*>>,
-    pdfByggerService: PDFByggerService,
-): Boolean {
-    val mal = maler.firstOrNull { it.template.letterDataType == EmptyRedigerbarBrevdata::class }
-    if (mal == null) {
-        logger.warn("Fant ingen mal med EmptyRedigerbarBrevdata å varme opp med")
-        return false
-    }
-    return try {
-        val varighet = measureTime {
-            val bestilling = BestillBrevRequest(
-                kode = mal.kode,
-                letterData = EmptyRedigerbarBrevdata(saksbehandlerValg = IngenSaksbehandlervalg),
-                felles = BrevbakerFelles(
-                    dokumentDato = LocalDate.now(),
-                    saksnummer = "1",
-                    avsenderEnhet = BrevbakerFelles.NavEnhet(
-                        nettside = "nav.no",
-                        navn = "Nav",
-                        telefonnummer = Telefonnummer("55553333"),
-                    ),
-                    bruker = BrevbakerFelles.Bruker(
-                        foedselsnummer = Foedselsnummer("01010100000"),
-                        fornavn = "Oppvarming",
-                        mellomnavn = null,
-                        etternavn = "Oppvarming",
-                    ),
-                    annenMottakerNavn = null,
-                    signerendeSaksbehandlere = BrevbakerFelles.SignerendeSaksbehandlere(saksbehandler = "Oppvarming"),
-                ),
-                language = mal.template.language.all().first().toCode(),
-            )
-            val mottatt = readValue(
-                writeValueAsBytes(bestilling),
-                jacksonTypeRef<BestillBrevRequest<Brevkode.Redigerbart>>(),
-            )
-            @Suppress("UNCHECKED_CAST")
-            val brev = LetterFactory<Brevkode.Redigerbart>(emptySet())
-                .createLetter(mottatt, mal as BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>)
-            val brevbaker = Brevbaker(pdfByggerService)
-            writeValueAsBytes(brevbaker.renderLetterMarkupWithDataUsage(brev))
-            writeValueAsBytes(brevbaker.renderLetterMarkupWithDataUsageV2(brev))
+    @Volatile
+    var ferdig: Boolean = false
+        private set
+
+    internal val feiledeSteg: MutableSet<String> = mutableSetOf()
+
+    fun varmOpp() {
+        val start = TimeSource.Monotonic.markNow()
+        try {
+            maal("brevdata") { jsonMapper.readValue<BrevbakerBrevdata>("{}") }
+            maal("markup") {
+                listOf(
+                    LetterMarkupImpl::class.java,
+                    LetterMarkupWithDataUsageImpl::class.java,
+                    LetterMarkup::class.java,
+                    LetterMarkupWithDataUsage::class.java,
+                ).forEach {
+                    jsonMapper.readerFor(it)
+                    jsonMapper.writerFor(it)
+                }
+            }
+            logger.info("Oppvarming ferdig på ${start.elapsedNow().inWholeMilliseconds} ms")
+        } finally {
+            ferdig = true
         }
-        logger.info("Oppvarming med ${mal.kode.kode()} ferdig på ${varighet.inWholeMilliseconds} ms")
-        true
-    } catch (e: Exception) {
-        logger.warn("Oppvarming feilet", e)
-        false
+    }
+
+    private fun maal(navn: String, steg: () -> Unit) {
+        val start = TimeSource.Monotonic.markNow()
+        try {
+            steg()
+            logger.info("Oppvarming av $navn ferdig på ${start.elapsedNow().inWholeMilliseconds} ms")
+        } catch (e: Exception) {
+            feiledeSteg.add(navn)
+            logger.warn("Oppvarming av $navn feilet etter ${start.elapsedNow().inWholeMilliseconds} ms", e)
+        }
     }
 }
 
-private object IngenSaksbehandlervalg : SaksbehandlervalgIDSL, Map<String, Any?> by emptyMap()
+internal val OppvarmingKey = AttributeKey<Oppvarming>("Oppvarming")
+
+internal fun Application.startOppvarming(jsonMapper: ObjectMapper) {
+    val oppvarming = Oppvarming(jsonMapper)
+    attributes.put(OppvarmingKey, oppvarming)
+    monitor.subscribe(ApplicationStarted) { it.launch(Dispatchers.Default) { oppvarming.varmOpp() } }
+}
