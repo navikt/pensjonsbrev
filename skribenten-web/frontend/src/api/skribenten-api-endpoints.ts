@@ -60,6 +60,10 @@ export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
 };
 
+export const acknowledgedAnnouncementsKeys = {
+  all: ["ACKNOWLEDGED_ANNOUNCEMENTS"] as const,
+};
+
 export const featureToggleKeys = {
   all: ["FEATURE_TOGGLE"] as const,
   name: (featureName: string) => [...featureToggleKeys.all, featureName] as const,
@@ -164,6 +168,17 @@ export async function addFavoritt(id: string) {
 
 export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
+}
+
+export const getAcknowledgedAnnouncements = {
+  queryKey: acknowledgedAnnouncementsKeys.all,
+  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler`)).data,
+  staleTime: Number.POSITIVE_INFINITY,
+  gcTime: Number.POSITIVE_INFINITY,
+};
+
+export async function acknowledgeAnnouncement(announcementId: string) {
+  await axios.put(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler/${encodeURIComponent(announcementId)}`);
 }
 
 export async function orderExstreamLetter(saksId: string, orderLetterRequest: OrderExstreamLetterRequest) {

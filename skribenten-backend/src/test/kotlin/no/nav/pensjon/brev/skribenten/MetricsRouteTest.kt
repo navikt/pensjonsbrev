@@ -14,7 +14,9 @@ import no.nav.pensjon.brev.skribenten.services.FakeSamhandlerService
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Isolated
 
+@Isolated
 class MetricsRouteTest {
 
     // NB: må ankres på skilletegnet, ellers matcher regexet slutten av throwable="n/a".

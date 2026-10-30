@@ -146,6 +146,7 @@ fun Application.configureDependencies() {
         provide(SlettBrevPolicy::class)
 
         provide(AttesterBrevHandler::class)
+        provide(BekreftNyhetsvarselHandler::class)
         provide(DiffBrevHandler::class)
         provide(EndreDistribusjonstypeHandler::class)
         provide(EndreMottakerHandler::class)
@@ -155,6 +156,7 @@ fun Application.configureDependencies() {
         provide(FrigiReservasjonHandler::class)
         provide(GenererFoerstesideHandler::class)
         provide(HentAlltidValgbareVedleggHandler::class)
+        provide(HentBekreftedeNyhetsvarslerHandler::class)
         provide(HentBrevAttesteringHandler::class)
         provide<HentBrevForAlleSakerService>(HentBrevForAlleSakerHandler::class)
         provide(HentBrevForSakHandler::class)
