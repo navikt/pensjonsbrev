@@ -226,6 +226,27 @@ describe("<FeatureAnnouncement />", () => {
     expect(queryAnnouncement()).toBeNull();
   });
 
+  test("vises ikke igjen når brukeren har vært borte lenger enn standard gcTime og lagringen feilet", async () => {
+    acknowledgeMock.mockRejectedValue(new Error("Nettverksfeil"));
+    const user = userEvent.setup();
+    const queryClient = createQueryClient();
+    const firstRender = renderWithQueryClient(<Harness />, queryClient);
+    await findAnnouncement();
+    await user.click(screen.getByRole("button", { name: "Skjønner!" }));
+    await waitFor(() => expect(queryAnnouncement()).toBeNull());
+    await waitFor(() => expect(logErrorMock).toHaveBeenCalled());
+
+    vi.useFakeTimers();
+    firstRender.unmount();
+    vi.advanceTimersByTime(10 * 60 * 1000);
+    vi.useRealTimers();
+
+    renderWithQueryClient(<Harness />, queryClient);
+    await settle();
+
+    expect(queryAnnouncement()).toBeNull();
+  });
+
   test("lukkes med Escape", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<Harness />);

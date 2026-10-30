@@ -173,6 +173,7 @@ export const getAcknowledgedAnnouncements = {
   queryKey: acknowledgedAnnouncementsKeys.all,
   queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler`)).data,
   staleTime: Number.POSITIVE_INFINITY,
+  gcTime: Number.POSITIVE_INFINITY,
 };
 
 export async function acknowledgeAnnouncement(announcementId: string) {
