@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -70,13 +69,19 @@ object FlereOpplysningerFirmaInntekt : RedigerbarTemplate<EmptyRedigerbarBrevdat
                 list {
                     item {text(bokmal { +"Arbeidsavtale for den aktuelle stillingen." },
                         nynorsk { +"Arbeidsavtale for den aktuelle stillinga." }) }
-                    item {text(bokmal { +"Hva skyldes inntektsendringen som inntraff i " + fritekst("dato") + ".? Hvis dette skyldes formell stillingsendring ber vi om at det vedlegges dokumentasjon på dette." },
+                    item {
+                        text(
+                            bokmal { +"Hva skyldes inntektsendringen som inntraff i " + fritekst("dato") + "? Hvis dette skyldes formell stillingsendring ber vi om at det vedlegges dokumentasjon på dette." },
                         nynorsk { +"Kva skuldast inntektsendringa som skjedde " + fritekst("dato") + "? Dersom dette skuldast ei formell stillingsendring, ber vi om at det blir lagt ved dokumentasjon på dette." }) }
-                    item {text(bokmal { +"Dersom du ikke lenger skal arbeide fullt, er det da ansatt en annen person i din stilling? Vi ber om kopi av arbeidsavtalen på denne personen. (eventuell hvem har overtatt dine arbeidsoppgaver)" },
+                    item {
+                        text(
+                            bokmal { +"Dersom du ikke lenger skal arbeide fullt, er det da ansatt en annen person i din stilling? Vi ber om kopi av arbeidsavtalen på denne personen. (eventuelt hvem har overtatt dine arbeidsoppgaver)" },
                         nynorsk { +"Dersom du ikkje lenger skal arbeide fullt, er det då tilsett ein annan person i stillinga di? Vi ber om kopi av arbeidsavtalen på denne personen. (eventuelt kven har overteke arbeidsoppgåvene dine)" }) }
                     item {text(bokmal { +"Timelistene dine fra " + fritekst("år") + " og " + fritekst("år") + "." },
                         nynorsk { +"Timelistene dine frå " + fritekst("år") + " og " + fritekst("år") + "." }) }
-                    item {text(bokmal { +"Hvilke arbeidsoppgaver du har utført for firmaet? Ifølge foreløpig driftsresultat er omsetningen økt betraktelig fra " + fritekst("år") + " til " + fritekst("år") + ". Firmaet har ikke benyttet innleid arbeidskraft i særlig grad ut ifra opplysningene i foreløpig resultatregnskap. Dette var også tilfellet i " + fritekst("år") + "." },
+                    item {
+                        text(
+                            bokmal { +"Hvilke arbeidsoppgaver har du utført for firmaet? Ifølge foreløpig driftsresultat er omsetningen økt betraktelig fra " + fritekst("år") + " til " + fritekst("år") + ". Firmaet har ikke benyttet innleid arbeidskraft i særlig grad ut ifra opplysningene i foreløpig resultatregnskap. Dette var også tilfellet i " + fritekst("år") + "." },
                         nynorsk { +"Kva arbeidsoppgåver har du utført for firmaet? Ifølgje førebels driftsresultat er omsetninga auka betydeleg frå " + fritekst("år") + " til " + fritekst("år") + ". Firmaet har ikkje nytta innleigd arbeidskraft i særleg grad ut ifrå opplysningane i førebels resultatrekneskap. Dette var også tilfellet i " + fritekst("år") + "." }) }
                     item {text(bokmal { +"Beskriv dine arbeidsoppgaver som styremedlem, samt uttak av styrehonorar." },
                         nynorsk { +"Skildre arbeidsoppgåvene dine som styremedlem, samt uttak av styrehonorar." }) }
