@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createMemoryHistory, createRootRouteWithContext, createRouter, RouterProvider } from "@tanstack/react-router";
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AxiosError, AxiosHeaders } from "axios";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -169,6 +169,7 @@ describe("search hit focus", () => {
   const loading = { isLoading: true, displayed: undefined, searchFailed: false };
 
   const scrolledTo: (string | null)[] = [];
+  const block = (index: number) => document.querySelector(`[data-block-index="${index}"]`) as HTMLElement;
   function openPage(search: Record<string, unknown>, { languages = ["BOKMAL"], hits = loaded as unknown } = {}) {
     getTemplateDescription.queryFn.mockResolvedValue({ languages });
     getBrevkoderMedMetadata.queryFn.mockResolvedValue([]);
@@ -236,6 +237,40 @@ describe("search hit focus", () => {
       expect(document.querySelector('[data-block-index="20"]')?.getAttribute("data-search-hit")).toBe("active"),
     );
     expect(screen.getByText("Ingen treff i denne språkversjonen")).toBeTruthy();
+  });
+
+  it("focuses a hit the user clicks in, so a copied link opens at it, without scrolling", async () => {
+    const router = await openPage({ tab: "innhold" });
+    await waitFor(() => expect(scrolledTo).toEqual(["20"]));
+
+    await userEvent.click(block(30));
+
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 30 }));
+    expect(screen.getByText("Avsnitt 2 av 2")).toBeTruthy();
+    expect(document.querySelector('[data-block-index="30"]')?.getAttribute("data-search-hit")).toBe("active");
+    await act(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+    expect(scrolledTo).toEqual(["20"]);
+  });
+
+  it("focuses a hit when keyboard focus moves into it", async () => {
+    const router = await openPage({ tab: "innhold" });
+    await waitFor(() => expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy());
+
+    fireEvent.focusIn(block(30));
+
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 30 }));
+  });
+
+  it("ignores clicks outside the hits, and all clicks while the hits are hidden", async () => {
+    const router = await openPage({ tab: "innhold" });
+    await waitFor(() => expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy());
+
+    await userEvent.click(screen.getByText("Innledning"));
+    await userEvent.click(screen.getByLabelText("Vis søketreff"));
+    await userEvent.click(block(30));
+
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ showHits: false }));
+    expect(router.state.location.search).not.toHaveProperty("focus");
   });
 
   it("opens a shared link as it was shared, with the hits hidden or shown", async () => {

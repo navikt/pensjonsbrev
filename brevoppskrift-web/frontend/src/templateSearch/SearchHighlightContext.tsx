@@ -62,6 +62,14 @@ export function SearchBlock({ index, children }: { index: number; children: Reac
   return <BlockIndexContext.Provider value={index}>{children}</BlockIndexContext.Provider>;
 }
 
+/** The search hit block `target` is inside, or `undefined` when it is in no
+ *  hit block, or the hits are not shown. */
+export function hitBlockOf(target: EventTarget | null): number | undefined {
+  const block = target instanceof Element ? target.closest("[data-search-hit]") : null;
+  const index = block?.getAttribute("data-block-index");
+  return index ? Number(index) : undefined;
+}
+
 /** Literal template text, with the search needle marked if its block is a hit. */
 export function HighlightedLiteral({ text }: { text: string }) {
   const highlight = useContext(SearchHighlightContext);

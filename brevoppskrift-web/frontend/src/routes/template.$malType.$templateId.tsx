@@ -25,6 +25,7 @@ import { blockIndexesOf } from "~/templateSearch/blockIndexes";
 import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
 import { BackButton, SearchHitToolbar } from "~/templateSearch/SearchHitToolbar";
 import { useHitFocus } from "~/templateSearch/useHitFocus";
+import { usePickHitBlock } from "~/templateSearch/usePickHitBlock";
 import { useScrollToBlock } from "~/templateSearch/useScrollToBlock";
 
 /** An unknown template answers 404, which is a missing page rather than an error. */
@@ -117,8 +118,17 @@ function TemplateExplorer() {
   );
   const marking = showHits !== false;
   const { hits, highlight, activeBlock, scrollTarget } = useHitFocus(criteria, current, requestedBlock, marking);
-  useScrollToBlock(previewRef, scrollTarget, documentation);
+  const pickedBlock = useRef<number | undefined>(undefined);
+  useScrollToBlock(previewRef, scrollTarget, documentation, pickedBlock);
   const selectBlock = (block: number) => navigate({ replace: true, search: (s) => ({ ...s, focus: block }) });
+  // A hit the user clicks in, or tabs into, becomes the focused one, so a copied
+  // link opens at it. It is already in view, so it is not scrolled to.
+  usePickHitBlock(previewRef, (block) => {
+    if (block !== activeBlock) {
+      pickedBlock.current = block;
+      selectBlock(block);
+    }
+  });
   const changeMarking = (show: boolean) =>
     navigate({ replace: true, search: (s) => ({ ...s, showHits: show ? undefined : false }) });
 
