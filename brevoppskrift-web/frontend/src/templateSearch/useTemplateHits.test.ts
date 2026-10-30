@@ -55,7 +55,7 @@ function ready(hits: TemplateHits) {
 describe("hitsInTemplate", () => {
   it("finds each matching block once, in document order, and opens at the first", () => {
     const hits = ready(
-      hitsInTemplate(search, "innhold", { malType: "autobrev", id: "A", language: "BOKMAL" }, undefined),
+      hitsInTemplate(search, "innhold", { malType: "autobrev", id: "A", language: "BOKMAL" }, undefined, true),
     );
 
     expect(hits.matchingBlocks).toEqual([20, 30]);
@@ -65,12 +65,14 @@ describe("hitsInTemplate", () => {
   it("opens at the requested block, also when it is not a hit", () => {
     const current = { malType: "autobrev" as const, id: "A", language: "BOKMAL" };
 
-    expect(ready(hitsInTemplate(search, "innhold", current, 30)).activeBlock).toBe(30);
-    expect(ready(hitsInTemplate(search, "innhold", current, 10)).activeBlock).toBe(10);
+    expect(ready(hitsInTemplate(search, "innhold", current, 30, true)).activeBlock).toBe(30);
+    expect(ready(hitsInTemplate(search, "innhold", current, 10, true)).activeBlock).toBe(10);
   });
 
   it("counts templates and moves to the next template at its best hit", () => {
-    const hits = ready(hitsInTemplate(search, "innhold", { malType: "autobrev", id: "A", language: "BOKMAL" }, 30));
+    const hits = ready(
+      hitsInTemplate(search, "innhold", { malType: "autobrev", id: "A", language: "BOKMAL" }, 30, true),
+    );
     expect(hits.result).toMatchObject({ position: 1, total: 2 });
     expect(hits.previousResult).toBeUndefined();
     expect(hits.nextResult).toEqual({ ref: { malType: "autobrev", id: "B", language: "BOKMAL" }, block: 6 });
@@ -80,7 +82,7 @@ describe("hitsInTemplate", () => {
     const withoutNynorsk = displayed([contentHit(aBokmal, [1]), contentHit(bBokmal, [0])]);
 
     const hits = ready(
-      hitsInTemplate(withoutNynorsk, "innhold", { malType: "autobrev", id: "A", language: "NYNORSK" }, undefined),
+      hitsInTemplate(withoutNynorsk, "innhold", { malType: "autobrev", id: "A", language: "NYNORSK" }, undefined, true),
     );
 
     expect(hits.matchingBlocks).toEqual([]);
@@ -93,23 +95,26 @@ describe("hitsInTemplate", () => {
     const withoutNynorsk = displayed([contentHit(aBokmal, [1]), contentHit(bBokmal, [0])]);
     const current = { malType: "autobrev" as const, id: "A", language: "NYNORSK" };
 
-    expect(ready(hitsInTemplate(withoutNynorsk, "innhold", current, 20)).activeBlock).toBe(20);
+    expect(ready(hitsInTemplate(withoutNynorsk, "innhold", current, 20, true)).activeBlock).toBe(20);
   });
 
   it("navigates the Brev tab's results without a block to open at", () => {
-    const hits = ready(hitsInTemplate(search, "brev", { malType: "autobrev", id: "A", language: "NYNORSK" }, 20));
+    const hits = ready(
+      hitsInTemplate(search, "brev", { malType: "autobrev", id: "A", language: "NYNORSK" }, 20, false),
+    );
     expect(hits.nextResult).toEqual({ ref: { malType: "autobrev", id: "B", language: "BOKMAL" }, block: undefined });
   });
 
-  it("opens a Brev result with no block active, but with its block hits to step through", () => {
+  it("focuses no block unless asked to, but keeps the block hits to step through", () => {
     const current = { malType: "autobrev" as const, id: "A", language: "BOKMAL" };
 
-    const opened = ready(hitsInTemplate(search, "brev", current, undefined));
-    expect(opened.matchingBlocks).toEqual([20, 30]);
-    expect(opened.activeBlock).toBeUndefined();
-    expect(blockNavigation(opened.matchingBlocks, opened.activeBlock).nextBlock).toBe(20);
+    const unfocused = ready(hitsInTemplate(search, "brev", current, undefined, false));
+    expect(unfocused.matchingBlocks).toEqual([20, 30]);
+    expect(unfocused.activeBlock).toBeUndefined();
+    expect(blockNavigation(unfocused.matchingBlocks, unfocused.activeBlock).nextBlock).toBe(20);
 
-    expect(ready(hitsInTemplate(search, "brev", current, 30)).activeBlock).toBe(30);
+    expect(ready(hitsInTemplate(search, "brev", current, undefined, true)).activeBlock).toBe(20);
+    expect(ready(hitsInTemplate(search, "brev", current, 30, false)).activeBlock).toBe(30);
   });
 });
 

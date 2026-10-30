@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Heading, HGrid, HStack, Spacer, VStack } from "@navikt/ds-react";
 import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 
 import {
   getTemplateDescription,
@@ -22,10 +22,10 @@ import {
   validateTemplateSearchContext,
 } from "~/search/searchContext";
 import { blockIndexesOf } from "~/templateSearch/blockIndexes";
-import { type SearchHighlight, SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
+import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
 import { BackButton, SearchHitToolbar } from "~/templateSearch/SearchHitToolbar";
+import { useHitFocus } from "~/templateSearch/useHitFocus";
 import { useScrollToBlock } from "~/templateSearch/useScrollToBlock";
-import { useTemplateHits } from "~/templateSearch/useTemplateHits";
 
 /** An unknown template answers 404, which is a missing page rather than an error. */
 function notFoundOn404(error: unknown): never {
@@ -120,41 +120,13 @@ function TemplateExplorer() {
     () => (index !== undefined && blockIndexesOf(documentation).has(index) ? index : undefined),
     [index, documentation],
   );
-  const hits = useTemplateHits(criteria, current, requestedBlock);
-  // Local on purpose: every visit, refresh and shared link starts the same way.
-  // On from the Innhold tab, where the hits are the point; off from the Brev
-  // tab, whose hits are on the title. Kept while moving between results, since
-  // the route stays mounted.
-  const [marking, setMarking] = useState(criteria?.tab !== "brev");
-
-  const highlight = useMemo<SearchHighlight | undefined>(
-    () =>
-      marking && hits?.status === "ready"
-        ? {
-            needle: hits.highlight.needle,
-            exact: hits.highlight.exactOnly,
-            matchingBlocks: new Set(hits.matchingBlocks),
-            activeBlock: hits.activeBlock,
-          }
-        : undefined,
-    [marking, hits],
+  const { hits, marking, setMarking, highlight, activeBlock, scrollTarget } = useHitFocus(
+    criteria,
+    current,
+    requestedBlock,
   );
-  // Without a search, a plain `index` link still scrolls to its block. With
-  // one, only while the hits are shown, so turning them on scrolls there.
-  const scrollTarget = criteria ? (marking && hits?.status === "ready" ? hits.activeBlock : undefined) : requestedBlock;
   useScrollToBlock(previewRef, scrollTarget, documentation);
   const selectBlock = (block: number) => navigate({ replace: true, search: (s) => ({ ...s, index: block }) });
-  // Turning the hits on takes the user to the active one, or, with none
-  // active (e.g. opened from the Brev tab), to the first.
-  const changeMarking = (on: boolean) => {
-    setMarking(on);
-    if (on && hits?.status === "ready" && hits.activeBlock === undefined) {
-      const [firstBlock] = hits.matchingBlocks;
-      if (firstBlock !== undefined) {
-        void selectBlock(firstBlock);
-      }
-    }
-  };
 
   return (
     <VStack height="100%" overflow="hidden">
@@ -166,7 +138,7 @@ function TemplateExplorer() {
             criteria={criteria}
             hits={hits}
             marking={marking}
-            onMarkingChange={changeMarking}
+            onMarkingChange={setMarking}
             onSelectBlock={selectBlock}
           />
         ) : null}
@@ -175,7 +147,11 @@ function TemplateExplorer() {
         </Heading>
         <LanguageToggle
           available={description.languages}
-          onChange={(value) => navigate({ replace: true, search: (s) => ({ ...s, language: value }) })}
+          // Block indexes follow the template's structure, so the block in focus is
+          // the same block in the other language, also when it has no hit there.
+          onChange={(value) =>
+            navigate({ replace: true, search: (s) => ({ ...s, language: value, index: activeBlock }) })
+          }
           value={language}
         />
         <Spacer />
