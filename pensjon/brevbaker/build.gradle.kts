@@ -43,6 +43,7 @@ tasks.compileTestKotlin {
 
 tasks {
     test {
+        //brukes for StartupLatencyTest. Øker faktisk hastigheten til testene med 15%~ De kjører fortsatt i parallell, bare ikke egen jvm fork ofte. Default er 8.
         maxParallelForks = 1
         useJUnitPlatform {
             excludeTags = setOf("integration-test", "manual-test")
