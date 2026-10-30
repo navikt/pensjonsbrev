@@ -17,11 +17,13 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.selectors.omstillingstoenadAvslagRedigerbartUtfallDTO.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.selectors.omstillingstoenadAvslagRedigerbartUtfallData.*
+import java.time.LocalDate
 
 data class OmstillingstoenadAvslagRedigerbartUtfallData(
     val avdoedNavn: String,
     val erSluttbehandling: Boolean = false,
     val tidligereFamiliepleier: Boolean = false,
+    val avdoedDoedsdato: LocalDate? = null,
 )
 
 data class OmstillingstoenadAvslagRedigerbartUtfallDTO(
@@ -57,7 +59,8 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
                     OmstillingsstoenadAvslagFraser.Vedtak(
                         data.erSluttbehandling,
                         data.tidligereFamiliepleier,
-                        data.avdoedNavn
+                        data.avdoedNavn,
+                        data.avdoedDoedsdato,
                     )
                 )
                 includePhrase(Vedtak.BegrunnelseForVedtaket)

@@ -2,9 +2,6 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
@@ -244,61 +241,162 @@ object Felles {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    bokmal { +"Du har rett til å klage" },
-                    nynorsk { +"Du har rett til å klage" },
+                    bokmal { +"Du kan klage på vedtaket" },
+                    nynorsk { +"Du kan klage på vedtaket" },
                     english { +"You have the right to appeal" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du mener at vedtaket er feil, kan du klage innen seks uker fra den dagen du " +
-                            "mottok vedtaket. Kontoret som har fattet vedtaket vil da vurdere saken din på nytt. " +
-                            "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til Nav klageinstans " +
-                            "for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, " +
-                            "kan du anke saken inn for Trygderetten." },
-                    nynorsk { +"Dersom du meiner vedtaket er feil, kan du klage innan seks veker frå den " +
-                            "datoen du fekk vedtaket. Kontoret som har fatta vedtaket, vil då vurdere saka di på " +
-                            "nytt. Dersom du ikkje får medhald i klaga di, blir ho sendt vidare til Nav klageinstans " +
-                            "for ny vurdering og avgjerd. Dersom du heller ikkje får medhald hos klageinstansen, kan " +
-                            "du anke saka inn for Trygderetten." },
-                    english { +"If you believe the decision is wrong, you can appeal within six weeks from " +
-                            "the date you received the decision. The office that made the decision will then review " +
-                            "your case again. If your appeal is not approved, it will be forwarded to the Nav Appeals " +
-                            "Instance for a new review and decision. If you do not receive approval there either, you " +
-                            "can bring your case before the National Insurance Court." }
+                    bokmal { +"Hvis du mener vedtaket er feil, har du rett til å klage. Du må sende klagen innen " +
+                            "6 uker fra den datoen vedtaket har kommet fram til deg. Dette følger av folketrygdloven " +
+                            "§ 21-12. Du finner mer informasjon om hvordan du kan klage på ${Constants.KLAGE_URL}." },
+                    nynorsk { +"Dersom du meiner vedtaket er feil, har du rett til å klage. Du må sende klaga innan " +
+                            "6 veker frå den datoen du fekk vedtaket. Dette følgjer av folketrygdlova § 21-12. Du finn " +
+                            "meir informasjon om korleis du kan klage på ${Constants.KLAGE_URL}." },
+                    english { +"If you believe the decision is incorrect, you have the right to appeal. You must " +
+                            "submit your appeal within 6 weeks from the date you received the decision. This is set " +
+                            "out in Section 21-12 of the National Insurance Act. You can find more information on how " +
+                            "to appeal at ${Constants.Engelsk.KLAGE_URL}." }
                 )
             }
-
             paragraph {
                 text(
-                    bokmal { +"Du finner skjema og informasjon på ${Constants.KLAGE_URL}. Nav kan veilede deg " +
-                            "på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å " +
-                            "skrive en klage." },
-                    nynorsk { +"Du finn skjema og informasjon på ${Constants.KLAGE_URL}. Nav kan rettleie deg " +
-                            "på telefon om korleis du sender ei klage. Nav-kontoret ditt kan òg hjelpe deg med å " +
-                            "skrive ei klage." },
-                    english { +"You can find forms and information at ${Constants.Engelsk.KLAGE_URL}. Nav " +
-                            "can guide you by phone on how to submit an appeal. Your local Nav office can also help " +
-                            "you write an appeal." }
+                    bokmal { +"Nav kan veilede deg på telefon hvis du trenger hjelp til å sende en klage. Du kan " +
+                            "også få hjelp av Nav-kontoret ditt til å skrive en klage. Hvis du velger å sende klagen " +
+                            "på papir, må du huske å signere den." },
+                    nynorsk { +"Nav kan rettleie deg på telefon dersom du treng hjelp til å sende ei klage. Du kan " +
+                            "òg få hjelp av Nav-kontoret ditt til å skrive ei klage. Dersom du vel å sende klaga på " +
+                            "papir, må du hugse å signere ho." },
+                    english { +"Nav can advise you over the phone if you need help submitting an appeal. You can " +
+                            "also get help from your local Nav office to write an appeal. If you choose to submit " +
+                            "your appeal on paper, you must remember to sign it." }
                 )
             }
-
             paragraph {
                 text(
-                    bokmal { +"Kontakt oss på telefon ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE} " +
-                            "hvis du trenger hjelp. Hvis du sender klagen i posten, må du signere klagen." },
-                    nynorsk { +"Kontakt oss på telefon ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE} " +
-                            "dersom du treng hjelp. Viss du sender klaga i posten, må du signere ho." },
-                    english { +"Contact us by phone at ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE} " +
-                            "if you need assistance. If you send your appeal by post, you must sign it." }
+                    bokmal { +"Når du klager, vil den Nav-enheten som har skrevet vedtaket, vurdere saken din på " +
+                            "nytt. Hvis du får medhold i klagen din, mottar du et nytt vedtak. Hvis du ikke får " +
+                            "medhold, sender vi klagen videre til Nav klageinstans. Du får brev når saken er sendt " +
+                            "dit. I brevet står det hva som skjer videre. Før en sak kan bringes inn for domstolene, " +
+                            "må du ha brukt muligheten til å klage og anke. Dette følger av folketrygdloven § 21-12." },
+                    nynorsk { +"Når du klagar, vil den Nav-eininga som har skrive vedtaket, vurdere saka di på " +
+                            "nytt. Dersom du får medhald i klaga di, får du eit nytt vedtak. Dersom du ikkje får " +
+                            "medhald, sender vi klaga vidare til Nav klageinstans. Du får brev når saka er send dit. " +
+                            "I brevet står det kva som skjer vidare. Før ei sak kan bringast inn for domstolane, må " +
+                            "du ha nytta høvet til å klage og anke. Det følgjer av folketrygdlova § 21-12." },
+                    english { +"When you lodge an appeal, the Nav unit that issued the decision will reassess " +
+                            "your case. If your appeal is upheld, you will receive a new decision. If your appeal is " +
+                            "unsuccessful, we will forward it to the Nav Appeals (Nav klageinstans). You will receive " +
+                            "a letter once the case has been forwarded there. The letter will explain the next " +
+                            "steps. Before a case can be brought before the courts, you must have exhausted the " +
+                            "options to appeal and lodge a further appeal. This is in accordance with Section 21-12 " +
+                            "of the National Insurance Act." }
                 )
             }
+        }
+    }
 
+    object DuHarRettTilInnsynISakenDin : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    bokmal { +"Du har rett til innsyn i saken din" },
+                    nynorsk { +"Du har rett til innsyn i saka di" },
+                    english { +"You have the right to access documents" }
+                )
+            }
             paragraph {
                 text(
-                    bokmal { +"Mer informasjon om klagerettigheter finner du på ${Constants.KLAGERETTIGHETER_URL}." },
-                    nynorsk { +"Meir informasjon om klagerettar finn du på ${Constants.KLAGERETTIGHETER_URL}." },
-                    english { +"More information about appeal rights can be found at ${Constants.KLAGERETTIGHETER_URL}." }
+                    bokmal { +"Du har rett til å se dokumentene i saken din. Dette følger av forvaltningsloven " +
+                            "§ 18. Du har tilgang til mange av dokumentene dine digitalt på ${Constants.NAV_URL}. " +
+                            "Hvis det er dokumenter du ikke finner, kan du be oss om innsyn i disse. Du kan lese mer " +
+                            "om retten til innsyn på ${Constants.INNSYNSKRAV_URL}." },
+                    nynorsk { +"Du har rett til å sjå dokumenta i saka di. Dette følgjer av forvaltningslova " +
+                            "§ 18. Du har tilgang til mange av dokumenta dine digitalt på ${Constants.NAV_URL}. " +
+                            "Dersom det er dokument du ikkje finn, kan du be oss om innsyn i desse. Du kan lese meir " +
+                            "om retten til innsyn på ${Constants.INNSYNSKRAV_URL}." },
+                    english { +"You have the right to view the documents relating to your case. This is set out " +
+                            "in Section 18 of the Public Administration Act. You can access many of your documents " +
+                            "digitally at ${Constants.NAV_URL}. If there are any documents you cannot find, you can " +
+                            "ask us to grant you access to them. You can read more about the right of access at " +
+                            "${Constants.INNSYNSKRAV_URL}." }
+                )
+            }
+        }
+    }
+
+    object DuHarRettigheterKnyttetTilPersonopplysninger : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    bokmal { +"Du har rettigheter knyttet til personopplysningene dine" },
+                    nynorsk { +"Du har rettar knytte til personopplysningane dine" },
+                    english { +"You have rights regarding your personal data" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du finner informasjon om hvordan Nav behandler personopplysningene dine, og hvilke " +
+                            "rettigheter du har, på ${Constants.PERSONVERNERKLAERING_URL}." },
+                    nynorsk { +"Du finn informasjon om korleis Nav behandlar personopplysningane dine, og kva " +
+                            "rettar du har, på ${Constants.PERSONVERNERKLAERING_URL}." },
+                    english { +"You can find information about how Nav processes your personal data, and what " +
+                            "rights you have, at ${Constants.PERSONVERNERKLAERING_URL}." }
+                )
+            }
+        }
+    }
+
+    object DuHarRettTilHjelpFraAndre : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    bokmal { +"Du har rett til å få hjelp fra andre" },
+                    nynorsk { +"Du har rett til hjelp frå andre" },
+                    english { +"You have the right to receive assistance from others" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du har rett til å få hjelp i kontakten din med Nav, for eksempel fra en advokat, " +
+                            "rettshjelper, en organisasjon du er medlem av, eller en myndig person over 18 år. Dette " +
+                            "følger av forvaltningsloven § 12. Hvis den som hjelper deg ikke er advokat, må du gi " +
+                            "denne personen skriftlig fullmakt. Bruk skjemaet du finner på ${Constants.FULLMAKT_URL}." },
+                    nynorsk { +"Du har rett til å få hjelp i kontakten med Nav, til dømes frå ein advokat, " +
+                            "rettshjelpar, ein organisasjon du er medlem av, eller ein myndig person over 18 år. " +
+                            "Dette følgjer av forvaltningslova § 12. Dersom personen som hjelper deg, ikkje er " +
+                            "advokat, må du gi vedkomande ei skriftleg fullmakt. Bruk gjerne skjemaet du finn på " +
+                            "${Constants.FULLMAKT_URL}." },
+                    english { +"You have the right to receive assistance in your dealings with Nav, for example " +
+                            "from a solicitor, a legal adviser, an organisation of which you are a member, or a " +
+                            "person over the age of 18. This is in accordance with Section 12 of the Public " +
+                            "Administration Act. If the person assisting you is not a solicitor, you must provide " +
+                            "that person with a written power of attorney. Use the form available at " +
+                            "${Constants.Engelsk.FULLMAKT_URL}." }
+                )
+            }
+        }
+    }
+
+    object DuHarRettTilVeiledning : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    bokmal { +"Du har rett til å få veiledning fra Nav" },
+                    nynorsk { +"Du har rett på rettleiing frå Nav" },
+                    english { +"Guidance from Nav" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Vi har plikt til å veilede deg om dine rettigheter og plikter i saken din, både " +
+                            "før, under og etter saksbehandlingen. Dette følger av forvaltningsloven § 11." },
+                    nynorsk { +"Vi pliktar å rettleie deg om rettane og pliktene du har i saka, både før, under " +
+                            "og etter saksbehandlinga. Det følgjer av forvaltningslova § 11." },
+                    english { +"We have a duty to advise you of your rights and obligations in your case – before, " +
+                            "during and after the case has been processed. This is in accordance with Section 11 of " +
+                            "the Public Administration Act." }
                 )
             }
         }
