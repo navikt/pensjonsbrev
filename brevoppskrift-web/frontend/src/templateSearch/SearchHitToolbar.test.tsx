@@ -45,6 +45,10 @@ describe("SearchHitToolbar", () => {
     expect(screen.getByLabelText<HTMLInputElement>("Vis søketreff").checked).toBe(true);
     expect(screen.getByText("Avsnitt – av 2")).toBeTruthy();
     expect(screen.getByText("Mal 1 av 2")).toBeTruthy();
+    // Marking was turned on, so the next result opens with it on as well.
+    expect(screen.getByTitle("Neste resultat").closest("a")?.getAttribute("href")).toBe(
+      "/template/autobrev/B?q=tekst&language=BOKMAL",
+    );
   });
 
   it("still steps between results with marking off, but not between hits", async () => {
@@ -54,7 +58,7 @@ describe("SearchHitToolbar", () => {
     expect(screen.queryByText(/Avsnitt/)).toBeNull();
     expect(screen.getByText("Mal 1 av 2")).toBeTruthy();
     expect(screen.getByTitle("Neste resultat").closest("a")?.getAttribute("href")).toBe(
-      "/template/autobrev/B?q=tekst&language=BOKMAL",
+      "/template/autobrev/B?q=tekst&language=BOKMAL&showHits=false",
     );
   });
 });

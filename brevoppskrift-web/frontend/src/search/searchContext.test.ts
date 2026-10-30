@@ -61,14 +61,15 @@ describe("searchContext", () => {
   it("builds the template link and the way back from the same criteria", () => {
     const criteria = { q: "pensjon", exact: true, tab: "innhold" as const };
 
-    const toTemplate = toTemplateSearch(criteria, ref, 4);
+    const toTemplate = toTemplateSearch(criteria, ref, { focus: 4 });
     expect(toTemplate).toEqual({
       q: "pensjon",
       exact: true,
       tab: "innhold",
       language: "BOKMAL",
-      index: 4,
+      focus: 4,
     });
+    expect(validateTemplateSearchContext(toTemplate)).toMatchObject({ focus: 4, showHits: undefined });
     expect(criteriaOf(validateTemplateSearchContext(toTemplate))).toEqual(criteria);
 
     expect(toTemplatesSearch(criteria, ref)).toEqual({
@@ -76,6 +77,27 @@ describe("searchContext", () => {
       exact: true,
       tab: "innhold",
       selected: "autobrev/UT_VEDTAK/BOKMAL",
+    });
+  });
+
+  it("hides the hits of a Brev result unless told otherwise, and writes only `showHits=false`", () => {
+    const brev = { q: "pensjon", exact: false, tab: "brev" as const };
+    const innhold = { ...brev, tab: "innhold" as const };
+
+    expect(toTemplateSearch(brev, ref).showHits).toBe(false);
+    expect(toTemplateSearch(brev, ref, { showHits: true }).showHits).toBeUndefined();
+    expect(toTemplateSearch(innhold, ref).showHits).toBeUndefined();
+    expect(toTemplateSearch(innhold, ref, { showHits: false }).showHits).toBe(false);
+  });
+
+  it("reads `showHits` and `focus` from a hand-edited URL", () => {
+    expect(validateTemplateSearchContext({ q: "a", showHits: "false", focus: "12" })).toMatchObject({
+      showHits: false,
+      focus: 12,
+    });
+    expect(validateTemplateSearchContext({ q: "a", showHits: "nei", focus: "-1" })).toMatchObject({
+      showHits: undefined,
+      focus: undefined,
     });
   });
 

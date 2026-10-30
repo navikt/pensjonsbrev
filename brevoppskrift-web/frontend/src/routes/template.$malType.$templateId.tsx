@@ -40,8 +40,6 @@ type TemplateSearchParams = TemplateSearchContextParams & {
   highlightedDataClass?: string;
   highlightedDataField?: string;
   highlightedDataFieldOwner?: string;
-  /** The block to open at, a matching block when opened from a search. */
-  index?: number;
 };
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
@@ -90,14 +88,11 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     return { documentation, description };
   },
   validateSearch: (search: Record<string, unknown>): TemplateSearchParams => {
-    const indexRaw = search.index?.toString();
-    const index = indexRaw !== undefined && /^\d+$/.test(indexRaw) ? Number(indexRaw) : undefined;
     return {
       language: search.language?.toString(),
       highlightedDataClass: search.highlightedDataClass?.toString(),
       highlightedDataField: search.highlightedDataField?.toString(),
       highlightedDataFieldOwner: search.highlightedDataFieldOwner?.toString(),
-      index,
       ...validateTemplateSearchContext(search),
     };
   },
@@ -107,7 +102,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 function TemplateExplorer() {
   const { documentation, description } = Route.useLoaderData();
   const { malType, templateId } = Route.useParams();
-  const { index, language: languageParam, q, exact, tab } = Route.useSearch();
+  const { focus, showHits, language: languageParam, q, exact, tab } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const previewRef = useRef<HTMLDivElement>(null);
   const language = languageParam ?? description.languages[0];
@@ -117,16 +112,15 @@ function TemplateExplorer() {
   // A block that is not in this template (e.g. a stale or hand-edited URL)
   // is ignored, so the page opens at the first hit, or at the top.
   const requestedBlock = useMemo(
-    () => (index !== undefined && blockIndexesOf(documentation).has(index) ? index : undefined),
-    [index, documentation],
+    () => (focus !== undefined && blockIndexesOf(documentation).has(focus) ? focus : undefined),
+    [focus, documentation],
   );
-  const { hits, marking, setMarking, highlight, activeBlock, scrollTarget } = useHitFocus(
-    criteria,
-    current,
-    requestedBlock,
-  );
+  const marking = showHits !== false;
+  const { hits, highlight, activeBlock, scrollTarget } = useHitFocus(criteria, current, requestedBlock, marking);
   useScrollToBlock(previewRef, scrollTarget, documentation);
-  const selectBlock = (block: number) => navigate({ replace: true, search: (s) => ({ ...s, index: block }) });
+  const selectBlock = (block: number) => navigate({ replace: true, search: (s) => ({ ...s, focus: block }) });
+  const changeMarking = (show: boolean) =>
+    navigate({ replace: true, search: (s) => ({ ...s, showHits: show ? undefined : false }) });
 
   return (
     <VStack height="100%" overflow="hidden">
@@ -138,7 +132,7 @@ function TemplateExplorer() {
             criteria={criteria}
             hits={hits}
             marking={marking}
-            onMarkingChange={setMarking}
+            onMarkingChange={changeMarking}
             onSelectBlock={selectBlock}
           />
         ) : null}
@@ -150,7 +144,7 @@ function TemplateExplorer() {
           // Block indexes follow the template's structure, so the block in focus is
           // the same block in the other language, also when it has no hit there.
           onChange={(value) =>
-            navigate({ replace: true, search: (s) => ({ ...s, language: value, index: activeBlock }) })
+            navigate({ replace: true, search: (s) => ({ ...s, language: value, focus: activeBlock }) })
           }
           value={language}
         />
