@@ -139,9 +139,22 @@ function TemplateExplorer() {
         : undefined,
     [marking, hits],
   );
-  // Without a search, a plain `index` link still scrolls to its block.
-  const scrollTarget = criteria ? (hits?.status === "ready" ? hits.activeBlock : undefined) : requestedBlock;
+  // Without a search, a plain `index` link still scrolls to its block. With
+  // one, only while the hits are shown, so turning them on scrolls there.
+  const scrollTarget = criteria ? (marking && hits?.status === "ready" ? hits.activeBlock : undefined) : requestedBlock;
   useScrollToBlock(previewRef, scrollTarget, documentation);
+  const selectBlock = (block: number) => navigate({ replace: true, search: (s) => ({ ...s, index: block }) });
+  // Turning the hits on takes the user to the active one, or, with none
+  // active (e.g. opened from the Brev tab), to the first.
+  const changeMarking = (on: boolean) => {
+    setMarking(on);
+    if (on && hits?.status === "ready" && hits.activeBlock === undefined) {
+      const [firstBlock] = hits.matchingBlocks;
+      if (firstBlock !== undefined) {
+        void selectBlock(firstBlock);
+      }
+    }
+  };
 
   return (
     <VStack height="100%" overflow="hidden">
@@ -153,8 +166,8 @@ function TemplateExplorer() {
             criteria={criteria}
             hits={hits}
             marking={marking}
-            onMarkingChange={setMarking}
-            onSelectBlock={(block) => navigate({ replace: true, search: (s) => ({ ...s, index: block }) })}
+            onMarkingChange={changeMarking}
+            onSelectBlock={selectBlock}
           />
         ) : null}
         <Heading level="1" size="small">
