@@ -37,6 +37,9 @@ for (const landkode of ["NOR", "GBR"]) {
     });
 
     await page.goto("/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815");
+    const eblankettTag = page.getByText("E-blankett", { exact: true });
+    await expect(eblankettTag).toHaveAttribute("data-color", "neutral");
+    await expect(eblankettTag.locator("..").locator(".aksel-tag")).toHaveText(["Exstream", "E-blankett"]);
     const country = page.getByRole("combobox", { name: "Land", exact: true });
     await expect(country).toHaveValue("NOR");
     await expect(country.locator("option")).toHaveText([

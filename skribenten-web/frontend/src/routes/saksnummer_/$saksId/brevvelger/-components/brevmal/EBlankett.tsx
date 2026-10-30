@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BodyShort, TextField } from "@navikt/ds-react";
+import { TextField } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { useEffect, useRef } from "react";
@@ -80,7 +80,6 @@ export default function EBlankett({
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
-      <BodyShort size="small">E-blankett</BodyShort>
       <Divider />
       <FormProvider {...methods}>
         <BrevmalFormWrapper
