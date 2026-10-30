@@ -91,6 +91,14 @@ data class AlderspensjonTabell(
                         }
                     }
                 }
+                ifNotNull(alderspensjon.minstenivaatilleggIndividuelt) {
+                    showIf(it.greaterThan(0)) {
+                        row {
+                            cell { text(bokmal { +"Minstenivåtillegg individuelt" }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
+                        }
+                    }
+                }
                 // Sum alderspensjon
                 row {
                     cell { text(bokmal { +"Sum alderspensjon" }, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD) }
@@ -102,6 +110,7 @@ data class AlderspensjonTabell(
                                 alderspensjon.garantipensjonBeloep.ifNull(BrevbakerType.Kroner(0)) +
                                 alderspensjon.garantitilleggBeloep.ifNull(BrevbakerType.Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(BrevbakerType.Kroner(0)) +
+                                alderspensjon.minstenivaatilleggIndividuelt.ifNull(BrevbakerType.Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(BrevbakerType.Kroner(0))
                         text(bokmal { +sum.format(denominator = false) }, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)
                     }

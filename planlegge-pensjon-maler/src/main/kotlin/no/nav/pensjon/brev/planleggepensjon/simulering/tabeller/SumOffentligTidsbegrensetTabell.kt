@@ -40,6 +40,7 @@ data class SumOffentligTidsbegrensetTabell(
                                 alderspensjon.garantipensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
+                                alderspensjon.minstenivaatilleggIndividuelt.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
                         text(bokmal { +sumAlderspensjon.format(denominator = false) })
                     }
@@ -60,6 +61,7 @@ data class SumOffentligTidsbegrensetTabell(
                                 alderspensjon.garantipensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
+                                alderspensjon.minstenivaatilleggIndividuelt.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
                         val sumPensjon = sumAlderspensjon + afp.totaltAfpBeloep
                         text(bokmal { +sumPensjon.format(denominator = false) }, fontType = BOLD)

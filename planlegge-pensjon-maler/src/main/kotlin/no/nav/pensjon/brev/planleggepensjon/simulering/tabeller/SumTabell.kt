@@ -40,6 +40,7 @@ data class SumTabell(
                                 alderspensjon.garantipensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
+                                alderspensjon.minstenivaatilleggIndividuelt.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
                         val sumAfp = privatAfp.kronetillegg.ifNull(Kroner(0)) +
                                 privatAfp.livsvarig.ifNull(Kroner(0)) +
