@@ -17,10 +17,10 @@ export type TemplateHits =
       highlight: Highlight;
       /** Matching block indexes in this template and language, in document order. */
       matchingBlocks: number[];
-      /** The block the user is at: the requested one, else the first match
-       *  when opened from the Innhold tab. Not necessarily a match, e.g. when
-       *  kept from another language. `undefined` when nothing was requested
-       *  and either nothing matched or the template was opened from the Brev tab. */
+      /** The block the user is at: the requested one, else the first match if
+       *  `focusFirstHit`. Not necessarily a match, e.g. when kept from another
+       *  language. `undefined` when nothing was requested and either nothing
+       *  matched or the first hit is not to be focused. */
       activeBlock: number | undefined;
       /** Where this template is among the active tab's results. */
       result: ResultPosition;
@@ -55,17 +55,17 @@ function matchingBlocksOf(displayed: DisplayedSearch, current: ResultRef): numbe
 }
 
 /** What a completed search says about the template being viewed. Pure; see
- *  `useTemplateHits`. */
+ *  `useTemplateHits`. `focusFirstHit` makes the first match the active
+ *  block when no block was requested. */
 export function hitsInTemplate(
   displayed: DisplayedSearch,
   tab: SearchCriteria["tab"],
   current: ResultRef,
   requestedBlock: number | undefined,
+  focusFirstHit: boolean,
 ): TemplateHits {
   const matchingBlocks = matchingBlocksOf(displayed, current);
-  // A Brev result is a hit on the template's title, not on any block, so it
-  // opens with no block active; the block hits are still there to step through.
-  const activeBlock = requestedBlock ?? (tab === "innhold" ? matchingBlocks[0] : undefined);
+  const activeBlock = requestedBlock ?? (focusFirstHit ? matchingBlocks[0] : undefined);
   const entries = rankedEntries(displayed, tab);
   const ranked = entries.map((entry) => entry.ref);
   const result = resultPosition(ranked, current);
@@ -114,6 +114,7 @@ export function useTemplateHits(
   criteria: SearchCriteria | undefined,
   current: ResultRef,
   requestedBlock: number | undefined,
+  focusFirstHit: boolean,
 ): TemplateHits | undefined {
   const refs = useAllTemplateRefs(criteria !== undefined);
   const { isLoading, displayed, searchFailed } = useSearchResults(
@@ -131,6 +132,6 @@ export function useTemplateHits(
     if (isLoading || !displayed) {
       return { status: "loading" };
     }
-    return hitsInTemplate(displayed, criteria.tab, current, requestedBlock);
-  }, [criteria, current, requestedBlock, isLoading, displayed, searchFailed]);
+    return hitsInTemplate(displayed, criteria.tab, current, requestedBlock, focusFirstHit);
+  }, [criteria, current, requestedBlock, focusFirstHit, isLoading, displayed, searchFailed]);
 }

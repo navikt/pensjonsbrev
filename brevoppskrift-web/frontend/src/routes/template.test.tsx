@@ -1,22 +1,39 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createMemoryHistory, createRootRouteWithContext, createRouter, RouterProvider } from "@tanstack/react-router";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AxiosError, AxiosHeaders } from "axios";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { type TemplateDocumentation } from "~/api/templateDocumentationTypes";
 import { Route as TemplateRouteImport } from "~/routes/template.$malType.$templateId";
-import { type SearchCriteria } from "~/search/searchContext";
-import { type TemplateHits } from "~/templateSearch/useTemplateHits";
+import { type TemplateText } from "~/search/textSearch";
+import { type DisplayedSearch } from "~/search/useSearchResults";
 
-const { useTemplateHits } = vi.hoisted(() => ({ useTemplateHits: vi.fn() }));
-vi.mock("~/templateSearch/useTemplateHits", async () => {
-  const actual = await vi.importActual<typeof import("~/templateSearch/useTemplateHits")>(
-    "~/templateSearch/useTemplateHits",
-  );
-  return { ...actual, useTemplateHits };
+// The search is replaced by a store the tests set, so the real hit logic runs
+// on top of it, and a test can finish loading while the page is open.
+const searchStore = vi.hoisted(() => {
+  let state: unknown = { isLoading: true, displayed: undefined, searchFailed: false };
+  const listeners = new Set<() => void>();
+  return {
+    get: () => state,
+    set(next: unknown) {
+      state = next;
+      for (const listener of listeners) {
+        listener();
+      }
+    },
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+  };
 });
+vi.mock("~/search/useSearchResults", async () => {
+  const { useSyncExternalStore } = await import("react");
+  return { useSearchResults: () => useSyncExternalStore(searchStore.subscribe, searchStore.get) };
+});
+vi.mock("~/search/templateRefs", () => ({ useAllTemplateRefs: () => [] }));
 
 const { getTemplateDescription, getTemplateDocumentation } = vi.hoisted(() => ({
   getTemplateDescription: {
@@ -112,7 +129,7 @@ describe("template route with incorrect URL values", () => {
   });
 });
 
-describe("turning on 'Vis søketreff'", () => {
+describe("search hit focus", () => {
   function paragraph(index: number, text: string) {
     return {
       controlStructureType: "CONTENT",
@@ -130,28 +147,38 @@ describe("turning on 'Vis søketreff'", () => {
     templateModelSpecification: { types: {}, letterModelTypeName: "" },
   } as unknown as TemplateDocumentation;
 
-  /** Hits in blocks 20 and 30, with the requested block active as the real hook does. */
-  function readyHits(criteria: SearchCriteria | undefined, _current: unknown, requestedBlock?: number) {
-    if (!criteria) {
-      return undefined;
-    }
-    return {
-      status: "ready",
-      highlight: { needle: "treff", exactOnly: false },
-      matchingBlocks: [20, 30],
-      activeBlock: requestedBlock ?? (criteria.tab === "innhold" ? 20 : undefined),
-      result: { position: 1, total: 1 },
-      previousResult: undefined,
-      nextResult: undefined,
-    } satisfies TemplateHits;
+  function text(language: string): TemplateText {
+    return { malType: "autobrev", id: "A", title: "A", language, lines: [[], [], []], indexes: [10, 20, 30] };
   }
+  /** Hits in blocks 20 and 30 of the Bokmål version only. */
+  const loaded = {
+    isLoading: false,
+    searchFailed: false,
+    displayed: {
+      highlight: { needle: "treff", exactOnly: false },
+      contentHits: [{ template: text("BOKMAL"), lineIndex: 1, matchCount: 2, matchedLineIndexes: [1, 2], score: 0 }],
+      brevHits: [{ template: text("BOKMAL") }],
+      contentTemplateCount: 1,
+      contentLineCount: 2,
+      brevTemplateCount: 1,
+    } satisfies DisplayedSearch,
+  };
+  const loading = { isLoading: true, displayed: undefined, searchFailed: false };
 
   const scrolledTo: (string | null)[] = [];
-  function trackScrolling() {
+  function openPage(search: Record<string, unknown>, { languages = ["BOKMAL"], hits = loaded as unknown } = {}) {
+    getTemplateDescription.queryFn.mockResolvedValue({ languages });
+    getTemplateDocumentation.queryFn.mockResolvedValue(page);
+    searchStore.set(hits);
     scrolledTo.length = 0;
     Element.prototype.scrollIntoView = function (this: Element) {
       scrolledTo.push(this.getAttribute("data-block-index"));
     };
+    return renderTemplateRoute(
+      "/template/autobrev/A",
+      { language: "BOKMAL", q: "treff", ...search },
+      { realPage: true },
+    );
   }
 
   afterEach(() => {
@@ -159,36 +186,30 @@ describe("turning on 'Vis søketreff'", () => {
     vi.resetAllMocks();
   });
 
-  it("goes to the first hit when none is active, e.g. opened from the Brev tab", async () => {
-    getTemplateDescription.queryFn.mockResolvedValue({ languages: ["BOKMAL"] });
-    getTemplateDocumentation.queryFn.mockResolvedValue(page);
-    useTemplateHits.mockImplementation(readyHits);
-    trackScrolling();
-    const router = await renderTemplateRoute(
-      "/template/autobrev/A",
-      { language: "BOKMAL", q: "treff" },
-      { realPage: true },
-    );
+  it("focuses the first hit when the hits are turned on, e.g. opened from the Brev tab", async () => {
+    await openPage({});
     const toggle = await screen.findByLabelText<HTMLInputElement>("Vis søketreff");
     expect(toggle.checked).toBe(false);
+    expect(scrolledTo).toEqual([]);
 
     await userEvent.click(toggle);
 
-    await waitFor(() => expect(router.state.location.search).toMatchObject({ index: 20 }));
-    await waitFor(() => expect(scrolledTo).toContain("20"));
+    await waitFor(() => expect(scrolledTo).toEqual(["20"]));
     expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy();
   });
 
-  it("goes back to the active hit when turned off and on again", async () => {
-    getTemplateDescription.queryFn.mockResolvedValue({ languages: ["BOKMAL"] });
-    getTemplateDocumentation.queryFn.mockResolvedValue(page);
-    useTemplateHits.mockImplementation(readyHits);
-    trackScrolling();
-    await renderTemplateRoute(
-      "/template/autobrev/A",
-      { language: "BOKMAL", q: "treff", tab: "innhold", index: 30 },
-      { realPage: true },
-    );
+  it("focuses the first hit once loaded, when the hits were turned on while loading", async () => {
+    await openPage({}, { hits: loading });
+    await userEvent.click(await screen.findByLabelText("Vis søketreff"));
+
+    act(() => searchStore.set(loaded));
+
+    await waitFor(() => expect(scrolledTo).toEqual(["20"]));
+    expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy();
+  });
+
+  it("goes back to the active hit when the hits are turned off and on again", async () => {
+    await openPage({ tab: "innhold", index: 30 });
     await waitFor(() => expect(scrolledTo).toEqual(["30"]));
     const toggle = screen.getByLabelText<HTMLInputElement>("Vis søketreff");
 
@@ -196,5 +217,18 @@ describe("turning on 'Vis søketreff'", () => {
     await userEvent.click(toggle);
 
     await waitFor(() => expect(scrolledTo).toEqual(["30", "30"]));
+  });
+
+  it("keeps the focused block when switching to a language where it is no hit", async () => {
+    const router = await openPage({ tab: "innhold" }, { languages: ["BOKMAL", "NYNORSK"] });
+    await waitFor(() => expect(scrolledTo).toEqual(["20"]));
+
+    await userEvent.click(screen.getByRole("radio", { name: "Nynorsk" }));
+
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ language: "NYNORSK", index: 20 }));
+    await waitFor(() =>
+      expect(document.querySelector('[data-block-index="20"]')?.getAttribute("data-search-hit")).toBe("active"),
+    );
+    expect(screen.getByText("Ingen treff i denne språkversjonen")).toBeTruthy();
   });
 });
