@@ -100,6 +100,17 @@ describe("hitsInTemplate", () => {
     const hits = ready(hitsInTemplate(search, "brev", { malType: "autobrev", id: "A", language: "NYNORSK" }, 20));
     expect(hits.nextResult).toEqual({ ref: { malType: "autobrev", id: "B", language: "BOKMAL" }, block: undefined });
   });
+
+  it("opens a Brev result with no block active, but with its block hits to step through", () => {
+    const current = { malType: "autobrev" as const, id: "A", language: "BOKMAL" };
+
+    const opened = ready(hitsInTemplate(search, "brev", current, undefined));
+    expect(opened.matchingBlocks).toEqual([20, 30]);
+    expect(opened.activeBlock).toBeUndefined();
+    expect(blockNavigation(opened.matchingBlocks, opened.activeBlock).nextBlock).toBe(20);
+
+    expect(ready(hitsInTemplate(search, "brev", current, 30)).activeBlock).toBe(30);
+  });
 });
 
 describe("blockNavigation", () => {

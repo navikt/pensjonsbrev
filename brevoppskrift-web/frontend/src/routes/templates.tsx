@@ -31,6 +31,7 @@ import {
 } from "~/search";
 import { isSelectedResult, pageOfResult } from "~/search/resultNavigation";
 import {
+  DEFAULT_TAB,
   formatResultRef,
   parseResultRef,
   type ResultRef,
@@ -149,7 +150,7 @@ function AllTemplates() {
     void navigate({ replace: true, search: (s) => ({ ...s, q, exact, page: undefined, selected: undefined }) });
   }, [settledQuery, exactOnly, navigate]);
 
-  const activeTab: ResultTab = search.tab ?? "innhold";
+  const activeTab: ResultTab = search.tab ?? DEFAULT_TAB;
   const selected = useMemo(() => parseResultRef(search.selected), [search.selected]);
   const groupsLanguages = activeTab === "brev";
   const activeHits = (activeTab === "innhold" ? displayed?.contentHits : displayed?.brevHits) ?? [];
@@ -287,7 +288,7 @@ function AllTemplates() {
                   replace: true,
                   search: (s) => ({
                     ...s,
-                    tab: tab === "brev" ? "brev" : undefined,
+                    tab: tab === "innhold" ? "innhold" : undefined,
                     page: undefined,
                     selected: undefined,
                   }),
@@ -296,27 +297,13 @@ function AllTemplates() {
               value={activeTab}
             >
               <Tabs.List>
+                <Tabs.Tab label={<TabLabel count={displayed?.brevTemplateCount} label="Brev" />} value="brev" />
                 <Tabs.Tab
                   label={<TabLabel count={displayed?.contentTemplateCount} label="Innhold" />}
                   value="innhold"
                 />
-                <Tabs.Tab label={<TabLabel count={displayed?.brevTemplateCount} label="Brev" />} value="brev" />
               </Tabs.List>
 
-              <Box asChild flexGrow="1" overflow="hidden">
-                <Tabs.Panel value="innhold">
-                  <SearchResultsPanel
-                    error={error}
-                    isPending={isPending}
-                    page={safePage}
-                    pageCount={pageCount}
-                    setPage={setPage}
-                    summary={contentSummary}
-                  >
-                    {contentList}
-                  </SearchResultsPanel>
-                </Tabs.Panel>
-              </Box>
               <Box asChild flexGrow="1" overflow="hidden">
                 <Tabs.Panel value="brev">
                   <SearchResultsPanel
@@ -349,6 +336,20 @@ function AllTemplates() {
                         </VStack>
                       </VStack>
                     )}
+                  </SearchResultsPanel>
+                </Tabs.Panel>
+              </Box>
+              <Box asChild flexGrow="1" overflow="hidden">
+                <Tabs.Panel value="innhold">
+                  <SearchResultsPanel
+                    error={error}
+                    isPending={isPending}
+                    page={safePage}
+                    pageCount={pageCount}
+                    setPage={setPage}
+                    summary={contentSummary}
+                  >
+                    {contentList}
                   </SearchResultsPanel>
                 </Tabs.Panel>
               </Box>

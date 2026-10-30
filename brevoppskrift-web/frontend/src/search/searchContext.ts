@@ -1,4 +1,4 @@
-import { type MalType } from "~/api/brevbaker-api-endpoints";
+import { isMalType, type MalType } from "~/api/brevbaker-api-endpoints";
 
 /**
  * The search context as it travels in URLs between the result list
@@ -9,11 +9,17 @@ import { type MalType } from "~/api/brevbaker-api-endpoints";
  * opened. Hit lists and highlight ranges are never stored; both pages derive
  * them by running the search again.
  *
- * Defaults are left out of the URL (`exact=false`, `tab=innhold`, `page=1`),
+ * Defaults are left out of the URL (`exact=false`, `tab=brev`, `page=1`),
  * which keeps plain links short.
  */
 
 export type ResultTab = "innhold" | "brev";
+
+/** The tab the result list opens in: title hits first, content hits a click away. */
+export const DEFAULT_TAB: ResultTab = "brev";
+
+/** The `tab` search param. Only the non-default tab is written. */
+type TabParam = "innhold";
 
 /** What was searched for, and in which result tab. */
 export type SearchCriteria = {
@@ -33,7 +39,7 @@ export type ResultRef = {
 export type TemplatesSearchParams = {
   q?: string;
   exact?: true;
-  tab?: "brev";
+  tab?: TabParam;
   page?: number;
   /** The result that was opened, as `malType/brevkode/language`. */
   selected?: string;
@@ -43,10 +49,8 @@ export type TemplatesSearchParams = {
 export type TemplateSearchContextParams = {
   q?: string;
   exact?: true;
-  tab?: "brev";
+  tab?: TabParam;
 };
-
-const MAL_TYPES: readonly MalType[] = ["autobrev", "redigerbar"];
 
 /** TanStack Router parses search values as JSON where it can, so a hand-typed
  *  `?q=12` arrives as a number. Values the app writes itself are quoted and
@@ -79,8 +83,8 @@ function exactParam(value: unknown): true | undefined {
   return value === true || value === "true" ? true : undefined;
 }
 
-function tabParam(value: unknown): "brev" | undefined {
-  return value === "brev" ? "brev" : undefined;
+function tabParam(value: unknown): TabParam | undefined {
+  return value === "innhold" ? "innhold" : undefined;
 }
 
 export function formatResultRef(ref: ResultRef): string {
@@ -93,10 +97,10 @@ export function parseResultRef(value: unknown): ResultRef | undefined {
     return undefined;
   }
   const [malType, id, language] = parts;
-  if (!MAL_TYPES.includes(malType as MalType) || !id || !language) {
+  if (!isMalType(malType) || !id || !language) {
     return undefined;
   }
-  return { malType: malType as MalType, id, language };
+  return { malType, id, language };
 }
 
 export function isSameResult(a: ResultRef, b: ResultRef): boolean {
@@ -127,18 +131,18 @@ export function validateTemplateSearchContext(search: Record<string, unknown>): 
 }
 
 /** The criteria in a set of search params, or `undefined` if nothing was searched for. */
-export function criteriaOf(params: { q?: string; exact?: true; tab?: "brev" }): SearchCriteria | undefined {
+export function criteriaOf(params: { q?: string; exact?: true; tab?: TabParam }): SearchCriteria | undefined {
   if (!params.q) {
     return undefined;
   }
-  return { q: params.q, exact: params.exact ?? false, tab: params.tab ?? "innhold" };
+  return { q: params.q, exact: params.exact ?? false, tab: params.tab ?? DEFAULT_TAB };
 }
 
-function criteriaParams(criteria: SearchCriteria): { q: string; exact?: true; tab?: "brev" } {
+function criteriaParams(criteria: SearchCriteria): { q: string; exact?: true; tab?: TabParam } {
   return {
     q: criteria.q,
     exact: criteria.exact ? true : undefined,
-    tab: criteria.tab === "brev" ? "brev" : undefined,
+    tab: criteria.tab === "innhold" ? "innhold" : undefined,
   };
 }
 

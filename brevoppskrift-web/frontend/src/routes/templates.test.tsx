@@ -170,7 +170,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     mockCorpus();
     const client = installClient(deferrableClient());
 
-    const { user } = await renderTemplatesRoute();
+    const { user } = await renderTemplatesRoute({ tab: "innhold" });
     await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     // An empty box: nothing in flight, nothing to summarise.
     expect(screen.queryByTestId("search-activity")).toBeNull();
@@ -211,7 +211,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     mockCorpus();
     const client = installClient(deferrableClient());
 
-    const { user } = await renderTemplatesRoute();
+    const { user } = await renderTemplatesRoute({ tab: "innhold" });
     await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "Hei");
     await act(async () => client.release());
@@ -231,12 +231,12 @@ describe("<AllTemplates /> (route: /templates)", () => {
     await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "xyzzy");
 
-    await waitFor(() => expect(screen.getByText("Ingen treff i innholdet")).toBeTruthy());
-    expect(screen.getByRole("tab", { name: /^Innhold\s*0$/ })).toBeTruthy();
-
-    await user.click(screen.getByRole("tab", { name: /^Brev\s*0$/ }));
-    expect(screen.getByText("Ingen treff i tittel, navn eller brevkode")).toBeTruthy();
+    await waitFor(() => expect(screen.getByText("Ingen treff i tittel, navn eller brevkode")).toBeTruthy());
+    expect(screen.getByRole("tab", { name: /^Brev\s*0$/ })).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "Automatiske brev" })).toBeNull();
+
+    await user.click(screen.getByRole("tab", { name: /^Innhold\s*0$/ }));
+    expect(screen.getByText("Ingen treff i innholdet")).toBeTruthy();
   });
 
   // Replacing the browsable index with "no hits" before the search has
@@ -247,7 +247,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
 
     const { user } = await renderTemplatesRoute();
     await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
-    await user.click(screen.getByRole("tab", { name: "Brev" }));
+    expect(screen.getByRole("tab", { name: "Brev" }).getAttribute("aria-selected")).toBe("true");
     expect(screen.getByRole("heading", { name: "Automatiske brev" })).toBeTruthy();
 
     await user.type(screen.getByRole("searchbox"), "Hei");
@@ -298,7 +298,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     );
     const isCurrent = (page: string) => screen.getByRole("button", { name: page }).getAttribute("aria-current");
 
-    const { user } = await renderTemplatesRoute();
+    const { user } = await renderTemplatesRoute({ tab: "innhold" });
     await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "Hei");
     await waitFor(() => expect(screen.getByRole("button", { name: "2" })).toBeTruthy());
@@ -352,12 +352,12 @@ describe("<AllTemplates /> (route: /templates)", () => {
     it("restores the query, match mode and tab from the URL", async () => {
       mockCorpus();
 
-      await renderTemplatesRoute({ q: "A1", exact: true, tab: "brev" });
+      await renderTemplatesRoute({ q: "A1", exact: true, tab: "innhold" });
 
       expect(screen.getByRole<HTMLInputElement>("searchbox").value).toBe("A1");
       expect(screen.getByRole<HTMLInputElement>("checkbox", { name: "Vis kun nøyaktige treff" }).checked).toBe(true);
-      expect(screen.getByRole("tab", { name: /^Brev/ }).getAttribute("aria-selected")).toBe("true");
-      expect(await screen.findByText(/Søket traff tittel, navn eller brevkode/)).toBeTruthy();
+      expect(screen.getByRole("tab", { name: /^Innhold/ }).getAttribute("aria-selected")).toBe("true");
+      expect(await screen.findByText("Ingen treff i innholdet")).toBeTruthy();
     });
 
     it("writes the settled query to the URL without adding history entries", async () => {
@@ -375,7 +375,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
     it("opens at the page showing the selected result, and marks it", async () => {
       mockManyHits();
 
-      await renderTemplatesRoute({ q: "Hei", selected: "autobrev/A11/BOKMAL" });
+      await renderTemplatesRoute({ q: "Hei", tab: "innhold", selected: "autobrev/A11/BOKMAL" });
 
       await waitFor(() => expect(isCurrentPage("2")).toBe(true));
       const link = screen.getByRole("link", { name: "A11" });
@@ -386,24 +386,29 @@ describe("<AllTemplates /> (route: /templates)", () => {
 
     it("starts a new search on page 1 with nothing selected", async () => {
       mockManyHits();
-      const { user, router } = await renderTemplatesRoute({ q: "Hei", selected: "autobrev/A11/BOKMAL" });
+      const { user, router } = await renderTemplatesRoute({
+        q: "Hei",
+        tab: "innhold",
+        selected: "autobrev/A11/BOKMAL",
+      });
       await waitFor(() => expect(isCurrentPage("2")).toBe(true));
 
       await user.type(screen.getByRole("searchbox"), "{Backspace}");
 
-      await waitFor(() => expect(router.state.location.search).toEqual({ q: "He" }));
+      await waitFor(() => expect(router.state.location.search).toEqual({ q: "He", tab: "innhold" }));
       expect(document.querySelector("[data-selected-result]")).toBeNull();
     });
 
     it("links each result with the search, and records the opened one so Back returns to it", async () => {
       mockManyHits();
-      const { user, router } = await renderTemplatesRoute({ q: "Hei" });
+      const { user, router } = await renderTemplatesRoute({ q: "Hei", tab: "innhold" });
       const link = await screen.findByRole("link", { name: "A00" });
 
       const href = new URL(link.getAttribute("href") ?? "", "http://localhost");
       expect(href.pathname).toBe("/template/autobrev/A00");
       expect(Object.fromEntries(href.searchParams)).toEqual({
         q: "Hei",
+        tab: "innhold",
         language: "BOKMAL",
         index: "7",
       });
@@ -413,7 +418,26 @@ describe("<AllTemplates /> (route: /templates)", () => {
 
       act(() => router.history.back());
       await waitFor(() => expect(router.state.location.pathname).toBe("/templates"));
-      expect(router.state.location.search).toEqual({ q: "Hei", selected: "autobrev/A00/BOKMAL" });
+      expect(router.state.location.search).toEqual({ q: "Hei", tab: "innhold", selected: "autobrev/A00/BOKMAL" });
+      await waitFor(() => expect(screen.getByRole("link", { name: "A00" }).getAttribute("aria-current")).toBe("true"));
+    });
+
+    it("opens a Brev result without a block, and Back returns to the Brev tab with it marked", async () => {
+      mockManyHits();
+      const { user, router } = await renderTemplatesRoute({ q: "A00" });
+      await screen.findByText(/Søket traff tittel, navn eller brevkode/);
+      const link = screen.getByRole("link", { name: "A00" });
+
+      const href = new URL(link.getAttribute("href") ?? "", "http://localhost");
+      expect(Object.fromEntries(href.searchParams)).toEqual({ q: "A00", language: "BOKMAL" });
+
+      await user.click(link);
+      await screen.findByText("Malsiden");
+
+      act(() => router.history.back());
+      await waitFor(() => expect(router.state.location.pathname).toBe("/templates"));
+      expect(router.state.location.search).toEqual({ q: "A00", selected: "autobrev/A00/BOKMAL" });
+      expect(screen.getByRole("tab", { name: /^Brev/ }).getAttribute("aria-selected")).toBe("true");
       await waitFor(() => expect(screen.getByRole("link", { name: "A00" }).getAttribute("aria-current")).toBe("true"));
     });
   });

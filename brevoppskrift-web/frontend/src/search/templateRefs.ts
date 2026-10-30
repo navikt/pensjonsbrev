@@ -1,11 +1,14 @@
 import { type QueryClient, useQueries } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { getBrevkoderMedMetadata, getTemplateDescription, type MalType } from "~/api/brevbaker-api-endpoints";
+import {
+  getBrevkoderMedMetadata,
+  getTemplateDescription,
+  MAL_TYPES,
+  type MalType,
+} from "~/api/brevbaker-api-endpoints";
 import { type TemplateDescription } from "~/api/brevbakerTypes";
 import { type TemplateRef } from "~/search/useSearchResults";
-
-const MAL_TYPES: MalType[] = ["autobrev", "redigerbar"];
 
 export function displayTitleOf(description: { name: string; metadata?: { displayTitle?: string } | null }): string {
   const title = description.metadata?.displayTitle;

@@ -1,18 +1,27 @@
 import { ArrowLeftIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon } from "@navikt/aksel-icons";
-import { Button, Detail, HStack, Switch } from "@navikt/ds-react";
+import { Button, type ButtonProps, Detail, HStack, Switch } from "@navikt/ds-react";
 import { createLink } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { type AnchorHTMLAttributes, type ReactNode, type Ref } from "react";
 
 import { AnimatedEllipsis } from "~/components/AnimatedEllipsis";
 import { type ResultRef, type SearchCriteria, toTemplateSearch, toTemplatesSearch } from "~/search/searchContext";
 import { blockNavigation, type ResultLinkTarget, type TemplateHits } from "~/templateSearch/useTemplateHits";
 
+/** An Aksel button rendered as an `<a>`. Passing `Button` itself to `createLink`
+ *  would render a `<button href>`, which is not a link (no open in new tab). */
+function AnchorButton({
+  ref,
+  ...props
+}: Omit<ButtonProps, "ref"> & AnchorHTMLAttributes<HTMLAnchorElement> & { ref?: Ref<HTMLAnchorElement> }) {
+  return <Button as="a" ref={ref} {...props} />;
+}
+
 /** An Aksel button that is a typed router link. */
-const ButtonLink = createLink(Button);
+const ButtonLink = createLink(AnchorButton);
 
 /**
- * The search controls on a template opened from a search: a switch for the hit marking, and - while marking is on - stepping
- * between matching blocks in this template and between search results.
+ * The search controls on a template opened from a search: a switch for the hit marking, stepping between
+ * matching blocks in this template while marking is on, and stepping between search results.
  */
 export function SearchHitToolbar({
   criteria,
@@ -30,9 +39,9 @@ export function SearchHitToolbar({
   return (
     <HStack align="center" gap="space-16" wrap>
       <Switch checked={marking} onChange={(event) => onMarkingChange(event.target.checked)} size="small">
-        Marker søketreff
+        Vis søketreff
       </Switch>
-      {marking ? <HitNavigation criteria={criteria} hits={hits} onSelectBlock={onSelectBlock} /> : null}
+      <HitNavigation criteria={criteria} hits={hits} marking={marking} onSelectBlock={onSelectBlock} />
     </HStack>
   );
 }
@@ -42,7 +51,7 @@ export function BackButton({ criteria, current }: { criteria: SearchCriteria | u
   if (!criteria) {
     return (
       <ButtonLink icon={<ArrowLeftIcon aria-hidden />} size="small" to="/templates" variant="secondary">
-        Tilbake til mal-oversikten
+        Mal-oversikt
       </ButtonLink>
     );
   }
@@ -54,7 +63,7 @@ export function BackButton({ criteria, current }: { criteria: SearchCriteria | u
       to="/templates"
       variant="secondary"
     >
-      Tilbake til søkeresultatene
+      Søkeresultat
     </ButtonLink>
   );
 }
@@ -62,10 +71,13 @@ export function BackButton({ criteria, current }: { criteria: SearchCriteria | u
 function HitNavigation({
   criteria,
   hits,
+  marking,
   onSelectBlock,
 }: {
   criteria: SearchCriteria;
   hits: TemplateHits;
+  /** Stepping between blocks only makes sense while they are marked. */
+  marking: boolean;
   onSelectBlock: (index: number) => void;
 }) {
   if (hits.status === "loading") {
@@ -96,40 +108,40 @@ function HitNavigation({
     );
   return (
     <>
-      <HStack align="center" gap="space-4">
-        {matchingBlocks.length === 0 ? (
-          <Detail>Ingen treff i denne språkversjonen</Detail>
-        ) : (
-          <>
-            <Button
-              disabled={previousBlock === undefined}
-              icon={<ChevronUpIcon title="Forrige treff" />}
-              onClick={() => previousBlock !== undefined && onSelectBlock(previousBlock)}
-              size="small"
-              variant="tertiary"
-            />
-            <Detail aria-live="polite">
-              Avsnitt {at === undefined ? "–" : at + 1} av {matchingBlocks.length}
-            </Detail>
-            <Button
-              disabled={nextBlock === undefined}
-              icon={<ChevronDownIcon title="Neste treff" />}
-              onClick={() => nextBlock !== undefined && onSelectBlock(nextBlock)}
-              size="small"
-              variant="tertiary"
-            />
-          </>
-        )}
-      </HStack>
-      {result ? (
+      {marking ? (
         <HStack align="center" gap="space-4">
-          {resultLink(previousResult, <ChevronLeftIcon title="Forrige resultat" />)}
-          <Detail>
-            Mal/språk {result.position} av {result.total}
-          </Detail>
-          {resultLink(nextResult, <ChevronRightIcon title="Neste resultat" />)}
+          {matchingBlocks.length === 0 ? (
+            <Detail>Ingen treff i denne språkversjonen</Detail>
+          ) : (
+            <>
+              <Button
+                disabled={previousBlock === undefined}
+                icon={<ChevronUpIcon title="Forrige treff" />}
+                onClick={() => previousBlock !== undefined && onSelectBlock(previousBlock)}
+                size="small"
+                variant="tertiary"
+              />
+              <Detail aria-live="polite">
+                Avsnitt {at === undefined ? "–" : at + 1} av {matchingBlocks.length}
+              </Detail>
+              <Button
+                disabled={nextBlock === undefined}
+                icon={<ChevronDownIcon title="Neste treff" />}
+                onClick={() => nextBlock !== undefined && onSelectBlock(nextBlock)}
+                size="small"
+                variant="tertiary"
+              />
+            </>
+          )}
         </HStack>
       ) : null}
+      <HStack align="center" gap="space-4">
+        {resultLink(previousResult, <ChevronLeftIcon title="Forrige resultat" />)}
+        <Detail>
+          Mal {result.position ?? "–"} av {result.total}
+        </Detail>
+        {resultLink(nextResult, <ChevronRightIcon title="Neste resultat" />)}
+      </HStack>
     </>
   );
 }

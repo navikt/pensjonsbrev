@@ -18,7 +18,9 @@ export type SearchHighlight = {
   exact: boolean;
   /** Block indexes (`data-block-index`) that matched the search. */
   matchingBlocks: ReadonlySet<number>;
-  /** The block the user is at. Marked as active only if it is one of `matchingBlocks`. */
+  /** The block the user is at. Outlined as active even when it is not one of
+   *  `matchingBlocks`, e.g. kept from a language where it matched, so the same
+   *  block is easy to find when switching languages. Its words are not marked. */
   activeBlock: number | undefined;
 };
 
@@ -43,13 +45,16 @@ export type SearchBlockAttributes = {
   "data-search-hit"?: SearchHitState;
 };
 
-/** Attributes for a block element: its index, and whether it is a search hit. */
+/** Attributes for a block element: its index, and whether it is the active block or another search hit. */
 export function useSearchBlockAttributes(index: number): SearchBlockAttributes {
   const highlight = useContext(SearchHighlightContext);
-  if (!highlight?.matchingBlocks.has(index)) {
-    return { "data-block-index": index };
+  if (highlight?.activeBlock === index) {
+    return { "data-block-index": index, "data-search-hit": "active" };
   }
-  return { "data-block-index": index, "data-search-hit": highlight.activeBlock === index ? "active" : "match" };
+  if (highlight?.matchingBlocks.has(index)) {
+    return { "data-block-index": index, "data-search-hit": "match" };
+  }
+  return { "data-block-index": index };
 }
 
 /** Marks everything inside as belonging to block `index`. */

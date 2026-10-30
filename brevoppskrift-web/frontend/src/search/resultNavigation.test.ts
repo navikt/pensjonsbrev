@@ -36,8 +36,9 @@ describe("resultPosition", () => {
     expect(resultPosition(ranked, cNynorsk)).toMatchObject({ previous: bBokmal, next: undefined });
   });
 
-  it("is undefined for a template that is not among the results", () => {
-    expect(resultPosition(ranked, result("X", "BOKMAL"))).toBeUndefined();
+  it("has no position for a template that is not among the results, and leads to the first one", () => {
+    expect(resultPosition(ranked, result("X", "NYNORSK"))).toEqual({ position: undefined, total: 3, next: aNynorsk });
+    expect(resultPosition([], result("X", "BOKMAL"))).toEqual({ position: undefined, total: 0, next: undefined });
   });
 });
 
