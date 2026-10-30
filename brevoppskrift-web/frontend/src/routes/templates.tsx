@@ -32,12 +32,11 @@ import {
 import { isSelectedResult, pageOfResult } from "~/search/resultNavigation";
 import {
   DEFAULT_TAB,
-  formatResultRef,
   parseResultRef,
-  type ResultRef,
   type ResultTab,
   resultRefOf,
   type SearchCriteria,
+  type TemplatesSearchParams,
   validateTemplatesSearch,
 } from "~/search/searchContext";
 import { displayTitleOf, fetchAllDescriptions, toRefs } from "~/search/templateRefs";
@@ -172,11 +171,10 @@ function AllTemplates() {
   const safePage = Math.min(page, pageCount);
   const setPage = (next: number) =>
     void navigate({ replace: true, search: (s) => ({ ...s, page: next, selected: undefined }) });
-  // Records the opened result in this history entry before leaving, so
-  // browser Back returns to the list with it marked.
+  // Records the way back from the opened result in this history entry before
+  // leaving, so browser Back returns to the search it was found in, with it marked.
   const openResult = useCallback(
-    (result: ResultRef) =>
-      navigate({ replace: true, search: (s) => ({ ...s, page: undefined, selected: formatResultRef(result) }) }),
+    (back: TemplatesSearchParams) => navigate({ replace: true, search: back }),
     [navigate],
   );
   const criteria = useMemo<SearchCriteria | undefined>(

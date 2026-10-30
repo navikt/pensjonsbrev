@@ -440,5 +440,29 @@ describe("<AllTemplates /> (route: /templates)", () => {
       expect(screen.getByRole("tab", { name: /^Brev/ }).getAttribute("aria-selected")).toBe("true");
       await waitFor(() => expect(screen.getByRole("link", { name: "A00" }).getAttribute("aria-current")).toBe("true"));
     });
+
+    // The hits on screen belong to the last completed search, which lags the
+    // input while a newer one runs. Back must return to the search the opened
+    // result was found in, as "Tilbake til søkeresultatene" does.
+    it("records the search an opened result was found in, also while a newer search runs", async () => {
+      mockCorpus();
+      const client = installClient(deferrableClient());
+      const { user, router } = await renderTemplatesRoute({ tab: "innhold" });
+      await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
+      await user.type(screen.getByRole("searchbox"), "Hei");
+      await act(async () => client.release());
+      const [link] = await screen.findAllByRole("link", { name: "A1" });
+      const malType = new URL(link.getAttribute("href") ?? "", "http://localhost").pathname.split("/")[2];
+      await user.type(screen.getByRole("searchbox"), "xyz");
+      await waitFor(() => expect(router.state.location.search).toMatchObject({ q: "Heixyz" }));
+
+      await user.click(link);
+      await screen.findByText("Malsiden");
+      expect(router.state.location.search).toMatchObject({ q: "Hei", tab: "innhold" });
+
+      act(() => router.history.back());
+      await waitFor(() => expect(router.state.location.pathname).toBe("/templates"));
+      expect(router.state.location.search).toEqual({ q: "Hei", tab: "innhold", selected: `${malType}/A1/BOKMAL` });
+    });
   });
 });

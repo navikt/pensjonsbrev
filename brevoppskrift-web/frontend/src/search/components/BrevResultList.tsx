@@ -5,7 +5,7 @@ import { languageLabel } from "~/search/components/format";
 import { LineContent } from "~/search/components/highlight";
 import { ResultLink, selectedRowCss } from "~/search/components/ResultLink";
 import { isSelectedResult } from "~/search/resultNavigation";
-import { type ResultRef, resultRefOf, type SearchCriteria } from "~/search/searchContext";
+import { type ResultRef, resultRefOf, type SearchCriteria, type TemplatesSearchParams } from "~/search/searchContext";
 import { type BrevHit, type TemplateText } from "~/search/textSearch";
 
 /** Title hits, one row per template with all its matching languages. */
@@ -20,7 +20,7 @@ export function BrevResultList({
   criteria: SearchCriteria;
   /** The result last opened; any language of its template marks the row. */
   selected?: ResultRef;
-  onOpen?: (result: ResultRef) => Promise<void>;
+  onOpen?: (back: TemplatesSearchParams) => Promise<void>;
 }) {
   const rows = useMemo(() => {
     const byTemplate = new Map<string, { template: TemplateText; languages: string[] }>();
