@@ -64,13 +64,25 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
 
     override fun <R> parseTokens(editScript: EditScript<Token>, producer: DiffProducer<R>): R {
         val cursor = ReplaceAwareEditScriptCursor(editScript)
+        // The edit script may pair content across block boundaries (e.g. when a block is inserted in the middle of an
+        // old block's content). When a block only exists on one side, the other side's content therefore continues
+        // the previous block on that side - both block index and content index - rather than starting a new one.
+        val contentIndices = ReplaceAwareEditScriptCursor.StableIndexState()
+        var insertBlockIndex = BlockIndex(0)
+        var deleteBlockIndex = BlockIndex(0)
         cursor.forEachIndexed<Token.Block> { insertBlockIdx, deleteBlockIdx, entry ->
-            val insertBlockIndex = BlockIndex(insertBlockIdx)
-            val deleteBlockIndex = BlockIndex(deleteBlockIdx)
-            entry.toChange { DiffProducer.BlockInfo(it.id, it.type) }?.let {
-                producer.block(insertBlockIndex, deleteBlockIndex, it)
+            if (entry !is DiffEntry.Delete) {
+                insertBlockIndex = BlockIndex(insertBlockIdx)
+                contentIndices.resetInsertSide()
             }
-            BlockParser(insertBlockIndex, deleteBlockIndex, cursor, producer).parse()
+            if (entry !is DiffEntry.Insert) {
+                deleteBlockIndex = BlockIndex(deleteBlockIdx)
+                contentIndices.resetDeleteSide()
+            }
+            entry.toChange { DiffProducer.BlockInfo(it.id, it.type) }?.let {
+                producer.block(BlockIndex(insertBlockIdx), BlockIndex(deleteBlockIdx), it)
+            }
+            BlockParser(insertBlockIndex, deleteBlockIndex, cursor, producer).parse(contentIndices)
         }
         require(!cursor.hasNext) { "Not all tokens were consumed, next: ${cursor.peek()}" }
         return producer.build()
@@ -82,8 +94,8 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         private val cursor: ReplaceAwareEditScriptCursor<Token>,
         private val producer: DiffProducer<*>,
     ) {
-        fun parse() =
-            cursor.forEachIndexedStable<Token.BlockContent> { indices, entry ->
+        fun parse(contentIndices: ReplaceAwareEditScriptCursor.StableIndexState) =
+            cursor.forEachIndexedStable<Token.BlockContent>(contentIndices) { indices, entry ->
                 val insertContentIndex = insertIndex.withContentIndex(indices.insertIndex)
                 val deleteContentIndex = deleteIndex.withContentIndex(indices.rawDeleteIndex)
                 val stableDeleteContentIndex = deleteIndex.withContentIndex(indices.stableDeleteIndex)
