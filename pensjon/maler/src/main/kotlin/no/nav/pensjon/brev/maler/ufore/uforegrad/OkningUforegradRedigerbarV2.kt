@@ -120,40 +120,17 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                 //Beregning barnetillegg
                 val btFellesInnvilget = barnetillegg.btFellesbarn.safe { innvilget }.ifNull(false)
-                val btFellesNetto = barnetillegg.btFellesbarn.safe { netto }.ifNull(Kroner(0))
-                val btFellesBrutto = barnetillegg.btFellesbarn.safe { brutto }.ifNull(Kroner(0))
-                val btfbJusteringsbelopPerAr = barnetillegg.btFellesbarn.safe { justeringsbelopPerAr }.ifNull(Kroner(0))
-                val btfbInntektAnnenForelder = barnetillegg.btFellesbarn.safe { inntektAnnenForelder }.ifNull(Kroner(0))
-                val btfbBrukersInntektTilAvkorting = barnetillegg.btFellesbarn.safe { brukersInntektTilAvkorting }.ifNull(Kroner(0))
-                val btfbInntektstak = barnetillegg.btFellesbarn.safe { inntektstak }.ifNull(Kroner(0))
-                val btfbBelopFratrukketAnnenForeldersInntekt = barnetillegg.btFellesbarn.safe { belopFratrukketAnnenForeldersInntekt }.ifNull(Kroner(0))
-                val barnetilleggFellesFradrag = barnetillegg.btFellesbarn.safe { fradrag }.ifNull(Kroner(0))
-                val barnetilleggFellesFribelop = barnetillegg.btFellesbarn.safe { fribelop }.ifNull(Kroner(0))
-                val btfbInntektBruktIAvkorting = barnetillegg.btFellesbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
-
                 val btSerkullInnvilget = barnetillegg.btSerkullsbarn.safe { innvilget }.ifNull(false)
-                val btSerkullNetto = barnetillegg.btSerkullsbarn.safe { netto }.ifNull(Kroner(0))
-                val btSerkullBrutto = barnetillegg.btSerkullsbarn.safe { brutto }.ifNull(Kroner(0))
-                val btsbJusteringsbelopPerAr = barnetillegg.btSerkullsbarn.safe { justeringsbelopPerAr }.ifNull(Kroner(0))
-                val btsbInntektstak = barnetillegg.btSerkullsbarn.safe { inntektstak }.ifNull(Kroner(0))
-                val barnetilleggSerkullFradrag = barnetillegg.btSerkullsbarn.safe { fradrag }.ifNull(Kroner(0))
-                val barnetillegSerkullFribelop = barnetillegg.btSerkullsbarn.safe { fribelop }.ifNull(Kroner(0))
-                val btsbInntektBruktIAvkorting = barnetillegg.btSerkullsbarn.safe { inntektBruktIAvkorting }.ifNull(Kroner(0))
-                val flereSerkullsbarn = barnetillegg.btSerkullsbarn.safe { antallBarn }.ifNull(0).greaterThan(1)
 
                 //Sammenstiller
                 val btInnvilget = btFellesInnvilget or btSerkullInnvilget
+                val btFellesInnvilgetMenIkkeUtbetalt = barnetillegg.btFellesbarn.safe { innvilget and netto.equalTo(0) }.ifNull(false)
+                val btSerkullInnvilgetMenIkkeUtbetalt = barnetillegg.btSerkullsbarn.safe { innvilget and netto.equalTo(0) }.ifNull(false)
                 val harBareBt = btInnvilget and not(tillegg.ektefelletilleggInnvilget) and not(tillegg.gjenlevendetilleggInnvilget)
                 val harBareGjt = not(btInnvilget) and not(tillegg.ektefelletilleggInnvilget) and tillegg.gjenlevendetilleggInnvilget
                 val harBareEt = tillegg.ektefelletilleggInnvilget and not(btInnvilget) and not(tillegg.gjenlevendetilleggInnvilget)
                 val harBtOgGjt = btInnvilget and tillegg.gjenlevendetilleggInnvilget and not(tillegg.ektefelletilleggInnvilget)
                 val harBtOgEt = btInnvilget and tillegg.ektefelletilleggInnvilget and not(tillegg.gjenlevendetilleggInnvilget)
-                val btsbInnvbtfbInnvJusteringsbelopSerkullIkke0 = btSerkullInnvilget and btFellesInnvilget and btsbJusteringsbelopPerAr.notEqualTo(0)
-                val btsbInnvbtfbInnvJusteringsbelopFellesIkke0 = btSerkullInnvilget and btFellesInnvilget and btfbJusteringsbelopPerAr.notEqualTo(0)
-                val btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 = btSerkullInnvilget and btFellesInnvilget and ((btSerkullNetto.notEqualTo(0) and btsbJusteringsbelopPerAr.equalTo(0)) or (btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0)))
-                val btsbInnvilgetOgJusteringsbelop0 = btSerkullInnvilget and btsbJusteringsbelopPerAr.notEqualTo(0)
-                val btsbInnvilgetIkkeBtfbinnvilget = btSerkullInnvilget and not(btFellesInnvilget)
-                val btMedFlereBarn = barnetillegg.btFellesbarn.safe { antallBarn }.ifNull(0).greaterThan(1)
 
                 //Tekster
                 val epsBorMedNnEntall = ifElse(
@@ -241,7 +218,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         includePhrase(Felles.TextOrList(nyeInnvilgedeBarnetillegg.map(BarnetilleggFormatter), 0))
 
                         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND  (((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)   AND   (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0))   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false))  ) THEN      INCLUDE ENDIF
-                        showIf((btFellesInnvilget and (((btSerkullInnvilget and btSerkullNetto.equalTo(0)) and (btFellesInnvilget and btFellesNetto.equalTo(0))) or (btSerkullInnvilget and btSerkullNetto.equalTo(0) and not(btFellesInnvilget)) or (btFellesInnvilget and btFellesNetto.equalTo(0) and not(btSerkullInnvilget))))) {
+                        showIf(btFellesInnvilgetMenIkkeUtbetalt and (btSerkullInnvilgetMenIkkeUtbetalt or not(btSerkullInnvilget))) {
                             text(
                                 bokmal { +"Tillegget blir ikke utbetalt fordi inntekten til deg og din ektefelle er over grensen for å få utbetalt barnetillegg. " },
                                 nynorsk { +"Tillegget blir ikkje utbetalt fordi inntekta di og inntekta til ektefellen din er over grensa for å få utbetalt barnetillegg. " },
@@ -249,7 +226,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
 
                         //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)  AND  (((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)   AND   (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0))   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false))  ) THEN      INCLUDE ENDIF
-                        showIf(((btSerkullInnvilget and not(btFellesInnvilget)) and (((btSerkullInnvilget and btSerkullNetto.equalTo(0)) and (btFellesInnvilget and btFellesNetto.equalTo(0))) or (btSerkullInnvilget and btSerkullNetto.equalTo(0) and not(btFellesInnvilget)) or (btFellesInnvilget and btFellesNetto.equalTo(0) and not(btSerkullInnvilget))))) {
+                        showIf(btSerkullInnvilgetMenIkkeUtbetalt and not(btFellesInnvilget)) {
                             text(
                                 bokmal { +"Tillegget blir ikke utbetalt fordi inntekten din er over grensen for å få utbetalt barnetillegg." },
                                 nynorsk { +"Tillegget blir ikkje betalt ut fordi inntekta di er over grensa for å få utbetalt barnetillegg." },
@@ -1131,26 +1108,30 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 showIf(not(btRedusertTil0)) {
-                    showIf(((not(btFellesInnvilget) and btSerkullInnvilget))) {
-                        includePhrase(
-                            TBU2338_Generated_Ny(
-                                btsbNetto = btSerkullNetto,
-                                beregningSivilstandAnvendt = grunnlag.anvendtSivilstand,
-                                epsBorMed = grunnlag.epsBrukerBorMed,
+                    ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
+                        showIf(sb.innvilget and not(btFellesInnvilget)) {
+                            includePhrase(
+                                TBU2338_Generated_Ny(
+                                    btsbNetto = sb.netto,
+                                    beregningSivilstandAnvendt = grunnlag.anvendtSivilstand,
+                                    epsBorMed = grunnlag.epsBrukerBorMed,
+                                )
                             )
-                        )
+                        }
                     }
 
-                    showIf(btFellesInnvilget) {
-                        includePhrase(
-                            TBU2339_Generated_Ny(
-                                btfbNetto = btFellesNetto,
-                                btsbInnvilget = btSerkullInnvilget,
-                                btfbInnvilget = btFellesInnvilget,
-                                btMedFlereBarn = btMedFlereBarn,
-                                epsBorMed = grunnlag.epsBrukerBorMed,
+                    ifNotNull(barnetillegg.btFellesbarn) { fb ->
+                        showIf(fb.innvilget) {
+                            includePhrase(
+                                TBU2339_Generated_Ny(
+                                    btfbNetto = fb.netto,
+                                    btsbInnvilget = btSerkullInnvilget,
+                                    btfbInnvilget = fb.innvilget,
+                                    btMedFlereBarn = fb.antallBarn.greaterThan(1),
+                                    epsBorMed = grunnlag.epsBrukerBorMed,
+                                )
                             )
-                        )
+                        }
                     }
 
                     showIf((btInnvilget)) {
@@ -1192,344 +1173,364 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         )
                     }
 
-                    showIf(((btFellesInnvilget))) {
-                        paragraph {
-                            text(
-                                bokmal { +"Inntekten din er " + btfbBrukersInntektTilAvkorting.format() + " og inntekten til din " + epsBorMedBmEntall + " er " + btfbInntektAnnenForelder.format() + ". " },
-                                nynorsk { +"Inntekta di er " + btfbBrukersInntektTilAvkorting.format() + ", og inntekta til " + epsBorMedNnEntall + " din er " + btfbInntektAnnenForelder.format() + ". " },
-                            )
-
-                            showIf((btfbBelopFratrukketAnnenForeldersInntekt.greaterThan(0))) {
+                    ifNotNull(barnetillegg.btFellesbarn) { fb ->
+                        showIf(fb.innvilget) {
+                            paragraph {
                                 text(
-                                    bokmal { +"Folketrygdens grunnbeløp på inntil " + beregning.grunnbelop.format() + " er holdt utenfor inntekten til din " + epsBorMedBmEntall + ". " },
-                                    nynorsk { +"Grunnbeløpet i folketrygda på inntil " + beregning.grunnbelop.format() + " er halde utanfor inntekta til " + epsBorMedNnEntall + " din. " }
+                                    bokmal { +"Inntekten din er " + fb.brukersInntektTilAvkorting.format() + " og inntekten til din " + epsBorMedBmEntall + " er " + fb.inntektAnnenForelder.format() + ". " },
+                                    nynorsk { +"Inntekta di er " + fb.brukersInntektTilAvkorting.format() + ", og inntekta til " + epsBorMedNnEntall + " din er " + fb.inntektAnnenForelder.format() + ". " },
                                 )
-                            }
 
-                            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 )) THEN      INCLUDE ENDIF
-                            showIf(((not(btSerkullInnvilget) and btfbJusteringsbelopPerAr.equalTo(0) and btFellesNetto.notEqualTo(0)))) {
-                                showIf(btfbInntektBruktIAvkorting.greaterThan(barnetilleggFellesFribelop)) {
+                                showIf((fb.belopFratrukketAnnenForeldersInntekt.greaterThan(0))) {
                                     text(
-                                        bokmal { +"Til sammen er inntektene høyere enn fribeløpet ditt på " + barnetilleggFellesFribelop.format() + ". Barnetillegget ditt er derfor " },
-                                        nynorsk { +"Til saman er inntektene høgare enn fribeløpet ditt på " + barnetilleggFellesFribelop.format() + ". Barnetillegget ditt er derfor " },
-                                    )
-                                }.orShow {
-                                    text(
-                                        bokmal { +"Til sammen er inntektene lavere enn fribeløpet ditt på " + barnetilleggFellesFribelop.format() + ". Barnetillegget ditt er derfor " },
-                                        nynorsk { +"Til saman er inntektene lågare enn fribeløpet ditt på " + barnetilleggFellesFribelop.format() + ". Barnetillegget ditt er derfor " },
+                                        bokmal { +"Folketrygdens grunnbeløp på inntil " + beregning.grunnbelop.format() + " er holdt utenfor inntekten til din " + epsBorMedBmEntall + ". " },
+                                        nynorsk { +"Grunnbeløpet i folketrygda på inntil " + beregning.grunnbelop.format() + " er halde utanfor inntekta til " + epsBorMedNnEntall + " din. " }
                                     )
                                 }
-                            }
 
-                            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0 )) THEN      INCLUDE ENDIF
-                            showIf(((not(btSerkullInnvilget) and btfbJusteringsbelopPerAr.equalTo(0) and btFellesNetto.notEqualTo(0) and barnetilleggFellesFradrag.equalTo(0)))) {
-                                text(
-                                    bokmal { +"ikke " },
-                                    nynorsk { +"ikkje " },
-                                )
-                            }
+                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 )) THEN      INCLUDE ENDIF
+                                showIf(((not(btSerkullInnvilget) and fb.justeringsbelopPerAr.equalTo(0) and fb.netto.notEqualTo(0)))) {
+                                    showIf(fb.inntektBruktIAvkorting.greaterThan(fb.fribelop)) {
+                                        text(
+                                            bokmal { +"Til sammen er inntektene høyere enn fribeløpet ditt på " + fb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                            nynorsk { +"Til saman er inntektene høgare enn fribeløpet ditt på " + fb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                        )
+                                    }.orShow {
+                                        text(
+                                            bokmal { +"Til sammen er inntektene lavere enn fribeløpet ditt på " + fb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                            nynorsk { +"Til saman er inntektene lågare enn fribeløpet ditt på " + fb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                        )
+                                    }
+                                }
 
-                            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 )) THEN      INCLUDE ENDIF
-                            showIf(((not(btSerkullInnvilget) and btfbJusteringsbelopPerAr.equalTo(0) and btFellesNetto.notEqualTo(0)))) {
-                                text(
-                                    bokmal { +"redusert. " },
-                                    nynorsk { +"redusert. " },
-                                )
-                            }
+                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0 )) THEN      INCLUDE ENDIF
+                                showIf(((not(btSerkullInnvilget) and fb.justeringsbelopPerAr.equalTo(0) and fb.netto.notEqualTo(0) and fb.fradrag.equalTo(0)))) {
+                                    text(
+                                        bokmal { +"ikke " },
+                                        nynorsk { +"ikkje " },
+                                    )
+                                }
 
-                            showIf(((btfbJusteringsbelopPerAr.notEqualTo(0) and not(btSerkullInnvilget)))) {
-                                text(
-                                    bokmal { +"Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. " },
-                                    nynorsk { +"Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. " },
-                                )
-                            }
+                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 )) THEN      INCLUDE ENDIF
+                                showIf(((not(btSerkullInnvilget) and fb.justeringsbelopPerAr.equalTo(0) and fb.netto.notEqualTo(0)))) {
+                                    text(
+                                        bokmal { +"redusert. " },
+                                        nynorsk { +"redusert. " },
+                                    )
+                                }
 
-                            //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto  = 0 ))THEN     INCLUDE ENDIF
-                            showIf(((btfbJusteringsbelopPerAr.notEqualTo(0) and not(btSerkullInnvilget) and btFellesNetto.equalTo(0)))) {
-                                text(
-                                    bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
-                                    nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
-                                )
+                                showIf(((fb.justeringsbelopPerAr.notEqualTo(0) and not(btSerkullInnvilget)))) {
+                                    text(
+                                        bokmal { +"Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. " },
+                                        nynorsk { +"Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. " },
+                                    )
+                                }
+
+                                //IF(( PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto  = 0 ))THEN     INCLUDE ENDIF
+                                showIf(((fb.justeringsbelopPerAr.notEqualTo(0) and not(btSerkullInnvilget) and fb.netto.equalTo(0)))) {
+                                    text(
+                                        bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
+                                        nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
+                                    )
+                                }
                             }
                         }
                     }
 
-                    showIf((btSerkullInnvilget and not(btFellesInnvilget))) {
-                        paragraph {
-                            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
-                            showIf(((btSerkullNetto.greaterThan(0) and btsbJusteringsbelopPerAr.equalTo(0) and btsbInnvilgetIkkeBtfbinnvilget))) {
-                                showIf(btsbInntektBruktIAvkorting.greaterThan(barnetillegSerkullFribelop)) {
+                    ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
+                        showIf((sb.innvilget and not(btFellesInnvilget))) {
+                            paragraph {
+                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
+                                showIf(((sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
+                                    showIf(sb.inntektBruktIAvkorting.greaterThan(sb.fribelop)) {
+                                        text(
+                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er høyere enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er høgare enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                        )
+                                    }.orShow {
+                                        text(
+                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er lavere enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er lågare enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                        )
+                                    }
+                                }
+
+                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop )) THEN      INCLUDE ENDIF
+                                showIf(((sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0) and sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop)))) {
                                     text(
-                                        bokmal { +"Inntekten din på " + btsbInntektBruktIAvkorting.format() + " er høyere enn fribeløpet ditt på " + barnetillegSerkullFribelop.format() + ". Barnetillegget ditt er derfor " },
-                                        nynorsk { +"Inntekta di på " + btsbInntektBruktIAvkorting.format() + " er høgare enn fribeløpet ditt på " + barnetillegSerkullFribelop.format() + ". Barnetillegget ditt er derfor " },
-                                    )
-                                }.orShow {
-                                    text(
-                                        bokmal { +"Inntekten din på " + btsbInntektBruktIAvkorting.format() + " er lavere enn fribeløpet ditt på " + barnetillegSerkullFribelop.format() + ". Barnetillegget ditt er derfor " },
-                                        nynorsk { +"Inntekta di på " + btsbInntektBruktIAvkorting.format() + " er lågare enn fribeløpet ditt på " + barnetillegSerkullFribelop.format() + ". Barnetillegget ditt er derfor " },
+                                        bokmal { +"ikke " },
+                                        nynorsk { +"ikkje " },
                                     )
                                 }
-                            }
 
-                            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop )) THEN      INCLUDE ENDIF
-                            showIf(((btSerkullNetto.greaterThan(0) and btsbJusteringsbelopPerAr.equalTo(0) and btsbInnvilgetIkkeBtfbinnvilget and btsbInntektBruktIAvkorting.lessThanOrEqual(barnetillegSerkullFribelop)))) {
-                                text(
-                                    bokmal { +"ikke " },
-                                    nynorsk { +"ikkje " },
-                                )
-                            }
+                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
+                                showIf(((sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
+                                    text(
+                                        bokmal { +"redusert ut fra inntekt. " },
+                                        nynorsk { +"redusert ut frå inntekt. " },
+                                    )
+                                }
 
-                            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
-                            showIf(((btSerkullNetto.greaterThan(0) and btsbJusteringsbelopPerAr.equalTo(0) and btsbInnvilgetIkkeBtfbinnvilget))) {
-                                text(
-                                    bokmal { +"redusert ut fra inntekt. " },
-                                    nynorsk { +"redusert ut frå inntekt. " },
-                                )
-                            }
+                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
+                                showIf(((sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
+                                    text(
+                                        bokmal { +"Inntekten din er " + sb.inntektBruktIAvkorting.format() + ". " },
+                                        nynorsk { +"Inntekta di er " + sb.inntektBruktIAvkorting.format() + "." },
+                                    )
+                                }
 
-                            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
-                            showIf(((btSerkullNetto.equalTo(0) and btsbJusteringsbelopPerAr.equalTo(0) and btsbInnvilgetIkkeBtfbinnvilget))) {
-                                text(
-                                    bokmal { +"Inntekten din er " + btsbInntektBruktIAvkorting.format() + ". " },
-                                    nynorsk { +"Inntekta di er " + btsbInntektBruktIAvkorting.format() + "." },
-                                )
-                            }
+                                showIf(sb.justeringsbelopPerAr.notEqualTo(0)) {
+                                    text(
+                                        bokmal { +"Inntekten din er " + sb.inntektBruktIAvkorting.format() + ". Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. " },
+                                        nynorsk { +"Inntekta di er " + sb.inntektBruktIAvkorting.format() + ". Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. " },
+                                    )
+                                }
 
-                            showIf(((btsbInnvilgetOgJusteringsbelop0))) {
-                                text(
-                                    bokmal { +"Inntekten din er " + btsbInntektBruktIAvkorting.format() + ". Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. " },
-                                    nynorsk { +"Inntekta di er " + btsbInntektBruktIAvkorting.format() + ". Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. " },
-                                )
-                            }
-
-                            showIf(((btsbInnvilgetOgJusteringsbelop0 and btSerkullNetto.equalTo(0)))) {
-                                text(
-                                    bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
-                                    nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
-                                )
+                                showIf(sb.justeringsbelopPerAr.notEqualTo(0) and sb.netto.equalTo(0)) {
+                                    text(
+                                        bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
+                                        nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
+                                    )
+                                }
                             }
                         }
                     }
 
-                    showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 or btsbInnvbtfbInnvJusteringsbelopFellesIkke0 or btsbInnvbtfbInnvJusteringsbelopSerkullIkke0)) {
-                        paragraph {
-                            //IF(PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btSerkullNetto.notEqualTo(0) and btsbJusteringsbelopPerAr.equalTo(0))) {
-                                showIf(btsbInntektBruktIAvkorting.greaterThan(barnetillegSerkullFribelop)) {
+                    ifNotNull(barnetillegg.btFellesbarn, barnetillegg.btSerkullsbarn) { fb, sb ->
+                        val justeringFelles0 = fb.justeringsbelopPerAr.equalTo(0)
+                        val justeringSerkull0 = sb.justeringsbelopPerAr.equalTo(0)
+                        val sbUtbetalesUtenJustering = sb.netto.notEqualTo(0) and justeringSerkull0
+                        val fbUtbetalesUtenJustering = fb.netto.notEqualTo(0) and justeringFelles0
+                        val ettFradragErStorreEnn0 = (sb.fradrag.greaterThan(0) and fb.fradrag.equalTo(0)) or (sb.fradrag.equalTo(0) and fb.fradrag.greaterThan(0))
+                        val beggeFradragStorreEnn0 = sb.fradrag.greaterThan(0) and fb.fradrag.greaterThan(0)
+                        val ingenFradragStorreEnn0 = sb.fradrag.equalTo(0) and fb.fradrag.equalTo(0)
+
+                        showIf(fb.innvilget and sb.innvilget and (sbUtbetalesUtenJustering or fbUtbetalesUtenJustering or !justeringFelles0 or !justeringSerkull0)) {
+                            paragraph {
+                                //IF(PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
+                                showIf((sb.netto.notEqualTo(0) and justeringSerkull0)) {
+                                    showIf(sb.inntektBruktIAvkorting.greaterThan(sb.fribelop)) {
+                                        text(
+                                            bokmal { +"Inntekten din er høyere enn " + sb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikke bor sammen med begge foreldrene. " },
+                                            nynorsk { +"Inntekta di er høgare enn " + sb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikkje bur saman med begge foreldra. " },
+                                        )
+                                    }.orShow {
+                                        text(
+                                            bokmal { +"Inntekten din er lavere enn " + sb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikke bor sammen med begge foreldrene. " },
+                                            nynorsk { +"Inntekta di er lågare enn " + sb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikkje bur saman med begge foreldra. " },
+                                        )
+                                    }
+                                }
+
+                                //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)  OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
+                                showIf((sb.netto.notEqualTo(0) and justeringSerkull0 and ettFradragErStorreEnn0)) {
+                                    showIf(sb.netto.equalTo(sb.brutto)) {
+                                        text(
+                                            bokmal { +"Dette barnetillegget er derfor ikke redusert ut fra inntekt. " },
+                                            nynorsk { +"Dette barnetillegget er derfor ikkje redusert ut frå inntekt. " },
+                                        )
+                                    }.orShow {
+                                        text(
+                                            bokmal { +"Dette barnetillegget er derfor redusert ut fra inntekt. " },
+                                            nynorsk { +"Dette barnetillegget er derfor redusert ut frå inntekt. " },
+                                        )
+                                    }
+                                }
+
+                                //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
+                                showIf((fb.netto.notEqualTo(0) and justeringFelles0)) {
                                     text(
-                                        bokmal { +"Inntekten din er høyere enn " + barnetillegSerkullFribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene. " },
-                                        nynorsk { +"Inntekta di er høgare enn " + barnetillegSerkullFribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikkje bur saman med begge foreldra. " },
-                                    )
-                                }.orShow {
-                                    text(
-                                        bokmal { +"Inntekten din er lavere enn " + barnetillegSerkullFribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene. " },
-                                        nynorsk { +"Inntekta di er lågare enn " + barnetillegSerkullFribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikkje bur saman med begge foreldra. " },
+                                        bokmal { +"Til sammen er " },
+                                        nynorsk { +"Til saman er " },
                                     )
                                 }
-                            }
 
-                            //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)  OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btSerkullNetto.notEqualTo(0) and ((barnetilleggSerkullFradrag.greaterThan(0) and barnetilleggFellesFradrag.equalTo(0)) or (barnetilleggSerkullFradrag.equalTo(0) and barnetilleggFellesFradrag.greaterThan(0))) and btsbJusteringsbelopPerAr.equalTo(0))) {
-                                showIf(btSerkullNetto.equalTo(btSerkullBrutto)) {
+                                //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <>  0 AND ( (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0) ) AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
+                                showIf(fb.netto.notEqualTo(0) and justeringFelles0 and (beggeFradragStorreEnn0 or ingenFradragStorreEnn0)) {
                                     text(
-                                        bokmal { +"Dette barnetillegget er derfor ikke redusert ut fra inntekt. " },
-                                        nynorsk { +"Dette barnetillegget er derfor ikkje redusert ut frå inntekt. " },
-                                    )
-                                }.orShow {
-                                    text(
-                                        bokmal { +"Dette barnetillegget er derfor redusert ut fra inntekt. " },
-                                        nynorsk { +"Dette barnetillegget er derfor redusert ut frå inntekt. " },
+                                        bokmal { +"også " },
+                                        nynorsk { +"også " },
                                     )
                                 }
-                            }
 
-                            //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
-                                text(
-                                    bokmal { +"Til sammen er " },
-                                    nynorsk { +"Til saman er " },
-                                )
-                            }
+                                //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
+                                showIf((fb.netto.notEqualTo(0) and justeringFelles0)) {
+                                    showIf(fb.inntektBruktIAvkorting.greaterThan(fb.fribelop)) {
+                                        text(
+                                            bokmal { +"inntektene til deg og din " + epsBorMedBmEntall + " høyere enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre. " },
+                                            nynorsk { +"inntektene til deg og " + epsBorMedNnEntall + " din høgare enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine. " },
+                                        )
+                                    }.orShow {
+                                        text(
+                                            bokmal { +"inntektene til deg og din " + epsBorMedBmEntall + " lavere enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre. " },
+                                            nynorsk { +"inntektene til deg og " + epsBorMedNnEntall + " din lågare enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine. " },
+                                        )
+                                    }
+                                }
 
-                            //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <>  0 AND ( (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0) ) AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and ((barnetilleggSerkullFradrag.equalTo(0) and barnetilleggFellesFradrag.equalTo(0)) or (barnetilleggSerkullFradrag.greaterThan(0) and barnetilleggFellesFradrag.greaterThan(0))) and btfbJusteringsbelopPerAr.equalTo(0))) {
-                                text(
-                                    bokmal { +"også " },
-                                    nynorsk { +"også " },
-                                )
-                            }
-
-                            //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
-                                showIf(btfbInntektBruktIAvkorting.greaterThan(barnetilleggFellesFribelop)) {
+                                //IF( PE_UT_TBU1286_del1() AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
+                                showIf(ettFradragErStorreEnn0 and fb.netto.notEqualTo(0) and justeringFelles0) {
                                     text(
-                                        bokmal { +"inntektene til deg og din " + epsBorMedBmEntall + " høyere enn " + barnetilleggFellesFribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bor med begge sine foreldre. " },
-                                        nynorsk { +"inntektene til deg og " + epsBorMedNnEntall + " din høgare enn " + barnetilleggFellesFribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bur saman med begge foreldra sine. " },
-                                    )
-                                }.orShow {
-                                    text(
-                                        bokmal { +"inntektene til deg og din " + epsBorMedBmEntall + " lavere enn " + barnetilleggFellesFribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bor med begge sine foreldre. " },
-                                        nynorsk { +"inntektene til deg og " + epsBorMedNnEntall + " din lågare enn " + barnetilleggFellesFribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bur saman med begge foreldra sine. " },
+                                        bokmal { +"Dette barnetillegget er derfor " },
+                                        nynorsk { +"Dette barnetillegget er derfor " },
                                     )
                                 }
-                            }
 
-                            //IF( PE_UT_TBU1286_del1() AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and ((barnetilleggSerkullFradrag.greaterThan(0) and barnetilleggFellesFradrag.equalTo(0)) or (barnetilleggSerkullFradrag.equalTo(0) and barnetilleggFellesFradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
-                                text(
-                                    bokmal { +"Dette barnetillegget er derfor " },
-                                    nynorsk { +"Dette barnetillegget er derfor " },
-                                )
-                            }
+                                //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBbrutto  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
+                                showIf((fb.netto.equalTo(fb.brutto) and ettFradragErStorreEnn0 and fb.netto.notEqualTo(0) and justeringFelles0)) {
+                                    text(
+                                        bokmal { +"ikke " },
+                                        nynorsk { +"ikkje " },
+                                    )
+                                }
 
-                            //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBbrutto  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.equalTo(btFellesBrutto) and ((barnetilleggSerkullFradrag.greaterThan(0) and barnetilleggFellesFradrag.equalTo(0)) or (barnetilleggSerkullFradrag.equalTo(0) and barnetilleggFellesFradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
-                                text(
-                                    bokmal { +"ikke " },
-                                    nynorsk { +"ikkje " },
-                                )
-                            }
+                                //IF( PE_UT_TBU1286_del1() AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
+                                showIf((ettFradragErStorreEnn0 and fb.netto.notEqualTo(0) and justeringFelles0)) {
+                                    text(
+                                        bokmal { +"redusert ut fra inntekt. " },
+                                        nynorsk { +"redusert ut frå inntekt. " },
+                                    )
+                                }
 
-                            //IF( PE_UT_TBU1286_del1() AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0))  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and ((barnetilleggSerkullFradrag.greaterThan(0) and barnetilleggFellesFradrag.equalTo(0)) or (barnetilleggSerkullFradrag.equalTo(0) and barnetilleggFellesFradrag.greaterThan(0))) and btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
-                                text(
-                                    bokmal { +"redusert ut fra inntekt. " },
-                                    nynorsk { +"redusert ut frå inntekt. " },
-                                )
-                            }
+                                //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0  ) THEN      INCLUDE ENDIF
+                                showIf((fb.netto.notEqualTo(0) and sb.netto.notEqualTo(0) and (beggeFradragStorreEnn0 or ingenFradragStorreEnn0) and justeringSerkull0 and justeringFelles0)) {
+                                    text(
+                                        bokmal { +"Barnetilleggene er derfor" },
+                                        nynorsk { +"Barnetillegga er derfor" },
+                                    )
+                                }
 
-                            //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0  ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btSerkullNetto.notEqualTo(0) and ((barnetilleggSerkullFradrag.equalTo(0) and barnetilleggFellesFradrag.equalTo(0)) or (barnetilleggSerkullFradrag.greaterThan(0) and barnetilleggFellesFradrag.greaterThan(0))) and btsbJusteringsbelopPerAr.equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
-                                text(
-                                    bokmal { +"Barnetilleggene er derfor" },
-                                    nynorsk { +"Barnetillegga er derfor" },
-                                )
-                            }
+                                //IF( PE_UT_TBU1286_del1() AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBbrutto  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_btSerkullBrutto)  AND  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0)  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
+                                showIf(
+                                    ((fb.netto.equalTo(fb.brutto) and sb.netto.equalTo(sb.brutto)) and (fb.netto.notEqualTo(0) and sb.netto.notEqualTo(0)) and (beggeFradragStorreEnn0 or ingenFradragStorreEnn0) and sb.justeringsbelopPerAr
+                                        .equalTo(0) and justeringFelles0)
+                                ) {
+                                    text(
+                                        bokmal { +" ikke" },
+                                        nynorsk { +" ikkje" },
+                                    )
+                                }
 
-                            //IF( PE_UT_TBU1286_del1() AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBbrutto  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_btSerkullBrutto)  AND  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0)  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
-                            showIf(
-                                (btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and (btFellesNetto.equalTo(btFellesBrutto) and btSerkullNetto.equalTo(btSerkullBrutto)) and (btFellesNetto.notEqualTo(0) and btSerkullNetto.notEqualTo(0)) and ((barnetilleggSerkullFradrag.equalTo(0) and barnetilleggFellesFradrag.equalTo(0)) or (barnetilleggSerkullFradrag.greaterThan(0) and barnetilleggFellesFradrag.greaterThan(0))) and btsbJusteringsbelopPerAr
-                                    .equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0))
-                            ) {
-                                text(
-                                    bokmal { +" ikke" },
-                                    nynorsk { +" ikkje" },
-                                )
-                            }
+                                //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0  ) THEN      INCLUDE ENDIF
+                                showIf((fb.netto.notEqualTo(0) and sb.netto.notEqualTo(0) and (beggeFradragStorreEnn0 or ingenFradragStorreEnn0) and justeringSerkull0 and justeringFelles0)) {
+                                    text(
+                                        bokmal { +" redusert ut fra inntekt. " },
+                                        nynorsk { +" redusert ut frå inntekt. " },
+                                    )
+                                }
 
-                            //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  AND  ((PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag = 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag = 0)   OR   (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_BTSBfradrag > 0  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBfradrag > 0)) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0  ) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and btFellesNetto.notEqualTo(0) and btSerkullNetto.notEqualTo(0) and ((barnetilleggSerkullFradrag.equalTo(0) and barnetilleggFellesFradrag.equalTo(0)) or (barnetilleggSerkullFradrag.greaterThan(0) and barnetilleggFellesFradrag.greaterThan(0))) and btsbJusteringsbelopPerAr.equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0))) {
-                                text(
-                                    bokmal { +" redusert ut fra inntekt. " },
-                                    nynorsk { +" redusert ut frå inntekt. " },
-                                )
-                            }
+                                //IF( PE_UT_TBU1286_del1() AND  ( PE_UT_TBU1286_del2() OR PE_UT_TBU1286_del3() )) THEN      INCLUDE ENDIF
+                                showIf(((sbUtbetalesUtenJustering or fbUtbetalesUtenJustering) and (!justeringFelles0 or !justeringSerkull0))) {
+                                    text(
+                                        bokmal { +" " },
+                                        nynorsk { +" " },
+                                    )
+                                }
 
-                            //IF( PE_UT_TBU1286_del1() AND  ( PE_UT_TBU1286_del2() OR PE_UT_TBU1286_del3() )) THEN      INCLUDE ENDIF
-                            showIf((btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 and (btsbInnvbtfbInnvJusteringsbelopFellesIkke0 or btsbInnvbtfbInnvJusteringsbelopSerkullIkke0))) {
-                                text(
-                                    bokmal { +" " },
-                                    nynorsk { +" " },
-                                )
-                            }
+                                showIf(((!justeringFelles0))) {
+                                    text(
+                                        bokmal { +"Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre. " },
+                                        nynorsk { +"Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine. " },
+                                    )
+                                }
 
-                            showIf(((btsbInnvbtfbInnvJusteringsbelopFellesIkke0))) {
-                                text(
-                                    bokmal { +"Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bor med begge sine foreldre. " },
-                                    nynorsk { +"Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bur saman med begge foreldra sine. " },
-                                )
-                            }
+                                showIf(((!justeringFelles0 and fb.netto.equalTo(0)))) {
+                                    text(
+                                        bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
+                                        nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. " },
+                                    )
+                                }
 
-                            showIf(((btsbInnvbtfbInnvJusteringsbelopFellesIkke0 and btFellesNetto.equalTo(0)))) {
-                                text(
-                                    bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
-                                    nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. " },
-                                )
-                            }
+                                showIf(((!justeringFelles0 and !justeringSerkull0))) {
+                                    text(
+                                        bokmal { +" " },
+                                        nynorsk { +" " },
+                                    )
+                                }
 
-                            showIf(((btsbInnvbtfbInnvJusteringsbelopFellesIkke0 and btsbInnvbtfbInnvJusteringsbelopSerkullIkke0))) {
-                                text(
-                                    bokmal { +" " },
-                                    nynorsk { +" " },
-                                )
-                            }
+                                showIf(((!justeringSerkull0))) {
+                                    text(
+                                        bokmal { +"Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikke bor sammen med begge foreldrene. " },
+                                        nynorsk { +"Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikkje bur saman med begge foreldra. " },
+                                    )
+                                }
 
-                            showIf(((btsbInnvbtfbInnvJusteringsbelopSerkullIkke0))) {
-                                text(
-                                    bokmal { +"Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget for " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene. " },
-                                    nynorsk { +"Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget for " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikkje bur saman med begge foreldra. " },
-                                )
-                            }
-
-                            showIf(((btsbInnvbtfbInnvJusteringsbelopSerkullIkke0 and btSerkullNetto.equalTo(0)))) {
-                                text(
-                                    bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
-                                    nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
-                                )
+                                showIf(((!justeringSerkull0 and sb.netto.equalTo(0)))) {
+                                    text(
+                                        bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
+                                        nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
+                                    )
+                                }
                             }
                         }
                     }
 
                     //IF( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) ) THEN      INCLUDE ENDIF
-                    showIf((btSerkullInnvilget and btSerkullNetto.equalTo(0) and btsbJusteringsbelopPerAr.equalTo(0) and (btFellesNetto.notEqualTo(0) or not(btFellesInnvilget)))) {
-                        paragraph {
-                            text(
-                                bokmal { +"Barnetillegget " },
-                                nynorsk { +"Barnetillegget " },
-                            )
-
-                            showIf(btFellesInnvilget) {
+                    ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
+                        showIf((sb.innvilget and sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0) and not(btFellesInnvilgetMenIkkeUtbetalt))) {
+                            paragraph {
                                 text(
-                                    bokmal { +"for " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene, " },
-                                    nynorsk { +"for " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikkje bur saman med begge foreldra sine, " },
+                                    bokmal { +"Barnetillegget " },
+                                    nynorsk { +"Barnetillegget " },
+                                )
+
+                                showIf(btFellesInnvilget) {
+                                    text(
+                                        bokmal { +"for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikke bor sammen med begge foreldrene, " },
+                                        nynorsk { +"for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikkje bur saman med begge foreldra sine, " },
+                                    )
+                                }
+                                text(
+                                    bokmal { +"blir ikke utbetalt fordi du " },
+                                    nynorsk { +"blir ikkje utbetalt fordi du " },
+                                )
+
+                                showIf(btFellesInnvilget) {
+                                    text(
+                                        bokmal { +"alene " },
+                                        nynorsk { +"åleine " },
+                                    )
+                                }
+                                text(
+                                    bokmal { +"har en samlet inntekt som er høyere enn " + sb.inntektstak.format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg." },
+                                    nynorsk { +"har ei samla inntekt som er høgare enn " + sb.inntektstak.format() + ". Inntekta di er over grensa for å få utbetalt barnetillegg. " },
                                 )
                             }
-                            text(
-                                bokmal { +"blir ikke utbetalt fordi du " },
-                                nynorsk { +"blir ikkje utbetalt fordi du " },
-                            )
-
-                            showIf(btFellesInnvilget) {
-                                text(
-                                    bokmal { +"alene " },
-                                    nynorsk { +"åleine " },
-                                )
-                            }
-                            text(
-                                bokmal { +"har en samlet inntekt som er høyere enn " + btsbInntektstak.format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg." },
-                                nynorsk { +"har ei samla inntekt som er høgare enn " + btsbInntektstak.format() + ". Inntekta di er over grensa for å få utbetalt barnetillegg. " },
-                            )
                         }
                     }
 
                     //IF( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false) ) THEN      INCLUDE ENDIF
-                    showIf((btFellesInnvilget and btFellesNetto.equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0) and (btSerkullNetto.notEqualTo(0) or not(btSerkullInnvilget)))) {
-                        paragraph {
-                            text(
-                                bokmal { +"Barnetillegget" },
-                                nynorsk { +"Barnetillegget " },
-                            )
-
-                            showIf(btSerkullInnvilget) {
+                    ifNotNull(barnetillegg.btFellesbarn) { fb ->
+                        showIf((fb.innvilget and fb.netto.equalTo(0) and fb.justeringsbelopPerAr.equalTo(0) and not(btSerkullInnvilgetMenIkkeUtbetalt))) {
+                            paragraph {
                                 text(
-                                    bokmal { +" for " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bor med begge sine foreldre," },
-                                    nynorsk { +"for " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bur saman med begge foreldra sine, " },
+                                    bokmal { +"Barnetillegget" },
+                                    nynorsk { +"Barnetillegget " },
+                                )
+
+                                showIf(btSerkullInnvilget) {
+                                    text(
+                                        bokmal { +" for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre," },
+                                        nynorsk { +"for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine, " },
+                                    )
+                                }
+                                text(
+                                    bokmal { +" blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " + fb.inntektstak.format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg." },
+                                    nynorsk { +"blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " + fb.inntektstak.format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg." },
                                 )
                             }
-                            text(
-                                bokmal { +" blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " + btfbInntektstak.format() + ". De samlede inntektene er over grensen for å få utbetalt barnetillegg." },
-                                nynorsk { +"blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " + btfbInntektstak.format() + ". Dei samla inntektene er over grensa for å få utbetalt barnetillegg." },
-                            )
                         }
                     }
 
                     //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0)  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0)  )  THEN      INCLUDE ENDIF
-                    showIf(((btSerkullInnvilget and btSerkullNetto.equalTo(0) and btsbJusteringsbelopPerAr.equalTo(0)) and (btFellesInnvilget and btFellesNetto.equalTo(0) and btfbJusteringsbelopPerAr.equalTo(0)))) {
-                        paragraph {
-                            text(
-                                bokmal { +"Barnetillegget for " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " + btfbInntektstak.format() + ". Barnetillegget for " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + btsbInntektstak.format() + ". Inntektene er over grensen for å få utbetalt barnetillegg." },
-                                nynorsk { +"Barnetillegget for " + ifElse(btMedFlereBarn, "barna", "barnet") + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn " + btfbInntektstak.format() + ". Barnetillegget for " + ifElse(flereSerkullsbarn, "barna", "barnet") + " som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn " + btsbInntektstak.format() + ". Inntektene er over grensa for å få utbetalt barnetillegg." },
-                            )
+                    ifNotNull(barnetillegg.btFellesbarn, barnetillegg.btSerkullsbarn) { fb, sb ->
+                        showIf(((sb.innvilget and sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0)) and (fb.innvilget and fb.netto.equalTo(0) and fb.justeringsbelopPerAr.equalTo(0)))) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Barnetillegget for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " + fb.inntektstak.format() + ". Barnetillegget for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + sb.inntektstak.format() + ". Inntektene er over grensen for å få utbetalt barnetillegg." },
+                                    nynorsk { +"Barnetillegget for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn " + fb.inntektstak.format() + ". Barnetillegget for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn " + sb.inntektstak.format() + ". Inntektene er over grensa for å få utbetalt barnetillegg." },
+                                )
+                            }
                         }
                     }
 
