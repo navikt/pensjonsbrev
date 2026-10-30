@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { isAfter, parseISO, startOfToday } from "date-fns";
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   ACTIONS,
   EVENTS,
@@ -18,7 +18,6 @@ import { acknowledgeAnnouncement, getAcknowledgedAnnouncements } from "~/api/skr
 import { logError } from "~/utils/logger";
 
 import {
-  FEATURE_ANNOUNCEMENT_ATTRIBUTE,
   FEATURE_ANNOUNCEMENT_LOCALE,
   FeatureAnnouncementArrow,
   type FeatureAnnouncementStepData,
@@ -59,8 +58,13 @@ type FeatureAnnouncementProps = {
  * Modal, contextual announcement of a feature. One step gives a single announcement, several steps give
  * a short walkthrough. Focus moves into the announcement and returns to where the user was when it closes.
  * Closing it (button, Escape or a click on the dimmed page) acknowledges it for the user, so it is not shown again.
+ * If several announcements are eligible at the same time, they are shown one after another.
  */
-export const FeatureAnnouncement = ({
+export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => (
+  <FeatureAnnouncementInstance key={props.id} {...props} />
+);
+
+const FeatureAnnouncementInstance = ({
   id,
   showUntil,
   steps,
@@ -69,6 +73,7 @@ export const FeatureAnnouncement = ({
   spotlight = true,
 }: FeatureAnnouncementProps) => {
   const [resumeIndex, setResumeIndex] = useState(0);
+  const [unsuccessfulRun, setUnsuccessfulRun] = useState(false);
   const queryClient = useQueryClient();
 
   const expired = isAfter(startOfToday(), parseISO(showUntil));
@@ -90,16 +95,19 @@ export const FeatureAnnouncement = ({
   const dismiss = useCallback(() => {
     if (hasDismissed.current) return;
     hasDismissed.current = true;
-    if (hasBeenShown.current) {
-      queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) => [...previous, id]);
-      saveAcknowledgement();
-    }
+    queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) => [...previous, id]);
+    saveAcknowledgement();
     onDismissReference.current?.();
   }, [id, queryClient, saveAcknowledgement]);
 
-  const pending = when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
-  const blocked = useIsBlockedByOtherOverlay(id, pending);
-  const run = pending && !blocked;
+  const eligible = when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
+  // A run that ended without showing anything (e.g. the target was never found) is retried the next time the
+  // announcement becomes eligible, instead of being treated as dismissed.
+  if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);
+  const pending = eligible && !unsuccessfulRun;
+  const hasTurn = useAnnouncementTurn(pending);
+  const blocked = useIsBlockedByOpenDialog(pending && hasTurn);
+  const run = pending && hasTurn && !blocked;
 
   const joyrideSteps = useMemo<Step[]>(
     () =>
@@ -157,6 +165,10 @@ export const FeatureAnnouncement = ({
         hasBeenShown.current = true;
         setResumeIndex(data.index);
       }
+      if (data.type === EVENTS.TOUR_END && !hasBeenShown.current) {
+        setUnsuccessfulRun(true);
+        return;
+      }
       // A click on the dimmed page closes the whole announcement, also in the middle of a walkthrough.
       const closedByOverlay = data.action === ACTIONS.CLOSE && data.origin === ORIGIN.OVERLAY;
       if (data.type === EVENTS.TOUR_END || closedByOverlay) dismiss();
@@ -182,26 +194,52 @@ export const FeatureAnnouncement = ({
 const toLiveTarget = (target: StepTarget): StepTarget =>
   typeof target === "object" && "current" in target ? () => target.current : target;
 
-const hasOtherOverlay = (id: string) =>
-  document.querySelector(
-    `dialog[open], [${FEATURE_ANNOUNCEMENT_ATTRIBUTE}]:not([${FEATURE_ANNOUNCEMENT_ATTRIBUTE}=${JSON.stringify(id)}])`,
-  ) !== null;
+const announcementQueue: string[] = [];
+const queueListeners = new Set<() => void>();
+const notifyQueueListeners = () => {
+  for (const listener of queueListeners) listener();
+};
+const subscribeToQueue = (listener: () => void) => {
+  queueListeners.add(listener);
+  return () => {
+    queueListeners.delete(listener);
+  };
+};
 
 /**
- * True while a native dialog (Aksel Modal) or another feature announcement is open. Only observes the
- * DOM while the announcement is still pending, so there is no cost once it has been dismissed.
+ * Several announcements can become eligible within the same Skribenten page.
+ * Lets announcements take turns: each pending announcement queues up, and only the first in line is shown.
+ * The next one gets its turn when the first is dismissed or no longer pending.
  */
-function useIsBlockedByOtherOverlay(id: string, enabled: boolean) {
+function useAnnouncementTurn(pending: boolean) {
+  const key = useId();
+
+  useEffect(() => {
+    if (!pending) return;
+    announcementQueue.push(key);
+    notifyQueueListeners();
+    return () => {
+      const index = announcementQueue.indexOf(key);
+      if (index !== -1) announcementQueue.splice(index, 1);
+      notifyQueueListeners();
+    };
+  }, [key, pending]);
+
+  return useSyncExternalStore(subscribeToQueue, () => pending && announcementQueue[0] === key);
+}
+
+/** True while a native dialog (e.g. an Aksel Modal) is open. Only observes the DOM while `enabled`. */
+function useIsBlockedByOpenDialog(enabled: boolean) {
   const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
-    const update = () => setBlocked(hasOtherOverlay(id));
+    const update = () => setBlocked(document.querySelector("dialog[open]") !== null);
     update();
     const observer = new MutationObserver(update);
     observer.observe(document.body, { attributes: true, attributeFilter: ["open"], childList: true, subtree: true });
     return () => observer.disconnect();
-  }, [id, enabled]);
+  }, [enabled]);
 
   return enabled && blocked;
 }

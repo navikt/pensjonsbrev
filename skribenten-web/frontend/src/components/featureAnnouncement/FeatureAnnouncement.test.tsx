@@ -328,16 +328,108 @@ describe("<FeatureAnnouncement />", () => {
     await findAnnouncement();
   });
 
-  test("vises ikke mens en annen nyhet er aktiv", async () => {
-    const otherAnnouncement = appendToBody(document.createElement("div"));
-    otherAnnouncement.setAttribute("data-feature-announcement", "annen-nyhet");
+  test("viser bare én av to samtidige nyheter, uten å blinke, og den andre etter at den første er lukket", async () => {
+    const user = userEvent.setup();
+    const TwoAnnouncements = () => {
+      const [first, setFirst] = useState<HTMLElement | null>(null);
+      const [second, setSecond] = useState<HTMLElement | null>(null);
+      const firstSteps = useMemo(
+        () => (first ? [{ target: first, title: "Første nyhet", content: "Første forklaring" }] : []),
+        [first],
+      );
+      const secondSteps = useMemo(
+        () => (second ? [{ target: second, title: "Andre nyhet", content: "Andre forklaring" }] : []),
+        [second],
+      );
+      return (
+        <>
+          <div ref={setFirst}>Første mål</div>
+          <div ref={setSecond}>Andre mål</div>
+          <FeatureAnnouncement id="forste-nyhet" showUntil="2999-12-31" steps={firstSteps} when={first !== null} />
+          <FeatureAnnouncement id="andre-nyhet" showUntil="2999-12-31" steps={secondSteps} when={second !== null} />
+        </>
+      );
+    };
+    const shownDialogs = new Set<Element>();
+    const observer = new MutationObserver(() => {
+      for (const dialog of document.querySelectorAll('[role="alertdialog"]')) shownDialogs.add(dialog);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    onTestFinished(() => observer.disconnect());
 
-    renderWithQueryClient(<Harness />);
-    await settle();
+    renderWithQueryClient(<TwoAnnouncements />);
+    await findAnnouncement("Første nyhet");
+    await settle(500);
+
+    expect(screen.getAllByRole("alertdialog")).toHaveLength(1);
+    expect(shownDialogs.size).toBe(1);
+
+    await user.click(screen.getByRole("button", { name: "Skjønner!" }));
+
+    await findAnnouncement("Andre nyhet");
+    expect(screen.getAllByRole("alertdialog")).toHaveLength(1);
+    await user.click(screen.getByRole("button", { name: "Skjønner!" }));
+    await waitFor(() => expect(queryAnnouncement()).toBeNull());
+    expect(acknowledgeMock.mock.calls).toEqual([["forste-nyhet"], ["andre-nyhet"]]);
+  });
+
+  test("prøver igjen etter at målet ikke ble funnet, og kan da lukkes og bekreftes som vanlig", async () => {
+    const RetryHarness = ({ when, showTarget }: { when: boolean; showTarget: boolean }) => {
+      const [target, setTarget] = useState<HTMLElement | null>(null);
+      const steps = useMemo<FeatureAnnouncementStep[]>(
+        () => [{ target: () => (showTarget ? target : null), title: "Første nyhet", content: "Første forklaring" }],
+        [showTarget, target],
+      );
+      return (
+        <>
+          <div ref={setTarget}>Mål</div>
+          <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when={when} />
+        </>
+      );
+    };
+    const user = userEvent.setup();
+    const { rerender } = renderWithQueryClient(<RetryHarness showTarget={false} when />);
+    await waitFor(() => expect(fetchAcknowledgedMock).toHaveBeenCalled());
+    await settle(1500);
     expect(queryAnnouncement()).toBeNull();
+    expect(acknowledgeMock).not.toHaveBeenCalled();
 
-    act(() => otherAnnouncement.remove());
+    rerender(<RetryHarness showTarget when={false} />);
+    rerender(<RetryHarness showTarget when />);
     await findAnnouncement();
+
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => expect(queryAnnouncement()).toBeNull());
+    expect(acknowledgeMock).toHaveBeenCalledTimes(1);
+  });
+
+  test("håndterer en ny nyhet som en egen nyhet når id-en endres", async () => {
+    const IdHarness = ({ id }: { id: string }) => {
+      const [target, setTarget] = useState<HTMLElement | null>(null);
+      const steps = useMemo(
+        () => (target ? [{ target, title: `Nyhet ${id}`, content: "Forklaring" }] : []),
+        [id, target],
+      );
+      return (
+        <>
+          <div ref={setTarget}>Mål</div>
+          <FeatureAnnouncement id={id} showUntil="2999-12-31" steps={steps} when={target !== null} />
+        </>
+      );
+    };
+    const user = userEvent.setup();
+    const { rerender } = renderWithQueryClient(<IdHarness id="forste" />);
+    await findAnnouncement("Nyhet forste");
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
+
+    rerender(<IdHarness id="andre" />);
+    await findAnnouncement("Nyhet andre");
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
+    expect(acknowledgeMock.mock.calls).toEqual([["forste"], ["andre"]]);
   });
 
   test("finner mål som sendes inn som React-refs, også når elementet først vises etter at nyheten har startet", async () => {

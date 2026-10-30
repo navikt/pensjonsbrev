@@ -1,10 +1,13 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render as renderWithoutClient, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { addDays, parseISO, setHours } from "date-fns";
 import { type ReactNode, useState } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import { AttestantDiffAnnouncement } from "./AttestantDiffAnnouncement";
+import { ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL, AttestantDiffAnnouncement } from "./AttestantDiffAnnouncement";
+
+const lastDisplayDay = () => setHours(parseISO(ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL), 12);
 
 const { useUserInfoMock, useMatchMock, fetchAcknowledgedMock, acknowledgeMock } = vi.hoisted(() => ({
   useUserInfoMock: vi.fn(),
@@ -64,10 +67,13 @@ const givenRoute = (routeId: string | undefined) =>
 describe("<AttestantDiffAnnouncement />", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(lastDisplayDay());
     givenUser(true);
     givenRoute(ATTESTANT_REDIGERING);
     fetchAcknowledgedMock.mockResolvedValue([]);
     acknowledgeMock.mockResolvedValue(undefined);
+    return () => vi.useRealTimers();
   });
 
   test("vises for attestant i attestantens redigeringsvisning", async () => {
@@ -139,5 +145,14 @@ describe("<AttestantDiffAnnouncement />", () => {
     await settle();
 
     expect(queryAnnouncement()).toBeNull();
+  });
+
+  test("vises ikke etter siste visningsdag", async () => {
+    vi.setSystemTime(addDays(lastDisplayDay(), 1));
+    render(<Harness />);
+    await settle();
+
+    expect(queryAnnouncement()).toBeNull();
+    expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
   });
 });
