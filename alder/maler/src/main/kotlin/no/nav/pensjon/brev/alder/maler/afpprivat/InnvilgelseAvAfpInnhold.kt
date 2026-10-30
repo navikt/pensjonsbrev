@@ -53,7 +53,7 @@ data class InnvilgelseAvAfpInnhold(
                             "Du får " + totalPensjon.format() + " kvar månad før skatt frå " + virkningFom.format() + "."
                 },
                 english {
-                    +"You have been granted AFP in the private sector. You will receive" + totalPensjon.format() + "every month before tax from " + virkningFom.format() + "."
+                    +"You have been granted AFP in the private sector. You will receive " + totalPensjon.format() + " every month before tax from " + virkningFom.format() + "."
                 },
             )
         }
