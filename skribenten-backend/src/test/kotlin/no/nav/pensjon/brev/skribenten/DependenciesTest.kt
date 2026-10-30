@@ -38,15 +38,18 @@ import org.testcontainers.postgresql.PostgreSQLContainer
 class DependenciesTest {
 
     private lateinit var postgres: PostgreSQLContainer
+    private var preUnleash: FeatureToggleService? = null
 
     @BeforeAll
     fun setup() {
+        preUnleash = Features.toggleService
         postgres = SharedPostgres.createStandaloneContainer().also { it.start() }
         initADGroups()
     }
 
     @AfterAll
     fun teardown() {
+        preUnleash?.let { Features.init(it) }
         postgres.stop()
     }
 
