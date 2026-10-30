@@ -50,7 +50,8 @@ export type TemplateSearchContextParams = {
   q?: string;
   exact?: true;
   tab?: TabParam;
-  /** The block in focus, a matching block when opened from a search. */
+  /** The block in focus, a matching block when opened from a search. Counted
+   *  from 1 for people reading the URL; see `focusParam` and `blockOfFocus`. */
   focus?: number;
   /** Whether the hits are marked ("Vis søketreff"). Only `false` is written. */
   showHits?: false;
@@ -89,11 +90,6 @@ function exactParam(value: unknown): true | undefined {
 
 function tabParam(value: unknown): TabParam | undefined {
   return value === "innhold" ? "innhold" : undefined;
-}
-
-function blockParam(value: unknown): number | undefined {
-  const raw = stringParam(value);
-  return raw !== undefined && /^\d+$/.test(raw) ? Number(raw) : undefined;
 }
 
 function showHitsParam(value: unknown): false | undefined {
@@ -135,12 +131,22 @@ export function validateTemplatesSearch(search: Record<string, unknown>): Templa
   };
 }
 
+/** The `focus` param for 0-based block `block`. */
+export function focusParam(block: number | undefined): number | undefined {
+  return block === undefined ? undefined : block + 1;
+}
+
+/** The 0-based block a `focus` param points at. */
+export function blockOfFocus(focus: number | undefined): number | undefined {
+  return focus === undefined ? undefined : focus - 1;
+}
+
 export function validateTemplateSearchContext(search: Record<string, unknown>): TemplateSearchContextParams {
   return {
     q: queryParam(search.q),
     exact: exactParam(search.exact),
     tab: tabParam(search.tab),
-    focus: blockParam(search.focus),
+    focus: positiveIntParam(search.focus),
     showHits: showHitsParam(search.showHits),
   };
 }
@@ -170,16 +176,21 @@ export function toTemplatesSearch(criteria: SearchCriteria, selected?: ResultRef
 /**
  * Search params for opening `ref` from a search.
  *
- * `focus` is the block to open at; without it, the template opens at its first
+ * `block` is the 0-based block to open at; without it, the template opens at its first
  * matching block. `showHits` defaults to the tab: content hits are shown, while
  * a Brev hit is on the title, so its template opens with the hits hidden.
  */
 export function toTemplateSearch(
   criteria: SearchCriteria,
   ref: ResultRef,
-  { focus, showHits = criteria.tab !== "brev" }: { focus?: number; showHits?: boolean } = {},
+  { block, showHits = criteria.tab !== "brev" }: { block?: number; showHits?: boolean } = {},
 ): TemplateSearchContextParams & { language: string } {
-  return { ...criteriaParams(criteria), language: ref.language, focus, showHits: showHits ? undefined : false };
+  return {
+    ...criteriaParams(criteria),
+    language: ref.language,
+    focus: focusParam(block),
+    showHits: showHits ? undefined : false,
+  };
 }
 
 /** The result a hit stands for: its template in its language. */

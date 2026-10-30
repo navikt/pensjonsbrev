@@ -16,7 +16,9 @@ import { ExportTemplateButton } from "~/components/ExportTemplateButton";
 import { LanguageToggle } from "~/components/LanguageToggle";
 import { Document, KnownDataClassesProvider } from "~/components/TemplateDocumentationView";
 import {
+  blockOfFocus,
   criteriaOf,
+  focusParam,
   type ResultRef,
   type TemplateSearchContextParams,
   validateTemplateSearchContext,
@@ -112,15 +114,16 @@ function TemplateExplorer() {
   const current = useMemo<ResultRef>(() => ({ malType, id: templateId, language }), [malType, templateId, language]);
   // A block that is not in this template (e.g. a stale or hand-edited URL)
   // is ignored, so the page opens at the first hit, or at the top.
-  const requestedBlock = useMemo(
-    () => (focus !== undefined && blockIndexesOf(documentation).has(focus) ? focus : undefined),
-    [focus, documentation],
-  );
+  const requestedBlock = useMemo(() => {
+    const block = blockOfFocus(focus);
+    return block !== undefined && blockIndexesOf(documentation).has(block) ? block : undefined;
+  }, [focus, documentation]);
   const marking = showHits !== false;
   const { hits, highlight, activeBlock, scrollTarget } = useHitFocus(criteria, current, requestedBlock, marking);
   const pickedBlock = useRef<number | undefined>(undefined);
   useScrollToBlock(previewRef, scrollTarget, documentation, pickedBlock);
-  const selectBlock = (block: number) => navigate({ replace: true, search: (s) => ({ ...s, focus: block }) });
+  const selectBlock = (block: number) =>
+    navigate({ replace: true, search: (s) => ({ ...s, focus: focusParam(block) }) });
   // A hit the user clicks in, or tabs into, becomes the focused one, so a copied
   // link opens at it. It is already in view, so it is not scrolled to.
   usePickHitBlock(previewRef, (block) => {
@@ -154,7 +157,7 @@ function TemplateExplorer() {
           // Block indexes follow the template's structure, so the block in focus is
           // the same block in the other language, also when it has no hit there.
           onChange={(value) =>
-            navigate({ replace: true, search: (s) => ({ ...s, language: value, focus: activeBlock }) })
+            navigate({ replace: true, search: (s) => ({ ...s, language: value, focus: focusParam(activeBlock) }) })
           }
           value={language}
         />

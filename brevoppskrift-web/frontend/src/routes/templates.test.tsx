@@ -410,7 +410,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
         q: "Hei",
         tab: "innhold",
         language: "BOKMAL",
-        focus: "7",
+        focus: "8",
       });
 
       await user.click(link);

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  blockOfFocus,
   criteriaOf,
   formatResultRef,
   parseResultRef,
@@ -61,15 +62,16 @@ describe("searchContext", () => {
   it("builds the template link and the way back from the same criteria", () => {
     const criteria = { q: "pensjon", exact: true, tab: "innhold" as const };
 
-    const toTemplate = toTemplateSearch(criteria, ref, { focus: 4 });
+    const toTemplate = toTemplateSearch(criteria, ref, { block: 4 });
     expect(toTemplate).toEqual({
       q: "pensjon",
       exact: true,
       tab: "innhold",
       language: "BOKMAL",
-      focus: 4,
+      focus: 5,
     });
-    expect(validateTemplateSearchContext(toTemplate)).toMatchObject({ focus: 4, showHits: undefined });
+    expect(validateTemplateSearchContext(toTemplate)).toMatchObject({ focus: 5, showHits: undefined });
+    expect(blockOfFocus(validateTemplateSearchContext(toTemplate).focus)).toBe(4);
     expect(criteriaOf(validateTemplateSearchContext(toTemplate))).toEqual(criteria);
 
     expect(toTemplatesSearch(criteria, ref)).toEqual({
@@ -99,6 +101,8 @@ describe("searchContext", () => {
       showHits: undefined,
       focus: undefined,
     });
+    // Counted from 1, so 0 points at no block.
+    expect(validateTemplateSearchContext({ q: "a", focus: "0" }).focus).toBeUndefined();
   });
 
   it("leaves default criteria out of the URL", () => {

@@ -215,12 +215,12 @@ describe("search hit focus", () => {
   });
 
   it("goes back to the active hit when the hits are turned off and on again", async () => {
-    const router = await openPage({ tab: "innhold", focus: 30 });
+    const router = await openPage({ tab: "innhold", focus: 31 });
     await waitFor(() => expect(scrolledTo).toEqual(["30"]));
     const toggle = screen.getByLabelText<HTMLInputElement>("Vis søketreff");
 
     await userEvent.click(toggle);
-    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 30, showHits: false }));
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 31, showHits: false }));
     await userEvent.click(toggle);
 
     await waitFor(() => expect(scrolledTo).toEqual(["30", "30"]));
@@ -232,7 +232,7 @@ describe("search hit focus", () => {
 
     await userEvent.click(screen.getByRole("radio", { name: "Nynorsk" }));
 
-    await waitFor(() => expect(router.state.location.search).toMatchObject({ language: "NYNORSK", focus: 20 }));
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ language: "NYNORSK", focus: 21 }));
     await waitFor(() =>
       expect(document.querySelector('[data-block-index="20"]')?.getAttribute("data-search-hit")).toBe("active"),
     );
@@ -245,7 +245,7 @@ describe("search hit focus", () => {
 
     await userEvent.click(block(30));
 
-    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 30 }));
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 31 }));
     expect(screen.getByText("Avsnitt 2 av 2")).toBeTruthy();
     expect(document.querySelector('[data-block-index="30"]')?.getAttribute("data-search-hit")).toBe("active");
     await act(() => new Promise((resolve) => requestAnimationFrame(resolve)));
@@ -258,7 +258,7 @@ describe("search hit focus", () => {
 
     fireEvent.focusIn(block(30));
 
-    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 30 }));
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 31 }));
   });
 
   it("ignores clicks outside the hits, and all clicks while the hits are hidden", async () => {
@@ -280,7 +280,7 @@ describe("search hit focus", () => {
     cleanup();
 
     // Turned on after arriving from the Brev tab.
-    await openPage({ focus: 30 });
+    await openPage({ focus: 31 });
     expect((await screen.findByLabelText<HTMLInputElement>("Vis søketreff")).checked).toBe(true);
     await waitFor(() => expect(scrolledTo).toEqual(["30"]));
   });
