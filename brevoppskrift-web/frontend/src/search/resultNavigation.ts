@@ -20,8 +20,9 @@ export function templatesInOrder(ranked: ResultRef[]): ResultRef[][] {
 }
 
 export type ResultPosition = {
-  /** 1-based position of the current template among the matching templates. */
-  position: number;
+  /** 1-based position of the current template among the matching templates,
+   *  or `undefined` if it is not among them. */
+  position: number | undefined;
   /** The number of matching templates, each counted once whatever its languages. */
   total: number;
   previous?: ResultRef;
@@ -31,15 +32,16 @@ export type ResultPosition = {
 /** Where the template of `current` is among the matching templates, and the
  *  neighbouring templates to move to. A neighbour opens in the current
  *  language if it matched there, otherwise in its best-ranked language.
- *  `undefined` if the template is not among the results. */
-export function resultPosition(ranked: ResultRef[], current: ResultRef): ResultPosition | undefined {
+ *  A template that is not among the results (e.g. a hand-edited URL) has no
+ *  position; its next result is the first one, so the user can get back on track. */
+export function resultPosition(ranked: ResultRef[], current: ResultRef): ResultPosition {
   const templates = templatesInOrder(ranked);
-  const at = templates.findIndex(([first]) => isSameTemplate(first, current));
-  if (at === -1) {
-    return undefined;
-  }
   const open = (languages: ResultRef[] | undefined) =>
     languages && (languages.find((ref) => ref.language === current.language) ?? languages[0]);
+  const at = templates.findIndex(([first]) => isSameTemplate(first, current));
+  if (at === -1) {
+    return { position: undefined, total: templates.length, next: open(templates[0]) };
+  }
   return {
     position: at + 1,
     total: templates.length,

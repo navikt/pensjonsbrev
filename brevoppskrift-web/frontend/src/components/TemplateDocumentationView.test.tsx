@@ -468,6 +468,22 @@ describe("Document search marking", () => {
     expect(html.match(/<mark[^>]*>barnetillegg<\/mark>/g)).toHaveLength(1);
   });
 
+  // E.g. a block kept from another language, where it matched: still easy to
+  // find when switching back and forth, but nothing in it is marked.
+  it("outlines the active block even when it is not a hit in this language, without marking its words", () => {
+    const html = renderToStaticMarkup(
+      <SearchHighlightProvider
+        highlight={{ needle: "barnetillegg", exact: false, matchingBlocks: new Set(), activeBlock: 0 }}
+      >
+        <Document templateDocumentation={documentation} />
+      </SearchHighlightProvider>,
+    );
+
+    expect(html).toMatch(/data-block-index="0"[^>]*data-search-hit="active"/);
+    expect(html).not.toMatch(/data-block-index="1"[^>]*data-search-hit/);
+    expect(html).not.toContain("<mark");
+  });
+
   it("renders exactly as without search when there is no highlight", () => {
     const plain = renderToStaticMarkup(<Document templateDocumentation={documentation} />);
     const withoutHighlight = renderToStaticMarkup(

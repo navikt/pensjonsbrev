@@ -17,12 +17,13 @@ export type TemplateHits =
       highlight: Highlight;
       /** Matching block indexes in this template and language, in document order. */
       matchingBlocks: number[];
-      /** The block the user is at: the requested one, else the first match.
-       *  Not necessarily a match, e.g. when kept from another language.
-       *  `undefined` only when nothing was requested and nothing matched. */
+      /** The block the user is at: the requested one, else the first match
+       *  when opened from the Innhold tab. Not necessarily a match, e.g. when
+       *  kept from another language. `undefined` when nothing was requested
+       *  and either nothing matched or the template was opened from the Brev tab. */
       activeBlock: number | undefined;
-      /** Where this template is among the active tab's results, if anywhere. */
-      result: ResultPosition | undefined;
+      /** Where this template is among the active tab's results. */
+      result: ResultPosition;
       previousResult: ResultLinkTarget | undefined;
       nextResult: ResultLinkTarget | undefined;
     };
@@ -62,7 +63,9 @@ export function hitsInTemplate(
   requestedBlock: number | undefined,
 ): TemplateHits {
   const matchingBlocks = matchingBlocksOf(displayed, current);
-  const activeBlock = requestedBlock ?? matchingBlocks[0];
+  // A Brev result is a hit on the template's title, not on any block, so it
+  // opens with no block active; the block hits are still there to step through.
+  const activeBlock = requestedBlock ?? (tab === "innhold" ? matchingBlocks[0] : undefined);
   const entries = rankedEntries(displayed, tab);
   const ranked = entries.map((entry) => entry.ref);
   const result = resultPosition(ranked, current);

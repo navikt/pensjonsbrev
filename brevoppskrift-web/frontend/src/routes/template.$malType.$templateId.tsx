@@ -1,9 +1,15 @@
 import { css } from "@emotion/react";
 import { Heading, HGrid, HStack, Spacer, VStack } from "@navikt/ds-react";
 import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
+import axios from "axios";
 import { useMemo, useRef, useState } from "react";
 
-import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
+import {
+  getTemplateDescription,
+  getTemplateDocumentation,
+  isMalType,
+  type MalType,
+} from "~/api/brevbaker-api-endpoints";
 import { type TemplateDocumentation } from "~/api/templateDocumentationTypes";
 import { DataClassesPanel } from "~/components/DataClasses";
 import { ExportTemplateButton } from "~/components/ExportTemplateButton";
@@ -15,10 +21,19 @@ import {
   type TemplateSearchContextParams,
   validateTemplateSearchContext,
 } from "~/search/searchContext";
+import { blockIndexesOf } from "~/templateSearch/blockIndexes";
 import { type SearchHighlight, SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
 import { BackButton, SearchHitToolbar } from "~/templateSearch/SearchHitToolbar";
 import { useScrollToBlock } from "~/templateSearch/useScrollToBlock";
 import { useTemplateHits } from "~/templateSearch/useTemplateHits";
+
+/** An unknown template answers 404, which is a missing page rather than an error. */
+function notFoundOn404(error: unknown): never {
+  if (axios.isAxiosError(error) && error.response?.status === 404) {
+    throw notFound();
+  }
+  throw error;
+}
 
 type TemplateSearchParams = TemplateSearchContextParams & {
   language?: string;
@@ -38,26 +53,34 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }),
   },
   loader: async ({ context, deps, params, preload }) => {
-    const description = await context.queryClient.ensureQueryData({
-      queryKey: getTemplateDescription.queryKey(params.malType, params.templateId),
-      queryFn: () => getTemplateDescription.queryFn(params.malType, params.templateId),
-    });
+    if (!isMalType(params.malType)) {
+      throw notFound();
+    }
+    const description = await context.queryClient
+      .ensureQueryData({
+        queryKey: getTemplateDescription.queryKey(params.malType, params.templateId),
+        queryFn: () => getTemplateDescription.queryFn(params.malType, params.templateId),
+      })
+      .catch(notFoundOn404);
 
     const defaultLanguage = description.languages[0];
     if (!defaultLanguage) {
       throw notFound();
     }
 
-    if (!deps.language && !preload) {
-      // Keeps the rest of the search params, so a search context survives.
+    // A missing or unknown language (e.g. a hand-edited URL) opens the
+    // default one. Keeps the rest of the search params, so a search context survives.
+    const languageIsValid = deps.language !== undefined && description.languages.includes(deps.language);
+    if (!languageIsValid && !preload) {
       throw redirect({
         to: "/template/$malType/$templateId",
         search: (prev) => ({ ...prev, language: defaultLanguage }),
         params,
+        replace: true,
       });
     }
 
-    const language = deps.language ?? defaultLanguage;
+    const language = languageIsValid && deps.language ? deps.language : defaultLanguage;
 
     const documentation = await context.queryClient.ensureQueryData({
       queryKey: getTemplateDocumentation.queryKey(params.malType, params.templateId, language),
@@ -91,10 +114,18 @@ function TemplateExplorer() {
 
   const criteria = useMemo(() => criteriaOf({ q, exact, tab }), [q, exact, tab]);
   const current = useMemo<ResultRef>(() => ({ malType, id: templateId, language }), [malType, templateId, language]);
-  const hits = useTemplateHits(criteria, current, index);
-  // Local on purpose: every visit, refresh and shared link starts with marking
-  // on. Kept while moving between results, since the route stays mounted.
-  const [marking, setMarking] = useState(true);
+  // A block that is not in this template (e.g. a stale or hand-edited URL)
+  // is ignored, so the page opens at the first hit, or at the top.
+  const requestedBlock = useMemo(
+    () => (index !== undefined && blockIndexesOf(documentation).has(index) ? index : undefined),
+    [index, documentation],
+  );
+  const hits = useTemplateHits(criteria, current, requestedBlock);
+  // Local on purpose: every visit, refresh and shared link starts the same way.
+  // On from the Innhold tab, where the hits are the point; off from the Brev
+  // tab, whose hits are on the title. Kept while moving between results, since
+  // the route stays mounted.
+  const [marking, setMarking] = useState(criteria?.tab !== "brev");
 
   const highlight = useMemo<SearchHighlight | undefined>(
     () =>
@@ -109,13 +140,14 @@ function TemplateExplorer() {
     [marking, hits],
   );
   // Without a search, a plain `index` link still scrolls to its block.
-  const scrollTarget = criteria ? (hits?.status === "ready" ? hits.activeBlock : undefined) : index;
+  const scrollTarget = criteria ? (hits?.status === "ready" ? hits.activeBlock : undefined) : requestedBlock;
   useScrollToBlock(previewRef, scrollTarget, documentation);
 
   return (
     <VStack height="100%" overflow="hidden">
       <HStack align="center" flexShrink="0" gap="space-16" marginBlock="space-8" marginInline="space-16" wrap>
         <BackButton criteria={criteria} current={current} />
+        <Spacer />
         {criteria && hits ? (
           <SearchHitToolbar
             criteria={criteria}
@@ -125,14 +157,14 @@ function TemplateExplorer() {
             onSelectBlock={(block) => navigate({ replace: true, search: (s) => ({ ...s, index: block }) })}
           />
         ) : null}
+        <Heading level="1" size="small">
+          {templateId}
+        </Heading>
         <LanguageToggle
           available={description.languages}
           onChange={(value) => navigate({ replace: true, search: (s) => ({ ...s, language: value }) })}
           value={language}
         />
-        <Heading level="1" size="small">
-          {templateId}
-        </Heading>
         <Spacer />
         <ExportTemplateButton documentation={documentation} language={language} templateId={templateId} />
       </HStack>

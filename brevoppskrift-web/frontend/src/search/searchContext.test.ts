@@ -32,13 +32,13 @@ describe("searchContext", () => {
       validateTemplatesSearch({
         q: "  pensjon ",
         exact: "true",
-        tab: "brev",
+        tab: "innhold",
         page: "3",
         selected: formatResultRef(ref),
       }),
-    ).toEqual({ q: "pensjon", exact: true, tab: "brev", page: 3, selected: "autobrev/UT_VEDTAK/BOKMAL" });
+    ).toEqual({ q: "pensjon", exact: true, tab: "innhold", page: 3, selected: "autobrev/UT_VEDTAK/BOKMAL" });
 
-    expect(validateTemplatesSearch({ q: " ", exact: "nei", tab: "innhold", page: "0", selected: "x" })).toEqual({
+    expect(validateTemplatesSearch({ q: " ", exact: "nei", tab: "brev", page: "0", selected: "x" })).toEqual({
       q: undefined,
       exact: undefined,
       tab: undefined,
@@ -55,17 +55,17 @@ describe("searchContext", () => {
 
   it("has no criteria when nothing was searched for", () => {
     expect(criteriaOf({})).toBeUndefined();
-    expect(criteriaOf({ q: "pensjon" })).toEqual({ q: "pensjon", exact: false, tab: "innhold" });
+    expect(criteriaOf({ q: "pensjon" })).toEqual({ q: "pensjon", exact: false, tab: "brev" });
   });
 
   it("builds the template link and the way back from the same criteria", () => {
-    const criteria = { q: "pensjon", exact: true, tab: "brev" as const };
+    const criteria = { q: "pensjon", exact: true, tab: "innhold" as const };
 
     const toTemplate = toTemplateSearch(criteria, ref, 4);
     expect(toTemplate).toEqual({
       q: "pensjon",
       exact: true,
-      tab: "brev",
+      tab: "innhold",
       language: "BOKMAL",
       index: 4,
     });
@@ -74,13 +74,13 @@ describe("searchContext", () => {
     expect(toTemplatesSearch(criteria, ref)).toEqual({
       q: "pensjon",
       exact: true,
-      tab: "brev",
+      tab: "innhold",
       selected: "autobrev/UT_VEDTAK/BOKMAL",
     });
   });
 
   it("leaves default criteria out of the URL", () => {
-    expect(toTemplatesSearch({ q: "pensjon", exact: false, tab: "innhold" })).toEqual({
+    expect(toTemplatesSearch({ q: "pensjon", exact: false, tab: "brev" })).toEqual({
       q: "pensjon",
       exact: undefined,
       tab: undefined,
