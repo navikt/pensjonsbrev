@@ -33,9 +33,12 @@ vi.mock("~/search/useSearchResults", async () => {
   const { useSyncExternalStore } = await import("react");
   return { useSearchResults: () => useSyncExternalStore(searchStore.subscribe, searchStore.get) };
 });
-vi.mock("~/search/templateRefs", () => ({ useAllTemplateRefs: () => [] }));
 
-const { getTemplateDescription, getTemplateDocumentation } = vi.hoisted(() => ({
+const { getBrevkoderMedMetadata, getTemplateDescription, getTemplateDocumentation } = vi.hoisted(() => ({
+  getBrevkoderMedMetadata: {
+    queryKey: (malType: string) => ["BREVKODER", malType, "METADATA"] as const,
+    queryFn: vi.fn(),
+  },
   getTemplateDescription: {
     queryKey: (malType: string, templateId: string) => ["TEMPLATE_DESCRIPTION", malType, templateId] as const,
     queryFn: vi.fn(),
@@ -49,7 +52,7 @@ const { getTemplateDescription, getTemplateDocumentation } = vi.hoisted(() => ({
 
 vi.mock("~/api/brevbaker-api-endpoints", async () => {
   const actual = await vi.importActual<typeof import("~/api/brevbaker-api-endpoints")>("~/api/brevbaker-api-endpoints");
-  return { ...actual, getTemplateDescription, getTemplateDocumentation };
+  return { ...actual, getBrevkoderMedMetadata, getTemplateDescription, getTemplateDocumentation };
 });
 
 // `Route.update` changes the shared route in place, so the real page is kept
@@ -168,6 +171,7 @@ describe("search hit focus", () => {
   const scrolledTo: (string | null)[] = [];
   function openPage(search: Record<string, unknown>, { languages = ["BOKMAL"], hits = loaded as unknown } = {}) {
     getTemplateDescription.queryFn.mockResolvedValue({ languages });
+    getBrevkoderMedMetadata.queryFn.mockResolvedValue([]);
     getTemplateDocumentation.queryFn.mockResolvedValue(page);
     searchStore.set(hits);
     scrolledTo.length = 0;
@@ -230,5 +234,29 @@ describe("search hit focus", () => {
       expect(document.querySelector('[data-block-index="20"]')?.getAttribute("data-search-hit")).toBe("active"),
     );
     expect(screen.getByText("Ingen treff i denne språkversjonen")).toBeTruthy();
+  });
+});
+
+describe("search hits when the template list cannot be fetched", () => {
+  afterEach(() => {
+    cleanup();
+    vi.resetAllMocks();
+  });
+
+  it("says the hits could not be found, instead of searching forever", async () => {
+    getTemplateDescription.queryFn.mockResolvedValue({ languages: ["BOKMAL"] });
+    getTemplateDocumentation.queryFn.mockResolvedValue({
+      title: [],
+      outline: [],
+      attachments: [],
+      templateModelSpecification: { types: {}, letterModelTypeName: "" },
+    });
+    getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) =>
+      malType === "redigerbar" ? Promise.reject(new Error("boom")) : Promise.resolve([]),
+    );
+
+    await renderTemplateRoute("/template/autobrev/A", { language: "BOKMAL", q: "treff" }, { realPage: true });
+
+    expect(await screen.findByText(/Kunne ikke finne søketreffene/)).toBeTruthy();
   });
 });
