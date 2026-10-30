@@ -1,4 +1,4 @@
-import { type QueryClient, useQueries } from "@tanstack/react-query";
+import { type QueryClient, queryOptions, useQueries } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import {
@@ -32,12 +32,21 @@ function assertList(descriptions: unknown, malType: MalType): asserts descriptio
   }
 }
 
-export async function fetchAllDescriptions(queryClient: QueryClient, malType: MalType): Promise<TemplateDescription[]> {
-  const descriptions = await queryClient.ensureQueryData({
+/** Every template of `malType` with its metadata. Shared by the template list
+ *  and the template page, so both cache, validate and fail the same way. */
+function descriptionsQuery(malType: MalType) {
+  return queryOptions({
     queryKey: getBrevkoderMedMetadata.queryKey(malType),
-    queryFn: () => getBrevkoderMedMetadata.queryFn(malType),
+    queryFn: async () => {
+      const descriptions: unknown = await getBrevkoderMedMetadata.queryFn(malType);
+      assertList(descriptions, malType);
+      return descriptions;
+    },
   });
-  assertList(descriptions, malType);
+}
+
+export async function fetchAllDescriptions(queryClient: QueryClient, malType: MalType): Promise<TemplateDescription[]> {
+  const descriptions = await queryClient.ensureQueryData(descriptionsQuery(malType));
   // Seed the per-template description cache so the detail route loads instantly.
   for (const description of descriptions) {
     queryClient.setQueryData(getTemplateDescription.queryKey(malType, description.name), description);
@@ -45,20 +54,29 @@ export async function fetchAllDescriptions(queryClient: QueryClient, malType: Ma
   return descriptions;
 }
 
+export type AllTemplateRefs = { status: "loading" } | { status: "failed" } | { status: "ready"; refs: TemplateRef[] };
+
+const LOADING: AllTemplateRefs = { status: "loading" };
+const FAILED: AllTemplateRefs = { status: "failed" };
+
 /** Every template the search covers, for pages that search without having
- *  loaded the template list themselves. `undefined` until all are known, and
- *  while `enabled` is false (nothing is fetched then). */
-export function useAllTemplateRefs(enabled = true): TemplateRef[] | undefined {
+ *  loaded the template list themselves. Loading while `enabled` is false
+ *  (nothing is fetched then). Failed once a fetch has given up, so a page can
+ *  say so rather than wait forever. */
+export function useAllTemplateRefs(enabled = true): AllTemplateRefs {
   const queries = useQueries({
-    queries: MAL_TYPES.map((malType) => ({
-      queryKey: getBrevkoderMedMetadata.queryKey(malType),
-      queryFn: () => getBrevkoderMedMetadata.queryFn(malType),
-      enabled,
-    })),
+    queries: MAL_TYPES.map((malType) => ({ ...descriptionsQuery(malType), enabled })),
   });
-  const [autobrev, redigerbar] = queries.map((query) => (Array.isArray(query.data) ? query.data : undefined));
-  return useMemo(
-    () => (autobrev && redigerbar ? [...toRefs(autobrev, "autobrev"), ...toRefs(redigerbar, "redigerbar")] : undefined),
-    [autobrev, redigerbar],
-  );
+  // A failed refetch keeps the data it had, which is still good to search.
+  const failed = queries.some((query) => query.isError && query.data === undefined);
+  const [autobrev, redigerbar] = queries.map((query) => query.data);
+  return useMemo(() => {
+    if (failed) {
+      return FAILED;
+    }
+    if (!autobrev || !redigerbar) {
+      return LOADING;
+    }
+    return { status: "ready", refs: [...toRefs(autobrev, "autobrev"), ...toRefs(redigerbar, "redigerbar")] };
+  }, [failed, autobrev, redigerbar]);
 }

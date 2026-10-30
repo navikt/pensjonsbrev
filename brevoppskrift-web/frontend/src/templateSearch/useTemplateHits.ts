@@ -116,9 +116,9 @@ export function useTemplateHits(
   requestedBlock: number | undefined,
   focusFirstHit: boolean,
 ): TemplateHits | undefined {
-  const refs = useAllTemplateRefs(criteria !== undefined);
+  const templates = useAllTemplateRefs(criteria !== undefined);
   const { isLoading, displayed, searchFailed } = useSearchResults(
-    criteria ? refs : undefined,
+    criteria && templates.status === "ready" ? templates.refs : undefined,
     criteria?.q ?? "",
     criteria?.exact ?? false,
   );
@@ -126,12 +126,12 @@ export function useTemplateHits(
     if (!criteria) {
       return undefined;
     }
-    if (searchFailed) {
+    if (searchFailed || templates.status === "failed") {
       return { status: "failed" };
     }
     if (isLoading || !displayed) {
       return { status: "loading" };
     }
     return hitsInTemplate(displayed, criteria.tab, current, requestedBlock, focusFirstHit);
-  }, [criteria, current, requestedBlock, focusFirstHit, isLoading, displayed, searchFailed]);
+  }, [criteria, current, requestedBlock, focusFirstHit, templates.status, isLoading, displayed, searchFailed]);
 }
