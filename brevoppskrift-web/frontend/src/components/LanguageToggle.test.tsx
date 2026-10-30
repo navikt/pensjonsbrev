@@ -45,4 +45,21 @@ describe("LanguageToggle", () => {
     await user.keyboard("{ArrowLeft}");
     expect(onChange).toHaveBeenLastCalledWith("BOKMAL");
   });
+
+  it("wraps around at the ends, so the other languages are one key press away", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    render(<ControlledToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={onChange} />);
+    await user.tab();
+
+    await user.keyboard("{ArrowLeft}");
+    expect(onChange).toHaveBeenLastCalledWith("ENGLISH");
+    expect(document.activeElement).toBe(screen.getByRole("radio", { name: "Engelsk" }));
+    expect(screen.getByRole("radio", { name: "Engelsk" }).getAttribute("aria-checked")).toBe("true");
+
+    await user.keyboard("{ArrowRight}");
+    expect(onChange).toHaveBeenLastCalledWith("BOKMAL");
+    expect(document.activeElement).toBe(screen.getByRole("radio", { name: "Bokmål" }));
+    expect(onChange).toHaveBeenCalledTimes(2);
+  });
 });
