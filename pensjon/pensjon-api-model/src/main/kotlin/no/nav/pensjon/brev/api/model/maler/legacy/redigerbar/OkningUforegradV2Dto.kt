@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Tillegg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Vedtak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Yrkesskade
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import java.time.LocalDate
@@ -47,5 +48,6 @@ data class OkningUforegradV2Dto(
         val tillegg: Tillegg,
         val barnetillegg: Barnetillegg,
         val vilkarsvurdering: VilkarsvurderingFullstendig,
+        val yrkesskade: Yrkesskade?,
     ) : FagsystemBrevdata
 }

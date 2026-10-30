@@ -20,14 +20,12 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.b
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.beregningsresultatTilRevurderingTotalNetto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.bunnfradrag
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.grunnbelop
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.inntektSkadetidspunkt
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.reduksjonsprosent
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.totalNetto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.uforegrad
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.uforetidspunkt
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.utbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.virkFom
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.yrkesskadegrad
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.yrkesskadeBest
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.grunnlag.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.institusjonsopphold.*
@@ -36,14 +34,19 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.reduksjonsg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.tillegg.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vedtak.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vilkarsvurderingFullstendig.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vilkarsvurderingFullstendig.yrkesskade.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradV2Dto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_1
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig.InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_2
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.anvendtTrygdetid
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.fribelop
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.oifu
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.yrkesskade.inntektVedSkadetidspunkt
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.yrkesskade.inntektVedSkadetidspunktBegrunnelse
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.yrkesskade.skadetidspunkt
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.yrkesskade.yrkesskadegrad
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -111,16 +114,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 //Beregning
                 val beregningsresultattilrevurderingtotalnetto = beregning.beregningsresultatTilRevurderingTotalNetto.ifNull(Kroner(0))
 
-                //beregning yrkesskade
-                val yrkesskadegradFraBeregning = beregning.yrkesskadegrad.ifNull(0)
-                val inntektSkadetidspunkt = beregning.inntektSkadetidspunkt.ifNull(Kroner(0))
-
-
-                //vilkårsvurdering yrkesskade
-                val skadetidspunkt = vilkarsvurdering.yrkesskade.safe { skadetidspunkt }.ifNull(localDateNow)
-                val yrkesskadegradFraVilkar = vilkarsvurdering.yrkesskade.safe { yrkesskadegrad }.ifNull(0)
-                val ivsbegrunnelse = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunktBegrunnelse }
-                val ivsinntekt = vilkarsvurdering.yrkesskade.safe { inntektVedSkadetidspunkt }.ifNull(Kroner(0))
+                //Yrkesskade ok
+                val yrkesskadegrad = yrkesskade.safe { yrkesskadegrad }.ifNull(0)
 
                 // reduksjonsgrunnlag ok
                 val btRedusertTil0 = not(reduksjonsgrunnlag.isNull()) and reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0)).greaterThan(0) and reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0)).equalTo(0)
@@ -204,7 +199,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskadegradFraVilkar).equalTo((vilkarsvurdering.uforegrad)))) {
+                showIf(((yrkesskadegrad).equalTo((vilkarsvurdering.uforegrad)))) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at hele uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." },
@@ -214,11 +209,11 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) < FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) > 0 AND (FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "ikke_oppfylt") ) THEN      INCLUDE ENDIF
-                showIf(((yrkesskadegradFraVilkar).lessThan((vilkarsvurdering.uforegrad)) and (yrkesskadegradFraVilkar).greaterThan(0) and ((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) or (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT)))) {
+                showIf(((yrkesskadegrad).lessThan((vilkarsvurdering.uforegrad)) and (yrkesskadegrad).greaterThan(0) and ((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) or (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT)))) {
                     paragraph {
                         text(
-                            bokmal { +"Vi har kommet fram til at " + yrkesskadegradFraVilkar.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." },
-                            nynorsk { +"Vi har kome fram til at " + yrkesskadegradFraVilkar.format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom." },
+                            bokmal { +"Vi har kommet fram til at " + yrkesskadegrad.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." },
+                            nynorsk { +"Vi har kome fram til at " + yrkesskadegrad.format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom." },
                         )
                     }
                 }
@@ -471,7 +466,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskadegradFraBeregning.equalTo(beregning.uforegrad) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1))) {
+                showIf((yrkesskadegrad.equalTo(beregning.uforegrad) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1))) {
                     paragraph {
                         text(
                             bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert at hele din nedsatte inntektsevne skyldes den godkjente yrkesskaden eller yrkessykdommen." },
@@ -481,7 +476,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = true AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1) = "stdbegr_12_17_1_o_1" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-                showIf((yrkesskadegradFraBeregning.equalTo(beregning.uforegrad) and beregning.yrkesskadeBest and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon))) {
+                showIf((yrkesskadegrad.equalTo(beregning.uforegrad) and beregning.yrkesskadeBest and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon))) {
                     paragraph {
                         text(
                             bokmal { +"Dette betyr at uføretrygden din vil bli beregnet etter særbestemmelser som gir deg en høyere uføretrygd." },
@@ -491,7 +486,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) = FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = false AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1) = "stdbegr_12_17_1_o_1" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-                showIf(((yrkesskadegradFraVilkar).equalTo((vilkarsvurdering.uforegrad)) and not(beregning.yrkesskadeBest) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon))) {
+                showIf(((yrkesskadegrad).equalTo((vilkarsvurdering.uforegrad)) and not(beregning.yrkesskadeBest) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon))) {
                     paragraph {
                         text(
                             bokmal { +"Dette betyr at uføretrygden din vil bli beregnet etter særbestemmelser, dersom dette er til fordel for deg." },
@@ -507,7 +502,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) < FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) > 0 AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1) = "stdbegr_12_17_1_o_2") THEN      INCLUDE ENDIF
-                showIf(((yrkesskadegradFraVilkar).lessThan((vilkarsvurdering.uforegrad)) and (yrkesskadegradFraVilkar).greaterThan(0) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_2))) {
+                showIf(((yrkesskadegrad).lessThan((vilkarsvurdering.uforegrad)) and (yrkesskadegrad).greaterThan(0) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_2))) {
                     paragraph(uniqueness = "12_17_1_o_2") {
                         text(
                             bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert om yrkesskaden eller yrkessykdommen er årsak til den økte uførheten din." },
@@ -516,8 +511,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                     paragraph {
                         text(
-                            bokmal { +"Vi har kommet fram til at " + yrkesskadegradFraVilkar.format() + " prosent av uførheten din skyldes godkjent yrkesskade eller yrkessykdom. " + fritekst("Konkret begrunnelse") + "." },
-                            nynorsk { +"Vi har kome fram til at " + yrkesskadegradFraVilkar.format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom. " + fritekst("Konkret begrunnelse") + "." },
+                            bokmal { +"Vi har kommet fram til at " + yrkesskadegrad.format() + " prosent av uførheten din skyldes godkjent yrkesskade eller yrkessykdom. " + fritekst("Konkret begrunnelse") + "." },
+                            nynorsk { +"Vi har kome fram til at " + yrkesskadegrad.format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom. " + fritekst("Konkret begrunnelse") + "." },
                         )
                     }
 
@@ -561,21 +556,22 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and ivsbegrunnelse.equalTo(InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_1))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + ivsinntekt.format() + "." },
-                            nynorsk { +"Vi har fastsett skadetidspunktet ditt til " + skadetidspunkt.format() + ". Den årlege inntekta di på dette tidspunktet er fastsett til " + ivsinntekt.format() + "." },
-                        )
-                    }
-                }
-
-                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and ivsbegrunnelse.equalTo(InntektVedSkadetidspunktBegrunnelse.STDBEGR_12_17_3_2))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + inntektSkadetidspunkt.format() + ". Vi har justert denne inntekten opp fordi den skal tilsvare inntekten du ville hatt som frisk på skadetidspunktet." },
-                            nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta på dette tidspunktet er fastsett til " + inntektSkadetidspunkt.format() + ". Vi har justert denne inntekta opp fordi den skal svare til inntekta du ville hatt som frisk på skadetidspunktet." },
-                        )
+                showIf(vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT)) {
+                    ifNotNull(yrkesskade) { yrk ->
+                        showIf(yrk.inntektVedSkadetidspunktBegrunnelse.isOneOf(STDBEGR_12_17_3_1, STDBEGR_12_17_3_2)) {
+                            paragraph {
+                                text(
+                                    bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + yrk.skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + yrk.inntektVedSkadetidspunkt.format() + ". " },
+                                    nynorsk { +"Vi har fastsett skadetidspunktet ditt til " + yrk.skadetidspunkt.format() + ". Den årlege inntekta di på dette tidspunktet er fastsett til " + yrk.inntektVedSkadetidspunkt.format() + ". " },
+                                )
+                                showIf(yrk.inntektVedSkadetidspunktBegrunnelse.equalTo(STDBEGR_12_17_3_2)) {
+                                    text(
+                                        bokmal { +"Vi har justert denne inntekten opp fordi den skal tilsvare inntekten du ville hatt som frisk på skadetidspunktet." },
+                                        nynorsk { +"Vi har justert denne inntekta opp fordi den skal svare til inntekta du ville hatt som frisk på skadetidspunktet." },
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -595,7 +591,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = true AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse) = "stdbegr_12_17_1_o_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-                showIf((yrkesskadegradFraBeregning.lessThan(beregning.uforegrad) and yrkesskadegradFraBeregning.greaterThan(0) and beregning.yrkesskadeBest and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon))) {
+                showIf((yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and beregning.yrkesskadeBest and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon))) {
                     paragraph {
                         text(
                             bokmal { +"Deler av uføretrygden din vil fortsatt bli beregnet etter særbestemmelser, noe som gir deg en høyere uføretrygd." },
@@ -605,7 +601,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = false AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse) = "stdbegr_12_17_1_o_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-                showIf((yrkesskadegradFraBeregning.lessThan(beregning.uforegrad) and yrkesskadegradFraBeregning.greaterThan(0) and not(beregning.yrkesskadeBest) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon))) {
+                showIf((yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and not(beregning.yrkesskadeBest) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon))) {
                     //[TBU3732NN, TBU3732]
 
                     paragraph {
@@ -617,7 +613,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = false AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse) = "stdbegr_12_17_1_o_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt") THEN      INCLUDE ENDIF
-                showIf((yrkesskadegradFraBeregning.lessThan(beregning.uforegrad) and yrkesskadegradFraBeregning.greaterThan(0) and not(beregning.yrkesskadeBest) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT))) {
+                showIf((yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and not(beregning.yrkesskadeBest) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT))) {
                     paragraph(uniqueness = "12_17_1_o_3") {
                         text(
                             bokmal { +"Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },

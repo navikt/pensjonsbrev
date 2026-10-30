@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradV2Dto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Yrkesskade
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.fixtures.createDineRettigheterOgPlikterUforeDto
@@ -502,7 +503,7 @@ fun createOkningUforegradV2Dto() =
                 kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
                 arsak = Kravhode.Arsak.ANNEN,
                 konvertertFraUforepensjon = false,
-                ),
+            ),
             vedtak = Vedtak(
                 virkFom = LocalDate.of(2024, Month.JANUARY, 1),
                 virkningsdatoTidligereMnd = false,
@@ -520,10 +521,8 @@ fun createOkningUforegradV2Dto() =
                 bunnfradragNesteAr = Kroner(1919),
                 reduksjonsprosent = 5.0,
                 fribelop = Kroner(5000),
-                oifuVedVirkningstidspunkt = Kroner(10000),
-                yrkesskadegrad = 0,
+                oifu = Kroner(10000),
                 yrkesskadeBest = false,
-                inntektSkadetidspunkt = Kroner(1010),
                 grunnbelop = Kroner(1010),
                 anvendtTrygdetid = 40,
             ),
@@ -532,7 +531,7 @@ fun createOkningUforegradV2Dto() =
                 epsBrukerBorMed = Grunnlag.Eps.EKTEFELLE,
                 anvendtSivilstand = Grunnlag.AnvendtSivilstandCode.BOR_MED_EKTEFELLE,
                 harVTA = false,
-                ),
+            ),
             institusjonsopphold = Institusjonsopphold(
                 erAnvendt = false,
                 type = null,
@@ -602,12 +601,12 @@ fun createOkningUforegradV2Dto() =
                 nedsattInntektsevneResultat = VilkarResultat.OPPFYLT,
                 yrkesskadeResultat = VilkarResultat.IKKE_OPPFYLT,
                 yrkesskadeBegrunnelse = VilkarsvurderingFullstendig.YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1,
-                yrkesskade = VilkarsvurderingFullstendig.Yrkesskade(
-                    skadetidspunkt = LocalDate.of(2020, Month.JANUARY, 1),
-                    yrkesskadegrad = 29,
-                    inntektVedSkadetidspunkt = Kroner(1010),
-                    inntektVedSkadetidspunktBegrunnelse = null,
-                ),
+            ),
+            yrkesskade = Yrkesskade(
+                skadetidspunkt = LocalDate.of(2020, Month.JANUARY, 1),
+                yrkesskadegrad = 29,
+                inntektVedSkadetidspunkt = Kroner(1010),
+                inntektVedSkadetidspunktBegrunnelse = null,
             ),
         ),
     )

@@ -19,9 +19,7 @@ data class Beregning(
     val reduksjonsprosent: Double,
     val oifu: Kroner,
 
-    val yrkesskadegrad: Int?,
     val yrkesskadeBest: Boolean,
-    val inntektSkadetidspunkt: Kroner?,
 
     val grunnbelop: Kroner,
 
