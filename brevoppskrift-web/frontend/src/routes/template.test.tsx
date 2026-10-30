@@ -191,7 +191,7 @@ describe("search hit focus", () => {
   });
 
   it("focuses the first hit when the hits are turned on, e.g. opened from the Brev tab", async () => {
-    await openPage({});
+    const router = await openPage({ showHits: false });
     const toggle = await screen.findByLabelText<HTMLInputElement>("Vis søketreff");
     expect(toggle.checked).toBe(false);
     expect(scrolledTo).toEqual([]);
@@ -200,10 +200,11 @@ describe("search hit focus", () => {
 
     await waitFor(() => expect(scrolledTo).toEqual(["20"]));
     expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy();
+    expect(router.state.location.search).not.toHaveProperty("showHits");
   });
 
   it("focuses the first hit once loaded, when the hits were turned on while loading", async () => {
-    await openPage({}, { hits: loading });
+    await openPage({ showHits: false }, { hits: loading });
     await userEvent.click(await screen.findByLabelText("Vis søketreff"));
 
     act(() => searchStore.set(loaded));
@@ -213,11 +214,12 @@ describe("search hit focus", () => {
   });
 
   it("goes back to the active hit when the hits are turned off and on again", async () => {
-    await openPage({ tab: "innhold", index: 30 });
+    const router = await openPage({ tab: "innhold", focus: 30 });
     await waitFor(() => expect(scrolledTo).toEqual(["30"]));
     const toggle = screen.getByLabelText<HTMLInputElement>("Vis søketreff");
 
     await userEvent.click(toggle);
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ focus: 30, showHits: false }));
     await userEvent.click(toggle);
 
     await waitFor(() => expect(scrolledTo).toEqual(["30", "30"]));
@@ -229,11 +231,23 @@ describe("search hit focus", () => {
 
     await userEvent.click(screen.getByRole("radio", { name: "Nynorsk" }));
 
-    await waitFor(() => expect(router.state.location.search).toMatchObject({ language: "NYNORSK", index: 20 }));
+    await waitFor(() => expect(router.state.location.search).toMatchObject({ language: "NYNORSK", focus: 20 }));
     await waitFor(() =>
       expect(document.querySelector('[data-block-index="20"]')?.getAttribute("data-search-hit")).toBe("active"),
     );
     expect(screen.getByText("Ingen treff i denne språkversjonen")).toBeTruthy();
+  });
+
+  it("opens a shared link as it was shared, with the hits hidden or shown", async () => {
+    await openPage({ showHits: false });
+    expect((await screen.findByLabelText<HTMLInputElement>("Vis søketreff")).checked).toBe(false);
+    expect(document.querySelector("[data-search-hit]")).toBeNull();
+    cleanup();
+
+    // Turned on after arriving from the Brev tab.
+    await openPage({ focus: 30 });
+    expect((await screen.findByLabelText<HTMLInputElement>("Vis søketreff")).checked).toBe(true);
+    await waitFor(() => expect(scrolledTo).toEqual(["30"]));
   });
 });
 

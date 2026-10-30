@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { type ResultRef, type SearchCriteria } from "~/search/searchContext";
 import { type SearchHighlight } from "~/templateSearch/SearchHighlightContext";
@@ -6,9 +6,6 @@ import { type TemplateHits, useTemplateHits } from "~/templateSearch/useTemplate
 
 export type HitFocus = {
   hits: TemplateHits | undefined;
-  /** Whether the hits are shown ("Vis søketreff"). */
-  marking: boolean;
-  setMarking: (marking: boolean) => void;
   /** What to mark in the document, or `undefined` when nothing is to be marked. */
   highlight: SearchHighlight | undefined;
   /** The block the user is at, to keep when switching language. */
@@ -20,22 +17,17 @@ export type HitFocus = {
 /**
  * Which search hits a template shows, and which block is in focus.
  *
- * Opened from the Innhold tab, the hits are shown with the first one in focus.
- * Opened from the Brev tab, whose hits are on the title, they start hidden.
- * Showing them focuses the first one, unless a block was requested. That is
- * derived rather than navigated to, so it also holds when the hits are shown
- * before they have loaded.
- *
- * Marking is local state on purpose: every visit, refresh and shared link
- * starts the same way. It is kept while moving between results, since the
- * route stays mounted.
+ * `marking` is whether the hits are shown ("Vis søketreff"). Showing them
+ * focuses the first hit, unless a block was requested. That is derived rather
+ * than navigated to, so it also holds when the hits are shown before they have
+ * loaded.
  */
 export function useHitFocus(
   criteria: SearchCriteria | undefined,
   current: ResultRef,
   requestedBlock: number | undefined,
+  marking: boolean,
 ): HitFocus {
-  const [marking, setMarking] = useState(criteria?.tab !== "brev");
   const hits = useTemplateHits(criteria, current, requestedBlock, marking);
   const ready = hits?.status === "ready" ? hits : undefined;
   const highlight = useMemo<SearchHighlight | undefined>(
@@ -54,11 +46,9 @@ export function useHitFocus(
   const activeBlock = ready?.activeBlock ?? requestedBlock;
   return {
     hits,
-    marking,
-    setMarking,
     highlight,
     activeBlock,
-    // Without a search, a plain `index` link still scrolls to its block. With
+    // Without a search, a plain `focus` link still scrolls to its block. With
     // one, only while the hits are shown, so showing them scrolls there.
     scrollTarget: criteria && !marking ? undefined : activeBlock,
   };

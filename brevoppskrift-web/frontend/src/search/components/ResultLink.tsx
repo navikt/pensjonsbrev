@@ -42,7 +42,7 @@ export function ResultLink({
 }) {
   const navigate = useNavigate();
   const params = { malType: result.malType, templateId: result.id };
-  const search = toTemplateSearch(criteria, result, block);
+  const search = toTemplateSearch(criteria, result, { focus: block });
   return (
     <Link
       aria-current={current ? "true" : undefined}

@@ -98,7 +98,7 @@ function HitNavigation({
       <ButtonLink
         icon={icon}
         params={{ malType: target.ref.malType, templateId: target.ref.id }}
-        search={toTemplateSearch(criteria, target.ref, target.block)}
+        search={toTemplateSearch(criteria, target.ref, { focus: target.block, showHits: marking })}
         size="small"
         to="/template/$malType/$templateId"
         variant="tertiary"

@@ -9,8 +9,8 @@ import { isMalType, type MalType } from "~/api/brevbaker-api-endpoints";
  * opened. Hit lists and highlight ranges are never stored; both pages derive
  * them by running the search again.
  *
- * Defaults are left out of the URL (`exact=false`, `tab=brev`, `page=1`),
- * which keeps plain links short.
+ * Defaults are left out of the URL (`exact=false`, `tab=brev`, `page=1`,
+ * `showHits=true`), which keeps plain links short.
  */
 
 export type ResultTab = "innhold" | "brev";
@@ -50,6 +50,10 @@ export type TemplateSearchContextParams = {
   q?: string;
   exact?: true;
   tab?: TabParam;
+  /** The block in focus, a matching block when opened from a search. */
+  focus?: number;
+  /** Whether the hits are marked ("Vis søketreff"). Only `false` is written. */
+  showHits?: false;
 };
 
 /** TanStack Router parses search values as JSON where it can, so a hand-typed
@@ -85,6 +89,15 @@ function exactParam(value: unknown): true | undefined {
 
 function tabParam(value: unknown): TabParam | undefined {
   return value === "innhold" ? "innhold" : undefined;
+}
+
+function blockParam(value: unknown): number | undefined {
+  const raw = stringParam(value);
+  return raw !== undefined && /^\d+$/.test(raw) ? Number(raw) : undefined;
+}
+
+function showHitsParam(value: unknown): false | undefined {
+  return value === false || value === "false" ? false : undefined;
 }
 
 export function formatResultRef(ref: ResultRef): string {
@@ -127,6 +140,8 @@ export function validateTemplateSearchContext(search: Record<string, unknown>): 
     q: queryParam(search.q),
     exact: exactParam(search.exact),
     tab: tabParam(search.tab),
+    focus: blockParam(search.focus),
+    showHits: showHitsParam(search.showHits),
   };
 }
 
@@ -152,14 +167,19 @@ export function toTemplatesSearch(criteria: SearchCriteria, selected?: ResultRef
   return { ...criteriaParams(criteria), selected: selected ? formatResultRef(selected) : undefined };
 }
 
-/** Search params for opening `ref` from a search. `block` is the block to
- *  open at; without it, the template opens at its first matching block. */
+/**
+ * Search params for opening `ref` from a search.
+ *
+ * `focus` is the block to open at; without it, the template opens at its first
+ * matching block. `showHits` defaults to the tab: content hits are shown, while
+ * a Brev hit is on the title, so its template opens with the hits hidden.
+ */
 export function toTemplateSearch(
   criteria: SearchCriteria,
   ref: ResultRef,
-  block?: number,
-): TemplateSearchContextParams & { language: string; index?: number } {
-  return { ...criteriaParams(criteria), language: ref.language, index: block };
+  { focus, showHits = criteria.tab !== "brev" }: { focus?: number; showHits?: boolean } = {},
+): TemplateSearchContextParams & { language: string } {
+  return { ...criteriaParams(criteria), language: ref.language, focus, showHits: showHits ? undefined : false };
 }
 
 /** The result a hit stands for: its template in its language. */

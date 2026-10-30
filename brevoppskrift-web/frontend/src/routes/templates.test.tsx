@@ -410,7 +410,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
         q: "Hei",
         tab: "innhold",
         language: "BOKMAL",
-        index: "7",
+        focus: "7",
       });
 
       await user.click(link);
@@ -429,7 +429,7 @@ describe("<AllTemplates /> (route: /templates)", () => {
       const link = screen.getByRole("link", { name: "A00" });
 
       const href = new URL(link.getAttribute("href") ?? "", "http://localhost");
-      expect(Object.fromEntries(href.searchParams)).toEqual({ q: "A00", language: "BOKMAL" });
+      expect(Object.fromEntries(href.searchParams)).toEqual({ q: "A00", language: "BOKMAL", showHits: "false" });
 
       await user.click(link);
       await screen.findByText("Malsiden");
