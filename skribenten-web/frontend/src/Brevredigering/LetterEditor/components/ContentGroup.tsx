@@ -307,8 +307,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         if (
           selection &&
           selection.rangeCount > 0 &&
-          element.contains(selection.anchorNode) &&
-          element.contains(selection.focusNode)
+          // En markering over flere literals starter eller slutter her
+          (element.contains(selection.anchorNode) || element.contains(selection.focusNode))
         ) {
           // Do not set fallback or move caret yet.
           return;

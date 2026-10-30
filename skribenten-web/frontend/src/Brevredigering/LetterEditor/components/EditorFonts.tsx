@@ -4,33 +4,44 @@ import { type ReactNode } from "react";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { FontType } from "~/types/brevbakerTypes";
 
-import Actions from "../actions";
+import { isFocusInTableHeader, isFocusInTitle } from "../actions/common";
 import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
-import { applyAction } from "../lib/actions";
-import { tooltipText } from "../utils";
+import { useAttestantDiff } from "../diff/AttestantDiffContext";
+import { refocusEditableAtSelection } from "../services/caretUtils";
+import { switchFontTypeAtSelection, tooltipText } from "../utils";
 
 const EditorFonts = () => {
   const { editorState, freeze, setEditorState } = useEditor();
   const activeFontType = getCurrentActiveFontTypeAtCursor(editorState);
+  const disabled = freeze || editorState.focus.blockIndex < 0 || isFocusInTitle(editorState);
+  // Tabelloverskrifter er allerede fete
+  const boldDisabled = disabled || isFocusInTableHeader(editorState);
+
+  const { disableDiffMode } = useAttestantDiff();
+
+  const switchFontType = (fontType: FontType) => {
+    // Refocusing must run before the action: the resulting focus event would otherwise overwrite the focus set by it.
+    switchFontTypeAtSelection(setEditorState, fontType, editorRoot(), disableDiffMode, refocusEditableAtSelection);
+  };
 
   return (
     <>
       <FontButton
-        active={activeFontType === FontType.BOLD}
+        active={!boldDisabled && activeFontType === FontType.BOLD}
         data-testid="fonttype-bold-button"
-        disabled={freeze || editorState.focus.blockIndex < 0}
+        disabled={boldDisabled}
         onClick={() => {
-          applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
+          switchFontType(FontType.BOLD);
         }}
         text={<BodyShort weight="semibold">F</BodyShort>}
         tooltip={tooltipText.bold}
       />
       <FontButton
-        active={activeFontType === FontType.ITALIC}
+        active={!disabled && activeFontType === FontType.ITALIC}
         data-testid="fonttype-italic-button"
-        disabled={freeze || editorState.focus.blockIndex < 0}
+        disabled={disabled}
         onClick={() => {
-          applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
+          switchFontType(FontType.ITALIC);
         }}
         text={
           <BodyShort css={{ fontStyle: "italic" }} weight="semibold">
@@ -60,6 +71,8 @@ const FontButton = (props: {
         data-testid={props["data-testid"]}
         disabled={props.disabled}
         onClick={props.onClick}
+        // Keep focus and selection in the editor when clicking
+        onMouseDown={(event) => event.preventDefault()}
         size="small"
         type="button"
         variant={props.active ? "primary-neutral" : "tertiary-neutral"}
@@ -67,5 +80,12 @@ const FontButton = (props: {
         {props.text}
       </Button>
     </Tooltip>
+  );
+};
+
+const editorRoot = () => {
+  const node = globalThis.getSelection()?.anchorNode;
+  return (
+    (node instanceof HTMLElement ? node : node?.parentElement)?.closest<HTMLElement>("[data-editor-root]") ?? undefined
   );
 };

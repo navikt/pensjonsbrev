@@ -3,12 +3,14 @@ import "./editor.css";
 import { CheckmarkIcon, XMarkIcon } from "@navikt/aksel-icons";
 import { Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
+import isEqual from "lodash/isEqual";
 import React, {
   createContext,
   type Dispatch,
   type SetStateAction,
   useCallback,
   useContext,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -26,10 +28,12 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
+import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
+import { selectSelectionIndex } from "./services/caretUtils";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
@@ -55,7 +59,8 @@ export const LetterEditor = ({
   const redigeringsflate = useRedigeringsflate();
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
-  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
+  const { disableDiffMode } = useAttestantDiff();
+  const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState, disableDiffMode);
   const highlightedIds = useInsertedTekstValgHighlight();
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
@@ -65,7 +70,25 @@ export const LetterEditor = ({
 
   useDragSelectUnifier(editorRoot, !freeze);
 
-  useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
+  useSelectionDeleteHotkey(
+    editorRoot,
+    (focus) => applyAction(Actions.deleteSelection, setEditorState, focus),
+    !freeze,
+    disableDiffMode,
+  );
+
+  // Restores a caret/selection requested by an action (e.g. after a font type change). Runs after the literals' own
+  // layout effects, so the range can span several literals. Focus is reset to the start of the range afterwards, overriding
+  // the focus event fired while restoring, so the literals don't move the caret again.
+  const pendingSelection = editorState.focus.pendingSelection;
+  useLayoutEffect(() => {
+    if (!pendingSelection || !editorRoot || freeze) return;
+    selectSelectionIndex(editorRoot, pendingSelection);
+    const { start, end } = pendingSelection;
+    const collapsed = isEqual(start, end);
+    // Som ved en markering gjort av brukeren: uten cursorPosition respekterer EditableText DOM-markeringen.
+    setEditorState((state) => ({ ...state, focus: collapsed ? start : { ...start, cursorPosition: undefined } }));
+  }, [pendingSelection, editorRoot, freeze, setEditorState]);
 
   const sporMissingFromTemplateHandling = useCallback(
     (eventName: MissingFromTemplateEventName, blockIndex: number) =>
