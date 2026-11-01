@@ -317,8 +317,23 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             }
             paragraph {
                 text(
-                    bokmal { +"Etter bestemmelsene i EØS-avtalen / trygdeavtale med " + fritekst("land") + ", kan vi gi unntak fra folketrygdlovens vilkår om medlemskap ved å legge sammen trygdetid i Norge og trygdetid i andre land. Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har fastsatt basert på sin nasjonale lovgivning. " },
-                    nynorsk { +"Etter bestemmelsane i EØS-avtalen / trygdeavtale med " + fritekst("land") + ", kan vi gi unntak frå folketrygdlovens vilkår om medlemskap ved å leggje saman trygdetid i Noreg og trygdetid i andre land. Nav må forhalde seg til trygdetida som trygdemyndigheitene i andre land har fastsett basert på sin nasjonale lovgiving. " },
+                    bokmal { +"Etter bestemmelsene i " },
+                    nynorsk { +"Etter bestemmelsane i " },
+                )
+                showIf(pesysData.eosNordisk) {
+                    text(
+                        bokmal { +"EØS-avtalen" },
+                        nynorsk { +"EØS-avtala" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"trygdeavtale med " + pesysData.avtaletype.ifNull(fritekst("land")) },
+                        nynorsk { +"trygdeavtale med " + pesysData.avtaletype.ifNull(fritekst("land")) },
+                    )
+                }
+                text(
+                    bokmal { +", kan vi gi unntak fra folketrygdlovens vilkår om medlemskap ved å legge sammen trygdetid i Norge og trygdetid i andre land. Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har fastsatt basert på sin nasjonale lovgivning. " },
+                    nynorsk { +", kan vi gi unntak frå folketrygdlovens vilkår om medlemskap ved å leggje saman trygdetid i Noreg og trygdetid i andre land. Nav må forhalde seg til trygdetida som trygdemyndigheitene i andre land har fastsett basert på sin nasjonale lovgiving. " },
                 )
             }
 
