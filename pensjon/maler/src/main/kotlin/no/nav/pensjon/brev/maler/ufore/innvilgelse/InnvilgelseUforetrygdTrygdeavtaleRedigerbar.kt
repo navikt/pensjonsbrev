@@ -379,11 +379,18 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                     nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(true)) + ". " },
                 )
             }
-            showIf(pesysData.eosNordisk) {
+            showIf(pesysData.eosNordisk and not(hjemmelTredjelandsborger)) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er også gjort etter EØS-avtalen, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
                         nynorsk { +"Vedtaket er òg gjort etter EØS-avtala, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
+                    )
+                }
+            }.orShowIf(hjemmelTredjelandsborger) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket er også gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
+                        nynorsk { +"Vedtaket er òg gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i etter forordning 883/2004 artikkel 6 og artikkel 52. " }, // TODO: Blir dette riktig nynorsk? "i henhold til" = "i etter"?
                     )
                 }
             }.orShowIf(pesysData.avtaletype.notNull() and pesysData.artikkel.notNull()) {
@@ -403,15 +410,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 paragraph {
                     text(bokmal { + fritekst("Du har valgt en avtaletype hvor vi ikke har en forhåndsutfylt tekst. Her må du sette inn tekst som passer til saken.") },
                         nynorsk { + fritekst("Du har valt ein avtaletype der vi ikkje har ein forhåndsutfylt tekst. Her må du setje inn tekst som passar til saka.") },)
-                }
-            }
-
-            showIf(hjemmelTredjelandsborger) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er også gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
-                        nynorsk { +"Vedtaket er òg gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i etter forordning 883/2004 artikkel 6 og artikkel 52. " }, // TODO: Blir dette riktig nynorsk? "i henhold til" = "i etter"?
-                    )
                 }
             }
 
