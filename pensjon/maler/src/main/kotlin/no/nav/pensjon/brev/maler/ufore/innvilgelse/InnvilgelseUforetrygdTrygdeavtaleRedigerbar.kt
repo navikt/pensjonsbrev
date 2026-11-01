@@ -169,8 +169,23 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
 
              paragraph {
                 text (
-                    bokmal { + "Du innvilges uføretrygd med unntak i " + fritekst("EØS-avtalen/trygdeavtalen med LAND") + ". Det at din uføretrygd ikke er beregnet utelukkende ut fra din inntekt og trygdetid i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget " },
-                    nynorsk { + "Du innvilgast uføretrygd med unntak i " + fritekst("EØS-avtalen/trygdeavtalen med LAND") + ". Det at uføretrygda di ikkje er rekna utelukkande ut frå inntekta og trygdetida di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er rekna ut i vedlegget " },
+                    bokmal { + "Du innvilges uføretrygd med unntak i " },
+                    nynorsk { + "Du innvilgast uføretrygd med unntak i " },
+                )
+                showIf(pesysData.eosNordisk) {
+                    text(
+                        bokmal { +"EØS-avtalen" },
+                        nynorsk { +"EØS-avtala" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"trygdeavtalen med " + pesysData.avtaletype.ifNull(fritekst("land")) },
+                        nynorsk { +"trygdeavtala med " + pesysData.avtaletype.ifNull(fritekst("land")) },
+                    )
+                }
+                text(
+                    bokmal { + ". Det at din uføretrygd ikke er beregnet utelukkende ut fra din inntekt og trygdetid i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget " },
+                    nynorsk { + ". Det at uføretrygda di ikkje er rekna utelukkande ut frå inntekta og trygdetida di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er rekna ut i vedlegget " },
                 )
                 namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
                 text(
