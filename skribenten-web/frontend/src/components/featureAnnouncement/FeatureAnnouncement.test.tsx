@@ -72,6 +72,78 @@ const Harness = ({
   );
 };
 
+const TwoAnnouncements = () => {
+  const [first, setFirst] = useState<HTMLElement | null>(null);
+  const [second, setSecond] = useState<HTMLElement | null>(null);
+  const firstSteps = useMemo(
+    () => (first ? [{ target: first, title: "Første nyhet", content: "Første forklaring" }] : []),
+    [first],
+  );
+  const secondSteps = useMemo(
+    () => (second ? [{ target: second, title: "Andre nyhet", content: "Andre forklaring" }] : []),
+    [second],
+  );
+  return (
+    <>
+      <div ref={setFirst}>Første mål</div>
+      <div ref={setSecond}>Andre mål</div>
+      <FeatureAnnouncement id="forste-nyhet" showUntil="2999-12-31" steps={firstSteps} when={first !== null} />
+      <FeatureAnnouncement id="andre-nyhet" showUntil="2999-12-31" steps={secondSteps} when={second !== null} />
+    </>
+  );
+};
+
+const RetryHarness = ({ when, showTarget }: { when: boolean; showTarget: boolean }) => {
+  const [target, setTarget] = useState<HTMLElement | null>(null);
+  const steps = useMemo<FeatureAnnouncementStep[]>(
+    () => [{ target: () => (showTarget ? target : null), title: "Første nyhet", content: "Første forklaring" }],
+    [showTarget, target],
+  );
+  return (
+    <>
+      <div ref={setTarget}>Mål</div>
+      <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when={when} />
+    </>
+  );
+};
+
+const IdHarness = ({ id }: { id: string }) => {
+  const [target, setTarget] = useState<HTMLElement | null>(null);
+  const steps = useMemo(() => (target ? [{ target, title: `Nyhet ${id}`, content: "Forklaring" }] : []), [id, target]);
+  return (
+    <>
+      <div ref={setTarget}>Mål</div>
+      <FeatureAnnouncement id={id} showUntil="2999-12-31" steps={steps} when={target !== null} />
+    </>
+  );
+};
+
+const RefHarness = () => {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const [showTarget, setShowTarget] = useState(false);
+  const steps = useMemo<FeatureAnnouncementStep[]>(
+    () => [{ target: targetRef, title: "Første nyhet", content: "Første forklaring" }],
+    [],
+  );
+  return (
+    <>
+      <button onClick={() => setShowTarget(true)} type="button">
+        Vis mål
+      </button>
+      {showTarget && <div ref={targetRef}>Mål</div>}
+      <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when />
+    </>
+  );
+};
+
+const MissingTarget = () => {
+  const steps = useMemo<FeatureAnnouncementStep[]>(
+    () => [{ target: () => null, title: "Første nyhet", content: "Første forklaring" }],
+    [],
+  );
+  return <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when />;
+};
+
 const renderWithQueryClient = (ui: ReactNode, queryClient = createQueryClient()) =>
   render(ui, {
     wrapper: ({ children }) => <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>,
@@ -351,26 +423,6 @@ describe("<FeatureAnnouncement />", () => {
 
   test("viser bare én av to samtidige nyheter, uten å blinke, og den andre etter at den første er lukket", async () => {
     const user = userEvent.setup();
-    const TwoAnnouncements = () => {
-      const [first, setFirst] = useState<HTMLElement | null>(null);
-      const [second, setSecond] = useState<HTMLElement | null>(null);
-      const firstSteps = useMemo(
-        () => (first ? [{ target: first, title: "Første nyhet", content: "Første forklaring" }] : []),
-        [first],
-      );
-      const secondSteps = useMemo(
-        () => (second ? [{ target: second, title: "Andre nyhet", content: "Andre forklaring" }] : []),
-        [second],
-      );
-      return (
-        <>
-          <div ref={setFirst}>Første mål</div>
-          <div ref={setSecond}>Andre mål</div>
-          <FeatureAnnouncement id="forste-nyhet" showUntil="2999-12-31" steps={firstSteps} when={first !== null} />
-          <FeatureAnnouncement id="andre-nyhet" showUntil="2999-12-31" steps={secondSteps} when={second !== null} />
-        </>
-      );
-    };
     const shownDialogs = new Set<Element>();
     const observer = new MutationObserver(() => {
       for (const dialog of document.querySelectorAll('[role="alertdialog"]')) shownDialogs.add(dialog);
@@ -395,19 +447,6 @@ describe("<FeatureAnnouncement />", () => {
   });
 
   test("prøver igjen etter at målet ikke ble funnet, og kan da lukkes og bekreftes som vanlig", async () => {
-    const RetryHarness = ({ when, showTarget }: { when: boolean; showTarget: boolean }) => {
-      const [target, setTarget] = useState<HTMLElement | null>(null);
-      const steps = useMemo<FeatureAnnouncementStep[]>(
-        () => [{ target: () => (showTarget ? target : null), title: "Første nyhet", content: "Første forklaring" }],
-        [showTarget, target],
-      );
-      return (
-        <>
-          <div ref={setTarget}>Mål</div>
-          <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when={when} />
-        </>
-      );
-    };
     const user = userEvent.setup();
     const { rerender } = renderWithQueryClient(<RetryHarness showTarget={false} when />);
     await waitFor(() => expect(fetchAcknowledgedMock).toHaveBeenCalled());
@@ -426,19 +465,6 @@ describe("<FeatureAnnouncement />", () => {
   });
 
   test("håndterer en ny nyhet som en egen nyhet når id-en endres", async () => {
-    const IdHarness = ({ id }: { id: string }) => {
-      const [target, setTarget] = useState<HTMLElement | null>(null);
-      const steps = useMemo(
-        () => (target ? [{ target, title: `Nyhet ${id}`, content: "Forklaring" }] : []),
-        [id, target],
-      );
-      return (
-        <>
-          <div ref={setTarget}>Mål</div>
-          <FeatureAnnouncement id={id} showUntil="2999-12-31" steps={steps} when={target !== null} />
-        </>
-      );
-    };
     const user = userEvent.setup();
     const { rerender } = renderWithQueryClient(<IdHarness id="forste" />);
     await findAnnouncement("Nyhet forste");
@@ -454,23 +480,6 @@ describe("<FeatureAnnouncement />", () => {
   });
 
   test("finner mål som sendes inn som React-refs, også når elementet først vises etter at nyheten har startet", async () => {
-    const RefHarness = () => {
-      const targetRef = useRef<HTMLDivElement>(null);
-      const [showTarget, setShowTarget] = useState(false);
-      const steps = useMemo<FeatureAnnouncementStep[]>(
-        () => [{ target: targetRef, title: "Første nyhet", content: "Første forklaring" }],
-        [],
-      );
-      return (
-        <>
-          <button onClick={() => setShowTarget(true)} type="button">
-            Vis mål
-          </button>
-          {showTarget && <div ref={targetRef}>Mål</div>}
-          <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when />
-        </>
-      );
-    };
     const user = userEvent.setup();
     renderWithQueryClient(<RefHarness />);
     await waitFor(() => expect(fetchAcknowledgedMock).toHaveBeenCalled());
@@ -483,13 +492,6 @@ describe("<FeatureAnnouncement />", () => {
   });
 
   test("lagrer ikke bekreftelsen når målet aldri vises, så nyheten kan vises ved neste besøk", async () => {
-    const MissingTarget = () => {
-      const steps = useMemo<FeatureAnnouncementStep[]>(
-        () => [{ target: () => null, title: "Første nyhet", content: "Første forklaring" }],
-        [],
-      );
-      return <FeatureAnnouncement id="test-nyhet" showUntil="2999-12-31" steps={steps} when />;
-    };
     renderWithQueryClient(<MissingTarget />);
     await waitFor(() => expect(fetchAcknowledgedMock).toHaveBeenCalled());
 
