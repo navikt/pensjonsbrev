@@ -605,8 +605,8 @@ export function addElements<T extends Identifiable, E extends T>(
   to: Draft<T[]>,
   deleted: Draft<number[]>,
 ): void;
-export function addElements<T extends Identifiable, E extends T>(
-  elements: Draft<E[]>,
+export function addElements<T extends Identifiable>(
+  elements: Draft<T[]>,
   toIndex: number,
   to: Draft<T[]>,
   deleted: Draft<number[]>,
@@ -618,11 +618,11 @@ export function addElements<T extends Identifiable, E extends T>(
     to.splice(
       toIndex - 1,
       1,
-      ...mergeLiteralsIfPossible(elementBeforeStartIndex, firstElementToAdd as Draft<T>),
-      ...(elements.slice(1) as unknown as Draft<T>[]),
+      ...mergeLiteralsIfPossible(elementBeforeStartIndex, firstElementToAdd),
+      ...elements.slice(1),
     );
   } else {
-    to.splice(toIndex, 0, ...(elements as unknown as Draft<T>[]));
+    to.splice(toIndex, 0, ...elements);
   }
 
   const addedIds = elements.map((e) => e.id).filter((id) => id !== null) as number[];
