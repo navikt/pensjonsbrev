@@ -1231,13 +1231,13 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                 showIf(((sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
                                     showIf(sb.inntektBruktIAvkorting.greaterThan(sb.fribelop)) {
                                         text(
-                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er høyere enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikke ", "") + "redusert ut fra inntekt. " },
-                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er høgare enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikkje ", "") + "redusert ut frå inntekt. " },
+                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er høyere enn fribeløpet ditt på " + sb.fribelop.format() + ". " },
+                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er høgare enn fribeløpet ditt på " + sb.fribelop.format() + ". " },
                                         )
                                     }.orShow {
                                         text(
-                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er lavere enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikke ", "") + "redusert ut fra inntekt. " },
-                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er lågare enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikkje ", "") + "redusert ut frå inntekt. " },
+                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er lavere enn fribeløpet ditt på " + sb.fribelop.format() + ". " },
+                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er lågare enn fribeløpet ditt på " + sb.fribelop.format() + ". " },
                                         )
                                     }
                                     text(
@@ -1334,16 +1334,16 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                                     showIf(ettFradragErStorreEnn0) {
                                         text(
-                                            bokmal { +"Dette barnetillegget er derfor " + ifElse(fb.netto.equalTo(fb.brutto) and ettFradragErStorreEnn0, "ikke ", "") + "redusert ut fra inntekt. " },
-                                            nynorsk { +"Dette barnetillegget er derfor " + ifElse(fb.netto.equalTo(fb.brutto) and ettFradragErStorreEnn0, "ikkje ", "") + "redusert ut frå inntekt. " },
+                                            bokmal { +"Dette barnetillegget er derfor " + ifElse(fb.netto.equalTo(fb.brutto), "ikke ", "") + "redusert ut fra inntekt. " },
+                                            nynorsk { +"Dette barnetillegget er derfor " + ifElse(fb.netto.equalTo(fb.brutto), "ikkje ", "") + "redusert ut frå inntekt. " },
                                         )
                                     }
                                 }
 
                                 showIf((fb.netto.notEqualTo(0) and sb.netto.notEqualTo(0) and (beggeFradragStorreEnn0 or ingenFradragStorreEnn0) and justeringSerkull0 and justeringFelles0)) {
                                     text(
-                                        bokmal { +"Barnetilleggene er derfor" + ifElse(fb.netto.equalTo(fb.brutto) and sb.netto.equalTo(sb.brutto), "ikke ", "") + "redusert ut fra inntekt. " },
-                                        nynorsk { +"Barnetillegga er derfor" + ifElse(fb.netto.equalTo(fb.brutto) and sb.netto.equalTo(sb.brutto), "ikkje ", "") + "redusert ut frå inntekt. " },
+                                        bokmal { +"Barnetilleggene er derfor " + ifElse(fb.netto.equalTo(fb.brutto) and sb.netto.equalTo(sb.brutto), "ikke ", "") + "redusert ut fra inntekt. " },
+                                        nynorsk { +"Barnetillegga er derfor " + ifElse(fb.netto.equalTo(fb.brutto) and sb.netto.equalTo(sb.brutto), "ikkje ", "") + "redusert ut frå inntekt. " },
                                     )
                                 }
 
