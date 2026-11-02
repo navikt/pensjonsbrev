@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NyhetsvarselId
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.insertIgnore
-import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.select
 import java.time.Instant
 
 class HentBekreftedeNyhetsvarslerHandler(private val transactional: Transactional) {
@@ -18,7 +18,7 @@ class HentBekreftedeNyhetsvarslerHandler(private val transactional: Transactiona
     suspend operator fun invoke(request: Request): Outcome<List<NyhetsvarselId>, Nothing> =
         transactional.rollbackOnFailure {
             success(
-                BekreftetNyhetsvarselTable.selectAll()
+                BekreftetNyhetsvarselTable.select(BekreftetNyhetsvarselTable.nyhetsvarselId)
                     .where { BekreftetNyhetsvarselTable.navIdent eq request.navIdent }
                     .map { it[BekreftetNyhetsvarselTable.nyhetsvarselId].value }
             )
