@@ -854,6 +854,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             includePhrase(KlippInnFraVedtak)
         }
+
         enum class Avslag(override val displayText: String) : SaksbehandlerValgEnum {
             Avslag("Avslag"),
             DelvisAvslag("Delvis avslag"),
@@ -1098,24 +1099,27 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
 
             title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph { text(bokmal { +"I forvaltningsloven § 31 heter det:" }, ITALIC) }
-            paragraph { text(bokmal { +"Selv om klageren har oversittet klagefristen, kan klagen tas under behandling såframt" }, ITALIC) }
-            paragraph { text(bokmal { +"a. Parten eller hans fullmektig ikke kan lastes for å ha oversittet fristen eller for å ha drøyd med klage etterpå, eller b. Det av særlige grunner er rimelig at klagen blir prøvd." }, ITALIC) }
-            paragraph { text(bokmal { +"Ved vurdering av om klage bør tas opp til behandling, skal det også legges vekt på om endring av vedtaket kan medføre skade eller ulempe for andre." }, ITALIC) }
-            paragraph { text(bokmal { +"Klagen kan ikke tas under behandling som klagesak dersom det er gått mer enn ett år siden vedtaket ble truffet." }, ITALIC) }
-            paragraph { text(bokmal { +"Og i forvaltningsloven § 33 andre heter det:" }, ITALIC) }
+            paragraph { text(bokmal { +"I forvaltningsloven § 31 heter det:" }) }
+            paragraph { text(bokmal { +fritekst("Selv om klageren har oversittet klagefristen, kan klagen tas under behandling såframt") }) }
+            paragraph { text(bokmal { +fritekst("a. Parten eller hans fullmektig ikke kan lastes for å ha oversittet fristen eller for å ha drøyd med klage etterpå, eller b. Det av særlige grunner er rimelig at klagen blir prøvd.") }) }
+            paragraph { text(bokmal { +fritekst("Ved vurdering av om klage bør tas opp til behandling, skal det også legges vekt på om endring av vedtaket kan medføre skade eller ulempe for andre.") }) }
+            paragraph { text(bokmal { +fritekst("Klagen kan ikke tas under behandling som klagesak dersom det er gått mer enn ett år siden vedtaket ble truffet.") }) }
+            paragraph { text(bokmal { +"Og i forvaltningsloven § 33 andre heter det:" }) }
             paragraph {
                 text(bokmal {
-                    +"Underinstansen skal foreta de undersøkelser klagen gir grunn til. "
-                    +"Den kan oppheve eller endre vedtaket dersom den finner klagen begrunnet. "
-                    +"Dersom vilkårene for å behandle klagen ikke foreligger, skal underinstansen avvise saken, jfr. dog § 31."
-                }, ITALIC)
+                    +fritekst(
+                        "Underinstansen skal foreta de undersøkelser klagen gir grunn til. "
+                                + "Den kan oppheve eller endre vedtaket dersom den finner klagen begrunnet. "
+                                + "Dersom vilkårene for å behandle klagen ikke foreligger, skal underinstansen avvise saken, jfr. dog § 31."
+                    )
+                })
             }
 
             paragraph {
                 text(bokmal {
                     +"I vedtaket av "
-                    +fritekst("dato") + " ble klager innvilget/ avslått fra "
+                    +fritekst("dato") + " ble klager "
+                    +fritekst("innvilget/avslått") + " fra. "
                     +fritekst("dato") + ". Den "
                     +fritekst("dato") + " mottok vi en klage på dette vedtaket."
                 })
