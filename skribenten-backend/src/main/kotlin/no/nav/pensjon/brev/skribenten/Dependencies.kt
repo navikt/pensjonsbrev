@@ -73,6 +73,11 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.saksbehandler.BekreftNyhetsvarselHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.FjernFavorittHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentBekreftedeNyhetsvarslerHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.LeggTilFavorittHandler
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService

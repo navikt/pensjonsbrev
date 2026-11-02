@@ -1,5 +1,7 @@
-package no.nav.pensjon.brev.skribenten
+package no.nav.pensjon.brev.skribenten.saksbehandler
 
+import no.nav.pensjon.brev.skribenten.SharedPostgres
+import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.db.BekreftetNyhetsvarselTable
 import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.model.NavIdent

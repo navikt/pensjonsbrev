@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten
+package no.nav.pensjon.brev.skribenten.saksbehandler
 
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
