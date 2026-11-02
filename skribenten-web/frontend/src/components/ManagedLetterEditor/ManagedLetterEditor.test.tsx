@@ -40,6 +40,7 @@ function renderEditor(redigeringsflate: Redigeringsflate) {
   const markerSomEndret = { current: null as (() => void) | null };
   const lagreEndringer = { current: null as (() => Promise<void>) | null };
 
+  // biome-ignore lint/correctness/noComponentHookFactories: Created once per test harness, with stable identity across renders.
   const Testkomponent = () => {
     const { setEditorState, savePendingChanges } = useManagedLetterEditorContext();
     markerSomEndret.current = () =>
