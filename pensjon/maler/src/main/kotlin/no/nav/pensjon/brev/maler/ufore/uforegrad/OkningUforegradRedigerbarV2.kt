@@ -1228,38 +1228,24 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
                         showIf((sb.innvilget and not(btFellesInnvilget))) {
                             paragraph {
-                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
                                 showIf(((sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
                                     showIf(sb.inntektBruktIAvkorting.greaterThan(sb.fribelop)) {
                                         text(
-                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er høyere enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " },
-                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er høgare enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er høyere enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikke ", "") + "redusert ut fra inntekt. " },
+                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er høgare enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikkje ", "") + "redusert ut frå inntekt. " },
                                         )
                                     }.orShow {
                                         text(
-                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er lavere enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " },
-                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er lågare enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " },
+                                            bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er lavere enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikke ", "") + "redusert ut fra inntekt. " },
+                                            nynorsk { +"Inntekta di på " + sb.inntektBruktIAvkorting.format() + " er lågare enn fribeløpet ditt på " + sb.fribelop.format() + ". Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikkje ", "") + "redusert ut frå inntekt. " },
                                         )
                                     }
-                                }
-
-                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBInntektBruktiAvkortning <= PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBfribelop )) THEN      INCLUDE ENDIF
-                                showIf(((sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0) and sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop)))) {
                                     text(
-                                        bokmal { +"ikke " },
-                                        nynorsk { +"ikkje " },
+                                        bokmal { +"Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikke ", "") + "redusert ut fra inntekt. " },
+                                        nynorsk { +"Barnetillegget ditt er derfor " + ifElse(sb.inntektBruktIAvkorting.lessThanOrEqual(sb.fribelop), "ikkje ", "") + "redusert ut frå inntekt. " },
                                     )
                                 }
 
-                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
-                                showIf(((sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
-                                    text(
-                                        bokmal { +"redusert ut fra inntekt. " },
-                                        nynorsk { +"redusert ut frå inntekt. " },
-                                    )
-                                }
-
-                                //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_UT_BTSBInnvilget_Ikke_BTFBInnvilget() )) THEN      INCLUDE ENDIF
                                 showIf(((sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
                                     text(
                                         bokmal { +"Inntekten din er " + sb.inntektBruktIAvkorting.format() + ". " },
@@ -1272,13 +1258,12 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                         bokmal { +"Inntekten din er " + sb.inntektBruktIAvkorting.format() + ". Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. " },
                                         nynorsk { +"Inntekta di er " + sb.inntektBruktIAvkorting.format() + ". Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. " },
                                     )
-                                }
-
-                                showIf(sb.justeringsbelopPerAr.notEqualTo(0) and sb.netto.equalTo(0)) {
-                                    text(
-                                        bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
-                                        nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
-                                    )
+                                    showIf(sb.netto.equalTo(0)) {
+                                        text(
+                                            bokmal { +"Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
+                                            nynorsk { +"Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året." },
+                                        )
+                                    }
                                 }
                             }
                         }
