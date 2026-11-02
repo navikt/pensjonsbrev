@@ -459,7 +459,12 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
 
             showIf(instoppholdType.equalTo("reduksjon_fo")) {
                 showIf((pe.ut_forsorgeransvar_ingen_er_false())) {
-                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(
+                        ektefelletilleggInnvilget = ektefelletilleggInnvilget,
+                        gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                        sisteForsorgeransvarErTrue = pe.ut_forsorgeransvar_siste_er_true(),
+                        forsteForsorgeransvarErTrue = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar(),
+                    ))
                 }
 
                 showIf((pe.ut_forsorgeransvar_ingen_er_true())) {

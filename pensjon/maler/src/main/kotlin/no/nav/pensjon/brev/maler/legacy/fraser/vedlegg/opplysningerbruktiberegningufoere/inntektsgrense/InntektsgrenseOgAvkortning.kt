@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntektsgrense
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse
 import no.nav.pensjon.brev.template.Expression
@@ -13,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class InntektsgrenseOgAvkortning(
     val pe: Expression<PEgruppe10>,
+    val visForklaringOmInntektEtterUfoerhet: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
@@ -156,7 +156,7 @@ data class InntektsgrenseOgAvkortning(
             }
         }
 
-        showIf(pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109")){
+        showIf(visForklaringOmInntektEtterUfoerhet){
             title1 {
                 text (
                     bokmal { + "Slik fastsetter vi inntekten din etter at du ble ufør" },

@@ -1,7 +1,8 @@
 app-name: "pensjon-pdf-bygger"
 brevbaker-app: "pensjon-brevbaker"
-ingresses: []
 minReplicas: 6
+ingresses:
+  - "https://pensjon-pdf-bygger.intern.nav.no"
 
 inbound:
   - name: pensjon-selvbetjening-soknad-alder-backend
@@ -10,3 +11,6 @@ inbound:
   - name: pensjon-pen
     namespace: pensjondeployer
     cluster: prod-fss
+  - name: su-se-bakover
+    namespace: supstonad
+    cluster: prod-gcp

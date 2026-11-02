@@ -1,21 +1,21 @@
 package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
-import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I2
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
 import no.nav.pensjon.brev.template.saksbehandlervalg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.uforeAvslagPendata.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.*
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I2
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.uforeAvslagPendata.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.uforeAvslagPendata.vurdering
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
@@ -99,13 +99,7 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
                     nynorsk { +"Vedtaket har vi gjort etter folketrygdlova §§ 12-5 til 12-7 og 12-10." })
             }
 
-            showIf(pesysData.bosattUtland) {
-                showIf(visAapAvsnitt) {
-                    includePhrase(Felles.DetteKanDuGjoreNaUtland)
-                }
-            }.orShow {
-                includePhrase(Felles.DetteKanDuGjoreNa)
-            }
+            includePhrase(Felles.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilAKlageLang)
             includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)

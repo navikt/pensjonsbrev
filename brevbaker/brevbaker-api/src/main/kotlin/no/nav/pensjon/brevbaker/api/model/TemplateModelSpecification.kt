@@ -26,7 +26,7 @@ class TemplateModelSpecification @InternKonstruktoer constructor(val types: Map<
             override fun toString() = "Scalar(nullable=$nullable, kind=$kind, displayText=$displayText, type='$type')"
         }
 
-        class Enum(override val nullable: Boolean, val values: Set<EnumEntry>, override val displayText: String? = null) : FieldType() {
+        class Enum(override val nullable: Boolean, val values: List<EnumEntry>, override val displayText: String? = null) : FieldType() {
             override val type = "enum"
 
             override fun equals(other: Any?): Boolean {

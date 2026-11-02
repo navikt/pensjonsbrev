@@ -123,6 +123,7 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
                 institusjonsoppholdGjeldende = institusjonsoppholdGjeldende,
                 bruker = bruker,
                 beregnetSomEnsligPgaInstopphold = beregnetSomEnsligPgaInstopphold,
+                forsteVirkFoer1998 = krav.forsteVirkFoer1998
             )
         )
 

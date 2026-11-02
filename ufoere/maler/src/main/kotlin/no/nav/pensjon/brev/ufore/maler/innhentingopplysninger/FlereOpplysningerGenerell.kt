@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -14,7 +13,6 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OP
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -51,10 +49,7 @@ object FlereOpplysningerGenerell : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +fritekst("Fyll inn de opplysningene som mangler") },
                     nynorsk { +fritekst("Fyll inn dei opplysningane som manglar") })
             }
-            paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL}. Dersom du sender opplysningene med posten, må de sendes inn sammen med vedlagt forside til oppgitt adresse på forsidearket snarest mulig. " },
-                    nynorsk { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklast og raskast å ettersende digitalt. Du finn skjemaoversikta og rettleiing på nettsidene våre ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL}. Dersom du sender opplysningane med posten, må dei sendast inn saman med vedlagt forside til oppgitt adresse på forsidearket snarast mogleg. " })
-            }
+            includePhrase(Felles.EttersendeDokumentasjonMedForside)
             includePhrase(Felles.MeldFraOmEndringer)
             includePhrase(Felles.HarDuSporsmal)
         }

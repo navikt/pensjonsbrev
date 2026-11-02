@@ -1,35 +1,46 @@
 import { css } from "@emotion/react";
 import { BodyLong, Box, Heading, Popover, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
-import { createContext, Fragment, type ReactNode, useCallback, useContext, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  Fragment,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { type LetterModelSpecification } from "~/api/brevbakerTypes";
 import {
   type AssocOp,
-  type AttachmentV2,
-  type ConditionalV2,
-  ContentOrControlStructureTypeV2,
-  type ContentOrControlStructureV2,
+  type Attachment,
+  type Conditional,
+  type ContentOrControlStructure,
+  ContentOrControlStructureType,
   type DataSource,
-  ElementTypeV2,
-  type ElementV2,
-  type ElseIfV2,
+  type Element,
+  ElementType,
+  type ElseIf,
   type Expr,
   type ExprFieldPath,
   type ExprLiteral,
   ExprType,
-  type ForEachV2,
-  type RowV2,
-  type TableV2,
-  type TemplateDocumentationV2,
-} from "~/api/brevbakerTypesV2";
+  type ForEach,
+  type ParagraphContent,
+  type Row,
+  type Table,
+  type TemplateDocumentation,
+} from "~/api/templateDocumentationTypes";
 import { trimClassName } from "~/components/DataClasses";
 
 /**
  * Navnene (normalisert med `trimClassName`) på data-klassene som faktisk finnes i malens
  * modellspesifikasjon. `FieldPathLink` bruker settet til å avgjøre om en `leafType` skal
  * lenke til en data-klasse eller til et felt, i stedet for å gjette ut fra typenavnet -
- * `leafType` er ikke garantert fullt kvalifisert (se `TemplateDocumentationRendererV2Expr.kt`).
+ * `leafType` er ikke garantert fullt kvalifisert (se `TemplateDocumentationRendererExpr.kt`).
  *
  * `undefined` betyr at spesifikasjonen ikke er tilgjengelig (f.eks. når `ExprToText` rendres
  * frittstående i enhetstester); da faller vi tilbake på `isPrimitiveTypeByName`.
@@ -53,14 +64,14 @@ export function KnownDataClassesProvider({
 /**
  * Sjekker om en tabells rader (rekursivt gjennom FOR_EACH) inneholder minst én CONDITIONAL, som
  * avgjør om vi må reservere en egen markør-"gutter" (utenfor selve den scrollbare tabell-boksen,
- * se `TableV2View`) med kompakte klikkbare If/Else If/Else-markører for den tabellen.
+ * se `TableView`) med kompakte klikkbare If/Else If/Else-markører for den tabellen.
  */
-function hasConditionalRows(rows: ContentOrControlStructureV2<RowV2>[]): boolean {
+function hasConditionalRows(rows: ContentOrControlStructure<Row>[]): boolean {
   return rows.some((row) => {
-    if (row.controlStructureType === ContentOrControlStructureTypeV2.CONDITIONAL) {
+    if (row.controlStructureType === ContentOrControlStructureType.CONDITIONAL) {
       return true;
     }
-    if (row.controlStructureType === ContentOrControlStructureTypeV2.FOR_EACH) {
+    if (row.controlStructureType === ContentOrControlStructureType.FOR_EACH) {
       return hasConditionalRows(row.body);
     }
     return false;
@@ -70,14 +81,12 @@ function hasConditionalRows(rows: ContentOrControlStructureV2<RowV2>[]): boolean
 /** Rendrer cellene til én tabellrad som direkte grid-elementer (ingen wrapper-div), med
  * eksplisitt `gridRow`/`gridColumn` - påkrevd siden radene ikke lenger plasseres via
  * nettleserens implisitte auto-placement (se `layoutTableRows`). */
-function renderTableRowCells(row: RowV2, gridRow: number, key: string): ReactNode {
+function renderTableRowCells(row: Row, gridRow: number, key: string): ReactNode {
   return (
     <Fragment key={key}>
       {row.cells.map((cell, index) => (
         <span className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
-          {cell.text.map((t, textIndex) => (
-            <ContentOrControlStructureComponentV2 cocs={t} key={textIndex} />
-          ))}
+          <CocsList items={cell.text} />
         </span>
       ))}
     </Fragment>
@@ -86,7 +95,7 @@ function renderTableRowCells(row: RowV2, gridRow: number, key: string): ReactNod
 
 /**
  * Kompakt klikkbar If/Else If-markør (▸/▾), eller et statisk "Else"-merke uten klikk-håndtering
- * (Else har ikke noe predikat å vise/skjule) - plasseres i markør-gutteren (se `TableV2View`),
+ * (Else har ikke noe predikat å vise/skjule) - plasseres i markør-gutteren (se `TableView`),
  * på SAMME grid-rad (`gridRow`, delt med tabellens hovedgrid via CSS subgrid) som det første
  * synlige elementet i grenen den hører til (enten selve predikat-raden, når den er ekspandert,
  * eller den første betingede tabellraden, når den er kollapset) - markøren flytter seg altså
@@ -133,15 +142,15 @@ function TableRowMarker({
  * PARALLELLE, flate lister av React-noder - `contentItems` (selve tabellcellene + eventuelle
  * full-bredde predikat-/"For hver X i:"-rader, rendres inni den scrollbare `.table-scroll`-
  * gridet) og `markerItems` (de kompakte ▸/▾/"?"-markørene, rendres i den separate, IKKE-
- * scrollbare markør-gutteren til venstre for tabellen - se `TableV2View`) - som deler EKSAKT
+ * scrollbare markør-gutteren til venstre for tabellen - se `TableView`) - som deler EKSAKT
  * samme `gridRow`-nummerering via CSS subgrid, slik at markøren alltid havner visuelt ved siden
  * av riktig rad, UTEN å måtte JS-måle rad-høyder (som varierer pga. tekstbrytning) og UTEN å
  * være en del av selve det scrollbare gridet (som ville klippet en markør plassert til venstre
  * for x=0, se CSS `overflow: auto`). `openState`/`toggle` er løftet til tabellens toppnivå
- * (`TableV2View`) nettopp fordi begge listene må lese SAMME tilstand for å telle rad-numre likt.
+ * (`TableView`) nettopp fordi begge listene må lese SAMME tilstand for å telle rad-numre likt.
  */
 function layoutTableRows(
-  rows: ContentOrControlStructureV2<RowV2>[],
+  rows: ContentOrControlStructure<Row>[],
   path: string,
   startRow: number,
   openState: Record<string, boolean>,
@@ -153,12 +162,12 @@ function layoutTableRows(
 
   rows.forEach((item, index) => {
     const itemPath = `${path}.${index}`;
-    if (item.controlStructureType === ContentOrControlStructureTypeV2.CONTENT) {
+    if (item.controlStructureType === ContentOrControlStructureType.CONTENT) {
       contentItems.push(renderTableRowCells(item.content, row, itemPath));
       row += 1;
       return;
     }
-    if (item.controlStructureType === ContentOrControlStructureTypeV2.FOR_EACH) {
+    if (item.controlStructureType === ContentOrControlStructureType.FOR_EACH) {
       contentItems.push(
         <div className="expression" key={itemPath} style={{ gridColumn: "1 / -1", gridRow: row }}>
           <code>For hver X i:</code> <ExprToText expr={item.items} />
@@ -179,7 +188,7 @@ function layoutTableRows(
       key: string;
       label: string;
       predicate: Expr | null;
-      branch: ContentOrControlStructureV2<RowV2>[];
+      branch: ContentOrControlStructure<Row>[];
     }[] = [
       { branch: item.showIf, key: `${itemPath}.if`, label: "If", predicate: item.predicate },
       ...item.elseIf.map((elseIf, elseIfIndex) => ({
@@ -243,7 +252,7 @@ function layoutTableRows(
  * hvordan If/Else If plasseres i brevets egen marg utenfor blokk-innhold (se
  * `.conditional-predicate` i appStyles.css).
  */
-function TableV2View({ content }: { content: TableV2 }) {
+function TableView({ content }: { content: Table }) {
   const [openState, setOpenState] = useState<Record<string, boolean>>({});
   const toggle = useCallback((key: string) => {
     setOpenState((state) => ({ ...state, [key]: !state[key] }));
@@ -319,9 +328,7 @@ function TableV2View({ content }: { content: TableV2 }) {
       >
         {content.header.cells.map((cell, index) => (
           <b className="cell" key={index} style={{ gridColumn: index + 1, gridRow: 1 }}>
-            {cell.text.map((t, textIndex) => (
-              <ContentOrControlStructureComponentV2 cocs={t} key={textIndex} />
-            ))}
+            <CocsList items={cell.text} />
           </b>
         ))}
         {contentItems}
@@ -331,154 +338,220 @@ function TableV2View({ content }: { content: TableV2 }) {
 }
 
 /**
- * Rendering for TemplateDocumentationRendererV2 ("v2"). Speiler strukturen i
- * routes/template.$malType.$templateId.tsx sin v1-rendering (samme CSS-klasser:
- * .preview/.expression/.conditional/.show-if/.show-else), men uttrykk (Expr) er
- * et generalisert sealed-hierarki i stedet for v1s løse operator+first+second-tre.
+ * Rendering for TemplateDocumentationRenderer. Uttrykkene bruker et generalisert
+ * sealed-hierarki, slik at strukturen kan vises lesbart og interaktivt.
  *
  * `FieldPath.leafType` er en fullt kvalifisert Kotlin-type-streng for det siste
  * segmentet i feltstien (f.eks. "no.nav.pensjon.brevbaker.api.model.SomeDto?" eller
  * "kotlin.String"), satt av backend-rendereren. Vi bruker den til å lenke feltstier
- * til DataClasses-sidepanelet, på samme måte som v1 gjør for postfix-uttrykk.
+ * til DataClasses-sidepanelet.
  */
-export function DocumentV2({
-  templateDocumentation,
-}: {
-  templateDocumentation: TemplateDocumentationV2 | AttachmentV2;
-}) {
+export function Document({ templateDocumentation }: { templateDocumentation: TemplateDocumentation | Attachment }) {
   return (
     <Box background="default" className="preview letter-page" padding="space-48">
       <Heading level="1" size="large" spacing>
         {templateDocumentation.title.map((cocs, index) => (
-          <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
+          <ContentOrControlStructureComponent cocs={cocs} key={index} />
         ))}
       </Heading>
       <div>
         {templateDocumentation.outline.map((cocs, index) => (
-          <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
+          <ContentOrControlStructureComponent cocs={cocs} key={index} />
         ))}
       </div>
     </Box>
   );
 }
 
-function ContentOrControlStructureComponentV2<E extends ElementV2>({ cocs }: { cocs: ContentOrControlStructureV2<E> }) {
+/**
+ * Er hele grenen ren løpende tekst (tekstliteraler/-uttrykk, evt. nøstede betingelser av samme
+ * slag)? Kun da kan en `Conditional` rendres inline midt i teksten uten å bryte linjen.
+ */
+function isInlineText<E extends Element>(items: ContentOrControlStructure<E>[]): boolean {
+  return items.every(isInlineItem);
+}
+
+function isInlineItem<E extends Element>(item: ContentOrControlStructure<E>): boolean {
+  if (item.controlStructureType === ContentOrControlStructureType.CONDITIONAL) {
+    return isInlineConditional(item);
+  }
+  return (
+    item.controlStructureType === ContentOrControlStructureType.CONTENT &&
+    (item.content.elementType === ElementType.PARAGRAPH_TEXT_LITERAL ||
+      item.content.elementType === ElementType.PARAGRAPH_TEXT_EXPRESSION)
+  );
+}
+
+function isInlineConditional<E extends Element>(conditional: Conditional<E>): boolean {
+  return (
+    isInlineText(conditional.showIf) &&
+    conditional.elseIf.every((elseIf) => isInlineText(elseIf.showIf)) &&
+    isInlineText(conditional.showElse)
+  );
+}
+
+/**
+ * Et avsnitt der en betingelse er eneste barn er i praksis en betinget avsnitt-blokk, og skal
+ * vises som det: betingelsen utenfor (med markør i margen), og hver gren som sitt eget avsnitt.
+ * Uten dette ville betingelsen blitt rendret som en blokk INNI avsnittet, med innholdet adskilt
+ * fra avsnittets egen ramme.
+ */
+function liftConditionalOutOfParagraph(
+  conditional: Conditional<ParagraphContent>,
+  index: number,
+): Conditional<Element> {
+  const wrap = (branch: ContentOrControlStructure<ParagraphContent>[]): ContentOrControlStructure<Element>[] =>
+    branch.length === 0
+      ? []
+      : [
+          {
+            controlStructureType: ContentOrControlStructureType.CONTENT,
+            content: { elementType: ElementType.PARAGRAPH, index, paragraph: branch },
+          },
+        ];
+  return {
+    ...conditional,
+    showIf: wrap(conditional.showIf),
+    elseIf: conditional.elseIf.map((elseIf) => ({ ...elseIf, showIf: wrap(elseIf.showIf) })),
+    showElse: wrap(conditional.showElse),
+  };
+}
+
+/**
+ * Rendrer søsken i en tekst-/avsnittsflyt. En betingelse som bare styrer løpende tekst og står
+ * sammen med annet innhold (typisk ett ord midt i en setning) rendres inline, slik at den ikke
+ * bryter linjen. Står betingelsen alene beholdes blokkvisningen med markør i margen.
+ */
+function CocsList<E extends Element>({
+  items,
+  inline = false,
+}: {
+  items: ContentOrControlStructure<E>[];
+  inline?: boolean;
+}) {
+  return items.map((cocs, index) => (
+    <ContentOrControlStructureComponent cocs={cocs} inline={inline || items.length > 1} key={index} />
+  ));
+}
+
+function ContentOrControlStructureComponent<E extends Element>({
+  cocs,
+  inline = false,
+}: {
+  cocs: ContentOrControlStructure<E>;
+  inline?: boolean;
+}) {
   switch (cocs.controlStructureType) {
-    case ContentOrControlStructureTypeV2.CONDITIONAL: {
-      return <ConditionalComponentV2 conditional={cocs} />;
+    case ContentOrControlStructureType.CONDITIONAL: {
+      if (inline && isInlineConditional(cocs)) {
+        return <InlineConditional conditional={cocs} />;
+      }
+      return <ConditionalComponent conditional={cocs} />;
     }
-    case ContentOrControlStructureTypeV2.CONTENT: {
-      return <ContentComponentV2 content={cocs.content} />;
+    case ContentOrControlStructureType.CONTENT: {
+      return <ContentComponent content={cocs.content} />;
     }
-    case ContentOrControlStructureTypeV2.FOR_EACH: {
-      return <ForEachComponentV2 content={cocs} />;
+    case ContentOrControlStructureType.FOR_EACH: {
+      return <ForEachComponent content={cocs} />;
     }
   }
 }
 
-function ForEachComponentV2({ content }: { content: ForEachV2<ElementV2> }) {
+function ForEachComponent({ content }: { content: ForEach<Element> }) {
   return (
     <>
       <div className="expression">
         <code>For hver X i:</code> <ExprToText expr={content.items} />
       </div>
       {content.body.map((b, index) => (
-        <ContentOrControlStructureComponentV2 cocs={b} key={index} />
+        <ContentOrControlStructureComponent cocs={b} key={index} />
       ))}
     </>
   );
 }
 
-function ContentComponentV2({ content }: { content: ElementV2 }) {
+function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
-    case ElementTypeV2.TITLE1: {
+    case ElementType.TITLE1: {
       return (
-        <Heading level="2" size="medium" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+        <Heading data-block-index={content.index} level="2" size="medium" spacing>
+          <CocsList items={content.text} />
         </Heading>
       );
     }
-    case ElementTypeV2.TITLE2: {
+    case ElementType.TITLE2: {
       return (
-        <Heading level="3" size="small" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+        <Heading data-block-index={content.index} level="3" size="small" spacing>
+          <CocsList items={content.text} />
         </Heading>
       );
     }
-    case ElementTypeV2.TITLE3: {
+    case ElementType.TITLE3: {
       return (
-        <Heading level="4" size="xsmall" spacing>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+        <Heading data-block-index={content.index} level="4" size="xsmall" spacing>
+          <CocsList items={content.text} />
         </Heading>
       );
     }
-    case ElementTypeV2.PARAGRAPH_TEXT_LITERAL: {
+    case ElementType.PARAGRAPH_TEXT_LITERAL: {
       return <span className="paragraph-text-literal">{content.text}</span>;
     }
-    case ElementTypeV2.PARAGRAPH_TEXT_EXPRESSION: {
+    case ElementType.PARAGRAPH_TEXT_EXPRESSION: {
       return (
         <span className="expression">
-          <ExprToText expr={content.expression} />
+          <TextValueExpr expr={content.expression} />
         </span>
       );
     }
-    case ElementTypeV2.PARAGRAPH: {
+    case ElementType.PARAGRAPH: {
+      const [only] = content.paragraph;
+      if (content.paragraph.length === 1 && only.controlStructureType === ContentOrControlStructureType.CONDITIONAL) {
+        return <ConditionalComponent conditional={liftConditionalOutOfParagraph(only, content.index)} />;
+      }
       return (
-        <BodyLong as="div" spacing>
-          {content.paragraph.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+        <BodyLong as="div" data-block-index={content.index} spacing>
+          <CocsList items={content.paragraph} />
         </BodyLong>
       );
     }
-    case ElementTypeV2.PARAGRAPH_TABLE: {
-      return <TableV2View content={content} />;
+    case ElementType.PARAGRAPH_TABLE: {
+      return <TableView content={content} />;
     }
-    case ElementTypeV2.PARAGRAPH_TABLE_ROW: {
-      // Urealistisk i praksis - PARAGRAPH_TABLE_ROW (RowV2) rendres alltid direkte av TableV2View
+    case ElementType.PARAGRAPH_TABLE_ROW: {
+      // Urealistisk i praksis - PARAGRAPH_TABLE_ROW (Row) rendres alltid direkte av TableView
       // sin egen layout-logikk (se `renderTableRowCells`), aldri via denne generiske switchen.
-      // Beholdt kun for at ElementV2-unionen (som inkluderer RowV2) skal være uttømmende dekket.
+      // Beholdt kun for at Element-unionen (som inkluderer Row) skal være uttømmende dekket.
       return (
         <>
           {content.cells.map((cell, index) => (
             <span className="cell" key={index}>
-              {cell.text.map((t, index) => (
-                <ContentOrControlStructureComponentV2 cocs={t} key={index} />
-              ))}
+              <CocsList items={cell.text} />
             </span>
           ))}
         </>
       );
     }
-    case ElementTypeV2.PARAGRAPH_ITEMLIST: {
+    case ElementType.PARAGRAPH_ITEMLIST: {
       const ListTag = content.type === "NUMMERERT_LISTE" ? "ol" : "ul";
       return (
         <ListTag>
           {content.items.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
+            <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
         </ListTag>
       );
     }
-    case ElementTypeV2.PARAGRAPH_ITEMLIST_ITEM: {
+    case ElementType.PARAGRAPH_ITEMLIST_ITEM: {
       return (
         <li>
-          {content.text.map((cocs, index) => (
-            <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-          ))}
+          <CocsList items={content.text} />
         </li>
       );
     }
   }
 }
 
-function ConditionalComponentV2<E extends ElementV2>({ conditional }: { conditional: ConditionalV2<E> }) {
+function ConditionalComponent<E extends Element>({ conditional }: { conditional: Conditional<E> }) {
   // Kun når det finnes flere enn én gren (If pluss minst én Else If/Else) gir det mening å tegne
   // en forbindelseslinje mellom markørene i margen - med bare "If" er det ingenting å forbinde.
   const hasMultipleBranches = conditional.elseIf.length > 0 || conditional.showElse.length > 0;
@@ -486,25 +559,64 @@ function ConditionalComponentV2<E extends ElementV2>({ conditional }: { conditio
     <div className={hasMultipleBranches ? "conditional conditional-multi-branch" : "conditional"}>
       <div className="show-if">
         <ConditionalPredicateDisclosure label="If" predicate={conditional.predicate} />
-        {conditional.showIf.map((cocs, index) => (
-          <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-        ))}
+        <CocsList items={conditional.showIf} />
       </div>
       {conditional.elseIf.map((elseIf, index) => (
-        <ShowElseIfV2 elseIf={elseIf} key={index} />
+        <ShowElseIf elseIf={elseIf} key={index} />
       ))}
-      <ShowElseV2 cocs={conditional.showElse} />
+      <ShowElse cocs={conditional.showElse} />
     </div>
   );
 }
 
-function ShowElseIfV2<E extends ElementV2>({ elseIf }: { elseIf: ElseIfV2<E> }) {
+/**
+ * Inline-variant av en betingelse (se `CocsList`): teksten flyter videre i setningen, og hver
+ * gren får en liten markør foran seg som avslører betingelsen i en popover - samme mønster som
+ * den kompakte ternære visningen, men med grenene som vanlig tekst i stedet for en liten
+ * knapp, siden grenene selv kan inneholde uttrykk (og knapper kan ikke nøstes).
+ */
+function InlineConditional<E extends Element>({ conditional }: { conditional: Conditional<E> }) {
+  const branches: { label: string; predicate?: Expr; body: ContentOrControlStructure<E>[] }[] = [
+    { body: conditional.showIf, label: "If", predicate: conditional.predicate },
+    ...conditional.elseIf.map((elseIf) => ({ body: elseIf.showIf, label: "Else If", predicate: elseIf.predicate })),
+    { body: conditional.showElse, label: "Else" },
+  ];
+  return (
+    <span className="inline-conditional">
+      {branches
+        .filter((branch) => branch.body.length > 0)
+        .map((branch, index) => (
+          <span className="inline-conditional-branch" key={index}>
+            <span className="inline-conditional-marker">
+              <ExprPopover
+                ariaLabel={branch.label}
+                content={
+                  <>
+                    <code>{branch.label}</code>
+                    {branch.predicate && (
+                      <>
+                        {" "}
+                        <ExprToText expr={branch.predicate} />
+                      </>
+                    )}
+                  </>
+                }
+              >
+                ▸
+              </ExprPopover>
+            </span>
+            <CocsList inline items={branch.body} />
+          </span>
+        ))}
+    </span>
+  );
+}
+
+function ShowElseIf<E extends Element>({ elseIf }: { elseIf: ElseIf<E> }) {
   return (
     <div className="show-if">
       <ConditionalPredicateDisclosure label="Else If" predicate={elseIf.predicate} />
-      {elseIf.showIf.map((cocs, index) => (
-        <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
-      ))}
+      <CocsList items={elseIf.showIf} />
     </div>
   );
 }
@@ -540,16 +652,14 @@ function ConditionalPredicateDisclosure({ label, predicate }: { label: string; p
   );
 }
 
-function ShowElseV2<E extends ElementV2>({ cocs }: { cocs: ContentOrControlStructureV2<E>[] }) {
+function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
   if (cocs.length === 0) {
     return null;
   }
   return (
     <div className="show-else">
       <ConditionalPredicateDisclosure label="Else" />
-      {cocs.map((a, index) => (
-        <ContentOrControlStructureComponentV2 cocs={a} key={index} />
-      ))}
+      <CocsList items={cocs} />
     </div>
   );
 }
@@ -604,7 +714,7 @@ function dataSourceLabel(source: DataSource): string {
   switch (source.dataSourceType) {
     case "SCOPE": {
       // Praktisk talt alle felt-uttrykk starter i "argument"-scopet (brevets Dto-rot), så det
-      // gir bare støy å skrive det ut hver gang – samme konvensjon som v1s ExpressionToText,
+      // gir bare støy å skrive det ut hver gang,
       // som returnerer "" for scopeName "argument". "felles"/"language" er egne, mindre
       // brukte scopes og beholder navnet sitt for å unngå tvetydighet.
       return source.name === "argument" ? "" : source.name;
@@ -814,7 +924,7 @@ function formatterPhrase(formatterName: string): string {
 /**
  * Navnebasert fallback-heuristikk for om `leafType` er en primitiv/innebygd type
  * ("kotlin."/"java.") i stedet for en av modellens egne data-klasser. Samme konvensjon som
- * v1 sin ExpressionToText, men den er upålitelig: håndskrevne selectors setter `propertyType`
+ * en enkel navneheuristikk, men den er upålitelig: håndskrevne selectors setter `propertyType`
  * til kortnavn som "Int" eller "LocalDate" (se `Date.kt`/`Number.kt`), som denne
  * heuristikken feilaktig ville klassifisert som en data-klasse. Brukes derfor kun når
  * modellspesifikasjonen ikke er tilgjengelig (se `KnownDataClassesContext`).
@@ -985,26 +1095,72 @@ function isSimpleLiteral(expr: Expr): expr is ExprLiteral {
 }
 
 /**
- * Et `Conditional` der begge grener bare er tekst-/verdiliteraler (svært vanlig - malforfattere
- * bruker ofte `ifElse(pred, "en tekst", "")` eller `ifElse(pred, "ja", "nei")` for kortfattede
- * setningsvarianter) trenger ikke den fulle if/then/else-blokkvisningen: selve predikatet er
- * ofte bare "hvorfor akkurat denne varianten", ikke noe leseren trenger foran seg hele tiden.
- * Vi viser i stedet kun de(n) faktiske teksten(e), med predikatet tilgjengelig i en popover.
+ * Den kompakte teksten en `Conditional`-gren kan reduseres til, eller `null` om grenen ikke har
+ * noen selvforklarende korttekst og derfor må vises i full if/then/else-blokk:
+ *
+ * - LITERAL: rå literal-tekst UTEN anførselstegn - `[`/`]`/`|`-markørene i den kompakte
+ *   visningen avgrenser allerede verdien tydelig nok, og verdien er som regel brevtekst som
+ *   skal se ut som brevtekst (ikke en generisk kodeverdi som trenger kvotering).
+ * - FORMAT med `exampleText`: den ferdig formatterte eksempelteksten backend har produsert
+ *   (f.eks. `mars 2024` for `foedselsdato.formatMonthYear()`). En slik gren vises uansett som
+ *   sin eksempeltekst når den står alene (se `ExprType.FORMAT`), så et `ifElse` mellom to
+ *   formatterte verdier fortjener nøyaktig samme kompakte behandling som to rene literaler -
+ *   i stedet for at et langt predikat får dominere raden (typisk i tabeller).
+ *
+ * Bevisst IKKE inkludert: FIELD_PATH og andre uttrykk. De har ingen konkret eksempelverdi å
+ * vise, så en kompakt visning ville skjult predikatet uten å gi leseren noe konkret igjen.
  */
-function isCompactLiteralConditional(
-  expr: Expr,
-): expr is { exprType: ExprType.CONDITIONAL_EXPR; predicate: Expr; ifTrue: ExprLiteral; ifElse: ExprLiteral } {
-  return expr.exprType === ExprType.CONDITIONAL_EXPR && isSimpleLiteral(expr.ifTrue) && isSimpleLiteral(expr.ifElse);
+function compactBranchText(expr: Expr): string | null {
+  if (expr.exprType === ExprType.LITERAL) {
+    return expr.value;
+  }
+  if (expr.exprType === ExprType.FORMAT) {
+    return expr.exampleText;
+  }
+  return null;
 }
 
 /**
- * Rå literal-tekst (uten anførselstegn) - brukes KUN i den kompakte Conditional-visningen, der
- * `[`/`]`/`|`-markørene allerede avgrenser verdien tydelig nok, og selve verdien som regel er
- * brevtekst som skal se ut som brevtekst (ikke en generisk kodeverdi som trenger kvotering).
+ * Er begge grenene i et `Conditional` rene literaler? Da er selve grenene fullt ut synlige i
+ * den kompakte markøren, og popoveren trenger kun å avsløre predikatet. Er minst én gren et
+ * uttrykk (f.eks. en formattert verdi) viser vi i stedet HELE if/then/else-strukturen i
+ * popoveren, ellers ville leseren ikke kunne se hvilket felt hver eksempelverdi kommer fra.
  */
-function compactLiteralText(literal: ExprLiteral): string {
-  return literal.value;
+function isLiteralOnlyConditional(ifTrue: Expr, ifElse: Expr): boolean {
+  return isSimpleLiteral(ifTrue) && isSimpleLiteral(ifElse);
 }
+
+/**
+ * if/then/else har naturlig tre "ledd" og drar samme nytte av linjeskift+innrykk som en
+ * AND/OR-kjede - se `.expr-block` i appStyles.css. Predikatet parentetiseres fortsatt
+ * eksplisitt (i motsetning til AND/OR-ledd) siden det ikke er et likestilt ledd i samme
+ * kjede, men selve betingelsen for grenene under.
+ */
+function ConditionalExprBlock({ predicate, ifTrue, ifElse }: { predicate: Expr; ifTrue: Expr; ifElse: Expr }) {
+  return (
+    <div className="expr-block">
+      <div className="expr-block-row">
+        <span className="expr-operator">if</span> (<ExprToText expr={predicate} />)
+      </div>
+      <div className="expr-block-row">
+        <span className="expr-operator">then</span> <MaybeParens expr={ifTrue} />
+      </div>
+      <div className="expr-block-row">
+        <span className="expr-operator">else</span> <MaybeParens expr={ifElse} />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Er vi allerede INNI et popover-innhold? En popover er selve stedet der den fulle strukturen
+ * skal avsløres, så nye, nøstede popover-markører der ville vært både utilgjengelige (den ytre
+ * triggerens `onMouseLeave` lukker popoveren før musen rekker frem til innholdet) og
+ * meningsløse (de ville skjult nettopp det man åpnet popoveren for å se). Uttrykk som ellers
+ * rendres kompakt bak en popover - i praksis `FORMAT` med eksempeltekst - rendres derfor i
+ * sin fulle form her.
+ */
+const InsideExprPopoverContext = createContext(false);
 
 /**
  * Viser `children` (en kompakt tekst-markør, f.eks. Conditional sin `[tekst]`/`tekst1|tekst2`
@@ -1015,36 +1171,77 @@ function compactLiteralText(literal: ExprLiteral): string {
 function ExprPopover({ ariaLabel, content, children }: { ariaLabel: string; content: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const show = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    setOpen(true);
+  }, []);
+  // Forsinkelsen lar peker/fokus flytte seg fra trigger til innholdet (f.eks. en feltlenke) uten at det lukkes.
+  const hideSoon = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpen(false), 200);
+  }, []);
+  const close = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    setOpen(false);
+  }, []);
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
 
   return (
     <>
       <button
         aria-label={ariaLabel}
         className="expr-popover-trigger"
-        onBlur={() => setOpen(false)}
-        onFocus={() => setOpen(true)}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
+        onBlur={hideSoon}
+        onFocus={show}
+        onMouseEnter={show}
+        onMouseLeave={hideSoon}
         ref={anchorRef}
         type="button"
       >
         {children}
       </button>
-      <Popover anchorEl={anchorRef.current} onClose={() => setOpen(false)} open={open} placement="top">
-        <Popover.Content>
-          <span className="expression">{content}</span>
+      <Popover anchorEl={anchorRef.current} onClose={close} open={open} placement="top">
+        <Popover.Content onBlur={hideSoon} onFocus={show} onMouseEnter={show} onMouseLeave={hideSoon}>
+          <InsideExprPopoverContext.Provider value={true}>
+            <span className="expression">{content}</span>
+          </InsideExprPopoverContext.Provider>
         </Popover.Content>
       </Popover>
     </>
   );
 }
 
+function isEmptyStringLiteral(expr: Expr): boolean {
+  return expr.exprType === ExprType.LITERAL && expr.kind === "STRING" && expr.value === "";
+}
+
+/**
+ * Uttrykk som vises som selve brevteksten. En tom streng som `?:`-fallback gir ingen synlig
+ * tekst og skjules derfor kun her; i predikater og popovere endrer den meningen og vises.
+ * Felt med kjent eksempelverdi vises som eksempeltekst, med fullt uttrykk i popover.
+ */
+function TextValueExpr({ expr }: { expr: Expr }) {
+  const hasEmptyFallback = expr.exprType === ExprType.NULL_COALESCE && isEmptyStringLiteral(expr.fallback);
+  const value = hasEmptyFallback ? expr.value : expr;
+  const example = value.exprType === ExprType.FIELD_PATH ? value.exampleText : undefined;
+  if (example) {
+    return (
+      <ExprPopover ariaLabel="Vis fullt uttrykk" content={<ExprToText expr={expr} />}>
+        <span className="expr-literal">{example}</span>
+      </ExprPopover>
+    );
+  }
+  return <ExprToText expr={value} />;
+}
+
 export function ExprToText({ expr }: { expr: Expr }) {
+  const insidePopover = useContext(InsideExprPopoverContext);
   switch (expr.exprType) {
     case ExprType.LITERAL: {
-      // Strengliteraler vises med anførselstegn, slik at f.eks. en tom streng-fallback i
-      // `ifNull("")` fortsatt er synlig i teksten (NullCoalesce sin fallback ville ellers
-      // fremstått som et usynlig/tomt felt).
+      // Strengliteraler vises med anførselstegn, slik at f.eks. en tom streng i en sammenligning
+      // fortsatt er synlig (ellers ville den fremstått som et usynlig/tomt felt).
       if (expr.kind === "STRING") {
         return <span className="expr-literal">"{expr.value}"</span>;
       }
@@ -1135,7 +1332,7 @@ export function ExprToText({ expr }: { expr: Expr }) {
       // faktiske `LocalizedFormatter`), vis det i stedet for den abstrakte
       // "<uttrykk> formatert som <formatterer>"-frasen - eksempelet ligner det leseren faktisk
       // vil se i et ferdig brev. Full struktur er fortsatt tilgjengelig via popover.
-      if (expr.exampleText !== null) {
+      if (expr.exampleText !== null && !insidePopover) {
         return (
           <ExprPopover ariaLabel="Vis fullt uttrykk" content={fullExpr}>
             <span className="expr-literal">{expr.exampleText}</span>
@@ -1145,46 +1342,34 @@ export function ExprToText({ expr }: { expr: Expr }) {
       return fullExpr;
     }
     case ExprType.CONDITIONAL_EXPR: {
-      // Svært vanlig mønster: begge grener er bare literaler (`ifElse(pred, "tekst", "")` eller
-      // `ifElse(pred, "ja", "nei")`), der predikatet er mindre interessant enn selve teksten(e)
-      // som faktisk vises. Vis da en kompakt markør (`[tekst]` når den ene grenen er tom
-      // streng, ellers `tekst1|tekst2`) med predikatet tilgjengelig via popover i stedet for
-      // den fulle if/then/else-blokken.
-      if (isCompactLiteralConditional(expr)) {
-        const ifTrueText = compactLiteralText(expr.ifTrue);
-        const ifElseText = compactLiteralText(expr.ifElse);
+      // Svært vanlig mønster: begge grener kan reduseres til en kort, selvforklarende tekst -
+      // enten rene literaler (`ifElse(pred, "tekst", "")`, `ifElse(pred, "ja", "nei")`) eller
+      // formatterte verdier med eksempeltekst (`ifElse(pred, a.formatMonthYear(), b.format())`)
+      // - der predikatet er mindre interessant enn selve verdien(e) som faktisk vises. Vis da en
+      // kompakt markør (`[tekst]` når else-grenen er tom streng, ellers `tekst1|tekst2`) med den
+      // fulle strukturen tilgjengelig via popover i stedet for den fulle if/then/else-blokken.
+      const ifTrueText = compactBranchText(expr.ifTrue);
+      const ifElseText = compactBranchText(expr.ifElse);
+      if (ifTrueText !== null && ifElseText !== null && !insidePopover) {
         const compact = ifElseText === "" ? `[${ifTrueText}]` : `${ifTrueText}|${ifElseText}`;
+        // Er begge grenene literaler, er de fullt ut synlige i markøren og popoveren trenger kun
+        // å avsløre predikatet. Er minst én gren et uttrykk, viser vi hele if/then/else-blokken,
+        // ellers ville leseren ikke kunne se hvilket felt hver eksempelverdi stammer fra.
+        const content = isLiteralOnlyConditional(expr.ifTrue, expr.ifElse) ? (
+          <>
+            <code>Hvis </code>
+            <ExprToText expr={expr.predicate} />
+          </>
+        ) : (
+          <ConditionalExprBlock ifElse={expr.ifElse} ifTrue={expr.ifTrue} predicate={expr.predicate} />
+        );
         return (
-          <ExprPopover
-            ariaLabel="Vis betingelse"
-            content={
-              <>
-                <code>Hvis </code>
-                <ExprToText expr={expr.predicate} />
-              </>
-            }
-          >
+          <ExprPopover ariaLabel="Vis betingelse" content={content}>
             <span className="expr-literal">{compact}</span>
           </ExprPopover>
         );
       }
-      // if/then/else har naturlig tre "ledd" og drar samme nytte av linjeskift+innrykk som en
-      // AND/OR-kjede - se `.expr-block` i appStyles.css. Prediktatet parentetiseres fortsatt
-      // eksplisitt (i motsetning til AND/OR-ledd) siden det ikke er et likestilt ledd i samme
-      // kjede, men selve betingelsen for grenene under.
-      return (
-        <div className="expr-block">
-          <div className="expr-block-row">
-            <span className="expr-operator">if</span> (<ExprToText expr={expr.predicate} />)
-          </div>
-          <div className="expr-block-row">
-            <span className="expr-operator">then</span> <MaybeParens expr={expr.ifTrue} />
-          </div>
-          <div className="expr-block-row">
-            <span className="expr-operator">else</span> <MaybeParens expr={expr.ifElse} />
-          </div>
-        </div>
-      );
+      return <ConditionalExprBlock ifElse={expr.ifElse} ifTrue={expr.ifTrue} predicate={expr.predicate} />;
     }
     case ExprType.NULL_COALESCE: {
       return (

@@ -13,14 +13,14 @@ import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeSoknadOmBarnetillegg
 
 data class ForDegSomHarRettTilMinsteytelse(
     val pe: Expression<PEgruppe10>,
+    val visUtlandsforklaringUansett: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
-        val bosattUtland = pe.pebrevkode().equalTo("f_bh_bo_utland") or (pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo(""))
+        val bosattUtland = visUtlandsforklaringUansett or (pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo(""))
         val ungUforUnder20 = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20)
 
-        showIf(pe.pebrevkode().isNotAnyOf("PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_103", "PE_UT_04_108", "PE_UT_07_200", "PE_UT_06_300")
-                and pe.erIkkeSoknadOmBarnetillegg()) {
+        showIf(pe.erIkkeSoknadOmBarnetillegg()) {
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()) {
 
                 title1 {

@@ -4,7 +4,9 @@ import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
+import no.nav.pensjon.brev.skribenten.override
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.BrevkontekstCode.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.DokumentType.N
@@ -26,10 +28,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Isolated
 
 val TEST_VEDTAKS_ID = VedtaksId(1234)
 
 @OptIn(InternKonstruktoer::class)
+// TODO: Fjern @Isolated når testen ikke lenger bruker Features.override
+@Isolated
 class BrevmalServiceTest {
     private val brevbakerbrev = listOf(
         TemplateDescription.Redigerbar(
@@ -92,15 +97,64 @@ class BrevmalServiceTest {
         assertThatBrevmalerInSakskontekst(testOkSakBrev.copy(brevkodeIBrevsystem = "PE_IY_05_301")).noneMatch { it.id == "PE_IY_05_301" }
     }
 
+    private val testEblankett = testOkBrev.copy(
+        brevkodeIBrevsystem = "E001",
+        brevkategori = null,
+        brevkontekst = null,
+        dokumentkategori = BrevdataDto.DokumentkategoriCode.E_BLANKETT,
+    )
+
     @Test
     fun `eblanketter vises om forespurt`() {
-        val brevmetadataService = FakeBrevmetadataService(
-            eblanketter = listOf(testOkBrev.copy(brevkodeIBrevsystem = "e-blankett-kode")),
-        )
+        Features.override(Features.eblanketter, true)
+        val brevmetadataService = FakeBrevmetadataService(eblanketter = listOf(testEblankett))
 
         runBlocking {
             val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(sakType = Sakstype("UFOREP"), includeEblanketter = true)
-            assertThat(brevmaler).anyMatch { it.id == "e-blankett-kode" }
+            assertThat(brevmaler).anyMatch { it.id == testEblankett.brevkodeIBrevsystem && it.dokumentkategoriCode == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
+        }
+    }
+
+    @Test
+    fun `eblanketter vises ikke om ikke forespurt`() {
+        Features.override(Features.eblanketter, true)
+        val brevmetadataService = FakeBrevmetadataService(eblanketter = listOf(testEblankett))
+
+        runBlocking {
+            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(sakType = Sakstype("UFOREP"), includeEblanketter = false)
+            assertThat(brevmaler).noneMatch { it.id == testEblankett.brevkodeIBrevsystem }
+        }
+    }
+
+    @Test
+    fun `eblanketter vises ikke naar toggle er av`() {
+        Features.override(Features.eblanketter, false)
+        val brevmetadataService = FakeBrevmetadataService(
+            brevmaler = listOf(testOkSakBrev),
+            eblanketter = listOf(testEblankett),
+        )
+
+        runBlocking {
+            val service = lagBrevmalService(brevmetadataService = brevmetadataService)
+            assertThat(service.hentBrevmalerForSak(sakType = Sakstype("UFOREP"), includeEblanketter = true))
+                .noneMatch { it.id == testEblankett.brevkodeIBrevsystem }
+                .anyMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
+            assertThat(service.hentBrevmaler(includeEblanketter = true))
+                .noneMatch { it.id == testEblankett.brevkodeIBrevsystem }
+        }
+    }
+
+    @Test
+    fun `eblanketter vises i vedtakskontekst om forespurt`() {
+        Features.override(Features.eblanketter, true)
+        val brevmetadataService = FakeBrevmetadataService(eblanketter = listOf(testEblankett))
+        val penService = object : PenClientStub() {
+            override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId) = KravStoettetAvDatabyggerResult(emptyMap())
+        }
+
+        runBlocking {
+            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(Sakstype("UFOREP"), true, TEST_VEDTAKS_ID)
+            assertThat(brevmaler).anyMatch { it.id == testEblankett.brevkodeIBrevsystem }
         }
     }
 

@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe1
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.*
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeSoknadOmBarnetillegg
-import no.nav.pensjon.brev.maler.legacy.vedlegg.harIkkeBarnetilleggBrevkode
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Expression
@@ -17,9 +16,10 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class SlikBlirDinUtbetalingFoerSkatt(
     val pe: Expression<PEgruppe10>,
+    val visOrdinaereUtbetalingsavsnitt: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and pe.harIkkeBarnetilleggBrevkode() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0))){
+        showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and visOrdinaereUtbetalingsavsnitt and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0))){
             title1 {
                 text (
                     bokmal { + "Slik blir din utbetaling før skatt" },
@@ -93,7 +93,7 @@ data class SlikBlirDinUtbetalingFoerSkatt(
             }
         }.orShowIf(
             (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-                .lessThan(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and pe.harIkkeBarnetilleggBrevkode())){
+                .lessThan(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and visOrdinaereUtbetalingsavsnitt)){
             //[TBU052V-TBU073V]
 
             title1 {
@@ -107,7 +107,7 @@ data class SlikBlirDinUtbetalingFoerSkatt(
         showIf(
             (pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
                 .greaterThan(0) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-                .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and pe.harIkkeBarnetilleggBrevkode() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
+                .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and visOrdinaereUtbetalingsavsnitt and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
                 .lessThan(
                     pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
                 ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0))){
@@ -126,7 +126,7 @@ data class SlikBlirDinUtbetalingFoerSkatt(
                 .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
                 .greaterThan(
                     0
-                ) and pe.erIkkeSoknadOmBarnetillegg() and pe.harIkkeBarnetilleggBrevkode() and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
+                ) and pe.erIkkeSoknadOmBarnetillegg() and visOrdinaereUtbetalingsavsnitt and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
                 .lessThan(
                     pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
                 ) and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().greaterThan(0))){
@@ -143,7 +143,7 @@ data class SlikBlirDinUtbetalingFoerSkatt(
                 .greaterThanOrEqual(
                     pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
                 ) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-                .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and pe.harIkkeBarnetilleggBrevkode() and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().equalTo(0))){
+                .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and visOrdinaereUtbetalingsavsnitt and pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut().equalTo(0))){
             paragraph {
                 text (
                     bokmal { + "Utbetalingen av uføretrygden din er redusert, fordi du har inntekt. Den innmeldte inntekten er høyere enn bunnfradraget ditt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag()
@@ -173,7 +173,7 @@ data class SlikBlirDinUtbetalingFoerSkatt(
 
         showIf(
             (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-                .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and pe.harIkkeBarnetilleggBrevkode())){
+                .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and visOrdinaereUtbetalingsavsnitt)){
             paragraph {
                 text (
                     bokmal { + "Du vil få tilbake " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()

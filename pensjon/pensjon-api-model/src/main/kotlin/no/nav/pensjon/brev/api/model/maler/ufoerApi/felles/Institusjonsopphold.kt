@@ -9,7 +9,9 @@ data class Institusjonsopphold(
     val fasteUtgifter: Kroner?,
     val reduksjonsperioder: List<Reduksjonsperiode>,
     val allePerioderHarForsorgeransvar: Boolean,
-    val ingenPerioderHarForsorgeransvar: Boolean
+    val ingenPerioderHarForsorgeransvar: Boolean,
+    val sistePeriodeHarForsorgeransvar: Boolean,
+    val forstePeriodeHarForsorgeransvar: Boolean,
 ) {
 
     data class Reduksjonsperiode(

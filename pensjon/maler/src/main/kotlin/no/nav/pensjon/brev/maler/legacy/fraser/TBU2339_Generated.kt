@@ -1,13 +1,27 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Grunnlag
+import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
+import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner
+import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles_en_entall_flertall
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget
+import no.nav.pensjon.brev.maler.ufore.extensions.bokmalUbestemtEntall
+import no.nav.pensjon.brev.maler.ufore.extensions.engelskUbestemtEntall
+import no.nav.pensjon.brev.maler.ufore.extensions.nynorskBestemtEntall
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.text
 
 
@@ -42,4 +56,40 @@ data class TBU2339_Generated(
         }
     }
 }
-        
+
+data class TBU2339_Generated_Ny(
+    val btfbNetto: Expression<Kroner>,
+    val btsbInnvilget: Expression<Boolean>,
+    val btfbInnvilget: Expression<Boolean>,
+    val barnetBarnaFelles: Expression<String>,
+    val barnetBarnaFellesEnEntallFlertall: Expression<String>,
+    val epsBorMed: Expression<Grunnlag.Eps?>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                bokmal { + "Inntekten til deg og din " + epsBorMed.safe { bokmalUbestemtEntall() }.ifNull("") + " har betydning for hva du får i barnetillegg. Er inntektene over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert. " },
+                nynorsk { + "Inntekta til deg og " + epsBorMed.safe { nynorskBestemtEntall() }.ifNull("") + " din har noko å seie for kva du får i barnetillegg. Er den samla inntekta over grensa for å få utbetalt fullt barnetillegg, blir tillegget ditt redusert. " },
+                english { + "The incomes of you and your " + epsBorMed.safe { engelskUbestemtEntall() }.ifNull("") + " affects how much you receive in child supplement. If your income exceeds the limit for receiving full child supplement, your child supplement will be reduced. " },
+            )
+
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0) THEN      INCLUDE ENDIF
+            showIf((btfbNetto.notEqualTo(0))) {
+                text(
+                    bokmal { + "Denne grensen kaller vi for fribeløp. " },
+                    nynorsk { + "Denne grensa kallar vi for fribeløp. " },
+                    english { + "We call this limit the exemption amount. " },
+                )
+            }
+
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
+            showIf((btsbInnvilget and btfbInnvilget)) {
+                text(
+                    bokmal { + "Inntekten til din " + epsBorMed.safe { bokmalUbestemtEntall() }.ifNull("") + " har kun betydning for størrelsen på barnetillegget til " + barnetBarnaFelles + " som bor sammen med begge sine foreldre." },
+                    nynorsk { + "Inntekta til " + epsBorMed.safe { nynorskBestemtEntall() }.ifNull("") + " din har berre betydning for storleiken på barnetillegget til " + barnetBarnaFelles + " som bur saman med begge foreldra sine. " },
+                    english { + "The income of your " + epsBorMed.safe { engelskUbestemtEntall() }.ifNull("") + " only affects the size of the child supplement for the " + barnetBarnaFelles + " who live" + barnetBarnaFellesEnEntallFlertall + " together with both parents. " },
+                )
+            }
+        }
+    }
+}

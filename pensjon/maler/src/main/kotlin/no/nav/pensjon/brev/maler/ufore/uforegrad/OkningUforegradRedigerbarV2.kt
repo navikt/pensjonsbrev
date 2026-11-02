@@ -53,13 +53,14 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradV2Dt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.anvendtTrygdetid
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2338_Generated_Ny
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated_Ny
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU5005_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
@@ -71,6 +72,7 @@ import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -105,6 +107,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
         )
     ) {
         val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Informasjon om renter på etterbetaling").bool()
 
         title {
             text(
@@ -253,6 +256,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             val btsbInnvbtfbInnvOgEnAvDeHarNettoUlik0OgJusteringsbelop0 = btSerkullInnvilget and btFellesInnvilget and ((btSerkullNetto.notEqualTo(0) and btsbJusteringsbelopPerAr.equalTo(0)) or (btFellesNetto.notEqualTo(0) and btfbJusteringsbelopPerAr.equalTo(0)))
             val btsbInnvilgetOgJusteringsbelop0 = btSerkullInnvilget and btsbJusteringsbelopPerAr.notEqualTo(0)
             val btsbInnvilgetIkkeBtfbinnvilget = btSerkullInnvilget and not(btFellesInnvilget)
+            val sumUtBtHoyereLavere = reduksjonsgrunnlagSumutbt.greaterThan(reduksjonsgrunnlagGradertoppjustertifu)
+            val barnetBarnaFellesEntallFlertall = ifElse(barnetillegg.btFellesbarn.safe { antallBarn }.ifNull(0).equalTo(1) and Expression.FromScope.Language.equalTo(English.expr()), "s".expr(), "".expr())
 
             //tekster
             val barnetBarnaSerkull =
@@ -1188,7 +1193,12 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             }
 
             showIf(instoppholdtype.equalTo(JustertPeriodeCode.REDUKSJON_FO)) {
-                includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
+                includePhrase(Ufoeretrygd.Straffegjennomfoering(
+                    ektefelletilleggInnvilget = ektefelletilleggInnvilget,
+                    gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                    sisteForsorgeransvarErTrue = instopphold.safe { sistePeriodeHarForsorgeransvar }.ifNull(false),
+                    forsteForsorgeransvarErTrue = instopphold.safe { forstePeriodeHarForsorgeransvar}.ifNull(false),
+                ))
             }
 
             showIf((btInnvilget)) {
@@ -1234,7 +1244,18 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             }
 
             showIf((reduksjonsgrunnlagBarnetilleggRegelverkstype.equalTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and reduksjonsgrunnlagAndelYtelseAvOifu.greaterThan(95.0))) {
-                includePhrase(TBU3802_Generated(pe))
+                includePhrase(TBU3802_Generated_Ny(
+                    virkningstidpunktAr = beregning.virkFom.year,
+                    andelYtelseAvOifu = reduksjonsgrunnlagAndelYtelseAvOifu,
+                    gradertOppjustertIfu = reduksjonsgrunnlagGradertoppjustertifu,
+                    sumUtBtHoyereLavere = sumUtBtHoyereLavere,
+                    sumBruttoForReduksjonBt = reduksjonsgrunnlagSumbruttoforreduksjonbt,
+                    sumBruttoEtterReduksjonBt = reduksjonsgrunnlagSumbruttoetterreduksjonbt,
+                    sumUtBt = reduksjonsgrunnlagSumutbt,
+                    anvendtTrygdetid = beregning.anvendtTrygdetid,
+                    btfbInnvilget = btFellesInnvilget,
+                    epsBorMed = grunnlag.epsBrukerBorMed,
+                ))
             }
 
             //IF (   NOT   (     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0     AND     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0   ) ) THEN   INCLUDE ENDIF
@@ -1242,11 +1263,22 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                 //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)   ) THEN      INCLUDE ENDIF
                 showIf(((not(btFellesInnvilget) and btSerkullInnvilget))) {
-                    includePhrase(TBU2338_Generated(pe))
+                    includePhrase(TBU2338_Generated_Ny(
+                        btsbNetto = btSerkullNetto,
+                        beregningSivilstandAnvendt = grunnlag.anvendtSivilstand,
+                        epsBorMed = grunnlag.epsBrukerBorMed,
+                    ))
                 }
 
                 showIf(btFellesInnvilget) {
-                    includePhrase(TBU2339_Generated(pe))
+                    includePhrase(TBU2339_Generated_Ny(
+                        btfbNetto = btFellesNetto,
+                        btsbInnvilget = btSerkullInnvilget,
+                        btfbInnvilget = btFellesInnvilget,
+                        barnetBarnaFelles = barnetBarnaFelles,
+                        barnetBarnaFellesEnEntallFlertall = barnetBarnaFellesEntallFlertall,
+                        epsBorMed = grunnlag.epsBrukerBorMed,
+                    ))
                 }
 
                 showIf((btInnvilget)) {
@@ -1683,7 +1715,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato < PE_VedtakFattetDato_minus_1mnd) THEN      INCLUDE ENDIF
             showIf((harBeløpØkt and utbetalingsgrad.equalTo(uforegradFraBeregning) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
-                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(kravOnsketvirkningsdato))
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(kravOnsketvirkningsdato, visTekstOmRenter))
             }
 
             showIf(bostedutland) {

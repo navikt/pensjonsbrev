@@ -13,10 +13,8 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.render.TemplateDocumentation
+import no.nav.pensjon.brev.routing.modelSpecification
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
-import no.nav.pensjon.brev.template.render.modelSpecification
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test

@@ -116,6 +116,11 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum {
 	public abstract fun getDisplayText ()Ljava/lang/String;
+	public fun getRekkefoelge ()Ljava/lang/Integer;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum$DefaultImpls {
+	public static fun getRekkefoelge (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;)Ljava/lang/Integer;
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL : java/util/Map, kotlin/jvm/internal/markers/KMappedMarker {

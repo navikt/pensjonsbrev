@@ -37,7 +37,7 @@ interface LetterMetadata {
                 BrevdataDto.BrevkontekstCode.ALLTID -> TemplateDescription.Brevkontekst.ALLE
                 BrevdataDto.BrevkontekstCode.SAK -> TemplateDescription.Brevkontekst.SAK
                 BrevdataDto.BrevkontekstCode.VEDTAK -> TemplateDescription.Brevkontekst.VEDTAK
-                null -> null
+                null -> if (data.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT) TemplateDescription.Brevkontekst.ALLE else null
             }
         override val isRedigerbart: Boolean get() = data.redigerbart
         override fun isForSakstype(sakstype: Sakstype) = sakstype == hasSakstype
