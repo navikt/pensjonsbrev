@@ -88,6 +88,7 @@ object ProductionTemplates : AllTemplates {
         AdHocVarselUgyldiggjoringFullmektig,
         AdhocFeilEtteroppgjoer2023,
         AdhocInformasjonHvilendeRett4Aar,
+        AdhocInformasjonOpphorGjenlevendepensjon,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
         AdhocUfoeretrygdEtterbetalingDagpenger,
         AdhocUfoeretrygdKombiDagpenger,
