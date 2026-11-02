@@ -43,12 +43,14 @@ object SoknadTilAvtaleland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { + "Vi viser til din søknad om uføretrygd. Vi har registrert at du har bodd i " + fritekst("Bosnia-Hercegovina/Tyrkia/Serbia/Canada/Quebec/Israel/India/Montenegro/USA/Australia/Sør-Korea") + ". Dette er et land Norge har inngått trygdeavtale med. " })
             }
 
-            title1 {
+            paragraph {
                 text(bokmal { + "Merk at hvert land har egne vilkår og krav til opptjening for å ha rett til uføreytelse fra aktuelt land. Dersom du har spørsmål til dette ber vi deg kontakte trygdemyndighetene i avtalelandet. " })
             }
+
             paragraph {
                 text(bokmal { + "Det er frivillig å søke uføreytelse til et avtaleland, og dette vil ikke ha innvirkning på behandling av din søknad om uføretrygd i Norge. " })
             }
+
             paragraph {
                 text(bokmal { + "Vi ber om en tilbakemelding innen " })
                 text(bokmal { + "2 uker frem i tid" }, BOLD)

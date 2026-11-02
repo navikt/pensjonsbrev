@@ -118,6 +118,7 @@ object Fixtures : LetterDataFactory {
             UtsendelseTilUtlandRedigerbar::class -> createUtsendelseTilUtlandRedigerbarDto() as T
             EOSSkjemaFraBruker::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             SoknadTilAvtaleland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            KravSendtUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 

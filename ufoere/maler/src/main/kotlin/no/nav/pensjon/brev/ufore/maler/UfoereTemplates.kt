@@ -103,7 +103,8 @@ object UfoereTemplates : AllTemplates {
         UtsendelseTilUtlandRedigerbar,
         EOSLegeerklaering,
         EOSSkjemaFraBruker,
-        SoknadTilAvtaleland
+        SoknadTilAvtaleland,
+        KravSendtUtland,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
