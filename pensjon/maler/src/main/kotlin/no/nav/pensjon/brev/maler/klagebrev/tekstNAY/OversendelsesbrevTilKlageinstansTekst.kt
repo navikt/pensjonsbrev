@@ -855,9 +855,10 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(KlippInnFraVedtak)
         }
 
-        enum class Avslag(override val displayText: String) : SaksbehandlerValgEnum {
-            Avslag("Avslag"),
-            DelvisAvslag("Delvis avslag"),
+        // Hvis yrkesskade er valgt:
+        enum class Avslag(override val displayText: String, override val rekkefoelge: Int) : SaksbehandlerValgEnum {
+            Avslag("Avslag", 1),
+            DelvisAvslag("Delvis avslag", 2),
         }
     }
 
@@ -1080,10 +1081,10 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
         }
     }
-    // SLUTT FOLKETRYGDLOVEN
+// SLUTT FOLKETRYGDLOVEN
 
     // START FORVALTNINGSLOVEN
-    //Fvl. § 31 Oversittet klagefrist
+//Fvl. § 31 Oversittet klagefrist
     object OversittetKlagefrist : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
@@ -1148,5 +1149,5 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
         }
     }
-    //SLUTT FORVALTNINGSLOVEN
+//SLUTT FORVALTNINGSLOVEN
 }
