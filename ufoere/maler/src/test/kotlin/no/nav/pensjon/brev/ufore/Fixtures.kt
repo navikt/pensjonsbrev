@@ -116,6 +116,8 @@ object Fixtures : LetterDataFactory {
             OrienteringOmSaksbehandlingstidAuto::class -> createOrienteringOmSaksbehandlingstidAutoDto() as T
             OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidRedigerbarDto() as T
             UtsendelseTilUtlandRedigerbar::class -> createUtsendelseTilUtlandRedigerbarDto() as T
+            EOSSkjemaFraBruker::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            SoknadTilAvtaleland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
@@ -435,4 +437,5 @@ object Fixtures : LetterDataFactory {
         saksbehandlerValg = lagSaksbehandlervalg("kunEOSInnvilgelseNorge" to true),
         pesysData = EmptyFagsystemdata
     )
+
 }
