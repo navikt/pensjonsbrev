@@ -31,7 +31,7 @@ fun List<KotlinSourceFile>.generateSelectors(): SourceGenerationResult =
 private val javaVersion by lazy { System.getProperty("java.version") }
 private val hostClassPath by lazy {
     ClassGraph()
-        .removeTemporaryFilesAfterScan()
+        .enableClasspath()
         .classpathFiles
         .distinctBy(File::getAbsolutePath)
 }
