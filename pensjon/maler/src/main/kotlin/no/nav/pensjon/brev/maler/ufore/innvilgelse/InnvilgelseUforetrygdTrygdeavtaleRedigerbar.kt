@@ -103,10 +103,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
 
         val totalNettoUforeberegning = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
 
-        val kravGjelder = pe.vedtaksdata_kravhode_kravgjelder()
-        val bosattUtland = kravGjelder.equalTo("f_bh_bo_utl") // TODO: Denne vil aldri slå til, sjekk om vi fortsatt trenger teksten denne representerer i brevet.
-        val oppfyltvedsammenlegging = pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging()
-        val txtEllerEtAvtaleland = ifElse(bosattUtland and oppfyltvedsammenlegging, " eller et avtaleland", "")
+        val txtEllerEtAvtaleland = " eller et avtaleland".expr()
 
         val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
         val ifuInntekt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
@@ -420,7 +417,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er også gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
-                        nynorsk { +"Vedtaket er òg gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i etter forordning 883/2004 artikkel 6 og artikkel 52. " }, // TODO: Blir dette riktig nynorsk? "i henhold til" = "i etter"?
+                        nynorsk { +"Vedtaket er òg gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, jmf. forordning 883/2004 artikkel 6 og artikkel 52. " },
                     )
                 }
             }.orShowIf(pesysData.avtaletype.notNull() and pesysData.artikkel.notNull()) {
@@ -663,11 +660,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
             }
 
-            // TODO: Er denne aktuell her?
-            showIf(kravGjelder.equalTo("f_bh_med_utl")){
-                includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
-            }
-
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
 
             includePhrase(Innvilgelse.Honnoerkort(
@@ -680,8 +672,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
-            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(not(bosattUtland)))
-            includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON, utland = bosattUtland))
+            includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON))
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
