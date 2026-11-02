@@ -11,3 +11,6 @@ inbound:
   - name: pensjon-pen-q2
     namespace: pensjon-q2
     cluster: dev-fss
+  - name: su-se-bakover
+    namespace: supstonad
+    cluster: dev-gcp
