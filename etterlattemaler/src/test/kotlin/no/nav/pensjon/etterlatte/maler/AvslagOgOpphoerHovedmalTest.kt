@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.maler
 
 import no.nav.brev.brevbaker.LetterTestImpl
-import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
@@ -14,10 +13,8 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslag
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoer
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoer
-import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.INTEGRATION_TEST)
 internal class AvslagOgOpphoerHovedmalTest {
 
     private val languages = listOf(Language.Bokmal, Language.Nynorsk, Language.English)

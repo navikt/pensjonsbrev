@@ -1,7 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad
 
 import no.nav.brev.brevbaker.LetterTestImpl
-import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
@@ -9,11 +8,9 @@ import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallData
-import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-@Tag(TestTags.INTEGRATION_TEST)
 internal class OmstillingsstoenadAvslagTest {
 
     private val languages = listOf(Language.Bokmal, Language.Nynorsk, Language.English)
