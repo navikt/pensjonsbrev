@@ -90,6 +90,7 @@ object UfoereTemplates : AllTemplates {
         OppgittSamboer,
         EktefelleUtland,
         AntattDod,
+        ForesporselTrygdetidSendtLand,
         HvilendeRettInfo4Aar,
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
