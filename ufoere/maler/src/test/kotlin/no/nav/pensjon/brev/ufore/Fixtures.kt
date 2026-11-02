@@ -122,6 +122,7 @@ object Fixtures : LetterDataFactory {
             ForesporselTrygdetidSendtLand::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             InnhentingAvOpplysninger::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             InnhentingAvBotidsopplysninger::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            InnhentingAvOpplysningerLege::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
