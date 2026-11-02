@@ -91,6 +91,7 @@ object UfoereTemplates : AllTemplates {
         EktefelleUtland,
         AntattDod,
         InnhentingAvOpplysninger,
+        InnhentingAvBotidsopplysninger,
         ForesporselTrygdetidSendtLand,
         HvilendeRettInfo4Aar,
         HvilendeRettOppHoer,
