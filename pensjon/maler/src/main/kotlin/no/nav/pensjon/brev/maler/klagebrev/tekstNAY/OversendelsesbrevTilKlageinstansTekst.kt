@@ -1099,12 +1099,12 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
 
             title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph { text(bokmal { +"I forvaltningsloven § 31 heter det:" }) }
+            paragraph { text(bokmal { +fritekst("I forvaltningsloven § 31 heter det:") }) }
             paragraph { text(bokmal { +fritekst("Selv om klageren har oversittet klagefristen, kan klagen tas under behandling såframt") }) }
             paragraph { text(bokmal { +fritekst("a. Parten eller hans fullmektig ikke kan lastes for å ha oversittet fristen eller for å ha drøyd med klage etterpå, eller b. Det av særlige grunner er rimelig at klagen blir prøvd.") }) }
             paragraph { text(bokmal { +fritekst("Ved vurdering av om klage bør tas opp til behandling, skal det også legges vekt på om endring av vedtaket kan medføre skade eller ulempe for andre.") }) }
             paragraph { text(bokmal { +fritekst("Klagen kan ikke tas under behandling som klagesak dersom det er gått mer enn ett år siden vedtaket ble truffet.") }) }
-            paragraph { text(bokmal { +"Og i forvaltningsloven § 33 andre heter det:" }) }
+            paragraph { text(bokmal { +fritekst("Og i forvaltningsloven § 33 andre heter det:") }) }
             paragraph {
                 text(bokmal {
                     +fritekst(
