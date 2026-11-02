@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { isAfter, parseISO, startOfToday } from "date-fns";
 import { type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   ACTIONS,
@@ -23,6 +22,12 @@ import {
   type FeatureAnnouncementStepData,
   FeatureAnnouncementTooltip,
 } from "./FeatureAnnouncementTooltip";
+import {
+  endAnnouncementReplay,
+  isAnnouncementExpired,
+  useAnnouncementReplay,
+  useRegisterAnnouncementAvailability,
+} from "./featureAnnouncementState";
 
 export type FeatureAnnouncementStep = {
   /** Element the tooltip points at. */
@@ -59,10 +64,18 @@ type FeatureAnnouncementProps = {
  * a short walkthrough. Focus moves into the announcement and returns to where the user was when it closes.
  * Closing it (button, Escape or a click on the dimmed page) acknowledges it for the user, so it is not shown again.
  * If several announcements are eligible at the same time, they are shown one after another.
+ * While `when` holds, the tour can also be started again on request (see `requestAnnouncementReplay`).
  */
-export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => (
-  <FeatureAnnouncementInstance key={props.id} {...props} />
-);
+export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => {
+  const replayGeneration = useAnnouncementReplay(props.id);
+  return (
+    <FeatureAnnouncementInstance
+      key={`${props.id}-${replayGeneration}`}
+      {...props}
+      replayGeneration={replayGeneration}
+    />
+  );
+};
 
 const FeatureAnnouncementInstance = ({
   id,
@@ -71,12 +84,17 @@ const FeatureAnnouncementInstance = ({
   when,
   onDismiss,
   spotlight = true,
-}: FeatureAnnouncementProps) => {
+  replayGeneration,
+}: FeatureAnnouncementProps & { replayGeneration: number }) => {
   const [resumeIndex, setResumeIndex] = useState(0);
   const [unsuccessfulRun, setUnsuccessfulRun] = useState(false);
   const queryClient = useQueryClient();
 
-  const expired = isAfter(startOfToday(), parseISO(showUntil));
+  const expired = isAnnouncementExpired(showUntil);
+  const replaying = replayGeneration > 0;
+  const available = when && !expired && steps.length > 0;
+  useRegisterAnnouncementAvailability(id, available);
+
   const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
   const acknowledged = acknowledgedQuery.data?.includes(id) === true;
   const { mutate: saveAcknowledgement } = useMutation({
@@ -95,12 +113,15 @@ const FeatureAnnouncementInstance = ({
   const dismiss = useCallback(() => {
     if (hasDismissed.current) return;
     hasDismissed.current = true;
-    queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) => [...previous, id]);
+    queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) =>
+      previous.includes(id) ? previous : [...previous, id],
+    );
     saveAcknowledgement();
     onDismissReference.current?.();
-  }, [id, queryClient, saveAcknowledgement]);
+    endAnnouncementReplay(replayGeneration);
+  }, [id, queryClient, saveAcknowledgement, replayGeneration]);
 
-  const eligible = when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
+  const eligible = available && (replaying || (acknowledgedQuery.isSuccess && !acknowledged));
   // A run that ended without showing anything (e.g. the target was never found) is retried the next time the
   // announcement becomes eligible, instead of being treated as dismissed.
   if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);
@@ -167,6 +188,7 @@ const FeatureAnnouncementInstance = ({
       }
       if (data.type === EVENTS.TOUR_END && !hasBeenShown.current) {
         setUnsuccessfulRun(true);
+        endAnnouncementReplay(replayGeneration);
         return;
       }
       // A click on the dimmed page closes the whole announcement, also in the middle of a walkthrough.

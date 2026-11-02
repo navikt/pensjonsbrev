@@ -3,10 +3,11 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { AxiosError, type AxiosResponse } from "axios";
 import { addDays, format } from "date-fns";
-import { type ReactNode, useMemo, useRef, useState } from "react";
+import { type ReactNode, StrictMode, useMemo, useRef, useState } from "react";
 import { beforeEach, describe, expect, onTestFinished, test, vi } from "vitest";
 
 import { FeatureAnnouncement, type FeatureAnnouncementStep } from "./FeatureAnnouncement";
+import { requestAnnouncementReplay, useIsAnnouncementAvailable } from "./featureAnnouncementState";
 
 const { fetchAcknowledgedMock, acknowledgeMock, logErrorMock } = vi.hoisted(() => ({
   fetchAcknowledgedMock: vi.fn(),
@@ -515,5 +516,139 @@ describe("<FeatureAnnouncement />", () => {
     expect(document.querySelector("[data-feature-announcement]")).toBeNull();
     expect(document.querySelector('[data-testid="overlay"]')).toBeNull();
     await user.keyboard("{Escape}");
+  });
+
+  describe("tilgjengelighet og visning på nytt", () => {
+    const AvailabilityProbe = () => (
+      <span>{useIsAnnouncementAvailable("test-nyhet") ? "tilgjengelig" : "utilgjengelig"}</span>
+    );
+
+    test("er tilgjengelig bare mens betingelsene er oppfylt og komponenten er montert", async () => {
+      const { rerender, unmount } = renderWithQueryClient(
+        <>
+          <Harness when={false} />
+          <AvailabilityProbe />
+        </>,
+      );
+      expect(screen.getByText("utilgjengelig")).not.toBeNull();
+
+      rerender(
+        <>
+          <Harness />
+          <AvailabilityProbe />
+        </>,
+      );
+      expect(await screen.findByText("tilgjengelig")).not.toBeNull();
+
+      unmount();
+      renderWithQueryClient(<AvailabilityProbe />);
+      expect(screen.getByText("utilgjengelig")).not.toBeNull();
+    });
+
+    test("er ikke tilgjengelig etter siste visningsdag", async () => {
+      renderWithQueryClient(
+        <>
+          <Harness showUntil={yesterday()} />
+          <AvailabilityProbe />
+        </>,
+      );
+      await settle();
+
+      expect(screen.getByText("utilgjengelig")).not.toBeNull();
+    });
+
+    test("vises på nytt på forespørsel selv om den er bekreftet, og lukkes som vanlig", async () => {
+      fetchAcknowledgedMock.mockResolvedValue(["test-nyhet"]);
+      const user = userEvent.setup();
+      renderWithQueryClient(<Harness />);
+      await settle();
+      expect(queryAnnouncement()).toBeNull();
+
+      act(() => requestAnnouncementReplay("test-nyhet"));
+      await findAnnouncement();
+      await user.keyboard("{Escape}");
+      await waitFor(() => expect(queryAnnouncement()).toBeNull());
+
+      await settle();
+      expect(queryAnnouncement()).toBeNull();
+    });
+
+    test("vises på nytt etter at den er lukket i samme økt, også i StrictMode", async () => {
+      const user = userEvent.setup();
+      renderWithQueryClient(
+        <StrictMode>
+          <Harness />
+        </StrictMode>,
+      );
+      await findAnnouncement();
+      await user.click(screen.getByRole("button", { name: "Skjønner!" }));
+      await waitFor(() => expect(queryAnnouncement()).toBeNull());
+
+      act(() => requestAnnouncementReplay("test-nyhet"));
+
+      expect(await findAnnouncement()).not.toBeNull();
+    });
+
+    test("glemmer forespørselen når nyheten avmonteres, også i StrictMode", async () => {
+      fetchAcknowledgedMock.mockResolvedValue(["test-nyhet"]);
+      const queryClient = createQueryClient();
+      const first = renderWithQueryClient(
+        <StrictMode>
+          <Harness />
+        </StrictMode>,
+        queryClient,
+      );
+      act(() => requestAnnouncementReplay("test-nyhet"));
+      await findAnnouncement();
+      first.unmount();
+      await settle();
+
+      renderWithQueryClient(
+        <StrictMode>
+          <Harness />
+        </StrictMode>,
+        queryClient,
+      );
+      await settle();
+
+      expect(queryAnnouncement()).toBeNull();
+    });
+
+    test("kan vises på nytt flere ganger i samme økt", async () => {
+      fetchAcknowledgedMock.mockResolvedValue(["test-nyhet"]);
+      const user = userEvent.setup();
+      renderWithQueryClient(<Harness />);
+      await settle();
+
+      for (let round = 0; round < 2; round++) {
+        act(() => requestAnnouncementReplay("test-nyhet"));
+        await findAnnouncement();
+        await user.click(screen.getByRole("button", { name: "Skjønner!" }));
+        await waitFor(() => expect(queryAnnouncement()).toBeNull());
+      }
+    });
+
+    test("ignorerer forespørselen når betingelsene ikke er oppfylt, og viser den ikke senere", async () => {
+      fetchAcknowledgedMock.mockResolvedValue(["test-nyhet"]);
+      const { rerender } = renderWithQueryClient(<Harness when={false} />);
+
+      act(() => requestAnnouncementReplay("test-nyhet"));
+      await settle();
+      rerender(<Harness />);
+      await settle();
+
+      expect(queryAnnouncement()).toBeNull();
+    });
+
+    test("ignorerer forespørsler om andre nyheter", async () => {
+      fetchAcknowledgedMock.mockResolvedValue(["test-nyhet"]);
+      renderWithQueryClient(<Harness />);
+      await settle();
+
+      act(() => requestAnnouncementReplay("annen-nyhet"));
+      await settle();
+
+      expect(queryAnnouncement()).toBeNull();
+    });
   });
 });

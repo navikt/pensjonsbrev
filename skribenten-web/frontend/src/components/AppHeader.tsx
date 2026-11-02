@@ -1,7 +1,8 @@
 import { LeaveIcon } from "@navikt/aksel-icons";
-import { ActionMenu, Box, InternalHeader, Link, Spacer } from "@navikt/ds-react";
+import { ActionMenu, Box, InternalHeader, Spacer } from "@navikt/ds-react";
 import { Link as RouterLink } from "@tanstack/react-router";
 
+import { NotificationBell } from "~/components/notifications/NotificationBell";
 import { useUserInfo } from "~/hooks/useUserInfo";
 
 export function AppHeader() {
@@ -19,15 +20,7 @@ export function AppHeader() {
           </RouterLink>
         </InternalHeader.Title>
         <Spacer />
-        <Link
-          css={{ marginRight: "var(--ax-space-16)" }}
-          data-color="neutral"
-          href="https://navikt.github.io/pensjonsbrev/docs/main/index.html"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Dokumentasjon og veiledning
-        </Link>
+        <NotificationBell />
         <UserDropdown />
       </InternalHeader>
     </Box>
