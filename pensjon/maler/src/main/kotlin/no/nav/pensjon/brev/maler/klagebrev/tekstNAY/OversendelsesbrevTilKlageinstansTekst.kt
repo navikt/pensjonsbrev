@@ -1056,7 +1056,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(KlippInnFraVedtak)
 
             paragraph { text(bokmal { +"Klager fyller ikke minstekravet til trygdetid i Norge før uføretidspunktet, og kan derfor ikke få vurdert rett til uføretrygd gjennom sammenlegging av trygdetid i Norge og i andre EØS-land." }) }
-            paragraph { text(bokmal { +"Hvis det er anført at også tid etter uføretidspunktet skal medregnes, fordi folketrygdloven § 12-2 andre ledd bokstav b ikke sier noe om tid <før uføretidspunktet>:" }, ITALIC) }
+            paragraph { text(bokmal { +fritekst("Hvis det er anført at også tid etter uføretidspunktet skal medregnes, fordi folketrygdloven § 12-2 andre ledd bokstav b ikke sier noe om tid <før uføretidspunktet>:") }) }
             paragraph {
                 text(bokmal {
                     +"Formålet med EØS-forordningen artikkel 57 er å forenkle administrasjonen og å unngå at medlemslandene forpliktes til å utbetale minipensjoner basert på trygdetid som samlet er kortere enn ett år. "
