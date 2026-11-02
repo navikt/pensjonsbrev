@@ -72,9 +72,6 @@
   "overrides": {
     "openapi-typescript": {
       "typescript": "$typescript"
-    },
-    "solid-js": {
-      "seroval": "^1.6.8"
     }
   }
 }
