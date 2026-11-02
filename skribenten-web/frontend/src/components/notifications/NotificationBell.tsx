@@ -46,7 +46,7 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
   const relevant = user
     ? announcements.filter(
         (announcement) =>
-          !isAnnouncementExpired(announcement.showUntil) && (announcement.isRelevantFor?.(user) ?? true),
+          !isAnnouncementExpired(announcement.replayableUntil) && (announcement.isRelevantFor?.(user) ?? true),
       )
     : [];
   const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: relevant.length > 0 });

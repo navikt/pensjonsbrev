@@ -9,6 +9,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 
 export const ATTESTANT_DIFF_ANNOUNCEMENT_ID = "diff-toggles";
 export const ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL = "2026-11-30";
+export const ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL = "2027-02-28";
 
 /**
  * Introduces/announces the diff toggles to attestants. Render it right after `AttestantDiffMenu`, once the letter
@@ -48,6 +49,7 @@ export const AttestantDiffAnnouncement = ({
   return (
     <FeatureAnnouncement
       id={ATTESTANT_DIFF_ANNOUNCEMENT_ID}
+      replayableUntil={ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL}
       showUntil={ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL}
       steps={steps}
       when={isAttestant && isOnAttestantEditingRoute && menu !== null && toggles !== null}

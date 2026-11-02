@@ -1,7 +1,10 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
-import { ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL } from "~/Brevredigering/LetterEditor/diff/AttestantDiffAnnouncement";
+import {
+  ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL,
+  ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL,
+} from "~/Brevredigering/LetterEditor/diff/AttestantDiffAnnouncement";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
@@ -80,6 +83,19 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await tour(page).getByRole("button", { name: "Skjønner!" }).click();
     await expect(tour(page)).toBeHidden();
     await expect(dot(page)).toBeHidden();
+
+    await bell(page).click();
+    await page.getByRole("button", { name: "Vis meg" }).click();
+    await expect(tour(page)).toBeVisible();
+  });
+
+  test("etter siste automatiske visningsdag starter nyheten bare med «Vis meg»", async ({ page }) => {
+    await page.clock.setFixedTime(`${ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL}T12:00:00`);
+    await givenAcknowledged(page, []);
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await expect(page.getByRole("checkbox", { name: "Marker tekst som er lagt til" })).toBeVisible();
+    await page.waitForTimeout(500);
+    await expect(tour(page)).toBeHidden();
 
     await bell(page).click();
     await page.getByRole("button", { name: "Vis meg" }).click();

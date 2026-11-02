@@ -48,8 +48,13 @@ export type FeatureAnnouncementStep = {
 type FeatureAnnouncementProps = {
   /** Unique per announcement and stored when the user acknowledges it, e.g. "diff-toggles". At most 100 characters. */
   id: string;
-  /** Last day (YYYY-MM-DD) the announcement is shown, typically 30 days after release. */
+  /** Last day (YYYY-MM-DD) the announcement starts automatically, typically 30 days after release. */
   showUntil: string;
+  /**
+   * Last day (YYYY-MM-DD) the tour can still be started on request, e.g. with «Vis meg» in the notification bell.
+   * Defaults to `showUntil`.
+   */
+  replayableUntil?: string;
   /** Pass a memoized array: a new identity restarts the step configuration in Joyride. */
   steps: FeatureAnnouncementStep[];
   /** All contextual conditions (role, route, data and targets available) combined by the caller. */
@@ -80,6 +85,7 @@ export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => {
 const FeatureAnnouncementInstance = ({
   id,
   showUntil,
+  replayableUntil,
   steps,
   when,
   onDismiss,
@@ -91,8 +97,9 @@ const FeatureAnnouncementInstance = ({
   const queryClient = useQueryClient();
 
   const expired = isAnnouncementExpired(showUntil);
+  const replayable = !isAnnouncementExpired(replayableUntil ?? showUntil);
   const replaying = replayGeneration > 0;
-  const available = when && !expired && steps.length > 0;
+  const available = when && (!expired || replayable) && steps.length > 0;
   useRegisterAnnouncementAvailability(id, available);
 
   const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
@@ -121,7 +128,7 @@ const FeatureAnnouncementInstance = ({
     endAnnouncementReplay(replayGeneration);
   }, [id, queryClient, saveAcknowledgement, replayGeneration]);
 
-  const eligible = available && (replaying || (acknowledgedQuery.isSuccess && !acknowledged));
+  const eligible = available && (replaying || (!expired && acknowledgedQuery.isSuccess && !acknowledged));
   // A run that ended without showing anything (e.g. the target was never found) is retried the next time the
   // announcement becomes eligible, instead of being treated as dismissed.
   if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);

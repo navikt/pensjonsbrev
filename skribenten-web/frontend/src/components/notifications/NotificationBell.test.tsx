@@ -28,7 +28,7 @@ vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
 
 const NYHET: ProductAnnouncement = {
   id: "test-nyhet",
-  showUntil: "2999-12-31",
+  replayableUntil: "2999-12-31",
   title: "Ny funksjon",
   description: "Beskrivelse av den nye funksjonen.",
   unavailable: { heading: "Du må åpne redigeringsvisningen", body: "Funksjonen finnes bare i redigeringsvisningen." },
@@ -65,7 +65,7 @@ const TourOnPage = () => {
       <div ref={setTarget}>Målet</div>
       <FeatureAnnouncement
         id={NYHET.id}
-        showUntil={NYHET.showUntil}
+        showUntil={NYHET.replayableUntil}
         steps={target ? [{ target, title: "Gjennomgang av funksjonen", content: "Forklaring" }] : []}
         when={target !== null}
       />
@@ -136,7 +136,7 @@ describe("<NotificationBell />", () => {
 
   test("viser ikke nyheter etter siste visningsdag", async () => {
     const user = userEvent.setup();
-    const utloept = { ...NYHET, showUntil: format(addDays(new Date(), -1), "yyyy-MM-dd") };
+    const utloept = { ...NYHET, replayableUntil: format(addDays(new Date(), -1), "yyyy-MM-dd") };
     renderWithQueryClient(<NotificationBell announcements={[utloept]} />);
     await settle();
 

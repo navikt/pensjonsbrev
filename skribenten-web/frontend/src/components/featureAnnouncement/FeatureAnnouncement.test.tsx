@@ -36,6 +36,7 @@ const Harness = ({
   spotlight,
   onDismiss,
   showUntil = "2999-12-31",
+  replayableUntil,
 }: {
   when?: boolean;
   multiStep?: boolean;
@@ -43,6 +44,7 @@ const Harness = ({
   spotlight?: boolean;
   onDismiss?: () => void;
   showUntil?: string;
+  replayableUntil?: string;
 }) => {
   const [first, setFirst] = useState<HTMLElement | null>(null);
   const [second, setSecond] = useState<HTMLElement | null>(null);
@@ -61,6 +63,7 @@ const Harness = ({
       <FeatureAnnouncement
         id="test-nyhet"
         onDismiss={onDismiss}
+        replayableUntil={replayableUntil}
         showUntil={showUntil}
         spotlight={spotlight}
         steps={steps}
@@ -555,6 +558,39 @@ describe("<FeatureAnnouncement />", () => {
       await settle();
 
       expect(screen.getByText("utilgjengelig")).not.toBeNull();
+    });
+
+    test("starter ikke automatisk etter siste visningsdag, men kan vises på nytt til og med replayableUntil", async () => {
+      renderWithQueryClient(
+        <>
+          <Harness replayableUntil={today()} showUntil={yesterday()} />
+          <AvailabilityProbe />
+        </>,
+      );
+      await settle();
+      expect(queryAnnouncement()).toBeNull();
+      expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
+      expect(screen.getByText("tilgjengelig")).not.toBeNull();
+
+      act(() => requestAnnouncementReplay("test-nyhet"));
+
+      expect(await findAnnouncement()).not.toBeNull();
+    });
+
+    test("kan ikke vises på nytt etter replayableUntil", async () => {
+      renderWithQueryClient(
+        <>
+          <Harness replayableUntil={yesterday()} showUntil={yesterday()} />
+          <AvailabilityProbe />
+        </>,
+      );
+      await settle();
+      expect(screen.getByText("utilgjengelig")).not.toBeNull();
+
+      act(() => requestAnnouncementReplay("test-nyhet"));
+      await settle();
+
+      expect(queryAnnouncement()).toBeNull();
     });
 
     test("vises på nytt på forespørsel selv om den er bekreftet, og lukkes som vanlig", async () => {
