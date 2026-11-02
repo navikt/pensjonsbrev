@@ -1,17 +1,23 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_KRAV_SENDT_UTLAND
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
@@ -34,28 +40,79 @@ object KravSendtUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         ),
     )
     {
+        val kravgjelder = saksbehandlervalg("kravgjelder", "Kravet gjelder").enum<KravGjelderEnum>()
+        val kravgjelderTxt = ifElse(
+            kravgjelder.equalTo(KravGjelderEnum.ALDERSPENSJON),
+            "alderspensjon".expr(),
+            "uføretrygd".expr()
+        )
+
         title {
-            text (bokmal { + "Kravet ditt om alderspensjon er sendt til " + fritekst("land") })
+            text (bokmal { + "Kravet ditt om " + kravgjelderTxt + " er sendt til " + fritekst("land") })
         }
         outline {
-            paragraph {
-                text(bokmal { + "Vi viser til ditt krav om alderspensjon fra " + fritekst("land") + " mottatt hos oss " + fritekst("dato") + ". Det er denne datoen som blir kravdatoen i avtalelandet. " })
+            showIf(kravgjelder.equalTo(KravGjelderEnum.ALDERSPENSJON)) {
+                paragraph {
+                    text(bokmal { +"Vi viser til ditt krav om alderspensjon fra " + fritekst("land") + " mottatt hos oss " + fritekst("dato") + ". Det er denne datoen som blir kravdatoen i avtalelandet. " })
+                }
+
+                paragraph {
+                    text(bokmal { +"Kravet er sendt til " + fritekst("land") + " i dag. " })
+                }
+
+                title1 {
+                    text(bokmal { +"Hva skjer i avtalelandet?" })
+                }
+
+                paragraph {
+                    text(bokmal { +"Kravet behandles av trygdemyndigheter i " + fritekst("land") + " etter deres nasjonale lovgivning. Når vedtaket er fattet, sendes det til deg og Nav arbeid og ytelser. " })
+                }
+                paragraph {
+                    text(bokmal { +"Vi kan dessverre ikke si noe om andre lands saksbehandlingstid utover at den er svært varierende og kan være lang. " })
+                }
+            }.orShowIf(kravgjelder.equalTo(KravGjelderEnum.UFØRETRYGD)) {
+                title1 {
+                    text(bokmal { +"Krav om uføreytelse fra folketrygden i Norge" })
+                }
+                paragraph {
+                    text(bokmal { +"Vi viser til ditt krav om uføreytelse av " + fritekst("dato") + " og foreløpig vedtak om uføreytelse av " + fritekst("dato") + ". " })
+                }
+
+                title1 {
+                    text(bokmal { +"Krav om alderspensjon fra annet land" })
+                }
+                paragraph {
+                    text(bokmal { +"Etter reglene i EØS-avtalen er et krav om uføreytelse i Norge også å anse som et krav om uføreytelse i andre EØS-land du kan ha opparbeidet deg trygdetid i. Det fremgår av kravet ditt at du har bodd og/eller arbeidet i " + fritekst("land") + ". Vi ser at du på søknadstidspunktet har nådd pensjonsalder for alderspensjon i " + fritekst("land") + ". Vi har derfor sendt krav om alderspensjon istedenfor kravet om uføreytelse til trygdemyndighetene i " + fritekst("land") + ". Kravdatoen i " + fritekst("land") + " vil bli den samme som kravdatoen i Norge. " })
+                }
+
+                title1 {
+                    text(bokmal { +"Hva skjer i avtalelandet?" })
+                }
+                paragraph {
+                    text(bokmal { +"Hvis du har opparbeidet trygdetid i " + fritekst("land") + ", vil trygdemyndigheter i dette landet fatte vedtak om pensjonsytelse etter egne nasjonale regler og sende vedtaket direkte til deg med kopi til oss. " })
+                }
+                paragraph {
+                    text(bokmal { +"Hvis du ikke har opparbeidet trygdetid i " + fritekst("land") + ", vil vi motta beskjed om dette, uten at du nødvendigvis mottar beskjed. Vi vil uansett informere deg om det svaret vi får. " })
+                }
+                paragraph {
+                    text(bokmal { +"Vi kan dessverre ikke si noe om andre lands saksbehandlingstid utover at den er svært varierende og kan være lang. " })
+                }
+
+                title1 {
+                    text(bokmal { +"Endelig beregning hos oss" })
+                }
+                paragraph {
+                    text(bokmal { +"Vi vil foreta en endelig beregning av uføreytelsen din og fatte et endelig vedtak når alle nødvendige opplysninger om trygdetid og/eller vedtak er mottatt fra avtalelandet. Dette gjelder uansett om du har opparbeidet deg rettigheter i avtalelandet eller ikke. Vi vil sende deg et brev om utfallet i saken. " })
+                }
             }
 
-            paragraph {
-                text(bokmal { + "Kravet er sendt til " + fritekst("land") + " i dag. " })
-            }
-
-            title1 {
-                text(bokmal { + "Hva skjer i avtalelandet?" })
-            }
-
-            paragraph {
-                text(bokmal { + "Kravet behandles av trygdemyndigheter i " + fritekst("land") + " etter deres nasjonale lovgivning. Når vedtaket er fattet, sendes det til deg og Nav arbeid og ytelser. " })
-            }
-            paragraph {
-                text(bokmal { + "Vi kan dessverre ikke si noe om andre lands saksbehandlingstid utover at den er svært varierende og kan være lang. " })
-            }
+            includePhrase(Felles.MeldFraOmEndringer)
+            includePhrase(Felles.HarDuSporsmal)
         }
     }
+}
+
+enum class KravGjelderEnum(override val displayText: String) : SaksbehandlerValgEnum {
+    ALDERSPENSJON("Alderspensjon"),
+    UFØRETRYGD("Uføretrygd"),
 }
