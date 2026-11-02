@@ -65,6 +65,7 @@ import no.nav.pensjon.brev.skribenten.db.dataSourceFactory
 import no.nav.pensjon.brev.skribenten.db.databaseReady
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPIService
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
@@ -134,6 +135,7 @@ fun Application.configureDependencies() {
         provide(Dto2ApiService::class)
         provide(ExternalAPIService::class)
 
+        provide(BrevoppdateringObservability::class)
         provide(Transactional::class)
         provide(Brevtilgang::class)
 

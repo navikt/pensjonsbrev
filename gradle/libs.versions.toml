@@ -19,6 +19,7 @@ ktlintEngineVersion = "1.8.0"
 log4j2Version = "2.26.1"
 micrometerVersion = "1.17.1"
 nettyVersion = "4.2.18.Final"
+openTelemetryVersion = "1.67.0"
 pdfboxVersion = "3.0.8"
 postgresqlVersion = "42.7.13"
 testcontainersVersion = "2.0.5"
@@ -54,6 +55,10 @@ log4j-core = { module = "org.apache.logging.log4j:log4j-core" }
 log4j-layout-template-json = { module = "org.apache.logging.log4j:log4j-layout-template-json" }
 log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
+opentelemetry-bom = { module = "io.opentelemetry:opentelemetry-bom", version.ref = "openTelemetryVersion" }
+opentelemetry-api = { module = "io.opentelemetry:opentelemetry-api" }
+opentelemetry-extension-kotlin = { module = "io.opentelemetry:opentelemetry-extension-kotlin" }
+opentelemetry-sdk-testing = { module = "io.opentelemetry:opentelemetry-sdk-testing" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
