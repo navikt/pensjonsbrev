@@ -26,4 +26,3 @@ docker compose --profile skribenten up -d --build
 
 Start dev-serveren lokalt (`npm run dev`) og gå deretter til
 https://pensjon-brevoppskrift.intern.dev.nav.no/vite-on
-
