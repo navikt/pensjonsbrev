@@ -72,6 +72,9 @@
   "overrides": {
     "openapi-typescript": {
       "typescript": "$typescript"
+    },
+    "@redocly/openapi-core": {
+      "minimatch": "^11.0.1"
     }
   }
 }
