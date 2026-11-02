@@ -20,7 +20,7 @@ class HentBekreftedeNyhetsvarslerHandler(private val transactional: Transactiona
             success(
                 BekreftetNyhetsvarselTable.selectAll()
                     .where { BekreftetNyhetsvarselTable.navIdent eq request.navIdent }
-                    .map { it[BekreftetNyhetsvarselTable.nyhetsvarselId] }
+                    .map { it[BekreftetNyhetsvarselTable.nyhetsvarselId].value }
             )
         }
 }
