@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.klagebrev.tekstNAY
 
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
