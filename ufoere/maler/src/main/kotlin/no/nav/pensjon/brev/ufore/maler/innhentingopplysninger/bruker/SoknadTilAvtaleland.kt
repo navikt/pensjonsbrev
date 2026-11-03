@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
+package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD

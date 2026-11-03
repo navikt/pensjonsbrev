@@ -1,7 +1,6 @@
-package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
+package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
