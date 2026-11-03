@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.brev.Listetype
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -95,7 +96,8 @@ class BrevbakerServiceTest {
             saksbehandlerNavn = "case worker name",
             attesterendeSaksbehandlerNavn = "case worker name2",
             navAvsenderEnhet = "Nav abc"
-        )
+        ),
+        stableHashCode = StableHashCode(3)
     )
 
     val mapper = jacksonObjectMapper().apply {

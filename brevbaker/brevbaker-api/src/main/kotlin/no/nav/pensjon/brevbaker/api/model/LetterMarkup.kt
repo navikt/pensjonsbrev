@@ -9,7 +9,6 @@ interface LetterMarkupWithDataUsage {
     val markup: LetterMarkup
     val letterDataUsage: Set<Property>
     val brevtype: LetterMetadata.Brevtype
-    val stableHashCode: StableHashCode?
 
     interface Property {
         val typeName: String
@@ -22,11 +21,13 @@ interface LetterMarkup {
     val sakspart: Sakspart
     val blocks: List<Block>
     val signatur: Signatur
+    val stableHashCode: StableHashCode?
 
     interface Attachment : AttachmentTitle {
         override val title: List<ParagraphContent.Text>
         val blocks: List<Block>
         val includeSakspart: Boolean
+        val stableHashCode: StableHashCode?
     }
 
     interface Sakspart {

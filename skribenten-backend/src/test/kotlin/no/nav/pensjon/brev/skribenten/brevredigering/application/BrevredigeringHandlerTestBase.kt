@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import no.nav.brev.InternKonstruktoer
-import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
@@ -601,7 +600,6 @@ abstract class BrevredigeringHandlerTestBase {
                     markup = it,
                     letterDataUsage = emptySet(),
                     brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
-                    stableHashCode = StableHashCode(it.blocks.map { block -> block.id }.hashCode())
                 ) }
 
         override suspend fun renderPdf(

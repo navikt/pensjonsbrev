@@ -21,7 +21,8 @@ private fun cleanMarkup(markup: LetterMarkup): LetterMarkup =
         title = markup.title,
         sakspart = markup.sakspart,
         blocks = markup.blocks.mapNotNull { clean(it) }.removeEmptyBlocks(),
-        signatur = markup.signatur
+        signatur = markup.signatur,
+        stableHashCode = markup.stableHashCode
     )
 
 @OptIn(InterneDataklasser::class)
@@ -29,8 +30,8 @@ private fun cleanMarkup(attachment: LetterMarkup.Attachment): LetterMarkup.Attac
     LetterMarkupImpl.AttachmentImpl(
         title = attachment.title,
         blocks = attachment.blocks.mapNotNull { clean(it) }.removeEmptyBlocks(),
-        includeSakspart = attachment.includeSakspart
-
+        includeSakspart = attachment.includeSakspart,
+        stableHashCode = attachment.stableHashCode
     )
 
 private fun List<Block>.removeEmptyBlocks(): List<Block> =

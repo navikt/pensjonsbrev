@@ -36,7 +36,6 @@ internal object BrevbakerLetterMarkup {
                 Letter2Markup.renderLetterOnly(letter.toScope(usage), letter.template),
                 usage.propertyUsage,
                 letter.template.letterMetadata.brevtype,
-                stableHashCode = StableHashCode(letter.template.stableHashCode())
             )
         }
 

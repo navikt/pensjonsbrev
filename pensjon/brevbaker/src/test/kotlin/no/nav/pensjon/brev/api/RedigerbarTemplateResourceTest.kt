@@ -7,6 +7,7 @@ import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
@@ -60,7 +61,8 @@ class RedigerbarTemplateResourceTest {
                 saksbehandlerNavn = "Saksbehandlersen",
                 attesterendeSaksbehandlerNavn = null,
                 navAvsenderEnhet = "Akersgata"
-            )
+            ),
+            stableHashCode = StableHashCode(5)
         ),
         alltidValgbareVedlegg = listOf(),
         redigerteVedlegg = emptyMap(),
@@ -71,7 +73,7 @@ class RedigerbarTemplateResourceTest {
             saksbehandlervalg = letterData.saksbehandlerValg,
             felles = FellesFactory.felles,
             language = LanguageCode.BOKMAL
-        )
+        ),
     )
 
     private val validRedigertBrevRequestV2 = BestillRedigertBrevRequestV2(

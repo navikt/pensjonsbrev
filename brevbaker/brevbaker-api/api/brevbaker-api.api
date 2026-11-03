@@ -267,12 +267,14 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 	public abstract fun getBlocks ()Ljava/util/List;
 	public abstract fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
 	public abstract fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
+	public abstract fun getStableHashCode-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 	public abstract fun getTitle ()Ljava/util/List;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment : no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
 	public abstract fun getBlocks ()Ljava/util/List;
 	public abstract fun getIncludeSakspart ()Z
+	public abstract fun getStableHashCode-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 	public abstract fun getTitle ()Ljava/util/List;
 }
 
@@ -511,7 +513,6 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupW
 	public abstract fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public abstract fun getLetterDataUsage ()Ljava/util/Set;
 	public abstract fun getMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public abstract fun getStableHashCode-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage$Property {

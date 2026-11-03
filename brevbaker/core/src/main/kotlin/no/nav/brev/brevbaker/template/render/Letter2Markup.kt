@@ -1,6 +1,7 @@
 package no.nav.brev.brevbaker.template.render
 
 import no.nav.brev.InterneDataklasser
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -70,7 +71,8 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                     attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler,
                     navAvsenderEnhet = context.scope.felles.avsenderEnhet.navn,
                 )
-            }
+            },
+            stableHashCode = StableHashCode(template.stableHashCode())
         )
 
     fun renderAttachmentsOnly(
@@ -89,7 +91,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             val override = editableId?.let { redigerteVedlegg[it] }
             add(
                 if (override != null) {
-                    AttachmentImpl(override.title, override.blocks, override.includeSakspart)
+                    AttachmentImpl(override.title, override.blocks, override.includeSakspart, override.stableHashCode)
                 } else {
                     renderAttachment(attachmentContext, attachment)
                 }
@@ -126,6 +128,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             renderText(attachmentContext, attachment.title),
             renderOutline(attachmentContext, attachment.outline),
             attachment.includeSakspart,
+            StableHashCode(attachment.stableHashCode())
         )
 
     fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> {
