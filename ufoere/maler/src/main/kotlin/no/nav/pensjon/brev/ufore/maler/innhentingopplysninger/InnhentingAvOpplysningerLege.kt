@@ -48,24 +48,26 @@ object InnhentingAvOpplysningerLege : RedigerbarTemplate<EmptyRedigerbarBrevdata
 
             showIf(helsetilstand) {
                 title1 {
-                    text (bokmal { + "Helsetilstand" }) // TODO: Toggle
+                    text (bokmal { + "Helsetilstand" })
                 }
                 paragraph {
                     text (
                         bokmal { + "Nav skal gjøre en vurdering i forhold til om brukers sykdom/skade er hovedårsak til varig nedsatt inntektsevne med minst halvparten. I den forbindelse ber vi om tilbakemelding på følgende: " },
                     )
-                    text (
-                        bokmal { + "Beskriv hvordan brukers sykdomsbilde påvirker arbeidsevnen." },
-                    )
-                    text (
-                        bokmal { + "Fra hvilket tidspunkt anser du at brukers arbeidsevne har vært varig nedsatt med minst halvparten på grunn av sykdom/skade?" },
-                    )
-                    text (
-                        bokmal { + "Beskriv utviklingen i brukers sykdomsbilde, fra sykdommen oppstod og frem til i dag." },
-                    )
-                    text (
-                        bokmal { + "Beskriv hvordan brukers funksjonsevne antas å bli på sikt." },
-                    )
+                    numberedList {
+                        item {
+                            text(bokmal { +"Beskriv hvordan brukers sykdomsbilde påvirker arbeidsevnen." })
+                        }
+                        item {
+                            text(bokmal { +"Fra hvilket tidspunkt anser du at brukers arbeidsevne har vært varig nedsatt med minst halvparten på grunn av sykdom/skade?" })
+                        }
+                        item {
+                            text(bokmal { +"Beskriv utviklingen i brukers sykdomsbilde, fra sykdommen oppstod og frem til i dag." })
+                        }
+                        item {
+                            text(bokmal { +"Beskriv hvordan brukers funksjonsevne antas å bli på sikt." })
+                        }
+                    }
                 }
             }
 
@@ -77,18 +79,20 @@ object InnhentingAvOpplysningerLege : RedigerbarTemplate<EmptyRedigerbarBrevdata
                     text(
                         bokmal { +"Nav skal gjøre en vurdering i forhold til om bruker har forsøkt all hensiktsmessig behandling for å bedre sin arbeidsevne. I den forbindelse ber vi om tilbakemelding på følgende:" },
                     )
-                    text(
-                        bokmal { +"Hvilken behandling eller utredning har bruker gjennomført og hvilke resultater har behandlingen/utredningen gitt?" },
-                    )
-                    text(
-                        bokmal { +"Er bruker henvist til ny behandling/utredning?" },
-                    )
-                    text(
-                        bokmal { +"Vil videre behandling føre til bedring av brukers arbeidsevne?" },
-                    )
-                    text(
-                        bokmal { +"Vil annen behandling kunne føre til økt arbeidsevne?" },
-                    )
+                    numberedList {
+                        item {
+                            text(bokmal { +"Hvilken behandling eller utredning har bruker gjennomført og hvilke resultater har behandlingen/utredningen gitt?" })
+                        }
+                        item {
+                            text(bokmal { +"Er bruker henvist til ny behandling/utredning?" })
+                        }
+                        item {
+                            text(bokmal { +"Vil videre behandling føre til bedring av brukers arbeidsevne?" })
+                        }
+                        item {
+                            text(bokmal { +"Vil annen behandling kunne føre til økt arbeidsevne?" })
+                        }
+                    }
                 }
             }
 
@@ -111,15 +115,17 @@ object InnhentingAvOpplysningerLege : RedigerbarTemplate<EmptyRedigerbarBrevdata
                     text(
                         bokmal { +"Bruker skal vurderes etter bestemmelsene i folketrygdloven om vedkommende fyller vilkåret om rettighet som ung ufør. I den forbindelse trenger vi noen opplysninger fra deg." },
                     )
-                    text(
-                        bokmal { +"Når var bruker første gang i kontakt med lege for utredning/behandling for <Fritekst: Diagnose>?" },
-                    )
-                    text(
-                        bokmal { +"Fra hvilket tidspunkt har bruker vært varig minst 50 prosent arbeidsufør?" },
-                    )
-                    text(
-                        bokmal { +"Mener du brukers sykdom var å anse som alvorlig og varig før bruker fylte 26 år?" },
-                    )
+                    numberedList {
+                        item {
+                            text(bokmal { +"Når var bruker første gang i kontakt med lege for utredning/behandling for " + fritekst("diagnose" + "?") })
+                        }
+                        item {
+                            text(bokmal { +"Fra hvilket tidspunkt har bruker vært varig minst 50 prosent arbeidsufør?" })
+                        }
+                        item {
+                            text(bokmal { +"Mener du brukers sykdom var å anse som alvorlig og varig før bruker fylte 26 år?" })
+                        }
+                    }
                 }
             }
 
