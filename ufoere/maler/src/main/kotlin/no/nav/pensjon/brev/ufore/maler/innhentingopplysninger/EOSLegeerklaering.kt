@@ -4,12 +4,15 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_EOS_LEGEERKLAERING
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.info.BrukersNavnDto
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.brukersNavnDto.brukersNavnPendata.navn
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.brukersNavnDto.pesysData
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_KONTAKTSENTER_TELEFON_LEGE
@@ -17,7 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object EOSLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object EOSLegeerklaering : RedigerbarTemplate<BrukersNavnDto> {
 
     override val kode = UT_INNH_OPPL_EOS_LEGEERKLAERING
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
@@ -40,7 +43,7 @@ object EOSLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { + fritekst("Navn") + " har søkt om uføretrygd, og har bodd eller arbeidet i et annet EØS-land. Derfor trenger vi EØS – detaljert legeerklæring, Nav 45-12.00. " })
+                text(bokmal { + pesysData.navn.ifNull(fritekst("Navn")) + " har søkt om uføretrygd, og har bodd eller arbeidet i et annet EØS-land. Derfor trenger vi EØS – detaljert legeerklæring, Nav 45-12.00. " })
             }
             paragraph {
                 text(bokmal { +"Vi bruker folketrygdlovens § 21-4 når vi innhenter opplysninger. " })

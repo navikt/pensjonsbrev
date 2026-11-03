@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -11,13 +12,16 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AlltidValgbareVedlegg
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_AV_BOTIDSOPPLYSNINGER
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.info.BrukersNavnDto
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.brukersNavnDto.brukersNavnPendata.navn
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.brukersNavnDto.pesysData
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object InnhentingAvBotidsopplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object InnhentingAvBotidsopplysninger : RedigerbarTemplate<BrukersNavnDto> {
 
     override val kode = UT_INNH_AV_BOTIDSOPPLYSNINGER
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
@@ -40,7 +44,7 @@ object InnhentingAvBotidsopplysninger : RedigerbarTemplate<EmptyRedigerbarBrevda
         }
         outline {
             paragraph {
-                text(bokmal { + "Vedrørende " + fritekst("navn") + ". "})
+                text(bokmal { + "Vedrørende " + pesysData.navn.ifNull(fritekst("Navn")) + ". "})
             }
             paragraph {
                 text(bokmal { + "Som et ledd i behandlingen av stønadssak ber vi om dokumentasjon på all botid i Norge, og gjerne kopi av hovedregisterkort om dette finnes. " })
