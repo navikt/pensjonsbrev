@@ -1,7 +1,6 @@
-package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
+package no.nav.pensjon.brev.ufore.maler.info
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -21,7 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTI
 object TrukketKlage : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = UT_INNH_OPPL_TRUKKET_KLAGE
-    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
     override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
