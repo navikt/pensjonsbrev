@@ -22,8 +22,6 @@ object InnhentingAvBotidsopplysninger : RedigerbarTemplate<EmptyRedigerbarBrevda
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
-
 
     override val template = createTemplate(
         languages = languages(Bokmal),
