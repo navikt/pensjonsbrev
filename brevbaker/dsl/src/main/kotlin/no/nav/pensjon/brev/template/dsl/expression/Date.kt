@@ -26,11 +26,11 @@ private object LocalDateSelectors {
         override val propertyType = "Int"
         override val selector = LocalDate::getYear
     }
-    val monthSelector = object : TemplateModelSelector<LocalDate, Int> {
+    val monthSelector = object : TemplateModelSelector<LocalDate, Month> {
         override val className = "java.time.LocalDate"
         override val propertyName = "month"
-        override val propertyType = "Int"
-        override val selector = LocalDate::getMonthValue
+        override val propertyType = "Month"
+        override val selector = LocalDate::getMonth
     }
 
     val daySelector = object : TemplateModelSelector<LocalDate, Int> {
@@ -61,8 +61,11 @@ val localDateNow: Expression<LocalDate> = UnaryOperation.LocalDateNow(Unit.expr(
 val Expression<LocalDate>.year: Expression<Int>
     get() = select(LocalDateSelectors.yearSelector)
 
-val Expression<LocalDate>.month: Expression<Int>
+val Expression<LocalDate>.month: Expression<Month>
     get() = select(LocalDateSelectors.monthSelector)
+
+operator fun Expression<Month>.plus(other: Int): Expression<Month> =
+    BinaryOperation.MonthPlus(this, other.expr())
 
 val Expression<LocalDate>.day: Expression<Int>
     get() = select(LocalDateSelectors.daySelector)

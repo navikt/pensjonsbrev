@@ -236,6 +236,13 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$MapCollection : 
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/template/BinaryOperation$MonthPlus : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$MonthPlus;
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Ljava/time/Month;I)Ljava/time/Month;
+	public fun stableHashCode ()I
+}
+
 public final class no/nav/pensjon/brev/template/BinaryOperation$Or : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$Or;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -1478,6 +1485,7 @@ public final class no/nav/pensjon/brev/template/dsl/expression/DateKt {
 	public static final fun getLocalDateNow ()Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getMonth (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun plus (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/EqualsKt {
