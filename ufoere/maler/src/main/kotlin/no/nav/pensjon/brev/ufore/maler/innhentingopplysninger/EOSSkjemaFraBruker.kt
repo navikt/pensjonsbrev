@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OP
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
@@ -57,12 +58,8 @@ object EOSSkjemaFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 text(bokmal { + "Sender du skjemaet i posten, må du legge ved forsidearket. Adressen er oppgitt på forsidearket. "})
             }
-
-            title1 {
-                text(bokmal { + "Fristen for å sende inn skjemaet og vedlegg er to uker" })
-            }
             paragraph {
-                text(bokmal { + "Fristen gjelder fra du mottar dette brevet og skjema i posten. Du kan be om utsettelse av fristen ved å kontakte Nav. " })
+                text(bokmal { + "Fristen for å sende inn skjemaet og vedlegg er to uker. Fristen gjelder fra du mottar dette brevet og skjema i posten. Du kan be om utsettelse av fristen ved å kontakte Nav. " })
             }
 
             title1 {
@@ -71,6 +68,8 @@ object EOSSkjemaFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 text(bokmal { + "Vi vil videresende opplysningene dine til landene du har oppgitt at du har bodd, arbeidet eller opphold deg i. Landet eller landene vil behandle søknaden din, og du vil motta et brev med endelig beregning av ytelsen når de har gjort dette. " })
             }
+
+            includePhrase(Felles.HarDuSporsmal)
         }
     }
 }

@@ -50,10 +50,7 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     text(bokmal { +"Du er under 18 år på søknadstidspunktet, søknaden må derfor framsettes av foresatte/verge" })
                 }
                 paragraph {
-                    text(bokmal { +"Vi viser til din søknad om uføretrygd. " })
-                }
-                paragraph {
-                    text(bokmal { +"Du er under 18 år på søknadstidspunktet, og søknaden må derfor framsettes av foresatte/verge. " })
+                    text(bokmal { +"Vi viser til din søknad om uføretrygd. Du er under 18 år på søknadstidspunktet, og søknaden må derfor framsettes av foresatte/verge. " })
                 }
                 paragraph {
                     text(bokmal { +"Kopi av søknaden sendes i retur per post for signering av foresatte/verge. Vedlagte forside bør benyttes når du sender søknaden på nytt. " })
@@ -69,7 +66,7 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     text(bokmal { + "Du er over 18 år og søknaden ikke er skrevet under av deg" })
                 }
                 paragraph {
-                    text(bokmal { + "Du har søkt om uføretrygd. Vi kan ikke behandle søknaden fordi du er over 18 år og søknaden ikke er skrevet under av deg. " })
+                    text(bokmal { + "Vi viser til din søknad om uføretrygd. Vi kan ikke behandle søknaden fordi du er over 18 år og søknaden ikke er skrevet under av deg. " })
                 }
                 paragraph {
                     text(bokmal { + "Hvis du ikke selv er i stand til å søke om uføretrygd, trenger vi dokumentasjon på at det finnes et gyldig vergeforhold mellom deg og den som har underskrevet denne søknaden. Sender du dette, kan søknaden anses som gyldig. " })
@@ -85,7 +82,7 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 }
             }.orShowIf(arsak.equalTo(ArsakEnum.MANGLENDE_FORMKRAV_KLAGE)) {
                 title1 {
-                    text(bokmal { + "Manglende formkrav klage" })
+                    text(bokmal { + "Klagen er mangelfull" })
                 }
                 paragraph {
                     text(bokmal { + "Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst("dato") + ". " })
@@ -94,7 +91,7 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     text(bokmal { + "Det følger av forvaltningsloven § 32 at klagen skal være skriftlig og underskrevet. Klagen skal også nevne hvilket vedtak det klages på og hvilken endring som ønskes. Dersom klagen er mangelfull, setter vi en kort frist slik at klager kan rette opp dette. Dersom manglene ikke blir rettet innen fristen og vilkårene for å behandle klagen ikke er oppfylt, skal klagen avvises. Dette følger av forvaltningsloven § 33. " })
                 }
                 paragraph {
-                    text(bokmal { + fritekst("Tilpass etter hva som er mangelen i klagen. Vi ber derfor om at du underskriver på vedlagt kopi av klagen / opplyser om hvilket vedtak du klager på / opplyser om hvilken endring du ønsker i vedtaket/ hvorfor vedtaket er feil.") })
+                    text(bokmal { + fritekst("Tilpass etter hva som er mangelen i klagen.") })
                 }
                 paragraph {
                     text(bokmal { + "Klagen må sendes inn til skanning sammen med vedlagte forside til adressen oppgitt på forsidearket. På nav.no kan du sende inn dokumenter elektronisk ved bruk av BankID. Det beste er om klagen sendes til oss på nytt på denne måten. " })
@@ -110,7 +107,7 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     text(bokmal { + "Manglende underskrift" })
                 }
                 paragraph {
-                    text(bokmal { + "Vi har mottatt din søknad om uføretrygd uten underskrift på søknadsskjemaet. " })
+                    text(bokmal { + "Vi viser til din søknad om uføretrygd. Du har ikke underskrevet søknaden. " })
                 }
                 paragraph {
                     text(bokmal { + "Søknaden må underskrives slik at det sikres at rett person fremmer søknaden. Søknaden behandles på bakgrunn av de opplysningene som framkommer i skjemaet. Underskriften din bekrefter at disse opplysningene er korrekte. " })

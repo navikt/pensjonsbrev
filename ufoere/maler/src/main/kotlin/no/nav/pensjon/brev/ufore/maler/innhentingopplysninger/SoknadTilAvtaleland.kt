@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OP
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
@@ -40,7 +41,7 @@ object SoknadTilAvtaleland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { + "Vi viser til din søknad om uføretrygd. Vi har registrert at du har bodd i " + fritekst("Bosnia-Hercegovina/Tyrkia/Serbia/Canada/Quebec/Israel/India/Montenegro/USA/Australia/Sør-Korea") + ". Dette er et land Norge har inngått trygdeavtale med. " })
+                text(bokmal { + "Vi viser til din søknad om uføretrygd. Vi har registrert at du har bodd i " + fritekst("land") + ". Dette er et land Norge har inngått trygdeavtale med. " })
             }
 
             paragraph {
@@ -54,8 +55,10 @@ object SoknadTilAvtaleland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 text(bokmal { + "Vi ber om en tilbakemelding innen " })
                 text(bokmal { + "2 uker frem i tid" }, BOLD)
-                text(bokmal { + " på om du også ønsker å søke uføretrygd i " + fritekst("land") + " eller ikke. Dersom vi ikke mottar tilbakemelding innen frist, antar vi at du ikke ønsker å fremme søke uføretrygd til avtalelandet. " })
+                text(bokmal { + " på om du også ønsker å søke uføretrygd i " + fritekst("land") + " eller ikke. Dersom vi ikke mottar tilbakemelding innen frist, antar vi at du ikke ønsker å fremme en søknad om uføretrygd til avtalelandet. " })
             }
+
+            includePhrase(Felles.HarDuSporsmal)
         }
     }
 }

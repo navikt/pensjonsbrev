@@ -20,10 +20,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTI
 object ForesporselTrygdetidSendtLand : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = UT_FORESPORSEL_TRYGDETID_SENDT_LAND
-    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
 
     override val template = createTemplate(
@@ -40,13 +39,13 @@ object ForesporselTrygdetidSendtLand : RedigerbarTemplate<EmptyRedigerbarBrevdat
         }
         outline {
             paragraph {
-                text(bokmal { + "Vi viser til ditt krav om uføreytelse av " + fritekst("dato") + ". " })
+                text(bokmal { + "Vi viser til ditt krav om uføretrygd av " + fritekst("dato") + ". " })
             }
             paragraph {
                 text(bokmal { + "Vi har i brev av " + fritekst("dato") + " funnet at vilkårene i folketrygdlovens § 12-2 ikke er oppfylt etter nasjonale regler. " })
             }
             paragraph {
-                text(bokmal { + "Vi skal ta stilling til om vilkårene i § 12-2 kan oppfylles gjennom medregning av medlemstid for tilsvarende periode i " + fritekst("land") + " så snart de mottar bekreftelse på medlemskapsperioder i " + fritekst("land") + " fra trygdemyndigheten der. " })
+                text(bokmal { + "Vi skal ta stilling til om vilkårene i § 12-2 kan oppfylles gjennom sammenlegging av medlemstid for tilsvarende periode i " + fritekst("land") + " så snart de mottar bekreftelse på medlemskapsperioder i " + fritekst("land") + " fra trygdemyndigheten der. " })
             }
             paragraph {
                 text(bokmal { + "Forespørsel om medlemskapsperioder i " + fritekst("land") + " er sendt til trygdemyndighetene i " + fritekst("land") + " dag. " })

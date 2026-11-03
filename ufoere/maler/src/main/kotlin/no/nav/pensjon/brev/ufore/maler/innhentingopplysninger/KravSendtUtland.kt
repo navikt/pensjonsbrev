@@ -65,7 +65,7 @@ object KravSendtUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 }
 
                 paragraph {
-                    text(bokmal { +"Kravet behandles av trygdemyndigheter i " + fritekst("land") + " etter deres nasjonale lovgivning. Når vedtaket er fattet, sendes det til deg og Nav arbeid og ytelser. " })
+                    text(bokmal { +"Kravet behandles av trygdemyndigheter i " + fritekst("land") + " etter deres nasjonale lovgivning. Når vedtaket er fattet, sendes det til deg og Nav. " })
                 }
                 paragraph {
                     text(bokmal { +"Vi kan dessverre ikke si noe om andre lands saksbehandlingstid utover at den er svært varierende og kan være lang. " })

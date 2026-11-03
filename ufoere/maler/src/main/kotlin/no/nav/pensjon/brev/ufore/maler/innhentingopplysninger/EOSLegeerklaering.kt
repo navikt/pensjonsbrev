@@ -1,14 +1,12 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_EOS_LEGEERKLAERING
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
@@ -24,8 +22,6 @@ object EOSLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
-    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
-
 
     override val template = createTemplate(
         languages = languages(Bokmal),
@@ -71,9 +67,7 @@ object EOSLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { + "Når legeerklæringen er ferdig utfylt, må den skrives ut, undertegnes og sendes i posten til Nav. Husk «Førsteside til saken din» når du returnerer skjemaet slik at dokumentasjon kommer frem til riktig enhet. " })
             }
             paragraph {
-                text(bokmal { +"Vi må få legeerklæringen snarest mulig og innen " })
-                text(bokmal { +"frist 6 uker frem i tid" }, BOLD)
-                text(bokmal { +". Vi betaler etter taksten L180. " })
+                text(bokmal { +"Vi må få legeerklæringen snarest mulig og innen " + fritekst("frist 6 uker frem i tid") + ". Vi betaler etter taksten L180. " })
             }
             paragraph {
                 text(bokmal { + "Vi takker på forhånd for et godt samarbeid. Har du spørsmål, kan du ringe oss på $NAV_KONTAKTSENTER_TELEFON_LEGE. " })
