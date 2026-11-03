@@ -48,7 +48,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
     ) {
 
         val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
-        val avslag = saksbehandlervalg("avslag", "Avslag").enum<Avslag>()
+        val avslag = saksbehandlervalg("avslag", "Hvis § 12-17 Yrkesskade, velg:").enum<Avslag>()
 
         title { text(bokmal { +"Oversendelse til $NAV_KLAGEINSTANS - Uføretrygd" }) }
 
