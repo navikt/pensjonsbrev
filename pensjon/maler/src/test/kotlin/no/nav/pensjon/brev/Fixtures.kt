@@ -87,6 +87,7 @@ object Fixtures : LetterDataFactory {
             AdhocFeilEtteroppgjoer2023::class -> EmptyAutobrevdata as T
             AdhocInformasjonHvilendeRett4Aar::class -> EmptyAutobrevdata as T
             AdhocMidlertidigOpphoerHvilenderett10Aar::class -> EmptyAutobrevdata as T
+            AdhocInformasjonOpphorGjenlevendepensjon::class -> EmptyAutobrevdata as T
             AdhocUfoeretrygdEtterbetalingDagpenger::class -> EmptyAutobrevdata as T
             AdhocUfoeretrygdKombiDagpenger::class -> EmptyAutobrevdata as T
             AdhocUfoeretrygdKombiDagpengerInntektsavkorting::class -> EmptyAutobrevdata as T

@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -19,7 +18,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.selectors.barnepensjo
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 data class BarnepensjonAvslagData(
     val brukerUnder18Aar: Boolean,
@@ -54,14 +52,11 @@ object BarnepensjonAvslag : EtterlatteTemplate<BarnepensjonAvslagDTO>, Hovedmal 
             konverterElementerTilBrevbakerformat(innhold)
 
             includePhrase(Felles.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
+            includePhrase(Felles.DuHarRettTilInnsynISakenDin)
+            includePhrase(Felles.DuHarRettigheterKnyttetTilPersonopplysninger)
+            includePhrase(Felles.DuHarRettTilHjelpFraAndre)
+            includePhrase(Felles.DuHarRettTilVeiledning)
             includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(data.brukerUnder18Aar, data.bosattUtland))
         }
-
-        // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), data.bosattUtland.not())
-
-        // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), data.bosattUtland)
     }
 }

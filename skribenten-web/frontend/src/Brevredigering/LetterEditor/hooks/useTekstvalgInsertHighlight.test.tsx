@@ -68,6 +68,7 @@ type Harness = {
 function renderHarness() {
   const harness = { current: null as Harness | null };
 
+  // biome-ignore lint/correctness/noComponentHookFactories: Created once per test harness, with stable identity across renders.
   const Testkomponent = () => {
     const { editorState, redigertBrev, setEditorState } = useManagedLetterEditorContext();
 

@@ -70,7 +70,7 @@ spec:
             severity: warning
             namespace: pensjonsbrev
           annotations:
-            summary: "p95 for proxykall i skribenten-web er over 30s (nå {{ $value | printf \"%.1f\" }}s)"
+            summary: 'p95 for proxykall i skribenten-web er over 30s (nå {{ $value | printf "%.1f" }}s)'
             consequence: "Saksbehandlerne opplever applikasjonen som treg."
             action: "Sammenlign med latensen i skribenten-backend. Er backend rask, ligger tregheten i BFF-en eller i OBO-vekslingen."
 
@@ -82,7 +82,7 @@ spec:
             severity: warning
             namespace: pensjonsbrev
           annotations:
-            summary: "Event loop i {{ $labels.pod }} er blokkert (p99 {{ $value | printf \"%.2f\" }}s)"
+            summary: 'Event loop i {{ $labels.pod }} er blokkert (p99 {{ $value | printf "%.2f" }}s)'
             consequence: "BFF-en blir treg eller uresponsiv for alle brukere på denne poden, uten at CPU-bruken ser unormal ut."
             action: "Se etter synkron kode som blokkerer - typisk stor JSON-parsing eller kryptografi. Sjekk også nodejs_heap_size_used_bytes for samtidig minnepress."
 

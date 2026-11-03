@@ -42,6 +42,9 @@ export const EnumEditor = ({
           ))}
         </RadioGroup>
       )}
+      rules={{
+        required: spec.nullable ? false : "Obligatorisk: du må velge et alternativ",
+      }}
     />
   );
 };
