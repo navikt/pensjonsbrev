@@ -30,7 +30,6 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
         StableHash.hash(
             StableHash.of(title),
             StableHash.of(outline),
-            StableHash.of(attachments.filter { it.editableId != null }.map { it.template })
         )
     }
 
