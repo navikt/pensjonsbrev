@@ -23,7 +23,7 @@ data class DinAfpPrivatBeregningDto(
 ) : VedleggData {
     data class Etterbetaling(
         val virkningFom: LocalDate,
-        val virkningTom: LocalDate,
+        val virkningTom: LocalDate?,
         val etterbetalingAfpLivsvarig: BrevbakerType.Kroner?,
         val etterbetalingKronetillegg: BrevbakerType.Kroner?,
         val etterbetalingKompensasjonstillegg: BrevbakerType.Kroner?,

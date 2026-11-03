@@ -70,11 +70,19 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                         table(
                             header = {
                                 column {
-                                    text(
-                                        bokmal { +"Din AFP per måned fra " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
-                                        nynorsk { +"AFP per månad blir slik frå " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
-                                        english { +"Your monthly AFP from fra " + etterbetaling.virkningFom.format() + " to " + etterbetaling.virkningTom.format() + ":" },
-                                    )
+                                    ifNotNull(etterbetaling.virkningTom) { tom ->
+                                        text(
+                                            bokmal { +"Din AFP per måned fra " + etterbetaling.virkningFom.format() + " til " + tom.format() + ":" },
+                                            nynorsk { +"AFP per månad blir slik frå " + etterbetaling.virkningFom.format() + " til " + tom.format() + ":" },
+                                            english { +"Your monthly AFP from fra " + etterbetaling.virkningFom.format() + " to " + tom.format() + ":" },
+                                        )
+                                    } orShow {
+                                        text(
+                                            bokmal { +"Din AFP per måned fra " + etterbetaling.virkningFom.format() + ":" },
+                                            nynorsk { +"AFP per månad frå " + etterbetaling.virkningFom.format() + ":" },
+                                            english { +"Your monthly AFP from " + etterbetaling.virkningFom.format() + ":" },
+                                        )
+                                    }
                                 }
                                 column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                                     text(bokmal { +"Beløp per måned" },
