@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.ufore.uforegrad
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Grunnlag.Eps
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Kravhode.Arsak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Institusjonsopphold.JustertPeriodeCode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Reduksjonsgrunnlag.BarnetilleggRegelverkTypeCode
@@ -55,6 +54,14 @@ import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU5005_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.extensions.barnetilleggRedusertTil0
+import no.nav.pensjon.brev.maler.ufore.extensions.btFellesInnvilgetMenIkkeUtbetalt
+import no.nav.pensjon.brev.maler.ufore.extensions.btSerkullInnvilgetMenIkkeUtbetalt
+import no.nav.pensjon.brev.maler.ufore.extensions.epsBorMedBmEntall
+import no.nav.pensjon.brev.maler.ufore.extensions.epsBorMedNnEntall
+import no.nav.pensjon.brev.maler.ufore.extensions.erInnvilget
+import no.nav.pensjon.brev.maler.ufore.extensions.fellesbarnInnvilget
+import no.nav.pensjon.brev.maler.ufore.extensions.serkullsbarnInnvilget
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.InntektBarnetillegg
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -109,44 +116,15 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 )
             }
             outline {
-                //Beregning
                 val beregningsresultattilrevurderingtotalnetto = beregning.beregningsresultatTilRevurderingTotalNetto.ifNull(Kroner(0))
-
-                //Yrkesskade
                 val yrkesskadegrad = yrkesskade.safe { yrkesskadegrad }.ifNull(0)
 
-                //Reduksjonsgrunnlag
-                val btRedusertTil0 = not(reduksjonsgrunnlag.isNull()) and reduksjonsgrunnlag.safe { sumBruttoFoerReduksjonBt }.ifNull(Kroner(0)).greaterThan(0) and reduksjonsgrunnlag.safe { sumBruttoEtterReduksjonBt }.ifNull(Kroner(0)).equalTo(0)
-
-                //Beregning barnetillegg
-                val btFellesInnvilget = barnetillegg.btFellesbarn.safe { innvilget }.ifNull(false)
-                val btSerkullInnvilget = barnetillegg.btSerkullsbarn.safe { innvilget }.ifNull(false)
-
                 //Sammenstiller
-                val btInnvilget = btFellesInnvilget or btSerkullInnvilget
-                val btFellesInnvilgetMenIkkeUtbetalt = barnetillegg.btFellesbarn.safe { innvilget and netto.equalTo(0) }.ifNull(false)
-                val btSerkullInnvilgetMenIkkeUtbetalt = barnetillegg.btSerkullsbarn.safe { innvilget and netto.equalTo(0) }.ifNull(false)
-                val harBareBt = btInnvilget and not(tillegg.ektefelletilleggInnvilget) and not(tillegg.gjenlevendetilleggInnvilget)
-                val harBareGjt = not(btInnvilget) and not(tillegg.ektefelletilleggInnvilget) and tillegg.gjenlevendetilleggInnvilget
-                val harBareEt = tillegg.ektefelletilleggInnvilget and not(btInnvilget) and not(tillegg.gjenlevendetilleggInnvilget)
-                val harBtOgGjt = btInnvilget and tillegg.gjenlevendetilleggInnvilget and not(tillegg.ektefelletilleggInnvilget)
-                val harBtOgEt = btInnvilget and tillegg.ektefelletilleggInnvilget and not(tillegg.gjenlevendetilleggInnvilget)
-
-                //Tekster
-                val epsBorMedNnEntall = ifElse(
-                    grunnlag.epsBrukerBorMed.equalTo(Eps.EKTEFELLE), "ektefellen".expr(),
-                    ifElse(
-                        grunnlag.epsBrukerBorMed.equalTo(Eps.PARTNER), "partnaren".expr(),
-                        ifElse(grunnlag.epsBrukerBorMed.equalTo(Eps.SAMBOER), "sambuaren".expr(), "".expr())
-                    )
-                )
-                val epsBorMedBmEntall = ifElse(
-                    grunnlag.epsBrukerBorMed.equalTo(Eps.EKTEFELLE), "ektefelle".expr(),
-                    ifElse(
-                        grunnlag.epsBrukerBorMed.equalTo(Eps.PARTNER), "partner".expr(),
-                        ifElse(grunnlag.epsBrukerBorMed.equalTo(Eps.SAMBOER), "samboer".expr(), "".expr())
-                    )
-                )
+                val harBareBt = barnetillegg.erInnvilget() and not(tillegg.ektefelletilleggInnvilget) and not(tillegg.gjenlevendetilleggInnvilget)
+                val harBareGjt = not(barnetillegg.erInnvilget()) and not(tillegg.ektefelletilleggInnvilget) and tillegg.gjenlevendetilleggInnvilget
+                val harBareEt = tillegg.ektefelletilleggInnvilget and not(barnetillegg.erInnvilget()) and not(tillegg.gjenlevendetilleggInnvilget)
+                val harBtOgGjt = barnetillegg.erInnvilget() and tillegg.gjenlevendetilleggInnvilget and not(tillegg.ektefelletilleggInnvilget)
+                val harBtOgEt = barnetillegg.erInnvilget() and tillegg.ektefelletilleggInnvilget and not(tillegg.gjenlevendetilleggInnvilget)
 
                 paragraph {
                     text(
@@ -216,14 +194,14 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         )
                         includePhrase(Felles.TextOrList(nyeInnvilgedeBarnetillegg.map(BarnetilleggFormatter), 0))
 
-                        showIf(btFellesInnvilgetMenIkkeUtbetalt and (btSerkullInnvilgetMenIkkeUtbetalt or not(btSerkullInnvilget))) {
+                        showIf(barnetillegg.btFellesInnvilgetMenIkkeUtbetalt() and (barnetillegg.btSerkullInnvilgetMenIkkeUtbetalt() or not(barnetillegg.serkullsbarnInnvilget()))) {
                             text(
                                 bokmal { +"Tillegget blir ikke utbetalt fordi inntekten til deg og din ektefelle er over grensen for å få utbetalt barnetillegg. " },
                                 nynorsk { +"Tillegget blir ikkje utbetalt fordi inntekta di og inntekta til ektefellen din er over grensa for å få utbetalt barnetillegg. " },
                             )
                         }
 
-                        showIf(btSerkullInnvilgetMenIkkeUtbetalt and not(btFellesInnvilget)) {
+                        showIf(barnetillegg.btSerkullInnvilgetMenIkkeUtbetalt() and not(barnetillegg.fellesbarnInnvilget())) {
                             text(
                                 bokmal { +"Tillegget blir ikke utbetalt fordi inntekten din er over grensen for å få utbetalt barnetillegg." },
                                 nynorsk { +"Tillegget blir ikkje betalt ut fordi inntekta di er over grensa for å få utbetalt barnetillegg." },
@@ -1032,7 +1010,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
                 }
 
-                showIf(btInnvilget) {
+                showIf(barnetillegg.erInnvilget()) {
                     title1 {
                         text(
                             bokmal { +"Slik påvirker inntekt barnetillegget ditt " },
@@ -1083,16 +1061,16 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                 sumBruttoEtterReduksjonBt = redGrunnlag.sumBruttoEtterReduksjonBt,
                                 sumUtBt = redGrunnlag.sumUtBt,
                                 anvendtTrygdetid = beregning.anvendtTrygdetid,
-                                btfbInnvilget = btFellesInnvilget,
+                                btfbInnvilget = barnetillegg.fellesbarnInnvilget(),
                                 epsBorMed = grunnlag.epsBrukerBorMed,
                             )
                         )
                     }
                 }
 
-                showIf(not(btRedusertTil0)) {
+                showIf(not(reduksjonsgrunnlag.barnetilleggRedusertTil0())) {
                     ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
-                        showIf(sb.innvilget and not(btFellesInnvilget)) {
+                        showIf(sb.innvilget and not(barnetillegg.fellesbarnInnvilget())) {
                             includePhrase(
                                 TBU2338_Generated_Ny(
                                     btsbNetto = sb.netto,
@@ -1108,7 +1086,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             includePhrase(
                                 TBU2339_Generated_Ny(
                                     btfbNetto = fb.netto,
-                                    btsbInnvilget = btSerkullInnvilget,
+                                    btsbInnvilget = barnetillegg.serkullsbarnInnvilget(),
                                     btfbInnvilget = fb.innvilget,
                                     btMedFlereBarn = fb.antallBarn.greaterThan(1),
                                     epsBorMed = grunnlag.epsBrukerBorMed,
@@ -1117,21 +1095,21 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
                     }
 
-                    showIf(btInnvilget) {
+                    showIf(barnetillegg.erInnvilget()) {
                         paragraph {
                             text(
                                 bokmal { +"Endringer i " },
                                 nynorsk { +"Endringar i " },
                             )
 
-                            showIf(btFellesInnvilget) {
+                            showIf(barnetillegg.fellesbarnInnvilget()) {
                                 text(
-                                    bokmal { +"inntektene til deg og din " + epsBorMedBmEntall + " " },
-                                    nynorsk { +"inntektene til deg og " + epsBorMedNnEntall + " din " },
+                                    bokmal { +"inntektene til deg og din " + grunnlag.epsBorMedBmEntall() + " " },
+                                    nynorsk { +"inntektene til deg og " + grunnlag.epsBorMedNnEntall() + " din " },
                                 )
                             }
 
-                            showIf(not(btFellesInnvilget) and btSerkullInnvilget) {
+                            showIf(not(barnetillegg.fellesbarnInnvilget()) and barnetillegg.serkullsbarnInnvilget()) {
                                 text(
                                     bokmal { +"inntekten din " },
                                     nynorsk { +"inntekta di " },
@@ -1144,11 +1122,11 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
                     }
 
-                    showIf(btInnvilget) {
+                    showIf(barnetillegg.erInnvilget()) {
                         includePhrase(
                             InntektBarnetillegg(
-                                btFellesInnvilget = btFellesInnvilget,
-                                btSerkullInnvilget = btSerkullInnvilget,
+                                btFellesInnvilget = barnetillegg.fellesbarnInnvilget(),
+                                btSerkullInnvilget = barnetillegg.serkullsbarnInnvilget(),
                                 grunnbelop = beregning.grunnbelop,
                                 pe = pe,
                                 periodisertInntekt = periodisertInntekt
@@ -1160,17 +1138,17 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         showIf(fb.innvilget) {
                             paragraph {
                                 text(
-                                    bokmal { +"Inntekten din er " + fb.brukersInntektTilAvkorting.format() + " og inntekten til din " + epsBorMedBmEntall + " er " + fb.inntektAnnenForelder.format() + ". " },
-                                    nynorsk { +"Inntekta di er " + fb.brukersInntektTilAvkorting.format() + ", og inntekta til " + epsBorMedNnEntall + " din er " + fb.inntektAnnenForelder.format() + ". " },
+                                    bokmal { +"Inntekten din er " + fb.brukersInntektTilAvkorting.format() + " og inntekten til din " + grunnlag.epsBorMedBmEntall() + " er " + fb.inntektAnnenForelder.format() + ". " },
+                                    nynorsk { +"Inntekta di er " + fb.brukersInntektTilAvkorting.format() + ", og inntekta til " + grunnlag.epsBorMedNnEntall() + " din er " + fb.inntektAnnenForelder.format() + ". " },
                                 )
                                 showIf(fb.belopFratrukketAnnenForeldersInntekt.greaterThan(0)) {
                                     text(
-                                        bokmal { +"Folketrygdens grunnbeløp på inntil " + beregning.grunnbelop.format() + " er holdt utenfor inntekten til din " + epsBorMedBmEntall + ". " },
-                                        nynorsk { +"Grunnbeløpet i folketrygda på inntil " + beregning.grunnbelop.format() + " er halde utanfor inntekta til " + epsBorMedNnEntall + " din. " }
+                                        bokmal { +"Folketrygdens grunnbeløp på inntil " + beregning.grunnbelop.format() + " er holdt utenfor inntekten til din " + grunnlag.epsBorMedBmEntall() + ". " },
+                                        nynorsk { +"Grunnbeløpet i folketrygda på inntil " + beregning.grunnbelop.format() + " er halde utanfor inntekta til " + grunnlag.epsBorMedNnEntall() + " din. " }
                                     )
                                 }
 
-                                showIf(not(btSerkullInnvilget)) {
+                                showIf(not(barnetillegg.serkullsbarnInnvilget())) {
                                     showIf(fb.justeringsbelopPerAr.equalTo(0) and fb.netto.notEqualTo(0)) {
                                         showIf(fb.inntektBruktIAvkorting.greaterThan(fb.fribelop)) {
                                             text(
@@ -1208,7 +1186,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
-                        showIf(sb.innvilget and not(btFellesInnvilget)) {
+                        showIf(sb.innvilget and not(barnetillegg.fellesbarnInnvilget())) {
                             paragraph {
                                 showIf(sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0)) {
                                     showIf(sb.inntektBruktIAvkorting.greaterThan(sb.fribelop)) {
@@ -1304,13 +1282,13 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                                     showIf(fb.inntektBruktIAvkorting.greaterThan(fb.fribelop)) {
                                         text(
-                                            bokmal { +"inntektene til deg og din " + epsBorMedBmEntall + " høyere enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre. " },
-                                            nynorsk { +"inntektene til deg og " + epsBorMedNnEntall + " din høgare enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine. " },
+                                            bokmal { +"inntektene til deg og din " + grunnlag.epsBorMedBmEntall() + " høyere enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre. " },
+                                            nynorsk { +"inntektene til deg og " + grunnlag.epsBorMedNnEntall() + " din høgare enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine. " },
                                         )
                                     }.orShow {
                                         text(
-                                            bokmal { +"inntektene til deg og din " + epsBorMedBmEntall + " lavere enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre. " },
-                                            nynorsk { +"inntektene til deg og " + epsBorMedNnEntall + " din lågare enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine. " },
+                                            bokmal { +"inntektene til deg og din " + grunnlag.epsBorMedBmEntall() + " lavere enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre. " },
+                                            nynorsk { +"inntektene til deg og " + grunnlag.epsBorMedNnEntall() + " din lågare enn " + fb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine. " },
                                         )
                                     }
 
@@ -1366,35 +1344,35 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
-                        showIf(sb.innvilget and sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0) and not(btFellesInnvilgetMenIkkeUtbetalt)) {
+                        showIf(sb.innvilget and sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0) and not(barnetillegg.btFellesInnvilgetMenIkkeUtbetalt())) {
                             paragraph {
                                 text(
                                     bokmal { +"Barnetillegget " },
                                     nynorsk { +"Barnetillegget " },
                                 )
-                                showIf(btFellesInnvilget) {
+                                showIf(barnetillegg.fellesbarnInnvilget()) {
                                     text(
                                         bokmal { +"for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikke bor sammen med begge foreldrene, " },
                                         nynorsk { +"for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikkje bur saman med begge foreldra sine, " },
                                     )
                                 }
                                 text(
-                                    bokmal { +"blir ikke utbetalt fordi du " + ifElse(btFellesInnvilget, "alene ", "") + "har en samlet inntekt som er høyere enn " + sb.inntektstak.format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg. " },
-                                    nynorsk { +"blir ikkje utbetalt fordi du " + ifElse(btFellesInnvilget, "åleine ", "") + "har ei samla inntekt som er høgare enn " + sb.inntektstak.format() + ". Inntekta di er over grensa for å få utbetalt barnetillegg. " },
+                                    bokmal { +"blir ikke utbetalt fordi du " + ifElse(barnetillegg.fellesbarnInnvilget(), "alene ", "") + "har en samlet inntekt som er høyere enn " + sb.inntektstak.format() + ". Inntekten din er over grensen for å få utbetalt barnetillegg. " },
+                                    nynorsk { +"blir ikkje utbetalt fordi du " + ifElse(barnetillegg.fellesbarnInnvilget(), "åleine ", "") + "har ei samla inntekt som er høgare enn " + sb.inntektstak.format() + ". Inntekta di er over grensa for å få utbetalt barnetillegg. " },
                                 )
                             }
                         }
                     }
 
                     ifNotNull(barnetillegg.btFellesbarn) { fb ->
-                        showIf(fb.innvilget and fb.netto.equalTo(0) and fb.justeringsbelopPerAr.equalTo(0) and not(btSerkullInnvilgetMenIkkeUtbetalt)) {
+                        showIf(fb.innvilget and fb.netto.equalTo(0) and fb.justeringsbelopPerAr.equalTo(0) and not(barnetillegg.btSerkullInnvilgetMenIkkeUtbetalt())) {
                             paragraph {
                                 text(
                                     bokmal { +"Barnetillegget" },
                                     nynorsk { +"Barnetillegget " },
                                 )
 
-                                showIf(btSerkullInnvilget) {
+                                showIf(barnetillegg.serkullsbarnInnvilget()) {
                                     text(
                                         bokmal { +" for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre," },
                                         nynorsk { +"for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bur saman med begge foreldra sine, " },
@@ -1419,7 +1397,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
                     }
 
-                    showIf(btInnvilget) {
+                    showIf(barnetillegg.erInnvilget()) {
                         paragraph(uniqueness = "barnetillegg") {
                             text(
                                 bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget " },
