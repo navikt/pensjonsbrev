@@ -164,7 +164,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             nynorsk { +"Du har fått medhald i klaga di, og får " + beregning.uforegrad.format() + " prosent uføretrygd frå " + vedtak.virkFom.format() + ". " },
                         )
                     }
-                    showIf(((vilkarsvurdering.ungUforResultat).equalTo(VilkarResultat.OPPFYLT))) {
+                    showIf(vilkarsvurdering.ungUforResultat.equalTo(VilkarResultat.OPPFYLT)) {
                         text(
                             bokmal { +"Hele uføretrygden din er innvilget med rettighet som ung ufør. " },
                             nynorsk { +"Heile uføretrygda di er innvilga med rett som ung ufør. " },
@@ -172,7 +172,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskadegrad).equalTo((vilkarsvurdering.uforegrad)))) {
+                showIf(yrkesskadegrad.equalTo(vilkarsvurdering.uforegrad)) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at hele uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." },
@@ -181,7 +181,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskadegrad).lessThan((vilkarsvurdering.uforegrad)) and (yrkesskadegrad).greaterThan(0) and ((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) or (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT)))) {
+                showIf(yrkesskadegrad.lessThan(vilkarsvurdering.uforegrad) and yrkesskadegrad.greaterThan(0) and (vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) or vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT))) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at " + yrkesskadegrad.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." },
@@ -190,7 +190,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_1))) {
+                showIf(vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_1)) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at uførheten din ikke skyldes en godkjent yrkesskade eller yrkessykdom." },
@@ -199,7 +199,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT)) and ((vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_2))) {
+                showIf(vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_2)) {
                     paragraph {
                         text(
                             bokmal { +"Vi har kommet fram til at det er andre sykdomsforhold enn din godkjente yrkesskade eller yrkessykdom som er årsak til den økte uførheten din." },
@@ -208,7 +208,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((nyeInnvilgedeBarnetillegg.isNotEmpty())) {
+                showIf(nyeInnvilgedeBarnetillegg.isNotEmpty()) {
                     paragraph {
                         text(
                             bokmal { +"Du er innvilget barnetillegg i uføretrygden din for" },
@@ -426,7 +426,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
                 }
 
-                showIf((vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) or vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT))) {
+                showIf(vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) or vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT)) {
                     title1 {
                         text(
                             bokmal { +"Uførhet som skyldes yrkesskade eller yrkessykdom" },
@@ -435,7 +435,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskadegrad.equalTo(beregning.uforegrad) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1))) {
+                showIf(yrkesskadegrad.equalTo(beregning.uforegrad) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1)) {
                     paragraph {
                         text(
                             bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert at hele din nedsatte inntektsevne skyldes den godkjente yrkesskaden eller yrkessykdommen." },
@@ -444,7 +444,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskadegrad.equalTo(beregning.uforegrad) and beregning.yrkesskadeBest and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon))) {
+                showIf(yrkesskadegrad.equalTo(beregning.uforegrad) and beregning.yrkesskadeBest and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon)) {
                     paragraph {
                         text(
                             bokmal { +"Dette betyr at uføretrygden din vil bli beregnet etter særbestemmelser som gir deg en høyere uføretrygd." },
@@ -453,7 +453,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskadegrad).equalTo((vilkarsvurdering.uforegrad)) and not(beregning.yrkesskadeBest) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon))) {
+                showIf(yrkesskadegrad.equalTo(vilkarsvurdering.uforegrad) and not(beregning.yrkesskadeBest) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1) and not(krav.konvertertFraUforepensjon)) {
                     paragraph {
                         text(
                             bokmal { +"Dette betyr at uføretrygden din vil bli beregnet etter særbestemmelser, dersom dette er til fordel for deg." },
@@ -468,7 +468,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((yrkesskadegrad).lessThan((vilkarsvurdering.uforegrad)) and (yrkesskadegrad).greaterThan(0) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_2))) {
+                showIf(yrkesskadegrad.lessThan(vilkarsvurdering.uforegrad) and yrkesskadegrad.greaterThan(0) and vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_2)) {
                     paragraph(uniqueness = "12_17_1_o_2") {
                         text(
                             bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert om yrkesskaden eller yrkessykdommen er årsak til den økte uførheten din." },
@@ -482,7 +482,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         )
                     }
 
-                    showIf((beregning.yrkesskadeBest and not(krav.konvertertFraUforepensjon))) {
+                    showIf(beregning.yrkesskadeBest and not(krav.konvertertFraUforepensjon)) {
                         paragraph {
                             text(
                                 bokmal { +"Derfor vil denne delen av uføretrygden din bli beregnet etter særbestemmelser som gir deg en høyere uføretrygd." },
@@ -491,7 +491,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
                     }
 
-                    showIf((not(beregning.yrkesskadeBest) and not(krav.konvertertFraUforepensjon))) {
+                    showIf(not(beregning.yrkesskadeBest) and not(krav.konvertertFraUforepensjon)) {
                         paragraph {
                             text(
                                 bokmal { +"Denne delen av uføretrygden din vil bli beregnet etter særbestemmelser, dersom dette er til fordel for deg." },
@@ -507,7 +507,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3))) {
+                showIf(vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3)) {
                     paragraph {
                         text(
                             bokmal { +"Du er tidligere innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom. Vi har ut fra opplysninger i saken din vurdert om yrkesskaden eller yrkessykdommen din også er årsak til at uførheten din har økt, eller om dette skyldes andre sykdomsforhold." },
@@ -541,7 +541,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_2))) {
+                showIf(vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_2)) {
                     paragraph(uniqueness = "12_17_1_i_2") {
                         text(
                             bokmal { +"Du har en godkjent yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert om yrkesskaden eller yrkessykdommen er årsak til den økte uførheten din." },
@@ -556,7 +556,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and beregning.yrkesskadeBest and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon))) {
+                showIf(yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and beregning.yrkesskadeBest and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon)) {
                     paragraph {
                         text(
                             bokmal { +"Deler av uføretrygden din vil fortsatt bli beregnet etter særbestemmelser, noe som gir deg en høyere uføretrygd." },
@@ -565,7 +565,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and not(beregning.yrkesskadeBest) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon))) {
+                showIf(yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and not(beregning.yrkesskadeBest) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT) and not(krav.konvertertFraUforepensjon)) {
                     paragraph {
                         text(
                             bokmal { +"Deler av uføretrygden din vil fortsatt bli beregnet etter særbestemmelser, dersom dette er til fordel for deg." },
@@ -574,7 +574,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and not(beregning.yrkesskadeBest) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and (vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.OPPFYLT))) {
+                showIf(yrkesskadegrad.lessThan(beregning.uforegrad) and yrkesskadegrad.greaterThan(0) and not(beregning.yrkesskadeBest) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_3) and vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.OPPFYLT)) {
                     paragraph(uniqueness = "12_17_1_o_3") {
                         text(
                             bokmal { +"Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },
@@ -583,7 +583,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.yrkesskadeResultat).equalTo(VilkarResultat.IKKE_OPPFYLT) and (vilkarsvurdering.yrkesskadeBegrunnelse).equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_1))) {
+                showIf(vilkarsvurdering.yrkesskadeResultat.equalTo(VilkarResultat.IKKE_OPPFYLT) and vilkarsvurdering.yrkesskadeBegrunnelse.equalTo(YrkesskadeBegrunnelse.STDBEGR_12_17_1_I_1)) {
                     paragraph {
                         text(
                             bokmal { +"Du har ikke en godkjent yrkesskade eller yrkessykdom. Uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom. " + fritekst("Konkret begrunnelse") + "." },
@@ -598,7 +598,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         nynorsk { +"Dette er verknadstidspunktet ditt" },
                     )
                 }
-                showIf(((vilkarsvurdering.nedsattInntektsevneResultat).equalTo(VilkarResultat.OPPFYLT) and (vilkarsvurdering.virkningstidspunktBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_1))) {
+                showIf(vilkarsvurdering.nedsattInntektsevneResultat.equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.virkningstidspunktBegrunnelse.equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_1)) {
                     paragraph {
                         text(
                             bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Fram til dette vil du få arbeidsavklaringspenger." },
@@ -613,7 +613,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.nedsattInntektsevneResultat).equalTo(VilkarResultat.OPPFYLT) and (vilkarsvurdering.virkningstidspunktBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_2))) {
+                showIf(vilkarsvurdering.nedsattInntektsevneResultat.equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.virkningstidspunktBegrunnelse.equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_2)) {
                     paragraph {
                         text(
                             bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + vilkarsvurdering.virkningstidspunkt.format(MaanedFormatter) + "." },
@@ -622,7 +622,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.virkningstidspunktBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_3))) {
+                showIf(vilkarsvurdering.virkningstidspunktBegrunnelse.equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_3)) {
                     paragraph {
                         text(
                             bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Du vil få sykepenger fram til " + fritekst("dato for opphør") + ". I denne måneden får du utbetalt den delen av sykepengene med det beløp som overstiger uføretrygden." },
@@ -631,7 +631,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.virkningstidspunktBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_4))) {
+                showIf(vilkarsvurdering.virkningstidspunktBegrunnelse.equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_4)) {
                     paragraph {
                         text(
                             bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. For å ha rett til uføretrygd må du ha fylt 18 år. Du får derfor uføretrygd fra måneden etter at du fyller 18 år." },
@@ -640,7 +640,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.virkningstidspunktBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_5))) {
+                showIf(vilkarsvurdering.virkningstidspunktBegrunnelse.equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_5)) {
                     paragraph {
                         text(
                             bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + krav.kravFremsattDato.ifNull(krav.mottattDato).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
@@ -649,7 +649,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.virkningstidspunktBegrunnelse).equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_13))) {
+                showIf(vilkarsvurdering.virkningstidspunktBegrunnelse.equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_13)) {
                     paragraph {
                         text(
                             bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Du har rett til uføretrygd fra den måneden vilkårene er oppfylt." },
@@ -679,7 +679,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
                 }
 
-                showIf((beregning.uforetidspunkt.notEqualTo((vilkarsvurdering.uforetidspunkt)))) {
+                showIf(beregning.uforetidspunkt.notEqualTo(vilkarsvurdering.uforetidspunkt)) {
                     paragraph {
                         text(
                             bokmal { +"Du får fortsatt beregnet uføretrygden din ut fra tidligere uføretidspunkt, fordi dette gir deg en høyere uføretrygd." },
@@ -688,7 +688,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((beregning.uforetidspunkt.equalTo(vilkarsvurdering.uforetidspunkt))) {
+                showIf(beregning.uforetidspunkt.equalTo(vilkarsvurdering.uforetidspunkt)) {
                     paragraph {
                         text(
                             bokmal { +"Du får beregnet uføretrygden din ut fra nytt uføretidspunkt, fordi dette gir deg en høyere uføretrygd." },
@@ -710,7 +710,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
                 }
 
-                showIf(((vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_1) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf(vilkarsvurdering.ifuBegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_1) and vilkarsvurdering.ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3)) {
                     paragraph {
                         text(
                             bokmal { +"Inntekten din før du ble ufør er fastsatt til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
@@ -725,7 +725,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_3) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf(vilkarsvurdering.ifuBegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_3) and vilkarsvurdering.ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3)) {
                     paragraph {
                         text(
                             bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." },
@@ -740,7 +740,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_5) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf(vilkarsvurdering.ifuBegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_5) and vilkarsvurdering.ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3)) {
                     paragraph {
                         text(
                             bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
@@ -755,7 +755,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((vilkarsvurdering.ungUforResultat.equalTo(VilkarResultat.OPPFYLT)) and (vilkarsvurdering.ifuBegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_4)) and (vilkarsvurdering.ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf(vilkarsvurdering.ungUforResultat.equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.ifuBegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_4) and vilkarsvurdering.ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3)) {
                     paragraph {
                         text(
                             bokmal { +"Inntekten din før du ble ufør er fastsatt til " + vilkarsvurdering.ifuInntekt.format() + ". Vi har innvilget deg rettighet som ung ufør, og inntekten din før du ble ufør skal derfor tilsvare minst 4,5 ganger grunnbeløpet." },
@@ -770,7 +770,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((((vilkarsvurdering.ifuBegrunnelse).notEqualTo(null) or (vilkarsvurdering.ieuBegrunnelse).notEqualTo(null)) and beregning.uforegrad.equalTo(100) and (vilkarsvurdering.ieuInntekt).equalTo(0) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3) and (vilkarsvurdering.ifuBegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) and (vilkarsvurdering.ifuBegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
+                showIf((vilkarsvurdering.ifuBegrunnelse.notEqualTo(null) or vilkarsvurdering.ieuBegrunnelse.notEqualTo(null)) and beregning.uforegrad.equalTo(100) and vilkarsvurdering.ieuInntekt.equalTo(0) and vilkarsvurdering.ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3) and vilkarsvurdering.ifuBegrunnelse.notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) and vilkarsvurdering.ifuBegrunnelse.notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9)) {
                     paragraph {
                         text(
                             bokmal { +"Du har ikke inntekt i dag, og vi har derfor fastsatt uføregraden din til " + beregning.uforegrad.format() + " prosent." },
@@ -779,7 +779,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((((vilkarsvurdering.ifuBegrunnelse).notEqualTo(null) or (vilkarsvurdering.ieuBegrunnelse).notEqualTo(null)) and ((beregning.uforegrad.greaterThan(0) and beregning.uforegrad.lessThan(100)) or (beregning.uforegrad.equalTo(100) and (vilkarsvurdering.ieuInntekt).greaterThan(0))) and (vilkarsvurdering.ieuBegrunnelse).notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3) and (vilkarsvurdering.ifuBegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) and (vilkarsvurdering.ifuBegrunnelse).notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
+                showIf((vilkarsvurdering.ifuBegrunnelse.notEqualTo(null) or vilkarsvurdering.ieuBegrunnelse.notEqualTo(null)) and ((beregning.uforegrad.greaterThan(0) and beregning.uforegrad.lessThan(100)) or (beregning.uforegrad.equalTo(100) and vilkarsvurdering.ieuInntekt.greaterThan(0))) and vilkarsvurdering.ieuBegrunnelse.notEqualTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3) and vilkarsvurdering.ifuBegrunnelse.notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) and vilkarsvurdering.ifuBegrunnelse.notEqualTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9)) {
                     paragraph {
                         text(
                             bokmal { +"Du har en inntekt på " + vilkarsvurdering.ieuInntekt.format() + ", og vi har derfor fastsatt uføregraden din til " + beregning.uforegrad.format() + " prosent." },
@@ -788,7 +788,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf((vilkarsvurdering.ieuBegrunnelse.equalTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3))) {
+                showIf(vilkarsvurdering.ieuBegrunnelse.equalTo(InntektEtterUforhetBegrunnelse.STDBEGR_12_8_1_3)) {
                     paragraph {
                         text(
                             bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + vilkarsvurdering.ifuInntekt.format() + " på uføretidspunktet " + vilkarsvurdering.uforetidspunkt.formatMonthYear() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
@@ -809,7 +809,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
                 }
 
-                showIf(((vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) or (vilkarsvurdering.ifuBegrunnelse).equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9))) {
+                showIf(vilkarsvurdering.ifuBegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_2) or vilkarsvurdering.ifuBegrunnelse.equalTo(InntektForUforhetBegrunnelse.STDBEGR_12_8_2_9)) {
                     paragraph {
                         text(
                             bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + vilkarsvurdering.ifuInntekt.format() + ". Inntekten din før du ble ufør er fastsatt ut fra stillingsandelen din, og forventet inntekt på " + vilkarsvurdering.ieuInntekt.format() + ". Inntekten din etter at du ble ufør er derfor fastsatt til " + vilkarsvurdering.ieuInntekt.format() + " og uføregraden din blir " + beregning.uforegrad.format() + " prosent." },
@@ -939,19 +939,19 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         )
                     }
 
-                    showIf(((institusjonsopphold.erAnvendt or institusjonsopphold.allePerioderHarForsorgeransvar or institusjonsopphold.fasteUtgifter.notEqualTo(Kroner(0))))) {
+                    showIf(institusjonsopphold.erAnvendt or institusjonsopphold.allePerioderHarForsorgeransvar or institusjonsopphold.fasteUtgifter.notEqualTo(Kroner(0))) {
                         paragraph {
                             text(
                                 bokmal { +"Vi reduserer ikke utbetalingen av uføretrygden din verken i innleggelsesmåneden eller de tre påfølgende månedene når du er innlagt på institusjon. Uføretrygden din blir deretter redusert og skal under oppholdet utgjøre 14 prosent av uføretrygden inntil institusjonsoppholdet avsluttes. Totalt sett skal utbetalingen likevel utgjøre minst 45 prosent av folketrygdens grunnbeløp, før skatt. " },
                                 nynorsk { +"Vi reduserer ikkje utbetalinga av uføretrygda di verken i innleggingsmånaden eller dei tre påfølgjande månadene når du er innlagd på institusjon. Uføretrygda di blir deretter redusert og skal under opphaldet utgjere 14 prosent av uføretrygda inntil institusjonsopphaldet blir avslutta. Totalt sett skal utbetalinga likevel utgjere minst 45 prosent av grunnbeløpet i folketrygda før skatt. " },
                             )
 
-                            showIf((tillegg.ektefelletilleggInnvilget)) {
+                            showIf(tillegg.ektefelletilleggInnvilget) {
                                 text(
                                     bokmal { +"Dersom du mottar ektefelletillegg vil dette tillegget også bli redusert. " },
                                     nynorsk { +"Dersom du får ektefelletillegg vil dette tillegget også bli redusert. " },
                                 )
-                            }.orShowIf((tillegg.gjenlevendetilleggInnvilget)) {
+                            }.orShowIf(tillegg.gjenlevendetilleggInnvilget) {
                                 text(
                                     bokmal { +"Dersom du mottar gjenlevendetillegg vil dette tillegget også bli redusert. " },
                                     nynorsk { +"Dersom du får attlevandetillegg vil dette tillegget også bli redusert. " },
@@ -967,7 +967,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     showIf(institusjonsopphold.fasteUtgifter.equalTo(0)) {
-                        showIf((not(institusjonsopphold.erAnvendt) and institusjonsopphold.ingenPerioderHarForsorgeransvar)) {
+                        showIf(not(institusjonsopphold.erAnvendt) and institusjonsopphold.ingenPerioderHarForsorgeransvar) {
                             paragraph {
                                 text(
                                     bokmal { +"Uføretrygden din er lavere enn 45 prosent av folketrygdens grunnbeløp. Du vil derfor ikke få redusert utbetaling av uføretrygden din når du er innlagt på institusjon. " },
@@ -976,7 +976,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
                         }
 
-                        showIf((institusjonsopphold.allePerioderHarForsorgeransvar)) {
+                        showIf(institusjonsopphold.allePerioderHarForsorgeransvar) {
                             paragraph {
                                 text(
                                     bokmal { +"Du forsørger barn" + ifElse(tillegg.ektefelletilleggInnvilget, " og/eller ektefelle", "") + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres. " },
@@ -985,7 +985,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
                         }
 
-                        showIf((institusjonsopphold.erAnvendt and institusjonsopphold.ingenPerioderHarForsorgeransvar)) {
+                        showIf(institusjonsopphold.erAnvendt and institusjonsopphold.ingenPerioderHarForsorgeransvar) {
                             paragraph {
                                 text(
                                     bokmal { +"Du forsørger ikke barn " + ifElse(tillegg.ektefelletilleggInnvilget, " og/eller ektefelle", "") + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + beregning.totalNetto.format() + ". " },
@@ -994,7 +994,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
                         }
                     }.orShow {
-                        showIf((not(institusjonsopphold.erAnvendt) and institusjonsopphold.ingenPerioderHarForsorgeransvar)) {
+                        showIf(not(institusjonsopphold.erAnvendt) and institusjonsopphold.ingenPerioderHarForsorgeransvar) {
                             paragraph {
                                 text(
                                     bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres. " },
@@ -1003,7 +1003,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
                         }
 
-                        showIf((institusjonsopphold.allePerioderHarForsorgeransvar)) {
+                        showIf(institusjonsopphold.allePerioderHarForsorgeransvar) {
                             paragraph {
                                 text(
                                     bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig, og du forsørger barn" + ifElse(tillegg.ektefelletilleggInnvilget, " og/eller ektefelle", "") + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres. " },
@@ -1012,7 +1012,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             }
                         }
 
-                        showIf((institusjonsopphold.erAnvendt)) {
+                        showIf(institusjonsopphold.erAnvendt) {
                             paragraph {
                                 text(
                                     bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din skal reduseres til " + beregning.totalNetto.format() + ". " },
@@ -1032,7 +1032,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     )
                 }
 
-                showIf((btInnvilget)) {
+                showIf(btInnvilget) {
                     title1 {
                         text(
                             bokmal { +"Slik påvirker inntekt barnetillegget ditt " },
@@ -1042,28 +1042,28 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
 
                 ifNotNull(reduksjonsgrunnlag) { redGrunnlag ->
-                    showIf((redGrunnlag.sumUtBt.greaterThan(redGrunnlag.gradertOppjustertIFU) and redGrunnlag.barnetilleggRegelverkType.notEqualTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and beregning.virkFom.legacyGreaterThanOrEqual(LocalDate.of(2016, 1, 1)))) {
+                    showIf(redGrunnlag.sumUtBt.greaterThan(redGrunnlag.gradertOppjustertIFU) and redGrunnlag.barnetilleggRegelverkType.notEqualTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and beregning.virkFom.legacyGreaterThanOrEqual(LocalDate.of(2016, 1, 1))) {
                         paragraph {
                             text(
                                 bokmal { +"Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn 95 prosent av inntekten din før du ble ufør. 95 prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + redGrunnlag.gradertOppjustertIFU.format() + ". Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Årlig barnetillegg før reduksjon ut fra inntekt blir " },
                                 nynorsk { +"Uføretrygda di og barnetillegget ditt kan til saman ikkje utgjere meir enn 95 prosent av inntekta di før du blei ufør. 95 prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + redGrunnlag.gradertOppjustertIFU.format() + ". Uføretrygda di og barnetillegget ditt er til saman høgare enn dette. Brutto årleg barnetillegg før reduksjon ut frå inntekt blir " },
                             )
 
-                            showIf((redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(redGrunnlag.sumBruttoEtterReduksjonBt) and redGrunnlag.sumBruttoEtterReduksjonBt.greaterThan(0))) {
+                            showIf(redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(redGrunnlag.sumBruttoEtterReduksjonBt) and redGrunnlag.sumBruttoEtterReduksjonBt.greaterThan(0)) {
                                 text(
                                     bokmal { +"derfor redusert til " + redGrunnlag.sumBruttoEtterReduksjonBt.format() + ". " },
                                     nynorsk { +"derfor redusert til " + redGrunnlag.sumBruttoEtterReduksjonBt.format() + ". " },
                                 )
                             }
 
-                            showIf((redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(0) and redGrunnlag.sumBruttoEtterReduksjonBt.equalTo(0))) {
+                            showIf(redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(0) and redGrunnlag.sumBruttoEtterReduksjonBt.equalTo(0)) {
                                 text(
                                     bokmal { +"ikke utbetalt. " },
                                     nynorsk { +"ikkje utbetalt. " },
                                 )
                             }
 
-                            showIf((redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(redGrunnlag.sumBruttoEtterReduksjonBt) and redGrunnlag.sumBruttoEtterReduksjonBt.greaterThan(0))) {
+                            showIf(redGrunnlag.sumBruttoFoerReduksjonBt.greaterThan(redGrunnlag.sumBruttoEtterReduksjonBt) and redGrunnlag.sumBruttoEtterReduksjonBt.greaterThan(0)) {
                                 text(
                                     bokmal { +"Har du inntekt ved siden av uføretrygden vil dette også kunne ha betydning for størrelsen på barnetillegget ditt." },
                                     nynorsk { +"Har du inntekt ved sida av uføretrygda, kan dette også ha noko å seie for storleiken på barnetillegget ditt." },
@@ -1072,7 +1072,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
                     }
 
-                    showIf((redGrunnlag.barnetilleggRegelverkType.equalTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and redGrunnlag.andelYtelseAvOIFU.greaterThan(95.0))) {
+                    showIf(redGrunnlag.barnetilleggRegelverkType.equalTo(BarnetilleggRegelverkTypeCode.OVERGANGSREGLER_2016) and redGrunnlag.andelYtelseAvOIFU.greaterThan(95.0)) {
                         includePhrase(
                             TBU3802_Generated_Ny(
                                 virkningstidpunktAr = beregning.virkFom.year,
@@ -1117,7 +1117,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
                     }
 
-                    showIf((btInnvilget)) {
+                    showIf(btInnvilget) {
                         paragraph {
                             text(
                                 bokmal { +"Endringer i " },
@@ -1131,7 +1131,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                 )
                             }
 
-                            showIf((not(btFellesInnvilget) and btSerkullInnvilget)) {
+                            showIf(not(btFellesInnvilget) and btSerkullInnvilget) {
                                 text(
                                     bokmal { +"inntekten din " },
                                     nynorsk { +"inntekta di " },
@@ -1163,7 +1163,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                     bokmal { +"Inntekten din er " + fb.brukersInntektTilAvkorting.format() + " og inntekten til din " + epsBorMedBmEntall + " er " + fb.inntektAnnenForelder.format() + ". " },
                                     nynorsk { +"Inntekta di er " + fb.brukersInntektTilAvkorting.format() + ", og inntekta til " + epsBorMedNnEntall + " din er " + fb.inntektAnnenForelder.format() + ". " },
                                 )
-                                showIf((fb.belopFratrukketAnnenForeldersInntekt.greaterThan(0))) {
+                                showIf(fb.belopFratrukketAnnenForeldersInntekt.greaterThan(0)) {
                                     text(
                                         bokmal { +"Folketrygdens grunnbeløp på inntil " + beregning.grunnbelop.format() + " er holdt utenfor inntekten til din " + epsBorMedBmEntall + ". " },
                                         nynorsk { +"Grunnbeløpet i folketrygda på inntil " + beregning.grunnbelop.format() + " er halde utanfor inntekta til " + epsBorMedNnEntall + " din. " }
@@ -1171,7 +1171,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                 }
 
                                 showIf(not(btSerkullInnvilget)) {
-                                    showIf((fb.justeringsbelopPerAr.equalTo(0) and fb.netto.notEqualTo(0))) {
+                                    showIf(fb.justeringsbelopPerAr.equalTo(0) and fb.netto.notEqualTo(0)) {
                                         showIf(fb.inntektBruktIAvkorting.greaterThan(fb.fribelop)) {
                                             text(
                                                 bokmal { +"Til sammen er inntektene høyere enn fribeløpet ditt på " + fb.fribelop.format() + ". " },
@@ -1189,7 +1189,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                         )
                                     }
 
-                                    showIf((fb.justeringsbelopPerAr.notEqualTo(0))) {
+                                    showIf(fb.justeringsbelopPerAr.notEqualTo(0)) {
                                         text(
                                             bokmal { +"Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. " },
                                             nynorsk { +"Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. " },
@@ -1208,9 +1208,9 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     ifNotNull(barnetillegg.btSerkullsbarn) { sb ->
-                        showIf((sb.innvilget and not(btFellesInnvilget))) {
+                        showIf(sb.innvilget and not(btFellesInnvilget)) {
                             paragraph {
-                                showIf(((sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
+                                showIf(sb.netto.greaterThan(0) and sb.justeringsbelopPerAr.equalTo(0)) {
                                     showIf(sb.inntektBruktIAvkorting.greaterThan(sb.fribelop)) {
                                         text(
                                             bokmal { +"Inntekten din på " + sb.inntektBruktIAvkorting.format() + " er høyere enn fribeløpet ditt på " + sb.fribelop.format() + ". " },
@@ -1228,7 +1228,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                     )
                                 }
 
-                                showIf(((sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0)))) {
+                                showIf(sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0)) {
                                     text(
                                         bokmal { +"Inntekten din er " + sb.inntektBruktIAvkorting.format() + ". " },
                                         nynorsk { +"Inntekta di er " + sb.inntektBruktIAvkorting.format() + "." },
@@ -1262,7 +1262,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
                         showIf(fb.innvilget and sb.innvilget and (sbUtbetalesUtenJustering or fbUtbetalesUtenJustering or !justeringFelles0 or !justeringSerkull0)) {
                             paragraph {
-                                showIf((sb.netto.notEqualTo(0) and justeringSerkull0)) {
+                                showIf(sb.netto.notEqualTo(0) and justeringSerkull0) {
                                     showIf(sb.inntektBruktIAvkorting.greaterThan(sb.fribelop)) {
                                         text(
                                             bokmal { +"Inntekten din er høyere enn " + sb.fribelop.format() + ", som er fribeløpet for barnetillegget til " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikke bor sammen med begge foreldrene. " },
@@ -1295,7 +1295,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                         nynorsk { +"Til saman er " },
                                     )
 
-                                    showIf((beggeFradragStorreEnn0 or ingenFradragStorreEnn0)) {
+                                    showIf(beggeFradragStorreEnn0 or ingenFradragStorreEnn0) {
                                         text(
                                             bokmal { +"også " },
                                             nynorsk { +"også " },
@@ -1322,7 +1322,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                     }
                                 }
 
-                                showIf((fb.netto.notEqualTo(0) and sb.netto.notEqualTo(0) and (beggeFradragStorreEnn0 or ingenFradragStorreEnn0) and justeringSerkull0 and justeringFelles0)) {
+                                showIf(fb.netto.notEqualTo(0) and sb.netto.notEqualTo(0) and (beggeFradragStorreEnn0 or ingenFradragStorreEnn0) and justeringSerkull0 and justeringFelles0) {
                                     text(
                                         bokmal { +"Barnetilleggene er derfor " + ifElse(fb.netto.equalTo(fb.brutto) and sb.netto.equalTo(sb.brutto), "ikke ", "") + "redusert ut fra inntekt. " },
                                         nynorsk { +"Barnetillegga er derfor " + ifElse(fb.netto.equalTo(fb.brutto) and sb.netto.equalTo(sb.brutto), "ikkje ", "") + "redusert ut frå inntekt. " },
@@ -1387,7 +1387,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     ifNotNull(barnetillegg.btFellesbarn) { fb ->
-                        showIf((fb.innvilget and fb.netto.equalTo(0) and fb.justeringsbelopPerAr.equalTo(0) and not(btSerkullInnvilgetMenIkkeUtbetalt))) {
+                        showIf(fb.innvilget and fb.netto.equalTo(0) and fb.justeringsbelopPerAr.equalTo(0) and not(btSerkullInnvilgetMenIkkeUtbetalt)) {
                             paragraph {
                                 text(
                                     bokmal { +"Barnetillegget" },
@@ -1409,7 +1409,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     }
 
                     ifNotNull(barnetillegg.btFellesbarn, barnetillegg.btSerkullsbarn) { fb, sb ->
-                        showIf(((sb.innvilget and sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0)) and (fb.innvilget and fb.netto.equalTo(0) and fb.justeringsbelopPerAr.equalTo(0)))) {
+                        showIf((sb.innvilget and sb.netto.equalTo(0) and sb.justeringsbelopPerAr.equalTo(0)) and (fb.innvilget and fb.netto.equalTo(0) and fb.justeringsbelopPerAr.equalTo(0))) {
                             paragraph {
                                 text(
                                     bokmal { +"Barnetillegget for " + ifElse(fb.antallBarn.greaterThan(1), "barna", "barnet") + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " + fb.inntektstak.format() + ". Barnetillegget for " + ifElse(sb.antallBarn.greaterThan(1), "barna", "barnet") + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + sb.inntektstak.format() + ". Inntektene er over grensen for å få utbetalt barnetillegg." },
@@ -1419,7 +1419,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                         }
                     }
 
-                    showIf((btInnvilget)) {
+                    showIf(btInnvilget) {
                         paragraph(uniqueness = "barnetillegg") {
                             text(
                                 bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget " },
@@ -1477,7 +1477,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     includePhrase(Ufoeretrygd.KombinereUforetrygdAldersPensjon)
                 }
 
-                showIf((beregning.belopHarOkt and beregning.utbetalingsgrad.equalTo(beregning.uforegrad) and vedtak.virkningsdatoTidligereMnd)) {
+                showIf(beregning.belopHarOkt and beregning.utbetalingsgrad.equalTo(beregning.uforegrad) and vedtak.virkningsdatoTidligereMnd) {
                     includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(krav.virkFom, visTekstOmRenter))
                 }
 
