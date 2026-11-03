@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon } from "@navikt/aksel-icons";
-import { Button, type ButtonProps, Detail, HStack, Switch } from "@navikt/ds-react";
+import { Button, type ButtonProps, Detail, HStack, InlineMessage, Switch } from "@navikt/ds-react";
 import { createLink } from "@tanstack/react-router";
 import { type AnchorHTMLAttributes, type ReactNode, type Ref } from "react";
 
@@ -89,7 +89,11 @@ function HitNavigation({
     );
   }
   if (hits.status === "failed") {
-    return <Detail textColor="subtle">Kunne ikke finne søketreffene på grunn av en teknisk feil.</Detail>;
+    return (
+      <InlineMessage size="small" status="warning">
+        Kunne ikke finne søketreffene på grunn av en teknisk feil.
+      </InlineMessage>
+    );
   }
   const { matchingBlocks, activeBlock, result, previousResult, nextResult } = hits;
   const { at, previousBlock, nextBlock } = blockNavigation(matchingBlocks, activeBlock);

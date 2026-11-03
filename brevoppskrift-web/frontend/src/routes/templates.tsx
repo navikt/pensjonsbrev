@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import {
-  Alert,
   Bleed,
   BodyShort,
   Box,
@@ -8,6 +7,7 @@ import {
   Checkbox,
   Heading,
   HStack,
+  LocalAlert,
   Search,
   Tabs,
   Tag,
@@ -265,17 +265,19 @@ function AllTemplates() {
           Vis kun nøyaktige treff
         </Checkbox>
         {failedMalTypes.length > 0 ? (
-          <Alert size="small" variant="warning">
-            <HStack align="center" gap="space-16" justify="space-between">
-              <BodyShort>
-                Kunne ikke hente innhold for {malTypeLabels(failedMalTypes)}. Søkeresultatene kan derfor være
-                ufullstendige.
-              </BodyShort>
-              <Button onClick={retryFailed} size="small" variant="secondary">
-                Prøv igjen
-              </Button>
-            </HStack>
-          </Alert>
+          <LocalAlert css={{ alignSelf: "flex-start" }} size="small" status="warning">
+            <LocalAlert.Header>
+              <LocalAlert.Title as="h2">Kunne ikke hente innhold for {malTypeLabels(failedMalTypes)}</LocalAlert.Title>
+            </LocalAlert.Header>
+            <LocalAlert.Content>
+              <HStack align="center" gap="space-16" justify="space-between">
+                <BodyShort size="small">Søkeresultatene kan derfor være ufullstendige.</BodyShort>
+                <Button onClick={retryFailed} size="small" variant="secondary">
+                  Prøv igjen
+                </Button>
+              </HStack>
+            </LocalAlert.Content>
+          </LocalAlert>
         ) : null}
         <VStack asChild flexGrow="1" overflow="hidden">
           <Bleed asChild marginInline="space-16">
