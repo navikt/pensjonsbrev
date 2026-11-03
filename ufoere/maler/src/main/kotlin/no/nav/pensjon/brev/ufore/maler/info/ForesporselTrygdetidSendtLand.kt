@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.ufore.maler.info
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -27,7 +28,7 @@ object ForesporselTrygdetidSendtLand : RedigerbarTemplate<EmptyRedigerbarBrevdat
     override val featureToggle = FeatureToggles.innhentingOpplysningerForside.toggle
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om at forespørsel om trygdetid er sendt til avtaleland",
             distribusjonstype = VIKTIG,
@@ -36,20 +37,35 @@ object ForesporselTrygdetidSendtLand : RedigerbarTemplate<EmptyRedigerbarBrevdat
     )
     {
         title {
-            text (bokmal { + "Forespørsel om trygdetid er sendt til " + fritekst("land") })
+            text(
+                bokmal { + "Forespørsel om trygdetid er sendt til " + fritekst("land") },
+                nynorsk { + "Førespurnad om trygdetid er sendt til " + fritekst("land") },
+            )
         }
         outline {
             paragraph {
-                text(bokmal { + "Vi viser til ditt krav om uføretrygd av " + fritekst("dato") + ". " })
+                text(
+                    bokmal { + "Vi viser til ditt krav om uføretrygd av " + fritekst("dato") + ". " },
+                    nynorsk { + "Vi viser til ditt krav om uføretrygd av " + fritekst("dato") + ". " },
+                )
             }
             paragraph {
-                text(bokmal { + "Vi har i brev av " + fritekst("dato") + " funnet at vilkårene i folketrygdlovens § 12-2 ikke er oppfylt etter nasjonale regler. " })
+                text(
+                    bokmal { + "Vi har i brev av " + fritekst("dato") + " funnet at vilkårene i folketrygdlovens § 12-2 ikke er oppfylt etter nasjonale regler. " },
+                    nynorsk { + "Vi har i brev av " + fritekst("dato") + " funne at vilkåra i folketrygdlova § 12-2 ikkje er oppfylte etter nasjonale reglar. " },
+                )
             }
             paragraph {
-                text(bokmal { + "Vi skal ta stilling til om vilkårene i § 12-2 kan oppfylles gjennom sammenlegging av medlemstid for tilsvarende periode i " + fritekst("land") + " så snart de mottar bekreftelse på medlemskapsperioder i " + fritekst("land") + " fra trygdemyndigheten der. " })
+                text(
+                    bokmal { + "Vi skal ta stilling til om vilkårene i § 12-2 kan oppfylles gjennom sammenlegging av medlemstid for tilsvarende periode i " + fritekst("land") + " så snart de mottar bekreftelse på medlemskapsperioder i " + fritekst("land") + " fra trygdemyndigheten der. " },
+                    nynorsk { + "Vi skal ta stilling til om vilkåra i § 12-2 kan oppfyllast gjennom samanlegging av medlemstid for tilsvarande periode i " + fritekst("land") + " så snart dei mottek stadfesting av medlemskapsperiodar i " + fritekst("land") + " frå trygdemyndigheita der. " },
+                )
             }
             paragraph {
-                text(bokmal { + "Forespørsel om medlemskapsperioder i " + fritekst("land") + " er sendt til trygdemyndighetene i " + fritekst("land") + " dag. " })
+                text(
+                    bokmal { + "Forespørsel om medlemskapsperioder i " + fritekst("land") + " er sendt til trygdemyndighetene i " + fritekst("land") + " dag. " },
+                    nynorsk { + "Førespurnad om medlemskapsperiodar i " + fritekst("land") + " er sendt til trygdemyndigheitene i " + fritekst("land") + " dag. " },
+                )
             }
 
             includePhrase(Felles.MeldFraOmEndringer)

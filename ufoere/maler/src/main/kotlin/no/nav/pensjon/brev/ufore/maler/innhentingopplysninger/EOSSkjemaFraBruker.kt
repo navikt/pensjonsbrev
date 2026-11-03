@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -29,7 +30,7 @@ object EOSSkjemaFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val featureToggle = FeatureToggles.innhentingOpplysningerForside.toggle
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "EØS-skjema fra bruker (Skjema for opplysninger om opphold i EØS-land)",
             distribusjonstype = VIKTIG,
@@ -38,37 +39,67 @@ object EOSSkjemaFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     )
     {
         title {
-            text (bokmal { + "Innsending av opplysninger om utenlandsopphold" })
+            text(
+                bokmal { + "Innsending av opplysninger om utenlandsopphold" },
+                nynorsk { + "Innsending av opplysningar om utanlandsopphald" },
+            )
         }
         outline {
             paragraph {
-                text(bokmal { + "Vi har mottatt søknaden din om uføretrygd der du har oppgitt at du har bodd, arbeidet eller oppholdt deg i et annet EØS-land. " })
+                text(
+                    bokmal { + "Vi har mottatt søknaden din om uføretrygd der du har oppgitt at du har bodd, arbeidet eller oppholdt deg i et annet EØS-land. " },
+                    nynorsk { + "Vi har motteke søknaden din om uføretrygd der du har oppgitt at du har budd, arbeidd eller opphalde deg i eit anna EØS-land. " },
+                )
             }
 
             title1 {
-                text(bokmal { + "Du må fylle ut «Skjema for opplysninger om opphold i EØS-land»." })
+                text(
+                    bokmal { + "Du må fylle ut «Skjema for opplysninger om opphold i EØS-land»." },
+                    nynorsk { + "Du må fylle ut «Skjema for opplysningar om opphald i EØS-land»." },
+                )
             }
             paragraph {
-                text(bokmal { + "Myndighetene i landet eller landene du har oppgitt i søknaden, trenger informasjon om dine opphold for å identifisere deg og vurdere søknaden din. Du kan også sende inn vedlegg som arbeidsattester, pensjonsbevis eller yrkesbevis som kan hjelpe myndighetene i andre land å vurdere dine rettigheter. " })
+                text(
+                    bokmal { + "Myndighetene i landet eller landene du har oppgitt i søknaden, trenger informasjon om dine opphold for å identifisere deg og vurdere søknaden din. Du kan også sende inn vedlegg som arbeidsattester, pensjonsbevis eller yrkesbevis som kan hjelpe myndighetene i andre land å vurdere dine rettigheter. " },
+                    nynorsk { + "Myndigheitene i landet eller landa du har oppgitt i søknaden, treng informasjon om dine opphald for å identifisere deg og vurdere søknaden din. Du kan også sende inn vedlegg som arbeidsattestar, pensjonsbevis eller yrkesbevis som kan hjelpe myndigheitene i andre land å vurdere dine rettar. " },
+                )
             }
             paragraph {
-                text(bokmal { + "Om du har studert i utlandet med lån fra Statens lånekasse, vennligst send oss dokumentasjon på det. " })
+                text(
+                    bokmal { + "Om du har studert i utlandet med lån fra Statens lånekasse, vennligst send oss dokumentasjon på det. " },
+                    nynorsk { + "Om du har studert i utlandet med lån frå Statens lånekasse, ver venleg og send oss dokumentasjon på det. " },
+                )
             }
             paragraph {
-                text(bokmal { + "Dette brevet kan du lese på Min side på nav.no, men skjemaet du skal fylle ut er ikke tilgjengelig i elektronisk versjon. Vi har sendt både brev, skjema og forsideark til deg i posten. "})
+                text(
+                    bokmal { + "Dette brevet kan du lese på Min side på nav.no, men skjemaet du skal fylle ut er ikke tilgjengelig i elektronisk versjon. Vi har sendt både brev, skjema og forsideark til deg i posten. " },
+                    nynorsk { + "Dette brevet kan du lese på Min side på nav.no, men skjemaet du skal fylle ut er ikkje tilgjengeleg i elektronisk versjon. Vi har sendt både brev, skjema og forsideark til deg i posten. " },
+                )
             }
             paragraph {
-                text(bokmal { + "Sender du skjemaet i posten, må du legge ved forsidearket. Adressen er oppgitt på forsidearket. "})
+                text(
+                    bokmal { + "Sender du skjemaet i posten, må du legge ved forsidearket. Adressen er oppgitt på forsidearket. " },
+                    nynorsk { + "Sender du skjemaet i posten, må du leggje ved forsidearket. Adressa er oppgitt på forsidearket. " },
+                )
             }
             paragraph {
-                text(bokmal { + "Fristen for å sende inn skjemaet og vedlegg er to uker. Fristen gjelder fra du mottar dette brevet og skjema i posten. Du kan be om utsettelse av fristen ved å kontakte Nav. " })
+                text(
+                    bokmal { + "Fristen for å sende inn skjemaet og vedlegg er to uker. Fristen gjelder fra du mottar dette brevet og skjema i posten. Du kan be om utsettelse av fristen ved å kontakte Nav. " },
+                    nynorsk { + "Fristen for å sende inn skjemaet og vedlegg er to veker. Fristen gjeld frå du mottek dette brevet og skjema i posten. Du kan be om utsetjing av fristen ved å kontakte Nav. " },
+                )
             }
 
             title1 {
-                text(bokmal { + "Hva skjer videre?" })
+                text(
+                    bokmal { + "Hva skjer videre?" },
+                    nynorsk { + "Kva skjer vidare?" },
+                )
             }
             paragraph {
-                text(bokmal { + "Vi vil videresende opplysningene dine til landene du har oppgitt at du har bodd, arbeidet eller opphold deg i. Landet eller landene vil behandle søknaden din, og du vil motta et brev med endelig beregning av ytelsen når de har gjort dette. " })
+                text(
+                    bokmal { + "Vi vil videresende opplysningene dine til landene du har oppgitt at du har bodd, arbeidet eller opphold deg i. Landet eller landene vil behandle søknaden din, og du vil motta et brev med endelig beregning av ytelsen når de har gjort dette. " },
+                    nynorsk { + "Vi vil vidaresende opplysningane dine til landa du har oppgitt at du har budd, arbeidd eller opphalde deg i. Landet eller landa vil behandle søknaden din, og du vil motta eit brev med endeleg berekning av ytinga når dei har gjort dette. " },
+                )
             }
 
             includePhrase(Felles.HarDuSporsmal)
