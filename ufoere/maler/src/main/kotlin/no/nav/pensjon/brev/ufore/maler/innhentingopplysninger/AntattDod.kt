@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -44,16 +43,16 @@ object AntattDod : RedigerbarTemplate<BrukersNavnDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har fått melding om at " + pesysData.navn.ifNull(fritekst("Navn")) + " kan være antatt død. Vi har ikke fått en formell dødsmelding fra folkeregisteret, og derfor er vi usikre på om informasjonen vi har fått er riktig. " },
-                    nynorsk { +"Vi har fått melding om at " + pesysData.navn.ifNull(fritekst("Navn")) + " truleg kan vere død. Vi har ikkje fått ei formell dødsmelding frå folkeregisteret, og derfor er vi usikre på om informasjonen vi har fått er riktig. " })
+                text(bokmal { +"Vi har fått melding om at " + pesysData.navn + " kan være antatt død. Vi har ikke fått en formell dødsmelding fra folkeregisteret, og derfor er vi usikre på om informasjonen vi har fått er riktig. " },
+                    nynorsk { +"Vi har fått melding om at " + pesysData.navn + " truleg kan vere død. Vi har ikkje fått ei formell dødsmelding frå folkeregisteret, og derfor er vi usikre på om informasjonen vi har fått er riktig. " })
             }
             paragraph {
                 text(bokmal { +"Hvis informasjonen vi har fått er feil, må du legitimere deg på et Nav-kontor eller sende inn en leveattest stemplet på norsk utenriksstasjon snarest, og senest " + fritekst("Dato") + ". Hvis vi ikke får en bekreftelse på at du lever, vil uføretrygden din opphøre etter folketrygdloven §§ 21-7 og 22-12. " },
                     nynorsk { +"Dersom informasjonen vi har fått er feil, må du legitimere deg på eit Nav-kontor eller sende inn ein leveattest stempla på norsk utanriksstasjon snarast, og seinast " + fritekst("Dato") + ". Dersom vi ikkje får ei stadfesting på at du lever, vil uføretrygda di opphøyre etter folketrygdlova §§ 21-7 og 22-12. " })
             }
             paragraph {
-                text(bokmal { +"Hvis du som etterlatt etter " + pesysData.navn.ifNull(fritekst("Navn")) + " leser dette brevet, ber vi deg om å varsle norske myndigheter om dødsfallet. " },
-                    nynorsk { +"Dersom du som etterlaten etter " + pesysData.navn.ifNull(fritekst("Navn")) + " les dette brevet, ber vi deg om å varsle norske styresmakter om dødsfallet. " })
+                text(bokmal { +"Hvis du som etterlatt etter " + pesysData.navn + " leser dette brevet, ber vi deg om å varsle norske myndigheter om dødsfallet. " },
+                    nynorsk { +"Dersom du som etterlaten etter " + pesysData.navn + " les dette brevet, ber vi deg om å varsle norske styresmakter om dødsfallet. " })
             }
         }
     }

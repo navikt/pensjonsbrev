@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -42,7 +41,7 @@ object InnhentingAvBotidsopplysninger : RedigerbarTemplate<BrukersNavnDto> {
         }
         outline {
             paragraph {
-                text(bokmal { + "Vedrørende " + pesysData.navn.ifNull(fritekst("Navn")) + ". "})
+                text(bokmal { + "Vedrørende " + pesysData.navn + ". "})
             }
             paragraph {
                 text(bokmal { + "Som et ledd i behandlingen av stønadssak ber vi om dokumentasjon på all botid i Norge, og gjerne kopi av hovedregisterkort om dette finnes. " })

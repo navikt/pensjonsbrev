@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -43,7 +42,7 @@ object EOSLegeerklaering : RedigerbarTemplate<BrukersNavnDto> {
         }
         outline {
             paragraph {
-                text(bokmal { + pesysData.navn.ifNull(fritekst("Navn")) + " har søkt om uføretrygd, og har bodd eller arbeidet i et annet EØS-land. Derfor trenger vi EØS – detaljert legeerklæring, Nav 45-12.00. " })
+                text(bokmal { + pesysData.navn + " har søkt om uføretrygd, og har bodd eller arbeidet i et annet EØS-land. Derfor trenger vi EØS – detaljert legeerklæring, Nav 45-12.00. " })
             }
             paragraph {
                 text(bokmal { +"Vi bruker folketrygdlovens § 21-4 når vi innhenter opplysninger. " })

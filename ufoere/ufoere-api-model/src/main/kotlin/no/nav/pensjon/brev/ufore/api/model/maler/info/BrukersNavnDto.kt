@@ -10,6 +10,6 @@ data class BrukersNavnDto(
 ) : RedigerbarBrevdata<BrukersNavnDto.BrukersNavnPendata> {
 
     data class BrukersNavnPendata(
-        val navn: String?,
+        val navn: String,
     ) : FagsystemBrevdata
 }

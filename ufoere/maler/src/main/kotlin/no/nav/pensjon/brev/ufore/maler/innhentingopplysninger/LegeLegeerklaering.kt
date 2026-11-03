@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -45,8 +44,8 @@ object LegeLegeerklaering : RedigerbarTemplate<BrukersNavnDto> {
         }
         outline {
             paragraph {
-                text(bokmal { + pesysData.navn.ifNull(fritekst("Navn")) + " har søkt om uføretrygd. " },
-                    nynorsk { + pesysData.navn.ifNull(fritekst("Navn")) + " har søkt om uføretrygd. " })
+                text(bokmal { + pesysData.navn + " har søkt om uføretrygd. " },
+                    nynorsk { + pesysData.navn + " har søkt om uføretrygd. " })
             }
             paragraph {
                 text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet Nav 08-07.08. " },
