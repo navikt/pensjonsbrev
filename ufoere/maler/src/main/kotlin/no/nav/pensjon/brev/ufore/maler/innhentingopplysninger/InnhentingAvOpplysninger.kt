@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNHENT
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -29,6 +30,7 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val sakstyper = setOf(Sakstype.UFOREP)
     override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
+    override val featureToggle = FeatureToggles.innhentingOpplysningerForside.toggle
 
     override val template = createTemplate(
         languages = languages(Bokmal),
