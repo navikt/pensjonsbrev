@@ -189,7 +189,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     object LocalDatePlus :
         BinaryOperation<LocalDate, TemporalAmount, LocalDate>(Documentation("+", Documentation.Notation.INFIX)),
-        StableHash by StableHash.of("BinaryOperation.MonthPlus") {
+        StableHash by StableHash.of("BinaryOperation.LocalDatePlus") {
         override fun apply(first: LocalDate, second: TemporalAmount): LocalDate = first.plus(second)
     }
 
