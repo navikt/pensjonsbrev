@@ -38,14 +38,14 @@ class LetterTemplateStableHashTest {
     }
 
     @Test
-    fun `endring i redigerbart vedlegg endrer hash`() {
+    fun `endring i redigerbart vedlegg endrer ikke hash`() {
         assertThat(mal(redigerbart = "a").stableHashCode()).isEqualTo(mal(redigerbart = "a").stableHashCode())
-        assertThat(mal(redigerbart = "a").stableHashCode()).isNotEqualTo(mal(redigerbart = "b").stableHashCode())
+        assertThat(mal(redigerbart = "a").stableHashCode()).isEqualTo(mal(redigerbart = "b").stableHashCode())
     }
 
     @Test
-    fun `nytt redigerbart vedlegg endrer hash`() {
-        assertThat(mal().stableHashCode()).isNotEqualTo(mal(redigerbart = "a").stableHashCode())
+    fun `nytt redigerbart vedlegg endrer ikke hash`() {
+        assertThat(mal().stableHashCode()).isEqualTo(mal(redigerbart = "a").stableHashCode())
     }
 
     @Test
