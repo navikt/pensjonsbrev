@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.dsl.expression
 import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
 import java.time.Month
-import java.time.YearMonth
+import java.time.temporal.TemporalAmount
 
 @JvmName("formatLocalDate")
 fun Expression<LocalDate>.format(short: Boolean = false): Expression<String> = format(dateFormatter(short))
@@ -64,8 +64,8 @@ val Expression<LocalDate>.year: Expression<Int>
 val Expression<LocalDate>.month: Expression<Month>
     get() = select(LocalDateSelectors.monthSelector)
 
-operator fun Expression<Month>.plus(other: Int): Expression<Month> =
-    BinaryOperation.MonthPlus(this, other.expr())
+operator fun Expression<LocalDate>.plus(other: TemporalAmount): Expression<LocalDate> =
+    BinaryOperation.LocalDatePlus(this, other.expr())
 
 val Expression<LocalDate>.day: Expression<Int>
     get() = select(LocalDateSelectors.daySelector)
