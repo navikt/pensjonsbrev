@@ -484,7 +484,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
-            showIf(pesysData.kravType.equalTo(InnvilgelseUfoeretrygdTrygdeavtaleDto.KravType.MELLOMBEHANDLING) and not(sluttbehandling)){
+            showIf(pesysData.kravType.equalTo(InnvilgelseUfoeretrygdTrygdeavtaleDto.KravType.MELLOMBEHANDLING) and pesysData.eosNordisk and not(sluttbehandling)){
                 title1 {
                     text (
                         bokmal { + "Dette skjer videre med søknaden din" },
