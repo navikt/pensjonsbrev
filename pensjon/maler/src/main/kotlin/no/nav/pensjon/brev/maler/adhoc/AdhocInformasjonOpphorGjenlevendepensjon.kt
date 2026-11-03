@@ -69,6 +69,11 @@ object AdhocInformasjonOpphorGjenlevendepensjon : AutobrevTemplate<EmptyAutobrev
             }
             paragraph {
                 text(
+                    bokmal { + "Har du allerede søkt om forlenget gjenlevendepensjon, trenger du ikke gjøre noe nå. Du vil bli kontaktet om vi trenger flere opplysninger fra deg. " },
+                )
+            }
+            paragraph {
+                text(
                     bokmal { + "Dersom du mener du har krav på forlenget periode med gjenlevendepensjon, må du søke om dette. " },
                 )
             }
