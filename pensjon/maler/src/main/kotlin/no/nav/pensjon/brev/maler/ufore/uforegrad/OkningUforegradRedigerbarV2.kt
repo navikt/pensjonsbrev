@@ -1512,7 +1512,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
         }
     }
 
-    //TODO: ha denne generell?
+    //TODO: erstatt når Date har month: Month
     private object MaanedFormatter : LocalizedFormatter<LocalDate>() {
         override fun apply(first: LocalDate, second: Language): String =
             MonthFormatter.apply(first.month, second)
