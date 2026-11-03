@@ -11,3 +11,6 @@ inbound:
   - name: pensjon-pen
     namespace: pensjondeployer
     cluster: prod-fss
+  - name: su-se-bakover
+    namespace: supstonad
+    cluster: prod-gcp

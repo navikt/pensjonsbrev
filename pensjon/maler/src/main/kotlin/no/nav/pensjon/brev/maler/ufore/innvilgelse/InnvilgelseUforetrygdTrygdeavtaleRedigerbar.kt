@@ -103,10 +103,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
 
         val totalNettoUforeberegning = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
 
-        val kravGjelder = pe.vedtaksdata_kravhode_kravgjelder()
-        val bosattUtland = kravGjelder.equalTo("f_bh_bo_utl") // TODO: Denne vil aldri slå til, sjekk om vi fortsatt trenger teksten denne representerer i brevet.
-        val oppfyltvedsammenlegging = pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging()
-        val txtEllerEtAvtaleland = ifElse(bosattUtland and oppfyltvedsammenlegging, " eller et avtaleland", "")
+        val txtEllerEtAvtaleland = " eller et avtaleland".expr()
 
         val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
         val ifuInntekt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
@@ -169,8 +166,23 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
 
              paragraph {
                 text (
-                    bokmal { + "Du innvilges uføretrygd med unntak i " + fritekst("EØS-avtalen/trygdeavtalen med LAND") + ". Det at din uføretrygd ikke er beregnet utelukkende ut fra din inntekt og trygdetid i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget " },
-                    nynorsk { + "Du innvilgast uføretrygd med unntak i " + fritekst("EØS-avtalen/trygdeavtalen med LAND") + ". Det at uføretrygda di ikkje er rekna utelukkande ut frå inntekta og trygdetida di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er rekna ut i vedlegget " },
+                    bokmal { + "Du innvilges uføretrygd med unntak i " },
+                    nynorsk { + "Du innvilgast uføretrygd med unntak i " },
+                )
+                showIf(pesysData.eosNordisk) {
+                    text(
+                        bokmal { +"EØS-avtalen" },
+                        nynorsk { +"EØS-avtala" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"trygdeavtalen med " + pesysData.avtaletype.ifNull(fritekst("land")) },
+                        nynorsk { +"trygdeavtala med " + pesysData.avtaletype.ifNull(fritekst("land")) },
+                    )
+                }
+                text(
+                    bokmal { + ". Det at din uføretrygd ikke er beregnet utelukkende ut fra din inntekt og trygdetid i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget " },
+                    nynorsk { + ". Det at uføretrygda di ikkje er rekna utelukkande ut frå inntekta og trygdetida di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er rekna ut i vedlegget " },
                 )
                 namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
                 text(
@@ -302,8 +314,23 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             }
             paragraph {
                 text(
-                    bokmal { +"Etter bestemmelsene i EØS-avtalen / trygdeavtale med " + fritekst("land") + ", kan vi gi unntak fra folketrygdlovens vilkår om medlemskap ved å legge sammen trygdetid i Norge og trygdetid i andre land. Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har fastsatt basert på sin nasjonale lovgivning. " },
-                    nynorsk { +"Etter bestemmelsane i EØS-avtalen / trygdeavtale med " + fritekst("land") + ", kan vi gi unntak frå folketrygdlovens vilkår om medlemskap ved å leggje saman trygdetid i Noreg og trygdetid i andre land. Nav må forhalde seg til trygdetida som trygdemyndigheitene i andre land har fastsett basert på sin nasjonale lovgiving. " },
+                    bokmal { +"Etter bestemmelsene i " },
+                    nynorsk { +"Etter bestemmelsane i " },
+                )
+                showIf(pesysData.eosNordisk) {
+                    text(
+                        bokmal { +"EØS-avtalen" },
+                        nynorsk { +"EØS-avtala" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"trygdeavtale med " + pesysData.avtaletype.ifNull(fritekst("land")) },
+                        nynorsk { +"trygdeavtale med " + pesysData.avtaletype.ifNull(fritekst("land")) },
+                    )
+                }
+                text(
+                    bokmal { +", kan vi gi unntak fra folketrygdlovens vilkår om medlemskap ved å legge sammen trygdetid i Norge og trygdetid i andre land. Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har fastsatt basert på sin nasjonale lovgivning. " },
+                    nynorsk { +", kan vi gi unntak frå folketrygdlovens vilkår om medlemskap ved å leggje saman trygdetid i Noreg og trygdetid i andre land. Nav må forhalde seg til trygdetida som trygdemyndigheitene i andre land har fastsett basert på sin nasjonale lovgiving. " },
                 )
             }
 
@@ -379,11 +406,18 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                     nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(true)) + ". " },
                 )
             }
-            showIf(pesysData.eosNordisk) {
+            showIf(pesysData.eosNordisk and not(hjemmelTredjelandsborger)) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er også gjort etter EØS-avtalen, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
                         nynorsk { +"Vedtaket er òg gjort etter EØS-avtala, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
+                    )
+                }
+            }.orShowIf(hjemmelTredjelandsborger) {
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket er også gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
+                        nynorsk { +"Vedtaket er òg gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, jmf. forordning 883/2004 artikkel 6 og artikkel 52. " },
                     )
                 }
             }.orShowIf(pesysData.avtaletype.notNull() and pesysData.artikkel.notNull()) {
@@ -403,15 +437,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 paragraph {
                     text(bokmal { + fritekst("Du har valgt en avtaletype hvor vi ikke har en forhåndsutfylt tekst. Her må du sette inn tekst som passer til saken.") },
                         nynorsk { + fritekst("Du har valt ein avtaletype der vi ikkje har ein forhåndsutfylt tekst. Her må du setje inn tekst som passar til saka.") },)
-                }
-            }
-
-            showIf(hjemmelTredjelandsborger) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er også gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i henhold til forordning 883/2004 artikkel 6 og artikkel 52. " },
-                        nynorsk { +"Vedtaket er òg gjort etter Nordisk konvensjon artikkel 3 og artikkel 4, og EØS-avtalen, i etter forordning 883/2004 artikkel 6 og artikkel 52. " }, // TODO: Blir dette riktig nynorsk? "i henhold til" = "i etter"?
-                    )
                 }
             }
 
@@ -459,7 +484,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
-            showIf(pesysData.kravType.equalTo(InnvilgelseUfoeretrygdTrygdeavtaleDto.KravType.MELLOMBEHANDLING) or not(sluttbehandling)){
+            showIf(pesysData.kravType.equalTo(InnvilgelseUfoeretrygdTrygdeavtaleDto.KravType.MELLOMBEHANDLING) and not(sluttbehandling)){
                 title1 {
                     text (
                         bokmal { + "Dette skjer videre med søknaden din" },
@@ -635,11 +660,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
             }
 
-            // TODO: Er denne aktuell her?
-            showIf(kravGjelder.equalTo("f_bh_med_utl")){
-                includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
-            }
-
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
 
             includePhrase(Innvilgelse.Honnoerkort(
@@ -652,8 +672,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
-            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(not(bosattUtland)))
-            includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON, utland = bosattUtland))
+            includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON))
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)

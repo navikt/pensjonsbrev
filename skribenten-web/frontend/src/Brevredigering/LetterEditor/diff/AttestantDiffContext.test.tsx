@@ -89,6 +89,7 @@ describe("AttestantDiffContext", () => {
       type: "UNIFIED",
     };
 
+    // biome-ignore lint/correctness/noComponentHookFactories: Created during suite setup, not React rendering.
     function SegmentProbe() {
       const segments = useDiffSegmentsForLiteral(literalA, "AA");
       const deletedBlocksAtOne = useDeletedBlocks(1);

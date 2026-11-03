@@ -35,6 +35,7 @@ vi.mock("fuse.js", async (importOriginal) => {
 });
 
 function wrapper(queryClient: QueryClient) {
+  // biome-ignore lint/correctness/noComponentHookFactories: Created once per renderHook setup, with stable identity across renders.
   return function Wrapper({ children }: { children: ReactNode }) {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   };
