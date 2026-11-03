@@ -25,7 +25,16 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>>? = null,
     val letterMetadata: LetterMetadata,
-) {
+) : StableHash {
+    private val stableHashCode: Int by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        StableHash.hash(
+            StableHash.of(title),
+            StableHash.of(outline),
+            StableHash.of(attachments.filter { it.editableId != null }.map { it.template })
+        )
+    }
+
+    override fun stableHashCode(): Int = stableHashCode
     init {
         if (title.isEmpty()) {
             throw MissingTitleInTemplateException("Missing title in template: ${letterMetadata.displayTitle}")
