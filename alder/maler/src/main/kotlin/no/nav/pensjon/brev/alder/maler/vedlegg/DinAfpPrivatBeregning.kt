@@ -17,12 +17,11 @@ import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDt
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.livsvarigBrutto
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.opptjening
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.referansebeloep
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.sistePeriodeVirkFom
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.totalPensjon
 import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.getOrNull
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
@@ -32,7 +31,6 @@ import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import java.time.LocalDate
 
 @TemplateModelHelpers
 val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, DinAfpPrivatBeregningDto>(
@@ -46,7 +44,6 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
     includeSakspart = false,
 ) {
     val foersteEtterbetalingFom = etterbetaling.getOrNull().safe { virkningFom }
-    val sistePeriodeFom = PeriodeFomFraSlutten(etterbetaling, 0.expr())
 
     // Alle perioder unntatt den siste er etterbetalingsperioder. Den siste perioden vises i tabellen under.
     showIf(etterbetaling.size().greaterThan(1)) {
@@ -67,7 +64,7 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
             }
         }
         forEach(etterbetaling) { etterbetaling ->
-            ifNotNull(sistePeriodeFom) { sistePeriodeFom ->
+            ifNotNull(sistePeriodeVirkFom) { sistePeriodeFom ->
                 showIf(etterbetaling.virkningFom.lessThan(sistePeriodeFom)) {
                     paragraph {
                         table(
@@ -75,7 +72,7 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                                 column {
                                     text(
                                         bokmal { +"Din AFP per måned fra " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
-                                        nynorsk { +"AFP per månad blir slik fra " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
+                                        nynorsk { +"AFP per månad blir slik frå " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
                                         english { +"Your monthly AFP from fra " + etterbetaling.virkningFom.format() + " to " + etterbetaling.virkningTom.format() + ":" },
                                     )
                                 }
@@ -146,10 +143,10 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
         table(
             header = {
                 column {
-                    ifNotNull(sistePeriodeFom) { fom ->
+                    ifNotNull(sistePeriodeVirkFom) { fom ->
                         text(
                             bokmal { +"Din AFP per måned fra " + fom.format() + ":" },
-                            nynorsk { +"AFP per månad frå " + fom.format() + ":" },
+                            nynorsk { +"AFP per månad blir slik frå " + fom.format() + ":" },
                             english { +"Your monthly AFP from " + fom.format() + ":" },
                         )
                     } orShow {
@@ -366,12 +363,4 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
             }
         }
     }
-}
-
-// Fom-dato for perioden `fraSlutten` plasser fra slutten av listen. 0 er siste periode.
-private object PeriodeFomFraSlutten : BinaryOperation<List<DinAfpPrivatBeregningDto.Etterbetaling>, Int, LocalDate?>() {
-    override fun apply(first: List<DinAfpPrivatBeregningDto.Etterbetaling>, second: Int): LocalDate? =
-        first.getOrNull(first.size - 1 - second)?.virkningFom
-
-    override fun stableHashCode(): Int = "BinaryOperation.PeriodeFomFraSlutten".hashCode()
 }
