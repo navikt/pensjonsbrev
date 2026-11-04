@@ -105,7 +105,7 @@ function HitNavigation({
       </InlineMessage>
     );
   }
-  const { matchingBlocks, activeBlock, result, previousResult, nextResult } = hits;
+  const { matchingBlocks, matchesInOtherLanguage, activeBlock, result, previousResult, nextResult } = hits;
   const { at, previousBlock, nextBlock } = blockNavigation(matchingBlocks, activeBlock);
   const resultLink = (target: ResultLinkTarget | undefined, icon: ReactNode) =>
     target ? (
@@ -125,7 +125,9 @@ function HitNavigation({
       {marking ? (
         <HStack align="center" gap="space-4">
           {matchingBlocks.length === 0 ? (
-            <Detail>Ingen treff i denne språkversjonen</Detail>
+            <Detail>
+              {matchesInOtherLanguage ? "Ingen treff i denne språkversjonen" : "Ingen treff i denne malen"}
+            </Detail>
           ) : (
             <>
               <Button

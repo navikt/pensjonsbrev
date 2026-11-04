@@ -12,6 +12,7 @@ const hits: TemplateHits = {
   status: "ready",
   highlight: { needle: "tekst", exactOnly: false },
   matchingBlocks: [20, 30],
+  matchesInOtherLanguage: false,
   activeBlock: undefined,
   result: { position: 1, total: 2, next: { malType: "autobrev", id: "B", language: "BOKMAL" } },
   previousResult: undefined,

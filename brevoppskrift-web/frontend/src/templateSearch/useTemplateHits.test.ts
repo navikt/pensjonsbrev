@@ -86,9 +86,20 @@ describe("hitsInTemplate", () => {
     );
 
     expect(hits.matchingBlocks).toEqual([]);
+    expect(hits.matchesInOtherLanguage).toBe(true);
     expect(hits.activeBlock).toBeUndefined();
     expect(hits.result).toMatchObject({ position: 1, total: 2 });
     expect(hits.nextResult?.ref.id).toBe("B");
+  });
+
+  it("tells a template without content hits in any language apart from one with hits elsewhere", () => {
+    const onlyB = displayed([contentHit(bBokmal, [0])]);
+
+    const hits = ready(
+      hitsInTemplate(onlyB, "innhold", { malType: "autobrev", id: "A", language: "NYNORSK" }, undefined, true),
+    );
+
+    expect(hits.matchesInOtherLanguage).toBe(false);
   });
 
   it("keeps the requested block in a language without hits", () => {

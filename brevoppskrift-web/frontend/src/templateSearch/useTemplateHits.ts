@@ -1,7 +1,13 @@
 import { useMemo } from "react";
 
 import { type ResultPosition, resultPosition } from "~/search/resultNavigation";
-import { formatResultRef, type ResultRef, resultRefOf, type SearchCriteria } from "~/search/searchContext";
+import {
+  formatResultRef,
+  isSameTemplate,
+  type ResultRef,
+  resultRefOf,
+  type SearchCriteria,
+} from "~/search/searchContext";
 import { useAllTemplateRefs } from "~/search/templateRefs";
 import { type DisplayedSearch, type Highlight, useSearchResults } from "~/search/useSearchResults";
 
@@ -17,6 +23,8 @@ export type TemplateHits =
       highlight: Highlight;
       /** Matching block indexes in this template and language, in document order. */
       matchingBlocks: number[];
+      /** Whether another language version of this template has matching blocks. */
+      matchesInOtherLanguage: boolean;
       /** The block the user is at: the requested one, else the first match if
        *  `focusFirstHit`. Not necessarily a match, e.g. when kept from another
        *  language. `undefined` when nothing was requested and either nothing
@@ -77,6 +85,9 @@ export function hitsInTemplate(
     status: "ready",
     highlight: displayed.highlight,
     matchingBlocks,
+    matchesInOtherLanguage: displayed.contentHits.some(
+      ({ template }) => isSameTemplate(template, current) && template.language !== current.language,
+    ),
     activeBlock,
     result,
     previousResult: target(result?.previous),
