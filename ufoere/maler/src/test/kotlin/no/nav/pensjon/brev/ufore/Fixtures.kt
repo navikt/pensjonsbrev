@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.info.BrukersNavnDto
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
@@ -22,9 +23,9 @@ import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
-import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
-import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
+import no.nav.pensjon.brev.ufore.maler.info.*
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
+import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.*
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
 import no.nav.pensjon.brev.ufore.maler.simulering.SimuleringUforetrygd
 import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidAuto
@@ -97,10 +98,11 @@ object Fixtures : LetterDataFactory {
             NySivilstand::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             EktefelleUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             UtsattKlagefrist::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
-            AntattDod::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            AntattDod::class -> lagBrukersNavnRedigerbarBrevdata() as T
+            EOSLegeerklaering::class -> lagBrukersNavnRedigerbarBrevdata() as T
             SoknadBarnetilleggUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             BrukerLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
-            LegeLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            LegeLegeerklaering::class -> lagBrukersNavnRedigerbarBrevdata() as T
             HvilendeRettMidlertidigOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             HvilendeRettOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             HvilendeRettInfo4Aar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
@@ -115,6 +117,13 @@ object Fixtures : LetterDataFactory {
             OrienteringOmSaksbehandlingstidAuto::class -> createOrienteringOmSaksbehandlingstidAutoDto() as T
             OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidRedigerbarDto() as T
             UtsendelseTilUtlandRedigerbar::class -> createUtsendelseTilUtlandRedigerbarDto() as T
+            EOSSkjemaFraBruker::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            SoknadTilAvtaleland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            KravSendtUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            ForesporselTrygdetidSendtLand::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            InnhentingAvOpplysninger::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            InnhentingAvBotidsopplysninger::class -> lagBrukersNavnRedigerbarBrevdata() as T
+            InnhentingAvOpplysningerLege::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
@@ -127,6 +136,13 @@ object Fixtures : LetterDataFactory {
 
     private fun lagEmptyRedigerbarRedigerbarBrevdata() =
         EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
+
+    private fun lagBrukersNavnRedigerbarBrevdata() =
+        BrukersNavnDto(
+            pesysData = BrukersNavnDto.BrukersNavnPendata(
+                navn = "Ola Nordmann"
+            ),
+            saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
 
     private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
         pesysData = VarselFeilutbetalingPesysData(100),
@@ -434,4 +450,5 @@ object Fixtures : LetterDataFactory {
         saksbehandlerValg = lagSaksbehandlervalg("kunEOSInnvilgelseNorge" to true),
         pesysData = EmptyFagsystemdata
     )
+
 }
