@@ -105,10 +105,10 @@ function HitNavigation({
       </InlineMessage>
     );
   }
-  const { matchingBlocks, matchesInOtherLanguage, activeBlock, result, previousResult, nextResult } = hits;
+  const { matchingBlocks, matchesInOtherLanguage, activeBlock, result, previousResult, nextResult, stale } = hits;
   const { at, previousBlock, nextBlock } = blockNavigation(matchingBlocks, activeBlock);
   const resultLink = (target: ResultLinkTarget | undefined, icon: ReactNode) =>
-    target ? (
+    target && !stale ? (
       <ButtonLink
         icon={icon}
         params={{ malType: target.ref.malType, templateId: target.ref.id }}

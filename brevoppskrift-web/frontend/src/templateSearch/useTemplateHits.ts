@@ -21,6 +21,8 @@ export type TemplateHits =
       status: "ready";
       /** The query and mode the hits were found with, for marking text. */
       highlight: Highlight;
+      /** Whether the displayed hits answer an earlier query than the URL. */
+      stale: boolean;
       /** Matching block indexes in this template and language, in document order. */
       matchingBlocks: number[];
       /** Whether another language version of this template has matching blocks. */
@@ -67,14 +69,14 @@ function matchingBlocksOf(displayed: DisplayedSearch, current: ResultRef): numbe
  *  block when no block was requested. */
 export function hitsInTemplate(
   displayed: DisplayedSearch,
-  tab: SearchCriteria["tab"],
+  criteria: SearchCriteria,
   current: ResultRef,
   requestedBlock: number | undefined,
   focusFirstHit: boolean,
 ): TemplateHits {
   const matchingBlocks = matchingBlocksOf(displayed, current);
   const activeBlock = requestedBlock ?? (focusFirstHit ? matchingBlocks[0] : undefined);
-  const entries = rankedEntries(displayed, tab);
+  const entries = rankedEntries(displayed, criteria.tab);
   const ranked = entries.map((entry) => entry.ref);
   const result = resultPosition(ranked, current);
   const blockByRef = new Map(entries.map((entry) => [formatResultRef(entry.ref), entry.block]));
@@ -84,6 +86,7 @@ export function hitsInTemplate(
   return {
     status: "ready",
     highlight: displayed.highlight,
+    stale: displayed.highlight.needle !== criteria.q || displayed.highlight.exactOnly !== criteria.exact,
     matchingBlocks,
     matchesInOtherLanguage: displayed.contentHits.some(
       ({ template }) => isSameTemplate(template, current) && template.language !== current.language,
@@ -143,6 +146,6 @@ export function useTemplateHits(
     if (isLoading || !displayed) {
       return { status: "loading" };
     }
-    return hitsInTemplate(displayed, criteria.tab, current, requestedBlock, focusFirstHit);
+    return hitsInTemplate(displayed, criteria, current, requestedBlock, focusFirstHit);
   }, [criteria, current, requestedBlock, focusFirstHit, templates.status, isLoading, displayed, searchFailed]);
 }

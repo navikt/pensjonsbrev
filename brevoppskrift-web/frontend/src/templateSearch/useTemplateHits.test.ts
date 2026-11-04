@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { type ContentHit, type TemplateText } from "~/search/textSearch";
 import { type DisplayedSearch } from "~/search/useSearchResults";
-import { blockNavigation, hitsInTemplate, type TemplateHits } from "~/templateSearch/useTemplateHits";
+import {
+  blockNavigation,
+  hitsInTemplate as calculateHitsInTemplate,
+  type TemplateHits,
+} from "~/templateSearch/useTemplateHits";
 
 function template(id: string, language: string, indexes: number[]): TemplateText {
   return {
@@ -52,6 +56,22 @@ function ready(hits: TemplateHits) {
   return hits;
 }
 
+function hitsInTemplate(
+  displayedSearch: DisplayedSearch,
+  tab: "brev" | "innhold",
+  current: { malType: "autobrev"; id: string; language: string },
+  requestedBlock: number | undefined,
+  focusFirstHit: boolean,
+) {
+  return calculateHitsInTemplate(
+    displayedSearch,
+    { q: displayedSearch.highlight.needle, exact: displayedSearch.highlight.exactOnly, tab },
+    current,
+    requestedBlock,
+    focusFirstHit,
+  );
+}
+
 describe("hitsInTemplate", () => {
   it("finds each matching block once, in document order, and opens at the first", () => {
     const hits = ready(
@@ -76,6 +96,19 @@ describe("hitsInTemplate", () => {
     expect(hits.result).toMatchObject({ position: 1, total: 2 });
     expect(hits.previousResult).toBeUndefined();
     expect(hits.nextResult).toEqual({ ref: { malType: "autobrev", id: "B", language: "BOKMAL" }, block: 6 });
+  });
+
+  it("marks the result links stale until the displayed hits match the URL query and mode", () => {
+    const current = { malType: "autobrev" as const, id: "A", language: "BOKMAL" };
+    const criteria = { q: "tekst", exact: false, tab: "innhold" as const };
+
+    expect(ready(calculateHitsInTemplate(search, criteria, current, undefined, false)).stale).toBe(false);
+    expect(ready(calculateHitsInTemplate(search, { ...criteria, q: "nytt" }, current, undefined, false)).stale).toBe(
+      true,
+    );
+    expect(ready(calculateHitsInTemplate(search, { ...criteria, exact: true }, current, undefined, false)).stale).toBe(
+      true,
+    );
   });
 
   it("has no blocks in a language without hits, but keeps its place among the templates", () => {

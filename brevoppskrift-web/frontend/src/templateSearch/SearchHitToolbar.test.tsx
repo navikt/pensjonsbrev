@@ -8,9 +8,10 @@ import { type TemplateHits } from "~/templateSearch/useTemplateHits";
 
 const criteria: SearchCriteria = { q: "tekst", exact: false, tab: "brev" };
 
-const hits: TemplateHits = {
+const hits: Extract<TemplateHits, { status: "ready" }> = {
   status: "ready",
   highlight: { needle: "tekst", exactOnly: false },
+  stale: false,
   matchingBlocks: [20, 30],
   matchesInOtherLanguage: false,
   activeBlock: undefined,
@@ -19,12 +20,12 @@ const hits: TemplateHits = {
   nextResult: { ref: { malType: "autobrev", id: "B", language: "BOKMAL" } },
 };
 
-async function renderToolbar(marking: boolean) {
+async function renderToolbar(marking: boolean, stale = false) {
   const rootRoute = createRootRoute({
     component: () => (
       <SearchHitToolbar
         criteria={criteria}
-        hits={hits}
+        hits={{ ...hits, stale }}
         marking={marking}
         onMarkingChange={vi.fn()}
         onSearch={vi.fn()}
@@ -62,5 +63,13 @@ describe("SearchHitToolbar", () => {
     expect(screen.getByTitle("Neste resultat").closest("a")?.getAttribute("href")).toBe(
       "/template/autobrev/B?q=tekst&language=BOKMAL&showHits=false",
     );
+  });
+
+  it("disables result navigation while the displayed hits are stale", async () => {
+    await renderToolbar(true, true);
+
+    expect(screen.getByTitle("Neste resultat").closest("button")?.disabled).toBe(true);
+    expect(screen.getByTitle("Forrige resultat").closest("button")?.disabled).toBe(true);
+    expect(screen.getByTitle("Neste resultat").closest("a")).toBeNull();
   });
 });
