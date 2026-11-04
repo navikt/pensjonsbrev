@@ -58,6 +58,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
 
 export interface SubmitTemplateOptions {
   onClick: () => void;
+  label?: string;
 }
 
 export function BrevvelgerPage() {

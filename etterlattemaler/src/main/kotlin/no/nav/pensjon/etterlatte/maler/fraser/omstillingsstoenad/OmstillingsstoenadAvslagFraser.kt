@@ -2,22 +2,25 @@ package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.LocalDate
 
 object OmstillingsstoenadAvslagFraser {
     data class Vedtak(
         val erSluttbehandling: Expression<Boolean>,
         val tidligereFamiliepleier: Expression<Boolean>,
         val avdoedNavn: Expression<String>,
+        val avdoedDoedsdato: Expression<LocalDate?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            val formatertDoedsdato = avdoedDoedsdato.format().ifNull(
+                "<Klarte ikke å finne dødsdato automatisk, du må sette inn her>",
+            )
+
             showIf(erSluttbehandling) {
                 paragraph {
                     text(
@@ -32,37 +35,37 @@ object OmstillingsstoenadAvslagFraser {
                 paragraph {
                     text(
                         bokmal { +
-                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du ikke har rett på stønaden vurdert etter EØS/avtalelandreglene." },
+                            "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du ikke har rett på stønaden vurdert etter EØS-/avtalelandreglene heller." },
                         nynorsk { +
-                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på stønaden vurdert etter EØS/avtalelandreglane." },
+                            "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på stønaden vurdert etter EØS-/avtalelandreglane heller." },
                         english { +
-                            "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA/agreement country rules." },
+                            "We have now received information from foreign social security authorities, which means you are not entitled to the allowance under the EEA/agreement country rules either." },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Din søknad om omstillingsstønad etter " + avdoedNavn + " er derfor endelig avslått." },
-                        nynorsk { +"Søknaden din om omstillingsstønad etter " + avdoedNavn + " er derfor endeleg avslått." },
+                        bokmal { +"Vi har behandlet søknaden din om omstillingsstønad etter " + avdoedNavn + ", som døde " + formatertDoedsdato + ". Søknaden er endelig avslått." },
+                        nynorsk { +"Vi har behandla søknaden din om omstillingsstønad etter " + avdoedNavn + ", som døydde " + formatertDoedsdato + ". Søknaden er endeleg avslått." },
                         english { +
-                            "Your application for adjustment allowance for the deceased " + avdoedNavn + " has therefore been finally rejected." },
+                            "We have processed your application for adjustment allowance following the death of " + avdoedNavn + ", who died on " + formatertDoedsdato + ". Your application has been finally rejected." },
                     )
                 }
             }.orShow {
                 showIf(tidligereFamiliepleier) {
                     paragraph {
                         text(
-                            bokmal { +"Din søknad om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid> er avslått." },
-                            nynorsk { +"Din søknad om omstillingsstønad som tidlegare familiepleiar for <navn på den som er pleid> er avslått." },
-                            english { +"Your application for adjustment allowance as a former family caregiver for <name of the person who has been cared for> has been rejected." },
+                            bokmal { +"Vi har behandlet søknaden din om omstillingsstønad som tidligere familiepleier for <navn på den som er pleid>. Søknaden er avslått." },
+                            nynorsk { +"Vi har behandla søknaden din om omstillingsstønad som tidlegare familiepleiar for <navn på den som er pleid>. Søknaden er avslått." },
+                            english { +"We have processed your application for adjustment allowance as a former family caregiver for <navn på den som er pleid>. Your application has been rejected." },
                         )
                     }
                 }.orShow {
                     paragraph {
                         text(
-                            bokmal { +"Din søknad om omstillingsstønad etter " + avdoedNavn + " er avslått." },
-                            nynorsk { +"Søknaden din om omstillingsstønad etter " + avdoedNavn + " er avslått." },
+                            bokmal { +"Vi har behandlet søknaden din om omstillingsstønad etter " + avdoedNavn + ", som døde " + formatertDoedsdato + ". Søknaden er avslått." },
+                            nynorsk { +"Vi har behandla søknaden din om omstillingsstønad etter " + avdoedNavn + ", som døydde " + formatertDoedsdato + ". Søknaden er avslått." },
                             english { +
-                                    "Your application for adjustment allowance for the deceased " + avdoedNavn + " has been rejected." },
+                                    "We have processed your application for adjustment allowance following the death of " + avdoedNavn + ", who died on " + formatertDoedsdato + ". Your application has been rejected." },
                         )
                     }
                 }

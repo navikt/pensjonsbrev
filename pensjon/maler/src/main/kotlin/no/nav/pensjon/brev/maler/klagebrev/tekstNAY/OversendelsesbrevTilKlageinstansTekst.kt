@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.klagebrev.tekstNAY
 
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
@@ -71,7 +70,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Som hovedregel må inntektsevnen være varig nedsatt med minst 50 prosent. "
                     +"For personer som mottar arbeidsavklaringspenger når søknaden om uføretrygd blir fremsatt, er det tilstrekkelig at inntektsevnen er varig nedsatt med minst 40 prosent. "
                 })
-                text(bokmal { +"Hvis uførheten skyldes en godkjent yrkesskade er det tilstrekkelig at inntektsevnen er varig nedsatt med minst 30 prosent." }, ITALIC)
+                text(bokmal { +fritekst("Hvis uførheten skyldes en godkjent yrkesskade er det tilstrekkelig at inntektsevnen er varig nedsatt med minst 30 prosent.") })
             }
         }
     }
@@ -200,9 +199,9 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
             paragraph {
                 text(bokmal {
-                    "Siden klager ikke er ferdig behandlet, "
-                    +"er det for tidlig å ta stilling til om inntektsevnen kan bedres ved at klager gjennomfører eventuelle ytterligere arbeidsrettede tiltak."
-                }, ITALIC)
+                    +"Siden klager ikke er ferdig behandlet, "
+                    +"er det for tidlig å ta stilling til om inntektsevnen kan bedres ved at klager gjennomfører (ev. ytterligere) arbeidsrettede tiltak."
+                })
             }
 
             includePhrase(KlippInnFraVedtak)
@@ -854,9 +853,11 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             includePhrase(KlippInnFraVedtak)
         }
-        enum class Avslag(override val displayText: String) : SaksbehandlerValgEnum {
-            Avslag("Avslag"),
-            DelvisAvslag("Delvis avslag"),
+
+        // Hvis yrkesskade er valgt:
+        enum class Avslag(override val displayText: String, override val rekkefoelge: Int) : SaksbehandlerValgEnum {
+            Avslag("Avslag", 1),
+            DelvisAvslag("Delvis avslag", 2),
         }
     }
 
@@ -1055,7 +1056,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(KlippInnFraVedtak)
 
             paragraph { text(bokmal { +"Klager fyller ikke minstekravet til trygdetid i Norge før uføretidspunktet, og kan derfor ikke få vurdert rett til uføretrygd gjennom sammenlegging av trygdetid i Norge og i andre EØS-land." }) }
-            paragraph { text(bokmal { +"Hvis det er anført at også tid etter uføretidspunktet skal medregnes, fordi folketrygdloven § 12-2 andre ledd bokstav b ikke sier noe om tid <før uføretidspunktet>:" }, ITALIC) }
+            paragraph { text(bokmal { +fritekst("Hvis det er anført at også tid etter uføretidspunktet skal medregnes, fordi folketrygdloven § 12-2 andre ledd bokstav b ikke sier noe om tid <før uføretidspunktet>:") }) }
             paragraph {
                 text(bokmal {
                     +"Formålet med EØS-forordningen artikkel 57 er å forenkle administrasjonen og å unngå at medlemslandene forpliktes til å utbetale minipensjoner basert på trygdetid som samlet er kortere enn ett år. "
@@ -1079,10 +1080,10 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
         }
     }
-    // SLUTT FOLKETRYGDLOVEN
+// SLUTT FOLKETRYGDLOVEN
 
     // START FORVALTNINGSLOVEN
-    //Fvl. § 31 Oversittet klagefrist
+//Fvl. § 31 Oversittet klagefrist
     object OversittetKlagefrist : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
@@ -1098,24 +1099,27 @@ object OversendelsesbrevTilKlageinstansTekst {
             includePhrase(ViHarVurdertKlagen)
 
             title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph { text(bokmal { +"I forvaltningsloven § 31 heter det:" }, ITALIC) }
-            paragraph { text(bokmal { +"Selv om klageren har oversittet klagefristen, kan klagen tas under behandling såframt" }, ITALIC) }
-            paragraph { text(bokmal { +"a. Parten eller hans fullmektig ikke kan lastes for å ha oversittet fristen eller for å ha drøyd med klage etterpå, eller b. Det av særlige grunner er rimelig at klagen blir prøvd." }, ITALIC) }
-            paragraph { text(bokmal { +"Ved vurdering av om klage bør tas opp til behandling, skal det også legges vekt på om endring av vedtaket kan medføre skade eller ulempe for andre." }, ITALIC) }
-            paragraph { text(bokmal { +"Klagen kan ikke tas under behandling som klagesak dersom det er gått mer enn ett år siden vedtaket ble truffet." }, ITALIC) }
-            paragraph { text(bokmal { +"Og i forvaltningsloven § 33 andre heter det:" }, ITALIC) }
+            paragraph { text(bokmal { +"I forvaltningsloven § 31 heter det:" }) }
+            paragraph { text(bokmal { +fritekst("Selv om klageren har oversittet klagefristen, kan klagen tas under behandling såframt") }) }
+            paragraph { text(bokmal { +fritekst("a. Parten eller hans fullmektig ikke kan lastes for å ha oversittet fristen eller for å ha drøyd med klage etterpå, eller b. Det av særlige grunner er rimelig at klagen blir prøvd.") }) }
+            paragraph { text(bokmal { +fritekst("Ved vurdering av om klage bør tas opp til behandling, skal det også legges vekt på om endring av vedtaket kan medføre skade eller ulempe for andre.") }) }
+            paragraph { text(bokmal { +fritekst("Klagen kan ikke tas under behandling som klagesak dersom det er gått mer enn ett år siden vedtaket ble truffet.") }) }
+            paragraph { text(bokmal { +"Og i forvaltningsloven § 33 andre heter det:" }) }
             paragraph {
                 text(bokmal {
-                    +"Underinstansen skal foreta de undersøkelser klagen gir grunn til. "
-                    +"Den kan oppheve eller endre vedtaket dersom den finner klagen begrunnet. "
-                    +"Dersom vilkårene for å behandle klagen ikke foreligger, skal underinstansen avvise saken, jfr. dog § 31."
-                }, ITALIC)
+                    +fritekst(
+                        "Underinstansen skal foreta de undersøkelser klagen gir grunn til. "
+                                + "Den kan oppheve eller endre vedtaket dersom den finner klagen begrunnet. "
+                                + "Dersom vilkårene for å behandle klagen ikke foreligger, skal underinstansen avvise saken, jfr. dog § 31."
+                    )
+                })
             }
 
             paragraph {
                 text(bokmal {
                     +"I vedtaket av "
-                    +fritekst("dato") + " ble klager innvilget/ avslått fra "
+                    +fritekst("dato") + " ble klager "
+                    +fritekst("innvilget/avslått") + " fra. "
                     +fritekst("dato") + ". Den "
                     +fritekst("dato") + " mottok vi en klage på dette vedtaket."
                 })
@@ -1144,5 +1148,5 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
         }
     }
-    //SLUTT FORVALTNINGSLOVEN
+//SLUTT FORVALTNINGSLOVEN
 }

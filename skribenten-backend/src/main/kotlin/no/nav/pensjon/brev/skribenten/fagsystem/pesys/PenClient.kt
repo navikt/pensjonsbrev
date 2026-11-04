@@ -17,6 +17,10 @@ import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.model.*
@@ -61,12 +65,12 @@ class PenServiceException(message: String, override val journalpostId: Journalpo
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
-class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : PenClient, ServiceStatus, Closeable {
+class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine, val cache: Cache) : PenClient, ServiceStatus, Closeable {
     private val penUrl = config.url
     private val penScope = config.scope
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.pen, authService, engine)
+    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine, cache: Cache): this(config.services.pen, authService, engine, cache)
 
     private val client = lagHttpClient(engine) {
         defaultRequest {
@@ -149,9 +153,11 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         }.bodyOrThrow()
 
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
-        client.get("brev/skribenten/avtaleland") {
-            metricsRoute("brev/skribenten/avtaleland")
-        }.bodyOrThrow() ?: emptyList()
+        cache.cached(Cacheomraade.AVTALELAND, Cacheomraade.AVTALELAND.name) {
+            client.get("brev/skribenten/avtaleland") {
+                metricsRoute("brev/skribenten/avtaleland")
+            }.bodyOrThrow() ?: emptyList()
+        }
 
     override suspend fun ping() =
         ping("PEN") { client.get("/pen/actuator/health/readiness") { metricsRoute("/pen/actuator/health/readiness") } }
@@ -172,29 +178,33 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         brevkode: Brevkode.Redigerbart,
         avsenderEnhetsId: EnhetId
     ): BrevdataResponse.Data =
-        client.get("brev/skribenten/sak/${saksId.id}/brevdata/${brevkode.kode()}") {
-            metricsRoute("brev/skribenten/sak/{saksId}/brevdata/{brevkode}")
-            mapOf(
-                "enhetsId" to avsenderEnhetsId.value,
-                "vedtaksId" to vedtaksId?.id?.toString(),
-            )
-                .filter { it.value != null }
-                .takeIf { it.isNotEmpty() }
-                ?.let { params ->
-                    url {
-                        params.forEach { (key, value) -> parameters.append(key, value!!) }
+        cache.cached(Cacheomraade.HENT_BREVDATA, key = "${saksId.id}-${vedtaksId?.id}-${brevkode.kode()}-${avsenderEnhetsId.value}-${PrincipalInContext.require().navIdent}", ttl = { 30.seconds }) {
+            client.get("brev/skribenten/sak/${saksId.id}/brevdata/${brevkode.kode()}") {
+                metricsRoute("brev/skribenten/sak/{saksId}/brevdata/{brevkode}")
+                mapOf(
+                    "enhetsId" to avsenderEnhetsId.value,
+                    "vedtaksId" to vedtaksId?.id?.toString(),
+                )
+                    .filter { it.value != null }
+                    .takeIf { it.isNotEmpty() }
+                    ?.let { params ->
+                        url {
+                            params.forEach { (key, value) -> parameters.append(key, value!!) }
+                        }
                     }
-                }
-        }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
+            }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
+        }
 
     override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto =
-        client.get("brev/skribenten/sak/${saksId.id}/p1data") {
-            metricsRoute("brev/skribenten/sak/{saksId}/p1data")
-            timeout { requestTimeoutMillis = 40.seconds.inWholeMilliseconds }
-            url {
-                parameters.append("spraak", spraak.name)
-            }
-        }.brevdataOrThrow(saksId = saksId)
+        cache.cached(Cacheomraade.HENT_P1DATA, "$saksId-$spraak", ttl = { 30.seconds }) {
+            client.get("brev/skribenten/sak/${saksId.id}/p1data") {
+                metricsRoute("brev/skribenten/sak/{saksId}/p1data")
+                timeout { requestTimeoutMillis = 40.seconds.inWholeMilliseconds }
+                url {
+                    parameters.append("spraak", spraak.name)
+                }
+            }.brevdataOrThrow(saksId = saksId)
+        }
 
     private suspend inline fun <reified Data : Any> HttpResponse.brevdataOrThrow(saksId: SaksId, vedtaksId: VedtaksId? = null): Data =
         when {

@@ -17,6 +17,7 @@ const adresse = { navn: "Advokat AS", linje1: "Postboks 603 Sentrum", postnr: "4
 
 function createWrapper() {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  // biome-ignore lint/correctness/noComponentHookFactories: Created once per renderHook setup, with stable identity across renders.
   return function Wrapper({ children }: { children: ReactNode }) {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   };

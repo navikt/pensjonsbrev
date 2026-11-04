@@ -40,6 +40,7 @@ function renderAutosave() {
     };
   } = {};
 
+  // biome-ignore lint/correctness/noComponentHookFactories: Created once per test harness, with stable identity across renders.
   const Testkomponent = () => {
     const context = useManagedLetterEditorContext();
     const { oppdaterBrevMutation } = useOppdaterBrevMutation("123456");

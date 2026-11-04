@@ -23,6 +23,6 @@ jobs:
           team: pensjonsbrev
       - name: Generate SBOM, attest and sign image
         id: attest-sign
-        uses: nais/attest-sign@fb682a4e2e92380274d6fd5332324831b62c1961 # v2.0.19
+        uses: nais/attest-sign@c02a0aedb111660e9fcf79e505753d6a7af4dcd5 # v2.1.0
         with:
           image_ref: ${{ inputs.image }}

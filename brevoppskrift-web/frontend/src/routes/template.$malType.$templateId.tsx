@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
 import { type TemplateDocumentation } from "~/api/templateDocumentationTypes";
 import { DataClassesPanel } from "~/components/DataClasses";
+import { ExportTemplateButton } from "~/components/ExportTemplateButton";
 import { Document, KnownDataClassesProvider } from "~/components/TemplateDocumentationView";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
@@ -68,9 +69,9 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 });
 
 function TemplateExplorer() {
-  const { documentation } = Route.useLoaderData();
+  const { documentation, description } = Route.useLoaderData();
   const { templateId } = Route.useParams();
-  const { index } = Route.useSearch();
+  const { index, language } = Route.useSearch();
   const previewRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
@@ -119,6 +120,11 @@ function TemplateExplorer() {
             Oppskrift for {templateId}
           </Heading>
           <SelectLanguage />
+          <ExportTemplateButton
+            documentation={documentation}
+            language={language ?? description.languages[0]}
+            templateId={templateId}
+          />
           <div
             css={css`
               width: 100%;

@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -55,7 +56,7 @@ class PenClientTest {
         mottaker = null,
     )
 
-    private fun penClient(engine: MockEngine) = PentHttpClient(config, FakeAuthService, engine)
+    private fun penClient(engine: MockEngine) = PentHttpClient(config, FakeAuthService, engine, InMemoryCache())
 
     @Test
     fun `sendbrev returnerer BestillBrevResponse ved suksess`() {

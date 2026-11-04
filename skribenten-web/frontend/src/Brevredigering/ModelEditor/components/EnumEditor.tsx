@@ -18,10 +18,6 @@ export const EnumEditor = ({
 }) => {
   const { control } = useFormContext();
 
-  const values = spec.values.toSorted((v1, v2) =>
-    (v1.displayText || v1.value) > (v2.displayText || v2.value) ? 1 : -1,
-  );
-
   return (
     <Controller
       control={control}
@@ -39,13 +35,16 @@ export const EnumEditor = ({
           readOnly={readOnly}
           size="small"
         >
-          {values.map((value) => (
+          {spec.values.map((value) => (
             <Radio key={value.value} value={value.value}>
               {value.displayText ?? value.value}
             </Radio>
           ))}
         </RadioGroup>
       )}
+      rules={{
+        required: spec.nullable ? false : "Obligatorisk: du må velge et alternativ",
+      }}
     />
   );
 };

@@ -248,6 +248,7 @@ object Innvilgelse {
     data class BegrunnelseForVedtaket(
         val pe: Expression<PEgruppe10>,
         val txtEllerEtAvtaleland: Expression<String>,
+        val konklusjon: Expression<Boolean> = true.expr()
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -295,11 +296,13 @@ object Innvilgelse {
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Vi har kommet fram til at du oppfyller vilkårene for å få uføretrygd." },
-                    nynorsk { +"Vi har kome fram til at du oppfyller vilkåra for å få uføretrygd." },
-                )
+            showIf(konklusjon) {
+                paragraph {
+                    text(
+                        bokmal { +"Vi har kommet fram til at du oppfyller vilkårene for å få uføretrygd." },
+                        nynorsk { +"Vi har kome fram til at du oppfyller vilkåra for å få uføretrygd." },
+                    )
+                }
             }
         }
     }

@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
 import no.nav.pensjon.brev.ufore.maler.simulering.SimuleringUforetrygd
 import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidAuto
 import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidRedigerbar
+import no.nav.pensjon.brev.ufore.maler.svartid.UtsendelseTilUtlandRedigerbar
 import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
@@ -113,6 +114,7 @@ object Fixtures : LetterDataFactory {
             InfobrevLovendringer2026::class -> EmptyAutobrevdata as T
             OrienteringOmSaksbehandlingstidAuto::class -> createOrienteringOmSaksbehandlingstidAutoDto() as T
             OrienteringOmSaksbehandlingstidRedigerbar::class -> createOrienteringOmSaksbehandlingstidRedigerbarDto() as T
+            UtsendelseTilUtlandRedigerbar::class -> createUtsendelseTilUtlandRedigerbarDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
@@ -425,6 +427,11 @@ object Fixtures : LetterDataFactory {
 
     fun createOrienteringOmSaksbehandlingstidRedigerbarDto() = OrienteringOmSaksbehandlingstidDto(
         saksbehandlerValg = lagSaksbehandlervalg("forlengetSaksbehandlingstid" to true),
+        pesysData = EmptyFagsystemdata
+    )
+
+    fun createUtsendelseTilUtlandRedigerbarDto() = OrienteringOmSaksbehandlingstidDto(
+        saksbehandlerValg = lagSaksbehandlervalg("kunEOSInnvilgelseNorge" to true),
         pesysData = EmptyFagsystemdata
     )
 }

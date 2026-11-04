@@ -135,14 +135,6 @@ export const SaksbehandlerValgModelEditor = (props: {
   });
 
   if (props.fieldsToRender === "required") {
-    for (const field of fieldsWithElements.requiredFields) {
-      if (!field.fieldType.nullable) {
-        register(`saksbehandlerValg.${field.field}`, {
-          required: "Obligatorisk: du må velge et alternativ",
-        });
-      }
-    }
-
     /**
      * Boolean felter har spesialbehandling. De er (nesten) alltid non-nullable og er flagg som styrer tekstvalg i malene
      * som regnes som utenfor normen. Vi ønsker derfor ikke å vise dem i Brevvelger, da det ikke er særlig relevant der.
