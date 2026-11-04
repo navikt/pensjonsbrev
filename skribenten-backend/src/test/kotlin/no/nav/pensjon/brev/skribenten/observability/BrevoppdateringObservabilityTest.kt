@@ -2,12 +2,16 @@ package no.nav.pensjon.brev.skribenten.observability
 
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry
 import io.micrometer.core.instrument.Meter
-import io.micrometer.core.instrument.config.MeterFilter
+import io.micrometer.core.instrument.Timer
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig
+import io.micrometer.core.instrument.distribution.pause.PauseDetector
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import io.opentelemetry.api.OpenTelemetry
 import io.opentelemetry.api.common.AttributeKey
 import io.opentelemetry.api.trace.Span
+import io.opentelemetry.api.trace.SpanBuilder
+import io.opentelemetry.api.trace.Tracer
 import io.opentelemetry.api.trace.StatusCode
 import io.opentelemetry.context.Context
 import io.opentelemetry.extension.kotlin.asContextElement
@@ -35,6 +39,7 @@ import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability
 import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Krypto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.util.concurrent.TimeUnit
 
 class BrevoppdateringObservabilityTest {
     @Test
@@ -166,24 +171,67 @@ class BrevoppdateringObservabilityTest {
     }
 
     @Test
-    suspend fun `feil i metrikkregistrering maskerer ikke applikasjonsfeilen`() {
-        BrevoppdateringTestTelemetry().use { telemetry ->
-            val measurementError = IllegalStateException("measurement")
-            var registrations = 0
-            telemetry.registry.config().meterFilter(object : MeterFilter {
-                override fun map(id: Meter.Id): Meter.Id {
-                    registrations++
-                    throw measurementError
+    suspend fun `maalingsfeil bevarer returverdier unntak og kansellering og avslutter spans`() {
+        val registry = FailingRecordingMeterRegistry()
+        try {
+            BrevoppdateringTestTelemetry().use { telemetry ->
+                val observer = BrevoppdateringObservability(registry, telemetry.tracer)
+                val previous = Context.current()
+                val results: List<Outcome<*, *>?> = listOf(success(Unit), failure(Unit), null)
+                results.forEach { result ->
+                    assertThat(observer.observer(false) {
+                        fase(Fase.DTO) { krypto(Krypto.KRYPTER) { result } }
+                    }).isSameAs(result)
                 }
-            })
-            val applicationError = IllegalArgumentException("application")
+                listOf(IllegalArgumentException("not exported"), CancellationException("not exported")).forEach { error ->
+                    val caught = runCatching {
+                        observer.observer(false) {
+                            fase(Fase.DTO) { krypto(Krypto.KRYPTER) { throw error } }
+                        }
+                    }.exceptionOrNull()
+                    assertThat(generateSequence(caught) { it.cause }.last()).isSameAs(error)
+                    assertThat(error.suppressed).isEmpty()
+                }
+                assertThat(registry.recordAttempts).isEqualTo(15)
+                assertThat(telemetry.exporter.finishedSpanItems).hasSize(15)
+                assertThat(Context.current()).isSameAs(previous)
+            }
+        } finally {
+            registry.close()
+        }
+    }
+
+    @Test
+    suspend fun `feil fra span end bevarer resultat og opprinnelig applikasjonsfeil`() {
+        BrevoppdateringTestTelemetry().use { telemetry ->
+            var endings = 0
+            val failingTracer = object : Tracer by telemetry.tracer {
+                override fun spanBuilder(spanName: String): SpanBuilder {
+                    val builder = telemetry.tracer.spanBuilder(spanName)
+                    return object : SpanBuilder by builder {
+                        override fun startSpan(): Span {
+                            val span = builder.startSpan()
+                            return object : Span by span {
+                                override fun end() {
+                                    endings++
+                                    span.end()
+                                    throw IllegalStateException("not exported")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            val observer = BrevoppdateringObservability(telemetry.registry, failingTracer)
+            val result = success(Unit)
+            assertThat(observer.observer(false) { fase(Fase.DTO) { result } }).isSameAs(result)
+            val error = IllegalArgumentException("application")
             val caught = runCatching {
-                telemetry.observer.observer(false) { throw applicationError }
+                observer.observer(false) { fase(Fase.DTO) { throw error } }
             }.exceptionOrNull()
-            val exceptions = generateSequence(caught) { it.cause }.toList()
-            assertThat(exceptions.last()).isSameAs(applicationError)
-            assertThat(registrations).isEqualTo(1)
-            assertThat(telemetry.exporter.finishedSpanItems).hasSize(1)
+            assertThat(generateSequence(caught) { it.cause }.last()).isSameAs(error)
+            assertThat(endings).isEqualTo(4)
+            assertThat(telemetry.exporter.finishedSpanItems).hasSize(4)
         }
     }
 
@@ -250,5 +298,20 @@ internal class BrevoppdateringTestTelemetry(sampler: Sampler = Sampler.alwaysOn(
     override fun close() {
         provider.close()
         registry.close()
+    }
+}
+
+internal class FailingRecordingMeterRegistry : SimpleMeterRegistry() {
+    var recordAttempts = 0
+        private set
+
+    override fun newTimer(id: Meter.Id, distributionStatisticConfig: DistributionStatisticConfig, pauseDetector: PauseDetector): Timer {
+        val timer = super.newTimer(id, distributionStatisticConfig, pauseDetector)
+        return object : Timer by timer {
+            override fun record(amount: Long, unit: TimeUnit) {
+                recordAttempts++
+                throw IllegalStateException("not exported")
+            }
+        }
     }
 }

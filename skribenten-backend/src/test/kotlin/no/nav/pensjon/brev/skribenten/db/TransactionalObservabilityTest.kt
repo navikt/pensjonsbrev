@@ -13,6 +13,8 @@ import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Transaksjon
 import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringTestTelemetry
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability
+import no.nav.pensjon.brev.skribenten.observability.FailingRecordingMeterRegistry
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.Transaction
 import org.jetbrains.exposed.v1.core.statements.StatementContext
@@ -21,6 +23,41 @@ import org.junit.jupiter.api.Test
 import java.sql.SQLException
 
 class TransactionalObservabilityTest : BrevredigeringHandlerTestBase() {
+    @Test
+    suspend fun `feil ved avslutning av maaling ruller ikke tilbake vellykket transaksjon`() {
+        val registry = FailingRecordingMeterRegistry()
+        try {
+            BrevoppdateringTestTelemetry().use { telemetry ->
+                val observer = BrevoppdateringObservability(registry, telemetry.tracer)
+                val original = opprettBrev().resultOrFail()
+                val choices = SaksbehandlervalgMap().apply { put("valg", SaksbehandlervalgVerdi.Boolean(false)) }
+                var committed = false
+                val result = success(Unit)
+                assertThat(observer.observer(false) {
+                    transactional.rollbackOnFailure(observasjon = Transaksjon.REDIGERING) {
+                        registerInterceptor(object : StatementInterceptor {
+                            override fun afterCommit(transaction: Transaction) {
+                                committed = true
+                            }
+                        })
+                        BrevredigeringEntity.findByIdAndSaksId(original.info.id, sak1.saksId)!!.saksbehandlerValg = choices
+                        result
+                    }
+                }).isSameAs(result)
+                assertThat(registry.recordAttempts).isGreaterThanOrEqualTo(3)
+                assertThat(committed).isTrue()
+                assertThat(hentBrev(original.info.id).resultOrFail().saksbehandlerValg).isEqualTo(choices)
+                assertThat(telemetry.exporter.finishedSpanItems.map { it.name }).contains(
+                    "skribenten.brev.update.editing_block",
+                    "skribenten.brev.update.editing_transaction",
+                    "skribenten.brev.update",
+                )
+            }
+        } finally {
+            registry.close()
+        }
+    }
+
     @Test
     suspend fun `automatisk flush og commit har aktivt ytre span etter at blokken er avsluttet`() {
         BrevoppdateringTestTelemetry().use { telemetry ->

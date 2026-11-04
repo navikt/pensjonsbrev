@@ -12,6 +12,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.skribenten.Metrics
 import no.nav.pensjon.brev.skribenten.common.Outcome
+import org.slf4j.LoggerFactory
 
 class BrevoppdateringObservability(
     private val registry: MeterRegistry = Metrics.registry,
@@ -80,7 +81,6 @@ class BrevoppdateringObservability(
         }
         private val metricName = if (fase != null) Metrics.brevoppdateringMetricName else Metrics.brevoppdateringCryptoMetricName
         private var utfall = Utfall.SUCCESS
-        private var applicationError: Throwable? = null
 
         init {
             span.setAttribute("skribenten.submission", scope.submission)
@@ -95,7 +95,6 @@ class BrevoppdateringObservability(
         }
 
         fun feil(error: Throwable) {
-            applicationError = error
             utfall = if (error is CancellationException) Utfall.CANCELLED else Utfall.EXCEPTION
             if (error !is CancellationException) span.setStatus(StatusCode.ERROR)
             // Exception messages can contain request data; retain only the technical type.
@@ -106,16 +105,20 @@ class BrevoppdateringObservability(
             try {
                 span.setAttribute("skribenten.outcome", utfall.tag)
                 sample.stop(registry.timer(metricName, *tags, "outcome", utfall.tag))
-            } catch (measurementError: Throwable) {
-                val original = applicationError ?: throw measurementError
-                original.addSuppressed(measurementError)
+            } catch (measurementError: Exception) {
+                logger.warn("Kunne ikke avslutte måling {}: {}", name, measurementError.javaClass.name)
             } finally {
-                span.end()
+                try {
+                    span.end()
+                } catch (measurementError: Exception) {
+                    logger.warn("Kunne ikke avslutte span {}: {}", name, measurementError.javaClass.name)
+                }
             }
         }
     }
 
     companion object {
+        private val logger = LoggerFactory.getLogger(BrevoppdateringObservability::class.java)
         private val scopeKey = ContextKey.named<Scope>("skribenten-brevoppdatering")
 
         suspend fun <T> fase(fase: Fase?, block: suspend () -> T): T {
