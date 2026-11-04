@@ -1,4 +1,4 @@
-@file:OptIn(InternKonstruktoer::class)
+@file:OptIn(InternKonstruktoer::class, MarkupModelApi::class)
 
 package no.nav.pensjon.brev.skribenten.brevredigering.application
 
@@ -9,6 +9,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.brevbaker.markup.Markup
+import no.nav.brev.brevbaker.markup.MarkupModel
+import no.nav.brev.brevbaker.markup.MarkupModelApi
+import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
@@ -73,6 +77,7 @@ abstract class BrevredigeringHandlerTestBase {
     @BeforeEach
     fun clearMocks() {
         brevbakerService.renderMarkupKall.clear()
+        brevbakerService.renderMarkupV2Resultat = { notYetStubbed("Mangler renderMarkupV2 stub") }
         brevbakerService.renderMarkupResultat = {
             letter.medSignatur(
                 saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
@@ -350,6 +355,7 @@ abstract class BrevredigeringHandlerTestBase {
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
         statiskFagsystemBrevdata: StatiskFagsystemBrevdata? = null,
+        markupVersjon: MarkupVersjon = MarkupVersjon.V1,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         opprettBrev.invoke(
             OpprettBrevHandler.Request(
@@ -362,6 +368,7 @@ abstract class BrevredigeringHandlerTestBase {
                 reserverForRedigering = reserverForRedigering,
                 mottaker = mottaker,
                 statiskFagsystemBrevdata = statiskFagsystemBrevdata,
+                markupVersjon = markupVersjon,
             )
         )
     }
@@ -379,7 +386,7 @@ abstract class BrevredigeringHandlerTestBase {
                 brevId = brevId,
                 saksId = saksId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
-                nyttRedigertbrev = nyttRedigertbrev,
+                nyttRedigertbrev = nyttRedigertbrev?.let { VersjonertBrev.V1(it) },
                 frigiReservasjon = frigiReservasjon
             )
         )
@@ -441,7 +448,7 @@ abstract class BrevredigeringHandlerTestBase {
                 brevId = brev.info.id,
                 saksId = saksId,
                 frigiReservasjon = frigiReservasjon,
-                nyttRedigertbrev = nyttRedigertbrev,
+                nyttRedigertbrev = nyttRedigertbrev?.let { VersjonertBrev.V1(it) },
             )
         )
     }
@@ -457,7 +464,7 @@ abstract class BrevredigeringHandlerTestBase {
             LagreAttestertBrevHandler.Request(
                 brevId = brev.info.id,
                 saksId = saksId,
-                nyttRedigertbrev = nyttRedigertbrev,
+                nyttRedigertbrev = VersjonertBrev.V1(nyttRedigertbrev),
                 frigiReservasjon = frigiReservasjon,
             )
         )
@@ -576,6 +583,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
+        lateinit var renderMarkupV2Resultat: suspend ((f: BrevbakerFelles) -> MarkupV2)
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
         var alltidValgbareVedleggResultat: Set<AlltidValgbartVedleggBrevkode> = emptySet()
@@ -597,6 +605,18 @@ abstract class BrevredigeringHandlerTestBase {
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
                 .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
+
+        override suspend fun renderMarkupV2(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            felles: BrevbakerFelles,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
+        ) = MarkupModel.letterMarkupWithDataUsage(
+            markup = renderMarkupV2Resultat(felles).also { renderMarkupKall.add(Pair(brevkode, spraak)) },
+            letterDataUsage = emptySet(),
+            brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) Markup.Brevtype.VEDTAKSBREV else Markup.Brevtype.INFORMASJONSBREV,
+        )
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,

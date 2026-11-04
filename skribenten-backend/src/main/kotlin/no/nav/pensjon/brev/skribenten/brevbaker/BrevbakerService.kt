@@ -24,6 +24,11 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
 
+import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
+import no.nav.brev.brevbaker.markup.Attachment as AttachmentV2
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupV2WithDataUsage
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
+
 class BrevbakerServiceException(msg: String) : ServiceException(msg)
 
 // TODO: Del opp i to interfaces, ett for det som skal håndteres av fagsystem, og ett for brevbaker.
@@ -73,6 +78,35 @@ interface BrevbakerService {
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment?
+
+    suspend fun renderMarkupV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        felles: BrevbakerFelles,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+    ): MarkupV2WithDataUsage
+
+    suspend fun renderPdfV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        redigertBrev: MarkupV2,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+        redigerteVedlegg: Map<VedleggId, AttachmentV2> = emptyMap(),
+        pdfVedlegg: List<PDFVedleggTittel>,
+    ): LetterResponse
+
+    suspend fun renderRedigerbartVedleggV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        vedleggId: VedleggId,
+    ): AttachmentV2?
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
@@ -288,6 +322,108 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             )
         }
     }
+
+    override suspend fun renderMarkupV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        felles: BrevbakerFelles,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+    ): MarkupV2WithDataUsage {
+        val response = client.post("/v2/letter/redigerbar/markup-usage") {
+            metricsRoute("v2/letter/redigerbar/markup-usage")
+            contentType(ContentType.Application.Json)
+            setBody(bestillRedigerbartBrev(brevkode, spraak, felles, fagsystemBrevdata, saksbehandlervalg))
+        }
+
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
+                    ?: "Ukjent feil oppstod ved generering av markup v2 for brevkode: $brevkode"
+            )
+        }
+    }
+
+    override suspend fun renderPdfV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        redigertBrev: MarkupV2,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+        redigerteVedlegg: Map<VedleggId, AttachmentV2>,
+        pdfVedlegg: List<PDFVedleggTittel>,
+    ): LetterResponse {
+        val response = client.post("/v2/letter/redigerbar/pdf") {
+            metricsRoute("v2/letter/redigerbar/pdf")
+            timeout { requestTimeoutMillis = 60.seconds.inWholeMilliseconds }
+            contentType(ContentType.Application.Json)
+            setBody(
+                BestillRedigertBrevRequestV2(
+                    letterMarkup = redigertBrev,
+                    alltidValgbareVedlegg = alltidValgbareVedlegg,
+                    redigerteVedlegg = redigerteVedlegg,
+                    redigerbartBrev = bestillRedigerbartBrev(brevkode, spraak, felles, fagsystemBrevdata, saksbehandlervalg, pdfVedlegg),
+                )
+            )
+        }
+
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }
+                    ?: "Ukjent feil oppstod ved generering av PDF v2 for brevkode: $brevkode"
+            )
+        }
+    }
+
+    override suspend fun renderRedigerbartVedleggV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        vedleggId: VedleggId,
+    ): AttachmentV2? {
+        val response = client.post("/v2/letter/redigerbar/redigerbare-vedlegg/${vedleggId.id}") {
+            metricsRoute("v2/letter/redigerbar/redigerbare-vedlegg/{vedleggId}")
+            contentType(ContentType.Application.Json)
+            setBody(bestillRedigerbartBrev(brevkode, spraak, felles, fagsystemBrevdata, saksbehandlervalg))
+        }
+
+        return when {
+            response.status == HttpStatusCode.NotFound -> null
+            response.status.isSuccess() -> response.body()
+            else -> throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
+                    ?: "Ukjent feil oppstod ved generering av redigerbart vedlegg v2 for brevkode: $brevkode"
+            )
+        }
+    }
+
+    private fun bestillRedigerbartBrev(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        felles: BrevbakerFelles,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        pdfVedlegg: List<PDFVedleggTittel> = emptyList(),
+    ) = BestillRedigerbartBrevRequest(
+        kode = brevkode,
+        letterData = GeneriskRedigerbarBrevdata(
+            pesysData = fagsystemBrevdata,
+            saksbehandlerValg = saksbehandlervalg,
+        ),
+        fagsystemBrevdata = fagsystemBrevdata,
+        saksbehandlervalg = saksbehandlervalg,
+        felles = felles,
+        language = spraak,
+        pdfVedlegg = pdfVedlegg,
+    )
 
     override suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? {
         val response = client.get("/templates/redigerbar") {

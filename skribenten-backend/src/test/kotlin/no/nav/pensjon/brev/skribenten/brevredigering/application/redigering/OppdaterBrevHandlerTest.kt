@@ -1,4 +1,11 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjon
+import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -48,14 +55,34 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         )
 
         assertThat(etterSaksbehandlersEndringerOgDeretterEndringIMalen).isSuccess {
-            assertThat(it.redigertBrev.blocks).hasSize(3)
-            assertThat(it.redigertBrev.blocks[0].content).isEqualTo(listOf(Literal(2, text = "red pill", editedText = "blue pill", parentId = 1)))
-            assertThat(it.redigertBrev.blocks[1].content).isEqualTo(listOf(Literal(4, "green pill", parentId = 3)))
-            assertThat(it.redigertBrev.blocks[2].content).isEqualTo(listOf(Literal(6, "red pill", parentId = 5)))
-            assertThat(it.redigertBrev.blocks[0].missingFromTemplate).isTrue
-            assertThat(it.redigertBrev.blocks[1].missingFromTemplate).isNotEqualTo(true)
-            assertThat(it.redigertBrev.blocks[2].missingFromTemplate).isNotEqualTo(true)
+            assertThat(it.redigertBrev.somV1().blocks).hasSize(3)
+            assertThat(it.redigertBrev.somV1().blocks[0].content).isEqualTo(listOf(Literal(2, text = "red pill", editedText = "blue pill", parentId = 1)))
+            assertThat(it.redigertBrev.somV1().blocks[1].content).isEqualTo(listOf(Literal(4, "green pill", parentId = 3)))
+            assertThat(it.redigertBrev.somV1().blocks[2].content).isEqualTo(listOf(Literal(6, "red pill", parentId = 5)))
+            assertThat(it.redigertBrev.somV1().blocks[0].missingFromTemplate).isTrue
+            assertThat(it.redigertBrev.somV1().blocks[1].missingFromTemplate).isNotEqualTo(true)
+            assertThat(it.redigertBrev.somV1().blocks[2].missingFromTemplate).isNotEqualTo(true)
         }
+    }
+
+    @Test
+    suspend fun `kan ikke oppdatere v1-brev med v2-brev`() {
+        val original = opprettBrev(reserverForRedigering = true).resultOrFail()
+
+        val resultat = withPrincipal(saksbehandler1Principal) {
+            oppdaterBrev(
+                OppdaterBrevHandler.Request(
+                    brevId = original.info.id,
+                    saksId = sak1.saksId,
+                    nyttRedigertbrev = RendretMarkup.V2(letterV2()).toEdit(),
+                )
+            )
+        }
+
+        assertThat(resultat).isFailure<FeilMarkupVersjon, _, _> {
+            assertThat(it).isEqualTo(FeilMarkupVersjon(forventet = MarkupVersjon.V1, faktisk = MarkupVersjon.V2))
+        }
+        assertThat(hentBrev(original.info.id).resultOrFail().redigertBrev).isEqualTo(original.redigertBrev)
     }
 
     @Test
@@ -77,7 +104,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(oppdatert).isSuccess {
             assertThat(it.saksbehandlerValg).isNotEqualTo(original.saksbehandlerValg)
-            assertThat(it.redigertBrev).isEqualTo(nyttRedigertBrev)
+            assertThat(it.redigertBrev.somV1()).isEqualTo(nyttRedigertBrev)
         }
     }
 
@@ -111,7 +138,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(oppdatert).isSuccess {
             assertThat(it.redigertBrev).isNotEqualTo(original.redigertBrev)
-            assertThat(it.redigertBrev).isEqualTo(original.redigertBrev.updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev.somV1()).isEqualTo(original.redigertBrev.somV1().updateEditedLetter(freshRender))
         }
     }
 
@@ -141,7 +168,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         )
 
         assertThat(resultat).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(nyttRedigertBrev)
+            assertThat(it.redigertBrev.somV1()).isEqualTo(nyttRedigertBrev)
         }
     }
 
@@ -219,14 +246,14 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan redigere signatur`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        val redigertSignatur = brev.redigertBrev.withSignaturSaksbehandler("Ny signatur")
+        val redigertSignatur = brev.redigertBrev.somV1().withSignaturSaksbehandler("Ny signatur")
 
         val result = oppdaterBrev(
             brevId = brev.info.id,
             nyttRedigertbrev = redigertSignatur,
         )
         assertThat(result).isSuccess {
-            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo("Ny signatur")
+            assertThat(it.redigertBrev.somV1().signatur.saksbehandlerNavn).isEqualTo("Ny signatur")
         }
     }
 }

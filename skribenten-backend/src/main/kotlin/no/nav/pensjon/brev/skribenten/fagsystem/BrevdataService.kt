@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.skribenten.fagsystem
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.attesterendeSaksbehandlerNavn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.saksbehandlerNavn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -51,8 +53,8 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
             mottaker = brev.mottaker,
             signatur = SignerendeSaksbehandlere(
                 // Redigerbare brev skal alltid ha saksbehandlers signatur, derfor non-null assertion her.
-                saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
-                attesterendeSaksbehandler = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
+                saksbehandler = brev.redigertBrev.saksbehandlerNavn!!,
+                attesterendeSaksbehandler = brev.redigertBrev.attesterendeSaksbehandlerNavn,
             ),
             statiskFagsystemBrevdata = brev.statiskFagsystemBrevdata,
         )

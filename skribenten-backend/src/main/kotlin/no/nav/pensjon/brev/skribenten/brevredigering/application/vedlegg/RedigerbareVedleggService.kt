@@ -7,11 +7,11 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretVedleggMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.merge
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.tittel
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 class RedigerbareVedleggService(
     private val brevmalService: BrevmalService,
@@ -32,7 +32,7 @@ class RedigerbareVedleggService(
             ?.map { vedlegg ->
                 RedigerbartVedleggInfo(
                     vedleggId = vedlegg.id,
-                    tittel = brev.hentRedigertVedlegg(vedlegg.id)?.title?.text?.format() ?: vedlegg.tittel,
+                    tittel = brev.hentRedigertVedlegg(vedlegg.id)?.tittel ?: vedlegg.tittel,
                 )
             }
     }
@@ -41,31 +41,31 @@ class RedigerbareVedleggService(
         brev: BrevredigeringEntity,
         vedleggId: VedleggId,
         mergeMotMal: Boolean,
-    ): Outcome<Edit.Attachment, VedleggFinnesIkkeIMal> {
+    ): Outcome<VersjonertVedlegg, VedleggFinnesIkkeIMal> {
         val lagretVedlegg = brev.hentRedigertVedlegg(vedleggId)
         if (!mergeMotMal && lagretVedlegg != null) {
             return success(lagretVedlegg)
         }
 
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
-        return success(lagretVedlegg?.updateEditedAttachment(malVedlegg) ?: malVedlegg.toEdit())
+        return success(lagretVedlegg?.merge(malVedlegg) ?: malVedlegg.toEdit())
     }
 
     suspend fun lagre(
         brev: BrevredigeringEntity,
         vedleggId: VedleggId,
-        redigertVedlegg: Edit.Attachment,
+        redigertVedlegg: VersjonertVedlegg,
         mergeMotMal: Boolean,
-    ): Outcome<Edit.Attachment, VedleggFinnesIkkeIMal> {
+    ): Outcome<VersjonertVedlegg, VedleggFinnesIkkeIMal> {
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
 
-        val nyttVedlegg = if (mergeMotMal) redigertVedlegg.updateEditedAttachment(malVedlegg) else redigertVedlegg
+        val nyttVedlegg = if (mergeMotMal) redigertVedlegg.merge(malVedlegg) else redigertVedlegg
         brev.settRedigertVedlegg(vedleggId, nyttVedlegg)
 
         return success(nyttVedlegg)
     }
 
-    suspend fun tilbakestill(brev: BrevredigeringEntity, vedleggId: VedleggId): Outcome<Edit.Attachment, VedleggFinnesIkkeIMal> {
+    suspend fun tilbakestill(brev: BrevredigeringEntity, vedleggId: VedleggId): Outcome<VersjonertVedlegg, VedleggFinnesIkkeIMal> {
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
 
         brev.slettRedigertVedlegg(vedleggId)
@@ -73,12 +73,9 @@ class RedigerbareVedleggService(
         return success(malVedlegg.toEdit())
     }
 
-    private suspend fun renderMal(brev: BrevredigeringEntity, vedleggId: VedleggId): LetterMarkup.Attachment? =
+    private suspend fun renderMal(brev: BrevredigeringEntity, vedleggId: VedleggId): RendretVedleggMarkup? =
         brevmalService.renderRedigerbartVedlegg(brev, brevdataService.hentBrevdata(brev), vedleggId)
 }
-
-private fun List<Edit.ParagraphContent.Text>.format(): String =
-    joinToString("") { if (it is Edit.ParagraphContent.Text.Literal) it.editedText ?: it.text else it.text }
 
 data class RedigerbartVedleggInfo(
     val vedleggId: VedleggId,

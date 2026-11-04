@@ -1,13 +1,17 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus
 import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
+import no.nav.pensjon.brev.skribenten.model.ApiV2
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -25,7 +29,19 @@ class Dto2ApiService(
     suspend fun toApi(brevredigering: Dto.Brevredigering): Api.BrevResponse =
         Api.BrevResponse(
             info = toApi(brevredigering.info),
-            redigertBrev = brevredigering.redigertBrev,
+            redigertBrev = (brevredigering.redigertBrev as? VersjonertBrev.V1)?.brev
+                ?: throw FeilMarkupVersjonException(MarkupVersjon.V1, brevredigering.redigertBrev.markupVersjon),
+            redigertBrevHash = brevredigering.redigertBrevHash,
+            saksbehandlerValg = brevredigering.saksbehandlerValg,
+            propertyUsage = brevredigering.propertyUsage,
+            valgteVedlegg = brevredigering.valgteVedlegg,
+        )
+
+    suspend fun toApiV2(brevredigering: Dto.Brevredigering): ApiV2.BrevResponse =
+        ApiV2.BrevResponse(
+            info = toApi(brevredigering.info),
+            redigertBrev = (brevredigering.redigertBrev as? VersjonertBrev.V2)?.brev
+                ?: throw FeilMarkupVersjonException(MarkupVersjon.V2, brevredigering.redigertBrev.markupVersjon),
             redigertBrevHash = brevredigering.redigertBrevHash,
             saksbehandlerValg = brevredigering.saksbehandlerValg,
             propertyUsage = brevredigering.propertyUsage,
@@ -64,7 +80,8 @@ class Dto2ApiService(
             spraak = info.spraak.toApi(),
             journalpostId = info.journalpostId,
             vedtaksId = info.vedtaksId,
-            leggVedFoersteside = info.leggVedFoersteside
+            leggVedFoersteside = info.leggVedFoersteside,
+            markupVersjon = info.markupVersjon,
         )
     }
 

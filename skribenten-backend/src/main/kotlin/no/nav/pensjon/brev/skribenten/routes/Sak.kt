@@ -147,6 +147,7 @@ fun Route.sakRoute() {
         }
 
         sakBrev()
+        sakBrevV2()
     }
 }
 

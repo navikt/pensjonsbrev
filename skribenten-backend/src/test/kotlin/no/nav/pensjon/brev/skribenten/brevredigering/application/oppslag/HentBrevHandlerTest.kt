@@ -1,4 +1,10 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjon
+import no.nav.pensjon.brev.skribenten.isFailure
+import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -34,6 +40,19 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
+    suspend fun `henting med feil markup-versjon feiler`() {
+        val opprettet = opprettBrev().resultOrFail()
+
+        val hentet = withPrincipal(saksbehandler1Principal) {
+            hentBrev(HentBrevHandler.Request(brevId = opprettet.info.id, saksId = sak1.saksId, markupVersjon = MarkupVersjon.V2))
+        }
+
+        assertThat(hentet).isFailure<FeilMarkupVersjon, _, _> {
+            assertThat(it).isEqualTo(FeilMarkupVersjon(forventet = MarkupVersjon.V1, faktisk = MarkupVersjon.V2))
+        }
+    }
+
+    @Test
     suspend fun `kan hente brev med reservasjon`() {
         val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val opprettet = opprettBrev(reserverForRedigering = false, saksbehandlerValg = saksbehandlerValg).resultOrFail()
@@ -48,7 +67,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(hentet).isSuccess {
             assertThat(it.info.id).isEqualTo(opprettet.info.id)
             assertThat(it.saksbehandlerValg).isEqualTo(saksbehandlerValg)
-            assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
+            assertThat(it.redigertBrev.somV1()).isEqualTo(letter.toEdit())
             assertThat(it.info.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
         }
     }
@@ -64,7 +83,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val hentet = hentBrev(brevId = opprettet.info.id, reserverForRedigering = true)
 
         assertThat(hentet).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev.somV1()).isEqualTo(opprettet.redigertBrev.somV1().updateEditedLetter(freshRender))
         }
     }
 

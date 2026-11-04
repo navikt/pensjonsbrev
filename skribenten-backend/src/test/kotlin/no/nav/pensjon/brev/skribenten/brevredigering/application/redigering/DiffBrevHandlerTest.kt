@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -17,7 +18,7 @@ class DiffBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `diff bruker rendret brev fra siste merge og ikke gjeldende mal`() {
         val brev = opprettBrev().resultOrFail()
         val rendretVedOpprettelse = letter.toEdit()
-        assertThat(brev.redigertBrev).isEqualTo(rendretVedOpprettelse)
+        assertThat(brev.redigertBrev.somV1()).isEqualTo(rendretVedOpprettelse)
 
         brevbakerService.renderMarkupResultat = {
             letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "ny tekst i malen")))).medSignatur(
@@ -30,7 +31,7 @@ class DiffBrevHandlerTest : BrevredigeringHandlerTestBase() {
         }
 
         assertThat(diff).isNotNull()
-        val unified = diff!!.resultOrFail() as DiffBrevHandler.Response.Unified
+        val unified = (diff!!.resultOrFail() as DiffBrevHandler.Resultat.V1).response as DiffBrevHandler.Response.Unified
         assertThat(unified.editedBlocks).isEmpty()
         assertThat(unified.deletedBlocks).isEmpty()
     }
