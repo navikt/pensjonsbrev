@@ -4,7 +4,9 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.LetterMarkup
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
@@ -13,6 +15,7 @@ import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 
@@ -62,6 +65,9 @@ class LetterRoutesV2Test {
         }
 
         assertEquals(HttpStatusCode.OK, response.status)
+        val body = response.body<LetterMarkupWithDataUsage>()
+        assertEquals(StableHashCode(EksempelbrevRedigerbart.template.stableHashCode()), body.markup.stableHashCode)
+        assertTrue(body.letterDataUsage.isNotEmpty())
     }
 
     @Test
