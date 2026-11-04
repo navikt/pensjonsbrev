@@ -287,7 +287,7 @@ describe("search hit focus", () => {
   });
 
   describe("the toolbar's search box", () => {
-    const searchBox = () => screen.findByLabelText<HTMLInputElement>("Søk etter innholdet eller brevmal");
+    const searchBox = () => screen.findByLabelText<HTMLInputElement>("Søk etter innhold");
 
     it("searches the content from a template opened without a search", async () => {
       const router = await openPage({ q: undefined, focus: 21 });
@@ -335,7 +335,7 @@ describe("search hit focus", () => {
 
       await userEvent.click(screen.getByLabelText("Vis søketreff"));
 
-      await waitFor(() => expect(screen.queryByLabelText("Søk etter innholdet eller brevmal")).toBeNull());
+      await waitFor(() => expect(screen.queryByLabelText("Søk etter innhold")).toBeNull());
     });
 
     it("follows the URL when the query changes elsewhere", async () => {

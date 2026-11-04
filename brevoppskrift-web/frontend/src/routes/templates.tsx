@@ -247,7 +247,13 @@ function AllTemplates() {
           Brevoppskrift
         </Heading>
         <Box maxWidth="480px" width="100%">
-          <SearchField active={isLoading || isPending} autoFocus onChange={setQuery} value={query} />
+          <SearchField
+            active={isLoading || isPending}
+            autoFocus
+            label="Søk etter brevmal eller innhold"
+            onChange={setQuery}
+            value={query}
+          />
         </Box>
         <Checkbox checked={exactOnly} onChange={(e) => setExactOnly(e.target.checked)} size="small">
           Vis kun nøyaktige treff

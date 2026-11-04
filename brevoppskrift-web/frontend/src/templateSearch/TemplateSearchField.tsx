@@ -51,5 +51,5 @@ export function TemplateSearchField({
     target !== q ||
     hits?.status === "loading" ||
     (hits?.status === "ready" && hits.highlight.needle !== q);
-  return <SearchField active={searching} onChange={setQuery} value={query} />;
+  return <SearchField active={searching} label="Søk etter innhold" onChange={setQuery} value={query} />;
 }

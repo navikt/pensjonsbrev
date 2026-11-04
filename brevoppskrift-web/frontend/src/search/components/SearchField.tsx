@@ -2,17 +2,17 @@ import { Search } from "@navikt/ds-react";
 
 import { SearchActivityOutline } from "~/search/components/SearchActivityOutline";
 
-const LABEL = "Søk etter innholdet eller brevmal";
-
-/** The search box, with the activity outline running while `active`. */
+/** The search box, with the activity outline running while `active`. The label is also the placeholder. */
 export function SearchField({
   active,
   autoFocus,
+  label,
   onChange,
   value,
 }: {
   active: boolean;
   autoFocus?: boolean;
+  label: string;
   onChange: (value: string) => void;
   value: string;
 }) {
@@ -20,10 +20,10 @@ export function SearchField({
     <SearchActivityOutline active={active}>
       <Search
         autoFocus={autoFocus}
-        label={LABEL}
+        label={label}
         onChange={onChange}
         onClear={() => onChange("")}
-        placeholder={LABEL}
+        placeholder={label}
         size="small"
         value={value}
         variant="simple"
