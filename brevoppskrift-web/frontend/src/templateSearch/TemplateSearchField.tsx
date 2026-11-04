@@ -33,7 +33,8 @@ export function TemplateSearchField({
   const latestQ = useRef(q);
   latestQ.current = q;
   useEffect(() => {
-    if (target !== latestQ.current) {
+    const latestRequested = written.current.at(-1) ?? latestQ.current;
+    if (target !== latestRequested) {
       written.current.push(target);
       latestOnSearch.current(target || undefined);
     }
