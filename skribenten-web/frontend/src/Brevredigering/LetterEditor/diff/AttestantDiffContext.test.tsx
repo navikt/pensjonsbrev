@@ -45,6 +45,17 @@ function Probe() {
   );
 }
 
+function SegmentProbe() {
+  const segments = useDiffSegmentsForLiteral(literalA, "AA");
+  const deletedBlocksAtOne = useDeletedBlocks(1);
+  return (
+    <div>
+      <span data-testid="segments">{segments ? segments.map((segment) => segment.type).join(",") : "none"}</span>
+      <span data-testid="deleted-blocks">{deletedBlocksAtOne.length}</span>
+    </div>
+  );
+}
+
 describe("AttestantDiffContext", () => {
   it("exposes entirely deleted blocks at their unified position", () => {
     render(
@@ -88,18 +99,6 @@ describe("AttestantDiffContext", () => {
       deletedBlocks: { 1: [deletedBlock] },
       type: "UNIFIED",
     };
-
-    // biome-ignore lint/correctness/noComponentHookFactories: Created during suite setup, not React rendering.
-    function SegmentProbe() {
-      const segments = useDiffSegmentsForLiteral(literalA, "AA");
-      const deletedBlocksAtOne = useDeletedBlocks(1);
-      return (
-        <div>
-          <span data-testid="segments">{segments ? segments.map((segment) => segment.type).join(",") : "none"}</span>
-          <span data-testid="deleted-blocks">{deletedBlocksAtOne.length}</span>
-        </div>
-      );
-    }
 
     const renderWith = (showInsertions: boolean, showDeletions: boolean) =>
       render(
