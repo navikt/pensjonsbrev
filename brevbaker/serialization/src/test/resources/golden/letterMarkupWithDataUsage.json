@@ -244,7 +244,8 @@
       },
       "navAvsenderEnhet" : "Nav Familie- og pensjonsytelser"
     },
-    "version" : 2
+    "version": 2,
+    "stableHashCode": 123
   },
   "letterDataUsage" : [ {
     "typeName" : "UngUfoerDto",

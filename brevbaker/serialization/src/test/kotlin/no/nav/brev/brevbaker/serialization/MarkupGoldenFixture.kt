@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.dsl.extended.*
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
@@ -38,6 +39,7 @@ object MarkupGoldenFixture {
                 saksbehandlerNavn = "Sak S. Behandler",
                 attesterendeSaksbehandlerNavn = "Att Esterer",
             ),
+            stableHashCode = StableHashCode(123),
         ) {
             title1 { text(id(), "Vedtak om "); variable(id(), "uføretrygd") }
             outline {
@@ -88,7 +90,7 @@ object MarkupGoldenFixture {
             spraak = Markup.Spraak.NYNORSK,
             brevtype = Markup.Brevtype.VEDTAKSBREV,
             attachments = listOf(
-                attachmentExtended(inkluderSaksinformasjon = true) {
+                attachmentExtended(inkluderSaksinformasjon = true, stableHashCode = StableHashCode(456)) {
                     title1 { text(id(), "Vedlegg 1") }
                     outline { paragraph(id()) { text(id(), "Sats: "); variable(id(), "2G") } }
                 }
