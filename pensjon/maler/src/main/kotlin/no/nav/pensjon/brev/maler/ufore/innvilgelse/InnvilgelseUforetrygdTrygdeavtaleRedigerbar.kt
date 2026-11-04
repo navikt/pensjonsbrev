@@ -141,14 +141,14 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 )
             }
 
-            includePhrase(Innvilgelse.YrkesskadeOgUngUfoerResultat(
+            includePhrase(InnvilgelseFraser.YrkesskadeOgUngUfoerResultat(
                 beregningsvilkarYrkesskadegrad = beregningsvilkarYrkesskadegrad,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
                 yrkesskadeResultat = yrkesskadeResultat,
                 ungUforResultat = ungUforResultat,
             ))
 
-            includePhrase(Innvilgelse.InnvilgelseDetaljer(
+            includePhrase(InnvilgelseFraser.InnvilgelseDetaljer(
                 pe = pe,
                 nyeInnvilgedeBarnetillegg = pesysData.nyeInnvilgedeBarnetillegg,
                 nyeAvslagBarnetillegg = pesysData.avslagBarnetilleggNye,
@@ -213,7 +213,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
             }
 
-            includePhrase(Innvilgelse.BegrunnelseForVedtaket(
+            includePhrase(InnvilgelseFraser.BegrunnelseForVedtaket(
                 pe = pe,
                 txtEllerEtAvtaleland = txtEllerEtAvtaleland,
                 konklusjon = false.expr()
@@ -440,39 +440,39 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
             }
 
-            includePhrase(Innvilgelse.UnntaksregelNedsattInntektsevne(
+            includePhrase(InnvilgelseFraser.UnntaksregelNedsattInntektsevne(
                 pe = pe,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
                 beregningsvilkarYrkesskadegrad = beregningsvilkarYrkesskadegrad,
             ))
 
-            includePhrase(Innvilgelse.RettighetSomUngUfoer(
+            includePhrase(InnvilgelseFraser.RettighetSomUngUfoer(
                 ungUforResultat = ungUforResultat,
                 pe = pe,
                 vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
-            includePhrase(Innvilgelse.YrkesskadeEllerYrkessykdom(
+            includePhrase(InnvilgelseFraser.YrkesskadeEllerYrkessykdom(
                 pe = pe,
                 beregningsvilkarYrkesskadegrad = beregningsvilkarYrkesskadegrad,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
                 yrkesskadeResultat = yrkesskadeResultat,
             ))
 
-            includePhrase(Innvilgelse.Virkningstidspunkt(
+            includePhrase(InnvilgelseFraser.Virkningstidspunkt(
                 pe = pe,
                 kravFremsattDato = pesysData.kravFremsattDato,
                 virkningbegrunnelseStdbegr_22_12_1_5 = virkningbegrunnelseStdbegr_22_12_1_5,
             ))
 
             includePhrase(
-                Innvilgelse.Uforetidspunkt(
+                InnvilgelseFraser.Uforetidspunkt(
                     pe = pe,
                     uforetidspunkt = uforetidspunkt,
                 )
             )
 
-            includePhrase(Innvilgelse.FastsattUforegrad(
+            includePhrase(InnvilgelseFraser.FastsattUforegrad(
                 ifuBegrunnelse = ifuBegrunnelse,
                 ieuBegrunnelse = ieuBegrunnelse,
                 ifuInntekt = ifuInntekt,
@@ -531,7 +531,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             }
 
 
-            includePhrase(Innvilgelse.KombinereUforetrygdOgInntekt(
+            includePhrase(InnvilgelseFraser.KombinereUforetrygdOgInntekt(
                 pe = pe,
                 uforegrad = uforegrad,
                 ieuInntekt = ieuInntekt,
@@ -540,7 +540,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 harVTA = pesysData.harVTA
             ))
 
-            includePhrase(Innvilgelse.InstitusjonReduksjon(
+            includePhrase(InnvilgelseFraser.InstitusjonReduksjon(
                 pe = pe,
                 instoppholdType = instoppholdType,
                 instoppholdAnvendt = instoppholdAnvendt,
@@ -595,7 +595,7 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             }
 
             // TODO: Må kanskje inn med et eget avsnitt imellom her om inntekt fra Norge og utland?
-            includePhrase(Innvilgelse.BarnetilleggOgInntekt(
+            includePhrase(InnvilgelseFraser.BarnetilleggOgInntekt(
                 pe = pe,
                 btInnvilget = btInnvilget,
                 btFellesInnvilget = btFellesInnvilget,
@@ -620,17 +620,17 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 }
             }
 
-            includePhrase(Innvilgelse.BarnetilleggOgUtland(
+            includePhrase(InnvilgelseFraser.BarnetilleggOgUtland(
                 pe = pe,
                 btInnvilget = btInnvilget,
             ))
 
-            includePhrase(Innvilgelse.Gjenlevendetillegg(
+            includePhrase(InnvilgelseFraser.Gjenlevendetillegg(
                 pe = pe,
                 gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
             ))
 
-            includePhrase(Innvilgelse.KombinereUforetrygdOgAlderspensjon(
+            includePhrase(InnvilgelseFraser.KombinereUforetrygdOgAlderspensjon(
                 pe = pe,
             ))
 
@@ -662,12 +662,12 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
 
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
 
-            includePhrase(Innvilgelse.Honnoerkort(
+            includePhrase(InnvilgelseFraser.Honnoerkort(
                 uforegrad = uforegrad,
             ))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
-            includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
+            includePhrase(InnvilgelseFraser.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)

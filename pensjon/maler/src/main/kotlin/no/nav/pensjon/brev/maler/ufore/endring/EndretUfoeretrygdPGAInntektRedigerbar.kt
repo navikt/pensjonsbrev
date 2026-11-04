@@ -71,7 +71,7 @@ object EndretUfoeretrygdPGAInntektRedigerbar : RedigerbarTemplate<EndretUfoeretr
         }
 
         outline {
-            includePhrase(EndretUfoeretrygdPGAInntekt.Outline(data, erRedigerbar = true))
+            includePhrase(EndretUfoeretrygdPGAInntektFraser.Outline(data, erRedigerbar = true))
         }
 
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe)

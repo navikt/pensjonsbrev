@@ -25,7 +25,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 
-object EndretUfoeretrygdPGAInntekt {
+object EndretUfoeretrygdPGAInntektFraser {
 
     data class Outline(val data: Expression<EndretUTPgaInntektDtoV2>, val erRedigerbar: Boolean = false) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {

@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.KonteringType
 
 
-data class KonteringTypeYtelseTextMappingStorBokstav(
+data class KonteringTypeYtelseTextMappingStorBokstavFraser(
     val ytelsenMedFeilutbetaling: Expression<KonteringType>
 ) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

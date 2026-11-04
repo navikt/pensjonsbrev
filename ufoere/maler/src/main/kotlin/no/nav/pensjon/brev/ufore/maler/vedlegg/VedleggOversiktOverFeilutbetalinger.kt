@@ -113,7 +113,7 @@ private data class TilbakekrevingerTabell(
                                 bokmal { + tilbakekreves.manedOgAr.formatMonthYear() + " - " },
                             )
                             includePhrase(
-                                KonteringTypeYtelseTextMappingStorBokstav(
+                                KonteringTypeYtelseTextMappingStorBokstavFraser(
                                     ytelsenMedFeilutbetaling = tilbakekreves.ytelsenMedFeilutbetaling
                                 )
                             )
@@ -121,7 +121,7 @@ private data class TilbakekrevingerTabell(
                                 bokmal { + " - " },
                             )
                             includePhrase(
-                                ResultatAvVurderingenTextMappingStorBokstav(
+                                ResultatAvVurderingenTextMappingStorBokstavFraser(
                                     resultatAvVurderingen = tilbakekreves.resultatAvVurderingen
                                 )
                             )

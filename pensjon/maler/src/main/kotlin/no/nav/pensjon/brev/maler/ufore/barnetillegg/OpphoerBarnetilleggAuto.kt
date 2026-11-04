@@ -90,7 +90,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
             )
 
             includePhrase(
-                OpphoerBarnetillegg.HjemmelForBarnetilleggIUfoeretrygden(
+                OpphoerBarnetilleggFraser.HjemmelForBarnetilleggIUfoeretrygden(
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
                 )
@@ -99,7 +99,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
             includePhrase(Ufoeretrygd.VirkningFomOverskrift)
 
             includePhrase(
-                OpphoerBarnetillegg.OensketVirkningsDatoForEndring(
+                OpphoerBarnetilleggFraser.OensketVirkningsDatoForEndring(
                     oensketVirkningsDato = oensketVirkningsDato,
                     harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
                     harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,

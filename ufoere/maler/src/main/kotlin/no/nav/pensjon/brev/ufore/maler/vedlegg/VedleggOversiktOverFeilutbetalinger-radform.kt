@@ -86,7 +86,7 @@ val oversiktOverFeilutbetalingerPaRadform: AttachmentTemplate<LangBokmalNynorsk,
                                 }
                                 cell {
                                     ifNotNull(feilutbetalingManed.resultat) {resultat ->
-                                        includePhrase(ResultatAvVurderingenTextMappingStorBokstav(resultat))
+                                        includePhrase(ResultatAvVurderingenTextMappingStorBokstavFraser(resultat))
                                     }.orShow { text(bokmal { + "-" }, nynorsk { + "-" }) }
 
                                 }

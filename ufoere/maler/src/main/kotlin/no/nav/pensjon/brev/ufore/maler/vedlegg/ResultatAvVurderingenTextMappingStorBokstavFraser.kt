@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.TilbakekrevingResultat
 
 
-data class ResultatAvVurderingenTextMappingStorBokstav(
+data class ResultatAvVurderingenTextMappingStorBokstavFraser(
     val resultatAvVurderingen: Expression<TilbakekrevingResultat>
 ) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
