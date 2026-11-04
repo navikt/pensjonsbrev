@@ -149,21 +149,69 @@ test("E-blankett synkroniserer enhet uten å nullstille andre felt", async ({ pa
   await expect(enhet).toHaveValue("4815");
 });
 
-test("E-blankett viser standardverdier etter forsinket lasting av land og enheter", async ({ page }) => {
+test("E-blankett blokkerer bestilling til landene er lastet inn", async ({ page }) => {
+  let orders = 0;
+  await page.route(orderUrl, async (route) => {
+    orders++;
+    await route.fulfill({ path: "test/e2e/fixtures/bestillBrevEblankett.json", contentType: "application/json" });
+  });
   let releaseOptions: () => void = () => {};
   const optionsReady = new Promise<void>((resolve) => {
     releaseOptions = resolve;
   });
-  for (const path of ["kodeverk/avtaleland", "me/enheter"]) {
-    await page.route(`**/bff/skribenten-backend/${path}`, async (route) => {
-      await optionsReady;
-      await route.fallback();
-    });
-  }
+  await page.route("**/bff/skribenten-backend/kodeverk/avtaleland", async (route) => {
+    await optionsReady;
+    await route.fallback();
+  });
   await page.goto("/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815");
-  await expect(page.getByRole("textbox", { name: "Mottaker" })).toBeVisible();
-  await expect(page.getByRole("combobox", { name: "Land", exact: true }).locator("option")).toHaveCount(1);
-  releaseOptions();
-  await expect(page.getByRole("combobox", { name: "Land", exact: true })).toHaveValue("NOR");
+  await page.getByRole("textbox", { name: "Mottaker" }).fill("Testmottaker");
   await expect(page.getByRole("combobox", { name: "Avsenderenhet" })).toHaveValue("4815");
+  const country = page.getByRole("combobox", { name: "Land", exact: true });
+  await expect(country.locator("option")).toHaveText(["Laster land..."]);
+  await page.getByTestId("order-letter").click();
+  await expect(country).toHaveAttribute("aria-invalid", "true");
+  expect(orders).toBe(0);
+  expect(await creationEvents(page)).toEqual([]);
+
+  releaseOptions();
+  await expect(country).toHaveValue("NOR");
+  await expect(page.getByRole("combobox", { name: "Avsenderenhet" })).toHaveValue("4815");
+  await page.getByTestId("order-letter").click();
+  await expect(page.getByTestId("order-letter-success-message")).toBeVisible();
+  expect(orders).toBe(1);
 });
+
+for (const response of ["feil", "tom liste", "mangler Norge"]) {
+  test(`E-blankett blokkerer ugyldig land ved ${response}`, async ({ page }) => {
+    let orders = 0;
+    await page.route(orderUrl, async (route) => {
+      orders++;
+      await route.fulfill({ path: "test/e2e/fixtures/bestillBrevEblankett.json", contentType: "application/json" });
+    });
+    await page.route("**/bff/skribenten-backend/kodeverk/avtaleland", async (route) => {
+      await route.fulfill({
+        status: response === "feil" ? 500 : 200,
+        json: response === "mangler Norge" ? avtaleland.filter((land) => land.kode !== "NOR") : [],
+      });
+    });
+    await page.goto("/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815");
+    const country = page.getByRole("combobox", { name: "Land", exact: true });
+    await expect(country.locator("option").first()).toHaveText("Velg land");
+    if (response === "feil") {
+      await expect(page.getByRole("heading", { name: "Klarte ikke å hente land", exact: true })).toBeVisible();
+    }
+    await expect(page.getByRole("combobox", { name: "Avsenderenhet" })).toHaveValue("4815");
+    await page.getByRole("textbox", { name: "Mottaker" }).fill("Testmottaker");
+    await page.getByTestId("order-letter").click();
+    await expect(country).toHaveAttribute("aria-invalid", "true");
+    expect(orders).toBe(0);
+    expect(await creationEvents(page)).toEqual([]);
+
+    if (response === "mangler Norge") {
+      await country.selectOption("GBR");
+      await page.getByTestId("order-letter").click();
+      await expect(page.getByTestId("order-letter-success-message")).toBeVisible();
+      expect(orders).toBe(1);
+    }
+  });
+}

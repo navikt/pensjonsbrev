@@ -30,7 +30,7 @@ test("beholder standardverdi og manuelt valg ved lasting og oppdatering uten å 
     </QueryClientProvider>,
   );
   const select = screen.getByRole("combobox", { name: "Land" });
-  expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual(["Velg land"]);
+  expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual(["Laster land..."]);
   expect(screen.getByTestId("landkode").textContent).toBe("NOR");
 
   const options = Object.freeze([

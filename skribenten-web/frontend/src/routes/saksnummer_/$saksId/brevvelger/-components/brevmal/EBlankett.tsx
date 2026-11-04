@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
+import { getAvtaleLand, orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { type LetterMetadata, type OrderEblankettRequest } from "~/types/apiTypes";
 import { trackEvent } from "~/utils/umami";
@@ -37,6 +37,11 @@ export default function EBlankett({
 }) {
   const { enhetsId: urlEnhetsId } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
+  const avtalelandQuery = useQuery(getAvtaleLand);
+  const validationSchema = eblankettValidationSchema.refine(
+    ({ landkode }) => avtalelandQuery.isSuccess && avtalelandQuery.data.some((land) => land.kode === landkode),
+    { path: ["landkode"], message: "Velg et gyldig land fra listen" },
+  );
 
   const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
     defaultValues: {
@@ -44,7 +49,7 @@ export default function EBlankett({
       mottakerText: "",
       enhetsId: defaultValues.enhetsId,
     },
-    resolver: zodResolver(eblankettValidationSchema),
+    resolver: zodResolver(validationSchema),
   });
 
   const { getValues, setValue } = methods;
