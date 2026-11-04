@@ -100,12 +100,20 @@ function HitNavigation({
   }
   if (hits.status === "failed") {
     return (
-      <InlineMessage size="small" status="warning">
-        Kan ikke vise treff på grunn av en teknisk feil.
-      </InlineMessage>
+      <HStack align="center" gap="space-8">
+        <InlineMessage role="alert" size="small" status="warning">
+          Kan ikke vise treff på grunn av en teknisk feil.
+        </InlineMessage>
+        {hits.retry ? (
+          <Button onClick={hits.retry} size="small" variant="secondary">
+            Prøv igjen
+          </Button>
+        ) : null}
+      </HStack>
     );
   }
-  const { matchingBlocks, matchesInOtherLanguage, activeBlock, result, previousResult, nextResult, stale } = hits;
+  const { matchingBlocks, matchesInOtherLanguage, activeBlock, result, previousResult, nextResult, stale, incomplete } =
+    hits;
   const { at, previousBlock, nextBlock } = blockNavigation(matchingBlocks, activeBlock);
   const resultLink = (target: ResultLinkTarget | undefined, icon: ReactNode) =>
     target && !stale ? (
@@ -122,6 +130,16 @@ function HitNavigation({
     );
   return (
     <>
+      {incomplete ? (
+        <HStack align="center" gap="space-8">
+          <InlineMessage role="status" size="small" status="warning">
+            Søkeresultatene kan være ufullstendige.
+          </InlineMessage>
+          <Button onClick={hits.retry} size="small" variant="secondary">
+            Prøv igjen
+          </Button>
+        </HStack>
+      ) : null}
       {marking ? (
         <HStack align="center" gap="space-4">
           {matchingBlocks.length === 0 ? (

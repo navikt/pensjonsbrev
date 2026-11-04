@@ -277,10 +277,10 @@ export function useSearchResults(
       active = false;
     };
   }, [client, corpus, searchable, query, exactOnly]);
-  const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError);
+  const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError && queries[i]?.data === undefined);
   const retryFailed = () => {
     for (const q of queries) {
-      if (q.isError) {
+      if (q.isError && q.data === undefined) {
         void q.refetch();
       }
     }

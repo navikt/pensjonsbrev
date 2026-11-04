@@ -96,6 +96,22 @@ describe("useTemplateSearch", () => {
     expect(result.current.failedMalTypes).toEqual(["redigerbar"]);
   });
 
+  it("does not report a background refetch failure when the corpus is still cached", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      malType === "redigerbar" ? Promise.reject(new Error("boom")) : Promise.resolve(autobrevContent),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const cachedCorpus = getAllTemplateDocumentation.queryKey("redigerbar");
+    queryClient.setQueryData(cachedCorpus, []);
+    await queryClient.invalidateQueries({ queryKey: cachedCorpus });
+
+    const { result } = renderSearch(queryClient);
+
+    await waitFor(() => expect(getAllTemplateDocumentation.queryFn).toHaveBeenCalledWith("redigerbar"));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.failedMalTypes).toEqual([]);
+  });
+
   it("does not report any failures when every malType's corpus fetch succeeds", async () => {
     getAllTemplateDocumentation.queryFn.mockResolvedValue(autobrevContent);
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });

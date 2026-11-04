@@ -1,5 +1,6 @@
 import { createRootRoute, createRoute, createRouter, RouterProvider } from "@tanstack/react-router";
 import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { type SearchCriteria } from "~/search/searchContext";
@@ -12,6 +13,8 @@ const hits: Extract<TemplateHits, { status: "ready" }> = {
   status: "ready",
   highlight: { needle: "tekst", exactOnly: false },
   stale: false,
+  incomplete: false,
+  retry: vi.fn(),
   matchingBlocks: [20, 30],
   matchesInOtherLanguage: false,
   activeBlock: undefined,
@@ -20,12 +23,12 @@ const hits: Extract<TemplateHits, { status: "ready" }> = {
   nextResult: { ref: { malType: "autobrev", id: "B", language: "BOKMAL" } },
 };
 
-async function renderToolbar(marking: boolean, stale = false) {
+async function renderToolbar(marking: boolean, currentHits: TemplateHits = hits) {
   const rootRoute = createRootRoute({
     component: () => (
       <SearchHitToolbar
         criteria={criteria}
-        hits={{ ...hits, stale }}
+        hits={currentHits}
         marking={marking}
         onMarkingChange={vi.fn()}
         onSearch={vi.fn()}
@@ -66,10 +69,28 @@ describe("SearchHitToolbar", () => {
   });
 
   it("disables result navigation while the displayed hits are stale", async () => {
-    await renderToolbar(true, true);
+    await renderToolbar(true, { ...hits, stale: true });
 
     expect(screen.getByTitle("Neste resultat").closest("button")?.disabled).toBe(true);
     expect(screen.getByTitle("Forrige resultat").closest("button")?.disabled).toBe(true);
     expect(screen.getByTitle("Neste resultat").closest("a")).toBeNull();
+  });
+
+  it("offers a retry when the current template corpus failed", async () => {
+    const retry = vi.fn();
+    await renderToolbar(true, { status: "failed", retry });
+
+    expect(screen.getByRole("alert").textContent).toContain("Kan ikke vise treff");
+    await userEvent.click(screen.getByRole("button", { name: "Prøv igjen" }));
+    expect(retry).toHaveBeenCalledOnce();
+  });
+
+  it("warns when another corpus failed and offers a retry", async () => {
+    const retry = vi.fn();
+    await renderToolbar(true, { ...hits, incomplete: true, retry });
+
+    expect(screen.getByRole("status").textContent).toContain("Søkeresultatene kan være ufullstendige");
+    await userEvent.click(screen.getByRole("button", { name: "Prøv igjen" }));
+    expect(retry).toHaveBeenCalledOnce();
   });
 });

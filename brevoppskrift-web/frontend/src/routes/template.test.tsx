@@ -13,7 +13,13 @@ import { type DisplayedSearch } from "~/search/useSearchResults";
 // The search is replaced by a store the tests set, so the real hit logic runs
 // on top of it, and a test can finish loading while the page is open.
 const searchStore = vi.hoisted(() => {
-  let state: unknown = { isLoading: true, displayed: undefined, searchFailed: false };
+  let state: unknown = {
+    isLoading: true,
+    displayed: undefined,
+    searchFailed: false,
+    failedMalTypes: [],
+    retryFailed: vi.fn(),
+  };
   const listeners = new Set<() => void>();
   return {
     get: () => state,
@@ -158,6 +164,8 @@ describe("search hit focus", () => {
   const loaded = {
     isLoading: false,
     searchFailed: false,
+    failedMalTypes: [],
+    retryFailed: vi.fn(),
     displayed: {
       highlight: { needle: "treff", exactOnly: false },
       contentHits: [{ template: text("BOKMAL"), lineIndex: 1, matchCount: 2, matchedLineIndexes: [1, 2], score: 0 }],
@@ -167,7 +175,13 @@ describe("search hit focus", () => {
       brevTemplateCount: 1,
     } satisfies DisplayedSearch,
   };
-  const loading = { isLoading: true, displayed: undefined, searchFailed: false };
+  const loading = {
+    isLoading: true,
+    displayed: undefined,
+    searchFailed: false,
+    failedMalTypes: [],
+    retryFailed: vi.fn(),
+  };
 
   const scrolledTo: (string | null)[] = [];
   const block = (index: number) => document.querySelector(`[data-block-index="${index}"]`) as HTMLElement;

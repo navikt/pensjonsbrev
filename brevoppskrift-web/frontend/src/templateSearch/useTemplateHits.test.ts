@@ -1,4 +1,5 @@
-import { describe, expect, it } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { type ContentHit, type TemplateText } from "~/search/textSearch";
 import { type DisplayedSearch } from "~/search/useSearchResults";
@@ -6,7 +7,27 @@ import {
   blockNavigation,
   hitsInTemplate as calculateHitsInTemplate,
   type TemplateHits,
+  useTemplateHits,
 } from "~/templateSearch/useTemplateHits";
+
+const hookMocks = vi.hoisted(() => ({
+  templates: { status: "ready", refs: [] },
+  results: {
+    isLoading: false,
+    displayed: undefined as DisplayedSearch | undefined,
+    searchFailed: false,
+    failedMalTypes: [] as string[],
+    retryFailed: vi.fn(),
+  },
+}));
+
+vi.mock("~/search/templateRefs", () => ({
+  useAllTemplateRefs: () => hookMocks.templates,
+}));
+
+vi.mock("~/search/useSearchResults", () => ({
+  useSearchResults: () => hookMocks.results,
+}));
 
 function template(id: string, language: string, indexes: number[]): TemplateText {
   return {
@@ -49,7 +70,9 @@ function displayed(contentHits: ContentHit[]): DisplayedSearch {
 
 const search = displayed([contentHit(aNynorsk, [1]), contentHit(aBokmal, [2, 1, 3]), contentHit(bBokmal, [1])]);
 
-function ready(hits: TemplateHits) {
+function ready(
+  hits: TemplateHits | ReturnType<typeof calculateHitsInTemplate>,
+): ReturnType<typeof calculateHitsInTemplate> {
   if (hits.status !== "ready") {
     throw new Error(`Expected ready hits, got ${hits.status}`);
   }
@@ -177,5 +200,33 @@ describe("blockNavigation", () => {
 
   it("steps to the first match without an active block", () => {
     expect(blockNavigation(blocks, undefined)).toEqual({ at: undefined, previousBlock: undefined, nextBlock: 20 });
+  });
+});
+
+describe("useTemplateHits corpus failures", () => {
+  const criteria = { q: "tekst", exact: false, tab: "innhold" as const };
+  const current = { malType: "autobrev" as const, id: "A", language: "BOKMAL" };
+
+  it("fails with a retry when the current template's corpus failed", () => {
+    const retry = vi.fn();
+    hookMocks.results = { ...hookMocks.results, displayed: search, failedMalTypes: ["autobrev"], retryFailed: retry };
+
+    const { result } = renderHook(() => useTemplateHits(criteria, current, undefined, false));
+
+    expect(result.current).toEqual({ status: "failed", retry });
+  });
+
+  it("keeps ready results and marks them incomplete when another corpus failed", () => {
+    const retry = vi.fn();
+    hookMocks.results = {
+      ...hookMocks.results,
+      displayed: search,
+      failedMalTypes: ["redigerbar"],
+      retryFailed: retry,
+    };
+
+    const { result } = renderHook(() => useTemplateHits(criteria, current, undefined, false));
+
+    expect(result.current).toMatchObject({ status: "ready", incomplete: true, retry });
   });
 });

@@ -14,29 +14,36 @@ import { type DisplayedSearch, type Highlight, useSearchResults } from "~/search
 /** A result to move to, and the block to open it at. */
 export type ResultLinkTarget = { ref: ResultRef; block?: number };
 
+type ReadyTemplateHits = {
+  status: "ready";
+  /** The query and mode the hits were found with, for marking text. */
+  highlight: Highlight;
+  /** Whether the displayed hits answer an earlier query than the URL. */
+  stale: boolean;
+  /** Matching block indexes in this template and language, in document order. */
+  matchingBlocks: number[];
+  /** Whether another language version of this template has matching blocks. */
+  matchesInOtherLanguage: boolean;
+  /** The block the user is at: the requested one, else the first match if
+   *  `focusFirstHit`. Not necessarily a match, e.g. when kept from another
+   *  language. `undefined` when nothing was requested and either nothing
+   *  matched or the first hit is not to be focused. */
+  activeBlock: number | undefined;
+  /** Where this template is among the active tab's results. */
+  result: ResultPosition;
+  previousResult: ResultLinkTarget | undefined;
+  nextResult: ResultLinkTarget | undefined;
+};
+
 export type TemplateHits =
   | { status: "loading" }
-  | { status: "failed" }
-  | {
-      status: "ready";
-      /** The query and mode the hits were found with, for marking text. */
-      highlight: Highlight;
-      /** Whether the displayed hits answer an earlier query than the URL. */
-      stale: boolean;
-      /** Matching block indexes in this template and language, in document order. */
-      matchingBlocks: number[];
-      /** Whether another language version of this template has matching blocks. */
-      matchesInOtherLanguage: boolean;
-      /** The block the user is at: the requested one, else the first match if
-       *  `focusFirstHit`. Not necessarily a match, e.g. when kept from another
-       *  language. `undefined` when nothing was requested and either nothing
-       *  matched or the first hit is not to be focused. */
-      activeBlock: number | undefined;
-      /** Where this template is among the active tab's results. */
-      result: ResultPosition;
-      previousResult: ResultLinkTarget | undefined;
-      nextResult: ResultLinkTarget | undefined;
-    };
+  | { status: "failed"; retry?: () => void }
+  | (ReadyTemplateHits & {
+      /** Whether a failed corpus means these results may be incomplete. */
+      incomplete: boolean;
+      /** Retries the malType corpus fetches that failed. */
+      retry: () => void;
+    });
 
 type RankedEntry = { ref: ResultRef; block?: number };
 
@@ -73,7 +80,7 @@ export function hitsInTemplate(
   current: ResultRef,
   requestedBlock: number | undefined,
   focusFirstHit: boolean,
-): TemplateHits {
+): ReadyTemplateHits {
   const matchingBlocks = matchingBlocksOf(displayed, current);
   const activeBlock = requestedBlock ?? (focusFirstHit ? matchingBlocks[0] : undefined);
   const entries = rankedEntries(displayed, criteria.tab);
@@ -131,7 +138,7 @@ export function useTemplateHits(
   focusFirstHit: boolean,
 ): TemplateHits | undefined {
   const templates = useAllTemplateRefs(criteria !== undefined);
-  const { isLoading, displayed, searchFailed } = useSearchResults(
+  const { isLoading, displayed, searchFailed, failedMalTypes, retryFailed } = useSearchResults(
     criteria && templates.status === "ready" ? templates.refs : undefined,
     criteria?.q ?? "",
     criteria?.exact ?? false,
@@ -140,12 +147,30 @@ export function useTemplateHits(
     if (!criteria) {
       return undefined;
     }
+    if (failedMalTypes.includes(current.malType)) {
+      return { status: "failed", retry: retryFailed };
+    }
     if (searchFailed || templates.status === "failed") {
       return { status: "failed" };
     }
     if (isLoading || !displayed) {
       return { status: "loading" };
     }
-    return hitsInTemplate(displayed, criteria, current, requestedBlock, focusFirstHit);
-  }, [criteria, current, requestedBlock, focusFirstHit, templates.status, isLoading, displayed, searchFailed]);
+    return {
+      ...hitsInTemplate(displayed, criteria, current, requestedBlock, focusFirstHit),
+      incomplete: failedMalTypes.length > 0,
+      retry: retryFailed,
+    };
+  }, [
+    criteria,
+    current,
+    requestedBlock,
+    focusFirstHit,
+    templates.status,
+    isLoading,
+    displayed,
+    searchFailed,
+    failedMalTypes,
+    retryFailed,
+  ]);
 }
