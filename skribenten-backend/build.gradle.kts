@@ -186,12 +186,16 @@ dependencies {
 
     // Metrics
     implementation(libs.bundles.metrics)
+    implementation(platform(libs.opentelemetry.bom))
+    implementation(libs.opentelemetry.api)
+    implementation(libs.opentelemetry.extension.kotlin)
 
     // Caching
     implementation(libs.valkey)
 
     // Test
     testImplementation(libs.bundles.junit)
+    testImplementation(libs.opentelemetry.sdk.testing)
     testImplementation(libs.ktor.server.test.host) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }

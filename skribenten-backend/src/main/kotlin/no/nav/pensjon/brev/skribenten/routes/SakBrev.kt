@@ -23,6 +23,9 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.toDto
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Companion.fase
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Fase
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
@@ -82,23 +85,25 @@ fun Route.sakBrev() =
             }
 
             val oppdaterBrev: OppdaterBrevHandler by app.dependencies
+            val observability: BrevoppdateringObservability by app.dependencies
             put {
-                val request = call.receive<Api.OppdaterBrevRequest>()
-                val brevId = call.parameters.brevId()
                 val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
-                val sak: Fagsak = call.attributes[SakKey]
-
-                val result = oppdaterBrev(
-                    OppdaterBrevHandler.Request(
-                        brevId = brevId,
-                        saksId = sak.saksId,
-                        nyeSaksbehandlerValg = request.saksbehandlerValg,
-                        nyttRedigertbrev = request.redigertBrev,
-                        frigiReservasjon = frigiReservasjon,
+                observability.observer(frigiReservasjon) {
+                    val request = fase(Fase.REQUEST) { call.receive<Api.OppdaterBrevRequest>() }
+                    val brevId = call.parameters.brevId()
+                    val sak: Fagsak = call.attributes[SakKey]
+                    val result = oppdaterBrev(
+                        OppdaterBrevHandler.Request(
+                            brevId = brevId,
+                            saksId = sak.saksId,
+                            nyeSaksbehandlerValg = request.saksbehandlerValg,
+                            nyttRedigertbrev = request.redigertBrev,
+                            frigiReservasjon = frigiReservasjon,
+                        )
                     )
-                )
-
-                apiRespond(dto2ApiService, result)
+                    apiRespond(dto2ApiService, result)
+                    result
+                }
             }
 
             // TODO: fjern når frontend er oppdatert til å bruke endreValgteVedlegg-endepunktet
