@@ -590,7 +590,7 @@ fun createOkningUforegradV2Dto() =
             ),
             vilkarsvurdering = VilkarsvurderingFullstendig(
                 virkningstidspunkt = LocalDate.of(2020, Month.FEBRUARY, 12),
-                virkningstidspunktBegrunnelse = VilkarsvurderingFullstendig.VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_1,
+                virkningstidspunktBegrunnelse = VilkarsvurderingFullstendig.VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_2,
                 uforetidspunkt = vilkaarligDato.minusYears(5),
                 uforegrad = 100,
                 ifuInntekt = Kroner(9938),

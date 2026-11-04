@@ -69,7 +69,6 @@ import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUf
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter
@@ -594,8 +593,8 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(vilkarsvurdering.nedsattInntektsevneResultat.equalTo(VilkarResultat.OPPFYLT) and vilkarsvurdering.virkningstidspunktBegrunnelse.equalTo(VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_2)) {
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + vilkarsvurdering.virkningstidspunkt.format(MaanedFormatter) + "." },
-                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til " + fritekst("Dato for opphør") + ", og uføretrygd blir betalt ut for dei dagane som er att i " + vilkarsvurdering.virkningstidspunkt.format(MaanedFormatter) + "." },
+                            bokmal { +"Du har fått innvilget økt uføretrygd fra " + vedtak.virkFom.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + vilkarsvurdering.virkningstidspunkt.month.format(LocalizedFormatter.MonthFormatter) + "." },
+                            nynorsk { +"Du har fått innvilga auka uføretrygd frå " + vedtak.virkFom.format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til " + fritekst("Dato for opphør") + ", og uføretrygd blir betalt ut for dei dagane som er att i " + vilkarsvurdering.virkningstidspunkt.month.format(LocalizedFormatter.MonthFormatter) + "." },
                         )
                     }
                 }
@@ -1510,13 +1509,5 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
             includeAttachmentRedigerbar(VedleggId("okningUforegradBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
             includeAttachment(vedleggDineRettigheterOgPlikterUfore, dineRettigheterOgPlikterUfore)
         }
-    }
-
-    //TODO: erstatt når Date har month: Month
-    private object MaanedFormatter : LocalizedFormatter<LocalDate>() {
-        override fun apply(first: LocalDate, second: Language): String =
-            MonthFormatter.apply(first.month, second)
-
-        override fun stableHashCode(): Int = "OkningUforegradRedigerbarV2.MaanedFormatter".hashCode()
     }
 }
