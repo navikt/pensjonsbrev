@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Heading, HGrid, HStack, Spacer, VStack } from "@navikt/ds-react";
+import { Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import { useMemo, useRef } from "react";
@@ -137,33 +137,40 @@ function TemplateExplorer() {
 
   return (
     <VStack height="100%" overflow="hidden">
-      <HStack align="center" flexShrink="0" gap="space-16" marginBlock="space-8" marginInline="space-16" wrap>
-        <BackButton criteria={criteria} current={current} />
-        <Spacer />
-        {criteria && hits ? (
-          <SearchHitToolbar
-            criteria={criteria}
-            hits={hits}
-            marking={marking}
-            onMarkingChange={changeMarking}
-            onSelectBlock={selectBlock}
+      <VStack flexShrink="0" gap="space-8" marginBlock="space-8" marginInline="space-16">
+        {/* The sides grow equally from zero, so the id is centred, and "Last ned" stays right also when it wraps. */}
+        <HStack align="center" gap="space-16" wrap>
+          <HStack flexBasis="0" flexGrow="1">
+            <BackButton criteria={criteria} current={current} />
+          </HStack>
+          <Heading level="1" size="small">
+            {templateId}
+          </Heading>
+          <HStack flexBasis="0" flexGrow="1" justify="end">
+            <ExportTemplateButton documentation={documentation} language={language} templateId={templateId} />
+          </HStack>
+        </HStack>
+        <HStack align="center" gap="space-16" justify="center" wrap>
+          {criteria && hits ? (
+            <SearchHitToolbar
+              criteria={criteria}
+              hits={hits}
+              marking={marking}
+              onMarkingChange={changeMarking}
+              onSelectBlock={selectBlock}
+            />
+          ) : null}
+          <LanguageToggle
+            available={description.languages}
+            // Block indexes follow the template's structure, so the block in focus is
+            // the same block in the other language, also when it has no hit there.
+            onChange={(value) =>
+              navigate({ replace: true, search: (s) => ({ ...s, language: value, focus: focusParam(activeBlock) }) })
+            }
+            value={language}
           />
-        ) : null}
-        <Heading level="1" size="small">
-          {templateId}
-        </Heading>
-        <LanguageToggle
-          available={description.languages}
-          // Block indexes follow the template's structure, so the block in focus is
-          // the same block in the other language, also when it has no hit there.
-          onChange={(value) =>
-            navigate({ replace: true, search: (s) => ({ ...s, language: value, focus: focusParam(activeBlock) }) })
-          }
-          value={language}
-        />
-        <Spacer />
-        <ExportTemplateButton documentation={documentation} language={language} templateId={templateId} />
-      </HStack>
+        </HStack>
+      </VStack>
       <HGrid columns="auto 1fr" flexGrow="1" minHeight="0" overflow="hidden">
         <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
         <VStack

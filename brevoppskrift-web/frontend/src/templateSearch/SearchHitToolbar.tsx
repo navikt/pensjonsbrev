@@ -37,7 +37,7 @@ export function SearchHitToolbar({
   onSelectBlock: (index: number) => void;
 }) {
   return (
-    <HStack align="center" gap="space-16" wrap>
+    <HStack align="center" gap="space-16" justify="center" wrap>
       <Switch checked={marking} onChange={(event) => onMarkingChange(event.target.checked)} size="small">
         Vis søketreff
       </Switch>
@@ -91,7 +91,7 @@ function HitNavigation({
   if (hits.status === "failed") {
     return (
       <InlineMessage size="small" status="warning">
-        Kunne ikke finne søketreffene på grunn av en teknisk feil.
+        Kan ikke vise treff på grunn av en teknisk feil.
       </InlineMessage>
     );
   }
