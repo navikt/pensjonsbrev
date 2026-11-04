@@ -130,8 +130,8 @@ data class DetteErTrygdetidenDin(
         ){
             paragraph {
                 text(
-                    bokmal { + "Trygdetiden din i folketrygden er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år. " },
-                    nynorsk { + "Trygdetida di i folketrygda er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år." },
+                    bokmal { + "Trygdetiden din er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år. " },
+                    nynorsk { + "Trygdetida di er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år." },
                 )
 
                 showIf(not(erMndEtterFoedsel) and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()) {

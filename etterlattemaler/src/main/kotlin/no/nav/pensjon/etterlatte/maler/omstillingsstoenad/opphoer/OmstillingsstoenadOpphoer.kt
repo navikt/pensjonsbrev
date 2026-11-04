@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -24,7 +23,6 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.selectors.omstillingsstoenadOpphoerDTO.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.selectors.omstillingsstoenadOpphoerData.*
-import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer
 import java.time.LocalDate
 
@@ -76,15 +74,12 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
                 includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
             }
             includePhrase(Felles.DuHarRettTilAaKlage)
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
+            includePhrase(Felles.DuHarRettTilInnsynISakenDin)
+            includePhrase(Felles.DuHarRettigheterKnyttetTilPersonopplysninger)
+            includePhrase(Felles.DuHarRettTilHjelpFraAndre)
+            includePhrase(Felles.DuHarRettTilVeiledning)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
-
-        // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), data.bosattUtland.not())
-
-        // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), data.bosattUtland)
 
         includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer, this.argument, data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }

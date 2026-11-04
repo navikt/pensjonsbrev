@@ -62,45 +62,45 @@ type Harness = {
   simulerTasting: () => void;
 };
 
+const Testkomponent = ({ harness }: { harness: { current: Harness | null } }) => {
+  const { editorState, redigertBrev, setEditorState } = useManagedLetterEditorContext();
+
+  // Rutene leser brevet fra query-cachen, som autosave-store skriver til. Abonnementet her
+  // gjør at `lagretRedigertBrev` oppdateres på samme måte som i produksjon.
+  const { data: brevFraCache } = useQuery({
+    queryKey: getBrev.queryKey(BREV_ID),
+    queryFn: () => lagretBrev,
+    initialData: lagretBrev,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+
+  const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
+    lagretRedigertBrev: brevFraCache.redigertBrev,
+    editorState: editorState,
+    setEditorState: setEditorState,
+  });
+  const { oppdaterBrevMutation } = useOppdaterBrevMutation(SAKS_ID);
+
+  harness.current = {
+    highlightedIds: highlightedIds,
+    focus: editorState.focus,
+    beforeTekstvalgChange: (valg) => beforeTekstvalgChange(valg, redigertBrev),
+    lagreTekstvalg: () =>
+      oppdaterBrevMutation.mutate({
+        saksbehandlerValg: nyeValg,
+      }),
+    simulerTasting: () =>
+      setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" })),
+  };
+
+  return null;
+};
+
 /**
  * Speiler hvordan rutene kobler sammen autolagring og tekstvalg-highlight.
  */
 function renderHarness() {
   const harness = { current: null as Harness | null };
-
-  const Testkomponent = () => {
-    const { editorState, redigertBrev, setEditorState } = useManagedLetterEditorContext();
-
-    // Rutene leser brevet fra query-cachen, som autosave-store skriver til. Abonnementet her
-    // gjør at `lagretRedigertBrev` oppdateres på samme måte som i produksjon.
-    const { data: brevFraCache } = useQuery({
-      queryKey: getBrev.queryKey(BREV_ID),
-      queryFn: () => lagretBrev,
-      initialData: lagretBrev,
-      staleTime: Number.POSITIVE_INFINITY,
-    });
-
-    const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
-      lagretRedigertBrev: brevFraCache.redigertBrev,
-      editorState: editorState,
-      setEditorState: setEditorState,
-    });
-    const { oppdaterBrevMutation } = useOppdaterBrevMutation(SAKS_ID);
-
-    harness.current = {
-      highlightedIds: highlightedIds,
-      focus: editorState.focus,
-      beforeTekstvalgChange: (valg) => beforeTekstvalgChange(valg, redigertBrev),
-      lagreTekstvalg: () =>
-        oppdaterBrevMutation.mutate({
-          saksbehandlerValg: nyeValg,
-        }),
-      simulerTasting: () =>
-        setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" })),
-    };
-
-    return null;
-  };
 
   const wrapper = (props: { children: ReactNode }) => (
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
@@ -110,7 +110,7 @@ function renderHarness() {
     </QueryClientProvider>
   );
 
-  render(wrapper({ children: <Testkomponent /> }));
+  render(wrapper({ children: <Testkomponent harness={harness} /> }));
 
   return () => {
     if (!harness.current) throw new Error("Testkomponenten er ikke rendret");

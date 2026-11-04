@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlagePE
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
@@ -87,6 +88,7 @@ object ProductionTemplates : AllTemplates {
         AdHocVarselUgyldiggjoringFullmektig,
         AdhocFeilEtteroppgjoer2023,
         AdhocInformasjonHvilendeRett4Aar,
+        AdhocInformasjonOpphorGjenlevendepensjon,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
         AdhocUfoeretrygdEtterbetalingDagpenger,
         AdhocUfoeretrygdKombiDagpenger,
@@ -160,6 +162,7 @@ object ProductionTemplates : AllTemplates {
         KlageOrienteringOmOversendelseTilKlageinstans,
         KlageOrienteringOmSaksbehandlingstidPE,
         KlageUtsattKlagefristUT,
+        KlageVedtakAvvisningAvKlagePE,
         OkningUforegradRedigerbar,
         OkningUforegradRedigerbarV2,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,

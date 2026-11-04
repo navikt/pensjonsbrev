@@ -18,11 +18,12 @@ data class DinAfpPrivatBeregningDto(
     val justeringsbeloep: BrevbakerType.Kroner?,
     val referansebeloep: BrevbakerType.Kroner?,
     val kompensasjonstilleggForholdstall: Double?,
+    val sistePeriodeVirkFom: LocalDate?,
     val etterbetaling: List<Etterbetaling> = emptyList(),
 ) : VedleggData {
     data class Etterbetaling(
         val virkningFom: LocalDate,
-        val virkningTom: LocalDate,
+        val virkningTom: LocalDate?,
         val etterbetalingAfpLivsvarig: BrevbakerType.Kroner?,
         val etterbetalingKronetillegg: BrevbakerType.Kroner?,
         val etterbetalingKompensasjonstillegg: BrevbakerType.Kroner?,

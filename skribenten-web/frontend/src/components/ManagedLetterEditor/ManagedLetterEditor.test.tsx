@@ -36,23 +36,28 @@ const lagretBrev: BrevResponse = brevResponse({
   saksbehandlerValg: { visTekstvalg: false },
 });
 
-function renderEditor(redigeringsflate: Redigeringsflate) {
-  const markerSomEndret = { current: null as (() => void) | null };
-  const lagreEndringer = { current: null as (() => Promise<void>) | null };
+type Testhandlinger = {
+  markerSomEndret: { current: (() => void) | null };
+  lagreEndringer: { current: (() => Promise<void>) | null };
+};
 
-  const Testkomponent = () => {
-    const { setEditorState, savePendingChanges } = useManagedLetterEditorContext();
-    markerSomEndret.current = () =>
-      setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" }));
-    lagreEndringer.current = savePendingChanges;
-    return null;
-  };
+const Testkomponent = ({ markerSomEndret, lagreEndringer }: Testhandlinger) => {
+  const { setEditorState, savePendingChanges } = useManagedLetterEditorContext();
+  markerSomEndret.current = () =>
+    setEditorState((state) => ({ ...state, redigertBrev: { ...state.redigertBrev }, saveStatus: "DIRTY" }));
+  lagreEndringer.current = savePendingChanges;
+  return null;
+};
+
+function renderEditor(redigeringsflate: Redigeringsflate) {
+  const markerSomEndret: Testhandlinger["markerSomEndret"] = { current: null };
+  const lagreEndringer: Testhandlinger["lagreEndringer"] = { current: null };
 
   render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
       <RedigeringsflateProvider redigeringsflate={redigeringsflate}>
         <ManagedLetterEditorContextProvider brev={lagretBrev}>
-          <Testkomponent />
+          <Testkomponent lagreEndringer={lagreEndringer} markerSomEndret={markerSomEndret} />
           <ManagedLetterEditor error={false} freeze={false} />
         </ManagedLetterEditorContextProvider>
       </RedigeringsflateProvider>

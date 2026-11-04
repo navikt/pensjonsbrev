@@ -16,6 +16,7 @@ fun createDinAfpPrivatBeregningDto() =
         justeringsbeloep = Kroner(1830),
         referansebeloep = Kroner(11122),
         kompensasjonstilleggForholdstall = 11.7,
+        sistePeriodeVirkFom = LocalDate.of(2026, 5, 1),
         etterbetaling = listOf(
             DinAfpPrivatBeregningDto.Etterbetaling(
                 virkningFom = LocalDate.of(2026, 3, 1),
@@ -27,7 +28,7 @@ fun createDinAfpPrivatBeregningDto() =
             ),
             DinAfpPrivatBeregningDto.Etterbetaling(
                 virkningFom = LocalDate.of(2026, 5, 1),
-                virkningTom = LocalDate.of(2026, 6, 30),
+                virkningTom = null,
                 etterbetalingAfpLivsvarig = Kroner(930),
                 etterbetalingKronetillegg = Kroner(1220),
                 etterbetalingKompensasjonstillegg = Kroner(730),

@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.db.Transactional
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Transaksjon
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -130,7 +131,7 @@ class Brevtilgang(
         reservertOgSjekket(brevId, saksId, frigiReservasjon = false, sjekk = { _, _ -> success(Unit) }, block = { block() })
 
     suspend fun reserver(brevId: BrevId, saksId: SaksId): Outcome<Reservasjon, BrevredigeringError>? =
-        transactional.rollbackOnFailure(Connection.TRANSACTION_REPEATABLE_READ) {
+        transactional.rollbackOnFailure(Connection.TRANSACTION_REPEATABLE_READ, observasjon = Transaksjon.RESERVASJON) {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 ?.reserver(Instant.now(), PrincipalInContext.require().navIdent, brevreservasjonPolicy)
         }
@@ -145,7 +146,7 @@ class Brevtilgang(
         // Forsøk å reservere brevet før vi kjører blokken, om reservasjonen feiler returner feilen eller om brevet ikke finnes returner null.
         reserver(brevId, saksId)?.onError { return failure(it) } ?: return null
 
-        return transactional.rollbackOnFailure {
+        return transactional.rollbackOnFailure(observasjon = Transaksjon.REDIGERING) {
             val brev = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId) ?: return@rollbackOnFailure null
 
             sjekk(brev, PrincipalInContext.require()).onError { return@rollbackOnFailure failure(it) }

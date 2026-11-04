@@ -12,6 +12,8 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Companion.fase
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Fase
 
 class OppdaterBrevHandler(
     private val brevtilgang: Brevtilgang,
@@ -29,18 +31,21 @@ class OppdaterBrevHandler(
 
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
-            if (request.nyeSaksbehandlerValg != null) {
-                brev.saksbehandlerValg = request.nyeSaksbehandlerValg
-            }
-            if (request.nyttRedigertbrev != null) {
-                brev.oppdaterRedigertBrev(request.nyttRedigertbrev, PrincipalInContext.require().navIdent)
+            fase(Fase.VERDIER) {
+                if (request.nyeSaksbehandlerValg != null) {
+                    brev.saksbehandlerValg = request.nyeSaksbehandlerValg
+                }
+                if (request.nyttRedigertbrev != null) {
+                    brev.oppdaterRedigertBrev(request.nyttRedigertbrev, PrincipalInContext.require().navIdent)
+                }
             }
 
-            val pesysdata = brevdataService.hentBrevdata(brev)
-            val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-            brev.mergeRendretBrev(rendretBrev.markup)
-            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+            val pesysdata = fase(Fase.BREVDATA) { brevdataService.hentBrevdata(brev) }
+            val rendretBrev = fase(Fase.RENDER_BREV) { brevmalService.renderMarkup(brev, pesysdata) }
+            fase(Fase.FLETT_BREV) { brev.mergeRendretBrev(rendretBrev.markup) }
+            val vedlegg = fase(Fase.RENDER_VEDLEGG) { brevmalService.renderRedigerteVedlegg(brev, pesysdata) }
+            fase(Fase.FLETT_VEDLEGG) { brev.mergeRendredeVedlegg(vedlegg) }
 
-            success(brev.tilDto(rendretBrev.letterDataUsage))
+            success(fase(Fase.DTO) { brev.tilDto(rendretBrev.letterDataUsage) })
         }
 }

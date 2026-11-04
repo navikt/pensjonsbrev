@@ -3,6 +3,7 @@
 package no.nav.pensjon.brev.template
 
 import java.time.LocalDate
+import java.time.Period
 
 /**
  * Classes implementing StableHash guarantee that they provide a hashCode
@@ -50,6 +51,7 @@ interface StableHash {
         fun of(number: Number): StableHash = HashCodeStableHash(number)
         fun of(boolean: Boolean): StableHash = HashCodeStableHash(boolean)
         fun of(localDate: LocalDate): StableHash = HashCodeStableHash(localDate)
+        fun of(period: Period): StableHash = HashCodeStableHash(period)
         fun of(string: String): StableHash = HashCodeStableHash(string)
 
         fun StableHash.with(optionalUnique: String?): StableHash = if (optionalUnique != null) of(this, of(optionalUnique)) else this

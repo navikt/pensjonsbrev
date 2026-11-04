@@ -246,11 +246,9 @@ const ControlledDatePicker = (props: {
     getFieldState,
     watch,
     formState: { defaultValues },
-    register,
   } = useFormContext();
 
   const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
-  register(fieldName, { required: props.fieldType.nullable ? false : "Må oppgis" });
   const watchedValue = useWatch({ name: fieldName, control: control });
   const fieldState = getFieldState(fieldName);
 
@@ -283,6 +281,9 @@ const ControlledDatePicker = (props: {
           readOnly={props.readOnly}
         />
       )}
+      rules={{
+        required: props.fieldType.nullable ? false : "Må oppgis",
+      }}
     />
   );
 };

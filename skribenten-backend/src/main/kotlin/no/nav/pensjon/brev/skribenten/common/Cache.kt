@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.common
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.ktor.utils.io.*
 import io.ktor.utils.io.core.Closeable
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
@@ -168,7 +167,10 @@ class InMemoryCache : Cache() {
 enum class Cacheomraade(val prefix: String) {
     AD("AD"),
     ALLTID_VALGBARE_VEDLEGG("ALLTID_VALGBARE_VEDLEGG"),
+    AVTALELAND("Avtaleland"),
     FAGSAK("fagsak"),
+    HENT_BREVDATA("HentBrevdata"),
+    HENT_P1DATA("HentP1Data"),
     NAVANSATT("Navansatt"),
     NAVANSATTENHET("NavAnsattEnhet"),
     NORG("Norg"),

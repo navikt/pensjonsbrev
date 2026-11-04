@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
+import java.time.temporal.TemporalAmount
 import java.util.Objects
 import kotlin.math.absoluteValue
 
@@ -184,6 +185,12 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     object IntPlus : BinaryOperation<Int, Int, Int>(Documentation("+", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntPlus") {
         override fun apply(first: Int, second: Int): Int = first + second
+    }
+
+    object LocalDatePlus :
+        BinaryOperation<LocalDate, TemporalAmount, LocalDate>(Documentation("+", Documentation.Notation.INFIX)),
+        StableHash by StableHash.of("BinaryOperation.LocalDatePlus") {
+        override fun apply(first: LocalDate, second: TemporalAmount): LocalDate = first.plus(second)
     }
 
     class IfNull<T : Any> internal constructor(): BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)),

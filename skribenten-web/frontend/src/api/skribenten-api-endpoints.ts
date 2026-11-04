@@ -18,6 +18,7 @@ import {
   type KontaktAdresseResponse,
   type NavAnsattEnhet,
   type OrderEblankettRequest,
+  type OrderExstreamAutobrevResponse,
   type OrderExstreamLetterRequest,
   type PreferredLanguage,
   type SakContextDto,
@@ -57,6 +58,10 @@ export const letterKeys = {
 
 export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
+};
+
+export const acknowledgedAnnouncementsKeys = {
+  all: ["ACKNOWLEDGED_ANNOUNCEMENTS"] as const,
 };
 
 export const featureToggleKeys = {
@@ -165,6 +170,17 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
+export const getAcknowledgedAnnouncements = {
+  queryKey: acknowledgedAnnouncementsKeys.all,
+  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler`)).data,
+  staleTime: Number.POSITIVE_INFINITY,
+  gcTime: Number.POSITIVE_INFINITY,
+};
+
+export async function acknowledgeAnnouncement(announcementId: string) {
+  await axios.put(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler/${encodeURIComponent(announcementId)}`);
+}
+
 export async function orderExstreamLetter(saksId: string, orderLetterRequest: OrderExstreamLetterRequest) {
   const response = await axios.post<BestillOgRedigerBrevResponse>(
     `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/exstream`,
@@ -181,6 +197,19 @@ export async function orderEblankett(saksId: string, orderLetterRequest: OrderEb
   );
 
   return convertBestillOgRedigerBrevResponse(response);
+}
+
+export async function orderExstreamAutobrev(saksId: string, request: OrderExstreamLetterRequest) {
+  const response = await axios.post<OrderExstreamAutobrevResponse>(
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/exstream/autobrev`,
+    request,
+  );
+
+  if (response.data.failureType) {
+    throw convertResponseToAxiosError({ message: response.data.failureType, response });
+  }
+
+  return response.data.journalpostId ?? null;
 }
 
 function convertBestillOgRedigerBrevResponse(response: AxiosResponse<BestillOgRedigerBrevResponse>) {

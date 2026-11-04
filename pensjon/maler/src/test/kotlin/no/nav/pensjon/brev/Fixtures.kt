@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlagePE
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
@@ -86,6 +87,7 @@ object Fixtures : LetterDataFactory {
             AdhocFeilEtteroppgjoer2023::class -> EmptyAutobrevdata as T
             AdhocInformasjonHvilendeRett4Aar::class -> EmptyAutobrevdata as T
             AdhocMidlertidigOpphoerHvilenderett10Aar::class -> EmptyAutobrevdata as T
+            AdhocInformasjonOpphorGjenlevendepensjon::class -> EmptyAutobrevdata as T
             AdhocUfoeretrygdEtterbetalingDagpenger::class -> EmptyAutobrevdata as T
             AdhocUfoeretrygdKombiDagpenger::class -> EmptyAutobrevdata as T
             AdhocUfoeretrygdKombiDagpengerInntektsavkorting::class -> EmptyAutobrevdata as T
@@ -137,6 +139,7 @@ object Fixtures : LetterDataFactory {
             KlageOrienteringOmOversendelseTilKlageinstans::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageOrienteringOmSaksbehandlingstidPE::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             KlageUtsattKlagefristUT::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            KlageVedtakAvvisningAvKlagePE::class -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             LetterExample::class -> createLetterExampleDto() as T
             OkningUforegradRedigerbar::class -> createOkningUforegradDto() as T
             OkningUforegradRedigerbarV2::class -> createOkningUforegradV2Dto() as T

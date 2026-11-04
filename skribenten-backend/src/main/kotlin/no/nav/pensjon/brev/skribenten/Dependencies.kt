@@ -65,6 +65,7 @@ import no.nav.pensjon.brev.skribenten.db.dataSourceFactory
 import no.nav.pensjon.brev.skribenten.db.databaseReady
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPIService
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
@@ -73,6 +74,11 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.saksbehandler.BekreftNyhetsvarselHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.FjernFavorittHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentBekreftedeNyhetsvarslerHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.LeggTilFavorittHandler
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
@@ -134,6 +140,7 @@ fun Application.configureDependencies() {
         provide(Dto2ApiService::class)
         provide(ExternalAPIService::class)
 
+        provide(BrevoppdateringObservability::class)
         provide(Transactional::class)
         provide(Brevtilgang::class)
 
@@ -146,6 +153,7 @@ fun Application.configureDependencies() {
         provide(SlettBrevPolicy::class)
 
         provide(AttesterBrevHandler::class)
+        provide(BekreftNyhetsvarselHandler::class)
         provide(DiffBrevHandler::class)
         provide(EndreDistribusjonstypeHandler::class)
         provide(EndreMottakerHandler::class)
@@ -155,6 +163,7 @@ fun Application.configureDependencies() {
         provide(FrigiReservasjonHandler::class)
         provide(GenererFoerstesideHandler::class)
         provide(HentAlltidValgbareVedleggHandler::class)
+        provide(HentBekreftedeNyhetsvarslerHandler::class)
         provide(HentBrevAttesteringHandler::class)
         provide<HentBrevForAlleSakerService>(HentBrevForAlleSakerHandler::class)
         provide(HentBrevForSakHandler::class)
