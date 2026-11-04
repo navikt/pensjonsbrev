@@ -41,7 +41,7 @@ class BrevoppdateringObservability(
         REDIGERING(Fase.REDIGERING_TRANSAKSJON, Fase.REDIGERING_BLOKK),
     }
 
-    enum class Krypto(val tag: String) {
+    enum class Kryptering(val tag: String) {
         KRYPTER("encrypt"),
         DEKRYPTER("decrypt"),
         AVLED_NOEKKEL("derive_key"),
@@ -64,11 +64,11 @@ class BrevoppdateringObservability(
         }
     }
 
-    private inner class Maaling(scope: Scope, fase: Fase? = null, krypto: Krypto? = null) {
+    private inner class Maaling(scope: Scope, fase: Fase? = null, kryptering: Kryptering? = null) {
         private val name = when {
             fase == Fase.TOTAL -> "skribenten.brev.update"
             fase?.tag != null -> "skribenten.brev.update.${fase.tag}"
-            krypto != null -> "skribenten.brev.update.crypto.${krypto.tag}"
+            kryptering != null -> "skribenten.brev.update.crypto.${kryptering.tag}"
             else -> throw IllegalArgumentException("Required value was null: either `fase` or `krypto` must be non-null")
         }
 
@@ -77,7 +77,7 @@ class BrevoppdateringObservability(
         private val tags = if (fase != null) {
             arrayOf("phase", fase.tag, "submission", scope.submission)
         } else {
-            arrayOf("operation", requireNotNull(krypto).tag)
+            arrayOf("operation", requireNotNull(kryptering).tag)
         }
         private val metricName = if (fase != null) Metrics.brevoppdateringMetricName else Metrics.brevoppdateringCryptoMetricName
         private var utfall = Utfall.SUCCESS
@@ -137,9 +137,9 @@ class BrevoppdateringObservability(
             }
         }
 
-        fun <T> krypto(operasjon: Krypto, block: () -> T): T {
+        fun <T> krypto(operasjon: Kryptering, block: () -> T): T {
             val scope = Context.current().get(scopeKey) ?: return block()
-            val maaling = scope.observer.Maaling(scope, krypto = operasjon)
+            val maaling = scope.observer.Maaling(scope, kryptering = operasjon)
             return try {
                 Context.current().with(maaling.span).makeCurrent().use {
                     block().also(maaling::resultat)

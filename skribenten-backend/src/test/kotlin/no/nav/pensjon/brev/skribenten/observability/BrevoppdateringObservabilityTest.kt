@@ -36,7 +36,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Companion.fase
 import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Companion.krypto
 import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Fase
-import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Krypto
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Kryptering
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
@@ -59,7 +59,7 @@ class BrevoppdateringObservabilityTest {
                                         ready[1 - index].await()
                                         yield()
                                         withContext(Dispatchers.IO) {
-                                            krypto(Krypto.KRYPTER) { assertThat(Span.current().spanContext.isValid).isTrue() }
+                                            krypto(Kryptering.KRYPTER) { assertThat(Span.current().spanContext.isValid).isTrue() }
                                         }
                                     }
                                     success(Unit)
@@ -89,7 +89,7 @@ class BrevoppdateringObservabilityTest {
             }
             assertThat(Context.current()).isSameAs(original)
             fase(Fase.REQUEST) { Unit }
-            krypto(Krypto.KRYPTER) { Unit }
+            krypto(Kryptering.KRYPTER) { Unit }
             assertThat(telemetry.exporter.finishedSpanItems).hasSize(8)
             assertThat(telemetry.registry.find(Metrics.brevoppdateringMetricName).tag("phase", "request_decode").timer()).isNull()
         }
@@ -180,13 +180,13 @@ class BrevoppdateringObservabilityTest {
                 val results: List<Outcome<*, *>?> = listOf(success(Unit), failure(Unit), null)
                 results.forEach { result ->
                     assertThat(observer.observer(false) {
-                        fase(Fase.DTO) { krypto(Krypto.KRYPTER) { result } }
+                        fase(Fase.DTO) { krypto(Kryptering.KRYPTER) { result } }
                     }).isSameAs(result)
                 }
                 listOf(IllegalArgumentException("not exported"), CancellationException("not exported")).forEach { error ->
                     val caught = runCatching {
                         observer.observer(false) {
-                            fase(Fase.DTO) { krypto(Krypto.KRYPTER) { throw error } }
+                            fase(Fase.DTO) { krypto(Kryptering.KRYPTER) { throw error } }
                         }
                     }.exceptionOrNull()
                     assertThat(generateSequence(caught) { it.cause }.last()).isSameAs(error)
@@ -239,7 +239,7 @@ class BrevoppdateringObservabilityTest {
     suspend fun `metrikker registreres uten sampling og uten agent`() {
         BrevoppdateringTestTelemetry(Sampler.alwaysOff()).use { telemetry ->
             telemetry.observer.observer(false) {
-                fase(Fase.RENDER_BREV) { krypto(Krypto.KRYPTER) { Unit } }
+                fase(Fase.RENDER_BREV) { krypto(Kryptering.KRYPTER) { Unit } }
                 success(Unit)
             }
             assertThat(telemetry.exporter.finishedSpanItems).isEmpty()
@@ -262,7 +262,7 @@ class BrevoppdateringObservabilityTest {
             registry.config().meterFilter(Metrics.brevoppdateringFilter())
             val observer = BrevoppdateringObservability(registry, OpenTelemetry.noop().getTracer("test"))
             observer.observer(false) {
-                fase(Fase.RENDER_BREV) { krypto(Krypto.KRYPTER) { Unit } }
+                fase(Fase.RENDER_BREV) { krypto(Kryptering.KRYPTER) { Unit } }
                 success(Unit)
             }
             val lines = registry.scrape().lines().filter { it.startsWith("skribenten_brevoppdatering") }

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.db.kryptering
 
 import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Companion.krypto
-import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Krypto
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Kryptering
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.util.concurrent.atomic.AtomicBoolean
@@ -35,7 +35,7 @@ object KrypteringService {
         }
     }
 
-    fun krypter(klartekst: ByteArray): EncryptedByteArray = krypto(Krypto.KRYPTER) {
+    fun krypter(klartekst: ByteArray): EncryptedByteArray = krypto(Kryptering.KRYPTER) {
         val salt = getRandomNonce(SALT_LENGTH_BYTE)
         val iv = getRandomNonce(IV_LENGTH_BYTE)
         val kryptertMelding = initCipher(Cipher.ENCRYPT_MODE, getSecretKey(salt), iv).doFinal(klartekst)
@@ -48,7 +48,7 @@ object KrypteringService {
             .let { EncryptedByteArray(it) }
     }
 
-    fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray = krypto(Krypto.DEKRYPTER) {
+    fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray = krypto(Kryptering.DEKRYPTER) {
         val byteBuffer = ByteBuffer.wrap(kryptertMelding.bytes)
 
         val iv = ByteArray(IV_LENGTH_BYTE)
@@ -72,7 +72,7 @@ object KrypteringService {
         return nonce
     }
 
-    private fun getSecretKey(salt: ByteArray): SecretKeySpec = krypto(Krypto.AVLED_NOEKKEL) {
+    private fun getSecretKey(salt: ByteArray): SecretKeySpec = krypto(Kryptering.AVLED_NOEKKEL) {
         require(KrypteringService::krypteringsnoekkel.isInitialized) { "Krypteringsnøkkel må være initialisert" }
         SecretKeySpec(
             SecretKeyFactory.getInstance(FACTORY_INSTANCE)
