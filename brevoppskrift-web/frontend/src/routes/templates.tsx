@@ -8,7 +8,6 @@ import {
   Heading,
   HStack,
   LocalAlert,
-  Search,
   Tabs,
   Tag,
   VStack,
@@ -23,7 +22,7 @@ import {
   BrevResultList,
   CONTENT_PAGE_SIZE,
   LETTER_PAGE_SIZE,
-  SearchActivityOutline,
+  SearchField,
   SearchResultsPanel,
   SearchSnippet,
   templateKey,
@@ -248,18 +247,7 @@ function AllTemplates() {
           Brevoppskrift
         </Heading>
         <Box maxWidth="480px" width="100%">
-          <SearchActivityOutline active={isLoading || isPending}>
-            <Search
-              autoFocus
-              label="Søk etter innholdet eller brevmal"
-              onChange={setQuery}
-              onClear={() => setQuery("")}
-              placeholder="Søk etter innholdet eller brevmal"
-              size="small"
-              value={query}
-              variant="simple"
-            />
-          </SearchActivityOutline>
+          <SearchField active={isLoading || isPending} autoFocus onChange={setQuery} value={query} />
         </Box>
         <Checkbox checked={exactOnly} onChange={(e) => setExactOnly(e.target.checked)} size="small">
           Vis kun nøyaktige treff

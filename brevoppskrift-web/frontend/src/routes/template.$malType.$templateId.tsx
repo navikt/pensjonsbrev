@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
+import { Box, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
 import { useMemo, useRef } from "react";
@@ -134,6 +134,16 @@ function TemplateExplorer() {
   });
   const changeMarking = (show: boolean) =>
     navigate({ replace: true, search: (s) => ({ ...s, showHits: show ? undefined : false }) });
+  // A new query opens at its first hit. Started here, without a search to keep the tab of,
+  // it searches the content, which is what a template shows.
+  const changeQuery = (newQ: string | undefined) =>
+    navigate({
+      replace: true,
+      search: (s) =>
+        newQ === undefined
+          ? { ...s, q: undefined, exact: undefined, tab: undefined, showHits: undefined, focus: undefined }
+          : { ...s, q: newQ, tab: s.q ? s.tab : "innhold", focus: undefined },
+    });
 
   return (
     <VStack height="100%" overflow="hidden">
@@ -151,15 +161,14 @@ function TemplateExplorer() {
           </HStack>
         </HStack>
         <HStack align="center" gap="space-16" justify="center" wrap>
-          {criteria && hits ? (
-            <SearchHitToolbar
-              criteria={criteria}
-              hits={hits}
-              marking={marking}
-              onMarkingChange={changeMarking}
-              onSelectBlock={selectBlock}
-            />
-          ) : null}
+          <SearchHitToolbar
+            criteria={criteria}
+            hits={hits}
+            marking={marking}
+            onMarkingChange={changeMarking}
+            onSearch={changeQuery}
+            onSelectBlock={selectBlock}
+          />
           <LanguageToggle
             available={description.languages}
             // Block indexes follow the template's structure, so the block in focus is
@@ -171,18 +180,19 @@ function TemplateExplorer() {
           />
         </HStack>
       </VStack>
-      <HGrid columns="auto 1fr" flexGrow="1" minHeight="0" overflow="hidden">
-        <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
-        <VStack
-          align="center"
-          gap="space-16"
-          overflow="auto"
-          paddingBlock="space-16"
-          paddingInline="space-16"
-          width="100%"
-        >
-          <div
-            css={css`
+      <Box asChild borderColor="neutral-subtle" borderWidth="1 0 0 0">
+        <HGrid columns="auto 1fr" flexGrow="1" minHeight="0" overflow="hidden">
+          <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
+          <VStack
+            align="center"
+            gap="space-16"
+            overflow="auto"
+            paddingBlock="space-16"
+            paddingInline="space-16"
+            width="100%"
+          >
+            <div
+              css={css`
               width: 100%;
 
               [data-search-hit] {
@@ -200,14 +210,15 @@ function TemplateExplorer() {
                 outline-offset: var(--ax-space-2);
               }
             `}
-            ref={previewRef}
-          >
-            <SearchHighlightProvider highlight={highlight}>
-              <TemplateDocumentationSection documentation={documentation} />
-            </SearchHighlightProvider>
-          </div>
-        </VStack>
-      </HGrid>
+              ref={previewRef}
+            >
+              <SearchHighlightProvider highlight={highlight}>
+                <TemplateDocumentationSection documentation={documentation} />
+              </SearchHighlightProvider>
+            </div>
+          </VStack>
+        </HGrid>
+      </Box>
     </VStack>
   );
 }

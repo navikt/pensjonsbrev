@@ -26,6 +26,7 @@ async function renderToolbar(marking: boolean) {
         hits={hits}
         marking={marking}
         onMarkingChange={vi.fn()}
+        onSearch={vi.fn()}
         onSelectBlock={vi.fn()}
       />
     ),

@@ -1,10 +1,11 @@
 import { ArrowLeftIcon, ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, ChevronUpIcon } from "@navikt/aksel-icons";
-import { Button, type ButtonProps, Detail, HStack, InlineMessage, Switch } from "@navikt/ds-react";
+import { Box, Button, type ButtonProps, Detail, HStack, InlineMessage, Switch } from "@navikt/ds-react";
 import { createLink } from "@tanstack/react-router";
 import { type AnchorHTMLAttributes, type ReactNode, type Ref } from "react";
 
 import { AnimatedEllipsis } from "~/components/AnimatedEllipsis";
 import { type ResultRef, type SearchCriteria, toTemplateSearch, toTemplatesSearch } from "~/search/searchContext";
+import { TemplateSearchField } from "~/templateSearch/TemplateSearchField";
 import { blockNavigation, type ResultLinkTarget, type TemplateHits } from "~/templateSearch/useTemplateHits";
 
 /** An Aksel button rendered as an `<a>`. Passing `Button` itself to `createLink`
@@ -20,20 +21,22 @@ function AnchorButton({
 const ButtonLink = createLink(AnchorButton);
 
 /**
- * The search controls on a template opened from a search: a switch for the hit marking, stepping between
- * matching blocks in this template while marking is on, and stepping between search results.
+ * The search controls on a template: a switch for the hit marking, and while marking is on, the search box
+ * and stepping between matching blocks in this template. With a search, also stepping between search results.
  */
 export function SearchHitToolbar({
   criteria,
   hits,
   marking,
   onMarkingChange,
+  onSearch,
   onSelectBlock,
 }: {
-  criteria: SearchCriteria;
-  hits: TemplateHits;
+  criteria: SearchCriteria | undefined;
+  hits: TemplateHits | undefined;
   marking: boolean;
   onMarkingChange: (marking: boolean) => void;
+  onSearch: (q: string | undefined) => void;
   onSelectBlock: (index: number) => void;
 }) {
   return (
@@ -41,7 +44,14 @@ export function SearchHitToolbar({
       <Switch checked={marking} onChange={(event) => onMarkingChange(event.target.checked)} size="small">
         Vis søketreff
       </Switch>
-      <HitNavigation criteria={criteria} hits={hits} marking={marking} onSelectBlock={onSelectBlock} />
+      {marking ? (
+        <Box maxWidth="100%" width="18rem">
+          <TemplateSearchField hits={hits} onSearch={onSearch} q={criteria?.q} />
+        </Box>
+      ) : null}
+      {criteria && hits ? (
+        <HitNavigation criteria={criteria} hits={hits} marking={marking} onSelectBlock={onSelectBlock} />
+      ) : null}
     </HStack>
   );
 }

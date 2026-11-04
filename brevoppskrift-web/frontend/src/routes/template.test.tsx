@@ -31,7 +31,8 @@ const searchStore = vi.hoisted(() => {
 });
 vi.mock("~/search/useSearchResults", async () => {
   const { useSyncExternalStore } = await import("react");
-  return { useSearchResults: () => useSyncExternalStore(searchStore.subscribe, searchStore.get) };
+  const actual = await vi.importActual<typeof import("~/search/useSearchResults")>("~/search/useSearchResults");
+  return { ...actual, useSearchResults: () => useSyncExternalStore(searchStore.subscribe, searchStore.get) };
 });
 
 const { getBrevkoderMedMetadata, getTemplateDescription, getTemplateDocumentation } = vi.hoisted(() => ({
@@ -284,6 +285,69 @@ describe("search hit focus", () => {
     expect((await screen.findByLabelText<HTMLInputElement>("Vis søketreff")).checked).toBe(true);
     await waitFor(() => expect(scrolledTo).toEqual(["30"]));
   });
+
+  describe("the toolbar's search box", () => {
+    const searchBox = () => screen.findByLabelText<HTMLInputElement>("Søk etter innholdet eller brevmal");
+
+    it("searches the content from a template opened without a search", async () => {
+      const router = await openPage({ q: undefined, focus: 21 });
+      expect((await searchBox()).value).toBe("");
+
+      await userEvent.type(await searchBox(), "treff");
+
+      await waitFor(() => expect(router.state.location.search).toMatchObject({ q: "treff", tab: "innhold" }));
+      expect(router.state.location.search).not.toHaveProperty("focus");
+      await waitFor(() => expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy());
+    });
+
+    it("replaces the search, keeping its tab and opening at the first hit, but not for a too short query", async () => {
+      const router = await openPage({ q: "første", focus: 31 });
+      const input = await searchBox();
+      expect(input.value).toBe("første");
+
+      await userEvent.type(input, "t", { initialSelectionStart: 0, initialSelectionEnd: input.value.length });
+      await act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+      expect(router.state.location.search).toMatchObject({ q: "første" });
+
+      await userEvent.type(input, "reff");
+      await waitFor(() => expect(router.state.location.search).toMatchObject({ q: "treff" }));
+      expect(router.state.location.search).not.toHaveProperty("tab");
+      expect(router.state.location.search).not.toHaveProperty("focus");
+    });
+
+    it("drops the search context when cleared", async () => {
+      const router = await openPage({ tab: "innhold", exact: true });
+
+      await userEvent.clear(await searchBox());
+
+      await waitFor(() => expect(router.state.location.search).not.toHaveProperty("q"));
+      expect(router.state.location.search).not.toHaveProperty("tab");
+      expect(router.state.location.search).not.toHaveProperty("exact");
+      expect(screen.queryByText(/Mal \d+ av/)).toBeNull();
+      // The box stays, so a new search can be typed.
+      expect(await searchBox()).toBeTruthy();
+    });
+
+    it("is hidden while the hits are hidden", async () => {
+      await openPage({ showHits: false });
+      await userEvent.click(await screen.findByLabelText("Vis søketreff"));
+      expect((await searchBox()).value).toBe("treff");
+
+      await userEvent.click(screen.getByLabelText("Vis søketreff"));
+
+      await waitFor(() => expect(screen.queryByLabelText("Søk etter innholdet eller brevmal")).toBeNull());
+    });
+
+    it("follows the URL when the query changes elsewhere", async () => {
+      const router = await openPage({});
+      expect((await searchBox()).value).toBe("treff");
+
+      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+      await act(() => router.navigate({ to: ".", search: (s: any) => ({ ...s, q: "annet" }) } as any));
+
+      await waitFor(async () => expect((await searchBox()).value).toBe("annet"));
+    });
+  });
 });
 
 describe("search hits when the template list cannot be fetched", () => {
@@ -306,6 +370,6 @@ describe("search hits when the template list cannot be fetched", () => {
 
     await renderTemplateRoute("/template/autobrev/A", { language: "BOKMAL", q: "treff" }, { realPage: true });
 
-    expect(await screen.findByText(/Kunne ikke finne søketreffene/)).toBeTruthy();
+    expect(await screen.findByText(/Kan ikke vise treff/)).toBeTruthy();
   });
 });
