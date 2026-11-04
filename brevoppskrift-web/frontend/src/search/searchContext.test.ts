@@ -59,6 +59,11 @@ describe("searchContext", () => {
     expect(criteriaOf({ q: "pensjon" })).toEqual({ q: "pensjon", exact: false, tab: "brev" });
   });
 
+  it("has no criteria for a query too short to search, except one of special characters", () => {
+    expect(criteriaOf({ q: "x" })).toBeUndefined();
+    expect(criteriaOf({ q: "§" })).toEqual({ q: "§", exact: false, tab: "brev" });
+  });
+
   it("builds the template link and the way back from the same criteria", () => {
     const criteria = { q: "pensjon", exact: true, tab: "innhold" as const };
 

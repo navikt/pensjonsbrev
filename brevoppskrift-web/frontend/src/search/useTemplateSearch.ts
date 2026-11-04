@@ -1,16 +1,16 @@
 import { useDeferredValue, useState } from "react";
 
 import { type SearchClient } from "~/search/searchClient";
+import { isSearchQuery } from "~/search/searchQuery";
 import {
   type DisplayedSearch,
-  isSearchQuery,
   type SearchResultsState,
   type TemplateRef,
   useSearchResults,
 } from "~/search/useSearchResults";
 
+export { MIN_QUERY_LENGTH } from "~/search/searchQuery";
 export type { DisplayedSearch, Highlight, TemplateRef } from "~/search/useSearchResults";
-export { MIN_QUERY_LENGTH } from "~/search/useSearchResults";
 
 export type TemplateSearch = Omit<SearchResultsState, "isSearching"> & {
   query: string;

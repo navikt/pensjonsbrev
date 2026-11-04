@@ -4,15 +4,9 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import { getAllTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
 import { type SearchClient, sharedSearchClient } from "~/search/searchClient";
 import { type HitRefs, type TemplateKey, templateKey } from "~/search/searchProtocol";
-import {
-  type BrevHit,
-  type ContentHit,
-  type SearchResults,
-  SPECIAL_CHAR_QUERY,
-  type TemplateText,
-} from "~/search/textSearch";
+import { isSearchQuery } from "~/search/searchQuery";
+import { type BrevHit, type ContentHit, type SearchResults, type TemplateText } from "~/search/textSearch";
 
-export const MIN_QUERY_LENGTH = 2;
 /** The batch payload carries an ETag, so periodic refetches revalidate cheaply
  *  (304 Not Modified) and only transfer the corpus when its content changes. */
 const DOC_STALE_TIME_MS = 30 * 1000;
@@ -67,13 +61,6 @@ export type SearchResultsState = {
   /** Refetches every malType whose corpus fetch is currently failing. */
   retryFailed: () => void;
 };
-/** Whether a trimmed query is worth sending to the worker. A query made
- *  entirely of special characters (e.g. "§" or "§§") is allowed to search
- *  despite being shorter than MIN_QUERY_LENGTH - see SPECIAL_CHAR_QUERY in
- *  textSearch.ts. */
-export function isSearchQuery(trimmed: string): boolean {
-  return trimmed.length >= MIN_QUERY_LENGTH || SPECIAL_CHAR_QUERY.test(trimmed);
-}
 function templateCount(hits: { template: TemplateText }[]): number {
   return new Set(hits.map((hit) => `${hit.template.malType}/${hit.template.id}`)).size;
 }

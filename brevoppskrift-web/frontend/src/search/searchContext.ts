@@ -1,4 +1,5 @@
 import { isMalType, type MalType } from "~/api/brevbaker-api-endpoints";
+import { isSearchQuery } from "~/search/searchQuery";
 
 /**
  * The search context as it travels in URLs between the result list
@@ -151,9 +152,10 @@ export function validateTemplateSearchContext(search: Record<string, unknown>): 
   };
 }
 
-/** The criteria in a set of search params, or `undefined` if nothing was searched for. */
+/** The criteria in a set of search params, or `undefined` if nothing was
+ *  searched for, or the query is too short to search (e.g. a hand-edited `?q=x`). */
 export function criteriaOf(params: { q?: string; exact?: true; tab?: TabParam }): SearchCriteria | undefined {
-  if (!params.q) {
+  if (!params.q || !isSearchQuery(params.q)) {
     return undefined;
   }
   return { q: params.q, exact: params.exact ?? false, tab: params.tab ?? DEFAULT_TAB };

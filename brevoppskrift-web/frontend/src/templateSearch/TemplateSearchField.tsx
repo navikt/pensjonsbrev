@@ -1,7 +1,7 @@
 import { useDeferredValue, useEffect, useRef, useState } from "react";
 
 import { SearchField } from "~/search/components/SearchField";
-import { isSearchQuery } from "~/search/useSearchResults";
+import { isSearchQuery } from "~/search/searchQuery";
 import { type TemplateHits } from "~/templateSearch/useTemplateHits";
 
 /**

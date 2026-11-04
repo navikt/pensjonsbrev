@@ -215,6 +215,21 @@ describe("search hit focus", () => {
     expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy();
   });
 
+  it("outlines and scrolls to the block of a paragraph link without a search", async () => {
+    await openPage({ q: undefined, focus: 21 });
+
+    await waitFor(() => expect(scrolledTo).toEqual(["20"]));
+    expect(block(20).getAttribute("data-search-hit")).toBe("active");
+    expect(screen.queryByText(/Finner søketreff/)).toBeNull();
+  });
+
+  it("does not search for a query too short to search, rather than wait for it", async () => {
+    await openPage({ q: "x" }, { hits: loading });
+
+    expect(await screen.findByText("Mal-oversikt")).toBeTruthy();
+    expect(screen.queryByText(/Finner søketreff/)).toBeNull();
+  });
+
   it("goes back to the active hit when the hits are turned off and on again", async () => {
     const router = await openPage({ tab: "innhold", focus: 31 });
     await waitFor(() => expect(scrolledTo).toEqual(["30"]));

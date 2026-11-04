@@ -14,13 +14,16 @@ export type HitFocus = {
   scrollTarget: number | undefined;
 };
 
+const NO_MATCHES: ReadonlySet<number> = new Set();
+
 /**
  * Which search hits a template shows, and which block is in focus.
  *
  * `marking` is whether the hits are shown ("Vis søketreff"). Showing them
  * focuses the first hit, unless a block was requested. That is derived rather
  * than navigated to, so it also holds when the hits are shown before they have
- * loaded.
+ * loaded. Without a search, a requested block (a plain paragraph link) is
+ * outlined on its own.
  */
 export function useHitFocus(
   criteria: SearchCriteria | undefined,
@@ -30,18 +33,21 @@ export function useHitFocus(
 ): HitFocus {
   const hits = useTemplateHits(criteria, current, requestedBlock, marking);
   const ready = hits?.status === "ready" ? hits : undefined;
-  const highlight = useMemo<SearchHighlight | undefined>(
-    () =>
-      marking && ready
-        ? {
-            needle: ready.highlight.needle,
-            exact: ready.highlight.exactOnly,
-            matchingBlocks: new Set(ready.matchingBlocks),
-            activeBlock: ready.activeBlock,
-          }
-        : undefined,
-    [marking, ready],
-  );
+  const highlight = useMemo<SearchHighlight | undefined>(() => {
+    if (!criteria) {
+      return requestedBlock === undefined
+        ? undefined
+        : { needle: "", exact: false, matchingBlocks: NO_MATCHES, activeBlock: requestedBlock };
+    }
+    return marking && ready
+      ? {
+          needle: ready.highlight.needle,
+          exact: ready.highlight.exactOnly,
+          matchingBlocks: new Set(ready.matchingBlocks),
+          activeBlock: ready.activeBlock,
+        }
+      : undefined;
+  }, [criteria, requestedBlock, marking, ready]);
   // Until the hits are ready, only a requested block is known.
   const activeBlock = ready?.activeBlock ?? requestedBlock;
   return {
