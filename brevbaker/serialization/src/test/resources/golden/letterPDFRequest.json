@@ -244,8 +244,8 @@
       },
       "navAvsenderEnhet" : "Nav Familie- og pensjonsytelser"
     },
-    "version": 2,
-    "stableHashCode": 123
+    "version" : 2,
+    "stableHashCode" : 123
   },
   "attachments" : [ {
     "title1" : [ {
@@ -272,8 +272,8 @@
         "editBehaviour" : null
       } ]
     } ],
-    "inkluderSaksinformasjon": true,
-    "stableHashCode": 456
+    "inkluderSaksinformasjon" : true,
+    "stableHashCode" : 456
   } ],
   "pdfVedlegg" : [ {
     "title1" : [ {
