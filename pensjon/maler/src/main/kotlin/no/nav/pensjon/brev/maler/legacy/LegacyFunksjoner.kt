@@ -51,15 +51,15 @@ import java.time.Month
 
 
 fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
-    date.ifNull(LocalDate.of(2020, 2, 2)).month.equalTo(1) and
-            date.ifNull(LocalDate.of(2020, 2, 2)).day.equalTo(1)
+    date.ifNull(LocalDate.of(2020, Month.FEBRUARY, 2)).month.equalTo(Month.JANUARY) and
+            date.ifNull(LocalDate.of(2020, Month.FEBRUARY, 2)).day.equalTo(1)
 
 
 fun FUNKSJON_Year(date: Expression<LocalDate?>): Expression<Int> =
-    date.ifNull(LocalDate.of(1000,1,1)).year // I exstream er Year(null) = 1000
+    date.ifNull(LocalDate.of(1000,Month.JANUARY,1)).year // I exstream er Year(null) = 1000
 
-fun FUNKSJON_Month(date: Expression<LocalDate?>): Expression<Int> =
-    date.ifNull(LocalDate.of(1000,1,1)).month
+fun FUNKSJON_Month(date: Expression<LocalDate?>): Expression<Month> =
+    date.ifNull(LocalDate.of(1000,Month.JANUARY,1)).month
 
 fun Expression<PEgruppe10>.ut_trygdetid_avdod() =
     vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and
@@ -98,7 +98,7 @@ fun Expression<PEgruppe10>.ut_barnet_barna_serkull(): Expression<String> {
 }
 
 fun Expression<PEgruppe10>.ut_bunnfradrag_faktisk() =
-    ifElse(not (localDateNow.year.equalTo(this.vedtaksdata_virkningfom().year) and this.vedtaksdata_virkningfom().month.equalTo(Month.DECEMBER.value))
+    ifElse(not (localDateNow.year.equalTo(this.vedtaksdata_virkningfom().year) and this.vedtaksdata_virkningfom().month.equalTo(Month.DECEMBER))
             or vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear().equalTo(0),
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag(),
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradragnestear()

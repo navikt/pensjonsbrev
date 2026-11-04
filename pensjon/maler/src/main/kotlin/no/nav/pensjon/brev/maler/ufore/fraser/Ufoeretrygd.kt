@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
+import java.time.Period
 
 object Ufoeretrygd {
 
@@ -723,9 +724,7 @@ object Ufoeretrygd {
  * Sjekker om uføretidspunkt er nøyaktig måneden etter fødselsdato.
  * Håndterer desember→januar-overgang.
  */
-fun erUforetidspunktMaanedEtterFoedsel(uforetidspunkt: Expression<LocalDate>, foedselsdato: Expression<LocalDate>): Expression<Boolean> =
-    (uforetidspunkt.month equalTo (foedselsdato.month + 1) and (uforetidspunkt.year equalTo foedselsdato.year))
-        .or(
-            (foedselsdato.month equalTo 12) and (uforetidspunkt.month equalTo 1) and (uforetidspunkt.year equalTo (foedselsdato.year + 1))
-        )
-
+fun erUforetidspunktMaanedEtterFoedsel(
+    uforetidspunkt: Expression<LocalDate>,
+    foedselsdato: Expression<LocalDate>,
+): Expression<Boolean> = foedselsdato.plus(Period.ofMonths(1)) equalTo uforetidspunkt
