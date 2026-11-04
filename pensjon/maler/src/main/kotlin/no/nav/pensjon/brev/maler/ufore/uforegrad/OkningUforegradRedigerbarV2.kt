@@ -842,7 +842,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                             bokmal { +" uten at uføretrygden din blir redusert. Dette heter bunnfradrag. " },
                             nynorsk { +" utan at uføretrygda di blir redusert. Dette heiter botnfrådrag. " },
                         )
-                        showIf(vedtak.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                        showIf(vedtak.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER)) {
                             text(
                                 bokmal { +"Selv om fribeløpet endrer seg beholder du det nåværende bunnfradraget ditt ut inneværende kalenderår. Det nåværende bunnfradraget ditt er " + beregning.bunnfradrag.format() + ". " },
                                 nynorsk { +"Sjølv om fribeløpet endrar seg, beheld du det noverande botnfrådraget ditt ut inneverande kalenderår. Det noverande botnfrådraget ditt er " + beregning.bunnfradrag.format() + ". " },

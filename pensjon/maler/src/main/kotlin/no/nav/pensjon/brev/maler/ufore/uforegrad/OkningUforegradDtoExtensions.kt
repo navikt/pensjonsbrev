@@ -19,7 +19,7 @@ import java.time.Month
 
 internal fun Expression<OkningUforegradV2Dto.PesysData>.faktiskBunnfradrag() =
     ifElse(
-        not(localDateNow.year.equalTo(vedtak.virkFom.year) and vedtak.virkFom.month.equalTo(Month.DECEMBER.value))
+        not(localDateNow.year.equalTo(vedtak.virkFom.year) and vedtak.virkFom.month.equalTo(Month.DECEMBER))
                 or beregning.bunnfradragNesteAr.equalTo(0),
         beregning.bunnfradrag,
         beregning.bunnfradragNesteAr
