@@ -2,6 +2,7 @@ package no.nav.brev.brevbaker.template.render
 
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.dsl.extended.*
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
@@ -28,6 +29,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         letterMarkupExtended(
             saksinformasjon = buildSaksinformasjon(scope),
             signatur = buildSignatur(scope),
+            stableHashCode = StableHashCode(template.stableHashCode()),
             build = buildLetter(scope, template),
         )
 
@@ -101,7 +103,10 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     }
 
     private fun renderAttachment(attachmentContext: RenderContext, attachment: AttachmentTemplate<*, *>): Attachment =
-        attachmentExtended(inkluderSaksinformasjon = attachment.includeSakspart) {
+        attachmentExtended(
+            inkluderSaksinformasjon = attachment.includeSakspart,
+            stableHashCode = StableHashCode(attachment.stableHashCode()),
+        ) {
             title1 { appendTexts(attachmentContext, attachment.title) }
             outline { renderOutline(attachmentContext, attachment.outline) }
         }

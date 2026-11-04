@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
@@ -11,6 +12,7 @@ data class LetterMarkup internal constructor(
     val blocks: List<Block>,
     val signatur: Signatur,
     val version: Int = VERSION,
+    val stableHashCode: StableHashCode? = null,
 ) {
     companion object {
         const val VERSION = 2
@@ -22,6 +24,7 @@ data class Attachment internal constructor(
     val title1: List<Text>,
     val blocks: List<Block>,
     val inkluderSaksinformasjon: Boolean,
+    val stableHashCode: StableHashCode? = null,
 )
 
 @ConsistentCopyVisibility

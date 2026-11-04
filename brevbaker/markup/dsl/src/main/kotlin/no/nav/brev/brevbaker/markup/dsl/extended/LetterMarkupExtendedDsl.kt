@@ -18,6 +18,7 @@ import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
 import kotlin.jvm.JvmName
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.MarkupModel
 
 /**
@@ -41,7 +42,16 @@ fun letterMarkupExtended(
     signatur: Signatur,
     build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
 ): LetterMarkup =
-    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur).apply(build).build()
+    letterMarkupExtended(saksinformasjon, signatur, null, build)
+
+@ExtendedMarkupDsl
+fun letterMarkupExtended(
+    saksinformasjon: Saksinformasjon,
+    signatur: Signatur,
+    stableHashCode: StableHashCode?,
+    build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
+): LetterMarkup =
+    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur, stableHashCode).apply(build).build()
 
 /**
  * Som [attachment], men med støtte for `variable(...)`/tags og krav om eksplisitt id på hvert element.
@@ -54,7 +64,15 @@ fun letterMarkupExtended(
  */
 @ExtendedMarkupDsl
 fun attachmentExtended(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit): Attachment =
-    AttachmentBuilder(::ExtendedContentBuilder, inkluderSaksinformasjon).apply(build).build()
+    attachmentExtended(inkluderSaksinformasjon, null, build)
+
+@ExtendedMarkupDsl
+fun attachmentExtended(
+    inkluderSaksinformasjon: Boolean,
+    stableHashCode: StableHashCode?,
+    build: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit,
+): Attachment =
+    AttachmentBuilder(::ExtendedContentBuilder, inkluderSaksinformasjon, stableHashCode).apply(build).build()
 
 /**
  * Som [pdfTittel], men med støtte for `variable(...)` og krav om eksplisitt id på hvert element.

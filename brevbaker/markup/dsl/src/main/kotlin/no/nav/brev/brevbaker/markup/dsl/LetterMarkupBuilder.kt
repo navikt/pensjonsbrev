@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.PDFTittel
 import no.nav.brev.brevbaker.markup.Saksinformasjon
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.Signatur
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
@@ -106,6 +107,7 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
     private val contentFactory: ContentFactory<C>,
     private val saksinformasjon: Saksinformasjon,
     private val signatur: Signatur,
+    private val stableHashCode: StableHashCode? = null,
 ) {
     private var title1: List<Text> = emptyList()
     private var blocks: List<Block> = emptyList()
@@ -133,6 +135,7 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
         saksinformasjon = saksinformasjon,
         blocks = blocks,
         signatur = signatur,
+        stableHashCode = stableHashCode,
     )
 }
 
@@ -140,6 +143,7 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
 class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
     private val contentFactory: ContentFactory<C>,
     private val inkluderSaksinformasjon: Boolean,
+    private val stableHashCode: StableHashCode? = null,
 ) {
     private var title1: List<Text> = emptyList()
     private var blocks: List<Block> = emptyList()
@@ -166,7 +170,7 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
         blocks = OutlineBuilder(contentFactory).apply(build).build()
     }
 
-    internal fun build(): Attachment = MarkupModel.attachment(title1, blocks, inkluderSaksinformasjon)
+    internal fun build(): Attachment = MarkupModel.attachment(title1, blocks, inkluderSaksinformasjon, stableHashCode)
 }
 
 /**

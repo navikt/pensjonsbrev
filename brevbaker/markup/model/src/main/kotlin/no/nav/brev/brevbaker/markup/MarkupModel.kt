@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage.Property
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour
@@ -68,10 +69,25 @@ object MarkupModel {
     // --- Brev ---
 
     fun letterMarkup(title1: List<Text>, saksinformasjon: Saksinformasjon, blocks: List<Block>, signatur: Signatur): LetterMarkup =
-        LetterMarkup(title1 = title1, saksinformasjon = saksinformasjon, blocks = blocks, signatur = signatur)
+        letterMarkup(title1, saksinformasjon, blocks, signatur, null)
+
+    fun letterMarkup(
+        title1: List<Text>,
+        saksinformasjon: Saksinformasjon,
+        blocks: List<Block>,
+        signatur: Signatur,
+        stableHashCode: StableHashCode?,
+    ): LetterMarkup = LetterMarkup(title1, saksinformasjon, blocks, signatur, stableHashCode = stableHashCode)
 
     fun attachment(title1: List<Text>, blocks: List<Block>, inkluderSaksinformasjon: Boolean): Attachment =
-        Attachment(title1, blocks, inkluderSaksinformasjon)
+        attachment(title1, blocks, inkluderSaksinformasjon, null)
+
+    fun attachment(
+        title1: List<Text>,
+        blocks: List<Block>,
+        inkluderSaksinformasjon: Boolean,
+        stableHashCode: StableHashCode?,
+    ): Attachment = Attachment(title1, blocks, inkluderSaksinformasjon, stableHashCode)
 
     fun pdfTittel(title1: List<Text>): PDFTittel = PDFTittel(title1)
 

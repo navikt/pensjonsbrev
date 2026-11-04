@@ -68,12 +68,15 @@ public final class no/nav/brev/brevbaker/document/DocumentSaksnummer {
 }
 
 public final class no/nav/brev/brevbaker/markup/Attachment {
+	public synthetic fun <init> (Ljava/util/List;Ljava/util/List;ZLno/nav/brev/brevbaker/StableHashCode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Z
+	public final fun component4-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBlocks ()Ljava/util/List;
 	public final fun getInkluderSaksinformasjon ()Z
+	public final fun getStableHashCode-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 	public final fun getTitle1 ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -88,15 +91,18 @@ public final class no/nav/brev/brevbaker/markup/CleanMarkupKt {
 public final class no/nav/brev/brevbaker/markup/LetterMarkup {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkup$Companion;
 	public static final field VERSION I
+	public synthetic fun <init> (Ljava/util/List;Lno/nav/brev/brevbaker/markup/Saksinformasjon;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Signatur;ILno/nav/brev/brevbaker/StableHashCode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Lno/nav/brev/brevbaker/markup/Saksinformasjon;
 	public final fun component3 ()Ljava/util/List;
 	public final fun component4 ()Lno/nav/brev/brevbaker/markup/Signatur;
 	public final fun component5 ()I
+	public final fun component6-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBlocks ()Ljava/util/List;
 	public final fun getSaksinformasjon ()Lno/nav/brev/brevbaker/markup/Saksinformasjon;
 	public final fun getSignatur ()Lno/nav/brev/brevbaker/markup/Signatur;
+	public final fun getStableHashCode-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 	public final fun getTitle1 ()Ljava/util/List;
 	public final fun getVersion ()I
 	public fun hashCode ()I
@@ -188,6 +194,7 @@ public abstract interface class no/nav/brev/brevbaker/markup/Markup$TextContaine
 public final class no/nav/brev/brevbaker/markup/MarkupModel {
 	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/MarkupModel;
 	public final fun attachment (Ljava/util/List;Ljava/util/List;Z)Lno/nav/brev/brevbaker/markup/Attachment;
+	public final fun attachment-P7BY7lg (Ljava/util/List;Ljava/util/List;ZLno/nav/brev/brevbaker/StableHashCode;)Lno/nav/brev/brevbaker/markup/Attachment;
 	public final fun cell (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
 	public final fun choice (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;
 	public final fun columnSpec (ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;I)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;
@@ -197,6 +204,7 @@ public final class no/nav/brev/brevbaker/markup/MarkupModel {
 	public final fun item (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
 	public final fun itemList (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
 	public final fun letterMarkup (Ljava/util/List;Lno/nav/brev/brevbaker/markup/Saksinformasjon;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Signatur;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public final fun letterMarkup-HX08_Qk (Ljava/util/List;Lno/nav/brev/brevbaker/markup/Saksinformasjon;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Signatur;Lno/nav/brev/brevbaker/StableHashCode;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public final fun letterMarkupWithDataUsage (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/Set;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
 	public final fun letterMarkupWithDataUsageProperty (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property;
 	public final fun literal (ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
