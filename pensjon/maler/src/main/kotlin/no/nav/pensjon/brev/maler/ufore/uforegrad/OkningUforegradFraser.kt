@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler.ufore.uforegrad
 
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.fribelopsperiode.faktor
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.fribelopsperiode.fom
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.fribelopsperiode.gradsokning
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.fribelopsperiode.grunnbelop
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.fribelopsperiode.tom
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.fribelopsperiode.venteperiodeStartDato
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsperiode.faktor
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsperiode.fom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsperiode.gradsokning
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsperiode.grunnbelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsperiode.tom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsperiode.venteperiodeStartDato
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
-class Fribelopsperioder(private val perioder: Expression<List<OkningUforegradDto.Fribelopsperiode>>, private val fribelop: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
+class Fribelopsperioder(private val perioder: Expression<List<Fribelopsperiode>>, private val fribelop: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(header = {
@@ -75,6 +75,7 @@ class Fribelopsperioder(private val perioder: Expression<List<OkningUforegradDto
                 }
             }
         }
+        //TODO: skal denne flyttes ut?
         paragraph {
             text(
                 bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + fribelop.format() + "." },
