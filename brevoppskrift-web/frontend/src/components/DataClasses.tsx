@@ -77,7 +77,7 @@ export function DataClassesPanel({
 
   if (!open) {
     return (
-      <Box asChild background="raised" borderRadius="0" marginBlock="space-0 space-0" marginInline="space-0 space-16">
+      <Box asChild background="raised" borderRadius="0" marginBlock="space-0" marginInline="space-0">
         <Button
           icon={<SidebarLeftIcon />}
           iconPosition="right"
