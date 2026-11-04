@@ -28,7 +28,7 @@ import {
   templateKey,
   useTemplateSearch,
 } from "~/search";
-import { isSelectedResult, pageOfResult } from "~/search/resultNavigation";
+import { isSelectedResult, pageOfResult, selectedRow } from "~/search/resultNavigation";
 import {
   DEFAULT_TAB,
   parseResultRef,
@@ -152,18 +152,15 @@ function AllTemplates() {
   const selected = useMemo(() => parseResultRef(search.selected), [search.selected]);
   const groupsLanguages = activeTab === "brev";
   const activeHits = (activeTab === "innhold" ? displayed?.contentHits : displayed?.brevHits) ?? [];
+  const activeRefs = useMemo(() => activeHits.map((hit) => resultRefOf(hit.template)), [activeHits]);
+  const selectedResult = useMemo(
+    () => selectedRow(activeRefs, selected, groupsLanguages),
+    [activeRefs, selected, groupsLanguages],
+  );
   const pageSize = activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE;
   // Coming back from a template, the list opens at the page showing it.
   const page =
-    search.page ??
-    (selected &&
-      pageOfResult(
-        activeHits.map((hit) => resultRefOf(hit.template)),
-        selected,
-        pageSize,
-        groupsLanguages,
-      )) ??
-    1;
+    search.page ?? (selectedResult && pageOfResult(activeRefs, selectedResult, pageSize, groupsLanguages)) ?? 1;
   // Only the active tab's panel is mounted, so both panels can share the page
   // state; each still slices with its own page size.
   const pageCount = Math.max(1, Math.ceil(activeHits.length / pageSize));
@@ -198,10 +195,10 @@ function AllTemplates() {
           hit={hit}
           key={templateKey(hit.template)}
           onOpen={openResult}
-          selected={isSelectedResult(resultRefOf(hit.template), selected, false)}
+          selected={isSelectedResult(resultRefOf(hit.template), selectedResult, false)}
         />
       ));
-  }, [displayed, criteria, safePage, selected, openResult]);
+  }, [displayed, criteria, safePage, selectedResult, openResult]);
   const brevList = useMemo(() => {
     if (!displayed || !criteria || displayed.brevHits.length === 0) {
       return null;
@@ -212,10 +209,10 @@ function AllTemplates() {
         criteria={criteria}
         hits={displayed.brevHits.slice(start, start + LETTER_PAGE_SIZE)}
         onOpen={openResult}
-        selected={selected}
+        selected={selectedResult}
       />
     );
-  }, [displayed, criteria, safePage, selected, openResult]);
+  }, [displayed, criteria, safePage, selectedResult, openResult]);
   useScrollToSelectedResult(search.selected, activeTab === "innhold" ? contentList : brevList);
   // Summaries describe the search on screen, so while the next one runs the
   // previous summary simply stays. Zero hits is reported here too, leaving the

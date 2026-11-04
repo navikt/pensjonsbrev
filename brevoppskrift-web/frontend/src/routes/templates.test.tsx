@@ -384,6 +384,18 @@ describe("<AllTemplates /> (route: /templates)", () => {
       expect(document.querySelectorAll("[data-selected-result]")).toHaveLength(1);
     });
 
+    it("marks the template's best-ranked language when returning from a language without a hit", async () => {
+      mockManyHits();
+
+      await renderTemplatesRoute({ q: "Hei", tab: "innhold", selected: "autobrev/A11/NYNORSK" });
+
+      await waitFor(() => expect(isCurrentPage("2")).toBe(true));
+      const link = screen.getByRole("link", { name: "A11" });
+      expect(link.getAttribute("aria-current")).toBe("true");
+      expect(link.closest("[data-selected-result]")).not.toBeNull();
+      expect(document.querySelectorAll("[data-selected-result]")).toHaveLength(1);
+    });
+
     it("starts a new search on page 1 with nothing selected", async () => {
       mockManyHits();
       const { user, router } = await renderTemplatesRoute({

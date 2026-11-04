@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { isSelectedResult, pageOfResult, resultPosition, templatesInOrder } from "~/search/resultNavigation";
+import {
+  isSelectedResult,
+  pageOfResult,
+  resultPosition,
+  selectedRow,
+  templatesInOrder,
+} from "~/search/resultNavigation";
 import { type ResultRef } from "~/search/searchContext";
 
 function result(id: string, language: string): ResultRef {
@@ -49,10 +55,18 @@ describe("selection in the result list", () => {
     expect(isSelectedResult(aBokmal, undefined, true)).toBe(false);
   });
 
+  it("falls back to the best-ranked language row for the selected template", () => {
+    expect(selectedRow(ranked, aNynorsk, false)).toBe(aNynorsk);
+    expect(selectedRow(ranked, result("A", "ENGLISH"), false)).toBe(aBokmal);
+    expect(selectedRow(ranked, result("X", "BOKMAL"), false)).toBeUndefined();
+    expect(selectedRow(ranked, result("A", "ENGLISH"), true)).toBe(aBokmal);
+  });
+
   it("finds the page that shows the selected result", () => {
     expect(pageOfResult(ranked, cNynorsk, 2, false)).toBe(2);
     expect(pageOfResult(ranked, bEnglish, 2, false)).toBe(3);
     expect(pageOfResult(ranked, result("A", "ENGLISH"), 2, true)).toBe(1);
+    expect(pageOfResult(ranked, result("A", "ENGLISH"), 2, false)).toBe(1);
     expect(pageOfResult(ranked, result("X", "BOKMAL"), 2, false)).toBeUndefined();
   });
 });

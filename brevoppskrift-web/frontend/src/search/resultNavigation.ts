@@ -60,6 +60,21 @@ export function isSelectedResult(row: ResultRef, selected: ResultRef | undefined
   return groupsLanguages ? isSameTemplate(row, selected) : isSameResult(row, selected);
 }
 
+/** The selected row, falling back to the best-ranked language of its template. */
+export function selectedRow(
+  ranked: ResultRef[],
+  selected: ResultRef | undefined,
+  groupsLanguages: boolean,
+): ResultRef | undefined {
+  if (!selected) {
+    return undefined;
+  }
+  return (
+    ranked.find((ref) => isSelectedResult(ref, selected, groupsLanguages)) ??
+    ranked.find((ref) => isSameTemplate(ref, selected))
+  );
+}
+
 /** The 1-based page of the result list that shows `selected`, or `undefined`
  *  if it is not among the results. */
 export function pageOfResult(
@@ -68,6 +83,7 @@ export function pageOfResult(
   pageSize: number,
   groupsLanguages: boolean,
 ): number | undefined {
-  const at = ranked.findIndex((ref) => isSelectedResult(ref, selected, groupsLanguages));
+  const row = selectedRow(ranked, selected, groupsLanguages);
+  const at = row ? ranked.indexOf(row) : -1;
   return at === -1 ? undefined : Math.floor(at / pageSize) + 1;
 }
