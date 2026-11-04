@@ -49,7 +49,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
         val harBarnetillegg = barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()
         val fellesbarnPeriodisert = barnetilleggFellesbarn.safe { periodisert }.ifNull(false)
         val sarkullsbarnPeriodisert = barnetilleggSaerkullsbarn.safe { periodisert }.ifNull(false)
-        val okningUforegradVedArsjoring = uforetrygd.okningUforegradVedArsjoring.ifNull(false)
+        val okningUforegradVedArsjoring = uforetrygd.okningUforegradVedArskjoring.ifNull(false)
 
         title {
             showIf(endretUt and not(btfbEndret or btsbEndret)) {

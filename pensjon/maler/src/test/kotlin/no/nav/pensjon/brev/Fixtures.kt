@@ -107,7 +107,7 @@ object Fixtures : LetterDataFactory {
             EndretBarnetilleggUfoerertrygdAuto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUfoeretrygdPGAInntektAuto::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUfoeretrygdPGAInntektRedigerbar::class -> createEndretUfoeretrygdPGAInntektRedigerbarDto() as T
-            EndretUforetrygdPGAInntektNesteAr::class -> createEndretUTPgaInntektDtoV2() as T
+            EndretUforetrygdPGAInntektNesteAr::class -> createEndretUforetrygdPGAInntektNesteArDto() as T
             EndretUforetrygdPGAOpptjeningLegacy::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
             EndringUforetrygdRedigerbar::class -> createEndringUfoeretrygdDto() as T
             EtteroppgjoerEtterbetalingAutoLegacy::class -> createEtteroppgjoerEtterbetalingAuto() as T
