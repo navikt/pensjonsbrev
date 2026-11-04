@@ -82,7 +82,8 @@ function hasConditionalRows(rows: ContentOrControlStructure<Row>[]): boolean {
 
 /** Rendrer cellene til én tabellrad som direkte grid-elementer (ingen wrapper-div), med
  * eksplisitt `gridRow`/`gridColumn` - påkrevd siden radene ikke lenger plasseres via
- * nettleserens implisitte auto-placement (se `layoutTableRows`). */
+ * nettleserens implisitte auto-placement (se `layoutTableRows`).
+ */
 function renderTableRowCells(row: Row, gridRow: number, key: string): ReactNode {
   return (
     <Fragment key={key}>

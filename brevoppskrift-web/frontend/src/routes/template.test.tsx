@@ -156,6 +156,36 @@ describe("search hit focus", () => {
     attachments: [],
     templateModelSpecification: { types: {}, letterModelTypeName: "" },
   } as unknown as TemplateDocumentation;
+  const conditionalPage = {
+    ...page,
+    outline: [
+      {
+        controlStructureType: "CONTENT",
+        content: {
+          elementType: "PARAGRAPH",
+          index: 20,
+          paragraph: [
+            {
+              controlStructureType: "CONDITIONAL",
+              showIf: [
+                {
+                  controlStructureType: "CONTENT",
+                  content: { elementType: "PARAGRAPH_TEXT_LITERAL", text: "Ingen samsvar i denne grenen" },
+                },
+              ],
+              elseIf: [],
+              showElse: [
+                {
+                  controlStructureType: "CONTENT",
+                  content: { elementType: "PARAGRAPH_TEXT_LITERAL", text: "Treff i denne grenen" },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  } as unknown as TemplateDocumentation;
 
   function text(language: string): TemplateText {
     return { malType: "autobrev", id: "A", title: "A", language, lines: [[], [], []], indexes: [10, 20, 30] };
@@ -184,15 +214,25 @@ describe("search hit focus", () => {
   };
 
   const scrolledTo: (string | null)[] = [];
+  const scrolledText: string[] = [];
   const block = (index: number) => document.querySelector(`[data-block-index="${index}"]`) as HTMLElement;
-  function openPage(search: Record<string, unknown>, { languages = ["BOKMAL"], hits = loaded as unknown } = {}) {
+  function openPage(
+    search: Record<string, unknown>,
+    {
+      languages = ["BOKMAL"],
+      hits = loaded as unknown,
+      documentation = page,
+    }: { languages?: string[]; hits?: unknown; documentation?: TemplateDocumentation } = {},
+  ) {
     getTemplateDescription.queryFn.mockResolvedValue({ languages });
     getBrevkoderMedMetadata.queryFn.mockResolvedValue([]);
-    getTemplateDocumentation.queryFn.mockResolvedValue(page);
+    getTemplateDocumentation.queryFn.mockResolvedValue(documentation);
     searchStore.set(hits);
     scrolledTo.length = 0;
+    scrolledText.length = 0;
     Element.prototype.scrollIntoView = function (this: Element) {
       scrolledTo.push(this.getAttribute("data-block-index"));
+      scrolledText.push(this.textContent ?? "");
     };
     return renderTemplateRoute(
       "/template/autobrev/A",
@@ -217,6 +257,37 @@ describe("search hit focus", () => {
     await waitFor(() => expect(scrolledTo).toEqual(["20"]));
     expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy();
     expect(router.state.location.search).not.toHaveProperty("showHits");
+  });
+
+  it("scrolls to the conditional branch containing the highlighted text", async () => {
+    await openPage({ tab: "innhold" }, { documentation: conditionalPage });
+
+    await waitFor(() => expect(scrolledTo).toEqual(["20"]));
+    const blocks = document.querySelectorAll('[data-block-index="20"]');
+    expect(blocks).toHaveLength(2);
+    expect(blocks[0].querySelector("mark")).toBeNull();
+    expect(blocks[1].querySelector("mark")).not.toBeNull();
+    expect(scrolledText[0]).toContain("Treff i denne grenen");
+  });
+
+  it("scrolls again when a new query's first hit has the same block index", async () => {
+    const router = await openPage({ tab: "innhold" });
+    await waitFor(() => expect(scrolledTo).toEqual(["20"]));
+    const updated = {
+      ...loaded,
+      displayed: {
+        ...loaded.displayed,
+        highlight: { needle: "annet", exactOnly: false },
+      },
+    };
+
+    await act(async () => {
+      // biome-ignore lint/suspicious/noExplicitAny: the standalone test router is untyped.
+      await router.navigate({ search: (search: Record<string, unknown>) => ({ ...search, q: "annet" }) } as any);
+      searchStore.set(updated);
+    });
+
+    await waitFor(() => expect(scrolledTo).toEqual(["20", "20"]));
   });
 
   it("focuses the first hit once loaded, when the hits were turned on while loading", async () => {

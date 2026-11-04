@@ -119,9 +119,14 @@ function TemplateExplorer() {
     return block !== undefined && blockIndexesOf(documentation).has(block) ? block : undefined;
   }, [focus, documentation]);
   const marking = showHits !== false;
-  const { hits, highlight, activeBlock, scrollTarget } = useHitFocus(criteria, current, requestedBlock, marking);
+  const { hits, highlight, activeBlock, scrollTarget, scrollKey } = useHitFocus(
+    criteria,
+    current,
+    requestedBlock,
+    marking,
+  );
   const pickedBlock = useRef<number | undefined>(undefined);
-  useScrollToBlock(previewRef, scrollTarget, documentation, pickedBlock);
+  useScrollToBlock(previewRef, scrollTarget, documentation, pickedBlock, scrollKey);
   const selectBlock = (block: number) =>
     navigate({ replace: true, search: (s) => ({ ...s, focus: focusParam(block) }) });
   // A hit the user clicks in, or tabs into, becomes the focused one, so a copied

@@ -12,6 +12,8 @@ export type HitFocus = {
   activeBlock: number | undefined;
   /** The block to scroll to. */
   scrollTarget: number | undefined;
+  /** The query and match mode that produced the current highlights. */
+  scrollKey: string | undefined;
 };
 
 const NO_MATCHES: ReadonlySet<number> = new Set();
@@ -57,5 +59,6 @@ export function useHitFocus(
     // Without a search, a plain `focus` link still scrolls to its block. With
     // one, only while the hits are shown, so showing them scrolls there.
     scrollTarget: criteria && !marking ? undefined : activeBlock,
+    scrollKey: ready ? JSON.stringify([ready.highlight.needle, ready.highlight.exactOnly]) : undefined,
   };
 }
