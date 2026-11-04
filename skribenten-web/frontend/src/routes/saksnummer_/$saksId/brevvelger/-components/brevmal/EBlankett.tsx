@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField } from "@navikt/ds-react";
+import { Textarea } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { useEffect, useRef } from "react";
@@ -98,13 +98,12 @@ export default function EBlankett({
             ),
           )}
         >
-          <TextField
+          <Textarea
             data-testid="mottaker-text-textfield"
             {...methods.register("mottakerText")}
             autoComplete="off"
             error={methods.formState.errors.mottakerText?.message}
             label="Mottaker"
-            size="small"
           />
           <SelectAvtaleland />
           <SelectEnhet />

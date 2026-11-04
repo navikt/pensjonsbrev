@@ -51,7 +51,8 @@ for (const landkode of ["NOR", "GBR"]) {
     if (landkode !== "NOR") {
       await country.selectOption(landkode);
     }
-    await page.getByRole("textbox", { name: "Mottaker" }).fill("Testmottaker");
+    const mottakerText = landkode === "NOR" ? "Testmottaker\nPostboks 123\n0123 Oslo" : "Testmottaker";
+    await page.getByRole("textbox", { name: "Mottaker" }).fill(mottakerText);
     expect(await creationEvents(page)).toEqual([]);
 
     const orderRequest = page.waitForRequest(
@@ -61,7 +62,7 @@ for (const landkode of ["NOR", "GBR"]) {
     expect((await orderRequest).postDataJSON()).toEqual({
       brevkode: "E001",
       landkode,
-      mottakerText: "Testmottaker",
+      mottakerText,
       enhetsId: "4815",
     });
     expect(await creationEvents(page)).toEqual([]);
