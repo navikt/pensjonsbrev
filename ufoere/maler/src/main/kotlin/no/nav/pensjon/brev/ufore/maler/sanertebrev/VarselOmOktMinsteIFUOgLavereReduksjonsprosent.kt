@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.ufore.maler.lovendringer2026
+package no.nav.pensjon.brev.ufore.maler.sanertebrev
 
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -15,14 +15,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBR
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object VarselOmLavereReduksjonsprosent : AutobrevTemplate<EmptyAutobrevdata> {
+object VarselOmOktMinsteIFUOgLavereReduksjonsprosent : AutobrevTemplate<EmptyAutobrevdata> {
 
-    override val kode = Ufoerebrevkoder.AutoBrev.UT_VARSEL_LAVERE_REDUKSJONSPROSENT
+    override val kode = Ufoerebrevkoder.AutoBrev.UT_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS
 
     override val template = createTemplate(
         languages = languages(Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Varsel - lavere reduksjonsprosent",
+            displayTitle = "Varsel - økt minste IFU og lavere reduksjonsprosent",
             distribusjonstype = VIKTIG,
             brevtype = INFORMASJONSBREV
         )
@@ -36,6 +36,7 @@ object VarselOmLavereReduksjonsprosent : AutobrevTemplate<EmptyAutobrevdata> {
         outline {
             includePhrase(UforetrygdLovendringer2026Fraser.Introduksjon)
             includePhrase(UforetrygdLovendringer2026Fraser.LavereReduksjonsprosent)
+            includePhrase(UforetrygdLovendringer2026Fraser.OktMinsteIFU)
             includePhrase(UforetrygdLovendringer2026Fraser.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilInnsyn)
             includePhrase(Felles.HarDuSporsmal)

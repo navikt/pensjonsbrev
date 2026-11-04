@@ -1,7 +1,6 @@
-package no.nav.pensjon.brev.ufore.maler.lovendringer2026
+package no.nav.pensjon.brev.ufore.maler.sanertebrev
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -10,8 +9,10 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
+import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -22,6 +23,8 @@ object VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar : RedigerbarTempl
     override val kategori = Brevkategori.VARSEL
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
+
+    override val featureToggle = FeatureToggles.sanerteBrev.toggle
 
     override val template = createTemplate(
         languages = languages(Bokmal, Language.Nynorsk),

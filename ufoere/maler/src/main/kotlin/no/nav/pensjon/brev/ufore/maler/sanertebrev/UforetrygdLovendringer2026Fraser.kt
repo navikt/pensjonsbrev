@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.ufore.maler.lovendringer2026
+package no.nav.pensjon.brev.ufore.maler.sanertebrev
 
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase

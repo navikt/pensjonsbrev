@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.ufore.maler.fraser
+package no.nav.pensjon.brev.ufore.maler.vedlegg
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

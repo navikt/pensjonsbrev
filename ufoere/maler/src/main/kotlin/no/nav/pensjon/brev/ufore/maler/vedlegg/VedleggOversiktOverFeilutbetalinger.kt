@@ -16,8 +16,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.oversiktOverFeilutbetalingPEDto.tilbakekreving.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.oversiktOverFeilutbetalingPEDto.*
-import no.nav.pensjon.brev.ufore.maler.fraser.KonteringTypeYtelseTextMappingStorBokstav
-import no.nav.pensjon.brev.ufore.maler.fraser.ResultatAvVurderingenTextMappingStorBokstav
 
 @TemplateModelHelpers
 val oversiktOverFeilutbetalinger =

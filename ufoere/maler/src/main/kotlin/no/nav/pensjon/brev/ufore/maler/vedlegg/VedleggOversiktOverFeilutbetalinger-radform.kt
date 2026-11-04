@@ -4,11 +4,7 @@ import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createAttachment
@@ -20,7 +16,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.feilutbeta
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.feilutbetalingPerAr.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.oversiktOverFeilutbetalingPEDto.*
-import no.nav.pensjon.brev.ufore.maler.fraser.ResultatAvVurderingenTextMappingStorBokstav
 
 @TemplateModelHelpers
 val oversiktOverFeilutbetalingerPaRadform: AttachmentTemplate<LangBokmalNynorsk, OversiktOverFeilutbetalingPEDto> =
