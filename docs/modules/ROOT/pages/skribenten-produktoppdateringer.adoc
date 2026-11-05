@@ -2,6 +2,53 @@
 
 Her publiserer Team Pensjonsbrev månedlige oppdateringer om hva som er nytt i Skribenten. Du finner informasjon om nye funksjoner, forbedringer og feilrettinger.
 
+== September - Oktober 2026
+I denne perioden har vi jobbet med å gjøre det enklere å redigere brev og vedlegg, forbedret formateringen på innlimt tekst og tastaturnavigeringen.
+
+=== Nye ting vi har laget
+* Visning av endringer for attestant
+
+
+=== Ting vi har forbedret
+
+* Formatering av innlimt tekst i brev
+* Tilgang til brevredigeringen med Tab
+* Bedre navigering i tabeller
+
+=== Ting vi har fikset
+
+* Sperre mot utsending av brev mens PDF-en lastes
+
+=== Ting vi jobber med
+
+* Mulighet for å kommunisere og synliggjøre nyheter og ny funksjonalitet i Skribenten
+* Håndtering av endringer i brevmal i kladd til saksbehandler
+
+
+
+
+=== Visning av endringer for attestant
+Attestanten kan enklere se hvilke endringer saksbehandler har gjort i brevet.
+Attestanten kan velge å vise:
+
+* tekst som er lagt til, markert i grønt
+* tekst som er slettet, markert i rosa med gjennomstreking
+* eller begge samtidig
+
+=== Mer robust innliming av tekst
+
+Håndteringen av innlimt tekst er forbedret, blant annet ved innliming i markert tekst, lister og tabeller. Det er også lagt til støtte for flere formater fra utklippstavlen. Målet er å redusere behovet for formatering når du limer inn tekst i brevet, men det er fortsatt viktig å kontrollere resultatet etter innliming.
+
+===  Tilgang til brevredigeringen med Tab
+Det er lagt til rette for å nå selve brevredigeringen med Tab-tasten. Dette gjør arbeidsflyten bedre for deg som navigerer uten mus.
+
+=== Bedre navigering i tabeller
+Pil opp og pil ned håndterer nå tabellceller med flere tekstlinjer bedre. Dette er særlig nyttig når du redigerer tabeller med tastaturet.
+
+=== Sperre mot utsending av brev mens PDF-en lastes
+
+Valgte brev kan ikke sendes mens PDF-ene fortsatt lastes inn. Dette er en ekstra sikkerhet for at riktig, oppdatert brevversjon er klar før utsending.
+
 == Juli–september 2026
 
 Sommeren og starten på høsten har vært preget av videre arbeid med redigerbare vedlegg. Vi har også gjort Skribenten mer robust, fått bedre innsikt i bruken av Skribenten, og flyttet flere brev over på en ny løsning for saksbehandlervalg.
