@@ -48,11 +48,11 @@ export default function BrevmalForExstream({
     onSuccess: (callbackUrl, variables) => {
       trackEvent("brev opprettet", {
         brevkode: letterTemplate.id,
-        spraak: variables.spraak,
         brevtittel: letterTemplate.name,
         brevsystem: "exstream",
         dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
         enhetsId: variables.enhetsId,
+        spraak: variables.spraak,
       });
       window.open(callbackUrl);
     },
