@@ -7,7 +7,17 @@ import { type UnifiedLetterDiff } from "~/Brevredigering/LetterEditor/diff/diffM
 import { type BrevResponse } from "~/types/brev";
 import { type AnyBlock, ElementTags, ListType } from "~/types/brevbakerTypes";
 import { setupSakStubs } from "~test/e2e/support/helpers";
-import { cell, item, itemList, literal, paragraph, row, table, title1 } from "~test/support/letterEditorTestUtils";
+import {
+  cell,
+  item,
+  itemList,
+  literal,
+  paragraph,
+  row,
+  table,
+  title1,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 const dialogName = "Vil du tilbakestille brevmalen?";
 const editorFixture: BrevResponse = JSON.parse(
@@ -127,6 +137,40 @@ test.describe("Letter editor accessibility", () => {
     test("loaded editor page", async ({ page }, testInfo) => {
       await openEditor(page);
       await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
+      await expectNoAxeViolations(page, testInfo);
+    });
+
+    test("fritekst and variable fields in paragraphs, lists and tables", async ({ page }, testInfo) => {
+      await openEditor(page, [
+        paragraph([
+          literal("Vanlig tekst "),
+          literal({ text: "Fritekst i avsnitt", tags: [ElementTags.FRITEKST] }),
+          variable("Variabel i avsnitt"),
+        ]),
+        paragraph([
+          itemList({
+            items: [
+              item(literal({ text: "Fritekst i liste", tags: [ElementTags.FRITEKST] }), variable("Variabel i liste")),
+            ],
+          }),
+        ]),
+        paragraph([
+          table(
+            [cell(literal("Opplysning"))],
+            [
+              row(
+                cell(
+                  literal({ text: "Fritekst i tabell", tags: [ElementTags.FRITEKST] }),
+                  variable("Variabel i tabell"),
+                ),
+              ),
+            ],
+          ),
+        ]),
+      ]);
+      await page.getByText("Vanlig tekst", { exact: true }).click();
+      await expect(page.getByText("Fritekst i tabell", { exact: true })).toBeVisible();
+      await expect(page.getByText("Variabel i tabell", { exact: true })).toBeVisible();
       await expectNoAxeViolations(page, testInfo);
     });
 

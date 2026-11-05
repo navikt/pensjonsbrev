@@ -945,8 +945,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       contentEditable={!freeze}
       css={{
         ...(erFritekst && {
-          color: "var(--ax-accent-600)",
+          color: "var(--ax-text-accent-subtle)",
+          backgroundColor: "var(--ax-bg-brand-blue-moderate)",
+          borderRadius: "var(--ax-radius-2)",
+          fontWeight: 600,
+          padding: "0 var(--ax-space-2)",
           textDecoration: "underline",
+          textDecorationThickness: "from-font",
+          textUnderlinePosition: "from-font",
           cursor: "pointer",
         }),
         ...(fontTypeOf(content) === FontType.BOLD && { fontWeight: "bold" }),
