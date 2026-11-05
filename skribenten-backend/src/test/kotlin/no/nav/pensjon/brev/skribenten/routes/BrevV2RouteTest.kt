@@ -18,9 +18,11 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import no.nav.pensjon.brev.skribenten.Features
+import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.SakKey
+import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.LagreP1DataHandler
@@ -29,6 +31,8 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentAll
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
+import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPI
+import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPIService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2
@@ -57,6 +61,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.api.parallel.Isolated
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 @Isolated
 @Execution(ExecutionMode.SAME_THREAD)
@@ -385,6 +391,45 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
         assertThat(attestert.status).isEqualTo(HttpStatusCode.OK)
         val status = mapper.readValue<ApiV2.BrevResponse>(attestert.bodyAsText()).info.status as Api.BrevStatus.Klar
         assertThat(status.attestertAv?.id).isEqualTo(attestant1Principal.navIdent)
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [false, true])
+    fun `ekstern oppretting lagrer valgt versjon som kan aapnes etter at toggle slaas av`(v2: Boolean) = routeTest { client ->
+        Features.override(Features.markupV2, v2)
+        val service = ExternalAPIService(
+            config = ExternalApiConfig("https://skribenten.test"),
+            hentBrevForAlleSaker = hentBrevForAlleSakerHandler,
+            brevmalService = brevmalService,
+            opprettBrevHandler = opprettBrev,
+        )
+        val created = withPrincipal(saksbehandler1Principal) {
+            service.opprettBrev(ExternalAPI.OpprettBrevRequest(
+                saksId = sak1.saksId,
+                brevkode = Testbrevkoder.INFORMASJONSBREV,
+                spraak = SpraakKode.EN,
+                avsenderEnhetsId = PRINCIPAL_NAVENHET_ID,
+                saksbehandlerValg = null,
+                statiskFagsystemBrevdata = null,
+                reserverForRedigering = null,
+                vedtaksId = null,
+            )).resultOrFail()
+        }
+        Features.override(Features.markupV2, false)
+        assertThat(created.info.markupVersjon).isEqualTo(if (v2) MarkupVersjon.V2 else MarkupVersjon.V1)
+        val response = client.get(if (v2) "$basePath/v2/${created.info.id}" else "$basePath/${created.info.id}")
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        if (v2) {
+            val reopened = mapper.readValue<ApiV2.BrevResponse>(response.bodyAsText())
+            assertThat(reopened.info.id).isEqualTo(created.info.id)
+            assertThat(reopened.redigertBrev.version).isEqualTo(2)
+        } else {
+            val reopened = mapper.readValue<Api.BrevResponse>(response.bodyAsText())
+            assertThat(reopened.info.id).isEqualTo(created.info.id)
+            assertThat(reopened.info.markupVersjon).isEqualTo(MarkupVersjon.V1)
+        }
+        val listed = service.hentAlleBrevForSaker(setOf(sak1.saksId)).single { it.id == created.info.id }
+        assertThat(listed.url).isEqualTo("https://skribenten.test/aapne/brev/${created.info.id.id}")
     }
 
     @Test
