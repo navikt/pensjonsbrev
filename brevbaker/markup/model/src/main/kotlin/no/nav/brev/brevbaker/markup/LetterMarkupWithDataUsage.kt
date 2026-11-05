@@ -13,7 +13,7 @@ data class LetterMarkupWithDataUsage internal constructor(
     val markup: LetterMarkup,
     val letterDataUsage: Set<Property>,
     val brevtype: Markup.Brevtype,
-    val stableHashCode: StableHashCode? = null,
+    val stableHashCode: StableHashCode,
 ) {
     /** Et enkelt datafelt (type og property) brevet leser fra. */
     @ConsistentCopyVisibility
