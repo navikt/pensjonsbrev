@@ -107,7 +107,6 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
     private val contentFactory: ContentFactory<C>,
     private val saksinformasjon: Saksinformasjon,
     private val signatur: Signatur,
-    private val stableHashCode: StableHashCode? = null,
 ) {
     private var title1: List<Text> = emptyList()
     private var blocks: List<Block> = emptyList()
@@ -135,7 +134,6 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
         saksinformasjon = saksinformasjon,
         blocks = blocks,
         signatur = signatur,
-        stableHashCode = stableHashCode,
     )
 }
 

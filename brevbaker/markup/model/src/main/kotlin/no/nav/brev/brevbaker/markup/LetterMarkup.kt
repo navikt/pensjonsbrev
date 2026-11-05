@@ -12,7 +12,6 @@ data class LetterMarkup internal constructor(
     val blocks: List<Block>,
     val signatur: Signatur,
     val version: Int = VERSION,
-    val stableHashCode: StableHashCode? = null,
 ) {
     companion object {
         const val VERSION = 2

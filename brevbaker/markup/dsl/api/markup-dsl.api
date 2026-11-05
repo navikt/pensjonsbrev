@@ -31,7 +31,6 @@ public final class no/nav/brev/brevbaker/markup/dsl/ItemsBuilder {
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder {
-	public synthetic fun <init> (Lkotlin/jvm/functions/Function0;Lno/nav/brev/brevbaker/markup/Saksinformasjon;Lno/nav/brev/brevbaker/markup/Signatur;Lno/nav/brev/brevbaker/StableHashCode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
 }
 
@@ -129,7 +128,6 @@ public final class no/nav/brev/brevbaker/markup/dsl/extended/LetterMarkupExtende
 	public static final fun itemExtended (Lno/nav/brev/brevbaker/markup/dsl/ItemsBuilder;ILkotlin/jvm/functions/Function1;)V
 	public static final fun itemListExtended (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;ILkotlin/jvm/functions/Function1;)V
 	public static final fun letterMarkupExtended (Lno/nav/brev/brevbaker/markup/Saksinformasjon;Lno/nav/brev/brevbaker/markup/Signatur;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
-	public static final fun letterMarkupExtended-CUV4Udg (Lno/nav/brev/brevbaker/markup/Saksinformasjon;Lno/nav/brev/brevbaker/markup/Signatur;Lno/nav/brev/brevbaker/StableHashCode;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public static final fun numberedListExtended (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;ILkotlin/jvm/functions/Function1;)V
 	public static final fun paragraphExtended (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;ILkotlin/jvm/functions/Function1;)V
 	public static final fun pdfTittelExtended (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittel;
@@ -144,8 +142,8 @@ public final class no/nav/brev/brevbaker/markup/dsl/extended/LetterMarkupExtende
 
 public final class no/nav/brev/brevbaker/markup/dsl/extended/LetterMarkupWithDataUsageDslKt {
 	public static final fun dataUsageProperty (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property;
-	public static final fun letterMarkupWithDataUsage (Lno/nav/brev/brevbaker/markup/LetterMarkup;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Ljava/util/Set;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
-	public static synthetic fun letterMarkupWithDataUsage$default (Lno/nav/brev/brevbaker/markup/LetterMarkup;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Ljava/util/Set;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
+	public static final fun letterMarkupWithDataUsage-P7BY7lg (Lno/nav/brev/brevbaker/markup/LetterMarkup;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Ljava/util/Set;Lno/nav/brev/brevbaker/StableHashCode;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
+	public static synthetic fun letterMarkupWithDataUsage-P7BY7lg$default (Lno/nav/brev/brevbaker/markup/LetterMarkup;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Ljava/util/Set;Lno/nav/brev/brevbaker/StableHashCode;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/extended/PlainExtendedTextBuilder {

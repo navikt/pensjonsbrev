@@ -29,7 +29,6 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         letterMarkupExtended(
             saksinformasjon = buildSaksinformasjon(scope),
             signatur = buildSignatur(scope),
-            stableHashCode = StableHashCode(template.stableHashCode()),
             build = buildLetter(scope, template),
         )
 

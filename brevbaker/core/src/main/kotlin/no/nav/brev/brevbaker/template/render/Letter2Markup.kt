@@ -72,7 +72,6 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                     navAvsenderEnhet = context.scope.felles.avsenderEnhet.navn,
                 )
             },
-            stableHashCode = StableHashCode(template.stableHashCode())
         )
 
     fun renderAttachmentsOnly(

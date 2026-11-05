@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.SaksbehandlervalgEksempelBrev
 import no.nav.brev.brevbaker.SaksbehandlervalgTestDto
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Language
@@ -26,6 +27,13 @@ class BrevbakerLetterMarkupWithDataUsageSaksbehandlervalgTest {
         language = Language.Bokmal,
         felles = FellesFactory.felles,
     )
+
+    @Test
+    fun `stableHashCode paa databruk-wrapperen er malens hash`() {
+        val result = BrevbakerLetterMarkup.renderLetterMarkupWithDataUsage(letter)
+
+        assertThat(result.stableHashCode).isEqualTo(StableHashCode(letter.template.stableHashCode()))
+    }
 
     @Test
     fun `letterDataUsage inneholder saksbehandlerValg-feltet fra DTO-en og de faktiske saksbehandlervalgene`() {

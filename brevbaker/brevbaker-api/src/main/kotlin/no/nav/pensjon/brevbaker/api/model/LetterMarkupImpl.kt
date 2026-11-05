@@ -19,6 +19,7 @@ data class LetterMarkupWithDataUsageImpl(
     override val markup: LetterMarkup,
     override val letterDataUsage: Set<LetterMarkupWithDataUsage.Property>,
     override val brevtype: LetterMetadata.Brevtype,
+    override val stableHashCode: StableHashCode?,
 ) : LetterMarkupWithDataUsage {
 
     @InterneDataklasser
@@ -32,7 +33,6 @@ data class LetterMarkupImpl(
     override val sakspart: LetterMarkup.Sakspart,
     override val blocks: List<Block>,
     override val signatur: LetterMarkup.Signatur,
-    override val stableHashCode: StableHashCode?,
 ) : LetterMarkup {
 
     @InterneDataklasser

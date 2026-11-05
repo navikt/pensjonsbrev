@@ -332,8 +332,7 @@ fun Edit.Letter.toMarkup(): LetterMarkup =
         sakspart = sakspart,
         blocks = blocks.map { it.toMarkup() },
         signatur = signatur,
-        stableHashCode = null
-    ) // TODO: fiks
+    )
 
 fun Edit.Attachment.toMarkup(): LetterMarkup.Attachment =
     LetterMarkupImpl.AttachmentImpl(
@@ -407,7 +406,6 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
-
 
 
 

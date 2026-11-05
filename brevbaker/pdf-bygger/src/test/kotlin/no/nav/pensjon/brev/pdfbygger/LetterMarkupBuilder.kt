@@ -52,7 +52,6 @@ class LetterMarkupBuilder {
             sakspart = sakspart,
             blocks = blocks,
             signatur = signatur,
-            stableHashCode = StableHashCode(blocks.map { it.id }.hashCode())
         )
     }
 }

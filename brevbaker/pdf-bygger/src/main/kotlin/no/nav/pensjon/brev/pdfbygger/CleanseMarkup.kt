@@ -22,7 +22,6 @@ private fun cleanMarkup(markup: LetterMarkup): LetterMarkup =
         sakspart = markup.sakspart,
         blocks = markup.blocks.mapNotNull { clean(it) }.removeEmptyBlocks(),
         signatur = markup.signatur,
-        stableHashCode = markup.stableHashCode
     )
 
 @OptIn(InterneDataklasser::class)
@@ -112,5 +111,4 @@ private fun List<LetterMarkup.ParagraphContent>.endsWithLinebreakableContent(): 
     }.lastOrNull().let {
         it is LetterMarkup.ParagraphContent.Text && it.text.isNotBlank()
     }
-
 

@@ -600,6 +600,7 @@ abstract class BrevredigeringHandlerTestBase {
                     markup = it,
                     letterDataUsage = emptySet(),
                     brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
+                    stableHashCode = null,
                 ) }
 
         override suspend fun renderPdf(

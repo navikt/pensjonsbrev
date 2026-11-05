@@ -42,16 +42,7 @@ fun letterMarkupExtended(
     signatur: Signatur,
     build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
 ): LetterMarkup =
-    letterMarkupExtended(saksinformasjon, signatur, null, build)
-
-@ExtendedMarkupDsl
-fun letterMarkupExtended(
-    saksinformasjon: Saksinformasjon,
-    signatur: Signatur,
-    stableHashCode: StableHashCode?,
-    build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
-): LetterMarkup =
-    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur, stableHashCode).apply(build).build()
+    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur).apply(build).build()
 
 /**
  * Som [attachment], men med støtte for `variable(...)`/tags og krav om eksplisitt id på hvert element.

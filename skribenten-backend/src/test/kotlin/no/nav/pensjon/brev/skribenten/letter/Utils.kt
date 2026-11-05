@@ -28,7 +28,6 @@ fun letter(vararg blocks: LetterMarkup.Block) =
             attesterendeSaksbehandlerNavn = null,
             navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn"
         ),
-        stableHashCode = StableHashCode(blocks.map { it.id }.hashCode())
     )
 
 fun editedLetter(vararg blocks: Edit.Block, deleted: Collection<Int> = emptyList(), fixParentIds: Boolean = true, dokumentDato: LocalDate = LocalDate.now()): Edit.Letter =

@@ -35,6 +35,7 @@ internal object BrevbakerLetterMarkup {
                 Letter2Markup.renderLetterOnly(letter.toScope(usage), letter.template),
                 usage.propertyUsage,
                 letter.template.letterMetadata.brevtype,
+                StableHashCode(letter.template.stableHashCode()),
             )
         }
 
@@ -52,6 +53,7 @@ internal object BrevbakerLetterMarkup {
             letterMarkupWithDataUsage(
                 markup = Letter2MarkupV2.renderLetterOnly(scope, letter.template),
                 brevtype = letter.template.letterMetadata.brevtype.toMarkup(),
+                stableHashCode = StableHashCode(letter.template.stableHashCode()),
                 letterDataUsage = usage.propertyUsage.map {
                     dataUsageProperty(it.typeName, it.propertyName)
                 }.toSet()

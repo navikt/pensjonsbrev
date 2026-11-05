@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.brevbaker.BrevbakerLetterMarkup
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.createTemplate
@@ -286,13 +287,13 @@ class Letter2MarkupV2Test {
     }
 
     @Test
-    fun `rendered letter includes template stable hash`() {
+    fun `rendered letter with data usage includes template stable hash`() {
         val template = outlineTestTemplate<EmptyAutobrevdata> {
             title1 { text(bokmal { +"overskrift" }) }
         }
 
-        val result = Letter2MarkupV2.render(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
+        val result = BrevbakerLetterMarkup.renderLetterMarkupWithDataUsageV2(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
 
-        assertEquals(StableHashCode(template.stableHashCode()), result.letterMarkup.stableHashCode)
+        assertEquals(StableHashCode(template.stableHashCode()), result.stableHashCode)
     }
 }

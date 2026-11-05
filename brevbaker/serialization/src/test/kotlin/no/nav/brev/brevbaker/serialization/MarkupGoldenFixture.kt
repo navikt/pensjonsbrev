@@ -39,7 +39,6 @@ object MarkupGoldenFixture {
                 saksbehandlerNavn = "Sak S. Behandler",
                 attesterendeSaksbehandlerNavn = "Att Esterer",
             ),
-            stableHashCode = StableHashCode(123),
         ) {
             title1 { text(id(), "Vedtak om "); variable(id(), "uføretrygd") }
             outline {
@@ -102,6 +101,7 @@ object MarkupGoldenFixture {
     fun withDataUsage(): LetterMarkupWithDataUsage = letterMarkupWithDataUsage(
         markup = letter(),
         brevtype = Markup.Brevtype.VEDTAKSBREV,
+        stableHashCode = StableHashCode(123),
         letterDataUsage = setOf(
             dataUsageProperty("UngUfoerDto", "totaltUfoerePerMnd"),
             dataUsageProperty("UngUfoerDto", "virkningsdato"),

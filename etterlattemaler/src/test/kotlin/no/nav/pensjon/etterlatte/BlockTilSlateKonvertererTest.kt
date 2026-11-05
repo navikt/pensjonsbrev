@@ -7,7 +7,6 @@ import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFRequest
-import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -136,7 +135,6 @@ class BlockTilSlateKonvertererTest {
                 )
             )
         ),
-        stableHashCode = StableHashCode(2)
     )
 
     private val brevbaker_payload_med_item_list = LetterMarkupImpl(
@@ -217,6 +215,5 @@ class BlockTilSlateKonvertererTest {
             attesterendeSaksbehandlerNavn = "Per Attesterende",
             navAvsenderEnhet = "NAV Familie- og pensjonsytelser Porsgrunn"
         ),
-        stableHashCode = StableHashCode(1)
     )
 }

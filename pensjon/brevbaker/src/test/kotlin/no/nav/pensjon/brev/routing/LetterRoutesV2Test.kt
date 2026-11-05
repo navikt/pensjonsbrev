@@ -66,7 +66,7 @@ class LetterRoutesV2Test {
 
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<LetterMarkupWithDataUsage>()
-        assertEquals(StableHashCode(EksempelbrevRedigerbart.template.stableHashCode()), body.markup.stableHashCode)
+        assertEquals(StableHashCode(EksempelbrevRedigerbart.template.stableHashCode()), body.stableHashCode)
         assertTrue(body.letterDataUsage.isNotEmpty())
     }
 

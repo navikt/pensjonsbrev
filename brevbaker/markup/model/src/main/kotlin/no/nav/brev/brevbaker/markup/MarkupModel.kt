@@ -69,15 +69,7 @@ object MarkupModel {
     // --- Brev ---
 
     fun letterMarkup(title1: List<Text>, saksinformasjon: Saksinformasjon, blocks: List<Block>, signatur: Signatur): LetterMarkup =
-        letterMarkup(title1, saksinformasjon, blocks, signatur, null)
-
-    fun letterMarkup(
-        title1: List<Text>,
-        saksinformasjon: Saksinformasjon,
-        blocks: List<Block>,
-        signatur: Signatur,
-        stableHashCode: StableHashCode?,
-    ): LetterMarkup = LetterMarkup(title1, saksinformasjon, blocks, signatur, stableHashCode = stableHashCode)
+        LetterMarkup(title1, saksinformasjon, blocks, signatur)
 
     fun attachment(title1: List<Text>, blocks: List<Block>, inkluderSaksinformasjon: Boolean): Attachment =
         attachment(title1, blocks, inkluderSaksinformasjon, null)
@@ -111,10 +103,12 @@ object MarkupModel {
     fun saksbehandlerSignatur(saksbehandlerNavn: String, attesterendeSaksbehandlerNavn: String?): SaksbehandlerSignatur =
         SaksbehandlerSignatur(saksbehandlerNavn, attesterendeSaksbehandlerNavn)
 
-    fun letterMarkupWithDataUsage(markup: LetterMarkup,
-                                  letterDataUsage: Set<Property>,
-                                  brevtype: Markup.Brevtype) =
-        LetterMarkupWithDataUsage(markup, letterDataUsage, brevtype)
+    fun letterMarkupWithDataUsage(
+        markup: LetterMarkup,
+        letterDataUsage: Set<Property>,
+        brevtype: Markup.Brevtype,
+        stableHashCode: StableHashCode? = null,
+    ) = LetterMarkupWithDataUsage(markup, letterDataUsage, brevtype, stableHashCode)
 
     fun letterMarkupWithDataUsageProperty(typeName: String, propertyName: String) =
         Property(typeName, propertyName)
