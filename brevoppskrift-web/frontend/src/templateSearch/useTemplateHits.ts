@@ -9,6 +9,7 @@ import {
   type SearchCriteria,
 } from "~/search/searchContext";
 import { useAllTemplateRefs } from "~/search/templateRefs";
+import { type ContentHit } from "~/search/textSearch";
 import { type DisplayedSearch, type Highlight, useSearchResults } from "~/search/useSearchResults";
 
 /** A result to move to, and the block to open it at. */
@@ -22,6 +23,8 @@ type ReadyTemplateHits = {
   stale: boolean;
   /** Matching block indexes in this template and language, in document order. */
   matchingBlocks: number[];
+  /** All searchable block indexes in this template's document order. */
+  blockOrder: number[];
   /** Whether another language version of this template has matching blocks. */
   matchesInOtherLanguage: boolean;
   /** The block the user is at: the requested one, else the first match if
@@ -59,16 +62,28 @@ function rankedEntries(displayed: DisplayedSearch, tab: SearchCriteria["tab"]): 
 }
 
 /** Block indexes of every matching line of `current`, unique and in document order. */
-function matchingBlocksOf(displayed: DisplayedSearch, current: ResultRef): number[] {
-  const hit = displayed.contentHits.find(
+function templateHitOf(displayed: DisplayedSearch, current: ResultRef): ContentHit | undefined {
+  return displayed.contentHits.find(
     ({ template }) =>
       template.malType === current.malType && template.id === current.id && template.language === current.language,
   );
+}
+
+function blockOrderOf(displayed: DisplayedSearch, current: ResultRef): number[] {
+  const hit =
+    templateHitOf(displayed, current) ??
+    displayed.contentHits.find(({ template }) => isSameTemplate(template, current));
+  return hit ? [...new Set<number>(hit.template.indexes)] : [];
+}
+
+/** Block indexes of every matching line of `current`, unique and in document order. */
+function matchingBlocksOf(displayed: DisplayedSearch, current: ResultRef): number[] {
+  const hit = templateHitOf(displayed, current);
   if (!hit) {
     return [];
   }
-  const blocks = new Set(hit.matchedLineIndexes.map((line) => hit.template.indexes[line]));
-  return [...blocks].sort((a, b) => a - b);
+  const matchingIndexes = new Set<number>(hit.matchedLineIndexes.map((line) => hit.template.indexes[line]));
+  return [...new Set<number>(hit.template.indexes)].filter((block) => matchingIndexes.has(block));
 }
 
 /** What a completed search says about the template being viewed. Pure; see
@@ -82,6 +97,7 @@ export function hitsInTemplate(
   focusFirstHit: boolean,
 ): ReadyTemplateHits {
   const matchingBlocks = matchingBlocksOf(displayed, current);
+  const blockOrder = blockOrderOf(displayed, current);
   const activeBlock = requestedBlock ?? (focusFirstHit ? matchingBlocks[0] : undefined);
   const entries = rankedEntries(displayed, criteria.tab);
   const ranked = entries.map((entry) => entry.ref);
@@ -95,6 +111,7 @@ export function hitsInTemplate(
     highlight: displayed.highlight,
     stale: displayed.highlight.needle !== criteria.q || displayed.highlight.exactOnly !== criteria.exact,
     matchingBlocks,
+    blockOrder,
     matchesInOtherLanguage: displayed.contentHits.some(
       ({ template }) => isSameTemplate(template, current) && template.language !== current.language,
     ),
@@ -111,13 +128,30 @@ export function hitsInTemplate(
 export function blockNavigation(
   matchingBlocks: number[],
   activeBlock: number | undefined,
+  blockOrder: number[] = matchingBlocks,
 ): { at: number | undefined; previousBlock: number | undefined; nextBlock: number | undefined } {
   if (activeBlock === undefined) {
     return { at: undefined, previousBlock: undefined, nextBlock: matchingBlocks[0] };
   }
   const at = matchingBlocks.indexOf(activeBlock);
+  if (at !== -1) {
+    return {
+      at,
+      previousBlock: matchingBlocks[at - 1],
+      nextBlock: matchingBlocks[at + 1],
+    };
+  }
+  const activePosition = blockOrder.indexOf(activeBlock);
+  if (activePosition !== -1) {
+    const positions = new Map(blockOrder.map((block, index) => [block, index]));
+    return {
+      at: undefined,
+      previousBlock: matchingBlocks.findLast((block) => (positions.get(block) ?? -1) < activePosition),
+      nextBlock: matchingBlocks.find((block) => (positions.get(block) ?? Number.POSITIVE_INFINITY) > activePosition),
+    };
+  }
   return {
-    at: at === -1 ? undefined : at,
+    at: undefined,
     previousBlock: matchingBlocks.findLast((block) => block < activeBlock),
     nextBlock: matchingBlocks.find((block) => block > activeBlock),
   };

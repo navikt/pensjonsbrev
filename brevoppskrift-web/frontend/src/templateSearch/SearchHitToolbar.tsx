@@ -114,7 +114,7 @@ function HitNavigation({
   }
   const { matchingBlocks, matchesInOtherLanguage, activeBlock, result, previousResult, nextResult, stale, incomplete } =
     hits;
-  const { at, previousBlock, nextBlock } = blockNavigation(matchingBlocks, activeBlock);
+  const { at, previousBlock, nextBlock } = blockNavigation(matchingBlocks, activeBlock, hits.blockOrder);
   const resultLink = (target: ResultLinkTarget | undefined, icon: ReactNode) =>
     target && !stale ? (
       <ButtonLink

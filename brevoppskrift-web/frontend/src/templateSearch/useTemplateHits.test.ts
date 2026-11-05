@@ -105,6 +105,24 @@ describe("hitsInTemplate", () => {
     expect(hits.activeBlock).toBe(20);
   });
 
+  it("keeps the renderer's document order when block indexes are not numeric", () => {
+    const conditionalTemplate = template("Conditional", "BOKMAL", [18, 17]);
+    const conditionalSearch = displayed([contentHit(conditionalTemplate, [0, 1])]);
+    const hits = ready(
+      hitsInTemplate(
+        conditionalSearch,
+        "innhold",
+        { malType: "autobrev", id: "Conditional", language: "BOKMAL" },
+        undefined,
+        true,
+      ),
+    );
+
+    expect(hits.matchingBlocks).toEqual([18, 17]);
+    expect(hits.blockOrder).toEqual([18, 17]);
+    expect(blockNavigation(hits.matchingBlocks, 18, hits.blockOrder)).toMatchObject({ nextBlock: 17 });
+  });
+
   it("opens at the requested block, also when it is not a hit", () => {
     const current = { malType: "autobrev" as const, id: "A", language: "BOKMAL" };
 
@@ -196,6 +214,14 @@ describe("blockNavigation", () => {
   it("steps to the nearest matches around a block that is not a match", () => {
     expect(blockNavigation(blocks, 35)).toEqual({ at: undefined, previousBlock: 30, nextBlock: 40 });
     expect(blockNavigation(blocks, 50)).toEqual({ at: undefined, previousBlock: 40, nextBlock: undefined });
+  });
+
+  it("uses document order around a requested block that is not a match", () => {
+    expect(blockNavigation([18, 17], 19, [18, 19, 17])).toEqual({
+      at: undefined,
+      previousBlock: 18,
+      nextBlock: 17,
+    });
   });
 
   it("steps to the first match without an active block", () => {

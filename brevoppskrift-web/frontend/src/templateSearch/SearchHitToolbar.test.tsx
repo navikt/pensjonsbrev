@@ -16,6 +16,7 @@ const hits: Extract<TemplateHits, { status: "ready" }> = {
   incomplete: false,
   retry: vi.fn(),
   matchingBlocks: [20, 30],
+  blockOrder: [20, 30],
   matchesInOtherLanguage: false,
   activeBlock: undefined,
   result: { position: 1, total: 2, next: { malType: "autobrev", id: "B", language: "BOKMAL" } },
