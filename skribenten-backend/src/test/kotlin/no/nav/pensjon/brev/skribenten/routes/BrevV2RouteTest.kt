@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2
+import no.nav.pensjon.brev.skribenten.letter.v2.attachment
 import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.ApiV2
@@ -42,6 +43,8 @@ import no.nav.pensjon.brev.skribenten.services.NavEnhet
 import no.nav.pensjon.brev.skribenten.services.PenClientStub
 import no.nav.pensjon.brev.skribenten.skribentenContenNegotiation
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -225,6 +228,56 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
         assertThat(client.get("$basePath/v2/${v1.info.id}").status).isEqualTo(HttpStatusCode.Conflict)
         assertThat(client.post("$basePath/v2/${v1.info.id}/tilbakestill").status).isEqualTo(HttpStatusCode.Conflict)
         assertThat(hentBrev(v1.info.id).resultOrFail().redigertBrevHash).isEqualTo(v1.redigertBrevHash)
+    }
+
+    @Test
+    fun `v2-vedlegg kan lagres gjenapnes flettes rendres og tilbakestilles med toggle av`() = routeTest { client ->
+        Features.override(Features.markupV2, true)
+        val brev = client.createV2()
+        Features.override(Features.markupV2, false)
+        val vedleggId = VedleggId("vedlegg")
+        val original = attachment(MarkupV2.paragraph(10, MarkupV2.literal(11, "original"), MarkupV2.variable(12, "before")))
+        brevbakerService.renderRedigerbareVedleggV2Resultat = mapOf(vedleggId to original)
+        val path = "$basePath/v2/${brev.info.id}/redigerbareVedlegg/${vedleggId.id}"
+        val get = client.get(path)
+        assertThat(get.status).isEqualTo(HttpStatusCode.OK)
+        val vedlegg = mapper.readValue<EditV2.Attachment>(get.bodyAsText())
+        val paragraph = vedlegg.blocks.single() as EditV2.Block.Paragraph
+        val edited = vedlegg.copy(blocks = listOf(paragraph.copy(content = listOf(
+            (paragraph.content.first() as EditV2.Text.Literal).copy(editedText = "edited"),
+            paragraph.content.last(),
+        ))))
+        assertThat(client.put(path) {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(ApiV2.RedigertVedleggRequest(edited)))
+        }.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(mapper.readValue<EditV2.Attachment>(client.get(path).bodyAsText())).isEqualTo(edited)
+        assertThat(client.get("$basePath/${brev.info.id}/redigerbareVedlegg/${vedleggId.id}").status).isEqualTo(HttpStatusCode.Conflict)
+
+        brevbakerService.renderRedigerbareVedleggV2Resultat = mapOf(
+            vedleggId to attachment(MarkupV2.paragraph(10, MarkupV2.literal(11, "original"), MarkupV2.variable(12, "after"))),
+        )
+        val merged = mapper.readValue<EditV2.Attachment>(client.get(path).bodyAsText()).blocks.single() as EditV2.Block.Paragraph
+        assertThat((merged.content.first() as EditV2.Text.Literal).editedText).isEqualTo("edited")
+        assertThat((merged.content.last() as EditV2.Text.Variable).text).isEqualTo("after")
+        assertThat(client.get("$basePath/v2/${brev.info.id}?reserver=true").status).isEqualTo(HttpStatusCode.OK)
+        assertThat(client.get("$basePath/${brev.info.id}/pdf").status).isEqualTo(HttpStatusCode.OK)
+        assertThat(brevbakerService.renderPdfV2VedleggKall.last().getValue(vedleggId).blocks)
+            .isEqualTo(attachment(MarkupV2.paragraph(10, MarkupV2.literal(11, "edited"), MarkupV2.variable(12, "after"))).blocks)
+
+        val selected = listOf(AlltidValgbartVedleggBrevkode("kode", "Valgt vedlegg", emptySet()))
+        assertThat(client.put("$basePath/v2/${brev.info.id}/valgteVedlegg") {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(Api.ValgteVedleggRequest(selected)))
+        }.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(mapper.readValue<ApiV2.BrevResponse>(client.get("$basePath/v2/${brev.info.id}").bodyAsText()).valgteVedlegg).isEqualTo(selected)
+
+        val reset = client.delete(path)
+        assertThat(reset.status).isEqualTo(HttpStatusCode.OK)
+        val resetParagraph = mapper.readValue<EditV2.Attachment>(reset.bodyAsText()).blocks.single() as EditV2.Block.Paragraph
+        assertThat((resetParagraph.content.first() as EditV2.Text.Literal).editedText).isNull()
+        assertThat(client.get("$basePath/${brev.info.id}/pdf").status).isEqualTo(HttpStatusCode.OK)
+        assertThat(brevbakerService.renderPdfV2VedleggKall.last()).isEmpty()
     }
 
     @Test

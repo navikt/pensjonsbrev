@@ -2766,69 +2766,11 @@ export interface paths {
                 };
             };
             responses: {
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiV2BrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                    content?: never;
                 };
             };
         };
@@ -2858,72 +2800,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiV2BrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         put: {
             parameters: {
@@ -2938,72 +2815,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiV2BrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete?: never;
@@ -3033,72 +2845,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiV2BrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete?: never;
@@ -3127,74 +2874,119 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
+            responses: never;
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/v2/{brevId}/valgteVedlegg": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: never;
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/v2/{brevId}/redigerbareVedlegg/{vedleggId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                    vedleggId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
             responses: {
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ApiV2BrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
+                        "application/json": components["schemas"]["EditV2Attachment"];
                     };
                 };
             };
         };
-        delete?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                    vedleggId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EditV2Attachment"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                    vedleggId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EditV2Attachment"];
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -5125,45 +4917,18 @@ export interface components {
         };
         /** EditV2Block */
         EditV2Block: components["schemas"]["EditV2BlockItemList"] | components["schemas"]["EditV2BlockNumberedList"] | components["schemas"]["EditV2BlockTable"] | components["schemas"]["EditV2BlockParagraph"] | components["schemas"]["EditV2BlockTitle2"] | components["schemas"]["EditV2BlockTitle3"] | components["schemas"]["EditV2BlockTitle4"];
-        /** EditV2Saksinformasjon */
-        EditV2Saksinformasjon: {
-            annenMottakerNavn?: string | null;
-            /** Format: date */
-            dokumentDato: string;
-            gjelderNavn: string;
-            gjelderPersonidentifikator: string;
-            saksnummer: string;
-        };
-        /** EditV2Signatur */
-        EditV2Signatur: {
-            attesterendeSaksbehandlerNavn?: string | null;
-            navAvsenderEnhet: string;
-            saksbehandlerNavn?: string | null;
-        };
         /** EditV2Title */
         EditV2Title: {
             deletedContent: number[];
             text: components["schemas"]["EditV2Text"][];
         };
-        /** EditV2Letter */
-        EditV2Letter: {
+        /** EditV2Attachment */
+        EditV2Attachment: {
             blocks: components["schemas"]["EditV2Block"][];
             deletedBlocks: number[];
-            saksinformasjon: components["schemas"]["EditV2Saksinformasjon"];
-            signatur: components["schemas"]["EditV2Signatur"];
+            inkluderSaksinformasjon: boolean;
             title: components["schemas"]["EditV2Title"];
             version: number;
-        };
-        /** ApiV2BrevResponse */
-        ApiV2BrevResponse: {
-            info: components["schemas"]["ApiBrevInfo"];
-            propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
-            redigertBrev: components["schemas"]["EditV2Letter"];
-            redigertBrevHash: string;
-            saksbehandlerValg: {
-                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
-            };
-            valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
         /** Duration */
         Duration: {
@@ -5643,11 +5408,8 @@ export type EditV2BlockTitle2 = components['schemas']['EditV2BlockTitle2'];
 export type EditV2BlockTitle3 = components['schemas']['EditV2BlockTitle3'];
 export type EditV2BlockTitle4 = components['schemas']['EditV2BlockTitle4'];
 export type EditV2Block = components['schemas']['EditV2Block'];
-export type EditV2Saksinformasjon = components['schemas']['EditV2Saksinformasjon'];
-export type EditV2Signatur = components['schemas']['EditV2Signatur'];
 export type EditV2Title = components['schemas']['EditV2Title'];
-export type EditV2Letter = components['schemas']['EditV2Letter'];
-export type ApiV2BrevResponse = components['schemas']['ApiV2BrevResponse'];
+export type EditV2Attachment = components['schemas']['EditV2Attachment'];
 export type Duration = components['schemas']['Duration'];
 export type ApiReservasjonResponse = components['schemas']['ApiReservasjonResponse'];
 export type ContentIndexType = components['schemas']['ContentIndexType'];

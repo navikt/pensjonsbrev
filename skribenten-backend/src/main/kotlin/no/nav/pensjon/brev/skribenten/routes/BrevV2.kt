@@ -12,8 +12,13 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.Oppr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreRedigertVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreValgteVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigertVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.TilbakestillRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -100,6 +105,61 @@ fun Route.sakBrevV2() =
                     TilbakestillBrevHandler.Request(brevId = call.parameters.brevId(), saksId = sak.saksId)
                 )
                 apiRespondV2(dto2ApiService, resultat)
+            }
+
+            val endreValgteVedlegg: EndreValgteVedleggHandler by app.dependencies
+            put<Api.ValgteVedleggRequest>("/valgteVedlegg") { request ->
+                val sak: Fagsak = call.attributes[SakKey]
+                val brev = endreValgteVedlegg(
+                    EndreValgteVedleggHandler.Request(
+                        brevId = call.parameters.brevId(),
+                        saksId = sak.saksId,
+                        alltidValgbareVedlegg = request.valgteVedlegg,
+                    )
+                )
+                apiRespondV2(dto2ApiService, brev)
+            }
+
+            route("/redigerbareVedlegg/{vedleggId}") {
+                val hentRedigertVedlegg: HentRedigertVedleggHandler by app.dependencies
+                get {
+                    val sak: Fagsak = call.attributes[SakKey]
+                    val result = hentRedigertVedlegg(
+                        HentRedigertVedleggHandler.Request(
+                            brevId = call.parameters.brevId(),
+                            saksId = sak.saksId,
+                            vedleggId = call.parameters.vedleggId(),
+                        )
+                    )
+                    respondOutcome(dto2ApiService, result) { respond(it.asV2()) }
+                }
+
+                val endreRedigertVedlegg: EndreRedigertVedleggHandler by app.dependencies
+                put<ApiV2.RedigertVedleggRequest> { request ->
+                    val sak: Fagsak = call.attributes[SakKey]
+                    val result = endreRedigertVedlegg(
+                        EndreRedigertVedleggHandler.Request(
+                            brevId = call.parameters.brevId(),
+                            saksId = sak.saksId,
+                            vedleggId = call.parameters.vedleggId(),
+                            redigertVedlegg = VersjonertVedlegg.V2(request.redigertVedlegg),
+                        )
+                    )
+                    respondOutcome(dto2ApiService, result) { respond(it.asV2()) }
+                }
+
+                val tilbakestillRedigertVedlegg: TilbakestillRedigertVedleggHandler by app.dependencies
+                delete {
+                    val sak: Fagsak = call.attributes[SakKey]
+                    val result = tilbakestillRedigertVedlegg(
+                        TilbakestillRedigertVedleggHandler.Request(
+                            brevId = call.parameters.brevId(),
+                            saksId = sak.saksId,
+                            vedleggId = call.parameters.vedleggId(),
+                        )
+                    )
+                    respondOutcome(dto2ApiService, result) { respond(it.asV2()) }
+                }
             }
         }
     }
