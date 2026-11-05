@@ -212,6 +212,8 @@ test.describe("Brevvelger spec", () => {
     await page.getByTestId("brevmal-search").pressSequentially("E 001");
     await page.getByTestId("brevmal-button").filter({ hasText: "E 001" }).click();
 
+    await expect(page.locator("select[name=landkode]")).toHaveValue("NOR");
+    await page.locator("select[name=landkode]").selectOption("");
     await page.getByTestId("order-letter").click();
     await page.locator("select[name=enhetsId]").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
 

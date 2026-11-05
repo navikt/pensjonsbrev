@@ -35,6 +35,15 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
+object BekreftetNyhetsvarselTable : CompositeIdTable() {
+    val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
+    val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
+        varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id).entityId()
+    val bekreftet: Column<Instant> = timestamp("bekreftet")
+
+    override val primaryKey = PrimaryKey(navIdent, nyhetsvarselId)
+}
+
 object BrevredigeringTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = long("id").transform(::BrevId, BrevId::id).autoIncrement().entityId()
     override val primaryKey = PrimaryKey(id)

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.db.kryptering
 
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Companion.krypto
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Kryptering
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import java.util.concurrent.atomic.AtomicBoolean
@@ -33,12 +35,12 @@ object KrypteringService {
         }
     }
 
-    fun krypter(klartekst: ByteArray): EncryptedByteArray {
+    fun krypter(klartekst: ByteArray): EncryptedByteArray = krypto(Kryptering.KRYPTER) {
         val salt = getRandomNonce(SALT_LENGTH_BYTE)
         val iv = getRandomNonce(IV_LENGTH_BYTE)
         val kryptertMelding = initCipher(Cipher.ENCRYPT_MODE, getSecretKey(salt), iv).doFinal(klartekst)
 
-        return ByteBuffer.allocate(iv.size + salt.size + kryptertMelding.size)
+        ByteBuffer.allocate(iv.size + salt.size + kryptertMelding.size)
             .put(iv)
             .put(salt)
             .put(kryptertMelding)
@@ -46,7 +48,7 @@ object KrypteringService {
             .let { EncryptedByteArray(it) }
     }
 
-    fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray {
+    fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray = krypto(Kryptering.DEKRYPTER) {
         val byteBuffer = ByteBuffer.wrap(kryptertMelding.bytes)
 
         val iv = ByteArray(IV_LENGTH_BYTE)
@@ -58,7 +60,7 @@ object KrypteringService {
         val encryptedByte = ByteArray(byteBuffer.remaining())
         byteBuffer.get(encryptedByte)
 
-        return initCipher(Cipher.DECRYPT_MODE, getSecretKey(salt), iv).doFinal(encryptedByte)
+        initCipher(Cipher.DECRYPT_MODE, getSecretKey(salt), iv).doFinal(encryptedByte)
     }
 
     private fun initCipher(mode: Int, secretKey: SecretKey, iv: ByteArray) = Cipher.getInstance(ALGORITHM)
@@ -70,9 +72,9 @@ object KrypteringService {
         return nonce
     }
 
-    private fun getSecretKey(salt: ByteArray): SecretKeySpec {
+    private fun getSecretKey(salt: ByteArray): SecretKeySpec = krypto(Kryptering.AVLED_NOEKKEL) {
         require(KrypteringService::krypteringsnoekkel.isInitialized) { "Krypteringsnøkkel må være initialisert" }
-        return SecretKeySpec(
+        SecretKeySpec(
             SecretKeyFactory.getInstance(FACTORY_INSTANCE)
                 .generateSecret(PBEKeySpec(krypteringsnoekkel.toCharArray(), salt, 65536, 256)).encoded,
             ALGORITHM_TYPE

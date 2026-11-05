@@ -28,6 +28,11 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
           Automatisk
         </Tag>
       )}
+      {letterTemplate.dokumentkategoriCode === "E_BLANKETT" && (
+        <Tag data-color="neutral" size="small" variant="moderate">
+          E-blankett
+        </Tag>
+      )}
     </HStack>
   );
 }

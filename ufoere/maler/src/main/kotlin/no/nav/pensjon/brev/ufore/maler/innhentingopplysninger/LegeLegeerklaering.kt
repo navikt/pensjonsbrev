@@ -10,15 +10,17 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_LEGE_LEGEERKLAERING
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.info.BrukersNavnDto
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.brukersNavnDto.brukersNavnPendata.navn
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.brukersNavnDto.pesysData
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object LegeLegeerklaering : RedigerbarTemplate<BrukersNavnDto> {
 
     override val kode = UT_INNH_OPPL_LEGE_LEGEERKLAERING
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
@@ -42,8 +44,8 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " },
-                    nynorsk { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " })
+                text(bokmal { + pesysData.navn + " har søkt om uføretrygd. " },
+                    nynorsk { + pesysData.navn + " har søkt om uføretrygd. " })
             }
             paragraph {
                 text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet Nav 08-07.08. " },

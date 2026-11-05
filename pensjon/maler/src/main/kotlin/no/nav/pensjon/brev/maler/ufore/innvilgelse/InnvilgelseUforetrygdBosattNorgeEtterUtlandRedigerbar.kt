@@ -267,7 +267,7 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
                                 bokmal { +"Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet vil du kunne tjene 1 G uten å bli redusert. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
                                 nynorsk { +"Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet vil du kunne tene 1 G utan å bli redusert. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
                             )
-                            showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                            showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER)) {
                                 text(
                                     bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                                     nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
@@ -290,7 +290,7 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar : RedigerbarTemplat
                             bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet øker dette beløpet til 1 G. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
                             nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet aukar dette beløpet til 1 G. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
                         )
-                        showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                        showIf(pesysData.vedtaksinfo.vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER)) {
                             text(
                                 bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                                 nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },

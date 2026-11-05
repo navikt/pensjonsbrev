@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringTestTelemetry
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -33,6 +34,38 @@ import org.junit.jupiter.api.Test
 class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     private val nyttRedigertBrev = editedLetter {
         paragraph(id = 1) { literal(id = 1, text = "red pill", editedText = "blue pill") }
+    }
+
+    @Test
+    suspend fun `oppdateringsscope maaler fasene og bevarer lagrede valg brev og hash`() {
+        BrevoppdateringTestTelemetry().use { telemetry ->
+            val original = opprettBrev().resultOrFail()
+            val choices = SaksbehandlervalgMap().apply { put("valg", SaksbehandlervalgVerdi.Boolean(false)) }
+            val updated = telemetry.observer.observer(false) {
+                oppdaterBrev(original.info.id, nyeSaksbehandlerValg = choices, nyttRedigertbrev = nyttRedigertBrev)
+            }.resultOrFail()
+            val stored = hentBrev(original.info.id).resultOrFail()
+
+            assertThat(stored.saksbehandlerValg).isEqualTo(choices)
+            assertThat(stored.redigertBrev).isEqualTo(updated.redigertBrev)
+            assertThat(stored.redigertBrevHash).isEqualTo(updated.redigertBrevHash)
+            assertThat(brevbakerService.renderMarkupKall).hasSize(2)
+
+            assertThat(telemetry.exporter.finishedSpanItems.map { it.name }).contains(
+                "skribenten.brev.update",
+                "skribenten.brev.update.reservation_transaction",
+                "skribenten.brev.update.reservation_block",
+                "skribenten.brev.update.editing_transaction",
+                "skribenten.brev.update.editing_block",
+                "skribenten.brev.update.apply_values",
+                "skribenten.brev.update.fetch_letter_data",
+                "skribenten.brev.update.render_letter",
+                "skribenten.brev.update.merge_letter",
+                "skribenten.brev.update.render_attachments",
+                "skribenten.brev.update.merge_attachments",
+                "skribenten.brev.update.build_dto",
+            )
+        }
     }
 
     @Test

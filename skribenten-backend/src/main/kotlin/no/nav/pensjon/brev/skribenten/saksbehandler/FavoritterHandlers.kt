@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten
+package no.nav.pensjon.brev.skribenten.saksbehandler
 
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.common.Outcome

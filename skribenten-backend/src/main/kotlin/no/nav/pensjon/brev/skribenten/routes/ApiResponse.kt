@@ -7,6 +7,8 @@ import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Companion.fase
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability.Fase
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -18,7 +20,8 @@ suspend inline fun RoutingContext.apiRespond(
     successStatus: HttpStatusCode = HttpStatusCode.OK,
 ) {
     respondOutcome(dto2ApiService, outcome) { brevredigering ->
-        respond(status = successStatus, dto2ApiService.toApi(brevredigering))
+        val response = fase(Fase.API) { dto2ApiService.toApi(brevredigering) }
+        fase(Fase.RESPONS) { respond(status = successStatus, response) }
     }
 }
 

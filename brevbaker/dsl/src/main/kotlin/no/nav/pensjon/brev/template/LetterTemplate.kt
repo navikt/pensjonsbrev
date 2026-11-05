@@ -13,6 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
+import java.time.Period
 import java.util.Objects
 import kotlin.reflect.KClass
 
@@ -78,6 +79,7 @@ sealed class Expression<out Out> : StableHash {
                 is Pair<*, *> -> StableHash.of(stableHash(v.first), stableHash(v.second))
                 is Unit -> StableHash.of("kotlin.Unit")
                 is LocalDate -> StableHash.of(v)
+                is Period -> StableHash.of(v)
                 null -> StableHash.of(null)
                 else -> throw IllegalArgumentException("Unable to calculate stableHashCode for type ${v::class.java}")
             }

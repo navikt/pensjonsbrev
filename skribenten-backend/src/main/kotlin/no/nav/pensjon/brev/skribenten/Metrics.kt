@@ -84,6 +84,25 @@ object Metrics {
         .maximumExpectedValue(cacheForventetHoeyest.inWholeNanoseconds.toDouble())
         .build()
 
+    const val brevoppdateringMetricName = "skribenten_brevoppdatering_seconds"
+    const val brevoppdateringCryptoMetricName = "skribenten_brevoppdatering_crypto_seconds"
+    private val brevoppdateringDistributionStatisticConfig = DistributionStatisticConfig.Builder()
+        .percentilesHistogram(false)
+        .serviceLevelObjectives(
+            *listOf(
+                1.milliseconds,
+                10.milliseconds,
+                100.milliseconds,
+                500.milliseconds,
+                1.seconds,
+                2.seconds,
+                5.seconds,
+                10.seconds,
+                60.seconds,
+            ).map { it.inWholeNanoseconds.toDouble() }.toDoubleArray()
+        )
+        .build()
+
 
     // Strukturell brems: avsender_enhet er eneste label med ukjent antall verdier, og taket gjelder
     // dette registeret - altså per pod. Se sendtbrevmetrikk.adoc for hvordan faktisk bruk måles.
@@ -96,12 +115,22 @@ object Metrics {
             MeterFilter.deny(),
         )
 
+    fun brevoppdateringFilter(): MeterFilter = object : MeterFilter {
+        override fun configure(id: Meter.Id, config: DistributionStatisticConfig): DistributionStatisticConfig =
+            when (id.name) {
+                brevoppdateringMetricName, brevoppdateringCryptoMetricName ->
+                    brevoppdateringDistributionStatisticConfig.merge(config)
+                else -> config
+            }
+    }
+
     fun Application.configureMetrics() {
         // Ktor tagger hver request med address=<podnavn>:<port>. Det er redundant med labelene
         // nais legger på ved scraping, og gir nye tidsserier for hver deploy.
         registry.config().meterFilter(MeterFilter.ignoreTags("address"))
 
         registry.config().meterFilter(avsenderEnhetFilter())
+        registry.config().meterFilter(brevoppdateringFilter())
 
         // MeterFilter for klientmetrikken (samme mønster som Ktors egen MicrometerMetrics-plugin
         // bruker internt), i stedet for å konfigurere distribusjonsstatistikk per Timer.builder()
