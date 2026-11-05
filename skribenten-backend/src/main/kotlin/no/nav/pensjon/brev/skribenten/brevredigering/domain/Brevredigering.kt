@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -64,6 +65,7 @@ interface Brevredigering {
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
     val vedleggHash: Hash<VedleggSnapshot>
     val leggVedFoersteside: Boolean?
+    val brevmalHash: StableHashCode?
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -128,6 +130,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     override var leggVedFoersteside by BrevredigeringTable.leggVedFoersteside
 
+    override var brevmalHash by BrevredigeringTable.brevmalHash
+
     // orderBy is intentionally NOT used on the referrersOn delegate: the Referrers object is shared across all
     // entity instances (cached in the companion object's refDefinitions HashMap). Its orderByExpressions
     // LinkedHashSet is mutated on every entity construction and read concurrently under Dispatchers.IO, which
@@ -189,6 +193,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
             distribusjonstype: Distribusjon = Distribusjon.SENTRALPRINT,
+            brevmalHash: StableHashCode,
         ): BrevredigeringEntity = new {
             this.saksId = saksId
             this.vedtaksId = vedtaksId
@@ -206,6 +211,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.redigertBrev = redigertBrev
             this.rendretBrev = redigertBrev
             this.brevtype = brevtype
+            this.brevmalHash = brevmalHash
         }
     }
 
