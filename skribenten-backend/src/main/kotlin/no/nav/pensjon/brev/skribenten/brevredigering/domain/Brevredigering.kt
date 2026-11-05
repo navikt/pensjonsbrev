@@ -76,6 +76,7 @@ interface Brevredigering {
     fun frigiReservasjon()
 
     fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
+    fun tilbakestillRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent, brevmalHash: StableHashCode)
     fun markerSomKlar()
     fun markerSomKladd()
     fun markerSomArkivert(journalpostId: JournalpostId)
@@ -248,6 +249,11 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         redigertBrev = nyttRedigertbrev
         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
         sistRedigertAv = av
+    }
+
+    override fun tilbakestillRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent, brevmalHash: StableHashCode) {
+        oppdaterRedigertBrev(nyttRedigertbrev, av)
+        this.brevmalHash = brevmalHash
     }
 
     override fun markerSomKlar() {
