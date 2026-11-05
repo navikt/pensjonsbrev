@@ -1,4 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -30,7 +32,7 @@ class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(resultat).isSuccess { attestert ->
             assertThat(attestert.info.attestertAv).isEqualTo(attestant1Principal.navIdent)
             assertThat(attestert.info.redigeresAv).isNull()
-            assertThat(attestert.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+            assertThat(attestert.redigertBrev.somV1().signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
             assertThat(attestert.info.status).isEqualTo(Dto.BrevStatus.KLAR)
         }
     }
@@ -61,7 +63,7 @@ class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(resultat).isSuccess {
             assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLAR)
             assertThat(it.info.attestertAv).isEqualTo(attestant1Principal.navIdent)
-            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+            assertThat(it.redigertBrev.somV1().signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
         }
     }
 
@@ -141,7 +143,7 @@ class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1234), reserverForRedigering = true).resultOrFail()
         veksleKlarStatus(brev, klar = true).resultOrFail()
 
-        val redigertAttestantSignatur = brev.redigertBrev.withSignaturAttestant("Ny attestant signatur")
+        val redigertAttestantSignatur = brev.redigertBrev.somV1().withSignaturAttestant("Ny attestant signatur")
         val attestert = attester(
             brev,
             nyttRedigertbrev = redigertAttestantSignatur,
@@ -149,7 +151,7 @@ class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
             frigiReservasjon = true
         )
         assertThat(attestert).isSuccess {
-            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo("Ny attestant signatur")
+            assertThat(it.redigertBrev.somV1().signatur.attesterendeSaksbehandlerNavn).isEqualTo("Ny attestant signatur")
         }
     }
 
@@ -161,13 +163,13 @@ class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         stagEndretMal()
 
         assertThat(attester(brev, attestant = attestant1Principal)).isSuccess {
-            assertThat(it.redigertBrev.blocks).isEqualTo(brev.redigertBrev.blocks)
-            assertThat(it.redigertBrev.title).isEqualTo(brev.redigertBrev.title)
-            assertThat(it.redigertBrev.sakspart.gjelderNavn).isEqualTo("Nytt Navn")
-            assertThat(it.redigertBrev.signatur.hilsenTekst).isEqualTo("Ny hilsen")
-            assertThat(it.redigertBrev.signatur.navAvsenderEnhet).isEqualTo("Ny avsenderenhet")
-            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(brev.redigertBrev.signatur.saksbehandlerNavn)
-            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+            assertThat(it.redigertBrev.somV1().blocks).isEqualTo(brev.redigertBrev.somV1().blocks)
+            assertThat(it.redigertBrev.somV1().title).isEqualTo(brev.redigertBrev.somV1().title)
+            assertThat(it.redigertBrev.somV1().sakspart.gjelderNavn).isEqualTo("Nytt Navn")
+            assertThat(it.redigertBrev.somV1().signatur.hilsenTekst).isEqualTo("Ny hilsen")
+            assertThat(it.redigertBrev.somV1().signatur.navAvsenderEnhet).isEqualTo("Ny avsenderenhet")
+            assertThat(it.redigertBrev.somV1().signatur.saksbehandlerNavn).isEqualTo(brev.redigertBrev.somV1().signatur.saksbehandlerNavn)
+            assertThat(it.redigertBrev.somV1().signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
         }
     }
 }

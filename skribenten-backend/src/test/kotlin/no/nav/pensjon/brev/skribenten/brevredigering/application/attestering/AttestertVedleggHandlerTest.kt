@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
+
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -50,7 +54,7 @@ class AttestertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     private fun lagretVedlegg(brevId: BrevId): Edit.Attachment =
-        transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(vedlegg1)!! }
+        transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(vedlegg1)!!.somV1() }
 
     private fun stagMal(vararg avsnitt: Pair<Int, String>, tittel: String = "Mal tittel") {
         brevbakerService.renderRedigerbareVedleggResultat = mapOf(vedlegg1 to malVedlegg(*avsnitt, tittel = tittel))
@@ -71,7 +75,7 @@ class AttestertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
                         brevId = brev.info.id,
                         saksId = sak1.saksId,
                         vedleggId = vedlegg1,
-                        redigertVedlegg = fraMalen.medRedigertTekst(redigertTekst),
+                        redigertVedlegg = VersjonertVedlegg.V1(fraMalen.somV1().medRedigertTekst(redigertTekst)),
                     )
                 )
             }
@@ -98,7 +102,7 @@ class AttestertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Edit.Attachment, BrevredigeringError>? = withPrincipal(attestant) {
         hentRedigertVedleggAttestering(
             HentRedigertVedleggAttesteringHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = vedleggId)
-        )
+        )?.then { it.somV1() }
     }
 
     private suspend fun hentVedleggstitlerForAttestering(
@@ -122,10 +126,10 @@ class AttestertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
                 brevId = brevId,
                 saksId = sak1.saksId,
                 vedleggId = vedleggId,
-                redigertVedlegg = redigertVedlegg,
+                redigertVedlegg = VersjonertVedlegg.V1(redigertVedlegg),
                 frigiReservasjon = frigiReservasjon,
             )
-        )
+        )?.then { it.somV1() }
     }
 
     @Test

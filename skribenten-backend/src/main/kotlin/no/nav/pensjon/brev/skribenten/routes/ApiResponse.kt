@@ -122,6 +122,9 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                 is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
 
+                is FeilMarkupVersjon ->
+                    call.respond(HttpStatusCode.Conflict, "Brevet har markup-versjon ${outcome.error.forventet.versjon}, men forespørselen brukte versjon ${outcome.error.faktisk.versjon}")
+
                 is BrevmalFinnesIkke ->
                     call.respond(HttpStatusCode.BadRequest, "Brevmal finnes ikke: ${outcome.error.brevkode.kode()}")
 
@@ -139,7 +142,7 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                             melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: " +
                                 outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { field ->
                                     val makslengde = 20
-                                    val tekst = field.text.let { if (it.length > makslengde) it.take(makslengde) + "..." else it }
+                                    val tekst = field.let { if (it.length > makslengde) it.take(makslengde) + "..." else it }
                                     "\"$tekst\""
                                 }
                         )

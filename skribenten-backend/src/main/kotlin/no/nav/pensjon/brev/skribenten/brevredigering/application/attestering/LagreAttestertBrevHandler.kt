@@ -3,11 +3,13 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.sjekkMarkupVersjon
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -21,12 +23,13 @@ class LagreAttestertBrevHandler(
     data class Request(
         val brevId: BrevId,
         val saksId: SaksId,
-        val nyttRedigertbrev: Edit.Letter,
+        val nyttRedigertbrev: VersjonertBrev,
         val frigiReservasjon: Boolean = false,
     )
 
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevtilgang.forAttestering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
+            brev.sjekkMarkupVersjon(request.nyttRedigertbrev.markupVersjon)?.let { return@forAttestering failure(it) }
             brev.oppdaterRedigertBrev(request.nyttRedigertbrev, PrincipalInContext.require().navIdent)
 
             val pesysdata = brevdataService.hentBrevdata(brev)

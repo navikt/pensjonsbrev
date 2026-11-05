@@ -1,4 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
@@ -40,7 +44,7 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(brevbakerService.renderMarkupKall.first()).isEqualTo(Testbrevkoder.INFORMASJONSBREV to LanguageCode.ENGLISH)
         assertThat(brev).isSuccess {
             assertThat(it.info.brevkode.kode()).isEqualTo(Testbrevkoder.INFORMASJONSBREV.kode())
-            assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
+            assertThat(it.redigertBrev.somV1()).isEqualTo(letter.toEdit())
         }
     }
 
@@ -49,8 +53,8 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev(reserverForRedigering = true)
 
         assertThat(brev).isSuccess {
-            assertThat(it.redigertBrev.signatur).isNotNull
-            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(saksbehandler1Principal.fullName)
+            assertThat(it.redigertBrev.somV1().signatur).isNotNull
+            assertThat(it.redigertBrev.somV1().signatur.saksbehandlerNavn).isEqualTo(saksbehandler1Principal.fullName)
             assertThat(it.info.opprettetAv).isEqualTo(saksbehandler1Principal.navIdent)
         }
     }
@@ -126,7 +130,7 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(brev).isSuccess {
             assertThat(it.info.mottaker).isEqualTo(mottaker)
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
+            assertThat(it.redigertBrev.somV1().sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
         }
     }
 

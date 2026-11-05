@@ -136,6 +136,7 @@ export const brevInfo = (
   journalpostId: args.journalpostId ?? null,
   vedtaksId: args.vedtaksId ?? null,
   saksId: args.saksId ?? 22981081,
+  markupVersjon: "V1",
 });
 
 export const signatur = (

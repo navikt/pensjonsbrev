@@ -24,15 +24,17 @@ class FerdigRedigertPolicy {
     }
 
     sealed interface IkkeFerdigRedigert : BrevredigeringError {
-        data class FritekstFelterUredigert(val ikkeredigerteFritekstfelter: List<Edit.ParagraphContent.Text.Literal>) : IkkeFerdigRedigert
+        data class FritekstFelterUredigert(val ikkeredigerteFritekstfelter: List<String>) : IkkeFerdigRedigert
         data object DuplikatAvsnittUhaandtert : IkkeFerdigRedigert
     }
 
-    private fun Edit.Letter.uredigerteFritekstfelter(): List<Edit.ParagraphContent.Text.Literal> =
-        literals.filter { it.tags.contains(ElementTags.FRITEKST) && it.editedText == null }
+    private fun VersjonertBrev.uredigerteFritekstfelter(): List<String> = when (this) {
+        is VersjonertBrev.V1 -> brev.literals.filter { it.tags.contains(ElementTags.FRITEKST) && it.editedText == null }.map { it.text }
+    }
 
-    private fun Edit.Letter.alleDuplikateAvsnittErHaandtert(): Boolean =
-        blocks.all { it.missingFromTemplate != true }
+    private fun VersjonertBrev.alleDuplikateAvsnittErHaandtert(): Boolean = when (this) {
+        is VersjonertBrev.V1 -> brev.blocks.all { it.missingFromTemplate != true }
+    }
 }
 
 private val Edit.Letter.literals: List<Literal>

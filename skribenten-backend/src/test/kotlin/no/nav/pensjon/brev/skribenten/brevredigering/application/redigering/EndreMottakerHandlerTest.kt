@@ -1,4 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.brev.BrevLandmodell.Landkode
@@ -55,21 +57,21 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.mottaker).isEqualTo(nyMottaker)
         }
         assertThat(hentBrev(brev.info.id)).isSuccess {
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isNull()
+            assertThat(it.redigertBrev.somV1().sakspart.annenMottakerNavn).isNull()
         }
     }
 
     @Test
     suspend fun `oppdaterer annenMottakerNavn i redigertBrev når mottaker endres`() {
         val brev = opprettBrev().resultOrFail()
-        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isNull()
+        assertThat(brev.redigertBrev.somV1().sakspart.annenMottakerNavn).isNull()
 
         val (samhandlerId, samhandlerNavn) = samhandlerService.navn.entries.first()
         val nyMottaker = Dto.Mottaker.samhandler(samhandlerId)
 
         assertThat(endreMottaker(brev.info.id, nyMottaker)).isSuccess()
         assertThat(hentBrev(brev.info.id)).isSuccess {
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(samhandlerNavn)
+            assertThat(it.redigertBrev.somV1().sakspart.annenMottakerNavn).isEqualTo(samhandlerNavn)
         }
     }
 
@@ -79,7 +81,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
 
         val brev = opprettBrev()
         assertThat(brev).isSuccess {
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo("Pesys Mottaker")
+            assertThat(it.redigertBrev.somV1().sakspart.annenMottakerNavn).isEqualTo("Pesys Mottaker")
         }
     }
 
@@ -88,14 +90,14 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
         penService.pesysBrevdata = brevdataResponseData.copy(felles = brevdataResponseData.felles.medAnnenMottakerNavn("Pesys Mottaker"))
 
         val brev = opprettBrev().resultOrFail()
-        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isEqualTo("Pesys Mottaker")
+        assertThat(brev.redigertBrev.somV1().sakspart.annenMottakerNavn).isEqualTo("Pesys Mottaker")
 
         val (samhandlerId, samhandlerNavn) = samhandlerService.navn.entries.first()
         val nyMottaker = Dto.Mottaker.samhandler(samhandlerId)
 
         assertThat(endreMottaker(brev.info.id, nyMottaker)).isSuccess()
         assertThat(hentBrev(brev.info.id)).isSuccess {
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(samhandlerNavn)
+            assertThat(it.redigertBrev.somV1().sakspart.annenMottakerNavn).isEqualTo(samhandlerNavn)
         }
     }
 
@@ -110,7 +112,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `kan sette annen mottaker for eksisterende brev`() {
         val brev = opprettBrev().resultOrFail()
-        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isNull()
+        assertThat(brev.redigertBrev.somV1().sakspart.annenMottakerNavn).isNull()
 
         val nyMottaker = Dto.Mottaker.utenlandskAdresse(
             navn = Navn("Reci Pient"),
@@ -123,7 +125,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(endreMottaker(brev.info.id, nyMottaker)).isSuccess()
         assertThat(hentBrev(brev.info.id)).isSuccess {
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(nyMottaker.navn?.value)
+            assertThat(it.redigertBrev.somV1().sakspart.annenMottakerNavn).isEqualTo(nyMottaker.navn?.value)
         }
     }
 
@@ -148,13 +150,13 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
             manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.ANNEN
         )
         val brev = opprettBrev(mottaker = mottaker).resultOrFail()
-        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
+        assertThat(brev.redigertBrev.somV1().sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
 
         assertThat(endreMottaker(brev.info.id, null)).isSuccess {
             assertThat(it.mottaker).isNull()
         }
         assertThat(hentBrev(brev.info.id)).isSuccess {
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isNull()
+            assertThat(it.redigertBrev.somV1().sakspart.annenMottakerNavn).isNull()
         }
     }
 }

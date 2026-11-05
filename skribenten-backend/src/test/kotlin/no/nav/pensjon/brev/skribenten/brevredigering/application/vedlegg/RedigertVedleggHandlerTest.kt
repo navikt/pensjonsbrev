@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
+
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
@@ -87,8 +91,8 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Edit.Attachment, BrevredigeringError>? =
         withPrincipal(principal) {
             endreRedigertVedlegg(
-                EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
-            )
+                EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId), redigertVedlegg = VersjonertVedlegg.V1(vedlegg))
+            )?.then { it.somV1() }
         }
 
     private suspend fun hentVedlegg(
@@ -99,7 +103,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         withPrincipal(principal) {
             hentRedigertVedlegg(
                 HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId))
-            )
+            )?.then { it.somV1() }
         }
 
     private suspend fun tilbakestillVedlegg(
@@ -110,7 +114,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         withPrincipal(principal) {
             tilbakestillRedigertVedlegg(
                 TilbakestillRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId))
-            )
+            )?.then { it.somV1() }
         }
 
     private suspend fun lagreRedigertVedlegg(brevId: BrevId, redigertTekst: String = "Redigert"): String {
@@ -121,7 +125,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     private fun lagretVedlegg(brevId: BrevId): Edit.Attachment =
-        transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(VedleggId("vedlegg1"))!! }
+        transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(VedleggId("vedlegg1"))!!.somV1() }
 
     private fun antallDokumenter(brevId: BrevId): Int =
         transaction { DocumentEntity.find { DocumentTable.brevredigering eq brevId }.count().toInt() }

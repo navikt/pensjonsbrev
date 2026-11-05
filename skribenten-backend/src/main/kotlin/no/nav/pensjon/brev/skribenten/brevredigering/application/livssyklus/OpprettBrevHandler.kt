@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -14,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.common.getOrElse
 import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
@@ -44,6 +44,7 @@ class OpprettBrevHandler(
         val reserverForRedigering: Boolean = false,
         val statiskFagsystemBrevdata: StatiskFagsystemBrevdata? = null,
         val mottaker: Dto.Mottaker? = null,
+        val markupVersjon: MarkupVersjon = MarkupVersjon.V1,
     )
 
     override suspend fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
@@ -64,6 +65,7 @@ class OpprettBrevHandler(
             )
 
             val rendretBrev = brevmalService.renderMarkup(
+                markupVersjon = request.markupVersjon,
                 brevkode = request.brevkode,
                 spraak = request.spraak,
                 saksbehandlerValg = request.saksbehandlerValg,

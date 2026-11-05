@@ -1,10 +1,12 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.sjekkMarkupVersjon
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.RedigerbareVedleggService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -18,12 +20,13 @@ class LagreAttestertVedleggHandler(
         val brevId: BrevId,
         val saksId: SaksId,
         val vedleggId: VedleggId,
-        val redigertVedlegg: Edit.Attachment,
+        val redigertVedlegg: VersjonertVedlegg,
         val frigiReservasjon: Boolean = false,
     )
 
-    suspend operator fun invoke(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? =
+    suspend operator fun invoke(request: Request): Outcome<VersjonertVedlegg, BrevredigeringError>? =
         brevtilgang.forAttestering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
+            brev.sjekkMarkupVersjon(request.redigertVedlegg.markupVersjon)?.let { return@forAttestering failure(it) }
             redigerbareVedleggService.lagre(brev, request.vedleggId, request.redigertVedlegg, mergeMotMal = false)
         }
 }
