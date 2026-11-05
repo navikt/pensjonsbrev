@@ -22,16 +22,8 @@ data class VilkarsvurderingFullstendig(
     val nedsattInntektsevneResultat: VilkarResultat,
 
     val yrkesskadeResultat: VilkarResultat,
-    val yrkesskadeBegrunnelse: YrkesskadeBegrunnelse?,
-    val yrkesskade: Yrkesskade?,
+    val yrkesskadeBegrunnelse: YrkesskadeBegrunnelse?
 ) {
-
-    data class Yrkesskade(
-        val skadetidspunkt: LocalDate,
-        val yrkesskadegrad: Int,
-        val inntektVedSkadetidspunkt: Kroner,
-        val inntektVedSkadetidspunktBegrunnelse: InntektVedSkadetidspunktBegrunnelse?,
-        )
 
     enum class VirkningstidspunktBegrunnelse {
         STDBEGR_22_12_1_1, STDBEGR_22_12_1_2, STDBEGR_22_12_1_3, STDBEGR_22_12_1_4, STDBEGR_22_12_1_5, STDBEGR_22_12_1_11, STDBEGR_22_12_1_12, STDBEGR_22_12_1_13
