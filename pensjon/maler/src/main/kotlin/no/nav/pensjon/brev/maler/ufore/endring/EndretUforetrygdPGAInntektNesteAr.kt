@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_JOBB_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -418,32 +419,32 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     }.orIfNotNull(uforetrygd.fribelop04GTil1GTil04G) { fribelop04GTil1GTil04G ->
                         showIf(uforetrygd.venteperiodeEtterGradsokning) {
                             text(
-                                bokmal { +"Fram til " + uforetrygd.datoOkningBunnfradrag.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningBunnfradrag.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4G. Etter to år vil fribeløpet settes opp igjen til 1 G. " },
-                                nynorsk { +"Frm til " + uforetrygd.datoOkningBunnfradrag.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningBunnfradrag.format() + " er det to år sidan din uføregrad auka. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar din uføregrad, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                                bokmal { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4G. Etter to år vil fribeløpet settes opp igjen til 1 G. " },
+                                nynorsk { +"Frm til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " er det to år sidan din uføregrad auka. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar din uføregrad, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Fram til " + uforetrygd.datoOkningBunnfradrag.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4G. Etter to år vil fribeløpet settes opp igjen til 1 G. " },
-                                nynorsk { +"Fram til " + uforetrygd.datoOkningBunnfradrag.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar din uføregrad, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                                bokmal { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4G. Etter to år vil fribeløpet settes opp igjen til 1 G. " },
+                                nynorsk { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar din uføregrad, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
                             )
                         }
                     }.orShow {
                         showIf(uforetrygd.venteperiodeEtterGradsokning) {
                             text(
-                                bokmal { +"Fram til " + uforetrygd.datoOkningBunnfradrag.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningBunnfradrag.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
-                                nynorsk { +"Fram til " + uforetrygd.datoOkningBunnfradrag.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningBunnfradrag.format() + " er det to år sidan din uføregrad auka. Derfor aukar fribeløpet ditt til 1 G. " }
+                                bokmal { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
+                                nynorsk { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " er det to år sidan din uføregrad auka. Derfor aukar fribeløpet ditt til 1 G. " }
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Fram til " + uforetrygd.datoOkningBunnfradrag.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
-                                nynorsk { +"Fram til " + uforetrygd.datoOkningBunnfradrag.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
+                                bokmal { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
+                                nynorsk { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
                             )
                         }
                     }
                 }
             }
 
-            //TODO sett inn tabell
+            includePhrase(Fribelopsperioder(uforetrygd.fribelopsperioder))
 
             showIf(not(sokerMottarApIlaAret or opphorDato.isNull())) {
                 paragraph {
