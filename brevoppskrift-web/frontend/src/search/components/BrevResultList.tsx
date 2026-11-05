@@ -1,5 +1,4 @@
 import { Detail, HStack, VStack } from "@navikt/ds-react";
-import { useMemo } from "react";
 
 import { languageLabel } from "~/search/components/format";
 import { LineContent } from "~/search/components/highlight";
@@ -8,35 +7,39 @@ import { isSelectedResult } from "~/search/resultNavigation";
 import { type ResultRef, resultRefOf, type SearchCriteria, type TemplatesSearchParams } from "~/search/searchContext";
 import { type BrevHit, type TemplateText } from "~/search/textSearch";
 
+export type BrevResultRow = { template: TemplateText; languages: string[] };
+
+/** Groups matching language versions in the order of each template's best-ranked hit. */
+export function groupBrevHits(hits: BrevHit[]): BrevResultRow[] {
+  const byTemplate = new Map<string, BrevResultRow>();
+  for (const { template } of hits) {
+    const key = `${template.malType}/${template.id}`;
+    const existing = byTemplate.get(key);
+    if (existing) {
+      if (!existing.languages.includes(template.language)) {
+        existing.languages.push(template.language);
+      }
+    } else {
+      byTemplate.set(key, { template, languages: [template.language] });
+    }
+  }
+  return [...byTemplate.values()];
+}
+
 /** Title hits, one row per template with all its matching languages. */
 export function BrevResultList({
-  hits,
+  rows,
   criteria,
   selected,
   onOpen,
 }: {
-  hits: BrevHit[];
+  rows: BrevResultRow[];
   /** The search these hits came from. Its query is also the needle to mark. */
   criteria: SearchCriteria;
   /** The result last opened; any language of its template marks the row. */
   selected?: ResultRef;
   onOpen?: (back: TemplatesSearchParams) => Promise<void>;
 }) {
-  const rows = useMemo(() => {
-    const byTemplate = new Map<string, { template: TemplateText; languages: string[] }>();
-    for (const { template } of hits) {
-      const key = `${template.malType}/${template.id}`;
-      const existing = byTemplate.get(key);
-      if (existing) {
-        if (!existing.languages.includes(template.language)) {
-          existing.languages.push(template.language);
-        }
-      } else {
-        byTemplate.set(key, { template, languages: [template.language] });
-      }
-    }
-    return [...byTemplate.values()];
-  }, [hits]);
   return (
     <VStack gap="space-8">
       {rows.map(({ template, languages }) => {

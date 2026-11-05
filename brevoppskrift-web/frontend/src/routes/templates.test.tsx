@@ -453,6 +453,41 @@ describe("<AllTemplates /> (route: /templates)", () => {
       await waitFor(() => expect(screen.getByRole("link", { name: "A00" }).getAttribute("aria-current")).toBe("true"));
     });
 
+    it("paginates grouped language results without splitting a template across pages", async () => {
+      const names = Array.from({ length: 101 }, (_, i) => `AA${String(i).padStart(3, "0")}`);
+      getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) =>
+        Promise.resolve(
+          malType === "autobrev"
+            ? names.map((name, i) => ({
+                name,
+                letterDataClass: "AutobrevDto",
+                languages: i === 99 ? ["BOKMAL", "NYNORSK"] : ["BOKMAL"],
+              }))
+            : [],
+        ),
+      );
+      getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+        Promise.resolve(
+          malType === "autobrev"
+            ? names.flatMap((brevkode, i) =>
+                (i === 99 ? ["BOKMAL", "NYNORSK"] : ["BOKMAL"]).map((language) => ({
+                  brevkode,
+                  language,
+                  lines: [{ index: 0, segments: [{ type: "text", value: "Innhold" }] }],
+                })),
+              )
+            : [],
+        ),
+      );
+
+      await renderTemplatesRoute({ q: "AA", exact: true, page: 2 });
+
+      await screen.findByText(/Søket traff tittel, navn eller brevkode/);
+      expect(isCurrentPage("2")).toBe(true);
+      expect(screen.queryByRole("link", { name: "AA099" })).toBeNull();
+      expect(screen.getByRole("link", { name: "AA100" })).toBeTruthy();
+    });
+
     // The hits on screen belong to the last completed search, which lags the
     // input while a newer one runs. Back must return to the search the opened
     // result was found in, as "Tilbake til søkeresultatene" does.

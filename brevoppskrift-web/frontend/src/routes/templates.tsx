@@ -21,6 +21,7 @@ import { AnimatedEllipsis } from "~/components/AnimatedEllipsis";
 import {
   BrevResultList,
   CONTENT_PAGE_SIZE,
+  groupBrevHits,
   LETTER_PAGE_SIZE,
   SearchField,
   SearchResultsPanel,
@@ -151,8 +152,15 @@ function AllTemplates() {
   const activeTab: ResultTab = search.tab ?? DEFAULT_TAB;
   const selected = useMemo(() => parseResultRef(search.selected), [search.selected]);
   const groupsLanguages = activeTab === "brev";
-  const activeHits = (activeTab === "innhold" ? displayed?.contentHits : displayed?.brevHits) ?? [];
-  const activeRefs = useMemo(() => activeHits.map((hit) => resultRefOf(hit.template)), [activeHits]);
+  const contentHits = displayed?.contentHits ?? [];
+  const brevRows = useMemo(() => groupBrevHits(displayed?.brevHits ?? []), [displayed?.brevHits]);
+  const activeRefs = useMemo(
+    () =>
+      groupsLanguages
+        ? brevRows.map((row) => resultRefOf(row.template))
+        : contentHits.map((hit) => resultRefOf(hit.template)),
+    [groupsLanguages, brevRows, contentHits],
+  );
   const selectedResult = useMemo(
     () => selectedRow(activeRefs, selected, groupsLanguages),
     [activeRefs, selected, groupsLanguages],
@@ -163,7 +171,7 @@ function AllTemplates() {
     search.page ?? (selectedResult && pageOfResult(activeRefs, selectedResult, pageSize, groupsLanguages)) ?? 1;
   // Only the active tab's panel is mounted, so both panels can share the page
   // state; each still slices with its own page size.
-  const pageCount = Math.max(1, Math.ceil(activeHits.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(activeRefs.length / pageSize));
   const safePage = Math.min(page, pageCount);
   const setPage = (next: number) =>
     void navigate({ replace: true, search: (s) => ({ ...s, page: next, selected: undefined }) });
@@ -200,19 +208,19 @@ function AllTemplates() {
       ));
   }, [displayed, criteria, safePage, selectedResult, openResult]);
   const brevList = useMemo(() => {
-    if (!displayed || !criteria || displayed.brevHits.length === 0) {
+    if (!displayed || !criteria || brevRows.length === 0) {
       return null;
     }
     const start = (safePage - 1) * LETTER_PAGE_SIZE;
     return (
       <BrevResultList
         criteria={criteria}
-        hits={displayed.brevHits.slice(start, start + LETTER_PAGE_SIZE)}
         onOpen={openResult}
+        rows={brevRows.slice(start, start + LETTER_PAGE_SIZE)}
         selected={selectedResult}
       />
     );
-  }, [displayed, criteria, safePage, selectedResult, openResult]);
+  }, [displayed, criteria, brevRows, safePage, selectedResult, openResult]);
   useScrollToSelectedResult(search.selected, activeTab === "innhold" ? contentList : brevList);
   // Summaries describe the search on screen, so while the next one runs the
   // previous summary simply stays. Zero hits is reported here too, leaving the

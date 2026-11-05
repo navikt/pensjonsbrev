@@ -1,4 +1,8 @@
-export { BrevResultList } from "~/search/components/BrevResultList";
+export {
+  BrevResultList,
+  type BrevResultRow,
+  groupBrevHits,
+} from "~/search/components/BrevResultList";
 export { SearchField } from "~/search/components/SearchField";
 export { CONTENT_PAGE_SIZE, LETTER_PAGE_SIZE, SearchResultsPanel } from "~/search/components/SearchResultsPanel";
 export { SearchSnippet } from "~/search/components/SearchSnippet";
