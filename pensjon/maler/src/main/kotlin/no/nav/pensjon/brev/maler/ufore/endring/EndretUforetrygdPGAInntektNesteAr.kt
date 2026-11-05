@@ -349,7 +349,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 )
             }
 
-            //TODO: skal vi ha denne og evt orshow?
             paragraph {
                 showIf(uforetrygd.erGradert) {
                     text(
@@ -397,7 +396,6 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                         nynorsk { +"Periodisert fribeløp" }
                     )
                 }
-                //TODO nynorsk retting
                 paragraph {
                     text(
                         bokmal { +"Når fribeløpet endres i løpet av kalenderåret, beregnes det årlige bunnfradraget ut fra periodene du har med ulike fribeløp. Ditt fribeløp i " + virkningFom.year.format() + " blir " + uforetrygd.fribelop.format() + ". Se tabellen under. " },
@@ -442,24 +440,24 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                         }
                     }
                 }
-            }
 
-            includePhrase(Fribelopsperioder(uforetrygd.fribelopsperioder))
+                includePhrase(Fribelopsperioder(uforetrygd.fribelopsperioder))
 
-            showIf(not(sokerMottarApIlaAret or opphorDato.isNull())) {
-                paragraph {
-                    text(
-                        bokmal { +"Neste år: " },
-                        nynorsk { +"Neste år: " },
-                        FontType.BOLD,
-                    )
-                    text(
-                        bokmal { +"Fra " + virkningFom.year.plus(1).format() + " vil du få nytt bunnfradrag med 1 G som fribeløp hele året. " },
-                        nynorsk { +"Frå " + virkningFom.year.plus(1).format() + " vil du få nytt botnfrådrag med 1 G som fribeløp heile året. " }
-                    )
+                showIf(uforetrygd.fribelop04GTil1G and not(sokerMottarApIlaAret or opphorDato.notNull())) {
+                    paragraph {
+                        text(
+                            bokmal { +"Neste år: " },
+                            nynorsk { +"Neste år: " },
+                            FontType.BOLD,
+                        )
+                        text(
+                            bokmal { +"Fra " + virkningFom.year.plus(1).format() + " vil du få nytt bunnfradrag med 1 G som fribeløp hele året. " },
+                            nynorsk { +"Frå " + virkningFom.year.plus(1).format() + " vil du få nytt botnfrådrag med 1 G som fribeløp heile året. " }
+                        )
+                    }
                 }
-            }
 
+            }
             title1 {
                 text(
                     bokmal { +"Inntekt lagt til grunn for beregning " },
