@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.ufore.uforegrad
+package no.nav.pensjon.brev.maler.ufore.fraser
 
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsperiode.faktor
@@ -15,9 +15,8 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
-class Fribelopsperioder(private val perioder: Expression<List<Fribelopsperiode>>, private val fribelop: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
+class Fribelopsperioder(private val perioder: Expression<List<Fribelopsperiode>>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(header = {
@@ -74,13 +73,6 @@ class Fribelopsperioder(private val perioder: Expression<List<Fribelopsperiode>>
                     }
                 }
             }
-        }
-        //TODO: skal denne flyttes ut?
-        paragraph {
-            text(
-                bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + fribelop.format() + "." },
-                nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + fribelop.format() + "." },
-            )
         }
     }
 }
