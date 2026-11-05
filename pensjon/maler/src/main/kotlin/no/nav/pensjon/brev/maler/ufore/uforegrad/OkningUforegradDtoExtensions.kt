@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUfo
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradV2Dto.pesysData.vedtak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.bunnfradrag
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.beregning.bunnfradragNesteAr
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vedtak.vedtakFattetDatoEllerIdag
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.vedtak.virkFom
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -19,7 +20,7 @@ import java.time.Month
 
 internal fun Expression<OkningUforegradV2Dto.PesysData>.faktiskBunnfradrag() =
     ifElse(
-        not(localDateNow.year.equalTo(vedtak.virkFom.year) and vedtak.virkFom.month.equalTo(Month.DECEMBER))
+        not(vedtak.vedtakFattetDatoEllerIdag.year.equalTo(vedtak.virkFom.year) and vedtak.virkFom.month.equalTo(Month.DECEMBER))
                 or beregning.bunnfradragNesteAr.equalTo(0),
         beregning.bunnfradrag,
         beregning.bunnfradragNesteAr
