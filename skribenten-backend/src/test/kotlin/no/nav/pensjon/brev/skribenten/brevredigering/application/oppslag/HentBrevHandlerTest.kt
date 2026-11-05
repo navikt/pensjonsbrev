@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
-import no.nav.pensjon.brev.skribenten.isFailure
-import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
