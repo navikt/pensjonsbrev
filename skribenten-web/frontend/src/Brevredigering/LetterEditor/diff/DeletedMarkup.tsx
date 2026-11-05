@@ -27,20 +27,6 @@ import {
  * the caret utilities since they carry no `contenteditable`.
  */
 
-const deletedTextStyle = css`
-  color: var(--ax-text-danger);
-  background: var(--ax-bg-danger-moderate);
-  border-radius: var(--ax-radius-2);
-  font-weight: var(--ax-font-weight-bold);
-  text-decoration-line: line-through;
-`;
-
-const deletedBlockStyle = css`
-  ${deletedTextStyle};
-  background: none;
-  text-decoration-line: none;
-`;
-
 const deletedTableStyle = css`
   width: 100%;
   table-layout: fixed;
@@ -59,7 +45,7 @@ const deletedTableStyle = css`
 const DeletedText = ({ content }: { content: TextContent }) => {
   if (content.type === "NEW_LINE") return <br />;
   return (
-    <span css={deletedTextStyle} data-diff-deleted>
+    <span className="attestant-diff-deleted" data-diff-deleted>
       {textOf(content)}
     </span>
   );
@@ -155,7 +141,7 @@ export const DeletedCells = ({ cells, asHeader = false }: { cells: Cell[]; asHea
 const DeletedBlocks = ({ blocks }: { blocks: AnyBlock[] }) => {
   if (blocks.length === 0) return null;
   return blocks.map((block, index) => (
-    <div className={block.type} contentEditable={false} css={deletedBlockStyle} data-diff-deleted-block key={index}>
+    <div className={block.type} contentEditable={false} data-diff-deleted-block key={index}>
       <DeletedContentNodes content={block.content} />
     </div>
   ));

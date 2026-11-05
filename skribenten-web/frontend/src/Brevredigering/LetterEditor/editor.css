@@ -73,18 +73,24 @@
 .attestant-diff-inserted,
 .attestant-diff-deleted {
   border-radius: var(--ax-radius-2);
-  font-weight: var(--ax-font-weight-bold);
 }
 
 .attestant-diff-inserted {
-  color: var(--ax-text-meta-lime);
-  background: var(--ax-bg-meta-lime-moderate);
+  color: var(--ax-text-success-subtle);
+  background-color: var(--ax-bg-success-soft);
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 10%;
+  text-underline-position: from-font;
 }
 
 .attestant-diff-deleted {
-  color: var(--ax-text-danger);
-  background: var(--ax-bg-danger-moderate);
+  color: var(--ax-text-danger-subtle);
+  background-color: var(--ax-bg-danger-soft);
   text-decoration-line: line-through;
+  text-decoration-style: solid;
+  text-decoration-thickness: from-font;
+  text-decoration-skip-ink: none;
 }
 
 .TITLE1 {
