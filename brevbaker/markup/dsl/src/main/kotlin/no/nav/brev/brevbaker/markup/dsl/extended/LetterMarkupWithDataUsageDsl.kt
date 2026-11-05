@@ -30,7 +30,7 @@ fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithD
  * - `markup`: den ferdige brevmarkuppen
  * - `brevtype`: hvilken brevtype markuppen tilhører
  * - `letterDataUsage`: sett av datafelter brevet bruker (kan stå tomt)
- * - `stableHashCode`: malens stabile hash (kan være null)
+ * - `stableHashCode`: malens stabile hash (obligatorisk)
  *
  * ```
  * val brev = letterMarkupWithDataUsage(
@@ -39,6 +39,7 @@ fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithD
  *     },
  *     brevtype = Markup.Brevtype.VEDTAKSBREV,
  *     letterDataUsage = setOf(dataUsageProperty("UngUfoerDto", "belop")),
+ *     stableHashCode = StableHashCode(123),
  * )
  * ```
  */
@@ -47,7 +48,7 @@ fun letterMarkupWithDataUsage(
     markup: LetterMarkup,
     brevtype: Markup.Brevtype,
     letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
-    stableHashCode: StableHashCode? = null,
+    stableHashCode: StableHashCode,
 ): LetterMarkupWithDataUsage = MarkupModel.letterMarkupWithDataUsage(
     markup = markup,
     letterDataUsage = letterDataUsage,
