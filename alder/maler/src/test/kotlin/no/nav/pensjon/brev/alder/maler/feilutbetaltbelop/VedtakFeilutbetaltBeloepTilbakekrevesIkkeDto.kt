@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 fun createVedtakFeilutbetaltBeloepTilbakekrevesIkkeDto() =
     VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
+        saksbehandlerValg = lagSaksbehandlervalg("forhandsvarselSendt" to true, "paragraf2215AndrePunktum" to true, "kravFallBort" to true, "belopetIkkeIBehold" to true),
         pesysData = VedtakFeilutbetaltBeloepTilbakekrevesIkkeDto.PesysData(
             sakstype = Sakstype.ALDER,
             forhaandsvarselDato = LocalDate.of(2026, 8, 15),
