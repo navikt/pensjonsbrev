@@ -73,6 +73,7 @@ export const LetterEditor = ({
   useSelectionDeleteHotkey(
     editorRoot,
     (focus) => applyAction(Actions.deleteSelection, setEditorState, focus),
+    (focus, softBreak) => applyAction(Actions.deleteSelectionAndEnter, setEditorState, focus, softBreak),
     !freeze,
     disableDiffMode,
   );

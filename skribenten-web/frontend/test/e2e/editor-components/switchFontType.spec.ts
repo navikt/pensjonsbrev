@@ -945,6 +945,14 @@ test.describe("Markering over flere literals", () => {
         id: 3,
         content: [makeLiteral(301, 3, "Hei "), makeVariable(302, 3, "Navn"), makeLiteral(303, 3, " og velkommen")],
       }),
+      paragraph({
+        id: 4,
+        content: [
+          itemList({
+            items: [item(makeLiteral(401, null, "Punkt start "), makeLiteral(402, null, "punkt slutt"))],
+          }),
+        ],
+      }),
     ],
     signatur: baseSignatur(),
   });
@@ -1055,15 +1063,73 @@ test.describe("Markering over flere literals", () => {
     });
   }
 
-  test("Enter over markering i flere literals sletter markeringen og deler avsnittet", async ({ page }) => {
-    await dragSelect(page, { text: paragraphFirst, offset: 8 }, { text: paragraphSecond, offset: 7 });
-    await expect.poll(() => selectedText(page)).toBe("start avsnitt");
+  for (const backwards of [false, true]) {
+    for (const key of ["Enter", "Shift+Enter"]) {
+      test(`${key} erstatter markering i flere literals (baklengs=${backwards})`, async ({ page }) => {
+        const start = { text: paragraphFirst, offset: 8 };
+        const end = { text: paragraphSecond, offset: 7 };
+        await dragSelect(page, backwards ? end : start, backwards ? start : end);
+        await expect.poll(() => selectedText(page)).toBe("start avsnitt");
 
-    await page.keyboard.press("Enter");
+        await page.keyboard.press(key);
 
-    await expect(page.locator(".PARAGRAPH").nth(1)).toHaveText(/^Avsnitt\s*$/);
-    await expect(page.locator(".PARAGRAPH").nth(2)).toHaveText(/^\s*slutt$/);
-  });
+        const paragraphs = page.locator(".PARAGRAPH");
+        if (key === "Enter") {
+          await expect(paragraphs.nth(1)).toHaveText(/^Avsnitt\s*$/);
+          await expect(paragraphs.nth(2)).toHaveText(/^\s*slutt$/);
+        } else {
+          await expect(paragraphs.nth(1)).toHaveText(/^Avsnitt\s+slutt$/);
+          await expect(paragraphs.nth(1).locator("br")).toHaveCount(1);
+          await expect(paragraphs.nth(2)).toHaveText("Hei Navn og velkommen");
+        }
+
+        await page.keyboard.press("Control+z");
+        await expect(paragraphs.nth(1)).toHaveText(paragraphFirst + paragraphSecond);
+        await expect(paragraphs.nth(1).locator("br")).toHaveCount(0);
+      });
+
+      test(`${key} erstatter markering i en liste (baklengs=${backwards})`, async ({ page }) => {
+        const start = { text: "Punkt start ", offset: 6 };
+        const end = { text: "punkt slutt", offset: 5 };
+        await dragSelect(page, backwards ? end : start, backwards ? start : end);
+        await expect.poll(() => selectedText(page)).toBe("start punkt");
+
+        await page.keyboard.press(key);
+
+        const list = page.locator("[data-editor-root] ul");
+        if (key === "Enter") {
+          await expect(list.locator("li")).toHaveCount(2);
+          await expect(list.locator("li").first()).toHaveText(/^Punkt\s*$/);
+          await expect(list.locator("li").last()).toHaveText(/^\s*slutt$/);
+        } else {
+          await expect(list.locator("li")).toHaveCount(1);
+          await expect(list.locator("li")).toHaveText(/^Punkt\s+slutt$/);
+          await expect(list.locator("br")).toHaveCount(1);
+        }
+
+        await page.keyboard.press("Control+z");
+        await expect(list.locator("li")).toHaveCount(1);
+        await expect(list.locator("li")).toHaveText("Punkt start punkt slutt");
+        await expect(list.locator("br")).toHaveCount(0);
+      });
+
+      test(`${key} sletter markering uten å dele tabellcellen (baklengs=${backwards})`, async ({ page }) => {
+        const start = { text: cellFirst, offset: 7 };
+        const end = { text: cellSecond, offset: 5 };
+        await dragSelect(page, backwards ? end : start, backwards ? start : end);
+        await expect.poll(() => selectedText(page)).toBe("del andre");
+
+        await page.keyboard.press(key);
+
+        const cell = page.getByTestId("table-cell-0-0");
+        await expect(cell).toHaveText(/^Første\s+del$/);
+        await expect(cell.locator("br")).toHaveCount(0);
+
+        await page.keyboard.press("Control+z");
+        await expect(cell).toHaveText(cellFirst + cellSecond);
+      });
+    }
+  }
 
   test("etter markering over flere literals kan man skrive videre og klikke andre steder", async ({ page }) => {
     await dragSelect(page, { text: paragraphFirst, offset: 8 }, { text: paragraphSecond, offset: 7 });

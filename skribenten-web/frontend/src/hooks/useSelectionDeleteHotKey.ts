@@ -14,6 +14,7 @@ const literalOf = (node: Node) =>
 /**
  * Deletes a selection with Backspace/Delete. Typing over a selection that spans several literals deletes it first,
  * so the key replaces the whole selection (the browser alone would only replace the part in the first literal).
+ * Enter uses a model operation instead: its original target may no longer be at the caret after deletion.
  *
  * If the selection touches diff decorations, the key only calls `onDiffEditIntent`, like the first edit in a
  * decorated literal: diff mode is turned off without changing the letter.
@@ -21,6 +22,7 @@ const literalOf = (node: Node) =>
 export function useSelectionDeleteHotkey(
   rootEl: HTMLElement | null,
   onDelete: (focus: SelectionIndex) => void,
+  onEnter: (focus: SelectionIndex, softBreak: boolean) => void,
   enabled = true,
   onDiffEditIntent?: () => void,
 ) {
@@ -62,6 +64,14 @@ export function useSelectionDeleteHotkey(
       const focus = getSelectionFocus(root);
       if (!focus) return;
 
+      if (event.key === "Enter") {
+        // The original target may no longer be at the caret after deletion (e.g. a backward selection).
+        event.preventDefault();
+        event.stopPropagation();
+        onEnter(focus, event.shiftKey);
+        return;
+      }
+
       if (!deleting) {
         // Render the deletion and its caret synchronously, then let the browser type the key there.
         flushSync(() => onDelete(focus));
@@ -80,5 +90,5 @@ export function useSelectionDeleteHotkey(
 
     document.addEventListener("keydown", handler, true);
     return () => document.removeEventListener("keydown", handler, true);
-  }, [rootEl, onDelete, enabled, onDiffEditIntent]);
+  }, [rootEl, onDelete, onEnter, enabled, onDiffEditIntent]);
 }
