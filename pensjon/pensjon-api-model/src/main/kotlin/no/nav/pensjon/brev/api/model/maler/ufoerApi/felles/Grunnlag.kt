@@ -5,6 +5,7 @@ data class Grunnlag(
     val borIUtlandet: Boolean,
     val anvendtSivilstand: AnvendtSivilstandCode?,
     val epsBrukerBorMed: Eps?,
+    val harVTA: Boolean,
 ) {
 
     enum class Eps {

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.brev.BrevLandmodell
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
@@ -28,6 +27,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradV2Dto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Yrkesskade
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.fixtures.createDineRettigheterOgPlikterUforeDto
@@ -433,9 +433,6 @@ fun createOkningUforegradV2Dto() =
         ),
         pesysData = OkningUforegradV2Dto.PesysData(
             pe = createPEgruppe10(),
-            vedtaksinfo = UforeVedtaksinfo(false, LocalDate.now()),
-            kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
-            oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
                 ufoeretrygdPerioder = listOf(
                     UfoeretrygdPerMaaned(
@@ -497,17 +494,16 @@ fun createOkningUforegradV2Dto() =
                     gradsokning = true
                 )
             ),
-            harVTA = false,
-            fribelop = Kroner(5000),
             forrigeUforegrad = 50,
             forrigeUforetidspunkt = LocalDate.of(2025, 12, 1),
             harAlderspensjonLopendeEllerTilBehandling = true,
             krav = Kravhode(
                 virkFom = LocalDate.of(2020, Month.JANUARY, 1),
                 mottattDato = LocalDate.of(2020, Month.JANUARY, 1),
+                kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
                 arsak = Kravhode.Arsak.ANNEN,
                 konvertertFraUforepensjon = false,
-                ),
+            ),
             vedtak = Vedtak(
                 virkFom = LocalDate.of(2024, Month.JANUARY, 1),
                 virkningsdatoTidligereMnd = false,
@@ -524,9 +520,9 @@ fun createOkningUforegradV2Dto() =
                 bunnfradrag = Kroner(1913),
                 bunnfradragNesteAr = Kroner(1919),
                 reduksjonsprosent = 5.0,
-                yrkesskadegrad = 0,
+                fribelop = Kroner(5000),
+                oifu = Kroner(10000),
                 yrkesskadeBest = false,
-                inntektSkadetidspunkt = Kroner(1010),
                 grunnbelop = Kroner(1010),
                 anvendtTrygdetid = 40,
             ),
@@ -534,11 +530,12 @@ fun createOkningUforegradV2Dto() =
                 borIUtlandet = false,
                 epsBrukerBorMed = Grunnlag.Eps.EKTEFELLE,
                 anvendtSivilstand = Grunnlag.AnvendtSivilstandCode.BOR_MED_EKTEFELLE,
+                harVTA = false,
             ),
             institusjonsopphold = Institusjonsopphold(
                 erAnvendt = false,
                 type = null,
-                fasteUtgifter = null,
+                fasteUtgifter = Kroner(30),
                 reduksjonsperioder = listOf(
                     Institusjonsopphold.Reduksjonsperiode(
                         forsorgeransvar = true,
@@ -593,7 +590,7 @@ fun createOkningUforegradV2Dto() =
             ),
             vilkarsvurdering = VilkarsvurderingFullstendig(
                 virkningstidspunkt = LocalDate.of(2020, Month.FEBRUARY, 12),
-                virkningstidspunktBegrunnelse = VilkarsvurderingFullstendig.VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_1,
+                virkningstidspunktBegrunnelse = VilkarsvurderingFullstendig.VirkningstidspunktBegrunnelse.STDBEGR_22_12_1_2,
                 uforetidspunkt = vilkaarligDato.minusYears(5),
                 uforegrad = 100,
                 ifuInntekt = Kroner(9938),
@@ -604,12 +601,12 @@ fun createOkningUforegradV2Dto() =
                 nedsattInntektsevneResultat = VilkarResultat.OPPFYLT,
                 yrkesskadeResultat = VilkarResultat.IKKE_OPPFYLT,
                 yrkesskadeBegrunnelse = VilkarsvurderingFullstendig.YrkesskadeBegrunnelse.STDBEGR_12_17_1_O_1,
-                yrkesskade = VilkarsvurderingFullstendig.Yrkesskade(
-                    skadetidspunkt = LocalDate.of(2020, Month.JANUARY, 1),
-                    yrkesskadegrad = 29,
-                    inntektVedSkadetidspunkt = Kroner(1010),
-                    inntektVedSkadetidspunktBegrunnelse = null,
-                ),
+            ),
+            yrkesskade = Yrkesskade(
+                skadetidspunkt = LocalDate.of(2020, Month.JANUARY, 1),
+                yrkesskadegrad = 29,
+                inntektVedSkadetidspunkt = Kroner(1010),
+                inntektVedSkadetidspunktBegrunnelse = null,
             ),
         ),
     )
