@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt
 
-import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -25,7 +24,7 @@ data class EndretUforetrygdPGAInntektNesteArDto(
     val pe: PEgruppe10,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto
 
-) : AutobrevData {
+) {
     data class Uforetrygd(
         val erGradert: Boolean,
         val netto: Kroner,

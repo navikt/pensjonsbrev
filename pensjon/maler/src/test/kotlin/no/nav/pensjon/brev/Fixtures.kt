@@ -52,7 +52,8 @@ import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ufore.diverse.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektAuto
-import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteArAuto
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteArRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
@@ -108,7 +109,8 @@ object Fixtures : LetterDataFactory {
             EndretBarnetilleggUfoerertrygdAuto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUfoeretrygdPGAInntektAuto::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUfoeretrygdPGAInntektRedigerbar::class -> createEndretUfoeretrygdPGAInntektRedigerbarDto() as T
-            EndretUforetrygdPGAInntektNesteAr::class -> createEndretUforetrygdPGAInntektNesteArDto() as T
+            EndretUforetrygdPGAInntektNesteArAuto::class -> createEndretUforetrygdPGAInntektNesteArDto() as T
+            EndretUforetrygdPGAInntektNesteArRedigerbar::class -> createEndretUforetrygdPGAInntektNesteArRedigerbarDto() as T
             EndretUforetrygdPGAOpptjeningLegacy::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
             EndringUforetrygdRedigerbar::class -> createEndringUfoeretrygdDto() as T
             EtteroppgjoerEtterbetalingAutoLegacy::class -> createEtteroppgjoerEtterbetalingAuto() as T
