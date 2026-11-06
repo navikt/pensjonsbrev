@@ -69,17 +69,8 @@ object SoknadTilAvtaleland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
             paragraph {
                 text(
-                    bokmal { + "Vi ber om en tilbakemelding innen " },
-                    nynorsk { + "Vi ber om ei tilbakemelding innan " },
-                )
-                text(
-                    bokmal { + "2 uker frem i tid" },
-                    nynorsk { + "2 veker fram i tid" },
-                    BOLD,
-                )
-                text(
-                    bokmal { + " på om du også ønsker å søke uføretrygd i " + fritekst("land") + " eller ikke. Dersom vi ikke mottar tilbakemelding innen frist, antar vi at du ikke ønsker å fremme en søknad om uføretrygd til avtalelandet. " },
-                    nynorsk { + " på om du også ønskjer å søkje uføretrygd i " + fritekst("land") + " eller ikkje. Dersom vi ikkje mottek tilbakemelding innan fristen, går vi ut frå at du ikkje ønskjer å fremje ein søknad om uføretrygd til avtalelandet. " },
+                    bokmal { + "Vi ber om en tilbakemelding innen " + fritekst("2 uker frem i tid" + " på om du også ønsker å søke uføretrygd i " + fritekst("land") + " eller ikke. Dersom vi ikke mottar tilbakemelding innen frist, antar vi at du ikke ønsker å fremme en søknad om uføretrygd til avtalelandet. ")},
+                    nynorsk { + "Vi ber om ei tilbakemelding innan " + fritekst("2 veker fram i tid" + " på om du også ønskjer å søkje uføretrygd i " + fritekst("land") + " eller ikkje. Dersom vi ikkje mottek tilbakemelding innan fristen, går vi ut frå at du ikkje ønskjer å fremje ein søknad om uføretrygd til avtalelandet. ") },
                 )
             }
 
