@@ -6,6 +6,9 @@ import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.brev.brevbaker.markup.Attachment as AttachmentV2
+import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupV2WithDataUsage
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -147,6 +150,24 @@ open class FakeBrevbakerService(
         felles: BrevbakerFelles,
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? = notYetStubbed()
+    override suspend fun renderMarkupV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        felles: BrevbakerFelles,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+    ): MarkupV2WithDataUsage = notYetStubbed()
+    override suspend fun renderPdfV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        redigertBrev: MarkupV2,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+        redigerteVedlegg: Map<VedleggId, AttachmentV2>,
+        pdfVedlegg: List<PDFVedleggTittel>,
+    ): LetterResponse = notYetStubbed()
 }
 
 private val objectMapper = jacksonObjectMapper()

@@ -1,4 +1,4 @@
-@file:OptIn(InternKonstruktoer::class)
+@file:OptIn(InternKonstruktoer::class, MarkupModelApi::class)
 
 package no.nav.pensjon.brev.skribenten.brevredigering.application
 
@@ -9,6 +9,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.brevbaker.markup.Markup
+import no.nav.brev.brevbaker.markup.MarkupModel
+import no.nav.brev.brevbaker.markup.MarkupModelApi
+import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
@@ -73,6 +77,7 @@ abstract class BrevredigeringHandlerTestBase {
     @BeforeEach
     fun clearMocks() {
         brevbakerService.renderMarkupKall.clear()
+        brevbakerService.renderMarkupV2Resultat = { notYetStubbed("Mangler renderMarkupV2 stub") }
         brevbakerService.renderMarkupResultat = {
             letter.medSignatur(
                 saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
@@ -578,12 +583,15 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
+        lateinit var renderMarkupV2Resultat: suspend ((f: BrevbakerFelles) -> MarkupV2)
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
         var alltidValgbareVedleggResultat: Set<AlltidValgbartVedleggBrevkode> = emptySet()
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
+        val renderPdfV2Kall = mutableListOf<MarkupV2>()
+        val renderPdfV2VedleggKall = mutableListOf<Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>>()
         val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
         var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
         val renderRedigerbartVedleggKall = mutableListOf<VedleggId>()
@@ -600,6 +608,18 @@ abstract class BrevredigeringHandlerTestBase {
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
                 .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
 
+        override suspend fun renderMarkupV2(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            felles: BrevbakerFelles,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
+        ) = MarkupModel.letterMarkupWithDataUsage(
+            markup = renderMarkupV2Resultat(felles).also { renderMarkupKall.add(Pair(brevkode, spraak)) },
+            letterDataUsage = emptySet(),
+            brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) Markup.Brevtype.VEDTAKSBREV else Markup.Brevtype.INFORMASJONSBREV,
+        )
+
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
@@ -613,6 +633,21 @@ abstract class BrevredigeringHandlerTestBase {
         ) = renderPdfResultat.also {
             renderPdfKall.add(redigertBrev)
             renderPdfRedigerteVedleggKall.add(redigerteVedlegg)
+        }
+
+        override suspend fun renderPdfV2(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
+            felles: BrevbakerFelles,
+            redigertBrev: MarkupV2,
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+            redigerteVedlegg: Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>,
+            pdfVedlegg: List<PDFVedleggTittel>,
+        ) = renderPdfResultat.also {
+            renderPdfV2Kall.add(redigertBrev)
+            renderPdfV2VedleggKall.add(redigerteVedlegg)
         }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]

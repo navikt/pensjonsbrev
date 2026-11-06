@@ -194,7 +194,9 @@ private fun Throwable.isInfoLogLevel(): Boolean =
 private val sensitiveEditedLetterTypes = listOf(
     Edit.Letter::class,
     VersjonertBrev.V1::class,
+    VersjonertBrev.V2::class,
     VersjonertVedlegg.V1::class,
+    VersjonertVedlegg.V2::class,
 ).mapNotNull { it.qualifiedName }
 
 private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.let { msg ->

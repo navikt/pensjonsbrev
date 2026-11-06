@@ -1,3 +1,5 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.skribenten.fagsystem
 
 import kotlinx.coroutines.Dispatchers
@@ -8,10 +10,14 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedleggMarkup
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupV2WithDataUsage
+import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
@@ -51,6 +57,20 @@ class BrevmalService(
             saksbehandlervalg = saksbehandlerValg.somSaksbehandlervalgIDSL()
         )
 
+    suspend fun renderMarkupV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        saksbehandlerValg: SaksbehandlervalgMap,
+        pesysData: BrevdataResponse.Data
+    ): MarkupV2WithDataUsage =
+        brevbakerService.renderMarkupV2(
+            brevkode = brevkode,
+            spraak = spraak,
+            felles = pesysData.felles,
+            fagsystemBrevdata = pesysData.brevdata,
+            saksbehandlervalg = saksbehandlerValg.somSaksbehandlervalgIDSL()
+        )
+
     suspend fun renderMarkup(
         markupVersjon: MarkupVersjon,
         brevkode: Brevkode.Redigerbart,
@@ -61,6 +81,13 @@ class BrevmalService(
         MarkupVersjon.V1 -> renderMarkup(brevkode, spraak, saksbehandlerValg, pesysData)
             .let { RendretBrev(VersjonertMarkup.V1(it.markup), it.letterDataUsage) }
 
+        MarkupVersjon.V2 -> renderMarkupV2(brevkode, spraak, saksbehandlerValg, pesysData)
+            .let { rendret ->
+                RendretBrev(
+                    markup = VersjonertMarkup.V2(rendret.markup),
+                    letterDataUsage = rendret.letterDataUsage.map { LetterMarkupWithDataUsageImpl.PropertyImpl(it.typeName, it.propertyName) }.toSet(),
+                )
+            }
     }
 
     suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): RendretBrev =
@@ -95,6 +122,7 @@ class BrevmalService(
                 vedleggId = vedleggId,
             )?.let { VersjonertVedleggMarkup.V1(it) }
 
+            MarkupVersjon.V2 -> throw FeilMarkupVersjonException(MarkupVersjon.V1, brev.markupVersjon)
         }
 
     suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, VersjonertVedleggMarkup> =

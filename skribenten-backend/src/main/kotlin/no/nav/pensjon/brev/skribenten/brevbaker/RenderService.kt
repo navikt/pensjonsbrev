@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
+import no.nav.pensjon.brev.skribenten.letter.v2.toMarkup as toMarkupV2
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 class RenderService(private val brevbakerService: BrevbakerService) {
@@ -21,6 +22,18 @@ class RenderService(private val brevbakerService: BrevbakerService) {
                 redigertBrev = redigertBrev.brev.withSakspart(dokumentDato = pesysData.felles.dokumentDato).toMarkup(),
                 alltidValgbareVedlegg = brev.valgteVedlegg,
                 redigerteVedlegg = brev.redigerteVedlegg.associate { it.vedleggId to it.redigertVedlegg.asV1().toMarkup() },
+                pdfVedlegg = pdfVedlegg
+            )
+
+            is VersjonertBrev.V2 -> brevbakerService.renderPdfV2(
+                brevkode = brev.brevkode,
+                spraak = brev.spraak,
+                fagsystemBrevdata = pesysData.brevdata,
+                saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
+                felles = pesysData.felles,
+                redigertBrev = redigertBrev.brev.withSaksinformasjon(dokumentDato = pesysData.felles.dokumentDato).toMarkupV2(),
+                alltidValgbareVedlegg = brev.valgteVedlegg,
+                redigerteVedlegg = brev.redigerteVedlegg.associate { it.vedleggId to it.redigertVedlegg.asV2().toMarkupV2() },
                 pdfVedlegg = pdfVedlegg
             )
         }

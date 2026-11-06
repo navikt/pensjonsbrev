@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
@@ -28,6 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     private val nyttRedigertBrev = editedLetter {
@@ -94,6 +96,24 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.redigertBrev.asV1().blocks[1].missingFromTemplate).isNotEqualTo(true)
             assertThat(it.redigertBrev.asV1().blocks[2].missingFromTemplate).isNotEqualTo(true)
         }
+    }
+
+    @Test
+    suspend fun `kan ikke oppdatere v1-brev med v2-brev`() {
+        val original = opprettBrev(reserverForRedigering = true).resultOrFail()
+
+        assertThrows<FeilMarkupVersjonException> {
+            withPrincipal(saksbehandler1Principal) {
+                oppdaterBrev(
+                    OppdaterBrevHandler.Request(
+                        brevId = original.info.id,
+                        saksId = sak1.saksId,
+                        nyttRedigertbrev = VersjonertMarkup.V2(letterV2()).toEdit(),
+                    )
+                )
+            }
+        }
+        assertThat(hentBrev(original.info.id).resultOrFail().redigertBrev).isEqualTo(original.redigertBrev)
     }
 
     @Test
