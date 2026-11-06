@@ -105,6 +105,7 @@ object RedigertVedleggTable : CompositeIdTable() {
         varchar("vedleggId", 50).transform(::VedleggId, VedleggId::id).entityId()
     val redigertVedleggKryptert: Column<Edit.Attachment> = kryptertDto<Edit.Attachment>("redigertVedleggKryptert")
     val redigertVedleggKryptertHash: Column<Hash<Edit.Attachment>> = hashColumn("redigertVedleggKryptertHash")
+    val rendretVedlegg: Column<Edit.Attachment?> = kryptertDto<Edit.Attachment>("rendretVedlegg").nullable()
 
     override val primaryKey = PrimaryKey(brevredigering, vedleggId)
 

@@ -16,12 +16,14 @@ class RedigertVedlegg(id: EntityID<CompositeID>) : CompositeEntity(id) {
     var redigertVedlegg by RedigertVedleggTable.redigertVedleggKryptert
         .writeHashTo(RedigertVedleggTable.redigertVedleggKryptertHash)
     val redigertVedleggHash by RedigertVedleggTable.redigertVedleggKryptertHash
+    var rendretVedlegg by RedigertVedleggTable.rendretVedlegg
 
     companion object : CompositeEntityClass<RedigertVedlegg>(RedigertVedleggTable) {
         fun new(
             brevredigering: EntityID<BrevId>,
             vedleggId: BrevbakerType.VedleggId,
             redigertVedlegg: Edit.Attachment,
+            malVedlegg: Edit.Attachment?,
         ): RedigertVedlegg =
             new(
                 CompositeID {
@@ -30,6 +32,7 @@ class RedigertVedlegg(id: EntityID<CompositeID>) : CompositeEntity(id) {
                 }
             ) {
                 this.redigertVedlegg = redigertVedlegg
+                malVedlegg?.let { this.rendretVedlegg = it }
             }
     }
 }

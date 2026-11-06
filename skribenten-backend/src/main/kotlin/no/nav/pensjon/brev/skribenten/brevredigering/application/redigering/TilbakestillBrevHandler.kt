@@ -36,7 +36,7 @@ class TilbakestillBrevHandler(
                 rendretBrev.stableHashCode
             )
             brev.settRendretBrev(rendretBrev.markup)
-            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata), true)
 
             success(brev.tilDto(rendretBrev.letterDataUsage))
         }
