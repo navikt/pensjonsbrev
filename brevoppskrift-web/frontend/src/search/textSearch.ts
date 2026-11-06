@@ -9,7 +9,7 @@ import {
   queryTerms,
   SPECIAL_CHAR_QUERY,
 } from "~/search/matchingRules";
-import { matchTextFlow, type TextFlow } from "~/search/matchTextFlow";
+import { type TextFlow, textFlowHasMatch } from "~/search/matchTextFlow";
 
 export type { Line, LineSegment };
 
@@ -149,7 +149,7 @@ function lineMatches(line: Line, query: string, exact: boolean): boolean {
     ...(source > 0 ? [{ type: "space" } as const] : []),
     segment.type === "var" ? { type: "variable" } : { type: "text", source, text: segment.value },
   ]);
-  return matchTextFlow(flow, query, exact).fullMatch;
+  return textFlowHasMatch(flow, query, exact);
 }
 
 /** Collapses the matched lines into one hit per template: the best-scoring
