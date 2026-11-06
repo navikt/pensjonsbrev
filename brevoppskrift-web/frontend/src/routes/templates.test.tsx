@@ -488,6 +488,37 @@ describe("<AllTemplates /> (route: /templates)", () => {
       expect(document.querySelector("[data-selected-result]")).toBeNull();
     });
 
+    it.each([false, true])(
+      "persists a checkbox edit and resets the selected result and page (initial exact mode: %s)",
+      async (initialExact) => {
+        mockManyHits();
+        const { user, router } = await renderTemplatesRoute({
+          q: "Hei",
+          exact: initialExact || undefined,
+          tab: "innhold",
+          page: 2,
+          selected: "autobrev/A11/BOKMAL",
+        });
+        await waitFor(() => expect(isCurrentPage("2")).toBe(true));
+        expect(screen.getByRole("link", { name: "A11" }).getAttribute("aria-current")).toBe("true");
+        const checkbox = screen.getByRole<HTMLInputElement>("checkbox", { name: "Vis kun nøyaktige treff" });
+        expect(checkbox.checked).toBe(initialExact);
+
+        await user.click(checkbox);
+
+        await waitFor(() =>
+          expect(router.state.location.search).toEqual({
+            q: "Hei",
+            ...(initialExact ? {} : { exact: true }),
+            tab: "innhold",
+          }),
+        );
+        expect(checkbox.checked).toBe(!initialExact);
+        expect(document.querySelector("[data-selected-result]")).toBeNull();
+        expect(isCurrentPage("1")).toBe(true);
+      },
+    );
+
     it("links each result with the search, and records the opened one so Back returns to it", async () => {
       mockManyHits();
       const { user, router } = await renderTemplatesRoute({ q: "Hei", tab: "innhold" });
