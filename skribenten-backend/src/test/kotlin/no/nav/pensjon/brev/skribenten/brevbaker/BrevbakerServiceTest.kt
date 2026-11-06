@@ -5,10 +5,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.brev.Listetype
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -95,7 +99,7 @@ class BrevbakerServiceTest {
             saksbehandlerNavn = "case worker name",
             attesterendeSaksbehandlerNavn = "case worker name2",
             navAvsenderEnhet = "Nav abc"
-        )
+        ),
     )
 
     val mapper = jacksonObjectMapper().apply {
@@ -107,6 +111,26 @@ class BrevbakerServiceTest {
     @Test
     fun testJacksonModule() {
         Assertions.assertEquals(markup, mapper.readValue<LetterMarkup>(mapper.writeValueAsString(markup)))
+    }
+
+    @Test
+    fun `stableHashCode serialiseres paa databruk-wrapperen og ikke markup`() {
+        val letter = LetterMarkupWithDataUsageImpl(
+            markup = markup,
+            letterDataUsage = emptySet(),
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+            stableHashCode = StableHashCode(3),
+        )
+        val json = mapper.writeValueAsString(letter)
+        val tree = mapper.readTree(json)
+
+        Assertions.assertEquals(3, tree["stableHashCode"].intValue())
+        Assertions.assertFalse(tree["markup"].has("stableHashCode"))
+        Assertions.assertEquals(letter, mapper.readValue<LetterMarkupWithDataUsage>(json))
+        Assertions.assertEquals(
+            letter.copy(stableHashCode = null),
+            mapper.readValue<LetterMarkupWithDataUsage>(mapper.writeValueAsString(letter.copy(stableHashCode = null))),
+        )
     }
 
 }

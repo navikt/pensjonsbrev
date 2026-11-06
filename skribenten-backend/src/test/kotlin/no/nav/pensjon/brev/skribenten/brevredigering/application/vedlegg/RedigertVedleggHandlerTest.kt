@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
 
@@ -58,6 +59,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
             title = listOf(LiteralImpl(1, tittel)),
             blocks = avsnitt.map { (id, tekst) -> ParagraphImpl(id, true, listOf(LiteralImpl(id * 10, tekst))) },
             includeSakspart = false,
+            stableHashCode = StableHashCode(avsnitt.map { it.first }.hashCode())
         )
 
     private fun Edit.Attachment.foersteLiteral(): Edit.ParagraphContent.Text.Literal =

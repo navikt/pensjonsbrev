@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage.Property
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour
@@ -68,10 +69,17 @@ object MarkupModel {
     // --- Brev ---
 
     fun letterMarkup(title1: List<Text>, saksinformasjon: Saksinformasjon, blocks: List<Block>, signatur: Signatur): LetterMarkup =
-        LetterMarkup(title1 = title1, saksinformasjon = saksinformasjon, blocks = blocks, signatur = signatur)
+        LetterMarkup(title1, saksinformasjon, blocks, signatur)
 
     fun attachment(title1: List<Text>, blocks: List<Block>, inkluderSaksinformasjon: Boolean): Attachment =
-        Attachment(title1, blocks, inkluderSaksinformasjon)
+        attachment(title1, blocks, inkluderSaksinformasjon, null)
+
+    fun attachment(
+        title1: List<Text>,
+        blocks: List<Block>,
+        inkluderSaksinformasjon: Boolean,
+        stableHashCode: StableHashCode?,
+    ): Attachment = Attachment(title1, blocks, inkluderSaksinformasjon, stableHashCode)
 
     fun pdfTittel(title1: List<Text>): PDFTittel = PDFTittel(title1)
 
@@ -95,10 +103,12 @@ object MarkupModel {
     fun saksbehandlerSignatur(saksbehandlerNavn: String, attesterendeSaksbehandlerNavn: String?): SaksbehandlerSignatur =
         SaksbehandlerSignatur(saksbehandlerNavn, attesterendeSaksbehandlerNavn)
 
-    fun letterMarkupWithDataUsage(markup: LetterMarkup,
-                                  letterDataUsage: Set<Property>,
-                                  brevtype: Markup.Brevtype) =
-        LetterMarkupWithDataUsage(markup, letterDataUsage, brevtype)
+    fun letterMarkupWithDataUsage(
+        markup: LetterMarkup,
+        letterDataUsage: Set<Property>,
+        brevtype: Markup.Brevtype,
+        stableHashCode: StableHashCode? = null,
+    ) = LetterMarkupWithDataUsage(markup, letterDataUsage, brevtype, stableHashCode)
 
     fun letterMarkupWithDataUsageProperty(typeName: String, propertyName: String) =
         Property(typeName, propertyName)

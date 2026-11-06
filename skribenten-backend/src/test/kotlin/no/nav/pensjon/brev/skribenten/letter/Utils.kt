@@ -3,6 +3,7 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.InterneDataklasser
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
@@ -26,7 +27,7 @@ fun letter(vararg blocks: LetterMarkup.Block) =
             saksbehandlerNavn = "Kjersti Saksbehandler",
             attesterendeSaksbehandlerNavn = null,
             navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn"
-        )
+        ),
     )
 
 fun editedLetter(vararg blocks: Edit.Block, deleted: Collection<Int> = emptyList(), fixParentIds: Boolean = true, dokumentDato: LocalDate = LocalDate.now()): Edit.Letter =
@@ -64,6 +65,7 @@ fun attachment(vararg blocks: LetterMarkup.Block, includeSakspart: Boolean = fal
         title = listOf(ParagraphContentImpl.TextImpl.LiteralImpl(1, title)),
         blocks = blocks.toList(),
         includeSakspart = includeSakspart,
+        stableHashCode = StableHashCode(blocks.map { it.id }.hashCode())
     )
 
 fun editedAttachment(

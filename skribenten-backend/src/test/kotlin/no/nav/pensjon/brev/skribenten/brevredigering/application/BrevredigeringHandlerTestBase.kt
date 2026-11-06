@@ -596,7 +596,12 @@ abstract class BrevredigeringHandlerTestBase {
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
-                .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
+                .let { LetterMarkupWithDataUsageImpl(
+                    markup = it,
+                    letterDataUsage = emptySet(),
+                    brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
+                    stableHashCode = null,
+                ) }
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
