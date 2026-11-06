@@ -109,7 +109,8 @@ type LineState = {
   condition: number;
   pendingSpace: number;
   prefixes: Map<string, Prefix>;
-  occurrences: Map<number, number>;
+  occurrences?: Map<number, number>;
+  coverage?: number[];
 };
 
 function prefixKey(prefix: Omit<Prefix, "condition">): string {
@@ -133,15 +134,28 @@ export function mergeRanges(ranges: HighlightRange[]): HighlightRange[] {
 
 /** Incremental edit-distance prefixes are bounded by query length and its error budget.
  * Branch choices and term coverage use decision diagrams instead of enumerating paths or term subsets. */
-export function matchTextFlow<T>(
+function matchTextFlowInternal<T>(
   flow: TextFlow<T>[],
   needle: string,
-  exact = false,
-): { parts: ReadonlyMap<T, HighlightParts>; fullMatch: boolean } {
-  const parts = new Map<T, HighlightParts>();
+  exact: boolean,
+  collectHighlights: true,
+): { parts: ReadonlyMap<T, HighlightParts>; fullMatch: boolean };
+function matchTextFlowInternal<T>(
+  flow: TextFlow<T>[],
+  needle: string,
+  exact: boolean,
+  collectHighlights: false,
+): { fullMatch: boolean };
+function matchTextFlowInternal<T>(
+  flow: TextFlow<T>[],
+  needle: string,
+  exact: boolean,
+  collectHighlights: boolean,
+): { parts?: ReadonlyMap<T, HighlightParts>; fullMatch: boolean } {
+  const parts = collectHighlights ? new Map<T, HighlightParts>() : undefined;
   const query = normalizeForExactMatch(needle);
   if (!query) {
-    return { parts, fullMatch: false };
+    return { ...(parts && { parts }), fullMatch: false };
   }
   const phrase = exact || SPECIAL_CHAR_QUERY.test(query);
   const patterns: Pattern[] = (phrase ? [query] : queryTerms(query)).map((text) => ({
@@ -149,18 +163,20 @@ export function matchTextFlow<T>(
     errors: !phrase && isFuzzyTerm(text) ? Math.floor(text.length * FUZZY_MATCH_OPTIONS.threshold) : 0,
   }));
   const conditions = new Conditions();
-  const origins: Origin<T>[] = [];
+  const origins: Origin<T>[] | undefined = collectHighlights ? [] : undefined;
   const occurrences: Occurrence[] = [];
   const occurrenceIds = new Map<string, number>();
   const transitions = new Map<string, { prefix: number; errors: number }[]>();
   let nextLine = 0;
+  let nextOrigin = 0;
   let fullMatch = false;
 
   const emptyLine = (condition: number): LineState => ({
     condition,
     pendingSpace: 0,
     prefixes: new Map(),
-    occurrences: new Map(),
+    ...(collectHighlights && { occurrences: new Map() }),
+    ...(!collectHighlights && { coverage: patterns.map(() => 0) }),
   });
   const addPrefix = (target: Map<string, Prefix>, prefix: Prefix) => {
     if (prefix.condition !== 0) {
@@ -199,7 +215,7 @@ export function matchTextFlow<T>(
     transitions.set(key, values);
     return values;
   };
-  const characterAt = (line: LineState, origin: number, present: number): LineState => {
+  const characterAt = (line: LineState, origin: number, present: number, character: string): LineState => {
     if (present === 0) {
       return line;
     }
@@ -211,18 +227,23 @@ export function matchTextFlow<T>(
       if (!condition || previous.length >= pattern.text.length + pattern.errors) {
         return;
       }
-      for (const next of advance(previous.term, previous.prefix, previous.errors, origins[origin].character)) {
+      for (const next of advance(previous.term, previous.prefix, previous.errors, character)) {
         const prefix = { ...previous, ...next, length: previous.length + 1, condition };
         addPrefix(prefixes, prefix);
         if (next.prefix === pattern.text.length) {
-          const key = `${prefix.term}:${prefix.start}:${origin}:${prefix.errors}`;
-          let id = occurrenceIds.get(key);
-          if (id === undefined) {
-            id = occurrences.length;
-            occurrenceIds.set(key, id);
-            occurrences.push({ term: prefix.term, start: prefix.start, end: origin, errors: prefix.errors });
+          if (line.coverage) {
+            line.coverage[prefix.term] = conditions.or(line.coverage[prefix.term] ?? 0, condition);
           }
-          found.set(id, conditions.or(found.get(id) ?? 0, condition));
+          if (found) {
+            const key = `${prefix.term}:${prefix.start}:${origin}:${prefix.errors}`;
+            let id = occurrenceIds.get(key);
+            if (id === undefined) {
+              id = occurrences.length;
+              occurrenceIds.set(key, id);
+              occurrences.push({ term: prefix.term, start: prefix.start, end: origin, errors: prefix.errors });
+            }
+            found.set(id, conditions.or(found.get(id) ?? 0, condition));
+          }
         }
       }
     };
@@ -236,6 +257,9 @@ export function matchTextFlow<T>(
     return { ...line, prefixes, occurrences: found };
   };
   const mark = (occurrence: Occurrence, condition: number, complete: number) => {
+    if (!origins || !parts) {
+      return;
+    }
     const pattern = patterns[occurrence.term];
     const ranges = new Map<T, HighlightRange>();
     let before = condition;
@@ -256,7 +280,7 @@ export function matchTextFlow<T>(
       }
       if (selected && origin.position) {
         const { source, index } = origin.position;
-        const part = parts.get(source);
+        const part = parts?.get(source);
         if (part) {
           const previous = ranges.get(source);
           ranges.set(source, {
@@ -269,13 +293,18 @@ export function matchTextFlow<T>(
       }
     }
     for (const [source, range] of ranges) {
-      parts.get(source)?.ranges.push(range);
+      parts?.get(source)?.ranges.push(range);
     }
   };
   const finishLine = (line: LineState) => {
+    if (!collectHighlights) {
+      const complete = line.coverage?.reduce((a, b) => conditions.and(a, b), line.condition) ?? 0;
+      fullMatch ||= complete !== 0;
+      return;
+    }
     const selected: { occurrence: Occurrence; condition: number }[] = [];
     const coverage = patterns.map(() => 0);
-    const ordered = [...line.occurrences]
+    const ordered = [...(line.occurrences ?? [])]
       .map(([id, condition]) => ({ occurrence: occurrences[id], condition: conditions.and(condition, line.condition) }))
       .sort(
         (a, b) =>
@@ -317,7 +346,10 @@ export function matchTextFlow<T>(
         { ...prefix, condition: conditions.and(prefix.condition, guard) },
       ]),
     ),
-    occurrences: new Map([...line.occurrences].map(([id, condition]) => [id, conditions.and(condition, guard)])),
+    ...(line.occurrences && {
+      occurrences: new Map([...line.occurrences].map(([id, condition]) => [id, conditions.and(condition, guard)])),
+    }),
+    ...(line.coverage && { coverage: line.coverage.map((condition) => conditions.and(condition, guard)) }),
   });
   const walk = (items: TextFlow<T>[], initial: Map<number, LineState>): Map<number, LineState> => {
     let lines = initial;
@@ -339,15 +371,24 @@ export function matchTextFlow<T>(
               for (const prefix of line.prefixes.values()) {
                 addPrefix(prefixes, prefix);
               }
-              const found = new Map(previous.occurrences);
-              for (const [id, condition] of line.occurrences) {
-                found.set(id, conditions.or(found.get(id) ?? 0, condition));
+              let found: Map<number, number> | undefined;
+              if (previous.occurrences && line.occurrences) {
+                found = new Map(previous.occurrences);
+                for (const [id, condition] of line.occurrences) {
+                  found.set(id, conditions.or(found.get(id) ?? 0, condition));
+                }
               }
               joined.set(id, {
                 condition: conditions.or(previous.condition, line.condition),
                 pendingSpace: conditions.or(previous.pendingSpace, line.pendingSpace),
                 prefixes,
-                occurrences: found,
+                ...(found && { occurrences: found }),
+                ...(previous.coverage &&
+                  line.coverage && {
+                    coverage: previous.coverage.map((condition, index) =>
+                      conditions.or(condition, line.coverage?.[index] ?? 0),
+                    ),
+                  }),
               });
             }
           }
@@ -365,7 +406,7 @@ export function matchTextFlow<T>(
       } else if (item.type === "space") {
         lines = new Map([...lines].map(([id, line]) => [id, { ...line, pendingSpace: line.condition }]));
       } else {
-        if (item.type === "text" && !parts.has(item.source)) {
+        if (item.type === "text" && collectHighlights && parts && !parts.has(item.source)) {
           parts.set(item.source, { ranges: [], fullMatch: false });
         }
         for (let index = 0; index < item.text.length; index++) {
@@ -373,7 +414,7 @@ export function matchTextFlow<T>(
             lines = new Map([...lines].map(([id, line]) => [id, { ...line, pendingSpace: line.condition }]));
             continue;
           }
-          const position = item.type === "text" ? { source: item.source, index } : undefined;
+          const position = item.type === "text" && collectHighlights ? { source: item.source, index } : undefined;
           for (const character of item.text[index].toLowerCase()) {
             let spaces = 0;
             let present = 0;
@@ -382,18 +423,18 @@ export function matchTextFlow<T>(
               present = conditions.or(present, line.condition);
             }
             if (spaces) {
-              const origin = origins.length;
-              origins.push({ position, character: " ", condition: spaces });
+              const origin = nextOrigin++;
+              origins?.push({ position: undefined, character: " ", condition: spaces });
               lines = new Map(
                 [...lines].map(([id, line]) => [
                   id,
-                  { ...characterAt(line, origin, line.pendingSpace), pendingSpace: 0 },
+                  { ...characterAt(line, origin, line.pendingSpace, " "), pendingSpace: 0 },
                 ]),
               );
             }
-            const origin = origins.length;
-            origins.push({ position, character, condition: present });
-            lines = new Map([...lines].map(([id, line]) => [id, characterAt(line, origin, line.condition)]));
+            const origin = nextOrigin++;
+            origins?.push({ position, character, condition: present });
+            lines = new Map([...lines].map(([id, line]) => [id, characterAt(line, origin, line.condition, character)]));
           }
         }
       }
@@ -403,8 +444,25 @@ export function matchTextFlow<T>(
   for (const line of walk(flow, new Map([[0, emptyLine(1)]]))) {
     finishLine(line[1]);
   }
-  for (const part of parts.values()) {
-    part.ranges = mergeRanges(part.ranges);
+  if (parts) {
+    for (const part of parts.values()) {
+      part.ranges = mergeRanges(part.ranges);
+    }
   }
-  return { parts, fullMatch };
+  return { ...(parts && { parts }), fullMatch };
+}
+
+/** Whether any compatible line/branch covers every query term, without
+ * constructing highlight ranges. Used to verify corpus-search candidates. */
+export function textFlowHasMatch<T>(flow: TextFlow<T>[], needle: string, exact = false): boolean {
+  return matchTextFlowInternal(flow, needle, exact, false).fullMatch;
+}
+
+export function matchTextFlow<T>(
+  flow: TextFlow<T>[],
+  needle: string,
+  exact = false,
+): { parts: ReadonlyMap<T, HighlightParts>; fullMatch: boolean } {
+  const result = matchTextFlowInternal(flow, needle, exact, true);
+  return { parts: result.parts, fullMatch: result.fullMatch };
 }

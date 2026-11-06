@@ -1,12 +1,69 @@
 import { describe, expect, it } from "vitest";
 
-import { type HighlightParts, matchTextFlow, mergeRanges, type TextFlow } from "~/search/matchTextFlow";
+import {
+  type HighlightParts,
+  matchTextFlow,
+  mergeRanges,
+  type TextFlow,
+  textFlowHasMatch,
+} from "~/search/matchTextFlow";
 
 function text(source: string): TextFlow<string> {
   return { type: "text", source, text: source };
 }
 
 describe("incremental text-flow matching", () => {
+  const eligibilityCases: {
+    description: string;
+    flow: TextFlow<string>[];
+    query: string;
+    exact: boolean;
+    expected: boolean;
+  }[] = [
+    {
+      description: "fuzzy terms across a variable",
+      flow: [text("barnetilleg"), { type: "variable" }, text(" uføretrygd")],
+      query: "barnetillegg uføretrygd",
+      exact: false,
+      expected: true,
+    },
+    {
+      description: "an exact phrase across a variable",
+      flow: [text("barnetillegg"), { type: "variable" }, text(" uføretrygd")],
+      query: "barnetillegg uføretrygd",
+      exact: true,
+      expected: false,
+    },
+    {
+      description: "mutually exclusive branch terms",
+      flow: [{ type: "branches", branches: [[text("barnetillegg")], [text("uføretrygd")]] }],
+      query: "barnetillegg uføretrygd",
+      exact: false,
+      expected: false,
+    },
+    {
+      description: "normalized exact whitespace",
+      flow: [text("Du får    barnetillegg")],
+      query: "får barnetillegg",
+      exact: true,
+      expected: true,
+    },
+    {
+      description: "symbol-only exact matching",
+      flow: [text("Henvisning til § 12")],
+      query: "§",
+      exact: false,
+      expected: true,
+    },
+  ];
+
+  it.each(eligibilityCases)("range-free matching preserves $description", ({ flow, query, exact, expected }) => {
+    const planned = matchTextFlow(flow, query, exact);
+
+    expect(planned.fullMatch).toBe(expected);
+    expect(textFlowHasMatch(flow, query, exact)).toBe(planned.fullMatch);
+  });
+
   it("matches an indexed separator without assigning it visible highlight ranges", () => {
     const flow: TextFlow<string>[] = [text("left"), { type: "separator", text: " | " }, text("right")];
     const result = matchTextFlow(flow, "left | right", true);
