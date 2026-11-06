@@ -1,14 +1,19 @@
 package no.nav.pensjon.brev.maler.ufore.endring
 
-
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggFellesbarn.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggSaerkullsbarn.*
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.fra1GTil04G.dato04G
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.gjenlevendetillegg.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.uforetrygd.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.*
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.fra1GTil04G.dato04G
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggFellesbarn.periodisert
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggSaerkullsbarn.periodisert
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.uforetrygd
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.uforetrygd.okningUforegradVedArskjoring
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.virkningFom
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
@@ -17,53 +22,31 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_JOBB_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
-@TemplateModelHelpers
-object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAInntektNesteArDto> {
+object EndretUforetrygdPGAInntektNesteArFelles {
 
-    override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_INNTEKT_NESTE_AR
+    data class Outline(val data: Expression<EndretUforetrygdPGAInntektNesteArDto>) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val harBarnetillegg = data.barnetilleggFellesbarn.notNull() or data.barnetilleggSaerkullsbarn.notNull()
+            val fellesbarnPeriodisert = data.barnetilleggFellesbarn.safe { periodisert }.ifNull(false)
+            val sarkullsbarnPeriodisert = data.barnetilleggSaerkullsbarn.safe { periodisert }.ifNull(false)
+            val okningUforegradVedArskjoring = data.uforetrygd.okningUforegradVedArskjoring.ifNull(false)
 
-    override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Inntekt og uføretrygd neste år",
-            distribusjonstype = VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-        )
-    ) {
-        val harBarnetillegg = barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()
-        val fellesbarnPeriodisert = barnetilleggFellesbarn.safe { periodisert }.ifNull(false)
-        val sarkullsbarnPeriodisert = barnetilleggSaerkullsbarn.safe { periodisert }.ifNull(false)
-        val okningUforegradVedArskjoring = uforetrygd.okningUforegradVedArskjoring.ifNull(false)
-
-        title {
-            text(
-                bokmal { +"Slik blir dine utbetalinger i " + virkningFom.year.format() },
-                nynorsk { +"Slik blir utbetalingane dine i " + virkningFom.year.format() },
-            )
-        }
-
-        outline {
             title1 {
                 text(
-                    bokmal { +"Endring i utbetalingen gjelder fra " + virkningFom.format() },
-                    nynorsk { +"Endring i utbetalinga gjeld frå " + virkningFom.format() },
+                    bokmal { +"Endring i utbetalingen gjelder fra " + data.virkningFom.format() },
+                    nynorsk { +"Endring i utbetalinga gjeld frå " + data.virkningFom.format() },
                 )
             }
             paragraph {
@@ -91,12 +74,12 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                         }
                         cell {
                             text(
-                                bokmal { +uforetrygd.netto.format() },
-                                nynorsk { +uforetrygd.netto.format() },
+                                bokmal { +data.uforetrygd.netto.format() },
+                                nynorsk { +data.uforetrygd.netto.format() },
                             )
                         }
                     }
-                    ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
+                    ifNotNull(data.barnetilleggSaerkullsbarn) { barnetilleggSB ->
                         row {
                             cell {
                                 text(
@@ -112,7 +95,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                             }
                         }
                     }
-                    ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
+                    ifNotNull(data.barnetilleggFellesbarn) { barnetilleggFB ->
                         row {
                             cell {
                                 text(
@@ -128,7 +111,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                             }
                         }
                     }
-                    ifNotNull(gjenlevendetillegg) { gjenlevendetillegg ->
+                    ifNotNull(data.gjenlevendetillegg) { gjenlevendetillegg ->
                         row {
                             cell {
                                 text(
@@ -153,8 +136,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                         }
                         cell {
                             text(
-                                bokmal { +uforetrygd.fribelop.format() },
-                                nynorsk { +uforetrygd.fribelop.format() }
+                                bokmal { +data.uforetrygd.fribelop.format() },
+                                nynorsk { +data.uforetrygd.fribelop.format() }
                             )
                         }
                     }
@@ -167,8 +150,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                         }
                         cell {
                             text(
-                                bokmal { +uforetrygd.bunnfradrag.format() },
-                                nynorsk { +uforetrygd.bunnfradrag.format() }
+                                bokmal { +data.uforetrygd.bunnfradrag.format() },
+                                nynorsk { +data.uforetrygd.bunnfradrag.format() }
                             )
                         }
                     }
@@ -182,8 +165,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                         }
                         cell {
                             text(
-                                bokmal { +totalNetto.format() },
-                                nynorsk { +totalNetto.format() },
+                                bokmal { +data.totalNetto.format() },
+                                nynorsk { +data.totalNetto.format() },
                                 FontType.BOLD
                             )
                         }
@@ -192,8 +175,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
             }
             paragraph {
                 text(
-                    bokmal { +"Endringen av utbetalingen din i " + virkningFom.year.format() + " påvirker ikke utbetalingen din i " + virkningFom.year.minus(1).format() },
-                    nynorsk { +"Endringa av utbetalinga di i " + virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + virkningFom.year.minus(1).format() }
+                    bokmal { +"Endringen av utbetalingen din i " + data.virkningFom.year.format() + " påvirker ikke utbetalingen din i " + data.virkningFom.year.minus(1).format() },
+                    nynorsk { +"Endringa av utbetalinga di i " + data.virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + data.virkningFom.year.minus(1).format() }
                 )
             }
             paragraph {
@@ -202,14 +185,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
                 )
             }
-            showIf(sokerMottarApIlaAret) {
+            showIf(data.sokerMottarApIlaAret) {
                 paragraph {
                     text(
-                        bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + ", er inntekten og bunnfradraget justert ut fra antall måneder du får uføretrygd." },
-                        nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er inntekta og botnfrådraget justert ut frå talet på månader du får uføretrygd." }
+                        bokmal { +"Fordi du får alderspensjon fra " + data.datoForNormertPensjonsalder.format() + ", er inntekten og bunnfradraget justert ut fra antall måneder du får uføretrygd." },
+                        nynorsk { +"Fordi du får alderspensjon frå " + data.datoForNormertPensjonsalder.format() + ", er inntekta og botnfrådraget justert ut frå talet på månader du får uføretrygd." }
                     )
                 }
-            }.orIfNotNull(opphorDato) { dato ->
+            }.orIfNotNull(data.opphorDato) { dato ->
                 paragraph {
                     text(
                         bokmal { +"Fordi uføretrygden din opphører fra " + dato.format() + ", er inntekten og bunnfradraget justert ut fra antall måneder du får uføretrygd. " },
@@ -218,7 +201,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 }
             }
 
-            ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
+            ifNotNull(data.barnetilleggFellesbarn) { barnetilleggFB ->
                 showIf(barnetilleggFB.inntektAnnenForelder.greaterThan(0) and barnetilleggFB.inntektBruker.greaterThan(0)) {
                     title1 {
                         text(
@@ -229,12 +212,12 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     paragraph {
                         text(
                             bokmal {
-                                +"Vi oppjusterer din inntekt og annen forelders inntekt for neste år, fordi du ikke har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + virkningFom.year.minus(
+                                +"Vi oppjusterer din inntekt og annen forelders inntekt for neste år, fordi du ikke har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + data.virkningFom.year.minus(
                                     1
                                 ).format() + "."
                             },
                             nynorsk {
-                                +"Vi oppjusterer inntekta di og inntekta til den andre forelderen for neste år, fordi du ikkje har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
+                                +"Vi oppjusterer inntekta di og inntekta til den andre forelderen for neste år, fordi du ikkje har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + data.virkningFom.year.minus(
                                     1
                                 ).format() + "."
                             }
@@ -250,12 +233,12 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     paragraph {
                         text(
                             bokmal {
-                                +"Vi oppjusterer annen forelders inntekt neste år, fordi du ikke har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + virkningFom.year.minus(
+                                +"Vi oppjusterer annen forelders inntekt neste år, fordi du ikke har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + data.virkningFom.year.minus(
                                     1
                                 ).format() + "."
                             },
                             nynorsk {
-                                +"Vi oppjusterer inntekta til den andre forelderen for neste år, fordi du ikkje har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
+                                +"Vi oppjusterer inntekta til den andre forelderen for neste år, fordi du ikkje har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + data.virkningFom.year.minus(
                                     1
                                 ).format() + "."
                             }
@@ -271,12 +254,12 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     paragraph {
                         text(
                             bokmal {
-                                +"Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + virkningFom.year.minus(
+                                +"Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + data.virkningFom.year.minus(
                                     1
                                 ).format() + "."
                             },
                             nynorsk {
-                                +"Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
+                                +"Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + data.virkningFom.year.minus(
                                     1
                                 ).format() + "."
                             }
@@ -293,12 +276,12 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 paragraph {
                     text(
                         bokmal {
-                            +"Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + virkningFom.year.minus(
+                            +"Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden per 1. mai " + data.virkningFom.year.minus(
                                 1
                             ).format() + "."
                         },
                         nynorsk {
-                            +"Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + virkningFom.year.minus(
+                            +"Vi oppjusterer inntekta di for neste år, fordi du ikkje har meldt inn inntekt for " + data.virkningFom.year.format() + ". Vi tek utgangspunkt i årsinntekta og justerer ho ut frå endringar i grunnbeløpet (G) i folketrygda per 1. mai " + data.virkningFom.year.minus(
                                 1
                             ).format() + "."
                         }
@@ -310,12 +293,12 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 paragraph {
                     text(
                         bokmal {
-                            +"Fikk du innvilget uføretrygd etter januar " + virkningFom.year.minus(1)
-                                .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". "
+                            +"Fikk du innvilget uføretrygd etter januar " + data.virkningFom.year.minus(1)
+                                .format() + ", er inntekten justert opp slik at den gjelder for hele " + data.virkningFom.year.format() + ". "
                         },
                         nynorsk {
-                            +"Fekk du innvilga uføretrygd etter januar " + virkningFom.year.minus(1)
-                                .format() + ", er inntekta justert opp slik at ho gjeld for heile " + virkningFom.year.format() + ". "
+                            +"Fekk du innvilga uføretrygd etter januar " + data.virkningFom.year.minus(1)
+                                .format() + ", er inntekta justert opp slik at ho gjeld for heile " + data.virkningFom.year.format() + ". "
                         }
                     )
                 }
@@ -324,12 +307,12 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 paragraph {
                     text(
                         bokmal {
-                            +"Fordi du har fått økning av uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. " +
-                                    "Får du lavere inntekt i " + virkningFom.year.format() + ", må du gå inn i Inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
+                            +"Fordi du har fått økning av uføregraden i løpet av " + data.virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekten vi har brukt i beregningen av uføretrygden er korrekt. " +
+                                    "Får du lavere inntekt i " + data.virkningFom.year.format() + ", må du gå inn i Inntektsplanleggeren og sende oss ny forventet inntekt, slik at du får riktig utbetaling av uføretrygd neste år."
                         },
                         nynorsk {
-                            +"Fordi du har fått auka uføregraden i løpet av " + virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda er korrekt. " +
-                                    "Får du lågare inntekt i " + virkningFom.year.format() + ", må du gå inn i Inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
+                            +"Fordi du har fått auka uføregraden i løpet av " + data.virkningFom.year.minus(1).format() + ", er det ekstra viktig at du kontrollerer at inntekta vi har brukt i berekninga av uføretrygda er korrekt. " +
+                                    "Får du lågare inntekt i " + data.virkningFom.year.format() + ", må du gå inn i Inntektsplanleggaren og sende oss ny forventa inntekt, slik at du får rett utbetaling av uføretrygd neste år. "
                         }
                     )
                 }
@@ -337,33 +320,33 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
 
             title1 {
                 text(
-                    bokmal { +"I " + virkningFom.year.format() + " kan du ha høyere inntekt før vi reduserer uføretrygden din" },
-                    nynorsk { +"I " + virkningFom.year.format() + " kan du ha høgare inntekt før vi reduserer uføretrygda di" }
+                    bokmal { +"I " + data.virkningFom.year.format() + " kan du ha høyere inntekt før vi reduserer uføretrygden din" },
+                    nynorsk { +"I " + data.virkningFom.year.format() + " kan du ha høgare inntekt før vi reduserer uføretrygda di" }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +"I " + virkningFom.year.format() + " vil bunnfradraget ditt være " + uforetrygd.bunnfradrag.format() + ". Bunnfradraget er så mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Det består av fribeløpet pluss inntekt etter uførhet. " },
-                    nynorsk { +"I " + virkningFom.year.format() + " vil botnfrådraget ditt vere " + uforetrygd.bunnfradrag.format() + ". Botnfrådraget er så mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Det består av fribeløpet pluss inntekt etter uførleik. " }
+                    bokmal { +"I " + data.virkningFom.year.format() + " vil bunnfradraget ditt være " + data.uforetrygd.bunnfradrag.format() + ". Bunnfradraget er så mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Det består av fribeløpet pluss inntekt etter uførhet. " },
+                    nynorsk { +"I " + data.virkningFom.year.format() + " vil botnfrådraget ditt vere " + data.uforetrygd.bunnfradrag.format() + ". Botnfrådraget er så mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Det består av fribeløpet pluss inntekt etter uførleik. " }
                 )
             }
 
             paragraph {
-                showIf(uforetrygd.erGradert) {
+                showIf(data.uforetrygd.erGradert) {
                     text(
                         bokmal { +"Siden du har gradert uføretrygd, har du fortsatt inntekt etter uførhet. " },
                         nynorsk { +"Sidan du har gradert uføretrygd, har du framleis inntekt etter uførleik. " }
                     )
-                }.orShowIf(!uforetrygd.erGradert and uforetrygd.inntektEtterUforhet.equalTo(0)) {
+                }.orShowIf(!data.uforetrygd.erGradert and data.uforetrygd.inntektEtterUforhet.equalTo(0)) {
                     text(
                         bokmal { +"Siden du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførhet. " },
                         nynorsk { +"Sidan du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførleik. " }
                     )
                 }.orShow {
                     text(
-                        bokmal { +"Du har 100 prosent uføretrygd, og din inntekt etter uførhet er " + uforetrygd.inntektEtterUforhet.format() + ". " },
-                        nynorsk { +"Du har 100 prosent uføretrygd, og inntekta di etter uførleik er " + uforetrygd.inntektEtterUforhet.format() + ". " }
+                        bokmal { +"Du har 100 prosent uføretrygd, og din inntekt etter uførhet er " + data.uforetrygd.inntektEtterUforhet.format() + ". " },
+                        nynorsk { +"Du har 100 prosent uføretrygd, og inntekta di etter uførleik er " + data.uforetrygd.inntektEtterUforhet.format() + ". " }
                     )
                 }
             }
@@ -375,17 +358,17 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 )
             }
 
-            showIf(uforetrygd.fribelop1GHeleAret) {
+            showIf(data.uforetrygd.fribelop1GHeleAret) {
                 paragraph {
-                    showIf(uforetrygd.venteperiodeEtterGradsokning) {
+                    showIf(data.uforetrygd.venteperiodeEtterGradsokning) {
                         text(                       //TODO eller lenger? Hm, sendes vel bare ut til de som får økning i 2027
-                            bokmal { +"Fra januar " + virkningFom.year.format() + " er det to år eller lenger siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
-                            nynorsk { +"Frå januar " + virkningFom.year.format() + " er det to år eller lenger sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
+                            bokmal { +"Fra januar " + data.virkningFom.year.format() + " er det to år eller lenger siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
+                            nynorsk { +"Frå januar " + data.virkningFom.year.format() + " er det to år eller lenger sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
                         )
                     }.orShow {
                         text(
-                            bokmal { +"Fra januar " + virkningFom.year.format() + " har du hatt uføretrygd i to år eller lenger. Derfor øker fribeløpet ditt til 1 G. " },
-                            nynorsk { +"Frå januar " + virkningFom.year.format() + " har du hatt uføretrygd i to år eller lenger. Derfor aukar fribeløpet ditt til 1 G. " }
+                            bokmal { +"Fra januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år eller lenger. Derfor øker fribeløpet ditt til 1 G. " },
+                            nynorsk { +"Frå januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år eller lenger. Derfor aukar fribeløpet ditt til 1 G. " }
                         )
                     }
                 }
@@ -398,8 +381,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 }
                 paragraph {
                     text(
-                        bokmal { +"Når fribeløpet endres i løpet av kalenderåret, beregnes det årlige bunnfradraget ut fra periodene du har med ulike fribeløp. Ditt fribeløp i " + virkningFom.year.format() + " blir " + uforetrygd.fribelop.format() + ". Se tabellen under. " },
-                        nynorsk { +"Når fribeløpet blir endra i løpet av kalenderåret, blir det årlege botnfrådraget berekna ut frå periodane du har med ulike fribeløp. Fribeløpet ditt i " + virkningFom.year.format() + " blir " + uforetrygd.fribelop.format() + ". Sjå tabellen under. " }
+                        bokmal { +"Når fribeløpet endres i løpet av kalenderåret, beregnes det årlige bunnfradraget ut fra periodene du har med ulike fribeløp. Ditt fribeløp i " + data.virkningFom.year.format() + " blir " + data.uforetrygd.fribelop.format() + ". Se tabellen under. " },
+                        nynorsk { +"Når fribeløpet blir endra i løpet av kalenderåret, blir det årlege botnfrådraget berekna ut frå periodane du har med ulike fribeløp. Fribeløpet ditt i " + data.virkningFom.year.format() + " blir " + data.uforetrygd.fribelop.format() + ". Sjå tabellen under. " }
                     )
                 }
                 title2 {
@@ -409,41 +392,41 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     )
                 }
                 paragraph {
-                    ifNotNull(uforetrygd.fribelop1GTil04G) { fribelop1GTil04G ->
+                    ifNotNull(data.uforetrygd.fribelop1GTil04G) { fribelop1GTil04G ->
                         text(
                             bokmal { +"Fram til " + fribelop1GTil04G.dato04G.format() + " er fribeløpet ditt 1 G. Da øker din uføregrad, og fribeløpet settes ned til 0,4 G. Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
                             nynorsk { +"Fram til " + fribelop1GTil04G.dato04G.format() + " er fribeløpet ditt 1 G. Då aukar uføregraden din, og fribeløpet blir sett ned til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
                         )
-                    }.orIfNotNull(uforetrygd.fribelop04GTil1GTil04G) { fribelop04GTil1GTil04G ->
-                        showIf(uforetrygd.venteperiodeEtterGradsokning) {
+                    }.orIfNotNull(data.uforetrygd.fribelop04GTil1GTil04G) { fribelop04GTil1GTil04G ->
+                        showIf(data.uforetrygd.venteperiodeEtterGradsokning) {
                             text(
-                                bokmal { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                                nynorsk { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                                bokmal { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
+                                nynorsk { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                                nynorsk { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                                bokmal { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
+                                nynorsk { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
                             )
                         }
                     }.orShow {
-                        showIf(uforetrygd.venteperiodeEtterGradsokning) {
+                        showIf(data.uforetrygd.venteperiodeEtterGradsokning) {
                             text(
-                                bokmal { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
-                                nynorsk { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
+                                bokmal { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
+                                nynorsk { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
-                                nynorsk { +"Fram til " + uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
+                                bokmal { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
+                                nynorsk { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
                             )
                         }
                     }
                 }
 
-                includePhrase(Fribelopsperioder(uforetrygd.fribelopsperioder))
+                includePhrase(Fribelopsperioder(data.uforetrygd.fribelopsperioder))
 
-                showIf(uforetrygd.fribelop04GTil1G and not(sokerMottarApIlaAret or opphorDato.notNull())) {
+                showIf(data.uforetrygd.fribelop04GTil1G and not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
                     paragraph {
                         text(
                             bokmal { +"Neste år: " },
@@ -451,8 +434,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                             FontType.BOLD,
                         )
                         text(
-                            bokmal { +"Fra " + virkningFom.year.plus(1).format() + " vil du få nytt bunnfradrag med 1 G som fribeløp hele året. " },
-                            nynorsk { +"Frå " + virkningFom.year.plus(1).format() + " vil du få nytt botnfrådrag med 1 G som fribeløp heile året. " }
+                            bokmal { +"Fra " + data.virkningFom.year.plus(1).format() + " vil du få nytt bunnfradrag med 1 G som fribeløp hele året. " },
+                            nynorsk { +"Frå " + data.virkningFom.year.plus(1).format() + " vil du få nytt botnfrådrag med 1 G som fribeløp heile året. " }
                         )
                     }
                 }
@@ -466,26 +449,26 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
             }
 
             paragraph {
-                showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) {
+                showIf(data.barnetilleggFellesbarn.notNull() or data.barnetilleggSaerkullsbarn.notNull()) {
                     text(
                         bokmal {
-                            +"Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er " + uforetrygd.inntektBruktIAvkortning.format() +
-                                    ". Det gir deg rett til en årlig utbetaling på " + totalNettoAr.format() + " i uføretrygd og barnetillegg. "
+                            +"Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
+                                    ". Det gir deg rett til en årlig utbetaling på " + data.totalNettoAr.format() + " i uføretrygd og barnetillegg. "
                         },
                         nynorsk {
-                            +"Den årlege inntekta vi vil bruke for deg i berekninga av uføretrygd er " + uforetrygd.inntektBruktIAvkortning.format() +
-                                    ". Det gir deg rett til ei årleg utbetaling på " + totalNettoAr.format() + " i uføretrygd og barnetillegg. "
+                            +"Den årlege inntekta vi vil bruke for deg i berekninga av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
+                                    ". Det gir deg rett til ei årleg utbetaling på " + data.totalNettoAr.format() + " i uføretrygd og barnetillegg. "
                         }
                     )
                 }.orShow {
                     text(
                         bokmal {
-                            +"Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er " + uforetrygd.inntektBruktIAvkortning.format() +
-                                    ". Det gir deg rett til en årlig utbetaling på " + totalNettoAr.format() + " i uføretrygd. "
+                            +"Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
+                                    ". Det gir deg rett til en årlig utbetaling på " + data.totalNettoAr.format() + " i uføretrygd. "
                         },
                         nynorsk {
-                            +"Den årlege inntekta vi vil bruke for deg i berekninga av uføretrygd er " + uforetrygd.inntektBruktIAvkortning.format() +
-                                    ". Det gir deg rett til ei årleg utbetaling på " + totalNettoAr.format() + " i uføretrygd. "
+                            +"Den årlege inntekta vi vil bruke for deg i berekninga av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
+                                    ". Det gir deg rett til ei årleg utbetaling på " + data.totalNettoAr.format() + " i uføretrygd. "
                         }
                     )
                 }
@@ -493,11 +476,11 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
             paragraph {
                 text(
                     bokmal {
-                        +"Tjener du mer enn ditt bunnfradrag på " + uforetrygd.bunnfradrag.format() +
+                        +"Tjener du mer enn ditt bunnfradrag på " + data.uforetrygd.bunnfradrag.format() +
                                 " per år, reduserer vi utbetalingen av uføretrygd. Det er bare den delen av inntekten din som er høyere enn bunnfradraget, som gir lavere utbetaling av uføretrygd. "
                     },
                     nynorsk {
-                        +"Dersom du tener meir enn botnfrådraget ditt på " + uforetrygd.bunnfradrag.format() +
+                        +"Dersom du tener meir enn botnfrådraget ditt på " + data.uforetrygd.bunnfradrag.format() +
                                 " per år, reduserer vi utbetalinga av uføretrygd. Det er berre den delen av inntekta di som er høgare enn botnfrådraget, som gir lågare utbetaling av uføretrygd. "
                     }
                 )
@@ -505,16 +488,16 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
             paragraph {
                 text(
                     bokmal {
-                        +"Tjener du mer enn " + uforetrygd.inntektstak.format() +
+                        +"Tjener du mer enn " + data.uforetrygd.inntektstak.format() +
                                 " per år, får du ikke utbetalt uføretrygd. Du beholder likevel retten til uføretrygd uten utbetaling, og du kan igjen få utbetaling av uføretrygd hvis inntekten din endrer seg i fremtiden. "
                     },
                     nynorsk {
-                        +"Viss du tener meir enn " + uforetrygd.inntektstak.format() +
+                        +"Viss du tener meir enn " + data.uforetrygd.inntektstak.format() +
                                 " per år, får du ikkje utbetalt uføretrygd. Du beheld likevel retten til uføretrygd utan utbetaling, og du kan igjen få utbetaling av uføretrygd dersom inntekta di seinare skulle endre seg. "
                     }
                 )
             }
-            ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
+            ifNotNull(data.barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                 showIf(barnetilleggFellesbarn.inntektAnnenForelder.greaterThan(0)) {
                     paragraph {
                         text(
@@ -531,16 +514,16 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 }
             }
             paragraph {
-                ifNotNull(barnetilleggFellesbarn) {
+                ifNotNull(data.barnetilleggFellesbarn) {
 
                     text(
-                        bokmal { +"Forventer du og/eller annen forelder en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL." },
-                        nynorsk { +"Forventar du og/eller den andre forelderen ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL." }
+                        bokmal { +"Forventer du og/eller annen forelder en annen inntekt i " + data.virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL." },
+                        nynorsk { +"Forventar du og/eller den andre forelderen ei anna inntekt i " + data.virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL." }
                     )
                 }.orShow {
                     text(
-                        bokmal { +"Forventer du en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL." },
-                        nynorsk { +"Forventar du ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL." }
+                        bokmal { +"Forventer du en annen inntekt i " + data.virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL." },
+                        nynorsk { +"Forventar du ei anna inntekt i " + data.virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL." }
                     )
                 }
             }
@@ -556,7 +539,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     nynorsk { +"På $UFOERE_JOBB_URL finn du meir informasjon, og ein informasjonsfilm om korleis du bruker Inntektsplanleggaren. Treng du meir rettleiing, kan du gjerne kontakte oss: $KONTAKT_URL" }
                 )
             }
-            showIf(gjtEndret) {
+            showIf(data.gjtEndret) {
                 title1 {
                     text(
                         bokmal { +"Ditt gjenlevendetillegg" },
@@ -570,7 +553,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     )
                 }
             }
-            showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) {
+            showIf(data.barnetilleggFellesbarn.notNull() or data.barnetilleggSaerkullsbarn.notNull()) {
                 title1 {
                     text(
                         bokmal { +"Barnetillegg" },
@@ -585,9 +568,9 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                 }
 
                 showIf(
-                    (btfbEndret and fellesbarnPeriodisert)
-                            or (btsbEndret and sarkullsbarnPeriodisert)
-                            or (harBarnetillegg and sokerMottarApIlaAret)
+                    (data.btfbEndret and fellesbarnPeriodisert)
+                            or (data.btsbEndret and sarkullsbarnPeriodisert)
+                            or (harBarnetillegg and data.sokerMottarApIlaAret)
                 ) {
                     paragraph {
                         text(
@@ -597,8 +580,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     }
                 }
 
-                showIf(btfbEndret and btsbEndret) {
-                    ifNotNull(barnetilleggSaerkullsbarn, barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
+                showIf(data.btfbEndret and data.btsbEndret) {
+                    ifNotNull(data.barnetilleggSaerkullsbarn, data.barnetilleggFellesbarn) { barnetilleggSB, barnetilleggFB ->
                         title2 {
                             text(
                                 bokmal { +"Dine barnetillegg" },
@@ -627,8 +610,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                         }
                     }
                 }.orShow {
-                    showIf(btfbEndret) {
-                        ifNotNull(barnetilleggFellesbarn) { barnetilleggFB ->
+                    showIf(data.btfbEndret) {
+                        ifNotNull(data.barnetilleggFellesbarn) { barnetilleggFB ->
                             title2 {
                                 text(
                                     bokmal { +"Barnetillegg for fellesbarn" },
@@ -651,8 +634,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                             }
                         }
                     }
-                    showIf(btsbEndret) {
-                        ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSB ->
+                    showIf(data.btsbEndret) {
+                        ifNotNull(data.barnetilleggSaerkullsbarn) { barnetilleggSB ->
                             title2 {
                                 text(
                                     bokmal { +"Barnetillegg for særkullsbarn" },
@@ -685,32 +668,32 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
             }
             paragraph {
                 showIf(
-                    uforetrygd.endringsbelop.notEqualTo(0)
-                            and (btfbEndret or btsbEndret)
-                            and gjtEndret //UT, BT og GJT
+                    data.uforetrygd.endringsbelop.notEqualTo(0)
+                            and (data.btfbEndret or data.btsbEndret)
+                            and data.gjtEndret //UT, BT og GJT
                 ) {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12." },
                         nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12." }
                     )
                 }.orShowIf(
-                    uforetrygd.endringsbelop.notEqualTo(0)
-                            and (btfbEndret or btsbEndret) //UT og BT
+                    data.uforetrygd.endringsbelop.notEqualTo(0)
+                            and (data.btfbEndret or data.btsbEndret) //UT og BT
                 ) {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12." },
                         nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16 og 22-12." }
                     )
                 }.orShowIf(
-                    uforetrygd.endringsbelop.notEqualTo(0)
-                            and gjtEndret //UT og GJT
+                    data.uforetrygd.endringsbelop.notEqualTo(0)
+                            and data.gjtEndret //UT og GJT
                 ) {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12." },
                         nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-18 og 22-12." }
                     )
                 }.orShowIf(
-                    uforetrygd.endringsbelop.notEqualTo(0) //UT
+                    data.uforetrygd.endringsbelop.notEqualTo(0) //UT
                 ) {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12." },
@@ -853,7 +836,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     nynorsk { +"Dersom du sender oss dokumentasjon som viser at du har slik inntekt, kan vi gjere ei ny berekning av uføretrygda di." },
                 )
             }
-            ifNotNull(barnetilleggFellesbarn) {
+            ifNotNull(data.barnetilleggFellesbarn) {
                 paragraph {
                     text(
                         bokmal { +"Hva kan holdes utenfor personinntekten til den andre forelderen? " },
@@ -903,7 +886,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
                     nynorsk { +"Uføretrygd blir skattlagt som lønsinntekt. Du treng ikkje levere skattekortet ditt til oss, då vi får skatteopplysningane dine elektronisk frå Skatteetaten. Du bør likevel sjekke at skattekortet ditt stemmer. Ved behov kan du endre skattekortet på skatteetaten.no. Du kan også få hjelp frå Skatteetaten dersom du har spørsmål om skatt. " }
                 )
             }
-            showIf(not(brukerBorINorge)) {
+            showIf(not(data.brukerBorINorge)) {
                 title1 {
                     text(
                         bokmal { +"Skatt for deg som bor i utlandet " },
@@ -919,8 +902,5 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUforetrygdPGAI
             }
             includePhrase(Felles.HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
         }
-
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe)
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }
 }

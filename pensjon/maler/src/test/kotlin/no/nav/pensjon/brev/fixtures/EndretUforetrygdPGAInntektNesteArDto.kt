@@ -1,15 +1,31 @@
 package no.nav.pensjon.brev.fixtures
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.BarnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.BarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.Uforetrygd
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArAutoDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 fun createEndretUforetrygdPGAInntektNesteArDto() =
+    EndretUforetrygdPGAInntektNesteArAutoDto(
+        vedtakData = createEndretUforetrygdPGAInntektNesteArData(),
+    )
+
+fun createEndretUforetrygdPGAInntektNesteArRedigerbarDto() =
+    EndretUforetrygdPGAInntektNesteArRedigerbarDto(
+        saksbehandlerValg = lagSaksbehandlervalg(),
+        pesysData = EndretUforetrygdPGAInntektNesteArRedigerbarDto.PesysData(
+            vedtakData = createEndretUforetrygdPGAInntektNesteArData(),
+        ),
+    )
+
+fun createEndretUforetrygdPGAInntektNesteArData() =
     EndretUforetrygdPGAInntektNesteArDto(
         uforetrygd = Uforetrygd(
             netto = Kroner(1),
