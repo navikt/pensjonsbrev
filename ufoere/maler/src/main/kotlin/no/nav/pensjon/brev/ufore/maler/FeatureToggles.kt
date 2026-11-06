@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 enum class FeatureToggles(private val key: String) {
     testmal("ut.testmal"),
     simulering("ut.simulering"),
-    utsendelseTilUtland("ut.utsendelseTilUtland"),
+    sanerteBrev("ut.sanerteBrev"),
     innhentingOpplysningerForside("ut.innhOpplysningerForside")
     ;
 

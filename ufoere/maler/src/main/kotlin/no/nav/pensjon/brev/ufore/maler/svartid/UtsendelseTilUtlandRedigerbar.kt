@@ -23,8 +23,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehandlingstidDto> {
 
-    override val featureToggle = FeatureToggles.utsendelseTilUtland.toggle
-
     override val kode = Ufoerebrevkoder.Redigerbar.UT_UTSENDELSE_TIL_UTENLANDSKE_TRYGDEMYND
     override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK

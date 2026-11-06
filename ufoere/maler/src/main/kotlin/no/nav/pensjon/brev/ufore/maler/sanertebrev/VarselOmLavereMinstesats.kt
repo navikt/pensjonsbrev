@@ -1,36 +1,32 @@
-package no.nav.pensjon.brev.ufore.maler.lovendringer2026
+package no.nav.pensjon.brev.ufore.maler.sanertebrev
 
-import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_S_VARSEL_LAVERE_MINSTESATS_2026
-import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
-import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AutoBrev.UT_VARSEL_LAVERE_MINSTESATS_2026
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_KONTAKTSENTER_TELEFON_UFORE
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object VarselOmLavereMinstesatsS : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object VarselOmLavereMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
 
-    override val kode = UT_S_VARSEL_LAVERE_MINSTESATS_2026
-    override val kategori = Brevkategori.VARSEL
-    override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
-    override val sakstyper = setOf(Sakstype.UFOREP)
+    override val kode = UT_VARSEL_LAVERE_MINSTESATS_2026
 
     override val template = createTemplate(
         languages = languages(Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel - endring av minstesats fom 1. juli 2026",
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+            distribusjonstype = VIKTIG,
+            brevtype = INFORMASJONSBREV
         )
     ) {
         title {

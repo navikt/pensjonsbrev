@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.ufore.maler.info
+package no.nav.pensjon.brev.ufore.maler.sanertebrev
 
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate

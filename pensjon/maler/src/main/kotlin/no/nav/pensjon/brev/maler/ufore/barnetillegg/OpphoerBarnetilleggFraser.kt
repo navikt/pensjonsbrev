@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
 
-object OpphoerBarnetillegg {
+object OpphoerBarnetilleggFraser {
 
     // TBU4085
     data class HjemmelForBarnetilleggIUfoeretrygden(

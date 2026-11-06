@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.ufore.maler.lovendringer2026
+package no.nav.pensjon.brev.ufore.maler.sanertebrev
 
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -8,21 +8,21 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AutoBrev.UT_VARSEL_OKT_MINSTE_IFU
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object VarselOmOktMinsteIFU : AutobrevTemplate<EmptyAutobrevdata> {
+object VarselOmLavereReduksjonsprosent : AutobrevTemplate<EmptyAutobrevdata> {
 
-    override val kode = UT_VARSEL_OKT_MINSTE_IFU
+    override val kode = Ufoerebrevkoder.AutoBrev.UT_VARSEL_LAVERE_REDUKSJONSPROSENT
 
     override val template = createTemplate(
         languages = languages(Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Varsel - økt minste IFU",
+            displayTitle = "Varsel - lavere reduksjonsprosent",
             distribusjonstype = VIKTIG,
             brevtype = INFORMASJONSBREV
         )
@@ -35,7 +35,7 @@ object VarselOmOktMinsteIFU : AutobrevTemplate<EmptyAutobrevdata> {
         }
         outline {
             includePhrase(UforetrygdLovendringer2026Fraser.Introduksjon)
-            includePhrase(UforetrygdLovendringer2026Fraser.OktMinsteIFU)
+            includePhrase(UforetrygdLovendringer2026Fraser.LavereReduksjonsprosent)
             includePhrase(UforetrygdLovendringer2026Fraser.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilInnsyn)
             includePhrase(Felles.HarDuSporsmal)

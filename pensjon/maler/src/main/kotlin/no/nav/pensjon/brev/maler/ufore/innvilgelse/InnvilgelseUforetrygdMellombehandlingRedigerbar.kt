@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
-import no.nav.pensjon.brev.maler.ufore.innvilgelse.Innvilgelse.BarnetilleggOgInntekt
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseFraser.BarnetilleggOgInntekt
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -109,7 +109,7 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
         }
 
         outline {
-            includePhrase(Innvilgelse.InnvilgetSoeknad(
+            includePhrase(InnvilgelseFraser.InnvilgetSoeknad(
                 ungUforResultat = ungUforResultat,
                 kravarsak = kravarsak,
                 kravGjelder = kravGjelder,
@@ -133,14 +133,14 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
             }
 
 
-            includePhrase(Innvilgelse.YrkesskadeOgUngUfoerResultat(
+            includePhrase(InnvilgelseFraser.YrkesskadeOgUngUfoerResultat(
                 beregningsvilkarYrkesskadegrad = beregningsvilkarYrkesskadegrad,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
                 yrkesskadeResultat = yrkesskadeResultat,
                 ungUforResultat = ungUforResultat,
             ))
 
-            includePhrase(Innvilgelse.InnvilgelseDetaljer(
+            includePhrase(InnvilgelseFraser.InnvilgelseDetaljer(
                 pe = pe,
                 nyeInnvilgedeBarnetillegg = pesysData.nyeInnvilgedeBarnetillegg,
                 nyeAvslagBarnetillegg = pesysData.avslagBarnetilleggNye,
@@ -211,7 +211,7 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 )
             }
 
-            includePhrase(Innvilgelse.InnvilgetEtterKlage(
+            includePhrase(InnvilgelseFraser.InnvilgetEtterKlage(
                 kravarsak = kravarsak,
             ))
 
@@ -222,19 +222,19 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 )
             }
 
-            includePhrase(Innvilgelse.UnntaksregelNedsattInntektsevne(
+            includePhrase(InnvilgelseFraser.UnntaksregelNedsattInntektsevne(
                 pe = pe,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
                 beregningsvilkarYrkesskadegrad = beregningsvilkarYrkesskadegrad,
             ))
 
-            includePhrase(Innvilgelse.RettighetSomUngUfoer(
+            includePhrase(InnvilgelseFraser.RettighetSomUngUfoer(
                 ungUforResultat = ungUforResultat,
                 pe = pe,
                 vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
-            includePhrase(Innvilgelse.UnntaksregelMedlemskapUtland(
+            includePhrase(InnvilgelseFraser.UnntaksregelMedlemskapUtland(
                 pe = pe,
                 oppfyltvedsammenlegging = oppfyltvedsammenlegging,
                 yrkesskadeResultat = yrkesskadeResultat,
@@ -242,20 +242,20 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 innvilgetEtter12_2_tredjeledd = innvilgetEtter12_2Tredjeledd
             ))
 
-            includePhrase(Innvilgelse.YrkesskadeEllerYrkessykdom(
+            includePhrase(InnvilgelseFraser.YrkesskadeEllerYrkessykdom(
                 pe = pe,
                 beregningsvilkarYrkesskadegrad = beregningsvilkarYrkesskadegrad,
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
                 yrkesskadeResultat = yrkesskadeResultat,
             ))
 
-            includePhrase(Innvilgelse.Virkningstidspunkt(
+            includePhrase(InnvilgelseFraser.Virkningstidspunkt(
                 pe = pe,
                 kravFremsattDato = null.expr(),
                 virkningbegrunnelseStdbegr_22_12_1_5 = virkningbegrunnelseStdbegr_22_12_1_5,
             ))
 
-            includePhrase(Innvilgelse.FastsattUforegrad(
+            includePhrase(InnvilgelseFraser.FastsattUforegrad(
                 ifuBegrunnelse = ifuBegrunnelse,
                 ieuBegrunnelse = ieuBegrunnelse,
                 ifuInntekt = ifuInntekt,
@@ -281,7 +281,7 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 )
             }
 
-            includePhrase(Innvilgelse.KombinereUforetrygdOgInntekt(
+            includePhrase(InnvilgelseFraser.KombinereUforetrygdOgInntekt(
                 pe = pe,
                 uforegrad = uforegrad,
                 ieuInntekt = ieuInntekt,
@@ -290,7 +290,7 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 harVTA = pesysData.harVTA
             ))
 
-            includePhrase(Innvilgelse.InstitusjonReduksjon(
+            includePhrase(InnvilgelseFraser.InstitusjonReduksjon(
                 pe = pe,
                 instoppholdType = instoppholdType,
                 instoppholdAnvendt = instoppholdAnvendt,
@@ -322,21 +322,21 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 )
             )
 
-            includePhrase(Innvilgelse.BarnetilleggOgUtland(
+            includePhrase(InnvilgelseFraser.BarnetilleggOgUtland(
                 pe = pe,
                 btInnvilget = btInnvilget,
             ))
 
-            includePhrase(Innvilgelse.Gjenlevendetillegg(
+            includePhrase(InnvilgelseFraser.Gjenlevendetillegg(
                 pe = pe,
                 gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
             ))
 
-            includePhrase(Innvilgelse.KombinereUforetrygdOgAlderspensjon(
+            includePhrase(InnvilgelseFraser.KombinereUforetrygdOgAlderspensjon(
                 pe = pe,
             ))
 
-            includePhrase(Innvilgelse.EtterbetalingUforetrygd(
+            includePhrase(InnvilgelseFraser.EtterbetalingUforetrygd(
                 pe = pe,
                 uforegrad = uforegrad,
                 virkningsdatoTidligereMnd = pesysData.vedtaksinfo.virkningsdatoTidligereMnd,
@@ -347,12 +347,12 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
 
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
 
-            includePhrase(Innvilgelse.Honnoerkort(
+            includePhrase(InnvilgelseFraser.Honnoerkort(
                 uforegrad = uforegrad,
             ))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
-            includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
+            includePhrase(InnvilgelseFraser.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)

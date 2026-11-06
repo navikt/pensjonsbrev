@@ -29,7 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import java.time.Month
 
-object Innvilgelse {
+object InnvilgelseFraser {
 
     data class InnvilgetSoeknad(
         val ungUforResultat: Expression<String>,

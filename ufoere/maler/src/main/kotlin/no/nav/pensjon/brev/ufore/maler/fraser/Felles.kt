@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.ufore.maler.fraser
 
-import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -147,42 +146,6 @@ class Felles {
                 text(
                     bokmal { +"Mer informasjon om klagerettigheter finner du på ${Constants.KLAGERETTIGHETER_URL}."},
                     nynorsk { +"Meir informasjon om klagerettar finn du på ${Constants.KLAGERETTIGHETER_URL}." }
-                )
-            }
-        }
-    }
-
-    object RettTilAKlageKort : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-            title1 {
-                text(
-                    bokmal { + "Du har rett til å klage" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +
-                    "Hvis du mener vedtaket er feil, kan du klage innen 6 uker fra den datoen vedtaket har kommet fram til deg. Dette følger av folketrygdloven § 21-12. " +
-                            "Du finner skjema og informasjon på ${Constants.KLAGE_URL}."},
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +
-                    "Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. " +
-                            "Kontakt oss på telefon ${NAV_KONTAKTSENTER_TELEFON_UFORE} hvis du trenger hjelp."},
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +
-                    "Hvis du sender klage i posten, må du signere klagen."},
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +
-                    "Mer informasjon om klagerettigheter finner du på ${Constants.KLAGERETTIGHETER_URL}."},
                 )
             }
         }
