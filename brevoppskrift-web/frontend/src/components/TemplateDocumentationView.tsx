@@ -1,7 +1,17 @@
 import { css } from "@emotion/react";
 import { BodyLong, Box, Heading, Popover, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
-import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  Fragment,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { type LetterModelSpecification } from "~/api/brevbakerTypes";
 import {
@@ -27,13 +37,13 @@ import {
   type TextLiteral,
 } from "~/api/templateDocumentationTypes";
 import { trimClassName } from "~/components/DataClasses";
-import { type HighlightParts, highlightParts, mergeRanges } from "~/search/components/highlight";
+import { type HighlightParts } from "~/search/components/highlight";
+import { matchDocument } from "~/templateSearch/documentMatch";
 import {
   HighlightedLiteral,
   SearchBlock,
-  type SearchHighlight,
+  useBlockSearchHighlight,
   useSearchBlockAttributes,
-  useSearchHighlight,
 } from "~/templateSearch/SearchHighlightContext";
 
 /**
@@ -84,17 +94,15 @@ function hasConditionalRows(rows: ContentOrControlStructure<Row>[]): boolean {
  * nettleserens implisitte auto-placement (se `layoutTableRows`).
  */
 function TableRowCells({ row, gridRow, header = false }: { row: Row; gridRow: number; header?: boolean }) {
-  const highlight = useSearchHighlight();
-  const parts = highlight && !highlight.exact ? rowHighlightParts(row, highlight) : undefined;
   const Cell = header ? "b" : "span";
   return (
-    <LiteralHighlightPartsContext.Provider value={parts}>
+    <Fragment>
       {row.cells.map((cell, index) => (
         <Cell className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
           <CocsList items={cell.text} />
         </Cell>
       ))}
-    </LiteralHighlightPartsContext.Provider>
+    </Fragment>
   );
 }
 
@@ -418,157 +426,11 @@ function liftConditionalOutOfParagraph(
   };
 }
 
-function markFullQuery(parts: HighlightParts[], needle: string): void {
-  const matchedTerms = new Set(parts.flatMap(({ ranges }) => ranges.flatMap(({ terms }) => terms)));
-  if (
-    matchedTerms.size > 0 &&
-    needle.split(/\s+/).every((term, index) => term.length === 0 || matchedTerms.has(index))
-  ) {
-    for (const part of parts) {
-      part.fullMatch = true;
-    }
-  }
-}
-
-function isSearchableText<E extends Element>(item: ContentOrControlStructure<E>): boolean {
-  switch (item.controlStructureType) {
-    case ContentOrControlStructureType.CONDITIONAL:
-      return [item.showIf, ...item.elseIf.map((branch) => branch.showIf), item.showElse].every((branch) =>
-        branch.every(isSearchableText),
-      );
-    case ContentOrControlStructureType.FOR_EACH:
-      return item.body.every(isSearchableText);
-    case ContentOrControlStructureType.CONTENT:
-      return (
-        item.content.elementType === ElementType.PARAGRAPH_TEXT_LITERAL ||
-        item.content.elementType === ElementType.PARAGRAPH_TEXT_EXPRESSION
-      );
-  }
-}
-
-/** Undefined separates literal runs at variables without ending the searchable line. */
-function literalPathsOf<E extends Element>(items: ContentOrControlStructure<E>[]): (TextLiteral | undefined)[][] {
-  let paths: (TextLiteral | undefined)[][] = [[]];
-  for (const item of items) {
-    if (item.controlStructureType === ContentOrControlStructureType.CONTENT) {
-      for (const path of paths) {
-        path.push(literalOf(item));
-      }
-    } else {
-      const branches =
-        item.controlStructureType === ContentOrControlStructureType.FOR_EACH
-          ? [item.body]
-          : [item.showIf, ...item.elseIf.map((branch) => branch.showIf), item.showElse];
-      const alternatives = branches.flatMap(literalPathsOf);
-      paths = paths.flatMap((path) => alternatives.map((alternative) => [...path, ...alternative]));
-    }
-  }
-  return paths;
-}
-
-function literalAlternativesOf<E extends Element>(
-  items: ContentOrControlStructure<E>[],
-  highlight: SearchHighlight,
-): Map<TextLiteral, HighlightParts>[] {
-  const alternatives: Map<TextLiteral, HighlightParts>[] = [];
-  let line: ContentOrControlStructure<E>[] = [];
-  const finishLine = () => {
-    if (line.length === 0) {
-      return;
-    }
-    for (const path of literalPathsOf(line)) {
-      const parts = new Map<TextLiteral, HighlightParts>();
-      let literals: TextLiteral[] = [];
-      const finishRun = () => {
-        highlightParts(
-          literals.map(({ text }) => text),
-          highlight.needle,
-          highlight.exact,
-          "",
-        ).forEach((part, index) => {
-          parts.set(literals[index], part);
-        });
-        literals = [];
-      };
-      for (const literal of path) {
-        if (literal) {
-          literals.push(literal);
-        } else {
-          finishRun();
-        }
-      }
-      finishRun();
-      if (!highlight.exact) {
-        markFullQuery([...parts.values()], highlight.needle);
-      }
-      alternatives.push(parts);
-    }
-    line = [];
-  };
-  for (const item of items) {
-    if (isSearchableText(item)) {
-      line.push(item);
-    } else {
-      finishLine();
-    }
-  }
-  finishLine();
-  return alternatives.length > 0 ? alternatives : [new Map()];
-}
-
-function mergeLiteralParts(alternatives: ReadonlyMap<TextLiteral, HighlightParts>[]): Map<TextLiteral, HighlightParts> {
-  const merged = new Map<TextLiteral, HighlightParts>();
-  for (const alternative of alternatives) {
-    for (const [literal, parts] of alternative) {
-      const previous = merged.get(literal);
-      merged.set(literal, {
-        ranges: mergeRanges([...(previous?.ranges ?? []), ...parts.ranges].map((range) => ({ ...range }))),
-        fullMatch: !!previous?.fullMatch || parts.fullMatch,
-      });
-    }
-  }
-  return merged;
-}
-
 function literalOf<E extends Element>(item: ContentOrControlStructure<E> | undefined): TextLiteral | undefined {
   return item?.controlStructureType === ContentOrControlStructureType.CONTENT &&
     item.content.elementType === ElementType.PARAGRAPH_TEXT_LITERAL
     ? item.content
     : undefined;
-}
-
-/** Coalesce equal term sets so equivalent branch combinations share their participating literals. */
-function combineCoverage(left: HighlightParts[][], right: HighlightParts[][]): HighlightParts[][] {
-  const byTerms = new Map<string, Set<HighlightParts>>();
-  for (const a of left) {
-    for (const b of right) {
-      const parts = [...a, ...b];
-      const terms = [...new Set(parts.flatMap(({ ranges }) => ranges.flatMap(({ terms }) => terms)))]
-        .sort((a, b) => a - b)
-        .join(",");
-      const matching = byTerms.get(terms) ?? new Set<HighlightParts>();
-      for (const part of parts) {
-        matching.add(part);
-      }
-      byTerms.set(terms, matching);
-    }
-  }
-  return [...byTerms.values()].map((parts) => [...parts]);
-}
-
-function rowHighlightParts(row: Row, highlight: SearchHighlight): ReadonlyMap<TextLiteral, HighlightParts> {
-  const cells = row.cells.map((cell) => literalAlternativesOf(cell.text, highlight));
-  let alternatives: HighlightParts[][] = [[]];
-  for (const cell of cells) {
-    alternatives = combineCoverage(
-      alternatives,
-      cell.map((parts) => [...parts.values()]),
-    );
-  }
-  for (const parts of alternatives) {
-    markFullQuery(parts, highlight.needle);
-  }
-  return mergeLiteralParts(cells.flat());
 }
 
 /**
@@ -583,12 +445,14 @@ function CocsList<E extends Element>({
   items: ContentOrControlStructure<E>[];
   inline?: boolean;
 }) {
-  const highlight = useSearchHighlight();
+  const highlight = useBlockSearchHighlight();
   const inheritedParts = useContext(LiteralHighlightPartsContext);
-  const literalParts = new Map([
-    ...mergeLiteralParts(highlight ? literalAlternativesOf(items, highlight) : []),
-    ...(inheritedParts ?? []),
-  ]);
+  const needle = highlight?.needle;
+  const exact = highlight?.exact ?? false;
+  const literalParts = useMemo(
+    () => inheritedParts ?? (needle ? matchDocument(items, needle, exact).parts : undefined),
+    [inheritedParts, needle, exact, items],
+  );
   return (
     <LiteralHighlightPartsContext.Provider value={literalParts}>
       {items.map((cocs, index) => {
@@ -598,7 +462,7 @@ function CocsList<E extends Element>({
             cocs={cocs}
             inline={inline}
             key={index}
-            literalParts={literal ? literalParts.get(literal) : undefined}
+            literalParts={literal ? literalParts?.get(literal) : undefined}
           />
         );
       })}

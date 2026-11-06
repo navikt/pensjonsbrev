@@ -42,6 +42,13 @@ export function useSearchHighlight(): SearchHighlight | undefined {
   return useContext(SearchHighlightContext);
 }
 
+/** A focus outline is not a request to calculate ranges. */
+export function useBlockSearchHighlight(): SearchHighlight | undefined {
+  const highlight = useSearchHighlight();
+  const block = useContext(BlockIndexContext);
+  return highlight?.needle.trim() && block !== undefined && highlight.matchingBlocks.has(block) ? highlight : undefined;
+}
+
 export type SearchHitState = "match" | "active";
 
 export type SearchBlockAttributes = {
@@ -76,9 +83,8 @@ export function hitBlockOf(target: EventTarget | null): number | undefined {
 
 /** Literal template text, with the search needle marked if its block is a hit. */
 export function HighlightedLiteral({ text, parts }: { text: string; parts?: HighlightParts }) {
-  const highlight = useContext(SearchHighlightContext);
-  const block = useContext(BlockIndexContext);
-  if (!highlight || block === undefined || !highlight.matchingBlocks.has(block)) {
+  const highlight = useBlockSearchHighlight();
+  if (!highlight) {
     return <>{text}</>;
   }
   return (

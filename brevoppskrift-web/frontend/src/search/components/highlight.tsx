@@ -1,149 +1,10 @@
 import { css } from "@emotion/react";
-import Fuse from "fuse.js";
 import { Fragment, type ReactNode } from "react";
 
-import { FUZZY_MATCH_OPTIONS, type Line, normalizeForExactMatch, SHORT_TERM_LENGTH } from "~/search/textSearch";
+import { type HighlightParts, type HighlightRange, matchTextFlow, type TextFlow } from "~/search/matchTextFlow";
+import { type Line } from "~/search/textSearch";
 
-export type HighlightRange = { start: number; end: number; terms: number[] };
-
-export type HighlightParts = { ranges: HighlightRange[]; fullMatch: boolean };
-
-/** All start/end indices (end exclusive) of `term` in `text`, case-insensitive. */
-function exactRanges(text: string, term: string): Array<[number, number]> {
-  const ranges: Array<[number, number]> = [];
-  const lowerText = text.toLowerCase();
-  const lowerTerm = term.toLowerCase();
-  if (!lowerTerm) {
-    return ranges;
-  }
-  let from = 0;
-  for (;;) {
-    const at = lowerText.indexOf(lowerTerm, from);
-    if (at === -1) {
-      break;
-    }
-    ranges.push([at, at + lowerTerm.length]);
-    from = at + lowerTerm.length;
-  }
-  return ranges;
-}
-
-/** The single best fuzzy-match location of `term` in `text`, or none. Uses the
- *  same tuning as the search index (`FUZZY_MATCH_OPTIONS`) so a term only
- *  highlights here if it would also have counted as a match in search. Terms
- *  short enough to require a verbatim match in search (`SHORT_TERM_LENGTH`)
- *  are never fuzzy-highlighted, for the same reason. */
-function fuzzyRange(text: string, term: string): [number, number] | undefined {
-  if (term.length <= SHORT_TERM_LENGTH) {
-    return undefined;
-  }
-  const result = Fuse.match(term, text, { ...FUZZY_MATCH_OPTIONS, includeMatches: true });
-  if (!result.isMatch) {
-    return undefined;
-  }
-  const range = result.indices?.[0];
-  // Fuse indices are inclusive [start, end]; convert to exclusive end.
-  return range ? [range[0], range[1] + 1] : undefined;
-}
-
-/** Per-term ranges: all exact occurrences of a term, or else its single best
- *  fuzzy location. Mirrors how fuzzy search matches each term on its own. */
-function termRanges(text: string, needle: string): HighlightRange[] {
-  return needle
-    .split(/\s+/)
-    .map((term, termIndex) => ({ term, termIndex }))
-    .filter(({ term }) => term.length > 0)
-    .flatMap(({ term, termIndex }) => {
-      const exact = exactRanges(text, term);
-      if (exact.length > 0) {
-        return exact.map(([start, end]) => ({ start, end, terms: [termIndex] }));
-      }
-      const fuzzy = fuzzyRange(text, term);
-      return fuzzy ? [{ start: fuzzy[0], end: fuzzy[1], terms: [termIndex] }] : [];
-    });
-}
-
-/** Merges overlapping/adjacent ranges into a minimal non-overlapping set. */
-export function mergeRanges(ranges: HighlightRange[]): HighlightRange[] {
-  if (ranges.length === 0) {
-    return ranges;
-  }
-  const sorted = [...ranges].sort((a, b) => a.start - b.start);
-  const merged: HighlightRange[] = [sorted[0]];
-  for (const { start, end, terms } of sorted.slice(1)) {
-    const last = merged[merged.length - 1];
-    if (start <= last.end) {
-      last.end = Math.max(last.end, end);
-      last.terms = [...new Set([...last.terms, ...terms])];
-    } else {
-      merged.push({ start, end, terms });
-    }
-  }
-  return merged;
-}
-
-/** Searchable text across adjacent literal segments, with offsets mapped back
- *  to their original segment and character. */
-function joinTextSegments(
-  texts: string[],
-  separator: "" | " ",
-): { text: string; source: Array<{ segment: number; index: number }> } {
-  let text = "";
-  const source: Array<{ segment: number; index: number }> = [];
-  let pendingSpace = false;
-  texts.forEach((value, segment) => {
-    for (let index = 0; index < value.length; index++) {
-      const character = value[index];
-      if (/\s/.test(character)) {
-        pendingSpace = true;
-        continue;
-      }
-      if (pendingSpace && text.length > 0) {
-        text += " ";
-        source.push({ segment, index });
-      }
-      pendingSpace = false;
-      const lower = character.toLowerCase();
-      text += lower;
-      for (let i = 0; i < lower.length; i++) {
-        source.push({ segment, index });
-      }
-    }
-    pendingSpace ||= separator === " ";
-  });
-  return { text, source };
-}
-
-function mapJoinedRanges(
-  ranges: Array<{ start: number; end: number; terms: number[] }>,
-  source: Array<{ segment: number; index: number }>,
-  segmentCount: number,
-  fullMatch: boolean,
-): HighlightParts[] {
-  const bySegment: HighlightRange[][] = Array.from({ length: segmentCount }, () => []);
-  for (const { start, end, terms } of ranges) {
-    const positions = new Map<number, number[]>();
-    for (let offset = start; offset < end; offset++) {
-      const origin = source[offset];
-      if (origin) {
-        const indexes = positions.get(origin.segment) ?? [];
-        indexes.push(origin.index);
-        positions.set(origin.segment, indexes);
-      }
-    }
-    for (const [segment, indexes] of positions) {
-      bySegment[segment]?.push({
-        start: Math.min(...indexes),
-        end: Math.max(...indexes) + 1,
-        terms,
-      });
-    }
-  }
-  return bySegment.map((segmentRanges) => ({
-    ranges: mergeRanges(segmentRanges),
-    fullMatch,
-  }));
-}
+export type { HighlightParts, HighlightRange } from "~/search/matchTextFlow";
 
 /** Computes ranges across literals. Snippets separate segments with a space;
  *  document literals concatenate without adding a separator. */
@@ -153,22 +14,12 @@ export function highlightParts(
   exact = false,
   separator: "" | " " = " ",
 ): HighlightParts[] {
-  const joined = joinTextSegments(texts, separator);
-  const terms = needle.split(/\s+/).filter((term) => term.length > 0);
-  const matches: HighlightRange[] = [];
-  if (exact) {
-    const phrase = normalizeForExactMatch(needle);
-    const indexes = terms.map((_, index) => index);
-    for (const [start, end] of exactRanges(joined.text, phrase)) {
-      matches.push({ start, end, terms: indexes.length > 0 ? indexes : [0] });
-    }
-  } else {
-    matches.push(...termRanges(joined.text, needle));
-  }
-  const fullMatch =
-    matches.length > 0 &&
-    (exact || terms.every((_, index) => matches.some(({ terms: matchedTerms }) => matchedTerms.includes(index))));
-  return mapJoinedRanges(matches, joined.source, texts.length, fullMatch);
+  const flow = texts.flatMap((text, source): TextFlow<number>[] => [
+    ...(separator === " " && source > 0 ? [{ type: "space" } as const] : []),
+    { type: "text", source, text },
+  ]);
+  const result = matchTextFlow(flow, needle, exact);
+  return texts.map((_, index) => result.parts.get(index) ?? { ranges: [], fullMatch: false });
 }
 
 function VariableChip({ label }: { label: string }) {
