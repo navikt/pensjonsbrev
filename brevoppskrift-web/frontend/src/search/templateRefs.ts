@@ -54,10 +54,12 @@ export async function fetchAllDescriptions(queryClient: QueryClient, malType: Ma
   return descriptions;
 }
 
-export type AllTemplateRefs = { status: "loading" } | { status: "failed" } | { status: "ready"; refs: TemplateRef[] };
+export type AllTemplateRefs =
+  | { status: "loading" }
+  | { status: "failed"; retry: () => void }
+  | { status: "ready"; refs: TemplateRef[] };
 
 const LOADING: AllTemplateRefs = { status: "loading" };
-const FAILED: AllTemplateRefs = { status: "failed" };
 
 /** Every template the search covers, for pages that search without having
  *  loaded the template list themselves. Loading while `enabled` is false
@@ -70,13 +72,24 @@ export function useAllTemplateRefs(enabled = true): AllTemplateRefs {
   // A failed refetch keeps the data it had, which is still good to search.
   const failed = queries.some((query) => query.isError && query.data === undefined);
   const [autobrev, redigerbar] = queries.map((query) => query.data);
-  return useMemo(() => {
-    if (failed) {
-      return FAILED;
-    }
-    if (!autobrev || !redigerbar) {
-      return LOADING;
-    }
-    return { status: "ready", refs: [...toRefs(autobrev, "autobrev"), ...toRefs(redigerbar, "redigerbar")] };
-  }, [failed, autobrev, redigerbar]);
+  const refs = useMemo(
+    () => (autobrev && redigerbar ? [...toRefs(autobrev, "autobrev"), ...toRefs(redigerbar, "redigerbar")] : undefined),
+    [autobrev, redigerbar],
+  );
+  if (failed) {
+    return {
+      status: "failed",
+      retry: () => {
+        for (const query of queries) {
+          if (query.isError && query.data === undefined) {
+            void query.refetch();
+          }
+        }
+      },
+    };
+  }
+  if (!refs) {
+    return LOADING;
+  }
+  return { status: "ready", refs };
 }

@@ -198,6 +198,7 @@ describe("search hit focus", () => {
     retryFailed: vi.fn(),
     displayed: {
       highlight: { needle: "treff", exactOnly: false },
+      incomplete: false,
       contentHits: [{ template: text("BOKMAL"), lineIndex: 1, matchCount: 2, matchedLineIndexes: [1, 2], score: 0 }],
       brevHits: [{ template: text("BOKMAL") }],
       contentTemplateCount: 1,
@@ -456,7 +457,7 @@ describe("search hits when the template list cannot be fetched", () => {
     vi.resetAllMocks();
   });
 
-  it("says the hits could not be found, instead of searching forever", async () => {
+  it("offers a retry when template metadata fails, instead of searching forever", async () => {
     getTemplateDescription.queryFn.mockResolvedValue({ languages: ["BOKMAL"] });
     getTemplateDocumentation.queryFn.mockResolvedValue({
       title: [],
@@ -464,12 +465,19 @@ describe("search hits when the template list cannot be fetched", () => {
       attachments: [],
       templateModelSpecification: { types: {}, letterModelTypeName: "" },
     });
-    getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) =>
-      malType === "redigerbar" ? Promise.reject(new Error("boom")) : Promise.resolve([]),
-    );
+    let redigerbarCalls = 0;
+    getBrevkoderMedMetadata.queryFn.mockImplementation((malType: string) => {
+      if (malType === "redigerbar" && redigerbarCalls++ === 0) {
+        return Promise.reject(new Error("boom"));
+      }
+      return Promise.resolve([]);
+    });
 
     await renderTemplateRoute("/template/autobrev/A", { language: "BOKMAL", q: "treff" }, { realPage: true });
 
     expect(await screen.findByText(/Kan ikke vise treff/)).toBeTruthy();
+    await userEvent.click(screen.getByRole("button", { name: "Prøv igjen" }));
+    await waitFor(() => expect(screen.queryByText(/Kan ikke vise treff/)).toBeNull());
+    expect(redigerbarCalls).toBe(2);
   });
 });

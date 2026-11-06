@@ -11,7 +11,7 @@ import {
 } from "~/templateSearch/useTemplateHits";
 
 const hookMocks = vi.hoisted(() => ({
-  templates: { status: "ready", refs: [] },
+  templates: { status: "ready" as "ready" | "failed", refs: [], retry: vi.fn() },
   results: {
     isLoading: false,
     displayed: undefined as DisplayedSearch | undefined,
@@ -60,6 +60,7 @@ const aNynorsk = template("A", "NYNORSK", [10, 20]);
 function displayed(contentHits: ContentHit[]): DisplayedSearch {
   return {
     highlight: { needle: "tekst", exactOnly: false },
+    incomplete: false,
     contentHits,
     brevHits: contentHits.map(({ template }) => ({ template })),
     contentTemplateCount: 0,
@@ -240,6 +241,21 @@ describe("useTemplateHits corpus failures", () => {
     const { result } = renderHook(() => useTemplateHits(criteria, current, undefined, false));
 
     expect(result.current).toEqual({ status: "failed", retry });
+    hookMocks.templates = { status: "ready", refs: [], retry: vi.fn() };
+  });
+
+  it("offers a retry when template metadata failed", () => {
+    const retry = vi.fn();
+    hookMocks.templates = { status: "failed", refs: [], retry };
+    hookMocks.results = { ...hookMocks.results, displayed: search, searchFailed: false, failedMalTypes: [] };
+
+    const { result } = renderHook(() => useTemplateHits(criteria, current, undefined, false));
+
+    hookMocks.templates = { status: "ready", refs: [], retry: vi.fn() };
+    expect(result.current?.status).toBe("failed");
+    if (result.current?.status === "failed") {
+      expect(result.current.retry).toBe(retry);
+    }
   });
 
   it("keeps ready results and marks them incomplete when another corpus failed", () => {
@@ -254,5 +270,17 @@ describe("useTemplateHits corpus failures", () => {
     const { result } = renderHook(() => useTemplateHits(criteria, current, undefined, false));
 
     expect(result.current).toMatchObject({ status: "ready", incomplete: true, retry });
+  });
+
+  it("keeps an incomplete warning from the last displayed search after the corpus recovers", () => {
+    hookMocks.results = {
+      ...hookMocks.results,
+      displayed: { ...search, incomplete: true },
+      failedMalTypes: [],
+    };
+
+    const { result } = renderHook(() => useTemplateHits(criteria, current, undefined, false));
+
+    expect(result.current).toMatchObject({ status: "ready", incomplete: true });
   });
 });

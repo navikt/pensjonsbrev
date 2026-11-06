@@ -34,6 +34,8 @@ export type DisplayedSearch = {
    *  `exactOnly`: emphasising a needle the hits were never matched against
    *  would mark the wrong words (or none at all). */
   highlight: Highlight;
+  /** Whether this search ran against an incomplete corpus. */
+  incomplete: boolean;
   contentHits: ContentHit[];
   brevHits: BrevHit[];
   contentTemplateCount: number;
@@ -108,9 +110,10 @@ function hydrate(hits: HitRefs, byKey: Map<TemplateKey, TemplateText>): SearchRe
 }
 /** Everything the result area needs from one search, counted once when the
  *  search completes rather than on every render. */
-function toDisplayed({ content, brev }: SearchResults, highlight: Highlight): DisplayedSearch {
+function toDisplayed({ content, brev }: SearchResults, highlight: Highlight, incomplete: boolean): DisplayedSearch {
   return {
     highlight,
+    incomplete,
     contentHits: content,
     brevHits: brev,
     contentTemplateCount: templateCount(content),
@@ -182,6 +185,7 @@ export function useSearchResults(
   // and in the returned object, so the two can never disagree on what "still
   // loading" means.
   const isLoading = templates === undefined || queries.some((q) => q.data === undefined && !q.isError);
+  const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError && queries[i]?.data === undefined);
   // Depends on data identity (not fetch timestamps), so an unchanged corpus that
   // revalidated to a 304 keeps the same reference and does not rebuild the index.
   const freshnessKey = queries.map((q) => referenceId(q.data)).join("|");
@@ -215,6 +219,7 @@ export function useSearchResults(
     });
   }, [freshnessKey, malTypes, titles, isLoading]);
   const searchable = isSearchQuery(query);
+  const incomplete = failedMalTypes.length > 0;
   // Replaced only when a search completes, so the previous search stays on
   // screen - and stays highlighted for its own query - while the worker
   // answers, rather than the list emptying on every keystroke. That includes a
@@ -256,7 +261,7 @@ export function useSearchResults(
         if (!active || !hits) {
           return;
         }
-        const displayed = toDisplayed(hydrate(hits, corpus.byKey), { needle: query, exactOnly });
+        const displayed = toDisplayed(hydrate(hits, corpus.byKey), { needle: query, exactOnly }, incomplete);
         startHitsTransition(() => {
           setIsAwaitingHits(false);
           setShown({ displayed, searchFailed: false });
@@ -276,8 +281,7 @@ export function useSearchResults(
     return () => {
       active = false;
     };
-  }, [client, corpus, searchable, query, exactOnly]);
-  const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError && queries[i]?.data === undefined);
+  }, [client, corpus, searchable, query, exactOnly, incomplete]);
   const retryFailed = () => {
     for (const q of queries) {
       if (q.isError && q.data === undefined) {

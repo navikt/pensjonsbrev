@@ -144,6 +144,35 @@ describe("useTemplateSearch", () => {
     expect(getAllTemplateDocumentation.queryFn.mock.calls.length).toBeGreaterThan(callsBeforeRetry);
   });
 
+  it("keeps a displayed search marked incomplete until its recovered-corpus search completes", async () => {
+    let redigerbarCalls = 0;
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) => {
+      if (malType === "redigerbar" && redigerbarCalls++ === 0) {
+        return Promise.reject(new Error("boom"));
+      }
+      return Promise.resolve(malType === "autobrev" ? autobrevContent : []);
+    });
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const client = deferrableClient();
+
+    const { result } = renderSearch(queryClient, client);
+    await waitFor(() => expect(result.current.failedMalTypes).toEqual(["redigerbar"]));
+    act(() => result.current.setQuery("hei"));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.displayed?.incomplete).toBe(true));
+    const previousSearch = result.current.displayed;
+
+    result.current.retryFailed();
+    await waitFor(() => expect(result.current.failedMalTypes).toEqual([]));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    expect(result.current.displayed).toBe(previousSearch);
+    expect(result.current.displayed?.incomplete).toBe(true);
+
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.displayed?.incomplete).toBe(false));
+  });
+
   it("defaults to fuzzy search enabled (exactOnly off), and setExactOnly(true) disables typo tolerance", async () => {
     const typoTolerantContent: SearchableContent[] = [
       {

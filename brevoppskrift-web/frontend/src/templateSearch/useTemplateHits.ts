@@ -172,6 +172,7 @@ export function useTemplateHits(
   focusFirstHit: boolean,
 ): TemplateHits | undefined {
   const templates = useAllTemplateRefs(criteria !== undefined);
+  const retryMetadata = templates.status === "failed" ? templates.retry : undefined;
   const { isLoading, displayed, searchFailed, failedMalTypes, retryFailed } = useSearchResults(
     criteria && templates.status === "ready" ? templates.refs : undefined,
     criteria?.q ?? "",
@@ -184,7 +185,10 @@ export function useTemplateHits(
     if (failedMalTypes.includes(current.malType)) {
       return { status: "failed", retry: retryFailed };
     }
-    if (searchFailed || templates.status === "failed") {
+    if (templates.status === "failed") {
+      return { status: "failed", retry: retryMetadata };
+    }
+    if (searchFailed) {
       return { status: "failed" };
     }
     if (isLoading || !displayed) {
@@ -192,7 +196,7 @@ export function useTemplateHits(
     }
     return {
       ...hitsInTemplate(displayed, criteria, current, requestedBlock, focusFirstHit),
-      incomplete: failedMalTypes.length > 0,
+      incomplete: failedMalTypes.length > 0 || displayed.incomplete,
       retry: retryFailed,
     };
   }, [
@@ -200,6 +204,7 @@ export function useTemplateHits(
     current,
     requestedBlock,
     focusFirstHit,
+    retryMetadata,
     templates.status,
     isLoading,
     displayed,
