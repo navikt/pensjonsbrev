@@ -44,6 +44,14 @@ export function createEditorAutosave<Response>({ initialState, ...defaultSave }:
   /* The most recently started save/reset; kept after it settles, so awaiting it then resolves (or rejects) at once. */
   let activeSave: Promise<Response | undefined> = Promise.resolve(undefined);
   let activeReset: Promise<void> = Promise.resolve();
+  let scheduledSave: ReturnType<typeof setTimeout> | undefined;
+  let scheduledSaveDue = false;
+
+  const cancelScheduledSave = () => {
+    clearTimeout(scheduledSave);
+    scheduledSave = undefined;
+    scheduledSaveDue = false;
+  };
 
   let snapshot = {
     editorState: initialState,
@@ -123,6 +131,10 @@ export function createEditorAutosave<Response>({ initialState, ...defaultSave }:
       isSaving = false;
       keepSavingUntilLatest = false;
       publish();
+      if (scheduledSaveDue) {
+        scheduledSaveDue = false;
+        autosave();
+      }
     }
   };
 
@@ -140,9 +152,24 @@ export function createEditorAutosave<Response>({ initialState, ...defaultSave }:
     activeSave.catch(() => undefined);
   };
 
+  const scheduleSave = (delay: number) => {
+    cancelScheduledSave();
+    if (delay === 0) {
+      if (isSaving) scheduledSaveDue = true;
+      else autosave();
+      return;
+    }
+    scheduledSave = setTimeout(() => {
+      scheduledSave = undefined;
+      if (isSaving) scheduledSaveDue = true;
+      else autosave();
+    }, delay);
+  };
+
   /* Saves pending edits right away, including edits made while it runs, and resolves once the latest revision is stored. */
   /* Concurrent callers share the same save, and also wait for a reset started meanwhile. */
   const savePendingChanges = async (): Promise<void> => {
+    cancelScheduledSave();
     if (isResetting) {
       await activeReset;
       return savePendingChanges();
@@ -159,6 +186,7 @@ export function createEditorAutosave<Response>({ initialState, ...defaultSave }:
 
   /* Waits for active saves/resets, then runs `customSave` with the latest state through the shared save loop. */
   const saveWith = async (customSave: SaveHandlers<Response>): Promise<Response> => {
+    cancelScheduledSave();
     if (isResetting) {
       await activeReset;
       return saveWith(customSave);
@@ -192,6 +220,7 @@ export function createEditorAutosave<Response>({ initialState, ...defaultSave }:
   /* Pending edits are discarded only if `loadState` succeeds. A reset requested while one runs joins it; its `loadState` is ignored. */
   const reset = (loadState: () => Promise<LetterEditorState>): Promise<void> => {
     if (!isResetting) {
+      cancelScheduledSave();
       isResetting = true;
       activeReset = Promise.resolve().then(() => runReset(loadState));
       publish();
@@ -213,5 +242,7 @@ export function createEditorAutosave<Response>({ initialState, ...defaultSave }:
     saveWith,
     reset,
     canAutosave,
+    scheduleSave,
+    cancelScheduledSave,
   };
 }

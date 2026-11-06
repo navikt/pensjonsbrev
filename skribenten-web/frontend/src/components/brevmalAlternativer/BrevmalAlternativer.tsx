@@ -13,7 +13,7 @@ import { BrevAlternativTab } from "./BrevmalAlternativerUtils";
 const BrevmalAlternativer = (props: {
   brevkode: string;
   propertyUsage?: PropertyUsage[];
-  submitOnChange?: () => void;
+  submitOnChange?: (debounce?: boolean) => void;
 
   /**
    * Kan velge hvilke felter som skal vises. Default er at begge vises (dersom dem finnes, ellers bare den som finnes)

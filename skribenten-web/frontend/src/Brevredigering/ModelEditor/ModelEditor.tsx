@@ -75,7 +75,7 @@ export const createFormElementsFromSpecification = (args: {
     requiredFields: [string, FieldType][];
   };
   brevkode: string;
-  submitOnChange?: () => void;
+  submitOnChange?: (debounce?: boolean) => void;
   readOnly?: boolean;
 }) => {
   const optionalFields = args.specificationFormElements.optionalFields.map(([field, fieldType]) => ({
@@ -123,7 +123,7 @@ export const SaksbehandlerValgModelEditor = (props: {
     requiredFields: [string, FieldType][];
   };
   fieldsToRender: "required" | "optional";
-  submitOnChange?: () => void;
+  submitOnChange?: (debounce?: boolean) => void;
   readOnly?: boolean;
 }) => {
   const { register } = useFormContext();

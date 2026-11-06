@@ -560,6 +560,7 @@ test.describe("Redigerbare vedlegg", () => {
   test("lagrer endringer skrevet mens Fortsett-lagringen pågår før brevet lagres", async ({ page }) => {
     const lagringer: string[] = [];
     const hendelser: string[] = [];
+    const firstSave = Promise.withResolvers<void>();
 
     await page.route(vedleggUrl(VEDLEGG_ID), async (route) => {
       if (route.request().method() !== "PUT") {
@@ -568,9 +569,7 @@ test.describe("Redigerbare vedlegg", () => {
       const redigertVedlegg = route.request().postDataJSON().redigertVedlegg;
       lagringer.push(JSON.stringify(redigertVedlegg));
       hendelser.push(`vedlegg-${lagringer.length}`);
-      if (lagringer.length === 1) {
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-      }
+      if (lagringer.length === 1) await firstSave.promise;
       return route.fulfill({ json: redigertVedlegg });
     });
 
@@ -596,9 +595,13 @@ test.describe("Redigerbare vedlegg", () => {
 
     await expect.poll(() => lagringer.length, { timeout: 10_000 }).toBe(1);
     const redigerbarTekst = page.locator("span[contenteditable='true']", { hasText: "AAA" });
-    await redigerbarTekst.focus();
-    await redigerbarTekst.press("End");
-    await redigerbarTekst.pressSequentially("BBB");
+    try {
+      await redigerbarTekst.focus();
+      await redigerbarTekst.press("End");
+      await redigerbarTekst.pressSequentially("BBB");
+    } finally {
+      firstSave.resolve();
+    }
 
     await expect(page).toHaveURL(/brevbehandler/, { timeout: 20_000 });
     expect(lagringer).toHaveLength(2);

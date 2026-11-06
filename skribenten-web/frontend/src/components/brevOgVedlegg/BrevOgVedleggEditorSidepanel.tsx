@@ -1,5 +1,5 @@
 import { Box, Tabs } from "@navikt/ds-react";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useId, useState } from "react";
 
 import { useActiveDocument } from "~/components/brevOgVedlegg/ActiveDocumentContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
@@ -15,6 +15,9 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
     brevId: props.brevId,
     redigeringsflate,
   });
+  const id = useId();
+  const brevmalTabId = `${id}-brevmal-tab`;
+  const brevmalPanelId = `${id}-brevmal-panel`;
   const [activeTab, setActiveTab] = useState(activeDocument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
 
   // Keep the tab aligned with URL-driven document changes, including normalization of an unknown vedlegg.
@@ -44,16 +47,7 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
 
   // Show the tabs only when the letter has editable attachments, but keep them visible on error so the issue can be shown.
   const showTabs = (vedleggQuery.data?.length ?? 0) > 0 || vedleggQuery.isError;
-  if (!showTabs) {
-    return (
-      <Box
-        paddingBlock={{ xs: "space-0 space-12", lg: "space-0 space-16" }}
-        paddingInline={{ xs: "space-12", lg: "space-24" }}
-      >
-        {props.brevmalPanel}
-      </Box>
-    );
-  }
+  const showBrevmal = !showTabs || activeTab === BREVMAL_TAB;
 
   return (
     <Box
@@ -63,29 +57,49 @@ export const BrevOgVedleggEditorSidepanel = (props: { saksId: string; brevId: nu
     >
       <Tabs
         className="brev-og-vedlegg-editor-sidepanel"
-        css={{
-          "> div:first-child": {
-            position: "sticky",
-            top: 0,
-            zIndex: 1,
-            height: "var(--ax-space-48)",
-            background: "var(--ax-bg-default)",
-          },
-        }}
+        css={
+          showTabs
+            ? {
+                "> div:first-child": {
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
+                  height: "var(--ax-space-48)",
+                  background: "var(--ax-bg-default)",
+                },
+              }
+            : undefined
+        }
         fill
         onChange={(tab) => void handleSelectTab(tab)}
         size="small"
         value={activeTab}
       >
-        <Tabs.List>
-          <Tabs.Tab label="Brevmal" value={BREVMAL_TAB} />
-          <Tabs.Tab label="Vedlegg" value={VEDLEGG_TAB} />
-        </Tabs.List>
+        {showTabs && (
+          <Tabs.List>
+            <Tabs.Tab aria-controls={brevmalPanelId} id={brevmalTabId} label="Brevmal" value={BREVMAL_TAB} />
+            <Tabs.Tab label="Vedlegg" value={VEDLEGG_TAB} />
+          </Tabs.List>
+        )}
 
-        <Tabs.Panel value={BREVMAL_TAB}>{props.brevmalPanel}</Tabs.Panel>
-        <Tabs.Panel value={VEDLEGG_TAB}>
-          <VedleggPanel vedleggQuery={vedleggQuery} />
-        </Tabs.Panel>
+        {/* Keep the panel mounted when tabs appear so focused fields are not replaced. */}
+        {/* biome-ignore lint/a11y/useAriaPropsSupportedByRole: The label is present only with the tabpanel role. */}
+        <div
+          aria-labelledby={showTabs ? brevmalTabId : undefined}
+          className={showTabs ? "aksel-tabs__tabpanel" : undefined}
+          data-state={showTabs ? (showBrevmal ? "active" : "inactive") : undefined}
+          hidden={!showBrevmal}
+          id={showTabs ? brevmalPanelId : undefined}
+          role={showTabs ? "tabpanel" : undefined}
+          tabIndex={showTabs ? 0 : undefined}
+        >
+          {showBrevmal ? props.brevmalPanel : null}
+        </div>
+        {showTabs && (
+          <Tabs.Panel value={VEDLEGG_TAB}>
+            <VedleggPanel vedleggQuery={vedleggQuery} />
+          </Tabs.Panel>
+        )}
       </Tabs>
     </Box>
   );
