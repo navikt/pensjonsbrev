@@ -480,7 +480,7 @@ function CocsList<E extends Element>({
         texts.push(text);
         start++;
       }
-      highlightParts(texts, highlight.needle, highlight.exact).forEach((parts, index) => {
+      highlightParts(texts, highlight.needle, highlight.exact, "").forEach((parts, index) => {
         const itemIndex = indexes[index];
         if (itemIndex !== undefined) {
           literalParts.set(itemIndex, parts);

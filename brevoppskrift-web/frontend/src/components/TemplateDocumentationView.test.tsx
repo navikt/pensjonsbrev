@@ -485,6 +485,58 @@ describe("Document search marking", () => {
     expect(html).not.toContain("<mark");
   });
 
+  it.each([
+    {
+      name: "highlights punctuation directly after an adjacent literal",
+      literals: ["Du får barnetillegg", "."],
+      needle: "barnetillegg.",
+      expectedMarks: ["barnetillegg", "."],
+    },
+    {
+      name: "highlights a word split across adjacent literals",
+      literals: ["Du får barne", "tillegg."],
+      needle: "barnetillegg",
+      expectedMarks: ["barne", "tillegg"],
+    },
+    {
+      name: "preserves and normalizes whitespace already present between literals",
+      literals: ["Du får \n", "\tbarnetillegg."],
+      needle: "får barnetillegg",
+      expectedMarks: ["får", "barnetillegg"],
+    },
+    {
+      name: "does not invent whitespace between adjacent literals",
+      literals: ["Du får barne", "tillegg."],
+      needle: "barne tillegg",
+      expectedMarks: [],
+    },
+  ])("$name", ({ literals, needle, expectedMarks }) => {
+    const html = renderToStaticMarkup(
+      <SearchHighlightProvider highlight={{ needle, exact: true, matchingBlocks: new Set([0]), activeBlock: 0 }}>
+        <Document
+          templateDocumentation={{
+            ...documentation,
+            outline: [
+              {
+                controlStructureType: ContentOrControlStructureType.CONTENT,
+                content: {
+                  elementType: ElementType.PARAGRAPH,
+                  index: 0,
+                  paragraph: literals.map((text) => ({
+                    controlStructureType: ContentOrControlStructureType.CONTENT,
+                    content: { elementType: ElementType.PARAGRAPH_TEXT_LITERAL, text },
+                  })),
+                },
+              },
+            ],
+          }}
+        />
+      </SearchHighlightProvider>,
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/gs)].map(([, text]) => text)).toEqual(expectedMarks);
+  });
+
   it("renders exactly as without search when there is no highlight", () => {
     const plain = renderToStaticMarkup(<Document templateDocumentation={documentation} />);
     const withoutHighlight = renderToStaticMarkup(

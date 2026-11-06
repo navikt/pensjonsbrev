@@ -84,7 +84,10 @@ function mergeRanges(ranges: HighlightRange[]): HighlightRange[] {
 
 /** Searchable text across adjacent literal segments, with offsets mapped back
  *  to their original segment and character. */
-function joinTextSegments(texts: string[]): { text: string; source: Array<{ segment: number; index: number }> } {
+function joinTextSegments(
+  texts: string[],
+  separator: "" | " ",
+): { text: string; source: Array<{ segment: number; index: number }> } {
   let text = "";
   const source: Array<{ segment: number; index: number }> = [];
   let pendingSpace = false;
@@ -106,7 +109,7 @@ function joinTextSegments(texts: string[]): { text: string; source: Array<{ segm
         source.push({ segment, index });
       }
     }
-    pendingSpace = true;
+    pendingSpace ||= separator === " ";
   });
   return { text, source };
 }
@@ -142,10 +145,15 @@ function mapJoinedRanges(
   }));
 }
 
-/** Computes ranges for a sequence of adjacent literals using the same phrase
- *  and per-term matching rules as the search UI. */
-export function highlightParts(texts: string[], needle: string, exact = false): HighlightParts[] {
-  const joined = joinTextSegments(texts);
+/** Computes ranges across literals. Snippets separate segments with a space;
+ *  document literals concatenate without adding a separator. */
+export function highlightParts(
+  texts: string[],
+  needle: string,
+  exact = false,
+  separator: "" | " " = " ",
+): HighlightParts[] {
+  const joined = joinTextSegments(texts, separator);
   const terms = needle.split(/\s+/).filter((term) => term.length > 0);
   const matches: HighlightRange[] = [];
   if (exact) {
