@@ -1,81 +1,25 @@
 import { css } from "@emotion/react";
-import Fuse from "fuse.js";
 import { Fragment, type ReactNode } from "react";
 
-import { FUZZY_MATCH_OPTIONS, type Line, normalizeForExactMatch, SHORT_TERM_LENGTH } from "~/search/textSearch";
+import { type HighlightParts, type HighlightRange, matchTextFlow, type TextFlow } from "~/search/matchTextFlow";
+import { type Line } from "~/search/textSearch";
 
-type Range = [number, number];
+export type { HighlightParts, HighlightRange } from "~/search/matchTextFlow";
 
-/** All start/end indices (end exclusive) of `term` in `text`, case-insensitive. */
-function exactRanges(text: string, term: string): Range[] {
-  const ranges: Range[] = [];
-  const lowerText = text.toLowerCase();
-  const lowerTerm = term.toLowerCase();
-  if (!lowerTerm) {
-    return ranges;
-  }
-  let from = 0;
-  for (;;) {
-    const at = lowerText.indexOf(lowerTerm, from);
-    if (at === -1) {
-      break;
-    }
-    ranges.push([at, at + lowerTerm.length]);
-    from = at + lowerTerm.length;
-  }
-  return ranges;
-}
-
-/** The single best fuzzy-match location of `term` in `text`, or none. Uses the
- *  same tuning as the search index (`FUZZY_MATCH_OPTIONS`) so a term only
- *  highlights here if it would also have counted as a match in search. Terms
- *  short enough to require a verbatim match in search (`SHORT_TERM_LENGTH`)
- *  are never fuzzy-highlighted, for the same reason. */
-function fuzzyRange(text: string, term: string): Range | undefined {
-  if (term.length <= SHORT_TERM_LENGTH) {
-    return undefined;
-  }
-  const result = Fuse.match(term, text, { ...FUZZY_MATCH_OPTIONS, includeMatches: true });
-  if (!result.isMatch) {
-    return undefined;
-  }
-  const range = result.indices?.[0];
-  // Fuse indices are inclusive [start, end]; convert to exclusive end.
-  return range ? [range[0], range[1] + 1] : undefined;
-}
-
-/** Per-term ranges: all exact occurrences of a term, or else its single best
- *  fuzzy location. Mirrors how fuzzy search matches each term on its own. */
-function termRanges(text: string, needle: string): Range[] {
-  return needle
-    .split(/\s+/)
-    .filter((term) => term.length > 0)
-    .flatMap((term) => {
-      const exact = exactRanges(text, term);
-      if (exact.length > 0) {
-        return exact;
-      }
-      const fuzzy = fuzzyRange(text, term);
-      return fuzzy ? [fuzzy] : [];
-    });
-}
-
-/** Merges overlapping/adjacent ranges into a minimal non-overlapping set. */
-function mergeRanges(ranges: Range[]): Range[] {
-  if (ranges.length === 0) {
-    return ranges;
-  }
-  const sorted = [...ranges].sort((a, b) => a[0] - b[0]);
-  const merged: Range[] = [sorted[0]];
-  for (const [start, end] of sorted.slice(1)) {
-    const last = merged[merged.length - 1];
-    if (start <= last[1]) {
-      last[1] = Math.max(last[1], end);
-    } else {
-      merged.push([start, end]);
-    }
-  }
-  return merged;
+/** Computes ranges across literals. Snippets separate segments with a space;
+ *  document literals concatenate without adding a separator. */
+export function highlightParts(
+  texts: string[],
+  needle: string,
+  exact = false,
+  separator: "" | " " = " ",
+): HighlightParts[] {
+  const flow = texts.flatMap((text, source): TextFlow<number>[] => [
+    ...(separator === " " && source > 0 ? [{ type: "space" } as const] : []),
+    { type: "text", source, text },
+  ]);
+  const result = matchTextFlow(flow, needle, exact);
+  return texts.map((_, index) => result.parts.get(index) ?? { ranges: [], fullMatch: false });
 }
 
 function VariableChip({ label }: { label: string }) {
@@ -102,6 +46,22 @@ function VariableChip({ label }: { label: string }) {
   );
 }
 
+/** How a match is marked. Snippets in the result list are short, so bold is
+ *  enough; in a whole document the marks have to stand out while scrolling. */
+export type HighlightVariant = "snippet" | "document";
+const MARK_STYLES = {
+  snippet: css`
+    background: transparent;
+    color: inherit;
+    font-weight: var(--ax-font-weight-bold);
+  `,
+  document: css`
+    background: var(--ax-bg-warning-moderate);
+    color: inherit;
+    border-radius: var(--ax-radius-2);
+    box-shadow: inset 0 -2px 0 var(--ax-border-warning);
+  `,
+};
 /**
  * Renders text with the matched parts of the needle wrapped in `<mark>`.
  *
@@ -113,27 +73,36 @@ function VariableChip({ label }: { label: string }) {
  * location is. Terms with no match at all in this particular text are left
  * unhighlighted.
  */
-function HighlightText({ text, needle, exact }: { text: string; needle: string; exact?: boolean }) {
-  const ranges = mergeRanges(exact ? exactRanges(text, normalizeForExactMatch(needle)) : termRanges(text, needle));
-  if (ranges.length === 0) {
+export function HighlightText({
+  text,
+  needle,
+  exact,
+  variant = "snippet",
+  ranges,
+  fullMatch,
+}: {
+  text: string;
+  needle: string;
+  exact?: boolean;
+  variant?: HighlightVariant;
+  ranges?: HighlightRange[];
+  fullMatch?: boolean;
+}) {
+  const parts = ranges
+    ? { ranges, fullMatch: fullMatch ?? false }
+    : (highlightParts([text], needle, exact)[0] ?? { ranges: [], fullMatch: false });
+  if (parts.ranges.length === 0) {
     return <>{text}</>;
   }
 
   const nodes: ReactNode[] = [];
   let cursor = 0;
-  ranges.forEach(([start, end], i) => {
+  parts.ranges.forEach(({ start, end }, i) => {
     if (start > cursor) {
       nodes.push(<Fragment key={`plain-${i}`}>{text.slice(cursor, start)}</Fragment>);
     }
     nodes.push(
-      <mark
-        css={{
-          background: "transparent",
-          color: "inherit",
-          fontWeight: "var(--ax-font-weight-bold)",
-        }}
-        key={`mark-${i}`}
-      >
+      <mark css={MARK_STYLES[variant]} data-search-full-match={parts.fullMatch || undefined} key={`mark-${i}`}>
         {text.slice(start, end)}
       </mark>,
     );
@@ -149,6 +118,32 @@ function HighlightText({ text, needle, exact }: { text: string; needle: string; 
  *  highlighting. `exact` mirrors the search mode: the needle is highlighted as
  *  one continuous phrase rather than term by term. */
 export function LineContent({ line, needle, exact }: { line: Line; needle?: string; exact?: boolean }) {
+  const parts = new Map<number, HighlightParts>();
+  if (needle) {
+    let start = 0;
+    while (start < line.length) {
+      if (line[start]?.type === "var") {
+        start++;
+        continue;
+      }
+      const indexes: number[] = [];
+      while (start < line.length && line[start]?.type === "text") {
+        indexes.push(start);
+        start++;
+      }
+      const highlighted = highlightParts(
+        indexes.map((index) => (line[index]?.type === "text" ? line[index].value : "")),
+        needle,
+        exact,
+      );
+      indexes.forEach((index, i) => {
+        const segmentParts = highlighted[i];
+        if (segmentParts) {
+          parts.set(index, segmentParts);
+        }
+      });
+    }
+  }
   return (
     <>
       {line.map((segment, index) => {
@@ -156,7 +151,17 @@ export function LineContent({ line, needle, exact }: { line: Line; needle?: stri
           return <VariableChip key={index} label={segment.label} />;
         }
         if (needle) {
-          return <HighlightText exact={exact} key={index} needle={needle} text={segment.value} />;
+          const segmentParts = parts.get(index);
+          return (
+            <HighlightText
+              exact={exact}
+              fullMatch={segmentParts?.fullMatch}
+              key={index}
+              needle={needle}
+              ranges={segmentParts?.ranges}
+              text={segment.value}
+            />
+          );
         }
         return <Fragment key={index}>{segment.value}</Fragment>;
       })}

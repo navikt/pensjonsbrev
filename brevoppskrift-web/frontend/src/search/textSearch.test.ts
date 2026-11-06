@@ -179,6 +179,21 @@ describe("search", () => {
     expect(search(index, "fox the grey", true).content).toEqual([]);
   });
 
+  it("shares highlighting's variable boundary: term coverage can cross it, but exact phrases cannot", () => {
+    const value = template({ id: "A1", title: "Barnetillegg", lines: [""] });
+    value.lines = [
+      [
+        { type: "text", value: "barnetillegg " },
+        { type: "var", label: "antall" },
+        { type: "text", value: " uføretrygd" },
+      ],
+    ];
+    const index = buildIndex([value]);
+
+    expect(search(index, "barnetillegg uføretrygd", true).content).toEqual([]);
+    expect(search(index, "barnetillegg uføretrygd", false).content).toHaveLength(1);
+  });
+
   it("accepts a character-prefix exact phrase", () => {
     const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["The grey fox jumped over the fence."] })];
     const index = buildIndex(templates);
