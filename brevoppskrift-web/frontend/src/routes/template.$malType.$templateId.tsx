@@ -147,7 +147,7 @@ function TemplateExplorer() {
       search: (s) =>
         newQ === undefined
           ? { ...s, q: undefined, exact: undefined, tab: undefined, showHits: undefined, focus: undefined }
-          : { ...s, q: newQ, tab: s.q ? s.tab : "innhold", focus: undefined },
+          : { ...s, q: newQ, tab: criteria ? s.tab : "innhold", focus: undefined },
     });
 
   return (
@@ -173,6 +173,7 @@ function TemplateExplorer() {
             onMarkingChange={changeMarking}
             onSearch={changeQuery}
             onSelectBlock={selectBlock}
+            query={q}
           />
           <LanguageToggle
             available={description.languages}

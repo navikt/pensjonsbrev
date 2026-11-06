@@ -401,6 +401,16 @@ describe("search hit focus", () => {
       await waitFor(() => expect(screen.getByText("Avsnitt 1 av 2")).toBeTruthy());
     });
 
+    it("restores a short URL query and starts a fresh search on the content tab", async () => {
+      const router = await openPage({ q: "x" });
+      const input = await searchBox();
+      expect(input.value).toBe("x");
+
+      await userEvent.type(input, "treff", { initialSelectionStart: 0, initialSelectionEnd: 1 });
+
+      await waitFor(() => expect(router.state.location.search).toMatchObject({ q: "treff", tab: "innhold" }));
+    });
+
     it("replaces the search, keeping its tab and opening at the first hit, but not for a too short query", async () => {
       const router = await openPage({ q: "første", focus: 31 });
       const input = await searchBox();

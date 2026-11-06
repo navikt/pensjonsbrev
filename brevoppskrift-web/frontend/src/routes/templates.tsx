@@ -138,16 +138,59 @@ function AllTemplates() {
   // it. Only the settled query is written, with `replace`, so typing neither
   // adds history entries nor navigates per keystroke. A new search starts on
   // page 1 with nothing selected.
-  const latestSearch = useRef(search);
-  latestSearch.current = search;
+  const urlQuery = search.q;
+  const urlExact = search.exact;
+  const lastUrlQuery = useRef({ q: urlQuery, exact: urlExact });
+  const writtenQueries = useRef<Array<{ q?: string; exact?: true }>>([]);
+  const syncingFromUrl = useRef<{ query: string; exactOnly: boolean } | undefined>(undefined);
+  const editedFromSelection = useRef(false);
   useEffect(() => {
-    const q = settledQuery || undefined;
-    const exact = exactOnly || undefined;
-    if (q === latestSearch.current.q && exact === latestSearch.current.exact) {
+    const previous = lastUrlQuery.current;
+    if (previous.q === urlQuery && previous.exact === urlExact) {
       return;
     }
-    void navigate({ replace: true, search: (s) => ({ ...s, q, exact, page: undefined, selected: undefined }) });
-  }, [settledQuery, exactOnly, navigate]);
+    lastUrlQuery.current = { q: urlQuery, exact: urlExact };
+    const writtenIndex = writtenQueries.current.findIndex(
+      (written) => written.q === urlQuery && written.exact === urlExact,
+    );
+    if (writtenIndex !== -1) {
+      writtenQueries.current.splice(0, writtenIndex + 1);
+      return;
+    }
+    writtenQueries.current = [];
+    editedFromSelection.current = false;
+    const queryFromUrl = urlQuery ?? "";
+    const exactOnlyFromUrl = urlExact === true;
+    syncingFromUrl.current = { query: queryFromUrl, exactOnly: exactOnlyFromUrl };
+    setQuery(queryFromUrl);
+    setExactOnly(exactOnlyFromUrl);
+  }, [urlQuery, urlExact, setQuery, setExactOnly]);
+  useEffect(() => {
+    const target = { q: settledQuery || undefined, exact: exactOnly || undefined };
+    if (search.selected && !editedFromSelection.current) {
+      return;
+    }
+    if (syncingFromUrl.current) {
+      const synced = syncingFromUrl.current;
+      if (query === synced.query && exactOnly === synced.exactOnly) {
+        if (settledQuery !== query.trim()) {
+          return;
+        }
+      }
+      syncingFromUrl.current = undefined;
+    }
+    const current = { q: search.q, exact: search.exact };
+    const lastRequested = writtenQueries.current.at(-1) ?? current;
+    if (target.q === lastRequested.q && target.exact === lastRequested.exact) {
+      return;
+    }
+    writtenQueries.current.push(target);
+    void navigate({
+      replace: true,
+      search: (s) =>
+        s.q === current.q && s.exact === current.exact ? { ...s, ...target, page: undefined, selected: undefined } : s,
+    });
+  }, [settledQuery, exactOnly, navigate, query, search.q, search.exact, search.selected]);
 
   const activeTab: ResultTab = search.tab ?? DEFAULT_TAB;
   const selected = useMemo(() => parseResultRef(search.selected), [search.selected]);
@@ -178,7 +221,10 @@ function AllTemplates() {
   // Records the way back from the opened result in this history entry before
   // leaving, so browser Back returns to the search it was found in, with it marked.
   const openResult = useCallback(
-    (back: TemplatesSearchParams) => navigate({ replace: true, search: back }),
+    (back: TemplatesSearchParams) => {
+      editedFromSelection.current = false;
+      return navigate({ replace: true, search: back });
+    },
     [navigate],
   );
   const criteria = useMemo<SearchCriteria | undefined>(
@@ -256,7 +302,10 @@ function AllTemplates() {
             active={isLoading || isPending}
             autoFocus
             label="Søk etter brevmal eller innhold"
-            onChange={setQuery}
+            onChange={(value) => {
+              editedFromSelection.current = true;
+              setQuery(value);
+            }}
             value={query}
           />
         </Box>

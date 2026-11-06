@@ -28,6 +28,7 @@ export function SearchHitToolbar({
   criteria,
   hits,
   marking,
+  query,
   onMarkingChange,
   onSearch,
   onSelectBlock,
@@ -35,6 +36,7 @@ export function SearchHitToolbar({
   criteria: SearchCriteria | undefined;
   hits: TemplateHits | undefined;
   marking: boolean;
+  query?: string;
   onMarkingChange: (marking: boolean) => void;
   onSearch: (q: string | undefined) => void;
   onSelectBlock: (index: number) => void;
@@ -46,7 +48,7 @@ export function SearchHitToolbar({
       </Switch>
       {marking ? (
         <Box maxWidth="100%" width="18rem">
-          <TemplateSearchField hits={hits} onSearch={onSearch} q={criteria?.q} />
+          <TemplateSearchField hits={hits} onSearch={onSearch} q={query ?? criteria?.q} />
         </Box>
       ) : null}
       {criteria && hits ? (

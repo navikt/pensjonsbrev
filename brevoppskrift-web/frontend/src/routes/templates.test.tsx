@@ -6,7 +6,7 @@ import {
   createRouter,
   RouterProvider,
 } from "@tanstack/react-router";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -358,6 +358,25 @@ describe("<AllTemplates /> (route: /templates)", () => {
       expect(screen.getByRole<HTMLInputElement>("checkbox", { name: "Vis kun nøyaktige treff" }).checked).toBe(true);
       expect(screen.getByRole("tab", { name: /^Innhold/ }).getAttribute("aria-selected")).toBe("true");
       expect(await screen.findByText("Ingen treff i innholdet")).toBeTruthy();
+    });
+
+    it("restores browser-history search state instead of writing a pending input over it", async () => {
+      mockCorpus();
+      const { router } = await renderTemplatesRoute({ q: "første" });
+      await act(async () => {
+        await router.navigate({ to: "/templates", search: { q: "andre" } });
+      });
+      const input = screen.getByRole<HTMLInputElement>("searchbox");
+      await waitFor(() => expect(input.value).toBe("andre"));
+
+      act(() => {
+        fireEvent.change(input, { target: { value: "utdatert søk" } });
+      });
+      await act(async () => router.history.back());
+
+      await waitFor(() => expect(router.state.location.search).toMatchObject({ q: "første" }));
+      await waitFor(() => expect(input.value).toBe("første"));
+      expect(router.state.location.search.q).toBe("første");
     });
 
     it("writes the settled query to the URL without adding history entries", async () => {
