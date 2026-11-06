@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.sjekkMarkupVersjon
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.RedigerbareVedleggService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
@@ -26,7 +24,6 @@ class LagreAttestertVedleggHandler(
 
     suspend operator fun invoke(request: Request): Outcome<VersjonertVedlegg, BrevredigeringError>? =
         brevtilgang.forAttestering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
-            brev.sjekkMarkupVersjon(request.redigertVedlegg.markupVersjon)?.let { return@forAttestering failure(it) }
             redigerbareVedleggService.lagre(brev, request.vedleggId, request.redigertVedlegg, mergeMotMal = false)
         }
 }

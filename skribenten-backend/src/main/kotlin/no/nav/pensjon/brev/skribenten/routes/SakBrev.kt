@@ -17,10 +17,8 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.*
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -82,7 +80,6 @@ fun Route.sakBrev() =
                         brevId = brevId,
                         saksId = sak.saksId,
                         reserverForRedigering = reserver,
-                        markupVersjon = MarkupVersjon.V1,
                     )
                 )
 
@@ -124,12 +121,11 @@ fun Route.sakBrev() =
                             brevId = brevId,
                             saksId = sak.saksId,
                             alltidValgbareVedlegg = request.alltidValgbareVedlegg,
-                            markupVersjon = MarkupVersjon.V1,
                         )
                     )
                     apiRespond(dto2ApiService, brev)
                 } else {
-                    val brev = hentBrev(HentBrevHandler.Request(brevId = brevId, saksId = sak.saksId, reserverForRedigering = false, markupVersjon = MarkupVersjon.V1))
+                    val brev = hentBrev(HentBrevHandler.Request(brevId = brevId, saksId = sak.saksId, reserverForRedigering = false))
                     apiRespond(dto2ApiService, brev)
                 }
             }
@@ -161,7 +157,6 @@ fun Route.sakBrev() =
                         brevId = brevId,
                         saksId = sak.saksId,
                         alltidValgbareVedlegg = request.valgteVedlegg,
-                        markupVersjon = MarkupVersjon.V1,
                     )
                 )
 
@@ -188,10 +183,10 @@ fun Route.sakBrev() =
                         val sak: Fagsak = call.attributes[SakKey]
 
                         val result = hentRedigertVedlegg(
-                            HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId, markupVersjon = MarkupVersjon.V1)
+                            HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
                         )
 
-                        respondOutcome(dto2ApiService, result) { respond(it.somV1()) }
+                        respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                     }
 
                     val endreRedigertVedlegg: EndreRedigertVedleggHandler by app.dependencies
@@ -210,7 +205,7 @@ fun Route.sakBrev() =
                             )
                         )
 
-                        respondOutcome(dto2ApiService, result) { respond(it.somV1()) }
+                        respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                     }
 
                     val tilbakestillRedigertVedlegg: TilbakestillRedigertVedleggHandler by app.dependencies
@@ -220,10 +215,10 @@ fun Route.sakBrev() =
                         val sak: Fagsak = call.attributes[SakKey]
 
                         val result = tilbakestillRedigertVedlegg(
-                            TilbakestillRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId, markupVersjon = MarkupVersjon.V1)
+                            TilbakestillRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
                         )
 
-                        respondOutcome(dto2ApiService, result) { respond(it.somV1()) }
+                        respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                     }
                 }
             }
@@ -319,7 +314,6 @@ fun Route.sakBrev() =
                             brevId = brevId,
                             saksId = sak.saksId,
                             reserverForRedigering = reserver,
-                            markupVersjon = MarkupVersjon.V1,
                         )
                     )
 
@@ -395,10 +389,10 @@ fun Route.sakBrev() =
                             val sak: Fagsak = call.attributes[SakKey]
 
                             val result = hentRedigertVedleggAttestering(
-                                HentRedigertVedleggAttesteringHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId, markupVersjon = MarkupVersjon.V1)
+                                HentRedigertVedleggAttesteringHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
                             )
 
-                            respondOutcome(dto2ApiService, result) { respond(it.somV1()) }
+                            respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                         }
 
                         val lagreAttestertVedlegg: LagreAttestertVedleggHandler by app.dependencies
@@ -416,7 +410,7 @@ fun Route.sakBrev() =
                                 )
                             )
 
-                            respondOutcome(dto2ApiService, result) { respond(it.somV1()) }
+                            respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                         }
                     }
                 }

@@ -122,9 +122,6 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                 is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
 
-                is FeilMarkupVersjon ->
-                    call.respond(HttpStatusCode.Conflict, "Brevet har markup-versjon ${outcome.error.forventet.versjon}, men forespørselen brukte versjon ${outcome.error.faktisk.versjon}")
-
                 is BrevmalFinnesIkke ->
                     call.respond(HttpStatusCode.BadRequest, "Brevmal finnes ikke: ${outcome.error.brevkode.kode()}")
 

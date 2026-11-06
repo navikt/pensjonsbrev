@@ -4,11 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.sjekkMarkupVersjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
@@ -58,9 +55,8 @@ class DiffBrevHandler(
         val split: Boolean = false,
     )
 
-    suspend operator fun invoke(request: Request): Outcome<Resultat, FeilMarkupVersjon>? =
+    suspend operator fun invoke(request: Request): Outcome<Resultat, Nothing>? =
         brevtilgang.forLesing(request.brevId, request.saksId) {
-            brev.sjekkMarkupVersjon(request.redigertBrev.markupVersjon)?.let { return@forLesing failure(it) }
             val rendretBrev = brev.rendretBrev ?: renderGjeldendeMal(brev)
 
             when (val redigertBrev = request.redigertBrev) {

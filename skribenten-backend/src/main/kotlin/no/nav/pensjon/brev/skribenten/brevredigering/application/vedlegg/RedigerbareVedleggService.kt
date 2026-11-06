@@ -9,8 +9,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretVedleggMarkup
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.merge
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.tittel
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 
 class RedigerbareVedleggService(

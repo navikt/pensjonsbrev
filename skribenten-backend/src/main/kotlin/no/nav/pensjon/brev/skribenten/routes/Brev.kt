@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBre
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
@@ -75,7 +74,7 @@ fun Route.brev() {
         post("/tilbakestill") {
             val brevId = call.parameters.brevId()
             val sak: Fagsak = call.attributes[SakKey]
-            val resultat = tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId, saksId = sak.saksId, markupVersjon = MarkupVersjon.V1))
+            val resultat = tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId, saksId = sak.saksId))
             apiRespond(dto2ApiService, resultat)
         }
 
@@ -86,7 +85,7 @@ fun Route.brev() {
             val sak: Fagsak = call.attributes[SakKey]
 
             val result = diffBrev(DiffBrevHandler.Request(brevId, sak.saksId, VersjonertBrev.V1(request), split))
-            respondOutcome(dto2ApiService, result) { respond(HttpStatusCode.OK, (it as DiffBrevHandler.Resultat.V1).response) }
+            respondSuccess(result?.asSuccess()) { respond(HttpStatusCode.OK, (it as DiffBrevHandler.Resultat.V1).response) }
         }
     }
 }

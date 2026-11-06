@@ -3,10 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.sjekkMarkupVersjon
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
@@ -30,12 +27,10 @@ class OppdaterBrevHandler(
         val nyeSaksbehandlerValg: SaksbehandlervalgMap? = null,
         val nyttRedigertbrev: VersjonertBrev? = null,
         val frigiReservasjon: Boolean = false,
-        val markupVersjon: MarkupVersjon? = null,
     )
 
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
-            brev.sjekkMarkupVersjon(request.markupVersjon ?: request.nyttRedigertbrev?.markupVersjon)?.let { return@forRedigering failure(it) }
             fase(Fase.VERDIER) {
                 if (request.nyeSaksbehandlerValg != null) {
                     brev.saksbehandlerValg = request.nyeSaksbehandlerValg

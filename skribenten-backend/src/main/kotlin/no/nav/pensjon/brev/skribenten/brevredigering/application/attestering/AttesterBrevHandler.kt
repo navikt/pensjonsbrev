@@ -5,8 +5,6 @@ import no.nav.pensjon.brev.skribenten.auth.hentSignatur
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.attesterendeSaksbehandlerNavn
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.sjekkMarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
@@ -36,7 +34,6 @@ class AttesterBrevHandler(
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevtilgang.forAttestering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
             val principal = PrincipalInContext.require()
-            brev.sjekkMarkupVersjon(request.nyttRedigertbrev?.markupVersjon)?.let { return@forAttestering failure(it) }
 
             if (request.nyttRedigertbrev != null) {
                 brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)

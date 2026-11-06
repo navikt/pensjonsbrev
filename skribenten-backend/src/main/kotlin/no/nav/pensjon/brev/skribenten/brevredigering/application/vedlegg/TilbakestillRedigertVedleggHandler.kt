@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.sjekkMarkupVersjon
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -20,12 +17,10 @@ class TilbakestillRedigertVedleggHandler(
         val brevId: BrevId,
         val saksId: SaksId,
         val vedleggId: VedleggId,
-        val markupVersjon: MarkupVersjon? = null,
     )
 
     suspend operator fun invoke(request: Request): Outcome<VersjonertVedlegg, BrevredigeringError>? =
         brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = false) {
-            brev.sjekkMarkupVersjon(request.markupVersjon)?.let { return@forRedigering failure(it) }
             redigerbareVedleggService.tilbakestill(brev, request.vedleggId)
         }
 }

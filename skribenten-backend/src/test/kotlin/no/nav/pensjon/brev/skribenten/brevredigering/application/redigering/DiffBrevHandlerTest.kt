@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.somV1
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -18,7 +18,7 @@ class DiffBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `diff bruker rendret brev fra siste merge og ikke gjeldende mal`() {
         val brev = opprettBrev().resultOrFail()
         val rendretVedOpprettelse = letter.toEdit()
-        assertThat(brev.redigertBrev.somV1()).isEqualTo(rendretVedOpprettelse)
+        assertThat(brev.redigertBrev.asV1()).isEqualTo(rendretVedOpprettelse)
 
         brevbakerService.renderMarkupResultat = {
             letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "ny tekst i malen")))).medSignatur(
