@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import {
+  type Conditional,
   type Content,
   type ContentOrControlStructure,
   ContentOrControlStructureType,
@@ -561,6 +562,19 @@ describe("Document full-query coverage", () => {
     };
   }
 
+  function conditional(
+    showIf: ContentOrControlStructure<Text>[],
+    showElse: ContentOrControlStructure<Text>[] = [],
+  ): Conditional<Text> {
+    return {
+      controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+      predicate: fieldPath("harBarn"),
+      showIf,
+      elseIf: [],
+      showElse,
+    };
+  }
+
   function row(...cells: (string | ContentOrControlStructure<Text>[])[]): Content<Row> {
     return {
       controlStructureType: ContentOrControlStructureType.CONTENT,
@@ -581,7 +595,7 @@ describe("Document full-query coverage", () => {
     };
   }
 
-  const variable: ContentOrControlStructure<ParagraphContent> = {
+  const variable: ContentOrControlStructure<Text> = {
     controlStructureType: ContentOrControlStructureType.CONTENT,
     content: { elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION, expression: fieldPath("antall") },
   };
@@ -616,6 +630,126 @@ describe("Document full-query coverage", () => {
       </SearchHighlightProvider>,
     );
   }
+
+  it.each([false, true])("highlights an exact phrase across an inline conditional (table cell: %s)", (inTable) => {
+    const items = [literal("Du får "), conditional([literal("barnetillegg")], [literal("Annet")])];
+    const html = renderParagraph(inTable ? [table([row(items)])] : items, true, "får barnetillegg");
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(["får", "barnetillegg"]);
+  });
+
+  it("highlights a word across surrounding literals and compatible nested branches", () => {
+    const html = renderParagraph(
+      [
+        literal("Du får barne"),
+        conditional([literal("til"), conditional([literal("legg")], [literal("pensjon")])], [literal("penger")]),
+        literal("."),
+      ],
+      true,
+      "barnetillegg.",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual([
+      "barne",
+      "til",
+      "legg",
+      ".",
+    ]);
+  });
+
+  it("merges overlapping ranges from compatible alternatives in a shared literal", () => {
+    const html = renderParagraph([conditional([literal("ab")], [literal("a")]), literal("aba")], true, "aba");
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(["ab", "aba"]);
+  });
+
+  it("combines compatible sibling conditionals, including an else-if branch", () => {
+    const first = conditional([literal("trygd")], [literal("penger")]);
+    first.elseIf = [{ predicate: fieldPath("harBarnetillegg"), showIf: [literal("til")] }];
+    const html = renderParagraph(
+      [literal("Du får barne"), first, conditional([literal("legg")], [literal("skatt")]), literal(".")],
+      true,
+      "barnetillegg.",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual([
+      "barne",
+      "til",
+      "legg",
+      ".",
+    ]);
+  });
+
+  it("allows an empty branch between the surrounding literals of an exact phrase", () => {
+    const html = renderParagraph(
+      [literal("Du får "), conditional([literal("ikke ")]), literal("barnetillegg.")],
+      true,
+      "får barnetillegg",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(["får", "barnetillegg"]);
+  });
+
+  it("prefers full coverage through an inline branch over an earlier partial-match paragraph", () => {
+    const html = renderParagraph(
+      [conditional([literal("får")], [literal("Du får "), conditional([literal("barnetillegg")], [literal("Annet")])])],
+      false,
+      "får barnetillegg",
+    );
+
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["får", false],
+      ["får", true],
+      ["barnetillegg", true],
+    ]);
+  });
+
+  it.each([false, true])("does not combine mutually exclusive inline branches (exact: %s)", (exact) => {
+    const html = renderParagraph(
+      [literal("Du får "), conditional([literal("barnetillegg ")], [literal("uføretrygd")])],
+      exact,
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(
+      exact ? [] : ["barnetillegg", "uføretrygd"],
+    );
+    expect(html).not.toContain("data-search-full-match");
+  });
+
+  it.each([false, true])("keeps a variable inside an inline branch unmarked (exact: %s)", (exact) => {
+    const html = renderParagraph(
+      [literal("Du får "), conditional([variable, literal(" barnetillegg")])],
+      exact,
+      "får barnetillegg",
+    );
+
+    const marks = [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)];
+    expect(marks.map(([, , text]) => text)).toEqual(exact ? [] : ["får", "barnetillegg"]);
+    expect(marks.every(([, attributes]) => attributes.includes("data-search-full-match"))).toBe(true);
+    expect(text(html)).toContain("antall");
+  });
+
+  it("combines a term spanning an inline conditional with another table cell", () => {
+    const html = renderParagraph([
+      table([row([literal("barne"), conditional([literal("tillegg")], [literal("X")])], "uføretrygd")]),
+    ]);
+
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["barne", true],
+      ["tillegg", true],
+      ["uføretrygd", true],
+    ]);
+  });
 
   it("prefers full term coverage across a variable over an earlier partial-match branch", () => {
     const html = renderParagraph([

@@ -27,7 +27,7 @@ import {
   type TextLiteral,
 } from "~/api/templateDocumentationTypes";
 import { trimClassName } from "~/components/DataClasses";
-import { type HighlightParts, highlightParts } from "~/search/components/highlight";
+import { type HighlightParts, highlightParts, mergeRanges } from "~/search/components/highlight";
 import {
   HighlightedLiteral,
   SearchBlock,
@@ -46,7 +46,7 @@ import {
  * frittstående i enhetstester); da faller vi tilbake på `isPrimitiveTypeByName`.
  */
 const KnownDataClassesContext = createContext<Set<string> | undefined>(undefined);
-const RowHighlightPartsContext = createContext<ReadonlyMap<TextLiteral, HighlightParts> | undefined>(undefined);
+const LiteralHighlightPartsContext = createContext<ReadonlyMap<TextLiteral, HighlightParts> | undefined>(undefined);
 
 export function KnownDataClassesProvider({
   templateModelSpecification,
@@ -88,13 +88,13 @@ function TableRowCells({ row, gridRow, header = false }: { row: Row; gridRow: nu
   const parts = highlight && !highlight.exact ? rowHighlightParts(row, highlight) : undefined;
   const Cell = header ? "b" : "span";
   return (
-    <RowHighlightPartsContext.Provider value={parts}>
+    <LiteralHighlightPartsContext.Provider value={parts}>
       {row.cells.map((cell, index) => (
         <Cell className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
           <CocsList items={cell.text} />
         </Cell>
       ))}
-    </RowHighlightPartsContext.Provider>
+    </LiteralHighlightPartsContext.Provider>
   );
 }
 
@@ -430,54 +430,104 @@ function markFullQuery(parts: HighlightParts[], needle: string): void {
   }
 }
 
-function literalPartsOf<E extends Element>(
+function isSearchableText<E extends Element>(item: ContentOrControlStructure<E>): boolean {
+  switch (item.controlStructureType) {
+    case ContentOrControlStructureType.CONDITIONAL:
+      return [item.showIf, ...item.elseIf.map((branch) => branch.showIf), item.showElse].every((branch) =>
+        branch.every(isSearchableText),
+      );
+    case ContentOrControlStructureType.FOR_EACH:
+      return item.body.every(isSearchableText);
+    case ContentOrControlStructureType.CONTENT:
+      return (
+        item.content.elementType === ElementType.PARAGRAPH_TEXT_LITERAL ||
+        item.content.elementType === ElementType.PARAGRAPH_TEXT_EXPRESSION
+      );
+  }
+}
+
+/** Undefined separates literal runs at variables without ending the searchable line. */
+function literalPathsOf<E extends Element>(items: ContentOrControlStructure<E>[]): (TextLiteral | undefined)[][] {
+  let paths: (TextLiteral | undefined)[][] = [[]];
+  for (const item of items) {
+    if (item.controlStructureType === ContentOrControlStructureType.CONTENT) {
+      for (const path of paths) {
+        path.push(literalOf(item));
+      }
+    } else {
+      const branches =
+        item.controlStructureType === ContentOrControlStructureType.FOR_EACH
+          ? [item.body]
+          : [item.showIf, ...item.elseIf.map((branch) => branch.showIf), item.showElse];
+      const alternatives = branches.flatMap(literalPathsOf);
+      paths = paths.flatMap((path) => alternatives.map((alternative) => [...path, ...alternative]));
+    }
+  }
+  return paths;
+}
+
+function literalAlternativesOf<E extends Element>(
   items: ContentOrControlStructure<E>[],
-  highlight: SearchHighlight | undefined,
-): Map<number, HighlightParts> {
-  const literalParts = new Map<number, HighlightParts>();
-  if (highlight) {
-    const lineParts: HighlightParts[] = [];
-    const finishLine = () => {
+  highlight: SearchHighlight,
+): Map<TextLiteral, HighlightParts>[] {
+  const alternatives: Map<TextLiteral, HighlightParts>[] = [];
+  let line: ContentOrControlStructure<E>[] = [];
+  const finishLine = () => {
+    if (line.length === 0) {
+      return;
+    }
+    for (const path of literalPathsOf(line)) {
+      const parts = new Map<TextLiteral, HighlightParts>();
+      let literals: TextLiteral[] = [];
+      const finishRun = () => {
+        highlightParts(
+          literals.map(({ text }) => text),
+          highlight.needle,
+          highlight.exact,
+          "",
+        ).forEach((part, index) => {
+          parts.set(literals[index], part);
+        });
+        literals = [];
+      };
+      for (const literal of path) {
+        if (literal) {
+          literals.push(literal);
+        } else {
+          finishRun();
+        }
+      }
+      finishRun();
       if (!highlight.exact) {
-        markFullQuery(lineParts, highlight.needle);
+        markFullQuery([...parts.values()], highlight.needle);
       }
-      lineParts.length = 0;
-    };
-    let start = 0;
-    while (start < items.length) {
-      if (literalOf(items[start]) === undefined) {
-        const item = items[start];
-        if (
-          item?.controlStructureType !== ContentOrControlStructureType.CONTENT ||
-          item.content.elementType !== ElementType.PARAGRAPH_TEXT_EXPRESSION
-        ) {
-          finishLine();
-        }
-        start++;
-        continue;
-      }
-      const indexes: number[] = [];
-      const texts: string[] = [];
-      while (start < items.length) {
-        const literal = literalOf(items[start]);
-        if (literal === undefined) {
-          break;
-        }
-        indexes.push(start);
-        texts.push(literal.text);
-        start++;
-      }
-      highlightParts(texts, highlight.needle, highlight.exact, "").forEach((parts, index) => {
-        const itemIndex = indexes[index];
-        if (itemIndex !== undefined) {
-          literalParts.set(itemIndex, parts);
-          lineParts.push(parts);
-        }
+      alternatives.push(parts);
+    }
+    line = [];
+  };
+  for (const item of items) {
+    if (isSearchableText(item)) {
+      line.push(item);
+    } else {
+      finishLine();
+    }
+  }
+  finishLine();
+  return alternatives.length > 0 ? alternatives : [new Map()];
+}
+
+function mergeLiteralParts(alternatives: ReadonlyMap<TextLiteral, HighlightParts>[]): Map<TextLiteral, HighlightParts> {
+  const merged = new Map<TextLiteral, HighlightParts>();
+  for (const alternative of alternatives) {
+    for (const [literal, parts] of alternative) {
+      const previous = merged.get(literal);
+      merged.set(literal, {
+        ranges: mergeRanges([...(previous?.ranges ?? []), ...parts.ranges].map((range) => ({ ...range }))),
+        fullMatch: !!previous?.fullMatch || parts.fullMatch,
       });
     }
-    finishLine();
   }
-  return literalParts;
+  return merged;
 }
 
 function literalOf<E extends Element>(item: ContentOrControlStructure<E> | undefined): TextLiteral | undefined {
@@ -507,33 +557,18 @@ function combineCoverage(left: HighlightParts[][], right: HighlightParts[][]): H
 }
 
 function rowHighlightParts(row: Row, highlight: SearchHighlight): ReadonlyMap<TextLiteral, HighlightParts> {
-  const byLiteral = new Map<TextLiteral, HighlightParts>();
-  const alternativesOf = (items: ContentOrControlStructure<Text>[]): HighlightParts[][] => {
-    const literalParts = literalPartsOf(items, highlight);
-    let alternatives: HighlightParts[][] = [[]];
-    items.forEach((item, index) => {
-      const literal = literalOf(item);
-      const parts = literalParts.get(index);
-      if (literal && parts) {
-        byLiteral.set(literal, parts);
-        alternatives = alternatives.map((alternative) => [...alternative, parts]);
-      } else if (item.controlStructureType === ContentOrControlStructureType.CONDITIONAL) {
-        const branches = [item.showIf, ...item.elseIf.map((branch) => branch.showIf), item.showElse];
-        alternatives = combineCoverage(alternatives, branches.flatMap(alternativesOf));
-      } else if (item.controlStructureType === ContentOrControlStructureType.FOR_EACH) {
-        alternatives = combineCoverage(alternatives, alternativesOf(item.body));
-      }
-    });
-    return alternatives;
-  };
+  const cells = row.cells.map((cell) => literalAlternativesOf(cell.text, highlight));
   let alternatives: HighlightParts[][] = [[]];
-  for (const cell of row.cells) {
-    alternatives = combineCoverage(alternatives, alternativesOf(cell.text));
+  for (const cell of cells) {
+    alternatives = combineCoverage(
+      alternatives,
+      cell.map((parts) => [...parts.values()]),
+    );
   }
   for (const parts of alternatives) {
     markFullQuery(parts, highlight.needle);
   }
-  return byLiteral;
+  return mergeLiteralParts(cells.flat());
 }
 
 /**
@@ -549,19 +584,26 @@ function CocsList<E extends Element>({
   inline?: boolean;
 }) {
   const highlight = useSearchHighlight();
-  const rowParts = useContext(RowHighlightPartsContext);
-  const literalParts = literalPartsOf(items, highlight);
-  return items.map((cocs, index) => {
-    const literal = literalOf(cocs);
-    return (
-      <ContentOrControlStructureComponent
-        cocs={cocs}
-        inline={inline}
-        key={index}
-        literalParts={(literal && rowParts?.get(literal)) ?? literalParts.get(index)}
-      />
-    );
-  });
+  const inheritedParts = useContext(LiteralHighlightPartsContext);
+  const literalParts = new Map([
+    ...mergeLiteralParts(highlight ? literalAlternativesOf(items, highlight) : []),
+    ...(inheritedParts ?? []),
+  ]);
+  return (
+    <LiteralHighlightPartsContext.Provider value={literalParts}>
+      {items.map((cocs, index) => {
+        const literal = literalOf(cocs);
+        return (
+          <ContentOrControlStructureComponent
+            cocs={cocs}
+            inline={inline}
+            key={index}
+            literalParts={literal ? literalParts.get(literal) : undefined}
+          />
+        );
+      })}
+    </LiteralHighlightPartsContext.Provider>
+  );
 }
 
 function ContentOrControlStructureComponent<E extends Element>({

@@ -64,7 +64,7 @@ function termRanges(text: string, needle: string): HighlightRange[] {
 }
 
 /** Merges overlapping/adjacent ranges into a minimal non-overlapping set. */
-function mergeRanges(ranges: HighlightRange[]): HighlightRange[] {
+export function mergeRanges(ranges: HighlightRange[]): HighlightRange[] {
   if (ranges.length === 0) {
     return ranges;
   }
