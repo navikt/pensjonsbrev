@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 

@@ -10,8 +10,8 @@ import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretBrev
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretMarkup
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretVedleggMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedleggMarkup
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
@@ -59,7 +59,7 @@ class BrevmalService(
         pesysData: BrevdataResponse.Data
     ): RendretBrev = when (markupVersjon) {
         MarkupVersjon.V1 -> renderMarkup(brevkode, spraak, saksbehandlerValg, pesysData)
-            .let { RendretBrev(RendretMarkup.V1(it.markup), it.letterDataUsage) }
+            .let { RendretBrev(VersjonertMarkup.V1(it.markup), it.letterDataUsage) }
 
     }
 
@@ -84,7 +84,7 @@ class BrevmalService(
     suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
         brevbakerService.harRedigerbareVedlegg(brevkode)
 
-    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: VedleggId): RendretVedleggMarkup? =
+    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: VedleggId): VersjonertVedleggMarkup? =
         when (brev.markupVersjon) {
             MarkupVersjon.V1 -> brevbakerService.renderRedigerbartVedlegg(
                 brevkode = brev.brevkode,
@@ -93,11 +93,11 @@ class BrevmalService(
                 saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
                 felles = pesysData.felles,
                 vedleggId = vedleggId,
-            )?.let { RendretVedleggMarkup.V1(it) }
+            )?.let { VersjonertVedleggMarkup.V1(it) }
 
         }
 
-    suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, RendretVedleggMarkup> =
+    suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, VersjonertVedleggMarkup> =
         brev.redigerteVedlegg.mapNotNull { lagret ->
             renderRedigerbartVedlegg(brev, pesysData, lagret.vedleggId)?.let { lagret.vedleggId to it }
         }.toMap()

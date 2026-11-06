@@ -29,9 +29,9 @@ sealed interface VersjonertBrev {
     val attesterendeSaksbehandlerNavn: String?
     val tittel: String
 
-    fun innholdEndresAv(rendret: RendretMarkup): Boolean
-    fun merge(rendret: RendretMarkup): VersjonertBrev
-    fun oppdaterSakspartOgSignatur(rendret: RendretMarkup): VersjonertBrev
+    fun innholdEndresAv(rendret: VersjonertMarkup): Boolean
+    fun merge(rendret: VersjonertMarkup): VersjonertBrev
+    fun oppdaterSakspartOgSignatur(rendret: VersjonertMarkup): VersjonertBrev
     fun withSignaturAttestant(attesterendeSaksbehandlerNavn: String?): VersjonertBrev
     fun withAnnenMottakerNavn(annenMottakerNavn: String?): VersjonertBrev
 
@@ -41,39 +41,39 @@ sealed interface VersjonertBrev {
         override val attesterendeSaksbehandlerNavn get() = brev.signatur.attesterendeSaksbehandlerNavn
         override val tittel get() = brev.title.text.joinToString(" ") { it.text }.trim()
 
-        override fun innholdEndresAv(rendret: RendretMarkup) =
+        override fun innholdEndresAv(rendret: VersjonertMarkup) =
             brev.updateEditedLetter(rendret.asV1()).blocks != brev.blocks
 
-        override fun merge(rendret: RendretMarkup) = V1(brev.updateEditedLetter(rendret.asV1()))
+        override fun merge(rendret: VersjonertMarkup) = V1(brev.updateEditedLetter(rendret.asV1()))
 
-        override fun oppdaterSakspartOgSignatur(rendret: RendretMarkup) = V1(brev.updateSakspartOgSignatur(rendret.asV1()))
+        override fun oppdaterSakspartOgSignatur(rendret: VersjonertMarkup) = V1(brev.updateSakspartOgSignatur(rendret.asV1()))
 
         override fun withSignaturAttestant(attesterendeSaksbehandlerNavn: String?) =
             V1(brev.withSignaturAttestant(attesterendeSaksbehandlerNavn))
 
         override fun withAnnenMottakerNavn(annenMottakerNavn: String?) = V1(brev.withSakspart(annenMottakerNavn = annenMottakerNavn))
 
-        private fun RendretMarkup.asV1(): LetterMarkup =
-            (this as? RendretMarkup.V1)?.markup ?: throw FeilMarkupVersjonException(this@V1.markupVersjon, markupVersjon)
+        private fun VersjonertMarkup.asV1(): LetterMarkup =
+            (this as? VersjonertMarkup.V1)?.markup ?: throw FeilMarkupVersjonException(this@V1.markupVersjon, markupVersjon)
     }
 }
 
 class FeilMarkupVersjonException(forventet: MarkupVersjon, faktisk: MarkupVersjon) :
     IllegalStateException("Forventet markup-versjon $forventet, men fikk $faktisk")
 
-sealed interface RendretMarkup {
+sealed interface VersjonertMarkup {
     val markupVersjon: MarkupVersjon
 
     fun toEdit(): VersjonertBrev
 
-    data class V1(val markup: LetterMarkup) : RendretMarkup {
+    data class V1(val markup: LetterMarkup) : VersjonertMarkup {
         override val markupVersjon get() = MarkupVersjon.V1
         override fun toEdit() = VersjonertBrev.V1(markup.toEdit())
     }
 }
 
 data class RendretBrev(
-    val markup: RendretMarkup,
+    val markup: VersjonertMarkup,
     val letterDataUsage: Set<LetterMarkupWithDataUsage.Property>,
 )
 

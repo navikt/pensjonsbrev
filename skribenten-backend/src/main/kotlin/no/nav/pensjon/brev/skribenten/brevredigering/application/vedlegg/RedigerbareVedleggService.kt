@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretVedleggMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedleggMarkup
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 
@@ -71,7 +71,7 @@ class RedigerbareVedleggService(
         return success(malVedlegg.toEdit())
     }
 
-    private suspend fun renderMal(brev: BrevredigeringEntity, vedleggId: VedleggId): RendretVedleggMarkup? =
+    private suspend fun renderMal(brev: BrevredigeringEntity, vedleggId: VedleggId): VersjonertVedleggMarkup? =
         brevmalService.renderRedigerbartVedlegg(brev, brevdataService.hentBrevdata(brev), vedleggId)
 }
 

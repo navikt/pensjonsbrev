@@ -74,10 +74,10 @@ interface Brevredigering {
     fun markerSomKladd()
     fun markerSomArkivert(journalpostId: JournalpostId)
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
-    fun mergeRendretBrev(rendretBrev: RendretMarkup)
-    fun settRendretBrev(rendretBrev: RendretMarkup)
-    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, RendretVedleggMarkup>)
-    fun oppdaterSakspartOgSignatur(rendretBrev: RendretMarkup)
+    fun mergeRendretBrev(rendretBrev: VersjonertMarkup)
+    fun settRendretBrev(rendretBrev: VersjonertMarkup)
+    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>)
+    fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
@@ -264,24 +264,24 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         // TODO: Vurder om vi skal oppdatere sistRedigert/sistRedigertAv her?
     }
 
-    override fun mergeRendretBrev(rendretBrev: RendretMarkup) {
+    override fun mergeRendretBrev(rendretBrev: VersjonertMarkup) {
         redigertBrev = redigertBrev.merge(rendretBrev)
         settRendretBrev(rendretBrev)
     }
 
-    override fun settRendretBrev(rendretBrev: RendretMarkup) {
+    override fun settRendretBrev(rendretBrev: VersjonertMarkup) {
         sjekkMarkupVersjon(rendretBrev.markupVersjon)
         this.rendretBrev = rendretBrev.toEdit()
     }
 
-    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, RendretVedleggMarkup>) {
+    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>) {
         rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
             hentRedigertVedlegg(vedleggId)
                 ?.let { settRedigertVedlegg(vedleggId, it.merge(rendretVedlegg)) }
         }
     }
 
-    override fun oppdaterSakspartOgSignatur(rendretBrev: RendretMarkup) {
+    override fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup) {
         redigertBrev = redigertBrev.oppdaterSakspartOgSignatur(rendretBrev)
     }
 
