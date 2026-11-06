@@ -263,7 +263,7 @@ function RedigerBrev({
     navigateToDocument,
   });
 
-  const { editorState, redigertBrev, setEditorState, savingValg, resetting, registerSaveErrorReset } =
+  const { editorState, redigertBrev, setEditorState, awaitingValgMerge, resetting, registerSaveErrorReset } =
     useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
@@ -399,7 +399,8 @@ function RedigerBrev({
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
 
-  const freeze = finalizing || oppdaterBrevMutation.isPending || savingValg;
+  const saving = finalizing || oppdaterBrevMutation.isPending;
+  const freeze = saving || awaitingValgMerge;
   const error = oppdaterBrevMutation.isError;
   const hasUnsavedValg = form.formState.isDirty;
 
@@ -439,7 +440,7 @@ function RedigerBrev({
                     >
                       Tilbake til brevvelger
                     </Button>
-                    <Button loading={freeze || documentCoordinator.savingPendingDocuments} size="small" type="submit">
+                    <Button loading={saving || documentCoordinator.savingPendingDocuments} size="small" type="submit">
                       <HStack align="center" gap="space-8">
                         <Label size="small">Fortsett</Label>
                       </HStack>
@@ -473,7 +474,7 @@ function RedigerBrev({
                 right={
                   <BrevOgVedleggEditor
                     brev={brev}
-                    freeze={oppdaterBrevMutation.isPending || savingValg}
+                    freeze={oppdaterBrevMutation.isPending || awaitingValgMerge}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
                         <ManagedLetterEditor canReset error={error} freeze={freeze} showDebug={showDebug} />
