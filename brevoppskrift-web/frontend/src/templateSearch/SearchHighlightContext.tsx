@@ -1,6 +1,6 @@
 import { createContext, type ReactNode, useContext } from "react";
 
-import { HighlightText } from "~/search/components/highlight";
+import { type HighlightParts, HighlightText } from "~/search/components/highlight";
 
 /**
  * Search highlighting inside a rendered template.
@@ -10,8 +10,8 @@ import { HighlightText } from "~/search/components/highlight";
  * Without a `SearchHighlightProvider` above it (e.g. in the Word export), both
  * are no-ops and the view renders exactly as without search.
  *
- * Text is marked per literal segment, so an exact phrase that spans a variable
- * or a segment boundary marks its block, but not the words.
+ * Adjacent literal segments are matched together, while variables remain
+ * unhighlighted.
  */
 export type SearchHighlight = {
   needle: string;
@@ -36,6 +36,10 @@ export function SearchHighlightProvider({
   children: ReactNode;
 }) {
   return <SearchHighlightContext.Provider value={highlight}>{children}</SearchHighlightContext.Provider>;
+}
+
+export function useSearchHighlight(): SearchHighlight | undefined {
+  return useContext(SearchHighlightContext);
 }
 
 export type SearchHitState = "match" | "active";
@@ -71,11 +75,20 @@ export function hitBlockOf(target: EventTarget | null): number | undefined {
 }
 
 /** Literal template text, with the search needle marked if its block is a hit. */
-export function HighlightedLiteral({ text }: { text: string }) {
+export function HighlightedLiteral({ text, parts }: { text: string; parts?: HighlightParts }) {
   const highlight = useContext(SearchHighlightContext);
   const block = useContext(BlockIndexContext);
   if (!highlight || block === undefined || !highlight.matchingBlocks.has(block)) {
     return <>{text}</>;
   }
-  return <HighlightText exact={highlight.exact} needle={highlight.needle} text={text} variant="document" />;
+  return (
+    <HighlightText
+      exact={highlight.exact}
+      fullMatch={parts?.fullMatch}
+      needle={highlight.needle}
+      ranges={parts?.ranges}
+      text={text}
+      variant="document"
+    />
+  );
 }

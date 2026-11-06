@@ -4,11 +4,13 @@ import { Fragment, type ReactNode } from "react";
 
 import { FUZZY_MATCH_OPTIONS, type Line, normalizeForExactMatch, SHORT_TERM_LENGTH } from "~/search/textSearch";
 
-type Range = [number, number];
+export type HighlightRange = { start: number; end: number; terms: number[] };
+
+export type HighlightParts = { ranges: HighlightRange[]; fullMatch: boolean };
 
 /** All start/end indices (end exclusive) of `term` in `text`, case-insensitive. */
-function exactRanges(text: string, term: string): Range[] {
-  const ranges: Range[] = [];
+function exactRanges(text: string, term: string): Array<[number, number]> {
+  const ranges: Array<[number, number]> = [];
   const lowerText = text.toLowerCase();
   const lowerTerm = term.toLowerCase();
   if (!lowerTerm) {
@@ -31,7 +33,7 @@ function exactRanges(text: string, term: string): Range[] {
  *  highlights here if it would also have counted as a match in search. Terms
  *  short enough to require a verbatim match in search (`SHORT_TERM_LENGTH`)
  *  are never fuzzy-highlighted, for the same reason. */
-function fuzzyRange(text: string, term: string): Range | undefined {
+function fuzzyRange(text: string, term: string): [number, number] | undefined {
   if (term.length <= SHORT_TERM_LENGTH) {
     return undefined;
   }
@@ -46,36 +48,119 @@ function fuzzyRange(text: string, term: string): Range | undefined {
 
 /** Per-term ranges: all exact occurrences of a term, or else its single best
  *  fuzzy location. Mirrors how fuzzy search matches each term on its own. */
-function termRanges(text: string, needle: string): Range[] {
+function termRanges(text: string, needle: string): HighlightRange[] {
   return needle
     .split(/\s+/)
-    .filter((term) => term.length > 0)
-    .flatMap((term) => {
+    .map((term, termIndex) => ({ term, termIndex }))
+    .filter(({ term }) => term.length > 0)
+    .flatMap(({ term, termIndex }) => {
       const exact = exactRanges(text, term);
       if (exact.length > 0) {
-        return exact;
+        return exact.map(([start, end]) => ({ start, end, terms: [termIndex] }));
       }
       const fuzzy = fuzzyRange(text, term);
-      return fuzzy ? [fuzzy] : [];
+      return fuzzy ? [{ start: fuzzy[0], end: fuzzy[1], terms: [termIndex] }] : [];
     });
 }
 
 /** Merges overlapping/adjacent ranges into a minimal non-overlapping set. */
-function mergeRanges(ranges: Range[]): Range[] {
+function mergeRanges(ranges: HighlightRange[]): HighlightRange[] {
   if (ranges.length === 0) {
     return ranges;
   }
-  const sorted = [...ranges].sort((a, b) => a[0] - b[0]);
-  const merged: Range[] = [sorted[0]];
-  for (const [start, end] of sorted.slice(1)) {
+  const sorted = [...ranges].sort((a, b) => a.start - b.start);
+  const merged: HighlightRange[] = [sorted[0]];
+  for (const { start, end, terms } of sorted.slice(1)) {
     const last = merged[merged.length - 1];
-    if (start <= last[1]) {
-      last[1] = Math.max(last[1], end);
+    if (start <= last.end) {
+      last.end = Math.max(last.end, end);
+      last.terms = [...new Set([...last.terms, ...terms])];
     } else {
-      merged.push([start, end]);
+      merged.push({ start, end, terms });
     }
   }
   return merged;
+}
+
+/** Searchable text across adjacent literal segments, with offsets mapped back
+ *  to their original segment and character. */
+function joinTextSegments(texts: string[]): { text: string; source: Array<{ segment: number; index: number }> } {
+  let text = "";
+  const source: Array<{ segment: number; index: number }> = [];
+  let pendingSpace = false;
+  texts.forEach((value, segment) => {
+    for (let index = 0; index < value.length; index++) {
+      const character = value[index];
+      if (/\s/.test(character)) {
+        pendingSpace = true;
+        continue;
+      }
+      if (pendingSpace && text.length > 0) {
+        text += " ";
+        source.push({ segment, index });
+      }
+      pendingSpace = false;
+      const lower = character.toLowerCase();
+      text += lower;
+      for (let i = 0; i < lower.length; i++) {
+        source.push({ segment, index });
+      }
+    }
+    pendingSpace = true;
+  });
+  return { text, source };
+}
+
+function mapJoinedRanges(
+  ranges: Array<{ start: number; end: number; terms: number[] }>,
+  source: Array<{ segment: number; index: number }>,
+  segmentCount: number,
+  fullMatch: boolean,
+): HighlightParts[] {
+  const bySegment: HighlightRange[][] = Array.from({ length: segmentCount }, () => []);
+  for (const { start, end, terms } of ranges) {
+    const positions = new Map<number, number[]>();
+    for (let offset = start; offset < end; offset++) {
+      const origin = source[offset];
+      if (origin) {
+        const indexes = positions.get(origin.segment) ?? [];
+        indexes.push(origin.index);
+        positions.set(origin.segment, indexes);
+      }
+    }
+    for (const [segment, indexes] of positions) {
+      bySegment[segment]?.push({
+        start: Math.min(...indexes),
+        end: Math.max(...indexes) + 1,
+        terms,
+      });
+    }
+  }
+  return bySegment.map((segmentRanges) => ({
+    ranges: mergeRanges(segmentRanges),
+    fullMatch,
+  }));
+}
+
+/** Computes ranges for a sequence of adjacent literals using the same phrase
+ *  and per-term matching rules as the search UI. */
+export function highlightParts(texts: string[], needle: string, exact = false): HighlightParts[] {
+  const joined = joinTextSegments(texts);
+  const terms = needle.split(/\s+/).filter((term) => term.length > 0);
+  const matches: HighlightRange[] = [];
+  if (exact) {
+    const phrase = normalizeForExactMatch(needle);
+    const indexes = terms.map((_, index) => index);
+    for (const [start, end] of exactRanges(joined.text, phrase)) {
+      matches.push({ start, end, terms: indexes.length > 0 ? indexes : [0] });
+    }
+  } else {
+    matches.push(...termRanges(joined.text, needle));
+  }
+  const fullMatch =
+    matches.length > 0 &&
+    (exact || terms.every((_, index) => matches.some(({ terms: matchedTerms }) => matchedTerms.includes(index))));
+  return mapJoinedRanges(matches, joined.source, texts.length, fullMatch);
 }
 
 function VariableChip({ label }: { label: string }) {
@@ -134,25 +219,31 @@ export function HighlightText({
   needle,
   exact,
   variant = "snippet",
+  ranges,
+  fullMatch,
 }: {
   text: string;
   needle: string;
   exact?: boolean;
   variant?: HighlightVariant;
+  ranges?: HighlightRange[];
+  fullMatch?: boolean;
 }) {
-  const ranges = mergeRanges(exact ? exactRanges(text, normalizeForExactMatch(needle)) : termRanges(text, needle));
-  if (ranges.length === 0) {
+  const parts = ranges
+    ? { ranges, fullMatch: fullMatch ?? false }
+    : (highlightParts([text], needle, exact)[0] ?? { ranges: [], fullMatch: false });
+  if (parts.ranges.length === 0) {
     return <>{text}</>;
   }
 
   const nodes: ReactNode[] = [];
   let cursor = 0;
-  ranges.forEach(([start, end], i) => {
+  parts.ranges.forEach(({ start, end }, i) => {
     if (start > cursor) {
       nodes.push(<Fragment key={`plain-${i}`}>{text.slice(cursor, start)}</Fragment>);
     }
     nodes.push(
-      <mark css={MARK_STYLES[variant]} key={`mark-${i}`}>
+      <mark css={MARK_STYLES[variant]} data-search-full-match={parts.fullMatch || undefined} key={`mark-${i}`}>
         {text.slice(start, end)}
       </mark>,
     );
@@ -168,6 +259,32 @@ export function HighlightText({
  *  highlighting. `exact` mirrors the search mode: the needle is highlighted as
  *  one continuous phrase rather than term by term. */
 export function LineContent({ line, needle, exact }: { line: Line; needle?: string; exact?: boolean }) {
+  const parts = new Map<number, HighlightParts>();
+  if (needle) {
+    let start = 0;
+    while (start < line.length) {
+      if (line[start]?.type === "var") {
+        start++;
+        continue;
+      }
+      const indexes: number[] = [];
+      while (start < line.length && line[start]?.type === "text") {
+        indexes.push(start);
+        start++;
+      }
+      const highlighted = highlightParts(
+        indexes.map((index) => (line[index]?.type === "text" ? line[index].value : "")),
+        needle,
+        exact,
+      );
+      indexes.forEach((index, i) => {
+        const segmentParts = highlighted[i];
+        if (segmentParts) {
+          parts.set(index, segmentParts);
+        }
+      });
+    }
+  }
   return (
     <>
       {line.map((segment, index) => {
@@ -175,7 +292,17 @@ export function LineContent({ line, needle, exact }: { line: Line; needle?: stri
           return <VariableChip key={index} label={segment.label} />;
         }
         if (needle) {
-          return <HighlightText exact={exact} key={index} needle={needle} text={segment.value} />;
+          const segmentParts = parts.get(index);
+          return (
+            <HighlightText
+              exact={exact}
+              fullMatch={segmentParts?.fullMatch}
+              key={index}
+              needle={needle}
+              ranges={segmentParts?.ranges}
+              text={segment.value}
+            />
+          );
         }
         return <Fragment key={index}>{segment.value}</Fragment>;
       })}

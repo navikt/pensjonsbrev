@@ -7,9 +7,9 @@ export type SkipScroll = { current: number | undefined };
 
 /* Scrolls block `index` into view inside `container`. A block can render as
  * several elements (one per branch of a conditional), so this scrolls to the
- * first branch containing a marked literal, or the first element if none has
- * one. Runs again when `trigger` or `scrollKey` changes, e.g. a new template,
- * language or search. A block in `skip` is not scrolled to.
+ * first branch matching the full query, then any marked branch, then the first
+ * element. Runs again when `trigger` or `scrollKey` changes, e.g. a new
+ * template, language or search. A block in `skip` is not scrolled to.
  */
 export function useScrollToBlock(
   container: RefObject<HTMLElement | null>,
@@ -30,7 +30,10 @@ export function useScrollToBlock(
     }
     const frame = requestAnimationFrame(() => {
       const blocks = root.querySelectorAll(`[data-block-index="${CSS.escape(String(index))}"]`);
-      const block = [...blocks].find((candidate) => candidate.querySelector("mark")) ?? blocks[0];
+      const block =
+        [...blocks].find((candidate) => candidate.querySelector("[data-search-full-match]")) ??
+        [...blocks].find((candidate) => candidate.querySelector("mark")) ??
+        blocks[0];
       block?.scrollIntoView?.({ behavior: "smooth", block: "center" });
     });
     return () => cancelAnimationFrame(frame);

@@ -36,7 +36,13 @@ import {
   type Text,
 } from "~/api/templateDocumentationTypes";
 import { trimClassName } from "~/components/DataClasses";
-import { HighlightedLiteral, SearchBlock, useSearchBlockAttributes } from "~/templateSearch/SearchHighlightContext";
+import { type HighlightParts, highlightParts } from "~/search/components/highlight";
+import {
+  HighlightedLiteral,
+  SearchBlock,
+  useSearchBlockAttributes,
+  useSearchHighlight,
+} from "~/templateSearch/SearchHighlightContext";
 
 /**
  * Navnene (normalisert med `trimClassName`) på data-klassene som faktisk finnes i malens
@@ -432,17 +438,59 @@ function CocsList<E extends Element>({
   items: ContentOrControlStructure<E>[];
   inline?: boolean;
 }) {
+  const highlight = useSearchHighlight();
+  const literalParts = new Map<number, HighlightParts>();
+  if (highlight) {
+    let start = 0;
+    while (start < items.length) {
+      if (literalTextOf(items[start]) === undefined) {
+        start++;
+        continue;
+      }
+      const indexes: number[] = [];
+      const texts: string[] = [];
+      while (start < items.length) {
+        const text = literalTextOf(items[start]);
+        if (text === undefined) {
+          break;
+        }
+        indexes.push(start);
+        texts.push(text);
+        start++;
+      }
+      highlightParts(texts, highlight.needle, highlight.exact).forEach((parts, index) => {
+        const itemIndex = indexes[index];
+        if (itemIndex !== undefined) {
+          literalParts.set(itemIndex, parts);
+        }
+      });
+    }
+  }
   return items.map((cocs, index) => (
-    <ContentOrControlStructureComponent cocs={cocs} inline={inline || items.length > 1} key={index} />
+    <ContentOrControlStructureComponent
+      cocs={cocs}
+      inline={inline || items.length > 1}
+      key={index}
+      literalParts={literalParts.get(index)}
+    />
   ));
+}
+
+function literalTextOf<E extends Element>(item: ContentOrControlStructure<E> | undefined): string | undefined {
+  return item?.controlStructureType === ContentOrControlStructureType.CONTENT &&
+    item.content.elementType === ElementType.PARAGRAPH_TEXT_LITERAL
+    ? item.content.text
+    : undefined;
 }
 
 function ContentOrControlStructureComponent<E extends Element>({
   cocs,
   inline = false,
+  literalParts,
 }: {
   cocs: ContentOrControlStructure<E>;
   inline?: boolean;
+  literalParts?: HighlightParts;
 }) {
   switch (cocs.controlStructureType) {
     case ContentOrControlStructureType.CONDITIONAL: {
@@ -452,7 +500,7 @@ function ContentOrControlStructureComponent<E extends Element>({
       return <ConditionalComponent conditional={cocs} />;
     }
     case ContentOrControlStructureType.CONTENT: {
-      return <ContentComponent content={cocs.content} />;
+      return <ContentComponent content={cocs.content} literalParts={literalParts} />;
     }
     case ContentOrControlStructureType.FOR_EACH: {
       return <ForEachComponent content={cocs} />;
@@ -473,7 +521,7 @@ function ForEachComponent({ content }: { content: ForEach<Element> }) {
   );
 }
 
-function ContentComponent({ content }: { content: Element }) {
+function ContentComponent({ content, literalParts }: { content: Element; literalParts?: HighlightParts }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
       return <TitleBlock index={content.index} level="2" size="medium" text={content.text} />;
@@ -487,7 +535,7 @@ function ContentComponent({ content }: { content: Element }) {
     case ElementType.PARAGRAPH_TEXT_LITERAL: {
       return (
         <span className="paragraph-text-literal">
-          <HighlightedLiteral text={content.text} />
+          <HighlightedLiteral parts={literalParts} text={content.text} />
         </span>
       );
     }

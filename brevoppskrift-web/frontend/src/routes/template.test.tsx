@@ -186,6 +186,58 @@ describe("search hit focus", () => {
       },
     ],
   } as unknown as TemplateDocumentation;
+  const multiTermConditionalPage = {
+    ...page,
+    outline: [
+      {
+        controlStructureType: "CONTENT",
+        content: {
+          elementType: "PARAGRAPH",
+          index: 20,
+          paragraph: [
+            {
+              controlStructureType: "CONDITIONAL",
+              showIf: [
+                {
+                  controlStructureType: "CONTENT",
+                  content: { elementType: "PARAGRAPH_TEXT_LITERAL", text: "Treff alene i denne grenen" },
+                },
+              ],
+              elseIf: [],
+              showElse: [
+                {
+                  controlStructureType: "CONTENT",
+                  content: { elementType: "PARAGRAPH_TEXT_LITERAL", text: "Treff og andre ord i denne grenen" },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  } as unknown as TemplateDocumentation;
+  const adjacentLiteralPage = {
+    ...page,
+    outline: [
+      {
+        controlStructureType: "CONTENT",
+        content: {
+          elementType: "PARAGRAPH",
+          index: 20,
+          paragraph: [
+            {
+              controlStructureType: "CONTENT",
+              content: { elementType: "PARAGRAPH_TEXT_LITERAL", text: "The grey " },
+            },
+            {
+              controlStructureType: "CONTENT",
+              content: { elementType: "PARAGRAPH_TEXT_LITERAL", text: "fox is here" },
+            },
+          ],
+        },
+      },
+    ],
+  } as unknown as TemplateDocumentation;
 
   function text(language: string): TemplateText {
     return { malType: "autobrev", id: "A", title: "A", language, lines: [[], [], []], indexes: [10, 20, 30] };
@@ -269,6 +321,44 @@ describe("search hit focus", () => {
     expect(blocks[0].querySelector("mark")).toBeNull();
     expect(blocks[1].querySelector("mark")).not.toBeNull();
     expect(scrolledText[0]).toContain("Treff i denne grenen");
+  });
+
+  it("prefers a conditional branch matching the full query over one matching only a term", async () => {
+    const fullQueryHits = {
+      ...loaded,
+      displayed: {
+        ...loaded.displayed,
+        highlight: { needle: "treff andre", exactOnly: false },
+      },
+    };
+    await openPage(
+      { tab: "innhold", q: "treff andre" },
+      { documentation: multiTermConditionalPage, hits: fullQueryHits },
+    );
+
+    await waitFor(() => expect(scrolledTo).toEqual(["20"]));
+    expect(scrolledText[0]).toContain("Treff og andre ord");
+    const blocks = document.querySelectorAll('[data-block-index="20"]');
+    expect(blocks[0].querySelector("[data-search-full-match]")).toBeNull();
+    expect(blocks[1].querySelector("[data-search-full-match]")).not.toBeNull();
+  });
+
+  it("highlights an exact phrase across adjacent rendered literals", async () => {
+    const exactHits = {
+      ...loaded,
+      displayed: {
+        ...loaded.displayed,
+        highlight: { needle: "the grey fox", exactOnly: true },
+      },
+    };
+    await openPage(
+      { tab: "innhold", q: "the grey fox", exact: true },
+      { documentation: adjacentLiteralPage, hits: exactHits },
+    );
+
+    await waitFor(() => expect(block(20).querySelectorAll("[data-search-full-match]")).not.toHaveLength(0));
+    const marks = [...block(20).querySelectorAll("mark")];
+    expect(marks.map((mark) => mark.textContent)).toEqual(["The grey", "fox"]);
   });
 
   it("scrolls again when a new query's first hit has the same block index", async () => {
