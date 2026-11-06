@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   type Conditional,
@@ -17,6 +17,7 @@ import {
   type Text,
 } from "~/api/templateDocumentationTypes";
 import { Document, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationView";
+import * as documentMatching from "~/templateSearch/documentMatch";
 import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
 
 function render(expr: Expr): string {
@@ -552,6 +553,23 @@ describe("Document search marking", () => {
     expect(plain).not.toContain("<mark");
     expect(plain).not.toContain("data-search-hit");
   });
+
+  it.each([
+    { needle: "", matchingBlocks: new Set([0]) },
+    { needle: "barnetillegg", matchingBlocks: new Set<number>() },
+  ])("skips match planning when no block can show marks: %j", (highlight) => {
+    const plan = vi.spyOn(documentMatching, "matchDocument");
+    try {
+      renderToStaticMarkup(
+        <SearchHighlightProvider highlight={{ ...highlight, exact: false, activeBlock: 0 }}>
+          <Document templateDocumentation={documentation} />
+        </SearchHighlightProvider>,
+      );
+      expect(plan).not.toHaveBeenCalled();
+    } finally {
+      plan.mockRestore();
+    }
+  });
 });
 
 describe("Document full-query coverage", () => {
@@ -630,6 +648,58 @@ describe("Document full-query coverage", () => {
       </SearchHighlightProvider>,
     );
   }
+
+  it.each([
+    { structure: "list", exact: false },
+    { structure: "list", exact: true },
+    { structure: "table", exact: false },
+    { structure: "table", exact: true },
+  ])(
+    "keeps a textual branch connected when another branch contains a $structure (exact: $exact)",
+    ({ structure, exact }) => {
+      const other: ContentOrControlStructure<ParagraphContent> =
+        structure === "table"
+          ? table([row("Annet")])
+          : {
+              controlStructureType: ContentOrControlStructureType.CONTENT,
+              content: {
+                elementType: ElementType.PARAGRAPH_ITEMLIST,
+                type: "PUNKTLISTE",
+                items: [
+                  {
+                    controlStructureType: ContentOrControlStructureType.CONTENT,
+                    content: { elementType: ElementType.PARAGRAPH_ITEMLIST_ITEM, text: [literal("Annet")] },
+                  },
+                ],
+              },
+            };
+      const branch: Conditional<ParagraphContent> = {
+        ...conditional([literal("barnetillegg.")]),
+        showElse: [other],
+      };
+      const html = renderParagraph([literal("Du får "), branch], exact, "får barnetillegg");
+
+      expect(
+        [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+          text,
+          attributes.includes("data-search-full-match"),
+        ]),
+      ).toEqual([
+        ["får", true],
+        ["barnetillegg", true],
+      ]);
+    },
+  );
+
+  it("reuses the block plan inside nested branches and table cells", () => {
+    const plan = vi.spyOn(documentMatching, "matchDocument");
+    try {
+      renderParagraph([table([row([literal("Du får "), conditional([literal("barnetillegg")])], "uføretrygd")])]);
+      expect(plan).toHaveBeenCalledTimes(1);
+    } finally {
+      plan.mockRestore();
+    }
+  });
 
   it.each([false, true])("highlights an exact phrase across an inline conditional (table cell: %s)", (inTable) => {
     const items = [literal("Du får "), conditional([literal("barnetillegg")], [literal("Annet")])];
