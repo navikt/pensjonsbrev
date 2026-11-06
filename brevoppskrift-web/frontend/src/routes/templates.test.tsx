@@ -379,6 +379,64 @@ describe("<AllTemplates /> (route: /templates)", () => {
       expect(router.state.location.search.q).toBe("første");
     });
 
+    it.each([{ q: "He" }, { q: "Hei" }, { q: "He", exact: true }])(
+      "preserves page 2 when restoring URL criteria from %j",
+      async (initial) => {
+        mockManyHits();
+        const { router } = await renderTemplatesRoute({ ...initial, tab: "innhold" });
+        await screen.findByRole("link", { name: "A00" });
+        const restored = { q: "Hei", exact: true, tab: "innhold", page: 2 } as const;
+
+        await act(async () => router.navigate({ to: "/templates", search: restored }));
+
+        await waitFor(() => {
+          expect(router.state.location.search).toEqual(restored);
+          expect(screen.getByRole<HTMLInputElement>("searchbox").value).toBe("Hei");
+          expect(screen.getByRole<HTMLInputElement>("checkbox", { name: "Vis kun nøyaktige treff" }).checked).toBe(
+            true,
+          );
+          expect(isCurrentPage("2")).toBe(true);
+        });
+      },
+    );
+
+    it("preserves page 2 when restoring different criteria through browser history", async () => {
+      mockManyHits();
+      const restored = { q: "Hei", exact: true, tab: "innhold", page: 2 } as const;
+      const { router } = await renderTemplatesRoute(restored);
+      await waitFor(() => expect(isCurrentPage("2")).toBe(true));
+      await act(async () => router.navigate({ to: "/templates", search: { q: "He", tab: "innhold" } }));
+      await waitFor(() => expect(screen.getByRole<HTMLInputElement>("searchbox").value).toBe("He"));
+
+      await act(async () => router.history.back());
+
+      await waitFor(() => {
+        expect(router.state.location.search).toEqual(restored);
+        expect(screen.getByRole<HTMLInputElement>("searchbox").value).toBe("Hei");
+        expect(screen.getByRole<HTMLInputElement>("checkbox", { name: "Vis kun nøyaktige treff" }).checked).toBe(true);
+        expect(isCurrentPage("2")).toBe(true);
+      });
+    });
+
+    it("lets a user edit replace a restored search with a selected result", async () => {
+      mockManyHits();
+      const { user, router } = await renderTemplatesRoute({ q: "He", tab: "innhold" });
+      await screen.findByRole("link", { name: "A00" });
+      await act(async () =>
+        router.navigate({
+          to: "/templates",
+          search: { q: "Hei", exact: true, tab: "innhold", selected: "autobrev/A11/BOKMAL" },
+        }),
+      );
+      await waitFor(() => expect(isCurrentPage("2")).toBe(true));
+
+      await user.type(screen.getByRole("searchbox"), "{Backspace}");
+
+      await waitFor(() => expect(router.state.location.search).toEqual({ q: "He", exact: true, tab: "innhold" }));
+      expect(document.querySelector("[data-selected-result]")).toBeNull();
+      expect(isCurrentPage("1")).toBe(true);
+    });
+
     it("writes the settled query to the URL without adding history entries", async () => {
       mockCorpus();
       const { user, router } = await renderTemplatesRoute();
