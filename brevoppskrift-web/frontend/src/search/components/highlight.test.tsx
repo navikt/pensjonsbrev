@@ -91,6 +91,15 @@ describe("LineContent highlighting", () => {
   });
 
   describe("exact mode", () => {
+    it("highlights a phrase across adjacent text segments", () => {
+      const line: Line = [
+        { type: "text", value: "The grey " },
+        { type: "text", value: "fox is here" },
+      ];
+
+      expect(marks(renderExact(line, "the grey fox"))).toEqual(["The grey", "fox"]);
+    });
+
     it("highlights every occurrence of the phrase as a whole", () => {
       const html = renderExact(textLine("The grey fox and the grey fox again"), "the grey fox");
       expect(marks(html)).toEqual(["The grey fox", "the grey fox"]);
