@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
@@ -122,7 +121,14 @@ class BrevmalService(
                 vedleggId = vedleggId,
             )?.let { VersjonertVedleggMarkup.V1(it) }
 
-            MarkupVersjon.V2 -> throw FeilMarkupVersjonException(MarkupVersjon.V1, brev.markupVersjon)
+            MarkupVersjon.V2 -> brevbakerService.renderRedigerbartVedleggV2(
+                brevkode = brev.brevkode,
+                spraak = brev.spraak,
+                fagsystemBrevdata = pesysData.brevdata,
+                saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
+                felles = pesysData.felles,
+                vedleggId = vedleggId,
+            )?.let { VersjonertVedleggMarkup.V2(it) }
         }
 
     suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, VersjonertVedleggMarkup> =

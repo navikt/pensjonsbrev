@@ -77,6 +77,9 @@ abstract class BrevredigeringHandlerTestBase {
     @BeforeEach
     fun clearMocks() {
         brevbakerService.renderMarkupKall.clear()
+        brevbakerService.renderPdfV2Kall.clear()
+        brevbakerService.renderPdfV2VedleggKall.clear()
+        brevbakerService.renderRedigerbareVedleggV2Resultat = emptyMap()
         brevbakerService.renderMarkupV2Resultat = { notYetStubbed("Mangler renderMarkupV2 stub") }
         brevbakerService.renderMarkupResultat = {
             letter.medSignatur(
@@ -594,6 +597,7 @@ abstract class BrevredigeringHandlerTestBase {
         val renderPdfV2VedleggKall = mutableListOf<Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>>()
         val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
         var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
+        var renderRedigerbareVedleggV2Resultat: Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment> = emptyMap()
         val renderRedigerbartVedleggKall = mutableListOf<VedleggId>()
         var harRedigerbareVedleggResultat: Boolean? = null
 
@@ -663,11 +667,23 @@ abstract class BrevredigeringHandlerTestBase {
             RedigerbareVedleggTitler(
                 renderRedigerbareVedleggResultat.map { (vedleggId, attachment) ->
                     RedigerbareVedleggTitler.Vedlegg(vedleggId, attachment.title.joinToString("") { it.text })
+                } + renderRedigerbareVedleggV2Resultat.map { (vedleggId, attachment) ->
+                    RedigerbareVedleggTitler.Vedlegg(vedleggId, attachment.title1.joinToString("") { it.text })
                 }
             )
 
         override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
-            harRedigerbareVedleggResultat ?: renderRedigerbareVedleggResultat.isNotEmpty()
+            harRedigerbareVedleggResultat ?: (renderRedigerbareVedleggResultat.isNotEmpty() || renderRedigerbareVedleggV2Resultat.isNotEmpty())
+
+        override suspend fun renderRedigerbartVedleggV2(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
+            felles: BrevbakerFelles,
+            vedleggId: VedleggId,
+        ): no.nav.brev.brevbaker.markup.Attachment? = renderRedigerbareVedleggV2Resultat[vedleggId]
+            .also { renderRedigerbartVedleggKall.add(vedleggId) }
 
         override suspend fun renderRedigerbartVedlegg(
             brevkode: Brevkode.Redigerbart,
