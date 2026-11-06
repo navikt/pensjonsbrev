@@ -6,11 +6,16 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -21,6 +26,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import java.nio.file.*
 import java.time.Instant
 import kotlin.reflect.*
@@ -141,11 +148,106 @@ class ExternalAPIServiceTest {
         assertThat(mottattRequest?.statiskFagsystemBrevdata).isNull()
     }
 
-    private fun lagExternalAPIService(onOpprettBrev: (OpprettBrevHandler.Request) -> Unit) = ExternalAPIService(
+    @Test
+    fun `sender samhandler videre som mottaker`(): Unit = runBlocking {
+        var mottattRequest: OpprettBrevHandler.Request? = null
+        val service = lagExternalAPIService { mottattRequest = it }
+
+        service.opprettBrev(lagOpprettBrevRequest(overstyrtMottaker = ExternalAPI.OverstyrtMottaker.Samhandler(TssId("samhandler1"))))
+
+        assertThat(mottattRequest?.mottaker).isEqualTo(Dto.Mottaker.samhandler(TssId("samhandler1")))
+    }
+
+    @ParameterizedTest
+    @EnumSource(Dto.Mottaker.ManueltAdressertTil::class)
+    fun `bevarer adressefelter og adresseringsvalg ved opprettelse og henting`(adressertTil: Dto.Mottaker.ManueltAdressertTil): Unit = runBlocking {
+        for ((ekstern, forventet) in adressepar(adressertTil)) {
+            var mottattRequest: OpprettBrevHandler.Request? = null
+            val service = lagExternalAPIService(brevInfo = brevDto.copy(mottaker = forventet)) { mottattRequest = it }
+
+            service.opprettBrev(lagOpprettBrevRequest(overstyrtMottaker = ekstern))
+
+            assertThat(mottattRequest?.mottaker).isEqualTo(forventet)
+            assertThat(service.hentAlleBrevForSaker(setOf(saksId)).single().overstyrtMottaker).isEqualTo(ekstern)
+        }
+    }
+
+    @Test
+    fun `bruker BRUKER naar manueltAdressertTil er null`(): Unit = runBlocking {
+        for ((ekstern, forventet) in adressepar(null)) {
+            var mottattRequest: OpprettBrevHandler.Request? = null
+            val service = lagExternalAPIService { mottattRequest = it }
+
+            service.opprettBrev(lagOpprettBrevRequest(overstyrtMottaker = ekstern))
+
+            assertThat(mottattRequest?.mottaker).isEqualTo(forventet)
+        }
+    }
+
+    @Test
+    fun `sender null mottaker naar overstyrtMottaker mangler`(): Unit = runBlocking {
+        var mottattRequest: OpprettBrevHandler.Request? = null
+        val service = lagExternalAPIService { mottattRequest = it }
+
+        service.opprettBrev(lagOpprettBrevRequest())
+
+        assertThat(mottattRequest).isNotNull()
+        assertThat(mottattRequest?.mottaker).isNull()
+    }
+
+    @Test
+    fun `nye mottakerfelter er valgfrie og matcher openapi`() {
+        val yamlfil = Files.readString(Paths.get("src/main/resources/openapi/external-api.yaml")).replace($$"$ref", "ref")
+        val schemas = ObjectMapper(YAMLFactory())
+            .registerModule(KotlinModule.Builder().build())
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .readValue(yamlfil, Yamlstruktur::class.java).components.schemas
+        val request = schemas.opprettBrevRequest
+        val mottaker = request.properties.getValue("overstyrtMottaker")
+
+        assertThat(request.required).doesNotContain("overstyrtMottaker")
+        assertThat(mottaker.oneOf!!.mapNotNull { it.ref }).containsExactly("#/components/schemas/mottaker")
+        assertThat(mottaker.oneOf.any { it.type == listOf("null") }).isTrue()
+        assertThat(ExternalAPI.OpprettBrevRequest::class.primaryConstructor!!.parameters.single { it.name == "overstyrtMottaker" }.isOptional).isTrue()
+
+        val adressemodeller = listOf(ExternalAPI.OverstyrtMottaker.NorskAdresse::class, ExternalAPI.OverstyrtMottaker.UtenlandskAdresse::class)
+        val adresser = schemas.mottaker.oneOf.filter { it.properties.getValue("type").enum!!.single() in adressemodeller.map { modell -> modell.simpleName } }
+        assertThat(adresser).hasSize(2)
+        adresser.forEach { adresse ->
+            val adressering = adresse.properties.getValue("manueltAdressertTil")
+            assertThat(adresse.required).doesNotContain("manueltAdressertTil")
+            assertThat(adressering.type).containsExactly("string", "null")
+            assertThat(adressering.enum).containsExactlyElementsOf(Dto.Mottaker.ManueltAdressertTil.entries.map { it.name } + null)
+            assertThat(adressering.default).isEqualTo("BRUKER")
+        }
+        adressemodeller.forEach { modell ->
+            val parameter = modell.primaryConstructor!!.parameters.single { it.name == "manueltAdressertTil" }
+            assertThat(parameter.isOptional).isTrue()
+            assertThat(parameter.type.isMarkedNullable).isTrue()
+        }
+    }
+
+    private fun adressepar(adressertTil: Dto.Mottaker.ManueltAdressertTil?): List<Pair<ExternalAPI.OverstyrtMottaker, Dto.Mottaker>> {
+        val navn = Navn("Test Mottaker")
+        val linje1 = Adresselinje("Adresse 1")
+        val linje2 = Adresselinje("Adresse 2")
+        val linje3 = Adresselinje("Adresse 3")
+        return listOf(
+            ExternalAPI.OverstyrtMottaker.NorskAdresse(navn, NorskPostnummer("0001"), Poststed("Oslo"), linje1, linje2, linje3, adressertTil) to
+                Dto.Mottaker.norskAdresse(navn, NorskPostnummer("0001"), Poststed("Oslo"), linje1, linje2, linje3, adressertTil ?: Dto.Mottaker.ManueltAdressertTil.BRUKER),
+            ExternalAPI.OverstyrtMottaker.UtenlandskAdresse(navn, linje1, linje2, linje3, Landkode("SE"), adressertTil) to
+                Dto.Mottaker.utenlandskAdresse(navn, linje1, linje2, linje3, Landkode("SE"), adressertTil ?: Dto.Mottaker.ManueltAdressertTil.BRUKER),
+        )
+    }
+
+    private fun lagExternalAPIService(
+        brevInfo: Dto.BrevInfo = brevDto,
+        onOpprettBrev: (OpprettBrevHandler.Request) -> Unit = {},
+    ) = ExternalAPIService(
         config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
-        hentBrevForAlleSaker = { Outcome.success(emptyList()) },
+        hentBrevForAlleSaker = { Outcome.success(listOf(brevInfo)) },
         brevmalService = BrevmalService(
-            brevbakerService = FakeBrevbakerService(),
+            brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),
             penClient = PenClientStub(),
             brevmetadataService = FakeBrevmetadataService(),
         ),
@@ -156,8 +258,9 @@ class ExternalAPIServiceTest {
     )
 
     private fun lagOpprettBrevRequest(
-        saksbehandlerValg: SaksbehandlervalgMap?,
-        statiskFagsystemBrevdata: Api.GeneriskBrevdata?,
+        saksbehandlerValg: SaksbehandlervalgMap? = null,
+        statiskFagsystemBrevdata: Api.GeneriskBrevdata? = null,
+        overstyrtMottaker: ExternalAPI.OverstyrtMottaker? = null,
     ) = ExternalAPI.OpprettBrevRequest(
         saksId = saksId,
         brevkode = Testbrevkoder.INFORMASJONSBREV,
@@ -167,6 +270,7 @@ class ExternalAPIServiceTest {
         statiskFagsystemBrevdata = statiskFagsystemBrevdata,
         reserverForRedigering = null,
         vedtaksId = null,
+        overstyrtMottaker = overstyrtMottaker,
     )
 
     private fun finnForventaType(parameter: KParameter): Pair<String?, String?> = when (parameter.type.classifier as KClass<*>) {
@@ -214,7 +318,7 @@ class Yamlstruktur(
                 val type: List<String>?,
                 val format: String? = null,
                 val description: String?,
-                val enum: List<String>?,
+                val enum: List<String?>?,
                 val ref: String?,
                 val additionalProperties: Map<String, String>?,
                 val oneOf: List<Property>?,
