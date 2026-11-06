@@ -231,6 +231,14 @@ components:
             adresselinje3:
               type: [ string, "null" ]
               description: Adresselinje 3
+            manueltAdressertTil:
+              type: [ string, "null" ]
+              enum: [ BRUKER, ANNEN, IKKE_RELEVANT, null ]
+              default: BRUKER
+              description: >
+                Brukes ved opprettelse og returneres ved henting. `BRUKER` overstyrer adressen til bruker,
+                mens `ANNEN` setter navn som annen mottaker i brevet. `IKKE_RELEVANT` brukes for samhandlere.
+                Utelatt felt eller `null` ved opprettelse behandles som `BRUKER`.
         - type: object
           description: Utenlandsk adresse
           required:
@@ -257,6 +265,14 @@ components:
             landkode:
               type: string
               description: To-bokstavers landkode ihht iso3166-1 alfa-2
+            manueltAdressertTil:
+              type: [ string, "null" ]
+              enum: [ BRUKER, ANNEN, IKKE_RELEVANT, null ]
+              default: BRUKER
+              description: >
+                Brukes ved opprettelse og returneres ved henting. `BRUKER` overstyrer adressen til bruker,
+                mens `ANNEN` setter navn som annen mottaker i brevet. `IKKE_RELEVANT` brukes for samhandlere.
+                Utelatt felt eller `null` ved opprettelse behandles som `BRUKER`.
     opprettetBrev:
       type: "object"
       properties:
@@ -318,6 +334,13 @@ components:
           type: integer
           format: int64
           description: VedtaksId. Må oppgis for brev som bruker vedtakskontekst.
+        overstyrtMottaker:
+          description: >
+            Brevet skal distribueres til annen adresse eller mottaker.
+            Utelatt felt eller `null` beholder vanlig mottaker.
+          oneOf:
+            - $ref: "#/components/schemas/mottaker"
+            - type: "null"
       required:
           - saksId
           - brevkode
