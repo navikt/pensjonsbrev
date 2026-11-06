@@ -172,10 +172,8 @@ function AllTemplates() {
     }
     if (syncingFromUrl.current) {
       const synced = syncingFromUrl.current;
-      if (query === synced.query && exactOnly === synced.exactOnly) {
-        if (settledQuery !== query.trim()) {
-          return;
-        }
+      if (query !== synced.query || exactOnly !== synced.exactOnly || settledQuery !== synced.query.trim()) {
+        return;
       }
       syncingFromUrl.current = undefined;
     }
@@ -303,13 +301,21 @@ function AllTemplates() {
             autoFocus
             label="Søk etter brevmal eller innhold"
             onChange={(value) => {
+              syncingFromUrl.current = undefined;
               editedFromSelection.current = true;
               setQuery(value);
             }}
             value={query}
           />
         </Box>
-        <Checkbox checked={exactOnly} onChange={(e) => setExactOnly(e.target.checked)} size="small">
+        <Checkbox
+          checked={exactOnly}
+          onChange={(e) => {
+            syncingFromUrl.current = undefined;
+            setExactOnly(e.target.checked);
+          }}
+          size="small"
+        >
           Vis kun nøyaktige treff
         </Checkbox>
         {failedMalTypes.length > 0 ? (
