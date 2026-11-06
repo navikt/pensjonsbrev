@@ -80,7 +80,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                     }
                     item {
                         text(
-                            bokmal { +"andre punkt" }
+                            bokmal { +"andre punkt" }, FontType.BOLD
                         )
                     }
                 }
@@ -94,7 +94,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                     }
                     item {
                         text(
-                            bokmal { +"kulepunkt2" }
+                            bokmal { +"kulepunkt2" }, FontType.ITALIC
                         )
                     }
                 }
