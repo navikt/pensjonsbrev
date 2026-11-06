@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.dsl.extended.*
 import no.nav.brev.brevbaker.serialization.internalObjectMapper
@@ -260,10 +261,12 @@ class LetterMarkupExtendedDslTest {
             },
             brevtype = Markup.Brevtype.VEDTAKSBREV,
             letterDataUsage = setOf(property),
+            stableHashCode = StableHashCode(123),
         )
 
         assertEquals(Markup.Brevtype.VEDTAKSBREV, letter.brevtype)
         assertEquals(setOf(property), letter.letterDataUsage)
+        assertEquals(StableHashCode(123), letter.stableHashCode)
         assertEquals("Vedtak", (letter.markup.title1.single() as Text.Literal).text)
     }
 
@@ -295,6 +298,7 @@ class LetterMarkupExtendedDslTest {
             },
             brevtype = Markup.Brevtype.INFORMASJONSBREV,
             letterDataUsage = setOf(property),
+            stableHashCode = StableHashCode(123),
         )
 
         val paragraph = letter.markup.blocks.single() as Block.Paragraph

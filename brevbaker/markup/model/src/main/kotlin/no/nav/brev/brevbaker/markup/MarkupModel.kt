@@ -107,7 +107,7 @@ object MarkupModel {
         markup: LetterMarkup,
         letterDataUsage: Set<Property>,
         brevtype: Markup.Brevtype,
-        stableHashCode: StableHashCode? = null,
+        stableHashCode: StableHashCode,
     ) = LetterMarkupWithDataUsage(markup, letterDataUsage, brevtype, stableHashCode)
 
     fun letterMarkupWithDataUsageProperty(typeName: String, propertyName: String) =
