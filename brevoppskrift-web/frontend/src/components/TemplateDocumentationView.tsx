@@ -1,17 +1,7 @@
 import { css } from "@emotion/react";
 import { BodyLong, Box, Heading, Popover, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
-import {
-  createContext,
-  Fragment,
-  type ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { type LetterModelSpecification } from "~/api/brevbakerTypes";
 import {
@@ -34,12 +24,14 @@ import {
   type Table,
   type TemplateDocumentation,
   type Text,
+  type TextLiteral,
 } from "~/api/templateDocumentationTypes";
 import { trimClassName } from "~/components/DataClasses";
 import { type HighlightParts, highlightParts } from "~/search/components/highlight";
 import {
   HighlightedLiteral,
   SearchBlock,
+  type SearchHighlight,
   useSearchBlockAttributes,
   useSearchHighlight,
 } from "~/templateSearch/SearchHighlightContext";
@@ -54,6 +46,7 @@ import {
  * frittstående i enhetstester); da faller vi tilbake på `isPrimitiveTypeByName`.
  */
 const KnownDataClassesContext = createContext<Set<string> | undefined>(undefined);
+const RowHighlightPartsContext = createContext<ReadonlyMap<TextLiteral, HighlightParts> | undefined>(undefined);
 
 export function KnownDataClassesProvider({
   templateModelSpecification,
@@ -90,15 +83,18 @@ function hasConditionalRows(rows: ContentOrControlStructure<Row>[]): boolean {
  * eksplisitt `gridRow`/`gridColumn` - påkrevd siden radene ikke lenger plasseres via
  * nettleserens implisitte auto-placement (se `layoutTableRows`).
  */
-function renderTableRowCells(row: Row, gridRow: number, key: string): ReactNode {
+function TableRowCells({ row, gridRow, header = false }: { row: Row; gridRow: number; header?: boolean }) {
+  const highlight = useSearchHighlight();
+  const parts = highlight && !highlight.exact ? rowHighlightParts(row, highlight) : undefined;
+  const Cell = header ? "b" : "span";
   return (
-    <Fragment key={key}>
+    <RowHighlightPartsContext.Provider value={parts}>
       {row.cells.map((cell, index) => (
-        <span className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
+        <Cell className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
           <CocsList items={cell.text} />
-        </span>
+        </Cell>
       ))}
-    </Fragment>
+    </RowHighlightPartsContext.Provider>
   );
 }
 
@@ -172,7 +168,7 @@ function layoutTableRows(
   rows.forEach((item, index) => {
     const itemPath = `${path}.${index}`;
     if (item.controlStructureType === ContentOrControlStructureType.CONTENT) {
-      contentItems.push(renderTableRowCells(item.content, row, itemPath));
+      contentItems.push(<TableRowCells gridRow={row} key={itemPath} row={item.content} />);
       row += 1;
       return;
     }
@@ -335,11 +331,7 @@ function TableView({ content }: { content: Table }) {
           }
         `}
       >
-        {content.header.cells.map((cell, index) => (
-          <b className="cell" key={index} style={{ gridColumn: index + 1, gridRow: 1 }}>
-            <CocsList items={cell.text} />
-          </b>
-        ))}
+        <TableRowCells gridRow={1} header row={content.header} />
         {contentItems}
       </div>
     </div>
@@ -426,39 +418,34 @@ function liftConditionalOutOfParagraph(
   };
 }
 
-/**
- * Rendrer søsken i en tekst-/avsnittsflyt. En betingelse som bare styrer løpende tekst og står
- * sammen med annet innhold (typisk ett ord midt i en setning) rendres inline, slik at den ikke
- * bryter linjen. Står betingelsen alene beholdes blokkvisningen med markør i margen.
- */
-function CocsList<E extends Element>({
-  items,
-  inline = false,
-}: {
-  items: ContentOrControlStructure<E>[];
-  inline?: boolean;
-}) {
-  const highlight = useSearchHighlight();
+function markFullQuery(parts: HighlightParts[], needle: string): void {
+  const matchedTerms = new Set(parts.flatMap(({ ranges }) => ranges.flatMap(({ terms }) => terms)));
+  if (
+    matchedTerms.size > 0 &&
+    needle.split(/\s+/).every((term, index) => term.length === 0 || matchedTerms.has(index))
+  ) {
+    for (const part of parts) {
+      part.fullMatch = true;
+    }
+  }
+}
+
+function literalPartsOf<E extends Element>(
+  items: ContentOrControlStructure<E>[],
+  highlight: SearchHighlight | undefined,
+): Map<number, HighlightParts> {
   const literalParts = new Map<number, HighlightParts>();
   if (highlight) {
     const lineParts: HighlightParts[] = [];
     const finishLine = () => {
       if (!highlight.exact) {
-        const matchedTerms = new Set(lineParts.flatMap(({ ranges }) => ranges.flatMap(({ terms }) => terms)));
-        const fullMatch =
-          matchedTerms.size > 0 &&
-          highlight.needle.split(/\s+/).every((term, index) => term.length === 0 || matchedTerms.has(index));
-        if (fullMatch) {
-          for (const parts of lineParts) {
-            parts.fullMatch = true;
-          }
-        }
+        markFullQuery(lineParts, highlight.needle);
       }
       lineParts.length = 0;
     };
     let start = 0;
     while (start < items.length) {
-      if (literalTextOf(items[start]) === undefined) {
+      if (literalOf(items[start]) === undefined) {
         const item = items[start];
         if (
           item?.controlStructureType !== ContentOrControlStructureType.CONTENT ||
@@ -472,12 +459,12 @@ function CocsList<E extends Element>({
       const indexes: number[] = [];
       const texts: string[] = [];
       while (start < items.length) {
-        const text = literalTextOf(items[start]);
-        if (text === undefined) {
+        const literal = literalOf(items[start]);
+        if (literal === undefined) {
           break;
         }
         indexes.push(start);
-        texts.push(text);
+        texts.push(literal.text);
         start++;
       }
       highlightParts(texts, highlight.needle, highlight.exact, "").forEach((parts, index) => {
@@ -490,21 +477,91 @@ function CocsList<E extends Element>({
     }
     finishLine();
   }
-  return items.map((cocs, index) => (
-    <ContentOrControlStructureComponent
-      cocs={cocs}
-      inline={inline || items.length > 1}
-      key={index}
-      literalParts={literalParts.get(index)}
-    />
-  ));
+  return literalParts;
 }
 
-function literalTextOf<E extends Element>(item: ContentOrControlStructure<E> | undefined): string | undefined {
+function literalOf<E extends Element>(item: ContentOrControlStructure<E> | undefined): TextLiteral | undefined {
   return item?.controlStructureType === ContentOrControlStructureType.CONTENT &&
     item.content.elementType === ElementType.PARAGRAPH_TEXT_LITERAL
-    ? item.content.text
+    ? item.content
     : undefined;
+}
+
+/** Coalesce equal term sets so equivalent branch combinations share their participating literals. */
+function combineCoverage(left: HighlightParts[][], right: HighlightParts[][]): HighlightParts[][] {
+  const byTerms = new Map<string, Set<HighlightParts>>();
+  for (const a of left) {
+    for (const b of right) {
+      const parts = [...a, ...b];
+      const terms = [...new Set(parts.flatMap(({ ranges }) => ranges.flatMap(({ terms }) => terms)))]
+        .sort((a, b) => a - b)
+        .join(",");
+      const matching = byTerms.get(terms) ?? new Set<HighlightParts>();
+      for (const part of parts) {
+        matching.add(part);
+      }
+      byTerms.set(terms, matching);
+    }
+  }
+  return [...byTerms.values()].map((parts) => [...parts]);
+}
+
+function rowHighlightParts(row: Row, highlight: SearchHighlight): ReadonlyMap<TextLiteral, HighlightParts> {
+  const byLiteral = new Map<TextLiteral, HighlightParts>();
+  const alternativesOf = (items: ContentOrControlStructure<Text>[]): HighlightParts[][] => {
+    const literalParts = literalPartsOf(items, highlight);
+    let alternatives: HighlightParts[][] = [[]];
+    items.forEach((item, index) => {
+      const literal = literalOf(item);
+      const parts = literalParts.get(index);
+      if (literal && parts) {
+        byLiteral.set(literal, parts);
+        alternatives = alternatives.map((alternative) => [...alternative, parts]);
+      } else if (item.controlStructureType === ContentOrControlStructureType.CONDITIONAL) {
+        const branches = [item.showIf, ...item.elseIf.map((branch) => branch.showIf), item.showElse];
+        alternatives = combineCoverage(alternatives, branches.flatMap(alternativesOf));
+      } else if (item.controlStructureType === ContentOrControlStructureType.FOR_EACH) {
+        alternatives = combineCoverage(alternatives, alternativesOf(item.body));
+      }
+    });
+    return alternatives;
+  };
+  let alternatives: HighlightParts[][] = [[]];
+  for (const cell of row.cells) {
+    alternatives = combineCoverage(alternatives, alternativesOf(cell.text));
+  }
+  for (const parts of alternatives) {
+    markFullQuery(parts, highlight.needle);
+  }
+  return byLiteral;
+}
+
+/**
+ * Rendrer søsken i en tekst-/avsnittsflyt. En betingelse som bare styrer løpende tekst og står
+ * sammen med annet innhold (typisk ett ord midt i en setning) rendres inline, slik at den ikke
+ * bryter linjen. Står betingelsen alene beholdes blokkvisningen med markør i margen.
+ */
+function CocsList<E extends Element>({
+  items,
+  inline = items.length > 1,
+}: {
+  items: ContentOrControlStructure<E>[];
+  inline?: boolean;
+}) {
+  const highlight = useSearchHighlight();
+  const rowParts = useContext(RowHighlightPartsContext);
+  const literalParts = literalPartsOf(items, highlight);
+  return items.map((cocs, index) => {
+    const literal = literalOf(cocs);
+    return (
+      <ContentOrControlStructureComponent
+        cocs={cocs}
+        inline={inline}
+        key={index}
+        literalParts={(literal && rowParts?.get(literal)) ?? literalParts.get(index)}
+      />
+    );
+  });
 }
 
 function ContentOrControlStructureComponent<E extends Element>({
@@ -538,9 +595,7 @@ function ForEachComponent({ content }: { content: ForEach<Element> }) {
       <div className="expression">
         <code>For hver X i:</code> <ExprToText expr={content.items} />
       </div>
-      {content.body.map((b, index) => (
-        <ContentOrControlStructureComponent cocs={b} key={index} />
-      ))}
+      <CocsList inline={false} items={content.body} />
     </>
   );
 }
@@ -582,7 +637,7 @@ function ContentComponent({ content, literalParts }: { content: Element; literal
     }
     case ElementType.PARAGRAPH_TABLE_ROW: {
       // Urealistisk i praksis - PARAGRAPH_TABLE_ROW (Row) rendres alltid direkte av TableView
-      // sin egen layout-logikk (se `renderTableRowCells`), aldri via denne generiske switchen.
+      // sin egen layout-logikk (se `TableRowCells`), aldri via denne generiske switchen.
       // Beholdt kun for at Element-unionen (som inkluderer Row) skal være uttømmende dekket.
       return (
         <>

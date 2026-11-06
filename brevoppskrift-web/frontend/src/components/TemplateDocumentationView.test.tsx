@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import {
+  type Content,
   type ContentOrControlStructure,
   ContentOrControlStructureType,
   ElementType,
@@ -11,6 +12,7 @@ import {
   ExprType,
   type OutlineContent,
   type ParagraphContent,
+  type Row,
   type Text,
 } from "~/api/templateDocumentationTypes";
 import { Document, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationView";
@@ -559,16 +561,40 @@ describe("Document full-query coverage", () => {
     };
   }
 
+  function row(...cells: (string | ContentOrControlStructure<Text>[])[]): Content<Row> {
+    return {
+      controlStructureType: ContentOrControlStructureType.CONTENT,
+      content: {
+        elementType: ElementType.PARAGRAPH_TABLE_ROW,
+        cells: cells.map((cell) => ({ text: typeof cell === "string" ? [literal(cell)] : cell })),
+      },
+    };
+  }
+
+  function table(
+    rows: ContentOrControlStructure<Row>[],
+    header = row("A", "B").content,
+  ): ContentOrControlStructure<ParagraphContent> {
+    return {
+      controlStructureType: ContentOrControlStructureType.CONTENT,
+      content: { elementType: ElementType.PARAGRAPH_TABLE, header, rows },
+    };
+  }
+
   const variable: ContentOrControlStructure<ParagraphContent> = {
     controlStructureType: ContentOrControlStructureType.CONTENT,
     content: { elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION, expression: fieldPath("antall") },
   };
 
-  function renderParagraph(items: ContentOrControlStructure<ParagraphContent>[], exact = false): string {
+  function renderParagraph(
+    items: ContentOrControlStructure<ParagraphContent>[],
+    exact = false,
+    needle = "barnetillegg uføretrygd",
+  ): string {
     return renderToStaticMarkup(
       <SearchHighlightProvider
         highlight={{
-          needle: "barnetillegg uføretrygd",
+          needle,
           exact,
           matchingBlocks: new Set([0]),
           activeBlock: 0,
@@ -653,6 +679,124 @@ describe("Document full-query coverage", () => {
     const html = renderParagraph([literal("barnetillegg "), variable, literal(" uføretrygd")], true);
 
     expect(html).not.toContain("<mark");
+  });
+
+  it("marks full-query coverage across table cells instead of an earlier partial-match branch", () => {
+    const html = renderParagraph([
+      {
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [literal("barnetillegg")],
+        elseIf: [],
+        showElse: [table([row("barnetillegg", "uføretrygd")])],
+      },
+    ]);
+
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["barnetillegg", false],
+      ["barnetillegg", true],
+      ["uføretrygd", true],
+    ]);
+  });
+
+  it("combines header cells without leaking coverage into body rows", () => {
+    const html = renderParagraph([table([row("barnetillegg", "Annet")], row("barnetillegg", "uføretrygd").content)]);
+
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["barnetillegg", true],
+      ["uføretrygd", true],
+      ["barnetillegg", false],
+    ]);
+  });
+
+  it.each([
+    {
+      name: "separate table rows",
+      rows: [row("barnetillegg", "Annet"), row("Annet", "uføretrygd")],
+    },
+    {
+      name: "alternative table-row branches",
+      rows: [
+        {
+          controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+          predicate: fieldPath("harBarn"),
+          showIf: [row("barnetillegg", "Annet")],
+          elseIf: [],
+          showElse: [row("Annet", "uføretrygd")],
+        } satisfies ContentOrControlStructure<Row>,
+      ],
+    },
+  ])("does not combine coverage across $name", ({ rows }) => {
+    const html = renderParagraph([table(rows)]);
+
+    expect(html.match(/<mark/g)).toHaveLength(2);
+    expect(html).not.toContain("data-search-full-match");
+  });
+
+  it.each([
+    { otherCell: "Annet", fullMatch: false },
+    { otherCell: "uføretrygd", fullMatch: true },
+  ])("keeps cell alternatives separate when another cell contains $otherCell", ({ otherCell, fullMatch }) => {
+    const html = renderParagraph([
+      table([
+        row(
+          [
+            {
+              controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+              predicate: fieldPath("harBarn"),
+              showIf: [literal("barnetillegg")],
+              elseIf: [],
+              showElse: [literal("uføretrygd")],
+            },
+          ],
+          otherCell,
+        ),
+      ]),
+    ]);
+
+    const marks = [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)];
+    expect(marks.map(([, attributes]) => attributes.includes("data-search-full-match"))).toEqual(
+      fullMatch ? [true, false, true] : [false, false],
+    );
+  });
+
+  it("highlights adjacent literals inside a loop without changing conditional rendering", () => {
+    const html = renderParagraph(
+      [
+        {
+          controlStructureType: ContentOrControlStructureType.FOR_EACH,
+          items: fieldPath("barn"),
+          body: [
+            literal("Du får barne"),
+            literal("tillegg."),
+            {
+              controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+              predicate: fieldPath("harBarn"),
+              showIf: [literal("Annen tekst")],
+              elseIf: [],
+              showElse: [],
+            },
+          ],
+        },
+      ],
+      true,
+      "barnetillegg",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(["barne", "tillegg"]);
+    expect(html).toContain('class="conditional"');
+    expect(html).not.toContain('class="inline-conditional"');
+    expect(text(html)).toContain("For hver X i:");
   });
 });
 
