@@ -115,7 +115,7 @@ object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehan
                     paragraph(uniqueness = "paragraf12_2SentEOS") {
                         text(
                             bokmal { +"Vi fatter endelig vedtak om norsk uføretrygd når vi har fått alle nødvendige opplysninger og vedtak fra utlandet. Du vil motta eget vedtak og eventuell utbetaling av ytelse fra utenlandske trygdemyndigheter. " },
-                            nynorsk { +"Vi fatte endeleg vedtak om norsk uføretrygd når vi har fått alle nødvendige opplysningar og vedtak frå utlandet. Du vil motta eige vedtak og eventuell utbetaling av yting frå utanlandske trygdemyndigheiter. " },
+                            nynorsk { +"Vi fattar endeleg vedtak om norsk uføretrygd når vi har fått alle nødvendige opplysningar og vedtak frå utlandet. Du vil motta eige vedtak og eventuell utbetaling av yting frå utanlandske trygdemyndigheiter. " },
                         )
                     }
                 }.orShowIf(malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.PARAGRAF_12_2_SENT_AVTALELAND)) {
@@ -128,7 +128,7 @@ object UtsendelseTilUtlandRedigerbar : RedigerbarTemplate<OrienteringOmSaksbehan
                     paragraph(uniqueness = "paragraf12_2SentAvtaleland") {
                         text(
                             bokmal { +"Vi fatter endelig vedtak om norsk uføretrygd når vi har fått alle nødvendige opplysninger og vedtak fra utlandet. Du vil motta eget vedtak og eventuell utbetaling av ytelse fra utenlandske trygdemyndigheter. " },
-                            nynorsk { +"Vi fatte endeleg vedtak om norsk uføretrygd når vi har fått alle nødvendige opplysningar og vedtak frå utlandet. Du vil motta eige vedtak og eventuell utbetaling av yting frå utanlandske trygdemyndigheiter. " },
+                            nynorsk { +"Vi fattar endeleg vedtak om norsk uføretrygd når vi har fått alle nødvendige opplysningar og vedtak frå utlandet. Du vil motta eige vedtak og eventuell utbetaling av yting frå utanlandske trygdemyndigheiter. " },
                         )
                     }
                 }.orShowIf(malvarianter.equalTo(UtsendelseTilUtlandVariantEnum.KUN_AVTALELAND_INNVILGELSE)) {

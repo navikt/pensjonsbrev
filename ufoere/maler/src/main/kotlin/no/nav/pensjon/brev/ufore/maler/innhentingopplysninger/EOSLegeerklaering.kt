@@ -42,7 +42,7 @@ object EOSLegeerklaering : RedigerbarTemplate<BrukersNavnDto> {
         }
         outline {
             paragraph {
-                text(bokmal { + pesysData.navn + " har søkt om uføretrygd, og har bodd eller arbeidet i et annet EØS-land. Derfor trenger vi EØS – detaljert legeerklæring, Nav 45-12.00. Vi viser til folketrygdlovens § 21-4 og ber deg om å sende disse opplysningene til oss" })
+                text(bokmal { + pesysData.navn + " har søkt om uføretrygd, og har bodd eller arbeidet i et annet EØS-land. Derfor trenger vi EØS – detaljert legeerklæring, Nav 45-12.00. Vi viser til folketrygdlovens § 21-4 og ber deg om å sende disse opplysningene til oss." })
             }
 
             title1 {
