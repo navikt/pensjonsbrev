@@ -8,32 +8,30 @@ import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Block.Table
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Item
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Text
 
-fun EditV2.Letter.updateEditedLetter(renderedLetter: LetterMarkup): EditV2.Letter =
-    renderedLetter.toEdit().let { rendered ->
-        UpdateEditedLetterV2(rendered.variablesValueMap()).mergeLetter(this, rendered)
+internal class UpdateEditedLetterV2(private val variableValues: Map<Int, String>) {
+
+    companion object {
+        fun merge(edited: EditV2.Letter, rendered: LetterMarkup): EditV2.Letter =
+            EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(it.variablesValueMap()).mergeLetter(edited, it) }
+
+        fun merge(edited: EditV2.Attachment, rendered: Attachment): EditV2.Attachment =
+            EditV2Markup.toEdit(rendered).let { UpdateEditedLetterV2(it.variablesValueMap()).mergeAttachment(edited, it) }
+
+        fun updateSaksinformasjonOgSignatur(edited: EditV2.Letter, rendered: LetterMarkup): EditV2.Letter =
+            edited.copy(
+                saksinformasjon = EditV2Markup.toEdit(rendered.saksinformasjon),
+                signatur = mergeSignatur(edited = edited.signatur, rendered = EditV2Markup.toEdit(rendered.signatur)),
+            )
+
+        private fun mergeSignatur(edited: EditV2.Signatur, rendered: EditV2.Signatur): EditV2.Signatur =
+            EditV2.Signatur(
+                saksbehandlerNavn = edited.saksbehandlerNavn,
+                attesterendeSaksbehandlerNavn = edited.attesterendeSaksbehandlerNavn,
+                navAvsenderEnhet = rendered.navAvsenderEnhet,
+            )
     }
 
-fun EditV2.Attachment.updateEditedAttachment(renderedAttachment: Attachment): EditV2.Attachment =
-    renderedAttachment.toEdit().let { rendered ->
-        UpdateEditedLetterV2(rendered.variablesValueMap()).mergeAttachment(this, rendered)
-    }
-
-fun EditV2.Letter.updateSaksinformasjonOgSignatur(renderedLetter: LetterMarkup): EditV2.Letter =
-    copy(
-        saksinformasjon = renderedLetter.saksinformasjon.toEdit(),
-        signatur = mergeSignatur(edited = signatur, rendered = renderedLetter.signatur.toEdit()),
-    )
-
-private fun mergeSignatur(edited: EditV2.Signatur, rendered: EditV2.Signatur): EditV2.Signatur =
-    EditV2.Signatur(
-        saksbehandlerNavn = edited.saksbehandlerNavn,
-        attesterendeSaksbehandlerNavn = edited.attesterendeSaksbehandlerNavn,
-        navAvsenderEnhet = rendered.navAvsenderEnhet,
-    )
-
-class UpdateEditedLetterV2(private val variableValues: Map<Int, String>) {
-
-    fun mergeLetter(edited: EditV2.Letter, rendered: EditV2.Letter): EditV2.Letter =
+    private fun mergeLetter(edited: EditV2.Letter, rendered: EditV2.Letter): EditV2.Letter =
         edited.copy(
             title = mergeTitle(edited.title, rendered.title),
             saksinformasjon = rendered.saksinformasjon,
@@ -42,7 +40,7 @@ class UpdateEditedLetterV2(private val variableValues: Map<Int, String>) {
             deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
         )
 
-    fun mergeAttachment(edited: EditV2.Attachment, rendered: EditV2.Attachment): EditV2.Attachment =
+    private fun mergeAttachment(edited: EditV2.Attachment, rendered: EditV2.Attachment): EditV2.Attachment =
         edited.copy(
             title = mergeTitle(edited.title, rendered.title),
             blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues, ::setMissing),

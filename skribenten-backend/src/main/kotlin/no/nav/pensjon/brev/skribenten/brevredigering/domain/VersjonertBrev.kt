@@ -6,15 +6,16 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import no.nav.brev.brevbaker.markup.Attachment as AttachmentV2
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.letter.updateSakspartOgSignatur
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
-import no.nav.pensjon.brev.skribenten.letter.v2.toEdit as toEditV2
-import no.nav.pensjon.brev.skribenten.letter.v2.updateEditedLetter as updateEditedLetterV2
-import no.nav.pensjon.brev.skribenten.letter.v2.updateSaksinformasjonOgSignatur
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 
@@ -59,6 +60,9 @@ sealed interface VersjonertBrev {
 
         override fun withAnnenMottakerNavn(annenMottakerNavn: String?) = V1(brev.withSakspart(annenMottakerNavn = annenMottakerNavn))
 
+        fun vedleggMarkup(vedlegg: List<Dto.RedigertVedlegg>): Map<VedleggId, LetterMarkup.Attachment> =
+            vedlegg.associate { it.vedleggId to it.redigertVedlegg.asV1().toMarkup() }
+
         private fun VersjonertMarkup.asV1(): LetterMarkup =
             (this as? VersjonertMarkup.V1)?.markup ?: throw FeilMarkupVersjonException(this@V1.markupVersjon, markupVersjon)
     }
@@ -70,9 +74,9 @@ sealed interface VersjonertBrev {
         override val tittel get() = brev.title.text.joinToString(" ") { it.text }.trim()
 
         override fun innholdEndresAv(rendret: VersjonertMarkup) =
-            brev.updateEditedLetterV2(rendret.asV2()).blocks != brev.blocks
+            brev.merge(rendret.asV2()).blocks != brev.blocks
 
-        override fun merge(rendret: VersjonertMarkup) = V2(brev.updateEditedLetterV2(rendret.asV2()))
+        override fun merge(rendret: VersjonertMarkup) = V2(brev.merge(rendret.asV2()))
 
         override fun oppdaterSakspartOgSignatur(rendret: VersjonertMarkup) = V2(brev.updateSaksinformasjonOgSignatur(rendret.asV2()))
 
@@ -80,6 +84,9 @@ sealed interface VersjonertBrev {
             V2(brev.withSignaturAttestant(attesterendeSaksbehandlerNavn))
 
         override fun withAnnenMottakerNavn(annenMottakerNavn: String?) = V2(brev.withSaksinformasjon(annenMottakerNavn = annenMottakerNavn))
+
+        fun vedleggMarkup(vedlegg: List<Dto.RedigertVedlegg>): Map<VedleggId, AttachmentV2> =
+            vedlegg.associate { it.vedleggId to it.redigertVedlegg.asV2().toMarkup() }
 
         private fun VersjonertMarkup.asV2(): MarkupV2 =
             (this as? VersjonertMarkup.V2)?.markup ?: throw FeilMarkupVersjonException(this@V2.markupVersjon, markupVersjon)
@@ -101,7 +108,7 @@ sealed interface VersjonertMarkup {
 
     data class V2(val markup: MarkupV2) : VersjonertMarkup {
         override val markupVersjon get() = MarkupVersjon.V2
-        override fun toEdit() = VersjonertBrev.V2(markup.toEditV2())
+        override fun toEdit() = VersjonertBrev.V2(EditV2.Letter.from(markup))
     }
 }
 
