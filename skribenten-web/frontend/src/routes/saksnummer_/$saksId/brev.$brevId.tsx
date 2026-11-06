@@ -518,7 +518,7 @@ function RedigerBrev({
                 right={
                   <BrevOgVedleggEditor
                     brev={brev}
-                    freeze={freeze}
+                    freeze={oppdaterBrevMutation.isPending || savingValg}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
                         <ManagedLetterEditor canReset error={error} freeze={freeze} showDebug={showDebug} />
