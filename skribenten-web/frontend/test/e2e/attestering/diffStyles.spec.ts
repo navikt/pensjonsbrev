@@ -4,7 +4,17 @@ import { type UnifiedLetterDiff } from "~/Brevredigering/LetterEditor/diff/diffM
 import { FontType } from "~/types/brevbakerTypes";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevInfo, brevResponse, editedLetter } from "~test/support/brevFixtures";
-import { cell, item, itemList, literal, paragraph, row, table, title1 } from "~test/support/letterEditorTestUtils";
+import {
+  cell,
+  item,
+  itemList,
+  literal,
+  paragraph,
+  row,
+  table,
+  title1,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 const addedText = "Tekst som er lagt til";
 const removedText = "Tekst som er slettet";
@@ -55,6 +65,17 @@ const diff: UnifiedLetterDiff = {
       paragraph([literal("Slettet avsnitt")]),
       paragraph([itemList({ items: [item(literal("Slettet listepunkt"))] })]),
       paragraph([table([cell(literal("Slettet kolonne"))], [row(cell(literal("Slettet tabelltekst")))])]),
+      paragraph([
+        { ...literal("Slettet fet tekst"), fontType: FontType.BOLD },
+        literal(" "),
+        { ...literal("Slettet kursiv tekst"), fontType: FontType.BOLD, editedFontType: FontType.ITALIC },
+        literal(" "),
+        { ...variable("Slettet fet variabel"), fontType: FontType.BOLD },
+        literal(" "),
+        { ...variable("Slettet kursiv variabel"), fontType: FontType.ITALIC },
+        literal(" "),
+        { ...literal("Slettet normal tekst"), fontType: FontType.BOLD, editedFontType: FontType.PLAIN },
+      ]),
     ],
   },
 };
@@ -159,6 +180,18 @@ test("bruker samme slettestil i hele avsnitt, lister og tabeller", async ({ page
   await expect(editor.locator("[data-diff-deleted-block]").first()).toHaveAttribute("contenteditable", "false");
   await expect(editor.getByRole("listitem")).toHaveText("Slettet listepunkt");
   await expect(editor.getByRole("columnheader", { name: "Slettet kolonne" })).toBeVisible();
+  for (const [text, weight, style] of [
+    ["Slettet fet tekst", "700", "normal"],
+    ["Slettet kursiv tekst", "400", "italic"],
+    ["Slettet fet variabel", "700", "normal"],
+    ["Slettet kursiv variabel", "400", "italic"],
+    ["Slettet normal tekst", "400", "normal"],
+  ]) {
+    const deleted = editor.getByText(text, { exact: true });
+    await expectDeletedStyle(deleted);
+    await expect(deleted).toHaveCSS("font-weight", weight);
+    await expect(deleted).toHaveCSS("font-style", style);
+  }
   await testInfo.attach("slettet-innhold", {
     body: await page.screenshot({ fullPage: true }),
     contentType: "image/png",

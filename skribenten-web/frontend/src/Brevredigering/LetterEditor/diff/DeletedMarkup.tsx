@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-import { text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
+import { fontTypeOf, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
 import {
   useDeletedBlocks,
   useDeletedCellContent,
@@ -15,6 +15,7 @@ import {
   type AnyBlock,
   type Cell,
   type Content,
+  FontType,
   type Item,
   ListType,
   type Row,
@@ -44,8 +45,16 @@ const deletedTableStyle = css`
 
 const DeletedText = ({ content }: { content: TextContent }) => {
   if (content.type === "NEW_LINE") return <br />;
+  const fontType = fontTypeOf(content);
   return (
-    <span className="attestant-diff-deleted" data-diff-deleted>
+    <span
+      className="attestant-diff-deleted"
+      css={{
+        ...(fontType === FontType.BOLD && { fontWeight: "bold" }),
+        ...(fontType === FontType.ITALIC && { fontStyle: "italic" }),
+      }}
+      data-diff-deleted
+    >
       {textOf(content)}
     </span>
   );
