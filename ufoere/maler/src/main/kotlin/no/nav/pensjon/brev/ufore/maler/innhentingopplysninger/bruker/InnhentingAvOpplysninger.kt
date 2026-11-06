@@ -37,7 +37,7 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Innhenting av opplysninger",
+            displayTitle = "Manglende formkrav ved søknad eller klage",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
