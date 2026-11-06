@@ -13,6 +13,7 @@ import { type EditedLetter } from "~/types/brevbakerTypes";
 const HIGHLIGHT_DURATION_MS = 2200;
 
 type PendingToggle = {
+  document: EditedLetter;
   /** All ids in the letter at the moment the tekstvalg was toggled on. */
   idsBeforeToggle: ReadonlySet<number>;
   /**
@@ -78,7 +79,7 @@ export function useTekstvalgInsertHighlight({
 
     // Drop the pending toggle instead of highlighting later, which would move the cursor
     // out from under someone who is still typing.
-    if (saveStatus === "DIRTY") {
+    if (saveStatus === "DIRTY" && redigertBrev !== pending.document) {
       pendingToggleRef.current = null;
       return;
     }
@@ -110,7 +111,11 @@ export function useTekstvalgInsertHighlight({
   // and must clear any previously armed one.
   const beforeTekstvalgChange = (updatedValg: SaksbehandlerValg, currentRedigertBrev: EditedLetter) => {
     pendingToggleRef.current = hasAnyTekstvalgBeenToggledOn(previousValgRef.current, updatedValg)
-      ? { idsBeforeToggle: collectAllIds(currentRedigertBrev), lastSeenIds: lastSeenIdsRef.current }
+      ? {
+          document: currentRedigertBrev,
+          idsBeforeToggle: collectAllIds(currentRedigertBrev),
+          lastSeenIds: lastSeenIdsRef.current,
+        }
       : null;
     previousValgRef.current = updatedValg;
   };

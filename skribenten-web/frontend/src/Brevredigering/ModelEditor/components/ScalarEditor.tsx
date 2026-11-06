@@ -17,7 +17,7 @@ export const ScalarEditor = ({
   prependName?: string;
   field: string;
   fieldType: TScalar;
-  submitOnChange?: () => void;
+  submitOnChange?: (debounce?: boolean) => void;
   readOnly?: boolean;
 }) => {
   switch (fieldType.kind) {
@@ -91,25 +91,17 @@ const SwitchField = (props: {
   prependName?: string;
   field: string;
   fieldType: TScalar;
-  onSubmit?: () => void;
+  onSubmit?: (debounce?: boolean) => void;
   readOnly?: boolean;
 }) => {
   const { getFieldState, formState } = useFormContext();
   const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
   const fieldState = getFieldState(fieldName, formState);
 
-  /**
-   * useEffekten er brukt kun i forbindelse med autolagring
-   *
-   * Vi gjør en submit ved onChange, og prøver på nytt hver 3 sekund dersom kallet feilet.
-   */
   useEffect(() => {
     const onSubmit = props.onSubmit;
     if (fieldState.isDirty && onSubmit !== undefined) {
-      const timeout = setTimeout(() => {
-        onSubmit();
-      }, 3000);
-
+      const timeout = setTimeout(() => onSubmit(true), 3000);
       return () => clearTimeout(timeout);
     }
   }, [fieldState.isDirty, props.onSubmit]);
@@ -125,7 +117,7 @@ const SwitchField = (props: {
             checked={field.value ?? false}
             onChange={(v) => {
               field.onChange(v.target.checked);
-              props.onSubmit?.();
+              props.onSubmit?.(true);
             }}
             readOnly={props.readOnly}
             size="small"

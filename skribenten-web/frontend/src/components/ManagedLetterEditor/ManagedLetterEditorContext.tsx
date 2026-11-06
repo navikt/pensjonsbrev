@@ -9,6 +9,7 @@ import {
   useContext,
   useEffect,
   useRef,
+  useState,
 } from "react";
 
 import {
@@ -23,17 +24,26 @@ import { redigerbareVedleggKeys } from "~/api/redigerbareVedlegg-endpoints";
 import { hentPdfForAttestering, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { isLetterDocument, normalizeDocumentForComparison } from "~/Brevredigering/LetterEditor/actions/common";
-import { addHistoryEntry, type HistoryEntry } from "~/Brevredigering/LetterEditor/history";
+import {
+  addHistoryEntry,
+  createLetterSnapshot,
+  createSaksbehandlerValgEndretHistoryEntry,
+  type HistoryEntry,
+  snapshotPendingEdit,
+} from "~/Brevredigering/LetterEditor/history";
 import { useEditorAutosave } from "~/Brevredigering/LetterEditor/hooks/useEditorAutosave";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { useRedigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import { type BrevResponse } from "~/types/brev";
+import { type BrevResponse, type SaksbehandlerValg } from "~/types/brev";
 import { type EditedDocument, type EditedLetter } from "~/types/brevbakerTypes";
+
+import { SAKSBEHANDLERVALG_TIMER } from "./autosave_timer";
 
 type ApplySavedResponseOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
   preserveUnchangedValg?: boolean;
+  merge?: boolean;
 };
 
 interface ManagedLetterEditorContextValue {
@@ -43,6 +53,8 @@ interface ManagedLetterEditorContextValue {
   redigertBrev: EditedLetter;
 
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
+  updateSaksbehandlerValg: (valg: SaksbehandlerValg, debounce: boolean) => void;
+  savingValg: boolean;
   saveLetterOperation: (
     operation: (state: LetterEditorState & { redigertBrev: EditedLetter }) => Promise<BrevResponse>,
     options?: ApplySavedResponseOptions,
@@ -107,6 +119,9 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const savedBrev = useRef(props.brev);
   const observedBrev = useRef(props.brev);
   const saveErrorResetRef = useRef<(() => void) | null>(null);
+  // Persisted choices do not imply their merged letter was applied: a newer revision may have discarded it.
+  const needsFullMerge = useRef(false);
+  const [savingValg, setSavingValg] = useState(false);
 
   const registerSaveErrorReset = useCallback((reset: (() => void) | null) => {
     saveErrorResetRef.current = reset;
@@ -120,34 +135,61 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     void queryClient.resetQueries({ queryKey: pdfQuery.queryKey(response.info.id) });
   };
 
-  const { editorState, setEditorState, saveFailed, savePendingChanges, saveWith, reset, resetting } =
-    useEditorAutosave<BrevResponse>({
-      initialState: Actions.create(props.brev),
-      save: (state) => {
-        saveErrorResetRef.current?.();
-        const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
-        const letterWithCursor = requireLetterDocument(stateWithCursor.redigertBrev);
+  const applyMergedResponse = (state: LetterEditorState, response: BrevResponse): LetterEditorState => {
+    if (!needsFullMerge.current) return applySavedResponse(state, response, { preserveUnchangedValg: true });
+    const snapshot = createLetterSnapshot(response);
+    const history = {
+      ...state.history,
+      entries: state.history.entries.map((entry, index) => {
+        if (entry.type === "PATCH") return entry;
+        // The current history boundary now has a rendered snapshot, including after undo/redo.
+        if (index === state.history.entryPointer) return { ...entry, after: snapshot };
+        if (index === state.history.entryPointer + 1) return { ...entry, before: snapshot };
+        return entry;
+      }),
+    };
+    needsFullMerge.current = false;
+    return { ...applySavedResponse(state, response, { preserveUnchangedValg: true }), history };
+  };
 
-        // Autosave must never release the user's reservation on the letter.
-        if (redigeringsflate === "attestant-redigering") {
-          return lagreAttestertBrevtekst({
-            saksId: String(stateWithCursor.info.saksId),
-            brevId: props.brev.info.id,
-            redigertBrev: letterWithCursor,
-            frigiReservasjon: false,
-          });
-        }
+  const {
+    editorState,
+    setEditorState: updateEditorState,
+    saveFailed,
+    savePendingChanges,
+    saveWith,
+    reset,
+    resetting,
+    scheduleSave,
+  } = useEditorAutosave<BrevResponse>({
+    initialState: Actions.create(props.brev),
+    save: async (state) => {
+      saveErrorResetRef.current?.();
+      const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
+      const letterWithCursor = requireLetterDocument(stateWithCursor.redigertBrev);
 
-        if (isEqual(stateWithCursor.saksbehandlerValg, savedBrev.current.saksbehandlerValg)) {
-          return oppdaterBrevtekst({
-            brevId: props.brev.info.id,
-            redigertBrev: letterWithCursor,
-            frigiReservasjon: false,
-          });
-        }
+      // Autosave must never release the user's reservation on the letter.
+      if (redigeringsflate === "attestant-redigering") {
+        return lagreAttestertBrevtekst({
+          saksId: String(stateWithCursor.info.saksId),
+          brevId: props.brev.info.id,
+          redigertBrev: letterWithCursor,
+          frigiReservasjon: false,
+        });
+      }
 
-        // Save the full letter when tekstvalg has changed
-        return oppdaterBrev({
+      if (!needsFullMerge.current && isEqual(stateWithCursor.saksbehandlerValg, savedBrev.current.saksbehandlerValg)) {
+        return oppdaterBrevtekst({
+          brevId: props.brev.info.id,
+          redigertBrev: letterWithCursor,
+          frigiReservasjon: false,
+        });
+      }
+
+      needsFullMerge.current = true;
+      setSavingValg(true);
+      try {
+        return await oppdaterBrev({
           saksId: stateWithCursor.info.saksId,
           brevId: stateWithCursor.info.id,
           frigiReservasjon: false,
@@ -156,14 +198,83 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
             saksbehandlerValg: stateWithCursor.saksbehandlerValg,
           },
         });
-      },
-      applyLatestResponse: (state, response) => applySavedResponse(state, response, { preserveUnchangedValg: true }),
-      onSaved,
-    });
+      } finally {
+        setSavingValg(false);
+      }
+    },
+    applyLatestResponse: applyMergedResponse,
+    onSaved,
+  });
+
+  const setEditorState = useCallback<Dispatch<SetStateAction<LetterEditorState>>>(
+    (updater) =>
+      updateEditorState((previous) => {
+        const next = typeof updater === "function" ? updater(previous) : updater;
+        if (next === previous) return next;
+        if (next.saveStatus === "DIRTY" && next.saksbehandlerValg !== previous.saksbehandlerValg) {
+          needsFullMerge.current = true;
+        }
+        if (
+          next.history.entries === previous.history.entries &&
+          next.history.entryPointer !== previous.history.entryPointer
+        ) {
+          const entry = previous.history.entries[Math.max(previous.history.entryPointer, next.history.entryPointer)];
+          if (entry && entry.type !== "PATCH") {
+            needsFullMerge.current = true;
+            scheduleSave(SAKSBEHANDLERVALG_TIMER);
+          }
+        }
+        const entry = next.history.entries[next.history.entryPointer];
+        if (
+          needsFullMerge.current &&
+          next.history !== previous.history &&
+          entry?.type === "PATCH" &&
+          next.history.entries !== previous.history.entries
+        ) {
+          return {
+            ...next,
+            history: addHistoryEntry(
+              previous.history,
+              snapshotPendingEdit(
+                { ...previous, redigertBrev: requireLetterDocument(previous.redigertBrev) },
+                { ...next, redigertBrev: requireLetterDocument(next.redigertBrev) },
+                entry,
+              ),
+            ),
+          };
+        }
+        return next;
+      }),
+    [updateEditorState, scheduleSave],
+  );
+
+  const updateSaksbehandlerValg = useCallback(
+    (valg: SaksbehandlerValg, debounce: boolean) => {
+      let changed = false;
+      setEditorState((state) => {
+        if (isEqual(state.saksbehandlerValg, valg)) return state;
+        changed = true;
+        const next = { ...state, saksbehandlerValg: structuredClone(valg), saveStatus: "DIRTY" as const };
+        return {
+          ...next,
+          history: addHistoryEntry(
+            state.history,
+            createSaksbehandlerValgEndretHistoryEntry(
+              { ...state, redigertBrev: requireLetterDocument(state.redigertBrev) },
+              { ...next, redigertBrev: requireLetterDocument(next.redigertBrev) },
+            ),
+          ),
+        };
+      });
+      if (changed) scheduleSave(debounce ? SAKSBEHANDLERVALG_TIMER : 0);
+    },
+    [setEditorState, scheduleSave],
+  );
 
   const resetLetter = () =>
     reset(async () => {
       const response = await tilbakestillBrev(props.brev.info.id);
+      needsFullMerge.current = false;
       onSaved(response);
       void queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.brev(response.info.id, redigeringsflate) });
       return Actions.create(response);
@@ -174,6 +285,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       saveWith({
         save: async (state) => {
           const response = await operation({ ...state, redigertBrev: requireLetterDocument(state.redigertBrev) });
+          if (options?.merge) needsFullMerge.current = true;
           setEditorState((current) =>
             current.saksbehandlerValg === state.saksbehandlerValg
               ? { ...current, saksbehandlerValg: response.saksbehandlerValg }
@@ -181,7 +293,10 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
           );
           return response;
         },
-        applyLatestResponse: (state, response) => applySavedResponse(state, response, options),
+        applyLatestResponse: (state, response) => {
+          if (options?.merge) needsFullMerge.current = false;
+          return applySavedResponse(state, response, options);
+        },
       }),
     [saveWith, setEditorState],
   );
@@ -201,6 +316,8 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         editorState: editorState,
         redigertBrev: requireLetterDocument(editorState.redigertBrev),
         setEditorState: setEditorState,
+        updateSaksbehandlerValg,
+        savingValg,
         saveLetterOperation,
         saveFailed: saveFailed,
         savePendingChanges,
