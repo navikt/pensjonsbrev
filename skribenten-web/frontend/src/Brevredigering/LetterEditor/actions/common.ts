@@ -1235,9 +1235,8 @@ export const base64ToPdfBlob = (b64: string) =>
   new Blob([Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))], { type: "application/pdf" });
 
 /**
- * Cell literals are inline (an empty one is only 1ch wide), so a click in the rest of the cell hits the
- * non-editable td/th and the browser does not reliably move the caret into the literal. Puts the caret at the
- * end of the cell's last literal, unless the browser already put it in the cell or the user selected text.
+ * Cell literals are inline (an empty one is only 1ch wide), so browsers don't reliably move the caret into them
+ * on clicks in the rest of the cell. Focus the last literal, preserving selections and existing cell focus.
  */
 export function focusCellWhenClickedOutsideText(event: MouseEvent<HTMLTableElement>) {
   const cell = event.target as HTMLElement;
@@ -1247,9 +1246,17 @@ export function focusCellWhenClickedOutsideText(event: MouseEvent<HTMLTableEleme
 
   const literals = cell.querySelectorAll<HTMLElement>("[data-literal-index][contenteditable=true]");
   const literal = literals[literals.length - 1];
-  const textNode = literal?.firstChild;
-  if (!textNode) return;
+  if (!literal) return;
+
+  // Caret code reads offsets in the text node, and diff-decorated literals split the text into segments.
+  const walker = document.createTreeWalker(literal, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) =>
+      node.parentElement?.closest("[data-diff-deletion]") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+  });
+  let textNode: Node | null = null;
+  while (walker.nextNode()) textNode = walker.currentNode;
 
   literal.focus();
-  selection.collapse(textNode, textNode.textContent?.length ?? 0);
+  if (textNode) selection.collapse(textNode, textNode.textContent?.length ?? 0);
+  else selection.collapse(literal, literal.childNodes.length);
 }
