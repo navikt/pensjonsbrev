@@ -763,4 +763,23 @@ test.describe("autolagring", () => {
     await expect(text).toContainText("MELLOM");
     await expect(text).toContainText("ETTER");
   });
+
+  test("gjenoppretter fokus når en strukturell endring angres mens tekstvalg venter på lagring", async ({ page }) => {
+    await page.goto("/saksnummer/123456/brev/1");
+    await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+    await page.clock.install();
+    await page.clock.pauseAt(new Date());
+
+    await page.getByRole("radio", { name: "Rullekake", exact: true }).check();
+    const text = page.getByText("Dersom vi trenger flere opplysninger", { exact: false });
+    await text.click();
+    await page.locator(":focus").press("End");
+    await page.locator(":focus").press("Enter");
+
+    await expect(page.getByRole("button", { name: "Angre (Undo)" })).toBeEnabled();
+    await page.getByRole("button", { name: "Angre (Undo)" }).click();
+    await page.keyboard.type(" FOKUS");
+
+    await expect(text).toContainText("FOKUS");
+  });
 });

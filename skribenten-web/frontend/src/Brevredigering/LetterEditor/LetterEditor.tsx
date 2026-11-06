@@ -98,6 +98,7 @@ export const LetterEditor = ({
               redigertBrev: structuredClone(entry.before.redigertBrev),
               redigertBrevHash: entry.before.redigertBrevHash,
               saksbehandlerValg: structuredClone(entry.before.saksbehandlerValg),
+              focus: entry.type === "DOCUMENT_SNAPSHOT" ? structuredClone(entry.beforeFocus) : current.focus,
             }
           : applyPatches(current, entry.inversePatches);
       return {
@@ -123,6 +124,7 @@ export const LetterEditor = ({
               redigertBrev: structuredClone(entry.after.redigertBrev),
               redigertBrevHash: entry.after.redigertBrevHash,
               saksbehandlerValg: structuredClone(entry.after.saksbehandlerValg),
+              focus: entry.type === "DOCUMENT_SNAPSHOT" ? structuredClone(entry.afterFocus) : current.focus,
             }
           : applyPatches(current, entry.patches);
       return {
