@@ -17,6 +17,7 @@ import {
   type Text,
 } from "~/api/templateDocumentationTypes";
 import { Document, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationView";
+import { LineContent } from "~/search/components/highlight";
 import * as documentMatching from "~/templateSearch/documentMatch";
 import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
 
@@ -921,6 +922,36 @@ describe("Document full-query coverage", () => {
       ["uføretrygd", true],
       ["barnetillegg", false],
     ]);
+  });
+
+  it.each([
+    { name: "body row", content: table([row("barnetillegg", "uføretrygd")]) },
+    { name: "header row", content: table([], row("barnetillegg", "uføretrygd").content) },
+    { name: "row with empty cells", content: table([row("", "barnetillegg", " \t", "uføretrygd", "")]) },
+  ])("highlights an exact query copied from a $name snippet", ({ content }) => {
+    const needle = "barnetillegg | uføretrygd";
+    const snippet = renderToStaticMarkup(
+      <LineContent exact line={[{ type: "text", value: needle }]} needle={needle} />,
+    );
+    expect([...snippet.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual([needle]);
+
+    const html = renderParagraph([content], true, needle);
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["barnetillegg", true],
+      ["uføretrygd", true],
+    ]);
+    expect(text(html)).not.toContain("|");
+  });
+
+  it("does not match an exact phrase across table cells without the indexed separator", () => {
+    const html = renderParagraph([table([row("barnetillegg", "uføretrygd")])], true);
+
+    expect(html).not.toContain("<mark");
   });
 
   it.each([

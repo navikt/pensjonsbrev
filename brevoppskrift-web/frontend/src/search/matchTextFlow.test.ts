@@ -7,6 +7,21 @@ function text(source: string): TextFlow<string> {
 }
 
 describe("incremental text-flow matching", () => {
+  it("matches an indexed separator without assigning it visible highlight ranges", () => {
+    const flow: TextFlow<string>[] = [text("left"), { type: "separator", text: " | " }, text("right")];
+    const result = matchTextFlow(flow, "left | right", true);
+
+    expect(result.fullMatch).toBe(true);
+    expect([...result.parts]).toEqual([
+      ["left", { ranges: [{ start: 0, end: 4, terms: [0] }], fullMatch: true }],
+      ["right", { ranges: [{ start: 0, end: 5, terms: [0] }], fullMatch: true }],
+    ]);
+
+    const separatorOnly = matchTextFlow(flow, "|", true);
+    expect(separatorOnly.fullMatch).toBe(true);
+    expect([...separatorOnly.parts.values()].every((parts) => parts.ranges.length === 0)).toBe(true);
+  });
+
   it.each([false, true])(
     "handles 35 optional siblings without expanding their combinations (exact: %s)",
     (exact) => {

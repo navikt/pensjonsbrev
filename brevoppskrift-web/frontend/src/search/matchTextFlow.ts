@@ -11,6 +11,7 @@ export type HighlightParts = { ranges: HighlightRange[]; fullMatch: boolean };
 
 export type TextFlow<T> =
   | { type: "text"; source: T; text: string }
+  | { type: "separator"; text: string }
   | { type: "branches"; branches: TextFlow<T>[][] }
   | { type: "variable" }
   | { type: "break" }
@@ -99,7 +100,11 @@ class Conditions {
 type Pattern = { text: string; errors: number };
 type Prefix = { term: number; start: number; prefix: number; errors: number; length: number; condition: number };
 type Occurrence = { term: number; start: number; end: number; errors: number };
-type Origin<T> = { source: T; index: number; character: string; condition: number };
+type Origin<T> = {
+  position: { source: T; index: number } | undefined;
+  character: string;
+  condition: number;
+};
 type LineState = {
   condition: number;
   pendingSpace: number;
@@ -249,13 +254,14 @@ export function matchTextFlow<T>(
           selected = 0;
         }
       }
-      if (selected) {
-        const part = parts.get(origin.source);
+      if (selected && origin.position) {
+        const { source, index } = origin.position;
+        const part = parts.get(source);
         if (part) {
-          const previous = ranges.get(origin.source);
-          ranges.set(origin.source, {
-            start: Math.min(previous?.start ?? origin.index, origin.index),
-            end: Math.max(previous?.end ?? 0, origin.index + 1),
+          const previous = ranges.get(source);
+          ranges.set(source, {
+            start: Math.min(previous?.start ?? index, index),
+            end: Math.max(previous?.end ?? 0, index + 1),
             terms: [occurrence.term],
           });
           part.fullMatch ||= conditions.and(selected, complete) !== 0;
@@ -359,7 +365,7 @@ export function matchTextFlow<T>(
       } else if (item.type === "space") {
         lines = new Map([...lines].map(([id, line]) => [id, { ...line, pendingSpace: line.condition }]));
       } else {
-        if (!parts.has(item.source)) {
+        if (item.type === "text" && !parts.has(item.source)) {
           parts.set(item.source, { ranges: [], fullMatch: false });
         }
         for (let index = 0; index < item.text.length; index++) {
@@ -367,6 +373,7 @@ export function matchTextFlow<T>(
             lines = new Map([...lines].map(([id, line]) => [id, { ...line, pendingSpace: line.condition }]));
             continue;
           }
+          const position = item.type === "text" ? { source: item.source, index } : undefined;
           for (const character of item.text[index].toLowerCase()) {
             let spaces = 0;
             let present = 0;
@@ -376,7 +383,7 @@ export function matchTextFlow<T>(
             }
             if (spaces) {
               const origin = origins.length;
-              origins.push({ source: item.source, index, character: " ", condition: spaces });
+              origins.push({ position, character: " ", condition: spaces });
               lines = new Map(
                 [...lines].map(([id, line]) => [
                   id,
@@ -385,7 +392,7 @@ export function matchTextFlow<T>(
               );
             }
             const origin = origins.length;
-            origins.push({ source: item.source, index, character, condition: present });
+            origins.push({ position, character, condition: present });
             lines = new Map([...lines].map(([id, line]) => [id, characterAt(line, origin, line.condition)]));
           }
         }
