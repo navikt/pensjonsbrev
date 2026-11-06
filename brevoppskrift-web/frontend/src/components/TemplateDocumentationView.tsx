@@ -441,9 +441,31 @@ function CocsList<E extends Element>({
   const highlight = useSearchHighlight();
   const literalParts = new Map<number, HighlightParts>();
   if (highlight) {
+    const lineParts: HighlightParts[] = [];
+    const finishLine = () => {
+      if (!highlight.exact) {
+        const matchedTerms = new Set(lineParts.flatMap(({ ranges }) => ranges.flatMap(({ terms }) => terms)));
+        const fullMatch =
+          matchedTerms.size > 0 &&
+          highlight.needle.split(/\s+/).every((term, index) => term.length === 0 || matchedTerms.has(index));
+        if (fullMatch) {
+          for (const parts of lineParts) {
+            parts.fullMatch = true;
+          }
+        }
+      }
+      lineParts.length = 0;
+    };
     let start = 0;
     while (start < items.length) {
       if (literalTextOf(items[start]) === undefined) {
+        const item = items[start];
+        if (
+          item?.controlStructureType !== ContentOrControlStructureType.CONTENT ||
+          item.content.elementType !== ElementType.PARAGRAPH_TEXT_EXPRESSION
+        ) {
+          finishLine();
+        }
         start++;
         continue;
       }
@@ -462,9 +484,11 @@ function CocsList<E extends Element>({
         const itemIndex = indexes[index];
         if (itemIndex !== undefined) {
           literalParts.set(itemIndex, parts);
+          lineParts.push(parts);
         }
       });
     }
+    finishLine();
   }
   return items.map((cocs, index) => (
     <ContentOrControlStructureComponent

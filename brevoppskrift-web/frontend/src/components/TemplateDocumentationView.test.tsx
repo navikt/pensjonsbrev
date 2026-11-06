@@ -11,6 +11,7 @@ import {
   ExprType,
   type OutlineContent,
   type ParagraphContent,
+  type Text,
 } from "~/api/templateDocumentationTypes";
 import { Document, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationView";
 import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
@@ -495,6 +496,111 @@ describe("Document search marking", () => {
     expect(withoutHighlight).toBe(plain);
     expect(plain).not.toContain("<mark");
     expect(plain).not.toContain("data-search-hit");
+  });
+});
+
+describe("Document full-query coverage", () => {
+  function literal(text: string): ContentOrControlStructure<Text> {
+    return {
+      controlStructureType: ContentOrControlStructureType.CONTENT,
+      content: { elementType: ElementType.PARAGRAPH_TEXT_LITERAL, text },
+    };
+  }
+
+  const variable: ContentOrControlStructure<ParagraphContent> = {
+    controlStructureType: ContentOrControlStructureType.CONTENT,
+    content: { elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION, expression: fieldPath("antall") },
+  };
+
+  function renderParagraph(items: ContentOrControlStructure<ParagraphContent>[], exact = false): string {
+    return renderToStaticMarkup(
+      <SearchHighlightProvider
+        highlight={{
+          needle: "barnetillegg uføretrygd",
+          exact,
+          matchingBlocks: new Set([0]),
+          activeBlock: 0,
+        }}
+      >
+        <Document
+          templateDocumentation={{
+            title: [],
+            outline: [
+              {
+                controlStructureType: ContentOrControlStructureType.CONTENT,
+                content: { elementType: ElementType.PARAGRAPH, index: 0, paragraph: items },
+              },
+            ],
+            attachments: [],
+            templateModelSpecification: { types: {}, letterModelTypeName: "" },
+          }}
+        />
+      </SearchHighlightProvider>,
+    );
+  }
+
+  it("prefers full term coverage across a variable over an earlier partial-match branch", () => {
+    const html = renderParagraph([
+      {
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [literal("barnetillegg")],
+        elseIf: [],
+        showElse: [literal("barnetillegg "), variable, literal(" uføretrygd")],
+      },
+    ]);
+
+    const marks = [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)];
+    expect(marks.map(([, attributes, text]) => [text, attributes.includes("data-search-full-match")])).toEqual([
+      ["barnetillegg", false],
+      ["barnetillegg", true],
+      ["uføretrygd", true],
+    ]);
+    expect(text(html)).toContain("antall");
+  });
+
+  it("does not combine term coverage from alternative branches", () => {
+    const html = renderParagraph([
+      {
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [literal("barnetillegg")],
+        elseIf: [],
+        showElse: [literal("uføretrygd")],
+      },
+    ]);
+
+    expect(html.match(/<mark/g)).toHaveLength(2);
+    expect(html).not.toContain("data-search-full-match");
+  });
+
+  it("does not combine term coverage across separate searchable lines in a paragraph", () => {
+    const html = renderParagraph([
+      literal("barnetillegg"),
+      {
+        controlStructureType: ContentOrControlStructureType.CONTENT,
+        content: {
+          elementType: ElementType.PARAGRAPH_ITEMLIST,
+          type: "PUNKTLISTE",
+          items: [
+            {
+              controlStructureType: ContentOrControlStructureType.CONTENT,
+              content: { elementType: ElementType.PARAGRAPH_ITEMLIST_ITEM, text: [literal("Annen tekst")] },
+            },
+          ],
+        },
+      },
+      literal("uføretrygd"),
+    ]);
+
+    expect(html.match(/<mark/g)).toHaveLength(2);
+    expect(html).not.toContain("data-search-full-match");
+  });
+
+  it("does not treat terms separated by a variable as an exact phrase", () => {
+    const html = renderParagraph([literal("barnetillegg "), variable, literal(" uføretrygd")], true);
+
+    expect(html).not.toContain("<mark");
   });
 });
 
