@@ -1,6 +1,5 @@
 import { css } from "@emotion/react";
 import {
-  Alert,
   Bleed,
   BodyShort,
   Box,
@@ -8,35 +7,41 @@ import {
   Checkbox,
   Heading,
   HStack,
-  Search,
+  LocalAlert,
   Tabs,
   Tag,
   VStack,
 } from "@navikt/ds-react";
-import { type QueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import { getBrevkoderMedMetadata, getTemplateDescription, type MalType } from "~/api/brevbaker-api-endpoints";
+import { type MalType } from "~/api/brevbaker-api-endpoints";
 import { type TemplateDescription } from "~/api/brevbakerTypes";
 import { AnimatedEllipsis } from "~/components/AnimatedEllipsis";
 import {
   BrevResultList,
   CONTENT_PAGE_SIZE,
-  type DisplayedSearch,
+  groupBrevHits,
   LETTER_PAGE_SIZE,
-  SearchActivityOutline,
+  SearchField,
   SearchResultsPanel,
   SearchSnippet,
-  type TemplateRef,
   templateKey,
   useTemplateSearch,
 } from "~/search";
+import { isSelectedResult, pageOfResult, selectedRow } from "~/search/resultNavigation";
+import {
+  DEFAULT_TAB,
+  parseResultRef,
+  type ResultTab,
+  resultRefOf,
+  type SearchCriteria,
+  type TemplatesSearchParams,
+  validateTemplatesSearch,
+} from "~/search/searchContext";
+import { displayTitleOf, fetchAllDescriptions, toRefs } from "~/search/templateRefs";
+import { useScrollToSelectedResult } from "~/search/useScrollToSelectedResult";
 
-function displayTitleOf(description: { name: string; metadata?: { displayTitle?: string } | null }): string {
-  const title = description.metadata?.displayTitle;
-  return title?.trim() ? title : description.name;
-}
 const MAL_TYPE_LABELS: Record<MalType, string> = {
   autobrev: "automatiske brev",
   redigerbar: "redigerbare brev",
@@ -46,6 +51,12 @@ function malTypeLabels(malTypes: MalType[]): string {
   return malTypes.map((malType) => MAL_TYPE_LABELS[malType]).join(" og ");
 }
 export const Route = createFileRoute("/templates")({
+  // The search lives in the URL, so a copied address, a refresh and the way
+  // back from a template all restore it. See `searchContext.ts`.
+  validateSearch: validateTemplatesSearch,
+  // Typing, paging and switching tab only change search params; the template
+  // list does not need loading again for that.
+  shouldReload: ({ cause }) => cause !== "stay",
   loader: async ({ context }) => {
     const [autobrev, redigerbar] = await Promise.all([
       fetchAllDescriptions(context.queryClient, "autobrev"),
@@ -55,22 +66,6 @@ export const Route = createFileRoute("/templates")({
   },
   component: AllTemplates,
 });
-async function fetchAllDescriptions(queryClient: QueryClient, malType: MalType): Promise<TemplateDescription[]> {
-  const descriptions = await queryClient.ensureQueryData({
-    queryKey: getBrevkoderMedMetadata.queryKey(malType),
-    queryFn: () => getBrevkoderMedMetadata.queryFn(malType),
-  });
-  if (!Array.isArray(descriptions)) {
-    throw new TypeError(
-      `Forventet en liste med brevkoder for "${malType}", men fikk noe annet. Går kallene til brevbaker-APIet (f.eks. via BFF eller Vite-proxy)?`,
-    );
-  }
-  // Seed the per-template description cache so the detail route loads instantly.
-  for (const description of descriptions) {
-    queryClient.setQueryData(getTemplateDescription.queryKey(malType, description.name), description);
-  }
-  return descriptions;
-}
 function TemplateList({ templates, malType }: { templates: TemplateDescription[]; malType: MalType }) {
   if (templates.length === 0) {
     return <span>Ingen treff</span>;
@@ -110,14 +105,6 @@ function TabLabel({ label, count }: { label: string; count?: number }) {
     </span>
   );
 }
-function toRefs(templates: TemplateDescription[], malType: MalType): TemplateRef[] {
-  return templates.map((description) => ({
-    malType,
-    brevkode: description.name,
-    title: displayTitleOf(description),
-    languages: description.languages,
-  }));
-}
 const SEARCH_FAILED_MESSAGE = "Søket kunne ikke gjennomføres på grunn av en teknisk feil.";
 const INDEXING_SUMMARY = (
   <>
@@ -125,17 +112,18 @@ const INDEXING_SUMMARY = (
     <AnimatedEllipsis />
   </>
 );
-/** A page number, and the search it is a page of. */
-type Paging = { page: number; of: DisplayedSearch | undefined };
 function AllTemplates() {
   const { autobrev, redigerbar } = Route.useLoaderData();
-  const refs = useMemo<TemplateRef[]>(
+  const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const refs = useMemo(
     () => [...toRefs(autobrev, "autobrev"), ...toRefs(redigerbar, "redigerbar")],
     [autobrev, redigerbar],
   );
   const {
     query,
     setQuery,
+    settledQuery,
     exactOnly,
     setExactOnly,
     isLoading,
@@ -144,57 +132,142 @@ function AllTemplates() {
     searchFailed,
     failedMalTypes,
     retryFailed,
-  } = useTemplateSearch(refs);
-  const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
-  // A page belongs to the search it was chosen in. Once a different search is
-  // on screen the stored page no longer applies and reads as page 1 - in the
-  // same render the new hits arrive in, so the list is never rendered at a
-  // stale page first. The tab switch resets it explicitly.
-  const [paging, setPaging] = useState<Paging>({ page: 1, of: undefined });
-  const page = paging.of === displayed ? paging.page : 1;
-  const setPage = (next: number) => setPaging({ page: next, of: displayed });
-  const activeHits = (activeTab === "innhold" ? displayed?.contentHits : displayed?.brevHits) ?? [];
+  } = useTemplateSearch(refs, { initialQuery: search.q, initialExactOnly: search.exact });
+
+  // The input is the source of truth while the page is open; the URL follows
+  // it. Only the settled query is written, with `replace`, so typing neither
+  // adds history entries nor navigates per keystroke. A new search starts on
+  // page 1 with nothing selected.
+  const urlQuery = search.q;
+  const urlExact = search.exact;
+  const lastUrlQuery = useRef({ q: urlQuery, exact: urlExact });
+  const writtenQueries = useRef<Array<{ q?: string; exact?: true }>>([]);
+  const syncingFromUrl = useRef<{ query: string; exactOnly: boolean } | undefined>(undefined);
+  const editedFromSelection = useRef(false);
+  useEffect(() => {
+    const previous = lastUrlQuery.current;
+    if (previous.q === urlQuery && previous.exact === urlExact) {
+      return;
+    }
+    lastUrlQuery.current = { q: urlQuery, exact: urlExact };
+    const writtenIndex = writtenQueries.current.findIndex(
+      (written) => written.q === urlQuery && written.exact === urlExact,
+    );
+    if (writtenIndex !== -1) {
+      writtenQueries.current.splice(0, writtenIndex + 1);
+      return;
+    }
+    writtenQueries.current = [];
+    editedFromSelection.current = false;
+    const queryFromUrl = urlQuery ?? "";
+    const exactOnlyFromUrl = urlExact === true;
+    syncingFromUrl.current = { query: queryFromUrl, exactOnly: exactOnlyFromUrl };
+    setQuery(queryFromUrl);
+    setExactOnly(exactOnlyFromUrl);
+  }, [urlQuery, urlExact, setQuery, setExactOnly]);
+  useEffect(() => {
+    const target = { q: settledQuery || undefined, exact: exactOnly || undefined };
+    if (search.selected && !editedFromSelection.current) {
+      return;
+    }
+    if (syncingFromUrl.current) {
+      const synced = syncingFromUrl.current;
+      if (query === synced.query && exactOnly === synced.exactOnly) {
+        if (settledQuery !== query.trim()) {
+          return;
+        }
+      }
+      syncingFromUrl.current = undefined;
+    }
+    const current = { q: search.q, exact: search.exact };
+    const lastRequested = writtenQueries.current.at(-1) ?? current;
+    if (target.q === lastRequested.q && target.exact === lastRequested.exact) {
+      return;
+    }
+    writtenQueries.current.push(target);
+    void navigate({
+      replace: true,
+      search: (s) =>
+        s.q === current.q && s.exact === current.exact ? { ...s, ...target, page: undefined, selected: undefined } : s,
+    });
+  }, [settledQuery, exactOnly, navigate, query, search.q, search.exact, search.selected]);
+
+  const activeTab: ResultTab = search.tab ?? DEFAULT_TAB;
+  const selected = useMemo(() => parseResultRef(search.selected), [search.selected]);
+  const groupsLanguages = activeTab === "brev";
+  const contentHits = displayed?.contentHits ?? [];
+  const brevRows = useMemo(() => groupBrevHits(displayed?.brevHits ?? []), [displayed?.brevHits]);
+  const activeRefs = useMemo(
+    () =>
+      groupsLanguages
+        ? brevRows.map((row) => resultRefOf(row.template))
+        : contentHits.map((hit) => resultRefOf(hit.template)),
+    [groupsLanguages, brevRows, contentHits],
+  );
+  const selectedResult = useMemo(
+    () => selectedRow(activeRefs, selected, groupsLanguages),
+    [activeRefs, selected, groupsLanguages],
+  );
   const pageSize = activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE;
+  // Coming back from a template, the list opens at the page showing it.
+  const page =
+    search.page ?? (selectedResult && pageOfResult(activeRefs, selectedResult, pageSize, groupsLanguages)) ?? 1;
   // Only the active tab's panel is mounted, so both panels can share the page
   // state; each still slices with its own page size.
-  const pageCount = Math.max(1, Math.ceil(activeHits.length / pageSize));
+  const pageCount = Math.max(1, Math.ceil(activeRefs.length / pageSize));
   const safePage = Math.min(page, pageCount);
+  const setPage = (next: number) =>
+    void navigate({ replace: true, search: (s) => ({ ...s, page: next, selected: undefined }) });
+  // Records the way back from the opened result in this history entry before
+  // leaving, so browser Back returns to the search it was found in, with it marked.
+  const openResult = useCallback(
+    (back: TemplatesSearchParams) => {
+      editedFromSelection.current = false;
+      return navigate({ replace: true, search: back });
+    },
+    [navigate],
+  );
+  const criteria = useMemo<SearchCriteria | undefined>(
+    () => displayed && { q: displayed.highlight.needle, exact: displayed.highlight.exactOnly, tab: activeTab },
+    [displayed, activeTab],
+  );
   // The result lists are by far the most expensive thing on this page, and they
-  // depend only on the search on screen and the page - never on `isPending`.
-  // Memoising the elements lets React bail out of the whole subtree when the
-  // only thing that changed is the search outline, so toggling it twice per search
-  // costs nothing while the user is typing.
+  // depend only on the search on screen, the page and the selection - never on
+  // `isPending`. Memoising the elements lets React bail out of the whole
+  // subtree when the only thing that changed is the search outline, so
+  // toggling it twice per search costs nothing while the user is typing.
   const contentList = useMemo(() => {
-    if (!displayed || displayed.contentHits.length === 0) {
+    if (!displayed || !criteria || displayed.contentHits.length === 0) {
       return null;
     }
-    const { contentHits, highlight } = displayed;
     const start = (safePage - 1) * CONTENT_PAGE_SIZE;
-    return contentHits
+    return displayed.contentHits
       .slice(start, start + CONTENT_PAGE_SIZE)
       .map((hit) => (
         <SearchSnippet
-          exact={highlight.exactOnly}
+          criteria={criteria}
           hit={hit}
           key={templateKey(hit.template)}
-          needle={highlight.needle}
+          onOpen={openResult}
+          selected={isSelectedResult(resultRefOf(hit.template), selectedResult, false)}
         />
       ));
-  }, [displayed, safePage]);
+  }, [displayed, criteria, safePage, selectedResult, openResult]);
   const brevList = useMemo(() => {
-    if (!displayed || displayed.brevHits.length === 0) {
+    if (!displayed || !criteria || brevRows.length === 0) {
       return null;
     }
-    const { brevHits, highlight } = displayed;
     const start = (safePage - 1) * LETTER_PAGE_SIZE;
     return (
       <BrevResultList
-        exact={highlight.exactOnly}
-        hits={brevHits.slice(start, start + LETTER_PAGE_SIZE)}
-        needle={highlight.needle}
+        criteria={criteria}
+        onOpen={openResult}
+        rows={brevRows.slice(start, start + LETTER_PAGE_SIZE)}
+        selected={selectedResult}
       />
     );
-  }, [displayed, safePage]);
+  }, [displayed, criteria, brevRows, safePage, selectedResult, openResult]);
+  useScrollToSelectedResult(search.selected, activeTab === "innhold" ? contentList : brevList);
   // Summaries describe the search on screen, so while the next one runs the
   // previous summary simply stays. Zero hits is reported here too, leaving the
   // panel body empty.
@@ -225,67 +298,60 @@ function AllTemplates() {
           Brevoppskrift
         </Heading>
         <Box maxWidth="480px" width="100%">
-          <SearchActivityOutline active={isLoading || isPending}>
-            <Search
-              autoFocus
-              label="Søk etter innholdet eller brevmal"
-              onChange={setQuery}
-              onClear={() => setQuery("")}
-              placeholder="Søk etter innholdet eller brevmal"
-              size="small"
-              value={query}
-              variant="simple"
-            />
-          </SearchActivityOutline>
+          <SearchField
+            active={isLoading || isPending}
+            autoFocus
+            label="Søk etter brevmal eller innhold"
+            onChange={(value) => {
+              editedFromSelection.current = true;
+              setQuery(value);
+            }}
+            value={query}
+          />
         </Box>
         <Checkbox checked={exactOnly} onChange={(e) => setExactOnly(e.target.checked)} size="small">
           Vis kun nøyaktige treff
         </Checkbox>
         {failedMalTypes.length > 0 ? (
-          <Alert size="small" variant="warning">
-            <HStack align="center" gap="space-16" justify="space-between">
-              <BodyShort>
-                Kunne ikke hente innhold for {malTypeLabels(failedMalTypes)}. Søkeresultatene kan derfor være
-                ufullstendige.
-              </BodyShort>
-              <Button onClick={retryFailed} size="small" variant="secondary">
-                Prøv igjen
-              </Button>
-            </HStack>
-          </Alert>
+          <LocalAlert css={{ alignSelf: "flex-start" }} size="small" status="warning">
+            <LocalAlert.Header>
+              <LocalAlert.Title as="h2">Kunne ikke hente innhold for {malTypeLabels(failedMalTypes)}</LocalAlert.Title>
+            </LocalAlert.Header>
+            <LocalAlert.Content>
+              <HStack align="center" gap="space-16" justify="space-between">
+                <BodyShort size="small">Søkeresultatene kan derfor være ufullstendige.</BodyShort>
+                <Button onClick={retryFailed} size="small" variant="secondary">
+                  Prøv igjen
+                </Button>
+              </HStack>
+            </LocalAlert.Content>
+          </LocalAlert>
         ) : null}
         <VStack asChild flexGrow="1" overflow="hidden">
           <Bleed asChild marginInline="space-16">
             <Tabs
               css={{ ">div:first-of-type": { marginInline: "var(--ax-space-16)" } }}
-              onChange={(tab) => {
-                setActiveTab(tab === "brev" ? "brev" : "innhold");
-                setPaging({ page: 1, of: displayed });
-              }}
+              onChange={(tab) =>
+                void navigate({
+                  replace: true,
+                  search: (s) => ({
+                    ...s,
+                    tab: tab === "innhold" ? "innhold" : undefined,
+                    page: undefined,
+                    selected: undefined,
+                  }),
+                })
+              }
               value={activeTab}
             >
               <Tabs.List>
+                <Tabs.Tab label={<TabLabel count={displayed?.brevTemplateCount} label="Brev" />} value="brev" />
                 <Tabs.Tab
                   label={<TabLabel count={displayed?.contentTemplateCount} label="Innhold" />}
                   value="innhold"
                 />
-                <Tabs.Tab label={<TabLabel count={displayed?.brevTemplateCount} label="Brev" />} value="brev" />
               </Tabs.List>
 
-              <Box asChild flexGrow="1" overflow="hidden">
-                <Tabs.Panel value="innhold">
-                  <SearchResultsPanel
-                    error={error}
-                    isPending={isPending}
-                    page={safePage}
-                    pageCount={pageCount}
-                    setPage={setPage}
-                    summary={contentSummary}
-                  >
-                    {contentList}
-                  </SearchResultsPanel>
-                </Tabs.Panel>
-              </Box>
               <Box asChild flexGrow="1" overflow="hidden">
                 <Tabs.Panel value="brev">
                   <SearchResultsPanel
@@ -318,6 +384,20 @@ function AllTemplates() {
                         </VStack>
                       </VStack>
                     )}
+                  </SearchResultsPanel>
+                </Tabs.Panel>
+              </Box>
+              <Box asChild flexGrow="1" overflow="hidden">
+                <Tabs.Panel value="innhold">
+                  <SearchResultsPanel
+                    error={error}
+                    isPending={isPending}
+                    page={safePage}
+                    pageCount={pageCount}
+                    setPage={setPage}
+                    summary={contentSummary}
+                  >
+                    {contentList}
                   </SearchResultsPanel>
                 </Tabs.Panel>
               </Box>
