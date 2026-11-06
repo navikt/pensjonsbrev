@@ -86,14 +86,14 @@ object HvaErBunnfradragFribelopOgVenteperiode : OutlinePhrase<LangBokmalNynorsk>
         }
         paragraph {
             text (
-                bokmal { + "132 000/12 = 11 000 x 8 = 90 000 " },
-                nynorsk { + "132 000/12 = 11 000 x 8 = 90 000 " }
+                bokmal { + "(132 000 / 12) x 8 = 88 000 " },
+                nynorsk { + "(132 000 / 12) x 8 = 88 000 " }
             )
         }
         paragraph {
             text (
-                bokmal { + "Bunnfradraget til Kim dette året er 90 000 kroner. Det betyr at Kim kan tjene 90 000 kroner fra januar til august før vi begynner å redusere uføretrygden. Det er egne regler for inntekt og alderspensjon. " },
-                nynorsk { + "Botnfrådraget til Kim dette året er 90 000 kroner. Det betyr at Kim kan tene 90 000 kroner frå januar til august før vi begynner å redusere uføretrygda. Det er eigne reglar for inntekt og alderspensjon. " }
+                bokmal { + "Bunnfradraget til Kim dette året er 88 000 kroner. Det betyr at Kim kan tjene 88 000 kroner fra januar til august før vi begynner å redusere uføretrygden. Det er egne regler for inntekt og alderspensjon. " },
+                nynorsk { + "Botnfrådraget til Kim dette året er 88 000 kroner. Det betyr at Kim kan tene 88 000 kroner frå januar til august før vi begynner å redusere uføretrygda. Det er eigne reglar for inntekt og alderspensjon. " }
             )
         }
         paragraph {
