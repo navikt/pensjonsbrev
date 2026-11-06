@@ -28,6 +28,7 @@ import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
+import { remapFocus } from "./model/remapFocus";
 import { type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
 import { useEditorKeyboardShortcuts } from "./utils";
@@ -98,7 +99,10 @@ export const LetterEditor = ({
               redigertBrev: structuredClone(entry.before.redigertBrev),
               redigertBrevHash: entry.before.redigertBrevHash,
               saksbehandlerValg: structuredClone(entry.before.saksbehandlerValg),
-              focus: entry.type === "DOCUMENT_SNAPSHOT" ? structuredClone(entry.beforeFocus) : current.focus,
+              focus:
+                entry.type === "DOCUMENT_SNAPSHOT"
+                  ? structuredClone(entry.beforeFocus)
+                  : remapFocus(current.focus, current.redigertBrev, entry.before.redigertBrev),
             }
           : applyPatches(current, entry.inversePatches);
       return {
@@ -124,7 +128,10 @@ export const LetterEditor = ({
               redigertBrev: structuredClone(entry.after.redigertBrev),
               redigertBrevHash: entry.after.redigertBrevHash,
               saksbehandlerValg: structuredClone(entry.after.saksbehandlerValg),
-              focus: entry.type === "DOCUMENT_SNAPSHOT" ? structuredClone(entry.afterFocus) : current.focus,
+              focus:
+                entry.type === "DOCUMENT_SNAPSHOT"
+                  ? structuredClone(entry.afterFocus)
+                  : remapFocus(current.focus, current.redigertBrev, entry.after.redigertBrev),
             }
           : applyPatches(current, entry.patches);
       return {

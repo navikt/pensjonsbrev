@@ -714,7 +714,7 @@ test.describe("autolagring", () => {
     await expect(page.getByText("OSTEKAKE", { exact: true })).toBeVisible();
   });
 
-  test("bevarer teksthistorikk før, mellom og etter valg som lagres sammen", async ({ page }) => {
+  test("bevarer teksthistorikk før, mellom og etter valg", async ({ page }) => {
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=false", async (route) => {
       const request: OppdaterBrevRequest = route.request().postDataJSON();
       const response = structuredClone(brev);
@@ -729,19 +729,23 @@ test.describe("autolagring", () => {
     await page.clock.install();
     await page.clock.pauseAt(new Date());
     const text = page.getByText("Dersom vi trenger flere opplysninger", { exact: false });
-    await text.click();
-    await page.locator(":focus").press("End");
-    await page.locator(":focus").pressSequentially(" FØR");
+    const typeAtEnd = async (suffix: string) => {
+      await text.click();
+      await page.locator(":focus").press("End");
+      await page.locator(":focus").pressSequentially(suffix);
+    };
+    const mergeChoice = async () => {
+      await page.clock.runFor(SAKSBEHANDLERVALG_TIMER);
+      await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+    };
+
+    await typeAtEnd(" FØR");
     await page.getByRole("radio", { name: "Rullekake", exact: true }).check();
-    await text.click();
-    await page.locator(":focus").press("End");
-    await page.locator(":focus").pressSequentially(" MELLOM");
+    await mergeChoice();
+    await typeAtEnd(" MELLOM");
     await page.getByRole("radio", { name: "Ostekake", exact: true }).check();
-    await text.click();
-    await page.locator(":focus").press("End");
-    await page.locator(":focus").pressSequentially(" ETTER");
-    await page.clock.runFor(SAKSBEHANDLERVALG_TIMER);
-    await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+    await mergeChoice();
+    await typeAtEnd(" ETTER");
 
     const undo = page.getByRole("button", { name: "Angre (Undo)" });
     await undo.click();
@@ -749,37 +753,96 @@ test.describe("autolagring", () => {
     await expect(text).toContainText("MELLOM");
     await undo.click();
     await expect(page.getByRole("radio", { name: "Rullekake", exact: true })).toBeChecked();
+    await mergeChoice();
     await undo.click();
     await expect(text).not.toContainText("MELLOM");
     await expect(text).toContainText("FØR");
     await undo.click();
+    await mergeChoice();
     await undo.click();
     await expect(text).not.toContainText("FØR");
+
     const redo = page.getByRole("button", { name: "Gjør om (Redo)" });
-    for (let i = 0; i < 5; i++) await redo.click();
-    await page.clock.runFor(SAKSBEHANDLERVALG_TIMER);
-    await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+    for (let i = 0; i < 5; i++) {
+      await redo.click();
+      if (i % 2 === 1) await mergeChoice();
+    }
     await expect(text).toContainText("FØR");
     await expect(text).toContainText("MELLOM");
     await expect(text).toContainText("ETTER");
   });
 
-  test("gjenoppretter fokus når en strukturell endring angres mens tekstvalg venter på lagring", async ({ page }) => {
+  test("fryser brevteksten straks et valg endres og beholder fokus når flettingen setter inn et avsnitt", async ({
+    page,
+  }) => {
+    const specification = JSON.parse(fs.readFileSync(path.join(fixturesDir, "modelSpecification.json"), "utf-8"));
+    specification.types[
+      "no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg"
+    ].ekstraTekstvalg = { type: "scalar", nullable: false, kind: "BOOLEAN", displayText: "Ekstra tekstvalg" };
+    await page.route(
+      "**/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification",
+      (route) => route.fulfill({ json: specification }),
+    );
+    const svar = Promise.withResolvers<void>();
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=false", async (route) => {
+      const request: OppdaterBrevRequest = route.request().postDataJSON();
+      const response = { ...structuredClone(brev), ...request };
+      // Å slå av et valg gir ingen utheving, så fokus skal bli i teksten brukeren sto i.
+      if (request.saksbehandlerValg.ekstraTekstvalg === false) {
+        await svar.promise;
+        const innsatt = structuredClone(response.redigertBrev.blocks[0]);
+        innsatt.id = 999_999;
+        innsatt.content = [{ ...structuredClone(innsatt.content[0]), id: 999_998, text: "Innsatt avsnitt" }];
+        response.redigertBrev.blocks.unshift(innsatt);
+      }
+      await route.fulfill({ json: response });
+    });
+    await page.goto("/saksnummer/123456/brev/1");
+    await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+    await page.clock.install();
+    await page.clock.pauseAt(new Date());
+    const ekstraTekstvalg = page.getByRole("checkbox", { name: "Ekstra tekstvalg" });
+    await ekstraTekstvalg.check();
+    await page.clock.runFor(SAKSBEHANDLERVALG_TIMER);
+    await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
+
+    const text = page.locator("[data-literal-index]", { hasText: "flere opplysninger fra deg" });
+    await text.click();
+    await ekstraTekstvalg.uncheck();
+    await expect(text).toHaveAttribute("contenteditable", "false");
+    await expect(page.getByRole("button", { name: "Angre (Undo)" })).toBeDisabled();
+
+    await page.clock.runFor(SAKSBEHANDLERVALG_TIMER);
+    await expect(text).toHaveAttribute("contenteditable", "false");
+    svar.resolve();
+    await expect(page.getByText("Innsatt avsnitt")).toBeVisible();
+    await expect(text).toHaveAttribute("contenteditable", "true");
+    await page.keyboard.type(" FOKUS");
+
+    await expect(text).toContainText("FOKUS");
+    await expect(page.getByText("Innsatt avsnitt", { exact: true })).toBeVisible();
+  });
+
+  test("tilbakestilling av malen forkaster verdier som venter på feltets debounce", async ({ page }) => {
+    const requests: OppdaterBrevRequest[] = [];
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=false", async (route) => {
+      requests.push(route.request().postDataJSON());
+      await route.fulfill({ json: brev });
+    });
+    await page.route("**/bff/skribenten-backend/brev/1/tilbakestill", (route) => route.fulfill({ json: brev }));
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("Lagret", { exact: true })).toBeVisible();
     await page.clock.install();
     await page.clock.pauseAt(new Date());
 
-    await page.getByRole("radio", { name: "Rullekake", exact: true }).check();
-    const text = page.getByText("Dersom vi trenger flere opplysninger", { exact: false });
-    await text.click();
-    await page.locator(":focus").press("End");
-    await page.locator(":focus").press("Enter");
+    await page.getByText("Overstyring").click();
+    await page.getByLabel("Ytelse").fill("Supplerende stønad");
+    await page.getByTestId("tilbakestill-mal-button").click();
+    await page.getByText("Ja, tilbakestill malen").click();
 
-    await expect(page.getByRole("button", { name: "Angre (Undo)" })).toBeEnabled();
-    await page.getByRole("button", { name: "Angre (Undo)" }).click();
-    await page.keyboard.type(" FOKUS");
-
-    await expect(text).toContainText("FOKUS");
+    await expect(page.getByLabel("Ytelse")).toHaveValue("alderspensjon");
+    await page.clock.runFor(AUTOSAVE_TIMER + SAKSBEHANDLERVALG_TIMER);
+    await expect(page.getByLabel("Ytelse")).toHaveValue("alderspensjon");
+    expect(requests).toHaveLength(0);
   });
 });

@@ -270,9 +270,10 @@ function RedigerBrev({
     redigertBrev,
     setEditorState,
     updateSaksbehandlerValg,
-    savingValg,
+    awaitingValgMerge,
     resetting,
     registerSaveErrorReset,
+    registerLetterResetHandler,
   } = useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
@@ -444,7 +445,18 @@ function RedigerBrev({
     previousEditorValg.current = defaultValuesModelEditor.saksbehandlerValg;
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = finalizing || oppdaterBrevMutation.isPending || savingValg;
+  useEffect(() => {
+    // Resetting to the template discards choices that are still only in the form, e.g. awaiting a field debounce.
+    registerLetterResetHandler((response) => {
+      validationRevision.current++;
+      previousEditorValg.current = response.saksbehandlerValg;
+      form.reset({ saksbehandlerValg: { ...response.saksbehandlerValg } });
+    });
+    return () => registerLetterResetHandler(null);
+  }, [form, registerLetterResetHandler]);
+
+  const saving = finalizing || oppdaterBrevMutation.isPending;
+  const freeze = saving || awaitingValgMerge;
   const error = oppdaterBrevMutation.isError;
   const hasUnsavedValg = form.formState.isDirty;
 
@@ -484,7 +496,7 @@ function RedigerBrev({
                     >
                       Tilbake til brevvelger
                     </Button>
-                    <Button loading={freeze || documentCoordinator.savingPendingDocuments} size="small" type="submit">
+                    <Button loading={saving || documentCoordinator.savingPendingDocuments} size="small" type="submit">
                       <HStack align="center" gap="space-8">
                         <Label size="small">Fortsett</Label>
                       </HStack>
@@ -518,7 +530,7 @@ function RedigerBrev({
                 right={
                   <BrevOgVedleggEditor
                     brev={brev}
-                    freeze={oppdaterBrevMutation.isPending || savingValg}
+                    freeze={oppdaterBrevMutation.isPending || awaitingValgMerge}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
                         <ManagedLetterEditor canReset error={error} freeze={freeze} showDebug={showDebug} />

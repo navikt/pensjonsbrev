@@ -3,6 +3,7 @@ import { act, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { useOppdaterBrevMutation } from "~/Brevredigering/hooks/useOppdaterBrevMutation";
+import { addToHistory } from "~/Brevredigering/LetterEditor/history";
 import { RedigeringsflateProvider } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
 import { AUTOSAVE_TIMER, SAKSBEHANDLERVALG_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import {
@@ -393,8 +394,9 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     oppdaterBrevMock.mockImplementationOnce(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
     const harness = renderAutosave();
     act(() => harness().updateSaksbehandlerValg(nyeValg, true));
+    expect(harness().awaitingValgMerge).toBe(true);
     await vent(SAKSBEHANDLERVALG_TIMER);
-    expect(harness().savingValg).toBe(true);
+    expect(harness().awaitingValgMerge).toBe(true);
     const latest = { ytelse: "Uføretrygd" };
     act(() => harness().updateSaksbehandlerValg(latest, true));
     await vent(SAKSBEHANDLERVALG_TIMER);
@@ -403,7 +405,21 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     expect(oppdaterBrevMock).toHaveBeenCalledTimes(2);
     expect(harness().editorState.saksbehandlerValg).toEqual(latest);
     expect(harness().editorState.saveStatus).toBe("SAVED");
-    expect(harness().savingValg).toBe(false);
+    expect(harness().awaitingValgMerge).toBe(false);
+  });
+
+  test("frysingen oppheves når flettingen feiler, men neste lagring fletter likevel", async () => {
+    const harness = renderAutosave();
+    act(() => harness().updateSaksbehandlerValg(nyeValg, true));
+    await vent(SAKSBEHANDLERVALG_TIMER);
+    expect(harness().saveFailed).toBe(true);
+    expect(harness().awaitingValgMerge).toBe(false);
+    oppdaterBrevMock.mockImplementation(({ request }) => Promise.resolve({ ...lagretBrev, ...request }));
+    endreBrev(harness, 100);
+    await vent(AUTOSAVE_TIMER);
+    expect(oppdaterBrevMock).toHaveBeenCalledTimes(2);
+    expect(oppdaterBrevtekstMock).not.toHaveBeenCalled();
+    expect(harness().editorState.saveStatus).toBe("SAVED");
   });
 
   test("nye valg forlenger også fristen mens et eldre kall pågår", async () => {
@@ -455,6 +471,41 @@ describe("samspill mellom tekstvalg og brevets autolagring", () => {
     endreBrev(harness, 102);
     await vent(AUTOSAVE_TIMER);
     expect(oppdaterBrevtekstMock).toHaveBeenCalledOnce();
+  });
+
+  test("flytter fokus og fokus i historikken når flettingen setter inn et avsnitt foran", async () => {
+    const innsatt = { ...lagretBrev.redigertBrev.blocks[0], id: 999, content: [] };
+    oppdaterBrevMock.mockImplementationOnce(({ request }) =>
+      Promise.resolve({
+        ...lagretBrev,
+        saksbehandlerValg: request.saksbehandlerValg,
+        redigertBrev: { ...request.redigertBrev, blocks: [innsatt, ...request.redigertBrev.blocks] },
+      }),
+    );
+    const harness = renderAutosave();
+    act(() => harness().updateSaksbehandlerValg(nyeValg, true));
+    const focus = { blockIndex: 1, contentIndex: 0, cursorPosition: 5 };
+    act(() =>
+      harness().setEditorState((state) => ({
+        ...state,
+        saveStatus: "DIRTY",
+        focus,
+        history: addToHistory(
+          state.history,
+          [{ op: "replace", path: ["redigertBrev", "blocks", 1, "content", 0, "editedText"], value: "x" }],
+          [{ op: "replace", path: ["redigertBrev", "blocks", 1, "content", 0, "editedText"], value: null }],
+        ),
+      })),
+    );
+    await vent(SAKSBEHANDLERVALG_TIMER);
+
+    const flyttet = { ...focus, blockIndex: 2 };
+    expect(harness().redigertBrev.blocks[0].id).toBe(999);
+    expect(harness().editorState.focus).toEqual(flyttet);
+    expect(harness().editorState.history.entries.at(-1)).toMatchObject({
+      type: "DOCUMENT_SNAPSHOT",
+      afterFocus: flyttet,
+    });
   });
 
   test("gjentatte feltsubmits starter ikke nye forsøk etter feil, men eksplisitt lagring gjør det", async () => {
