@@ -365,6 +365,19 @@ class EditLetterWordUnifiedDiffTest {
         )
     }
 
+    @Test
+    fun `splitting a paragraph and deleting its trailing text reports deletion in the new block`() {
+        val old = editedLetter { paragraph { literal(text = "Hei"); variable(text = "Ola"); literal(text = "x y") } }
+        val new = editedLetter {
+            paragraph { literal(text = "Hei") }
+            paragraph { variable(text = "Ola") }
+        }
+        val diff = wordDiff.unifiedDiff(old, new)
+        val oldContent = (old.blocks[0] as Edit.Block.Paragraph).content
+        assertEquals(mapOf(1 to BlockEdit(contentEdits = emptyMap(), deletedContent = mapOf(1 to listOf(oldContent[2])))), diff.editedBlocks)
+        assertEquals(emptyMap<Int, List<Edit.Block>>(), diff.deletedBlocks)
+    }
+
     private fun textContentEdit(inserts: List<TextSegment> = emptyList(), deletes: List<DeletedTextSegment> = emptyList()): ContentEdit.TextContentEdit =
         ContentEdit.TextContentEdit(TextEdit(inserts, deletes))
 
