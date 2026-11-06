@@ -16,8 +16,8 @@ object HvaErBunnfradragFribelopOgVenteperiode : OutlinePhrase<LangBokmalNynorsk>
 
         paragraph {
             text (
-                bokmal { + "Uføretrygd beregnes ut fra grunnbeløpet (G). G justeres hvert år i mai, med utgangspunkt i prisveksten i samfunnet. Bunnfradraget fastsettes også ut fra G. " },
-                nynorsk { + "Uføretrygd blir rekna ut frå grunnbeløpet (G). G blir justert kvart år i mai, med utgangspunkt i prisveksten i samfunnet. Botnfrådraget blir også fastsett ut frå G. " }
+                bokmal { + "Uføretrygd beregnes ut fra grunnbeløpet (G). G justeres hvert år i mai, med utgangspunkt i lønnsutviklingen i samfunnet. Bunnfradraget fastsettes også ut fra G. " },
+                nynorsk { + "Uføretrygd blir rekna ut frå grunnbeløpet (G). G blir justert kvart år i mai, med utgangspunkt i lønnsutviklinga i samfunnet. Botnfrådraget blir også fastsett ut frå G. " }
             )
         }
 
