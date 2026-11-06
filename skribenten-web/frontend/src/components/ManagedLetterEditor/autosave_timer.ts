@@ -1,1 +1,2 @@
 export const AUTOSAVE_TIMER = 5000;
+export const SAKSBEHANDLERVALG_TIMER = 500;

@@ -38,7 +38,28 @@ export interface SaksbehandlerValgEndretHistoryEntry {
   timestamp?: number;
 }
 
-export type HistoryEntry = PatchHistoryEntry | SaksbehandlerValgEndretHistoryEntry;
+export interface DocumentSnapshotHistoryEntry {
+  type: "DOCUMENT_SNAPSHOT";
+  before: LetterSnapshot;
+  after: LetterSnapshot;
+  kind?: PatchKind;
+  patchPath?: string;
+  timestamp: number;
+}
+
+export type HistoryEntry = PatchHistoryEntry | SaksbehandlerValgEndretHistoryEntry | DocumentSnapshotHistoryEntry;
+
+/** Snapshot edits while a template merge is pending: positional patches cannot cross that structural change. */
+export function snapshotPendingEdit(before: LetterSnapshot, after: LetterSnapshot, entry: PatchHistoryEntry) {
+  return {
+    type: "DOCUMENT_SNAPSHOT" as const,
+    before: createLetterSnapshot(before),
+    after: createLetterSnapshot(after),
+    kind: entry.kind,
+    patchPath: entry.patches[0]?.path.toString(),
+    timestamp: entry.timestamp ?? Date.now(),
+  };
+}
 
 export interface History {
   entries: HistoryEntry[];
@@ -93,6 +114,20 @@ export function createSaksbehandlerValgEndretHistoryEntry(
 
 function updateHistory(history: History, newHistoryEntry: HistoryEntry): History {
   const lastHistoryEntry = history.entries[history.entries.length - 1];
+
+  if (
+    lastHistoryEntry?.type === "DOCUMENT_SNAPSHOT" &&
+    newHistoryEntry.type === "DOCUMENT_SNAPSHOT" &&
+    lastHistoryEntry.kind === "TEXT_UPDATE" &&
+    newHistoryEntry.kind === "TEXT_UPDATE" &&
+    lastHistoryEntry.patchPath === newHistoryEntry.patchPath &&
+    newHistoryEntry.timestamp - lastHistoryEntry.timestamp < MERGE_TIME_THRESHOLD_MS
+  ) {
+    return {
+      entries: [...history.entries.slice(0, -1), { ...newHistoryEntry, before: lastHistoryEntry.before }],
+      entryPointer: history.entries.length - 1,
+    };
+  }
 
   const shouldMerge =
     lastHistoryEntry &&
