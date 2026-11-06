@@ -393,7 +393,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     ): Boolean {
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }
         if (eksisterende != null) {
-            if (eksisterende.redigertVedlegg == redigertVedlegg) {
+            if (eksisterende.redigertVedlegg == redigertVedlegg && malVedlegg?.toEdit() == eksisterende.rendretVedlegg) {
                 return false
             }
             eksisterende.redigertVedlegg = redigertVedlegg
