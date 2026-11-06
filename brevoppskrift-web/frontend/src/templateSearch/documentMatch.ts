@@ -7,6 +7,15 @@ import {
 } from "~/api/templateDocumentationTypes";
 import { matchTextFlow, type TextFlow } from "~/search/matchTextFlow";
 
+function isVisibleCell(flow: TextFlow<TextLiteral>[]): boolean {
+  return flow.some(
+    (item) =>
+      (item.type === "text" && item.text.trim().length > 0) ||
+      item.type === "variable" ||
+      (item.type === "branches" && item.branches.some(isVisibleCell)),
+  );
+}
+
 /** The same flow matcher supplies both match eligibility and ranges; React only renders its plan. */
 export function matchDocument<E extends Element>(
   items: ContentOrControlStructure<E>[],
@@ -58,10 +67,10 @@ export function matchDocument<E extends Element>(
           );
         case ElementType.PARAGRAPH_TABLE_ROW:
           return isolated(
-            content.cells.flatMap((cell, index) => [
-              ...(index > 0 ? [{ type: "variable" } as const] : []),
-              ...flowOf(cell.text),
-            ]),
+            content.cells
+              .map((cell) => flowOf(cell.text))
+              .filter(isVisibleCell)
+              .flatMap((cell, index) => [...(index > 0 ? [{ type: "separator", text: " | " } as const] : []), ...cell]),
           );
       }
       const unsupported: never = content;
