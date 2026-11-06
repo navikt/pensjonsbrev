@@ -75,6 +75,14 @@ describe("remapFocus", () => {
     });
   });
 
+  test("beholder signaturfokus når flettingen setter inn et avsnitt", () => {
+    const from = editedLetter({ blocks: [avsnitt] });
+    const to = editedLetter({ blocks: [flettetInn, avsnitt] });
+    const focus = { blockIndex: -1, contentIndex: -1 };
+
+    expect(remapFocus(focus, from, to)).toBe(focus);
+  });
+
   test("faller tilbake til starten av nærmeste foregående avsnitt når innholdet er fjernet", () => {
     const fjernet = paragraph({ id: 50, content: [literal({ id: 51, text: "Fjernes" })] });
     const from = editedLetter({ blocks: [avsnitt, fjernet] });

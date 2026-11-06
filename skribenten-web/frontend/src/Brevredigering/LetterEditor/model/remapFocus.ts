@@ -115,6 +115,8 @@ function startOfBlock(document: EditedDocument, blockIndex: number): Focus | und
  * inserted or removed blocks. Falls back to the start of the nearest preceding block that still exists.
  */
 export function remapFocus(focus: Focus, from: EditedDocument, to: EditedDocument): Focus {
+  if (focus.blockIndex === -1 && focus.contentIndex === -1) return focus;
+
   const remapped = remapLiteral(focus, from, to);
   if (remapped) return remapped;
 
