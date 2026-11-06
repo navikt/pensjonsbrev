@@ -17,6 +17,8 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.*
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -97,7 +99,7 @@ fun Route.sakBrev() =
                             brevId = brevId,
                             saksId = sak.saksId,
                             nyeSaksbehandlerValg = request.saksbehandlerValg,
-                            nyttRedigertbrev = request.redigertBrev,
+                            nyttRedigertbrev = VersjonertBrev.V1(request.redigertBrev),
                             frigiReservasjon = frigiReservasjon,
                         )
                     )
@@ -184,7 +186,7 @@ fun Route.sakBrev() =
                             HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
                         )
 
-                        respondOutcome(dto2ApiService, result) { respond(it) }
+                        respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                     }
 
                     val endreRedigertVedlegg: EndreRedigertVedleggHandler by app.dependencies
@@ -199,11 +201,11 @@ fun Route.sakBrev() =
                                 brevId = brevId,
                                 saksId = sak.saksId,
                                 vedleggId = vedleggId,
-                                redigertVedlegg = request.redigertVedlegg,
+                                redigertVedlegg = VersjonertVedlegg.V1(request.redigertVedlegg),
                             )
                         )
 
-                        respondOutcome(dto2ApiService, result) { respond(it) }
+                        respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                     }
 
                     val tilbakestillRedigertVedlegg: TilbakestillRedigertVedleggHandler by app.dependencies
@@ -216,7 +218,7 @@ fun Route.sakBrev() =
                             TilbakestillRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
                         )
 
-                        respondOutcome(dto2ApiService, result) { respond(it) }
+                        respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                     }
                 }
             }
@@ -329,7 +331,7 @@ fun Route.sakBrev() =
                         AttesterBrevHandler.Request(
                             brevId = brevId,
                             saksId = sak.saksId,
-                            nyttRedigertbrev = request.redigertBrev,
+                            nyttRedigertbrev = VersjonertBrev.V1(request.redigertBrev),
                             frigiReservasjon = frigiReservasjon,
                         )
                     )
@@ -347,7 +349,7 @@ fun Route.sakBrev() =
                         LagreAttestertBrevHandler.Request(
                             brevId = brevId,
                             saksId = sak.saksId,
-                            nyttRedigertbrev = request,
+                            nyttRedigertbrev = VersjonertBrev.V1(request),
                             frigiReservasjon = frigiReservasjon,
                         )
                     )
@@ -390,7 +392,7 @@ fun Route.sakBrev() =
                                 HentRedigertVedleggAttesteringHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
                             )
 
-                            respondOutcome(dto2ApiService, result) { respond(it) }
+                            respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                         }
 
                         val lagreAttestertVedlegg: LagreAttestertVedleggHandler by app.dependencies
@@ -404,11 +406,11 @@ fun Route.sakBrev() =
                                     brevId = brevId,
                                     saksId = sak.saksId,
                                     vedleggId = vedleggId,
-                                    redigertVedlegg = request.redigertVedlegg,
+                                    redigertVedlegg = VersjonertVedlegg.V1(request.redigertVedlegg),
                                 )
                             )
 
-                            respondOutcome(dto2ApiService, result) { respond(it) }
+                            respondOutcome(dto2ApiService, result) { respond(it.asV1()) }
                         }
                     }
                 }

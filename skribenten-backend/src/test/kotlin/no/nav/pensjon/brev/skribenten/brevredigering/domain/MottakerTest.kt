@@ -106,7 +106,7 @@ class MottakerTest {
             avsenderEnhetId = EnhetId("1111"),
             saksbehandlerValg = SaksbehandlervalgMap(),
             distribusjonstype = Distribusjon.SENTRALPRINT,
-            redigertBrev = Edit.Letter(
+            redigertBrev = VersjonertBrev.V1(Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
@@ -123,7 +123,7 @@ class MottakerTest {
                     navAvsenderEnhet = "j",
                 ),
                 emptyList(),
-            ),
+            )),
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             vedtaksId = null,
             timestamp = Instant.now(),

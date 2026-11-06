@@ -15,8 +15,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
-import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
-import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
@@ -92,13 +90,13 @@ class BrevPdfService(
     // Grunnen til at vi kun sjekker blocks er at det er kun om det er endringer i selve innholdet at saksbehandler trenger å ta stilling til det.
     private suspend fun rendretBrevErEndret(brev: BrevredigeringEntity, pesysBrevdata: BrevdataResponse.Data): Boolean =
         brevmalService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
-            brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
+            brev.redigertBrev.innholdEndresAv(rendretBrev.markup)
         } || rendredeVedleggErEndret(brev, pesysBrevdata)
 
     private suspend fun rendredeVedleggErEndret(brev: BrevredigeringEntity, pesysBrevdata: BrevdataResponse.Data): Boolean =
         brevmalService.renderRedigerteVedlegg(brev, pesysBrevdata).any { (vedleggId, rendretVedlegg) ->
             val lagret = brev.hentRedigertVedlegg(vedleggId)
-            lagret != null && lagret.updateEditedAttachment(rendretVedlegg).blocks != lagret.blocks
+            lagret != null && lagret.innholdEndresAv(rendretVedlegg)
         }
 
     private fun leggVedPDFVedlegg(

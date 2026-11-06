@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
@@ -24,9 +23,10 @@ open class BrevredigeringStub : Brevredigering {
     override val avsenderEnhetId: EnhetId get() = notYetStubbed()
     override val saksbehandlerValg: SaksbehandlervalgMap get() = notYetStubbed()
     override val statiskFagsystemBrevdata: StatiskFagsystemBrevdata? get() = notYetStubbed()
-    override val redigertBrev: Edit.Letter get() = notYetStubbed()
-    override val redigertBrevHash: Hash<Edit.Letter> get() = notYetStubbed()
-    override val rendretBrev: Edit.Letter? get() = notYetStubbed()
+    override val markupVersjon: MarkupVersjon get() = notYetStubbed()
+    override val redigertBrev: VersjonertBrev get() = notYetStubbed()
+    override val redigertBrevHash: Hash<VersjonertBrev> get() = notYetStubbed()
+    override val rendretBrev: VersjonertBrev? get() = notYetStubbed()
     override val laastForRedigering: Boolean get() = notYetStubbed()
     override val distribusjonstype: Distribusjon get() = notYetStubbed()
     override val redigeresAv: NavIdent get() = notYetStubbed()
@@ -50,15 +50,15 @@ open class BrevredigeringStub : Brevredigering {
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()
     override fun frigiReservasjon() = notYetStubbed()
-    override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
+    override fun oppdaterRedigertBrev(nyttRedigertbrev: VersjonertBrev, av: NavIdent): Unit = notYetStubbed()
     override fun markerSomKlar(): Unit = notYetStubbed()
     override fun markerSomKladd(): Unit = notYetStubbed()
     override fun markerSomArkivert(journalpostId: JournalpostId): Unit = notYetStubbed()
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String): Unit = notYetStubbed()
-    override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
-    override fun settRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
-    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>): Unit = notYetStubbed()
-    override fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup): Unit = notYetStubbed()
+    override fun mergeRendretBrev(rendretBrev: VersjonertMarkup): Unit = notYetStubbed()
+    override fun settRendretBrev(rendretBrev: VersjonertMarkup): Unit = notYetStubbed()
+    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>): Unit = notYetStubbed()
+    override fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()

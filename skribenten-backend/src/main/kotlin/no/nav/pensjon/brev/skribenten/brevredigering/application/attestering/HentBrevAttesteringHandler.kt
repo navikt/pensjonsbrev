@@ -34,7 +34,7 @@ class HentBrevAttesteringHandler(
             brevtilgang.forAttestering(request.brevId, request.saksId, frigiReservasjon = false) {
                 val principal = PrincipalInContext.require()
 
-                if (brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn == null) {
+                if (brev.redigertBrev.attesterendeSaksbehandlerNavn == null) {
                     brev.oppdaterRedigertBrev(brev.redigertBrev.withSignaturAttestant(principal.hentSignatur(navansattService)), principal.navIdent)
                 }
 

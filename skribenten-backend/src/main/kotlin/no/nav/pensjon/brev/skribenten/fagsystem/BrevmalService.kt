@@ -8,6 +8,10 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.RendretBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedleggMarkup
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
@@ -47,8 +51,21 @@ class BrevmalService(
             saksbehandlervalg = saksbehandlerValg.somSaksbehandlervalgIDSL()
         )
 
-    suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): LetterMarkupWithDataUsage =
+    suspend fun renderMarkup(
+        markupVersjon: MarkupVersjon,
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        saksbehandlerValg: SaksbehandlervalgMap,
+        pesysData: BrevdataResponse.Data
+    ): RendretBrev = when (markupVersjon) {
+        MarkupVersjon.V1 -> renderMarkup(brevkode, spraak, saksbehandlerValg, pesysData)
+            .let { RendretBrev(VersjonertMarkup.V1(it.markup), it.letterDataUsage) }
+
+    }
+
+    suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): RendretBrev =
         renderMarkup(
+            markupVersjon = brev.markupVersjon,
             brevkode = brev.brevkode,
             spraak = brev.spraak,
             saksbehandlerValg = brev.saksbehandlerValg,
@@ -67,17 +84,20 @@ class BrevmalService(
     suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
         brevbakerService.harRedigerbareVedlegg(brevkode)
 
-    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: VedleggId): LetterMarkup.Attachment? =
-        brevbakerService.renderRedigerbartVedlegg(
-            brevkode = brev.brevkode,
-            spraak = brev.spraak,
-            fagsystemBrevdata = pesysData.brevdata,
-            saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
-            felles = pesysData.felles,
-            vedleggId = vedleggId,
-        )
+    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: VedleggId): VersjonertVedleggMarkup? =
+        when (brev.markupVersjon) {
+            MarkupVersjon.V1 -> brevbakerService.renderRedigerbartVedlegg(
+                brevkode = brev.brevkode,
+                spraak = brev.spraak,
+                fagsystemBrevdata = pesysData.brevdata,
+                saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
+                felles = pesysData.felles,
+                vedleggId = vedleggId,
+            )?.let { VersjonertVedleggMarkup.V1(it) }
 
-    suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, LetterMarkup.Attachment> =
+        }
+
+    suspend fun renderRedigerteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, VersjonertVedleggMarkup> =
         brev.redigerteVedlegg.mapNotNull { lagret ->
             renderRedigerbartVedlegg(brev, pesysData, lagret.vedleggId)?.let { lagret.vedleggId to it }
         }.toMap()

@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test
 
 class FerdigRedigertPolicyTest {
 
-    private data class RedigertBrevStub(override val redigertBrev: Edit.Letter) : BrevredigeringStub() {
-        override val redigertBrevHash: Hash<Edit.Letter> get() = Hash.read(redigertBrev)
+    private data class RedigertBrevStub(val brev: Edit.Letter) : BrevredigeringStub() {
+        override val redigertBrev: VersjonertBrev get() = VersjonertBrev.V1(brev)
+        override val redigertBrevHash: Hash<VersjonertBrev> get() = Hash.read(redigertBrev)
     }
 
     private val fritekst = setOf(ElementTags.FRITEKST)

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
+
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
@@ -40,8 +42,8 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
                 put("inkluderAfpTekst", SaksbehandlervalgVerdi.Boolean(true))
                 put("land", SaksbehandlervalgVerdi.String("Spania"))
             },
-            nyttRedigertbrev = brev.redigertBrev.copy(
-                blocks = brev.redigertBrev.blocks + Paragraph(
+            nyttRedigertbrev = brev.redigertBrev.asV1().copy(
+                blocks = brev.redigertBrev.asV1().blocks + Paragraph(
                     2,
                     true,
                     listOf(Literal(1, "original text", Edit.ParagraphContent.Text.FontType.PLAIN, "and blue pill"))
@@ -67,7 +69,7 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val tilbakestilt = tilbakestillBrev(brevId = brev.info.id)
 
         assertThat(tilbakestilt).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
+            assertThat(it.redigertBrev.asV1()).isEqualTo(letter.toEdit())
             assertThat(it.saksbehandlerValg).isEqualTo(SaksbehandlervalgMap().apply {
                 // Kun booleans og nullables blir tilbakestilt, så dermed forventes ytelse å fortsatt være "uføre" og land å være null
                 put("ytelse", SaksbehandlervalgVerdi.String("uføre"))
@@ -85,8 +87,8 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
         oppdaterBrev(
             brevId = brev.info.id,
             nyeSaksbehandlerValg = SaksbehandlervalgMap(),
-            nyttRedigertbrev = brev.redigertBrev.copy(
-                blocks = brev.redigertBrev.blocks + Paragraph(
+            nyttRedigertbrev = brev.redigertBrev.asV1().copy(
+                blocks = brev.redigertBrev.asV1().blocks + Paragraph(
                     2,
                     true,
                     listOf(Literal(1, "original text", Edit.ParagraphContent.Text.FontType.PLAIN, "and blue pill"))
@@ -103,7 +105,7 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val tilbakestilt = tilbakestillBrev(brevId = brev.info.id)
 
         assertThat(tilbakestilt).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
+            assertThat(it.redigertBrev.asV1()).isEqualTo(letter.toEdit())
             assertThat(it.saksbehandlerValg).isEqualTo(SaksbehandlervalgMap())
         }
     }

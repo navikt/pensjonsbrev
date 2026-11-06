@@ -3166,11 +3166,61 @@ export interface paths {
                         "application/json": components["schemas"]["DiffBrevHandlerResponse"];
                     };
                 };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
                 };
             };
         };
@@ -3862,6 +3912,11 @@ export interface components {
          */
         Distribusjon: "SENTRALPRINT" | "LOKALPRINT";
         /**
+         * MarkupVersjon
+         * @enum {string}
+         */
+        MarkupVersjon: "V1";
+        /**
          * DtoMottakerManueltAdressertTil
          * @enum {string}
          */
@@ -3966,6 +4021,7 @@ export interface components {
             id: number;
             journalpostId?: number | null;
             leggVedFoersteside?: boolean | null;
+            markupVersjon: components["schemas"]["MarkupVersjon"];
             mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             /** Format: date-time */
             opprettet: string;
@@ -4790,6 +4846,7 @@ export type KrrServiceKontaktinfoResponseFailureType = components['schemas']['Kr
 export type KrrServiceKontaktinfoResponse = components['schemas']['KrrServiceKontaktinfoResponse'];
 export type NavEnhet = components['schemas']['NavEnhet'];
 export type Distribusjon = components['schemas']['Distribusjon'];
+export type MarkupVersjon = components['schemas']['MarkupVersjon'];
 export type DtoMottakerManueltAdressertTil = components['schemas']['DtoMottakerManueltAdressertTil'];
 export type ApiOverstyrtMottakerNorskAdresse = components['schemas']['ApiOverstyrtMottakerNorskAdresse'];
 export type ApiOverstyrtMottakerSamhandler = components['schemas']['ApiOverstyrtMottakerSamhandler'];

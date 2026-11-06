@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -51,6 +52,7 @@ class ExternalAPIServiceTest {
         attestertAv = null,
         status = Dto.BrevStatus.KLADD,
         leggVedFoersteside = false,
+        markupVersjon = MarkupVersjon.V1,
     )
     val brevmal = TemplateDescription.Redigerbar(
         name = Testbrevkoder.INFORMASJONSBREV.kode(),
