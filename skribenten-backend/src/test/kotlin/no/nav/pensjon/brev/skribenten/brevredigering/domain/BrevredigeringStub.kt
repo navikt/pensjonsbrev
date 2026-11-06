@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -46,11 +47,14 @@ open class BrevredigeringStub : Brevredigering {
     override val redigerteVedlegg: List<Dto.RedigertVedlegg> get() = notYetStubbed()
     override val vedleggHash: Hash<VedleggSnapshot> get() = notYetStubbed()
     override val leggVedFoersteside: Boolean? get() = notYetStubbed()
+    override val brevmalHash get() = notYetStubbed()
 
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()
     override fun frigiReservasjon() = notYetStubbed()
     override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
+    override fun tilbakestillRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent, brevmalHash: StableHashCode) =
+        notYetStubbed()
     override fun markerSomKlar(): Unit = notYetStubbed()
     override fun markerSomKladd(): Unit = notYetStubbed()
     override fun markerSomArkivert(journalpostId: JournalpostId): Unit = notYetStubbed()

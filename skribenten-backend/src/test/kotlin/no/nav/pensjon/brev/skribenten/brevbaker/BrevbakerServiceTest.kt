@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
+import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -15,6 +17,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
 class BrevbakerServiceTest {
@@ -127,10 +130,15 @@ class BrevbakerServiceTest {
         Assertions.assertEquals(3, tree["stableHashCode"].intValue())
         Assertions.assertFalse(tree["markup"].has("stableHashCode"))
         Assertions.assertEquals(letter, mapper.readValue<LetterMarkupWithDataUsage>(json))
-        Assertions.assertEquals(
-            letter.copy(stableHashCode = null),
-            mapper.readValue<LetterMarkupWithDataUsage>(mapper.writeValueAsString(letter.copy(stableHashCode = null))),
-        )
+        val withoutHash = mapper.readTree(json) as ObjectNode
+        withoutHash.remove("stableHashCode")
+        assertThrows<JsonMappingException> {
+            mapper.readValue<LetterMarkupWithDataUsage>(withoutHash.toString())
+        }
+        withoutHash.putNull("stableHashCode")
+        assertThrows<JsonMappingException> {
+            mapper.readValue<LetterMarkupWithDataUsage>(withoutHash.toString())
+        }
     }
 
 }
