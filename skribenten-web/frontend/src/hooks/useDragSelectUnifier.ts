@@ -3,38 +3,60 @@ import { useEffect } from "react";
 // Solves the browser's native limitation where a text selection
 // cannot cross the boundary of separate contentEditable elements.
 // It makes a group of individual editable spans behave like a single,
-// continuous block of text, but only during a drag-selection.
+// continuous block of text during a drag-selection, and for as long as
+// the resulting selection spans more than one of them.
+
+/** Marks the host (div) as "unified" and removes contentEditable from all children. */
+export function unifyEditables(host: HTMLElement) {
+  if (!host.isConnected) return;
+  if (host.dataset.unified === "1") return;
+  host.dataset.unified = "1";
+  host.classList.add("is-drag-selecting");
+  for (const el of host.querySelectorAll<HTMLElement>("[contenteditable]")) {
+    const orig = el.getAttribute("contenteditable") ?? "true";
+    el.setAttribute("data-ce-orig", orig);
+    el.removeAttribute("contenteditable");
+  }
+}
+
+/** Restores contentEditable attributes to their original values. */
+export function restoreEditables(host: HTMLElement) {
+  if (!host.isConnected) return;
+  if (host.dataset.unified !== "1") return;
+  host.classList.remove("is-drag-selecting");
+  delete host.dataset.unified;
+  for (const el of host.querySelectorAll<HTMLElement>("[data-ce-orig]")) {
+    const orig = el.getAttribute("data-ce-orig");
+    if (orig != null) el.setAttribute("contenteditable", orig);
+    el.removeAttribute("data-ce-orig");
+  }
+}
+
+const editableOf = (node: Node | null) =>
+  (node instanceof Element ? node : node?.parentElement)?.closest("[contenteditable], [data-ce-orig]") ?? null;
+
+/**
+ * True when the current selection spans more than one editable element. Restoring contentEditable would then
+ * make the browser shrink the selection to the element it starts in.
+ */
+function selectionSpansSeveralEditables(host: HTMLElement) {
+  const selection = document.getSelection?.();
+  if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return false;
+  const anchor = editableOf(selection.anchorNode);
+  const focus = editableOf(selection.focusNode);
+  return anchor !== focus && host.contains(selection.anchorNode) && host.contains(selection.focusNode);
+}
 
 export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enabled = true) {
   useEffect(() => {
     if (!host || !enabled) return;
 
     const isInsideHost = (n: Node | null) => !!n && host.contains(n);
-
-    // Mark the host(div) as "unified" and remove contentEditable from all children
-    const unify = () => {
-      if (!host.isConnected) return;
-      if (host.dataset.unified === "1") return;
-      host.dataset.unified = "1";
-      host.classList.add("is-drag-selecting");
-      for (const el of host.querySelectorAll<HTMLElement>("[contenteditable]")) {
-        const orig = el.getAttribute("contenteditable") ?? "true";
-        el.setAttribute("data-ce-orig", orig);
-        el.removeAttribute("contenteditable");
-      }
-    };
-
-    // Restore contentEditable attributes to original values
-    const restore = () => {
-      if (!host.isConnected) return;
-      if (host.dataset.unified !== "1") return;
-      host.classList.remove("is-drag-selecting");
-      delete host.dataset.unified;
-      for (const el of host.querySelectorAll<HTMLElement>("[data-ce-orig]")) {
-        const orig = el.getAttribute("data-ce-orig");
-        if (orig != null) el.setAttribute("contenteditable", orig);
-        el.removeAttribute("data-ce-orig");
-      }
+    const unify = () => unifyEditables(host);
+    const restore = () => restoreEditables(host);
+    // Keeps a selection that spans several editables, e.g. so the toolbar can act on all of it
+    const restoreUnlessSpanningSeveral = () => {
+      if (!selectionSpansSeveralEditables(host)) restore();
     };
 
     let pointerDownInside = false;
@@ -56,6 +78,13 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Shift") {
         selectingByKeys = true;
+        return;
+      }
+      // Other keys (typing, arrows) need editable text again. Shortcuts and Shift+arrows act on the whole selection.
+      const isShortcut = event.ctrlKey || event.metaKey || event.altKey;
+      const extendsSelection = event.shiftKey && event.key.startsWith("Arrow");
+      if (!isShortcut && !extendsSelection) {
+        restore();
       }
     };
 
@@ -65,7 +94,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
         !["ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "Control", "Alt", "Meta", "CapsLock"].includes(event.key)
       ) {
         selectingByKeys = false;
-        restore();
+        restoreUnlessSpanningSeveral();
       }
     };
 
@@ -74,6 +103,8 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
       pointerDownInside = isInsideHost(event.target as Node);
       dragStarted = false;
       if (!pointerDownInside) return;
+      // A kept selection spanning several editables is replaced by this click, which must land in editable text
+      restore();
       pointerDownX = event.clientX;
       pointerDownY = event.clientY;
     };
@@ -87,8 +118,8 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     // ensure we're unified.
     const onSelectionChange = () => {
       const selection = document.getSelection?.();
-      if (!selection || selection.rangeCount === 0) return;
-      if (selection.isCollapsed) {
+      if (!selection) return;
+      if (selection.rangeCount === 0 || selection.isCollapsed) {
         restore();
         return;
       }
@@ -109,7 +140,7 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     const onPointerUp = () => {
       pointerDownInside = false;
       dragStarted = false;
-      restore();
+      restoreUnlessSpanningSeveral();
     };
 
     const onPointerCancel = () => restore();

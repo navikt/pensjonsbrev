@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from "vitest";
 
-import { ensureAdjacentLineVisible } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import { ensureAdjacentLineVisible, getSelectionIndex } from "~/Brevredigering/LetterEditor/services/caretUtils";
 
 const CONTAINER_HEIGHT = 410;
 const LINE_HEIGHT = 24;
@@ -67,5 +67,76 @@ describe("ensureAdjacentLineVisible", () => {
 
     expect(container.scrollTop).toBe(LINE_HEIGHT);
     expect(container.scrollTop).toBeLessThan(SELECTION_HEIGHT);
+  });
+});
+
+describe("getSelectionIndex med attestant-diff", () => {
+  // Modellteksten er "Ny tekst her" (12 tegn); "gammel " (7 tegn) er slettet tekst som bare vises.
+  function renderDecoratedLiteral() {
+    const root = document.createElement("div");
+    const literal = document.createElement("span");
+    literal.contentEditable = "true";
+    literal.dataset.literalIndex = JSON.stringify({ blockIndex: 0, contentIndex: 0 });
+    literal.dataset.diffVersion = "1";
+    const segment = (text: string, type?: "insertion" | "deletion") => {
+      const span = document.createElement("span");
+      span.textContent = text;
+      if (type === "insertion") span.dataset.diffInsertion = "";
+      if (type === "deletion") {
+        span.dataset.diffDeletion = "";
+        span.contentEditable = "false";
+      }
+      literal.append(span);
+      return span.firstChild as Text;
+    };
+    const nodes = {
+      ny: segment("Ny ", "insertion"),
+      gammel: segment("gammel ", "deletion"),
+      rest: segment("tekst her"),
+    };
+    root.append(literal);
+    document.body.append(root);
+    return { root, ...nodes };
+  }
+
+  function select(start: [Node, number], end: [Node, number] = start) {
+    globalThis.getSelection()?.setBaseAndExtent(start[0], start[1], end[0], end[1]);
+  }
+
+  const at = (cursorPosition: number) => ({ blockIndex: 0, contentIndex: 0, cursorPosition });
+
+  afterEach(() => {
+    globalThis.getSelection()?.removeAllRanges();
+    document.body.innerHTML = "";
+  });
+
+  test("slettet tekst inne i markeringen telles ikke med", () => {
+    const { root, ny, rest } = renderDecoratedLiteral();
+    select([ny, 0], [rest, 5]);
+    expect(getSelectionIndex(root)).toEqual({ start: at(0), end: at(8) });
+  });
+
+  test("start i slettet tekst flyttes til teksten etter", () => {
+    const { root, gammel, rest } = renderDecoratedLiteral();
+    select([gammel, 2], [rest, 5]);
+    expect(getSelectionIndex(root)).toEqual({ start: at(3), end: at(8) });
+  });
+
+  test("slutt i slettet tekst flyttes til teksten før", () => {
+    const { root, ny, gammel } = renderDecoratedLiteral();
+    select([ny, 1], [gammel, 4]);
+    expect(getSelectionIndex(root)).toEqual({ start: at(1), end: at(3) });
+  });
+
+  test("markering bare i slettet tekst kollapser der den slettede teksten vises", () => {
+    const { root, gammel } = renderDecoratedLiteral();
+    select([gammel, 1], [gammel, 5]);
+    expect(getSelectionIndex(root)).toEqual({ start: at(3), end: at(3) });
+  });
+
+  test("markør etter slettet tekst", () => {
+    const { root, rest } = renderDecoratedLiteral();
+    select([rest, 2]);
+    expect(getSelectionIndex(root)).toEqual({ start: at(5), end: at(5) });
   });
 });
