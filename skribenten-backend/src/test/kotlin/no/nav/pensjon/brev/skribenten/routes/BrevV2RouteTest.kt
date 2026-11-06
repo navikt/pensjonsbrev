@@ -18,11 +18,13 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import no.nav.pensjon.brev.skribenten.Features
+import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.LagreP1DataHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentAlltidValgbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
@@ -30,11 +32,15 @@ import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2
+import no.nav.pensjon.brev.skribenten.letter.v2.ContentIndexV2
+import no.nav.pensjon.brev.skribenten.letter.v2.DiffSegmentV2
+import no.nav.pensjon.brev.skribenten.letter.v2.UnifiedDiffV2
 import no.nav.pensjon.brev.skribenten.letter.v2.attachment
 import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.ApiV2
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability
 import no.nav.pensjon.brev.skribenten.override
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
@@ -81,7 +87,13 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
             }
             install(Authentication) {
                 basic("test") {
-                    validate { if (it.name == "test" && it.password == "test") saksbehandler1Principal else null }
+                    validate {
+                        if (it.password != "test") null else when (it.name) {
+                            "test" -> saksbehandler1Principal
+                            "attestant" -> attestant1Principal
+                            else -> null
+                        }
+                    }
                 }
             }
             intercept(ApplicationCallPipeline.Call) {
@@ -93,6 +105,7 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
                 provide { hentBrev }
                 provide { oppdaterBrev }
                 provide { tilbakestillBrev }
+                provide { DiffBrevHandler(brevtilgang, brevdataService, brevmalService) }
                 provide { veksleKlarStatus }
                 provide { hentEllerOpprettPdf }
                 provide { sendBrevHandler }
@@ -147,10 +160,10 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
         block(authenticatedClient)
     }
 
-    private suspend fun HttpClient.createV2(): ApiV2.BrevResponse {
+    private suspend fun HttpClient.createV2(request: Api.OpprettBrevRequest = createRequest()): ApiV2.BrevResponse {
         val response = post("$basePath/v2") {
             contentType(ContentType.Application.Json)
-            setBody(mapper.writeValueAsString(createRequest()))
+            setBody(mapper.writeValueAsString(request))
         }
         assertThat(response.status).isEqualTo(HttpStatusCode.Created)
         return mapper.readValue(response.bodyAsText())
@@ -278,6 +291,100 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
         assertThat((resetParagraph.content.first() as EditV2.Text.Literal).editedText).isNull()
         assertThat(client.get("$basePath/${brev.info.id}/pdf").status).isEqualTo(HttpStatusCode.OK)
         assertThat(brevbakerService.renderPdfV2VedleggKall.last()).isEmpty()
+    }
+
+    @Test
+    fun `v2-diff viser redigert tekst i baade split og unified format`() = routeTest { client ->
+        Features.override(Features.markupV2, true)
+        val original = client.createV2()
+        Features.override(Features.markupV2, false)
+        val paragraph = original.redigertBrev.blocks.single() as EditV2.Block.Paragraph
+        val edited = original.redigertBrev.copy(
+            blocks = listOf(paragraph.copy(content = listOf((paragraph.content.single() as EditV2.Text.Literal).copy(editedText = "edited")))),
+        )
+        val path = "$basePath/v2/${original.info.id}/diff"
+        val split = client.post("$path?split=true") {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(edited))
+        }
+        assertThat(split.status).isEqualTo(HttpStatusCode.OK)
+        val splitDiff = mapper.readValue<DiffBrevHandler.ResponseV2.Split>(split.bodyAsText())
+        assertThat(splitDiff.inserts).containsExactly(DiffSegmentV2(ContentIndexV2.BlockContentIndex(0, 0), 0, 6))
+        assertThat(splitDiff.deletes).containsExactly(DiffSegmentV2(ContentIndexV2.BlockContentIndex(0, 0), 0, 8))
+        assertThat(splitDiff.rendretBrev).isEqualTo(original.redigertBrev)
+
+        val unified = client.post(path) {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(edited))
+        }
+        assertThat(unified.status).isEqualTo(HttpStatusCode.OK)
+        val unifiedDiff = mapper.readValue<DiffBrevHandler.ResponseV2.Unified>(unified.bodyAsText())
+        val blockEdit = unifiedDiff.editedBlocks.getValue(0) as UnifiedDiffV2.BlockEdit.TextBlockEdit
+        assertThat(blockEdit.textEdits.getValue(0).inserts).containsExactly(UnifiedDiffV2.TextSegment(0, 6))
+        assertThat(blockEdit.textEdits.getValue(0).deletes).containsExactly(UnifiedDiffV2.DeletedTextSegment(0, 8, "original"))
+        assertThat(mapper.readValue<ApiV2.BrevResponse>(client.get("$basePath/v2/${original.info.id}").bodyAsText()).redigertBrev)
+            .isEqualTo(original.redigertBrev)
+    }
+
+    @Test
+    fun `v2-vedtaksbrev og vedlegg kan attesteres av annen bruker med toggle av`() = routeTest { client ->
+        Features.override(Features.markupV2, true)
+        val original = client.createV2(createRequest().copy(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1234)))
+        Features.override(Features.markupV2, false)
+        val path = "$basePath/v2/${original.info.id}/attestering"
+        assertThat(client.get("$path?reserver=true").status).isEqualTo(HttpStatusCode.Forbidden)
+        assertThat(client.put("$basePath/${original.info.id}/status") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"klar":true}""")
+        }.status).isEqualTo(HttpStatusCode.OK)
+        val attestant = createClient {
+            install(Auth) {
+                basic {
+                    credentials { BasicAuthCredentials("attestant", "test") }
+                    sendWithoutRequest { true }
+                }
+            }
+        }
+        val hent = attestant.get("$path?reserver=true")
+        assertThat(hent.status).isEqualTo(HttpStatusCode.OK)
+        val forAttestering = mapper.readValue<ApiV2.BrevResponse>(hent.bodyAsText())
+        assertThat(forAttestering.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+        val paragraph = forAttestering.redigertBrev.blocks.single() as EditV2.Block.Paragraph
+        val edited = forAttestering.redigertBrev.copy(
+            blocks = listOf(paragraph.copy(content = listOf((paragraph.content.single() as EditV2.Text.Literal).copy(editedText = "attested")))),
+        )
+        assertThat(attestant.put("$path/redigertBrev") {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(edited))
+        }.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(mapper.readValue<ApiV2.BrevResponse>(attestant.get(path).bodyAsText()).redigertBrev).isEqualTo(edited)
+
+        val vedleggId = VedleggId("attestering")
+        brevbakerService.renderRedigerbareVedleggV2Resultat = mapOf(vedleggId to attachment(MarkupV2.paragraph(10, MarkupV2.literal(11, "original"))))
+        val vedleggPath = "$path/redigerbareVedlegg/${vedleggId.id}"
+        val vedleggResponse = attestant.get(vedleggPath)
+        assertThat(vedleggResponse.status).isEqualTo(HttpStatusCode.OK)
+        val vedlegg = mapper.readValue<EditV2.Attachment>(vedleggResponse.bodyAsText())
+        val vedleggParagraph = vedlegg.blocks.single() as EditV2.Block.Paragraph
+        val editedVedlegg = vedlegg.copy(blocks = listOf(vedleggParagraph.copy(content = listOf(
+            (vedleggParagraph.content.single() as EditV2.Text.Literal).copy(editedText = "attested attachment"),
+        ))))
+        assertThat(attestant.put(vedleggPath) {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(ApiV2.RedigertVedleggRequest(editedVedlegg)))
+        }.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(mapper.readValue<EditV2.Attachment>(attestant.get(vedleggPath).bodyAsText())).isEqualTo(editedVedlegg)
+        assertThat(attestant.get("$basePath/${original.info.id}/attestering/pdf").status).isEqualTo(HttpStatusCode.OK)
+        assertThat(brevbakerService.renderPdfV2VedleggKall.last().getValue(vedleggId).blocks)
+            .isEqualTo(attachment(MarkupV2.paragraph(10, MarkupV2.literal(11, "attested attachment"))).blocks)
+
+        val attestert = attestant.put("$path?frigiReservasjon=true") {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(ApiV2.OppdaterAttesteringRequest(edited)))
+        }
+        assertThat(attestert.status).isEqualTo(HttpStatusCode.OK)
+        val status = mapper.readValue<ApiV2.BrevResponse>(attestert.bodyAsText()).info.status as Api.BrevStatus.Klar
+        assertThat(status.attestertAv?.id).isEqualTo(attestant1Principal.navIdent)
     }
 
     @Test
