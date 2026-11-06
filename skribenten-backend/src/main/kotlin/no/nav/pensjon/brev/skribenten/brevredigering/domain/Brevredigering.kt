@@ -83,7 +83,7 @@ interface Brevredigering {
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settRendretBrev(rendretBrev: LetterMarkup)
-    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
+    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>, settHash: Boolean)
     fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
@@ -285,10 +285,18 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         this.rendretBrev = rendretBrev.toEdit()
     }
 
-    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
+    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>, settHash: Boolean) {
         rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
             hentRedigertVedlegg(vedleggId)
-                ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg)) }
+                ?.let {
+                    settRedigertVedlegg(
+                        vedleggId, it.updateEditedAttachment(rendretVedlegg), if (settHash) {
+                            rendretVedlegg
+                        } else {
+                            null
+                        }
+                    )
+                }
         }
     }
 
@@ -378,18 +386,24 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     fun hentRedigertVedlegg(vedleggId: VedleggId): Edit.Attachment? =
         _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.redigertVedlegg
 
-    fun settRedigertVedlegg(vedleggId: VedleggId, redigertVedlegg: Edit.Attachment): Boolean {
+    fun settRedigertVedlegg(
+        vedleggId: VedleggId,
+        redigertVedlegg: Edit.Attachment,
+        malVedlegg: LetterMarkup.Attachment? = null,
+    ): Boolean {
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }
         if (eksisterende != null) {
             if (eksisterende.redigertVedlegg == redigertVedlegg) {
                 return false
             }
             eksisterende.redigertVedlegg = redigertVedlegg
+            malVedlegg?.let { eksisterende.rendretVedlegg = it.toEdit() }
         } else {
             RedigertVedlegg.new(
                 brevredigering = this@BrevredigeringEntity.id,
                 vedleggId = vedleggId,
                 redigertVedlegg = redigertVedlegg,
+                malVedlegg = malVedlegg?.toEdit()
             )
             refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
         }

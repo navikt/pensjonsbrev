@@ -25,7 +25,7 @@ class RedigerbareVedleggService(
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         if (mergeMotMal) {
-            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata), false)
         }
 
         return brevmalService.hentRedigerbareVedleggTitler(brev, pesysdata)?.vedlegg
@@ -60,7 +60,7 @@ class RedigerbareVedleggService(
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
 
         val nyttVedlegg = if (mergeMotMal) redigertVedlegg.updateEditedAttachment(malVedlegg) else redigertVedlegg
-        brev.settRedigertVedlegg(vedleggId, nyttVedlegg)
+        brev.settRedigertVedlegg(vedleggId, nyttVedlegg, malVedlegg.takeIf { it.toEdit() == nyttVedlegg })
 
         return success(nyttVedlegg)
     }
