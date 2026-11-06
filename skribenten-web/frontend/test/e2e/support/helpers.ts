@@ -83,6 +83,10 @@ export async function setupSakStubs(page: Page) {
     return route.fulfill({ json: [] });
   });
 
+  await page.route("**/bff/skribenten-backend/sak/123456/brev/*/attestering/redigerbareVedlegg", (route) => {
+    return route.fulfill({ json: [] });
+  });
+
   await page.route("**/bff/skribenten-backend/sak/123456/brev/*", (route) => {
     if (route.request().method() === "GET") {
       return route.fulfill({ json: {} });
