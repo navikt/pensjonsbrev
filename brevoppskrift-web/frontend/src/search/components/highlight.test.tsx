@@ -91,6 +91,16 @@ describe("LineContent highlighting", () => {
   });
 
   describe("exact mode", () => {
+    it("keeps snippet segments space-separated even when they have no boundary whitespace", () => {
+      const line: Line = [
+        { type: "text", value: "grey" },
+        { type: "text", value: "fox" },
+      ];
+
+      expect(marks(renderExact(line, "grey fox"))).toEqual(["grey", "fox"]);
+      expect(marks(renderExact(line, "greyfox"))).toEqual([]);
+    });
+
     it("highlights a phrase across adjacent text segments", () => {
       const line: Line = [
         { type: "text", value: "The grey " },
