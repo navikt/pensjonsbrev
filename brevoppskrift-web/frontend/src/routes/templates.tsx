@@ -312,6 +312,7 @@ function AllTemplates() {
           checked={exactOnly}
           onChange={(e) => {
             syncingFromUrl.current = undefined;
+            editedFromSelection.current = true;
             setExactOnly(e.target.checked);
           }}
           size="small"
