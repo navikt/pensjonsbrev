@@ -7,13 +7,15 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { FeatureAnnouncement } from "~/components/featureAnnouncement/FeatureAnnouncement";
 
-import { DOCUMENTATION_URL, NotificationBell } from "./NotificationBell";
+import { NotificationBell } from "./NotificationBell";
 import { type ProductAnnouncement } from "./productAnnouncements";
 
-const { useUserInfoMock, fetchAcknowledgedMock, acknowledgeMock } = vi.hoisted(() => ({
+const { useUserInfoMock, fetchAcknowledgedMock, acknowledgeMock, fetchSeenMock, markSeenMock } = vi.hoisted(() => ({
   useUserInfoMock: vi.fn(),
   fetchAcknowledgedMock: vi.fn(),
   acknowledgeMock: vi.fn(),
+  fetchSeenMock: vi.fn(),
+  markSeenMock: vi.fn(),
 }));
 
 vi.mock("~/hooks/useUserInfo", () => ({ useUserInfo: useUserInfoMock }));
@@ -23,15 +25,18 @@ vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
     ...original,
     getAcknowledgedAnnouncements: { ...original.getAcknowledgedAnnouncements, queryFn: fetchAcknowledgedMock },
     acknowledgeAnnouncement: acknowledgeMock,
+    getSeenAnnouncements: { ...original.getSeenAnnouncements, queryFn: fetchSeenMock },
+    markAnnouncementSeen: markSeenMock,
   };
 });
 
 const NYHET: ProductAnnouncement = {
   id: "test-nyhet",
   replayableUntil: "2999-12-31",
+  publishedAt: "2026-11-10",
   title: "Ny funksjon",
   description: "Beskrivelse av den nye funksjonen.",
-  unavailable: { heading: "Du må åpne redigeringsvisningen", body: "Funksjonen finnes bare i redigeringsvisningen." },
+  documentationUrl: "https://dokumentasjon.example/ny-funksjon",
 };
 const ATTESTANTNYHET: ProductAnnouncement = {
   ...NYHET,
@@ -55,8 +60,14 @@ const renderWithQueryClient = (ui: ReactNode) => {
 };
 
 const settle = () => act(() => new Promise((resolve) => setTimeout(resolve, 50)));
-const bell = () => screen.getByRole("button", { name: /^Nytt i Skribenten og nyttige lenker/ });
+const bell = () => screen.getByRole("button", { name: /^Nytt i Skribenten/ });
 const dot = () => screen.queryByTestId("unseen-announcements-dot");
+const announcementsDialog = () => screen.queryByRole("dialog", { name: "Nytt i Skribenten" });
+const newsItem = (title: string) => {
+  const item = screen.getByRole("heading", { name: title }).closest("li");
+  if (!item) throw new Error(`Fant ikke nyheten ${title}`);
+  return item;
+};
 
 const TourOnPage = () => {
   const [target, setTarget] = useState<HTMLElement | null>(null);
@@ -79,6 +90,8 @@ describe("<NotificationBell />", () => {
     givenUser(false);
     fetchAcknowledgedMock.mockResolvedValue([]);
     acknowledgeMock.mockResolvedValue(undefined);
+    fetchSeenMock.mockResolvedValue([]);
+    markSeenMock.mockResolvedValue(undefined);
   });
 
   test("viser rød prikk og antall i navnet når brukeren har nyheter som ikke er bekreftet", async () => {
@@ -95,11 +108,12 @@ describe("<NotificationBell />", () => {
     await settle();
 
     expect(dot()).toBeNull();
-    expect(bell().getAttribute("aria-expanded")).toBe("false");
+    expect(bell().getAttribute("aria-haspopup")).toBe("dialog");
+    expect(announcementsDialog()).toBeNull();
 
     await user.click(bell());
 
-    expect(bell().getAttribute("aria-expanded")).toBe("true");
+    expect(announcementsDialog()).not.toBeNull();
     expect(screen.getByRole("heading", { name: NYHET.title })).not.toBeNull();
     expect(screen.getByText(NYHET.description)).not.toBeNull();
   });
@@ -145,20 +159,75 @@ describe("<NotificationBell />", () => {
     expect(screen.queryByRole("heading", { name: NYHET.title })).toBeNull();
   });
 
-  test("har seksjoner for nyheter og for dokumentasjon, med lenke som åpnes i ny fane", async () => {
+  test("åpning av klokken markerer nyhetene som sett, fjerner prikken og beholder dem i listen", async () => {
     const user = userEvent.setup();
-    renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
+    renderWithQueryClient(
+      <NotificationBell announcements={[NYHET, { ...NYHET, id: "annen-nyhet", title: "Annen" }]} />,
+    );
+    await waitFor(() => expect(dot()).not.toBeNull());
 
     await user.click(bell());
 
-    expect(screen.getByRole("region", { name: "Nytt i Skribenten" })).not.toBeNull();
-    const links = screen.getByRole("region", { name: "Dokumentasjon og nyttige lenker" });
-    const link = within(links).getByRole("link", { name: /Dokumentasjon og veiledning/ });
-    expect(link.getAttribute("href")).toBe(DOCUMENTATION_URL);
-    expect(link.getAttribute("target")).toBe("_blank");
+    expect(dot()).toBeNull();
+    expect(markSeenMock).toHaveBeenCalledWith(NYHET.id);
+    expect(markSeenMock).toHaveBeenCalledWith("annen-nyhet");
+    expect(acknowledgeMock).not.toHaveBeenCalled();
+    expect(screen.getByRole("heading", { name: NYHET.title })).not.toBeNull();
+
+    await user.click(bell());
+    await user.click(bell());
+    expect(markSeenMock).toHaveBeenCalledTimes(2);
   });
 
-  test("«Vis meg» starter gjennomgangen på nytt når den er tilgjengelig på siden", async () => {
+  test("viser ikke prikk for nyheter som er sett, og markerer dem ikke på nytt", async () => {
+    fetchSeenMock.mockResolvedValue([NYHET.id]);
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
+    await settle();
+
+    expect(dot()).toBeNull();
+    await user.click(bell());
+    expect(markSeenMock).not.toHaveBeenCalled();
+  });
+
+  test("markerer ikke bekreftede nyheter som sett", async () => {
+    fetchAcknowledgedMock.mockResolvedValue([NYHET.id]);
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
+    await settle();
+
+    await user.click(bell());
+
+    expect(markSeenMock).not.toHaveBeenCalled();
+  });
+
+  test("viser ikke prikk når det ikke kan hentes hvilke nyheter som er sett", async () => {
+    fetchSeenMock.mockRejectedValue(new Error("Nettverksfeil"));
+    renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
+    await settle();
+
+    expect(dot()).toBeNull();
+  });
+
+  test("gjennomgangen starter fortsatt automatisk etter at nyheten er sett i klokken", async () => {
+    const user = userEvent.setup();
+    const { rerender } = renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
+    await waitFor(() => expect(dot()).not.toBeNull());
+    await user.click(bell());
+    await user.click(screen.getByRole("button", { name: "Lukk" }));
+    await waitFor(() => expect(announcementsDialog()).toBeNull());
+
+    rerender(
+      <>
+        <NotificationBell announcements={[NYHET]} />
+        <TourOnPage />
+      </>,
+    );
+
+    expect(await screen.findByRole("alertdialog", { name: "Gjennomgang av funksjonen" })).not.toBeNull();
+  });
+
+  test("«Se hvordan» starter gjennomgangen på nytt når den er tilgjengelig på siden", async () => {
     fetchAcknowledgedMock.mockResolvedValue([NYHET.id]);
     const user = userEvent.setup();
     renderWithQueryClient(
@@ -171,30 +240,58 @@ describe("<NotificationBell />", () => {
     expect(screen.queryByRole("alertdialog")).toBeNull();
 
     await user.click(bell());
-    await user.click(screen.getByRole("button", { name: "Vis meg", description: NYHET.title }));
+    await user.click(screen.getByRole("button", { name: "Se hvordan", description: NYHET.title }));
 
     expect(await screen.findByRole("alertdialog", { name: "Gjennomgang av funksjonen" })).not.toBeNull();
-    expect(bell().getAttribute("aria-expanded")).toBe("false");
+    expect(announcementsDialog()).toBeNull();
 
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
     expect(document.activeElement).toBe(bell());
   });
 
-  test("«Vis meg» forklarer hvor funksjonen finnes når gjennomgangen ikke er tilgjengelig på siden", async () => {
+  test("viser dato, tittel og beskrivelse", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
 
     await user.click(bell());
-    await user.click(screen.getByRole("button", { name: "Vis meg" }));
 
-    const dialog = await screen.findByRole("dialog", { name: NYHET.unavailable.heading });
-    expect(within(dialog).getByText(NYHET.unavailable.body)).not.toBeNull();
+    const item = newsItem(NYHET.title);
+    const date = within(item).getByText("10.11.2026");
+    expect(date.tagName).toBe("TIME");
+    expect(date.getAttribute("dateTime")).toBe("2026-11-10");
+    expect(within(item).getByText(NYHET.description)).not.toBeNull();
+  });
 
-    const closeButtons = within(dialog).getAllByRole("button", { name: "Lukk" });
-    await user.click(closeButtons[closeButtons.length - 1]);
-    await waitFor(() => expect(screen.queryByRole("dialog", { name: NYHET.unavailable.heading })).toBeNull());
-    await waitFor(() => expect(document.activeElement).toBe(bell()));
-    expect(acknowledgeMock).not.toHaveBeenCalled();
+  test("viser bare «Se dokumentasjon» når gjennomgangen ikke er tilgjengelig på siden", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
+
+    await user.click(bell());
+
+    expect(screen.queryByRole("button", { name: "Se hvordan" })).toBeNull();
+    const link = screen.getByRole("link", {
+      name: /^Se dokumentasjon\s*\(åpnes i ny fane\)$/,
+      description: NYHET.title,
+    });
+    expect(link.getAttribute("href")).toBe(NYHET.documentationUrl);
+    expect(link.getAttribute("target")).toBe("_blank");
+  });
+
+  test("viser både «Se hvordan» og «Se dokumentasjon» når gjennomgangen er tilgjengelig på siden", async () => {
+    fetchAcknowledgedMock.mockResolvedValue([NYHET.id]);
+    const user = userEvent.setup();
+    renderWithQueryClient(
+      <>
+        <NotificationBell announcements={[NYHET]} />
+        <TourOnPage />
+      </>,
+    );
+    await settle();
+
+    await user.click(bell());
+
+    expect(screen.getByRole("button", { name: "Se hvordan", description: NYHET.title })).not.toBeNull();
+    expect(screen.getByRole("link", { name: /^Se dokumentasjon\s*\(åpnes i ny fane\)$/ })).not.toBeNull();
   });
 });

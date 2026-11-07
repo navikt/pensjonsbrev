@@ -1,47 +1,33 @@
-import { BellIcon, ExternalLinkIcon } from "@navikt/aksel-icons";
-import {
-  BodyLong,
-  BodyShort,
-  Box,
-  Button,
-  Dialog,
-  Heading,
-  HStack,
-  InternalHeader,
-  Link,
-  Popover,
-  Theme,
-  VStack,
-} from "@navikt/ds-react";
+import { BellIcon, ExternalLinkIcon, SparklesIcon } from "@navikt/aksel-icons";
+import { BodyShort, Box, Button, Heading, HStack, InternalHeader, Link, Modal, Theme, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 
-import { getAcknowledgedAnnouncements } from "~/api/skribenten-api-endpoints";
-import { Divider } from "~/components/Divider";
+import { getAcknowledgedAnnouncements, getSeenAnnouncements } from "~/api/skribenten-api-endpoints";
+import { useMarkAnnouncementSeen } from "~/components/featureAnnouncement/announcementStatus";
 import {
   isAnnouncementExpired,
   requestAnnouncementReplay,
   useIsAnnouncementAvailable,
 } from "~/components/featureAnnouncement/featureAnnouncementState";
 import { useUserInfo } from "~/hooks/useUserInfo";
+import { formatStringDate } from "~/utils/dateUtils";
 
 import { PRODUCT_ANNOUNCEMENTS, type ProductAnnouncement } from "./productAnnouncements";
 
-export const DOCUMENTATION_URL = "https://navikt.github.io/pensjonsbrev/docs/main/index.html";
-
 /**
- * Bell in the top bar with product announcements and useful links. A red dot marks announcements the user has not
- * acknowledged yet. Acknowledged announcements stay in the list until their last display day.
+ * Bell in the top bar with product announcements. A red dot marks announcements the user has neither seen in the bell
+ * nor acknowledged in their tour. Opening the bell marks them as seen, while their tour still starts automatically
+ * where it belongs. They stay in the list until their last day.
  */
 export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { announcements?: ProductAnnouncement[] }) {
   const user = useUserInfo();
-  const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
+  const [bell, setBell] = useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
-  const [unavailableOpen, setUnavailableOpen] = useState(false);
-  const [unavailable, setUnavailable] = useState<ProductAnnouncement | null>(null);
-  const popoverId = useId();
-  const newsHeadingId = useId();
-  const linksHeadingId = useId();
+  const position = usePositionBelow(open ? bell : null);
+  const modalId = useId();
+  const headingId = useId();
+  const markSeen = useMarkAnnouncementSeen();
 
   const relevant = user
     ? announcements.filter(
@@ -50,37 +36,49 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
       )
     : [];
   const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: relevant.length > 0 });
-  const unseenCount = acknowledgedQuery.isSuccess
-    ? relevant.filter((announcement) => !acknowledgedQuery.data.includes(announcement.id)).length
-    : 0;
+  const seenQuery = useQuery({ ...getSeenAnnouncements, enabled: relevant.length > 0 });
+  const unseen =
+    acknowledgedQuery.isSuccess && seenQuery.isSuccess
+      ? relevant.filter(
+          (announcement) =>
+            !acknowledgedQuery.data.includes(announcement.id) && !seenQuery.data.includes(announcement.id),
+        )
+      : [];
   const label =
-    unseenCount > 0
-      ? `Nytt i Skribenten og nyttige lenker, ${unseenCount} ${unseenCount === 1 ? "ny nyhet" : "nye nyheter"}`
-      : "Nytt i Skribenten og nyttige lenker";
+    unseen.length > 0
+      ? `Nytt i Skribenten, ${unseen.length} ${unseen.length === 1 ? "ny nyhet" : "nye nyheter"}`
+      : "Nytt i Skribenten";
 
-  const showMe = (announcement: ProductAnnouncement, availableHere: boolean) => {
-    setOpen(false);
-    if (availableHere) {
-      // The tour returns focus to the element that had it when the tour started.
-      anchor?.focus();
-      requestAnnouncementReplay(announcement.id);
-    } else {
-      setUnavailable(announcement);
-      setUnavailableOpen(true);
-    }
+  const openAnnouncements = () => {
+    for (const announcement of unseen) markSeen(announcement.id);
+    setOpen(true);
   };
+
+  const [replayAfterClose, setReplayAfterClose] = useState<string | null>(null);
+  const showMe = (announcement: ProductAnnouncement) => {
+    setReplayAfterClose(announcement.id);
+    setOpen(false);
+  };
+
+  // Runs after the modal has closed, when the bell can take focus again. The tour returns focus to it when it ends.
+  useEffect(() => {
+    if (open || replayAfterClose === null) return;
+    bell?.focus();
+    requestAnnouncementReplay(replayAfterClose);
+    setReplayAfterClose(null);
+  }, [open, replayAfterClose, bell]);
 
   return (
     <>
       <InternalHeader.Button
-        aria-controls={open ? popoverId : undefined}
-        aria-expanded={open}
-        onClick={() => setOpen((current) => !current)}
-        ref={setAnchor}
+        aria-controls={open ? modalId : undefined}
+        aria-haspopup="dialog"
+        onClick={openAnnouncements}
+        ref={setBell}
       >
         <Box as="span" css={{ display: "inline-flex", position: "relative" }}>
           <BellIcon fontSize="1.5rem" title={label} />
-          {unseenCount > 0 && (
+          {unseen.length > 0 && (
             <Box
               as="span"
               background="danger-strong"
@@ -93,74 +91,76 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
           )}
         </Box>
       </InternalHeader.Button>
-      {/* InternalHeader is dark; the popover and dialog should follow the rest of the app. */}
+      {/* InternalHeader is dark; the modal should follow the rest of the app. */}
       <Theme hasBackground={false} theme="light">
-        <Popover
-          anchorEl={anchor}
-          css={{ overflow: "hidden" }}
-          id={popoverId}
-          onClose={() => setOpen(false)}
+        <Modal
+          aria-labelledby={headingId}
+          closeOnBackdropClick
+          id={modalId}
+          onClose={() => {
+            setOpen(false);
+            bell?.focus();
+          }}
           open={open}
-          placement="bottom-end"
+          size="small"
+          width={451}
+          {...(position && {
+            css: {
+              position: "fixed",
+              inset: "auto",
+              top: `calc(${position.top}px + var(--ax-space-8))`,
+              right: `${position.right}px`,
+              margin: 0,
+            },
+          })}
         >
-          <Box maxWidth="calc(100vw - var(--ax-space-32))" width="24rem">
-            <VStack aria-labelledby={newsHeadingId} as="section">
-              <Box
-                asChild
-                background="meta-purple-soft"
-                borderColor="meta-purple-subtleA"
-                borderWidth="0 0 1 0"
-                paddingInline="space-16"
-              >
-                <HStack align="center" minHeight="var(--ax-space-48)">
-                  <Heading css={{ color: "var(--ax-text-meta-purple)" }} id={newsHeadingId} level="2" size="small">
-                    Nytt i Skribenten
-                  </Heading>
-                </HStack>
-              </Box>
-              <Box padding="space-16">
-                {relevant.length > 0 ? (
-                  <VStack as="ul" css={{ listStyle: "none", margin: 0, padding: 0 }} gap="space-16">
-                    {relevant.map((announcement) => (
-                      <AnnouncementItem announcement={announcement} key={announcement.id} onShowMe={showMe} />
-                    ))}
-                  </VStack>
-                ) : (
-                  <BodyShort size="small">Ingen nyheter akkurat nå.</BodyShort>
-                )}
-              </Box>
-            </VStack>
-            <Box paddingInline="space-16">
-              <Divider />
-            </Box>
-            <VStack aria-labelledby={linksHeadingId} as="section" gap="space-8" padding="space-16">
-              <Heading id={linksHeadingId} level="2" size="xsmall">
-                Dokumentasjon og nyttige lenker
+          <Modal.Header
+            css={{
+              background: "var(--ax-bg-meta-purple-soft)",
+              borderBottom: "1px solid var(--ax-border-meta-purple-subtleA)",
+              boxSizing: "border-box",
+              height: "var(--ax-space-48)",
+              // Centres Aksel's 32px close button in the 24px left between the 12px top and bottom padding.
+              "& .aksel-modal__button": { marginTop: "calc(-1 * var(--ax-space-4))" },
+            }}
+          >
+            <HStack
+              align="center"
+              css={{ color: "var(--ax-text-meta-purple)" }}
+              gap="space-8"
+              height="100%"
+              wrap={false}
+            >
+              <SparklesIcon aria-hidden fontSize="1.5rem" />
+              <Heading id={headingId} level="2" size="small">
+                Nytt i Skribenten
               </Heading>
-              <BodyShort size="small">
-                <Link href={DOCUMENTATION_URL} rel="noopener noreferrer" target="_blank">
-                  Dokumentasjon og veiledning
-                  <ExternalLinkIcon title="åpnes i ny fane" />
-                </Link>
-              </BodyShort>
-            </VStack>
-          </Box>
-        </Popover>
-        <Dialog onOpenChange={setUnavailableOpen} open={unavailableOpen} size="small">
-          <Dialog.Popup returnFocusTo={() => anchor} width="small">
-            <Dialog.Header>
-              <Dialog.Title>{unavailable?.unavailable.heading}</Dialog.Title>
-            </Dialog.Header>
-            <Dialog.Body>
-              <BodyLong>{unavailable?.unavailable.body}</BodyLong>
-            </Dialog.Body>
-            <Dialog.Footer>
-              <Dialog.CloseTrigger>
-                <Button size="small">Lukk</Button>
-              </Dialog.CloseTrigger>
-            </Dialog.Footer>
-          </Dialog.Popup>
-        </Dialog>
+            </HStack>
+          </Modal.Header>
+          <Modal.Body css={{ paddingTop: "var(--ax-space-12)" }}>
+            {relevant.length > 0 ? (
+              <VStack
+                as="ul"
+                css={{
+                  listStyle: "none",
+                  margin: 0,
+                  padding: 0,
+                  "& > li:not(:last-child)": {
+                    paddingBottom: "var(--ax-space-16)",
+                    borderBottom: "1px solid var(--ax-border-neutral-subtle)",
+                  },
+                }}
+                gap="space-16"
+              >
+                {relevant.map((announcement) => (
+                  <AnnouncementItem announcement={announcement} key={announcement.id} onShowMe={showMe} />
+                ))}
+              </VStack>
+            ) : (
+              <BodyShort size="small">Ingen nyheter akkurat nå.</BodyShort>
+            )}
+          </Modal.Body>
+        </Modal>
       </Theme>
     </>
   );
@@ -171,26 +171,69 @@ const AnnouncementItem = ({
   onShowMe,
 }: {
   announcement: ProductAnnouncement;
-  onShowMe: (announcement: ProductAnnouncement, availableHere: boolean) => void;
+  onShowMe: (announcement: ProductAnnouncement) => void;
 }) => {
   const availableHere = useIsAnnouncementAvailable(announcement.id);
   const titleId = useId();
 
   return (
     <VStack align="start" as="li" gap="space-4">
+      <BodyShort as="time" dateTime={announcement.publishedAt} size="small">
+        {formatStringDate(announcement.publishedAt)}
+      </BodyShort>
       <Heading id={titleId} level="3" size="xsmall">
         {announcement.title}
       </Heading>
       <BodyShort size="small">{announcement.description}</BodyShort>
-      <Button
-        aria-describedby={titleId}
-        css={{ marginTop: "var(--ax-space-4)" }}
-        onClick={() => onShowMe(announcement, availableHere)}
-        size="small"
-        variant="secondary"
-      >
-        Vis meg
-      </Button>
+      <HStack align="center" css={{ marginTop: "var(--ax-space-8)" }} gap="space-8">
+        {availableHere && (
+          <Button aria-describedby={titleId} onClick={() => onShowMe(announcement)} size="small" variant="secondary">
+            Se hvordan
+          </Button>
+        )}
+        <BodyShort size="small" weight="semibold">
+          <Link
+            aria-describedby={titleId}
+            href={announcement.documentationUrl}
+            rel="noopener noreferrer"
+            target="_blank"
+            underline={false}
+          >
+            <ExternalLinkIcon aria-hidden fontSize="1.25rem" />
+            Se dokumentasjon
+            <span className="aksel-sr-only"> (åpnes i ny fane)</span>
+          </Link>
+        </BodyShort>
+      </HStack>
     </VStack>
   );
 };
+
+/**
+ * Where to place a panel right below `element`, right-aligned with it. Follows the element when the window is resized
+ * or its neighbours change size, e.g. when the web font or the user's name loads after the panel was opened.
+ */
+function usePositionBelow(element: HTMLElement | null) {
+  const [position, setPosition] = useState<{ top: number; right: number } | null>(null);
+
+  useEffect(() => {
+    if (!element) {
+      setPosition(null);
+      return;
+    }
+    const update = () => {
+      const rect = element.getBoundingClientRect();
+      setPosition({ top: rect.bottom, right: window.innerWidth - rect.right });
+    };
+    update();
+    window.addEventListener("resize", update);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    for (const sibling of element.parentElement?.children ?? []) observer?.observe(sibling);
+    return () => {
+      window.removeEventListener("resize", update);
+      observer?.disconnect();
+    };
+  }, [element]);
+
+  return position;
+}
