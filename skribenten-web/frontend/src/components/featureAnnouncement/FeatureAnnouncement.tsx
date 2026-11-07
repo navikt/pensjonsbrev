@@ -1,5 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { useQuery } from "@tanstack/react-query";
 import { type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   ACTIONS,
@@ -13,9 +12,9 @@ import {
   useJoyride,
 } from "react-joyride";
 
-import { acknowledgeAnnouncement, getAcknowledgedAnnouncements } from "~/api/skribenten-api-endpoints";
-import { logError } from "~/utils/logger";
+import { getAcknowledgedAnnouncements } from "~/api/skribenten-api-endpoints";
 
+import { useAcknowledgeAnnouncement } from "./announcementStatus";
 import {
   FEATURE_ANNOUNCEMENT_LOCALE,
   FeatureAnnouncementArrow,
@@ -51,7 +50,7 @@ type FeatureAnnouncementProps = {
   /** Last day (YYYY-MM-DD) the announcement starts automatically, typically 30 days after release. */
   showUntil: string;
   /**
-   * Last day (YYYY-MM-DD) the tour can still be started on request, e.g. with «Vis meg» in the notification bell.
+   * Last day (YYYY-MM-DD) the tour can still be started on request, e.g. with «Se hvordan» in the notification bell.
    * Defaults to `showUntil`.
    */
   replayableUntil?: string;
@@ -94,7 +93,6 @@ const FeatureAnnouncementInstance = ({
 }: FeatureAnnouncementProps & { replayGeneration: number }) => {
   const [resumeIndex, setResumeIndex] = useState(0);
   const [unsuccessfulRun, setUnsuccessfulRun] = useState(false);
-  const queryClient = useQueryClient();
 
   const expired = isAnnouncementExpired(showUntil);
   const replayable = !isAnnouncementExpired(replayableUntil ?? showUntil);
@@ -104,14 +102,7 @@ const FeatureAnnouncementInstance = ({
 
   const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
   const acknowledged = acknowledgedQuery.data?.includes(id) === true;
-  const { mutate: saveAcknowledgement } = useMutation({
-    mutationFn: () => acknowledgeAnnouncement(id),
-    retry: 2,
-    onError: (error) =>
-      logError(error, error instanceof AxiosError ? error.response?.status : undefined).catch(() =>
-        console.error("Unable to log error message"),
-      ),
-  });
+  const acknowledge = useAcknowledgeAnnouncement();
 
   const onDismissReference = useRef(onDismiss);
   onDismissReference.current = onDismiss;
@@ -120,13 +111,10 @@ const FeatureAnnouncementInstance = ({
   const dismiss = useCallback(() => {
     if (hasDismissed.current) return;
     hasDismissed.current = true;
-    queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) =>
-      previous.includes(id) ? previous : [...previous, id],
-    );
-    saveAcknowledgement();
+    acknowledge(id);
     onDismissReference.current?.();
     endAnnouncementReplay(replayGeneration);
-  }, [id, queryClient, saveAcknowledgement, replayGeneration]);
+  }, [id, acknowledge, replayGeneration]);
 
   const eligible = available && (replaying || (!expired && acknowledgedQuery.isSuccess && !acknowledged));
   // A run that ended without showing anything (e.g. the target was never found) is retried the next time the

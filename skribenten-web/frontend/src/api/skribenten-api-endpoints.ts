@@ -63,6 +63,10 @@ export const acknowledgedAnnouncementsKeys = {
   all: ["ACKNOWLEDGED_ANNOUNCEMENTS"] as const,
 };
 
+export const seenAnnouncementsKeys = {
+  all: ["SEEN_ANNOUNCEMENTS"] as const,
+};
+
 export const featureToggleKeys = {
   all: ["FEATURE_TOGGLE"] as const,
   name: (featureName: string) => [...featureToggleKeys.all, featureName] as const,
@@ -178,6 +182,17 @@ export const getAcknowledgedAnnouncements = {
 
 export async function acknowledgeAnnouncement(announcementId: string) {
   await axios.put(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler/${encodeURIComponent(announcementId)}`);
+}
+
+export const getSeenAnnouncements = {
+  queryKey: seenAnnouncementsKeys.all,
+  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/setteNyhetsvarsler`)).data,
+  staleTime: Number.POSITIVE_INFINITY,
+  gcTime: Number.POSITIVE_INFINITY,
+};
+
+export async function markAnnouncementSeen(announcementId: string) {
+  await axios.put(`${SKRIBENTEN_API_BASE_PATH}/me/setteNyhetsvarsler/${encodeURIComponent(announcementId)}`);
 }
 
 export async function orderExstreamLetter(saksId: string, orderLetterRequest: OrderExstreamLetterRequest) {
