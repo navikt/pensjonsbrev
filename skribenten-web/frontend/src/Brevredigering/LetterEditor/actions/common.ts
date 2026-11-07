@@ -1239,7 +1239,7 @@ export const base64ToPdfBlob = (b64: string) =>
  * Cell literals are inline, so an empty one is only 1ch wide and browsers don't reliably move the caret into it
  * when the click lands in the rest of the cell. Focuses the literal of an empty cell on such clicks.
  */
-export function focusCellWhenClickedOutsideText(event: MouseEvent<HTMLTableElement>) {
+export function focusEmptyCellOnClick(event: MouseEvent<HTMLTableElement>) {
   const cell = event.target as HTMLElement;
   if (event.button !== 0 || (cell.tagName !== "TD" && cell.tagName !== "TH")) return;
   const selection = globalThis.getSelection();

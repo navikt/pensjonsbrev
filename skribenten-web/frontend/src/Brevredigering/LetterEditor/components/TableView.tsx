@@ -4,7 +4,7 @@ import { ActionMenu } from "@navikt/ds-react";
 import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { focusCellWhenClickedOutsideText } from "~/Brevredigering/LetterEditor/actions/common";
+import { focusEmptyCellOnClick } from "~/Brevredigering/LetterEditor/actions/common";
 import { useAttestantDiff } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
 import { DeletedCellContentAt, DeletedCellsAt, DeletedRowsAt } from "~/Brevredigering/LetterEditor/diff/DeletedMarkup";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -107,7 +107,7 @@ const TableView: React.FC<{
       <table
         css={tableStyles}
         data-testid="letter-table"
-        onClick={focusCellWhenClickedOutsideText}
+        onClick={focusEmptyCellOnClick}
         onContextMenu={(e) => {
           e.preventDefault();
           if (diffHash !== undefined) {

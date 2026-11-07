@@ -1,14 +1,14 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, test } from "vitest";
 
-import { focusCellWhenClickedOutsideText } from "~/Brevredigering/LetterEditor/actions/common";
+import { focusEmptyCellOnClick } from "~/Brevredigering/LetterEditor/actions/common";
 import { renderDiffSegments } from "~/Brevredigering/LetterEditor/diff/DiffSegments";
 import { ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
 
 function renderCell(cellContent: React.ReactNode) {
   render(
     // biome-ignore lint/a11y/useKeyWithClickEvents: Tests the mouse-only cell-whitespace handler.
-    <table onClick={focusCellWhenClickedOutsideText}>
+    <table onClick={focusEmptyCellOnClick}>
       <tbody>
         <tr>
           <td data-testid="cell">{cellContent}</td>
@@ -27,7 +27,7 @@ const literal = (text: string) => (
   </span>
 );
 
-describe("focusCellWhenClickedOutsideText", () => {
+describe("focusEmptyCellOnClick", () => {
   test("focuses the literal of an empty cell", () => {
     const { cell, selection } = renderCell(literal(ZERO_WIDTH_SPACE));
     const span = screen.getByTestId("literal");
