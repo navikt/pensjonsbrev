@@ -40,6 +40,20 @@ describe("focusCellWhenClickedOutsideText", () => {
     expect(selection.anchorOffset).toBe(ZERO_WIDTH_SPACE.length);
   });
 
+  test("focuses the first literal of a cell with several empty literals and a line break", () => {
+    const { cell } = renderCell(
+      <>
+        {literal(ZERO_WIDTH_SPACE)}
+        <br />
+        {literal(ZERO_WIDTH_SPACE)}
+      </>,
+    );
+
+    fireEvent.click(cell);
+
+    expect(document.activeElement).toBe(screen.getAllByTestId("literal")[0]);
+  });
+
   test.each([
     ["with text", literal("Tekst")],
     [

@@ -1244,12 +1244,12 @@ export function focusCellWhenClickedOutsideText(event: MouseEvent<HTMLTableEleme
   if (event.button !== 0 || (cell.tagName !== "TD" && cell.tagName !== "TH")) return;
   const selection = globalThis.getSelection();
   if (!selection?.isCollapsed || cell.contains(document.activeElement)) return;
-  if (cell.textContent !== ZERO_WIDTH_SPACE) return;
+  if (cell.textContent?.replaceAll(ZERO_WIDTH_SPACE, "") !== "") return;
 
   const literal = cell.querySelector<HTMLElement>("[data-literal-index][contenteditable=true]");
   const textNode = literal?.firstChild;
   if (textNode?.nodeType !== Node.TEXT_NODE) return;
 
   literal?.focus();
-  selection.collapse(textNode, ZERO_WIDTH_SPACE.length);
+  selection.collapse(textNode, textNode.textContent?.length ?? 0);
 }
