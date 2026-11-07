@@ -11,6 +11,7 @@ import {
   isParagraph,
   isTableCellIndex,
   isTextContent,
+  ZERO_WIDTH_SPACE,
 } from "~/Brevredigering/LetterEditor/model/utils";
 import { type BrevResponse } from "~/types/brev";
 import {
@@ -1235,28 +1236,20 @@ export const base64ToPdfBlob = (b64: string) =>
   new Blob([Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))], { type: "application/pdf" });
 
 /**
- * Cell literals are inline (an empty one is only 1ch wide), so browsers don't reliably move the caret into them
- * on clicks in the rest of the cell. Focus the last literal, preserving selections and existing cell focus.
+ * Cell literals are inline, so an empty one is only 1ch wide and browsers don't reliably move the caret into it
+ * when the click lands in the rest of the cell. Focuses the literal of an empty cell on such clicks.
  */
 export function focusCellWhenClickedOutsideText(event: MouseEvent<HTMLTableElement>) {
   const cell = event.target as HTMLElement;
   if (event.button !== 0 || (cell.tagName !== "TD" && cell.tagName !== "TH")) return;
   const selection = globalThis.getSelection();
   if (!selection?.isCollapsed || cell.contains(document.activeElement)) return;
+  if (cell.textContent !== ZERO_WIDTH_SPACE) return;
 
-  const literals = cell.querySelectorAll<HTMLElement>("[data-literal-index][contenteditable=true]");
-  const literal = literals[literals.length - 1];
-  if (!literal) return;
+  const literal = cell.querySelector<HTMLElement>("[data-literal-index][contenteditable=true]");
+  const textNode = literal?.firstChild;
+  if (textNode?.nodeType !== Node.TEXT_NODE) return;
 
-  // Caret code reads offsets in the text node, and diff-decorated literals split the text into segments.
-  const walker = document.createTreeWalker(literal, NodeFilter.SHOW_TEXT, {
-    acceptNode: (node) =>
-      node.parentElement?.closest("[data-diff-deletion]") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
-  });
-  let textNode: Node | null = null;
-  while (walker.nextNode()) textNode = walker.currentNode;
-
-  literal.focus();
-  if (textNode) selection.collapse(textNode, textNode.textContent?.length ?? 0);
-  else selection.collapse(literal, literal.childNodes.length);
+  literal?.focus();
+  selection.collapse(textNode, ZERO_WIDTH_SPACE.length);
 }

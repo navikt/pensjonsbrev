@@ -1,58 +1,79 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import { focusCellWhenClickedOutsideText } from "~/Brevredigering/LetterEditor/actions/common";
 import { renderDiffSegments } from "~/Brevredigering/LetterEditor/diff/DiffSegments";
-import { type DiffSegment } from "~/Brevredigering/LetterEditor/diff/diffModel";
+import { ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
 
-const diffSegments: Record<string, DiffSegment[]> = {
-  diff: [
-    { type: "inserted", text: "Inserted text" },
-    { type: "deleted", text: "Deleted text" },
-    { type: "unchanged", text: "Trailing text" },
-  ],
-  "diff ending in a deletion": [
-    { type: "unchanged", text: "Kept text" },
-    { type: "deleted", text: "Deleted text" },
-  ],
-};
+function renderCell(cellContent: React.ReactNode) {
+  render(
+    // biome-ignore lint/a11y/useKeyWithClickEvents: Tests the mouse-only cell-whitespace handler.
+    <table onClick={focusCellWhenClickedOutsideText}>
+      <tbody>
+        <tr>
+          <td data-testid="cell">{cellContent}</td>
+        </tr>
+      </tbody>
+    </table>,
+  );
+  const selection = document.getSelection()!;
+  selection.collapse(document.body, 0);
+  return { cell: screen.getByTestId("cell"), selection };
+}
 
-test.each(["plain", "empty", "diff", "diff ending in a deletion"] as const)(
-  "focuses the end of the last editable text in a %s literal on cell-whitespace clicks",
-  (mode) => {
-    render(
-      // biome-ignore lint/a11y/useKeyWithClickEvents: Tests the mouse-only cell-whitespace handler.
-      <table onClick={focusCellWhenClickedOutsideText}>
-        <tbody>
-          <tr>
-            <td data-testid="cell">
-              <span contentEditable data-literal-index="{}" data-testid="literal" tabIndex={-1} />
-            </td>
-          </tr>
-        </tbody>
-      </table>,
-    );
-    const cell = screen.getByTestId("cell");
-    const literal = screen.getByTestId("literal");
-    const segments = diffSegments[mode];
-    if (segments) {
-      renderDiffSegments(literal, segments, "test");
-    } else {
-      literal.textContent = mode === "empty" ? "\u200B" : "Plain text";
-    }
-    // Offsets are read from the text node, so the caret must not be anchored on the literal element itself.
-    const expectedTextNode = [...literal.querySelectorAll(":scope > span:not([data-diff-deletion])")]
-      .map((segment) => segment.firstChild)
-      .concat(segments ? [] : [literal.firstChild])
-      .at(-1);
-    const selection = document.getSelection()!;
-    selection.collapse(cell, 0);
+const literal = (text: string) => (
+  <span contentEditable data-literal-index="{}" data-testid="literal" suppressContentEditableWarning tabIndex={-1}>
+    {text}
+  </span>
+);
+
+describe("focusCellWhenClickedOutsideText", () => {
+  test("focuses the literal of an empty cell", () => {
+    const { cell, selection } = renderCell(literal(ZERO_WIDTH_SPACE));
+    const span = screen.getByTestId("literal");
 
     fireEvent.click(cell);
 
-    expect(document.activeElement).toBe(literal);
+    expect(document.activeElement).toBe(span);
     expect(selection.isCollapsed).toBe(true);
-    expect(selection.anchorNode).toBe(expectedTextNode);
-    expect(selection.anchorOffset).toBe(expectedTextNode?.textContent?.length);
-  },
-);
+    expect(selection.anchorNode).toBe(span.firstChild);
+    expect(selection.anchorOffset).toBe(ZERO_WIDTH_SPACE.length);
+  });
+
+  test.each([
+    ["with text", literal("Tekst")],
+    [
+      "with a variable",
+      <>
+        {literal(ZERO_WIDTH_SPACE)}
+        <span data-literal-index="{}">variabel</span>
+      </>,
+    ],
+  ])("leaves a cell %s to the browser", (_, cellContent) => {
+    const { cell } = renderCell(cellContent);
+
+    fireEvent.click(cell);
+
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  test("does nothing for a cell showing deleted diff text", () => {
+    const { cell } = renderCell(literal(ZERO_WIDTH_SPACE));
+    renderDiffSegments(screen.getByTestId("literal"), [{ type: "deleted", text: "Slettet" }], "test");
+
+    expect(() => fireEvent.click(cell)).not.toThrow();
+    expect(document.activeElement).toBe(document.body);
+  });
+
+  test("ignores clicks on the literal itself and keeps selections", () => {
+    const { selection } = renderCell(literal(ZERO_WIDTH_SPACE));
+    const span = screen.getByTestId("literal");
+
+    fireEvent.click(span);
+    expect(document.activeElement).toBe(document.body);
+
+    selection.selectAllChildren(document.body);
+    fireEvent.click(screen.getByTestId("cell"));
+    expect(document.activeElement).toBe(document.body);
+  });
+});
