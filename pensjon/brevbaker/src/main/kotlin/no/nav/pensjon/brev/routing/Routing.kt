@@ -71,7 +71,11 @@ fun Application.brevRouting(
         }
 
         get("/isReady") {
-            call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
+            if (call.application.attributes[OppvarmingKey].ferdig) {
+                call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
+            } else {
+                call.respondText("Varmer opp", ContentType.Text.Plain, HttpStatusCode.ServiceUnavailable)
+            }
         }
 
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")

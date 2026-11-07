@@ -119,7 +119,7 @@ class TemplateModelSpecificationFactoryTest {
         assertThat(spec["anEnum"]).isEqualTo(
             FieldType.Enum(
                 false,
-                setOf(FieldType.EnumEntry("FLAG1"), FieldType.EnumEntry("FLAG2"))
+                listOf(FieldType.EnumEntry("FLAG1"), FieldType.EnumEntry("FLAG2"))
             )
         )
     }
@@ -218,10 +218,27 @@ class TemplateModelSpecificationFactoryTest {
         assertThat(valgSpec["enumValg"]).isEqualTo(
             FieldType.Enum(
                 true,
-                setOf(FieldType.EnumEntry("ALTERNATIV_EN", "Alternativ en"), FieldType.EnumEntry("ALTERNATIV_TO", "Alternativ to")),
+                listOf(FieldType.EnumEntry("ALTERNATIV_EN", "Alternativ en"), FieldType.EnumEntry("ALTERNATIV_TO", "Alternativ to")),
                 "Enum display"
             )
         )
+    }
+
+    enum class SortertEnum(override val displayText: String, override val rekkefoelge: Int?) : SaksbehandlerValgEnum {
+        C_UTEN("C", null),
+        B_ANDRE("B", 2),
+        A_UTEN("A", null),
+        D_FOERSTE("D", 1),
+    }
+
+    @OptIn(InternKonstruktoer::class)
+    @Test
+    fun `enum saksbehandlervalg sorteres etter rekkefoelge og deretter navn`() {
+        val spec = TemplateModelSpecificationFactory(WithSaksbehandlervalg::class)
+            .build(mapOf("sortert" to SaksbehandlervalgVerdi.Enum("sortert", "Sortert", SortertEnum::class)))
+        val enumSpec = spec.types[SaksbehandlervalgIDSL::class.qualifiedName!!]!!["sortert"] as FieldType.Enum
+
+        assertThat(enumSpec.values.map { it.value }).containsExactly("D_FOERSTE", "B_ANDRE", "A_UTEN", "C_UTEN")
     }
 
     @Test

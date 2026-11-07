@@ -103,6 +103,7 @@ internal fun createMaanedligPensjonFoerSkatt() =
         krav =
             MaanedligPensjonFoerSkattDto.Krav(
                 virkDatoFom = LocalDate.of(2020, 1, 1),
+                forsteVirkFoer1998 = true
             ),
         alderspensjonPerManed =
             listOf(

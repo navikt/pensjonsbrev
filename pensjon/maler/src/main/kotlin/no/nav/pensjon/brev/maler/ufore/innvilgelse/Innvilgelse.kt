@@ -248,6 +248,7 @@ object Innvilgelse {
     data class BegrunnelseForVedtaket(
         val pe: Expression<PEgruppe10>,
         val txtEllerEtAvtaleland: Expression<String>,
+        val konklusjon: Expression<Boolean> = true.expr()
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -295,11 +296,13 @@ object Innvilgelse {
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Vi har kommet fram til at du oppfyller vilkårene for å få uføretrygd." },
-                    nynorsk { +"Vi har kome fram til at du oppfyller vilkåra for å få uføretrygd." },
-                )
+            showIf(konklusjon) {
+                paragraph {
+                    text(
+                        bokmal { +"Vi har kommet fram til at du oppfyller vilkårene for å få uføretrygd." },
+                        nynorsk { +"Vi har kome fram til at du oppfyller vilkåra for å få uføretrygd." },
+                    )
+                }
             }
         }
     }
@@ -1001,7 +1004,7 @@ object Innvilgelse {
                             bokmal { +"Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet vil du kunne tjene 1 G uten å bli redusert. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
                             nynorsk { +"Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet vil du kunne tene 1 G utan å bli redusert. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
                         )
-                        showIf(vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                        showIf(vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER)) {
                             text(
                                 bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                                 nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
@@ -1032,7 +1035,7 @@ object Innvilgelse {
                             bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Fra virkningstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp (G), uten at uføretrygden din blir redusert. To år etter virkningstidspunktet øker dette beløpet til 1 G. Beløpet du kan tjene uten reduksjon i uføretrygden kalles bunnfradrag. " },
                             nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Frå verknadstidspunktet " + virkningstidspunkt.format() + " kan du i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda (G) utan at uføretrygda di blir redusert. To år etter verknadstidspunktet aukar dette beløpet til 1 G. Beløpet du kan tene utan reduksjon i uføretrygda kallar vi botnfrådrag. " },
                         )
-                        showIf(vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER.value)) {
+                        showIf(vedtakFattetDatoEllerIdag.month.notEqualTo(Month.DECEMBER)) {
                             text(
                                 bokmal { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
                                 nynorsk { +"Dette er i år " + pe.ut_bunnfradrag_faktisk().format() + ". " },
@@ -1584,11 +1587,12 @@ object Innvilgelse {
         val pe: Expression<PEgruppe10>,
         val uforegrad: Expression<Int>,
         val virkningsdatoTidligereMnd: Expression<Boolean>,
+        val visTekstOmRenter: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegrad) and virkningsdatoTidligereMnd) {
                 ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { onsketvirkningsdato ->
-                    includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato))
+                    includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(onsketvirkningsdato, visTekstOmRenter))
                 }
             }
         }

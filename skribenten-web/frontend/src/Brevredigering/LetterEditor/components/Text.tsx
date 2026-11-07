@@ -34,11 +34,12 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
           className={isInserted ? "inserted-flash-text" : undefined}
           css={{
             background: "var(--ax-bg-neutral-moderate)",
+            color: "var(--ax-text-neutral)",
             borderRadius: "var(--ax-radius-2)",
             cursor: "default",
             display: "inline-block",
             margin: "0 var(--ax-space-1)",
-            outline: `${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"}`,
+            outline: `${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral)"}`,
             padding: "0 var(--ax-space-2)",
 
             ...(isEmpty && {

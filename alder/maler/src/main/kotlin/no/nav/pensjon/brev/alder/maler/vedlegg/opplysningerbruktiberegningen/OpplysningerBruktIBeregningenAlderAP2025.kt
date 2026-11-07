@@ -13,6 +13,10 @@ import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBereg
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025Dto.vedtak.*
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025Dto.vilkaarsVedtak.*
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025Dto.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025Dto.beregnetPensjonPerManedVedVirk.brukersSivilstand
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025Dto.epsVedVirk.borSammenMedBruker
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025Dto.epsVedVirk.harInntektOver2G
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025Dto.epsVedVirk.mottarPensjon
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -59,6 +63,24 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 english { +"The rate of your retirement pension is " + alderspensjonVedVirk.uttaksgrad.format() + " percent." },
             )
         }
+
+
+        val epsBorSammenMedBruker = epsVedVirk.safe { borSammenMedBruker }.ifNull(false)
+        val epsMottarPensjon = epsVedVirk.safe { mottarPensjon }.ifNull(false)
+        val epsHarInntektOver2G = epsVedVirk.safe { harInntektOver2G }.ifNull(false)
+        val brukersSivilstand = beregnetPensjonPerManedVedVirk.brukersSivilstand
+
+        includePhrase(
+            OpplysningerBruktIBeregningenSivilstand(
+                beregnetSomEnsligPgaInstitusjon = erBeregnetSomEnsligPgaInstitusjonsopphold,
+                epsBorSammenMedBruker = epsBorSammenMedBruker,
+                epsMottarPensjon = epsMottarPensjon,
+                epsHarInntektOver2G = epsHarInntektOver2G,
+                brukersSivilstand = brukersSivilstand,
+                betydningForAP = false.expr()
+            )
+        )
+
         includePhrase(
             OpplysningerBruktIBeregningTabellAP2025(
                 alderspensjonVedVirk = alderspensjonVedVirk,

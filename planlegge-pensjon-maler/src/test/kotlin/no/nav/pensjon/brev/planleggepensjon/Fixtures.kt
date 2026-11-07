@@ -348,6 +348,7 @@ object Fixtures : LetterDataFactory {
         tilleggspensjonBeloep = Kroner(4872),
         pensjonstillegg = Kroner(4872),
         skjermingstillegg = null,
+        minstenivaatilleggIndividuelt = Kroner(2934),
         kapittel19AndelTeller = 1,
         kapittel19Trygdetid = 40,
         basispensjonBeloep = null,

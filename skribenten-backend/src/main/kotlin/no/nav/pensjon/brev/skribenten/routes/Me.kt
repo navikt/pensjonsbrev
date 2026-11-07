@@ -8,17 +8,17 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.getOrFail
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.BekreftNyhetsvarselHandler
-import no.nav.pensjon.brev.skribenten.FjernFavorittHandler
-import no.nav.pensjon.brev.skribenten.HentBekreftedeNyhetsvarslerHandler
-import no.nav.pensjon.brev.skribenten.HentFavoritterHandler
-import no.nav.pensjon.brev.skribenten.HentSetteNyhetsvarslerHandler
-import no.nav.pensjon.brev.skribenten.LeggTilFavorittHandler
-import no.nav.pensjon.brev.skribenten.MarkerNyhetsvarselSomSettHandler
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NyhetsvarselId
 import no.nav.pensjon.brev.skribenten.principal
+import no.nav.pensjon.brev.skribenten.saksbehandler.BekreftNyhetsvarselHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.FjernFavorittHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentBekreftedeNyhetsvarslerHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentSetteNyhetsvarslerHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.LeggTilFavorittHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.MarkerNyhetsvarselSomSettHandler
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 
 context(app: Application)

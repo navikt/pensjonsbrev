@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+import no.nav.brev.BrevLandmodell.Landkode
 
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -26,6 +27,8 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.EnumSource
 import java.time.Instant
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
@@ -127,6 +130,26 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(brev).isSuccess {
             assertThat(it.info.mottaker).isEqualTo(mottaker)
             assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
+            assertThat(transaction { BrevredigeringEntity[it.info.id].mottaker }).isEqualTo(mottaker)
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = Dto.Mottaker.ManueltAdressertTil::class, names = ["BRUKER", "ANNEN"])
+    suspend fun `lagrer adresseringsvalg og setter riktig navn for utenlandsk mottaker`(adressertTil: Dto.Mottaker.ManueltAdressertTil) {
+        val mottaker = Dto.Mottaker.utenlandskAdresse(
+            navn = Navn("Test Mottaker"),
+            adresselinje1 = Adresselinje("Adresse 1"),
+            adresselinje2 = null,
+            adresselinje3 = null,
+            landkode = Landkode("SE"),
+            manueltAdressertTil = adressertTil,
+        )
+
+        assertThat(opprettBrev(mottaker = mottaker)).isSuccess {
+            assertThat(it.info.mottaker).isEqualTo(mottaker)
+            assertThat(transaction { BrevredigeringEntity[it.info.id].mottaker }).isEqualTo(mottaker)
+            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(if (adressertTil == ANNEN) mottaker.navn?.value else null)
         }
     }
 

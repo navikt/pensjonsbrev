@@ -56,6 +56,7 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
         val innvilgetEtter12_2Andreledd = saksbehandlervalg("innvilgetEtter12_2Andreledd", "Innvilget etter 12-2 2.ledd").bool()
         val innvilgetEtter12_2Tredjeledd = saksbehandlervalg("innvilgetEtter12_2Tredjeledd", "Innvilget etter 12-2 3.ledd").bool()
         val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Informasjon om renter på etterbetaling").bool()
 
         val pe = pesysData.pe
 
@@ -331,9 +332,10 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
             showIf(instoppholdType.equalTo("reduksjon_fo")) {
                 includePhrase(
                     Ufoeretrygd.Straffegjennomfoering(
-                        pe = pe,
                         ektefelletilleggInnvilget = ektefelletilleggInnvilget,
                         gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                        sisteForsorgeransvarErTrue = pe.ut_forsorgeransvar_siste_er_true(),
+                        forsteForsorgeransvarErTrue = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar(),
                     )
                 )
             }
@@ -368,6 +370,7 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
                 pe = pe,
                 uforegrad = uforegrad,
                 virkningsdatoTidligereMnd = pesysData.vedtaksinfo.virkningsdatoTidligereMnd,
+                visTekstOmRenter
             ))
 
             showIf(refusjon){

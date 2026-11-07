@@ -144,6 +144,7 @@ data class SimuleringV1MaanedligAlderspensjon(
     val tilleggspensjonBeloep: Kroner?,
     val pensjonstillegg: Kroner?,
     val skjermingstillegg: Kroner?,
+    val minstenivaatilleggIndividuelt: Kroner?,
     val kapittel19AndelTeller: Int?,
     val kapittel19Trygdetid: Int?,
     val basispensjonBeloep: Kroner?,

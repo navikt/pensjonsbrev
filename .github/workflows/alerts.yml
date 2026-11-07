@@ -46,7 +46,7 @@ jobs:
         with:
           persist-credentials: false
       - name: "Deploy PrometheusRule til prod-gcp"
-        uses: nais/deploy/actions/deploy@1de80da70ad26556ecdc5964a8b7ec3bbed98120 # v2
+        uses: nais/deploy/actions/deploy@3944168fd20b7eea3818e97de3810f74b54c78ff # v2
         env:
           CLUSTER: "prod-gcp"
           RESOURCE: ".nais/plattform-alerts.yaml,pensjon/brevbaker/.nais/alerts.yaml,brevbaker/pdf-bygger/.nais/alerts.yaml,skribenten-backend/.nais/alerts.yaml,skribenten-web/bff/.nais/alerts.yaml"

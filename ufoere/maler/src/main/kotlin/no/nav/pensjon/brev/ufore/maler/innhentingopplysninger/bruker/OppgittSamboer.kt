@@ -1,0 +1,73 @@
+package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker
+
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_OPPGITT_SAMBOER
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDto
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants
+import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
+
+@TemplateModelHelpers
+object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
+
+    override val kode = UT_INNH_OPPL_OPPGITT_SAMBOER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
+    override val brevkontekst = TemplateDescription.Brevkontekst.SAK
+    override val sakstyper = setOf(Sakstype.UFOREP)
+    override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
+
+
+    override val template = createTemplate(
+        languages = languages(Bokmal, Nynorsk),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Oppgitt samboer – ulike bostedsadresser-ukjent samboer",
+            distribusjonstype = VIKTIG,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
+        ),
+    )
+    {
+        val ukjentSamboer = saksbehandlervalg("ukjentSamboer", "Ukjent samboer").bool()
+
+        title {
+            text (bokmal { + "Du må sende flere opplysninger" },
+                nynorsk { + "Du må sende fleire opplysningar" })
+        }
+        outline {
+            paragraph {
+                text(bokmal { +"Vi har mottatt melding om at du har blitt samboer. " },
+                    nynorsk { +"Vi har motteke melding om at du har blitt sambuar. " })
+            }
+
+            showIf(ukjentSamboer) {
+                paragraph {
+                    text(bokmal { +"Vi ber om at du sender oss navn og fødselsnummer på din samboer. Vi trenger også informasjon om hvilken dato dere ble samboere. Dersom du og din samboer ikke har samme registrerte bostedsadresser må dere melde flytting til Folkeregisteret. Du kan melde flytting her: ${Constants.SKATTEETATEN_MELD_FLYTTING}" },
+                        nynorsk { +"Vi ber om at du sender oss namn og fødselsnummer på sambuaren din. Vi treng også informasjon om kva dato de blei sambuarar. Dersom du og sambuaren din ikkje har same registrerte bustadsadresser må de melde flytting til Folkeregisteret. Du kan melde flytting her: ${Constants.SKATTEETATEN_MELD_FLYTTING}" })
+                }
+            }.orShow {
+                paragraph {
+                    text(bokmal { +"Ifølge opplysninger i Folkeregisteret er dere ikke bosatt på samme adresse. " },
+                        nynorsk { +"Ifølgje opplysningar i Folkeregisteret er de ikkje busette på same adresse. " })
+                }
+                paragraph {
+                    text(bokmal { +"Vi ber om at dere oppdaterer opplysninger i Folkeregisteret så snart som mulig med riktig flyttedato. Du kan melde flytting her: ${Constants.SKATTEETATEN_MELD_FLYTTING}" },
+                        nynorsk { +"Vi ber om at de oppdaterer opplysningar i Folkeregisteret så snart som mogleg med riktig flyttedato. Du kan melde flytting her: ${Constants.SKATTEETATEN_MELD_FLYTTING}" })
+                }
+            }
+
+            includePhrase(Felles.MeldFraOmEndringer)
+            includePhrase(Felles.HarDuSporsmal)
+        }
+    }
+}

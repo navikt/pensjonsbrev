@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
+import java.time.Period
 
 object Ufoeretrygd {
 
@@ -619,9 +620,10 @@ object Ufoeretrygd {
     }
 
     data class Straffegjennomfoering(
-        val pe: Expression<PEgruppe10>,
         val ektefelletilleggInnvilget: Expression<Boolean>,
         val gjenlevendetilleggInnvilget: Expression<Boolean>,
+        val sisteForsorgeransvarErTrue: Expression<Boolean>,
+        val forsteForsorgeransvarErTrue: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -636,21 +638,21 @@ object Ufoeretrygd {
                     nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring. " },
                 )
 
-                showIf((pe.ut_forsorgeransvar_siste_er_true())) {
+                showIf(sisteForsorgeransvarErTrue) {
                     text(
                         bokmal { +"Fordi du forsørger barn" },
                         nynorsk { +"Fordi du forsørgjer barn" },
                     )
                 }
 
-                showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()) and ektefelletilleggInnvilget)) {
+                showIf(forsteForsorgeransvarErTrue and ektefelletilleggInnvilget) {
                     text(
                         bokmal { +" og/eller ektefelle" },
                         nynorsk { +" og/eller ektefelle" },
                     )
                 }
 
-                showIf((pe.ut_forsorgeransvar_siste_er_true())) {
+                showIf(sisteForsorgeransvarErTrue) {
                     text(
                         bokmal { +", vil utbetalingen av uføretrygden din reduseres med 50 prosent. " },
                         nynorsk { +", vil utbetalinga av uføretrygda di reduserast med 50 prosent. " },
@@ -680,6 +682,7 @@ object Ufoeretrygd {
 
     data class EtterbetalingUforetrygd(
         val virkningsdato: Expression<LocalDate>,
+        val visTekstOmRenter: Expression<Boolean> = false.expr()
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -694,11 +697,13 @@ object Ufoeretrygd {
                     nynorsk { +"Du får etterbetalt uføretrygd frå " + virkningsdato.format() + ". Beløpet blir vanlegvis utbetalt innan sju yrkedagar. Det kan bli rekna ut frådrag i etterbetalinga for skatt og ytingar du har fått frå Nav eller andre, som til dømes tenestepensjonsordningar. I desse tilfella kan etterbetalinga bli forseinka med inntil ni veker. Frådrag i etterbetalinga kjem fram av utbetalingsmeldinga." },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Du kan ha rett på renter i etterbetalingen. Du får et eget vedtak om dette når vi har vurdert saken. " },
-                    nynorsk { +"Du kan ha rett på renter i etterbetalinga. Du får eit eige vedtak om dette når vi har vurdert saka. " },
-                )
+            showIf(visTekstOmRenter) {
+                paragraph {
+                    text(
+                        bokmal { +"Du kan ha rett på renter i etterbetalingen. Du får et eget vedtak om dette når vi har vurdert saken. " },
+                        nynorsk { +"Du kan ha rett på renter i etterbetalinga. Du får eit eige vedtak om dette når vi har vurdert saka. " },
+                    )
+                }
             }
         }
     }
@@ -719,9 +724,7 @@ object Ufoeretrygd {
  * Sjekker om uføretidspunkt er nøyaktig måneden etter fødselsdato.
  * Håndterer desember→januar-overgang.
  */
-fun erUforetidspunktMaanedEtterFoedsel(uforetidspunkt: Expression<LocalDate>, foedselsdato: Expression<LocalDate>): Expression<Boolean> =
-    (uforetidspunkt.month equalTo (foedselsdato.month + 1) and (uforetidspunkt.year equalTo foedselsdato.year))
-        .or(
-            (foedselsdato.month equalTo 12) and (uforetidspunkt.month equalTo 1) and (uforetidspunkt.year equalTo (foedselsdato.year + 1))
-        )
-
+fun erUforetidspunktMaanedEtterFoedsel(
+    uforetidspunkt: Expression<LocalDate>,
+    foedselsdato: Expression<LocalDate>,
+): Expression<Boolean> = foedselsdato.plus(Period.ofMonths(1)) equalTo uforetidspunkt

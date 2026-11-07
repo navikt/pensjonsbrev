@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { renderHook, waitFor } from "@testing-library/react";
 import axios from "axios";
-import { type ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { useSamhandlerMottaker } from "~/hooks/useSamhandlerMottaker";
@@ -15,11 +15,9 @@ const samhandler = {
 };
 const adresse = { navn: "Advokat AS", linje1: "Postboks 603 Sentrum", postnr: "4003", poststed: "Stavanger" };
 
-function createWrapper() {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  return function Wrapper({ children }: { children: ReactNode }) {
-    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
-  };
+function Wrapper({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: false } } }));
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 
 describe("useSamhandlerMottaker", () => {
@@ -35,7 +33,7 @@ describe("useSamhandlerMottaker", () => {
   });
 
   it("fetches the organization number without fetching an address", async () => {
-    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({ samhandler });
@@ -52,7 +50,7 @@ describe("useSamhandlerMottaker", () => {
       organisasjonsnummer: "999888777",
     };
     vi.mocked(axios.post).mockResolvedValueOnce({ data: { success: tssPrefixedSamhandler } });
-    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({ samhandler: tssPrefixedSamhandler });
@@ -63,7 +61,7 @@ describe("useSamhandlerMottaker", () => {
     vi.mocked(axios.post).mockResolvedValueOnce({
       data: { success: { ...samhandler, idType, organisasjonsnummer: null } },
     });
-    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: Wrapper });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(result.current.data).toEqual({ samhandler: { ...samhandler, idType, organisasjonsnummer: null }, adresse });
@@ -79,7 +77,7 @@ describe("useSamhandlerMottaker", () => {
       vi.mocked(axios.post).mockResolvedValueOnce({
         data: { success: { ...samhandler, offentligId, organisasjonsnummer: null } },
       });
-      const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: Wrapper });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
       expect(result.current.data).toEqual({
@@ -97,7 +95,7 @@ describe("useSamhandlerMottaker", () => {
     "reports a failed lookup without falling back to an address",
     async (data) => {
       vi.mocked(axios.post).mockResolvedValue({ data });
-      const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: createWrapper() });
+      const { result } = renderHook(() => useSamhandlerMottaker("80000781720"), { wrapper: Wrapper });
 
       await waitFor(() => expect(result.current.isError).toBe(true));
       expect(axios.post).toHaveBeenCalledTimes(1);
@@ -105,7 +103,7 @@ describe("useSamhandlerMottaker", () => {
   );
 
   it("does not fetch without a samhandler recipient", () => {
-    renderHook(() => useSamhandlerMottaker(), { wrapper: createWrapper() });
+    renderHook(() => useSamhandlerMottaker(), { wrapper: Wrapper });
 
     expect(axios.post).not.toHaveBeenCalled();
   });
@@ -113,7 +111,7 @@ describe("useSamhandlerMottaker", () => {
   it("does not show the previous recipient while fetching a new recipient", async () => {
     const { result, rerender } = renderHook(({ id }) => useSamhandlerMottaker(id), {
       initialProps: { id: "80000781720" },
-      wrapper: createWrapper(),
+      wrapper: Wrapper,
     });
     await waitFor(() => expect(result.current.data?.samhandler.organisasjonsnummer).toBeDefined());
 

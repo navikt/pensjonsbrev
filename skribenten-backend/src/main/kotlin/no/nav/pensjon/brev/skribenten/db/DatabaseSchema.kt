@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
@@ -33,9 +34,10 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
-object BekreftetNyhetsvarselTable : Table() {
-    val navIdent: Column<NavIdent> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id)
-    val nyhetsvarselId: Column<NyhetsvarselId> = varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id)
+object BekreftetNyhetsvarselTable : CompositeIdTable() {
+    val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
+    val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
+        varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id).entityId()
     val bekreftet: Column<Instant> = timestamp("bekreftet")
 
     override val primaryKey = PrimaryKey(navIdent, nyhetsvarselId)
@@ -78,6 +80,8 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val attestertAvNavIdent: Column<NavIdent?> = varchar("attestertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
     val leggVedFoersteside: Column<Boolean?> = bool("leggvedfoersteside").nullable()
+    val brevmalHash: Column<StableHashCode?> =
+        integer("brevmalHash").transform(::StableHashCode, StableHashCode::value).nullable()
 }
 
 object DocumentTable : LongIdTable() {

@@ -12,6 +12,9 @@ import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBereg
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderDto.poengrekkeVedVirk.*
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderDto.trygdetidsdetaljerKap19VedVirk.*
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderDto.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderDto.ePSvedVirk.borSammenMedBruker
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderDto.ePSvedVirk.harInntektOver2G
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderDto.ePSvedVirk.mottarPensjon
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createAttachment
@@ -43,13 +46,19 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                 )
             }
 
+            val epsBorSammenMedBruker = epsVedVirk.safe { borSammenMedBruker }.ifNull(false)
+            val epsMottarPensjon = epsVedVirk.safe { mottarPensjon }.ifNull(false)
+            val epsHarInntektOver2G = epsVedVirk.safe { harInntektOver2G }.ifNull(false)
+            val brukersSivilstand = beregnetPensjonPerManedVedVirk.brukersSivilstand
 
             includePhrase(
                 OpplysningerBruktIBeregningenSivilstand(
                     beregnetSomEnsligPgaInstitusjon = beregnetSomEnsligPgaInstitusjon,
-                    epsVedVirk = epsVedVirk,
-                    alderspensjonVedVirk = alderspensjonVedVirk,
-                    beregnetPensjonPerManedVedVirk = beregnetPensjonPerManedVedVirk
+                    epsBorSammenMedBruker = epsBorSammenMedBruker,
+                    epsMottarPensjon = epsMottarPensjon,
+                    epsHarInntektOver2G = epsHarInntektOver2G,
+                    brukersSivilstand = brukersSivilstand,
+                    betydningForAP = true.expr()
                 )
             )
 

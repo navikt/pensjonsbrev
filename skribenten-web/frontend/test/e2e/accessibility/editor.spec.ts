@@ -3,10 +3,21 @@ import fs from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, type TestInfo, test } from "@playwright/test";
 
+import { type UnifiedLetterDiff } from "~/Brevredigering/LetterEditor/diff/diffModel";
 import { type BrevResponse } from "~/types/brev";
 import { type AnyBlock, ElementTags, ListType } from "~/types/brevbakerTypes";
 import { setupSakStubs } from "~test/e2e/support/helpers";
-import { cell, item, itemList, literal, paragraph, row, table } from "~test/support/letterEditorTestUtils";
+import {
+  cell,
+  item,
+  itemList,
+  literal,
+  paragraph,
+  row,
+  table,
+  title1,
+  variable,
+} from "~test/support/letterEditorTestUtils";
 
 const dialogName = "Vil du tilbakestille brevmalen?";
 const editorFixture: BrevResponse = JSON.parse(
@@ -129,6 +140,40 @@ test.describe("Letter editor accessibility", () => {
       await expectNoAxeViolations(page, testInfo);
     });
 
+    test("fritekst and variable fields in paragraphs, lists and tables", async ({ page }, testInfo) => {
+      await openEditor(page, [
+        paragraph([
+          literal("Vanlig tekst "),
+          literal({ text: "Fritekst i avsnitt", tags: [ElementTags.FRITEKST] }),
+          variable("Variabel i avsnitt"),
+        ]),
+        paragraph([
+          itemList({
+            items: [
+              item(literal({ text: "Fritekst i liste", tags: [ElementTags.FRITEKST] }), variable("Variabel i liste")),
+            ],
+          }),
+        ]),
+        paragraph([
+          table(
+            [cell(literal("Opplysning"))],
+            [
+              row(
+                cell(
+                  literal({ text: "Fritekst i tabell", tags: [ElementTags.FRITEKST] }),
+                  variable("Variabel i tabell"),
+                ),
+              ),
+            ],
+          ),
+        ]),
+      ]);
+      await page.getByText("Vanlig tekst", { exact: true }).click();
+      await expect(page.getByText("Fritekst i tabell", { exact: true })).toBeVisible();
+      await expect(page.getByText("Variabel i tabell", { exact: true })).toBeVisible();
+      await expectNoAxeViolations(page, testInfo);
+    });
+
     const placeholder = "Fyll inn fritekst";
     for (const scenario of [
       {
@@ -223,6 +268,72 @@ test.describe("Letter editor accessibility", () => {
       await expect(list.getByRole("listitem")).toHaveText(["Punkt 1", "Punkt 2"]);
       await expect(page.locator(".editor ul")).toHaveCount(0);
       await expectNoAxeViolations(page, testInfo);
+    });
+  });
+
+  test.describe("Attestant diff", () => {
+    test("text contrast in changes and the legend", async ({ page }, testInfo) => {
+      const addedText = "Tekst som er lagt til";
+      const removedText = "Tekst som er slettet";
+      const response = structuredClone(editorFixture);
+      response.redigertBrev.blocks = [paragraph([literal(addedText)])];
+      const diff: UnifiedLetterDiff = {
+        type: "UNIFIED",
+        editedBlocks: {
+          0: {
+            contentEdits: {
+              0: {
+                type: "TEXT",
+                edit: {
+                  inserts: [{ startOffset: 0, endOffset: addedText.length }],
+                  deletes: [{ startOffset: 0, endOffset: removedText.length, text: removedText }],
+                },
+              },
+            },
+            deletedContent: {},
+          },
+        },
+        deletedBlocks: {
+          1: [
+            title1(literal("Slettet overskrift")),
+            paragraph([literal("Slettet avsnitt")]),
+            paragraph([itemList({ items: [item(literal("Slettet listepunkt"))] })]),
+            paragraph([table([cell(literal("Slettet kolonne"))], [row(cell(literal("Slettet tabelltekst")))])]),
+          ],
+        },
+      };
+      await page.route("**/bff/skribenten-backend/me/bekreftedeNyhetsvarsler", (route) =>
+        route.fulfill({ json: ["diff-toggles"] }),
+      );
+      await page.route("**/bff/skribenten-backend/features/diff", (route) =>
+        route.fulfill({ json: { enabled: true } }),
+      );
+      await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) =>
+        route.fulfill({ json: response }),
+      );
+      await page.route("**/bff/skribenten-backend/brev/1/diff", (route) => route.fulfill({ json: diff }));
+      await page.goto("/saksnummer/123456/attester/1/redigering");
+      await page.getByRole("checkbox", { name: "Marker tekst som er lagt til" }).check();
+      await page.getByRole("checkbox", { name: "Vis slettet tekst" }).check();
+      await expect(page.locator(".editor [data-diff-insertion]")).toHaveText(addedText);
+      await expect(page.locator(".editor [data-diff-deletion]")).toHaveText(removedText);
+      await expect(page.locator(".editor [data-diff-deleted-block]")).toHaveCount(4);
+      await page.getByRole("button", { name: "Slik vises endringer" }).click();
+      await expect(page.getByText("Slik vises ord som er lagt til manuelt", { exact: true })).toBeVisible();
+      await expect(page.getByText("Slik vises ord som er slettet manuelt", { exact: true })).toBeVisible();
+
+      const contrast = await new AxeBuilder({ page })
+        .include(".attestant-diff-inserted")
+        .include(".attestant-diff-deleted")
+        .withRules(["color-contrast"])
+        .analyze();
+      expect(contrast.violations).toEqual([]);
+      expect(contrast.incomplete).toEqual([]);
+      expect(contrast.passes).toHaveLength(1);
+      await testInfo.attach("diff-tekstkontrast", {
+        body: JSON.stringify(contrast.passes, null, 2),
+        contentType: "application/json",
+      });
     });
   });
 

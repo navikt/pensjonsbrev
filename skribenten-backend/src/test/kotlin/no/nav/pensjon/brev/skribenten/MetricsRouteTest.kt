@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Isolated
 
+// @Isolated fordi testen deler Metrics.registry med HttpClientMetricsTest. Kjører de parallelt, kan configureMetrics()
+// skje etter at klientmetrikker er registrert. Samme metrikk blir da både summary og histogram, og /metrics svarer 500.
 @Isolated
 class MetricsRouteTest {
 
@@ -121,6 +123,7 @@ class MetricsRouteTest {
                 avsenderEnhet = EnhetId("4321"),
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 valgteVedlegg = emptyList(),
+                redigerteVedlegg = emptyList(),
             )
         ).join()
 

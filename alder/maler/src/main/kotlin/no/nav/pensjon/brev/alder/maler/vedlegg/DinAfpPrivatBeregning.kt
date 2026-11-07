@@ -14,16 +14,17 @@ import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDt
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.kompensasjonstilleggBrutto
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.kompensasjonstilleggForholdstall
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.kronetilleggBrutto
-import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.livsvarigBrutto
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.opptjening
 import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.referansebeloep
-import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dinAfpPrivatBeregningDto.totalPensjon
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.getOrNull
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNotEmpty
+import no.nav.pensjon.brev.template.dsl.expression.safe
+import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -38,13 +39,15 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
     },
     includeSakspart = false,
 ) {
-    showIf(etterbetaling.isNotEmpty()) {
-        forEach(etterbetaling) { etterbetaling ->
+    val foersteEtterbetalingFom = etterbetaling.getOrNull().safe { virkningFom }
+
+    showIf(etterbetaling.size().greaterThan(1)) {
+        ifNotNull(foersteEtterbetalingFom) { fom ->
             title2 {
                 text(
-                    bokmal { +"Oversikt over hva du får fra " + etterbetaling.virkningFom.format() },
-                    nynorsk { +"Oversikt over kva du får frå " + etterbetaling.virkningFom.format() },
-                    english { +"Overview of what you will receive from" + etterbetaling.virkningFom.format()},
+                    bokmal { +"Oversikt over hva du får fra " + fom.format() },
+                    nynorsk { +"Oversikt over kva du får frå " + fom.format() },
+                    english { +"Overview of what you will receive from " + fom.format()},
                 )
             }
             paragraph {
@@ -54,141 +57,84 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                     english { +"If there have been changes to any of the information on which the calculation is based, or if your pension has been adjusted during this period, the amount you receive may change. " },
                 )
             }
-
-            paragraph {
-                table(
-                    header = {
-                        column {
-                            text(
-                                bokmal { +"Din AFP per måned fra " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
-                                nynorsk { +"AFP per månad blir slik fra " + etterbetaling.virkningFom.format() + " til " + etterbetaling.virkningTom.format() + ":" },
-                                english { +"Your monthly AFP from fra " + etterbetaling.virkningFom.format() + " to " + etterbetaling.virkningTom.format() + ":" },
-                            )
-                        }
-                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                            text(bokmal { +"Beløp per måned" },
-                                nynorsk { +"Beløp per månad" },
-                                english { +"Amount per month" })
-                        }
-                    },
-                ) {
-                    ifNotNull(etterbetaling.etterbetalingAfpLivsvarig) { brutto ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP livsvarig del" },
-                                    nynorsk { +"AFP livsvarig del" },
-                                    english { +"AFP lifelong amount" },
-                                )
-                            }
-                            cell { includePhrase(KronerText(brutto)) }
-                        }
-                    }
-                    ifNotNull(etterbetaling.etterbetalingKronetillegg) { brutto ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP kronetillegg" },
-                                    nynorsk { +"AFP-kronetillegg" },
-                                    english { +"AFP fixed amount" },
-                                )
-                            }
-                            cell { includePhrase(KronerText(brutto)) }
-                        }
-                    }
-                    ifNotNull(etterbetaling.etterbetalingKompensasjonstillegg) { brutto ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
-                                    nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
-                                    english { +"AFP compensatory allowance (tax-free)" },
-                                )
-                            }
-                            cell { includePhrase(KronerText(brutto)) }
-                        }
-                    }
-                    ifNotNull(etterbetaling.etterbetalingAfpSum) { sum ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"Sum AFP før skatt" },
-                                    nynorsk { +"Sum AFP før skatt" },
-                                    english { +"Total AFP before tax " },
-                                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
-                                )
-                            }
-                            cell { includePhrase(KronerText(sum, Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
-                        }
-                    }
-                }
-            }
         }
     }
 
-    paragraph {
-        table(
-            header = {
-                column {
-                    text(
-                        bokmal { +"Din AFP per måned blir slik:" },
-                        nynorsk { +"AFP per månad blir slik:" },
-                        english { +"Your monthly AFP will be as follows: " },
-                    )
-                }
-                column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
-                    text(bokmal { +"Beløp per måned" },
-                        nynorsk { +"Beløp per månad" },
-                        english { +"Amount per month" })
-                }
-            },
-        ) {
-            ifNotNull(livsvarigBrutto) { brutto ->
-                row {
-                    cell {
-                        text(
-                            bokmal { +"AFP livsvarig del" },
-                            nynorsk { +"AFP livsvarig del" },
-                            english { +"AFP lifelong amount" },
-                        )
+    forEach(etterbetaling) { etterbetaling ->
+        paragraph {
+            table(
+                header = {
+                    column {
+                        ifNotNull(etterbetaling.virkningTom) { tom ->
+                            text(
+                                bokmal { +"Din AFP per måned fra " + etterbetaling.virkningFom.format() + " til " + tom.format() + ":" },
+                                nynorsk { +"AFP per månad blir slik frå " + etterbetaling.virkningFom.format() + " til " + tom.format() + ":" },
+                                english { +"Your monthly AFP from " + etterbetaling.virkningFom.format() + " to " + tom.format() + ":" },
+                            )
+                        } orShow {
+                            text(
+                                bokmal { +"Din AFP per måned fra " + etterbetaling.virkningFom.format() + ":" },
+                                nynorsk { +"AFP per månad blir slik frå " + etterbetaling.virkningFom.format() + ":" },
+                                english { +"Your monthly AFP from " + etterbetaling.virkningFom.format() + ":" },
+                            )
+                        }
                     }
-                    cell { includePhrase(KronerText(brutto)) }
-                }
-            }
-            ifNotNull(kronetilleggBrutto) { brutto ->
-                row {
-                    cell {
-                        text(
-                            bokmal { +"AFP kronetillegg" },
-                            nynorsk { +"AFP-kronetillegg" },
-                            english { +"AFP fixed amount" },
-                        )
+                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                        text(bokmal { +"Beløp per måned" },
+                            nynorsk { +"Beløp per månad" },
+                            english { +"Amount per month" })
                     }
-                    cell { includePhrase(KronerText(brutto)) }
-                }
-            }
-            ifNotNull(kompensasjonstilleggBrutto) { brutto ->
-                row {
-                    cell {
-                        text(
-                            bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
-                            nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
-                            english { +"AFP compensatory allowance (tax-free)" },
-                        )
+                },
+            ) {
+                ifNotNull(etterbetaling.etterbetalingAfpLivsvarig) { brutto ->
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"AFP livsvarig del" },
+                                nynorsk { +"AFP livsvarig del" },
+                                english { +"AFP lifelong amount" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(brutto)) }
                     }
-                    cell { includePhrase(KronerText(brutto)) }
                 }
-            }
-            row {
-                cell {
-                    text(
-                        bokmal { +"Sum AFP før skatt" },
-                        nynorsk { +"Sum AFP før skatt" },
-                        english { +"Total AFP before tax" },
-                        Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
-                    )
+                ifNotNull(etterbetaling.etterbetalingKronetillegg) { brutto ->
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"AFP kronetillegg" },
+                                nynorsk { +"AFP-kronetillegg" },
+                                english { +"AFP fixed amount" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(brutto)) }
+                    }
                 }
-                cell { includePhrase(KronerText(totalPensjon, Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                ifNotNull(etterbetaling.etterbetalingKompensasjonstillegg) { brutto ->
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
+                                nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
+                                english { +"AFP compensatory allowance (tax-free)" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(brutto)) }
+                    }
+                }
+                ifNotNull(etterbetaling.etterbetalingAfpSum) { sum ->
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Sum AFP før skatt" },
+                                nynorsk { +"Sum AFP før skatt" },
+                                english { +"Total AFP before tax" },
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
+                            )
+                        }
+                        cell { includePhrase(KronerText(sum, Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                    }
+                }
             }
         }
     }
@@ -303,15 +249,17 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                 }
             }
             ifNotNull(justeringsbeloep) { justeringsbeloep ->
-                row {
-                    cell {
-                        text(
-                            bokmal { +"Justeringsbeløp" },
-                            nynorsk { +"Justeringsbeløp" },
-                            english { +"Adjustment amount" },
-                        )
+                showIf(justeringsbeloep.greaterThan(0)) {
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Justeringsbeløp" },
+                                nynorsk { +"Justeringsbeløp" },
+                                english { +"Adjustment amount" },
+                            )
+                        }
+                        cell { includePhrase(KronerText(justeringsbeloep)) }
                     }
-                    cell { includePhrase(KronerText(justeringsbeloep)) }
                 }
             }
             ifNotNull(referansebeloep) { referansebelop ->
@@ -319,7 +267,7 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                     cell {
                         text(
                             bokmal { +"AFP kompensasjonstillegg referansebeløp" },
-                            nynorsk { +"AFP-kompensasjonstillegg referansebeløp" },
+                            nynorsk { +"AFP kompensasjonstillegg referansebeløp" },
                             english { +"AFP compensatory allowance reference amount" },
                         )
                     }
@@ -331,7 +279,7 @@ val vedleggDinAfpPrivatBeregning = createAttachment<LangBokmalNynorskEnglish, Di
                     cell {
                         text(
                             bokmal { +"AFP kompensasjonstillegg forholdstall" },
-                            nynorsk { +"AFP-kompensasjonstillegg forholdstal" },
+                            nynorsk { +"AFP kompensasjonstillegg forholdstal" },
                             english { +"AFP compensatory allowance factor" },
                         )
                     }

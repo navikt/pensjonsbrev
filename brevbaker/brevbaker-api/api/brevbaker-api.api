@@ -259,6 +259,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment : no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
 	public abstract fun getBlocks ()Ljava/util/List;
 	public abstract fun getIncludeSakspart ()Z
+	public abstract fun getStableHashCode-yKUU_oI ()Lno/nav/brev/brevbaker/StableHashCode;
 	public abstract fun getTitle ()Ljava/util/List;
 }
 
@@ -497,6 +498,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupW
 	public abstract fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public abstract fun getLetterDataUsage ()Ljava/util/Set;
 	public abstract fun getMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public abstract fun getStableHashCode-qYGZA34 ()I
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage$Property {
@@ -578,13 +580,13 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Enum : no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType {
-	public fun <init> (ZLjava/util/Set;Ljava/lang/String;)V
-	public synthetic fun <init> (ZLjava/util/Set;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZLjava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (ZLjava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getDisplayText ()Ljava/lang/String;
 	public fun getNullable ()Z
 	public fun getType ()Ljava/lang/String;
-	public final fun getValues ()Ljava/util/Set;
+	public final fun getValues ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

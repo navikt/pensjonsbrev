@@ -57,6 +57,7 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
         )
     ) {
         val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+        val visTekstOmRenter = saksbehandlervalg("visTekstOmRenter", "Informasjon om renter på etterbetaling").bool()
 
         title {
             text(
@@ -513,7 +514,12 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
 
             showIf(instoppholdType.equalTo("reduksjon_fo")) {
                 showIf(pe.ut_forsorgeransvar_ingen_er_false()) {
-                    includePhrase(Ufoeretrygd.Straffegjennomfoering(pe, ektefelletilleggInnvilget, gjenlevendetilleggInnvilget))
+                    includePhrase(Ufoeretrygd.Straffegjennomfoering(
+                        ektefelletilleggInnvilget = ektefelletilleggInnvilget,
+                        gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
+                        sisteForsorgeransvarErTrue = pe.ut_forsorgeransvar_siste_er_true(),
+                        forsteForsorgeransvarErTrue = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar(),
+                    ))
                 }
 
                 showIf(pe.ut_forsorgeransvar_ingen_er_true()) {
@@ -1001,7 +1007,7 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             }
 
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad().equalTo(uforegrad) and pesysData.vedtaksinfo.virkningsdatoTidligereMnd)) {
-                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(pe.vedtaksdata_virkningfom()))
+                includePhrase(Ufoeretrygd.EtterbetalingUforetrygd(pe.vedtaksdata_virkningfom(), visTekstOmRenter))
             }
 
             paragraph {

@@ -35,12 +35,22 @@ class OpplysningerBruktIBeregningUTLegacyTest {
     fun testVedleggMedInntektsgrenseOgAvkortning() {
         val basis = createPEgruppe10()
         val vedtaksdata = basis.vedtaksbrev.vedtaksdata!!
+        val vilkarsvedtaklist = vedtaksdata.vilkarsvedtaklist!!
         val medInntektsdetaljer = basis.copy(
-            pebrevkode = "PE_UT_04_100",
+            pebrevkode = "PE_UT_04_101",
             vedtaksbrev = basis.vedtaksbrev.copy(
                 vedtaksdata = vedtaksdata.copy(
                     kravhode = vedtaksdata.kravhode!!.copy(
                         kravarsaktype = "foerstegangsbehandling"
+                    ),
+                    vilkarsvedtaklist = vilkarsvedtaklist.copy(
+                        vilkarsvedtak = vilkarsvedtaklist.vilkarsvedtak.map {
+                            it.copy(
+                                beregningsvilkar = it.beregningsvilkar!!.copy(
+                                    ifubegrunnelse = "stdbegr_12_8_2_1"
+                                )
+                            )
+                        }
                     )
                 )
             )
@@ -48,13 +58,13 @@ class OpplysningerBruktIBeregningUTLegacyTest {
         val template = createVedleggTestTemplate(
             vedleggOpplysningerBruktIBeregningUTLegacy,
             medInntektsdetaljer.expr(),
-            languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            languages(Language.Bokmal, Language.Nynorsk),
         )
         LetterTestImpl(
             template,
             EmptyAutobrevdata,
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.fellesAuto
-        ).renderTestPDF("OpplysningerBruktIBeregningUfoereLegacyInntektsgrense")
+        ).renderTestPDF("OpplysningerBruktIBeregningUfoereLegacyInntektsgrense2")
     }
 }

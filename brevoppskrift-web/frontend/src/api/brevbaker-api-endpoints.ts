@@ -1,7 +1,7 @@
 import axios from "axios";
 
-import { type SearchLine, type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
-import { type TemplateDocumentationV2 } from "~/api/brevbakerTypesV2";
+import { type SearchLine, type TemplateDescription } from "~/api/brevbakerTypes";
+import { type TemplateDocumentation } from "~/api/templateDocumentationTypes";
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
@@ -22,12 +22,6 @@ export const templateDocumentationKeys = {
     [...templateDocumentationKeys.all, malType, templateId, language] as const,
 };
 
-export const templateDocumentationV2Keys = {
-  all: ["TEMPLATE_DOCUMENTATION_V2"] as const,
-  idWithLanguage: (malType: MalType, templateId: string, language: string) =>
-    [...templateDocumentationV2Keys.all, malType, templateId, language] as const,
-};
-
 export const brevkoderKeys = {
   all: ["BREVKODER"] as const,
   malType: (malType: MalType) => [...brevkoderKeys.all, malType] as const,
@@ -37,16 +31,6 @@ export const getTemplateDescription = {
   queryKey: templateDescriptionKeys.id,
   queryFn: async (type: MalType, templateId: string) =>
     (await axios.get<TemplateDescription>(`${BREVBAKER_API_BASE_PATH}/templates/${type}/${templateId}`)).data,
-};
-
-export const getTemplateDocumentation = {
-  queryKey: templateDocumentationKeys.idWithLanguage,
-  queryFn: async (type: MalType, templateId: string, language: string) =>
-    (
-      await axios.get<TemplateDocumentation>(
-        `${BREVBAKER_API_BASE_PATH}/templates/${type}/${templateId}/doc/${language}`,
-      )
-    ).data,
 };
 
 export type SearchableContent = {
@@ -68,12 +52,12 @@ export const getBrevkoderMedMetadata = {
       .data,
 };
 
-export const getTemplateDocumentationV2 = {
-  queryKey: templateDocumentationV2Keys.idWithLanguage,
+export const getTemplateDocumentation = {
+  queryKey: templateDocumentationKeys.idWithLanguage,
   queryFn: async (type: MalType, templateId: string, language: string) =>
     (
-      await axios.get<TemplateDocumentationV2>(
-        `${BREVBAKER_API_BASE_PATH}/templates/${type}/${templateId}/doc/v2/${language}`,
+      await axios.get<TemplateDocumentation>(
+        `${BREVBAKER_API_BASE_PATH}/templates/${type}/${templateId}/doc/${language}`,
       )
     ).data,
 };

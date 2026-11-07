@@ -55,7 +55,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
 
         outline {
             showIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Klage)) {
-                paragraph { text(bokmal { +"Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst("datoVedtak") + "." }) }
+                paragraph { text(bokmal { +"Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst("dato") + "." }) }
 
                 title1 { text(bokmal { +"Behandlingstid" }) }
                 paragraph {
@@ -68,7 +68,7 @@ object OrienteringOmSvartidKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdata>
             }.orShowIf(orienteringOmSvartid.isOneOf(OrienteringOmSvartid.Omgjoering)) {
                 paragraph {
                     text(bokmal {
-                        +"Vi har den " + fritekst("dato") + " mottatt kravet ditt om omgjøring av vedtaket vårt av " + fritekst("datoVedtak") + ". "
+                        +"Vi har den " + fritekst("dato") + " mottatt kravet ditt om omgjøring av vedtaket vårt av " + fritekst("dato") + ". "
                         +"Du ber om omgjøring av " + fritekst("eks. uføretidspunktet/ung ufør") + "."
                     })
                 }

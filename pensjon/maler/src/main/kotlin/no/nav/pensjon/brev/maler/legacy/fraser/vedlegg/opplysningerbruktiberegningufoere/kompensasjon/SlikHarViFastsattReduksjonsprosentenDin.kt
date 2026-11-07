@@ -9,15 +9,15 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeEndringEllerOekningBrevkode
-import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeInntektsendringBrevkode
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseReduksjonsprosentavsnitt
 
 data class SlikHarViFastsattReduksjonsprosentenDin(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val erBeregningsendring: Expression<Boolean>,
+    val visDetaljertReduksjonsberegning: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        showIf(pe.skalViseReduksjonsprosentavsnitt()) {
+        showIf(pe.skalViseReduksjonsprosentavsnitt(erBeregningsendring)) {
             title1 {
                 text(
                     bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },
@@ -50,7 +50,7 @@ data class SlikHarViFastsattReduksjonsprosentenDin(
                 )
             }
 
-            showIf(pe.erIkkeEndringEllerOekningBrevkode() and pe.erIkkeInntektsendringBrevkode()) {
+            showIf(visDetaljertReduksjonsberegning) {
                 paragraph {
                     text(
                         bokmal {

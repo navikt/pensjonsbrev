@@ -22,6 +22,7 @@ data class MaanedligPensjonFoerSkattDto(
 
     data class Krav(
         val virkDatoFom: LocalDate,
+        val forsteVirkFoer1998: Boolean = false
     )
 
     data class BarnetilleggGjeldende(

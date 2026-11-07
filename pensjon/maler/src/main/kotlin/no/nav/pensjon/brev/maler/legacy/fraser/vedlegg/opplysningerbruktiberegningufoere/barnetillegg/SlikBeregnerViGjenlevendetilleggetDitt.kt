@@ -8,14 +8,15 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.maler.legacy.vedlegg.harGjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.maler.legacy.vedlegg.harGenereltGjenlevendetilleggKrav
-import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseOmregningUPtilUT
 
 data class SlikBeregnerViGjenlevendetilleggetDitt(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val visOmregningsforklaring: Expression<Boolean>,
+    val visGenerellForklaring: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         showIf(pe.harGjenlevendetilleggInnvilget()) {
-            showIf(pe.skalViseOmregningUPtilUT()) {
+            showIf(visOmregningsforklaring) {
                 title1 {
                     text(
                         bokmal { + "Slik beregner vi gjenlevendetillegget ditt" },
@@ -34,7 +35,7 @@ data class SlikBeregnerViGjenlevendetilleggetDitt(
                         nynorsk { + "Berekningsgrunnlaget ditt ut frå eiga opptening skal justerast for trygdetid og trekkjast frå berekningsgrunnlaget med attlevanderett. Denne differansen blir deretter delt på uføregraden din, og 66 prosent av dette vil utgjere attlevandetillegget ditt. Tillegget blir til slutt justert ut frå uføregraden din." },
                     )
                 }
-            }.orShowIf(pe.harGenereltGjenlevendetilleggKrav()) {
+            }.orShowIf(pe.harGenereltGjenlevendetilleggKrav(visGenerellForklaring)) {
                 title1 {
                     text(
                         bokmal { + "Slik beregner vi gjenlevendetillegget ditt" },

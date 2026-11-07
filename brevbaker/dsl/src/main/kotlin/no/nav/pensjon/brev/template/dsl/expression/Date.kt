@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.dsl.expression
 import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
 import java.time.Month
-import java.time.YearMonth
+import java.time.temporal.TemporalAmount
 
 @JvmName("formatLocalDate")
 fun Expression<LocalDate>.format(short: Boolean = false): Expression<String> = format(dateFormatter(short))
@@ -26,11 +26,11 @@ private object LocalDateSelectors {
         override val propertyType = "Int"
         override val selector = LocalDate::getYear
     }
-    val monthSelector = object : TemplateModelSelector<LocalDate, Int> {
+    val monthSelector = object : TemplateModelSelector<LocalDate, Month> {
         override val className = "java.time.LocalDate"
         override val propertyName = "month"
-        override val propertyType = "Int"
-        override val selector = LocalDate::getMonthValue
+        override val propertyType = "Month"
+        override val selector = LocalDate::getMonth
     }
 
     val daySelector = object : TemplateModelSelector<LocalDate, Int> {
@@ -61,8 +61,11 @@ val localDateNow: Expression<LocalDate> = UnaryOperation.LocalDateNow(Unit.expr(
 val Expression<LocalDate>.year: Expression<Int>
     get() = select(LocalDateSelectors.yearSelector)
 
-val Expression<LocalDate>.month: Expression<Int>
+val Expression<LocalDate>.month: Expression<Month>
     get() = select(LocalDateSelectors.monthSelector)
+
+operator fun Expression<LocalDate>.plus(other: TemporalAmount): Expression<LocalDate> =
+    BinaryOperation.LocalDatePlus(this, other.expr())
 
 val Expression<LocalDate>.day: Expression<Int>
     get() = select(LocalDateSelectors.daySelector)

@@ -13,13 +13,15 @@ data class Beregning(
     val belopHarOkt: Boolean,
     val beregningsresultatTilRevurderingTotalNetto: Kroner?,
 
+    val fribelop: Kroner,
     val bunnfradrag: Kroner,
     val bunnfradragNesteAr: Kroner,
     val reduksjonsprosent: Double,
+    val oifu: Kroner,
 
-    val yrkesskadegrad: Int?,
     val yrkesskadeBest: Boolean,
-    val inntektSkadetidspunkt: Kroner?,
 
     val grunnbelop: Kroner,
+
+    val anvendtTrygdetid: Int
 )

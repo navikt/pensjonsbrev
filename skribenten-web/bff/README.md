@@ -1,13 +1,14 @@
 # Backend for frontend (BFF) for skribenten-web
 
 I hovedsak gjør applikasjonen:
-* Servere frontend
-* Validere token fra wonderwall
-* Veksle til OBO-token for å proxye til andre api-er
+- Servere frontend
+- Validere token fra wonderwall
+- Veksle til OBO-token for å proxye til andre api-er
 
 ## Lokal kjøring
 
 ### Oppsett av secrets
+
 Dette vil populere secrets nødvendig for alle tjenestene i repoet.
 ```bash
 gcloud auth login
@@ -22,12 +23,14 @@ gcloud auth login
 2. Logg inn med `npm login --registry=https://npm.pkg.github.com --auth-type=legacy`. Username er github brukernavnet ditt, men for passord bruker du tokenet du lagde i steg 1.
 
 ### Bygg BFF
+
 ```bash
 npm i #Installer avhengigheter
 npm run build #Bygg applikasjonen til /dist
 ```
 
 #### Ha docker kjørende, og kjør BFF via docker
+
 ```bash
 docker-compose up -d
 ```
@@ -39,17 +42,20 @@ docker-compose up -d --build frontend
 ```
 
 ### Logg inn via Wonderwall
+
 1. I `frontend`-katalogen kjører du `npm run dev`. Vite-devserver vil nå kjøre på `localhost:5173`.
 2. Gå til `localhost:8080` og logg inn med en trygdeetat bruker.
    1. Etter redirect vil du få en feilmelding, det er forventet.
 3. Gå så til `localhost:8080/vite-on`. Frontenden skal nå være tilgjengelig med API-kall og hele pakka.
 
 ### Valg av miljø som kjøres mot
-Frontend kan targete lokalt, eller mot q2. 
+
+Frontend kan targete lokalt, eller mot q2.
 
 #### For targeting lokalt
-Se i [se i root readme](../../README.md) for oppstart av applikasjonen lokalt. 
+
+Se i [se i root readme](../../README.md) for oppstart av applikasjonen lokalt.
 
 #### For targeting Q2
-Gå til https://pensjon-skribenten-web-q2.intern.dev.nav.no/vite-on
 
+Gå til https://pensjon-skribenten-web-q2.intern.dev.nav.no/vite-on

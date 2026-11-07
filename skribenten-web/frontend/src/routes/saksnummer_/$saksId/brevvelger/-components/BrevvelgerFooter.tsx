@@ -44,7 +44,7 @@ const BrevvelgerFooter = (props: {
             size="small"
             variant="primary"
           >
-            Fortsett
+            {props.onSubmitClick.label ?? "Fortsett"}
           </Button>
         )}
       </HStack>

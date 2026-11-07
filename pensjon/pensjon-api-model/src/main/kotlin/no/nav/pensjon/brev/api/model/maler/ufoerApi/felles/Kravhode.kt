@@ -5,6 +5,7 @@ import java.time.LocalDate
 data class Kravhode(
     val virkFom: LocalDate,
     val mottattDato: LocalDate,
+    val kravFremsattDato: LocalDate?,
     val arsak: Arsak,
     val konvertertFraUforepensjon: Boolean,
     )

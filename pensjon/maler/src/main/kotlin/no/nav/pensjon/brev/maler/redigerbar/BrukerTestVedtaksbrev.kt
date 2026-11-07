@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestVedtaksbrevDto.U
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -76,7 +77,7 @@ object BrukerTestVedtaksbrev : RedigerbarTemplate<BrukerTestVedtaksbrevDto> {
                     }
                     item {
                         text(
-                            bokmal { +"andre punkt" }
+                            bokmal { +"andre punkt" }, FontType.BOLD
                         )
                     }
                 }
@@ -90,15 +91,19 @@ object BrukerTestVedtaksbrev : RedigerbarTemplate<BrukerTestVedtaksbrevDto> {
                     }
                     item {
                         text(
-                            bokmal { +"kulepunkt2" }
+                            bokmal { +"kulepunkt2" }, FontType.ITALIC
                         )
                     }
                 }
             }
 
             paragraph {
+                text(bokmal { + "Sokkelesten på " })
+                text(bokmal { + "kontorbyggets tak" }, FontType.BOLD)
+                text(bokmal { + " krever " })
+                text(bokmal { + "jevnlig inspeksjon" }, FontType.ITALIC)
                 text(
-                    bokmal { + "Sokkelesten på kontorbyggets tak krever jevnlig inspeksjon for å unngå opphopning av løv og smuss som kan tette avløpene. Men det er ikke din jobb å verken tenke på eller utføre, så det er ikke relevant informasjon for deg." },
+                    bokmal { + " for å unngå opphopning av løv og smuss som kan tette avløpene. Men det er ikke din jobb å verken tenke på eller utføre, så det er ikke relevant informasjon for deg." },
                 )
             }
 

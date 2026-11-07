@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -11,15 +10,17 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_LEGE_LEGEERKLAERING
-import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.info.BrukersNavnDto
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.brukersNavnDto.brukersNavnPendata.navn
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.brukersNavnDto.pesysData
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object LegeLegeerklaering : RedigerbarTemplate<BrukersNavnDto> {
 
     override val kode = UT_INNH_OPPL_LEGE_LEGEERKLAERING
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
@@ -43,16 +44,17 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " },
-                    nynorsk { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " })
+                text(bokmal { + pesysData.navn + " har søkt om uføretrygd. " },
+                    nynorsk { + pesysData.navn + " har søkt om uføretrygd. " })
             }
             paragraph {
                 text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet Nav 08-07.08. " },
                     nynorsk { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførleik Nav 08-07.08. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen " + fritekst("X uker. ") + "Erklæringen sendes til skanning med vedlagte førsteside, eller elektronisk. " },
-                    nynorsk { +"Vi ber om at du sender oss erklæringa snarast mogleg og seinast innan " + fritekst("X veker. ") + "Erklæringa vert sendt til skanning med vedlagde førsteside, eller elektronisk. " })
+                text(
+                    bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen " + fritekst("X uker (se felles rutine for innhenting av helseopplysninger; 3 uker for erklæringer som ikke krever egen undersøkelse av pasienten, 6 uker for erklæringer som krever slik undersøkelse)") + ". Erklæringen sendes til skanning med vedlagte førsteside, eller elektronisk. " },
+                    nynorsk { +"Vi ber om at du sender oss erklæringa snarast mogleg og seinast innan " + fritekst("X veker (se felles rutine for innhenting av helseopplysninger; 3 uker for erklæringer som ikke krever egen undersøkelse av pasienten, 6 uker for erklæringer som krever slik undersøkelse)") + ". Erklæringa vert sendt til skanning med vedlagde førsteside, eller elektronisk. " })
             }
             paragraph {
                 text(bokmal { +"Erklæringen godgjøres etter honorartakst L40. " },

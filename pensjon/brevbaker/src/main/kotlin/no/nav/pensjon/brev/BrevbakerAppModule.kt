@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.DocumentationETag
 import no.nav.pensjon.brev.routing.brevRouting
+import no.nav.pensjon.brev.routing.startOppvarming
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
 import kotlin.time.Duration.Companion.minutes
@@ -116,9 +117,17 @@ fun Application.brevbakerModule(
         }
     }
 
+    val pdfbyggerService = PensjonPdfByggerService(
+        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
+        pdfByggerScope = brevbakerConfig.property("pdfByggerScope").getString(),
+        azureADConfig = if (!developmentMode) brevbakerConfig.config("azureAD") else null,
+    )
+    monitor.subscribe(ApplicationStopped) { pdfbyggerService.close() }
+
     install(ContentNegotiation) {
         jackson {
             brevbakerConfig()
+            this@brevbakerModule.startOppvarming(this)
         }
         register(ContentType.Text.Html, LetterResponseFileConverter)
         register(ContentType.Application.Pdf, LetterResponseFileConverter)
@@ -134,13 +143,6 @@ fun Application.brevbakerModule(
         configs
     } else null.also { log.warn("Running in development mode, skal ikke skje i produksjon") }
 
-
-    val pdfbyggerService = PensjonPdfByggerService(
-        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
-        pdfByggerScope = brevbakerConfig.property("pdfByggerScope").getString(),
-        azureADConfig = if (!developmentMode) brevbakerConfig.config("azureAD") else null,
-    )
-    monitor.subscribe(ApplicationStopped) { pdfbyggerService.close() }
 
     konfigurerUnleash(brevbakerConfig)
 

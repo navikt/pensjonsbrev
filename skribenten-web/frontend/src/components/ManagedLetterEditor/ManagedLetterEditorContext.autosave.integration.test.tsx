@@ -33,32 +33,32 @@ const lagretBrev = brevResponse({
 const nyeValg = { ytelse: "Supplerende stønad" };
 const lagringsfeil = new Error("Lagring feilet");
 
-function renderAutosave() {
-  const result: {
-    current?: ReturnType<typeof useManagedLetterEditorContext> & {
-      lagreValg: (recordHistory?: boolean) => Promise<BrevResponse>;
-    };
-  } = {};
+type AutosaveHarness = ReturnType<typeof useManagedLetterEditorContext> & {
+  lagreValg: (recordHistory?: boolean) => Promise<BrevResponse>;
+};
 
-  const Testkomponent = () => {
-    const context = useManagedLetterEditorContext();
-    const { oppdaterBrevMutation } = useOppdaterBrevMutation("123456");
-    result.current = {
-      ...context,
-      lagreValg: (recordHistory) =>
-        oppdaterBrevMutation.mutateAsync({
-          saksbehandlerValg: nyeValg,
-          recordHistory,
-        }),
-    };
-    return null;
+const Testkomponent = ({ result }: { result: { current?: AutosaveHarness } }) => {
+  const context = useManagedLetterEditorContext();
+  const { oppdaterBrevMutation } = useOppdaterBrevMutation("123456");
+  result.current = {
+    ...context,
+    lagreValg: (recordHistory) =>
+      oppdaterBrevMutation.mutateAsync({
+        saksbehandlerValg: nyeValg,
+        recordHistory,
+      }),
   };
+  return null;
+};
+
+function renderAutosave() {
+  const result: { current?: AutosaveHarness } = {};
 
   render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { mutations: { retry: false } } })}>
       <RedigeringsflateProvider redigeringsflate="saksbehandler-redigering">
         <ManagedLetterEditorContextProvider brev={lagretBrev}>
-          <Testkomponent />
+          <Testkomponent result={result} />
         </ManagedLetterEditorContextProvider>
       </RedigeringsflateProvider>
     </QueryClientProvider>,

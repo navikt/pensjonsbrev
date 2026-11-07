@@ -14,8 +14,9 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmAaIkkeGjoereOmVedtak
 import no.nav.pensjon.brev.maler.klagebrev.KlageBeslutningOmVedtaketSkalIverksettesPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageInnhentingAvOpplysningerUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlageinstans
-import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
+import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlagePE
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
@@ -67,6 +68,7 @@ import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdBosattNo
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMedEndringRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMellombehandlingRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdTrygdeavtaleRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdUtlandRedigerbar
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026Auto
 import no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
@@ -86,6 +88,7 @@ object ProductionTemplates : AllTemplates {
         AdHocVarselUgyldiggjoringFullmektig,
         AdhocFeilEtteroppgjoer2023,
         AdhocInformasjonHvilendeRett4Aar,
+        AdhocInformasjonOpphorGjenlevendepensjon,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
         AdhocUfoeretrygdEtterbetalingDagpenger,
         AdhocUfoeretrygdKombiDagpenger,
@@ -146,6 +149,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingDokumentasjonFraBruker,
         InnhentingOpplysningerFraBruker,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
+        InnvilgelseUforetrygdTrygdeavtaleRedigerbar,
         InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar,
         InnvilgelseUforetrygdMedEndringRedigerbar,
         InnvilgelseUforetrygdMellombehandlingRedigerbar,
@@ -156,8 +160,9 @@ object ProductionTemplates : AllTemplates {
         KlageBeslutningOmVedtaketSkalIverksettesPE,
         KlageInnhentingAvOpplysningerUT,
         KlageOrienteringOmOversendelseTilKlageinstans,
-        KlageOrienteringOmSaksbehandlingstid,
+        KlageOrienteringOmSaksbehandlingstidPE,
         KlageUtsattKlagefristUT,
+        KlageVedtakAvvisningAvKlagePE,
         OkningUforegradRedigerbar,
         OkningUforegradRedigerbarV2,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,

@@ -1,12 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BodyShort, TextField } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
+import { Textarea } from "@navikt/ds-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
+import { getAvtaleLand, orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { type LetterMetadata, type OrderEblankettRequest } from "~/types/apiTypes";
 import { trackEvent } from "~/utils/umami";
@@ -24,23 +24,43 @@ const eblankettValidationSchema = z.object({
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
-export default function Eblankett({
+export default function EBlankett({
   letterTemplate,
+  defaultValues,
+  saksId,
   setOnFormSubmitClick,
 }: {
   letterTemplate: LetterMetadata;
+  defaultValues: { enhetsId: string };
+  saksId: string;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
-  const { saksId } = Route.useParams();
+  const { enhetsId: urlEnhetsId } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
+  const avtalelandQuery = useQuery(getAvtaleLand);
+  const validationSchema = eblankettValidationSchema.refine(
+    ({ landkode }) => avtalelandQuery.isSuccess && avtalelandQuery.data.some((land) => land.kode === landkode),
+    { path: ["landkode"], message: "Velg et gyldig land fra listen" },
+  );
 
   const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
     defaultValues: {
-      landkode: "",
+      landkode: "NOR",
       mottakerText: "",
+      enhetsId: defaultValues.enhetsId,
     },
-    resolver: zodResolver(eblankettValidationSchema),
+    resolver: zodResolver(validationSchema),
   });
+
+  const { getValues, setValue } = methods;
+
+  useEffect(() => {
+    const enhetsId = urlEnhetsId ?? "";
+
+    if (getValues("enhetsId") !== enhetsId) {
+      setValue("enhetsId", enhetsId);
+    }
+  }, [urlEnhetsId, getValues, setValue]);
 
   const orderEblankettMutation = useMutation<string, AxiosError<Error> | Error, OrderEblankettRequest>({
     mutationFn: (payload) => orderEblankett(saksId, payload),
@@ -51,6 +71,7 @@ export default function Eblankett({
         brevsystem: "exstream",
         dokumentkategori: letterTemplate.dokumentkategoriCode || "E_BLANKETT",
         enhetsId: variables.enhetsId,
+        landkode: variables.landkode,
       });
       window.open(callbackUrl);
     },
@@ -64,7 +85,6 @@ export default function Eblankett({
   return (
     <>
       <LetterTemplateHeading letterTemplate={letterTemplate} />
-      <BodyShort size="small">E-blankett</BodyShort>
       <Divider />
       <FormProvider {...methods}>
         <BrevmalFormWrapper
@@ -78,13 +98,12 @@ export default function Eblankett({
             ),
           )}
         >
-          <TextField
+          <Textarea
             data-testid="mottaker-text-textfield"
             {...methods.register("mottakerText")}
             autoComplete="off"
             error={methods.formState.errors.mottakerText?.message}
             label="Mottaker"
-            size="small"
           />
           <SelectAvtaleland />
           <SelectEnhet />

@@ -43,7 +43,7 @@ paths:
       - $ref: "#/components/parameters/brevkodeParam"
       - $ref: "#/components/parameters/languageParam"
     get:
-      summary: TODO
+      summary: Hent strukturert dokumentasjon for en redigerbar brevmal
       responses:
         '200':
           description: Strukturert dokumentasjon av brevmal. Se `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
@@ -85,10 +85,10 @@ paths:
       - $ref: "#/components/parameters/brevkodeParam"
       - $ref: "#/components/parameters/languageParam"
     get:
-      summary: TODO
+      summary: Hent strukturert dokumentasjon for en automatisk brevmal
       responses:
         '200':
-          description: TODO
+          description: Strukturert dokumentasjon av brevmal. Se `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
 
   /templates/autobrev/{kode}/modelSpecification:
     parameters:
