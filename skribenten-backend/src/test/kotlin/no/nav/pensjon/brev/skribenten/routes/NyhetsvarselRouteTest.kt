@@ -20,7 +20,9 @@ import no.nav.pensjon.brev.skribenten.BekreftNyhetsvarselHandler
 import no.nav.pensjon.brev.skribenten.FjernFavorittHandler
 import no.nav.pensjon.brev.skribenten.HentBekreftedeNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.HentSetteNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.LeggTilFavorittHandler
+import no.nav.pensjon.brev.skribenten.MarkerNyhetsvarselSomSettHandler
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
@@ -76,6 +78,8 @@ class NyhetsvarselRouteTest {
                 provide(FjernFavorittHandler::class)
                 provide(HentBekreftedeNyhetsvarslerHandler::class)
                 provide(BekreftNyhetsvarselHandler::class)
+                provide(HentSetteNyhetsvarslerHandler::class)
+                provide(MarkerNyhetsvarselSomSettHandler::class)
             }
 
             routing {
@@ -133,10 +137,23 @@ class NyhetsvarselRouteTest {
     }
 
     @Test
+    fun `markerer nyhetsvarsel som sett uten aa bekrefte det`() = meTestApplication(nyNavIdent()) { client ->
+        assertThat(client.get("/me/setteNyhetsvarsler").bodyAsText()).isEqualTo("[]")
+
+        val marker = client.put("/me/setteNyhetsvarsler/diff-toggles")
+
+        assertThat(marker.status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.get("/me/setteNyhetsvarsler").bodyAsText()).isEqualTo("""["diff-toggles"]""")
+        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("[]")
+    }
+
+    @Test
     fun `svarer med unauthorized uten innlogget bruker`() = meTestApplication(nyNavIdent()) { _ ->
         val utenInnlogging = createClient { }
 
         assertThat(utenInnlogging.get("/me/bekreftedeNyhetsvarsler").status).isEqualTo(HttpStatusCode.Unauthorized)
         assertThat(utenInnlogging.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.get("/me/setteNyhetsvarsler").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.put("/me/setteNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.Unauthorized)
     }
 }

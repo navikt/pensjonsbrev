@@ -12,7 +12,9 @@ import no.nav.pensjon.brev.skribenten.BekreftNyhetsvarselHandler
 import no.nav.pensjon.brev.skribenten.FjernFavorittHandler
 import no.nav.pensjon.brev.skribenten.HentBekreftedeNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.HentSetteNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.LeggTilFavorittHandler
+import no.nav.pensjon.brev.skribenten.MarkerNyhetsvarselSomSettHandler
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NyhetsvarselId
@@ -67,6 +69,20 @@ fun Route.meRoute() {
                 BekreftNyhetsvarselHandler.Request(principal().navIdent, NyhetsvarselId(call.parameters.getOrFail("nyhetsvarselId")))
             )
             respondSuccess(bekreft?.asSuccess()) { respond(HttpStatusCode.NoContent) }
+        }
+
+        val hentSetteNyhetsvarslerHandler: HentSetteNyhetsvarslerHandler by app.dependencies
+        get("/setteNyhetsvarsler") {
+            val sette = hentSetteNyhetsvarslerHandler(HentSetteNyhetsvarslerHandler.Request(principal().navIdent))
+            respondSuccess(sette?.asSuccess()) { respond(it) }
+        }
+
+        val markerNyhetsvarselSomSettHandler: MarkerNyhetsvarselSomSettHandler by app.dependencies
+        put("/setteNyhetsvarsler/{nyhetsvarselId}") {
+            val marker = markerNyhetsvarselSomSettHandler(
+                MarkerNyhetsvarselSomSettHandler.Request(principal().navIdent, NyhetsvarselId(call.parameters.getOrFail("nyhetsvarselId")))
+            )
+            respondSuccess(marker?.asSuccess()) { respond(HttpStatusCode.NoContent) }
         }
     }
 }

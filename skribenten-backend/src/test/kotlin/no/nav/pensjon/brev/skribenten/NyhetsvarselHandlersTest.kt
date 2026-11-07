@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import no.nav.pensjon.brev.skribenten.db.BekreftetNyhetsvarselTable
+import no.nav.pensjon.brev.skribenten.db.SettNyhetsvarselTable
 import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NyhetsvarselId
@@ -17,6 +18,8 @@ class NyhetsvarselHandlersTest {
     private val transactional by lazy { Transactional(SharedPostgres.database) }
     private val hentBekreftedeNyhetsvarslerHandler by lazy { HentBekreftedeNyhetsvarslerHandler(transactional) }
     private val bekreftNyhetsvarselHandler by lazy { BekreftNyhetsvarselHandler(transactional) }
+    private val hentSetteNyhetsvarslerHandler by lazy { HentSetteNyhetsvarslerHandler(transactional) }
+    private val markerNyhetsvarselSomSettHandler by lazy { MarkerNyhetsvarselSomSettHandler(transactional) }
 
     @BeforeAll
     fun initDb() {
@@ -37,6 +40,20 @@ class NyhetsvarselHandlersTest {
             bekreftede = it
         }
         return bekreftede
+    }
+
+    private suspend fun hentSette(navIdent: NavIdent): List<NyhetsvarselId> {
+        var sette: List<NyhetsvarselId> = emptyList()
+        assertThat(hentSetteNyhetsvarslerHandler(HentSetteNyhetsvarslerHandler.Request(navIdent))).isSuccess<List<NyhetsvarselId>, Nothing> {
+            sette = it
+        }
+        return sette
+    }
+
+    private fun settTidspunkter(navIdent: NavIdent) = transaction(SharedPostgres.database) {
+        SettNyhetsvarselTable.selectAll()
+            .where { SettNyhetsvarselTable.navIdent eq navIdent }
+            .map { it[SettNyhetsvarselTable.sett] }
     }
 
     private fun bekreftetTidspunkter(navIdent: NavIdent) = transaction(SharedPostgres.database) {
@@ -94,5 +111,41 @@ class NyhetsvarselHandlersTest {
         bekreftNyhetsvarselHandler(BekreftNyhetsvarselHandler.Request(bekrefter, NyhetsvarselId("diff-toggles")))
 
         assertThat(hentBekreftede(annenBruker)).isEmpty()
+    }
+
+    @Test
+    suspend fun `henter ingen sette nyhetsvarsler for bruker som ikke har sett noen`() {
+        assertThat(hentSette(nyNavIdent())).isEmpty()
+    }
+
+    @Test
+    suspend fun `markerer nyhetsvarsel som sett uten aa bekrefte det`() {
+        val navIdent = nyNavIdent()
+        val nyhetsvarselId = NyhetsvarselId("diff-toggles")
+
+        assertThat(markerNyhetsvarselSomSettHandler(MarkerNyhetsvarselSomSettHandler.Request(navIdent, nyhetsvarselId))).isSuccess()
+
+        assertThat(hentSette(navIdent)).containsExactly(nyhetsvarselId)
+        assertThat(hentBekreftede(navIdent)).isEmpty()
+    }
+
+    @Test
+    suspend fun `aa markere samme nyhetsvarsel som sett flere ganger lagrer det en gang og beholder foerste tidspunkt`() {
+        val navIdent = nyNavIdent()
+        val nyhetsvarselId = NyhetsvarselId("diff-toggles")
+
+        markerNyhetsvarselSomSettHandler(MarkerNyhetsvarselSomSettHandler.Request(navIdent, nyhetsvarselId))
+        val foersteGang = settTidspunkter(navIdent).single()
+        assertThat(markerNyhetsvarselSomSettHandler(MarkerNyhetsvarselSomSettHandler.Request(navIdent, nyhetsvarselId))).isSuccess()
+
+        assertThat(hentSette(navIdent)).containsExactly(nyhetsvarselId)
+        assertThat(settTidspunkter(navIdent)).containsExactly(foersteGang)
+    }
+
+    @Test
+    suspend fun `sette nyhetsvarsler er knyttet til brukeren som saa dem`() {
+        markerNyhetsvarselSomSettHandler(MarkerNyhetsvarselSomSettHandler.Request(nyNavIdent(), NyhetsvarselId("diff-toggles")))
+
+        assertThat(hentSette(nyNavIdent())).isEmpty()
     }
 }
