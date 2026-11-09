@@ -60,7 +60,11 @@ class RedigerbareVedleggService(
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
 
         val nyttVedlegg = if (mergeMotMal) redigertVedlegg.updateEditedAttachment(malVedlegg) else redigertVedlegg
+        val foersteLagring = brev.hentRedigertVedlegg(vedleggId) == null
         brev.settRedigertVedlegg(vedleggId, nyttVedlegg)
+        if (foersteLagring) {
+            brev.settBrevmalForRedigertVedlegg(vedleggId, malVedlegg)
+        }
 
         return success(nyttVedlegg)
     }

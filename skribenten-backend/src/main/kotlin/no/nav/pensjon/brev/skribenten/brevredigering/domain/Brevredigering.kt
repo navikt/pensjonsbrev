@@ -396,6 +396,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         return true
     }
 
+    fun settBrevmalForRedigertVedlegg(vedleggId: VedleggId, malVedlegg: LetterMarkup.Attachment) {
+        _redigerteVedlegg.single { it.vedleggId.value == vedleggId }.rendretVedlegg = malVedlegg.toEdit()
+    }
+
     fun slettRedigertVedlegg(vedleggId: VedleggId): Boolean {
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId } ?: return false
         eksisterende.delete()
