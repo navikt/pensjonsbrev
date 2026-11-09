@@ -83,7 +83,6 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.renderMarkupKall.clear()
         brevbakerService.renderPdfV2Kall.clear()
         brevbakerService.renderPdfV2VedleggKall.clear()
-        brevbakerService.renderRedigerbareVedleggV2Resultat = emptyMap()
         brevbakerService.renderMarkupV2Resultat = { notYetStubbed("Mangler renderMarkupV2 stub") }
         brevbakerService.renderMarkupResultat = {
             letter.medSignatur(
@@ -96,7 +95,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.redigerbareMaler[Testbrevkoder.VEDTAKSBREV] = vedtaksbrev
         brevbakerService.redigerbareMaler[Testbrevkoder.VARSELBREV] = varselbrevIVedtakskontekst
         brevbakerService.alltidValgbareVedleggResultat = emptySet()
-        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(emptyMap())
         brevbakerService.renderRedigerbartVedleggKall.clear()
         brevbakerService.harRedigerbareVedleggResultat = null
         stagePdf(stagetPDF)
@@ -617,6 +616,18 @@ abstract class BrevredigeringHandlerTestBase {
         )
     }
 
+    sealed interface RedigerbareVedlegg {
+        val titler: List<RedigerbareVedleggTitler.Vedlegg>
+
+        data class V1(val vedlegg: Map<VedleggId, LetterMarkup.Attachment>) : RedigerbareVedlegg {
+            override val titler get() = vedlegg.map { (id, vedlegg) -> RedigerbareVedleggTitler.Vedlegg(id, vedlegg.title.joinToString("") { it.text }) }
+        }
+
+        data class V2(val vedlegg: Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>) : RedigerbareVedlegg {
+            override val titler get() = vedlegg.map { (id, vedlegg) -> RedigerbareVedleggTitler.Vedlegg(id, vedlegg.title1.joinToString("") { it.text }) }
+        }
+    }
+
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
         lateinit var renderMarkupV2Resultat: suspend ((f: BrevbakerFelles) -> MarkupV2)
@@ -629,8 +640,7 @@ abstract class BrevredigeringHandlerTestBase {
         val renderPdfV2Kall = mutableListOf<MarkupV2>()
         val renderPdfV2VedleggKall = mutableListOf<Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>>()
         val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
-        var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
-        var renderRedigerbareVedleggV2Resultat: Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment> = emptyMap()
+        var redigerbareVedlegg: RedigerbareVedlegg = RedigerbareVedlegg.V1(emptyMap())
         val renderRedigerbartVedleggKall = mutableListOf<VedleggId>()
         var harRedigerbareVedleggResultat: Boolean? = null
 
@@ -696,17 +706,10 @@ abstract class BrevredigeringHandlerTestBase {
             fagsystemBrevdata: FagsystemBrevdata,
             saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
-        ): RedigerbareVedleggTitler =
-            RedigerbareVedleggTitler(
-                renderRedigerbareVedleggResultat.map { (vedleggId, attachment) ->
-                    RedigerbareVedleggTitler.Vedlegg(vedleggId, attachment.title.joinToString("") { it.text })
-                } + renderRedigerbareVedleggV2Resultat.map { (vedleggId, attachment) ->
-                    RedigerbareVedleggTitler.Vedlegg(vedleggId, attachment.title1.joinToString("") { it.text })
-                }
-            )
+        ): RedigerbareVedleggTitler = RedigerbareVedleggTitler(redigerbareVedlegg.titler)
 
         override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
-            harRedigerbareVedleggResultat ?: (renderRedigerbareVedleggResultat.isNotEmpty() || renderRedigerbareVedleggV2Resultat.isNotEmpty())
+            harRedigerbareVedleggResultat ?: redigerbareVedlegg.titler.isNotEmpty()
 
         override suspend fun renderRedigerbartVedleggV2(
             brevkode: Brevkode.Redigerbart,
@@ -715,7 +718,7 @@ abstract class BrevredigeringHandlerTestBase {
             saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
-        ): no.nav.brev.brevbaker.markup.Attachment? = renderRedigerbareVedleggV2Resultat[vedleggId]
+        ): no.nav.brev.brevbaker.markup.Attachment? = (redigerbareVedlegg as RedigerbareVedlegg.V2).vedlegg[vedleggId]
             .also { renderRedigerbartVedleggKall.add(vedleggId) }
 
         override suspend fun renderRedigerbartVedlegg(
@@ -725,7 +728,7 @@ abstract class BrevredigeringHandlerTestBase {
             saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
-        ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]
+        ): LetterMarkup.Attachment? = (redigerbareVedlegg as RedigerbareVedlegg.V1).vedlegg[vedleggId]
             .also { renderRedigerbartVedleggKall.add(vedleggId) }
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat

@@ -2,6 +2,7 @@
 
 package no.nav.pensjon.brev.skribenten.routes
 
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase.RedigerbareVedlegg
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
@@ -237,7 +238,7 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
         Features.override(Features.markupV2, false)
         val vedleggId = VedleggId("vedlegg")
         val original = attachment(MarkupV2.paragraph(10, MarkupV2.literal(11, "original"), MarkupV2.variable(12, "before")))
-        brevbakerService.renderRedigerbareVedleggV2Resultat = mapOf(vedleggId to original)
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V2(mapOf(vedleggId to original))
         val path = "$basePath/v2/${brev.info.id}/redigerbareVedlegg/${vedleggId.id}"
         val get = client.get(path)
         assertThat(get.status).isEqualTo(HttpStatusCode.OK)
@@ -254,9 +255,9 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
         assertThat(mapper.readValue<EditV2.Attachment>(client.get(path).bodyAsText())).isEqualTo(edited)
         assertThat(client.get("$basePath/${brev.info.id}/redigerbareVedlegg/${vedleggId.id}").status).isEqualTo(HttpStatusCode.Conflict)
 
-        brevbakerService.renderRedigerbareVedleggV2Resultat = mapOf(
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V2(mapOf(
             vedleggId to attachment(MarkupV2.paragraph(10, MarkupV2.literal(11, "original"), MarkupV2.variable(12, "after"))),
-        )
+        ))
         val merged = mapper.readValue<EditV2.Attachment>(client.get(path).bodyAsText()).blocks.single() as EditV2.Block.Paragraph
         assertThat((merged.content.first() as EditV2.Text.Literal).editedText).isEqualTo("edited")
         assertThat((merged.content.last() as EditV2.Text.Variable).text).isEqualTo("after")
