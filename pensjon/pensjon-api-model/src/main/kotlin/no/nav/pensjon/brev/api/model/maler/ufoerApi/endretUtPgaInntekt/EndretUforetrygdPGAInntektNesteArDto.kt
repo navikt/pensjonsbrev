@@ -36,6 +36,7 @@ data class EndretUforetrygdPGAInntektNesteArDto(
         val bunnfradrag: Kroner,
         val okningUforegradVedArskjoring: Boolean?,
         val fribelopsperioder: List<Fribelopsperiode>,
+        val fribelop1GDesemberIfjor: Boolean,
         val fribelop1G: Boolean,
         val fribelop1GTil04G: Fra1GTil04G?,
         val fribelop04GTil1GTil04G: Fra1GTil04G?,
