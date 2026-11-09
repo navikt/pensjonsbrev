@@ -809,58 +809,29 @@ object OversendelsesbrevTilKlageinstansTekst {
                 }
 
                 includePhrase(KlippInnFraVedtak)
+
+                showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Etteroppgjoer)) {
+                    paragraph {
+                        text(bokmal {
+                            +"For mye utbetalt uføretrygd i etteroppgjøret skal innkreves uten hensyn til skyld, jf. § 12-14, fjerde ledd. "
+                            +"Det er heller ikke anledning til å foreta en rimelighetsvurdering av tilbakebetalingskravet."
+                        })
+                    }
+                }
+                showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.EtteroppgjoerBarnetillegg)) {
+                    paragraph {
+                        text(bokmal {
+                            +"For mye utbetalt barnetillegg i etteroppgjøret skal innkreves uten hensyn til skyld, jf. § 12-14, fjerde ledd. "
+                            +"Det er heller ikke anledning til å foreta en rimelighetsvurdering av tilbakebetalingskravet."
+                        })
+                    }
+                }
             }
         }
 
         enum class ReduksjonPaaGrunnAvInntektValg(override val displayText: String, override val rekkefoelge: Int) :
             SaksbehandlerValgEnum {
             Automatisk("Automatisk inntektsreduksjon", 1), Etteroppgjoer("Etteroppgjør", 2), EtteroppgjoerBarnetillegg("Etteroppgjør barnetillegg", 3)
-        }
-    }
-
-
-    //§ 12-14 Reduksjon på grunn av inntekt
-    object EtteroppgjoerBarnetillegg : RedigerbarOutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-
-            paragraph {
-                text(bokmal {
-                    +"Vi viser til klagen av "
-                    +fritekst("dato") + " på "
-                    +fritekst("varsel/vedtak") + " av "
-                    +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
-                    +fritekst("beløp") + " kroner for mye i barnetillegg i "
-                    +fritekst("år") + ". Vedtaket ble iverksatt "
-                    +fritekst("dato") + ". Klagefristen er overholdt."
-                })
-            }
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-14 og 12-16, samt etter kapittel 3 og 4 i forskrift om uføretrygd fra folketrygden." }) }
-
-            includePhrase(ViHarVurdertKlagen)
-            includePhrase(KlagersAnfoersler)
-
-            title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph {
-                text(bokmal {
-                    +"Det skal foretas et etteroppgjør når den uføretrygdede i løpet av et kalenderår har fått utbetalt for lite eller for mye uføretrygd og barnetillegg. "
-                    +"Dette gjøres etter at personinntekten er skattefastsatt."
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"Det er personinntekten til klager og annen forelder etter skattelovens § 12-2 som har betydning for størrelsen på barnetillegget. "
-                    +"Utbetalt barnetillegg i kalenderåret sammenlignes med ny fastsatt årlig personinntekt basert på den skattefastsatte inntekten."
-                })
-            }
-
-            includePhrase(KlippInnFraVedtak)
-
-            paragraph {
-                text(bokmal {
-                    +"For mye utbetalt barnetillegg i etteroppgjøret skal innkreves uten hensyn til skyld, jf. § 12-14, fjerde ledd. "
-                    +"Det er heller ikke anledning til å foreta en rimelighetsvurdering av tilbakebetalingskravet."
-                })
-            }
         }
     }
 
