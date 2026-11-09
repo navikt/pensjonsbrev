@@ -186,7 +186,7 @@ const AnnouncementItem = ({
         {announcement.title}
       </Heading>
       <BodyShort size="small">{announcement.description}</BodyShort>
-      <HStack align="center" css={{ marginTop: "var(--ax-space-8)" }} gap="space-8">
+      <HStack align="center" css={{ marginTop: "var(--ax-space-8)" }} gap="space-12">
         {availableHere && (
           <Button aria-describedby={titleId} onClick={() => onShowMe(announcement)} size="small" variant="secondary">
             Se hvordan
