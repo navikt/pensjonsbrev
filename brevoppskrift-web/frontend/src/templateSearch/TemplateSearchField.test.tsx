@@ -28,4 +28,34 @@ describe("TemplateSearchField", () => {
 
     await waitFor(() => expect((input as HTMLInputElement).value).toBe("uføretrygd"));
   });
+
+  it("does not search again for a query changed outside the input while its own write is pending", async () => {
+    const onSearch = vi.fn();
+    const { rerender } = render(<TemplateSearchField hits={undefined} onSearch={onSearch} q="pensjon" />);
+    const input = screen.getByRole("searchbox", { name: "Søk etter innhold" });
+
+    fireEvent.change(input, { target: { value: "alder" } });
+    await waitFor(() => expect(onSearch).toHaveBeenLastCalledWith("alder"));
+
+    rerender(<TemplateSearchField hits={undefined} onSearch={onSearch} q="uføretrygd" />);
+    await waitFor(() => expect((input as HTMLInputElement).value).toBe("uføretrygd"));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(onSearch).toHaveBeenCalledTimes(1);
+  });
+
+  it("follows a query changed outside the input after a repeated query was written", async () => {
+    const onSearch = vi.fn();
+    const { rerender } = render(<TemplateSearchField hits={undefined} onSearch={onSearch} q="" />);
+    const input = screen.getByRole("searchbox", { name: "Søk etter innhold" });
+
+    for (const value of ["alder", "pensjon", "alder"]) {
+      fireEvent.change(input, { target: { value } });
+      await waitFor(() => expect(onSearch).toHaveBeenLastCalledWith(value));
+    }
+    expect(onSearch).toHaveBeenCalledTimes(3);
+
+    rerender(<TemplateSearchField hits={undefined} onSearch={onSearch} q="alder" />);
+    rerender(<TemplateSearchField hits={undefined} onSearch={onSearch} q="pensjon" />);
+    await waitFor(() => expect((input as HTMLInputElement).value).toBe("pensjon"));
+  });
 });

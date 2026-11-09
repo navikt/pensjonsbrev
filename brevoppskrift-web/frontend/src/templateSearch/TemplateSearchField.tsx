@@ -40,11 +40,14 @@ export function TemplateSearchField({
     }
   }, [target]);
   useEffect(() => {
-    const at = written.current.indexOf(q);
+    // The router may skip intermediate writes, so a repeated query retires everything up to its last write.
+    const at = written.current.lastIndexOf(q);
     if (at === -1) {
+      written.current = [];
       setQuery(q);
+    } else {
+      written.current.splice(0, at + 1);
     }
-    written.current.splice(0, at + 1);
   }, [q]);
 
   const searching =
