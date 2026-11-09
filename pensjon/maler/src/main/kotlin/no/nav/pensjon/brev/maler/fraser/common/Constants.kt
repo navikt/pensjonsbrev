@@ -14,7 +14,6 @@ object Constants {
     const val DIN_PENSJON_URL = "$NAV_URL/din-pensjon"
     const val DIN_PENSJON_URL_INNLOGGET = "$NAV_URL/din-pensjon"
     const val PENSJON_URL = "$NAV_URL/pensjon"
-    const val DITT_NAV = "$NAV_URL/dittnav"
     const val ETTEROPPGJOR_URL = "$NAV_URL/etteroppgjor"
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
     const val FAMILIEPLEIER_URL = "$NAV_URL/tidligere-familiepleier"

@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.alder.maler.felles.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.alder.maler.felles.AfpPrivatErBrukt
 import no.nav.pensjon.brev.alder.maler.felles.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.alder.maler.felles.BilateralAvtaleHjemmel
-import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
+import no.nav.pensjon.brev.alder.maler.felles.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.EOSLandAvtaleHjemmel
 import no.nav.pensjon.brev.alder.maler.felles.FlereBeregningsperioder
 import no.nav.pensjon.brev.alder.maler.felles.GarantitilleggHjemmel
@@ -210,9 +210,9 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                 includePhrase(InnvilgelseFelles.Utbetalingsinformasjon)
                 paragraph {
                     text(
-                        bokmal { +"Du finner informasjon om utbetalingene dine på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
-                        nynorsk { +"Du finn informasjon om utbetalingane dine på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
-                        english { +"See the more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number." }
+                        bokmal { +"Du finner informasjon om utbetalingene dine på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." },
+                        nynorsk { +"Du finn informasjon om utbetalingane dine på $MINSIDE_URL. Her kan du også endre kontonummeret ditt." },
+                        english { +"See the more detailed information on what you will receive at $MINSIDE_URL. Here you can also change your bank account number." }
                     )
                 }
 

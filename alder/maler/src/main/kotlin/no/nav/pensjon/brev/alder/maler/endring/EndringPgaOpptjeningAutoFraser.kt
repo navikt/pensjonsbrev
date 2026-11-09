@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.maler.endring
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
+import no.nav.pensjon.brev.alder.maler.felles.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
@@ -485,9 +485,9 @@ data class AvsnittEtterbetaling(
             }
             paragraph {
                 text(
-                    bokmal { +"Du får etterbetalt pensjon fra " + virkFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV." },
-                    nynorsk { +"Du får etterbetalt pensjon frå " + virkFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV." },
-                    english { +"You will receive retroactive pension payments from " + virkFom.format() + ". The retroactive payments will normally be made in the course of seven working days. You can check if there are any deductions from the payment notice at $DITT_NAV." }
+                    bokmal { +"Du får etterbetalt pensjon fra " + virkFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $MINSIDE_URL." },
+                    nynorsk { +"Du får etterbetalt pensjon frå " + virkFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $MINSIDE_URL." },
+                    english { +"You will receive retroactive pension payments from " + virkFom.format() + ". The retroactive payments will normally be made in the course of seven working days. You can check if there are any deductions from the payment notice at $MINSIDE_URL." }
                 )
             }
 
@@ -601,15 +601,15 @@ class AvsnittLesMerOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 bokmal {
                     +"Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON. " +
-                            "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt."
+                            "Informasjon om utbetalingene dine finner du på $MINSIDE_URL. Her kan du også endre kontonummeret ditt."
                 },
                 nynorsk {
                     +"Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON. " +
-                            "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt."
+                            "Informasjon om utbetalingane dine finn du på $MINSIDE_URL. Her kan du også endre kontonummeret ditt."
                 },
                 english {
                     +"There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $$ALDERSPENSJON. " +
-                            "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number."
+                            "You can find more detailed information on what you will receive at $MINSIDE_URL. Here you can also change your bank account number."
                 }
             )
         }

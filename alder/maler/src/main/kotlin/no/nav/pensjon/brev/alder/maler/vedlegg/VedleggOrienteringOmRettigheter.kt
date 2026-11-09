@@ -408,17 +408,17 @@ object VedleggInnsynSakUfoeretrygdPesysNoenDokumenter : OutlinePhrase<LangBokmal
         paragraph {
             text(
                 bokmal {
-                    +"Med få unntak har du rett til å se dokumentene i saken din. Du kan se noen dokumenter på ${Constants.DITT_NAV}. Du kan også ringe oss på telefon " +
+                    +"Med få unntak har du rett til å se dokumentene i saken din. Du kan se noen dokumenter på ${Constants.MINSIDE_URL}. Du kan også ringe oss på telefon " +
                         felles.avsenderEnhet.telefonnummer.format() +
                         "."
                 },
                 nynorsk {
-                    +"Med få unntak har du rett til å sjå dokumenta i saka di. Du kan sjå nokre dokument på ${Constants.DITT_NAV}. Du kan også ringe oss på telefon " +
+                    +"Med få unntak har du rett til å sjå dokumenta i saka di. Du kan sjå nokre dokument på ${Constants.MINSIDE_URL}. Du kan også ringe oss på telefon " +
                         felles.avsenderEnhet.telefonnummer.format() +
                         "."
                 },
                 english {
-                    +"With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at ${Constants.DITT_NAV}. You can also call us at tel.: " +
+                    +"With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at ${Constants.MINSIDE_URL}. You can also call us at tel.: " +
                         felles.avsenderEnhet.telefonnummer.format() +
                         "."
                 },
