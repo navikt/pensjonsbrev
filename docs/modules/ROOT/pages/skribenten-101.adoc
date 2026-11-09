@@ -88,7 +88,7 @@ Attestant må lukke brevet hos seg. Vent litt, og prøv deretter å åpne brevet
 For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Brevet åpnes fra dokumentoversikt, og har status «under arbeid (attestering)».
 
 === Hvordan ser attestant endringene som saksbehandler har gjort
-Attestanten kan velge å vise følgende i redigerinsbildet
+Attestanten kan velge å vise følgende i redigeringsbildet:
 
 1. tekst som er lagt til, markert i grønt
 2- tekst som er slettet, markert i rosa med gjennomstreking
