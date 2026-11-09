@@ -4,6 +4,8 @@ import { SearchField } from "~/search/components/SearchField";
 import { isSearchQuery } from "~/search/searchQuery";
 import { type TemplateHits } from "~/templateSearch/useTemplateHits";
 
+type PendingQueryWrite = { id: number; query: string };
+
 /**
  * The search box on a template. Like on the result list, the input is live and
  * the URL's `q` follows it once it settles, so the hits in the template update
@@ -18,7 +20,7 @@ export function TemplateSearchField({
   q = "",
 }: {
   hits: TemplateHits | undefined;
-  onSearch: (q: string | undefined) => void;
+  onSearch: (q: string | undefined) => void | Promise<void>;
   q: string | undefined;
 }) {
   const [query, setQuery] = useState(q);
@@ -27,21 +29,48 @@ export function TemplateSearchField({
   const target = settled === "" || isSearchQuery(settled) ? settled : q;
 
   // The queries this input has written that the URL has not caught up with yet.
-  const written = useRef<string[]>([]);
+  const written = useRef<PendingQueryWrite[]>([]);
+  const nextWriteId = useRef(0);
   const latestOnSearch = useRef(onSearch);
   latestOnSearch.current = onSearch;
   const latestQ = useRef(q);
   latestQ.current = q;
   useEffect(() => {
-    const latestRequested = written.current.at(-1) ?? latestQ.current;
+    const latestRequested = written.current.at(-1)?.query ?? latestQ.current;
     if (target !== latestRequested) {
-      written.current.push(target);
-      latestOnSearch.current(target || undefined);
+      const write = { id: ++nextWriteId.current, query: target };
+      written.current.push(write);
+      const navigation = latestOnSearch.current(target || undefined);
+      if (navigation) {
+        void navigation.finally(() => {
+          const index = written.current.findIndex(({ id }) => id === write.id);
+          if (index === -1) {
+            return;
+          }
+          if (latestQ.current === write.query) {
+            let lastMatchingWrite = index;
+            for (let next = index + 1; next < written.current.length; next++) {
+              if (written.current[next]?.query === write.query) {
+                lastMatchingWrite = next;
+              }
+            }
+            written.current.splice(0, lastMatchingWrite + 1);
+          } else {
+            written.current.splice(index, 1);
+          }
+        });
+      }
     }
   }, [target]);
   useEffect(() => {
     // The router may skip intermediate writes, so a repeated query retires everything up to its last write.
-    const at = written.current.lastIndexOf(q);
+    let at = -1;
+    for (let index = written.current.length - 1; index >= 0; index--) {
+      if (written.current[index]?.query === q) {
+        at = index;
+        break;
+      }
+    }
     if (at === -1) {
       written.current = [];
       setQuery(q);

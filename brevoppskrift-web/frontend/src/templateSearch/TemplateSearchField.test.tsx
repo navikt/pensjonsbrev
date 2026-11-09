@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { TemplateSearchField } from "~/templateSearch/TemplateSearchField";
@@ -55,6 +55,33 @@ describe("TemplateSearchField", () => {
     expect(onSearch).toHaveBeenCalledTimes(3);
 
     rerender(<TemplateSearchField hits={undefined} onSearch={onSearch} q="alder" />);
+    rerender(<TemplateSearchField hits={undefined} onSearch={onSearch} q="pensjon" />);
+    await waitFor(() => expect((input as HTMLInputElement).value).toBe("pensjon"));
+  });
+
+  it("retires coalesced writes when navigation completes without changing the URL query", async () => {
+    const resolveNavigations: Array<() => void> = [];
+    const onSearch = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveNavigations.push(resolve);
+        }),
+    );
+    const { rerender } = render(<TemplateSearchField hits={undefined} onSearch={onSearch} q="alder" />);
+    const input = screen.getByRole("searchbox", { name: "Søk etter innhold" });
+
+    fireEvent.change(input, { target: { value: "pensjon" } });
+    await waitFor(() => expect(onSearch).toHaveBeenCalledTimes(1));
+
+    fireEvent.change(input, { target: { value: "alder" } });
+    await waitFor(() => expect(onSearch).toHaveBeenCalledTimes(2));
+
+    await act(async () => {
+      for (const resolve of resolveNavigations) {
+        resolve();
+      }
+    });
+
     rerender(<TemplateSearchField hits={undefined} onSearch={onSearch} q="pensjon" />);
     await waitFor(() => expect((input as HTMLInputElement).value).toBe("pensjon"));
   });

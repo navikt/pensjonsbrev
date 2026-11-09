@@ -38,7 +38,7 @@ export function SearchHitToolbar({
   marking: boolean;
   query?: string;
   onMarkingChange: (marking: boolean) => void;
-  onSearch: (q: string | undefined) => void;
+  onSearch: (q: string | undefined) => void | Promise<void>;
   onSelectBlock: (index: number) => void;
 }) {
   return (
