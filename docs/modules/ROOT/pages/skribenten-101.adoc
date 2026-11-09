@@ -91,7 +91,7 @@ For å attestere et vedtaksbrev, må brevet først og fremst være markert «kla
 Attestanten kan velge å vise følgende i redigeringsbildet:
 
 1. tekst som er lagt til, markert i grønt
-2- tekst som er slettet, markert i rosa med gjennomstreking
+2. tekst som er slettet, markert i rosa med gjennomstreking
 3. eller begge samtidig
 
 Bruk bryterne «Marker tekst som er lagt til» og «Vis slettet tekst» i redigeringsbildet for å slå visningene av og på.
