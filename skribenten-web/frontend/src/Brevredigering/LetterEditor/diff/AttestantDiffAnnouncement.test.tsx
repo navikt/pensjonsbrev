@@ -7,7 +7,11 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { DIFF_TOGGLES_ANNOUNCEMENT } from "~/components/notifications/productAnnouncements";
 
-import { ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL, AttestantDiffAnnouncement } from "./AttestantDiffAnnouncement";
+import {
+  ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL,
+  ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL,
+  AttestantDiffAnnouncement,
+} from "./AttestantDiffAnnouncement";
 
 const lastDisplayDay = () => setHours(parseISO(ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL), 12);
 
@@ -158,8 +162,16 @@ describe("<AttestantDiffAnnouncement />", () => {
     expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
   });
 
-  test("vises ikke etter siste visningsdag", async () => {
+  test("starter ikke automatisk etter siste automatiske visningsdag", async () => {
     vi.setSystemTime(addDays(lastDisplayDay(), 1));
+    render(<Harness />);
+    await settle();
+
+    expect(queryAnnouncement()).toBeNull();
+  });
+
+  test("henter ikke bekreftelser når nyheten heller ikke kan vises på nytt lenger", async () => {
+    vi.setSystemTime(addDays(setHours(parseISO(ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL), 12), 1));
     render(<Harness />);
     await settle();
 

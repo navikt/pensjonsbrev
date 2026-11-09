@@ -105,7 +105,10 @@ const FeatureAnnouncementInstance = ({
   const available = when && published && (!expired || replayable) && steps.length > 0;
   useRegisterAnnouncementAvailability(id, available);
 
-  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && published && !expired });
+  const acknowledgedQuery = useQuery({
+    ...getAcknowledgedAnnouncements,
+    enabled: when && published && (!expired || replayable),
+  });
   const acknowledged = acknowledgedQuery.data?.includes(id) === true;
   const acknowledge = useAcknowledgeAnnouncement();
 
@@ -121,7 +124,10 @@ const FeatureAnnouncementInstance = ({
     endAnnouncementReplay(replayGeneration);
   }, [id, acknowledge, replayGeneration]);
 
-  const eligible = available && (replaying || (!expired && acknowledgedQuery.isSuccess && !acknowledged));
+  // Also a replay waits until the status has been read (or failed), so closing it cannot be overwritten by an older,
+  // still pending read that would make the tour start again.
+  const statusRead = !acknowledgedQuery.isPending;
+  const eligible = available && statusRead && (replaying || (!expired && acknowledgedQuery.isSuccess && !acknowledged));
   // A run that ended without showing anything (e.g. the target was never found) is retried the next time the
   // announcement becomes eligible, instead of being treated as dismissed.
   if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);

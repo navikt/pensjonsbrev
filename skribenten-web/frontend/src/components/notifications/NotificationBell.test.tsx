@@ -272,6 +272,48 @@ describe("<NotificationBell />", () => {
     expect(screen.getByRole("heading", { name: NYHET.title })).not.toBeNull();
   });
 
+  test("«Se hvordan» venter på bekreftelsesstatusen, og gjennomgangen åpnes ikke igjen etter at den er lukket", async () => {
+    let answerAcknowledged: (ids: string[]) => void = () => {};
+    fetchAcknowledgedMock.mockReturnValue(new Promise<string[]>((resolve) => (answerAcknowledged = resolve)));
+    const user = userEvent.setup();
+    renderWithQueryClient(
+      <>
+        <NotificationBell announcements={[NYHET]} />
+        <TourOnPage />
+      </>,
+    );
+    await user.click(bell());
+    await user.click(screen.getByRole("button", { name: "Se hvordan" }));
+    await settle();
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+
+    await act(async () => answerAcknowledged([]));
+    await user.click(await screen.findByRole("button", { name: "Skjønner!" }));
+    await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
+    await settle();
+
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+    expect(acknowledgeMock).toHaveBeenCalledTimes(1);
+  });
+
+  test("«Se hvordan» virker selv om bekreftelsesstatusen ikke kan hentes", async () => {
+    fetchAcknowledgedMock.mockRejectedValue(new Error("Nettverksfeil"));
+    const user = userEvent.setup();
+    renderWithQueryClient(
+      <>
+        <NotificationBell announcements={[NYHET]} />
+        <TourOnPage />
+      </>,
+    );
+    await settle();
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+
+    await user.click(bell());
+    await user.click(screen.getByRole("button", { name: "Se hvordan" }));
+
+    expect(await screen.findByRole("alertdialog", { name: "Gjennomgang av funksjonen" })).not.toBeNull();
+  });
+
   test("viser dato, tittel og beskrivelse", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);

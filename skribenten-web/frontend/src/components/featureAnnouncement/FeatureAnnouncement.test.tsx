@@ -575,7 +575,6 @@ describe("<FeatureAnnouncement />", () => {
       );
       await settle();
       expect(queryAnnouncement()).toBeNull();
-      expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
       expect(screen.getByText("tilgjengelig")).not.toBeNull();
 
       act(() => requestAnnouncementReplay("test-nyhet"));

@@ -25,6 +25,7 @@ export const useMarkAnnouncementSeen = () =>
   useSaveAnnouncementStatus(getSeenAnnouncements.queryKey, markAnnouncementSeen);
 
 // Updates the cached list right away, so the tour and the bell react at once, and then saves it in the backend.
+// Only call it once the list has been read: a read that is still pending would overwrite the update when it arrives.
 function useSaveAnnouncementStatus(queryKey: readonly string[], save: (id: string) => Promise<void>) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
