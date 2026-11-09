@@ -70,10 +70,10 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
         )
     ) {
 
-        val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
         val avslag = saksbehandlervalg("avslag", "Hvis § 12-17 Yrkesskade, velg:").enum<Avslag>()
         val fastsettelseInntekt = saksbehandlervalg("fastsettelseInntekt", "Velg om inntekt er fastsatt før eller etter uførhet:").enum<FastsettelseIFUIEU.FastsettelseInntektValg>()
         val inntekt = saksbehandlervalg("inntekt", "Velg begrunnelsen for inntektsreduksjon:").enum<ReduksjonPaaGrunnAvInntektValg>()
+        val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
         val ufoertidspunkt = saksbehandlervalg("ufoertidspunkt", "Velg uføretidspunkt:").enum<UngUfoer.Ufoertidspunkt>()
 
 
