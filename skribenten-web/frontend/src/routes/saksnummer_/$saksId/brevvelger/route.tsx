@@ -63,7 +63,6 @@ export interface SubmitTemplateOptions {
 
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
-  const { enhetsId } = Route.useSearch();
   const startTime = useRef(0);
 
   useEffect(() => {
@@ -73,7 +72,6 @@ export function BrevvelgerPage() {
       trackEvent("tid brukt i brevvelger", {
         varighetSekunder,
         varighetMinutter: Math.round(varighetSekunder / 60),
-        enhetsId,
       });
     };
   }, []);
@@ -182,7 +180,7 @@ function Brevmaler({
   handleOpenAccordionChange: (categoryKey: string) => void;
 }) {
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
-  const { templateId, enhetsId } = Route.useSearch();
+  const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const favoritter = useQuery(getFavoritter).data ?? [];
@@ -338,7 +336,6 @@ function Brevmaler({
                               trackEvent("exstream brev valgt", {
                                 brevkode: template.id,
                                 brevtittel: template.name,
-                                enhetsId,
                               });
                             }
 

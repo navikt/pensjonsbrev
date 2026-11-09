@@ -51,7 +51,6 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
         destinasjon,
         erForfatter: isOriginalCreator,
         ...(rolle ? { rolle } : {}),
-        enhetsId: brevInfo.avsenderEnhet.enhetNr,
         brevkode: brevInfo.brevkode,
         spraak: brevInfo.spraak,
       });

@@ -70,7 +70,6 @@ export default function EBlankett({
         brevtittel: letterTemplate.name,
         brevsystem: "exstream",
         dokumentkategori: letterTemplate.dokumentkategoriCode || "E_BLANKETT",
-        enhetsId: variables.enhetsId,
         landkode: variables.landkode,
       });
       window.open(callbackUrl);

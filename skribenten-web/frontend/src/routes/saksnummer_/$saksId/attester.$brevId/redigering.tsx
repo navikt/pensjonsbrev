@@ -386,13 +386,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       spraak: props.brev.info.spraak,
       varighetSekunder,
       varighetMinutter: Math.round(varighetSekunder / 60),
-      enhetsId: props.brev.info.avsenderEnhet.enhetNr,
     });
     trackEvent("brev attestert", {
       brevId: props.brev.info.id,
       brevkode: props.brev.info.brevkode,
       spraak: props.brev.info.spraak,
-      enhetsId: props.brev.info.avsenderEnhet.enhetNr,
     });
     navigate({
       to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
