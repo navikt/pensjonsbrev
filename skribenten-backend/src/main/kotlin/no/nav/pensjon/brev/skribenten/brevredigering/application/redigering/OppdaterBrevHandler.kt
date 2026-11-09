@@ -44,7 +44,7 @@ class OppdaterBrevHandler(
             val rendretBrev = fase(Fase.RENDER_BREV) { brevmalService.renderMarkup(brev, pesysdata) }
             fase(Fase.FLETT_BREV) { brev.mergeRendretBrev(rendretBrev.markup) }
             val vedlegg = fase(Fase.RENDER_VEDLEGG) { brevmalService.renderRedigerteVedlegg(brev, pesysdata) }
-            fase(Fase.FLETT_VEDLEGG) { brev.mergeRendredeVedlegg(vedlegg, false) }
+            fase(Fase.FLETT_VEDLEGG) { brev.mergeRendredeVedlegg(vedlegg) }
 
             success(fase(Fase.DTO) { brev.tilDto(rendretBrev.letterDataUsage) })
         }

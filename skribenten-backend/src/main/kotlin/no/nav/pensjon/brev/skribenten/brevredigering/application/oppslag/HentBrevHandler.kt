@@ -30,7 +30,7 @@ class HentBrevHandler(
                 val pesysdata = brevdataService.hentBrevdata(brev)
                 val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
                 brev.mergeRendretBrev(rendretBrev.markup)
-                brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata), false)
+                brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
                 success(brev.tilDto(rendretBrev.letterDataUsage))
             }

@@ -25,7 +25,7 @@ class RedigerbareVedleggService(
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         if (mergeMotMal) {
-            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata), false)
+            brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
         }
 
         return brevmalService.hentRedigerbareVedleggTitler(brev, pesysdata)?.vedlegg

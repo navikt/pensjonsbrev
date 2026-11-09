@@ -83,7 +83,7 @@ interface Brevredigering {
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settRendretBrev(rendretBrev: LetterMarkup)
-    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>, settHash: Boolean)
+    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
     fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
@@ -285,18 +285,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         this.rendretBrev = rendretBrev.toEdit()
     }
 
-    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>, settHash: Boolean) {
+    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
         rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
             hentRedigertVedlegg(vedleggId)
-                ?.let {
-                    settRedigertVedlegg(
-                        vedleggId, it.updateEditedAttachment(rendretVedlegg), if (settHash) {
-                            rendretVedlegg
-                        } else {
-                            null
-                        }
-                    )
-                }
+                ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg), null) }
         }
     }
 
