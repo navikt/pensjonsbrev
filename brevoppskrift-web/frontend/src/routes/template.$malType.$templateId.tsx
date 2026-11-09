@@ -148,15 +148,20 @@ function TemplateExplorer() {
   const changeMarking = (show: boolean) =>
     navigate({ replace: true, search: (s) => ({ ...s, showHits: show ? undefined : false }) });
   // A new query opens at its first hit. Started here, without a search to keep the tab of,
-  // it searches the content, which is what a template shows.
+  // it searches the content, which is what a template shows. A write of the query the URL
+  // already has (e.g. one that lands after navigating to another hit) changes nothing.
   const changeQuery = (newQ: string | undefined) =>
     navigate({
       replace: true,
       search: (s) =>
-        newQ === undefined
-          ? { ...s, q: undefined, exact: undefined, tab: undefined, showHits: undefined, focus: undefined }
-          : { ...s, q: newQ, tab: criteria ? s.tab : "innhold", focus: undefined },
+        s.q === newQ
+          ? s
+          : newQ === undefined
+            ? { ...s, q: undefined, exact: undefined, tab: undefined, showHits: undefined, focus: undefined }
+            : { ...s, q: newQ, tab: criteria ? s.tab : "innhold", focus: undefined },
     });
+  // Input state that is pending for one template is not carried over to another.
+  const templateKey = `${malType}/${templateId}`;
 
   return (
     <VStack height="100%" overflow="hidden">
@@ -182,9 +187,11 @@ function TemplateExplorer() {
             onSearch={changeQuery}
             onSelectBlock={selectBlock}
             query={q}
+            searchFieldKey={templateKey}
           />
           <LanguageToggle
             available={description.languages}
+            key={templateKey}
             // Block indexes follow the template's structure, so the block in focus is
             // the same block in the other language, also when it has no hit there.
             onChange={(value) =>

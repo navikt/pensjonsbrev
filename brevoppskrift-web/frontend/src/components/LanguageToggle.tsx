@@ -13,7 +13,9 @@ import { LANGUAGES, languageLabel, languageShortLabel } from "~/search/component
  *
  * The chosen language is selected right away, and a spinner replaces its name
  * until `value` follows, so selection, focus and the language that opens stay
- * in step while it loads.
+ * in step while it loads. When the navigation `onChange` returns settles
+ * without `value` following (e.g. redirected or superseded), the selection
+ * falls back to `value`.
  */
 export function LanguageToggle({
   available,
@@ -23,7 +25,7 @@ export function LanguageToggle({
   /** The languages the template is written in. */
   available: readonly string[];
   value: string;
-  onChange: (language: string) => void;
+  onChange: (language: string) => void | Promise<void>;
 }) {
   const languages = [
     ...LANGUAGES.filter((language) => available.includes(language)),
@@ -37,10 +39,18 @@ export function LanguageToggle({
     setPreviousValue(value);
     setRequested(value);
   }
+  const latestValue = useRef(value);
+  latestValue.current = value;
+  const latestRequest = useRef(0);
   const select = (language: string) => {
     if (language !== requested) {
       setRequested(language);
-      onChange(language);
+      const request = ++latestRequest.current;
+      void onChange(language)?.finally(() => {
+        if (request === latestRequest.current) {
+          setRequested(latestValue.current);
+        }
+      });
     }
   };
 

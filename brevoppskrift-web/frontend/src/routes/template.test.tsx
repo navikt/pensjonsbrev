@@ -567,6 +567,37 @@ describe("search hit focus", () => {
 
       await waitFor(async () => expect((await searchBox()).value).toBe("annet"));
     });
+
+    it("keeps the focus of a template being opened when a write of the query it already has lands", async () => {
+      const router = await openPage({ q: "tref" });
+      const input = await searchBox();
+      let openB: ((documentation: TemplateDocumentation) => void) | undefined;
+      getTemplateDocumentation.queryFn.mockImplementation((_malType: string, templateId: string) =>
+        templateId === "B" ? new Promise((resolve) => (openB = resolve)) : Promise.resolve(page),
+      );
+      const toB = { to: "/template/autobrev/B", search: { language: "BOKMAL", q: "treff", focus: 31 } };
+
+      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+      void router.navigate(toB as any);
+      await userEvent.type(input, "f");
+      await act(async () => openB?.(page));
+
+      await waitFor(() => expect(router.state.location.pathname).toBe("/template/autobrev/B"));
+      expect(router.state.location.search).toMatchObject({ q: "treff", focus: 31 });
+    });
+
+    it("drops input not yet searched for when another template opens", async () => {
+      const router = await openPage({});
+      const input = await searchBox();
+      await userEvent.type(input, "t", { initialSelectionStart: 0, initialSelectionEnd: input.value.length });
+      expect(input.value).toBe("t");
+      expect(router.state.location.search).toMatchObject({ q: "treff" });
+
+      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+      await act(() => router.navigate({ to: "/template/autobrev/B", search: (s: any) => s } as any));
+
+      await waitFor(async () => expect((await searchBox()).value).toBe("treff"));
+    });
   });
 });
 

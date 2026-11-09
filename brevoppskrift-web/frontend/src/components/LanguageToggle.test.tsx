@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -109,6 +109,24 @@ describe("LanguageToggle", () => {
 
       rerender(<LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={vi.fn()} value="ENGLISH" />);
       expect(checked("Engelsk")).toBe("true");
+      expect(spinners()).toHaveLength(0);
+    });
+
+    it("falls back to the shown language when its latest navigation settles without it, e.g. redirected", async () => {
+      const user = userEvent.setup();
+      const settle: (() => void)[] = [];
+      const onChange = () => new Promise<void>((resolve) => settle.push(resolve));
+      render(<LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={onChange} value="BOKMAL" />);
+      await user.tab();
+      await user.keyboard("{ArrowRight}");
+      await user.keyboard("{ArrowRight}");
+
+      await act(async () => settle[0]?.());
+      expect(checked("Engelsk")).toBe("true");
+      expect(spinners()).toHaveLength(1);
+
+      await act(async () => settle[1]?.());
+      expect(checked("Bokmål")).toBe("true");
       expect(spinners()).toHaveLength(0);
     });
   });

@@ -32,6 +32,7 @@ export function SearchHitToolbar({
   onMarkingChange,
   onSearch,
   onSelectBlock,
+  searchFieldKey,
 }: {
   criteria: SearchCriteria | undefined;
   hits: TemplateHits | undefined;
@@ -40,6 +41,8 @@ export function SearchHitToolbar({
   onMarkingChange: (marking: boolean) => void;
   onSearch: (q: string | undefined) => void | Promise<void>;
   onSelectBlock: (index: number) => void;
+  /** A new key resets the search field, e.g. to drop input pending for another template. */
+  searchFieldKey?: string;
 }) {
   return (
     <HStack align="center" gap="space-16" justify="center" wrap>
@@ -48,7 +51,7 @@ export function SearchHitToolbar({
       </Switch>
       {marking ? (
         <Box maxWidth="100%" width="18rem">
-          <TemplateSearchField hits={hits} onSearch={onSearch} q={query ?? criteria?.q} />
+          <TemplateSearchField hits={hits} key={searchFieldKey} onSearch={onSearch} q={query ?? criteria?.q} />
         </Box>
       ) : null}
       {criteria && hits ? (
