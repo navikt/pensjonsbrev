@@ -237,6 +237,14 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
 
             includePhrase(KlippInnFraVedtak)
+
+            paragraph {
+                text(bokmal {
+                    +"Vi kan ikke se at det foreligger åpenbare grunner til å utelate et arbeidsrettet tiltak, som kan resultere i en konkret avklaring av klagers inntektsevne. "
+                    +"Vilkårene i folketrygdloven § 12-5 er derfor ikke oppfylt. "
+                    +"Når klager er ferdig avklart mot arbeid, må det tas stilling til hvorvidt vilkårene i folketrygdloven §§ 12-6 og 12-7 er oppfylt."
+                })
+            }
         }
     }
 
