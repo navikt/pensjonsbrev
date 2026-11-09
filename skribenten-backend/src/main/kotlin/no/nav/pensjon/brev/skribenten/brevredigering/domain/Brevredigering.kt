@@ -378,10 +378,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     fun hentRedigertVedlegg(vedleggId: VedleggId): Edit.Attachment? =
         _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.redigertVedlegg
 
-    fun settRedigertVedlegg(
-        vedleggId: VedleggId,
-        redigertVedlegg: Edit.Attachment,
-    ): Boolean {
+    fun settRedigertVedlegg(vedleggId: VedleggId, redigertVedlegg: Edit.Attachment): Boolean {
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }
         if (eksisterende != null) {
             if (eksisterende.redigertVedlegg == redigertVedlegg) {
