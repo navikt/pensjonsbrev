@@ -76,7 +76,7 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
             }
             showIf(tyvearfulleksportviasammenlegging) {
                 paragraph {
-                    text(bokmal { +"Du har ikke mer enn 20 års botid i Norge og du er innvilget uføretrygd uten rettigheter til ung ufør og flyktning. Imidlertid har du vært medlem i EØS som Norge har trygdeavtale med, disse medlemskapsperiodene er likestilte med norske perioder når vi skal ta stilling til om du har 20 års trygdetid. Du oppfyller vilkåret om 20 års trygdetid via sammenlegging av trygdetidsperioder fra " + land.ifNull("") + ".  " })
+                    text(bokmal { +"Du har ikke mer enn 20 års botid i Norge og du er innvilget uføretrygd uten rettigheter til ung ufør og flyktning. Imidlertid har du vært medlem i EØS som Norge har trygdeavtale med, disse medlemskapsperiodene er likestilte med norske perioder når vi skal ta stilling til om du har 20 års trygdetid. Du oppfyller vilkåret om 20 års trygdetid via sammenlegging av trygdetidsperioder fra " + fritekst("land med opptjent trygdetid") + ".  " })
                 }
                 paragraph {
                     text(bokmal { +"Uføretrygden din er også innvilget uten unntaksbestemmelser. Etter gjeldende regelverk kan du dermed ta med deg uføretrygden din til " + land.ifNull("") + " eller hvilket som helst land i verden uten at det medfører endringer i beløp. " })
