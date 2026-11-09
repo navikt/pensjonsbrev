@@ -11,7 +11,8 @@ export type HighlightParts = { ranges: HighlightRange[]; fullMatch: boolean };
 
 export type TextFlow<T> =
   | { type: "text"; source: T; text: string }
-  | { type: "separator"; text: string }
+  /** Searchable but never rendered. A matched separator only sets `fullMatch` on its optional `source`. */
+  | { type: "separator"; text: string; source?: T }
   | { type: "branches"; branches: TextFlow<T>[][] }
   | { type: "variable" }
   | { type: "break" }
@@ -102,6 +103,7 @@ type Prefix = { term: number; start: number; prefix: number; errors: number; len
 type Occurrence = { term: number; start: number; end: number; errors: number };
 type Origin<T> = {
   position: { source: T; index: number } | undefined;
+  marker?: T;
   character: string;
   condition: number;
 };
@@ -291,6 +293,12 @@ function matchTextFlowInternal<T>(
           part.fullMatch ||= conditions.and(selected, complete) !== 0;
         }
       }
+      if (selected && origin.marker !== undefined) {
+        const part = parts.get(origin.marker);
+        if (part) {
+          part.fullMatch ||= conditions.and(selected, complete) !== 0;
+        }
+      }
     }
     for (const [source, range] of ranges) {
       parts?.get(source)?.ranges.push(range);
@@ -406,8 +414,11 @@ function matchTextFlowInternal<T>(
       } else if (item.type === "space") {
         lines = new Map([...lines].map(([id, line]) => [id, { ...line, pendingSpace: line.condition }]));
       } else {
-        if (item.type === "text" && collectHighlights && parts && !parts.has(item.source)) {
-          parts.set(item.source, { ranges: [], fullMatch: false });
+        const marker = item.type === "separator" ? item.source : undefined;
+        for (const source of [item.type === "text" ? item.source : undefined, marker]) {
+          if (source !== undefined && parts && !parts.has(source)) {
+            parts.set(source, { ranges: [], fullMatch: false });
+          }
         }
         for (let index = 0; index < item.text.length; index++) {
           if (/\s/.test(item.text[index])) {
@@ -433,7 +444,7 @@ function matchTextFlowInternal<T>(
               );
             }
             const origin = nextOrigin++;
-            origins?.push({ position, character, condition: present });
+            origins?.push({ position, marker, character, condition: present });
             lines = new Map([...lines].map(([id, line]) => [id, characterAt(line, origin, line.condition, character)]));
           }
         }

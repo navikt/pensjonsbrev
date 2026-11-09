@@ -948,6 +948,30 @@ describe("Document full-query coverage", () => {
     expect(text(html)).not.toContain("|");
   });
 
+  it.each([false, true])("targets the table row matched by a separator-only query (exact: %s)", (exact) => {
+    const html = renderParagraph(
+      [
+        {
+          controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+          predicate: fieldPath("harBarn"),
+          showIf: [literal("Ingen tabell")],
+          elseIf: [],
+          showElse: [table([row("barnetillegg", "uføretrygd")], row("Ytelse").content)],
+        },
+      ],
+      exact,
+      "|",
+    );
+
+    const cells = [...html.matchAll(/<span class="cell"([^>]*)>/g)].map(([, attributes]) =>
+      attributes.includes("data-search-full-match"),
+    );
+    expect(cells).toEqual([true, true]);
+    expect(html.indexOf("data-search-full-match")).toBeGreaterThan(html.indexOf("Ingen tabell"));
+    expect(html).not.toContain("<mark");
+    expect(text(html)).not.toContain("|");
+  });
+
   it("does not match an exact phrase across table cells without the indexed separator", () => {
     const html = renderParagraph([table([row("barnetillegg", "uføretrygd")])], true);
 

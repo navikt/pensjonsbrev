@@ -80,6 +80,30 @@ describe("incremental text-flow matching", () => {
   });
 
   it.each([false, true])(
+    "credits a matched separator only to the source of its selected branch (exact: %s)",
+    (exact) => {
+      const separator = (source: string): TextFlow<string> => ({ type: "separator", text: " | ", source });
+      const flow: TextFlow<string>[] = [
+        {
+          type: "branches",
+          branches: [[text("left")], [text("left"), separator("row"), text("right")]],
+        },
+        { type: "break" },
+        text("other"),
+        separator("other-row"),
+      ];
+
+      const result = matchTextFlow(flow, "|", exact);
+      expect(result.parts.get("row")).toEqual({ ranges: [], fullMatch: true });
+      expect(result.parts.get("other-row")).toEqual({ ranges: [], fullMatch: true });
+      expect(result.parts.get("left")).toEqual({ ranges: [], fullMatch: false });
+
+      const partial = matchTextFlow(flow, "| missing", false);
+      expect(partial.parts.get("row")?.fullMatch).toBe(false);
+    },
+  );
+
+  it.each([false, true])(
     "handles 35 optional siblings without expanding their combinations (exact: %s)",
     (exact) => {
       const flow: TextFlow<string>[] = [
