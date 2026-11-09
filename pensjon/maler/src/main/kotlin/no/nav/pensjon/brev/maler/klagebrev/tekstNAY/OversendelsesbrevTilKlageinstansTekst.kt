@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.maler.klagebrev.tekstNAY
 
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
-import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTDto.ufoeretrygdGjeldende.ufoeregradSelector
-import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU.FastsettelseIFUIEUValg.*
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU.FastsettelseInntektValg.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal

@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidP
 import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlagePE
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
-import no.nav.pensjon.brev.maler.klagebrev.OversendelseOgFoelgebrevKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.legacy.redigerbar.*
@@ -170,7 +169,6 @@ object ProductionTemplates : AllTemplates {
         OpphoerGjenlevendepensjon,
         OrienteringOmForlengetSaksbehandlingstid,
         OrienteringOmSvartidKlageUT,
-        OversendelseOgFoelgebrevKlageinstansUT,
         OversendelsesbrevTilKlageinstansPE,
         OversendelsesbrevTilKlageinstansUT,
         OversettelseAvDokumenter,
