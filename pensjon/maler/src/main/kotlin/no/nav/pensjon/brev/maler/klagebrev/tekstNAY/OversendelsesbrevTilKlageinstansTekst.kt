@@ -328,8 +328,8 @@ object OversendelsesbrevTilKlageinstansTekst {
                 text(bokmal {
                     +"Inntekt før uførhet (IFU) skal fastsettes til vedkommende sin normale årsinntekt i full stilling før uføretidspunktet. "
                     +"IFU er fastsatt til "
-                    +fritekst("kr") + " kroner. Oppjustert til i dag utgjør dette "
-                    +fritekst("kr") + " kroner."
+                    +fritekst("beløp") + " kroner. Oppjustert til i dag utgjør dette "
+                    +fritekst("beløp") + " kroner."
                 })
             }
             paragraph {
@@ -340,7 +340,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Hvis vedkommende har inntektsmuligheter som ikke utnyttes, skal disse medregnes ved fastsettelsen av IEU. "
                     +"Dette betyr at IEU kan settes til et høyere nivå enn den faktiske inntekten. "
                     +"IEU er fastsatt til "
-                    +fritekst("antall") + " kroner."
+                    +fritekst("beløp") + " kroner."
                 })
             }
 
@@ -666,7 +666,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Vi viser til klagen av "
                     +fritekst("dato") + " på varsel/vedtak av "
                     +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
-                    +fritekst("antall kr") + " kroner for mye i uføretrygd i "
+                    +fritekst("beløp") + " kroner for mye i uføretrygd i "
                     +fritekst("år") + "."
                     +"Klagefristen er overholdt."
                 })
@@ -714,7 +714,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +fritekst("dato") + " på "
                     +fritekst("varsel/vedtak") + " av "
                     +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
-                    +fritekst("antall") + " kroner for mye i barnetillegg i "
+                    +fritekst("beløp") + " kroner for mye i barnetillegg i "
                     +fritekst("år") + ". Vedtaket ble iverksatt "
                     +fritekst("dato") + ". Klagefristen er overholdt."
                 })
@@ -818,7 +818,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Vi viser til klagen av "
                     +fritekst("dato") + " på vedtak av "
                     +fritekst("dato") + " der klager fikk "
-                    +fritekst("antall") + " kroner etter særbestemmelsene ved yrkesskade. "
+                    +fritekst("beløp") + " kroner etter særbestemmelsene ved yrkesskade. "
                     +"Klagefristen er overholdt."
                 })
             }
