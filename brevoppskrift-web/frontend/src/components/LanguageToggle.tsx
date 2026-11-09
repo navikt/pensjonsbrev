@@ -13,7 +13,7 @@ import { LANGUAGES, languageLabel, languageShortLabel } from "~/search/component
  *
  * `value` is the chosen language, and `loading` whether it is still loading,
  * in which case a spinner replaces its name. Selection, focus and the
- * language that opens so stay in step while it loads.
+ * language that opens stay in step while it loads.
  */
 export function LanguageToggle({
   available,
