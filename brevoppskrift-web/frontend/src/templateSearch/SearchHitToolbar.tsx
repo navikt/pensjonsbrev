@@ -39,7 +39,7 @@ export function SearchHitToolbar({
   marking: boolean;
   query?: string;
   onMarkingChange: (marking: boolean) => void;
-  onSearch: (q: string | undefined) => void | Promise<void>;
+  onSearch: (q: string | undefined) => void;
   onSelectBlock: (index: number) => void;
   /** A new key resets the search field, e.g. to drop input pending for another template. */
   searchFieldKey?: string;

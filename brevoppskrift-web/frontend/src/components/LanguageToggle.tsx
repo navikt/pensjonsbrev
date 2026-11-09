@@ -1,5 +1,5 @@
 import { Loader, ToggleGroup, Tooltip } from "@navikt/ds-react";
-import { type KeyboardEvent, useRef, useState } from "react";
+import { type KeyboardEvent, useRef } from "react";
 
 import { LANGUAGES, languageLabel, languageShortLabel } from "~/search/components/format";
 
@@ -11,21 +11,21 @@ import { LANGUAGES, languageLabel, languageShortLabel } from "~/search/component
  * language right away, without Enter or Space. The arrow keys wrap around, so
  * the other languages are always one key press away.
  *
- * The chosen language is selected right away, and a spinner replaces its name
- * until `value` follows, so selection, focus and the language that opens stay
- * in step while it loads. When the navigation `onChange` returns settles
- * without `value` following (e.g. redirected or superseded), the selection
- * falls back to `value`.
+ * `value` is the chosen language, and `loading` whether it is still loading,
+ * in which case a spinner replaces its name. Selection, focus and the
+ * language that opens so stay in step while it loads.
  */
 export function LanguageToggle({
   available,
   value,
+  loading = false,
   onChange,
 }: {
   /** The languages the template is written in. */
   available: readonly string[];
   value: string;
-  onChange: (language: string) => void | Promise<void>;
+  loading?: boolean;
+  onChange: (language: string) => void;
 }) {
   const languages = [
     ...LANGUAGES.filter((language) => available.includes(language)),
@@ -33,24 +33,9 @@ export function LanguageToggle({
   ];
   const items = useRef(new Map<string, HTMLButtonElement>());
 
-  const [requested, setRequested] = useState(value);
-  const [previousValue, setPreviousValue] = useState(value);
-  if (value !== previousValue) {
-    setPreviousValue(value);
-    setRequested(value);
-  }
-  const latestValue = useRef(value);
-  latestValue.current = value;
-  const latestRequest = useRef(0);
   const select = (language: string) => {
-    if (language !== requested) {
-      setRequested(language);
-      const request = ++latestRequest.current;
-      void onChange(language)?.finally(() => {
-        if (request === latestRequest.current) {
-          setRequested(latestValue.current);
-        }
-      });
+    if (language !== value) {
+      onChange(language);
     }
   };
 
@@ -73,16 +58,12 @@ export function LanguageToggle({
     items.current.get(target)?.focus();
   };
   return (
-    <ToggleGroup aria-label="Språk" onChange={select} size="small" value={requested}>
+    <ToggleGroup aria-label="Språk" onChange={select} size="small" value={value}>
       {languages.map((language) => (
         <Tooltip content={languageLabel(language)} key={language}>
           <ToggleGroup.Item
             label={
-              language === requested && requested !== value ? (
-                <Loader size="xsmall" title="Laster" />
-              ) : (
-                languageShortLabel(language)
-              )
+              language === value && loading ? <Loader size="xsmall" title="Laster" /> : languageShortLabel(language)
             }
             onFocus={() => select(language)}
             onKeyDown={(event) => wrapAround(event, language)}
