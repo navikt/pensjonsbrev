@@ -16,9 +16,9 @@ import { formatStringDate } from "~/utils/dateUtils";
 import { listedUntil, PRODUCT_ANNOUNCEMENTS, type ProductAnnouncement } from "./productAnnouncements";
 
 /**
- * Bell in the top bar with product announcements. A red dot marks announcements the user has neither seen in the bell
- * nor acknowledged in their tour. Opening the bell marks them as seen, while their tour still starts automatically
- * where it belongs. They stay in the list until their last day.
+ * Bell in the top bar with product announcements, listed from their publish date until their last day. A red dot marks
+ * announcements the user has neither seen in the bell nor acknowledged in their tour. Showing them in the open bell marks
+ * them as seen, while their tour still starts automatically where it belongs.
  */
 export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { announcements?: ProductAnnouncement[] }) {
   const [bell, setBell] = useState<HTMLButtonElement | null>(null);
@@ -46,8 +46,8 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
       ? `Nytt i Skribenten, ${unseen.length} ${unseen.length === 1 ? "ny nyhet" : "nye nyheter"}`
       : "Nytt i Skribenten";
 
-  // Everything shown in the open bell counts as seen, also when its status arrives after the bell was opened.
-  // Marking updates the cached list right away, so an announcement is only marked once.
+  // Marks what the open bell shows as seen once both status lists have been read, also when that happens after the bell
+  // was opened. Marking updates the cached list right away, so each announcement is marked once.
   const unseenIds = unseen.map((announcement) => announcement.id).join(",");
   useEffect(() => {
     if (!open || unseenIds === "") return;

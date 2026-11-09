@@ -69,7 +69,8 @@ type FeatureAnnouncementProps = {
 /**
  * Modal, contextual announcement of a feature. One step gives a single announcement, several steps give
  * a short walkthrough. Focus moves into the announcement and returns to where the user was when it closes.
- * Closing it (button, Escape or a click on the dimmed page) acknowledges it for the user, so it is not shown again.
+ * Closing it (button, Escape or a click on the dimmed page) acknowledges it for the user, so it no longer starts
+ * automatically.
  * If several announcements are eligible at the same time, they are shown one after another.
  * While `when` holds, the tour can also be started again on request (see `requestAnnouncementReplay`).
  */
