@@ -14,10 +14,12 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * that wasn't present in previous renders, e.g. if Saksbehandler has modified the template options (saksbehandlerValg) or
  * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
  * present.
+ *
+ * If [previousRender] is provided, blocks in the fresh rendering that differ from it (new or changed) are marked [Edit.Block.newFromTemplate].
  */
-fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
+fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup, previousRender: Edit.Letter? = null): Edit.Letter =
     renderedLetter.toEdit().let { rendered ->
-        UpdateEditedLetter(rendered.variablesValueMap()).mergeLetter(this, rendered)
+        UpdateEditedLetter(rendered.variablesValueMap()).mergeLetter(this, rendered, previousRender)
     }
 
 
@@ -44,12 +46,23 @@ private fun mergeSignatur(edited: LetterMarkup.Signatur, rendered: LetterMarkup.
 
 class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
-    fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter): Edit.Letter =
+    fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter, previousRender: Edit.Letter? = null): Edit.Letter =
         edited.copy(
             title = mergeTitle(edited.title, rendered.title),
             sakspart = rendered.sakspart,
             signatur = mergeSignatur(edited.signatur, rendered.signatur),
-            blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues, ::setMissing),
+            blocks = mergeList(
+                parent = null,
+                edited = edited.blocks,
+                rendered = rendered.blocks,
+                deleted = edited.deletedBlocks,
+                merge = ::mergeBlock,
+                updateVariables = ::updateVariableValues,
+                setMissingFromTemplate = ::setMissing,
+                previousRendered = previousRender?.blocks,
+                setNewFromTemplate = ::setNew,
+                isNewFromTemplate = { it.newFromTemplate },
+            ),
             deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
         )
 
@@ -153,6 +166,10 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
      *    rendered: [A, B, C, D]
      *    result:   [A, B', C, D]
      * ```
+     *
+     * If [previousRendered] is provided, every result element taken from [rendered] that is not identical to an element in [previousRendered]
+     * (i.e. new or changed in the template since the previous render) is marked with [setNewFromTemplate]. The mark is kept for edited elements
+     * already marked according to [isNewFromTemplate], so that it survives subsequent merges until Saksbehandler has handled it.
      */
     private fun <E : Edit.Identifiable> mergeList(
         parent: Edit.Identifiable?,
@@ -162,7 +179,18 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         merge: (E, E) -> E,
         updateVariables: ((E) -> E),
         setMissingFromTemplate: ((E) -> E),
+        previousRendered: List<E>? = null,
+        setNewFromTemplate: ((E) -> E) = { it },
+        isNewFromTemplate: ((E) -> Boolean) = { false },
     ): List<E> = buildList {
+        val previousRenderedSet = previousRendered?.toSet()
+        fun markNewFromTemplate(result: E, renderedElement: E, editedElement: E? = null): E =
+            if ((editedElement != null && isNewFromTemplate(editedElement)) || (previousRenderedSet != null && renderedElement !in previousRenderedSet)) {
+                setNewFromTemplate(result)
+            } else {
+                result
+            }
+
         // A queue of unprocessed rendered elements. `deleted` is a multiset (one entry per actually
         // deleted occurrence, not a "this id is deleted" flag). The LCS alignment identifies which
         // occurrences are still represented by `edited`; deletion counts are consumed only from
@@ -196,14 +224,15 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                     // The currentEdited element is present in the fresh render.
 
                     // We add any new elements from the fresh render that precedes currentEdited in the fresh render.
-                    repeat((0 until renderedIndex).count()) { add(remainingRendered.removeFirst()) }
+                    repeat((0 until renderedIndex).count()) {
+                        val renderedElement = remainingRendered.removeFirst()
+                        add(markNewFromTemplate(renderedElement, renderedElement))
+                    }
 
                     // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
-                    if (currentEdited.isEdited()) {
-                        add(merge(currentEdited, remainingRendered.removeFirst()))
-                    } else {
-                        add(remainingRendered.removeFirst())
-                    }
+                    val renderedElement = remainingRendered.removeFirst()
+                    val result = if (currentEdited.isEdited()) merge(currentEdited, renderedElement) else renderedElement
+                    add(markNewFromTemplate(result, renderedElement, currentEdited))
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
@@ -215,7 +244,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 }
             }
         }
-        addAll(remainingRendered)
+        remainingRendered.forEach { add(markNewFromTemplate(it, it)) }
     }
 
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
@@ -414,4 +443,11 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
     private fun setMissing(row: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row = row
 
     private fun setMissing(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell = cell
+
+    private fun setNew(block: Edit.Block): Edit.Block = when (block) {
+        is Edit.Block.Title1 -> block.copy(newFromTemplate = true)
+        is Edit.Block.Title2 -> block.copy(newFromTemplate = true)
+        is Edit.Block.Title3 -> block.copy(newFromTemplate = true)
+        is Edit.Block.Paragraph -> block.copy(newFromTemplate = true)
+    }
 }

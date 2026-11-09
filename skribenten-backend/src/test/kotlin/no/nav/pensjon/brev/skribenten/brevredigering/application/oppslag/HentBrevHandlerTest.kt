@@ -64,7 +64,8 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val hentet = hentBrev(brevId = opprettet.info.id, reserverForRedigering = true)
 
         assertThat(hentet).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(freshRender, previousRender = letter.toEdit()))
+            assertThat(it.redigertBrev.blocks.map { b -> b.newFromTemplate }).isEqualTo(letter.blocks.map { false } + true)
         }
     }
 

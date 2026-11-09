@@ -277,7 +277,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
-        redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
+        redigertBrev = redigertBrev.updateEditedLetter(rendretBrev, previousRender = this.rendretBrev)
         settRendretBrev(rendretBrev)
     }
 

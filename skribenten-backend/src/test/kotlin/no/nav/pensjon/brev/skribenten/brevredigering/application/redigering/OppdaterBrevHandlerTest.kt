@@ -144,7 +144,8 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(oppdatert).isSuccess {
             assertThat(it.redigertBrev).isNotEqualTo(original.redigertBrev)
-            assertThat(it.redigertBrev).isEqualTo(original.redigertBrev.updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev).isEqualTo(original.redigertBrev.updateEditedLetter(freshRender, previousRender = letter.toEdit()))
+            assertThat(it.redigertBrev.blocks.map { b -> b.newFromTemplate }).isEqualTo(letter.blocks.map { false } + true)
         }
     }
 
