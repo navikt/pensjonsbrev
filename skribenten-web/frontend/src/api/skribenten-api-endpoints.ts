@@ -60,6 +60,7 @@ export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
 };
 
+// Seen means shown in the open announcement bell; acknowledged means the Joyride tour was closed and stops auto-starting.
 export const acknowledgedAnnouncementsKeys = {
   all: ["ACKNOWLEDGED_ANNOUNCEMENTS"] as const,
 };

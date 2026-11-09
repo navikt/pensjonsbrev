@@ -34,6 +34,7 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
+// Sett betyr vist i den åpne varselbjellen; bekreftet betyr at den automatiske Joyride-turen har blitt sett og lukket.
 object BekreftetNyhetsvarselTable : CompositeIdTable() {
     val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
     val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
