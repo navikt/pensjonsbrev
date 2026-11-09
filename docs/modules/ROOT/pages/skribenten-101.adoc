@@ -93,7 +93,8 @@ Attestanten kan velge å vise følgende i redigeringsbildet:
 1. tekst som er lagt til, markert i grønt
 2- tekst som er slettet, markert i rosa med gjennomstreking
 3. eller begge samtidig
-4. Se bildet nedenfor.
+
+Bruk bryterne «Marker tekst som er lagt til» og «Vis slettet tekst» i redigeringsbildet for å slå visningene av og på.
 
 
 Viktig å vite:
