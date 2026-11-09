@@ -33,6 +33,7 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
     ) {
+        val land = saksbehandlervalg("land", "Land").text()
         val hvisensligogminstesats = saksbehandlervalg("hvisensligogminstesats", "Hvis enslig og minstesats").bool()
         val barnetillegginnenavtaleland = saksbehandlervalg("barnetillegginnenavtaleland", "Barnetillegg innen avtaleland").bool()
         val retttileksportmendetkommeikketilutbetpgainntekt = saksbehandlervalg("retttileksportmendetkommeikketilutbetpgainntekt", "Rett til eksport av barnetillegg men dette kommer ikke til utbetaling").bool()
@@ -41,7 +42,6 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
         val vedopphoravuforetrygd = saksbehandlervalg("vedopphoravuforetrygd", "Dersom opphør av uføretrygd").bool()
         val tyvearfulleksport = saksbehandlervalg("tyvearfulleksport", "20 år, full eksport").bool()
         val tyvearfulleksportviasammenlegging = saksbehandlervalg("tyvearfulleksportviasammenlegging", "20 år via sammenlegging, full eksport  EØS").bool()
-        val land = saksbehandlervalg("land", "Land").text()
         val mindreenn20areosfulleksport = saksbehandlervalg("mindreenn20areosfulleksport", "Mindre enn 20 år, EØS, full eksport").bool()
         val mindreenn20arikkeavtalelandgenopptjening = saksbehandlervalg("mindreenn20arikkeavtalelandgenopptjening", "Mindre enn 20 år, ikke avtaleland, egenopptjening").bool()
         val fritekstmal = saksbehandlervalg("fritekstmal", "Sett inn rett alternativ fra eksportmal").bool()
