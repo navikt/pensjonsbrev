@@ -55,6 +55,7 @@ export const AttestantDiffAnnouncement = ({
     <FeatureAnnouncement
       id={ATTESTANT_DIFF_ANNOUNCEMENT_ID}
       replayableUntil={ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL}
+      showFrom={DIFF_TOGGLES_ANNOUNCEMENT.publishedAt}
       showUntil={ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL}
       steps={steps}
       when={isAttestant && isOnAttestantEditingRoute && menu !== null && toggles !== null}

@@ -24,6 +24,7 @@ import {
 import {
   endAnnouncementReplay,
   isAnnouncementExpired,
+  isAnnouncementPublished,
   useAnnouncementReplay,
   useRegisterAnnouncementAvailability,
 } from "./featureAnnouncementState";
@@ -47,6 +48,8 @@ export type FeatureAnnouncementStep = {
 type FeatureAnnouncementProps = {
   /** Unique per announcement and stored when the user acknowledges it, e.g. "diff-toggles". At most 100 characters. */
   id: string;
+  /** First day (YYYY-MM-DD) the announcement can be shown, typically the release date. Shown right away when omitted. */
+  showFrom?: string;
   /** Last day (YYYY-MM-DD) the announcement starts automatically, typically 30 days after release. */
   showUntil: string;
   /**
@@ -83,6 +86,7 @@ export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => {
 
 const FeatureAnnouncementInstance = ({
   id,
+  showFrom,
   showUntil,
   replayableUntil,
   steps,
@@ -94,13 +98,14 @@ const FeatureAnnouncementInstance = ({
   const [resumeIndex, setResumeIndex] = useState(0);
   const [unsuccessfulRun, setUnsuccessfulRun] = useState(false);
 
+  const published = isAnnouncementPublished(showFrom);
   const expired = isAnnouncementExpired(showUntil);
   const replayable = !isAnnouncementExpired(replayableUntil ?? showUntil);
   const replaying = replayGeneration > 0;
-  const available = when && (!expired || replayable) && steps.length > 0;
+  const available = when && published && (!expired || replayable) && steps.length > 0;
   useRegisterAnnouncementAvailability(id, available);
 
-  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
+  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && published && !expired });
   const acknowledged = acknowledgedQuery.data?.includes(id) === true;
   const acknowledge = useAcknowledgeAnnouncement();
 

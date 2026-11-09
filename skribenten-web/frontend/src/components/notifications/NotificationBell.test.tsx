@@ -236,6 +236,42 @@ describe("<NotificationBell />", () => {
     expect(screen.getByRole("link", { name: /^Se dokumentasjon/ })).not.toBeNull();
   });
 
+  test("markerer nyheten som sett når klokken åpnes før statusen er hentet", async () => {
+    let answerSeen: (ids: string[]) => void = () => {};
+    fetchSeenMock.mockReturnValue(new Promise<string[]>((resolve) => (answerSeen = resolve)));
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
+
+    await user.click(bell());
+    expect(screen.getByRole("heading", { name: NYHET.title })).not.toBeNull();
+    await act(async () => answerSeen([]));
+    await settle();
+
+    expect(markSeenMock).toHaveBeenCalledTimes(1);
+    expect(markSeenMock).toHaveBeenCalledWith(NYHET.id);
+    expect(dot()).toBeNull();
+  });
+
+  test("viser ikke nyheter før publiseringsdatoen, og markerer dem ikke som sett", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell announcements={[{ ...NYHET, publishedAt: "2026-11-16" }]} />);
+    await settle();
+
+    expect(dot()).toBeNull();
+    await user.click(bell());
+    expect(screen.queryByRole("heading", { name: NYHET.title })).toBeNull();
+    expect(markSeenMock).not.toHaveBeenCalled();
+  });
+
+  test("viser nyheten fra og med publiseringsdatoen", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell announcements={[{ ...NYHET, publishedAt: "2026-11-15" }]} />);
+
+    await user.click(bell());
+
+    expect(screen.getByRole("heading", { name: NYHET.title })).not.toBeNull();
+  });
+
   test("viser dato, tittel og beskrivelse", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);

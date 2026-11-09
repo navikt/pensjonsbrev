@@ -5,6 +5,8 @@ import { addDays, parseISO, setHours } from "date-fns";
 import { type ReactNode, useState } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import { DIFF_TOGGLES_ANNOUNCEMENT } from "~/components/notifications/productAnnouncements";
+
 import { ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL, AttestantDiffAnnouncement } from "./AttestantDiffAnnouncement";
 
 const lastDisplayDay = () => setHours(parseISO(ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL), 12);
@@ -145,6 +147,15 @@ describe("<AttestantDiffAnnouncement />", () => {
     await settle();
 
     expect(queryAnnouncement()).toBeNull();
+  });
+
+  test("vises ikke før publiseringsdatoen", async () => {
+    vi.setSystemTime(addDays(setHours(parseISO(DIFF_TOGGLES_ANNOUNCEMENT.publishedAt), 12), -1));
+    render(<Harness />);
+    await settle();
+
+    expect(queryAnnouncement()).toBeNull();
+    expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
   });
 
   test("vises ikke etter siste visningsdag", async () => {

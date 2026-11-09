@@ -4,6 +4,10 @@ import { useEffect, useSyncExternalStore } from "react";
 /** The announcement is shown to and including `showUntil` (YYYY-MM-DD). */
 export const isAnnouncementExpired = (showUntil: string) => isAfter(startOfToday(), parseISO(showUntil));
 
+/** The announcement is shown from and including `showFrom` (YYYY-MM-DD), or right away when it is omitted. */
+export const isAnnouncementPublished = (showFrom?: string) =>
+  showFrom === undefined || !isAfter(parseISO(showFrom), startOfToday());
+
 const availableCounts = new Map<string, number>();
 let replay: { id: string; generation: number } | null = null;
 let replayGeneration = 0;

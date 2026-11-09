@@ -7,6 +7,7 @@ import { getAcknowledgedAnnouncements, getSeenAnnouncements } from "~/api/skribe
 import { useMarkAnnouncementSeen } from "~/components/featureAnnouncement/announcementStatus";
 import {
   isAnnouncementExpired,
+  isAnnouncementPublished,
   requestAnnouncementReplay,
   useIsAnnouncementAvailable,
 } from "~/components/featureAnnouncement/featureAnnouncementState";
@@ -27,7 +28,10 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
   const headingId = useId();
   const markSeen = useMarkAnnouncementSeen();
 
-  const current = announcements.filter((announcement) => !isAnnouncementExpired(listedUntil(announcement)));
+  const current = announcements.filter(
+    (announcement) =>
+      isAnnouncementPublished(announcement.publishedAt) && !isAnnouncementExpired(listedUntil(announcement)),
+  );
   const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: current.length > 0 });
   const seenQuery = useQuery({ ...getSeenAnnouncements, enabled: current.length > 0 });
   const unseen =
@@ -42,10 +46,13 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
       ? `Nytt i Skribenten, ${unseen.length} ${unseen.length === 1 ? "ny nyhet" : "nye nyheter"}`
       : "Nytt i Skribenten";
 
-  const openAnnouncements = () => {
-    for (const announcement of unseen) markSeen(announcement.id);
-    setOpen(true);
-  };
+  // Everything shown in the open bell counts as seen, also when its status arrives after the bell was opened.
+  // Marking updates the cached list right away, so an announcement is only marked once.
+  const unseenIds = unseen.map((announcement) => announcement.id).join(",");
+  useEffect(() => {
+    if (!open || unseenIds === "") return;
+    for (const id of unseenIds.split(",")) markSeen(id);
+  }, [open, unseenIds, markSeen]);
 
   const [replayAfterClose, setReplayAfterClose] = useState<string | null>(null);
   const showMe = (announcement: ProductAnnouncement) => {
@@ -66,7 +73,7 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
       <InternalHeader.Button
         aria-controls={open ? modalId : undefined}
         aria-haspopup="dialog"
-        onClick={openAnnouncements}
+        onClick={() => setOpen(true)}
         ref={setBell}
       >
         <Box as="span" css={{ display: "inline-flex", position: "relative" }}>

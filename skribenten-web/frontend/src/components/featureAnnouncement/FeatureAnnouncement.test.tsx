@@ -28,6 +28,7 @@ vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
 
 const today = () => format(new Date(), "yyyy-MM-dd");
 const yesterday = () => format(addDays(new Date(), -1), "yyyy-MM-dd");
+const tomorrow = () => format(addDays(new Date(), 1), "yyyy-MM-dd");
 
 const Harness = ({
   when = true,
@@ -35,6 +36,7 @@ const Harness = ({
   showTarget = true,
   spotlight,
   onDismiss,
+  showFrom,
   showUntil = "2999-12-31",
   replayableUntil,
 }: {
@@ -43,6 +45,7 @@ const Harness = ({
   showTarget?: boolean;
   spotlight?: boolean;
   onDismiss?: () => void;
+  showFrom?: string;
   showUntil?: string;
   replayableUntil?: string;
 }) => {
@@ -64,6 +67,7 @@ const Harness = ({
         id="test-nyhet"
         onDismiss={onDismiss}
         replayableUntil={replayableUntil}
+        showFrom={showFrom}
         showUntil={showUntil}
         spotlight={spotlight}
         steps={steps}
@@ -575,6 +579,30 @@ describe("<FeatureAnnouncement />", () => {
       expect(screen.getByText("tilgjengelig")).not.toBeNull();
 
       act(() => requestAnnouncementReplay("test-nyhet"));
+
+      expect(await findAnnouncement()).not.toBeNull();
+    });
+
+    test("vises ikke, og kan ikke vises på nytt, før publiseringsdatoen", async () => {
+      renderWithQueryClient(
+        <>
+          <Harness showFrom={tomorrow()} />
+          <AvailabilityProbe />
+        </>,
+      );
+      await settle();
+      expect(queryAnnouncement()).toBeNull();
+      expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
+      expect(screen.getByText("utilgjengelig")).not.toBeNull();
+
+      act(() => requestAnnouncementReplay("test-nyhet"));
+      await settle();
+
+      expect(queryAnnouncement()).toBeNull();
+    });
+
+    test("vises fra og med publiseringsdatoen", async () => {
+      renderWithQueryClient(<Harness showFrom={today()} />);
 
       expect(await findAnnouncement()).not.toBeNull();
     });
