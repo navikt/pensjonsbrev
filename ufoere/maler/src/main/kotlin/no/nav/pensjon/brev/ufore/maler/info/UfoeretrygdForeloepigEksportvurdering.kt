@@ -51,7 +51,7 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har foretatt en foreløpig eksportvurdering av din uføretrygd etter henvendelse fra deg den " + fritekst("dato") + ". Du ønsker å flytte til " + redigerbarData(land.ifNull("land")) + "." })
+                text(bokmal { +"Vi har foretatt en foreløpig eksportvurdering av din uføretrygd etter henvendelse fra deg den " + fritekst("dato") + ". Du ønsker å flytte til " + land.ifNull("land") + "." })
             }
             paragraph {
                 text(bokmal { +"Generelt kan man ta med seg uføretrygden til utlandet uten hindringer, forutsatt at man har minst 20 års botid i Norge etter fylte 16 år. I tillegg må trygden være innvilget uten unntaksbestemmelser som flyktningstatus, ung ufør eller andre spesielle bestemmelser.  " })
