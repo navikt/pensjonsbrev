@@ -358,17 +358,17 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 )
             }
 
-            showIf(data.uforetrygd.fribelop1GHeleAret) {
+            showIf(data.uforetrygd.fribelop1G) {
                 paragraph {
                     showIf(data.uforetrygd.venteperiodeEtterGradsokning) {
-                        text(                       //TODO eller lenger? Hm, sendes vel bare ut til de som får økning i 2027
-                            bokmal { +"Fra januar " + data.virkningFom.year.format() + " er det to år eller lenger siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
-                            nynorsk { +"Frå januar " + data.virkningFom.year.format() + " er det to år eller lenger sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
+                        text(
+                            bokmal { +"I januar " + data.virkningFom.year.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
+                            nynorsk { +"I januar " + data.virkningFom.year.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
                         )
                     }.orShow {
                         text(
-                            bokmal { +"Fra januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år eller lenger. Derfor øker fribeløpet ditt til 1 G. " },
-                            nynorsk { +"Frå januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år eller lenger. Derfor aukar fribeløpet ditt til 1 G. " }
+                            bokmal { +"I januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
+                            nynorsk { +"I januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
                         )
                     }
                 }

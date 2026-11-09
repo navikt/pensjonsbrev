@@ -47,7 +47,7 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
                     gradsokning = true
                 )
             ),
-            fribelop1GHeleAret = false,
+            fribelop1G = false,
             fribelop1GTil04G = null,
             fribelop04GTil1GTil04G = EndretUforetrygdPGAInntektNesteArDto.Fra1GTil04G(LocalDate.of(2026, 1, 1), 80),
             fribelop04GTil1G = false,
