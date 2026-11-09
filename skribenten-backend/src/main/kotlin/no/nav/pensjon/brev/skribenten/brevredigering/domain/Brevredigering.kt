@@ -288,7 +288,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
         rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
             hentRedigertVedlegg(vedleggId)
-                ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg)) }
+                ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg, previousRender = hentRendretVedlegg(vedleggId))) }
         }
     }
 
@@ -377,6 +377,9 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     fun hentRedigertVedlegg(vedleggId: VedleggId): Edit.Attachment? =
         _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.redigertVedlegg
+
+    fun hentRendretVedlegg(vedleggId: VedleggId): Edit.Attachment? =
+        _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.rendretVedlegg
 
     fun settRedigertVedlegg(vedleggId: VedleggId, redigertVedlegg: Edit.Attachment): Boolean {
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }

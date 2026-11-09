@@ -134,4 +134,71 @@ class UpdateEditedAttachmentTest {
 
         assertEquals(rendered.toEdit(), edited.updateEditedAttachment(rendered))
     }
+
+    @Test
+    fun `blocks that are new or changed since previous render are marked newFromTemplate`() {
+        val previous = attachment(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(VariableImpl(21, "100 kr"))),
+        )
+        val next = attachment(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(3, true, listOf(LiteralImpl(31, "Ny før"))),
+            ParagraphImpl(2, true, listOf(VariableImpl(21, "200 kr"))),
+            ParagraphImpl(4, true, listOf(LiteralImpl(41, "Ny etter"))),
+        )
+
+        val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(next.toEdit().blocks.map { it.id to it.content }, result.blocks.map { it.id to it.content })
+        assertEquals(listOf(false, true, true, true), result.blocks.map { it.newFromTemplate })
+    }
+
+    @Test
+    fun `edited block changed since previous render keeps edits and is marked newFromTemplate`() {
+        val previous = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "100 kr"))))
+        val next = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "200 kr"))))
+        val edited = editedAttachment {
+            paragraph(id = 1) {
+                literal(id = 11, text = "Du får ", editedText = "Du mottar ")
+                variable(id = 12, text = "100 kr")
+            }
+        }
+        val expected = editedAttachment {
+            paragraph(id = 1, newFromTemplate = true) {
+                literal(id = 11, text = "Du får ", editedText = "Du mottar ")
+                variable(id = 12, text = "200 kr")
+            }
+        }
+
+        assertEquals(expected, edited.updateEditedAttachment(next, previousRender = previous.toEdit()))
+    }
+
+    @Test
+    fun `newFromTemplate is kept on subsequent merges without changes in template`() {
+        val rendered = attachment(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Var ny"))),
+        )
+        val edited = editedAttachment {
+            paragraph(id = 1) { literal(id = 11, text = "Uendret") }
+            paragraph(id = 2, newFromTemplate = true) { literal(id = 21, text = "Var ny", editedText = "Redigert") }
+        }
+
+        assertEquals(edited, edited.updateEditedAttachment(rendered, previousRender = rendered.toEdit()))
+        assertEquals(edited, edited.updateEditedAttachment(rendered))
+    }
+
+    @Test
+    fun `nothing is marked newFromTemplate when render is unchanged or previous render is unknown`() {
+        val previous = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))))
+        val next = attachment(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Ny"))),
+        )
+        val edited = previous.toEdit()
+
+        assertEquals(edited, edited.updateEditedAttachment(previous, previousRender = previous.toEdit()))
+        assertEquals(next.toEdit(), edited.updateEditedAttachment(next, previousRender = null))
+    }
 }

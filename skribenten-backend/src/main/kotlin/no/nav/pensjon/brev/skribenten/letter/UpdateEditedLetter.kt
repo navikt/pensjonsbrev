@@ -23,9 +23,12 @@ fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup, previousRender:
     }
 
 
-fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Attachment): Edit.Attachment =
+/**
+ * If [previousRender] is provided, blocks in the fresh rendering that differ from it (new or changed) are marked [Edit.Block.newFromTemplate].
+ */
+fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Attachment, previousRender: Edit.Attachment? = null): Edit.Attachment =
     renderedAttachment.toEdit().let { rendered ->
-        UpdateEditedLetter(rendered.variablesValueMap()).mergeAttachment(this, rendered)
+        UpdateEditedLetter(rendered.variablesValueMap()).mergeAttachment(this, rendered, previousRender)
     }
 
 fun Edit.Letter.updateSakspartOgSignatur(renderedLetter: LetterMarkup): Edit.Letter =
@@ -66,10 +69,21 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
             deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
         )
 
-    fun mergeAttachment(edited: Edit.Attachment, rendered: Edit.Attachment): Edit.Attachment =
+    fun mergeAttachment(edited: Edit.Attachment, rendered: Edit.Attachment, previousRender: Edit.Attachment? = null): Edit.Attachment =
         edited.copy(
             title = mergeTitle(edited.title, rendered.title),
-            blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues, ::setMissing),
+            blocks = mergeList(
+                parent = null,
+                edited = edited.blocks,
+                rendered = rendered.blocks,
+                deleted = edited.deletedBlocks,
+                merge = ::mergeBlock,
+                updateVariables = ::updateVariableValues,
+                setMissingFromTemplate = ::setMissing,
+                previousRendered = previousRender?.blocks,
+                setNewFromTemplate = ::setNew,
+                isNewFromTemplate = { it.newFromTemplate },
+            ),
             deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
             includeSakspart = rendered.includeSakspart,
         )

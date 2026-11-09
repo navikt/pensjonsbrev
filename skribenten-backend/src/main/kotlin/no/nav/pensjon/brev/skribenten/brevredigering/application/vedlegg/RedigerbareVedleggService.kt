@@ -48,7 +48,7 @@ class RedigerbareVedleggService(
         }
 
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
-        return success(lagretVedlegg?.updateEditedAttachment(malVedlegg) ?: malVedlegg.toEdit())
+        return success(lagretVedlegg?.updateEditedAttachment(malVedlegg, previousRender = brev.hentRendretVedlegg(vedleggId)) ?: malVedlegg.toEdit())
     }
 
     suspend fun lagre(
@@ -59,7 +59,11 @@ class RedigerbareVedleggService(
     ): Outcome<Edit.Attachment, VedleggFinnesIkkeIMal> {
         val malVedlegg = renderMal(brev, vedleggId) ?: return failure(VedleggFinnesIkkeIMal(brev.id.value, vedleggId))
 
-        val nyttVedlegg = if (mergeMotMal) redigertVedlegg.updateEditedAttachment(malVedlegg) else redigertVedlegg
+        val nyttVedlegg = if (mergeMotMal) {
+            redigertVedlegg.updateEditedAttachment(malVedlegg, previousRender = brev.hentRendretVedlegg(vedleggId))
+        } else {
+            redigertVedlegg
+        }
         val foersteLagring = brev.hentRedigertVedlegg(vedleggId) == null
         brev.settRedigertVedlegg(vedleggId, nyttVedlegg)
         if (foersteLagring) {
