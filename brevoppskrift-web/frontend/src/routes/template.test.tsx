@@ -102,7 +102,7 @@ async function renderTemplateRoute(path: string, search: Record<string, unknown>
     </QueryClientProvider>,
   );
   // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped, like the route it mounts.
-  await router.navigate({ to: path, search } as any);
+  await act(() => router.navigate({ to: path, search } as any));
   return router;
 }
 
@@ -504,8 +504,10 @@ describe("search hit focus", () => {
       );
       const toB = { to: "/template/autobrev/B", search: { language: "BOKMAL", q: "treff" } };
 
-      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
-      void router.navigate(toB as any);
+      act(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+        void router.navigate(toB as any);
+      });
       await userEvent.click(screen.getByRole("radio", { name: "Nynorsk" }));
       expect(spinners()).toHaveLength(0);
       await act(async () => openB?.(page));
@@ -642,8 +644,10 @@ describe("search hit focus", () => {
       );
       const toB = { to: "/template/autobrev/B", search: { language: "BOKMAL", q: "treff", focus: 31 } };
 
-      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
-      void router.navigate(toB as any);
+      act(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+        void router.navigate(toB as any);
+      });
       await userEvent.type(input, "f");
       await act(async () => openB?.(page));
 
@@ -672,15 +676,17 @@ describe("search hit focus", () => {
         templateId === "B" ? new Promise((resolve) => (openB = resolve)) : Promise.resolve(page),
       );
 
-      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
-      void router.navigate({ to: "/template/autobrev/B", search: (s: any) => s } as any);
+      act(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+        void router.navigate({ to: "/template/autobrev/B", search: (s: any) => s } as any);
+      });
       await waitFor(() => expect(router.latestLocation.pathname).toBe("/template/autobrev/B"));
       await userEvent.type(input, "annet", { initialSelectionStart: 0, initialSelectionEnd: input.value.length });
 
       await waitFor(() => expect(input.value).toBe("treff"));
       expect(screen.queryByTestId("search-activity")).toBeNull();
 
-      await act(() => router.history.back());
+      await act(async () => router.history.back());
 
       await waitFor(() => expect(router.latestLocation.pathname).toBe("/template/autobrev/A"));
       expect(input.value).toBe("treff");
