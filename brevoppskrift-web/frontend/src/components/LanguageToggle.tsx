@@ -1,5 +1,5 @@
-import { ToggleGroup, Tooltip } from "@navikt/ds-react";
-import { type KeyboardEvent, useRef } from "react";
+import { Loader, ToggleGroup, Tooltip } from "@navikt/ds-react";
+import { type KeyboardEvent, useRef, useState } from "react";
 
 import { LANGUAGES, languageLabel, languageShortLabel } from "~/search/components/format";
 
@@ -10,6 +10,10 @@ import { LANGUAGES, languageLabel, languageShortLabel } from "~/search/component
  * Selection follows focus, as in a radio group: the arrow keys switch
  * language right away, without Enter or Space. The arrow keys wrap around, so
  * the other languages are always one key press away.
+ *
+ * The chosen language is selected right away, and a spinner replaces its name
+ * until `value` follows, so selection, focus and the language that opens stay
+ * in step while it loads.
  */
 export function LanguageToggle({
   available,
@@ -26,6 +30,19 @@ export function LanguageToggle({
     ...available.filter((language) => !LANGUAGES.includes(language)),
   ];
   const items = useRef(new Map<string, HTMLButtonElement>());
+
+  const [requested, setRequested] = useState(value);
+  const [previousValue, setPreviousValue] = useState(value);
+  if (value !== previousValue) {
+    setPreviousValue(value);
+    setRequested(value);
+  }
+  const select = (language: string) => {
+    if (language !== requested) {
+      setRequested(language);
+      onChange(language);
+    }
+  };
 
   // ToggleGroup stops at the ends. Wrapping is handled here, before it, and
   // preventDefault keeps ToggleGroup from handling the same key press.
@@ -46,12 +63,18 @@ export function LanguageToggle({
     items.current.get(target)?.focus();
   };
   return (
-    <ToggleGroup aria-label="Språk" onChange={onChange} size="small" value={value}>
+    <ToggleGroup aria-label="Språk" onChange={select} size="small" value={requested}>
       {languages.map((language) => (
         <Tooltip content={languageLabel(language)} key={language}>
           <ToggleGroup.Item
-            label={languageShortLabel(language)}
-            onFocus={() => language !== value && onChange(language)}
+            label={
+              language === requested && requested !== value ? (
+                <Loader size="xsmall" title="Laster" />
+              ) : (
+                languageShortLabel(language)
+              )
+            }
+            onFocus={() => select(language)}
             onKeyDown={(event) => wrapAround(event, language)}
             ref={(element) => {
               if (element) {

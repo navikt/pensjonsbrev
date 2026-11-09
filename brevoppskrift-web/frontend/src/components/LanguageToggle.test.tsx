@@ -62,4 +62,54 @@ describe("LanguageToggle", () => {
     expect(document.activeElement).toBe(screen.getByRole("radio", { name: "Bokmål" }));
     expect(onChange).toHaveBeenCalledTimes(2);
   });
+
+  describe("while the chosen language loads", () => {
+    const checked = (name: string) => screen.getByRole("radio", { name }).getAttribute("aria-checked");
+    const spinners = () => document.querySelectorAll("svg title");
+
+    it("selects it right away and shows a spinner on it", async () => {
+      const user = userEvent.setup();
+      render(<LanguageToggle available={["BOKMAL", "ENGLISH"]} onChange={vi.fn()} value="BOKMAL" />);
+      await user.tab();
+
+      await user.keyboard("{ArrowRight}");
+
+      expect(checked("Engelsk")).toBe("true");
+      expect(checked("Bokmål")).toBe("false");
+      expect(screen.getByRole("radio", { name: "Engelsk" }).querySelector("svg")).not.toBeNull();
+      expect(spinners()).toHaveLength(1);
+      expect(screen.getByRole("radio", { name: "Engelsk" }).textContent).not.toContain("EN");
+    });
+
+    it("switches back to the shown language when focus returns to it", async () => {
+      const user = userEvent.setup();
+      const onChange = vi.fn();
+      render(<LanguageToggle available={["BOKMAL", "ENGLISH"]} onChange={onChange} value="BOKMAL" />);
+      await user.tab();
+
+      await user.keyboard("{ArrowLeft}");
+      await user.keyboard("{ArrowRight}");
+
+      expect(onChange.mock.calls).toEqual([["ENGLISH"], ["BOKMAL"]]);
+      expect(checked("Bokmål")).toBe("true");
+      expect(spinners()).toHaveLength(0);
+    });
+
+    it("drops the spinner once the language has loaded, and follows a language changed elsewhere", async () => {
+      const user = userEvent.setup();
+      const { rerender } = render(
+        <LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={vi.fn()} value="BOKMAL" />,
+      );
+      await user.tab();
+      await user.keyboard("{ArrowRight}");
+
+      rerender(<LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={vi.fn()} value="NYNORSK" />);
+      expect(checked("Nynorsk")).toBe("true");
+      expect(spinners()).toHaveLength(0);
+
+      rerender(<LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={vi.fn()} value="ENGLISH" />);
+      expect(checked("Engelsk")).toBe("true");
+      expect(spinners()).toHaveLength(0);
+    });
+  });
 });
