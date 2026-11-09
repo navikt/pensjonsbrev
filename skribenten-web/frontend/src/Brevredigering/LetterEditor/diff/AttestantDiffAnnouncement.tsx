@@ -5,11 +5,16 @@ import {
   FeatureAnnouncement,
   type FeatureAnnouncementStep,
 } from "~/components/featureAnnouncement/FeatureAnnouncement";
+import {
+  automaticTourUntil,
+  DIFF_TOGGLES_ANNOUNCEMENT,
+  listedUntil,
+} from "~/components/notifications/productAnnouncements";
 import { useUserInfo } from "~/hooks/useUserInfo";
 
-export const ATTESTANT_DIFF_ANNOUNCEMENT_ID = "diff-toggles";
-export const ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL = "2026-11-30";
-export const ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL = "2027-02-28";
+export const ATTESTANT_DIFF_ANNOUNCEMENT_ID = DIFF_TOGGLES_ANNOUNCEMENT.id;
+export const ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL = automaticTourUntil(DIFF_TOGGLES_ANNOUNCEMENT);
+export const ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL = listedUntil(DIFF_TOGGLES_ANNOUNCEMENT);
 
 /**
  * Introduces/announces the diff toggles to attestants. Render it right after `AttestantDiffMenu`, once the letter

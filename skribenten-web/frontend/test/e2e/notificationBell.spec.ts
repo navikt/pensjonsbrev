@@ -150,6 +150,29 @@ test.describe("varslingsklokke i toppmenyen", () => {
   });
 });
 
+test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjonen i brevbehandler", async ({
+  page,
+}) => {
+  await page.clock.setFixedTime(LAST_DISPLAY_DAY);
+  await setupSakStubs(page);
+  await page.route("**/bff/skribenten-backend/me/userinfo", (route) =>
+    route.fulfill({ json: { navident: "Z990297", name: "F_Z990297 E_Z990297", erAttestant: false } }),
+  );
+  await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => route.fulfill({ json: [] }));
+  await givenAcknowledged(page, []);
+  await page.route("**/bff/skribenten-backend/me/setteNyhetsvarsler", (route) => route.fulfill({ json: [] }));
+  await page.route("**/bff/skribenten-backend/me/setteNyhetsvarsler/*", (route) => route.fulfill({ status: 204 }));
+  await page.goto("/saksnummer/123456/brevbehandler");
+  await expect(page.getByText("Fant ingen brev som er under behandling")).toBeVisible();
+  await expect(dot(page)).toBeVisible();
+
+  await bell(page).click();
+
+  await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^Se dokumentasjon/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
+});
+
 test.describe("menyen med nyttige lenker i toppmenyen", () => {
   test("har lenke til dokumentasjon og veiledning som åpnes i ny fane", async ({ page }) => {
     await setupSakStubs(page);

@@ -10,10 +10,9 @@ import {
   requestAnnouncementReplay,
   useIsAnnouncementAvailable,
 } from "~/components/featureAnnouncement/featureAnnouncementState";
-import { useUserInfo } from "~/hooks/useUserInfo";
 import { formatStringDate } from "~/utils/dateUtils";
 
-import { PRODUCT_ANNOUNCEMENTS, type ProductAnnouncement } from "./productAnnouncements";
+import { listedUntil, PRODUCT_ANNOUNCEMENTS, type ProductAnnouncement } from "./productAnnouncements";
 
 /**
  * Bell in the top bar with product announcements. A red dot marks announcements the user has neither seen in the bell
@@ -21,7 +20,6 @@ import { PRODUCT_ANNOUNCEMENTS, type ProductAnnouncement } from "./productAnnoun
  * where it belongs. They stay in the list until their last day.
  */
 export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { announcements?: ProductAnnouncement[] }) {
-  const user = useUserInfo();
   const [bell, setBell] = useState<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState(false);
   const position = usePositionBelow(open ? bell : null);
@@ -29,17 +27,12 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
   const headingId = useId();
   const markSeen = useMarkAnnouncementSeen();
 
-  const relevant = user
-    ? announcements.filter(
-        (announcement) =>
-          !isAnnouncementExpired(announcement.replayableUntil) && (announcement.isRelevantFor?.(user) ?? true),
-      )
-    : [];
-  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: relevant.length > 0 });
-  const seenQuery = useQuery({ ...getSeenAnnouncements, enabled: relevant.length > 0 });
+  const current = announcements.filter((announcement) => !isAnnouncementExpired(listedUntil(announcement)));
+  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: current.length > 0 });
+  const seenQuery = useQuery({ ...getSeenAnnouncements, enabled: current.length > 0 });
   const unseen =
     acknowledgedQuery.isSuccess && seenQuery.isSuccess
-      ? relevant.filter(
+      ? current.filter(
           (announcement) =>
             !acknowledgedQuery.data.includes(announcement.id) && !seenQuery.data.includes(announcement.id),
         )
@@ -138,7 +131,8 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
             </HStack>
           </Modal.Header>
           <Modal.Body css={{ paddingTop: "var(--ax-space-12)" }}>
-            {relevant.length > 0 ? (
+            {/* Aksel keeps a closed modal in the page, so its content is only rendered while it is open. */}
+            {!open ? null : current.length > 0 ? (
               <VStack
                 as="ul"
                 css={{
@@ -152,7 +146,7 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
                 }}
                 gap="space-16"
               >
-                {relevant.map((announcement) => (
+                {current.map((announcement) => (
                   <AnnouncementItem announcement={announcement} key={announcement.id} onShowMe={showMe} />
                 ))}
               </VStack>

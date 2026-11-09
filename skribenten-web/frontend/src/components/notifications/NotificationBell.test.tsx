@@ -1,24 +1,21 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { addDays, format } from "date-fns";
 import { type ReactNode, StrictMode, useState } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { FeatureAnnouncement } from "~/components/featureAnnouncement/FeatureAnnouncement";
 
 import { NotificationBell } from "./NotificationBell";
-import { type ProductAnnouncement } from "./productAnnouncements";
+import { DIFF_TOGGLES_ANNOUNCEMENT, listedUntil, type ProductAnnouncement } from "./productAnnouncements";
 
-const { useUserInfoMock, fetchAcknowledgedMock, acknowledgeMock, fetchSeenMock, markSeenMock } = vi.hoisted(() => ({
-  useUserInfoMock: vi.fn(),
+const { fetchAcknowledgedMock, acknowledgeMock, fetchSeenMock, markSeenMock } = vi.hoisted(() => ({
   fetchAcknowledgedMock: vi.fn(),
   acknowledgeMock: vi.fn(),
   fetchSeenMock: vi.fn(),
   markSeenMock: vi.fn(),
 }));
 
-vi.mock("~/hooks/useUserInfo", () => ({ useUserInfo: useUserInfoMock }));
 vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
   const original = await importOriginal<typeof import("~/api/skribenten-api-endpoints")>();
   return {
@@ -32,21 +29,11 @@ vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
 
 const NYHET: ProductAnnouncement = {
   id: "test-nyhet",
-  replayableUntil: "2999-12-31",
   publishedAt: "2026-11-10",
   title: "Ny funksjon",
   description: "Beskrivelse av den nye funksjonen.",
   documentationUrl: "https://dokumentasjon.example/ny-funksjon",
 };
-const ATTESTANTNYHET: ProductAnnouncement = {
-  ...NYHET,
-  id: "attestant-nyhet",
-  title: "Kun for attestanter",
-  isRelevantFor: (user) => user.erAttestant,
-};
-
-const givenUser = (erAttestant: boolean) =>
-  useUserInfoMock.mockReturnValue({ navident: "Z990297", name: "F_Z990297 E_Z990297", erAttestant });
 
 const renderWithQueryClient = (ui: ReactNode) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -76,7 +63,7 @@ const TourOnPage = () => {
       <div ref={setTarget}>Målet</div>
       <FeatureAnnouncement
         id={NYHET.id}
-        showUntil={NYHET.replayableUntil}
+        showUntil={listedUntil(NYHET)}
         steps={target ? [{ target, title: "Gjennomgang av funksjonen", content: "Forklaring" }] : []}
         when={target !== null}
       />
@@ -87,11 +74,13 @@ const TourOnPage = () => {
 describe("<NotificationBell />", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    givenUser(false);
     fetchAcknowledgedMock.mockResolvedValue([]);
     acknowledgeMock.mockResolvedValue(undefined);
     fetchSeenMock.mockResolvedValue([]);
     markSeenMock.mockResolvedValue(undefined);
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-11-15T12:00:00"));
+    return () => vi.useRealTimers();
   });
 
   test("viser rød prikk og antall i navnet når brukeren har nyheter som ikke er bekreftet", async () => {
@@ -126,31 +115,16 @@ describe("<NotificationBell />", () => {
     expect(dot()).toBeNull();
   });
 
-  test("viser bare nyheter som er relevante for brukeren", async () => {
+  test("viser nyheten til og med tre måneder etter publisering, men ikke dagen etter", async () => {
     const user = userEvent.setup();
-    renderWithQueryClient(<NotificationBell announcements={[ATTESTANTNYHET]} />);
-    await settle();
-
-    expect(dot()).toBeNull();
+    renderWithQueryClient(<NotificationBell announcements={[{ ...NYHET, publishedAt: "2026-08-15" }]} />);
     await user.click(bell());
-    expect(screen.queryByRole("heading", { name: ATTESTANTNYHET.title })).toBeNull();
-    expect(screen.getByText("Ingen nyheter akkurat nå.")).not.toBeNull();
-    expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
-  });
-
-  test("viser nyheter for attestanter til attestanter", async () => {
-    givenUser(true);
-    const user = userEvent.setup();
-    renderWithQueryClient(<NotificationBell announcements={[ATTESTANTNYHET]} />);
-
-    await waitFor(() => expect(dot()).not.toBeNull());
-    await user.click(bell());
-    expect(screen.getByRole("heading", { name: ATTESTANTNYHET.title })).not.toBeNull();
+    expect(screen.getByRole("heading", { name: NYHET.title })).not.toBeNull();
   });
 
   test("viser ikke nyheter etter siste visningsdag", async () => {
     const user = userEvent.setup();
-    const utloept = { ...NYHET, replayableUntil: format(addDays(new Date(), -1), "yyyy-MM-dd") };
+    const utloept = { ...NYHET, publishedAt: "2026-08-14" };
     renderWithQueryClient(<NotificationBell announcements={[utloept]} />);
     await settle();
 
@@ -248,6 +222,18 @@ describe("<NotificationBell />", () => {
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
     expect(document.activeElement).toBe(bell());
+  });
+
+  test("viser nyheten om endringer i brevet med lenke til dokumentasjonen", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell />);
+    await waitFor(() => expect(dot()).not.toBeNull());
+
+    await user.click(bell());
+
+    expect(screen.getByRole("heading", { name: DIFF_TOGGLES_ANNOUNCEMENT.title })).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Se hvordan" })).toBeNull();
+    expect(screen.getByRole("link", { name: /^Se dokumentasjon/ })).not.toBeNull();
   });
 
   test("viser dato, tittel og beskrivelse", async () => {
