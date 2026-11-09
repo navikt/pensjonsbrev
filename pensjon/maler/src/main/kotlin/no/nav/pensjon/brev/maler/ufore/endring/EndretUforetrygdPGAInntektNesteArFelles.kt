@@ -338,7 +338,7 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                         bokmal { +"Siden du har gradert uføretrygd, har du fortsatt inntekt etter uførhet. " },
                         nynorsk { +"Sidan du har gradert uføretrygd, har du framleis inntekt etter uførleik. " }
                     )
-                }.orShowIf(!data.uforetrygd.erGradert and data.uforetrygd.inntektEtterUforhet.equalTo(0)) {
+                }.orShowIf(data.uforetrygd.inntektEtterUforhet.equalTo(0)) {
                     text(
                         bokmal { +"Siden du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførhet. " },
                         nynorsk { +"Sidan du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførleik. " }
@@ -394,19 +394,31 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 paragraph {
                     ifNotNull(data.uforetrygd.fribelop1GTil04G) { fribelop1GTil04G ->
                         text(
-                            bokmal { +"Fram til " + fribelop1GTil04G.dato04G.format() + " er fribeløpet ditt 1 G. Da øker din uføregrad, og fribeløpet settes ned til 0,4 G. Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                            nynorsk { +"Fram til " + fribelop1GTil04G.dato04G.format() + " er fribeløpet ditt 1 G. Då aukar uføregraden din, og fribeløpet blir sett ned til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                            bokmal { +"Fram til " + fribelop1GTil04G.dato04G.format() + " er fribeløpet ditt 1 G. Da øker din uføregrad, og fribeløpet settes ned til 0,4 G. " },
+                            nynorsk { +"Fram til " + fribelop1GTil04G.dato04G.format() + " er fribeløpet ditt 1 G. Då aukar uføregraden din, og fribeløpet blir sett ned til 0,4 G." }
                         )
+                        showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
+                            text(
+                                bokmal { +"Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
+                                nynorsk { +"Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                            )
+                        }
                     }.orIfNotNull(data.uforetrygd.fribelop04GTil1GTil04G) { fribelop04GTil1GTil04G ->
                         showIf(data.uforetrygd.venteperiodeEtterGradsokning) {
                             text(
-                                bokmal { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                                nynorsk { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                                bokmal { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
+                                nynorsk { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G." }
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                                nynorsk { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                                bokmal { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G." },
+                                nynorsk { +"Fram til " + data.uforetrygd.datoOkningFribelop.format() + " er fribeløpet ditt 0,4 G. " + data.uforetrygd.datoOkningFribelop.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + fribelop04GTil1GTil04G.dato04G.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G." }
+                            )
+                        }
+                        showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
+                            text(
+                                bokmal { +"Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
+                                nynorsk { +"Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
                             )
                         }
                     }.orShow {
@@ -449,29 +461,16 @@ object EndretUforetrygdPGAInntektNesteArFelles {
             }
 
             paragraph {
-                showIf(data.barnetilleggFellesbarn.notNull() or data.barnetilleggSaerkullsbarn.notNull()) {
-                    text(
-                        bokmal {
-                            +"Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
-                                    ". Det gir deg rett til en årlig utbetaling på " + data.totalNettoAr.format() + " i uføretrygd og barnetillegg. "
-                        },
-                        nynorsk {
-                            +"Den årlege inntekta vi vil bruke for deg i berekninga av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
-                                    ". Det gir deg rett til ei årleg utbetaling på " + data.totalNettoAr.format() + " i uføretrygd og barnetillegg. "
-                        }
-                    )
-                }.orShow {
-                    text(
-                        bokmal {
-                            +"Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
-                                    ". Det gir deg rett til en årlig utbetaling på " + data.totalNettoAr.format() + " i uføretrygd. "
-                        },
-                        nynorsk {
-                            +"Den årlege inntekta vi vil bruke for deg i berekninga av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
-                                    ". Det gir deg rett til ei årleg utbetaling på " + data.totalNettoAr.format() + " i uføretrygd. "
-                        }
-                    )
-                }
+                text(
+                    bokmal {
+                        +"Den årlige inntekten vi vil bruke for deg i beregning av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
+                                ". Det gir deg rett til en årlig utbetaling på " + data.totalNettoAr.format() + " i uføretrygd" + ifElse(harBarnetillegg, " og barnetillegg", "") + ". "
+                    },
+                    nynorsk {
+                        +"Den årlege inntekta vi vil bruke for deg i berekninga av uføretrygd er " + data.uforetrygd.inntektBruktIAvkortning.format() +
+                                ". Det gir deg rett til ei årleg utbetaling på " + data.totalNettoAr.format() + " i uføretrygd" + ifElse(harBarnetillegg, " og barnetillegg", "") + ". "
+                    }
+                )
             }
             paragraph {
                 text(
