@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.text
-import kotlin.plus
 
 
 object OversendelsesbrevTilKlageinstansTekst {
@@ -674,22 +673,6 @@ object OversendelsesbrevTilKlageinstansTekst {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
             paragraph {
-                text(
-                    bokmal {
-                        +"Vi viser til klagen av "
-                        +fritekst("dato") + " på vedtak av "
-                        +fritekst("dato") + " der uføretrygden ble redusert mot arbeidsinntekt. "
-                        +"Klagefristen er overholdt."
-                    }
-                )
-            }
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
-
-            includePhrase(ViHarVurdertKlagen)
-            includePhrase(KlagersAnfoersler)
-
-            title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph {
                 text(bokmal {
                     +"Det framgår av folketrygdloven § 12-14 at utbetalingen av uføretrygden skal reduseres dersom inntektsgrensen overskrides. "
                     +"Mottakere av uføretrygd skal i utgangspunktet selv melde fra om pensjonsgivende inntekt som har betydning for størrelsen på uføretrygden."
@@ -702,8 +685,6 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"A-ordningen er en samordnet måte for arbeidsgivere å rapportere opplysninger om inntekt til Nav, Statistisk sentralbyrå og Skatteetaten."
                 })
             }
-
-            includePhrase(KlippInnFraVedtak)
         }
     }
 
@@ -711,23 +692,6 @@ object OversendelsesbrevTilKlageinstansTekst {
     object Etteroppgjoer : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            paragraph {
-                text(bokmal {
-                    +"Vi viser til klagen av "
-                    +fritekst("dato") + " på varsel/vedtak av "
-                    +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
-                    +fritekst("beløp") + " kroner for mye i uføretrygd i "
-                    +fritekst("år") + "."
-                    +"Klagefristen er overholdt."
-                })
-            }
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt etter kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
-            paragraph { text(bokmal { +fritekst("Husk å bruke ny hjemmel § 12-14 EO - arbeidsforsøk, der det er aktuelt!") }) }
-
-            includePhrase(ViHarVurdertKlagen)
-            includePhrase(KlagersAnfoersler)
-
-            title1 { text(bokmal { +"Vurdering av klagen" }) }
             paragraph {
                 text(bokmal {
                     +"Det skal foretas et etteroppgjør når den uføretrygdede i løpet av et kalenderår har fått utbetalt for lite eller for mye uføretrygd. "
@@ -749,10 +713,111 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Vi har vurdert om klager kommer inn under bestemmelsen for arbeidsforsøk, men vi kan ikke se at dette er mulig."
                 })
             }
-
-            includePhrase(KlippInnFraVedtak)
         }
     }
+
+    //§ 12-14 Reduksjon på grunn av inntekt
+    object EtteropgjoerBarnetillegg : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            paragraph {
+                text(bokmal {
+                    +"Det skal foretas et etteroppgjør når den uføretrygdede i løpet av et kalenderår har fått utbetalt for lite eller for mye uføretrygd og barnetillegg. "
+                    +"Dette gjøres etter at personinntekten er skattefastsatt."
+                })
+            }
+            paragraph {
+                text(bokmal {
+                    +"Det er personinntekten til klager og annen forelder etter skattelovens § 12-2 som har betydning for størrelsen på barnetillegget. "
+                    +"Utbetalt barnetillegg i kalenderåret sammenlignes med ny fastsatt årlig personinntekt basert på den skattefastsatte inntekten."
+                })
+            }
+        }
+    }
+
+
+    //§ 12-14 Reduksjon på grunn av inntekt
+    data class ReduksjonPaaGrunnAvInntekt(
+        val inntekt: Expression<ReduksjonPaaGrunnAvInntektValg?>
+    ) : RedigerbarOutlinePhrase<LangBokmal>() {
+        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
+
+            ifNotNull(inntekt) {
+
+                paragraph {
+                    text(bokmal {
+                        +"Vi viser til klagen av "
+                        +fritekst("dato") + " på "
+                    })
+                }
+
+                showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Automatisk)) {
+                    paragraph {
+                        text(bokmal {
+                            +"vedtak av "
+                            +fritekst("dato") + " der uføretrygden ble redusert mot arbeidsinntekt. "
+                            +"Klagefristen er overholdt."
+                        })
+                    }
+                    paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
+
+                }.orShow {
+                    paragraph {
+                        text(bokmal {
+                            +"Vi viser til klagen av "
+                            +fritekst("dato") + " på "
+                            +fritekst("varsel/vedtak") + " av "
+                            +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
+                            +fritekst("beløp") + " kroner for mye i "
+                        })
+                    }
+                }
+                showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Etteroppgjoer)) {
+                    paragraph {
+                        text(bokmal {
+                            +"uføretrygd i "
+                            +fritekst("år") + ". Klagefristen er overholdt."
+                        })
+                    }
+                    paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-14 og 12-16, samt etter kapittel 3 og 4 i forskrift om uføretrygd fra folketrygden." }) }
+                    paragraph { text(bokmal { +fritekst("Husk å bruke ny hjemmel § 12-14 EO - arbeidsforsøk, der det er aktuelt!") }) }
+
+                }.orShowIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.EtteroppgjoerBarnetillegg)) {
+                    paragraph {
+                        text(bokmal {
+                            +"barnetillegg i "
+                            +fritekst("år") + ". Klagefristen er overholdt."
+                        })
+                    }
+                    paragraph {
+                        text(bokmal {
+                            +"Klagen vurderes etter folketrygdloven §§ 12-14 og 12-16, samt etter kapittel 3 og 4 i forskrift om uføretrygd fra folketrygden."
+                        })
+                    }
+                }
+
+                includePhrase(ViHarVurdertKlagen)
+                includePhrase(KlagersAnfoersler)
+
+                title1 { text(bokmal { +"Vurdering av klagen" }) }
+                showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Automatisk)) {
+                    includePhrase(AutomatiskInntektsreduksjon)
+                }.orShowIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Etteroppgjoer)) {
+                    includePhrase(Etteroppgjoer)
+                }.orShowIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.EtteroppgjoerBarnetillegg)) {
+                    includePhrase(EtteropgjoerBarnetillegg)
+                }
+
+                includePhrase(KlippInnFraVedtak)
+            }
+        }
+
+        enum class ReduksjonPaaGrunnAvInntektValg(override val displayText: String, override val rekkefoelge: Int) :
+            SaksbehandlerValgEnum {
+            Automatisk("Automatisk inntektsreduksjon", 1), Etteroppgjoer("Etteroppgjør", 2), EtteroppgjoerBarnetillegg("Etteroppgjør barnetillegg", 3)
+        }
+    }
+
 
     //§ 12-14 Reduksjon på grunn av inntekt
     object EtteroppgjoerBarnetillegg : RedigerbarOutlinePhrase<LangBokmal>() {
