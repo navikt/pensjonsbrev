@@ -76,7 +76,6 @@ for (const landkode of ["NOR", "GBR"]) {
           brevtittel: "E 001 - Anmodning om opplysninger",
           brevsystem: "exstream",
           dokumentkategori: "E_BLANKETT",
-          enhetsId: "4815",
           landkode,
         },
       },

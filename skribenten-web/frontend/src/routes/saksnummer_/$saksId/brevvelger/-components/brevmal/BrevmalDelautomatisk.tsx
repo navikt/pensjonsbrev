@@ -64,7 +64,6 @@ export default function BrevmalDelautomatisk({
         brevtittel: letterTemplate.name,
         brevsystem: "delautomatisk",
         dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
-        enhetsId: variables.enhetsId,
       });
       addDelautomatiskBrevResult({
         status: "success",
