@@ -4146,6 +4146,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
+            newFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
@@ -4161,6 +4162,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
+            newFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
@@ -4176,6 +4178,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
+            newFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
@@ -4191,6 +4194,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
+            newFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**

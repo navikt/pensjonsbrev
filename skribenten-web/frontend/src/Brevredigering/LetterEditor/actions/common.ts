@@ -710,6 +710,7 @@ export function newTitle(args: {
     deletedContent: args.deletedContent ?? [],
     content: args.content,
     missingFromTemplate: false,
+    newFromTemplate: false,
   };
 }
 
@@ -726,6 +727,7 @@ export function newParagraph(args: {
     editable: true,
     deletedContent: args.deletedContent ?? [],
     missingFromTemplate: false,
+    newFromTemplate: false,
     content: args.content,
   };
 }
