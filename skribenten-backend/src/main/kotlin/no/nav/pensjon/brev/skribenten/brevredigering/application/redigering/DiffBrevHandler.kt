@@ -63,6 +63,7 @@ class DiffBrevHandler(
 
             when (val redigertBrev = request.redigertBrev) {
                 is VersjonertBrev.V1 -> success(Resultat.V1(diffV1(rendretBrev.asV1(), redigertBrev.brev, request.split)))
+                // TODO: Diff for V2 letters is implemented in a later stage
                 is VersjonertBrev.V2 -> throw FeilMarkupVersjonException(MarkupVersjon.V1, MarkupVersjon.V2)
             }
         }

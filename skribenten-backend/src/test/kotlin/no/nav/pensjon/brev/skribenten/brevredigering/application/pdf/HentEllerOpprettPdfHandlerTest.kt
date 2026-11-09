@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.pdf
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
@@ -201,6 +202,26 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.rendretBrevErEndret).isFalse()
         }
         assertThat(brevbakerService.renderPdfKall.last().sakspart.dokumentDato).isEqualTo(penService.pesysBrevdata!!.felles.dokumentDato)
+    }
+
+    @Test
+    suspend fun `hentPdf rendrer v2-brev med v2 og gjeldende dokumentdato`() {
+        stageMarkupV2()
+        val brev = opprettBrev(markupVersjon = MarkupVersjon.V2).resultOrFail()
+        val renderPdfKall = brevbakerService.renderPdfKall.size
+        penService.pesysBrevdata = brevdataResponseData.copy(
+            felles = brevdataResponseData.felles.copy(
+                dokumentDato = brevdataResponseData.felles.dokumentDato.plusDays(2),
+                saksnummer = sak1.saksId.toString(),
+            )
+        )
+
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess {
+            assertThat(it.document.pdf).isEqualTo(stagetPDF)
+            assertThat(it.document.redigertBrevHash).isEqualTo(brev.redigertBrevHash)
+        }
+        assertThat(brevbakerService.renderPdfV2Kall.last().saksinformasjon.dokumentDato).isEqualTo(penService.pesysBrevdata!!.felles.dokumentDato)
+        assertThat(brevbakerService.renderPdfKall).hasSize(renderPdfKall)
     }
 
     @Test

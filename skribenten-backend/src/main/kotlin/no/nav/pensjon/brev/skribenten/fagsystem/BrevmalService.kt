@@ -122,6 +122,7 @@ class BrevmalService(
                 vedleggId = vedleggId,
             )?.let { VersjonertVedleggMarkup.V1(it) }
 
+            // TODO: Editable attachments for V2 letters are implemented in a later stage
             MarkupVersjon.V2 -> throw FeilMarkupVersjonException(MarkupVersjon.V1, brev.markupVersjon)
         }
 
