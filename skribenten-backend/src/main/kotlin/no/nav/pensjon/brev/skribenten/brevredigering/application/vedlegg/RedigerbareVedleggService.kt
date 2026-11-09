@@ -63,7 +63,7 @@ class RedigerbareVedleggService(
         val foersteLagring = brev.hentRedigertVedlegg(vedleggId) == null
         brev.settRedigertVedlegg(vedleggId, nyttVedlegg)
         if (foersteLagring || malVedlegg.toEdit() == nyttVedlegg) {
-            brev.settHashForRedigertVedlegg(vedleggId, malVedlegg)
+            brev.settBrevmalForRedigertVedlegg(vedleggId, malVedlegg)
         }
 
         return success(nyttVedlegg)
