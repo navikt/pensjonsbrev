@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Paragraf.Oversittetklagefrist
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst
+import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.UngUfoer
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Yrkesskade.Avslag
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
@@ -49,6 +50,9 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
 
         val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
         val avslag = saksbehandlervalg("avslag", "Hvis § 12-17 Yrkesskade, velg:").enum<Avslag>()
+        val fastsettelseInntekt = saksbehandlervalg("fastsettelseInntekt", "Velg om inntekt er fastsatt før eller etter uførhet:").enum<OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU.FastsettelseInntektValg>()
+        val ufoertidspunkt = saksbehandlervalg("ufoertidspunkt", "Velg uføretidspunkt:").enum<UngUfoer.Ufoertidspunkt>()
+
 
         title { text(bokmal { +"Oversendelse til $NAV_KLAGEINSTANS - Uføretrygd" }) }
 
@@ -120,10 +124,8 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.KombinasjonNedsattInntektsevne)
             }.orShowIf(paragraf.isOneOf(Paragraf.Ufoeretidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Ufoeretidspunkt)
-            }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseIFU)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFU)
-            }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseIEU)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIEU)
+            }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseAvInntekt)) {
+                includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU(fastsettelseInntekt))
             }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseUfoeregrad)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseUfoeregrad)
             }.orShowIf(paragraf.isOneOf(Paragraf.BeregningAvUfoeretrygd)) {
@@ -131,7 +133,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             }.orShowIf(paragraf.isOneOf(Paragraf.Trygdetid)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Trygdetid)
             }.orShowIf(paragraf.isOneOf(Paragraf.Ungufoer)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.UngUfoer)
+                includePhrase(UngUfoer(ufoertidspunkt))
             }.orShowIf(paragraf.isOneOf(Paragraf.AutomatiskInntektsreduksjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.AutomatiskInntektsreduksjon)
             }.orShowIf(paragraf.isOneOf(Paragraf.Etteropgjoer)) {
@@ -167,23 +169,22 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             NedsattInnteksevne("§ 12-7 Nedsatt innteksevne", 6),
             KombinasjonNedsattInntektsevne("§ 12-7 Kombinasjon nedsatt inntektsevne", 7),
             Ufoeretidspunkt("§ 12-8 Uføretidspunkt", 8),
-            FastsettelseIFU("§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU", 9),
-            FastsettelseIEU("§ 12-9 Fastsettelse av Inntekt Etter Uførhet IEU", 10),
-            FastsettelseUfoeregrad("§ 12-10 Fastsettelse av Uføregrad", 11),
-            BeregningAvUfoeretrygd("§ 12-11 Beregning av uføretrygd", 12),
-            Trygdetid("§ 12-12 Trygdetid", 13),
-            Ungufoer("§ 12-13 Ung ufør", 14),
-            AutomatiskInntektsreduksjon("§ 12-14 Reduksjon på grunn av inntekt - automatisk", 15),
-            Etteropgjoer("§ 12-14 Reduksjon på grunn av inntekt - etteropgjør", 16),
-            EtteroppgjoerBarnetillegg("§ 12-14 Reduksjon på grunn av inntekt - etteroppgjør barnetillegg", 17),
-            Barnetillegg("§ 12-15 Barnetillegg", 18),
-            ReduksjonAvBarnetillegg("§ 12-16 Reduksjon av barnetillegg", 19),
-            Yrkesskade("§ 12-17 Yrkesskade", 20),
-            Oppholdsinstitusjon("§ 12-19 Opphold i institusjon", 21),
-            Straffegjennomfoering("§ 12-20 Straffegjennomføring", 22),
-            Virkningstidspunkt("§ 22-12/22-13 Virkningstidspunkt", 23),
-            Tilbakekreving("§ 22-15 Tilbakekreving", 24),
-            EosArtikkel57("EØS-trygdeforordningen artikkel 57 Trygdetid eller botid under ett år", 25),
+            FastsettelseAvInntekt("§ 12-9 Fastsettelse av Inntekt", 9),
+            FastsettelseUfoeregrad("§ 12-10 Fastsettelse av Uføregrad", 10),
+            BeregningAvUfoeretrygd("§ 12-11 Beregning av uføretrygd", 11),
+            Trygdetid("§ 12-12 Trygdetid", 12),
+            Ungufoer("§ 12-13 Ung ufør", 13),
+            AutomatiskInntektsreduksjon("§ 12-14 Reduksjon på grunn av inntekt - automatisk", 14),
+            Etteropgjoer("§ 12-14 Reduksjon på grunn av inntekt - etteropgjør", 15),
+            EtteroppgjoerBarnetillegg("§ 12-14 Reduksjon på grunn av inntekt - etteroppgjør barnetillegg", 16),
+            Barnetillegg("§ 12-15 Barnetillegg", 17),
+            ReduksjonAvBarnetillegg("§ 12-16 Reduksjon av barnetillegg", 18),
+            Yrkesskade("§ 12-17 Yrkesskade", 19),
+            Oppholdsinstitusjon("§ 12-19 Opphold i institusjon", 20),
+            Straffegjennomfoering("§ 12-20 Straffegjennomføring", 21),
+            Virkningstidspunkt("§ 22-12/22-13 Virkningstidspunkt", 22),
+            Tilbakekreving("§ 22-15 Tilbakekreving", 23),
+            EosArtikkel57("EØS-trygdeforordningen artikkel 57 Trygdetid eller botid under ett år", 24),
     }
 }
 

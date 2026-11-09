@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.maler.klagebrev.tekstNAY
 
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTDto.ufoeretrygdGjeldende.ufoeregradSelector
+import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU.FastsettelseIFUIEUValg.*
+import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU.FastsettelseInntektValg.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
@@ -8,6 +11,7 @@ import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.text
+import kotlin.plus
 
 
 object OversendelsesbrevTilKlageinstansTekst {
@@ -394,28 +398,58 @@ object OversendelsesbrevTilKlageinstansTekst {
         }
     }
 
-    //§ 12-9 Fastsettelse av Inntekt Før Uførhet IFU
-    object FastsettelseIFU : RedigerbarOutlinePhrase<LangBokmal>() {
+    //§ 12-9 Fastsettelse av Inntekt Før IFU/Etter Uførhet IEU
+    data class FastsettelseIFUIEU(
+        val fastsettelseInntekt: Expression<FastsettelseInntektValg?>
+    ) : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
-            includePhrase(InnvilgetUfoeretrygd)
+            ifNotNull(fastsettelseInntekt) {
 
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-9 – fastsettelse av inntekt før uførhet." }) }
+                includePhrase(InnvilgetUfoeretrygd)
 
-            includePhrase(ViHarVurdertKlagen)
-            includePhrase(KlagersAnfoersler)
+                paragraph {
+                    text(bokmal {
+                        +"Klagen vurderes etter folketrygdloven § 12-9 – fastsettelse av inntekt "
+                    })
+                    showIf(fastsettelseInntekt.isOneOf(IFU)) {
+                        text(bokmal { +"før uførehet." })
+                    }.orShow {
+                        text(bokmal { +"etter uførehet." })
+                    }
+                }
 
-            title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph {
-                text(bokmal {
-                    +"Inntekt før uførhet skal være et uttrykk for personens normale inntektssituasjon før uføretidspunktet. "
-                    +"Hva som skal anses som normal årsinntekt må vurderes konkret i hvert tilfelle. "
-                    +"Utgangspunktet er at inntekt før uførhet skal fastsettes til det vedkommende hadde i inntekt umiddelbart før uføretidspunktet. "
-                    +"Dette kan være inntekten på uføretidspunktet eller året før."
-                })
+                includePhrase(ViHarVurdertKlagen)
+                includePhrase(KlagersAnfoersler)
+
+                title1 { text(bokmal { +"Vurdering av klagen" }) }
+                showIf(fastsettelseInntekt.isOneOf(IFU)) {
+                    paragraph {
+                        text(bokmal {
+                            +"Inntekt før uførhet skal være et uttrykk for personens normale inntektssituasjon før uføretidspunktet. "
+                            +"Hva som skal anses som normal årsinntekt må vurderes konkret i hvert tilfelle. "
+                            +"Utgangspunktet er at inntekt før uførhet skal fastsettes til det vedkommende hadde i inntekt umiddelbart før uføretidspunktet. "
+                            +"Dette kan være inntekten på uføretidspunktet eller året før."
+                        })
+                    }
+                }.orShow {
+                    paragraph {
+                        text(bokmal {
+                            +"Inntekt etter uførhet skal fastsettes til den inntekten som personen forutsetter å kunne skaffe seg ved å utnytte restinntektsevnen. "
+                            +"Utgangspunktet for fastsettelsen av inntekt etter uførhet er personens fremtidige pensjonsgivende inntekt. "
+                            +"Hvis vedkommende har inntektsmuligheter som ikke utnyttes skal disse medregnes. "
+                            +"Inntekten etter uførhet kan derfor settes høyere enn faktisk pensjonsgivende inntekt."
+                        })
+                    }
+                }
+
+                includePhrase(KlippInnFraVedtak)
             }
+        }
 
-            includePhrase(KlippInnFraVedtak)
+        enum class FastsettelseInntektValg(override val displayText: String, override val rekkefoelge: Int) :
+            SaksbehandlerValgEnum {
+            IFU("Inntekt Før Uførehet (IFU)", 1), IEU("Inntekt Etter Uførhet (IEU)", 2)
         }
     }
 
@@ -557,7 +591,9 @@ object OversendelsesbrevTilKlageinstansTekst {
     }
 
     //§ 12-13 Ung ufør
-    object UngUfoer : RedigerbarOutlinePhrase<LangBokmal>() {
+    data class UngUfoer(
+        val ufoertidspunkt: Expression<Ufoertidspunkt?>
+    ) : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
 
             paragraph {
@@ -584,48 +620,56 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
             paragraph { text(bokmal { +"Dette går fram av folketrygdloven § 12-13 tredje ledd. " }) }
 
-            title1 { text(bokmal { +"Uføretidspunkt før fylte 26 år" }) }
-            paragraph {
-                text(bokmal {
-                    +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
-                    +fritekst("dato") + ". Fra dette tidspunktet er det vurdert at klagers inntektsevne er varig nedsatt med minst 50 prosent grunnet sykdom. "
-                    +"Uføretidspunktet er fastsatt til før fylte 26 år, forutsetningen for å vurdere om klager har rettigheter som ung ufør er altså oppfylt."
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"Klager fylte 26 år den "
-                    +fritekst("dato") + ", dokumentasjon som er tidsnær til tidspunktet klager fylte 26 år vil være avgjørende i vurderingen av hvorvidt klagers helseplager kvalifiserer til rettigheter som ung ufør."
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"I nyere rettspraksis fra Høyesterett er det lagt til grunn at det skal tas utgangspunkt i den medisinske lidelsen og dens alvorlighet. "
-                    +"Det faktiske funksjonsnivået som selvstendig moment får bare betydning der det er noe tvil om den medisinske lidelsen i seg selv er alvorlig nok. "
-                    +"Da kan et ekstraordinært lavt fungeringsnivå likevel tilsi at vilkåret er oppfylt."
-                })
-            }
-            paragraph {
-                text(bokmal {
-                    +"I retningslinjene til folketrygdloven § 12-13 er det angitt en liste over diagnoser som kan anses som alvorlige. "
-                    +"Selv om denne listen ikke er uttømmende gir den klare holdepunkter for hva som kan anses som alvorlig sykdom."
-                })
-            }
+            ifNotNull(ufoertidspunkt) {
+                showIf(ufoertidspunkt.isOneOf(Ufoertidspunkt.Foer26Aar)) {
+                    paragraph {
+                        text(bokmal {
+                            +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
+                            +fritekst("dato") + ". Fra dette tidspunktet er det vurdert at klagers inntektsevne er varig nedsatt med minst 50 prosent grunnet sykdom. "
+                            +"Uføretidspunktet er fastsatt til før fylte 26 år, forutsetningen for å vurdere om klager har rettigheter som ung ufør er altså oppfylt."
+                        })
+                    }
+                    paragraph {
+                        text(bokmal {
+                            +"Klager fylte 26 år den "
+                            +fritekst("dato") + ", dokumentasjon som er tidsnær til tidspunktet klager fylte 26 år vil være avgjørende i vurderingen av hvorvidt klagers helseplager kvalifiserer til rettigheter som ung ufør."
+                        })
+                    }
+                    paragraph {
+                        text(bokmal {
+                            +"I nyere rettspraksis fra Høyesterett er det lagt til grunn at det skal tas utgangspunkt i den medisinske lidelsen og dens alvorlighet. "
+                            +"Det faktiske funksjonsnivået som selvstendig moment får bare betydning der det er noe tvil om den medisinske lidelsen i seg selv er alvorlig nok. "
+                            +"Da kan et ekstraordinært lavt fungeringsnivå likevel tilsi at vilkåret er oppfylt."
+                        })
+                    }
+                    paragraph {
+                        text(bokmal {
+                            +"I retningslinjene til folketrygdloven § 12-13 er det angitt en liste over diagnoser som kan anses som alvorlige. "
+                            +"Selv om denne listen ikke er uttømmende gir den klare holdepunkter for hva som kan anses som alvorlig sykdom."
+                        })
+                    }
+                }.orShow {
+                    paragraph {
+                        text(bokmal {
+                            +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
+                            +fritekst("dato") + ". Uføretidspunktet skal fastsettes til det tidspunktet da inntektsevnen ble varig nedsatt med minst 50 prosent. "
+                            +"Det er altså ikke avgjørende når man er diagnostiert med sykdom. "
+                            +"For at klager skal kunne vurderes mot rettigheter som ung ufør etter folketrygdlovens § 12-13 tredje ledd må uføretidspunktet være satt til før "
+                            +fritekst("dato") + " da klager fylte 26 år."
+                        })
+                    }
+                }
 
-            title1 { text(bokmal { +"Uføretidspunkt etter fylte 26 år" }) }
-            paragraph {
-                text(bokmal {
-                    +"I det påklagde vedtaket er uføretidspunktet fastsatt til "
-                    +fritekst("dato") + ". Uføretidspunktet skal fastsettes til det tidspunktet da inntektsevnen ble varig nedsatt med minst 50 prosent. "
-                    +"Det er altså ikke avgjørende når man er diagnostiert med sykdom. "
-                    +"For at klager skal kunne vurderes mot rettigheter som ung ufør etter folketrygdlovens § 12-13 tredje ledd må uføretidspunktet være satt til før "
-                    +fritekst("dato") + " da klager fylte 26 år."
-                })
+                includePhrase(KlippInnFraVedtak)
             }
+        }
 
-            includePhrase(KlippInnFraVedtak)
+        enum class Ufoertidspunkt(override val displayText: String, override val rekkefoelge: Int) :
+            SaksbehandlerValgEnum {
+            Foer26Aar("Ufør før 26 år", 1), Etter26Aar("Ufør etter 26 år", 2)
         }
     }
+
 
     //§ 12-14 Reduksjon på grunn av inntekt
     object AutomatiskInntektsreduksjon : RedigerbarOutlinePhrase<LangBokmal>() {
@@ -747,6 +791,13 @@ object OversendelsesbrevTilKlageinstansTekst {
             }
 
             includePhrase(KlippInnFraVedtak)
+
+            paragraph {
+                text(bokmal {
+                    +"For mye utbetalt barnetillegg i etteroppgjøret skal innkreves uten hensyn til skyld, jf. § 12-14, fjerde ledd. "
+                    +"Det er heller ikke anledning til å foreta en rimelighetsvurdering av tilbakebetalingskravet."
+                })
+            }
         }
     }
 
@@ -760,7 +811,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                         +"Vi viser til klagen av "
                         +fritekst("dato") + " på vedtak av "
                         +fritekst("dato") + " der klager fikk avslag på søknad om barnetillegg. "
-                        +fritekst("dato") + ". Klagefristen er overholdt."
+                        +"Klagefristen er overholdt."
                     }
                 )
             }
@@ -839,7 +890,6 @@ object OversendelsesbrevTilKlageinstansTekst {
 
             ifNotNull(avslag) {
                 showIf(avslag.isOneOf(Avslag.Avslag)) {
-                    title1 { text(bokmal { +"Avslag" }) }
                     paragraph {
                         text(bokmal {
                             +"I henhold til retningslinjene til folketrygdloven § 12-17 må det foretas en vurdering av om det mest sannsynlig er en årsakssammenheng mellom den godkjente yrkesskaden/ yrkessykdommen og hele eller noen deler av uførheten. "
@@ -847,7 +897,6 @@ object OversendelsesbrevTilKlageinstansTekst {
                         })
                     }
                 }.orShow {
-                    title1 { text(bokmal { +"Delvis innvilget" }) }
                     paragraph {
                         text(bokmal {
                             +"Når uførheten delvis skyldes godkjent yrkesskade/yrkessykdom og delvis skyldes annen sykdom fastsettes en særskilt uføregrad for den delen av uførheten som skyldes yrkesskade/yrkessykdom. "
@@ -941,7 +990,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                 text(bokmal {
                     +"Vi viser til klagen av "
                     +fritekst("dato") + " på vedtak av "
-                    +fritekst("dato") + " der klager ble innvilget uføretrygd fra . "
+                    +fritekst("dato") + " der klager ble innvilget uføretrygd fra "
                     +fritekst("dato") + ". Klagen gjelder virkningstidspunktet. "
                     +"Klagefristen er overholdt."
                 })
@@ -979,7 +1028,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Klagefristen er overholdt."
                 })
             }
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 22-15." }) }
+            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 22-15 - tilbakekreving av feilaktig utbetaling." }) }
 
             includePhrase(ViHarVurdertKlagen)
             includePhrase(KlagersAnfoersler)
@@ -991,14 +1040,15 @@ object OversendelsesbrevTilKlageinstansTekst {
                     +"Det samme gjelder dersom vedkommende har forårsaket utbetalingen ved forsettlig eller uaktsomt å gi feilaktige eller mangelfulle opplysninger."
                 })
             }
+
+            includePhrase(KlippInnFraVedtak)
+
             paragraph {
                 text(bokmal {
                     +"Vi vurderer at vilkårene er oppfylt for å kreve tilbake feilaktig utbetalt uføretrygd etter bestemmelsen i folketrygdloven § 22-15, første ledd. "
                     +"Vi har også vurdert om det er grunnlag for å redusere vårt krav om tilbakebetaling etter folketrygdloven § 22-15 fjerde ledd, men ikke funnet at det foreligger særlige forhold (ut over det som allerede er lagt vekt på i vedtaket)."
                 })
             }
-
-            includePhrase(KlippInnFraVedtak)
         }
     }
 

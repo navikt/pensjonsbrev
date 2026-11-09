@@ -41,7 +41,10 @@ object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerb
         )
     ) {
 
+        val avslag = saksbehandlervalg("avslag", "Velg om vedtaket er avslag eller delvis innvilget:").enum<OversendelsesbrevTilKlageinstansTekst.Yrkesskade.Avslag>()
+        val fastsettelseInntekt = saksbehandlervalg("fastsettelseInntekt", "Velg om inntekt er fastsatt før eller etter uførhet:").enum<OversendelsesbrevTilKlageinstansTekst.FastsettelseInntektValg>()
         val forskrift = saksbehandlervalg("forskrift", "Velg forskriften:").enum<Forskriften>()
+        val ufoertidspunkt = saksbehandlervalg("ufoertidspunkt", "Velg uføretidspunkt:").enum<OversendelsesbrevTilKlageinstansTekst.UngUfoer.Ufoertidspunkt>()
 
 
         title { text(bokmal { +"Oversendelsesbrev til Nav Klageinstans - Uføretrygd" }) }
@@ -67,7 +70,7 @@ object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerb
             }.orShowIf(forskrift.isOneOf(Ufoeretidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Ufoeretidspunkt)
             }.orShowIf(forskrift.isOneOf(FastsettelseIFU)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFU)
+                includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU(fastsettelseInntekt))
             }.orShowIf(forskrift.isOneOf(FastsettelseIEU)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIEU)
             }.orShowIf(forskrift.isOneOf(FastsettelseUfoeregrad)) {
@@ -77,7 +80,7 @@ object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerb
             }.orShowIf(forskrift.isOneOf(Trygdetid)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Trygdetid)
             }.orShowIf(forskrift.isOneOf(Ungufoer)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.UngUfoer)
+                includePhrase(OversendelsesbrevTilKlageinstansTekst.UngUfoer(ufoertidspunkt))
             }.orShowIf(forskrift.isOneOf(AutomatiskInntektsreduksjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.AutomatiskInntektsreduksjon)
             }.orShowIf(forskrift.isOneOf(Etteropgjoer)) {
@@ -89,7 +92,7 @@ object OversendelseOgFoelgebrevKlageinstansUT : RedigerbarTemplate<EmptyRedigerb
             }.orShowIf(forskrift.isOneOf(ReduksjonAvBarnetillegg)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.ReduksjonAvBarnetillegg)
             }.orShowIf(forskrift.isOneOf(Yrkesskade)) {
-              //  includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade)
+                includePhrase(OversendelsesbrevTilKlageinstansTekst.Yrkesskade(avslag))
             }.orShowIf(forskrift.isOneOf(Oppholdsinstitusjon)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.OppholdIinstitusjon)
             }.orShowIf(forskrift.isOneOf(Straffegjennomfoering)) {
