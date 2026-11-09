@@ -38,7 +38,7 @@ import {
 } from "~/api/templateDocumentationTypes";
 import { trimClassName } from "~/components/DataClasses";
 import { type HighlightParts } from "~/search/components/highlight";
-import { type DocumentSource, matchDocument } from "~/templateSearch/documentMatch";
+import { matchDocument } from "~/templateSearch/documentMatch";
 import {
   HighlightedLiteral,
   SearchBlock,
@@ -56,7 +56,7 @@ import {
  * frittstående i enhetstester); da faller vi tilbake på `isPrimitiveTypeByName`.
  */
 const KnownDataClassesContext = createContext<Set<string> | undefined>(undefined);
-const LiteralHighlightPartsContext = createContext<ReadonlyMap<DocumentSource, HighlightParts> | undefined>(undefined);
+const LiteralHighlightPartsContext = createContext<ReadonlyMap<TextLiteral, HighlightParts> | undefined>(undefined);
 
 export function KnownDataClassesProvider({
   templateModelSpecification,
@@ -95,17 +95,10 @@ function hasConditionalRows(rows: ContentOrControlStructure<Row>[]): boolean {
  */
 function TableRowCells({ row, gridRow, header = false }: { row: Row; gridRow: number; header?: boolean }) {
   const Cell = header ? "b" : "span";
-  // A separator-only match has no visible mark, so the row cells carry the scroll target.
-  const fullMatch = useContext(LiteralHighlightPartsContext)?.get(row)?.fullMatch || undefined;
   return (
     <Fragment>
       {row.cells.map((cell, index) => (
-        <Cell
-          className="cell"
-          data-search-full-match={fullMatch}
-          key={index}
-          style={{ gridColumn: index + 1, gridRow }}
-        >
+        <Cell className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
           <CocsList items={cell.text} />
         </Cell>
       ))}

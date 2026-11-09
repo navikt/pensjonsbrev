@@ -2,7 +2,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { LineContent } from "~/search/components/highlight";
+import { LineContent, truncateLine } from "~/search/components/highlight";
 import { type Line } from "~/search/textSearch";
 
 function textLine(value: string): Line {
@@ -61,6 +61,36 @@ describe("LineContent highlighting", () => {
     const html = renderToStaticMarkup(<LineContent line={line} needle="fornavn blue" />);
     expect(marks(html)).toEqual(["blue"]);
     expect(html).toContain("fornavn");
+  });
+
+  describe("table-cell boundaries", () => {
+    const row: Line = [
+      { type: "text", value: "barnetillegg" },
+      { type: "cell" },
+      { type: "text", value: "uføretrygd" },
+    ];
+
+    it("shows an unselectable divider that is never matched", () => {
+      const html = render(row, "|");
+      expect(html.replace(/<style[^>]*>.*?<\/style>/g, "")).toMatch(
+        /barnetillegg <span aria-hidden="true"[^>]*>\|<\/span> uføretrygd/,
+      );
+      expect(marks(html)).toEqual([]);
+      expect(marks(renderExact(row, "|"))).toEqual([]);
+    });
+
+    it("combines terms across cells but stops exact phrases at the boundary", () => {
+      const fuzzy = render(row, "barnetillegg uføretrygd");
+      expect([...fuzzy.matchAll(/<mark([^>]*)>/g)].map(([, attributes]) => attributes)).toEqual([
+        expect.stringContaining("data-search-full-match"),
+        expect.stringContaining("data-search-full-match"),
+      ]);
+      expect(marks(renderExact(row, "barnetillegg uføretrygd"))).toEqual([]);
+    });
+
+    it("counts the divider when truncating", () => {
+      expect(truncateLine(row, 16)).toEqual([row[0], row[1], { type: "text", value: "u …" }]);
+    });
   });
 
   it("renders a term plainly when it matches nothing in this text", () => {

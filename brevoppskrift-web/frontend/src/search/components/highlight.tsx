@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Fragment, type ReactNode } from "react";
 
 import { type HighlightParts, type HighlightRange, matchTextFlow, type TextFlow } from "~/search/matchTextFlow";
-import { type Line } from "~/search/textSearch";
+import { type Line, lineFlow } from "~/search/textSearch";
 
 export type { HighlightParts, HighlightRange } from "~/search/matchTextFlow";
 
@@ -43,6 +43,25 @@ function VariableChip({ label }: { label: string }) {
       {label}
       <span aria-hidden>⟩</span>
     </span>
+  );
+}
+
+// Spaces stay selectable, so copying a snippet keeps cell contents apart without the divider.
+const CELL_DIVIDER = " | ";
+function CellDivider() {
+  return (
+    <>
+      {" "}
+      <span
+        aria-hidden
+        css={css`
+          color: var(--ax-text-subtle);
+          user-select: none;
+        `}
+      >
+        |
+      </span>{" "}
+    </>
   );
 }
 
@@ -114,44 +133,22 @@ export function HighlightText({
   return <>{nodes}</>;
 }
 
-/** Renders a line of segments (text + variable chips), with optional needle
- *  highlighting. `exact` mirrors the search mode: the needle is highlighted as
- *  one continuous phrase rather than term by term. */
+/** Renders a line of segments (text, variable chips and table-cell dividers),
+ *  with optional needle highlighting. `exact` mirrors the search mode: the
+ *  needle is highlighted as one continuous phrase rather than term by term. */
 export function LineContent({ line, needle, exact }: { line: Line; needle?: string; exact?: boolean }) {
-  const parts = new Map<number, HighlightParts>();
-  if (needle) {
-    let start = 0;
-    while (start < line.length) {
-      if (line[start]?.type === "var") {
-        start++;
-        continue;
-      }
-      const indexes: number[] = [];
-      while (start < line.length && line[start]?.type === "text") {
-        indexes.push(start);
-        start++;
-      }
-      const highlighted = highlightParts(
-        indexes.map((index) => (line[index]?.type === "text" ? line[index].value : "")),
-        needle,
-        exact,
-      );
-      indexes.forEach((index, i) => {
-        const segmentParts = highlighted[i];
-        if (segmentParts) {
-          parts.set(index, segmentParts);
-        }
-      });
-    }
-  }
+  const parts = needle ? matchTextFlow(lineFlow(line), needle, exact).parts : undefined;
   return (
     <>
       {line.map((segment, index) => {
         if (segment.type === "var") {
           return <VariableChip key={index} label={segment.label} />;
         }
+        if (segment.type === "cell") {
+          return <CellDivider key={index} />;
+        }
         if (needle) {
-          const segmentParts = parts.get(index);
+          const segmentParts = parts?.get(index);
           return (
             <HighlightText
               exact={exact}
@@ -174,7 +171,7 @@ export function truncateLine(line: Line, maxChars: number): Line {
   let remaining = maxChars;
   const result: Line = [];
   for (const segment of line) {
-    const text = segment.type === "text" ? segment.value : segment.label;
+    const text = segment.type === "text" ? segment.value : segment.type === "var" ? segment.label : CELL_DIVIDER;
     if (text.length <= remaining) {
       result.push(segment);
       remaining -= text.length;

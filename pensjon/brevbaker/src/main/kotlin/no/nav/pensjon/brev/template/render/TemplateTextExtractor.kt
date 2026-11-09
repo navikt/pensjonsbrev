@@ -10,18 +10,22 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expr
 /**
  * A line is rendered (and indexed by the search frontend) as a sequence of
  * segments. Literal text is searchable; variables are shown as a placeholder but
- * are never searchable. The JSON shape mirrors the frontend `LineSegment`
- * discriminated union (`{type:"text",value}` / `{type:"var",label}`).
+ * are never searchable. A table row marks the boundary between its cells with
+ * [CellBoundary], so no separator character enters the searchable text. The JSON
+ * shape mirrors the frontend `LineSegment` discriminated union
+ * (`{type:"text",value}` / `{type:"var",label}` / `{type:"cell"}`).
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(
     JsonSubTypes.Type(TextSegment.Text::class, name = "text"),
     JsonSubTypes.Type(TextSegment.Variable::class, name = "var"),
+    JsonSubTypes.Type(TextSegment.CellBoundary::class, name = "cell"),
 )
 @JsonPropertyOrder("type")
 sealed class TextSegment {
     data class Text(val value: String) : TextSegment()
     data class Variable(val label: String) : TextSegment()
+    data object CellBoundary : TextSegment()
 }
 
 data class TemplateTextBlock(val index: Int, val segments: List<TextSegment>)
@@ -77,9 +81,7 @@ object TemplateTextExtractor {
             }
         }
 
-    private data class LineParts(val raw: String, val labels: List<String>) {
-        val isVisible: Boolean get() = normalize(raw).isNotEmpty()
-    }
+    private data class LineParts(val raw: String, val labels: List<String>)
 
     private fun partsOf(texts: List<Element.ParagraphContent.Text>): LineParts =
         LineParts(
@@ -106,10 +108,9 @@ object TemplateTextExtractor {
     private fun lineFrom(texts: List<ContentOrControlStructure<Element.ParagraphContent.Text>>): List<TextSegment>? =
         partsOf(flatten(texts)).toSegments()
 
-    private fun rowLine(row: Element.ParagraphContent.Table.Row): List<TextSegment>? {
-        val cells = row.cells.map { partsOf(flatten(it.text)) }.filter { it.isVisible }
-        return LineParts(cells.joinToString(" | ") { it.raw }, cells.flatMap { it.labels }).toSegments()
-    }
+    private fun rowLine(row: Element.ParagraphContent.Table.Row): List<TextSegment>? =
+        row.cells.mapNotNull { lineFrom(it.text) }
+            .reduceOrNull { line, cell -> line + TextSegment.CellBoundary + cell }
 
     private fun listLines(list: Element.ParagraphContent.ItemList): List<List<TextSegment>> =
         flatten(list.items).mapNotNull { lineFrom(it.text) }

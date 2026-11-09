@@ -144,12 +144,21 @@ type ContentMatch = {
   score: number;
 };
 
-function lineMatches(line: Line, query: string, exact: boolean): boolean {
-  const flow = line.flatMap((segment, source): TextFlow<number>[] => [
+/** A line as a match flow, keyed by segment index. Segments are space-separated;
+ *  variables and table-cell boundaries end exact phrases. */
+export function lineFlow(line: Line): TextFlow<number>[] {
+  return line.flatMap((segment, source): TextFlow<number>[] => [
     ...(source > 0 ? [{ type: "space" } as const] : []),
-    segment.type === "var" ? { type: "variable" } : { type: "text", source, text: segment.value },
+    segment.type === "text"
+      ? { type: "text", source, text: segment.value }
+      : segment.type === "var"
+        ? { type: "variable" }
+        : { type: "cell" },
   ]);
-  return textFlowHasMatch(flow, query, exact);
+}
+
+function lineMatches(line: Line, query: string, exact: boolean): boolean {
+  return textFlowHasMatch(lineFlow(line), query, exact);
 }
 
 /** Collapses the matched lines into one hit per template: the best-scoring

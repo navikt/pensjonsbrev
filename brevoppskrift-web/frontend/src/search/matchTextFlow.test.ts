@@ -35,6 +35,20 @@ describe("incremental text-flow matching", () => {
       expected: false,
     },
     {
+      description: "fuzzy terms across a table cell",
+      flow: [text("barnetillegg"), { type: "cell" }, text("uføretrygd")],
+      query: "barnetillegg uføretrygd",
+      exact: false,
+      expected: true,
+    },
+    {
+      description: "an exact phrase across a table cell",
+      flow: [text("barnetillegg"), { type: "cell" }, text("uføretrygd")],
+      query: "barnetillegg uføretrygd",
+      exact: true,
+      expected: false,
+    },
+    {
       description: "mutually exclusive branch terms",
       flow: [{ type: "branches", branches: [[text("barnetillegg")], [text("uføretrygd")]] }],
       query: "barnetillegg uføretrygd",
@@ -63,45 +77,6 @@ describe("incremental text-flow matching", () => {
     expect(planned.fullMatch).toBe(expected);
     expect(textFlowHasMatch(flow, query, exact)).toBe(planned.fullMatch);
   });
-
-  it("matches an indexed separator without assigning it visible highlight ranges", () => {
-    const flow: TextFlow<string>[] = [text("left"), { type: "separator", text: " | " }, text("right")];
-    const result = matchTextFlow(flow, "left | right", true);
-
-    expect(result.fullMatch).toBe(true);
-    expect([...result.parts]).toEqual([
-      ["left", { ranges: [{ start: 0, end: 4, terms: [0] }], fullMatch: true }],
-      ["right", { ranges: [{ start: 0, end: 5, terms: [0] }], fullMatch: true }],
-    ]);
-
-    const separatorOnly = matchTextFlow(flow, "|", true);
-    expect(separatorOnly.fullMatch).toBe(true);
-    expect([...separatorOnly.parts.values()].every((parts) => parts.ranges.length === 0)).toBe(true);
-  });
-
-  it.each([false, true])(
-    "credits a matched separator only to the source of its selected branch (exact: %s)",
-    (exact) => {
-      const separator = (source: string): TextFlow<string> => ({ type: "separator", text: " | ", source });
-      const flow: TextFlow<string>[] = [
-        {
-          type: "branches",
-          branches: [[text("left")], [text("left"), separator("row"), text("right")]],
-        },
-        { type: "break" },
-        text("other"),
-        separator("other-row"),
-      ];
-
-      const result = matchTextFlow(flow, "|", exact);
-      expect(result.parts.get("row")).toEqual({ ranges: [], fullMatch: true });
-      expect(result.parts.get("other-row")).toEqual({ ranges: [], fullMatch: true });
-      expect(result.parts.get("left")).toEqual({ ranges: [], fullMatch: false });
-
-      const partial = matchTextFlow(flow, "| missing", false);
-      expect(partial.parts.get("row")?.fullMatch).toBe(false);
-    },
-  );
 
   it.each([false, true])(
     "handles 35 optional siblings without expanding their combinations (exact: %s)",

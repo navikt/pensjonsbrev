@@ -194,6 +194,20 @@ describe("search", () => {
     expect(search(index, "barnetillegg uføretrygd", false).content).toHaveLength(1);
   });
 
+  it("does not index table-cell boundaries, but keeps vertical bars written in the text", () => {
+    const row = template({ id: "ROW", title: "Tabell", lines: [""] });
+    row.lines = [[{ type: "text", value: "barnetillegg" }, { type: "cell" }, { type: "text", value: "uføretrygd" }]];
+    const literal = template({ id: "BAR", title: "Strek", lines: ["barnetillegg | uføretrygd"] });
+    const index = buildIndex([row, literal]);
+    const ids = (query: string, exact: boolean) => search(index, query, exact).content.map((hit) => hit.template.id);
+
+    expect(ids("|", true)).toEqual(["BAR"]);
+    expect(ids("|", false)).toEqual(["BAR"]);
+    expect(ids("barnetillegg | uføretrygd", true)).toEqual(["BAR"]);
+    expect(ids("barnetillegg uføretrygd", true)).toEqual([]);
+    expect(ids("barnetillegg uføretrygd", false).sort()).toEqual(["BAR", "ROW"]);
+  });
+
   it("accepts a character-prefix exact phrase", () => {
     const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["The grey fox jumped over the fence."] })];
     const index = buildIndex(templates);
