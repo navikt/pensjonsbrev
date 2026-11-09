@@ -663,6 +663,31 @@ describe("search hit focus", () => {
 
       await waitFor(async () => expect((await searchBox()).value).toBe("treff"));
     });
+
+    it("resets a rejected search write when browser Back returns to this template", async () => {
+      const router = await openPage({});
+      const input = await searchBox();
+      let openB: ((documentation: TemplateDocumentation) => void) | undefined;
+      getTemplateDocumentation.queryFn.mockImplementation((_malType: string, templateId: string) =>
+        templateId === "B" ? new Promise((resolve) => (openB = resolve)) : Promise.resolve(page),
+      );
+
+      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+      void router.navigate({ to: "/template/autobrev/B", search: (s: any) => s } as any);
+      await waitFor(() => expect(router.latestLocation.pathname).toBe("/template/autobrev/B"));
+      await userEvent.type(input, "annet", { initialSelectionStart: 0, initialSelectionEnd: input.value.length });
+
+      await waitFor(() => expect(input.value).toBe("treff"));
+      expect(screen.queryByTestId("search-activity")).toBeNull();
+
+      await act(() => router.history.back());
+
+      await waitFor(() => expect(router.latestLocation.pathname).toBe("/template/autobrev/A"));
+      expect(input.value).toBe("treff");
+      expect(screen.queryByTestId("search-activity")).toBeNull();
+      expect(router.latestLocation.search).toMatchObject({ q: "treff" });
+      await act(async () => openB?.(page));
+    });
   });
 });
 

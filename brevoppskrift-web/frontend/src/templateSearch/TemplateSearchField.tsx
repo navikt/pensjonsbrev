@@ -19,7 +19,7 @@ export function TemplateSearchField({
   q = "",
 }: {
   hits: TemplateHits | undefined;
-  onSearch: (q: string | undefined) => void;
+  onSearch: (q: string | undefined) => boolean;
   q: string | undefined;
 }) {
   const [query, setQuery] = useState(q);
@@ -43,8 +43,11 @@ export function TemplateSearchField({
   latestOnSearch.current = onSearch;
   useEffect(() => {
     if (target !== latestQ.current) {
-      written.current = target;
-      latestOnSearch.current(target || undefined);
+      if (latestOnSearch.current(target || undefined)) {
+        written.current = target;
+      } else {
+        setQuery(latestQ.current ?? "");
+      }
     }
   }, [target]);
 

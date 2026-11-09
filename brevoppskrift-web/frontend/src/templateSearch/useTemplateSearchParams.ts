@@ -60,9 +60,10 @@ export function useTemplateSearchParams(
 
   const write = (update: (search: TemplateSearchParams) => TemplateSearchParams) => {
     if (router.latestLocation.pathname !== pathname) {
-      return;
+      return false;
     }
     void navigate({ replace: true, search: (search) => update(validateTemplateSearch(search)) });
+    return true;
   };
 
   return {
