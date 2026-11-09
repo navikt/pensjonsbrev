@@ -66,7 +66,7 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
                     text(bokmal { +"Uføretrygden din er innvilget uten unntaksbestemmelser, men du har mindre enn 20 års botid i Norge. Den som ikke har 20 års botid, men som har år med inntekt over ett grunnbeløp før uføretidspunktet, får eksportere egenopptjent uføretrygd basert på trygdetid tilsvarende antall år med slik inntekt, samt eventuell fremtidig trygdetid.  " })
                 }
                 paragraph {
-                    text(bokmal { +"Du har hittil hatt utbetalt " + fritekst("minsteytelse / uføretrygd") + " beregnet med " + fritekst("xx") + " års trygdetid. Ved flytting til " + land.ifNull("") + " vil du ha rett til egenopptjent uføretrygd beregnet med " + fritekst("xx") + " års trygdetid. Med dagens grunnbeløp vil du få utbetalt " + fritekst("xx") + " kroner i måneden før skatt. " })
+                    text(bokmal { +"Du har hittil hatt utbetalt " + fritekst("minsteytelse / uføretrygd") + " beregnet med " + fritekst("antall år") + " års trygdetid. Ved flytting til " + land.ifNull("") + " vil du ha rett til egenopptjent uføretrygd beregnet med " + fritekst("antall år") + " års trygdetid. Med dagens grunnbeløp vil du få utbetalt " + fritekst("beløp") + " kroner i måneden før skatt. " })
                 }
             }
             showIf(tyvearfulleksport) {
