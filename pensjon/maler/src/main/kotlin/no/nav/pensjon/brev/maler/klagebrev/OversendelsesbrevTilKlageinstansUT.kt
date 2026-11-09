@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT.Paragraf.Oversittetklagefrist
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst
+import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.UngUfoer
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Yrkesskade.Avslag
 import no.nav.pensjon.brev.model.Brevkategori
@@ -50,7 +51,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
 
         val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
         val avslag = saksbehandlervalg("avslag", "Hvis § 12-17 Yrkesskade, velg:").enum<Avslag>()
-        val fastsettelseInntekt = saksbehandlervalg("fastsettelseInntekt", "Velg om inntekt er fastsatt før eller etter uførhet:").enum<OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU.FastsettelseInntektValg>()
+        val fastsettelseInntekt = saksbehandlervalg("fastsettelseInntekt", "Velg om inntekt er fastsatt før eller etter uførhet:").enum<FastsettelseIFUIEU.FastsettelseInntektValg>()
         val ufoertidspunkt = saksbehandlervalg("ufoertidspunkt", "Velg uføretidspunkt:").enum<UngUfoer.Ufoertidspunkt>()
 
 
@@ -125,7 +126,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             }.orShowIf(paragraf.isOneOf(Paragraf.Ufoeretidspunkt)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.Ufoeretidspunkt)
             }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseAvInntekt)) {
-                includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU(fastsettelseInntekt))
+                includePhrase(FastsettelseIFUIEU(fastsettelseInntekt))
             }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseUfoeregrad)) {
                 includePhrase(OversendelsesbrevTilKlageinstansTekst.FastsettelseUfoeregrad)
             }.orShowIf(paragraf.isOneOf(Paragraf.BeregningAvUfoeretrygd)) {
