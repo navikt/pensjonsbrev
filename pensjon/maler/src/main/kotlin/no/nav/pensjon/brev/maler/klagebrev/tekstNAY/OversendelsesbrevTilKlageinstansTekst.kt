@@ -135,7 +135,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal { +"Vi kan også gjøre unntak dersom man har vært medlem av folketrygden i minst ett år umiddelbart før man setter fram krav om uføretrygd, og" })
                 list {
-                    item { text(bokmal { +"Ble uføre før man fylte 26 år og da var medlem av trygden eller" }) }
+                    item { text(bokmal { +"Ble ufør før man fylte 26 år og da var medlem av trygden eller" }) }
                     item { text(bokmal { +"Etter fylte 16 år har vært medlem i trygden med unntak av maksimum fem år" }) }
                 }
             }
