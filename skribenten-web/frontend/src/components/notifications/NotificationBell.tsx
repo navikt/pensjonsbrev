@@ -110,6 +110,7 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
               inset: "auto",
               top: `calc(${position.top}px + var(--ax-space-8))`,
               right: `${position.right}px`,
+              maxWidth: `calc(100vw - ${position.right}px - var(--ax-space-16))`,
               margin: 0,
             },
           })}
