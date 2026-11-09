@@ -543,7 +543,7 @@ object OversendelsesbrevTilKlageinstansTekst {
             paragraph {
                 text(bokmal {
                     +"I det påklagde vedtaket er klager gitt en trygdetid på "
-                    +fritekst("antall") + " år ."
+                    +fritekst("antall") + " år. "
                     +"Dersom den fastsatte trygdetiden er mindre enn 40 år reduseres uføretrygdens størrelse. "
                     +"Det vil si at klager som har en trygdetid på "
                     +fritekst("antall") + " år, vil får en uføretrygd med en uføregrad på 100 prosent som tilsvarer "
