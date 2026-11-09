@@ -288,7 +288,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
         rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
             hentRedigertVedlegg(vedleggId)
-                ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg), null) }
+                ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg)) }
         }
     }
 
@@ -381,25 +381,26 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     fun settRedigertVedlegg(
         vedleggId: VedleggId,
         redigertVedlegg: Edit.Attachment,
-        malVedlegg: LetterMarkup.Attachment? = null,
     ): Boolean {
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }
         if (eksisterende != null) {
-            if (eksisterende.redigertVedlegg == redigertVedlegg && malVedlegg?.toEdit() == eksisterende.rendretVedlegg) {
+            if (eksisterende.redigertVedlegg == redigertVedlegg) {
                 return false
             }
             eksisterende.redigertVedlegg = redigertVedlegg
-            malVedlegg?.let { eksisterende.rendretVedlegg = it.toEdit() }
         } else {
             RedigertVedlegg.new(
                 brevredigering = this@BrevredigeringEntity.id,
                 vedleggId = vedleggId,
                 redigertVedlegg = redigertVedlegg,
-                malVedlegg = malVedlegg?.toEdit()
             )
             refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
         }
         return true
+    }
+
+    fun settHashForRedigertVedlegg(vedleggId: VedleggId, malVedlegg: LetterMarkup.Attachment) {
+        _redigerteVedlegg.single { it.vedleggId.value == vedleggId }.rendretVedlegg = malVedlegg.toEdit()
     }
 
     fun slettRedigertVedlegg(vedleggId: VedleggId): Boolean {

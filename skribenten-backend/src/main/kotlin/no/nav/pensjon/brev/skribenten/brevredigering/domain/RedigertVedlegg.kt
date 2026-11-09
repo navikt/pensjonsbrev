@@ -23,7 +23,6 @@ class RedigertVedlegg(id: EntityID<CompositeID>) : CompositeEntity(id) {
             brevredigering: EntityID<BrevId>,
             vedleggId: BrevbakerType.VedleggId,
             redigertVedlegg: Edit.Attachment,
-            malVedlegg: Edit.Attachment?,
         ): RedigertVedlegg =
             new(
                 CompositeID {
@@ -32,7 +31,6 @@ class RedigertVedlegg(id: EntityID<CompositeID>) : CompositeEntity(id) {
                 }
             ) {
                 this.redigertVedlegg = redigertVedlegg
-                malVedlegg?.let { this.rendretVedlegg = it }
             }
     }
 }
