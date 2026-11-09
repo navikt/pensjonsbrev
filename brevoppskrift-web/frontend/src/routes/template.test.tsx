@@ -312,6 +312,25 @@ describe("search hit focus", () => {
     expect(router.state.location.search).not.toHaveProperty("showHits");
   });
 
+  it("resets the document scroll when navigating to another template with hits hidden", async () => {
+    const router = await openPage({ showHits: false });
+    const scroller = (await screen.findByTestId("template-document-scroller")) as HTMLDivElement;
+    scroller.scrollTop = 500;
+    const nextPage = { ...page, outline: [paragraph(40, "Ny mal")] };
+    getTemplateDocumentation.queryFn.mockImplementation((_malType: string, templateId: string) =>
+      Promise.resolve(templateId === "B" ? nextPage : page),
+    );
+
+    await act(async () => {
+      // biome-ignore lint/suspicious/noExplicitAny: the standalone test router is untyped.
+      await router.navigate({ to: "/template/autobrev/B", search: (search: Record<string, unknown>) => search } as any);
+    });
+
+    await screen.findByText("Ny mal");
+    expect(scroller.scrollTop).toBe(0);
+    expect(scrolledTo).toEqual([]);
+  });
+
   it("scrolls to the conditional branch containing the highlighted text", async () => {
     await openPage({ tab: "innhold" }, { documentation: conditionalPage });
 

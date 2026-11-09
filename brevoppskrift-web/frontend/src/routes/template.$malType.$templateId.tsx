@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Box, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import axios from "axios";
-import { useMemo, useRef } from "react";
+import { useLayoutEffect, useMemo, useRef } from "react";
 
 import {
   getTemplateDescription,
@@ -108,7 +108,15 @@ function TemplateExplorer() {
   const { focus, showHits, language: languageParam, q, exact, tab } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const previewRef = useRef<HTMLDivElement>(null);
+  const documentScrollerRef = useRef<HTMLDivElement>(null);
   const language = languageParam ?? description.languages[0];
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: template changes reset scroll; language changes preserve it.
+  useLayoutEffect(() => {
+    if (documentScrollerRef.current) {
+      documentScrollerRef.current.scrollTop = 0;
+    }
+  }, [malType, templateId]);
 
   const criteria = useMemo(() => criteriaOf({ q, exact, tab }), [q, exact, tab]);
   const current = useMemo<ResultRef>(() => ({ malType, id: templateId, language }), [malType, templateId, language]);
@@ -191,10 +199,12 @@ function TemplateExplorer() {
           <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
           <VStack
             align="center"
+            data-testid="template-document-scroller"
             gap="space-16"
             overflow="auto"
             paddingBlock="space-16"
             paddingInline="space-16"
+            ref={documentScrollerRef}
             width="100%"
           >
             <div
