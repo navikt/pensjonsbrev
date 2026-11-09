@@ -66,7 +66,7 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
                     text(bokmal { +"Uføretrygden din er innvilget uten unntaksbestemmelser, men du har mindre enn 20 års botid i Norge. Den som ikke har 20 års botid, men som har år med inntekt over ett grunnbeløp før uføretidspunktet, får eksportere egenopptjent uføretrygd basert på trygdetid tilsvarende antall år med slik inntekt, samt eventuell fremtidig trygdetid.  " })
                 }
                 paragraph {
-                    text(bokmal { +" Du har hittil hatt utbetalt " + fritekst("minsteytelse / uføretrygd") + " beregnet med " + fritekst("xx") + " års trygdetid. Ved flytting til " + land.ifNull("") + " vil du ha rett til egenopptjent uføretrygd beregnet med " + fritekst("xx") + " års trygdetid. Med dagens grunnbeløp vil du få utbetalt " + fritekst("xx") + " kroner i måneden før skatt. " })
+                    text(bokmal { +"Du har hittil hatt utbetalt " + fritekst("minsteytelse / uføretrygd") + " beregnet med " + fritekst("xx") + " års trygdetid. Ved flytting til " + land.ifNull("") + " vil du ha rett til egenopptjent uføretrygd beregnet med " + fritekst("xx") + " års trygdetid. Med dagens grunnbeløp vil du få utbetalt " + fritekst("xx") + " kroner i måneden før skatt. " })
                 }
             }
             showIf(tyvearfulleksport) {
@@ -112,7 +112,7 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
                 paragraph {
                     list {
                         item { text(bokmal { +"må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med " }) }
-                        item { text(bokmal { +fritekst("barnet/barna") + " må også være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med. " }) }
+                        item { text(bokmal { +"må " + fritekst("barnet/barna") + " også være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med. " }) }
                     }
                 }
                 paragraph {
@@ -131,7 +131,6 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
             }
             paragraph {
                 text(bokmal { +"Det er viktig å merke seg at dette kun er en foreløpig vurdering av eksportretten, og at vedtak gjøres når vi har mottatt melding om flytting." }, FontType.BOLD)
-                text(bokmal { +" " })
             }
             paragraph {
                 text(bokmal { +"Vi minner om at flytting og ny adresse alltid skal meldes skriftlig til Folkeregisteret og til Nav." }, FontType.BOLD)
