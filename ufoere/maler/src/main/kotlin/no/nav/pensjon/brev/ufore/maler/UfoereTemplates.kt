@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.info.KravSendtUtland
 import no.nav.pensjon.brev.ufore.maler.info.TrukketKlage
+import no.nav.pensjon.brev.ufore.maler.info.UfoeretrygdForeloepigEksportvurdering
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.BrukerLegeerklaering
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.EOSSkjemaFraBruker
@@ -126,6 +127,7 @@ object UfoereTemplates : AllTemplates {
         EOSSkjemaFraBruker,
         SoknadTilAvtaleland,
         KravSendtUtland,
+        UfoeretrygdForeloepigEksportvurdering,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
