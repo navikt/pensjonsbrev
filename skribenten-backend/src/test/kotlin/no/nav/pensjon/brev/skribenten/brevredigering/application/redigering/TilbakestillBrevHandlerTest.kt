@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV2
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 
 import no.nav.brev.InternKonstruktoer
@@ -107,6 +110,27 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(tilbakestilt).isSuccess {
             assertThat(it.redigertBrev.asV1()).isEqualTo(letter.toEdit())
             assertThat(it.saksbehandlerValg).isEqualTo(SaksbehandlervalgMap())
+        }
+    }
+
+    @Test
+    suspend fun `kan tilbakestille v2-brev`() {
+        stageMarkupV2()
+        val brev = opprettBrev(markupVersjon = MarkupVersjon.V2).resultOrFail()
+        val paragraph = brev.redigertBrev.asV2().blocks.single() as EditV2.Block.Paragraph
+        val literal = paragraph.content.single() as EditV2.Text.Literal
+        oppdaterBrevV2(
+            brevId = brev.info.id,
+            nyttRedigertbrev = brev.redigertBrev.asV2().copy(
+                blocks = listOf(paragraph.copy(content = listOf(literal.copy(editedText = "blue pill")))),
+            ),
+        ).resultOrFail()
+        brevbakerService.modelSpecificationResultat = TemplateModelSpecification(types = mapOf(), letterModelTypeName = null)
+
+        val tilbakestilt = tilbakestillBrev(brevId = brev.info.id)
+
+        assertThat(tilbakestilt).isSuccess {
+            assertThat(it.redigertBrev.asV2()).isEqualTo(brev.redigertBrev.asV2())
         }
     }
 

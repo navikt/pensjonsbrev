@@ -259,8 +259,8 @@ fun editedLetter(
     deleted: Collection<Int> = emptyList(),
     fixParentIds: Boolean = true,
     title: String = "En tittel",
-    saksinformasjon: EditV2.Saksinformasjon = MarkupV2.saksinformasjon().toEdit(),
-    signatur: EditV2.Signatur = MarkupV2.signatur().toEdit(),
+    saksinformasjon: EditV2.Saksinformasjon = EditV2Markup.toEdit(MarkupV2.saksinformasjon()),
+    signatur: EditV2.Signatur = EditV2Markup.toEdit(MarkupV2.signatur()),
 ): EditV2.Letter =
     EditV2.Letter(
         title = EditV2.Title(listOf(EditV2.Text.Literal(1, title))),
@@ -274,8 +274,8 @@ fun editedLetter(
     deleted: Collection<Int> = emptyList(),
     fixParentIds: Boolean = true,
     title: String = "En tittel",
-    saksinformasjon: EditV2.Saksinformasjon = MarkupV2.saksinformasjon().toEdit(),
-    signatur: EditV2.Signatur = MarkupV2.signatur().toEdit(),
+    saksinformasjon: EditV2.Saksinformasjon = EditV2Markup.toEdit(MarkupV2.saksinformasjon()),
+    signatur: EditV2.Signatur = EditV2Markup.toEdit(MarkupV2.signatur()),
     builder: EditLetterBuilderV2.() -> Unit,
 ): EditV2.Letter =
     editedLetter(

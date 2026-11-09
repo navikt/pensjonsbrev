@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV2
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
@@ -114,6 +117,36 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
             }
         }
         assertThat(hentBrev(original.info.id).resultOrFail().redigertBrev).isEqualTo(original.redigertBrev)
+    }
+
+    @Test
+    suspend fun `kan ikke oppdatere v2-brev med v1-brev`() {
+        stageMarkupV2()
+        val original = opprettBrev(reserverForRedigering = true, markupVersjon = MarkupVersjon.V2).resultOrFail()
+
+        assertThrows<FeilMarkupVersjonException> {
+            oppdaterBrev(brevId = original.info.id, nyttRedigertbrev = letter.toEdit())
+        }
+        assertThat(hentBrev(original.info.id).resultOrFail().redigertBrev).isEqualTo(original.redigertBrev)
+    }
+
+    @Test
+    suspend fun `kan oppdatere v2-brev`() {
+        stageMarkupV2()
+        val original = opprettBrev(reserverForRedigering = true, markupVersjon = MarkupVersjon.V2).resultOrFail()
+        val paragraph = original.redigertBrev.asV2().blocks.single() as EditV2.Block.Paragraph
+        val literal = paragraph.content.single() as EditV2.Text.Literal
+        val redigert = original.redigertBrev.asV2().copy(
+            blocks = listOf(paragraph.copy(content = listOf(literal.copy(editedText = "blue pill")))),
+        )
+
+        val oppdatert = oppdaterBrevV2(brevId = original.info.id, nyttRedigertbrev = redigert)
+
+        assertThat(oppdatert).isSuccess {
+            assertThat(it.redigertBrev.asV2()).isEqualTo(redigert)
+            assertThat(it.redigertBrevHash).isNotEqualTo(original.redigertBrevHash)
+        }
+        assertThat(hentBrev(original.info.id).resultOrFail().redigertBrev.asV2()).isEqualTo(redigert)
     }
 
     @Test

@@ -13,6 +13,10 @@ import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.MarkupModel
 import no.nav.brev.brevbaker.markup.MarkupModelApi
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
+import no.nav.brev.brevbaker.markup.outline.Block as BlockV2
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
+import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2 as MarkupV2Dsl
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
@@ -383,16 +387,45 @@ abstract class BrevredigeringHandlerTestBase {
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
         saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        oppdaterVersjonertBrev(brevId, nyeSaksbehandlerValg, nyttRedigertbrev?.let { VersjonertBrev.V1(it) }, frigiReservasjon, principal, saksId)
+
+    protected suspend fun oppdaterBrevV2(
+        brevId: BrevId,
+        nyttRedigertbrev: EditV2.Letter,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        oppdaterVersjonertBrev(brevId, null, VersjonertBrev.V2(nyttRedigertbrev), false, principal, sak1.saksId)
+
+    private suspend fun oppdaterVersjonertBrev(
+        brevId: BrevId,
+        nyeSaksbehandlerValg: SaksbehandlervalgMap?,
+        nyttRedigertbrev: VersjonertBrev?,
+        frigiReservasjon: Boolean,
+        principal: UserPrincipal,
+        saksId: SaksId,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
         oppdaterBrev.invoke(
             OppdaterBrevHandler.Request(
                 brevId = brevId,
                 saksId = saksId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
-                nyttRedigertbrev = nyttRedigertbrev?.let { VersjonertBrev.V1(it) },
+                nyttRedigertbrev = nyttRedigertbrev,
                 frigiReservasjon = frigiReservasjon
             )
         )
+    }
+
+    protected fun stageMarkupV2(vararg blocks: BlockV2 = arrayOf(MarkupV2Dsl.paragraph(1, MarkupV2Dsl.literal(1, "red pill")))) {
+        brevbakerService.renderMarkupV2Resultat = { felles ->
+            letterV2(
+                *blocks,
+                signatur = MarkupV2Dsl.signatur(
+                    saksbehandlerNavn = felles.signerendeSaksbehandlere?.saksbehandler,
+                    attesterendeSaksbehandlerNavn = felles.signerendeSaksbehandlere?.attesterendeSaksbehandler,
+                ),
+            )
+        }
     }
 
     protected suspend fun hentBrev(
