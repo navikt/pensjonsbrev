@@ -82,7 +82,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
             entry.toChange { DiffProducer.BlockInfo(it.id, it.type) }?.let {
                 producer.block(BlockIndex(insertBlockIdx), BlockIndex(deleteBlockIdx), it)
             }
-            BlockParser(insertBlockIndex, deleteBlockIndex, cursor, producer).parse(contentIndices)
+            BlockParser(insertBlockIndex, deleteBlockIndex, cursor, producer, entry is DiffEntry.Insert).parse(contentIndices)
         }
         require(!cursor.hasNext) { "Not all tokens were consumed, next: ${cursor.peek()}" }
         return producer.build()
@@ -93,6 +93,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         private val deleteIndex: BlockIndex,
         private val cursor: ReplaceAwareEditScriptCursor<Token>,
         private val producer: DiffProducer<*>,
+        private val insertedBlock: Boolean,
     ) {
         fun parse(contentIndices: ReplaceAwareEditScriptCursor.StableIndexState) =
             cursor.forEachIndexedStable<Token.BlockContent>(contentIndices) { indices, entry ->
@@ -165,7 +166,9 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                     if (isWholeNodeGone) {
                         producer.textContent(insertIndex, deleteIndex, Change.Delete(DiffProducer.TextContentInfo(entry.token.id)))
                     } else {
-                        changes.forEach { producer.textSegment(insertIndex, stableDeleteIndex, it) }
+                        changes.forEach {
+                            producer.textSegment(insertIndex, stableDeleteIndex, it, insertionOnlyAnchor = insertedBlock && it is Change.Insert)
+                        }
                     }
                     return isWholeNodeGone && entry !is DiffEntry.Delete
                 }

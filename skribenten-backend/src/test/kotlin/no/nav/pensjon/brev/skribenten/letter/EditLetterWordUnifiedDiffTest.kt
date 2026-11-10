@@ -16,6 +16,33 @@ class EditLetterWordUnifiedDiffTest {
     private val wordDiff = EditLetterWordDiff()
 
     @Test
+    fun `paragraph inserted after merging old paragraphs retains added text highlighting`() {
+        val old = editedLetter {
+            paragraph { literal(text = "alpha") }
+            paragraph { variable(text = "beta") }
+        }
+        val new = editedLetter {
+            paragraph {
+                literal(text = "alpha")
+                variable(text = "beta")
+            }
+            paragraph { literal(text = "gamma") }
+        }
+
+        val diff = wordDiff.unifiedDiff(old, new)
+
+        assertEquals(
+            mapOf(1 to BlockEdit(contentEdits = mapOf(0 to textContentEdit(inserts = listOf(TextSegment(0, 5)))), deletedContent = emptyMap())),
+            diff.editedBlocks,
+        )
+        assertEquals(mapOf(1 to listOf(old.blocks[1])), diff.deletedBlocks)
+        assertEquals(
+            listOf(DiffSegment(ContentIndex.BlockContentIndex(1, 0), 0, 5)),
+            wordDiff.diff(old, new).inserts,
+        )
+    }
+
+    @Test
     fun `no change produces empty editedBlocks and deletedBlocks`() {
         val letter = editedLetter { paragraph { literal(text = "hello world") } }
         val diff = wordDiff.unifiedDiff(letter, letter)

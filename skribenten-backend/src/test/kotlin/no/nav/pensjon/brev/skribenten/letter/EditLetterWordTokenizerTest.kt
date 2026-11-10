@@ -179,7 +179,7 @@ class EditLetterWordTokenizerTest {
             override fun cell(insertIndex: TableCellIndex, deleteIndex: TableCellIndex, change: Change<DiffProducer.CellInfo>) {
                 calls.add(Triple(insertIndex, deleteIndex, change))
             }
-            override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>) {
+            override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>, insertionOnlyAnchor: Boolean) {
                 calls.add(Triple(insertIndex, deleteIndex, change))
             }
             override fun build() = calls.toList()
