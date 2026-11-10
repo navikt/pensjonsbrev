@@ -130,6 +130,11 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     private fun lagretMalVedlegg(brevId: BrevId): Edit.Attachment? =
         transaction { RedigertVedlegg.find { RedigertVedleggTable.brevredigering eq brevId }.single().rendretVedlegg }
 
+    private fun lagretMalVedleggHash(brevId: BrevId): StableHashCode? =
+        transaction {
+            RedigertVedlegg.find { RedigertVedleggTable.brevredigering eq brevId }.single().rendretVedleggHash
+        }
+
     private fun antallDokumenter(brevId: BrevId): Int =
         transaction { DocumentEntity.find { DocumentTable.brevredigering eq brevId }.count().toInt() }
 
@@ -159,6 +164,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", redigert)).isSuccess()
 
         assertThat(lagretMalVedlegg(brev.info.id)).isEqualTo(malen.toEdit())
+        assertThat(lagretMalVedleggHash(brev.info.id)).isEqualTo(malen.stableHashCode)
         assertThat(lagretVedlegg(brev.info.id).foersteLiteral().editedText).isEqualTo("Redigert")
     }
 
@@ -167,13 +173,16 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         val malen = malVedlegg(1 to "Foerste")
         lagreRedigertVedlegg(brev.info.id)
+        val nyMal = malVedlegg(1 to "Foerste", 2 to "Andre")
+        assertThat(nyMal.stableHashCode).isNotEqualTo(malen.stableHashCode)
         brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+            mapOf(VedleggId("vedlegg1") to nyMal)
         val redigert = lagretVedlegg(brev.info.id).medRedigertTekst("Ny redigering")
 
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", redigert)).isSuccess()
 
         assertThat(lagretMalVedlegg(brev.info.id)).isEqualTo(malen.toEdit())
+        assertThat(lagretMalVedleggHash(brev.info.id)).isEqualTo(malen.stableHashCode)
         assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id }).containsExactly(1, 2)
         assertThat(lagretVedlegg(brev.info.id).foersteLiteral().editedText).isEqualTo("Ny redigering")
     }
