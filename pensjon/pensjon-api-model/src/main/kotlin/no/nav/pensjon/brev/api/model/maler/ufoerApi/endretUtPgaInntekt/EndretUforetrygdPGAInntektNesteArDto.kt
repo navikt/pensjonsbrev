@@ -36,13 +36,7 @@ data class EndretUforetrygdPGAInntektNesteArDto(
         val bunnfradrag: Kroner,
         val okningUforegradVedArskjoring: Boolean?,
         val fribelopsperioder: List<Fribelopsperiode>,
-        val fribelop1GDesemberIfjor: Boolean,
-        val fribelop1G: Boolean,
-        val fribelop1GTil04G: Fra1GTil04G?,
-        val fribelop04GTil1GTil04G: Fra1GTil04G?,
-        val fribelop04GTil1G: Boolean,
-        val venteperiodeEtterGradsokning: Boolean,
-        val datoOkningFribelop: LocalDate,
+        val fribelopUtvikling: FribelopUtvikling,
         )
 
     data class BarnetilleggFellesbarn(
@@ -62,8 +56,28 @@ data class EndretUforetrygdPGAInntektNesteArDto(
         val belop: Kroner,
     )
 
-    data class Fra1GTil04G(
-        val dato04G: LocalDate,
-        val uforegradForOkning: Int,
+    data class FribelopUtvikling(
+        val kategori: FribelopUtviklingKategori,
+        val gradsokning: Gradsokning?,
+        val fribelopsokning: Fribelopsokning?,
     )
+
+    data class Gradsokning(
+        val dato: LocalDate,
+        val uforegradFoerOkning: Int,
+    )
+
+    data class Fribelopsokning(
+        val dato: LocalDate,
+        val _2arEtterGradsokning: Boolean,
+    )
+
+    enum class FribelopUtviklingKategori {
+        FRIBELOP_1G_FRA_IFJOR,
+        FRIBELOP_1G_FRA_JAN,
+        FRIBELOP_1G_TIL_04G,
+        FRIBELOP_04G_TIL_1G,
+        FRIBELOP_04G_TIL_1G_TIL_04G,
+        FRIBELOP_04G
+    }
 }

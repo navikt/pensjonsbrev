@@ -7,10 +7,15 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUfo
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.BarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.Uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArAutoDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.FribelopUtvikling
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.FribelopUtviklingKategori.FRIBELOP_04G_TIL_1G_TIL_04G
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.Fribelopsokning
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.Gradsokning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
+import java.time.Month
 
 fun createEndretUforetrygdPGAInntektNesteArDto() =
     EndretUforetrygdPGAInntektNesteArAutoDto(
@@ -37,7 +42,6 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
             fribelop = Kroner(3),
             bunnfradrag = Kroner(4),
             erGradert = true,
-            fribelop1GDesemberIfjor = false,
             fribelopsperioder = listOf(
                 Fribelopsperiode(
                     fom = LocalDate.of(2026, 1, 1),
@@ -48,13 +52,17 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
                     gradsokning = true
                 )
             ),
-            fribelop1G = false,
-            fribelop1GTil04G = null,
-            fribelop04GTil1GTil04G = EndretUforetrygdPGAInntektNesteArDto.Fra1GTil04G(LocalDate.of(2026, 1, 1), 80),
-            fribelop04GTil1G = false,
-            datoOkningFribelop = LocalDate.of(2027, 1, 1),
-            venteperiodeEtterGradsokning = true,
+            fribelopUtvikling = FribelopUtvikling(
+                kategori = FRIBELOP_04G_TIL_1G_TIL_04G,
+                gradsokning = Gradsokning(
+                    dato = LocalDate.of(2026, 1, 1), 80
+                ),
+                fribelopsokning = Fribelopsokning(
+                    dato = LocalDate.of(2026, Month.OCTOBER, 1),
+                    _2arEtterGradsokning = true
+                )
             ),
+        ),
         barnetilleggFellesbarn = BarnetilleggFellesbarn(
             netto = Kroner(1000),
             inntektBruker = Kroner(1000),
