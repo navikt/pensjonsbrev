@@ -162,17 +162,17 @@ object Ufoeretrygd {
                 text(
                     bokmal {
                         +"Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. " +
-                                "Du kan se alle utbetalingene du har mottatt på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt."
+                                "Du kan se alle utbetalingene du har mottatt på ${Constants.MINSIDE_URL}. Her kan du også endre kontonummeret ditt."
                     },
 
                     nynorsk {
                         +"Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. " +
-                                "Du kan sjå alle utbetalingar du har fått på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt."
+                                "Du kan sjå alle utbetalingar du har fått på ${Constants.MINSIDE_URL}. Her kan du også endre kontonummeret ditt."
                     },
 
                     english {
                         +"Your disability benefit will be paid on the 20th of each month or no later than the last business day before this date. " +
-                                "To see all the payments you have received, go to: ${Constants.DITT_NAV}. You may also change your account number here."
+                                "To see all the payments you have received, go to: ${Constants.MINSIDE_URL}. You may also change your account number here."
                     },
                 )
             }

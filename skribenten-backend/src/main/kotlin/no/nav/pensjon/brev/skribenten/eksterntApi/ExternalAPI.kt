@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
@@ -50,7 +51,8 @@ object ExternalAPI {
         val saksbehandlerValg: SaksbehandlervalgMap?,
         val statiskFagsystemBrevdata: StatiskFagsystemBrevdata?,
         val reserverForRedigering: Boolean?,
-        val vedtaksId: VedtaksId?
+        val vedtaksId: VedtaksId?,
+        val overstyrtMottaker: OverstyrtMottaker? = null,
     )
 
     data class OpprettetBrev(
@@ -73,6 +75,7 @@ object ExternalAPI {
             val adresselinje1: Adresselinje?,
             val adresselinje2: Adresselinje?,
             val adresselinje3: Adresselinje?,
+            val manueltAdressertTil: ManueltAdressertTil? = null,
         ) : OverstyrtMottaker()
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
@@ -82,6 +85,7 @@ object ExternalAPI {
             val adresselinje2: Adresselinje?,
             val adresselinje3: Adresselinje?,
             val landkode: BrevLandmodell.Landkode,
+            val manueltAdressertTil: ManueltAdressertTil? = null,
         ) : OverstyrtMottaker()
     }
 

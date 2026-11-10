@@ -51,7 +51,6 @@ export default function BrevmalForExstream({
         brevtittel: letterTemplate.name,
         brevsystem: "exstream",
         dokumentkategori: letterTemplate.dokumentkategoriCode || undefined,
-        enhetsId: variables.enhetsId,
         spraak: variables.spraak,
       });
       window.open(callbackUrl);

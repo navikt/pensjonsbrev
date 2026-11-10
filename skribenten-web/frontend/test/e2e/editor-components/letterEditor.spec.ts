@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { type EditedLetter, type LiteralValue } from "~/types/brevbakerTypes";
+import { type EditedLetter, ElementTags, type LiteralValue } from "~/types/brevbakerTypes";
 import { baseSakspart, baseSignatur, editorInfo } from "~test/e2e/support/editorFixtures";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse, editedLetter } from "~test/support/brevFixtures";
@@ -532,6 +532,77 @@ test.describe("LetterEditor", () => {
       await expect(page.getByText("Navn:")).toBeVisible();
       await expect(page.getByText("Test Testeson")).toBeVisible();
       await expect(page.getByText("Saken gjelder:")).not.toBeVisible();
+    });
+  });
+});
+
+test.describe("LetterEditor text fields", () => {
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [
+            paragraph([
+              _literal({ text: "Fyll inn fritekst", tags: [ElementTags.FRITEKST] }),
+              _literal(" "),
+              _variable("Variabelverdi"),
+            ]),
+            paragraph([_literal("Tom variabel: "), _variable(""), _literal(" slutt")]),
+          ],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+  });
+
+  test("fritekst matches the blue design until replaced with ordinary text", async ({ page }) => {
+    const placeholder = page.locator(".editor").getByText("Fyll inn fritekst", { exact: true });
+    await expect(placeholder).toHaveCSS("color", "rgb(0, 91, 182)");
+    await expect(placeholder).toHaveCSS("background-color", "rgb(227, 239, 247)");
+    await expect(placeholder).toHaveCSS("font-weight", "600");
+    await expect(placeholder).toHaveCSS("border-radius", "2px");
+    await expect(placeholder).toHaveCSS("padding-inline-start", "2px");
+    await expect(placeholder).toHaveCSS("text-decoration-line", "underline");
+    await expect(placeholder).toHaveCSS("text-decoration-style", "solid");
+    await expect(placeholder).toHaveCSS("text-decoration-thickness", "from-font");
+    await expect(placeholder).toHaveCSS("text-underline-position", "from-font");
+
+    await page.locator(".editor").getByText("Tom variabel:", { exact: true }).click();
+    await placeholder.click();
+    await expect.poll(() => page.evaluate(() => globalThis.getSelection()?.toString())).toBe("Fyll inn fritekst");
+    await page.keyboard.type("Utfylt tekst");
+    const filled = page.locator(".editor").getByText("Utfylt tekst", { exact: true });
+    await expect(filled).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(filled).toHaveCSS("color", "rgb(32, 39, 51)");
+    await expect(filled).toHaveCSS("font-weight", "400");
+    await expect(filled).toHaveCSS("padding-inline-start", "0px");
+    await expect(filled).toHaveCSS("text-decoration-line", "none");
+  });
+
+  test("variables match the gray design while retaining focus and empty-field behavior", async ({ page }, testInfo) => {
+    const value = page.locator(".editor").getByText("Variabelverdi", { exact: true });
+    await expect(value).toHaveCSS("background-color", "rgb(236, 237, 239)");
+    await expect(value).toHaveCSS("color", "rgb(32, 39, 51)");
+    await expect(value).toHaveCSS("font-weight", "400");
+    await expect(value).toHaveCSS("outline", "rgb(111, 119, 133) solid 1px");
+    await expect(value).toHaveCSS("border-radius", "2px");
+    await expect(value).toHaveCSS("padding-inline-start", "2px");
+
+    const empty = page.locator(".editor .PARAGRAPH").nth(1).locator("[data-literal-index]:not([contenteditable])");
+    await expect(empty).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await expect(empty).toHaveCSS("outline-style", "none");
+    await expect(empty).toHaveCSS("padding-inline-start", "0px");
+
+    const baselineBounds = await value.boundingBox();
+    await value.click();
+    await expect(value).toHaveCSS("outline-width", "2px");
+    expect(await value.boundingBox()).toEqual(baselineBounds);
+    await page.locator(".editor").getByText("Tom variabel:", { exact: true }).click();
+    await expect(value).toHaveCSS("outline", "rgb(111, 119, 133) solid 1px");
+    await testInfo.attach("fritekst-and-variable-fields", {
+      body: await page.screenshot({ fullPage: true }),
+      contentType: "image/png",
     });
   });
 });

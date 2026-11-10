@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
 
@@ -14,9 +15,11 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigertVedlegg
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggFinnesIkkeIMal
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.db.RedigertVedleggTable
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
@@ -62,6 +65,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
             title = listOf(LiteralImpl(1, tittel)),
             blocks = avsnitt.map { (id, tekst) -> ParagraphImpl(id, true, listOf(LiteralImpl(id * 10, tekst))) },
             includeSakspart = false,
+            stableHashCode = StableHashCode(avsnitt.map { it.first }.hashCode())
         )
 
     private fun Edit.Attachment.foersteLiteral(): Edit.ParagraphContent.Text.Literal =
@@ -127,6 +131,9 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     private fun lagretVedlegg(brevId: BrevId): Edit.Attachment =
         transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(VedleggId("vedlegg1"))!!.asV1() }
 
+    private fun lagretMalVedlegg(brevId: BrevId): Edit.Attachment? =
+        transaction { RedigertVedlegg.find { RedigertVedleggTable.brevredigering eq brevId }.single().rendretVedlegg?.asV1() }
+
     private fun antallDokumenter(brevId: BrevId): Int =
         transaction { DocumentEntity.find { DocumentTable.brevredigering eq brevId }.count().toInt() }
 
@@ -144,6 +151,35 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
         assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(vedlegg)
+    }
+
+    @Test
+    suspend fun `foerste lagring av redigert vedlegg lagrer malen uten redigeringer`() {
+        val brev = opprettBrev().resultOrFail()
+        val malen = malVedlegg(1 to "Mal-tekst")
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malen)
+        val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().medRedigertTekst("Redigert")
+
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", redigert)).isSuccess()
+
+        assertThat(lagretMalVedlegg(brev.info.id)).isEqualTo(malen.toEdit())
+        assertThat(lagretVedlegg(brev.info.id).foersteLiteral().editedText).isEqualTo("Redigert")
+    }
+
+    @Test
+    suspend fun `senere lagring av redigert vedlegg beholder den opprinnelige malen`() {
+        val brev = opprettBrev().resultOrFail()
+        val malen = malVedlegg(1 to "Foerste")
+        lagreRedigertVedlegg(brev.info.id)
+        brevbakerService.renderRedigerbareVedleggResultat =
+            mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        val redigert = lagretVedlegg(brev.info.id).medRedigertTekst("Ny redigering")
+
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", redigert)).isSuccess()
+
+        assertThat(lagretMalVedlegg(brev.info.id)).isEqualTo(malen.toEdit())
+        assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id }).containsExactly(1, 2)
+        assertThat(lagretVedlegg(brev.info.id).foersteLiteral().editedText).isEqualTo("Ny redigering")
     }
 
     @Test

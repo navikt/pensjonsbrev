@@ -17,7 +17,6 @@ import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupLetterMarkupWithDataUsage
 import no.nav.brev.brevbaker.markup.outline.Text as MarkupText
 import no.nav.brev.brevbaker.markup.dsl.extended.dataUsageProperty
-import no.nav.brev.brevbaker.markup.dsl.extended.letterMarkupExtended
 import no.nav.brev.brevbaker.markup.dsl.extended.letterMarkupWithDataUsage
 
 internal object BrevbakerLetterMarkup {
@@ -35,7 +34,8 @@ internal object BrevbakerLetterMarkup {
             LetterMarkupWithDataUsageImpl(
                 Letter2Markup.renderLetterOnly(letter.toScope(usage), letter.template),
                 usage.propertyUsage,
-                letter.template.letterMetadata.brevtype
+                letter.template.letterMetadata.brevtype,
+                StableHashCode(letter.template.stableHashCode()),
             )
         }
 
@@ -51,15 +51,9 @@ internal object BrevbakerLetterMarkup {
         SelectorUsage().let { usage ->
             val scope = letter.toScope(usage)
             letterMarkupWithDataUsage(
-                markup = letterMarkupExtended(
-                    saksinformasjon = Letter2MarkupV2.buildSaksinformasjon(scope),
-                    signatur = Letter2MarkupV2.buildSignatur(scope),
-                    build = Letter2MarkupV2.buildLetter(
-                        scope = scope,
-                        template = letter.template
-                    )
-                ),
+                markup = Letter2MarkupV2.renderLetterOnly(scope, letter.template),
                 brevtype = letter.template.letterMetadata.brevtype.toMarkup(),
+                stableHashCode = StableHashCode(letter.template.stableHashCode()),
                 letterDataUsage = usage.propertyUsage.map {
                     dataUsageProperty(it.typeName, it.propertyName)
                 }.toSet()

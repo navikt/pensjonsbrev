@@ -669,7 +669,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
           spraak: editorState.info.spraak,
-          enhetsId: editorState.info.avsenderEnhet.enhetNr,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
           limInnMetode,
@@ -689,7 +688,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,
             spraak: editorState.info.spraak,
-            enhetsId: editorState.info.avsenderEnhet.enhetNr,
             antallTegn: pasteLength,
             merEnn200: pasteLength > 200,
             limInnMetode,
@@ -945,8 +943,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       contentEditable={!freeze}
       css={{
         ...(erFritekst && {
-          color: "var(--ax-accent-600)",
+          color: "var(--ax-text-accent-subtle)",
+          backgroundColor: "var(--ax-bg-brand-blue-moderate)",
+          borderRadius: "var(--ax-radius-2)",
+          fontWeight: 600,
+          padding: "0 var(--ax-space-2)",
           textDecoration: "underline",
+          textDecorationThickness: "from-font",
+          textUnderlinePosition: "from-font",
           cursor: "pointer",
         }),
         ...(fontTypeOf(content) === FontType.BOLD && { fontWeight: "bold" }),

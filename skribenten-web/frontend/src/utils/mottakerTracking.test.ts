@@ -43,9 +43,9 @@ describe("trackMottakerClick", () => {
   });
 
   it("sender med øvrige felter fra eventData", async () => {
-    await trackMottakerClick("endre mottaker klikket", "brevbehandler", "12345678", { enhetsId: "4405" });
+    await trackMottakerClick("endre mottaker klikket", "brevbehandler", "12345678", { kilde: "brevmeny" });
 
-    expect(sisteKall()[1].enhetsId).toBe("4405");
+    expect(sisteKall()[1].kilde).toBe("brevmeny");
   });
 
   it("sender aldri saksId i klartekst når hashingen feiler", async () => {

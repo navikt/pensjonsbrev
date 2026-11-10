@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import no.nav.brev.brevbaker.markup.Attachment as AttachmentV2
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
@@ -115,6 +116,7 @@ sealed interface VersjonertMarkup {
 data class RendretBrev(
     val markup: VersjonertMarkup,
     val letterDataUsage: Set<LetterMarkupWithDataUsage.Property>,
+    val stableHashCode: StableHashCode,
 )
 
 internal fun JsonNode.markupVersjon(): MarkupVersjon =

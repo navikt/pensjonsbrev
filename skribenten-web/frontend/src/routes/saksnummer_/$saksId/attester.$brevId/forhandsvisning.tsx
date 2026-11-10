@@ -211,7 +211,6 @@ const SendBrevModal = (props: {
         brevkode: cachedBrevData?.info.brevkode,
         spraak: cachedBrevData?.info.spraak,
         type: "attestering",
-        enhetsId: cachedBrevData?.info.avsenderEnhet.enhetNr,
       });
       setBrevResult(props.brevId, {
         status: "success",
