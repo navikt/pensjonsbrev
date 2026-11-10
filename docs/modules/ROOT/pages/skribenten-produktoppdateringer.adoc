@@ -35,6 +35,8 @@ Attestanten kan velge å vise:
 * tekst som er slettet, markert i rosa med gjennomstreking
 * eller begge samtidig
 
+image::attestering-begge-endringer.png[]
+
 === Mer robust innliming av tekst
 
 Håndteringen av innlimt tekst er forbedret, blant annet ved innliming i markert tekst, lister og tabeller. Det er også lagt til støtte for flere formater fra utklippstavlen. Målet er å redusere behovet for formatering når du limer inn tekst i brevet, men det er fortsatt viktig å kontrollere resultatet etter innliming.
