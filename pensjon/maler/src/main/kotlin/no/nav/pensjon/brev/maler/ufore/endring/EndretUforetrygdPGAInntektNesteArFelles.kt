@@ -58,8 +58,8 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                             alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
                         ) {
                             text(
-                                bokmal { +"Beløp før skatt per måned" },
-                                nynorsk { +"Beløp før skatt per månad" },
+                                bokmal { +"Beløp" },
+                                nynorsk { +"Beløp" },
                             )
                         }
                     }
@@ -130,6 +130,22 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                     row {
                         cell {
                             text(
+                                bokmal { +"Sum per måned før skatt" },
+                                nynorsk { +"Sum per månad før skatt" },
+                                FontType.BOLD
+                            )
+                        }
+                        cell {
+                            text(
+                                bokmal { +data.totalNetto.format() },
+                                nynorsk { +data.totalNetto.format() },
+                                FontType.BOLD
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
                                 bokmal { +"Fribeløp" },
                                 nynorsk { +"Fribeløp" }
                             )
@@ -152,22 +168,6 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                             text(
                                 bokmal { +data.uforetrygd.bunnfradrag.format() },
                                 nynorsk { +data.uforetrygd.bunnfradrag.format() }
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Sum før skatt" },
-                                nynorsk { +"Sum før skatt" },
-                                FontType.BOLD
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +data.totalNetto.format() },
-                                nynorsk { +data.totalNetto.format() },
-                                FontType.BOLD
                             )
                         }
                     }
@@ -318,11 +318,19 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 }
             }
 
+
             title1 {
-                text(
-                    bokmal { +"I " + data.virkningFom.year.format() + " kan du ha høyere inntekt før vi reduserer uføretrygden din" },
-                    nynorsk { +"I " + data.virkningFom.year.format() + " kan du ha høgare inntekt før vi reduserer uføretrygda di" }
-                )
+                showIf(data.uforetrygd.fribelop1G or data.uforetrygd.fribelop04GTil1G) {
+                    text(
+                        bokmal { +"I " + data.virkningFom.year.format() + " kan du ha høyere inntekt før vi reduserer uføretrygden din" },
+                        nynorsk { +"I " + data.virkningFom.year.format() + " kan du ha høgare inntekt før vi reduserer uføretrygda di" }
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"Bunnfradraget ditt endres i " + data.virkningFom.year.format() },
+                        nynorsk { +"Botnfrådraget ditt endres i " + data.virkningFom.year.format() }
+                    )
+                }
             }
 
             paragraph {
@@ -351,11 +359,13 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Et høyere bunnfradrag kan gjøre det mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
-                    nynorsk { +"Eit høgare botnfrådrag kan gjere det meir lønsamt for deg å kombinere jobb og uføretrygd. " }
-                )
+            showIf(data.uforetrygd.fribelop1G or data.uforetrygd.fribelop04GTil1G) {
+                paragraph {
+                    text(
+                        bokmal { +"Et høyere bunnfradrag kan gjøre det mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
+                        nynorsk { +"Eit høgare botnfrådrag kan gjere det meir lønsamt for deg å kombinere jobb og uføretrygd. " }
+                    )
+                }
             }
 
             showIf(data.uforetrygd.fribelop1G) {
@@ -374,7 +384,7 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                         }
                     }
                 }
-            }.orShow {
+            }.orShowIf(data.uforetrygd.fribelop1GTil04G.notNull() or data.uforetrygd.fribelop04GTil1GTil04G.notNull() or data.uforetrygd.fribelop04GTil1G) {
                 title1 {
                     text(
                         bokmal { +"Periodisert fribeløp" },

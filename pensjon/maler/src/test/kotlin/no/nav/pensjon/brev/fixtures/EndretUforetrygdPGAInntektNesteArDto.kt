@@ -37,6 +37,7 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
             fribelop = Kroner(3),
             bunnfradrag = Kroner(4),
             erGradert = true,
+            fribelop1GDesemberIfjor = false,
             fribelopsperioder = listOf(
                 Fribelopsperiode(
                     fom = LocalDate.of(2026, 1, 1),
