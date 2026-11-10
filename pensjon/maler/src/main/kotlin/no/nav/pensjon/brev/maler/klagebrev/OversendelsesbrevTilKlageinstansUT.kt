@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageins
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.BeregningAvUfoeretrygd
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.EoesArtikkel57
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU
+import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.FastsettelseIFUIEU.*
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.FastsettelseUfoeregrad
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.HensiktsmessigBehandlingOgTiltak
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.HovedAarsakTilSykdom
@@ -42,8 +43,6 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -72,32 +71,10 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
     ) {
 
         val avslag = saksbehandlervalg("avslag", "Hvis § 12-17 Yrkesskade, velg:").enum<Avslag>()
-        val fastsettelseInntekt = saksbehandlervalg("fastsettelseInntekt", "Velg om inntekt er fastsatt før eller etter uførhet:").enum<FastsettelseIFUIEU.FastsettelseInntektValg>()
+        val fastsettelseInntekt = saksbehandlervalg("fastsettelseInntekt", "Velg om inntekt er fastsatt før eller etter uførhet:").enum<FastsettelseInntektValg>()
         val inntekt = saksbehandlervalg("inntekt", "Velg begrunnelsen for inntektsreduksjon:").enum<ReduksjonPaaGrunnAvInntektValg>()
         val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
         val ufoertidspunkt = saksbehandlervalg("ufoertidspunkt", "Velg uføretidspunkt:").enum<UngUfoer.Ufoertidspunkt>()
-        val fastsettelseInntektValgt = ifElse(
-            paragraf.isOneOf(Paragraf.FastsettelseIFU),
-            FastsettelseIFUIEU.FastsettelseInntektValg.IFU.expr(),
-            ifElse(
-                paragraf.isOneOf(Paragraf.FastsettelseIEU),
-                FastsettelseIFUIEU.FastsettelseInntektValg.IEU.expr(),
-                fastsettelseInntekt,
-            ),
-        )
-        val inntektValgt = ifElse(
-            paragraf.isOneOf(Paragraf.AutomatiskInntektsreduksjon),
-            ReduksjonPaaGrunnAvInntektValg.Automatisk.expr(),
-            ifElse(
-                paragraf.isOneOf(Paragraf.Etteropgjoer),
-                ReduksjonPaaGrunnAvInntektValg.Etteroppgjoer.expr(),
-                ifElse(
-                    paragraf.isOneOf(Paragraf.EtteroppgjoerBarnetillegg),
-                    ReduksjonPaaGrunnAvInntektValg.EtteroppgjoerBarnetillegg.expr(),
-                    inntekt,
-                ),
-            ),
-        )
 
 
         title { text(bokmal { +"Oversendelse til $NAV_KLAGEINSTANS - Uføretrygd" }) }
@@ -170,8 +147,8 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
                 includePhrase(KombinasjonNedsattInntektsevne)
             }.orShowIf(paragraf.isOneOf(Paragraf.Ufoeretidspunkt)) {
                 includePhrase(Ufoeretidspunkt)
-            }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseAvInntekt, Paragraf.FastsettelseIFU, Paragraf.FastsettelseIEU)) {
-                includePhrase(FastsettelseIFUIEU(fastsettelseInntektValgt))
+            }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseAvInntekt)) {
+                includePhrase(FastsettelseIFUIEU(fastsettelseInntekt))
             }.orShowIf(paragraf.isOneOf(Paragraf.FastsettelseUfoeregrad)) {
                 includePhrase(FastsettelseUfoeregrad)
             }.orShowIf(paragraf.isOneOf(Paragraf.BeregningAvUfoeretrygd)) {
@@ -180,15 +157,8 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
                 includePhrase(Trygdetid)
             }.orShowIf(paragraf.isOneOf(Paragraf.Ungufoer)) {
                 includePhrase(UngUfoer(ufoertidspunkt))
-            }.orShowIf(
-                paragraf.isOneOf(
-                    Paragraf.ReduksjonPaaGrunnAvInntekt,
-                    Paragraf.AutomatiskInntektsreduksjon,
-                    Paragraf.Etteropgjoer,
-                    Paragraf.EtteroppgjoerBarnetillegg,
-                )
-            ) {
-                includePhrase(ReduksjonPaaGrunnAvInntekt(inntektValgt))
+            }.orShowIf(paragraf.isOneOf(Paragraf.ReduksjonPaaGrunnAvInntekt)) {
+                includePhrase(ReduksjonPaaGrunnAvInntekt(inntekt))
             }.orShowIf(paragraf.isOneOf(Paragraf.Barnetillegg)) {
                 includePhrase(Barnetillegg)
             }.orShowIf(paragraf.isOneOf(Paragraf.ReduksjonAvBarnetillegg)) {
@@ -232,11 +202,6 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             Virkningstidspunkt("§ 22-12/22-13 Virkningstidspunkt", 20),
             Tilbakekreving("§ 22-15 Tilbakekreving", 21),
             EosArtikkel57("EØS-trygdeforordningen artikkel 57 Trygdetid eller botid under ett år", 22),
-            FastsettelseIFU("§ 12-9 Fastsettelse av inntekt før uførhet", 23),
-            FastsettelseIEU("§ 12-9 Fastsettelse av inntekt etter uførhet", 24),
-            AutomatiskInntektsreduksjon("§ 12-14 Automatisk inntektsreduksjon", 25),
-            Etteropgjoer("§ 12-14 Etteroppgjør", 26),
-            EtteroppgjoerBarnetillegg("§ 12-14 Etteroppgjør barnetillegg", 27),
     }
 }
 

@@ -78,38 +78,6 @@ object OversendelsesbrevTilKlageinstansTekst {
 //SLUTT FELLESTEKSTER
 
     //START FOLKETRYGDLOVEN
-    object Generisk : RedigerbarOutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-
-            paragraph {
-                text(bokmal {
-                    +"Vi viser til klagen av "
-                    +fritekst("dato") + " på vedtak av "
-                    +fritekst("dato") + ", der "
-                    +fritekst("Beskrive kort hva avslaget gjelder/vedtaket gjelder. Eks: (...), der klager fikk avslag på sitt krav om uføretrygd.")
-                    +". Klagefristen er overholdt."
-                })
-            }
-            paragraph { text(bokmal { +"Klagen behandles etter folketrygdloven § " + fritekst("aktuell hjemmel/hjemler") + "." }) }
-
-            includePhrase(ViHarVurdertKlagen)
-            includePhrase(KlagersAnfoersler)
-
-            title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph {
-                text(bokmal {
-                    +fritekst(
-                        "Gjør rede for problemstillingen i saken. "
-                                + "Det skal komme frem hvilke lovbestemmelser som gjøres gjeldende i saken/ hva sier loven? "
-                                + "Det skal skrives en begrunnelse for hvorfor klager ikke fyller vilkårene. "
-                                + "Klagers anførsler skal kommenteres/imøtegås. "
-                                + "Drøftelsen skal avsluttes med en konklusjon."
-                    )
-                })
-            }
-        }
-    }
-
     //§12-2 Medlemskap
     object Medlemskap : RedigerbarOutlinePhrase<LangBokmal>() {
         override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
@@ -446,32 +414,7 @@ object OversendelsesbrevTilKlageinstansTekst {
 
         enum class FastsettelseInntektValg(override val displayText: String, override val rekkefoelge: Int) :
             SaksbehandlerValgEnum {
-            IFU("Inntekt Før Uførehet (IFU)", 1), IEU("Inntekt Etter Uførhet (IEU)", 2)
-        }
-    }
-
-    //§ 12-9 Fastsettelse av Inntekt Etter Uførhet IEU
-    object FastsettelseIEU : RedigerbarOutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
-
-            includePhrase(InnvilgetUfoeretrygd)
-
-            paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-9 – fastsettelse av inntekt før uførhet." }) }
-
-            includePhrase(ViHarVurdertKlagen)
-            includePhrase(KlagersAnfoersler)
-
-            title1 { text(bokmal { +"Vurdering av klagen" }) }
-            paragraph {
-                text(bokmal {
-                    +"Inntekt etter uførhet skal fastsettes til den inntekten som personen forutsetter å kunne skaffe seg ved å utnytte restinntektsevnen. "
-                    +"Utgangspunktet for fastsettelsen av inntekt etter uførhet (IEU) er personens fremtidige pensjonsgivende inntekt. "
-                    +"Hvis vedkommende har inntektsmuligheter som ikke utnyttes skal disse medregnes. "
-                    +"Inntekten etter uførhet kan derfor settes høyere enn faktisk pensjonsgivende inntekt."
-                })
-            }
-
-            includePhrase(KlippInnFraVedtak)
+            IFU("Inntekt Før Uførehet (IFU)", 1), IEU("Inntekt Etter Uførehet (IEU)", 2)
         }
     }
 
