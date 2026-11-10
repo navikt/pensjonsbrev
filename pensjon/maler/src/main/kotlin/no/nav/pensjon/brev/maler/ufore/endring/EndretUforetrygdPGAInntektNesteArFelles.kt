@@ -417,7 +417,7 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                         ifNotNull(data.uforetrygd.fribelopUtvikling.gradsokning) { gradsokning ->
                             text(
                                 bokmal { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Da øker din uføregrad, og fribeløpet settes ned til 0,4 G. " },
-                                nynorsk { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Då aukar uføregraden din, og fribeløpet blir sett ned til 0,4 G." }
+                                nynorsk { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Då aukar uføregraden din, og fribeløpet blir sett ned til 0,4 G. " }
                             )
                             showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
                                 text(
@@ -431,12 +431,12 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                             showIf(fribelopsokning._2arEtterGradsokning) {
                                 text(
                                     bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
-                                    nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G." }
+                                    nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. " }
                                 )
                             }.orShow {
                                 text(
-                                    bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G." },
-                                    nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G." }
+                                    bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
+                                    nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. " }
                                 )
                             }
                             showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
