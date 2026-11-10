@@ -60,7 +60,7 @@ class RedigerbarTemplateResourceTest {
                 saksbehandlerNavn = "Saksbehandlersen",
                 attesterendeSaksbehandlerNavn = null,
                 navAvsenderEnhet = "Akersgata"
-            )
+            ),
         ),
         alltidValgbareVedlegg = listOf(),
         redigerteVedlegg = emptyMap(),
@@ -71,7 +71,7 @@ class RedigerbarTemplateResourceTest {
             saksbehandlervalg = letterData.saksbehandlerValg,
             felles = FellesFactory.felles,
             language = LanguageCode.BOKMAL
-        )
+        ),
     )
 
     private val validRedigertBrevRequestV2 = BestillRedigertBrevRequestV2(

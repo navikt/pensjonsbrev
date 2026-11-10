@@ -17,6 +17,7 @@ import no.nav.brev.brevbaker.markup.outline.Block as BlockV2
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2 as MarkupV2Dsl
 import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
@@ -676,7 +677,12 @@ abstract class BrevredigeringHandlerTestBase {
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
-                .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
+                .let { LetterMarkupWithDataUsageImpl(
+                    markup = it,
+                    letterDataUsage = emptySet(),
+                    brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
+                    stableHashCode = StableHashCode(123),
+                ) }
 
         override suspend fun renderMarkupV2(
             brevkode: Brevkode.Redigerbart,
@@ -688,6 +694,7 @@ abstract class BrevredigeringHandlerTestBase {
             markup = renderMarkupV2Resultat(felles).also { renderMarkupKall.add(Pair(brevkode, spraak)) },
             letterDataUsage = emptySet(),
             brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) Markup.Brevtype.VEDTAKSBREV else Markup.Brevtype.INFORMASJONSBREV,
+            stableHashCode = StableHashCode(123),
         )
 
         override suspend fun renderPdf(

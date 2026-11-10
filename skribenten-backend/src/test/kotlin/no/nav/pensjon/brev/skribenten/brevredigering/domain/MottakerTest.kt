@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.time.Instant
 import java.time.LocalDate
 
 // TODO: Bør endre på hele denne. Mottaker er et value object under Brevredigering.
@@ -100,12 +100,12 @@ class MottakerTest {
     private fun createBrevredigering() = transaction {
         BrevredigeringEntity.opprettBrev(
             saksId = SaksId(123L),
+            vedtaksId = null,
             opprettetAv = principal,
             brevkode = Testbrevkoder.TESTBREV,
             spraak = LanguageCode.BOKMAL,
             avsenderEnhetId = EnhetId("1111"),
             saksbehandlerValg = SaksbehandlervalgMap(),
-            distribusjonstype = Distribusjon.SENTRALPRINT,
             redigertBrev = VersjonertBrev.V1(Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(
@@ -125,8 +125,7 @@ class MottakerTest {
                 emptyList(),
             )),
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-            vedtaksId = null,
-            timestamp = Instant.now(),
+            brevmalHash = StableHashCode(12345),
         )
     }
 

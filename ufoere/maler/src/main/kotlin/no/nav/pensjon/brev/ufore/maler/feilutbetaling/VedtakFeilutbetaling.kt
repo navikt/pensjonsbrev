@@ -135,7 +135,7 @@ object VedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
             paragraph {
                 text(
                     bokmal { + fritekst("Din vurdering om bruker har gitt beskjed") },
-                    nynorsk { + fritekst("Di vurdering om brukar har gitt beskjed ") }
+                    nynorsk { + fritekst("Di vurdering om brukar har gitt beskjed") }
                 )
             }
             paragraph {

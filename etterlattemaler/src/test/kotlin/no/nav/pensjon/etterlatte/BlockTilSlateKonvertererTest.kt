@@ -134,7 +134,7 @@ class BlockTilSlateKonvertererTest {
                     )
                 )
             )
-        )
+        ),
     )
 
     private val brevbaker_payload_med_item_list = LetterMarkupImpl(
@@ -214,6 +214,6 @@ class BlockTilSlateKonvertererTest {
             saksbehandlerNavn = "Ole Saksbehandler",
             attesterendeSaksbehandlerNavn = "Per Attesterende",
             navAvsenderEnhet = "NAV Familie- og pensjonsytelser Porsgrunn"
-        )
+        ),
     )
 }
