@@ -197,9 +197,8 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         previousRendered: List<E>? = null,
         isNewFromTemplate: ((E) -> Boolean) = { false },
     ): List<E> = buildList {
-        val previousRenderedSet = previousRendered?.toSet()
         fun markNewFromTemplate(result: E, renderedElement: E, editedElement: E? = null): E =
-            if ((editedElement != null && isNewFromTemplate(editedElement)) || (previousRenderedSet != null && renderedElement !in previousRenderedSet)) {
+            if ((editedElement != null && isNewFromTemplate(editedElement)) || (previousRendered != null && renderedElement !in previousRendered)) {
                 setNewFromTemplate(result)
             } else {
                 result
