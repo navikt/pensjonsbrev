@@ -779,7 +779,7 @@ object OversendelsesbrevTilKlageinstansTekst {
                             +fritekst("år") + ". Klagefristen er overholdt."
                         })
                     }
-                    paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven §§ 12-14 og 12-16, samt etter kapittel 3 og 4 i forskrift om uføretrygd fra folketrygden." }) }
+                    paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt etter kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
                     paragraph { text(bokmal { +fritekst("Husk å bruke ny hjemmel § 12-14 EO - arbeidsforsøk, der det er aktuelt!") }) }
 
                 }.orShowIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.EtteroppgjoerBarnetillegg)) {
