@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.brevbaker.BrevbakerLetterMarkup
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
@@ -281,5 +283,17 @@ class Letter2MarkupV2Test {
                 }
             }
         }
+        assertEquals(StableHashCode(vedlegg.stableHashCode()), result.attachments.single().stableHashCode)
+    }
+
+    @Test
+    fun `rendered letter with data usage includes template stable hash`() {
+        val template = outlineTestTemplate<EmptyAutobrevdata> {
+            title1 { text(bokmal { +"overskrift" }) }
+        }
+
+        val result = BrevbakerLetterMarkup.renderLetterMarkupWithDataUsageV2(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
+
+        assertEquals(StableHashCode(template.stableHashCode()), result.stableHashCode)
     }
 }

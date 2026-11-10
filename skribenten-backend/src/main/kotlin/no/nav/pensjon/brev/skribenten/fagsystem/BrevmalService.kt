@@ -78,13 +78,14 @@ class BrevmalService(
         pesysData: BrevdataResponse.Data
     ): RendretBrev = when (markupVersjon) {
         MarkupVersjon.V1 -> renderMarkup(brevkode, spraak, saksbehandlerValg, pesysData)
-            .let { RendretBrev(VersjonertMarkup.V1(it.markup), it.letterDataUsage) }
+            .let { RendretBrev(VersjonertMarkup.V1(it.markup), it.letterDataUsage, it.stableHashCode) }
 
         MarkupVersjon.V2 -> renderMarkupV2(brevkode, spraak, saksbehandlerValg, pesysData)
             .let { rendret ->
                 RendretBrev(
                     markup = VersjonertMarkup.V2(rendret.markup),
                     letterDataUsage = rendret.letterDataUsage.map { LetterMarkupWithDataUsageImpl.PropertyImpl(it.typeName, it.propertyName) }.toSet(),
+                    stableHashCode = rendret.stableHashCode,
                 )
             }
     }

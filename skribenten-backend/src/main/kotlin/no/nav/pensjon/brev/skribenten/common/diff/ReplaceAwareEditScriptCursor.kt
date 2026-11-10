@@ -89,6 +89,26 @@ class ReplaceAwareEditScriptCursor<T : Any>(editScript: EditScript<T>) {
     )
 
     /**
+     * Mutable index bookkeeping for [forEachIndexedStable]. Passing the same instance to consecutive calls lets one
+     * side continue counting from where the previous call left off, which is needed when a container only exists on
+     * the other side (e.g. an inserted block that the edit script splits an old block's content across).
+     */
+    class StableIndexState {
+        var insertIndex = 0
+        var deleteIndex = 0
+        var lastDeleteIndex = 0
+
+        fun resetInsertSide() {
+            insertIndex = 0
+        }
+
+        fun resetDeleteSide() {
+            deleteIndex = 0
+            lastDeleteIndex = 0
+        }
+    }
+
+    /**
      * Like [forEachIndexed], but additionally provides a decoy-corrected insert index and a stabilized delete index
      * - see [StableIndices].
      *
@@ -108,14 +128,19 @@ class ReplaceAwareEditScriptCursor<T : Any>(editScript: EditScript<T>) {
      * misattribute a later, genuinely leading delete to a spurious "next" position. [Delete] entries are always
      * excluded regardless of the returned value, since they never consume the insert side to begin with.
      */
-    inline fun <reified E : T> forEachIndexedStable(action: (indices: StableIndices, entry: DiffEntry<E>) -> Boolean) {
-        var insertIndex = 0
-        var lastDeleteIndex = 0
-        forEachIndexed<E> { _, deleteIndex, entry ->
-            val stableDeleteIndex = if (entry is Insert) lastDeleteIndex else deleteIndex
-            val insertSideWasDecoy = action(StableIndices(insertIndex, deleteIndex, stableDeleteIndex), entry)
-            if (entry !is Delete && !insertSideWasDecoy) insertIndex++
-            if (entry !is Insert) lastDeleteIndex = deleteIndex
+    inline fun <reified E : T> forEachIndexedStable(
+        state: StableIndexState = StableIndexState(),
+        action: (indices: StableIndices, entry: DiffEntry<E>) -> Boolean,
+    ) {
+        while (true) {
+            val entry = consumeIf<E>() ?: break
+            val stableDeleteIndex = if (entry is Insert) state.lastDeleteIndex else state.deleteIndex
+            val insertSideWasDecoy = action(StableIndices(state.insertIndex, state.deleteIndex, stableDeleteIndex), entry)
+            if (entry !is Delete && !insertSideWasDecoy) state.insertIndex++
+            if (entry !is Insert) {
+                state.lastDeleteIndex = state.deleteIndex
+                state.deleteIndex++
+            }
         }
     }
 

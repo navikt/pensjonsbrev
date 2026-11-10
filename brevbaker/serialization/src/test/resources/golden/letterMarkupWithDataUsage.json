@@ -253,5 +253,6 @@
     "typeName" : "UngUfoerDto",
     "propertyName" : "virkningsdato"
   } ],
-  "brevtype" : "VEDTAKSBREV"
+  "brevtype" : "VEDTAKSBREV",
+  "stableHashCode" : 123
 }

@@ -1,13 +1,17 @@
 package no.nav.brev.brevbaker.serialization
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.node.ObjectNode
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -37,6 +41,29 @@ class MarkupJacksonModuleTest {
             letter,
             mapper.readValue(mapper.writeValueAsString(letter), LetterMarkupWithDataUsage::class.java),
         )
+    }
+
+    @Test
+    fun `stableHashCode serialiseres paa databruk-wrapperen og ikke markup`() {
+        val letter = MarkupGoldenFixture.withDataUsage()
+        val tree = mapper.readTree(mapper.writeValueAsString(letter))
+
+        assertEquals(123, tree["stableHashCode"].intValue())
+        assertFalse(tree["markup"].has("stableHashCode"))
+    }
+
+    @Test
+    fun `LetterMarkupWithDataUsage krever stableHashCode`() {
+        val tree = mapper.valueToTree<ObjectNode>(MarkupGoldenFixture.withDataUsage())
+        tree.remove("stableHashCode")
+        assertThrows<JsonMappingException> {
+            mapper.readValue(tree.toString(), LetterMarkupWithDataUsage::class.java)
+        }
+
+        tree.putNull("stableHashCode")
+        assertThrows<JsonMappingException> {
+            mapper.readValue(tree.toString(), LetterMarkupWithDataUsage::class.java)
+        }
     }
 
     @Test

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.ALDERSPENSJON_GJENLEVENDE_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
+import no.nav.pensjon.brev.alder.maler.felles.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
@@ -696,21 +696,21 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                                     "Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. " +
                                     "Vi kan trekke fra skatt og ytelser du har fått fra for eksempel $NAV_URL eller tjenestepensjonsordninger. " +
                                     "Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. " +
-                                    "Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV"
+                                    "Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $MINSIDE_URL"
                         },
                         nynorsk {
                             +"Du får etterbetalt pensjon frå " + virkFom.formatMonthYear() + " . " +
                                     "Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. " +
                                     "Vi kan trekkje frå skatt og ytingar du har fått frå for eksempel $NAV_URL eller tenestepensjonsordningar. " +
                                     "Etterbetalinga di kan derfor bli forseinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. " +
-                                    "Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV"
+                                    "Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $MINSIDE_URL"
                         },
                         english {
                             +"You will receive retroactive pension payments from " + virkFom.formatMonthYear() + ". " +
                                     "The retroactive payments will normally be made in the course of seven working days. " +
                                     "We can make deductions for tax and benefits you have received, for example, from $NAV_URL or occupational pension schemes. " +
                                     "Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. " +
-                                    "You can check if there are any deductions from the payment notice at $DITT_NAV"
+                                    "You can check if there are any deductions from the payment notice at $MINSIDE_URL"
                         }
                     )
                 }

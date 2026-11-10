@@ -1,4 +1,5 @@
 import { current, type Draft, isDraft, produce } from "immer";
+import { type MouseEvent } from "react";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
@@ -10,6 +11,7 @@ import {
   isParagraph,
   isTableCellIndex,
   isTextContent,
+  ZERO_WIDTH_SPACE,
 } from "~/Brevredigering/LetterEditor/model/utils";
 import { type BrevResponse } from "~/types/brev";
 import {
@@ -1232,3 +1234,22 @@ export function getBlockClassName(
 
 export const base64ToPdfBlob = (b64: string) =>
   new Blob([Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))], { type: "application/pdf" });
+
+/**
+ * Cell literals are inline, so an empty one is only 1ch wide and browsers don't reliably move the caret into it
+ * when the click lands in the rest of the cell. Focuses the literal of an empty cell on such clicks.
+ */
+export function focusEmptyCellOnClick(event: MouseEvent<HTMLTableElement>) {
+  const cell = event.target as HTMLElement;
+  if (event.button !== 0 || (cell.tagName !== "TD" && cell.tagName !== "TH")) return;
+  const selection = globalThis.getSelection();
+  if (!selection?.isCollapsed || cell.contains(document.activeElement)) return;
+  if (cell.textContent?.replaceAll(ZERO_WIDTH_SPACE, "") !== "") return;
+
+  const literal = cell.querySelector<HTMLElement>("[data-literal-index][contenteditable=true]");
+  const textNode = literal?.firstChild;
+  if (textNode?.nodeType !== Node.TEXT_NODE) return;
+
+  literal?.focus();
+  selection.collapse(textNode, textNode.textContent?.length ?? 0);
+}

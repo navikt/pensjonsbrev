@@ -145,10 +145,10 @@ object InformasjonOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { +"Informasjon om utbetalingene dine finner du på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt." },
-                nynorsk { +"Informasjon om utbetalingane dine finn du på ${Constants.DITT_NAV}. Her kan du også endre kontonummeret ditt." },
+                bokmal { +"Informasjon om utbetalingene dine finner du på ${Constants.MINSIDE_URL}. Her kan du også endre kontonummeret ditt." },
+                nynorsk { +"Informasjon om utbetalingane dine finn du på ${Constants.MINSIDE_URL}. Her kan du også endre kontonummeret ditt." },
                 english {
-                    +"You can find more detailed information on what you will receive at ${Constants.DITT_NAV}. Here you can also change your bank account number."
+                    +"You can find more detailed information on what you will receive at ${Constants.MINSIDE_URL}. Here you can also change your bank account number."
                 },
             )
         }
