@@ -6,6 +6,7 @@ enum class FeatureToggles(private val key: String) {
     testmal("ut.testmal"),
     simulering("ut.simulering"),
     utsendelseTilUtland("ut.utsendelseTilUtland"),
+    ufoeretrygdForeloepigEksportvurdering("ut.ufoeretrygdForeloepigEksportvurdering"),
     innhentingOpplysningerForside("ut.innhOpplysningerForside")
     ;
 

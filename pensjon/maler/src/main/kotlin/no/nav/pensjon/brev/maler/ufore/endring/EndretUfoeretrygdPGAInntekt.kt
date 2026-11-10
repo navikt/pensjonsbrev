@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUTPgaInntektDtoV2.uforetrygd.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUTPgaInntektDtoV2.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
@@ -650,9 +650,9 @@ object EndretUfoeretrygdPGAInntekt {
             paragraph {
                 text(
                     bokmal { + "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. " +
-                            "Du kan se alle utbetalingene du har mottatt på $DITT_NAV. Her kan du også endre kontonummeret ditt. " },
+                            "Du kan se alle utbetalingene du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt. " },
                     nynorsk { + "Du får utbetalt uføretrygd den 20. kvar månad, eller seinast siste verkedag før denne datoen. " +
-                            "Du kan sjå alle utbetalingane du har fått, på $DITT_NAV. Her kan du også endre kontonummeret ditt. " }
+                            "Du kan sjå alle utbetalingane du har fått, på $MINSIDE_URL. Her kan du også endre kontonummeret ditt. " }
                 )
             }
 

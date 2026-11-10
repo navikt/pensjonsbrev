@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
+import no.nav.pensjon.brev.alder.maler.felles.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
@@ -608,9 +608,9 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
             paragraph {
                 text(
-                    bokmal { + "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg " + quoted("Send beskjed til Nav") + ", tema " + quoted("Beskjed – pensjon") + "." },
-                    nynorsk { + "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel " + quoted("Send beskjed til Nav") +", tema " + quoted("Beskjed – pensjon") + "." },
-                    english { + "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select " + quoted("Send beskjed til Nav") +" and the theme " + quoted("Beskjed – pensjon") + "." },
+                    bokmal { + "Du kan gi tilbakemelding via Nav sin nettside $MINSIDE_URL. Velg " + quoted("Send beskjed til Nav") + ", tema " + quoted("Beskjed – pensjon") + "." },
+                    nynorsk { + "Du kan gi tilbakemelding via Nav si nettside $MINSIDE_URL. Vel " + quoted("Send beskjed til Nav") +", tema " + quoted("Beskjed – pensjon") + "." },
+                    english { + "Feel free to contact us and give us the required information at Nav’s online service $MINSIDE_URL. Select " + quoted("Send beskjed til Nav") +" and the theme " + quoted("Beskjed – pensjon") + "." },
                 )
             }
             paragraph {

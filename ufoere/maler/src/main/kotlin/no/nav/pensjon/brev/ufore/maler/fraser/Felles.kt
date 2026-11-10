@@ -43,12 +43,6 @@ class Felles {
                     "Rettleiar kan også hjelpe deg å finne ut om det er andre pengestøttar frå Nav som kan vere aktuelle for deg." }
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Ditt lokale Nav-kontor har fått beskjed om at vi har avslått søknaden din."},
-                    nynorsk { +"Ditt lokale Nav-kontor har fått beskjed om at vi har avslått søknaden din." }
-                )
-            }
         }
     }
 
