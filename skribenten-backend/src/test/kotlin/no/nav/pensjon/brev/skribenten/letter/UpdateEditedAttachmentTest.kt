@@ -167,6 +167,32 @@ class UpdateEditedAttachmentTest {
     }
 
     @Test
+    fun `duplicate inserted before an attachment separator marks only the inserted occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = attachment(separator, paragraph)
+        val next = attachment(paragraph, separator, paragraph)
+
+        val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(next.toEdit().blocks.map { it.content }, result.blocks.map { it.content })
+        assertEquals(listOf(true, false, false), result.blocks.map { it.newFromTemplate })
+        assertEquals(result, result.updateEditedAttachment(next, previousRender = next.toEdit()))
+    }
+
+    @Test
+    fun `duplicate inserted after an attachment separator marks only the inserted occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = attachment(paragraph, separator)
+        val next = attachment(paragraph, separator, paragraph)
+
+        val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(false, false, true), result.blocks.map { it.newFromTemplate })
+    }
+
+    @Test
     fun `edited block changed since previous render keeps edits and is marked newFromTemplate`() {
         val previous = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "100 kr"))))
         val next = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "200 kr"))))

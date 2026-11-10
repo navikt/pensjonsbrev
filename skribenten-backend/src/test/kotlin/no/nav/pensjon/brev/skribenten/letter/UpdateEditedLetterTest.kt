@@ -1301,6 +1301,32 @@ class UpdateRenderedLetterTest {
     }
 
     @Test
+    fun `duplicate inserted before a separator is marked instead of the unchanged occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = letter(separator, paragraph)
+        val next = letter(paragraph, separator, paragraph)
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(next.toEdit().blocks.map { it.content }, result.blocks.map { it.content })
+        assertEquals(listOf(true, false, false), result.blocks.map { it.newFromTemplate })
+        assertEquals(result, result.updateEditedLetter(next, previousRender = next.toEdit()))
+    }
+
+    @Test
+    fun `duplicate inserted after a separator is marked instead of the unchanged occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = letter(paragraph, separator)
+        val next = letter(paragraph, separator, paragraph)
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(false, false, true), result.blocks.map { it.newFromTemplate })
+    }
+
+    @Test
     fun `deleted occurrences consume previous matches before marking additional duplicates`() {
         val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
         val previous = letter(paragraph)

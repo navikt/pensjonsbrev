@@ -124,7 +124,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         return collectMatchedRenderedIndices(editedIds, renderedWithIds, lengths)
     }
 
-    private fun longestCommonSubsequenceLengths(editedIds: List<Int>, renderedIds: List<Int>): Array<IntArray> {
+    private fun <T> longestCommonSubsequenceLengths(editedIds: List<T>, renderedIds: List<T>): Array<IntArray> {
         val lengths = Array(editedIds.size + 1) { IntArray(renderedIds.size + 1) }
         for (editedIndex in editedIds.indices.reversed()) {
             for (renderedIndex in renderedIds.indices.reversed()) {
@@ -139,9 +139,9 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         return lengths
     }
 
-    private fun collectMatchedRenderedIndices(
-        editedIds: List<Int>,
-        renderedWithIds: List<Pair<Int, Int>>,
+    private fun <T> collectMatchedRenderedIndices(
+        editedIds: List<T>,
+        renderedWithIds: List<Pair<Int, T>>,
         lengths: Array<IntArray>,
     ): Set<Int> =
         buildSet {
@@ -198,11 +198,10 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         isNewFromTemplate: ((E) -> Boolean) = { false },
     ): List<E> = buildList {
         val renderedWithNewMarkers = if (previousRendered != null) {
-            val previousCounts = previousRendered.groupingBy { it }.eachCount().toMutableMap()
-            rendered.map { element ->
-                val count = previousCounts[element] ?: 0
-                if (count > 0) {
-                    previousCounts[element] = count - 1
+            val lengths = longestCommonSubsequenceLengths(previousRendered, rendered)
+            val unchangedIndices = collectMatchedRenderedIndices(previousRendered, rendered.mapIndexed { index, element -> index to element }, lengths)
+            rendered.mapIndexed { index, element ->
+                if (index in unchangedIndices) {
                     element
                 } else {
                     setNewFromTemplate(element)
