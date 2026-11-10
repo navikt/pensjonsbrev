@@ -181,7 +181,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
      *    result:   [A, B', C, D]
      * ```
      *
-     * If [previousRendered] is provided, every result element taken from [rendered] that is not identical to an element in [previousRendered]
+     * If [previousRendered] is provided, every result element taken from [rendered] without a corresponding identical occurrence in [previousRendered]
      * (i.e. new or changed in the template since the previous render) is marked with [setNewFromTemplate]. The mark is kept for edited elements
      * already marked according to [isNewFromTemplate], so that it survives subsequent merges until Saksbehandler has handled it.
      */
@@ -197,8 +197,23 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         previousRendered: List<E>? = null,
         isNewFromTemplate: ((E) -> Boolean) = { false },
     ): List<E> = buildList {
+        val renderedWithNewMarkers = if (previousRendered != null) {
+            val previousCounts = previousRendered.groupingBy { it }.eachCount().toMutableMap()
+            rendered.map { element ->
+                val count = previousCounts[element] ?: 0
+                if (count > 0) {
+                    previousCounts[element] = count - 1
+                    element
+                } else {
+                    setNewFromTemplate(element)
+                }
+            }
+        } else {
+            rendered
+        }
+
         fun markNewFromTemplate(result: E, renderedElement: E, editedElement: E? = null): E =
-            if ((editedElement != null && isNewFromTemplate(editedElement)) || (previousRendered != null && renderedElement !in previousRendered)) {
+            if ((editedElement != null && isNewFromTemplate(editedElement)) || isNewFromTemplate(renderedElement)) {
                 setNewFromTemplate(result)
             } else {
                 result
@@ -209,11 +224,11 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         // occurrences are still represented by `edited`; deletion counts are consumed only from
         // the unmatched occurrences, preserving the surrounding content order.
         val remainingRendered = if (deleted.isEmpty()) {
-            rendered.filter { it.id != null }.toMutableList()
+            renderedWithNewMarkers.filter { it.id != null }.toMutableList()
         } else {
             val deletedCounts = deleted.groupingBy { it }.eachCount().toMutableMap()
             val matchedRenderedIndices = matchedRenderedIndices(edited, rendered)
-            rendered.mapIndexedNotNull { index, element ->
+            renderedWithNewMarkers.mapIndexedNotNull { index, element ->
                 val id = element.id ?: return@mapIndexedNotNull null
                 val remaining = deletedCounts[id]
                 if (index !in matchedRenderedIndices && remaining != null && remaining > 0) {

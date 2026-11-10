@@ -1287,6 +1287,44 @@ class UpdateRenderedLetterTest {
     }
 
     @Test
+    fun `additional identical block occurrences are marked newFromTemplate`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val previous = letter(paragraph, paragraph)
+        val next = letter(paragraph, paragraph, paragraph, paragraph)
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(false, false, true, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(result, result.updateEditedLetter(next, previousRender = next.toEdit()))
+        assertEquals(previous.toEdit(), previous.toEdit().updateEditedLetter(previous, previousRender = previous.toEdit()))
+        assertEquals(next.toEdit(), previous.toEdit().updateEditedLetter(next))
+    }
+
+    @Test
+    fun `deleted occurrences consume previous matches before marking additional duplicates`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val previous = letter(paragraph)
+        val next = letter(paragraph, paragraph)
+        val edited = previous.toEdit().copy(blocks = emptyList(), deletedBlocks = listOf(1))
+
+        val result = edited.updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(true), result.blocks.map { it.newFromTemplate })
+        assertEquals(listOf(1), result.deletedBlocks)
+    }
+
+    @Test
+    fun `changed duplicate does not consume the previous identical occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val previous = letter(paragraph, paragraph)
+        val next = letter(paragraph.copy(content = listOf(LiteralImpl(11, "Changed"))), paragraph)
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(true, false), result.blocks.map { it.newFromTemplate })
+    }
+
+    @Test
     fun `edited block changed since previous render keeps edits and is marked newFromTemplate`() {
         val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "100 kr"))))
         val next = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "200 kr"))))

@@ -155,6 +155,18 @@ class UpdateEditedAttachmentTest {
     }
 
     @Test
+    fun `additional identical attachment block occurrences are marked newFromTemplate`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val previous = attachment(paragraph)
+        val next = attachment(paragraph, paragraph)
+
+        val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(false, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(result, result.updateEditedAttachment(next, previousRender = next.toEdit()))
+    }
+
+    @Test
     fun `edited block changed since previous render keeps edits and is marked newFromTemplate`() {
         val previous = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "100 kr"))))
         val next = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "200 kr"))))
