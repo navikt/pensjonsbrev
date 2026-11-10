@@ -152,7 +152,13 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     private val _redigerteVedlegg by RedigertVedlegg referrersOn RedigertVedleggTable.brevredigering
     override val redigerteVedlegg: List<Dto.RedigertVedlegg>
-        get() = _redigerteVedlegg.map { Dto.RedigertVedlegg(vedleggId = it.vedleggId.value, redigertVedlegg = it.redigertVedlegg) }
+        get() = _redigerteVedlegg.map {
+            Dto.RedigertVedlegg(
+                vedleggId = it.vedleggId.value,
+                redigertVedlegg = it.redigertVedlegg,
+                rendretVedlegg = it.rendretVedlegg
+            )
+        }
 
     override val vedleggHash: Hash<VedleggSnapshot>
         get() = Hash.read(

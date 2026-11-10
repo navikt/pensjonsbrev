@@ -64,6 +64,7 @@ object Dto {
     data class RedigertVedlegg(
         val vedleggId: BrevbakerType.VedleggId,
         val redigertVedlegg: VersjonertVedlegg,
+        val rendretVedlegg: Edit.Attachment?,
     )
 
     data class Document(
