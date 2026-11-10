@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
 
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -29,10 +31,13 @@ class HentBrevHandler(
             brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = false) {
                 val pesysdata = brevdataService.hentBrevdata(brev)
                 val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-                brev.mergeRendretBrev(rendretBrev.markup)
-                brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
-
-                success(brev.tilDto(rendretBrev.letterDataUsage))
+                if (!Features.forhindreOppdateringAvKladd.isEnabled() || (rendretBrev.stableHashCode == brev.brevmalHash || brev.rendretBrev == null || brev.brevmalHash == null)) {
+                    brev.mergeRendretBrev(rendretBrev.markup)
+                    brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+                    success(brev.tilDto(rendretBrev.letterDataUsage))
+                } else {
+                    success(brev.tilDto(emptySet()))
+                }
             }
         }
 }

@@ -56,6 +56,7 @@ object Features {
     val eblanketter = UnleashToggle("eblanketter")
     val visAutobrev = UnleashToggle("visAutobrev")
     val nyhetsvarsling = UnleashToggle("nyhetsvarsling")
+    val forhindreOppdateringAvKladd = UnleashToggle("forhindreOppdateringAvKladd")
 
     var toggleService: FeatureToggleService? = null
         private set
