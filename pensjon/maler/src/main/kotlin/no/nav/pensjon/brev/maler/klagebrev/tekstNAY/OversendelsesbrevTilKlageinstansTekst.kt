@@ -749,46 +749,39 @@ object OversendelsesbrevTilKlageinstansTekst {
                         +"Vi viser til klagen av "
                         +fritekst("dato") + " på "
                     })
-                }
-
-                showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Automatisk)) {
-                    paragraph {
+                    showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Automatisk)) {
                         text(bokmal {
                             +"vedtak av "
                             +fritekst("dato") + " der uføretrygden ble redusert mot arbeidsinntekt. "
                             +"Klagefristen er overholdt."
                         })
-                    }
-                    paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
-
-                }.orShow {
-                    paragraph {
+                    }.orShow {
                         text(bokmal {
-                            +"Vi viser til klagen av "
-                            +fritekst("dato") + " på "
                             +fritekst("varsel/vedtak") + " av "
                             +fritekst("dato") + " der resultatet av etteroppgjøret viser at klager har fått "
                             +fritekst("beløp") + " kroner for mye i "
                         })
+                        showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Etteroppgjoer)) {
+                            text(bokmal {
+                                +"uføretrygd i "
+                                +fritekst("år") + ". Klagefristen er overholdt."
+                            })
+                        }.orShowIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.EtteroppgjoerBarnetillegg)) {
+                            text(bokmal {
+                                +"barnetillegg i "
+                                +fritekst("år") + ". Klagefristen er overholdt."
+                            })
+                        }
                     }
                 }
+
+                showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Automatisk)) {
+                    paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
+                }
                 showIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.Etteroppgjoer)) {
-                    paragraph {
-                        text(bokmal {
-                            +"uføretrygd i "
-                            +fritekst("år") + ". Klagefristen er overholdt."
-                        })
-                    }
                     paragraph { text(bokmal { +"Klagen vurderes etter folketrygdloven § 12-14, samt etter kapittel 3 i forskrift om uføretrygd fra folketrygden." }) }
                     paragraph { text(bokmal { +fritekst("Husk å bruke ny hjemmel § 12-14 EO - arbeidsforsøk, der det er aktuelt!") }) }
-
                 }.orShowIf(inntekt.isOneOf(ReduksjonPaaGrunnAvInntektValg.EtteroppgjoerBarnetillegg)) {
-                    paragraph {
-                        text(bokmal {
-                            +"barnetillegg i "
-                            +fritekst("år") + ". Klagefristen er overholdt."
-                        })
-                    }
                     paragraph {
                         text(bokmal {
                             +"Klagen vurderes etter folketrygdloven §§ 12-14 og 12-16, samt etter kapittel 3 og 4 i forskrift om uføretrygd fra folketrygden."
