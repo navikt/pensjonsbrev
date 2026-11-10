@@ -61,12 +61,8 @@ export const favoritterKeys = {
 };
 
 // Seen means shown in the open announcement bell; acknowledged means the Joyride tour was closed and stops auto-starting.
-export const acknowledgedAnnouncementsKeys = {
-  all: ["ACKNOWLEDGED_ANNOUNCEMENTS"] as const,
-};
-
-export const seenAnnouncementsKeys = {
-  all: ["SEEN_ANNOUNCEMENTS"] as const,
+export const announcementStatusKeys = {
+  all: ["ANNOUNCEMENT_STATUS"] as const,
 };
 
 export const featureToggleKeys = {
@@ -175,26 +171,25 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export const getAcknowledgedAnnouncements = {
-  queryKey: acknowledgedAnnouncementsKeys.all,
-  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler`)).data,
+/** Ids of the announcements the user has seen in the notification bell, and of those whose tour the user has closed. */
+export type AnnouncementStatus = { settAnnonsen: string[]; gjennomfoertTuren: string[] };
+
+export const getAnnouncementStatus = {
+  queryKey: announcementStatusKeys.all,
+  queryFn: async () => (await axios.get<AnnouncementStatus>(`${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsler`)).data,
   staleTime: Number.POSITIVE_INFINITY,
   gcTime: Number.POSITIVE_INFINITY,
 };
+
+const announcementUrl = (announcementId: string) =>
+  `${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsler/${encodeURIComponent(announcementId)}`;
 
 export async function acknowledgeAnnouncement(announcementId: string) {
-  await axios.put(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler/${encodeURIComponent(announcementId)}`);
+  await axios.put(`${announcementUrl(announcementId)}/gjennomfoertTuren`);
 }
 
-export const getSeenAnnouncements = {
-  queryKey: seenAnnouncementsKeys.all,
-  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/setteNyhetsvarsler`)).data,
-  staleTime: Number.POSITIVE_INFINITY,
-  gcTime: Number.POSITIVE_INFINITY,
-};
-
 export async function markAnnouncementSeen(announcementId: string) {
-  await axios.put(`${SKRIBENTEN_API_BASE_PATH}/me/setteNyhetsvarsler/${encodeURIComponent(announcementId)}`);
+  await axios.put(`${announcementUrl(announcementId)}/settAnnonsen`);
 }
 
 export async function orderExstreamLetter(saksId: string, orderLetterRequest: OrderExstreamLetterRequest) {

@@ -12,7 +12,7 @@ import {
   useJoyride,
 } from "react-joyride";
 
-import { getAcknowledgedAnnouncements } from "~/api/skribenten-api-endpoints";
+import { getAnnouncementStatus } from "~/api/skribenten-api-endpoints";
 
 import { useAcknowledgeAnnouncement } from "./announcementStatus";
 import {
@@ -106,11 +106,11 @@ const FeatureAnnouncementInstance = ({
   const available = when && published && (!expired || replayable) && steps.length > 0;
   useRegisterAnnouncementAvailability(id, available);
 
-  const acknowledgedQuery = useQuery({
-    ...getAcknowledgedAnnouncements,
+  const statusQuery = useQuery({
+    ...getAnnouncementStatus,
     enabled: when && published && (!expired || replayable),
   });
-  const acknowledged = acknowledgedQuery.data?.includes(id) === true;
+  const acknowledged = statusQuery.data?.gjennomfoertTuren.includes(id) === true;
   const acknowledge = useAcknowledgeAnnouncement();
 
   const onDismissReference = useRef(onDismiss);
@@ -127,8 +127,8 @@ const FeatureAnnouncementInstance = ({
 
   // Also a replay waits until the status has been read (or failed), so closing it cannot be overwritten by an older,
   // still pending read that would make the tour start again.
-  const statusRead = !acknowledgedQuery.isPending;
-  const eligible = available && statusRead && (replaying || (!expired && acknowledgedQuery.isSuccess && !acknowledged));
+  const statusRead = !statusQuery.isPending;
+  const eligible = available && statusRead && (replaying || (!expired && statusQuery.isSuccess && !acknowledged));
   // A run that ended without showing anything (e.g. the target was never found) is retried the next time the
   // announcement becomes eligible, instead of being treated as dismissed.
   if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);

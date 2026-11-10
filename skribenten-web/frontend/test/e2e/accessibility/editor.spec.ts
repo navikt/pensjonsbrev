@@ -302,8 +302,8 @@ test.describe("Letter editor accessibility", () => {
           ],
         },
       };
-      await page.route("**/bff/skribenten-backend/me/bekreftedeNyhetsvarsler", (route) =>
-        route.fulfill({ json: ["diff-toggles"] }),
+      await page.route("**/bff/skribenten-backend/me/nyhetsvarsler", (route) =>
+        route.fulfill({ json: { settAnnonsen: [], gjennomfoertTuren: ["diff-toggles"] } }),
       );
       await page.route("**/bff/skribenten-backend/features/diff", (route) =>
         route.fulfill({ json: { enabled: true } }),

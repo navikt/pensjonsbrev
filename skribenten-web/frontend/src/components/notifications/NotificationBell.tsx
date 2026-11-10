@@ -3,7 +3,7 @@ import { BodyShort, Box, Button, Heading, HStack, InternalHeader, Link, Modal, T
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useId, useState } from "react";
 
-import { getAcknowledgedAnnouncements, getSeenAnnouncements } from "~/api/skribenten-api-endpoints";
+import { getAnnouncementStatus } from "~/api/skribenten-api-endpoints";
 import { useMarkAnnouncementSeen } from "~/components/featureAnnouncement/announcementStatus";
 import {
   isAnnouncementExpired,
@@ -32,22 +32,21 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
     (announcement) =>
       isAnnouncementPublished(announcement.publishedAt) && !isAnnouncementExpired(listedUntil(announcement)),
   );
-  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: current.length > 0 });
-  const seenQuery = useQuery({ ...getSeenAnnouncements, enabled: current.length > 0 });
-  const unseen =
-    acknowledgedQuery.isSuccess && seenQuery.isSuccess
-      ? current.filter(
-          (announcement) =>
-            !acknowledgedQuery.data.includes(announcement.id) && !seenQuery.data.includes(announcement.id),
-        )
-      : [];
+  const statusQuery = useQuery({ ...getAnnouncementStatus, enabled: current.length > 0 });
+  const unseen = statusQuery.isSuccess
+    ? current.filter(
+        (announcement) =>
+          !statusQuery.data.gjennomfoertTuren.includes(announcement.id) &&
+          !statusQuery.data.settAnnonsen.includes(announcement.id),
+      )
+    : [];
   const label =
     unseen.length > 0
       ? `Nytt i Skribenten, ${unseen.length} ${unseen.length === 1 ? "ny nyhet" : "nye nyheter"}`
       : "Nytt i Skribenten";
 
-  // Marks what the open bell shows as seen once both status lists have been read, also when that happens after the bell
-  // was opened. Marking updates the cached list right away, so each announcement is marked once.
+  // Marks what the open bell shows as seen once the status has been read, also when that happens after the bell was
+  // opened. Marking updates the cached status right away, so each announcement is marked once.
   const unseenIds = unseen.map((announcement) => announcement.id).join(",");
   useEffect(() => {
     if (!open || unseenIds === "") return;

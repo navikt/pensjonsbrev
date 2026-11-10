@@ -13,8 +13,9 @@ const ANNOUNCEMENT_TITLE = "Se manuelle endringer i brevet";
 const BELL_TITLE = "Se endringer gjort av saksbehandler";
 const LAST_DISPLAY_DAY = `${ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL}T12:00:00`;
 
+const STATUS_URL = "**/bff/skribenten-backend/me/nyhetsvarsler";
 const givenAcknowledged = (page: Page, ids: string[]) =>
-  page.route("**/bff/skribenten-backend/me/bekreftedeNyhetsvarsler", (route) => route.fulfill({ json: ids }));
+  page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: [], gjennomfoertTuren: ids } }));
 
 const bell = (page: Page) => page.getByRole("button", { name: /^Nytt i Skribenten/ });
 const dot = (page: Page) => page.getByTestId("unseen-announcements-dot");
@@ -37,26 +38,21 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await page.route("**/bff/skribenten-backend/brev/1/diff", (route) =>
       route.fulfill({ json: { editedBlocks: {}, deletedBlocks: {} } }),
     );
-    await page.route("**/bff/skribenten-backend/me/bekreftedeNyhetsvarsler/*", (route) =>
-      route.fulfill({ status: 204 }),
-    );
-    await page.route("**/bff/skribenten-backend/me/setteNyhetsvarsler", (route) => route.fulfill({ json: [] }));
-    await page.route("**/bff/skribenten-backend/me/setteNyhetsvarsler/*", (route) => route.fulfill({ status: 204 }));
+    await page.route(`${STATUS_URL}/*/*`, (route) => route.fulfill({ status: 204 }));
   });
 
   test("åpning av klokken fjerner prikken, men gjennomgangen starter automatisk i attesteringen", async ({ page }) => {
     const seen: string[] = [];
-    await givenAcknowledged(page, []);
-    await page.route("**/bff/skribenten-backend/me/setteNyhetsvarsler", (route) => route.fulfill({ json: seen }));
-    await page.route("**/bff/skribenten-backend/me/setteNyhetsvarsler/*", (route) => {
-      seen.push(decodeURIComponent(route.request().url().split("/").pop() ?? ""));
+    await page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: seen, gjennomfoertTuren: [] } }));
+    await page.route(`${STATUS_URL}/*/settAnnonsen`, (route) => {
+      seen.push(decodeURIComponent(route.request().url().split("/").at(-2) ?? ""));
       return route.fulfill({ status: 204 });
     });
     await page.goto("/saksnummer/123456/brev/1");
     await expect(dot(page)).toBeVisible();
 
     const markedSeen = page.waitForRequest(
-      (request) => request.url().endsWith("/me/setteNyhetsvarsler/diff-toggles") && request.method() === "PUT",
+      (request) => request.url().endsWith("/me/nyhetsvarsler/diff-toggles/settAnnonsen") && request.method() === "PUT",
     );
     await bell(page).click();
     await markedSeen;
@@ -160,8 +156,7 @@ test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjone
   );
   await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => route.fulfill({ json: [] }));
   await givenAcknowledged(page, []);
-  await page.route("**/bff/skribenten-backend/me/setteNyhetsvarsler", (route) => route.fulfill({ json: [] }));
-  await page.route("**/bff/skribenten-backend/me/setteNyhetsvarsler/*", (route) => route.fulfill({ status: 204 }));
+  await page.route(`${STATUS_URL}/*/*`, (route) => route.fulfill({ status: 204 }));
   await page.goto("/saksnummer/123456/brevbehandler");
   await expect(page.getByText("Fant ingen brev som er under behandling")).toBeVisible();
   await expect(dot(page)).toBeVisible();

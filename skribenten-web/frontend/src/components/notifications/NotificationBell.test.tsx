@@ -20,9 +20,14 @@ vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
   const original = await importOriginal<typeof import("~/api/skribenten-api-endpoints")>();
   return {
     ...original,
-    getAcknowledgedAnnouncements: { ...original.getAcknowledgedAnnouncements, queryFn: fetchAcknowledgedMock },
+    getAnnouncementStatus: {
+      ...original.getAnnouncementStatus,
+      queryFn: async () => {
+        const [gjennomfoertTuren, settAnnonsen] = await Promise.all([fetchAcknowledgedMock(), fetchSeenMock()]);
+        return { settAnnonsen, gjennomfoertTuren };
+      },
+    },
     acknowledgeAnnouncement: acknowledgeMock,
-    getSeenAnnouncements: { ...original.getSeenAnnouncements, queryFn: fetchSeenMock },
     markAnnouncementSeen: markSeenMock,
   };
 });
