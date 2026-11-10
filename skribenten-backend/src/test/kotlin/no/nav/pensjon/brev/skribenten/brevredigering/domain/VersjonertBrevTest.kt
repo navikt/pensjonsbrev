@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
+import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -72,5 +73,29 @@ class VersjonertBrevTest {
     fun `ukjent version feiler`() {
         val json = databaseObjectMapper.writeValueAsString(VersjonertBrev.V2(v2Brev)).replace("\"version\":2", "\"version\":3")
         assertThatThrownBy { databaseObjectMapper.readValue<VersjonertBrev>(json) }.isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @Test
+    fun `brev merges bare med rendret markup av samme versjon`() {
+        val v1Markup = VersjonertMarkup.V1(v1Brev.toMarkup())
+        val v2Markup = VersjonertMarkup.V2(v2Brev.toMarkup())
+
+        assertThat(VersjonertBrev.V1(v1Brev).merge(v1Markup)).isInstanceOf(VersjonertBrev.V1::class.java)
+        assertThat(VersjonertBrev.V2(v2Brev).merge(v2Markup)).isInstanceOf(VersjonertBrev.V2::class.java)
+        assertThatThrownBy { VersjonertBrev.V1(v1Brev).merge(v2Markup) }.isInstanceOf(FeilMarkupVersjonException::class.java)
+        assertThatThrownBy { VersjonertBrev.V2(v2Brev).merge(v1Markup) }.isInstanceOf(FeilMarkupVersjonException::class.java)
+    }
+
+    @Test
+    fun `vedlegg merges bare med rendret markup av samme versjon`() {
+        val v1 = Edit.Attachment(v1Brev.title, v1Brev.blocks, emptyList(), false)
+        val v2 = EditV2.Attachment(v2Brev.title, v2Brev.blocks, emptyList(), false)
+        val v1Markup = VersjonertVedleggMarkup.V1(v1.toMarkup())
+        val v2Markup = VersjonertVedleggMarkup.V2(v2.toMarkup())
+
+        assertThat(VersjonertVedlegg.V1(v1).merge(v1Markup)).isInstanceOf(VersjonertVedlegg.V1::class.java)
+        assertThat(VersjonertVedlegg.V2(v2).merge(v2Markup)).isInstanceOf(VersjonertVedlegg.V2::class.java)
+        assertThatThrownBy { VersjonertVedlegg.V1(v1).merge(v2Markup) }.isInstanceOf(FeilMarkupVersjonException::class.java)
+        assertThatThrownBy { VersjonertVedlegg.V2(v2).merge(v1Markup) }.isInstanceOf(FeilMarkupVersjonException::class.java)
     }
 }

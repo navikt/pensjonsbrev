@@ -90,8 +90,3 @@ private fun List<Block>.variablesValueMap(): Map<Int, String> =
     object : EditLetterVisitorV2<Text.Variable>(this) {
         override fun visit(text: Text.Variable) = emit(text)
     }.build().mapNotNull { v -> v.id?.let { it to v.text } }.toMap()
-
-val EditV2.Letter.literals: List<Text.Literal>
-    get() = object : EditLetterVisitorV2<Text.Literal>(this) {
-        override fun visit(text: Text.Literal) = emit(text)
-    }.build()

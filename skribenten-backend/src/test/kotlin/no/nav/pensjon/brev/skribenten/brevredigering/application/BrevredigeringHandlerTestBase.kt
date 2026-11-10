@@ -13,6 +13,10 @@ import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.MarkupModel
 import no.nav.brev.brevbaker.markup.MarkupModelApi
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
+import no.nav.brev.brevbaker.markup.outline.Block as BlockV2
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
+import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2 as MarkupV2Dsl
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
@@ -79,7 +83,6 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.renderMarkupKall.clear()
         brevbakerService.renderPdfV2Kall.clear()
         brevbakerService.renderPdfV2VedleggKall.clear()
-        brevbakerService.renderRedigerbareVedleggV2Resultat = emptyMap()
         brevbakerService.renderMarkupV2Resultat = { notYetStubbed("Mangler renderMarkupV2 stub") }
         brevbakerService.renderMarkupResultat = {
             letter.medSignatur(
@@ -92,7 +95,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.redigerbareMaler[Testbrevkoder.VEDTAKSBREV] = vedtaksbrev
         brevbakerService.redigerbareMaler[Testbrevkoder.VARSELBREV] = varselbrevIVedtakskontekst
         brevbakerService.alltidValgbareVedleggResultat = emptySet()
-        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(emptyMap())
         brevbakerService.renderRedigerbartVedleggKall.clear()
         brevbakerService.harRedigerbareVedleggResultat = null
         stagePdf(stagetPDF)
@@ -383,16 +386,45 @@ abstract class BrevredigeringHandlerTestBase {
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
         saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        oppdaterVersjonertBrev(brevId, nyeSaksbehandlerValg, nyttRedigertbrev?.let { VersjonertBrev.V1(it) }, frigiReservasjon, principal, saksId)
+
+    protected suspend fun oppdaterBrevV2(
+        brevId: BrevId,
+        nyttRedigertbrev: EditV2.Letter,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        oppdaterVersjonertBrev(brevId, null, VersjonertBrev.V2(nyttRedigertbrev), false, principal, sak1.saksId)
+
+    private suspend fun oppdaterVersjonertBrev(
+        brevId: BrevId,
+        nyeSaksbehandlerValg: SaksbehandlervalgMap?,
+        nyttRedigertbrev: VersjonertBrev?,
+        frigiReservasjon: Boolean,
+        principal: UserPrincipal,
+        saksId: SaksId,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
         oppdaterBrev.invoke(
             OppdaterBrevHandler.Request(
                 brevId = brevId,
                 saksId = saksId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
-                nyttRedigertbrev = nyttRedigertbrev?.let { VersjonertBrev.V1(it) },
+                nyttRedigertbrev = nyttRedigertbrev,
                 frigiReservasjon = frigiReservasjon
             )
         )
+    }
+
+    protected fun stageMarkupV2(vararg blocks: BlockV2 = arrayOf(MarkupV2Dsl.paragraph(1, MarkupV2Dsl.literal(1, "red pill")))) {
+        brevbakerService.renderMarkupV2Resultat = { felles ->
+            letterV2(
+                *blocks,
+                signatur = MarkupV2Dsl.signatur(
+                    saksbehandlerNavn = felles.signerendeSaksbehandlere?.saksbehandler,
+                    attesterendeSaksbehandlerNavn = felles.signerendeSaksbehandlere?.attesterendeSaksbehandler,
+                ),
+            )
+        }
     }
 
     protected suspend fun hentBrev(
@@ -584,6 +616,18 @@ abstract class BrevredigeringHandlerTestBase {
         )
     }
 
+    sealed interface RedigerbareVedlegg {
+        val titler: List<RedigerbareVedleggTitler.Vedlegg>
+
+        data class V1(val vedlegg: Map<VedleggId, LetterMarkup.Attachment>) : RedigerbareVedlegg {
+            override val titler get() = vedlegg.map { (id, vedlegg) -> RedigerbareVedleggTitler.Vedlegg(id, vedlegg.title.joinToString("") { it.text }) }
+        }
+
+        data class V2(val vedlegg: Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>) : RedigerbareVedlegg {
+            override val titler get() = vedlegg.map { (id, vedlegg) -> RedigerbareVedleggTitler.Vedlegg(id, vedlegg.title1.joinToString("") { it.text }) }
+        }
+    }
+
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
         lateinit var renderMarkupV2Resultat: suspend ((f: BrevbakerFelles) -> MarkupV2)
@@ -596,8 +640,7 @@ abstract class BrevredigeringHandlerTestBase {
         val renderPdfV2Kall = mutableListOf<MarkupV2>()
         val renderPdfV2VedleggKall = mutableListOf<Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>>()
         val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
-        var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
-        var renderRedigerbareVedleggV2Resultat: Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment> = emptyMap()
+        var redigerbareVedlegg: RedigerbareVedlegg = RedigerbareVedlegg.V1(emptyMap())
         val renderRedigerbartVedleggKall = mutableListOf<VedleggId>()
         var harRedigerbareVedleggResultat: Boolean? = null
 
@@ -663,17 +706,10 @@ abstract class BrevredigeringHandlerTestBase {
             fagsystemBrevdata: FagsystemBrevdata,
             saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
-        ): RedigerbareVedleggTitler =
-            RedigerbareVedleggTitler(
-                renderRedigerbareVedleggResultat.map { (vedleggId, attachment) ->
-                    RedigerbareVedleggTitler.Vedlegg(vedleggId, attachment.title.joinToString("") { it.text })
-                } + renderRedigerbareVedleggV2Resultat.map { (vedleggId, attachment) ->
-                    RedigerbareVedleggTitler.Vedlegg(vedleggId, attachment.title1.joinToString("") { it.text })
-                }
-            )
+        ): RedigerbareVedleggTitler = RedigerbareVedleggTitler(redigerbareVedlegg.titler)
 
         override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
-            harRedigerbareVedleggResultat ?: (renderRedigerbareVedleggResultat.isNotEmpty() || renderRedigerbareVedleggV2Resultat.isNotEmpty())
+            harRedigerbareVedleggResultat ?: redigerbareVedlegg.titler.isNotEmpty()
 
         override suspend fun renderRedigerbartVedleggV2(
             brevkode: Brevkode.Redigerbart,
@@ -682,7 +718,7 @@ abstract class BrevredigeringHandlerTestBase {
             saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
-        ): no.nav.brev.brevbaker.markup.Attachment? = renderRedigerbareVedleggV2Resultat[vedleggId]
+        ): no.nav.brev.brevbaker.markup.Attachment? = (redigerbareVedlegg as RedigerbareVedlegg.V2).vedlegg[vedleggId]
             .also { renderRedigerbartVedleggKall.add(vedleggId) }
 
         override suspend fun renderRedigerbartVedlegg(
@@ -692,7 +728,7 @@ abstract class BrevredigeringHandlerTestBase {
             saksbehandlervalg: SaksbehandlervalgIDSL,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
-        ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]
+        ): LetterMarkup.Attachment? = (redigerbareVedlegg as RedigerbareVedlegg.V1).vedlegg[vedleggId]
             .also { renderRedigerbartVedleggKall.add(vedleggId) }
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat

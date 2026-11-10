@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV2
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
@@ -67,6 +71,24 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(hentet).isSuccess {
             assertThat(it.redigertBrev.asV1()).isEqualTo(opprettet.redigertBrev.asV1().updateEditedLetter(freshRender))
+        }
+    }
+
+    @Test
+    suspend fun `hent v2-brev med reservasjon merger inn rendret brev`() {
+        stageMarkupV2()
+        val opprettet = opprettBrev(reserverForRedigering = false, markupVersjon = MarkupVersjon.V2).resultOrFail()
+        val freshBlocks = arrayOf(
+            MarkupV2.paragraph(1, MarkupV2.literal(1, "red pill")),
+            MarkupV2.paragraph(2, MarkupV2.variable(21, "ny paragraph")),
+        )
+        stageMarkupV2(*freshBlocks)
+
+        val hentet = hentBrev(brevId = opprettet.info.id, reserverForRedigering = true)
+
+        assertThat(hentet).isSuccess {
+            assertThat(it.redigertBrev.asV2().blocks).hasSize(2)
+            assertThat(it.redigertBrev.asV2().blocks).isEqualTo(opprettet.redigertBrev.asV2().merge(letterV2(*freshBlocks)).blocks)
         }
     }
 

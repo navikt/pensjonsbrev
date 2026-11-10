@@ -10,8 +10,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
-import no.nav.pensjon.brev.skribenten.letter.v2.toEdit as toEditV2
-import no.nav.pensjon.brev.skribenten.letter.v2.updateEditedAttachment as updateEditedAttachmentV2
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 @JsonDeserialize(using = VersjonertVedleggDeserializer::class)
@@ -48,9 +46,9 @@ sealed interface VersjonertVedlegg {
             vedlegg.title.text.joinToString("") { if (it is EditV2.Text.Literal) it.editedText ?: it.text else it.text }
 
         override fun innholdEndresAv(rendret: VersjonertVedleggMarkup) =
-            vedlegg.updateEditedAttachmentV2(rendret.asV2()).blocks != vedlegg.blocks
+            vedlegg.merge(rendret.asV2()).blocks != vedlegg.blocks
 
-        override fun merge(rendret: VersjonertVedleggMarkup) = V2(vedlegg.updateEditedAttachmentV2(rendret.asV2()))
+        override fun merge(rendret: VersjonertVedleggMarkup) = V2(vedlegg.merge(rendret.asV2()))
 
         override fun asV1() = throw FeilMarkupVersjonException(MarkupVersjon.V1, markupVersjon)
 
@@ -73,7 +71,7 @@ sealed interface VersjonertVedleggMarkup {
 
     data class V2(val markup: AttachmentV2) : VersjonertVedleggMarkup {
         override val markupVersjon get() = MarkupVersjon.V2
-        override fun toEdit() = VersjonertVedlegg.V2(markup.toEditV2())
+        override fun toEdit() = VersjonertVedlegg.V2(EditV2.Attachment.from(markup))
     }
 }
 

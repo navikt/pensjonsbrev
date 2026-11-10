@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
 
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase.RedigerbareVedlegg
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
@@ -57,7 +58,7 @@ class AttestertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(vedlegg1)!!.asV1() }
 
     private fun stagMal(vararg avsnitt: Pair<Int, String>, tittel: String = "Mal tittel") {
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(vedlegg1 to malVedlegg(*avsnitt, tittel = tittel))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(vedlegg1 to malVedlegg(*avsnitt, tittel = tittel)))
     }
 
     private suspend fun klartVedtaksbrevMedRedigertVedlegg(redigertTekst: String = "Redigert"): Dto.Brevredigering {

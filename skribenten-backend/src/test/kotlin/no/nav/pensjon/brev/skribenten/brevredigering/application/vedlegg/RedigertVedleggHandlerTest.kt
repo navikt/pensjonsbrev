@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase.RedigerbareVedlegg
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
@@ -118,7 +119,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         }
 
     private suspend fun lagreRedigertVedlegg(brevId: BrevId, redigertTekst: String = "Redigert"): String {
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste")))
         val redigert = hentVedlegg(brevId, "vedlegg1").resultOrFail().medRedigertTekst(redigertTekst)
         assertThat(endreVedlegg(brevId, "vedlegg1", redigert)).isSuccess()
         return redigertTekst
@@ -131,9 +132,9 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         transaction { DocumentEntity.find { DocumentTable.brevredigering eq brevId }.count().toInt() }
 
     private fun answerWithEditedAttachmentResult(vararg vedlegg: Pair<String, Edit.Attachment>) {
-        brevbakerService.renderRedigerbareVedleggResultat = vedlegg.associate { (vedleggId, attachment) ->
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(vedlegg.associate { (vedleggId, attachment) ->
             VedleggId(vedleggId) to attachment.toMarkup()
-        }
+        })
     }
 
     @Test
@@ -158,7 +159,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `hent uten overstyring gir vedlegget slik det produseres fra mal`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold").toMarkup())
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold").toMarkup()))
 
         val hentet = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()
         assertThat(hentet.toMarkup()).isEqualTo(attachment("Mal-innhold").toMarkup())
@@ -199,7 +200,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
 
-        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(emptyMap())
 
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg.medRedigertTekst("Ny tekst")))
             .isFailure<VedleggFinnesIkkeIMal, _, _>()
@@ -211,10 +212,10 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `lagring merger inn nye blokker fra malen og returnerer det sammenslaatte vedlegget`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste")))
         val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()
 
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre")))
         val sammenslaatt = endreVedlegg(brev.info.id, "vedlegg1", redigert).resultOrFail()
 
         assertThat(sammenslaatt.blocks.map { it.id }).containsExactly(1, 2)
@@ -224,10 +225,10 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `lagring beholder saksbehandlers redigerte tekst ved merging`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Mal-tekst"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Mal-tekst")))
         val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().medRedigertTekst("Saksbehandlers tekst")
 
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Mal-tekst", 2 to "Andre"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Mal-tekst", 2 to "Andre")))
         val sammenslaatt = endreVedlegg(brev.info.id, "vedlegg1", redigert).resultOrFail()
 
         assertThat(sammenslaatt.blocks.map { it.id }).containsExactly(1, 2)
@@ -237,15 +238,15 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `henting merger inn endringer fra malen uten aa lagre dem`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste")))
         val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().medRedigertTekst("Redigert")
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", redigert)).isSuccess()
 
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre")))
         assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().blocks.map { it.id }).containsExactly(1, 2)
 
         // Merging ved henting skal ikke persisteres
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste")))
         assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().blocks.map { it.id }).containsExactly(1)
     }
 
@@ -256,7 +257,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
 
-        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(emptyMap())
 
         assertThat(hentVedlegg(brev.info.id, "vedlegg1")).isFailure<VedleggFinnesIkkeIMal, _, _>()
     }
@@ -276,11 +277,11 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `tilbakestilling returnerer vedlegget slik malen produserer det naa`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste")))
         val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().medRedigertTekst("Redigert")
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", redigert)).isSuccess()
 
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre")))
         val tilbakestilt = tilbakestillVedlegg(brev.info.id, "vedlegg1").resultOrFail()
 
         assertThat(tilbakestilt).isEqualTo(malVedlegg(1 to "Foerste", 2 to "Andre").toEdit())
@@ -390,7 +391,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         val redigert = lagreRedigertVedlegg(brev.info.id)
 
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre")))
         assertThat(hentBrev(brev.info.id, reserverForRedigering = true)).isSuccess()
 
         assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id }).containsExactly(1, 2)
@@ -402,7 +403,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         lagreRedigertVedlegg(brev.info.id)
 
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre")))
         assertThat(oppdaterBrev(brev.info.id)).isSuccess()
 
         assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id }).containsExactly(1, 2)
@@ -414,7 +415,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         lagreRedigertVedlegg(brev.info.id)
 
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre")))
         brevbakerService.modelSpecificationResultat = TemplateModelSpecification(types = emptyMap(), letterModelTypeName = "BrevData1")
         assertThat(
             withPrincipal(saksbehandler1Principal) {
@@ -431,7 +432,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         lagreRedigertVedlegg(brev.info.id)
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
 
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre")))
         penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
 
         assertThat(hentEllerOpprettPdf(brev).resultOrFail().rendretBrevErEndret).isTrue()
@@ -440,7 +441,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `brev uten overstyrte vedlegg rendrer ingen vedlegg fra malen`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste")))
 
         brevbakerService.renderRedigerbartVedleggKall.clear()
         assertThat(hentBrev(brev.info.id, reserverForRedigering = true)).isSuccess()
@@ -454,10 +455,10 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `brev med overstyrt vedlegg rendrer kun det overstyrte vedlegget`() {
         val brev = opprettBrev().resultOrFail()
         lagreRedigertVedlegg(brev.info.id)
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf(
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(
             VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"),
             VedleggId("vedlegg2") to malVedlegg(1 to "Et annet vedlegg"),
-        )
+        ))
 
         brevbakerService.renderRedigerbartVedleggKall.clear()
         assertThat(oppdaterBrev(brev.info.id)).isSuccess()
@@ -498,8 +499,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `hentRedigerbareVedlegg bruker maltittelen naar vedlegget ikke er overstyrt`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup()))
 
         val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
 
@@ -511,8 +511,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `hentRedigerbareVedlegg returnerer den redigerte tittelen naar vedlegget er overstyrt`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup()))
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Mal-innhold", tittel = "Mal tittel", editedTittel = "Redigert tittel")))
             .isSuccess()
 
@@ -526,13 +525,11 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `hentRedigerbareVedlegg bruker den ferske maltittelen naar det overstyrte vedlegget ikke har redigert tittel`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Gammel maltittel").toMarkup())
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Gammel maltittel").toMarkup()))
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Mal-innhold", tittel = "Gammel maltittel", editedTekst = "Redigert innhold")))
             .isSuccess()
 
-        brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Ny maltittel").toMarkup())
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Ny maltittel").toMarkup()))
 
         val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
 
@@ -556,8 +553,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `hentRedigerbareVedlegg henter brevdata naar malen har redigerbare vedlegg`() {
         val brev = opprettBrev().resultOrFail()
         brevbakerService.harRedigerbareVedleggResultat = true
-        brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
+        brevbakerService.redigerbareVedlegg = RedigerbareVedlegg.V1(mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup()))
 
         penService.utfoerteHentPesysBrevdataKall.clear()
         val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
