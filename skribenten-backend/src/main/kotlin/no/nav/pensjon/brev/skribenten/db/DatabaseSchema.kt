@@ -34,21 +34,13 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
-// Sett betyr vist i den åpne varselbjellen; bekreftet betyr at den automatiske Joyride-turen har blitt sett og lukket.
-object BekreftetNyhetsvarselTable : CompositeIdTable() {
+// settAnnonsen: nyheten er vist i den åpne varselbjellen. gjennomfoertTuren: den automatiske Joyride-turen er lukket.
+object NyhetsvarselstatusTable : CompositeIdTable() {
     val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
     val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
         varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id).entityId()
-    val bekreftet: Column<Instant> = timestamp("bekreftet")
-
-    override val primaryKey = PrimaryKey(navIdent, nyhetsvarselId)
-}
-
-object SettNyhetsvarselTable : CompositeIdTable() {
-    val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
-    val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
-        varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id).entityId()
-    val sett: Column<Instant> = timestamp("sett")
+    val settAnnonsen: Column<Instant?> = timestamp("settAnnonsen").nullable()
+    val gjennomfoertTuren: Column<Instant?> = timestamp("gjennomfoertTuren").nullable()
 
     override val primaryKey = PrimaryKey(navIdent, nyhetsvarselId)
 }
