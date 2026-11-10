@@ -59,7 +59,7 @@ class BrevmalService(
         pesysData: BrevdataResponse.Data
     ): RendretBrev = when (markupVersjon) {
         MarkupVersjon.V1 -> renderMarkup(brevkode, spraak, saksbehandlerValg, pesysData)
-            .let { RendretBrev(VersjonertMarkup.V1(it.markup), it.letterDataUsage) }
+            .let { RendretBrev(VersjonertMarkup.V1(it.markup), it.letterDataUsage, it.stableHashCode) }
 
     }
 

@@ -31,7 +31,7 @@ interface DiffProducer<R> {
     fun textContent(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<TextContentInfo>) {}
     // Fires for word-level changes within a Text node whose surrounding node is not being reported via
     // textContent (i.e. some of its words survived, were reused, or it's otherwise still "there" in some form).
-    fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<TextSegment>) {}
+    fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<TextSegment>, insertionOnlyAnchor: Boolean = false) {}
 
     fun build(): R
 }

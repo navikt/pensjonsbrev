@@ -1,61 +1,74 @@
 {
   "collection": "(à la carte)",
-  "version": "2026.09.04-063742-24ad9ba",
+  "version": "2026.11.04-221952-0b85e3a",
   "scope": "repo",
-  "source_sha": "24ad9baf95ae381f03a1a1bad69199b5d4532aa6",
+  "source_sha": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef",
   "installed_at": "2026-07-15T14:11:15Z",
   "files": [
     {
       "path": ".github/agents/aksel.agent.md",
-      "hash": "a85a02b7740368a9"
+      "hash": "c14ba829b924f33c",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/agents/forfatter.agent.md",
-      "hash": "2529faa6918e3520"
+      "hash": "81d4560449214a21",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "f381cdcba7fcb644"
+      "hash": "a6d797b0efe8bbfb",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/agents/research.agent.md",
-      "hash": "57973bb865dfdd9d"
+      "hash": "bfd27dcb2ee26f09",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/agents/security-champion.agent.md",
-      "hash": "a209e3ce5d93746d"
+      "hash": "fb9fd0c8f1432dad",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/skills/aksel-builder/",
-      "hash": "3075f3a92c2eb6fc"
+      "hash": "c4c9c58ec501ca98",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/skills/api-design/",
-      "hash": "a353aded69a4bd4c"
+      "hash": "cc11f76f432c6df8",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/skills/nav-deep-interview/",
-      "hash": "eeb3399ecd4e352c"
+      "hash": "71eee20e10ebdf38",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/skills/nav-plan/",
-      "hash": "db7618d269cd2f07"
+      "hash": "acf7f52bf9dd29b0",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/skills/nav-troubleshoot/",
-      "hash": "e9900d58d91ee0ee"
+      "hash": "db7b1810b9dda6a7",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/skills/observability-debugging/",
-      "hash": "107a99f70451c01b"
+      "hash": "d09dd467d7ce45a7",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/skills/security-owasp/",
-      "hash": "b909907ae0e18174"
+      "hash": "6c2dc64c5fe6b81e",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     },
     {
       "path": ".github/skills/security-review/",
-      "hash": "3c05f1012664e5c8"
+      "hash": "09af5a47b658c7fe",
+      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
     }
   ]
 }

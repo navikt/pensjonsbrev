@@ -83,6 +83,7 @@ class OpprettBrevHandler(
                 statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
                 redigertBrev = rendretBrev.markup.toEdit(),
                 brevtype = parametre.brevtype,
+                brevmalHash = rendretBrev.stableHashCode,
             )
 
             if (request.reserverForRedigering) {

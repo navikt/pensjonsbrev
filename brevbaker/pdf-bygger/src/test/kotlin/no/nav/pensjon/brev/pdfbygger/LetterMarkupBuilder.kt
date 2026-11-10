@@ -4,6 +4,7 @@ package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
@@ -50,7 +51,7 @@ class LetterMarkupBuilder {
             title = title,
             sakspart = sakspart,
             blocks = blocks,
-            signatur = signatur
+            signatur = signatur,
         )
     }
 }
@@ -108,6 +109,7 @@ class AttachmentBuilder {
             title = title,
             blocks = blocks,
             includeSakspart = includeSakspart,
+            stableHashCode = StableHashCode(blocks.map { it.id }.hashCode())
         )
 }
 

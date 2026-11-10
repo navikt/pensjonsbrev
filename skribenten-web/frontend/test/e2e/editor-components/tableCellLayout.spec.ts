@@ -107,4 +107,21 @@ test.describe("Table cell layout", () => {
     expect(variableBox!.x).toBeGreaterThanOrEqual(literalBox!.x + literalBox!.width - 1);
     expect(variableBox!.x + variableBox!.width).toBeLessThanOrEqual(headerBox!.x + headerBox!.width);
   });
+
+  test("clicking anywhere in an empty cell puts the caret in its literal", async ({ page }) => {
+    await setupEditor(page, [
+      newParagraph({
+        content: [newTable([{ id: null, parentId: null, deletedCells: [], cells: [newCell(), newCell()] }])],
+      }),
+    ]);
+
+    const cell = cellLocator(page, 0, 1);
+    const cellBox = await cell.boundingBox();
+    expect(cellBox).toBeTruthy();
+
+    await page.mouse.click(cellBox!.x + cellBox!.width / 2, cellBox!.y + cellBox!.height / 2);
+    await page.keyboard.type("Tekst");
+
+    await expect(cell.locator("span[contenteditable=true]").first()).toContainText("Tekst");
+  });
 });

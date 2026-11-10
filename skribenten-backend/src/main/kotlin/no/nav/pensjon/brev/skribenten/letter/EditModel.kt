@@ -327,13 +327,19 @@ fun ParagraphContent.Table.ColumnAlignment.toEdit(): Edit.ParagraphContent.Table
     }
 
 fun Edit.Letter.toMarkup(): LetterMarkup =
-    LetterMarkupImpl(title = title.text.toMarkup(), sakspart = sakspart, blocks = blocks.map { it.toMarkup() }, signatur = signatur)
+    LetterMarkupImpl(
+        title = title.text.toMarkup(),
+        sakspart = sakspart,
+        blocks = blocks.map { it.toMarkup() },
+        signatur = signatur,
+    )
 
 fun Edit.Attachment.toMarkup(): LetterMarkup.Attachment =
     LetterMarkupImpl.AttachmentImpl(
         title = title.text.toMarkup(),
         blocks = blocks.map { it.toMarkup() },
         includeSakspart = includeSakspart,
+        stableHashCode = null, // TODO: fiks
     )
 
 fun Edit.Block.toMarkup(): Block =
@@ -400,7 +406,6 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
-
 
 
 
