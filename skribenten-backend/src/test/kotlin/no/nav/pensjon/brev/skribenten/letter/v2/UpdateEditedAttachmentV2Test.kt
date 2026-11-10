@@ -13,20 +13,20 @@ class UpdateEditedAttachmentV2Test {
     @Test
     fun `no edits and no template changes returns the same attachment`() {
         val rendered = attachment(paragraph(1, literal(11, "Noe tekst")))
-        val edited = rendered.toEdit()
+        val edited = EditV2.Attachment.from(rendered)
 
-        assertEquals(edited, edited.updateEditedAttachment(rendered))
+        assertEquals(edited, edited.merge(rendered))
     }
 
     @Test
     fun `new block from template is included`() {
-        val edited = attachment(paragraph(1, literal(11, "Foerste"))).toEdit()
+        val edited = EditV2.Attachment.from(attachment(paragraph(1, literal(11, "Foerste"))))
         val rendered = attachment(
             paragraph(1, literal(11, "Foerste")),
             paragraph(2, literal(21, "Andre")),
         )
 
-        assertEquals(rendered.toEdit(), edited.updateEditedAttachment(rendered))
+        assertEquals(EditV2.Attachment.from(rendered), edited.merge(rendered))
     }
 
     @Test
@@ -36,7 +36,7 @@ class UpdateEditedAttachmentV2Test {
             paragraph(id = 1) { literal(id = 11, text = "Mal-tekst", editedText = "Saksbehandlers tekst") }
         }
 
-        val result = edited.updateEditedAttachment(rendered)
+        val result = edited.merge(rendered)
 
         val literal = (result.blocks.single() as EditV2.Block.Paragraph).content.single() as EditV2.Text.Literal
         assertEquals("Saksbehandlers tekst", literal.editedText)
@@ -50,7 +50,7 @@ class UpdateEditedAttachmentV2Test {
             paragraph(id = 2) { literal(id = 21, text = "Andre") }
         }
 
-        val result = edited.updateEditedAttachment(rendered)
+        val result = edited.merge(rendered)
 
         assertEquals(2, result.blocks.size)
         assertTrue(result.blocks.first().missingFromTemplate)
@@ -70,7 +70,7 @@ class UpdateEditedAttachmentV2Test {
             paragraph(id = 2) { literal(id = 21, text = "Fjernet fra mal", editedText = "Redigert") }
         }
 
-        val result = edited.updateEditedAttachment(rendered)
+        val result = edited.merge(rendered)
 
         val variable = (result.blocks.first() as EditV2.Block.Paragraph).content.last() as EditV2.Text.Variable
         assertEquals("2000", variable.text)
@@ -79,9 +79,9 @@ class UpdateEditedAttachmentV2Test {
     @Test
     fun `title is merged from the template render`() {
         val rendered = attachment(paragraph(1, literal(11, "Tekst")), title = "Ny tittel")
-        val edited = attachment(paragraph(1, literal(11, "Tekst")), title = "Gammel tittel").toEdit()
+        val edited = EditV2.Attachment.from(attachment(paragraph(1, literal(11, "Tekst")), title = "Gammel tittel"))
 
-        val result = edited.updateEditedAttachment(rendered)
+        val result = edited.merge(rendered)
 
         assertEquals("Ny tittel", (result.title.text.single() as EditV2.Text.Literal).text)
     }
@@ -93,7 +93,7 @@ class UpdateEditedAttachmentV2Test {
             paragraph(id = 1) { literal(id = 11, text = "Tekst") }
         }
 
-        assertTrue(edited.updateEditedAttachment(rendered).inkluderSaksinformasjon)
+        assertTrue(edited.merge(rendered).inkluderSaksinformasjon)
     }
 
     @Test
@@ -103,7 +103,7 @@ class UpdateEditedAttachmentV2Test {
             title2(id = 3) { literal(id = 31, text = "Egen tittel", editedText = "Egen tittel redigert") }
         }
 
-        val result = edited.updateEditedAttachment(rendered)
+        val result = edited.merge(rendered)
 
         assertEquals(listOf(1), result.deletedBlocks)
     }
@@ -116,7 +116,7 @@ class UpdateEditedAttachmentV2Test {
             paragraph(id = null) { literal(id = null, text = "Nytt avsnitt") }
         }
 
-        val result = edited.updateEditedAttachment(rendered)
+        val result = edited.merge(rendered)
 
         assertEquals(2, result.blocks.size)
         assertEquals(null, result.blocks.last().id)
@@ -132,6 +132,6 @@ class UpdateEditedAttachmentV2Test {
             paragraph(id = 2) { literal(id = 21, text = "Tekst") }
         }
 
-        assertEquals(rendered.toEdit(), edited.updateEditedAttachment(rendered))
+        assertEquals(EditV2.Attachment.from(rendered), edited.merge(rendered))
     }
 }

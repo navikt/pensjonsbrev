@@ -23,7 +23,7 @@ class UpdateEditedLetterV2Test {
     @Test
     fun `updates fields of editedLetter from renderedLetter`() {
         val firstRender = letter(title2(1, literal(1, "Noe tekst")))
-        val originalEditedLetter = firstRender.toEdit().withSignaturAttestant("original attestant")
+        val originalEditedLetter = EditV2.Letter.from(firstRender).withSignaturAttestant("original attestant")
         val nextRender = letter(
             title2(1, literal(1, "Noe tekst")),
             title = "ny tittel11",
@@ -39,7 +39,7 @@ class UpdateEditedLetterV2Test {
             ),
         )
 
-        val expected = nextRender.toEdit().copy(
+        val expected = EditV2.Letter.from(nextRender).copy(
             signatur = EditV2.Signatur(
                 saksbehandlerNavn = originalEditedLetter.signatur.saksbehandlerNavn,
                 attesterendeSaksbehandlerNavn = "original attestant",
@@ -47,7 +47,7 @@ class UpdateEditedLetterV2Test {
             )
         )
 
-        assertEquals(expected, originalEditedLetter.updateEditedLetter(nextRender))
+        assertEquals(expected, originalEditedLetter.merge(nextRender))
     }
 
     @Test
@@ -62,7 +62,7 @@ class UpdateEditedLetterV2Test {
         )
 
         val expected = edited.copy(
-            saksinformasjon = rendered.saksinformasjon.toEdit(),
+            saksinformasjon = EditV2Markup.toEdit(rendered.saksinformasjon),
             signatur = EditV2.Signatur("Redigert Saksbehandler", "Redigert Attestant", "ny enhet"),
         )
 
@@ -74,8 +74,8 @@ class UpdateEditedLetterV2Test {
         val rendered = letter(
             title2(1, literal(1, "En tittel "), variable(2, "for deg "), literal(3, "og meg!"))
         )
-        val edited = rendered.toEdit()
-        assertEquals(edited, edited.updateEditedLetter(rendered))
+        val edited = EditV2.Letter.from(rendered)
+        assertEquals(edited, edited.merge(rendered))
     }
 
     @Test
@@ -91,7 +91,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -107,7 +107,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(rendered.toEdit(), edited.updateEditedLetter(rendered))
+        assertEquals(EditV2.Letter.from(rendered), edited.merge(rendered))
     }
 
     @Test
@@ -128,7 +128,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(rendered))
+        assertEquals(expected, edited.merge(rendered))
     }
 
     @Test
@@ -153,7 +153,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -176,7 +176,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -193,7 +193,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -219,7 +219,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -232,7 +232,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -258,7 +258,7 @@ class UpdateEditedLetterV2Test {
                 item(id = 41) { literal(id = 411, text = "en punktliste") }
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -287,7 +287,7 @@ class UpdateEditedLetterV2Test {
                 literal(id = 4, text = " pluss noe ny tekst")
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -307,7 +307,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -340,7 +340,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -372,7 +372,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -412,7 +412,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -447,7 +447,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(next.toEdit(), edited.updateEditedLetter(next))
+        assertEquals(EditV2.Letter.from(next), edited.merge(next))
     }
 
     @Test
@@ -463,7 +463,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -479,7 +479,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -505,7 +505,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -526,7 +526,7 @@ class UpdateEditedLetterV2Test {
                 }
             }
         }
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -547,7 +547,7 @@ class UpdateEditedLetterV2Test {
                 literal(id = 14, text = "fjerde", editedText = "fjerdeEdited")
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -620,7 +620,7 @@ class UpdateEditedLetterV2Test {
                 variable(id = 14211, text = "oppdatert variabel 4")
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -638,7 +638,7 @@ class UpdateEditedLetterV2Test {
                 literal(id = 12, text = "en variabel")
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -666,7 +666,7 @@ class UpdateEditedLetterV2Test {
                 literal(id = 21, text = "to literal")
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -687,7 +687,7 @@ class UpdateEditedLetterV2Test {
                 variable(id = 1211, text = "oppdatert v1", parentId = 121)
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -713,7 +713,7 @@ class UpdateEditedLetterV2Test {
                 literal(id = 21, text = "hei", editedText = "heisann")
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -735,7 +735,7 @@ class UpdateEditedLetterV2Test {
                 }
             }
         }
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -762,7 +762,7 @@ class UpdateEditedLetterV2Test {
                 literal(id = 14, text = "lit2")
             }
         }
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -785,7 +785,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, editedLetter1.updateEditedLetter(brevdataVariabelHarEnVerdi))
+        assertEquals(expected, editedLetter1.merge(brevdataVariabelHarEnVerdi))
     }
 
     @Test
@@ -800,7 +800,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -815,7 +815,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(edited, edited.merge(next))
     }
 
     @Test
@@ -827,7 +827,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(next.toEdit(), edited.updateEditedLetter(next))
+        assertEquals(EditV2.Letter.from(next), edited.merge(next))
     }
 
     @Test
@@ -847,7 +847,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -901,9 +901,9 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        val result = edited.updateEditedLetter(next)
+        val result = edited.merge(next)
         assertEquals(expected, result)
-        assertEquals(expected, result.updateEditedLetter(next))
+        assertEquals(expected, result.merge(next))
     }
 
     @Test
@@ -924,7 +924,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -954,7 +954,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(expected, edited.updateEditedLetter(next))
+        assertEquals(expected, edited.merge(next))
     }
 
     @Test
@@ -978,7 +978,7 @@ class UpdateEditedLetterV2Test {
                 }
             }
         }
-        assertEquals(edited, edited.updateEditedLetter(rendered))
+        assertEquals(edited, edited.merge(rendered))
     }
 
     @Test
@@ -1008,7 +1008,7 @@ class UpdateEditedLetterV2Test {
                 }
             }
         }
-        assertEquals(edited, edited.updateEditedLetter(rendered))
+        assertEquals(edited, edited.merge(rendered))
     }
 
     @Test
@@ -1045,7 +1045,7 @@ class UpdateEditedLetterV2Test {
                 }
             }
         }
-        assertEquals(expected, edited.updateEditedLetter(rendered))
+        assertEquals(expected, edited.merge(rendered))
     }
 
     @Test
@@ -1060,7 +1060,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(rendered))
+        assertEquals(edited, edited.merge(rendered))
     }
 
     @Test
@@ -1075,7 +1075,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(rendered))
+        assertEquals(edited, edited.merge(rendered))
     }
 
     @Test
@@ -1093,9 +1093,9 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        val firstUpdate = edited.updateEditedLetter(rendered)
+        val firstUpdate = edited.merge(rendered)
         assertEquals(expected, firstUpdate)
-        assertEquals(expected, firstUpdate.updateEditedLetter(rendered))
+        assertEquals(expected, firstUpdate.merge(rendered))
     }
 
     @Test
@@ -1109,7 +1109,7 @@ class UpdateEditedLetterV2Test {
             }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(rendered))
+        assertEquals(edited, edited.merge(rendered))
     }
 
     @Test
@@ -1121,7 +1121,7 @@ class UpdateEditedLetterV2Test {
         }
         val rendered = letter(title2(1, literal(3, " og ")))
 
-        val result = edited.updateEditedLetter(rendered)
+        val result = edited.merge(rendered)
         assertEquals(emptyList<Int>(), (result.blocks.single() as EditV2.Block.Title2).deletedContent)
     }
 }

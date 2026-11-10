@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.EditLetterVisitor
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
-import no.nav.pensjon.brev.skribenten.letter.v2.literals as literalsV2
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 
 class FerdigRedigertPolicy {
@@ -32,7 +31,7 @@ class FerdigRedigertPolicy {
 
     private fun VersjonertBrev.uredigerteFritekstfelter(): List<String> = when (this) {
         is VersjonertBrev.V1 -> brev.literals.filter { it.tags.contains(ElementTags.FRITEKST) && it.editedText == null }.map { it.text }
-        is VersjonertBrev.V2 -> brev.literalsV2.filter { it.editBehaviour == EditV2.EditBehaviour.FRITEKST && it.editedText == null }.map { it.text }
+        is VersjonertBrev.V2 -> brev.literals().filter { it.editBehaviour == EditV2.EditBehaviour.FRITEKST && it.editedText == null }.map { it.text }
     }
 
     private fun VersjonertBrev.alleDuplikateAvsnittErHaandtert(): Boolean = when (this) {

@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.skribenten.letter.v2
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import no.nav.brev.brevbaker.markup.Attachment as AttachmentMarkup
+import no.nav.brev.brevbaker.markup.LetterMarkup
 import java.time.LocalDate
 
 object EditV2 {
@@ -41,6 +43,22 @@ object EditV2 {
 
         fun withSignaturSaksbehandler(saksbehandlerNavn: String): Letter =
             copy(signatur = signatur.copy(saksbehandlerNavn = saksbehandlerNavn))
+
+        fun merge(rendered: LetterMarkup): Letter = UpdateEditedLetterV2.merge(this, rendered)
+
+        fun updateSaksinformasjonOgSignatur(rendered: LetterMarkup): Letter =
+            UpdateEditedLetterV2.updateSaksinformasjonOgSignatur(this, rendered)
+
+        fun toMarkup(): LetterMarkup = EditV2Markup.toMarkup(this)
+
+        fun literals(): List<Text.Literal> =
+            object : EditLetterVisitorV2<Text.Literal>(this) {
+                override fun visit(text: Text.Literal) = emit(text)
+            }.build()
+
+        companion object {
+            fun from(markup: LetterMarkup): Letter = EditV2Markup.toEdit(markup)
+        }
     }
 
     data class Attachment(
@@ -52,6 +70,14 @@ object EditV2 {
     ) {
         init {
             require(version == VERSION) { "EditV2.Attachment må ha version=$VERSION, men fikk $version" }
+        }
+
+        fun merge(rendered: AttachmentMarkup): Attachment = UpdateEditedLetterV2.merge(this, rendered)
+
+        fun toMarkup(): AttachmentMarkup = EditV2Markup.toMarkup(this)
+
+        companion object {
+            fun from(markup: AttachmentMarkup): Attachment = EditV2Markup.toEdit(markup)
         }
     }
 
