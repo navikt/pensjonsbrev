@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
-import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
+import no.nav.pensjon.brev.alder.maler.felles.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
@@ -261,10 +261,10 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                 paragraph {
                     text(
                         bokmal {
-                            +"Du får pensjonen utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalinger du har mottatt på $DITT_NAV. Her kan du også endre kontonummeret ditt."
+                            +"Du får pensjonen utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalinger du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt."
                         },
                         nynorsk {
-                            +"Du får pensjon utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. Du kan sjå alle utbetalingar du har fått på $DITT_NAV. Her kan du også endre kontonummeret ditt."
+                            +"Du får pensjon utbetalt den 20. kvar månad, eller seinast siste yrkedag før denne datoen. Du kan sjå alle utbetalingar du har fått på $MINSIDE_URL. Her kan du også endre kontonummeret ditt."
                         },
                     )
                 }

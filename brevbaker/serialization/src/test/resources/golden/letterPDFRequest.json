@@ -271,7 +271,8 @@
         "editBehaviour" : null
       } ]
     } ],
-    "inkluderSaksinformasjon" : true
+    "inkluderSaksinformasjon" : true,
+    "stableHashCode" : 456
   } ],
   "pdfVedlegg" : [ {
     "title1" : [ {

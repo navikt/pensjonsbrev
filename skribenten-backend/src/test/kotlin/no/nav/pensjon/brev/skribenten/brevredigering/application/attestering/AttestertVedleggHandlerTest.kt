@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
@@ -50,6 +51,7 @@ class AttestertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
                     title = listOf(LiteralImpl(1, tittel)),
                     blocks = avsnitt.map { (id, tekst) -> ParagraphImpl(id, true, listOf(LiteralImpl(id * 10, tekst))) },
                     includeSakspart = false,
+                    stableHashCode = StableHashCode(avsnitt.map { it.first }.hashCode()),
                 )
             )
             MarkupVersjon.V2 -> VersjonertVedleggMarkup.V2(

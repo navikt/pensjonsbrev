@@ -179,7 +179,7 @@ class EditLetterWordTokenizerTest {
             override fun cell(insertIndex: TableCellIndex, deleteIndex: TableCellIndex, change: Change<DiffProducer.CellInfo>) {
                 calls.add(Triple(insertIndex, deleteIndex, change))
             }
-            override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>) {
+            override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>, insertionOnlyAnchor: Boolean) {
                 calls.add(Triple(insertIndex, deleteIndex, change))
             }
             override fun build() = calls.toList()
@@ -531,7 +531,8 @@ class EditLetterWordTokenizerTest {
         assertEquals(
             listOf(
                 Triple(BlockIndex(1), BlockIndex(1), Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH))),
-                Triple(BlockContentIndex(1, 0), BlockContentIndex(1, 0), Change.Delete(DiffProducer.TextSegment(4, 7, "ccc"))),
+                // "ccc" is in old block 0, which continues into the inserted new block 1
+                Triple(BlockContentIndex(1, 0), BlockContentIndex(0, 0), Change.Delete(DiffProducer.TextSegment(4, 7, "ccc"))),
             ),
             calls,
         )

@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup.dsl.extended
 
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
 import no.nav.brev.brevbaker.markup.Markup
@@ -29,6 +30,7 @@ fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithD
  * - `markup`: den ferdige brevmarkuppen
  * - `brevtype`: hvilken brevtype markuppen tilhører
  * - `letterDataUsage`: sett av datafelter brevet bruker (kan stå tomt)
+ * - `stableHashCode`: malens stabile hash (obligatorisk)
  *
  * ```
  * val brev = letterMarkupWithDataUsage(
@@ -37,6 +39,7 @@ fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithD
  *     },
  *     brevtype = Markup.Brevtype.VEDTAKSBREV,
  *     letterDataUsage = setOf(dataUsageProperty("UngUfoerDto", "belop")),
+ *     stableHashCode = StableHashCode(123),
  * )
  * ```
  */
@@ -45,8 +48,10 @@ fun letterMarkupWithDataUsage(
     markup: LetterMarkup,
     brevtype: Markup.Brevtype,
     letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
+    stableHashCode: StableHashCode,
 ): LetterMarkupWithDataUsage = MarkupModel.letterMarkupWithDataUsage(
     markup = markup,
     letterDataUsage = letterDataUsage,
     brevtype = brevtype,
+    stableHashCode = stableHashCode,
 )

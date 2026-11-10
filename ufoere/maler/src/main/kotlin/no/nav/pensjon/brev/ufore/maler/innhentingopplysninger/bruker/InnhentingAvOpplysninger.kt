@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -36,28 +37,23 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Innhenting av opplysninger",
+            displayTitle = "Manglende formkrav ved søknad eller klage",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
     )
     {
         val arsak = saksbehandlervalg("arsak", "Velg årsak:").enum<ArsakEnum>()
+        val soknadEllerKlage = ifElse(arsak.equalTo(ArsakEnum.MANGLENDE_FORMKRAV_KLAGE), "klagen", "søknaden")
 
         title {
             text(
-                bokmal { + "Innhenting av opplysninger" },
-                nynorsk { + "Innhenting av opplysningar" },
+                bokmal { + "Vi har mottatt " + soknadEllerKlage + " din, dette må du gjøre" },
+                nynorsk { + "Vi har motteke " + soknadEllerKlage + " din, dette må du gjere" },
             )
         }
         outline {
             showIf(arsak.equalTo(ArsakEnum.UNDER_18)) {
-                title1 {
-                    text(
-                        bokmal { +"Du er under 18 år på søknadstidspunktet, søknaden må derfor framsettes av foresatte/verge" },
-                        nynorsk { +"Du er under 18 år på søknadstidspunktet, søknaden må derfor setjast fram av føresette/verje" },
-                    )
-                }
                 paragraph {
                     text(
                         bokmal { +"Vi viser til din søknad om uføretrygd. Du er under 18 år på søknadstidspunktet, og søknaden må derfor framsettes av foresatte/verge. " },
@@ -83,12 +79,6 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     )
                 }
             }.orShowIf(arsak.equalTo(ArsakEnum.UNDERSKREVET_AV_ANDRE)) {
-                title1 {
-                    text(
-                        bokmal { + "Du er over 18 år og søknaden ikke er skrevet under av deg" },
-                        nynorsk { + "Du er over 18 år og søknaden ikkje er skriven under av deg" },
-                    )
-                }
                 paragraph {
                     text(
                         bokmal { + "Vi viser til din søknad om uføretrygd. Vi kan ikke behandle søknaden fordi du er over 18 år og søknaden ikke er skrevet under av deg. " },
@@ -120,22 +110,16 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     )
                 }
             }.orShowIf(arsak.equalTo(ArsakEnum.MANGLENDE_FORMKRAV_KLAGE)) {
-                title1 {
+                paragraph {
                     text(
-                        bokmal { + "Klagen er mangelfull" },
-                        nynorsk { + "Klagen er mangelfull" },
+                        bokmal { + "Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst("dato") + ". Klagen din er mangelfull. " },
+                        nynorsk { + "Vi har den " + fritekst("dato") + " motteke klagen din over vedtaket vårt av " + fritekst("dato") + ". Klagen din er mangelfull. " },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { + "Vi har den " + fritekst("dato") + " mottatt klagen din over vedtaket vårt av " + fritekst("dato") + ". " },
-                        nynorsk { + "Vi har den " + fritekst("dato") + " motteke klagen din over vedtaket vårt av " + fritekst("dato") + ". " },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { + "Det følger av forvaltningsloven § 32 at klagen skal være skriftlig og underskrevet. Klagen skal også nevne hvilket vedtak det klages på og hvilken endring som ønskes. Dersom klagen er mangelfull, setter vi en kort frist slik at klager kan rette opp dette. Dersom manglene ikke blir rettet innen fristen og vilkårene for å behandle klagen ikke er oppfylt, skal klagen avvises. Dette følger av forvaltningsloven § 33. " },
-                        nynorsk { + "Det følgjer av forvaltningslova § 32 at klagen skal vere skriftleg og underskriven. Klagen skal også nemne kva vedtak det blir klaga på og kva endring som er ønskt. Dersom klagen er mangelfull, set vi ein kort frist slik at klagaren kan rette opp dette. Dersom manglane ikkje blir retta innan fristen og vilkåra for å behandle klagen ikkje er oppfylte, skal klagen avvisast. Dette følgjer av forvaltningslova § 33. " },
+                        bokmal { + "Det følger av forvaltningsloven § 32 at klagen skal være skriftlig og underskrevet. Klagen skal også nevne hvilket vedtak det klages på og hvilken endring som ønskes. Dersom manglene ikke blir rettet innen fristen og vilkårene for å behandle klagen ikke er oppfylt, skal klagen avvises. Dette følger av forvaltningsloven § 33. " },
+                        nynorsk { + "Det følgjer av forvaltningslova § 32 at klagen skal vere skriftleg og underskriven. Klagen skal også nemne kva vedtak det blir klaga på og kva endring som er ønskt. Dersom manglane ikkje blir retta innan fristen og vilkåra for å behandle klagen ikkje er oppfylte, skal klagen avvisast. Dette følgjer av forvaltningslova § 33. " },
                     )
                 }
                 paragraph {
@@ -163,12 +147,6 @@ object InnhentingAvOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     )
                 }
             }.orShowIf(arsak.equalTo(ArsakEnum.MANGLENDE_UNDERSKRIFT)) {
-                title1 {
-                    text(
-                        bokmal { + "Manglende underskrift" },
-                        nynorsk { + "Manglande underskrift" },
-                    )
-                }
                 paragraph {
                     text(
                         bokmal { + "Vi viser til din søknad om uføretrygd. Du har ikke underskrevet søknaden. " },

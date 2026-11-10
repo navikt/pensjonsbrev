@@ -86,7 +86,8 @@ class ExternalAPIService(
             poststed = poststed!!,
             adresselinje1 = adresselinje1,
             adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3
+            adresselinje3 = adresselinje3,
+            manueltAdressertTil = manueltAdressertTil,
         )
 
         MottakerType.UTENLANDSK_ADRESSE -> ExternalAPI.OverstyrtMottaker.UtenlandskAdresse(
@@ -94,7 +95,29 @@ class ExternalAPIService(
             adresselinje1 = adresselinje1!!,
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
-            landkode = landkode!!
+            landkode = landkode!!,
+            manueltAdressertTil = manueltAdressertTil,
+        )
+    }
+
+    private fun ExternalAPI.OverstyrtMottaker.toDto(): Dto.Mottaker = when (this) {
+        is ExternalAPI.OverstyrtMottaker.Samhandler -> Dto.Mottaker.samhandler(tssId)
+        is ExternalAPI.OverstyrtMottaker.NorskAdresse -> Dto.Mottaker.norskAdresse(
+            navn = navn,
+            postnummer = postnummer,
+            poststed = poststed,
+            adresselinje1 = adresselinje1,
+            adresselinje2 = adresselinje2,
+            adresselinje3 = adresselinje3,
+            manueltAdressertTil = manueltAdressertTil ?: Dto.Mottaker.ManueltAdressertTil.BRUKER,
+        )
+        is ExternalAPI.OverstyrtMottaker.UtenlandskAdresse -> Dto.Mottaker.utenlandskAdresse(
+            navn = navn,
+            adresselinje1 = adresselinje1,
+            adresselinje2 = adresselinje2,
+            adresselinje3 = adresselinje3,
+            landkode = landkode,
+            manueltAdressertTil = manueltAdressertTil ?: Dto.Mottaker.ManueltAdressertTil.BRUKER,
         )
     }
 
@@ -110,6 +133,7 @@ class ExternalAPIService(
                 statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
                 reserverForRedigering = request.reserverForRedigering ?: true,
                 markupVersjon = if (Features.markupV2.isEnabled()) MarkupVersjon.V2 else MarkupVersjon.V1,
+                mottaker = request.overstyrtMottaker?.toDto(),
             )
         )
 }

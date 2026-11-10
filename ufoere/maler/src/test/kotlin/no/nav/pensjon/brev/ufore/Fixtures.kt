@@ -120,6 +120,7 @@ object Fixtures : LetterDataFactory {
             EOSSkjemaFraBruker::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             SoknadTilAvtaleland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             KravSendtUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            UfoeretrygdForeloepigEksportvurdering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             ForesporselTrygdetidSendtLand::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             InnhentingAvOpplysninger::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             InnhentingAvBotidsopplysninger::class -> lagBrukersNavnRedigerbarBrevdata() as T

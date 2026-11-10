@@ -30,7 +30,7 @@ object FlereOpplysningerGenerell : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Fritekst du må sende oss opplysninger",
+            displayTitle = "Du må sende oss opplysninger",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),

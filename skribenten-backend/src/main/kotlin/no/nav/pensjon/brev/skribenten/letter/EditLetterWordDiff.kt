@@ -27,7 +27,7 @@ class EditLetterWordDiff {
         private val inserts = mutableListOf<DiffSegment>()
         private val deletes = mutableListOf<DiffSegment>()
 
-        override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>) {
+        override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>, insertionOnlyAnchor: Boolean) {
             when (change) {
                 is Change.Delete -> deletes.add(DiffSegment(deleteIndex, change.old.startOffset, change.old.endOffset))
                 is Change.Insert -> inserts.add(DiffSegment(insertIndex, change.new.startOffset, change.new.endOffset))
@@ -165,8 +165,8 @@ class EditLetterWordDiff {
             }
         }
 
-        override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>) {
-            if (isAncestorDeleted(deleteIndex)) return
+        override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>, insertionOnlyAnchor: Boolean) {
+            if (!insertionOnlyAnchor && isAncestorDeleted(deleteIndex)) return
 
             val textEdit = when (insertIndex) {
                 is ContentIndex.BlockContentIndex -> textContentEdit(insertIndex.blockIndex, insertIndex.contentIndex).edit

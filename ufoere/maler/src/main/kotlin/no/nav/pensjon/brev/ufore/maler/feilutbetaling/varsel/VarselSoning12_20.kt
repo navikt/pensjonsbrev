@@ -84,7 +84,7 @@ object VarselSoning12_20: RedigerbarTemplate<FeilutbetalingSpesifikkVarselDto> {
             paragraph {
                 text(
                     bokmal { + "Vi har den " + dato + " fått opplysninger fra " + kilde + " om at du har gjennomført varetekt, straff eller særreaksjon fra " + dato + ". " + fritekst("Eventuelt til dato/i dag") },
-                    nynorsk { + "Vi har den " + dato + " fått opplysningar frå " + kilde + " om at du har gjennomført varetekt, straff eller særreaksjon frå " + dato + ". " + fritekst("Eventuelt til dato/i dag ")}
+                    nynorsk { + "Vi har den " + dato + " fått opplysningar frå " + kilde + " om at du har gjennomført varetekt, straff eller særreaksjon frå " + dato + ". " + fritekst("Eventuelt til dato/i dag")}
                     )
             }
             paragraph {
