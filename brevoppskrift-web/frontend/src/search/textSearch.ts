@@ -162,28 +162,37 @@ function lineMatches(line: Line, query: string, exact: boolean): boolean {
 }
 
 /** Collapses the matched lines into one hit per template: the best-scoring
- *  line, plus every line that matched. */
-function toContentHits(matches: ContentMatch[]): ContentHit[] {
-  const byTemplate = new Map<string, ContentHit>();
-  for (const { record, score } of matches) {
-    const { template, lineIndex } = record;
+ *  line that `isShowable` accepts, plus every line that matched. Templates
+ *  without such a line are dropped. `isShowable` is called best score first and
+ *  only until it accepts a line, so it may be expensive. */
+function toContentHits(
+  matches: ContentMatch[],
+  isShowable: (record: ContentRecord) => boolean = () => true,
+): ContentHit[] {
+  const byTemplate = new Map<string, ContentMatch[]>();
+  for (const match of matches) {
+    const { template } = match.record;
     const key = `${template.malType}/${template.id}/${template.language}`;
-    const existing = byTemplate.get(key);
-    if (existing) {
-      existing.matchCount++;
-      existing.matchedLineIndexes.push(lineIndex);
-      if (score < existing.score) {
-        existing.score = score;
-        existing.lineIndex = lineIndex;
-      }
+    const group = byTemplate.get(key);
+    if (group) {
+      group.push(match);
     } else {
-      byTemplate.set(key, { template, lineIndex, matchCount: 1, matchedLineIndexes: [lineIndex], score });
+      byTemplate.set(key, [match]);
     }
   }
-  const hits = [...byTemplate.values()];
-  for (const hit of hits) {
-    // Fuse returns matches by score, not in document order.
-    hit.matchedLineIndexes.sort((a, b) => a - b);
+  const hits: ContentHit[] = [];
+  for (const group of byTemplate.values()) {
+    const shown = group.toSorted((a, b) => a.score - b.score).find(({ record }) => isShowable(record));
+    if (shown) {
+      hits.push({
+        template: shown.record.template,
+        lineIndex: shown.record.lineIndex,
+        matchCount: group.length,
+        // Fuse returns matches by score, not in document order.
+        matchedLineIndexes: group.map(({ record }) => record.lineIndex).sort((a, b) => a - b),
+        score: shown.score,
+      });
+    }
   }
   return hits.sort(
     (a, b) =>
@@ -204,7 +213,11 @@ function fuzzySearch(index: SearchIndex, query: string): SearchResults {
     .filter(({ item }) => hasShortTermsVerbatim(terms, [item.title, item.id]))
     .map(({ item }) => ({ template: item.template }));
 
-  return { content: toContentHits(matches), brev };
+  // Verifying every Fuse candidate is too slow on the full corpus; only the line shown per template must highlight.
+  const content = toContentHits(matches, ({ template, lineIndex }) =>
+    lineMatches(template.lines[lineIndex], query, false),
+  );
+  return { content, brev };
 }
 
 /** Every exact hit is a verbatim occurrence, so they are all equally good and

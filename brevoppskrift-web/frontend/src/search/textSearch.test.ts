@@ -208,6 +208,23 @@ describe("search", () => {
     expect(ids("barnetillegg uføretrygd", false).sort()).toEqual(["BAR", "ROW"]);
   });
 
+  it("shows each fuzzy hit at a line highlighting can mark, and drops templates without one", () => {
+    const acrossVariable: Line = [
+      { type: "text", value: "Skatteoppgjøret for " },
+      { type: "var", label: "år" },
+      { type: "text", value: " er klart." },
+    ];
+    const both = template({ id: "BOTH", title: "Begge", lines: ["", "Vi forrer dyrene."] });
+    both.lines[0] = acrossVariable;
+    const only = template({ id: "ONLY", title: "Bare variabel", lines: [""] });
+    only.lines = [acrossVariable];
+    const index = buildIndex([both, only]);
+
+    const { content } = search(index, "forer");
+
+    expect(content.map((hit) => [hit.template.id, hit.lineIndex])).toEqual([["BOTH", 1]]);
+  });
+
   it("accepts a character-prefix exact phrase", () => {
     const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["The grey fox jumped over the fence."] })];
     const index = buildIndex(templates);

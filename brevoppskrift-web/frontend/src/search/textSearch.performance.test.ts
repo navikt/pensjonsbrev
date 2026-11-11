@@ -13,14 +13,23 @@ import {
   lineFlow,
   queryTerms,
   type SearchIndex,
+  search,
   type TemplateText,
 } from "~/search/textSearch";
 
 // npm run bench:search; optionally set SEARCH_BENCHMARK_CORPUS to a saved /templates/{malType}/all response
 // (or a concatenation of several) and SEARCH_BENCHMARK_SAMPLES to the number of paired samples (default 20).
-// Measures what verifying fuzzy candidates with textFlowHasMatch would cost, and how many candidates it rejects.
-// Covers content candidate selection only, excluding indexing, hit aggregation, metadata search and rendering.
-const QUERIES = ["pensjon", "barnetillegg", "barnetillegg uføretrygd", "barnetileg uføretrygd", "folketrygdloven §"];
+// Measures what verifying fuzzy candidates with textFlowHasMatch costs: for every candidate line, or (as search() does)
+// only for the line shown per template. Excludes indexing and rendering; search() also includes aggregation and
+// metadata search.
+const QUERIES = [
+  "pensjon",
+  "barnetillegg",
+  "barnetillegg uføretrygd",
+  "barnetileg uføretrygd",
+  "folketrygdloven §",
+  "difor brukt",
+];
 const SAMPLES = Number(process.env.SEARCH_BENCHMARK_SAMPLES ?? 20);
 
 function syntheticCorpus(): TemplateText[] {
@@ -71,31 +80,32 @@ function loadCorpus(): TemplateText[] {
   );
 }
 
-function measure(index: SearchIndex, query: string, verify: boolean) {
+type Variant = "unverified" | "every line" | "search()";
+const VARIANTS: Variant[] = ["unverified", "every line", "search()"];
+
+/** "unverified" and "every line" time the fuzzy candidate loop without and with verifying every candidate;
+ *  "search()" times the production search, which verifies only the line shown per template. */
+function measure(index: SearchIndex, query: string, variant: Variant) {
   const start = performance.now();
+  if (variant === "search()") {
+    const { content } = search(index, query, false);
+    return { ms: performance.now() - start, candidates: 0, lines: 0, templates: content.length };
+  }
   const candidates = index.contentFuse.search(query);
-  const afterFuse = performance.now();
   const terms = queryTerms(query);
   const matches = [];
-  let checked = 0;
   for (const result of candidates) {
     const { item } = result;
-    if (hasShortTermsVerbatim(terms, [item.text])) {
-      checked++;
-      if (!verify || textFlowHasMatch(lineFlow(item.template.lines[item.lineIndex]), query, false)) {
-        matches.push(result);
-      }
+    if (
+      hasShortTermsVerbatim(terms, [item.text]) &&
+      (variant === "unverified" || textFlowHasMatch(lineFlow(item.template.lines[item.lineIndex]), query, false))
+    ) {
+      matches.push(result);
     }
   }
-  const end = performance.now();
-  return {
-    candidates: candidates.length,
-    checked,
-    matches,
-    fuseMs: afterFuse - start,
-    filterMs: end - afterFuse,
-    totalMs: end - start,
-  };
+  const ms = performance.now() - start;
+  const templates = new Set(matches.map(({ item }) => item.template)).size;
+  return { ms, candidates: candidates.length, lines: matches.length, templates };
 }
 
 function percentile(values: number[], fraction: number): number {
@@ -103,76 +113,46 @@ function percentile(values: number[], fraction: number): number {
   return sorted[Math.ceil(sorted.length * fraction) - 1];
 }
 
-const ms = (value: number) => Number(value.toFixed(2));
+const round = (value: number) => Number(value.toFixed(2));
 
 it.runIf(process.env.SEARCH_BENCHMARK === "1")(
-  "compares fuzzy candidate selection with and without textFlowHasMatch verification",
+  "compares unverified, every-line and shown-line verification of fuzzy candidates",
   () => {
     const corpus = loadCorpus();
     const index = buildIndex(corpus);
     console.info(
       `${process.env.SEARCH_BENCHMARK_CORPUS ? "Exported" : "SYNTHETIC"} corpus: ${corpus.length} templates, ` +
-        `${index.contentRecords.length} searchable lines. ${SAMPLES} paired samples, two warm-up pairs, alternating order. ` +
+        `${index.contentRecords.length} searchable lines. ${SAMPLES} samples per variant, two warm-up rounds, rotating order. ` +
         `${process.version}, ${process.platform}/${process.arch}.`,
     );
     const rows = QUERIES.map((query) => {
       for (let warmup = 0; warmup < 2; warmup++) {
-        measure(index, query, false);
-        measure(index, query, true);
-      }
-      const without: ReturnType<typeof measure>[] = [];
-      const withCheck: ReturnType<typeof measure>[] = [];
-      for (let sample = 0; sample < SAMPLES; sample++) {
-        if (sample % 2 === 0) {
-          without.push(measure(index, query, false));
-          withCheck.push(measure(index, query, true));
-        } else {
-          withCheck.push(measure(index, query, true));
-          without.push(measure(index, query, false));
+        for (const variant of VARIANTS) {
+          measure(index, query, variant);
         }
       }
-      const row = {
+      const samples = new Map<Variant, ReturnType<typeof measure>[]>(VARIANTS.map((variant) => [variant, []]));
+      for (let sample = 0; sample < SAMPLES; sample++) {
+        for (let offset = 0; offset < VARIANTS.length; offset++) {
+          const variant = VARIANTS[(sample + offset) % VARIANTS.length];
+          samples.get(variant)?.push(measure(index, query, variant));
+        }
+      }
+      const of = (variant: Variant) => samples.get(variant) ?? [];
+      const [unverified, everyLine, shownLine] = VARIANTS.map((variant) => of(variant)[0]);
+      const row: Record<string, string | number> = {
         query,
-        candidates: withCheck[0].candidates,
-        checked: withCheck[0].checked,
-        rejected: without[0].matches.length - withCheck[0].matches.length,
-        "Fuse median ms": ms(
-          percentile(
-            [...without, ...withCheck].map((sample) => sample.fuseMs),
-            0.5,
-          ),
-        ),
-        "without median ms": ms(
-          percentile(
-            without.map((sample) => sample.totalMs),
-            0.5,
-          ),
-        ),
-        "with median ms": ms(
-          percentile(
-            withCheck.map((sample) => sample.totalMs),
-            0.5,
-          ),
-        ),
-        "added filter median ms": ms(
-          percentile(
-            withCheck.map((sample, index) => sample.filterMs - without[index].filterMs),
-            0.5,
-          ),
-        ),
-        "without p95 ms": ms(
-          percentile(
-            without.map((sample) => sample.totalMs),
-            0.95,
-          ),
-        ),
-        "with p95 ms": ms(
-          percentile(
-            withCheck.map((sample) => sample.totalMs),
-            0.95,
-          ),
-        ),
+        candidates: unverified.candidates,
+        "lines rejected (every line)": unverified.lines - everyLine.lines,
+        templates: unverified.templates,
+        "templates dropped (every line)": unverified.templates - everyLine.templates,
+        "templates dropped (search())": unverified.templates - shownLine.templates,
       };
+      for (const variant of VARIANTS) {
+        const times = of(variant).map((sample) => sample.ms);
+        row[`${variant} median ms`] = round(percentile(times, 0.5));
+        row[`${variant} p95 ms`] = round(percentile(times, 0.95));
+      }
       console.info(JSON.stringify(row));
       return row;
     });
