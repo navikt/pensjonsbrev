@@ -1,15 +1,49 @@
 import { css } from "@emotion/react";
-import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import { Box, Button, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
-import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
+import { Box, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
+import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
+import axios from "axios";
+import { useLayoutEffect, useMemo, useRef } from "react";
 
-import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
+import {
+  getTemplateDescription,
+  getTemplateDocumentation,
+  isMalType,
+  type MalType,
+} from "~/api/brevbaker-api-endpoints";
 import { type TemplateDocumentation } from "~/api/templateDocumentationTypes";
 import { DataClassesPanel } from "~/components/DataClasses";
 import { ExportTemplateButton } from "~/components/ExportTemplateButton";
+import { LanguageToggle } from "~/components/LanguageToggle";
 import { Document, KnownDataClassesProvider } from "~/components/TemplateDocumentationView";
-import { blockOfFocus, type TemplateSearchContextParams, validateTemplateSearchContext } from "~/search/searchContext";
+import {
+  blockOfFocus,
+  criteriaOf,
+  focusParam,
+  type ResultRef,
+  type TemplateSearchContextParams,
+  validateTemplateSearchContext,
+} from "~/search/searchContext";
+import { blockIndexesOf } from "~/templateSearch/blockIndexes";
+import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
+import { BackButton, SearchHitToolbar } from "~/templateSearch/SearchHitToolbar";
+import { useHitFocus } from "~/templateSearch/useHitFocus";
+import { usePickHitBlock } from "~/templateSearch/usePickHitBlock";
+import { useScrollToBlock } from "~/templateSearch/useScrollToBlock";
+
+/** An unknown template answers 404, which is a missing page rather than an error. */
+function notFoundOn404(error: unknown): never {
+  if (axios.isAxiosError(error) && error.response?.status === 404) {
+    throw notFound();
+  }
+  throw error;
+}
+
+type TemplateSearchParams = TemplateSearchContextParams & {
+  language?: string;
+  highlightedDataClass?: string;
+  highlightedDataField?: string;
+  highlightedDataFieldOwner?: string;
+};
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -20,17 +54,25 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }),
   },
   loader: async ({ context, deps, params, preload }) => {
-    const description = await context.queryClient.ensureQueryData({
-      queryKey: getTemplateDescription.queryKey(params.malType, params.templateId),
-      queryFn: () => getTemplateDescription.queryFn(params.malType, params.templateId),
-    });
+    if (!isMalType(params.malType)) {
+      throw notFound();
+    }
+    const description = await context.queryClient
+      .ensureQueryData({
+        queryKey: getTemplateDescription.queryKey(params.malType, params.templateId),
+        queryFn: () => getTemplateDescription.queryFn(params.malType, params.templateId),
+      })
+      .catch(notFoundOn404);
 
     const defaultLanguage = description.languages[0];
     if (!defaultLanguage) {
       throw notFound();
     }
 
-    if (!deps.language && !preload) {
+    // A missing or unknown language (e.g. a hand-edited URL) opens the
+    // default one. Keeps the rest of the search params, so a search context survives.
+    const languageIsValid = deps.language !== undefined && description.languages.includes(deps.language);
+    if (!languageIsValid && !preload) {
       throw redirect({
         to: "/template/$malType/$templateId",
         search: (prev) => ({ ...prev, language: defaultLanguage }),
@@ -39,7 +81,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
       });
     }
 
-    const language = deps.language ?? defaultLanguage;
+    const language = languageIsValid && deps.language ? deps.language : defaultLanguage;
 
     const documentation = await context.queryClient.ensureQueryData({
       queryKey: getTemplateDocumentation.queryKey(params.malType, params.templateId, language),
@@ -48,14 +90,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 
     return { documentation, description };
   },
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): TemplateSearchContextParams & {
-    language?: string;
-    highlightedDataClass?: string;
-    highlightedDataField?: string;
-    highlightedDataFieldOwner?: string;
-  } => {
+  validateSearch: (search: Record<string, unknown>): TemplateSearchParams => {
     return {
       language: search.language?.toString(),
       highlightedDataClass: search.highlightedDataClass?.toString(),
@@ -69,78 +104,144 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 
 function TemplateExplorer() {
   const { documentation, description } = Route.useLoaderData();
-  const { templateId } = Route.useParams();
-  const { focus, language } = Route.useSearch();
-  const index = blockOfFocus(focus);
+  const { malType, templateId } = Route.useParams();
+  const { focus, showHits, language: languageParam, q, exact, tab } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
   const previewRef = useRef<HTMLDivElement>(null);
+  const documentScrollerRef = useRef<HTMLDivElement>(null);
+  const language = languageParam ?? description.languages[0];
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
-  useEffect(() => {
-    const container = previewRef.current;
-    if (!container) {
-      return;
+  // biome-ignore lint/correctness/useExhaustiveDependencies: template changes reset scroll; language changes preserve it.
+  useLayoutEffect(() => {
+    if (documentScrollerRef.current) {
+      documentScrollerRef.current.scrollTop = 0;
     }
+  }, [malType, templateId]);
 
-    for (const prev of container.querySelectorAll(".search-target")) {
-      prev.classList.remove("search-target");
+  const criteria = useMemo(() => criteriaOf({ q, exact, tab }), [q, exact, tab]);
+  const current = useMemo<ResultRef>(() => ({ malType, id: templateId, language }), [malType, templateId, language]);
+  // A block that is not in this template (e.g. a stale or hand-edited URL)
+  // is ignored, so the page opens at the first hit, or at the top.
+  const requestedBlock = useMemo(() => {
+    const block = blockOfFocus(focus);
+    return block !== undefined && blockIndexesOf(documentation).has(block) ? block : undefined;
+  }, [focus, documentation]);
+  const marking = showHits !== false;
+  const { hits, highlight, activeBlock, scrollTarget, scrollKey } = useHitFocus(
+    criteria,
+    current,
+    requestedBlock,
+    marking,
+  );
+  const pickedBlock = useRef<number | undefined>(undefined);
+  useScrollToBlock(previewRef, scrollTarget, documentation, pickedBlock, scrollKey);
+  const selectBlock = (block: number) =>
+    navigate({ replace: true, search: (s) => ({ ...s, focus: focusParam(block) }) });
+  // A hit the user clicks in, or tabs into, becomes the focused one, so a copied
+  // link opens at it. It is already in view, so it is not scrolled to.
+  usePickHitBlock(previewRef, (block) => {
+    if (block !== activeBlock) {
+      pickedBlock.current = block;
+      selectBlock(block);
     }
-
-    if (index === undefined) {
-      return;
-    }
-
-    const raf = requestAnimationFrame(() => {
-      const el = container.querySelector(`[data-block-index="${CSS.escape(String(index))}"]`);
-      if (el) {
-        el.classList.add("search-target");
-        el.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+  });
+  const changeMarking = (show: boolean) =>
+    navigate({ replace: true, search: (s) => ({ ...s, showHits: show ? undefined : false }) });
+  // A new query opens at its first hit. Started here, without a search to keep the tab of,
+  // it searches the content, which is what a template shows. A write of the query the URL
+  // already has (e.g. one that lands after navigating to another hit) changes nothing.
+  const changeQuery = (newQ: string | undefined) =>
+    navigate({
+      replace: true,
+      search: (s) =>
+        s.q === newQ
+          ? s
+          : newQ === undefined
+            ? { ...s, q: undefined, exact: undefined, tab: undefined, showHits: undefined, focus: undefined }
+            : { ...s, q: newQ, tab: criteria ? s.tab : "innhold", focus: undefined },
     });
-    return () => cancelAnimationFrame(raf);
-  }, [index, documentation]);
+  // Input state that is pending for one template is not carried over to another.
+  const templateKey = `${malType}/${templateId}`;
 
   return (
     <VStack height="100%" overflow="hidden">
-      <Box asChild flexShrink="0" marginBlock="space-8" marginInline="space-16 auto">
-        <Button as={Link} icon={<ArrowLeftIcon />} size="small" to="/templates" variant="secondary">
-          Tilbake til mal-oversikten
-        </Button>
-      </Box>
-      <HGrid columns="auto 1fr" flexGrow="1" minHeight="0" overflow="hidden">
-        <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
-        <VStack
-          align="center"
-          gap="space-16"
-          overflow="auto"
-          paddingBlock="space-16"
-          paddingInline="space-16"
-          width="100%"
-        >
-          <Heading size="medium" spacing>
-            Oppskrift for {templateId}
+      <VStack flexShrink="0" gap="space-8" marginBlock="space-8" marginInline="space-16">
+        {/* The sides grow equally from zero, so the id is centred, and "Last ned" stays right also when it wraps. */}
+        <HStack align="center" gap="space-16" wrap>
+          <HStack flexBasis="0" flexGrow="1">
+            <BackButton criteria={criteria} current={current} />
+          </HStack>
+          <Heading level="1" size="small">
+            {templateId}
           </Heading>
-          <SelectLanguage />
-          <ExportTemplateButton
-            documentation={documentation}
-            language={language ?? description.languages[0]}
-            templateId={templateId}
+          <HStack flexBasis="0" flexGrow="1" justify="end">
+            <ExportTemplateButton documentation={documentation} language={language} templateId={templateId} />
+          </HStack>
+        </HStack>
+        <HStack align="center" gap="space-16" justify="center" wrap>
+          <SearchHitToolbar
+            criteria={criteria}
+            hits={hits}
+            marking={marking}
+            onMarkingChange={changeMarking}
+            onSearch={changeQuery}
+            onSelectBlock={selectBlock}
+            query={q}
+            searchFieldKey={templateKey}
           />
-          <div
-            css={css`
+          <LanguageToggle
+            available={description.languages}
+            key={templateKey}
+            // Block indexes follow the template's structure, so the block in focus is
+            // the same block in the other language, also when it has no hit there.
+            onChange={(value) =>
+              navigate({ replace: true, search: (s) => ({ ...s, language: value, focus: focusParam(activeBlock) }) })
+            }
+            value={language}
+          />
+        </HStack>
+      </VStack>
+      <Box asChild borderColor="neutral-subtle" borderWidth="1 0 0 0">
+        <HGrid columns="auto 1fr" flexGrow="1" minHeight="0" overflow="hidden">
+          <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
+          <VStack
+            align="center"
+            data-testid="template-document-scroller"
+            gap="space-16"
+            overflow="auto"
+            paddingBlock="space-16"
+            paddingInline="space-16"
+            ref={documentScrollerRef}
+            width="100%"
+          >
+            <div
+              css={css`
               width: 100%;
 
-              .search-target {
-                outline: 3px solid var(--ax-warning-400);
+              [data-search-hit] {
                 border-radius: var(--ax-radius-4);
                 scroll-margin-top: var(--ax-space-64);
               }
+
+              [data-search-hit="match"] {
+                outline: 1px solid var(--ax-border-warning-subtle);
+                outline-offset: var(--ax-space-2);
+              }
+
+              [data-search-hit="active"] {
+                outline: 3px solid var(--ax-border-warning);
+                outline-offset: var(--ax-space-2);
+              }
             `}
-            ref={previewRef}
-          >
-            <TemplateDocumentationSection documentation={documentation} />
-          </div>
-        </VStack>
-      </HGrid>
+              ref={previewRef}
+            >
+              <SearchHighlightProvider highlight={highlight}>
+                <TemplateDocumentationSection documentation={documentation} />
+              </SearchHighlightProvider>
+            </div>
+          </VStack>
+        </HGrid>
+      </Box>
     </VStack>
   );
 }
@@ -153,30 +254,5 @@ function TemplateDocumentationSection({ documentation }: { documentation: Templa
         <Document key={index} templateDocumentation={attachment} />
       ))}
     </KnownDataClassesProvider>
-  );
-}
-
-function SelectLanguage() {
-  const { description } = Route.useLoaderData();
-  const { language } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
-
-  return (
-    <Select
-      css={css`
-        width: 200px;
-        margin-bottom: var(--ax-space-32);
-      `}
-      label="Språk"
-      onChange={(event) => navigate({ replace: true, search: (s) => ({ ...s, language: event.target.value }) })}
-      size="medium"
-      value={language}
-    >
-      {description.languages.map((language) => (
-        <option key={language} value={language}>
-          {language}
-        </option>
-      ))}
-    </Select>
   );
 }
