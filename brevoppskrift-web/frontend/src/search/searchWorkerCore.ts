@@ -10,6 +10,7 @@ function toHitRefs(results: SearchResults): HitRefs {
       key: templateKey(hit.template),
       lineIndex: hit.lineIndex,
       matchCount: hit.matchCount,
+      matchedLineIndexes: hit.matchedLineIndexes,
       score: hit.score,
     })),
     brev: results.brev.map((hit) => ({ key: templateKey(hit.template) })),

@@ -84,6 +84,20 @@ describe("search", () => {
 
     expect(content).toHaveLength(1);
     expect(content[0].matchCount).toBe(2);
+    expect(content[0].matchedLineIndexes).toEqual([0, 2]);
+  });
+
+  it("lists matching lines in document order in exact mode too, whichever line scores best", () => {
+    const templates = [
+      template({
+        id: "MULTI",
+        title: "Flere avsnitt",
+        lines: ["Barnetillegg barnetillegg.", "Noe uavhengig tekst.", "Om barnetillegg.", "Barnetillegg igjen."],
+      }),
+    ];
+    const index = buildIndex(templates);
+
+    expect(search(index, "barnetillegg", true).content[0].matchedLineIndexes).toEqual([0, 2, 3]);
   });
 
   it("matches on title and brevkode for brev hits", () => {
