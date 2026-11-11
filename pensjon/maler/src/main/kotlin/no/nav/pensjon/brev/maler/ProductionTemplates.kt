@@ -24,7 +24,8 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektAuto
-import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteArAuto
+import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteArRedigerbar
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0.FeilBelopInntekstendringsbrev_AvkortetTil0
 import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettInfo4Aar
@@ -96,7 +97,7 @@ object ProductionTemplates : AllTemplates {
         AdhocVarselOpphoerMedHvilendeRett,
         EndretBarnetilleggUfoerertrygdAuto,
         EndretUfoeretrygdPGAInntektAuto,
-        EndretUforetrygdPGAInntektNesteAr,
+        EndretUforetrygdPGAInntektNesteArAuto,
         EndretUforetrygdPGAOpptjeningLegacy,
         VedtakOmEtterbetalingOpphor2026Auto,
         VedtakOmEtterbetalingOpphor2026OktIfuAuto,
@@ -140,6 +141,7 @@ object ProductionTemplates : AllTemplates {
         BrukerTestVedtaksbrev,
         DelvisEksportAvUforetrygdRedigerbar,
         EndretUfoeretrygdPGAInntektRedigerbar,
+        EndretUforetrygdPGAInntektNesteArRedigerbar,
         EndringUforetrygdRedigerbar,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,

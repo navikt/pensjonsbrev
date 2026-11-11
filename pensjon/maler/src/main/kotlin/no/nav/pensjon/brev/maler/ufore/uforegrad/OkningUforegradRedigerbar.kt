@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU5005_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.InntektBarnetillegg
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -956,7 +957,13 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                             nynorsk { +"Slik reknar vi ut fribeløpet ditt i år: " },
                         )
                     }
-                    includePhrase(Fribelopsperioder(pesysData.fribelopsperioder, pesysData.fribelop))
+                    includePhrase(Fribelopsperioder(pesysData.fribelopsperioder))
+                    paragraph {
+                        text(
+                            bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + pesysData.fribelop.format() + "." },
+                            nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + pesysData.fribelop.format() + "." },
+                        )
+                    }
                 }
             }.orShow {
                 showIf(pesysData.harVTA) {
