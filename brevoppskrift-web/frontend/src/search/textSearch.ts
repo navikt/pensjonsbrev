@@ -195,7 +195,7 @@ function fuzzySearch(index: SearchIndex, query: string): SearchResults {
   const terms = queryTerms(query);
   const matches: ContentMatch[] = [];
   for (const { item, score } of index.contentFuse.search(query)) {
-    if (hasShortTermsVerbatim(terms, [item.text]) && lineMatches(item.template.lines[item.lineIndex], query, false)) {
+    if (hasShortTermsVerbatim(terms, [item.text])) {
       matches.push({ record: item, score: score ?? 1 });
     }
   }
