@@ -88,9 +88,21 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 )
             )
 
-            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(ufoeretrygd.utbetaltPerMaaned.greaterThan(0)))
-            includePhrase(Vedtak.BegrunnelseOverskrift())
+            showIf(ufoeretrygd.utbetaltPerMaaned.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                        nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad." },
+                    )
+                }
+            }
 
+            title1() {
+                text(
+                    bokmal { + "Begrunnelse for vedtaket" },
+                    nynorsk { + "Grunngiving for vedtaket" },
+                )
+            }
             paragraph {
                 val barnFlertall = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
                 text(
