@@ -16,12 +16,11 @@ val informasjonsskrivOmHelsetjenester =
             text(bokmal { +"Informasjon til pensjonister og uføretrygdede som flytter INNEN EØS-OMRÅDET og er omfattet av EØS-avtalens regler om trygd" })
         }
         paragraph {
-            list {
-                item { text(bokmal { +"om medlemskap og rett til helsetjenester" }) }
-            }
+             text(bokmal { +"Informasjon om medlemskap og rett til helsetjenester" })
         }
+
         title2 {
-            text(bokmal { +" Medlemskap i folketrygden" })
+            text(bokmal { +"Medlemskap i folketrygden" })
         }
         paragraph {
             text(bokmal { +"Pensjonister/uføretrygdede som bor i utlandet, er ikke automatisk medlemmer i folketrygden." })
@@ -30,7 +29,7 @@ val informasjonsskrivOmHelsetjenester =
             text(bokmal { +"Som EØS borger regnes du som bosatt der du har ditt senter for livsinteresser. I vurderingen av hvor du har ditt bosted vektlegges blant annet" })
             list {
                 item { text(bokmal { +"varigheten og kontinuiteten av ditt opphold i de aktuelle landene" }) }
-                item { text(bokmal { +"dersom du er i arbeid, vil arbeidets art og karakter" }) }
+                item { text(bokmal { +"arbeidets art og karakter dersom du er i arbeid" }) }
                 item { text(bokmal { +"din familiesituasjon og familiebånd," }) }
                 item { text(bokmal { +"eventuell ulønnet aktivitet," }) }
                 item { text(bokmal { +"din boligsituasjon, særlig hvor permanent den er" }) }
@@ -72,19 +71,19 @@ val informasjonsskrivOmHelsetjenester =
         paragraph {
             text(bokmal { +"Dersom du mottar avtalefestet pensjon, har du ikke rett til dokumentet S1. Du kan søke om frivillig medlemskap, se neste side." })
         }
+
         title1 {
             text(bokmal { +"Informasjon til pensjonister og uføretrygdede som bosetter seg UTENFOR EØS-OMRÅDET og pensjonister med AVTALEFESTET PENSJON som bosetter seg innen EØS-området" })
         }
         paragraph {
-            list {
-                item { text(bokmal { +"om frivillig medlemskap i folketrygden" }) }
-            }
+            text(bokmal { +"Informasjon om frivillig medlemskap i folketrygden" })
         }
+
         title2 {
             text(bokmal { +"Medlemskap i folketrygden" })
         }
         paragraph {
-            text(bokmal { +"Pensjonister/uføretrygdede som bor i utlandet, er ikke automatisk medlemmer i folketrygden. Du regnes som bosatt i utlandet dersom du har til hensikt, eller faktisk har, oppholdt deg i 12 måneder i utlandet. Du vil også regnet som bosatt i utlandet dersom du oppholder deg i mer enn 6 måneder i to eller flere år på rad. Det at du mottar pensjon eller uføretrygd fra folketrygden, medfører ikke at du automatisk er medlem i folketrygden." })
+            text(bokmal { +"Pensjonister/uføretrygdede som bor i utlandet, er ikke automatisk medlemmer i folketrygden. Du regnes som bosatt i utlandet dersom du har til hensikt, eller faktisk har, oppholdt deg i 12 måneder i utlandet. Du vil også regnes som bosatt i utlandet dersom du oppholder deg i mer enn 6 måneder i to eller flere år på rad. Det at du mottar pensjon eller uføretrygd fra folketrygden, medfører ikke at du automatisk er medlem i folketrygden." })
         }
         paragraph {
             text(bokmal { +"Skatteplikt til Norge innebærer heller ikke at du er automatisk medlem i folketrygden. En pensjonist/uføretrygdet som ikke er medlem i folketrygden har ikke rett til å få dekket utgifter til helsetjenester fra folketrygden, verken når det gjelder sykdom som oppstår under utenlandsoppholdet eller under eventuelle ferieopphold i Norge." })
@@ -110,10 +109,10 @@ val informasjonsskrivOmHelsetjenester =
             text(bokmal { +"Trygdeavgift" })
         }
         paragraph {
-            text(bokmal { +"En pensjonist/uføretrygdet som blir frivillig medlem, må betale avgift til NAV Medlemskap og avgift. Vi beregner avgiften av brutto pensjoner (offentlige og private) i den perioden medlemskapet gjelder for. I 2023 er avgiftssatsen 9,1 prosent av pensjonen dersom du ikke betaler skatt til Norge av den. Dersom du betaler skatt til Norge, er avgiftssatsen 2,3 prosent." })
+            text(bokmal { +"En pensjonist/uføretrygdet som blir frivillig medlem, må betale avgift til NAV Medlemskap og avgift. Vi beregner avgiften av brutto pensjoner (offentlige og private) i den perioden medlemskapet gjelder for. Informasjon om de ulike satsene er tilgjengelig på nav.no eller skatteetaten.no" })
         }
         paragraph {
-            text(bokmal { +"Dersom du betaler kildeskatt, skal du betale en avgift på 7,4 prosent av avgiftsgrunnlaget til Nav." })
+            text(bokmal { +"Dersom du betaler kildeskatt, skal du betale en avgift se mer om dette på skatteetaten.no" })
         }
         title2 {
             text(bokmal { +"Utgifter til helsetjenester – hva dekkes" })
