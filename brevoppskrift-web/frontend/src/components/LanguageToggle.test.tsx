@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -16,6 +16,27 @@ function ControlledToggle({ available, onChange }: { available: string[]; onChan
       }}
       value={value}
     />
+  );
+}
+
+function LoadingToggle({ available, onChange = vi.fn() }: { available: string[]; onChange?: (l: string) => void }) {
+  const [requested, setRequested] = useState(available[0]);
+  const [loaded, setLoaded] = useState(available[0]);
+  return (
+    <>
+      <LanguageToggle
+        available={available}
+        loading={requested !== loaded}
+        onChange={(language) => {
+          onChange(language);
+          setRequested(language);
+        }}
+        value={requested}
+      />
+      <button onClick={() => setLoaded(requested)} type="button">
+        last
+      </button>
+    </>
   );
 }
 
@@ -67,24 +88,23 @@ describe("LanguageToggle", () => {
     const checked = (name: string) => screen.getByRole("radio", { name }).getAttribute("aria-checked");
     const spinners = () => document.querySelectorAll("svg title");
 
-    it("selects it right away and shows a spinner on it", async () => {
+    it("selects it right away and shows a spinner in place of its name", async () => {
       const user = userEvent.setup();
-      render(<LanguageToggle available={["BOKMAL", "ENGLISH"]} onChange={vi.fn()} value="BOKMAL" />);
+      render(<LoadingToggle available={["BOKMAL", "ENGLISH"]} />);
       await user.tab();
 
       await user.keyboard("{ArrowRight}");
 
       expect(checked("Engelsk")).toBe("true");
       expect(checked("Bokmål")).toBe("false");
-      expect(screen.getByRole("radio", { name: "Engelsk" }).querySelector("svg")).not.toBeNull();
       expect(spinners()).toHaveLength(1);
       expect(screen.getByRole("radio", { name: "Engelsk" }).textContent).not.toContain("EN");
     });
 
-    it("switches back to the shown language when focus returns to it", async () => {
+    it("switches back when focus returns to the shown language", async () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
-      render(<LanguageToggle available={["BOKMAL", "ENGLISH"]} onChange={onChange} value="BOKMAL" />);
+      render(<LoadingToggle available={["BOKMAL", "ENGLISH"]} onChange={onChange} />);
       await user.tab();
 
       await user.keyboard("{ArrowLeft}");
@@ -95,38 +115,16 @@ describe("LanguageToggle", () => {
       expect(spinners()).toHaveLength(0);
     });
 
-    it("drops the spinner once the language has loaded, and follows a language changed elsewhere", async () => {
+    it("drops the spinner once the language has loaded", async () => {
       const user = userEvent.setup();
-      const { rerender } = render(
-        <LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={vi.fn()} value="BOKMAL" />,
-      );
+      render(<LoadingToggle available={["BOKMAL", "NYNORSK"]} />);
       await user.tab();
       await user.keyboard("{ArrowRight}");
-
-      rerender(<LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={vi.fn()} value="NYNORSK" />);
-      expect(checked("Nynorsk")).toBe("true");
-      expect(spinners()).toHaveLength(0);
-
-      rerender(<LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={vi.fn()} value="ENGLISH" />);
-      expect(checked("Engelsk")).toBe("true");
-      expect(spinners()).toHaveLength(0);
-    });
-
-    it("falls back to the shown language when its latest navigation settles without it, e.g. redirected", async () => {
-      const user = userEvent.setup();
-      const settle: (() => void)[] = [];
-      const onChange = () => new Promise<void>((resolve) => settle.push(resolve));
-      render(<LanguageToggle available={["BOKMAL", "NYNORSK", "ENGLISH"]} onChange={onChange} value="BOKMAL" />);
-      await user.tab();
-      await user.keyboard("{ArrowRight}");
-      await user.keyboard("{ArrowRight}");
-
-      await act(async () => settle[0]?.());
-      expect(checked("Engelsk")).toBe("true");
       expect(spinners()).toHaveLength(1);
 
-      await act(async () => settle[1]?.());
-      expect(checked("Bokmål")).toBe("true");
+      await user.click(screen.getByRole("button", { name: "last" }));
+
+      expect(checked("Nynorsk")).toBe("true");
       expect(spinners()).toHaveLength(0);
     });
   });

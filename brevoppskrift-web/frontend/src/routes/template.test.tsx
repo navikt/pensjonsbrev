@@ -102,7 +102,7 @@ async function renderTemplateRoute(path: string, search: Record<string, unknown>
     </QueryClientProvider>,
   );
   // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped, like the route it mounts.
-  await router.navigate({ to: path, search } as any);
+  await act(() => router.navigate({ to: path, search } as any));
   return router;
 }
 
@@ -450,6 +450,73 @@ describe("search hit focus", () => {
     expect(screen.getByText("Ingen treff i denne språkversjonen")).toBeTruthy();
   });
 
+  describe("while a language loads", () => {
+    const checked = (name: string) => screen.getByRole("radio", { name }).getAttribute("aria-checked");
+    const spinners = () => screen.getByRole("radiogroup").querySelectorAll("svg title");
+    function holdNynorsk() {
+      let open: ((documentation: TemplateDocumentation) => void) | undefined;
+      getTemplateDocumentation.queryFn.mockImplementation((_m: string, _t: string, language: string) =>
+        language === "NYNORSK" ? new Promise((resolve) => (open = resolve)) : Promise.resolve(page),
+      );
+      return () => open?.(page);
+    }
+
+    it("follows a navigation that redirects to another language, without a spinner left behind", async () => {
+      const router = await openPage({ tab: "innhold" }, { languages: ["BOKMAL", "NYNORSK"] });
+      await screen.findByRole("radio", { name: "Nynorsk" });
+      holdNynorsk();
+
+      await userEvent.click(screen.getByRole("radio", { name: "Nynorsk" }));
+      expect(checked("Nynorsk")).toBe("true");
+      expect(spinners()).toHaveLength(1);
+
+      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+      await act(() => router.navigate({ to: ".", search: (s: any) => ({ ...s, language: "SAMISK" }) } as any));
+
+      await waitFor(() => expect(router.state.location.search).toMatchObject({ language: "BOKMAL" }));
+      expect(checked("Bokmål")).toBe("true");
+      expect(spinners()).toHaveLength(0);
+    });
+
+    it("keeps a query typed meanwhile, and the language once loaded", async () => {
+      const router = await openPage({ tab: "innhold" }, { languages: ["BOKMAL", "NYNORSK"] });
+      const input = await screen.findByLabelText<HTMLInputElement>("Søk etter innhold");
+      const openNynorsk = holdNynorsk();
+
+      await userEvent.click(screen.getByRole("radio", { name: "Nynorsk" }));
+      await userEvent.type(input, "annet", { initialSelectionStart: 0, initialSelectionEnd: input.value.length });
+      await waitFor(() => expect(router.latestLocation.search).toMatchObject({ language: "NYNORSK", q: "annet" }));
+      expect(input.value).toBe("annet");
+
+      await act(async () => openNynorsk());
+
+      await waitFor(() => expect(router.state.location.search).toMatchObject({ language: "NYNORSK", q: "annet" }));
+      expect(input.value).toBe("annet");
+      expect(spinners()).toHaveLength(0);
+    });
+
+    it("does not change a template being opened", async () => {
+      const router = await openPage({ tab: "innhold" }, { languages: ["BOKMAL", "NYNORSK"] });
+      await screen.findByRole("radio", { name: "Nynorsk" });
+      let openB: ((documentation: TemplateDocumentation) => void) | undefined;
+      getTemplateDocumentation.queryFn.mockImplementation((_m: string, templateId: string) =>
+        templateId === "B" ? new Promise((resolve) => (openB = resolve)) : Promise.resolve(page),
+      );
+      const toB = { to: "/template/autobrev/B", search: { language: "BOKMAL", q: "treff" } };
+
+      act(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+        void router.navigate(toB as any);
+      });
+      await userEvent.click(screen.getByRole("radio", { name: "Nynorsk" }));
+      expect(spinners()).toHaveLength(0);
+      await act(async () => openB?.(page));
+
+      await waitFor(() => expect(router.state.location.pathname).toBe("/template/autobrev/B"));
+      expect(router.state.location.search).toMatchObject({ language: "BOKMAL" });
+    });
+  });
+
   it("focuses a hit the user clicks in, so a copied link opens at it, without scrolling", async () => {
     const router = await openPage({ tab: "innhold" });
     await waitFor(() => expect(scrolledTo).toEqual(["20"]));
@@ -577,8 +644,10 @@ describe("search hit focus", () => {
       );
       const toB = { to: "/template/autobrev/B", search: { language: "BOKMAL", q: "treff", focus: 31 } };
 
-      // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
-      void router.navigate(toB as any);
+      act(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+        void router.navigate(toB as any);
+      });
       await userEvent.type(input, "f");
       await act(async () => openB?.(page));
 
@@ -597,6 +666,33 @@ describe("search hit focus", () => {
       await act(() => router.navigate({ to: "/template/autobrev/B", search: (s: any) => s } as any));
 
       await waitFor(async () => expect((await searchBox()).value).toBe("treff"));
+    });
+
+    it("resets a rejected search write when browser Back returns to this template", async () => {
+      const router = await openPage({});
+      const input = await searchBox();
+      let openB: ((documentation: TemplateDocumentation) => void) | undefined;
+      getTemplateDocumentation.queryFn.mockImplementation((_malType: string, templateId: string) =>
+        templateId === "B" ? new Promise((resolve) => (openB = resolve)) : Promise.resolve(page),
+      );
+
+      act(() => {
+        // biome-ignore lint/suspicious/noExplicitAny: the test router is untyped.
+        void router.navigate({ to: "/template/autobrev/B", search: (s: any) => s } as any);
+      });
+      await waitFor(() => expect(router.latestLocation.pathname).toBe("/template/autobrev/B"));
+      await userEvent.type(input, "annet", { initialSelectionStart: 0, initialSelectionEnd: input.value.length });
+
+      await waitFor(() => expect(input.value).toBe("treff"));
+      expect(screen.queryByTestId("search-activity")).toBeNull();
+
+      await act(async () => router.history.back());
+
+      await waitFor(() => expect(router.latestLocation.pathname).toBe("/template/autobrev/A"));
+      expect(input.value).toBe("treff");
+      expect(screen.queryByTestId("search-activity")).toBeNull();
+      expect(router.latestLocation.search).toMatchObject({ q: "treff" });
+      await act(async () => openB?.(page));
     });
   });
 });

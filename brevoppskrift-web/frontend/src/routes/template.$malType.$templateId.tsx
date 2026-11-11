@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { Box, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
-import { createFileRoute, notFound, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import axios from "axios";
 import { useLayoutEffect, useMemo, useRef } from "react";
 
@@ -15,20 +15,14 @@ import { DataClassesPanel } from "~/components/DataClasses";
 import { ExportTemplateButton } from "~/components/ExportTemplateButton";
 import { LanguageToggle } from "~/components/LanguageToggle";
 import { Document, KnownDataClassesProvider } from "~/components/TemplateDocumentationView";
-import {
-  blockOfFocus,
-  criteriaOf,
-  focusParam,
-  type ResultRef,
-  type TemplateSearchContextParams,
-  validateTemplateSearchContext,
-} from "~/search/searchContext";
+import { blockOfFocus, criteriaOf, type ResultRef } from "~/search/searchContext";
 import { blockIndexesOf } from "~/templateSearch/blockIndexes";
 import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
 import { BackButton, SearchHitToolbar } from "~/templateSearch/SearchHitToolbar";
 import { useHitFocus } from "~/templateSearch/useHitFocus";
 import { usePickHitBlock } from "~/templateSearch/usePickHitBlock";
 import { useScrollToBlock } from "~/templateSearch/useScrollToBlock";
+import { useTemplateSearchParams, validateTemplateSearch } from "~/templateSearch/useTemplateSearchParams";
 
 /** An unknown template answers 404, which is a missing page rather than an error. */
 function notFoundOn404(error: unknown): never {
@@ -37,13 +31,6 @@ function notFoundOn404(error: unknown): never {
   }
   throw error;
 }
-
-type TemplateSearchParams = TemplateSearchContextParams & {
-  language?: string;
-  highlightedDataClass?: string;
-  highlightedDataField?: string;
-  highlightedDataFieldOwner?: string;
-};
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -90,26 +77,24 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 
     return { documentation, description };
   },
-  validateSearch: (search: Record<string, unknown>): TemplateSearchParams => {
-    return {
-      language: search.language?.toString(),
-      highlightedDataClass: search.highlightedDataClass?.toString(),
-      highlightedDataField: search.highlightedDataField?.toString(),
-      highlightedDataFieldOwner: search.highlightedDataFieldOwner?.toString(),
-      ...validateTemplateSearchContext(search),
-    };
-  },
+  validateSearch: validateTemplateSearch,
   component: TemplateExplorer,
 });
 
 function TemplateExplorer() {
   const { documentation, description } = Route.useLoaderData();
   const { malType, templateId } = Route.useParams();
-  const { focus, showHits, language: languageParam, q, exact, tab } = Route.useSearch();
-  const navigate = useNavigate({ from: Route.fullPath });
+  const loaded = Route.useSearch();
+  // The page follows the latest navigation right away, but shows the language that has loaded.
+  const { requested, changeQuery, changeMarking, selectBlock, changeLanguage } = useTemplateSearchParams(
+    { malType, templateId },
+    loaded,
+  );
+  const { focus, showHits, q, exact, tab } = requested;
   const previewRef = useRef<HTMLDivElement>(null);
   const documentScrollerRef = useRef<HTMLDivElement>(null);
-  const language = languageParam ?? description.languages[0];
+  const language = loaded.language ?? description.languages[0];
+  const requestedLanguage = requested.language ?? language;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: template changes reset scroll; language changes preserve it.
   useLayoutEffect(() => {
@@ -135,8 +120,6 @@ function TemplateExplorer() {
   );
   const pickedBlock = useRef<number | undefined>(undefined);
   useScrollToBlock(previewRef, scrollTarget, documentation, pickedBlock, scrollKey);
-  const selectBlock = (block: number) =>
-    navigate({ replace: true, search: (s) => ({ ...s, focus: focusParam(block) }) });
   // A hit the user clicks in, or tabs into, becomes the focused one, so a copied
   // link opens at it. It is already in view, so it is not scrolled to.
   usePickHitBlock(previewRef, (block) => {
@@ -145,21 +128,6 @@ function TemplateExplorer() {
       selectBlock(block);
     }
   });
-  const changeMarking = (show: boolean) =>
-    navigate({ replace: true, search: (s) => ({ ...s, showHits: show ? undefined : false }) });
-  // A new query opens at its first hit. Started here, without a search to keep the tab of,
-  // it searches the content, which is what a template shows. A write of the query the URL
-  // already has (e.g. one that lands after navigating to another hit) changes nothing.
-  const changeQuery = (newQ: string | undefined) =>
-    navigate({
-      replace: true,
-      search: (s) =>
-        s.q === newQ
-          ? s
-          : newQ === undefined
-            ? { ...s, q: undefined, exact: undefined, tab: undefined, showHits: undefined, focus: undefined }
-            : { ...s, q: newQ, tab: criteria ? s.tab : "innhold", focus: undefined },
-    });
   // Input state that is pending for one template is not carried over to another.
   const templateKey = `${malType}/${templateId}`;
 
@@ -191,13 +159,9 @@ function TemplateExplorer() {
           />
           <LanguageToggle
             available={description.languages}
-            key={templateKey}
-            // Block indexes follow the template's structure, so the block in focus is
-            // the same block in the other language, also when it has no hit there.
-            onChange={(value) =>
-              navigate({ replace: true, search: (s) => ({ ...s, language: value, focus: focusParam(activeBlock) }) })
-            }
-            value={language}
+            loading={requestedLanguage !== language}
+            onChange={(value) => changeLanguage(value, activeBlock)}
+            value={requestedLanguage}
           />
         </HStack>
       </VStack>
