@@ -104,33 +104,6 @@ object Ufoeretrygd {
     }
 
     /**
-     * TBU3011
-     */
-    object HjemmelSivilstand : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() =
-            paragraph {
-                text(
-                    bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 og § 22-12." },
-                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-13 og § 22-12." },
-                )
-            }
-    }
-
-    /**
-     * TBU1174
-     */
-    object VirkningFomOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            title1 {
-                text(
-                    bokmal { +"Dette er virkningstidspunktet ditt" },
-                    nynorsk { +"Dette er verknadstidspunktet ditt" },
-                    english { +"This is your effective date" },
-                )
-            }
-    }
-
-    /**
      * TBU2529x
      */
     data class VirkningFraOgMed(val kravVirkningFraOgMed: Expression<LocalDate>) :

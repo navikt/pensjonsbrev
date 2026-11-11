@@ -258,7 +258,12 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 includePhrase(HarBarnUnder18)
             }
 
-            includePhrase(Ufoeretrygd.VirkningFomOverskrift)
+            title1 {
+                text(
+                    bokmal { +"Dette er virkningstidspunktet ditt" },
+                    nynorsk { +"Dette er verknadstidspunktet ditt" },
+                )
+            }
 
             showIf(
                 harUfoereMaanedligBeloepVedvirk and (harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret or avdoed.ektefelletilleggOpphoert)

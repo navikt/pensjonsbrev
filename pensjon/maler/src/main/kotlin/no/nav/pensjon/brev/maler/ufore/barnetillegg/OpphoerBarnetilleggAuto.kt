@@ -101,23 +101,53 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 )
             }
 
-            includePhrase(
-                OpphoerBarnetillegg.HjemmelForBarnetilleggIUfoeretrygden(
-                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
-                )
-            )
+            paragraph {
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    text(
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12" },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12." },
+                    )
+                }
+            }
 
-            includePhrase(Ufoeretrygd.VirkningFomOverskrift)
-
-            includePhrase(
-                OpphoerBarnetillegg.OensketVirkningsDatoForEndring(
-                    oensketVirkningsDato = oensketVirkningsDato,
-                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                    harOpphoertBarnetilleggForFlereBarn = harOpphoertBarnetilleggForFlereBarn,
+            title1 {
+                text(
+                    bokmal { +"Dette er virkningstidspunktet ditt" },
+                    nynorsk { +"Dette er verknadstidspunktet ditt" },
                 )
-            )
+            }
+
+            paragraph {
+                val dato = oensketVirkningsDato.format()
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    text(
+                        bokmal { + "Barnetillegget ditt er blitt endret fra " + dato +
+                                ". Dette er måneden etter at " +
+                                ifElse(harOpphoertBarnetilleggForFlereBarn, "barna", "barnet") +
+                                " har fylt 18 år. Dette kaller vi virkningstidspunktet." },
+                        nynorsk { + "Barnetillegget ditt er endra frå " + dato +
+                                ". Dette er månaden etter at " +
+                                ifElse(harOpphoertBarnetilleggForFlereBarn, "barna", "barnet") +
+                                " har fylt 18 år. Dette kallar vi verknadstidspunktet." },
+                    )
+                } orShow {
+                    text(
+                        bokmal { + "Barnetillegget ditt har opphørt fra " + dato +
+                                ". Dette er måneden etter at " +
+                                ifElse(harOpphoertBarnetilleggForFlereBarn, "barna", "barnet") +
+                                " har fylt 18 år. Dette kaller vi virkningstidspunktet." },
+                        nynorsk { + "Barnetillegget ditt er stansa frå " + dato +
+                                ". Dette er månaden etter at " +
+                                ifElse(harOpphoertBarnetilleggForFlereBarn, "barna", "barnet") +
+                                " har fylt 18 år. Dette kallar vi verknadstidspunktet." },
+                    )
+                }
+            }
 
             showIf(harBarnetillegg) {
                 title1 {

@@ -73,9 +73,19 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
 
             includePhrase(Vedtak.BegrunnelseOverskrift())
             includePhrase(UngUfoer.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
-            includePhrase(Ufoeretrygd.HjemmelSivilstand)
+            paragraph {
+                text(
+                    bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 og § 22-12." },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-13 og § 22-12." },
+                )
+            }
 
-            includePhrase(Ufoeretrygd.VirkningFomOverskrift)
+            title1 {
+                text(
+                    bokmal { +"Dette er virkningstidspunktet ditt" },
+                    nynorsk { +"Dette er verknadstidspunktet ditt" },
+                )
+            }
             includePhrase(Ufoeretrygd.VirkningFraOgMed(kravVirkningFraOgMed))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
