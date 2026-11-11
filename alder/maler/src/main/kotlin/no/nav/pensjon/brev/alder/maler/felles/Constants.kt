@@ -20,6 +20,7 @@ object Constants {
     val SKATT_KONTAKT_TLF = skattKontaktTelefonnummer.format()
     const val FAMILIEPLEIER_URL = "$NAV_URL/tidligere-familiepleier"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
+    const val KONTAKTTELEFON_PENSJON = "55 55 33 34"
     const val GJENLEVENDEPENSJON_URL = "$NAV_URL/gjenlevendepensjon"
     const val SOSIALHJELP_URL = "$NAV_URL/sosialhjelp"
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
@@ -50,4 +51,5 @@ object Constants {
     const val SUPPLERENDE_STOENAD_URL = "$NAV_URL/supplerende"
     const val TELEFON_HELSE = "800 HELSE (800 43 573)"
     const val UTBETALINGER_URL = "$NAV_URL/utbetalinger"
+    const val INNSYNSKRAV_URL = "$NAV_URL/innsynskrav"
 }

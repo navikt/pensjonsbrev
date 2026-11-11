@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.selectors.avslagAfpPrivatAutoDt
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto.Begrunnelse
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -32,7 +33,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
     override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_PRIVAT_AVSLAG_AUTO
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk),
+        languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på AFP i privat sektor",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
@@ -41,8 +42,9 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
     ) {
         title {
             text(
-                bokmal { +"Søknaden din om avtalefestet pensjon (AFP) i privat sektor er avslått - melding om vedtak" },
-                nynorsk { +"Søknaden din om avtalefesta pensjon (AFP) i privat sektor er avslått - melding om vedtak" },
+                bokmal { +"Nav har avslått søknaden din om avtalefestet pensjon (AFP) i privat sektor  " },
+                nynorsk { +"Nav har avslått søknaden din om avtalefesta pensjon (AFP) i privat sektor  " },
+                english {+"" },
             )
         }
 
@@ -57,6 +59,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                         +"Nav viser til søknaden din om AFP i privat sektor motteken " +
                             kravMottattDato.format() + ". Søknaden din er avslått."
                     },
+                    english {+"" },
                 )
             }
 
@@ -64,6 +67,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                 text(
                     bokmal { +"Begrunnelse for vedtaket" },
                     nynorsk { +"Grunngiving for vedtaket" },
+                    english {+"" },
                 )
             }
 
@@ -83,6 +87,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                             "avtalemessige vilkåra for rett til AFP. Nav har avgjort andre spørsmål om " +
                             "retten til pensjon."
                     },
+                    english {+"" },
                 )
             }
 
@@ -92,6 +97,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                     text(
                         bokmal { +"Dette vedtaket er gjort etter AFP-tilskottsloven paragraf 5 første ledd bokstav a." },
                         nynorsk { +"Dette vedtaket er gjort etter AFP-tilskotslova paragraf 5 første ledd bokstav a." },
+                        english {+"" },
                     )
                 }
             }
@@ -101,6 +107,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                     text(
                         bokmal { +"Dette vedtaket er gjort etter AFP-tilskottsloven paragraf 5 første ledd bokstav b." },
                         nynorsk { +"Dette vedtaket er gjort etter AFP-tilskotslova paragraf 5 første ledd bokstav b." },
+                        english {+"" },
                     )
                 }
             }
@@ -110,6 +117,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                     text(
                         bokmal { +"Dette vedtaket er gjort etter AFP-tilskottsloven paragraf 8 første ledd." },
                         nynorsk { +"Dette vedtaket er gjort etter AFP-tilskotslova paragraf 8 første ledd." },
+                        english {+"" },
                     )
                 }
             }
@@ -127,6 +135,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                                 "frå folketrygda. Søknaden din om avtalefesta pensjon er avslått fordi " +
                                 "du har fått avslag på søknaden din om alderspensjon."
                         },
+                        english {+"" },
                     )
                 }
 
@@ -146,6 +155,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                                 "frå folketrygda. Søknaden din om avtalefesta pensjon er avslått fordi " +
                                 "du verken får eller har søkt om å ta ut alderspensjon."
                         },
+                        english {+"" },
                     )
                 }
 
@@ -168,6 +178,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                                 "du har fått uførepensjon etter at du fylte 62 år. Du vil heller ikkje " +
                                 "seinare kunne få rett til AFP i privat sektor."
                         },
+                        english {+"" },
                     )
                 }
             }
@@ -185,6 +196,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                                 "har fått uføretrygd frå folketrygda. Søknaden din er avslått fordi du " +
                                 "har fått uføretrygd etter at du fylte 62 år."
                         },
+                        english {+"" },
                     )
                 }
                 paragraph {
@@ -198,7 +210,8 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                             "heller ikkje kunne få rett til AFP seinare, sjølv om du skulle seie " +
                                     "ifrå deg uføretrygda. Det fins enkelte unntak frå denne regelen. Du " +
                                     "finn meir informasjon om dette på " +
-                                    Constants.AFP_PRIVAT_UFORETRYGD_URL + "."}
+                                    Constants.AFP_PRIVAT_UFORETRYGD_URL + "."},
+                        english {+"" },
                     )
                 }
             }
@@ -218,6 +231,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                                 "du har fått uførepensjon etter at du fylte 62 år. Du vil heller ikkje " +
                                 "seinare kunne få rett til AFP i privat sektor."
                         },
+                        english {+"" },
                     )
                 }
             }
@@ -237,6 +251,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                                 "du får uførepensjon. Du vil derfor heller ikkje seinare kunne få rett " +
                                 "til AFP i privat sektor."
                         },
+                        english {+"" },
                     )
                 }
             }
@@ -246,6 +261,7 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                     text(
                         bokmal { +"AFP i privat sektor kan ikke innvilges fordi du ikke har fylt 62 år på virkningstidspunktet." },
                         nynorsk { +"AFP i privat sektor kan ikkje innvilgast fordi du ikkje har fylt 62 år på verknadstidspunktet." },
+                        english {+"" },
                     )
                 }
             }
@@ -254,11 +270,12 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
                 text(
                     bokmal { +"Dine rettigheter" },
                     nynorsk { +"Dine rettar" },
+                    english {+"" },
                 )
             }
 
-            includePhrase(AfpPrivatFraser.InnsynForvaltningsloven18)
-            includePhrase(AfpPrivatFraser.KlagerettAvslagFolketrygdloven2112)
+            //includePhrase(AfpPrivatFraser.InnsynForvaltningsloven18)
+          //  includePhrase(AfpPrivatFraser.KlagerettAvslagFolketrygdloven2112)
 
             includePhrase(HarDuSpoersmaal.afpPrivat)
         }
