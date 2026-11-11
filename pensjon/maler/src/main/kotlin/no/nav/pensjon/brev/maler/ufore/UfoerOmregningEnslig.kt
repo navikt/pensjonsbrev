@@ -1,67 +1,36 @@
 package no.nav.pensjon.brev.maler.ufore
 
-import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.api.model.SivilstandAvdoed.*
-import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.avdoed.*
-import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.barnetilleggSaerkullsbarnVedvirk.*
-import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.bruker.*
-import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.inntektFoerUfoerhetVedVirk.*
-import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.ufoeretrygdVedVirk.*
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.*
-import no.nav.pensjon.brev.maler.fraser.common.*
-import no.nav.pensjon.brev.maler.ufore.fraser.AvdoedBoddArbeidetIUtlandOverskrift
-import no.nav.pensjon.brev.maler.ufore.fraser.AvdoedBoddEllerArbeidetIUtland
-import no.nav.pensjon.brev.maler.ufore.fraser.EndretMinstInntektFoerUfoerhetDoedEPS
-import no.nav.pensjon.brev.maler.ufore.fraser.EndretMinsteytelseDoedEPS
-import no.nav.pensjon.brev.maler.ufore.fraser.EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS
-import no.nav.pensjon.brev.maler.ufore.fraser.EndringUfoeretrygdPaavirkerBarnetilleggOverskrift
-import no.nav.pensjon.brev.maler.ufore.fraser.HarBarnUnder18
-import no.nav.pensjon.brev.maler.ufore.fraser.HarBarnUnder18Overskrift
-import no.nav.pensjon.brev.maler.ufore.fraser.HarBarnUtenBarnetillegg
-import no.nav.pensjon.brev.maler.ufore.fraser.HjemmelBarnetillegg
-import no.nav.pensjon.brev.maler.ufore.fraser.HjemmelBarnetilleggRedusert
-import no.nav.pensjon.brev.maler.ufore.fraser.HjemmelEPSDoedFengselUfoerUfoeretrygd
-import no.nav.pensjon.brev.maler.ufore.fraser.HjemmelEPSDoedInstitusjonUfoeretrygd
-import no.nav.pensjon.brev.maler.ufore.fraser.HjemmelEktefelletillegg
-import no.nav.pensjon.brev.maler.ufore.fraser.HjemmelSivilstandUfoeretrygd
-import no.nav.pensjon.brev.maler.ufore.fraser.HvemHarRettPaaOmstillingsstoenad
-import no.nav.pensjon.brev.maler.ufore.fraser.HvordanSoekerDuOverskrift
-import no.nav.pensjon.brev.maler.ufore.fraser.IkkeRedusertBarnetilleggSaerkullsbarnPgaInntekt
-import no.nav.pensjon.brev.maler.ufore.fraser.IkkeUtbetaltBarnetilleggPgaInntektOgJusteringsbelop
-import no.nav.pensjon.brev.maler.ufore.fraser.IkkeUtbetaltBarnetilleggSaerkullsbarnPgaInntekt
-import no.nav.pensjon.brev.maler.ufore.fraser.InfoAvdoedPenFraAndre
-import no.nav.pensjon.brev.maler.ufore.fraser.InfoBarnetilleggOverfortTilSaerkullsbarnInntekt
-import no.nav.pensjon.brev.maler.ufore.fraser.InfoBarnetilleggSaerkullsbarnInntekt
-import no.nav.pensjon.brev.maler.ufore.fraser.InfoFellesbarnTilSaerkullsbarn
-import no.nav.pensjon.brev.maler.ufore.fraser.InfoTidligereSaerkullsbarn
-import no.nav.pensjon.brev.maler.ufore.fraser.InfoTidligereSaerkullsbarnOgEndretUfoeretrygd
-import no.nav.pensjon.brev.maler.ufore.fraser.JusterBeloepRedusertBarnetilleggPgaInntekt
-import no.nav.pensjon.brev.maler.ufore.fraser.MerInfoBarnetillegg
-import no.nav.pensjon.brev.maler.ufore.fraser.OmregnEPSInnledning
-import no.nav.pensjon.brev.maler.ufore.fraser.OmregningFellesbarnOverskrift
-import no.nav.pensjon.brev.maler.ufore.fraser.OpphoerEktefelletillegg
-import no.nav.pensjon.brev.maler.ufore.fraser.OpphoerEktefelletilleggOverskrift
-import no.nav.pensjon.brev.maler.ufore.fraser.PensjonFraAndreOverskrift
-import no.nav.pensjon.brev.maler.ufore.fraser.RedusertBarnetilleggSaerkullsbarnPgaInntekt
-import no.nav.pensjon.brev.maler.ufore.fraser.RettTilUfoeretrygdVedGradertUfoeretrygd
-import no.nav.pensjon.brev.maler.ufore.fraser.SoekGjenlevendetilleggEtter2024
-import no.nav.pensjon.brev.maler.ufore.fraser.StoerrelseOmstillingsstoenad
-import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
-import no.nav.pensjon.brev.maler.ufore.fraser.UtbetalingUfoeretrygd
-import no.nav.pensjon.brev.maler.ufore.fraser.VirkningstidspunktOmregningBarnetillegg
-import no.nav.pensjon.brev.maler.ufore.fraser.VirkningstidspunktUfoeretrygd
-import no.nav.pensjon.brev.maler.ufore.fraser.VirkningstidspunktUfoeretrygdAvkortetTil0
-import no.nav.pensjon.brev.maler.ufore.fraser.VirkningstidspunktUfoeretrygdIngenEndring
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.avdoed.ektefelletilleggOpphoert
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.avdoed.harFellesBarnUtenBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.avdoed.navn
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.avdoed.sivilstand
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.barnetilleggSaerkullsbarnVedvirk.*
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.bruker.borIAvtaleLand
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.bruker.borINorge
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.inntektFoerUfoerhetVedVirk.beloep
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.inntektFoerUfoerhetVedVirk.erMinsteinntekt
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.inntektFoerUfoerhetVedVirk.erSannsynligEndret
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.inntektFoerUfoerhetVedVirk.oppjustertBeloep
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoerOmregningEnsligDto.ufoeretrygdVedVirk.*
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.ufore.fraser.*
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.*
+import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
@@ -72,7 +41,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_OMREGNING_ENSLIG_AUTO
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk, English),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
@@ -85,7 +54,6 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
             text(
                 bokmal { + "Nav har regnet om uføretrygden din" },
                 nynorsk { + "Nav har rekna om uføretrygda di" },
-                english { + "Nav has altered your disability benefit" },
             )
         }
 
@@ -97,7 +65,9 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
                 barnetilleggSaerkullsbarnVedVirk.safe { barnTidligereSaerkullsbarn }.ifNull(emptyList()).isNotEmpty()
             val harUfoereMaanedligBeloepVedvirk = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.greaterThan(0)
 
-            includePhrase(Vedtak.Overskrift)
+            title1 {
+                text(bokmal { +"Vedtak" }, nynorsk { +"Vedtak" })
+            }
 
             includePhrase(
                 OmregnEPSInnledning(
