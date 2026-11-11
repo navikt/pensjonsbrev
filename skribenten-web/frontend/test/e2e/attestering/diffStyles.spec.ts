@@ -100,7 +100,7 @@ async function expectDeletedStyle(text: Locator) {
 
 test.beforeEach(async ({ page }) => {
   await setupSakStubs(page);
-  await page.route("**/bff/skribenten-backend/me/nyhetsvarsler", (route) =>
+  await page.route("**/bff/skribenten-backend/me/nyhetsvarsel", (route) =>
     route.fulfill({ json: { settAnnonsen: [], gjennomfoertOmvisningen: ["diff-toggles"] } }),
   );
   await page.route("**/bff/skribenten-backend/features/diff", (route) => route.fulfill({ json: { enabled: true } }));

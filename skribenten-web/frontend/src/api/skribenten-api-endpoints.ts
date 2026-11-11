@@ -176,13 +176,13 @@ export type AnnouncementStatus = { settAnnonsen: string[]; gjennomfoertOmvisning
 
 export const getAnnouncementStatus = {
   queryKey: announcementStatusKeys.all,
-  queryFn: async () => (await axios.get<AnnouncementStatus>(`${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsler`)).data,
+  queryFn: async () => (await axios.get<AnnouncementStatus>(`${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsel`)).data,
   staleTime: Number.POSITIVE_INFINITY,
   gcTime: Number.POSITIVE_INFINITY,
 };
 
 const announcementUrl = (announcementId: string) =>
-  `${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsler/${encodeURIComponent(announcementId)}`;
+  `${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsel/${encodeURIComponent(announcementId)}`;
 
 export async function acknowledgeAnnouncement(announcementId: string) {
   await axios.put(`${announcementUrl(announcementId)}/gjennomfoertOmvisningen`);

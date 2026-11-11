@@ -13,7 +13,7 @@ const ANNOUNCEMENT_TITLE = "Se manuelle endringer i brevet";
 const BELL_TITLE = "Se endringer gjort av saksbehandler";
 const LAST_DISPLAY_DAY = `${ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL}T12:00:00`;
 
-const STATUS_URL = "**/bff/skribenten-backend/me/nyhetsvarsler";
+const STATUS_URL = "**/bff/skribenten-backend/me/nyhetsvarsel";
 const givenAcknowledged = (page: Page, ids: string[]) =>
   page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: [], gjennomfoertOmvisningen: ids } }));
 
@@ -54,7 +54,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await expect(dot(page)).toBeVisible();
 
     const markedSeen = page.waitForRequest(
-      (request) => request.url().endsWith("/me/nyhetsvarsler/diff-toggles/settAnnonsen") && request.method() === "PUT",
+      (request) => request.url().endsWith("/me/nyhetsvarsel/diff-toggles/settAnnonsen") && request.method() === "PUT",
     );
     await bell(page).click();
     await markedSeen;

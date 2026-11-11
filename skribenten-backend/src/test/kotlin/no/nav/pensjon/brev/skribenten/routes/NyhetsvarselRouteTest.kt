@@ -102,7 +102,7 @@ class NyhetsvarselRouteTest {
 
     @Test
     fun `svarer med tomme lister for bruker uten nyhetsvarsler`() = meTestApplication(nyNavIdent()) { client ->
-        val response = client.get("/me/nyhetsvarsler")
+        val response = client.get("/me/nyhetsvarsel")
 
         assertThat(response.status).isEqualTo(HttpStatusCode.OK)
         assertThat(response.bodyAsText()).isEqualTo(tom)
@@ -110,45 +110,45 @@ class NyhetsvarselRouteTest {
 
     @Test
     fun `markerer at annonsen er sett og at omvisningen er gjennomfoert`() = meTestApplication(nyNavIdent()) { client ->
-        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.NoContent)
-        assertThat(client.get("/me/nyhetsvarsler").bodyAsText())
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.get("/me/nyhetsvarsel").bodyAsText())
             .isEqualTo("""{"settAnnonsen":["diff-toggles"],"gjennomfoertOmvisningen":[]}""")
 
-        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
-        assertThat(client.get("/me/nyhetsvarsler").bodyAsText())
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.get("/me/nyhetsvarsel").bodyAsText())
             .isEqualTo("""{"settAnnonsen":["diff-toggles"],"gjennomfoertOmvisningen":["diff-toggles"]}""")
     }
 
     @Test
     fun `aa markere samme nyhetsvarsel flere ganger gir fortsatt bare ett`() = meTestApplication(nyNavIdent()) { client ->
-        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
-        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
 
-        assertThat(client.get("/me/nyhetsvarsler").bodyAsText())
+        assertThat(client.get("/me/nyhetsvarsel").bodyAsText())
             .isEqualTo("""{"settAnnonsen":[],"gjennomfoertOmvisningen":["diff-toggles"]}""")
     }
 
     @Test
     fun `brukere ser bare sine egne nyhetsvarsler`() {
         meTestApplication(nyNavIdent()) { client ->
-            client.put("/me/nyhetsvarsler/diff-toggles/settAnnonsen")
+            client.put("/me/nyhetsvarsel/diff-toggles/settAnnonsen")
         }
         meTestApplication(nyNavIdent()) { client ->
-            assertThat(client.get("/me/nyhetsvarsler").bodyAsText()).isEqualTo(tom)
+            assertThat(client.get("/me/nyhetsvarsel").bodyAsText()).isEqualTo(tom)
         }
     }
 
     @Test
     fun `svarer med not found for ukjent markering`() = meTestApplication(nyNavIdent()) { client ->
-        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/ukjent").status).isEqualTo(HttpStatusCode.NotFound)
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/ukjent").status).isEqualTo(HttpStatusCode.NotFound)
     }
 
     @Test
     fun `svarer med unauthorized uten innlogget bruker`() = meTestApplication(nyNavIdent()) { _ ->
         val utenInnlogging = createClient { }
 
-        assertThat(utenInnlogging.get("/me/nyhetsvarsler").status).isEqualTo(HttpStatusCode.Unauthorized)
-        assertThat(utenInnlogging.put("/me/nyhetsvarsler/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.Unauthorized)
-        assertThat(utenInnlogging.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.get("/me/nyhetsvarsel").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.put("/me/nyhetsvarsel/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.Unauthorized)
     }
 }

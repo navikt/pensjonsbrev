@@ -136,7 +136,7 @@ test.describe("nyhet om diff-menyen for attestant", () => {
 
     const acknowledgement = page.waitForRequest(
       (request) =>
-        request.url().endsWith("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen") && request.method() === "PUT",
+        request.url().endsWith("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen") && request.method() === "PUT",
     );
     await announcement(page).getByRole("button", { name: "Skjønner!" }).click();
 
@@ -154,7 +154,7 @@ test.describe("nyhet om diff-menyen for attestant", () => {
   });
 
   test("vises ikke når attestanten allerede har bekreftet nyheten", async ({ page }) => {
-    await page.route("**/bff/skribenten-backend/me/nyhetsvarsler", (route) =>
+    await page.route("**/bff/skribenten-backend/me/nyhetsvarsel", (route) =>
       route.fulfill({ json: { settAnnonsen: [], gjennomfoertOmvisningen: ["diff-toggles"] } }),
     );
     await page.goto("/saksnummer/123456/attester/1/redigering");

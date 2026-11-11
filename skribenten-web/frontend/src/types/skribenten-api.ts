@@ -3458,7 +3458,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/me/nyhetsvarsler": {
+    "/me/nyhetsvarsel": {
         parameters: {
             query?: never;
             header?: never;
@@ -3498,7 +3498,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/me/nyhetsvarsler/{nyhetsvarselId}/settAnnonsen": {
+    "/me/nyhetsvarsel/{nyhetsvarselId}/settAnnonsen": {
         parameters: {
             query?: never;
             header?: never;
@@ -3538,7 +3538,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/me/nyhetsvarsler/{nyhetsvarselId}/gjennomfoertOmvisningen": {
+    "/me/nyhetsvarsel/{nyhetsvarselId}/gjennomfoertOmvisningen": {
         parameters: {
             query?: never;
             header?: never;
