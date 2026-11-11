@@ -9,10 +9,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { GlobalError } from "~/components/GlobalError";
+import { initInnblikk } from "~/utils/innblikk";
 
 import { routeTree } from "./routeTree.gen";
 
 enablePatches();
+initInnblikk();
 
 // Disable staggered retries in tests to speed them up
 const isBrowserAutomation = typeof navigator !== "undefined" && navigator.webdriver;
