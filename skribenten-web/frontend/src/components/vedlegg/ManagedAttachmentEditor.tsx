@@ -35,7 +35,7 @@ const formatVedleggTitle = (vedlegg: EditAttachment): string =>
  * body, `info` comes from the parent brev (for spraak), and hash/saksbehandlerValg are unused here
  * because an attachment is saved through its own endpoint.
  */
-const createVedleggState = (brev: BrevResponse, vedlegg: EditAttachment): LetterEditorState => ({
+const createVedleggState = (brev: Pick<BrevResponse, "info">, vedlegg: EditAttachment): LetterEditorState => ({
   info: brev.info,
   redigertBrev: { title: vedlegg.title, blocks: vedlegg.blocks, deletedBlocks: vedlegg.deletedBlocks },
   redigertBrevHash: "",
@@ -47,7 +47,7 @@ const createVedleggState = (brev: BrevResponse, vedlegg: EditAttachment): Letter
 
 type AttachmentEditorProps = {
   saksId: string;
-  brev: BrevResponse;
+  brev: Pick<BrevResponse, "info">;
   vedleggId: string;
   vedleggTitle: string;
   freeze: boolean;

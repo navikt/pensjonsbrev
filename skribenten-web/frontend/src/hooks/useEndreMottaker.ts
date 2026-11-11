@@ -3,9 +3,11 @@ import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
+import { brevV2Keys } from "~/api/brevV2-queries";
 import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevInfoForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { type Adresse } from "~/types/apiTypes";
 import { type BrevInfo, type BrevResponse } from "~/types/brev";
+import { type BrevResponseV2 } from "~/types/brevV2";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 export function useEndreMottaker(saksId: string, brevId: number) {
@@ -28,6 +30,9 @@ export function useEndreMottaker(saksId: string, brevId: number) {
       queryClient.setQueryData(getBrev.queryKey(brevId), (current: BrevResponse | undefined) =>
         current ? { ...current, info: response } : current,
       );
+      queryClient.setQueryData(brevV2Keys.id(brevId), (current: BrevResponseV2 | undefined) =>
+        current ? { ...current, info: response } : current,
+      );
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
       setModalÅpen(false);
     },
@@ -42,6 +47,9 @@ export function useEndreMottaker(saksId: string, brevId: number) {
           currentBrevInfo.map((brevInfo) => (brevInfo.id === brevId ? { ...brevInfo, mottaker: null } : brevInfo)),
       );
       queryClient.setQueryData(getBrev.queryKey(brevId), (current: BrevResponse | undefined) =>
+        current ? { ...current, info: { ...current.info, mottaker: null } } : current,
+      );
+      queryClient.setQueryData(brevV2Keys.id(brevId), (current: BrevResponseV2 | undefined) =>
         current ? { ...current, info: { ...current.info, mottaker: null } } : current,
       );
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });

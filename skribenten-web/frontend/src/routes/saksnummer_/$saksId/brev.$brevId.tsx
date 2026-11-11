@@ -1,8 +1,8 @@
 import { Alert, Box, Button, Heading, HStack, Label, VStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -28,11 +28,13 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import { isCachedAsV2, MarkupVersjonConflict } from "~/components/ManagedLetterEditorV2/markupVersjon";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
+import { RedigerBrevV2Page } from "~/routes/saksnummer_/$saksId/-components/RedigerBrevV2";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
 import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
@@ -49,8 +51,15 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
     parse: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
   },
   validateSearch: (search) => brevRedigeringSearchSchema.parse(search),
-  component: () => <RedigerBrevPage />,
+  component: () => <RedigerBrevRoute />,
 });
+
+function RedigerBrevRoute() {
+  const { brevId, saksId } = Route.useParams();
+  const queryClient = useQueryClient();
+  const [erV2] = useState(() => isCachedAsV2(queryClient, saksId, brevId));
+  return erV2 ? <RedigerBrevV2Page /> : <RedigerBrevPage />;
+}
 
 const queryRetries = 3;
 const shouldSkipRetry = (status: number | undefined) =>
@@ -138,14 +147,20 @@ function RedigerBrevPage() {
       }
       if (errorStatus === 409) {
         return (
-          <ArkivertBrev
-            onGaTilBrevbehandler={() =>
-              navigate({
-                to: "/saksnummer/$saksId/brevbehandler",
-                params: { saksId },
-                search: { enhetsId, vedtaksId },
-              })
-            }
+          <MarkupVersjonConflict
+            brevId={brevId}
+            otherwise={() => (
+              <ArkivertBrev
+                onGaTilBrevbehandler={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
+              />
+            )}
+            v2={() => <RedigerBrevV2Page />}
           />
         );
       }

@@ -8,15 +8,30 @@ import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedleg
 /**
  * Handles document switching and ensures the active vedlegg is saved before navigation.
  */
-export const useActiveDocumentCoordinator = (args: {
+type DocumentCoordinatorArgs = {
   saksId: string;
   brevId: number;
   activeVedleggId: string | undefined;
   redigeringsflate: Redigeringsflate;
   navigateToDocument: (vedleggId: string | undefined) => Promise<void>;
-}) => {
-  const { saksId, brevId, activeVedleggId, redigeringsflate, navigateToDocument } = args;
+  fetchSavedMissingFromTemplateCount?: (vedleggId: string) => Promise<number>;
+};
+
+export const useActiveDocumentCoordinator = (args: DocumentCoordinatorArgs) => {
   const { savePendingChanges } = useManagedLetterEditorContext();
+  return useDocumentCoordinator({ ...args, savePendingChanges });
+};
+
+export const useDocumentCoordinator = (args: DocumentCoordinatorArgs & { savePendingChanges: () => Promise<void> }) => {
+  const {
+    saksId,
+    brevId,
+    activeVedleggId,
+    redigeringsflate,
+    navigateToDocument,
+    savePendingChanges,
+    fetchSavedMissingFromTemplateCount,
+  } = args;
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId, redigeringsflate });
   const activeVedleggSaveRef = useRef<(() => Promise<void>) | null>(null);
   const [savingPendingDocuments, setSavingPendingDocuments] = useState(false);
@@ -25,6 +40,7 @@ export const useActiveDocumentCoordinator = (args: {
     brevId,
     redigeringsflate,
     vedlegg: redigerbareVedleggQuery.data,
+    fetchSavedMissingFromTemplateCount,
   });
 
   const registerVedleggSave = useCallback((savePendingChanges: (() => Promise<void>) | null) => {

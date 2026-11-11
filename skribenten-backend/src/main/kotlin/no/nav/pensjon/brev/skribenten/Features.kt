@@ -19,13 +19,15 @@ interface FeatureToggleService : Closeable {
 
 class UnleashService(config: UnleashCfg) : FeatureToggleService {
     private val unleash: Unleash = initUnleash(config)
+    private val localForcedToggles: Set<String> =
+        System.getenv("LOCAL_FORCE_TOGGLES")?.split(",")?.map { it.trim() }?.toSet() ?: emptySet()
 
 
     @Suppress("unused") // Brukes av ktor-di
     constructor(config: SkribentenConfig): this(config.unleash)
 
     override suspend fun isEnabled(toggle: UnleashToggle): Boolean =
-        unleash.isEnabled(unleashTogglePrefix + toggle.name, context())
+        toggle.name in localForcedToggles || unleash.isEnabled(unleashTogglePrefix + toggle.name, context())
 
     override fun close() {
         unleash.shutdown()

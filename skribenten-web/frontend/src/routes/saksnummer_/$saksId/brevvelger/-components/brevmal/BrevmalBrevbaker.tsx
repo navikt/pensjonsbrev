@@ -6,14 +6,16 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
+import { brevV2Keys, createBrevV2 } from "~/api/brevV2-queries";
 import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
+import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
-import { type BrevInfo, type BrevResponse, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
+import { type BrevInfo, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 import { trackMottakerClick } from "~/utils/mottakerTracking";
@@ -108,16 +110,27 @@ const BrevmalBrevbaker = (props: {
   }, [alleSaksbrevQuery.data, props.letterTemplate.id]);
   const harEksisterendeKladd = !!sistOpprettetKladd;
 
-  const opprettBrevMutation = useMutation<BrevResponse, Error, BrevbakerFormData>({
-    mutationFn: async (values) =>
-      createBrev(props.saksId, {
+  const markupV2Toggle = useQuery(getFeatureToggle("markupV2"));
+
+  const opprettBrevMutation = useMutation<{ info: BrevInfo }, Error, BrevbakerFormData>({
+    mutationFn: async (values) => {
+      const request = {
         brevkode: props.letterTemplate.id,
         spraak: values.spraak,
         avsenderEnhetsId: values.enhetsId,
         saksbehandlerValg: values.saksbehandlerValg,
         mottaker: values.mottaker,
         vedtaksId: vedtaksId ? Number.parseInt(vedtaksId, 10) : null,
-      }),
+      };
+      if (markupV2Toggle.data?.enabled === true) {
+        const response = await createBrevV2(props.saksId, request);
+        queryClient.setQueryData(brevV2Keys.id(response.info.id), response);
+        return response;
+      }
+      const response = await createBrev(props.saksId, request);
+      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+      return response;
+    },
 
     onSuccess: async (response) => {
       trackEvent("brev opprettet", {
@@ -127,7 +140,6 @@ const BrevmalBrevbaker = (props: {
         brevsystem: "brevbaker",
         brevtype: response.info.brevtype,
       });
-      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",
         params: { brevId: response.info.id },

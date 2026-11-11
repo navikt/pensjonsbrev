@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 
 import { getBrev, getP1Override, saveP1Override } from "~/api/brev-queries";
+import { brevV2Keys } from "~/api/brevV2-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { useLandDataP1 } from "~/hooks/useLandData";
 import { type P1Redigerbar } from "~/types/p1";
@@ -104,6 +105,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
         queryKey: getP1Override.queryKey(brevId),
       });
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(brevId) });
+      queryClient.invalidateQueries({ queryKey: brevV2Keys.id(brevId) });
       setSaveSuccess(true);
       if (successTimeoutRef.current) {
         clearTimeout(successTimeoutRef.current);

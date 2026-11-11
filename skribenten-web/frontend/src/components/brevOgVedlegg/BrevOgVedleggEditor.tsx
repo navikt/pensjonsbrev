@@ -4,6 +4,7 @@ import { ApiError } from "~/components/ApiError";
 import { useActiveDocument } from "~/components/brevOgVedlegg/ActiveDocumentContext";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { ManagedAttachmentEditor } from "~/components/vedlegg/ManagedAttachmentEditor";
+import { ManagedAttachmentEditorV2 } from "~/components/vedlegg/ManagedAttachmentEditorV2";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 import { type BrevResponse } from "~/types/brev";
 
@@ -12,7 +13,7 @@ import { type BrevResponse } from "~/types/brev";
  */
 export const BrevOgVedleggEditor = (props: {
   saksId: string;
-  brev: BrevResponse;
+  brev: Pick<BrevResponse, "info">;
   freeze: boolean;
   renderBrev: () => ReactNode;
 }) => {
@@ -41,8 +42,10 @@ export const BrevOgVedleggEditor = (props: {
     return props.renderBrev();
   }
 
+  const AttachmentEditor = props.brev.info.markupVersjon === "V2" ? ManagedAttachmentEditorV2 : ManagedAttachmentEditor;
+
   return (
-    <ManagedAttachmentEditor
+    <AttachmentEditor
       brev={props.brev}
       freeze={props.freeze}
       // Keying by the full editing identity forces a fresh query owner and activation lifecycle on

@@ -1,0 +1,4 @@
+services:
+  skribenten-backend:
+    environment:
+      - LOCAL_FORCE_TOGGLES=markupV2

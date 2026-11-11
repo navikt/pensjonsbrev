@@ -21,6 +21,7 @@ import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
+import { brevV2Keys } from "~/api/brevV2-queries";
 import {
   endreDistribusjonstype,
   hentAlleBrevInfoForSak,
@@ -223,7 +224,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
       queryClient.invalidateQueries({
-        queryKey: getBrev.queryKey(props.brev.id),
+        queryKey: props.brev.markupVersjon === "V2" ? brevV2Keys.id(props.brev.id) : getBrev.queryKey(props.brev.id),
       });
     },
   });

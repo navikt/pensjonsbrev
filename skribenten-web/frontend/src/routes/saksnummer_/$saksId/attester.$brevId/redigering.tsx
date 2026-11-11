@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, Label, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -34,6 +34,7 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import { isCachedAsV2, MarkupVersjonConflict } from "~/components/ManagedLetterEditorV2/markupVersjon";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
@@ -41,6 +42,7 @@ import { type DiffToggles, useAttestantLetterDiff } from "~/hooks/useAttestantLe
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
+import { AttesterBrevV2Page } from "~/routes/saksnummer_/$saksId/attester.$brevId/-components/AttesterBrevV2";
 import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
 import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
@@ -53,8 +55,15 @@ const attesteringSearchSchema = baseSearchSchema.extend({
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
   validateSearch: (search) => attesteringSearchSchema.parse(search),
-  component: () => <VedtakWrapper />,
+  component: () => <AttesterRedigering />,
 });
+
+const AttesterRedigering = () => {
+  const { saksId, brevId } = Route.useParams();
+  const queryClient = useQueryClient();
+  const [erV2] = useState(() => isCachedAsV2(queryClient, saksId, Number(brevId)));
+  return erV2 ? <AttesterBrevV2Page /> : <VedtakWrapper />;
+};
 
 const vedtakSidemenySchema = z.object({
   attestantSignatur: z.string().min(1, "Underskrift må oppgis"),
@@ -106,14 +115,20 @@ const VedtakWrapper = () => {
 
       if (err.response?.status === 409) {
         return (
-          <ArkivertBrev
-            onGaTilBrevbehandler={() =>
-              navigate({
-                to: "/saksnummer/$saksId/brevbehandler",
-                params: { saksId },
-                search: { vedtaksId, enhetsId, brevId: Number(brevId) },
-              })
-            }
+          <MarkupVersjonConflict
+            brevId={Number(brevId)}
+            otherwise={() => (
+              <ArkivertBrev
+                onGaTilBrevbehandler={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { vedtaksId, enhetsId, brevId: Number(brevId) },
+                  })
+                }
+              />
+            )}
+            v2={() => <AttesterBrevV2Page />}
           />
         );
       }

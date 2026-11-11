@@ -12,11 +12,13 @@ export function useVedleggEditorWarnings({
   brevId,
   redigeringsflate,
   vedlegg,
+  fetchSavedMissingFromTemplateCount,
 }: {
   saksId: string;
   brevId: number;
   redigeringsflate: Redigeringsflate;
   vedlegg: RedigerbartVedleggInfo[] | undefined;
+  fetchSavedMissingFromTemplateCount?: (vedleggId: string) => Promise<number>;
 }) {
   const queryClient = useQueryClient();
   const missingFromTemplateCounts = useRef<Record<string, number>>({});
@@ -31,6 +33,7 @@ export function useVedleggEditorWarnings({
 
   const getSavedMissingFromTemplateCount = async (vedleggId: string): Promise<number> => {
     try {
+      if (fetchSavedMissingFromTemplateCount) return await fetchSavedMissingFromTemplateCount(vedleggId);
       const content = await queryClient.fetchQuery({
         ...getRedigerbartVedlegg(saksId, brevId, vedleggId, redigeringsflate),
         staleTime: Number.POSITIVE_INFINITY,

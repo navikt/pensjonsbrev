@@ -6,13 +6,16 @@ import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { attesteringBrevKeys, getBrevAttestering } from "~/api/brev-queries";
+import { brevV2Keys, getBrevAttesteringV2 } from "~/api/brevV2-queries";
 import { hentPdfForAttestering, sendBrev } from "~/api/sak-api-endpoints";
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
+import { isCachedAsV2, MarkupVersjonConflict } from "~/components/ManagedLetterEditorV2/markupVersjon";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { type BestillBrevResponse, type BrevResponse } from "~/types/brev";
+import { type BrevResponseV2 } from "~/types/brevV2";
 import { trackEvent } from "~/utils/umami";
 
 import BrevForhåndsvisning from "../brevbehandler/-components/BrevForhåndsvisning";
@@ -24,7 +27,36 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forh
 
 const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
-  const hentBrevQuery = useQuery(getBrevAttestering(saksId, Number(brevId)));
+  const queryClient = useQueryClient();
+  const [erV2] = useState(() => isCachedAsV2(queryClient, saksId, Number(brevId)));
+  return erV2 ? <VedtakForhåndsvisningV2 /> : <VedtakForhåndsvisningV1 />;
+};
+
+const VedtakForhåndsvisningV1 = () => {
+  const { saksId, brevId } = Route.useParams();
+  const hentBrevQuery = useQuery({
+    ...getBrevAttestering(saksId, Number(brevId)),
+    retry: (failureCount, error) => error.response?.status !== 409 && failureCount < 3,
+  });
+
+  if (hentBrevQuery.isError) {
+    const error = <ApiError error={hentBrevQuery.error} title="En feil skjedde ved henting av vedtaksbrev" />;
+    if (hentBrevQuery.error.response?.status === 409) {
+      return (
+        <MarkupVersjonConflict brevId={Number(brevId)} otherwise={() => error} v2={() => <VedtakForhåndsvisningV2 />} />
+      );
+    }
+    return error;
+  }
+
+  return (
+    <VedtaksForhåndsvisning brev={hentBrevQuery.data} isBrevFresh={hentBrevQuery.isFetchedAfterMount} saksId={saksId} />
+  );
+};
+
+const VedtakForhåndsvisningV2 = () => {
+  const { saksId, brevId } = Route.useParams();
+  const hentBrevQuery = useQuery(getBrevAttesteringV2(saksId, Number(brevId)));
 
   if (hentBrevQuery.isError) {
     return <ApiError error={hentBrevQuery.error} title="En feil skjedde ved henting av vedtaksbrev" />;
@@ -37,7 +69,11 @@ const VedtakForhåndsvisningWrapper = () => {
 
 type PdfStatus = "ready" | "fetching" | "unavailable";
 
-const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; isBrevFresh: boolean }) => {
+const VedtaksForhåndsvisning = (props: {
+  saksId: string;
+  brev?: Pick<BrevResponse, "info" | "redigertBrevHash">;
+  isBrevFresh: boolean;
+}) => {
   const { brevId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
@@ -199,7 +235,9 @@ const SendBrevModal = (props: {
 
   const queryClient = useQueryClient();
 
-  const cachedBrevData = queryClient.getQueryData<BrevResponse>(attesteringBrevKeys.id(Number(props.brevId)));
+  const cachedBrevData =
+    queryClient.getQueryData<BrevResponse>(attesteringBrevKeys.id(Number(props.brevId))) ??
+    queryClient.getQueryData<BrevResponseV2>(brevV2Keys.attestering(Number(props.brevId)));
 
   const sendBrevMutation = useMutation<BestillBrevResponse, AxiosError>({
     mutationFn: () => {

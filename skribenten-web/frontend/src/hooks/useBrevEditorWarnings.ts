@@ -13,25 +13,41 @@ import {
 import { type SaksbehandlerValg } from "~/types/brev";
 import { type EditedDocument, type PropertyUsage } from "~/types/brevbakerTypes";
 
-interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: SaksbehandlerValg }> {
+interface UseEditorWarningsParams<FormSchema extends { saksbehandlerValg: SaksbehandlerValg }> {
   brevkode: string;
   form: UseFormReturn<FormSchema>;
-  redigertBrev: EditedDocument;
   propertyUsage?: PropertyUsage[];
   warnAboutMissingFromTemplate?: boolean;
   getMissingFromTemplateVedleggCount?: () => Promise<number>;
+  countUneditedFritekst: () => number;
+  countMissingFromTemplate: () => number;
+}
+
+interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: SaksbehandlerValg }>
+  extends Omit<UseEditorWarningsParams<FormSchema>, "countUneditedFritekst" | "countMissingFromTemplate"> {
+  redigertBrev: EditedDocument;
 }
 
 type WarningResult = { kind: WarnModalKind; count?: number } | null;
 
 export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: SaksbehandlerValg }>({
+  redigertBrev,
+  ...params
+}: UseBrevEditorWarningsParams<FormSchema>) {
+  const countUneditedFritekst = useCallback(() => countUneditedFritekstPlaceholders(redigertBrev), [redigertBrev]);
+  const countMissingFromTemplate = useCallback(() => countMissingFromTemplateBlocks(redigertBrev), [redigertBrev]);
+  return useEditorWarnings({ ...params, countUneditedFritekst, countMissingFromTemplate });
+}
+
+export function useEditorWarnings<FormSchema extends { saksbehandlerValg: SaksbehandlerValg }>({
   brevkode,
   form,
-  redigertBrev,
   propertyUsage,
   warnAboutMissingFromTemplate = true,
   getMissingFromTemplateVedleggCount,
-}: UseBrevEditorWarningsParams<FormSchema>) {
+  countUneditedFritekst,
+  countMissingFromTemplate,
+}: UseEditorWarningsParams<FormSchema>) {
   const { status, specification, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
 
   const filteredSpecification = useMemo(
@@ -54,15 +70,8 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     });
   }, [form, filteredSpecification, status]);
 
-  const numberOfUneditedFritekstPlaceholders = useCallback(
-    () => countUneditedFritekstPlaceholders(redigertBrev),
-    [redigertBrev],
-  );
-
-  const numberOfMissingFromTemplateBlocks = useCallback(
-    () => countMissingFromTemplateBlocks(redigertBrev),
-    [redigertBrev],
-  );
+  const numberOfUneditedFritekstPlaceholders = countUneditedFritekst;
+  const numberOfMissingFromTemplateBlocks = countMissingFromTemplate;
 
   const getWarning = useCallback(async (): Promise<WarningResult> => {
     const unedited = numberOfUneditedFritekstPlaceholders();

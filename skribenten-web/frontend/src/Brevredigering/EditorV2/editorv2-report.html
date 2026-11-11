@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<title>Skribenten: V2-editor – forbedringer i frontend (PoC)</title>
+<meta content="width=device-width, initial-scale=1" name="viewport" >
+<style>
+  :root { --fg:#1d2433; --muted:#5b6475; --line:#d9dde5; --bg:#f6f7f9; --accent:#0056b4; --good:#06893a; --bad:#c30000; --warn:#c77300; }
+  * { box-sizing: border-box; }
+  body { font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--fg); margin: 0; background: #fff; }
+  main { max-width: 1060px; margin: 0 auto; padding: 40px 28px 80px; }
+  h1 { font-size: 30px; margin: 0 0 4px; }
+  h2 { font-size: 21px; margin: 44px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+  h3 { font-size: 16px; margin: 24px 0 8px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin: 20px 0; }
+  .card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .card .n { font-size: 28px; font-weight: 700; }
+  .card .n small { font-size: 15px; font-weight: 500; color: var(--muted); }
+  .card .l { color: var(--muted); font-size: 13px; }
+  .good { color: var(--good); } .bad { color: var(--bad); } .warn { color: var(--warn); }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 16px; font-size: 14px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--bg); font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  code { font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+  pre { font: 12.5px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; background: #0f1724; color: #e6edf6; padding: 14px 16px; border-radius: 8px; overflow-x: auto; margin: 0; }
+  .cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 12px 0 20px; }
+  .cmp > div > .h { font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+  .cmp > div > .h.v1 { color: var(--bad); } .cmp > div > .h.v2 { color: var(--good); }
+  .note { background: #fff8e6; border-left: 4px solid var(--warn); padding: 10px 14px; border-radius: 4px; margin: 14px 0; }
+  .ok { background: #ecf8f0; border-left: 4px solid var(--good); padding: 10px 14px; border-radius: 4px; margin: 14px 0; }
+  ul { padding-left: 22px; } li { margin: 3px 0; }
+  .bar { height: 8px; background: var(--line); border-radius: 4px; position: relative; min-width: 120px; }
+  .bar > span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+  .bar .v1 { background: #e3a4a4; } .bar .v2 { background: #6cc28c; }
+  .tree { font: 13px/1.5 ui-monospace, monospace; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; white-space: pre; overflow-x: auto; }
+  footer { margin-top: 50px; color: var(--muted); font-size: 13px; }
+  @media (max-width: 760px) { .cmp { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+
+<h1>V2-editoren i Skribenten – hva markup V2 gjør mulig i frontend</h1>
+<p class="sub">PoC på greinen <code>markup-v2-stage-6-frontend-poc</code> (bygger på stage 5). Den gamle V1-editoren er ikke endret. Vi har laget en egen V2-editor som skal kunne alt V1 kan, og som velges ut fra <code>BrevInfo.markupVersjon</code>. Rapporten er generert 10.11.2026.</p>
+
+<div class="cards">
+  <div class="card"><div class="n good">−62 %<small> / −51 %</small></div><div class="l">Kildekode (uten tester): 11 301 → 4 343 linjer. Til høyre: sammenlignet med bare den modellavhengige V1-koden (8 873)</div></div>
+  <div class="card"><div class="n good">103 → 0</div><div class="l"><code>as</code>-casts i editorkoden</div></div>
+  <div class="card"><div class="n good">26 → 0</div><div class="l"><code>"x" in</code>-sjekker</div></div>
+  <div class="card"><div class="n good">~158 → 1</div><div class="l">Steder i koden som endrer <code>deleted*</code>-lister (V2: bare <code>collection.ts</code>)</div></div>
+  <div class="card"><div class="n good">1 131 → 292</div><div class="l">Største fil (linjer)</div></div>
+  <div class="card"><div class="n good">46 → 10</div><div class="l">Funksjoner med kompleksitet over 10 (største: 49 → 21, dypeste nesting: 8 → 3)</div></div>
+  <div class="card"><div class="n good">530 / 530</div><div class="l">V2-enhetstester grønne (27 filer)</div></div>
+</div>
+
+<h2>1. Kort oppsummert</h2>
+<p>V1-editoren er krevende å jobbe med fordi <em>datamodellen</em> er tung: lister og tabeller ligger <em>inne i</em> avsnitt, og posisjoner angis med tre ulike indekstyper uten noe felt som skiller dem. Det fører til <code>"itemIndex" in index</code>-sjekker, casts, og at hver handling må ha egne grener for blokk, punkt og celle. Markup V2 legger lister og tabeller som egne blokker på toppnivå. Det gjør at <strong>all redigerbar tekst får samme form</strong>: en <em>tekstbeholder</em> med <code>content</code> og <code>deletedContent</code>. V2-editoren bygger hele arkitekturen på dette.</p>
+<ul>
+  <li><strong>Mer enn halvparten mindre kode</strong> for samme funksjonalitet, selv når vi bare regner med den modellavhengige V1-koden.</li>
+  <li><strong>Typesikker hele veien.</strong> Ingen casts, ingen <code>in</code>-sjekker, og alle <code>switch</code>-er dekker alle tilfeller.</li>
+  <li><strong>Én modul eier ID- og sletteregler</strong> i stedet for over 150 spredte endringer i 15 filer.</li>
+  <li><strong>Små, rene kommandoer</strong> (en per fil). <code>split</code> gikk fra 166 til 25 linjer.</li>
+  <li><strong>Mindre forgreining:</strong> halvparten så mange beslutningspunkter, og funksjoner med kompleksitet over 10 gikk fra 46 til 10.</li>
+  <li>Noen V1-feil og V1-TODO-er er løst som en naturlig følge av strukturen (se avsnitt 6).</li>
+</ul>
+
+<h2>2. Målinger</h2>
+<p>Linjer = ikke-tomme linjer i <code>.ts</code>/<code>.tsx</code>. V1 = <code>src/Brevredigering/LetterEditor</code>, V2 = <code>src/Brevredigering/EditorV2</code>.</p>
+<table>
+  <tr><th></th><th class="num">V1</th><th class="num">V2</th><th>Kommentar</th></tr>
+  <tr><td>Filer (kilde)</td><td class="num">61</td><td class="num">54</td><td>V2 har flere og mindre filer, med én kommando per fil</td></tr>
+  <tr><td>Linjer kilde</td><td class="num">11 301</td><td class="num">4 343</td><td>V2 importerer ca. 2 430 linjer modelluavhengig V1-kode (RTF-parser, DOM-markørhjelpere, diff-segmenter m.m.) i stedet for å kopiere den</td></tr>
+  <tr><td>Linjer kilde, modellavhengig</td><td class="num">≈ 8 873</td><td class="num">4 343</td><td><strong>−51 %</strong> for samme funksjonalitet</td></tr>
+  <tr><td>Linjer tester</td><td class="num">14 441</td><td class="num">4 741</td><td>Scenarioene er overført. Mange V1-tester fantes bare fordi lister og tabeller lå inne i avsnitt</td></tr>
+  <tr><td><code>as</code>-casts (kilde)</td><td class="num bad">103</td><td class="num good">0</td><td>V2-testene har 16, alle i testoppsett med DOM og mock</td></tr>
+  <tr><td><code>"x" in</code>-sjekker (kilde)</td><td class="num bad">26</td><td class="num good">0</td><td></td></tr>
+  <tr><td>Kall til indeks-typesjekker (<code>isItemContentIndex</code> o.l.)</td><td class="num bad">116</td><td class="num good">0</td><td>Erstattet av <code>switch (path.kind)</code></td></tr>
+  <tr><td>Linjer som endrer <code>deleted*</code></td><td class="num bad">~158 i 15 filer</td><td class="num good">1 fil</td><td>Ellers bare lesing (diff), oppstart i fabrikkfunksjoner og overlevering til <code>collection(...)</code></td></tr>
+  <tr><td>Kommentarlinjer (kilde)</td><td class="num">1 173</td><td class="num">2</td><td>V2 er skrevet for å være lesbar uten kommentarer (2 = lint-unntak)</td></tr>
+  <tr><td>Enhetstester</td><td class="num">1 185</td><td class="num">530</td><td>Alle grønne</td></tr>
+</table>
+
+<h3>Per funksjon</h3>
+<table>
+  <tr><th>Område</th><th class="num">V1</th><th class="num">V2</th><th style="width:34%">Relativt</th></tr>
+  <tr><td>Splitt (Enter)</td><td class="num">166</td><td class="num">25</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:15%"></span></div></td></tr>
+  <tr><td>Slå sammen (Backspace/Delete)</td><td class="num">424</td><td class="num">124</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:29%"></span></div></td></tr>
+  <tr><td>Slett markering</td><td class="num">490</td><td class="num">127</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:26%"></span></div></td></tr>
+  <tr><td>Lim inn (HTML, uten RTF-parser)</td><td class="num">1 116</td><td class="num">630</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:56%"></span></div></td></tr>
+  <tr><td>Fet/kursiv</td><td class="num">302</td><td class="num">55</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:18%"></span></div></td></tr>
+  <tr><td>Tekststil (overskrift/normal)</td><td class="num">66</td><td class="num">22</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:33%"></span></div></td></tr>
+  <tr><td>Punktliste/nummerert liste</td><td class="num">252</td><td class="num">47</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:19%"></span></div></td></tr>
+  <tr><td>Tabellhandlinger + tabellnavigasjon</td><td class="num">1 092</td><td class="num">287</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:26%"></span></div></td></tr>
+  <tr><td>Tabellmarkør (<code>tableCaretUtils</code> → <code>navigation</code>)</td><td class="num">506</td><td class="num">57</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:11%"></span></div></td></tr>
+  <tr><td>Felles modell (<code>common.ts</code> + <code>model/</code>)</td><td class="num">1 295</td><td class="num">664</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:51%"></span></div></td></tr>
+  <tr><td>Visning (komponenter, meny, editor)</td><td class="num">2 665</td><td class="num">1 331</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:50%"></span></div></td></tr>
+  <tr><td>Attestant-diff</td><td class="num">842</td><td class="num">436</td><td><div class="bar"><span class="v1" style="width:100%"></span></div><div class="bar"><span class="v2" style="width:52%"></span></div></td></tr>
+</table>
+
+<h3>Største filer</h3>
+<div class="cmp">
+<div><div class="h v1">V1</div><table>
+  <tr><td><code>actions/common.ts</code></td><td class="num">1 131</td></tr>
+  <tr><td><code>actions/paste.ts</code></td><td class="num">1 116</td></tr>
+  <tr><td><code>components/ContentGroup.tsx</code></td><td class="num">864</td></tr>
+  <tr><td><code>services/tableCaretUtils.ts</code></td><td class="num">506</td></tr>
+  <tr><td><code>actions/deleteSelection.ts</code></td><td class="num">490</td></tr>
+  <tr><td><code>components/DebugPanel.tsx</code></td><td class="num">457</td></tr>
+  <tr><td><code>actions/merge.ts</code></td><td class="num">424</td></tr>
+</table></div>
+<div><div class="h v2">V2</div><table>
+  <tr><td><code>commands/paste.ts</code></td><td class="num">292</td></tr>
+  <tr><td><code>view/menu/EditorMenuV2.tsx</code></td><td class="num">233</td></tr>
+  <tr><td><code>view/text/EditableLiteral.tsx</code></td><td class="num">208</td></tr>
+  <tr><td><code>clipboard/htmlToElements.ts</code></td><td class="num">208</td></tr>
+  <tr><td><code>view/TableView.tsx</code></td><td class="num">203</td></tr>
+  <tr><td><code>model/paths.ts</code></td><td class="num">182</td></tr>
+  <tr><td><code>commands/table.ts</code></td><td class="num">179</td></tr>
+</table></div>
+</div>
+<p>V1 har 61 eksporter i <code>common.ts</code>, som i praksis er en samlefil for alt. V2 har ingen samlefil, og ingen fil er over 300 linjer.</p>
+
+<h3>Forgreiningsanalyse</h3>
+<p>Tallene er målt med TypeScripts AST-parser, ikke med tekstsøk. Et <em>beslutningspunkt</em> er <code>if</code>, <code>? :</code>, <code>case</code>, <code>&amp;&amp;</code>/<code>||</code>, løkker og <code>catch</code>. Kompleksiteten til en funksjon er 1 + antall beslutningspunkter i den, uten nestede funksjoner (McCabe). Kolonnen «V1, modellavhengig» trekker fra koden V2 gjenbruker, blant annet RTF-parseren og <code>caretUtils</code>.</p>
+<table>
+  <tr><th></th><th class="num">V1</th><th class="num">V1, modellavhengig</th><th class="num">V2</th></tr>
+  <tr><td>Beslutningspunkter totalt</td><td class="num bad">1 998</td><td class="num">1 480</td><td class="num good">938</td></tr>
+  <tr><td>&nbsp;&nbsp;<code>if</code></td><td class="num">845</td><td class="num"></td><td class="num">320</td></tr>
+  <tr><td>&nbsp;&nbsp;<code>&amp;&amp;</code> / <code>||</code></td><td class="num">638</td><td class="num"></td><td class="num">302</td></tr>
+  <tr><td>&nbsp;&nbsp;<code>? :</code></td><td class="num">256</td><td class="num"></td><td class="num">147</td></tr>
+  <tr><td>&nbsp;&nbsp;<code>case</code> (i <code>switch</code>)</td><td class="num">163 (29)</td><td class="num"></td><td class="num">142 (28)</td></tr>
+  <tr><td>&nbsp;&nbsp;Løkker</td><td class="num">90</td><td class="num"></td><td class="num">25</td></tr>
+  <tr><td>Funksjoner</td><td class="num">762</td><td class="num">603</td><td class="num">494</td></tr>
+  <tr><td>Gjennomsnittlig kompleksitet per funksjon</td><td class="num">3,61</td><td class="num">3,44</td><td class="num good">2,90</td></tr>
+  <tr><td>Funksjoner med kompleksitet &gt; 10</td><td class="num bad">46</td><td class="num">36</td><td class="num good">10</td></tr>
+  <tr><td>Funksjoner med kompleksitet &gt; 20</td><td class="num bad">10</td><td class="num">7</td><td class="num good">1</td></tr>
+  <tr><td>Høyeste kompleksitet</td><td class="num bad">49</td><td class="num">46</td><td class="num good">21</td></tr>
+  <tr><td>Dypeste nesting av forgreininger</td><td class="num bad">8</td><td class="num"></td><td class="num good">3</td></tr>
+  <tr><td>Funksjoner med nesting ≥ 4</td><td class="num bad">16</td><td class="num"></td><td class="num good">0</td></tr>
+</table>
+
+<div class="cmp">
+<div><div class="h v1">V1 – mest komplekse funksjoner</div><table>
+  <tr><td><code>rtf/walkRtf</code> (gjenbrukt av V2)</td><td class="num">49</td></tr>
+  <tr><td><code>ContentGroup › handleOnKeyDown</code></td><td class="num">46</td></tr>
+  <tr><td><code>rtf/interpretNativeRtf › handleBodyControlWord</code> (gjenbrukt)</td><td class="num">30</td></tr>
+  <tr><td><code>tableCaretUtils › getTableArrowNavigationFocus</code></td><td class="num">28</td></tr>
+  <tr><td><code>common › findLiteral</code> (nesting 8)</td><td class="num">27</td></tr>
+  <tr><td><code>merge › mergeRecipe</code></td><td class="num">25</td></tr>
+  <tr><td><code>paste › traverse</code></td><td class="num">21</td></tr>
+</table></div>
+<div><div class="h v2">V2 – mest komplekse funksjoner</div><table>
+  <tr><td><code>useEditorShortcuts</code> (tastaturhandler)</td><td class="num">21</td></tr>
+  <tr><td><code>useLiteralKeyboard</code> (tastaturhandler)</td><td class="num">20</td></tr>
+  <tr><td><code>merge › mergeContainers</code></td><td class="num">19</td></tr>
+  <tr><td><code>addNewLine</code></td><td class="num">18</td></tr>
+  <tr><td><code>domCaret › domSelection</code></td><td class="num">16</td></tr>
+  <tr><td><code>EditableLiteral</code></td><td class="num">16</td></tr>
+  <tr><td><code>htmlToElements › traverse</code></td><td class="num">14</td></tr>
+</table></div>
+</div>
+
+<p><strong>Forgreininger på posisjons- og nodetype.</strong> Begge editorene må skille mellom tittel, avsnitt, punkt og celle. Antallet slike forgreininger er omtrent det samme, men kvaliteten er svært ulik:</p>
+<table>
+  <tr><th></th><th>V1</th><th>V2</th></tr>
+  <tr><td>Forgreininger på posisjonstype</td><td class="num">132 i 17 filer</td><td class="num">120 i 19 filer</td></tr>
+  <tr><td>Hvordan</td><td><code>isItemContentIndex(…)</code>, <code>"rowIndex" in …</code>, <code>blockIndex === TITLE_INDEX</code></td><td><code>path.kind</code> (13 uttømmende <code>switch</code>-er)</td></tr>
+  <tr><td>Kompilatoren sjekker at alle tilfeller er dekket</td><td class="bad">Nei – en glemt gren gir stille feil</td><td class="good">Ja – en ny beholdertype gir kompileringsfeil overalt den mangler</td></tr>
+  <tr><td>Type innsnevres etter sjekken</td><td class="bad">Delvis – gir 103 <code>as</code>-casts</td><td class="good">Ja – 0 casts</td></tr>
+  <tr><td>Hvor forgreiningene ligger</td><td>Spredt i handlinger og visning (<code>common</code> 22, <code>paste</code> 18, <code>ContentGroup</code> 15, <code>deleteSelection</code> 13)</td><td>Samlet i modellaget (<code>paths</code> 22, <code>table</code> 19, <code>structure</code> 10)</td></tr>
+  <tr><td>Forgreininger på nodetype (literal, variabel, liste, tabell …)</td><td class="num">195</td><td class="num">143</td></tr>
+</table>
+<div class="note"><strong>Tolkning:</strong> V2 har omtrent halvparten så mange beslutningspunkter, men tettheten er litt høyere: 21,6 per 100 linjer mot 17,7 i V1. Det skyldes at V2 har mindre kode uten logikk, ikke at logikken er mer innviklet. Gevinsten ligger i <em>fordelingen</em>: kompleksiteten er spredt på mange små funksjoner, ingen funksjon nester mer enn 3 nivåer, og de mest komplekse V2-funksjonene er tastaturhandlere som bare velger en tast og kaller en kommando. V1s mest komplekse funksjoner er derimot redigeringslogikk (<code>findLiteral</code>, <code>mergeRecipe</code>, tabellnavigasjon).</div>
+
+<h2>3. Forbedringer som følger av V2-strukturen</h2>
+
+<h3>3.1 Én tagget stitype i stedet for tre utaggede indekstyper</h3>
+<div class="cmp">
+<div><div class="h v1">V1 – model/state.ts + bruk</div><pre>type BlockContentIndex = { blockIndex; contentIndex };
+type ItemContentIndex  = BlockContentIndex &amp; { itemIndex; itemContentIndex };
+type TableCellIndex    = BlockContentIndex &amp; { rowIndex; cellIndex; cellContentIndex };
+type LiteralIndex = BlockContentIndex | ItemContentIndex | TableCellIndex;
+
+if ("itemIndex" in index) { … }
+if ("rowIndex" in index)  { … }
+const cell = event.target as HTMLElement;</pre></div>
+<div><div class="h v2">V2 – model/paths.ts</div><pre>type ContainerPath =
+  | { kind: "title" }
+  | { kind: "block";  block }
+  | { kind: "item";   block; item }
+  | { kind: "header"; block; column }
+  | { kind: "cell";   block; row; cell };
+
+type Caret = { path: ContainerPath; content; offset };
+
+switch (path.kind) { … }   // kompilatoren sjekker at alle tilfeller er dekket</pre></div>
+</div>
+<p>I V1 er tittelen <code>blockIndex = -1</code>, og innholdsindeksen betyr ulike ting avhengig av hvilke felt som finnes. I V2 er hver posisjon en beholder pluss en indeks inn i dens <code>content</code>, uansett hvor i brevet den er. Det er hovedgrunnen til at casts og <code>in</code>-sjekker er borte.</p>
+
+<h3>3.2 Lister og tabeller er egne blokker</h3>
+<p>I V1 er en liste et <code>ITEM_LIST</code>-element midt i et avsnitts <code>content</code>, og en tabell trenger «skilletekst» før og etter seg. Mange V1-funksjoner fantes bare for dette: <code>normalizeTableSeparators</code>, <code>mergeFromItemList</code>, splitting av avsnitt med blandet innhold, og tester for «avsnitt som slutter med liste». I V2 er en liste en <code>ItemList</code>-blokk og en tabell en <code>Table</code>-blokk. Ved overføringen ble omtrent 20 V1-testscenarioer droppet fordi de bare testet denne nestingen.</p>
+
+<h3>3.3 Samme diff-nøkler i backend og frontend</h3>
+<p>Backendens <code>ContentIndexV2</code> (<code>BLOCK_CONTENT</code>, <code>ITEM_CONTENT</code>, <code>COLUMN_SPEC_CONTENT</code>, <code>TABLE_CELL_CONTENT</code>) bruker de samme beholdertypene som <code>ContainerPath</code>. <code>diff/diffModel.ts</code> oversetter direkte, med én <code>switch</code> som dekker alle tilfeller, og er halvparten så stor som i V1.</p>
+
+<h2>4. Forbedringer som følger av bedre abstraksjoner</h2>
+
+<h3>4.1 Én modul eier ID- og sletteregler</h3>
+<p><code>model/collection.ts</code> har <code>insertAt</code>, <code>removeAt</code>, <code>move</code>, <code>transfer</code> og <code>replaceAll</code>. Disse er de eneste funksjonene som endrer <code>deleted*</code>. Når et element fra malen fjernes, legges ID-en i slettelisten. Når det settes inn igjen, fjernes ID-en fra listen. Nye elementer får <code>id = null</code>. I V1 gjøres dette for hånd på rundt 158 steder med <code>addElements</code>/<code>removeElements</code> og lignende, hvor man selv må sende inn riktig sletteliste for riktig nivå. Det var en vanlig kilde til feil.</p>
+<pre>removeAt(collection(list.items, list.deletedItems, list), path.item);</pre>
+
+<h3>4.2 Kommandoer som små, rene funksjoner</h3>
+<p>Alle endringer har typen <code>Command&lt;Args&gt; = (draft, ...args) =&gt; void</code>. De kjøres gjennom én <code>run</code>/<code>dispatch</code>, som tar seg av Immer-patcher, historikk og <code>saveStatus</code>. Kommandoene vet ikke noe om historikk eller lagring. Kommandoer som bare flytter fokus, havner ikke i angre-historikken. Kommandoer som bare gjelder brev (<code>LetterCommand</code>, f.eks. <code>updateSignatur</code>), gir kompileringsfeil hvis de brukes på et vedlegg.</p>
+<div class="cmp">
+<div><div class="h v1">V1 split.ts (166 linjer, utdrag)</div><pre>if (literalIndex.blockIndex === TITLE_INDEX) return;
+const content = block?.content[literalIndex.contentIndex];
+if (isLiteral(content)) splitBlockAtLiteral(…);
+else if (isItemList(content)) splitItemList(…);
+else console.warn(`Don't know how to split …`);
+…
+addElements([newParagraph(…)], literalIndex.blockIndex,
+            editedLetter.blocks, editedLetter.deletedBlocks);</pre></div>
+<div><div class="h v2">V2 commands/split.ts (25 linjer, hele logikken)</div><pre>if (path.kind !== "block" &amp;&amp; path.kind !== "item") return;
+const container = resolve(doc, path);
+if (path.kind === "item" &amp;&amp; isEmptyContainer(container))
+  return focusIn(draft, breakOutOfList(doc, path));
+const linear = linearOf(doc, at);
+if (linear === 0) {
+  insertSibling(doc, path, "before");
+  focusIn(draft, container);
+} else {
+  focusIn(draft, insertSibling(doc, path, "after",
+                               splitContent(container, at)));
+}</pre></div>
+</div>
+
+<h3>4.3 Lagdeling med én oppgave per modul</h3>
+<div class="tree">EditorV2/
+  model/      paths (ContainerPath, resolve, containers, next/previous), collection (ID-/sletteregler),
+              text (bare Text[]), structure (splitt/sammenslåing av beholdere), table, blockType, factories
+  state/      editorState (run/apply/Command), history, createEditorAutosave, useEditorAutosave
+  commands/   split, merge, addNewLine, updateText, deleteSelection, switchFontType, switchTypography,
+              toggleList, table, tableTab, paste, pasteOverSelection, missingFromTemplate, updateSignatur
+  clipboard/  htmlToElements, readClipboard, fitElements, buildTable
+  caret/      domCaret (DOM ↔ Caret via data-path), navigation (opp/ned, Tab i tabeller)
+  diff/       diffModel, AttestantDiffContextV2, DeletedMarkupV2, useAttestantLetterDiffV2
+  view/       EditorV2, BlockView, ListView, TableView, LetterChrome, menu/, text/ (TextContainerView,
+              EditableLiteral, VariableView, useLiteralKeyboard)</div>
+<ul>
+  <li><strong>Én gjennomgang av dokumentet:</strong> <code>containers(doc)</code> gir alle beholdere i dokumentrekkefølge. Markørbevegelse, sletting av markering, «første uredigerte fritekst», Tab i tabeller og pil opp/ned bruker alle denne i stedet for egne løkker.</li>
+  <li><strong>Forskjellen mellom blokk, punkt og celle finnes bare ett sted</strong>, i <code>structure.ts</code> (<code>insertSibling</code>, <code>removeContainer</code>, <code>breakOutOfList</code>).</li>
+  <li><strong>Samme komponent for all tekst:</strong> <code>TextContainerView</code> brukes for tittel, avsnitt, listepunkt, tabelloverskrift og celle. V1 har 864 linjer i <code>ContentGroup.tsx</code> med egne grener per type.</li>
+  <li><strong>Én kobling mellom DOM og modell:</strong> attributtene <code>data-path</code>/<code>data-content</code>, som leses og skrives bare i <code>caret/domCaret.ts</code>.</li>
+  <li><strong>Lim inn er delt i tre trinn:</strong> lese utklippstavlen → <code>TraversedElement</code>, sjekke hva som passer ved markøren, og sette inn. V1 har alt i én fil på 1 116 linjer.</li>
+  <li><strong>Brev og vedlegg bruker samme editor:</strong> <code>EditorV2&lt;S extends EditorStateV2&gt;</code> er generisk. Saksinformasjon og signatur sendes inn som props.</li>
+</ul>
+
+<h2>5. Hva som er gjenbrukt fra V1</h2>
+<p>For en rettferdig sammenligning er modelluavhengig V1-kode importert direkte, ikke kopiert. Den er ikke regnet med som en V2-forbedring (ca. 2 430 linjer):</p>
+<ul>
+  <li>RTF-parser (<code>actions/rtf/*</code>) og AST-en <code>TraversedElement</code></li>
+  <li>DOM-hjelpere for markøren (<code>services/caretUtils</code>: <code>gotoCoordinates</code>, linjedeteksjon)</li>
+  <li>Diff-segmenter (<code>DiffSegments.tsx</code>, <code>buildDiffSegments</code>, <code>diffQueryState</code>)</li>
+  <li>Små komponenter: <code>TableContextMenu</code>, <code>InsertTableDialog</code>, <code>EditorUndoRedo</code>, <code>AttestantDiffMenu</code>, tekster og hurtigtaster i <code>utils.ts</code>, <code>editor.css</code></li>
+</ul>
+<p>Historikk og autolagring er kopiert og gjort generiske (ca. 400 linjer i <code>state/</code>). De er regnet med i V2-tallene, så det er ingen gevinst der.</p>
+
+<h2>6. Endret oppførsel</h2>
+<h3>Forbedringer og V1-TODO-er som er løst</h3>
+<ul>
+  <li>Sletting av en markering som går fra et listepunkt inn i et avsnitt, slår dem sammen. Dette var en TODO i V1.</li>
+  <li>Lim inn av <code>tekst&lt;p&gt;p1&lt;/p&gt;etter</code> foran en liste mister ikke lenger «etter», og listepunkter forsvinner ikke. V1 og V2 ble sammenlignet i 403 scenarioer: 400 ga likt resultat, og de 3 som skilte seg var V1-feil.</li>
+  <li>Når en liste limes inn rett etter en liste av samme type, blir de én liste. Fjernes avsnittene mellom to like lister, slås listene sammen.</li>
+  <li>Fet og kursiv fungerer per ord også i tabellceller. V1 endret hele cellen og flyttet markøren til start.</li>
+  <li>Bytte av skrifttype gjenbruker det opprinnelige elementet, så færre malelementer havner i <code>deleted*</code>.</li>
+  <li>Lim inn i tittelen setter inn ren tekst. V1 ignorerte det.</li>
+  <li>Det er funnet og rettet én reell markørfeil: pil venstre inn i forrige tekstbit plasserte markøren i starten i stedet for slutten.</li>
+</ul>
+<h3>Mangler sammenlignet med V1</h3>
+<ul>
+  <li class="warn">Fet og kursiv virker bare på ordet ved markøren, ikke på en markert tekstbit. Kan legges til som et valgfritt markeringsargument.</li>
+  <li>Etter en variabel blir det alltid stående en tom tekstbit (<code>["t1", var, ""]</code>).</li>
+  <li>Versjonsvalget for lagrede brev: hvis V1-endepunktet svarer 409, hentes <code>/brev/{id}/info</code>, og V2 brukes hvis infoen sier det. Brev som allerede ligger i cache, sendes rett til riktig editor. Uten cache koster et V2-brev derfor ett ekstra kall.</li>
+  <li>V2-siden mangler fremheving av innsatt tekstvalg og sporing av diff-bruk.</li>
+</ul>
+
+<h2>7. Funksjonalitet og status</h2>
+<table>
+  <tr><th>Område</th><th>V2-status</th></tr>
+  <tr><td>Skriving, splitt, sammenslåing, ny linje, slett markering</td><td class="good">Ferdig med tester</td></tr>
+  <tr><td>Fet/kursiv, tekststil, punkt- og nummerert liste</td><td class="good">Ferdig med tester (fet/kursiv bare per ord, se over)</td></tr>
+  <tr><td>Tabeller: sett inn, rader og kolonner, overskrift, flytt rad, Tab og piltaster</td><td class="good">Ferdig med tester</td></tr>
+  <tr><td>Lim inn (HTML og RTF) og lim inn over markering</td><td class="good">Ferdig med tester</td></tr>
+  <tr><td>Angre/gjør om, autolagring, reservasjon</td><td class="good">Ferdig med tester</td></tr>
+  <tr><td>Attestering og diff (sammenslått visning)</td><td class="good">Ferdig med tester</td></tr>
+  <tr><td>Redigerbare vedlegg, signatur, saksinformasjon, «avsnitt ikke i mal»</td><td class="good">Ferdig</td></tr>
+  <tr><td>Ruter, brevbehandler, forhåndsvisning, P1, endre mottaker</td><td class="good">Velger V1 eller V2 (bare små endringer i delt kode)</td></tr>
+  <tr><td>Opprett brev som V2</td><td class="good">Bak funksjonsbryteren <code>markupV2</code></td></tr>
+  <tr><td>Playwright e2e for V2</td><td class="warn">Ikke laget ennå</td></tr>
+  <tr><td>Manuell test i nettleser mot ekte backend</td><td class="warn">Ikke gjort</td></tr>
+</table>
+<div class="ok"><strong>Kvalitet:</strong> 530 av 530 V2-enhetstester er grønne. <code>tsc</code> er uten feil i alle fire tsconfig-er, og Biome er ren for V2-koden. V1-editoren er ikke endret, og alle 1 185 V1-tester er fortsatt grønne. Det trengs ingen endringer i backend.</div>
+
+<h2>8. Konklusjon</h2>
+<p>Den største gevinsten kommer av <strong>modellen</strong>. Når lister og tabeller er egne blokker og all tekst ligger i like beholdere, forsvinner de utaggede indekstypene, nestingen og de dupliserte grenene, som er hovedkildene til kompleksitet i V1. <strong>Abstraksjonene</strong> som bygger på dette (<code>ContainerPath</code>, <code>collection</code>, <code>containers()</code>, én <code>TextContainerView</code>) gir resten. Resultatet er omtrent halvparten så mye modellavhengig kode, null casts, ID-/sletteregler på ett sted, og kommandoer som kan leses på noen sekunder. Disse abstraksjonene kunne ikke bygges like rent på V1-modellen, fordi tre indekstyper med ulik betydning, nesting og skilletekst rundt tabeller ville trengt spesialtilfeller i hver av dem.</p>
+
+<footer>Grein: markup-v2-stage-6-frontend-poc · Tallene er målt med skript på gjeldende arbeidskopi · V1 = src/Brevredigering/LetterEditor, V2 = src/Brevredigering/EditorV2</footer>
+</main>
+</body>
+</html>
