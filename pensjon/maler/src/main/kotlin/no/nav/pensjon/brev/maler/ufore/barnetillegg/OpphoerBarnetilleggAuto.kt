@@ -293,16 +293,15 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                     )
                 )
 
-                paragraph {
-                    showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    paragraph {
                         text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12" },
+                            bokmal { + "Du kan lese mer om beregningen av barnetillegg i vedlegget " },
+                            nynorsk { + "Du kan lese meir om berekninga av barnetillegg i vedlegget " },
                         )
-                    }.orShow {
                         text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12." },
+                            bokmal { + quoted("Opplysninger om beregningen") +"." },
+                            nynorsk { + quoted("Opplysningar om berekninga") +"." },
                         )
                     }
                 }
@@ -328,6 +327,4 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }
 }
-
-
 
