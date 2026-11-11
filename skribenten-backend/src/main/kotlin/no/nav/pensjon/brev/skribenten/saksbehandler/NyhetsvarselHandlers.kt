@@ -27,7 +27,7 @@ class HentNyhetsvarslerHandler(private val transactional: Transactional) {
                 Api.Nyhetsvarsler(
                     settAnnonsen = rader.filter { it[NyhetsvarselstatusTable.settAnnonsen] != null }
                         .map { it[NyhetsvarselstatusTable.nyhetsvarselId].value },
-                    gjennomfoertTuren = rader.filter { it[NyhetsvarselstatusTable.gjennomfoertTuren] != null }
+                    gjennomfoertOmvisningen = rader.filter { it[NyhetsvarselstatusTable.gjennomfoertOmvisningen] != null }
                         .map { it[NyhetsvarselstatusTable.nyhetsvarselId].value },
                 )
             )
@@ -42,7 +42,7 @@ class MarkerNyhetsvarselHandler(private val transactional: Transactional) {
         transactional.rollbackOnFailure {
             val tidspunkt = when (request.markering) {
                 Nyhetsvarselmarkering.SETT_ANNONSEN -> NyhetsvarselstatusTable.settAnnonsen
-                Nyhetsvarselmarkering.GJENNOMFOERT_TUREN -> NyhetsvarselstatusTable.gjennomfoertTuren
+                Nyhetsvarselmarkering.GJENNOMFOERT_OMVISNINGEN -> NyhetsvarselstatusTable.gjennomfoertOmvisningen
             }
             NyhetsvarselstatusTable.upsert(onUpdate = { it[tidspunkt] = Coalesce(tidspunkt, insertValue(tidspunkt)) }) {
                 it[navIdent] = request.navIdent

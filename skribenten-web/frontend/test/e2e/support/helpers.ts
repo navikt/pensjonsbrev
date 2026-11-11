@@ -72,7 +72,7 @@ export async function setupSakStubs(page: Page) {
   });
 
   await page.route("**/bff/skribenten-backend/me/nyhetsvarsler", (route) => {
-    return route.fulfill({ json: { settAnnonsen: [], gjennomfoertTuren: [] } });
+    return route.fulfill({ json: { settAnnonsen: [], gjennomfoertOmvisningen: [] } });
   });
 
   await page.route("**/bff/skribenten-backend/me/nyhetsvarsler/*/*", (route) => {

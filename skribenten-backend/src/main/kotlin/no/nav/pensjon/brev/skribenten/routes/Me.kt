@@ -69,6 +69,6 @@ fun Route.meRoute() {
             respondSuccess(marker?.asSuccess()) { respond(HttpStatusCode.NoContent) }
         }
         put("/nyhetsvarsler/{nyhetsvarselId}/settAnnonsen") { marker(Nyhetsvarselmarkering.SETT_ANNONSEN) }
-        put("/nyhetsvarsler/{nyhetsvarselId}/gjennomfoertTuren") { marker(Nyhetsvarselmarkering.GJENNOMFOERT_TUREN) }
+        put("/nyhetsvarsler/{nyhetsvarselId}/gjennomfoertOmvisningen") { marker(Nyhetsvarselmarkering.GJENNOMFOERT_OMVISNINGEN) }
     }
 }

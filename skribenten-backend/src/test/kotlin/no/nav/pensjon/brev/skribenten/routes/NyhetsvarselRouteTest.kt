@@ -98,7 +98,7 @@ class NyhetsvarselRouteTest {
         block(client)
     }
 
-    private val tom = """{"settAnnonsen":[],"gjennomfoertTuren":[]}"""
+    private val tom = """{"settAnnonsen":[],"gjennomfoertOmvisningen":[]}"""
 
     @Test
     fun `svarer med tomme lister for bruker uten nyhetsvarsler`() = meTestApplication(nyNavIdent()) { client ->
@@ -109,23 +109,23 @@ class NyhetsvarselRouteTest {
     }
 
     @Test
-    fun `markerer at annonsen er sett og at turen er gjennomfoert`() = meTestApplication(nyNavIdent()) { client ->
+    fun `markerer at annonsen er sett og at omvisningen er gjennomfoert`() = meTestApplication(nyNavIdent()) { client ->
         assertThat(client.put("/me/nyhetsvarsler/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.NoContent)
         assertThat(client.get("/me/nyhetsvarsler").bodyAsText())
-            .isEqualTo("""{"settAnnonsen":["diff-toggles"],"gjennomfoertTuren":[]}""")
+            .isEqualTo("""{"settAnnonsen":["diff-toggles"],"gjennomfoertOmvisningen":[]}""")
 
-        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertTuren").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
         assertThat(client.get("/me/nyhetsvarsler").bodyAsText())
-            .isEqualTo("""{"settAnnonsen":["diff-toggles"],"gjennomfoertTuren":["diff-toggles"]}""")
+            .isEqualTo("""{"settAnnonsen":["diff-toggles"],"gjennomfoertOmvisningen":["diff-toggles"]}""")
     }
 
     @Test
     fun `aa markere samme nyhetsvarsel flere ganger gir fortsatt bare ett`() = meTestApplication(nyNavIdent()) { client ->
-        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertTuren").status).isEqualTo(HttpStatusCode.NoContent)
-        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertTuren").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
 
         assertThat(client.get("/me/nyhetsvarsler").bodyAsText())
-            .isEqualTo("""{"settAnnonsen":[],"gjennomfoertTuren":["diff-toggles"]}""")
+            .isEqualTo("""{"settAnnonsen":[],"gjennomfoertOmvisningen":["diff-toggles"]}""")
     }
 
     @Test
@@ -149,6 +149,6 @@ class NyhetsvarselRouteTest {
 
         assertThat(utenInnlogging.get("/me/nyhetsvarsler").status).isEqualTo(HttpStatusCode.Unauthorized)
         assertThat(utenInnlogging.put("/me/nyhetsvarsler/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.Unauthorized)
-        assertThat(utenInnlogging.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertTuren").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.put("/me/nyhetsvarsler/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.Unauthorized)
     }
 }

@@ -172,7 +172,7 @@ export async function deleteFavoritt(id: string) {
 }
 
 /** Ids of the announcements the user has seen in the notification bell, and of those whose tour the user has closed. */
-export type AnnouncementStatus = { settAnnonsen: string[]; gjennomfoertTuren: string[] };
+export type AnnouncementStatus = { settAnnonsen: string[]; gjennomfoertOmvisningen: string[] };
 
 export const getAnnouncementStatus = {
   queryKey: announcementStatusKeys.all,
@@ -185,7 +185,7 @@ const announcementUrl = (announcementId: string) =>
   `${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsler/${encodeURIComponent(announcementId)}`;
 
 export async function acknowledgeAnnouncement(announcementId: string) {
-  await axios.put(`${announcementUrl(announcementId)}/gjennomfoertTuren`);
+  await axios.put(`${announcementUrl(announcementId)}/gjennomfoertOmvisningen`);
 }
 
 export async function markAnnouncementSeen(announcementId: string) {

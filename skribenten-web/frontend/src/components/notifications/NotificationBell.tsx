@@ -36,7 +36,7 @@ export function NotificationBell({ announcements = PRODUCT_ANNOUNCEMENTS }: { an
   const unseen = statusQuery.isSuccess
     ? current.filter(
         (announcement) =>
-          !statusQuery.data.gjennomfoertTuren.includes(announcement.id) &&
+          !statusQuery.data.gjennomfoertOmvisningen.includes(announcement.id) &&
           !statusQuery.data.settAnnonsen.includes(announcement.id),
       )
     : [];

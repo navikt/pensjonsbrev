@@ -34,13 +34,13 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
-// settAnnonsen: nyheten er vist i den åpne varselbjellen. gjennomfoertTuren: den automatiske Joyride-turen er lukket.
+// settAnnonsen: nyheten er vist i den åpne varselbjellen. gjennomfoertOmvisningen: brukeren har gått gjennom omvisningen.
 object NyhetsvarselstatusTable : CompositeIdTable() {
     val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
     val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
         varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id).entityId()
     val settAnnonsen: Column<Instant?> = timestamp("settAnnonsen").nullable()
-    val gjennomfoertTuren: Column<Instant?> = timestamp("gjennomfoertTuren").nullable()
+    val gjennomfoertOmvisningen: Column<Instant?> = timestamp("gjennomfoertOmvisningen").nullable()
 
     override val primaryKey = PrimaryKey(navIdent, nyhetsvarselId)
 }

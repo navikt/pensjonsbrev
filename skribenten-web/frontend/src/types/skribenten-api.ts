@@ -3538,7 +3538,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/me/nyhetsvarsler/{nyhetsvarselId}/gjennomfoertTuren": {
+    "/me/nyhetsvarsler/{nyhetsvarselId}/gjennomfoertOmvisningen": {
         parameters: {
             query?: never;
             header?: never;
@@ -4785,7 +4785,7 @@ export interface components {
         };
         /** ApiNyhetsvarsler */
         ApiNyhetsvarsler: {
-            gjennomfoertTuren: string[];
+            gjennomfoertOmvisningen: string[];
             settAnnonsen: string[];
         };
         /** ApiFeatureToggleResponse */

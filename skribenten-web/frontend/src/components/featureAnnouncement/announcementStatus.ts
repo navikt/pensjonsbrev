@@ -14,7 +14,8 @@ import { logError } from "~/utils/logger";
  * Marks an announcement as acknowledged, i.e. the user has closed its tour. It then no longer starts automatically,
  * and it no longer gives a red dot in the notification bell.
  */
-export const useAcknowledgeAnnouncement = () => useSaveAnnouncementStatus("gjennomfoertTuren", acknowledgeAnnouncement);
+export const useAcknowledgeAnnouncement = () =>
+  useSaveAnnouncementStatus("gjennomfoertOmvisningen", acknowledgeAnnouncement);
 
 /**
  * Marks an announcement as seen, i.e. the user has opened the notification bell while it was listed. It then no longer
@@ -39,7 +40,7 @@ function useSaveAnnouncementStatus(field: keyof AnnouncementStatus, save: (id: s
     (id: string) => {
       queryClient.setQueryData(
         getAnnouncementStatus.queryKey,
-        (previous: AnnouncementStatus = { settAnnonsen: [], gjennomfoertTuren: [] }) =>
+        (previous: AnnouncementStatus = { settAnnonsen: [], gjennomfoertOmvisningen: [] }) =>
           previous[field].includes(id) ? previous : { ...previous, [field]: [...previous[field], id] },
       );
       mutate(id);

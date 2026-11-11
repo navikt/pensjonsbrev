@@ -110,7 +110,7 @@ const FeatureAnnouncementInstance = ({
     ...getAnnouncementStatus,
     enabled: when && published && (!expired || replayable),
   });
-  const acknowledged = statusQuery.data?.gjennomfoertTuren.includes(id) === true;
+  const acknowledged = statusQuery.data?.gjennomfoertOmvisningen.includes(id) === true;
   const acknowledge = useAcknowledgeAnnouncement();
 
   const onDismissReference = useRef(onDismiss);

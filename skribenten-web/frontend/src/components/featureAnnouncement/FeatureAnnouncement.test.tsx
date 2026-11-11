@@ -23,7 +23,7 @@ vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
     ...original,
     getAnnouncementStatus: {
       ...original.getAnnouncementStatus,
-      queryFn: async () => ({ settAnnonsen: [], gjennomfoertTuren: await fetchAcknowledgedMock() }),
+      queryFn: async () => ({ settAnnonsen: [], gjennomfoertOmvisningen: await fetchAcknowledgedMock() }),
     },
     acknowledgeAnnouncement: acknowledgeMock,
   };

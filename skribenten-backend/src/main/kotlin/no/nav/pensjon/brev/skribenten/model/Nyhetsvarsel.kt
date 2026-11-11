@@ -5,4 +5,4 @@ value class NyhetsvarselId(val id: String) {
     override fun toString() = id
 }
 
-enum class Nyhetsvarselmarkering { SETT_ANNONSEN, GJENNOMFOERT_TUREN }
+enum class Nyhetsvarselmarkering { SETT_ANNONSEN, GJENNOMFOERT_OMVISNINGEN }

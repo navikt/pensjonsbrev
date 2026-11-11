@@ -15,7 +15,7 @@ const LAST_DISPLAY_DAY = `${ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL}T12:00:00`;
 
 const STATUS_URL = "**/bff/skribenten-backend/me/nyhetsvarsler";
 const givenAcknowledged = (page: Page, ids: string[]) =>
-  page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: [], gjennomfoertTuren: ids } }));
+  page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: [], gjennomfoertOmvisningen: ids } }));
 
 const bell = (page: Page) => page.getByRole("button", { name: /^Nytt i Skribenten/ });
 const dot = (page: Page) => page.getByTestId("unseen-announcements-dot");
@@ -43,7 +43,9 @@ test.describe("varslingsklokke i toppmenyen", () => {
 
   test("åpning av klokken fjerner prikken, men gjennomgangen starter automatisk i attesteringen", async ({ page }) => {
     const seen: string[] = [];
-    await page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: seen, gjennomfoertTuren: [] } }));
+    await page.route(STATUS_URL, (route) =>
+      route.fulfill({ json: { settAnnonsen: seen, gjennomfoertOmvisningen: [] } }),
+    );
     await page.route(`${STATUS_URL}/*/settAnnonsen`, (route) => {
       seen.push(decodeURIComponent(route.request().url().split("/").at(-2) ?? ""));
       return route.fulfill({ status: 204 });

@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NyhetsvarselId
-import no.nav.pensjon.brev.skribenten.model.Nyhetsvarselmarkering.GJENNOMFOERT_TUREN
+import no.nav.pensjon.brev.skribenten.model.Nyhetsvarselmarkering.GJENNOMFOERT_OMVISNINGEN
 import no.nav.pensjon.brev.skribenten.model.Nyhetsvarselmarkering.SETT_ANNONSEN
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
@@ -49,7 +49,7 @@ class NyhetsvarselHandlersTest {
         NyhetsvarselstatusTable.selectAll()
             .where { NyhetsvarselstatusTable.navIdent eq navIdent }
             .single()
-            .let { it[NyhetsvarselstatusTable.settAnnonsen] to it[NyhetsvarselstatusTable.gjennomfoertTuren] }
+            .let { it[NyhetsvarselstatusTable.settAnnonsen] to it[NyhetsvarselstatusTable.gjennomfoertOmvisningen] }
     }
 
     @Test
@@ -58,21 +58,21 @@ class NyhetsvarselHandlersTest {
     }
 
     @Test
-    suspend fun `markerer at annonsen er sett uten at turen er gjennomfoert`() {
+    suspend fun `markerer at annonsen er sett uten at omvisningen er gjennomfoert`() {
         val navIdent = nyNavIdent()
 
         assertThat(markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, SETT_ANNONSEN))).isSuccess()
 
-        assertThat(hent(navIdent)).isEqualTo(Api.Nyhetsvarsler(settAnnonsen = listOf(diff), gjennomfoertTuren = emptyList()))
+        assertThat(hent(navIdent)).isEqualTo(Api.Nyhetsvarsler(settAnnonsen = listOf(diff), gjennomfoertOmvisningen = emptyList()))
     }
 
     @Test
-    suspend fun `markerer at turen er gjennomfoert uten at annonsen er sett`() {
+    suspend fun `markerer at omvisningen er gjennomfoert uten at annonsen er sett`() {
         val navIdent = nyNavIdent()
 
-        assertThat(markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, GJENNOMFOERT_TUREN))).isSuccess()
+        assertThat(markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, GJENNOMFOERT_OMVISNINGEN))).isSuccess()
 
-        assertThat(hent(navIdent)).isEqualTo(Api.Nyhetsvarsler(settAnnonsen = emptyList(), gjennomfoertTuren = listOf(diff)))
+        assertThat(hent(navIdent)).isEqualTo(Api.Nyhetsvarsler(settAnnonsen = emptyList(), gjennomfoertOmvisningen = listOf(diff)))
     }
 
     @Test
@@ -80,12 +80,12 @@ class NyhetsvarselHandlersTest {
         val navIdent = nyNavIdent()
 
         markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, SETT_ANNONSEN))
-        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, GJENNOMFOERT_TUREN))
+        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, GJENNOMFOERT_OMVISNINGEN))
 
-        assertThat(hent(navIdent)).isEqualTo(Api.Nyhetsvarsler(settAnnonsen = listOf(diff), gjennomfoertTuren = listOf(diff)))
-        val (settAnnonsen, gjennomfoertTuren) = rad(navIdent)
+        assertThat(hent(navIdent)).isEqualTo(Api.Nyhetsvarsler(settAnnonsen = listOf(diff), gjennomfoertOmvisningen = listOf(diff)))
+        val (settAnnonsen, gjennomfoertOmvisningen) = rad(navIdent)
         assertThat(settAnnonsen).isNotNull()
-        assertThat(gjennomfoertTuren).isNotNull()
+        assertThat(gjennomfoertOmvisningen).isNotNull()
     }
 
     @Test
@@ -106,16 +106,16 @@ class NyhetsvarselHandlersTest {
 
         markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, SETT_ANNONSEN))
         markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, eblanketter, SETT_ANNONSEN))
-        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, eblanketter, GJENNOMFOERT_TUREN))
+        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, eblanketter, GJENNOMFOERT_OMVISNINGEN))
 
         val nyhetsvarsler = hent(navIdent)
         assertThat(nyhetsvarsler.settAnnonsen).containsExactlyInAnyOrder(diff, eblanketter)
-        assertThat(nyhetsvarsler.gjennomfoertTuren).containsExactly(eblanketter)
+        assertThat(nyhetsvarsler.gjennomfoertOmvisningen).containsExactly(eblanketter)
     }
 
     @Test
     suspend fun `nyhetsvarsler er knyttet til brukeren som markerte dem`() {
-        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(nyNavIdent(), diff, GJENNOMFOERT_TUREN))
+        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(nyNavIdent(), diff, GJENNOMFOERT_OMVISNINGEN))
 
         assertThat(hent(nyNavIdent())).isEqualTo(Api.Nyhetsvarsler(emptyList(), emptyList()))
     }
