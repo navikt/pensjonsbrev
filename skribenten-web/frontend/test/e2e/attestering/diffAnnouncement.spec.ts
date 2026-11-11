@@ -73,6 +73,30 @@ test.describe("nyhet om diff-menyen for attestant", () => {
     await expect(page.locator(".editor").getByText("Hei")).toBeVisible();
   });
 
+  test("Escape og klikk utenfor lagrer ikke at omvisningen er gjennomført, så den vises igjen neste gang", async ({
+    page,
+  }) => {
+    const completed: string[] = [];
+    page.on("request", (request) => {
+      if (request.method() === "PUT" && request.url().endsWith("/gjennomfoertOmvisningen"))
+        completed.push(request.url());
+    });
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await expect(announcement(page)).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(announcement(page)).toBeHidden();
+
+    await page.reload();
+    await expect(announcement(page)).toBeVisible();
+    const letterText = await page.getByText("weeks.").boundingBox();
+    if (!letterText) throw new Error("Fant ikke brevteksten");
+    await page.mouse.click(letterText.x + letterText.width / 2, letterText.y + letterText.height / 2);
+    await expect(announcement(page)).toBeHidden();
+
+    await page.waitForTimeout(500);
+    expect(completed).toEqual([]);
+  });
+
   test("klikk på den dimmede siden lukker nyheten uten å endre brevet", async ({ page }) => {
     await page.goto("/saksnummer/123456/attester/1/redigering");
     await expect(announcement(page)).toBeVisible();

@@ -69,17 +69,22 @@ type FeatureAnnouncementProps = {
 /**
  * Modal, contextual announcement of a feature. One step gives a single announcement, several steps give
  * a short walkthrough. Focus moves into the announcement and returns to where the user was when it closes.
- * Closing it (button, Escape or a click on the dimmed page) acknowledges it for the user, so it no longer starts
- * automatically.
+ * Finishing it with the button on the last step marks it as completed for the user, so it no longer starts automatically.
+ * Escape or a click on the dimmed page only closes it while this component stays mounted, so it starts again the next
+ * time the user comes back.
  * If several announcements are eligible at the same time, they are shown one after another.
  * While `when` holds, the tour can also be started again on request (see `requestAnnouncementReplay`).
  */
 export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => {
   const replayGeneration = useAnnouncementReplay(props.id);
+  // Kept outside the instance, which is replaced for each replay, so closing a replay does not start the tour again.
+  const [closedId, setClosedId] = useState<string | null>(null);
   return (
     <FeatureAnnouncementInstance
       key={`${props.id}-${replayGeneration}`}
       {...props}
+      closedWithoutCompleting={closedId === props.id}
+      onCloseWithoutCompleting={() => setClosedId(props.id)}
       replayGeneration={replayGeneration}
     />
   );
@@ -95,7 +100,13 @@ const FeatureAnnouncementInstance = ({
   onDismiss,
   spotlight = true,
   replayGeneration,
-}: FeatureAnnouncementProps & { replayGeneration: number }) => {
+  closedWithoutCompleting,
+  onCloseWithoutCompleting,
+}: FeatureAnnouncementProps & {
+  replayGeneration: number;
+  closedWithoutCompleting: boolean;
+  onCloseWithoutCompleting: () => void;
+}) => {
   const [resumeIndex, setResumeIndex] = useState(0);
   const [unsuccessfulRun, setUnsuccessfulRun] = useState(false);
 
@@ -115,20 +126,29 @@ const FeatureAnnouncementInstance = ({
 
   const onDismissReference = useRef(onDismiss);
   onDismissReference.current = onDismiss;
-  const hasDismissed = useRef(false);
+  const onCloseWithoutCompletingReference = useRef(onCloseWithoutCompleting);
+  onCloseWithoutCompletingReference.current = onCloseWithoutCompleting;
+  const hasEnded = useRef(false);
   const hasBeenShown = useRef(false);
-  const dismiss = useCallback(() => {
-    if (hasDismissed.current) return;
-    hasDismissed.current = true;
-    acknowledge(id);
-    onDismissReference.current?.();
-    endAnnouncementReplay(replayGeneration);
-  }, [id, acknowledge, replayGeneration]);
+  const end = useCallback(
+    (completed: boolean) => {
+      if (hasEnded.current) return;
+      hasEnded.current = true;
+      if (completed) acknowledge(id);
+      else onCloseWithoutCompletingReference.current();
+      onDismissReference.current?.();
+      endAnnouncementReplay(replayGeneration);
+    },
+    [id, acknowledge, replayGeneration],
+  );
 
   // Also a replay waits until the status has been read (or failed), so closing it cannot be overwritten by an older,
   // still pending read that would make the tour start again.
   const statusRead = !statusQuery.isPending;
-  const eligible = available && statusRead && (replaying || (!expired && statusQuery.isSuccess && !acknowledged));
+  const eligible =
+    available &&
+    statusRead &&
+    (replaying || (!expired && statusQuery.isSuccess && !acknowledged && !closedWithoutCompleting));
   // A run that ended without showing anything (e.g. the target was never found) is retried the next time the
   // announcement becomes eligible, instead of being treated as dismissed.
   if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);
@@ -178,7 +198,7 @@ const FeatureAnnouncementInstance = ({
       arrowSize: 10,
       // Keeps the arrow clear of the tooltip's rounded corners.
       arrowSpacing: 16,
-      // Escape is handled below so it dismisses the whole announcement, not just the current step.
+      // Escape is handled below so it closes the whole announcement, not just the current step.
       dismissKeyAction: false,
       hideOverlay: !spotlight,
       // Small gap (Aksel space-8) between the target and the arrow tip.
@@ -200,7 +220,8 @@ const FeatureAnnouncementInstance = ({
       }
       // A click on the dimmed page closes the whole announcement, also in the middle of a walkthrough.
       const closedByOverlay = data.action === ACTIONS.CLOSE && data.origin === ORIGIN.OVERLAY;
-      if (data.type === EVENTS.TOUR_END || closedByOverlay) dismiss();
+      if (closedByOverlay) end(false);
+      else if (data.type === EVENTS.TOUR_END) end(data.status === STATUS.FINISHED);
     },
   });
 
@@ -208,12 +229,12 @@ const FeatureAnnouncementInstance = ({
 
   useEffect(() => {
     if (!tooltipVisible) return;
-    const dismissOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") dismiss();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") end(false);
     };
-    document.addEventListener("keydown", dismissOnEscape);
-    return () => document.removeEventListener("keydown", dismissOnEscape);
-  }, [tooltipVisible, dismiss]);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [tooltipVisible, end]);
 
   return run ? Tour : null;
 };

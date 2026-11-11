@@ -334,15 +334,41 @@ describe("<FeatureAnnouncement />", () => {
     expect(queryAnnouncement()).toBeNull();
   });
 
-  test("lukkes med Escape", async () => {
+  test("lukkes med Escape uten å bli gjennomført, åpnes ikke igjen i samme økt, men starter igjen neste gang", async () => {
     const user = userEvent.setup();
-    renderWithQueryClient(<Harness />);
+    const queryClient = createQueryClient();
+    const { rerender, unmount } = renderWithQueryClient(<Harness />, queryClient);
     await findAnnouncement();
 
     await user.keyboard("{Escape}");
 
     await waitFor(() => expect(queryAnnouncement()).toBeNull());
-    expect(acknowledgeMock).toHaveBeenCalledTimes(1);
+    expect(acknowledgeMock).not.toHaveBeenCalled();
+    rerender(<Harness when={false} />);
+    rerender(<Harness when />);
+    await settle();
+    expect(queryAnnouncement()).toBeNull();
+
+    unmount();
+    renderWithQueryClient(<Harness />, queryClient);
+    expect(await findAnnouncement()).not.toBeNull();
+  });
+
+  test("lukking av en ny visning med Escape starter ikke den automatiske visningen igjen", async () => {
+    const user = userEvent.setup();
+    renderWithQueryClient(<Harness />);
+    await findAnnouncement();
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(queryAnnouncement()).toBeNull());
+
+    act(() => requestAnnouncementReplay("test-nyhet"));
+    await findAnnouncement();
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(queryAnnouncement()).toBeNull());
+    await settle();
+
+    expect(queryAnnouncement()).toBeNull();
+    expect(acknowledgeMock).not.toHaveBeenCalled();
   });
 
   test("flytter fokus til nyheten og tilbake dit brukeren var når den lukkes", async () => {
@@ -367,31 +393,35 @@ describe("<FeatureAnnouncement />", () => {
     await findAnnouncement();
     await user.click(screen.getByRole("button", { name: "Neste" }));
     await findAnnouncement("Andre nyhet");
-    const buttons = ["Lukk", "Forrige", "Skjønner!"].map((name) => screen.getByRole("button", { name }));
-    act(() => buttons[2].focus());
+    const buttons = ["Forrige", "Skjønner!"].map((name) => screen.getByRole("button", { name }));
+    act(() => buttons[1].focus());
 
     await user.tab();
     expect(document.activeElement).toBe(buttons[0]);
     await user.tab({ shift: true });
-    expect(document.activeElement).toBe(buttons[2]);
+    expect(document.activeElement).toBe(buttons[1]);
   });
 
-  test("støtter flere steg med neste, forrige og lukk", async () => {
+  test("støtter flere steg med neste og forrige, uten lukkeknapp, og er gjennomført først etter siste steg", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<Harness multiStep />);
 
     await findAnnouncement();
     expect(screen.queryByText("Steg 1 av 2")).not.toBeNull();
+    expect(screen.queryByRole("button", { name: "Lukk" })).toBeNull();
     await user.click(screen.getByRole("button", { name: "Neste" }));
 
     await findAnnouncement("Andre nyhet");
-    expect(acknowledgeMock).not.toHaveBeenCalled();
     await user.click(screen.getByRole("button", { name: "Forrige" }));
-
     await findAnnouncement();
-    await user.click(screen.getByRole("button", { name: "Lukk" }));
+    await user.click(screen.getByRole("button", { name: "Neste" }));
+    await findAnnouncement("Andre nyhet");
+    expect(acknowledgeMock).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: "Skjønner!" }));
     await waitFor(() => expect(queryAnnouncement()).toBeNull());
     expect(acknowledgeMock).toHaveBeenCalledTimes(1);
+    expect(acknowledgeMock).toHaveBeenCalledWith("test-nyhet");
   });
 
   test("dimmer siden, skjult for skjermlesere, og lukkes ved klikk på den dimmede flaten", async () => {
@@ -404,7 +434,7 @@ describe("<FeatureAnnouncement />", () => {
 
     await waitFor(() => expect(queryAnnouncement()).toBeNull());
     expect(onDismiss).toHaveBeenCalledTimes(1);
-    expect(acknowledgeMock).toHaveBeenCalledTimes(1);
+    expect(acknowledgeMock).not.toHaveBeenCalled();
   });
 
   test("klikk på den dimmede flaten lukker hele gjennomgangen", async () => {
@@ -415,6 +445,7 @@ describe("<FeatureAnnouncement />", () => {
     await settle();
 
     expect(queryAnnouncement()).toBeNull();
+    expect(acknowledgeMock).not.toHaveBeenCalled();
   });
 
   test("spotlight kan slås av", async () => {
@@ -473,7 +504,7 @@ describe("<FeatureAnnouncement />", () => {
     rerender(<RetryHarness showTarget when />);
     await findAnnouncement();
 
-    await user.keyboard("{Escape}");
+    await user.click(screen.getByRole("button", { name: "Skjønner!" }));
 
     await waitFor(() => expect(queryAnnouncement()).toBeNull());
     expect(acknowledgeMock).toHaveBeenCalledTimes(1);
@@ -483,12 +514,12 @@ describe("<FeatureAnnouncement />", () => {
     const user = userEvent.setup();
     const { rerender } = renderWithQueryClient(<IdHarness id="forste" />);
     await findAnnouncement("Nyhet forste");
-    await user.keyboard("{Escape}");
+    await user.click(screen.getByRole("button", { name: "Skjønner!" }));
     await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
 
     rerender(<IdHarness id="andre" />);
     await findAnnouncement("Nyhet andre");
-    await user.keyboard("{Escape}");
+    await user.click(screen.getByRole("button", { name: "Skjønner!" }));
 
     await waitFor(() => expect(screen.queryByRole("alertdialog")).toBeNull());
     expect(acknowledgeMock.mock.calls).toEqual([["forste"], ["andre"]]);

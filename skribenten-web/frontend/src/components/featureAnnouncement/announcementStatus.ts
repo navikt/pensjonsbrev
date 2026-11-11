@@ -11,8 +11,8 @@ import {
 import { logError } from "~/utils/logger";
 
 /**
- * Marks an announcement as acknowledged, i.e. the user has closed its tour. It then no longer starts automatically,
- * and it no longer gives a red dot in the notification bell.
+ * Marks an announcement as acknowledged, i.e. the user has gone through its tour. It then no longer starts
+ * automatically, and it no longer gives a red dot in the notification bell.
  */
 export const useAcknowledgeAnnouncement = () =>
   useSaveAnnouncementStatus("gjennomfoertOmvisningen", acknowledgeAnnouncement);
