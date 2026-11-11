@@ -1,15 +1,17 @@
 package no.nav.pensjon.brev.maler.ufore.fraser
 
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.selectors.barnetilleggFellesbarn.*
-import no.nav.pensjon.brev.maler.fraser.common.*
-import no.nav.pensjon.brev.model.*
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.model.bestemtForm
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.ParagraphPhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import java.time.LocalDate
 
 
 object Barnetillegg {
@@ -55,40 +57,6 @@ object Barnetillegg {
             }
         }
     }
-
-
-    // TBU3801
-    data class BetydningAvInntektEndringer(
-        val barnetilleggFellesbarn: Expression<BarnetilleggFellesbarn?>,
-        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(barnetilleggFellesbarn.notNull() or harBarnetilleggSaerkullsbarn) {
-                paragraph {
-                    ifNotNull(barnetilleggFellesbarn) { fellesTillegg ->
-                        val sivilstand = fellesTillegg.brukerBorMed
-                        text(
-                            bokmal { + "Endringer i inntektene til deg og " + sivilstand.bestemtForm() + " din kan ha betydning for barnetillegget ditt. " },
-                            nynorsk { + "Endringar i inntektene til deg og " + sivilstand.bestemtForm() + " di kan ha betydning for barnetillegget ditt. " },
-                            english { + "Changes in your and your " + sivilstand.bestemtForm() + " income may affect your child supplement. " },
-                        )
-                    }.orShowIf(harBarnetilleggSaerkullsbarn) {
-                        text(
-                            bokmal { + "Endringer i inntekten din kan ha betydning for barnetillegget ditt. " },
-                            nynorsk { + "Endringar i inntekta di kan ha betydning for barnetillegget ditt. " },
-                            english { + "Changes in income may affect your child supplement. " }
-                        )
-                    }
-                    text(
-                        bokmal { + "Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" på ${Constants.NAV_URL}." },
-                        nynorsk { + "Du kan enkelt melde frå om inntektsendringar under menyvalet " + quoted("uføretrygd") +" på ${Constants.NAV_URL}." },
-                        english { + "You can easily report income changes under the menu option " + quoted("disability benefit") + " at ${Constants.NAV_URL}." }
-                    )
-                }
-            }
-        }
-    }
-
 
     // TBU1284
     data class InntektTilAvkortningFellesbarn(
@@ -540,30 +508,6 @@ object Barnetillegg {
                                     inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit." }
                         )
                     }
-                }
-            }
-        }
-    }
-
-    // TBU1288
-    data class HenvisningTilVedleggOpplysningerOmBeregning(
-        val harBarnetilleggFellesbarn: Expression<Boolean>,
-        val harBarnetilleggSaerkullsbarn: Expression<Boolean>,
-
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
-                paragraph {
-                    text(
-                        bokmal { + "Du kan lese mer om beregningen av barnetillegg i vedlegget " },
-                        nynorsk { + "Du kan lese meir om berekninga av barnetillegg i vedlegget " },
-                        english { + "Read more about how child supplements are calculated in the attachment called " }
-                    )
-                    text(
-                        bokmal { + quoted("Opplysninger om beregningen") +"." },
-                        nynorsk { + quoted("Opplysningar om berekninga") +"." },
-                        english { + quoted("Information about calculations") +"." }
-                    )
                 }
             }
         }

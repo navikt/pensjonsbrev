@@ -17,21 +17,6 @@ object OpphoerBarnetillegg {
         val harBarnetilleggSaerkullsbarn: Expression<Boolean>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
-                    text(
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12" },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12" },
-                        english { + "The decision has been made pursuant to Section 12-15, 12-16 and 22-12 of the Norwegian National Insurance Act." }
-                    )
-                }.orShow {
-                    text(
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12." },
-                        english { + "The decision has been made pursuant to Section 12-15, and 22-12 of the Norwegian National Insurance Act." }
-                    )
-                }
-            }
         }
     }
 

@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.ektefelletilleg
 import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.gjenlevendetilleggUtbetalt
 import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.utbetaltPerMaaned
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.ufore.fraser.Barnetillegg
@@ -162,12 +163,26 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 }
 
 
-                includePhrase(
-                    Barnetillegg.BetydningAvInntektEndringer(
-                        barnetilleggFellesbarn = barnetilleggFellesbarn,
-                        harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                    )
-                )
+                showIf(barnetilleggFellesbarn.notNull() or harBarnetilleggSaerkullsbarn) {
+                    paragraph {
+                        ifNotNull(barnetilleggFellesbarn) { fellesTillegg ->
+                            val sivilstand = fellesTillegg.brukerBorMed
+                            text(
+                                bokmal { + "Endringer i inntektene til deg og " + sivilstand.bestemtForm() + " din kan ha betydning for barnetillegget ditt. " },
+                                nynorsk { + "Endringar i inntektene til deg og " + sivilstand.bestemtForm() + " di kan ha betydning for barnetillegget ditt. " },
+                            )
+                        }.orShowIf(harBarnetilleggSaerkullsbarn) {
+                            text(
+                                bokmal { + "Endringer i inntekten din kan ha betydning for barnetillegget ditt. " },
+                                nynorsk { + "Endringar i inntekta di kan ha betydning for barnetillegget ditt. " },
+                            )
+                        }
+                        text(
+                            bokmal { + "Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" på ${Constants.NAV_URL}." },
+                            nynorsk { + "Du kan enkelt melde frå om inntektsendringar under menyvalet " + quoted("uføretrygd") +" på ${Constants.NAV_URL}." },
+                        )
+                    }
+                }
 
                 ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                     includePhrase(
@@ -236,12 +251,19 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                     )
                 )
 
-                includePhrase(
-                    Barnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(
-                        harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                        harBarnetilleggFellesbarn = harBarnetilleggFellesbarn
-                    )
-                )
+                paragraph {
+                    showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12" },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12" },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12." },
+                        )
+                    }
+                }
             }
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
