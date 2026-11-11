@@ -40,14 +40,16 @@ class MarkerNyhetsvarselHandler(private val transactional: Transactional) {
 
     suspend operator fun invoke(request: Request): Outcome<Unit, Nothing> =
         transactional.rollbackOnFailure {
-            val tidspunkt = when (request.markering) {
+            val markeringsKolonne = when (request.markering) {
                 Nyhetsvarselmarkering.SETT_ANNONSEN -> NyhetsvarselstatusTable.settAnnonsen
                 Nyhetsvarselmarkering.GJENNOMFOERT_OMVISNINGEN -> NyhetsvarselstatusTable.gjennomfoertOmvisningen
             }
-            NyhetsvarselstatusTable.upsert(onUpdate = { it[tidspunkt] = Coalesce(tidspunkt, insertValue(tidspunkt)) }) {
+            NyhetsvarselstatusTable.upsert(
+                onUpdate = { it[markeringsKolonne] = Coalesce(markeringsKolonne, insertValue(markeringsKolonne)) },
+            ) {
                 it[navIdent] = request.navIdent
                 it[nyhetsvarselId] = request.nyhetsvarselId
-                it[tidspunkt] = Instant.now()
+                it[markeringsKolonne] = Instant.now()
             }
             success(Unit)
         }
