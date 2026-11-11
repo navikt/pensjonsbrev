@@ -9,6 +9,7 @@ import { type TemplateDocumentation } from "~/api/templateDocumentationTypes";
 import { DataClassesPanel } from "~/components/DataClasses";
 import { ExportTemplateButton } from "~/components/ExportTemplateButton";
 import { Document, KnownDataClassesProvider } from "~/components/TemplateDocumentationView";
+import { blockOfFocus, type TemplateSearchContextParams, validateTemplateSearchContext } from "~/search/searchContext";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -32,8 +33,9 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     if (!deps.language && !preload) {
       throw redirect({
         to: "/template/$malType/$templateId",
-        search: { language: defaultLanguage },
+        search: (prev) => ({ ...prev, language: defaultLanguage }),
         params,
+        replace: true,
       });
     }
 
@@ -48,21 +50,18 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
   },
   validateSearch: (
     search: Record<string, unknown>,
-  ): {
+  ): TemplateSearchContextParams & {
     language?: string;
     highlightedDataClass?: string;
     highlightedDataField?: string;
     highlightedDataFieldOwner?: string;
-    index?: number;
   } => {
-    const indexRaw = search.index?.toString();
-    const index = indexRaw !== undefined && /^\d+$/.test(indexRaw) ? Number(indexRaw) : undefined;
     return {
       language: search.language?.toString(),
       highlightedDataClass: search.highlightedDataClass?.toString(),
       highlightedDataField: search.highlightedDataField?.toString(),
       highlightedDataFieldOwner: search.highlightedDataFieldOwner?.toString(),
-      index,
+      ...validateTemplateSearchContext(search),
     };
   },
   component: TemplateExplorer,
@@ -71,7 +70,8 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 function TemplateExplorer() {
   const { documentation, description } = Route.useLoaderData();
   const { templateId } = Route.useParams();
-  const { index, language } = Route.useSearch();
+  const { focus, language } = Route.useSearch();
+  const index = blockOfFocus(focus);
   const previewRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
