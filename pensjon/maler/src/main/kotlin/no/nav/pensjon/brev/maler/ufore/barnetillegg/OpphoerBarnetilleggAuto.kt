@@ -97,7 +97,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 }
             }
 
-            title1() {
+            title1 {
                 text(
                     bokmal { + "Begrunnelse for vedtaket" },
                     nynorsk { + "Grunngiving for vedtaket" },
