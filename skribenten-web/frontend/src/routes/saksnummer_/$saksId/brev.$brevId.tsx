@@ -356,7 +356,6 @@ function RedigerBrev({
             spraak: brev.info.spraak,
             varighetSekunder,
             varighetMinutter: Math.round(varighetSekunder / 60),
-            enhetsId,
           });
           navigateDone?.();
         },

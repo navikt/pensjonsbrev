@@ -124,7 +124,7 @@ describe("searchWorkerCore", () => {
     const hits = searchHits(core, "utbetalt");
 
     expect(hits.content).toEqual([
-      { key: templateKey(corpus[0]), lineIndex: 1, matchCount: 1, score: expect.any(Number) },
+      { key: templateKey(corpus[0]), lineIndex: 1, matchCount: 1, matchedLineIndexes: [1], score: expect.any(Number) },
     ]);
     expect(hits.brev).toEqual([]);
   });
@@ -161,7 +161,13 @@ describe("searchWorkerCore", () => {
 
     expect(searchHits(core, "uføretrygd")).toEqual({ content: [], brev: [] });
     expect(searchHits(core, "nytt innhold").content).toEqual([
-      { key: templateKey(replacement[0]), lineIndex: 0, matchCount: 1, score: expect.any(Number) },
+      {
+        key: templateKey(replacement[0]),
+        lineIndex: 0,
+        matchCount: 1,
+        matchedLineIndexes: [0],
+        score: expect.any(Number),
+      },
     ]);
   });
 });
