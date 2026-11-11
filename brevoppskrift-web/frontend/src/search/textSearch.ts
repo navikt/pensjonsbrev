@@ -2,6 +2,14 @@ import Fuse from "fuse.js";
 
 import { type MalType } from "~/api/brevbaker-api-endpoints";
 import { type Line, type LineSegment } from "~/api/brevbakerTypes";
+import {
+  FUZZY_MATCH_OPTIONS,
+  isFuzzyTerm,
+  normalizeForExactMatch,
+  queryTerms,
+  SPECIAL_CHAR_QUERY,
+} from "~/search/matchingRules";
+import { type TextFlow, textFlowHasMatch } from "~/search/matchTextFlow";
 
 export type { Line, LineSegment };
 
@@ -62,74 +70,22 @@ type BrevRecord = {
   id: string;
 };
 
-/** Per-term fuzzy match tuning, shared between the token-search index (below)
- *  and single-term highlighting (`highlight.tsx`, via `Fuse.match()`), so the
- *  two never drift out of sync on what counts as a "fuzzy" match. Tuned
- *  tighter than Fuse's default threshold (0.6) so short brevkoder/terms don't
- *  match unrelated text. `ignoreLocation` mirrors what Fuse's own per-term
- *  token search uses internally.
- *
- *  `minMatchCharLength` must be 1: token search requires *every* term to match
- *  (`tokenMatch: "all"`), so a higher value silently discards single-character
- *  terms and makes the whole query fail - e.g. "paragraf 3" found nothing while
- *  "paragraf 12" worked. Single-character terms are instead required to be
- *  exact substrings (see `SHORT_TERM_LENGTH` / `hasShortTermsVerbatim`), which
- *  keeps them from fuzzily matching almost any text. */
-export const FUZZY_MATCH_OPTIONS = {
-  threshold: 0.3,
-  minMatchCharLength: 1,
-  ignoreLocation: true,
-} as const;
-
-/** Terms at or below this length are too short to fuzzy-match meaningfully
- *  (a single character is "within one edit" of almost anything), so they must
- *  occur verbatim in the matched text. */
-export const SHORT_TERM_LENGTH = 1;
-
-/** Matches a query consisting *only* of non-alphanumeric characters, e.g.
- *  "§", "%", "§§", or "§ §" (internal whitespace is allowed - both callers
- *  trim the query first, so this can only match if there's at least one
- *  non-whitespace character in it). Fuse's tokenizer
- *  (`/[\p{L}\p{M}\p{N}_]+/gu`, used by `useTokenSearch`) only recognises
- *  letters/digits/underscore, so a query made entirely of such characters -
- *  regardless of length or internal whitespace - produces zero query tokens
- *  and `contentFuse.search()` returns no candidates at all - not merely a
- *  fuzzy vs. exact distinction, but no matching attempted whatsoever. This
- *  regex is therefore used to detect that "query has no letters/digits at
- *  all" case, both to bypass `MIN_QUERY_LENGTH` (see `useTemplateSearch.ts`)
- *  and to route straight to verbatim substring matching instead of Fuse. */
-export const SPECIAL_CHAR_QUERY = /^[^\p{L}\p{M}\p{N}_]+$/u;
-
-/** Splits a query into its whitespace-separated terms. */
-export function queryTerms(query: string): string[] {
-  return query.split(/\s+/).filter((term) => term.length > 0);
-}
-
-/** A term Fuse can safely fuzzy-match on its own: composed only of the same
- *  "word" characters as Fuse's own tokenizer (letters/marks/digits/
- *  underscore, see `SPECIAL_CHAR_QUERY`). Any other character in the term -
- *  even just one, mixed in anywhere - means Fuse's tokenizer will silently
- *  extract only a fragment of it as the real query token (e.g. the query
- *  term "{{[[{{{_" is tokenized down to just "_", which then fuzzy-matches
- *  any text containing an underscore, such as a variable placeholder like
- *  "[_Value NAV_]" - a false positive verified empirically). Such a term
- *  must instead be required to occur verbatim, in full, as typed. */
-function isPureWordTerm(term: string): boolean {
-  return /^[\p{L}\p{M}\p{N}_]+$/u.test(term);
-}
+export {
+  FUZZY_MATCH_OPTIONS,
+  isFuzzyTerm,
+  queryTerms,
+  SHORT_TERM_LENGTH,
+  SPECIAL_CHAR_QUERY,
+} from "~/search/matchingRules";
 
 /** True unless some non-fuzzy-safe term (too short, or containing any
- *  character outside Fuse's own "word" charset - see `isPureWordTerm` and
+ *  character outside Fuse's own "word" charset - see `isFuzzyTerm` and
  *  `SHORT_TERM_LENGTH`) is missing from every one of `fields` as a
  *  case-insensitive substring. Pure, longer-than-`SHORT_TERM_LENGTH` word
  *  terms are left to Fuse's own (possibly fuzzy) matching. */
 export function hasShortTermsVerbatim(terms: string[], fields: string[]): boolean {
   const lowerFields = fields.map((field) => field.toLowerCase());
-  return terms.every(
-    (term) =>
-      (term.length > SHORT_TERM_LENGTH && isPureWordTerm(term)) ||
-      lowerFields.some((field) => field.includes(term.toLowerCase())),
-  );
+  return terms.every((term) => isFuzzyTerm(term) || lowerFields.some((field) => field.includes(term.toLowerCase())));
 }
 
 /** Multi-word queries are typo-tolerant per term (token search) and must match
@@ -188,29 +144,55 @@ type ContentMatch = {
   score: number;
 };
 
+/** A line as a match flow, keyed by segment index. Segments are space-separated;
+ *  variables and table-cell boundaries end exact phrases. */
+export function lineFlow(line: Line): TextFlow<number>[] {
+  return line.flatMap((segment, source): TextFlow<number>[] => [
+    ...(source > 0 ? [{ type: "space" } as const] : []),
+    segment.type === "text"
+      ? { type: "text", source, text: segment.value }
+      : segment.type === "var"
+        ? { type: "variable" }
+        : { type: "cell" },
+  ]);
+}
+
+function lineMatches(line: Line, query: string, exact: boolean): boolean {
+  return textFlowHasMatch(lineFlow(line), query, exact);
+}
+
 /** Collapses the matched lines into one hit per template: the best-scoring
- *  line, plus every line that matched. */
-function toContentHits(matches: ContentMatch[]): ContentHit[] {
-  const byTemplate = new Map<string, ContentHit>();
-  for (const { record, score } of matches) {
-    const { template, lineIndex } = record;
+ *  line that `isShowable` accepts, plus every line that matched. Templates
+ *  without such a line are dropped. `isShowable` is called best score first and
+ *  only until it accepts a line, so it may be expensive. */
+function toContentHits(
+  matches: ContentMatch[],
+  isShowable: (record: ContentRecord) => boolean = () => true,
+): ContentHit[] {
+  const byTemplate = new Map<string, ContentMatch[]>();
+  for (const match of matches) {
+    const { template } = match.record;
     const key = `${template.malType}/${template.id}/${template.language}`;
-    const existing = byTemplate.get(key);
-    if (existing) {
-      existing.matchCount++;
-      existing.matchedLineIndexes.push(lineIndex);
-      if (score < existing.score) {
-        existing.score = score;
-        existing.lineIndex = lineIndex;
-      }
+    const group = byTemplate.get(key);
+    if (group) {
+      group.push(match);
     } else {
-      byTemplate.set(key, { template, lineIndex, matchCount: 1, matchedLineIndexes: [lineIndex], score });
+      byTemplate.set(key, [match]);
     }
   }
-  const hits = [...byTemplate.values()];
-  for (const hit of hits) {
-    // Fuse returns matches by score, not in document order.
-    hit.matchedLineIndexes.sort((a, b) => a - b);
+  const hits: ContentHit[] = [];
+  for (const group of byTemplate.values()) {
+    const shown = group.toSorted((a, b) => a.score - b.score).find(({ record }) => isShowable(record));
+    if (shown) {
+      hits.push({
+        template: shown.record.template,
+        lineIndex: shown.record.lineIndex,
+        matchCount: group.length,
+        // Fuse returns matches by score, not in document order.
+        matchedLineIndexes: group.map(({ record }) => record.lineIndex).sort((a, b) => a - b),
+        score: shown.score,
+      });
+    }
   }
   return hits.sort(
     (a, b) =>
@@ -231,7 +213,11 @@ function fuzzySearch(index: SearchIndex, query: string): SearchResults {
     .filter(({ item }) => hasShortTermsVerbatim(terms, [item.title, item.id]))
     .map(({ item }) => ({ template: item.template }));
 
-  return { content: toContentHits(matches), brev };
+  // Verifying every Fuse candidate is too slow on the full corpus; only the line shown per template must highlight.
+  const content = toContentHits(matches, ({ template, lineIndex }) =>
+    lineMatches(template.lines[lineIndex], query, false),
+  );
+  return { content, brev };
 }
 
 /** Every exact hit is a verbatim occurrence, so they are all equally good and
@@ -250,7 +236,9 @@ function exactSearch(index: SearchIndex, query: string): SearchResults {
   // the query the same way so it can be compared verbatim.
   const phrase = normalizeForExactMatch(query);
   const matches = index.contentRecords
-    .filter((record) => record.text.includes(phrase))
+    .filter(
+      (record) => record.text.includes(phrase) && lineMatches(record.template.lines[record.lineIndex], query, true),
+    )
     .map((record) => ({ record, score: EXACT_MATCH_SCORE }));
   const brev = index.brevRecords
     .filter(
@@ -265,9 +253,7 @@ function exactSearch(index: SearchIndex, query: string): SearchResults {
 /** Lowercases and collapses whitespace, so a query can be compared verbatim
  *  against text normalized by `lineText`. Shared with `highlight.tsx`, so
  *  exact-mode highlighting marks exactly what exact search matched. */
-export function normalizeForExactMatch(value: string): string {
-  return value.toLowerCase().replace(/\s+/g, " ").trim();
-}
+export { normalizeForExactMatch } from "~/search/matchingRules";
 
 export function search(index: SearchIndex, rawQuery: string, exactOnly = false): SearchResults {
   const query = rawQuery.trim();
