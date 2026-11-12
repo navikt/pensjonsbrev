@@ -15,7 +15,7 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
  * present.
  *
- * If [previousRender] is provided, blocks in the fresh rendering that differ from it (new or changed) are marked [Edit.Block.newFromTemplate].
+ * If [previousRender] is provided, blocks in the fresh rendering without a corresponding occurrence in it are marked [Edit.Block.newFromTemplate].
  */
 fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup, previousRender: Edit.Letter? = null): Edit.Letter =
     renderedLetter.toEdit().let { rendered ->
@@ -24,7 +24,7 @@ fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup, previousRender:
 
 
 /**
- * If [previousRender] is provided, blocks in the fresh rendering that differ from it (new or changed) are marked [Edit.Block.newFromTemplate].
+ * If [previousRender] is provided, blocks in the fresh rendering without a corresponding occurrence in it are marked [Edit.Block.newFromTemplate].
  */
 fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Attachment, previousRender: Edit.Attachment? = null): Edit.Attachment =
     renderedAttachment.toEdit().let { rendered ->
@@ -181,8 +181,8 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
      *    result:   [A, B', C, D]
      * ```
      *
-     * If [previousRendered] is provided, every result element taken from [rendered] without a corresponding identical occurrence in [previousRendered]
-     * (i.e. new or changed in the template since the previous render) is marked with [setNewFromTemplate]. The mark is kept for edited elements
+     * If [previousRendered] is provided, every result element taken from [rendered] without a corresponding occurrence with the same id in [previousRendered]
+     * (i.e. newly added to the template since the previous render) is marked with [setNewFromTemplate]. The mark is kept for edited elements
      * already marked according to [isNewFromTemplate], so that it survives subsequent merges until Saksbehandler has handled it.
      */
     private fun <E : Edit.Identifiable> mergeList(
@@ -198,10 +198,12 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         isNewFromTemplate: ((E) -> Boolean) = { false },
     ): List<E> = buildList {
         val renderedWithNewMarkers = if (previousRendered != null) {
-            val lengths = longestCommonSubsequenceLengths(previousRendered, rendered)
-            val unchangedIndices = collectMatchedRenderedIndices(previousRendered, rendered.mapIndexed { index, element -> index to element }, lengths)
+            val previousIds = previousRendered.map { it.id }
+            val renderedIds = rendered.map { it.id }
+            val lengths = longestCommonSubsequenceLengths(previousIds, renderedIds)
+            val matchedIndices = collectMatchedRenderedIndices(previousIds, renderedIds.mapIndexed { index, id -> index to id }, lengths)
             rendered.mapIndexed { index, element ->
-                if (index in unchangedIndices) {
+                if (index in matchedIndices) {
                     element
                 } else {
                     setNewFromTemplate(element)

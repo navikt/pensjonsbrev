@@ -1268,7 +1268,7 @@ class UpdateRenderedLetterTest {
     }
 
     @Test
-    fun `blocks that are new or changed since previous render are marked newFromTemplate`() {
+    fun `only blocks added since previous render are marked newFromTemplate`() {
         val previous = letter(
             ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
             ParagraphImpl(2, true, listOf(VariableImpl(21, "100 kr"))),
@@ -1283,7 +1283,7 @@ class UpdateRenderedLetterTest {
         val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
 
         assertEquals(next.toEdit().blocks.map { it.id to it.content }, result.blocks.map { it.id to it.content })
-        assertEquals(listOf(false, true, true, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(listOf(false, true, false, true), result.blocks.map { it.newFromTemplate })
     }
 
     @Test
@@ -1347,11 +1347,11 @@ class UpdateRenderedLetterTest {
 
         val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
 
-        assertEquals(listOf(true, false), result.blocks.map { it.newFromTemplate })
+        assertEquals(listOf(false, false), result.blocks.map { it.newFromTemplate })
     }
 
     @Test
-    fun `edited block changed since previous render keeps edits and is marked newFromTemplate`() {
+    fun `edited block changed since previous render keeps edits without being marked newFromTemplate`() {
         val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "100 kr"))))
         val next = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "200 kr"))))
         val edited = editedLetter {
@@ -1361,7 +1361,7 @@ class UpdateRenderedLetterTest {
             }
         }
         val expected = editedLetter {
-            paragraph(id = 1, newFromTemplate = true) {
+            paragraph(id = 1) {
                 literal(id = 11, text = "Du får ", editedText = "Du mottar ")
                 variable(id = 12, text = "200 kr")
             }
