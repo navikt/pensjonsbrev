@@ -133,7 +133,7 @@ object Ufoeretrygd {
                     },
                     nynorsk { + "Du finn meir informasjon på $UFOERETRYGD_URL. " +
                             "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
-                            "Dersom du ikkje finn svar på $Constants.NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON " +
+                            "Dersom du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON " +
                             "kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID."
                     }
                 )
