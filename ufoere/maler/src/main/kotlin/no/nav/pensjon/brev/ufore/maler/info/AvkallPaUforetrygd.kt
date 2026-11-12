@@ -42,7 +42,7 @@ object AvkallPaUforetrygd : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 text(
                     bokmal { +"Vi har " + fritekst("dato") + " mottatt brev/henvendelse fra deg hvor du uttaler at du ønsker å si ifra deg retten til uføretrygd. Vi ønsker i denne forbindelse å informere deg om konsekvensene av dette valget." },
-                    nynorsk { +"Vi har " + fritekst("dato") + " motteke brev/førespurnad frå deg der du uttaler at du ønskjer å seie frå deg retten til uføretrygd. Vi ønskjer i denne samband å informere deg om konsekvensane av dette valet." },
+                    nynorsk { +"Vi har " + fritekst("dato") + " motteke brev/førespurnad frå deg der du uttaler at du ønskjer å seie frå deg retten til uføretrygd. Vi ønskjer i denne samanhengen å informere deg om konsekvensane av dette valet." },
                 )
             }
             title1 {
