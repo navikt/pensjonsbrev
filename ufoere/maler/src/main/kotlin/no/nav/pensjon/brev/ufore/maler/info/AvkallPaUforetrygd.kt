@@ -61,7 +61,7 @@ object AvkallPaUforetrygd : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     }
                     item {
                         text(
-                            bokmal { +"Ved ny søknad kan du kan risikere å få en dårligere beregning enn den du har nå." },
+                            bokmal { +"Ved ny søknad kan du risikere å få en dårligere beregning enn den du har nå." },
                             nynorsk { +"Ved ny søknad kan du risikere å få ei dårlegare berekning enn den du har no." },
                         )
                     }
