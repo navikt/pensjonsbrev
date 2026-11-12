@@ -1283,7 +1283,10 @@ class UpdateRenderedLetterTest {
         val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
 
         assertEquals(next.toEdit().blocks.map { it.id to it.content }, result.blocks.map { it.id to it.content })
-        assertEquals(listOf(false, true, false, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(false, true, false, true),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
     }
 
     @Test
@@ -1294,7 +1297,10 @@ class UpdateRenderedLetterTest {
 
         val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
 
-        assertEquals(listOf(false, false, true, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(false, false, true, true),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
         assertEquals(result, result.updateEditedLetter(next, previousRender = next.toEdit()))
         assertEquals(previous.toEdit(), previous.toEdit().updateEditedLetter(previous, previousRender = previous.toEdit()))
         assertEquals(next.toEdit(), previous.toEdit().updateEditedLetter(next))
@@ -1310,7 +1316,10 @@ class UpdateRenderedLetterTest {
         val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
 
         assertEquals(next.toEdit().blocks.map { it.content }, result.blocks.map { it.content })
-        assertEquals(listOf(true, false, false), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(true, false, false),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
         assertEquals(result, result.updateEditedLetter(next, previousRender = next.toEdit()))
     }
 
@@ -1323,7 +1332,10 @@ class UpdateRenderedLetterTest {
 
         val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
 
-        assertEquals(listOf(false, false, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(false, false, true),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
     }
 
     @Test
@@ -1335,7 +1347,7 @@ class UpdateRenderedLetterTest {
 
         val result = edited.updateEditedLetter(next, previousRender = previous.toEdit())
 
-        assertEquals(listOf(true), result.blocks.map { it.newFromTemplate })
+        assertEquals(listOf(Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE), result.blocks.map { it.templateStatus })
         assertEquals(listOf(1), result.deletedBlocks)
     }
 
@@ -1347,7 +1359,10 @@ class UpdateRenderedLetterTest {
 
         val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
 
-        assertEquals(listOf(false, false), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(false, false),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
     }
 
     @Test

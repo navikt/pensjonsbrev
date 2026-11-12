@@ -104,17 +104,24 @@ class RowBuilder {
 class EditLetterBuilder {
     val blocks = mutableListOf<Edit.Block>()
     fun paragraph(id: Int? = null, missingFromTemplate: Boolean = false, newFromTemplate: Boolean = false, deletedContent: Collection<Int> = emptyList(), builder: ParagraphContentBuilder.() -> Unit) {
-        blocks += Edit.Block.Paragraph(id = id, editable = true, content = ParagraphContentBuilder().apply(builder).content, missingFromTemplate = missingFromTemplate, newFromTemplate = newFromTemplate, deletedContent = deletedContent.toList())
+        blocks += Edit.Block.Paragraph(id = id, editable = true, content = ParagraphContentBuilder().apply(builder).content, templateStatus = templateStatus(missingFromTemplate, newFromTemplate), deletedContent = deletedContent.toList())
     }
     fun title1(id: Int? = null, missingFromTemplate: Boolean = false, newFromTemplate: Boolean = false, deletedContent: Collection<Int> = emptyList(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
-        blocks += Edit.Block.Title1(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, newFromTemplate = newFromTemplate, deletedContent = deletedContent.toList(), originalType = originalType)
+        blocks += Edit.Block.Title1(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, templateStatus = templateStatus(missingFromTemplate, newFromTemplate), deletedContent = deletedContent.toList(), originalType = originalType)
     }
     fun title2(id: Int? = null, missingFromTemplate: Boolean = false, newFromTemplate: Boolean = false, deletedContent: Collection<Int> = emptyList(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
-        blocks += Edit.Block.Title2(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, newFromTemplate = newFromTemplate, deletedContent = deletedContent.toList(), originalType = originalType)
+        blocks += Edit.Block.Title2(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, templateStatus = templateStatus(missingFromTemplate, newFromTemplate), deletedContent = deletedContent.toList(), originalType = originalType)
     }
     fun title3(id: Int? = null, missingFromTemplate: Boolean = false, newFromTemplate: Boolean = false, deletedContent: Collection<Int> = emptyList(), originalType: Edit.Block.Type? = null, builder: TextContentBuilder.() -> Unit) {
-        blocks += Edit.Block.Title3(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, missingFromTemplate = missingFromTemplate, newFromTemplate = newFromTemplate, deletedContent = deletedContent.toList(), originalType = originalType)
+        blocks += Edit.Block.Title3(id = id, editable = true, content = TextContentBuilder().apply(builder).texts, templateStatus = templateStatus(missingFromTemplate, newFromTemplate), deletedContent = deletedContent.toList(), originalType = originalType)
     }
+
+    private fun templateStatus(missingFromTemplate: Boolean, newFromTemplate: Boolean): Edit.Block.TemplateStatus =
+        when {
+            missingFromTemplate -> Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE
+            newFromTemplate -> Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE
+            else -> Edit.Block.TemplateStatus.NONE
+        }
 }
 
 fun editLetterBlocks(builder: EditLetterBuilder.() -> Unit): List<Edit.Block> =

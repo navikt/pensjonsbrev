@@ -15,7 +15,7 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
  * present.
  *
- * If [previousRender] is provided, blocks in the fresh rendering without a corresponding occurrence in it are marked [Edit.Block.newFromTemplate].
+ * If [previousRender] is provided, blocks in the fresh rendering without a corresponding occurrence in it are marked with [Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE].
  */
 fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup, previousRender: Edit.Letter? = null): Edit.Letter =
     renderedLetter.toEdit().let { rendered ->
@@ -24,7 +24,7 @@ fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup, previousRender:
 
 
 /**
- * If [previousRender] is provided, blocks in the fresh rendering without a corresponding occurrence in it are marked [Edit.Block.newFromTemplate].
+ * If [previousRender] is provided, blocks in the fresh rendering without a corresponding occurrence in it are marked with [Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE].
  */
 fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Attachment, previousRender: Edit.Attachment? = null): Edit.Attachment =
     renderedAttachment.toEdit().let { rendered ->
@@ -64,7 +64,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 setMissingFromTemplate = ::setMissing,
                 previousRendered = previousRender?.blocks,
                 setNewFromTemplate = ::setNew,
-                isNewFromTemplate = { it.newFromTemplate },
+                isNewFromTemplate = { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
             ),
             deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
         )
@@ -82,7 +82,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 setMissingFromTemplate = ::setMissing,
                 previousRendered = previousRender?.blocks,
                 setNewFromTemplate = ::setNew,
-                isNewFromTemplate = { it.newFromTemplate },
+                isNewFromTemplate = { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
             ),
             deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
             includeSakspart = rendered.includeSakspart,
@@ -455,10 +455,10 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         cell.copy(text = cell.text.map(::updateVariableValues))
 
     private fun setMissing(block: Edit.Block): Edit.Block = when (block) {
-        is Edit.Block.Title1 -> block.copy(missingFromTemplate = true)
-        is Edit.Block.Title2 -> block.copy(missingFromTemplate = true)
-        is Edit.Block.Title3 -> block.copy(missingFromTemplate = true)
-        is Edit.Block.Paragraph -> block.copy(missingFromTemplate = true)
+        is Edit.Block.Title1 -> block.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
+        is Edit.Block.Title2 -> block.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
+        is Edit.Block.Title3 -> block.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
+        is Edit.Block.Paragraph -> block.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
     }
 
     private fun setMissing(content: Edit.ParagraphContent): Edit.ParagraphContent = content
@@ -473,12 +473,17 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     private fun setMissing(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell = cell
 
-    private fun setNew(block: Edit.Block): Edit.Block = when (block) {
-        is Edit.Block.Title1 -> block.copy(newFromTemplate = true)
-        is Edit.Block.Title2 -> block.copy(newFromTemplate = true)
-        is Edit.Block.Title3 -> block.copy(newFromTemplate = true)
-        is Edit.Block.Paragraph -> block.copy(newFromTemplate = true)
-    }
+    private fun setNew(block: Edit.Block): Edit.Block =
+        if (block.templateStatus == Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) {
+            block
+        } else {
+            when (block) {
+                is Edit.Block.Title1 -> block.copy(templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
+                is Edit.Block.Title2 -> block.copy(templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
+                is Edit.Block.Title3 -> block.copy(templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
+                is Edit.Block.Paragraph -> block.copy(templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
+            }
+        }
 
     private fun setNew(content: Edit.ParagraphContent): Edit.ParagraphContent = content
 

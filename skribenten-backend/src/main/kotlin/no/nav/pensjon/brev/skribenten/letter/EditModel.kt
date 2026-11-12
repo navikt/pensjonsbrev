@@ -3,6 +3,7 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.InterneDataklasser
@@ -98,12 +99,32 @@ object Edit {
             TITLE1, TITLE2, TITLE3, PARAGRAPH,
         }
 
+        enum class TemplateStatus {
+            NONE, MISSING_FROM_TEMPLATE, NEW_FROM_TEMPLATE,
+        }
+
         abstract val editable: Boolean
         abstract val content: List<ParagraphContent>
         abstract val deletedContent: List<Int>
         abstract val originalType: Type?
-        abstract val missingFromTemplate: Boolean
-        abstract val newFromTemplate: Boolean
+        abstract var templateStatus: TemplateStatus
+
+        /*
+         TODO: Dette feltet skal vi slette så fort vi kan, dvs når frontend er oppdatert
+          og det ikke lenger krøller til eksisterende kladder som har feltet
+         */
+        @get:JsonProperty("missingFromTemplate")
+        val missingFromTemplate: Boolean
+            get() = templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE
+
+        @JsonProperty("missingFromTemplate")
+        fun setMissingFromTemplate(value: Boolean) {
+            templateStatus = when {
+                value -> TemplateStatus.MISSING_FROM_TEMPLATE
+                templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE -> TemplateStatus.NONE
+                else -> templateStatus
+            }
+        }
 
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
@@ -117,8 +138,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-            override val newFromTemplate: Boolean = false,
+            override var templateStatus: TemplateStatus = TemplateStatus.NONE,
         ) : Block(Type.TITLE1)
 
         data class Title2(
@@ -128,8 +148,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-            override val newFromTemplate: Boolean = false,
+            override var templateStatus: TemplateStatus = TemplateStatus.NONE,
         ) : Block(Type.TITLE2)
 
         data class Title3(
@@ -139,8 +158,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-            override val newFromTemplate: Boolean = false,
+            override var templateStatus: TemplateStatus = TemplateStatus.NONE,
         ) : Block(Type.TITLE3)
 
         data class Paragraph(
@@ -150,8 +168,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-            override val newFromTemplate: Boolean = false,
+            override var templateStatus: TemplateStatus = TemplateStatus.NONE,
         ) : Block(Type.PARAGRAPH)
     }
 
@@ -411,6 +428,3 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
-
-
-

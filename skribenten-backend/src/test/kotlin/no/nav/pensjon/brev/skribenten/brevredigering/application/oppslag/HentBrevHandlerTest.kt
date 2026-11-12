@@ -3,6 +3,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringH
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -65,7 +66,8 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(hentet).isSuccess {
             assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(freshRender, previousRender = letter.toEdit()))
-            assertThat(it.redigertBrev.blocks.map { b -> b.newFromTemplate }).isEqualTo(letter.blocks.map { false } + true)
+            assertThat(it.redigertBrev.blocks.map { b -> b.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE })
+                .isEqualTo(letter.blocks.map { false } + true)
         }
     }
 

@@ -151,7 +151,10 @@ class UpdateEditedAttachmentTest {
         val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
 
         assertEquals(next.toEdit().blocks.map { it.id to it.content }, result.blocks.map { it.id to it.content })
-        assertEquals(listOf(false, true, false, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(false, true, false, true),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
     }
 
     @Test
@@ -162,7 +165,10 @@ class UpdateEditedAttachmentTest {
 
         val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
 
-        assertEquals(listOf(false, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(false, true),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
         assertEquals(result, result.updateEditedAttachment(next, previousRender = next.toEdit()))
     }
 
@@ -176,7 +182,10 @@ class UpdateEditedAttachmentTest {
         val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
 
         assertEquals(next.toEdit().blocks.map { it.content }, result.blocks.map { it.content })
-        assertEquals(listOf(true, false, false), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(true, false, false),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
         assertEquals(result, result.updateEditedAttachment(next, previousRender = next.toEdit()))
     }
 
@@ -189,7 +198,10 @@ class UpdateEditedAttachmentTest {
 
         val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
 
-        assertEquals(listOf(false, false, true), result.blocks.map { it.newFromTemplate })
+        assertEquals(
+            listOf(false, false, true),
+            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+        )
     }
 
     @Test
