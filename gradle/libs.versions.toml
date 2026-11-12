@@ -4,7 +4,6 @@ kotlinKspVersion = "2.3.12"
 assertJVersion = "3.27.7"
 classGraphVersion = "6.0.0"
 commonsCodecVersion = "1.23.0"
-exposedVersion = "1.6.0"
 flywayVersion = "13.11.1"
 gradleNodePluginVersion = "7.1.0"
 hikariVersion = "7.1.0"
@@ -68,14 +67,6 @@ ktlint-rule-engine-core = { module = "com.pinterest.ktlint:ktlint-rule-engine-co
 ktlint-test = { module = "com.pinterest.ktlint:ktlint-test", version.ref = "ktlintEngineVersion" }
 
 netty-bom = { module = "io.netty:netty-bom", version.ref = "nettyVersion" }
-
-# Exposed
-exposed-bom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "exposedVersion" }
-exposed-core = { module = "org.jetbrains.exposed:exposed-core" }
-exposed-dao = { module = "org.jetbrains.exposed:exposed-dao" }
-exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc" }
-exposed-json = { module = "org.jetbrains.exposed:exposed-json" }
-exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time" }
 
 # Flyway
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flywayVersion" }

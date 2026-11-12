@@ -148,12 +148,11 @@ dependencies {
     implementation(ktorLibs.openapiSchema.reflect)
 
     // Exposed
-    implementation(platform(libs.exposed.bom))
-    implementation(libs.exposed.core)
-    implementation(libs.exposed.dao)
-    implementation(libs.exposed.jdbc)
-    implementation(libs.exposed.json)
-    implementation(libs.exposed.java.time)
+    implementation(exposedLibs.core)
+    implementation(exposedLibs.dao)
+    implementation(exposedLibs.jdbc)
+    implementation(exposedLibs.json)
+    implementation(exposedLibs.java.time)
     implementation(libs.postgresql)
     implementation(libs.hikari.cp)
 

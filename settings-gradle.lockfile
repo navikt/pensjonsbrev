@@ -2,4 +2,5 @@
 # Manual edits can break the build and are not advised.
 # This file is expected to be part of source control.
 io.ktor:ktor-version-catalog:3.6.0=incomingCatalogForKtorLibs0
+org.jetbrains.exposed:exposed-version-catalog:1.6.0=incomingCatalogForExposedLibs0
 empty=incomingCatalogForLibs0
