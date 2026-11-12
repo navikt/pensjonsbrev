@@ -461,7 +461,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
         brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
 
-        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()                .blocks.map { it.id to (it.status == Edit.Block.Status.NEW_FROM_TEMPLATE) })
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail() .blocks.map { it.id to (it.status == Edit.Block.Status.NEW_FROM_TEMPLATE) })
             .containsExactly(1 to false, 2 to true)
     }
 
