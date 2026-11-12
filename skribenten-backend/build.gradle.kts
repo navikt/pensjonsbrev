@@ -8,7 +8,7 @@ plugins {
     application
     kotlin("jvm")
     kotlin("plugin.serialization") version libs.versions.kotlinVersion
-    alias(libs.plugins.ktor)
+    alias(ktorLibs.plugins.ktor)
     alias(libs.plugins.gradle.node)
 }
 
@@ -127,26 +127,25 @@ sourceSets {
 
 dependencies {
     // Ktor
-    implementation(platform(libs.ktor.bom))
     implementation(platform(libs.netty.bom)) // Vi opplever ofte at netty har sårbarheter, så vi ønsker å enkelt kunne patche denne separat
-    implementation(libs.ktor.client.auth)
-    implementation(libs.ktor.client.call.id)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.jackson)
-    implementation(libs.ktor.server.auth)
-    implementation(libs.ktor.server.auth.jwt)
-    implementation(libs.ktor.server.caching.headers)
-    implementation(libs.ktor.server.callId)
-    implementation(libs.ktor.server.di)
-    implementation(libs.ktor.server.callLogging)
-    implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.cors)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.status.pages)
-    implementation(libs.ktor.server.swagger)
-    implementation(libs.ktor.openapi.schema.reflect)
+    implementation(ktorLibs.client.auth)
+    implementation(ktorLibs.client.callId)
+    implementation(ktorLibs.client.cio)
+    implementation(ktorLibs.client.contentNegotiation)
+    implementation(ktorLibs.serialization.jackson)
+    implementation(ktorLibs.server.auth)
+    implementation(ktorLibs.server.auth.jwt)
+    implementation(ktorLibs.server.cachingHeaders)
+    implementation(ktorLibs.server.callId)
+    implementation(ktorLibs.server.di)
+    implementation(ktorLibs.server.callLogging)
+    implementation(ktorLibs.server.contentNegotiation)
+    implementation(ktorLibs.server.core)
+    implementation(ktorLibs.server.cors)
+    implementation(ktorLibs.server.netty)
+    implementation(ktorLibs.server.statusPages)
+    implementation(ktorLibs.server.swagger)
+    implementation(ktorLibs.openapiSchema.reflect)
 
     // Exposed
     implementation(platform(libs.exposed.bom))
@@ -185,7 +184,9 @@ dependencies {
     implementation(libs.commons.codec)
 
     // Metrics
-    implementation(libs.bundles.metrics)
+    implementation(libs.micrometer.prometheus)
+    implementation(ktorLibs.server.metrics)
+    implementation(ktorLibs.server.metrics.micrometer)
     implementation(platform(libs.opentelemetry.bom))
     implementation(libs.opentelemetry.api)
     implementation(libs.opentelemetry.extension.kotlin)
@@ -196,10 +197,10 @@ dependencies {
     // Test
     testImplementation(libs.bundles.junit)
     testImplementation(libs.opentelemetry.sdk.testing)
-    testImplementation(libs.ktor.server.test.host) {
+    testImplementation(ktorLibs.server.testHost) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }
-    testImplementation(libs.ktor.client.mock)
+    testImplementation(ktorLibs.client.mock)
     testImplementation(libs.testcontainers.postgresql)
     testImplementation(libs.jackson.yaml)
     testImplementation(project(":brevbaker:dsl"))
