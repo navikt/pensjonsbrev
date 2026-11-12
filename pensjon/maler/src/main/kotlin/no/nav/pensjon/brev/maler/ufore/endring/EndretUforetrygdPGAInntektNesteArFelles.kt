@@ -34,7 +34,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -59,20 +59,10 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 )
             }
             paragraph {
-                table(
-                    header = {
-                        column(2) {}
-                        column(
-                            columnSpan = 1,
-                            alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-                        ) {
-                            text(
-                                bokmal { +"Beløp" },
-                                nynorsk { +"Beløp" },
-                            )
-                        }
-                    }
-                )
+                table(header = {
+                    column { text(bokmal { +"Beregning" }, nynorsk { +"Berekning" }) }
+                    column(alignment = RIGHT) { text(bokmal { +"Beløp" }, nynorsk { +"Beløp" }) }
+                })
                 {
                     row {
                         cell {
@@ -596,8 +586,7 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 showIf(
                     (data.btfbEndret and fellesbarnPeriodisert)
                             or (data.btsbEndret and sarkullsbarnPeriodisert)
-                            or (harBarnetillegg and data.sokerMottarApIlaAret)
-                    //TODO: bør opphør inn her?
+                            or (harBarnetillegg and (data.sokerMottarApIlaAret or not(data.opphorDato.isNull())))
                 ) {
                     paragraph {
                         text(
