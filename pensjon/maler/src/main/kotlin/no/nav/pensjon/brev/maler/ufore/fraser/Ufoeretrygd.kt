@@ -7,8 +7,12 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektB
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggMedSammeBegrunnelsePaSammeTidDto.begrunnelse
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggMedSammeBegrunnelsePaSammeTidDto.fom
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggFlereBarnFormatter
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggOpphorFormatter
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
@@ -110,6 +114,31 @@ object Ufoeretrygd {
                     nynorsk { +"Uføretrygda di er endra frå " + dato + ". Dette kallar vi verknadstidspunktet. Du vil derfor få ny utbetaling frå og med månaden vilkåret er oppfylt." },
                 )
             }
+    }
+
+    object HarDuSporsmal : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Har du spørsmål?" },
+                    nynorsk { + "Har du spørsmål?" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Du finner mer informasjon på $UFOERETRYGD_URL. " +
+                            "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
+                            "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON " +
+                            "hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID."
+                    },
+                    nynorsk { + "Du finn meir informasjon på $UFOERETRYGD_URL. " +
+                            "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
+                            "Dersom du ikkje finn svar på $Constants.NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON " +
+                            "kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID."
+                    }
+                )
+            }
+        }
     }
 
     /**

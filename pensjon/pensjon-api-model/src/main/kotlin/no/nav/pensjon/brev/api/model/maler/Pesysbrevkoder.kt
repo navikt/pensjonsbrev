@@ -48,7 +48,8 @@ object Pesysbrevkoder {
         UT_VEDTAK_ENDRING_BT_EPS_2026_OKT_AUTO,
         UT_VEDTAK_OKT_BUNNFRADRAG_2026,
         UT_VEDTAK_OKT_BUNNFRADRAG_INST_2026,
-        UT_VEDTAK_OKT_FRIBELOP_2026;
+        UT_VEDTAK_OKT_FRIBELOP_2026,
+        UT_EPS_ENDRING_I_BARNETILLEGG;
 
         override fun kode(): String = this.name
     }
@@ -116,7 +117,8 @@ object Pesysbrevkoder {
         UT_VEDTAK_OKT_BUNNFRADRAG_2026_RED,
         UT_VEDTAK_OKT_FRIBELOP_2026_RED,
         UT_VEDTAK_OM_LAVERE_MINSTESATS_2026,
-        UT_VEDTAK_REDUKSJONSPROSENT_2026_RED;
+        UT_VEDTAK_REDUKSJONSPROSENT_2026_RED,
+        UT_EPS_ENDRING_I_BARNETILLEGG_RED;
 
         override fun kode(): String = this.name
     }
