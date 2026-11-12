@@ -42,7 +42,7 @@ const block: ParagraphBlock = {
   type: "PARAGRAPH",
   deletedContent: [],
   missingFromTemplate: false,
-  newFromTemplate: false,
+  status: "PRESENT",
   content,
 };
 const editorState = letter(block, block, block);

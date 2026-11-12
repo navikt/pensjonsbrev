@@ -76,7 +76,7 @@ export const editedLetter = ({
       ],
       deletedContent: [],
       missingFromTemplate: false,
-      newFromTemplate: false,
+      status: "PRESENT",
       type: "PARAGRAPH",
     },
     {
@@ -94,7 +94,7 @@ export const editedLetter = ({
       ],
       deletedContent: [],
       missingFromTemplate: false,
-      newFromTemplate: false,
+      status: "PRESENT",
       type: "PARAGRAPH",
     },
   ],

@@ -81,7 +81,7 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
   deletedContent: number[];
   content: TextContent[];
   missingFromTemplate: boolean;
-  newFromTemplate: boolean;
+  status: AnyBlock["status"];
 } {
   if ("content" in contentOrArgs && !("text" in contentOrArgs)) {
     const args = contentOrArgs as TitleArgs;
@@ -94,7 +94,7 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
       deletedContent: [],
       content: withParent(args.content, id),
       missingFromTemplate: false,
-      newFromTemplate: false,
+      status: "PRESENT",
     };
   }
   const id = randomId();
@@ -107,7 +107,7 @@ function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
     deletedContent: [],
     content: withParent(content, id),
     missingFromTemplate: false,
-    newFromTemplate: false,
+    status: "PRESENT",
   };
 }
 
