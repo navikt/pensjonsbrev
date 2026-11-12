@@ -709,8 +709,8 @@ export function newTitle(args: {
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
+    status: "PRESENT",
     missingFromTemplate: false,
-    newFromTemplate: false,
   };
 }
 
@@ -727,7 +727,7 @@ export function newParagraph(args: {
     editable: true,
     deletedContent: args.deletedContent ?? [],
     missingFromTemplate: false,
-    newFromTemplate: false,
+    status: "PRESENT",
     content: args.content,
   };
 }
