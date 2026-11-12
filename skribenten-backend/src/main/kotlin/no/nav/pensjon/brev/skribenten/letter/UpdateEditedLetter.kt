@@ -61,9 +61,8 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 deleted = edited.deletedBlocks,
                 merge = ::mergeBlock,
                 updateVariables = ::updateVariableValues,
-                setMissingFromTemplate = ::setMissing,
+                setTemplateStatus = ::setTemplateStatus,
                 previousRendered = previousRender?.blocks,
-                setNewFromTemplate = ::setNew,
                 isNewFromTemplate = { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
             ),
             deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
@@ -79,9 +78,8 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 deleted = edited.deletedBlocks,
                 merge = ::mergeBlock,
                 updateVariables = ::updateVariableValues,
-                setMissingFromTemplate = ::setMissing,
+                setTemplateStatus = ::setTemplateStatus,
                 previousRendered = previousRender?.blocks,
-                setNewFromTemplate = ::setNew,
                 isNewFromTemplate = { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
             ),
             deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
@@ -182,7 +180,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
      * ```
      *
      * If [previousRendered] is provided, every result element taken from [rendered] without a corresponding occurrence with the same id in [previousRendered]
-     * (i.e. newly added to the template since the previous render) is marked with [setNewFromTemplate]. The mark is kept for edited elements
+     * (i.e. newly added to the template since the previous render) is marked with [setTemplateStatus]. The mark is kept for edited elements
      * already marked according to [isNewFromTemplate], so that it survives subsequent merges until Saksbehandler has handled it.
      */
     private fun <E : Edit.Identifiable> mergeList(
@@ -192,8 +190,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         deleted: List<Int>,
         merge: (E, E) -> E,
         updateVariables: ((E) -> E),
-        setMissingFromTemplate: ((E) -> E),
-        setNewFromTemplate: ((E) -> E),
+        setTemplateStatus: (E, Edit.Block.TemplateStatus) -> E,
         previousRendered: List<E>? = null,
         isNewFromTemplate: ((E) -> Boolean) = { false },
     ): List<E> = buildList {
@@ -206,7 +203,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 if (index in matchedIndices) {
                     element
                 } else {
-                    setNewFromTemplate(element)
+                    setTemplateStatus(element, Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
                 }
             }
         } else {
@@ -215,7 +212,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
         fun markNewFromTemplate(result: E, renderedElement: E, editedElement: E? = null): E =
             if ((editedElement != null && isNewFromTemplate(editedElement)) || isNewFromTemplate(renderedElement)) {
-                setNewFromTemplate(result)
+                setTemplateStatus(result, Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
             } else {
                 result
             }
@@ -265,7 +262,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-                    add(setMissingFromTemplate(updateVariables(currentEdited)))
+                    add(setTemplateStatus(updateVariables(currentEdited), Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE))
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
                     // But it is moved by intent, so we do not wish to remove it.
@@ -278,14 +275,14 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
         edited.copy(
-            text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setMissing, ::setNew),
+            text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setTemplateStatus),
             deletedContent = prunedDeleted(edited.deletedContent, edited.text, rendered.text)
         )
 
     private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block =
         when (edited) {
             is Edit.Block.Paragraph -> edited.copy(
-                content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent, ::updateVariableValues, ::setMissing, ::setNew),
+                content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent, ::updateVariableValues, ::setTemplateStatus),
                 deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
             )
 
@@ -321,10 +318,10 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         deleted: List<Int>,
     ): List<Edit.ParagraphContent.Text> =
         when (rendered) {
-            is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing, ::setNew)
-            is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing, ::setNew)
-            is Edit.Block.Title3 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing, ::setNew)
-            is Edit.Block.Paragraph -> mergeList(parent, editedContent, rendered.textContent(), deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing, ::setNew)
+            is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setTemplateStatus)
+            is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setTemplateStatus)
+            is Edit.Block.Title3 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setTemplateStatus)
+            is Edit.Block.Paragraph -> mergeList(parent, editedContent, rendered.textContent(), deleted, ::mergeTextContent, ::updateVariableValues, ::setTemplateStatus)
         }
 
     private fun mergeTextContent(edited: Edit.ParagraphContent.Text, rendered: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
@@ -347,7 +344,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
             is Edit.ParagraphContent.ItemList ->
                 if (rendered is Edit.ParagraphContent.ItemList) {
                     edited.copy(
-                        items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues, ::setMissing, ::setNew),
+                        items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues, ::setTemplateStatus),
                         deletedItems = prunedDeleted(edited.deletedItems, edited.items, rendered.items),
                     )
                 } else {
@@ -365,7 +362,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 if (rendered is Edit.ParagraphContent.Table) {
                     edited.copy(
                         header = mergeTableHeader(edited.header, rendered.header),
-                        rows = mergeList(edited, edited.rows, rendered.rows, edited.deletedRows, ::mergeRows, ::updateVariableValues, ::setMissing, ::setNew),
+                        rows = mergeList(edited, edited.rows, rendered.rows, edited.deletedRows, ::mergeRows, ::updateVariableValues, ::setTemplateStatus),
                         deletedRows = prunedDeleted(edited.deletedRows, edited.rows, rendered.rows),
                     )
                 } else {
@@ -375,7 +372,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     private fun mergeTableHeader(edited: Edit.ParagraphContent.Table.Header, rendered: Edit.ParagraphContent.Table.Header): Edit.ParagraphContent.Table.Header =
         edited.copy(
-            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, edited.deletedColSpecs, ::mergeColumnSpec, ::updateVariableValues, ::setMissing, ::setNew),
+            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, edited.deletedColSpecs, ::mergeColumnSpec, ::updateVariableValues, ::setTemplateStatus),
             deletedColSpecs = prunedDeleted(edited.deletedColSpecs, edited.colSpec, rendered.colSpec),
         )
 
@@ -387,19 +384,19 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     private fun mergeCell(edited: Edit.ParagraphContent.Table.Cell, rendered: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         edited.copy(
-            text = mergeList(edited, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setMissing, ::setNew),
+            text = mergeList(edited, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setTemplateStatus),
             deletedContent = prunedDeleted(edited.deletedContent, edited.text, rendered.text),
         )
 
     private fun mergeRows(edited: Edit.ParagraphContent.Table.Row, rendered: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
         edited.copy(
-            cells = mergeList(edited, edited.cells, rendered.cells, edited.deletedCells, ::mergeCell, ::updateVariableValues, ::setMissing, ::setNew),
+            cells = mergeList(edited, edited.cells, rendered.cells, edited.deletedCells, ::mergeCell, ::updateVariableValues, ::setTemplateStatus),
             deletedCells = prunedDeleted(edited.deletedCells, edited.cells, rendered.cells),
         )
 
     private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
         edited.copy(
-            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setMissing, ::setNew),
+            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setTemplateStatus),
             deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
         )
 
@@ -454,46 +451,36 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
     private fun updateVariableValues(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         cell.copy(text = cell.text.map(::updateVariableValues))
 
-    private fun setMissing(block: Edit.Block): Edit.Block = when (block) {
-        is Edit.Block.Title1 -> block.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
-        is Edit.Block.Title2 -> block.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
-        is Edit.Block.Title3 -> block.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
-        is Edit.Block.Paragraph -> block.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
+    private fun setTemplateStatus(block: Edit.Block, status: Edit.Block.TemplateStatus): Edit.Block {
+        val effectiveStatus =
+            if (block.templateStatus == Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE && status == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE) {
+                block.templateStatus
+            } else {
+                status
+            }
+        return when (block) {
+            is Edit.Block.Title1 -> block.copy(templateStatus = effectiveStatus)
+            is Edit.Block.Title2 -> block.copy(templateStatus = effectiveStatus)
+            is Edit.Block.Title3 -> block.copy(templateStatus = effectiveStatus)
+            is Edit.Block.Paragraph -> block.copy(templateStatus = effectiveStatus)
+        }
     }
 
-    private fun setMissing(content: Edit.ParagraphContent): Edit.ParagraphContent = content
+    @Suppress("UNUSED_PARAMETER")
+    private fun setTemplateStatus(content: Edit.ParagraphContent, status: Edit.Block.TemplateStatus): Edit.ParagraphContent = content
 
-    private fun setMissing(text: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text = text
+    @Suppress("UNUSED_PARAMETER")
+    private fun setTemplateStatus(text: Edit.ParagraphContent.Text, status: Edit.Block.TemplateStatus): Edit.ParagraphContent.Text = text
 
-    private fun setMissing(item: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item = item
+    @Suppress("UNUSED_PARAMETER")
+    private fun setTemplateStatus(item: Edit.ParagraphContent.ItemList.Item, status: Edit.Block.TemplateStatus): Edit.ParagraphContent.ItemList.Item = item
 
-    private fun setMissing(columnSpec: Edit.ParagraphContent.Table.ColumnSpec): Edit.ParagraphContent.Table.ColumnSpec = columnSpec
+    @Suppress("UNUSED_PARAMETER")
+    private fun setTemplateStatus(columnSpec: Edit.ParagraphContent.Table.ColumnSpec, status: Edit.Block.TemplateStatus): Edit.ParagraphContent.Table.ColumnSpec = columnSpec
 
-    private fun setMissing(row: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row = row
+    @Suppress("UNUSED_PARAMETER")
+    private fun setTemplateStatus(row: Edit.ParagraphContent.Table.Row, status: Edit.Block.TemplateStatus): Edit.ParagraphContent.Table.Row = row
 
-    private fun setMissing(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell = cell
-
-    private fun setNew(block: Edit.Block): Edit.Block =
-        if (block.templateStatus == Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) {
-            block
-        } else {
-            when (block) {
-                is Edit.Block.Title1 -> block.copy(templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
-                is Edit.Block.Title2 -> block.copy(templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
-                is Edit.Block.Title3 -> block.copy(templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
-                is Edit.Block.Paragraph -> block.copy(templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE)
-            }
-        }
-
-    private fun setNew(content: Edit.ParagraphContent): Edit.ParagraphContent = content
-
-    private fun setNew(text: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text = text
-
-    private fun setNew(item: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item = item
-
-    private fun setNew(columnSpec: Edit.ParagraphContent.Table.ColumnSpec): Edit.ParagraphContent.Table.ColumnSpec = columnSpec
-
-    private fun setNew(row: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row = row
-
-    private fun setNew(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell = cell
+    @Suppress("UNUSED_PARAMETER")
+    private fun setTemplateStatus(cell: Edit.ParagraphContent.Table.Cell, status: Edit.Block.TemplateStatus): Edit.ParagraphContent.Table.Cell = cell
 }
