@@ -113,13 +113,18 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
      * only to rendered occurrences outside this alignment. That preserves whether the caseworker
      * removed the first or the second occurrence in e.g. `[X, separator, X]`.
      */
-    private fun matchedRenderedIndices(edited: List<Edit.Identifiable>, rendered: List<Edit.Identifiable>): Set<Int> {
-        val editedIds = edited.mapNotNull { it.id }
+    private fun <E : Edit.Identifiable> matchedRenderedIndices(
+        edited: List<E>,
+        rendered: List<Edit.Identifiable>,
+        includeEdited: (E) -> Boolean = { true },
+    ): Set<Int> {
+        val editedWithIds = edited.filter { it.id != null }
+        val editedIds = editedWithIds.mapNotNull { it.id }
         val renderedWithIds = rendered.mapIndexedNotNull { index, element -> element.id?.let { index to it } }
         val renderedIds = renderedWithIds.map { it.second }
         val lengths = longestCommonSubsequenceLengths(editedIds, renderedIds)
 
-        return collectMatchedRenderedIndices(editedIds, renderedWithIds, lengths)
+        return collectMatchedRenderedIndices(editedIds, renderedWithIds, lengths) { includeEdited(editedWithIds[it]) }
     }
 
     private fun <T> longestCommonSubsequenceLengths(editedIds: List<T>, renderedIds: List<T>): Array<IntArray> {
@@ -141,13 +146,14 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         editedIds: List<T>,
         renderedWithIds: List<Pair<Int, T>>,
         lengths: Array<IntArray>,
+        includeEdited: (Int) -> Boolean = { true },
     ): Set<Int> =
         buildSet {
             var editedIndex = 0
             var renderedIndex = 0
             while (editedIndex < editedIds.size && renderedIndex < renderedWithIds.size) {
                 if (editedIds[editedIndex] == renderedWithIds[renderedIndex].second) {
-                    add(renderedWithIds[renderedIndex].first)
+                    if (includeEdited(editedIndex)) add(renderedWithIds[renderedIndex].first)
                     editedIndex++
                     renderedIndex++
                 } else if (lengths[editedIndex + 1][renderedIndex] > lengths[editedIndex][renderedIndex + 1]) {
@@ -194,27 +200,28 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         previousRendered: List<E>? = null,
         isNewFromTemplate: ((E) -> Boolean) = { false },
     ): List<E> = buildList {
+        val stillNewIndices = if (edited.none(isNewFromTemplate)) emptySet() else matchedRenderedIndices(edited, rendered, isNewFromTemplate)
         val renderedWithNewMarkers = if (previousRendered != null) {
             val previousIds = previousRendered.map { it.id }
             val renderedIds = rendered.map { it.id }
             val lengths = longestCommonSubsequenceLengths(previousIds, renderedIds)
             val matchedIndices = collectMatchedRenderedIndices(previousIds, renderedIds.mapIndexed { index, id -> index to id }, lengths)
             rendered.mapIndexed { index, element ->
-                if (index in matchedIndices) {
+                if (index in matchedIndices && index !in stillNewIndices) {
                     element
                 } else {
                     setStatus(element, Edit.Block.Status.NEW_FROM_TEMPLATE)
                 }
             }
         } else {
-            rendered
+            rendered.mapIndexed { index, element -> if (index in stillNewIndices) setStatus(element, Edit.Block.Status.NEW_FROM_TEMPLATE) else element }
         }
 
-        fun markNewFromTemplate(result: E, renderedElement: E, editedElement: E? = null): E =
-            if ((editedElement != null && isNewFromTemplate(editedElement)) || isNewFromTemplate(renderedElement)) {
-                setStatus(result, Edit.Block.Status.NEW_FROM_TEMPLATE)
-            } else {
-                result
+        fun markNewFromTemplate(result: E, renderedElement: E): E =
+            when {
+                isNewFromTemplate(renderedElement) -> setStatus(result, Edit.Block.Status.NEW_FROM_TEMPLATE)
+                isNewFromTemplate(result) -> setStatus(result, Edit.Block.Status.PRESENT)
+                else -> result
             }
 
         // A queue of unprocessed rendered elements. `deleted` is a multiset (one entry per actually
@@ -258,7 +265,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                     // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
                     val renderedElement = remainingRendered.removeFirst()
                     val result = if (currentEdited.isEdited()) merge(currentEdited, renderedElement) else renderedElement
-                    add(markNewFromTemplate(result, renderedElement, currentEdited))
+                    add(markNewFromTemplate(result, renderedElement))
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
