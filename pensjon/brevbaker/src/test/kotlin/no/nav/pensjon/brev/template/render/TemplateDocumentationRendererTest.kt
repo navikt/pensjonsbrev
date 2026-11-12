@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentation.Element.Outline
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Element.ParagraphContent.Text
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expr
 import no.nav.pensjon.brev.template.TemplateModelSelector
+import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -44,6 +45,41 @@ class TemplateDocumentationRendererTest {
         assertEquals(
             listOf("overskrift", "første avsnitt", "andre avsnitt"),
             lines.map { (it.segments.single() as TextSegment.Text).value },
+        )
+    }
+
+    @Test
+    fun `skiller tabellceller med en egen grense i stedet for et soekbart skilletegn`() {
+        val templ = outlineTestTemplate<Unit> {
+            paragraph {
+                table(
+                    header = {
+                        column { text(bokmal { +"Ytelse" }) }
+                        column { }
+                        column { text(bokmal { +"Beløp" }) }
+                    },
+                ) {
+                    row {
+                        cell { text(bokmal { +"a | b" }) }
+                        cell { text(bokmal { +" " }) }
+                        cell { text(bokmal { +"c" }) }
+                    }
+                }
+            }
+        }
+
+        val lines = TemplateTextExtractor.extract(TemplateDocumentationRenderer.render(templ, Bokmal, templ.modelSpecification()))
+
+        assertEquals(
+            listOf(
+                listOf(TextSegment.Text("Ytelse"), TextSegment.CellBoundary, TextSegment.Text("Beløp")),
+                listOf(TextSegment.Text("a | b"), TextSegment.CellBoundary, TextSegment.Text("c")),
+            ),
+            lines.map { it.segments },
+        )
+        assertEquals(
+            """[{"type":"text","value":"a | b"},{"type":"cell"},{"type":"text","value":"c"}]""",
+            brevbakerJacksonObjectMapper().let { it.readTree(it.writeValueAsString(lines.last()))["segments"].toString() },
         )
     }
 

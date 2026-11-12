@@ -5,7 +5,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 
 object Constants {
     const val NAV_URL = "nav.no"
-    const val DITT_NAV = "$NAV_URL/dittnav"
+    const val MINSIDE_URL = "$NAV_URL/minside"
     const val KLAGE_URL = "$NAV_URL/klage"
     const val KLAGERETTIGHETER_URL = "$NAV_URL/klagerettigheter"
     const val UFORE_URL = "$NAV_URL/uforetrygd"

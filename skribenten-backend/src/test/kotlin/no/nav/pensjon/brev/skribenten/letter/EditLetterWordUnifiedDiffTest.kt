@@ -16,6 +16,33 @@ class EditLetterWordUnifiedDiffTest {
     private val wordDiff = EditLetterWordDiff()
 
     @Test
+    fun `paragraph inserted after merging old paragraphs retains added text highlighting`() {
+        val old = editedLetter {
+            paragraph { literal(text = "alpha") }
+            paragraph { variable(text = "beta") }
+        }
+        val new = editedLetter {
+            paragraph {
+                literal(text = "alpha")
+                variable(text = "beta")
+            }
+            paragraph { literal(text = "gamma") }
+        }
+
+        val diff = wordDiff.unifiedDiff(old, new)
+
+        assertEquals(
+            mapOf(1 to BlockEdit(contentEdits = mapOf(0 to textContentEdit(inserts = listOf(TextSegment(0, 5)))), deletedContent = emptyMap())),
+            diff.editedBlocks,
+        )
+        assertEquals(mapOf(1 to listOf(old.blocks[1])), diff.deletedBlocks)
+        assertEquals(
+            listOf(DiffSegment(ContentIndex.BlockContentIndex(1, 0), 0, 5)),
+            wordDiff.diff(old, new).inserts,
+        )
+    }
+
+    @Test
     fun `no change produces empty editedBlocks and deletedBlocks`() {
         val letter = editedLetter { paragraph { literal(text = "hello world") } }
         val diff = wordDiff.unifiedDiff(letter, letter)
@@ -363,6 +390,19 @@ class EditLetterWordUnifiedDiffTest {
             mapOf(0 to listOf(trailingContent[0]), 1 to listOf(trailingContent[2])),
             trailingDiff.editedBlocks[0]!!.deletedContent,
         )
+    }
+
+    @Test
+    fun `splitting a paragraph and deleting its trailing text reports deletion in the new block`() {
+        val old = editedLetter { paragraph { literal(text = "Hei"); variable(text = "Ola"); literal(text = "x y") } }
+        val new = editedLetter {
+            paragraph { literal(text = "Hei") }
+            paragraph { variable(text = "Ola") }
+        }
+        val diff = wordDiff.unifiedDiff(old, new)
+        val oldContent = (old.blocks[0] as Edit.Block.Paragraph).content
+        assertEquals(mapOf(1 to BlockEdit(contentEdits = emptyMap(), deletedContent = mapOf(1 to listOf(oldContent[2])))), diff.editedBlocks)
+        assertEquals(emptyMap<Int, List<Edit.Block>>(), diff.deletedBlocks)
     }
 
     private fun textContentEdit(inserts: List<TextSegment> = emptyList(), deletes: List<DeletedTextSegment> = emptyList()): ContentEdit.TextContentEdit =

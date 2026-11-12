@@ -6,7 +6,6 @@ enum class FeatureToggles(private val key: String) {
     // Sett inn featuretoggles her
     // val minFeature = UnleashToggle("minFeature")
     bekreftelsePaaPensjon("bekreftelsePaaPensjon"),
-    bekreftelsePaaUfoeretrygd("bekreftelsePaaUfoeretrygd"),
     brevmalAnkeOrienteringOmSaksbehandling("brevmalAnkeOrienteringOmSaksbehandling"),
     brevmalAnkeTilsvarTilAnkendePart("brevmalAnkeTilsvarTilAnkendePart"),
     brevmalAvslagGjenlevendepensjon("brevmalAvslagGjenlevendepensjon"),
@@ -20,7 +19,6 @@ enum class FeatureToggles(private val key: String) {
     brevmalKlageInnhentingAvOpplysningerUT("brevmalKlageInnhentingAvOpplysningerUT"),
     brevmalKlageOrienteringOmOversendelseTilKlageinstans("klageOrienteringOmOversendelseTilKlageinstans"),
     brevmalKlageOrienteringOmSaksbehandlingstid("brevmalKlageOrienteringOmSaksbehandlingstid"),
-    brevmalKlageOversendelseOgFoelgebrevKlageinstansUT("brevmalKlageOversendelseOgFoelgebrevKlageinstansUT"),
     brevmalKlageOversendelsesbrevTilKlageinstansPE("brevmalKlageOversendelsesbrevTilKlageinstansPE"),
     brevmalKlageOversendelsesbrevTilKlageinstansUT("brevmalKlageOversendelsesbrevTilKlageinstansUT"),
     brevmalKlageUtsattKlagefristUT("brevmalKlageUtsattKlagefristUT"),
@@ -30,6 +28,7 @@ enum class FeatureToggles(private val key: String) {
     brevmalUtBosattNorgeEtterUtland("brevmalUtBosattNorgeEtterUtland"),
     brevmalUtDelvisEksport("brevmalUtDelvisEksport"),
     brevmalUtEndretPgaInntekt("brevmalUtEndretPgaInntekt"),
+    brevmalUtEndretPgaInntektNesteAr("brevmalUtEndretPgaInntektNesteAr"),
     brevmalUtInnvilgelseMedEndring("brevmalUtInnvilgelseMedEndring"),
     brevmalUtInnvilgelseTrygdeavtale("brevmalUtInnvilgelseTrygdeavtale"),
     brevmalUtOmregningUfoerepensjonTilUfoeretrygd("brevmalOmregningUfoerepensjonTilUfoeretrygd"),
