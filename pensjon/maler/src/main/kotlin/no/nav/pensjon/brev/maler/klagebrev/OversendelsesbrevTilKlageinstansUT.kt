@@ -35,6 +35,7 @@ import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageins
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Trygdetid
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Ufoeretidspunkt
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.UngUfoer
+import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.UngUfoer.Ufoertidspunkt
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Virkningstidspunkt
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Yrkesskade
 import no.nav.pensjon.brev.maler.klagebrev.tekstNAY.OversendelsesbrevTilKlageinstansTekst.Yrkesskade.Avslag
@@ -74,7 +75,7 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
         val fastsettelseInntekt = saksbehandlervalg("fastsettelseInntekt", "Velg om inntekt er fastsatt før eller etter uførhet:").enum<FastsettelseInntektValg>()
         val inntekt = saksbehandlervalg("inntekt", "Velg begrunnelsen for inntektsreduksjon:").enum<ReduksjonPaaGrunnAvInntektValg>()
         val paragraf = saksbehandlervalg("paragraf", "Velg paragraf:").enum<Paragraf>()
-        val ufoertidspunkt = saksbehandlervalg("ufoertidspunkt", "Velg uføretidspunkt:").enum<UngUfoer.Ufoertidspunkt>()
+        val ufoertidspunkt = saksbehandlervalg("ufoertidspunkt", "Velg uføretidspunkt:").enum<Ufoertidspunkt>()
 
 
         title { text(bokmal { +"Oversendelse til $NAV_KLAGEINSTANS - Uføretrygd" }) }
@@ -98,21 +99,21 @@ object OversendelsesbrevTilKlageinstansUT : RedigerbarTemplate<EmptyRedigerbarBr
             paragraph {
                 text(bokmal {
                     +"Klagesaken er derfor oversendt til $NAV_KLAGEINSTANS for behandling. "
-                    +"Kopi av innstillingen vår er vedlagt under."
+                    +"Kopi av innstillingen vår er vedlagt nedenfor."
                 })
             }
             paragraph {
                 text(bokmal {
                     +"Klageinstansen vurderer alle sider av saken på selvstendig grunnlag. "
                     +"Resultatet av klagebehandlingen kan bli at vårt vedtak ikke blir endret, eller at det blir endret helt eller delvis. "
-                    +"Klageinstansen kan også oppheve vedtaket vårt, og sende saken tilbake til oss for helt eller delvis ny behandling. "
+                    +"Klageinstansen kan også oppheve vedtaket vårt og sende saken tilbake til oss for helt eller delvis ny behandling. "
                 })
             }
             paragraph { text(bokmal { +"Du får melding fra $NAV_KLAGEINSTANS når de har mottatt saken." }) }
             paragraph {
                 text(bokmal {
                     +"Du finner oversikt over saksbehandlingstidene på $NAV_URL/saksbehandlingstider. "
-                    +"Du får beskjed fra $NAV_KLAGEINSTANS, dersom de trenger mer tid."
+                    +"Du får beskjed fra $NAV_KLAGEINSTANS dersom de trenger mer tid."
                 })
             }
             paragraph {
