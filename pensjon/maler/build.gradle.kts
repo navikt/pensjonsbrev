@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 476
+val apiModelVersion = 477
 
 val apiModelJavaTarget: String by System.getProperties()
 
