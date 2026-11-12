@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -89,56 +88,62 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
                     +"I vurderingen av om vedtaket likevel skal gis oppsettende virkning, "
                     +"skal det legges vekt på hva som antas å bli utfallet av klagebehandlingen. "
                 })
-                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES) and oekonomiskeForhold) {
-                    text(bokmal {
-                        +"Økonomiske forhold kan som hovedregel ikke vektlegges i vurderingen av om vedtaket skal gis oppsettende virkning."
-                    })
+                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES)) {
+                    showIf(oekonomiskeForhold) {
+                        text(bokmal {
+                            +"Økonomiske forhold kan som hovedregel ikke vektlegges i vurderingen av om vedtaket skal gis oppsettende virkning."
+                        })
+                    }
                 }
             }
 
-            title1 { text(bokmal { +"Vurdering og konklusjon" }) }
-            paragraph {
-                text(bokmal {
-                    +fritekst(
-                        "Skriv en konkret begrunnelse med utgangspunkt i rettslig grunnlag. "
-                                + "Aktuelle momenter: hva klagen er begrunnet med, "
-                                + "hvor sannsynlig det er at klagen vil medføre omgjøring av det påklagede vedtaket m.m."
-                    )
-                })
-            }
-            paragraph {
-                text(bokmal { +"Vi mener at det " })
-                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IKKE_IVERKSETTES)) {
-                    text(bokmal {
-                        +"er grunnlag "
-                    })
-                }.orShow {
-                    text(bokmal { +"ikke er tilstrekkelig grunnlag " })
-                }
-                text(bokmal { +"for å utsette iverksettelse av vedtaket vårt av "
-                    +fritekst("dato") + " fram til klagen er endelig avgjort." })
-            }
-            showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES) and tilbakekreving) {
+                title1 { text(bokmal { +"Vurdering og konklusjon" }) }
                 paragraph {
                     text(bokmal {
-                        +"Du kan be Skatteetaten om en nedbetalingsavtale hvis det er vanskelig for deg å betale tilbake det feilutbetalte beløpet samlet."
+                        +fritekst(
+                            "Skriv en konkret begrunnelse med utgangspunkt i rettslig grunnlag. "
+                                    + "Aktuelle momenter: hva klagen er begrunnet med, "
+                                    + "hvor sannsynlig det er at klagen vil medføre omgjøring av det påklagede vedtaket m.m."
+                        )
                     })
                 }
-            }
+                paragraph {
+                    text(bokmal { +"Vi mener at det " })
+                    showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IKKE_IVERKSETTES)) {
+                        text(bokmal {
+                            +"er grunnlag "
+                        })
+                    }.orShow {
+                        text(bokmal { +"ikke er tilstrekkelig grunnlag " })
+                    }
+                    text(bokmal {
+                        +"for å utsette iverksettelse av vedtaket vårt av "
+                        +fritekst("dato") + " fram til klagen er endelig avgjort."
+                    })
+                }
+                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES)) {
+                    showIf(tilbakekreving) {
+                        paragraph{
+                            text(bokmal {+"Du kan be Skatteetaten om en nedbetalingsavtale hvis det er vanskelig for deg å betale tilbake det feilutbetalte beløpet samlet."
+                            })
+                        }
+                    }
+                }
 
-            title1{ text(bokmal { +"Prosessuell beslutning uten klagerett" }) }
-            paragraph {
-                text(bokmal {
-                    +"Denne avgjørelsen er ikke et vedtak som gjelder individuelle rettigheter eller plikter (enkeltvedtak), "
-                    +"men en prosessuell beslutning. Du kan ikke klage på denne beslutningen. "
-                    +"Det følger av forvaltningsloven §§ 2 og 28."
-                })
-            }
+                title1 { text(bokmal { +"Prosessuell beslutning uten klagerett" }) }
+                paragraph {
+                    text(bokmal {
+                        +"Denne avgjørelsen er ikke et vedtak som gjelder individuelle rettigheter eller plikter (enkeltvedtak), "
+                        +"men en prosessuell beslutning. Du kan ikke klage på denne beslutningen. "
+                        +"Det følger av forvaltningsloven §§ 2 og 28."
+                    })
+                }
 
-            includePhrase(Felles.RettTilInnsynRedigerbarebrev)
-            includePhrase(Felles.HarDuSpoersmaal.alder)
+                includePhrase(Felles.RettTilInnsynRedigerbarebrev)
+                includePhrase(Felles.HarDuSpoersmaal.alder)
+            }
         }
-    }
+
     enum class BeslutningOmVedtaketSkalIverksettes(override val displayText: String, override val rekkefoelge: Int) : SaksbehandlerValgEnum {
         IVERKSETTES("Søknaden er avslått og vedtaket skal iverksettes", 1),
         IKKE_IVERKSETTES("Søknaden er innvilget og vedtaket skal ikke iverksettes", 2)
