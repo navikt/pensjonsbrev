@@ -24,7 +24,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object EPSEndringIBarnetilleggRedigerbar : RedigerbarTemplate<EPSEndringIBarnetilleggRedigerbarDto> {
-    override val featureToggle = FeatureToggles.brevmalUtOmregningUfoerepensjonTilUfoeretrygd.toggle
+    override val featureToggle = FeatureToggles.epsEndringIBarnetillegg.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_EPS_ENDRING_I_BARNETILLEGG_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
