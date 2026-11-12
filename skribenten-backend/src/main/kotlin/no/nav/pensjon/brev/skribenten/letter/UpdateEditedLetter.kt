@@ -190,7 +190,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         deleted: List<Int>,
         merge: (E, E) -> E,
         updateVariables: ((E) -> E),
-        setStatus: (E, Edit.Block.Status) -> E,
+        setStatus: (E, Edit.Block.Status) -> E = { element, _ -> element },
         previousRendered: List<E>? = null,
         isNewFromTemplate: ((E) -> Boolean) = { false },
     ): List<E> = buildList {
@@ -275,14 +275,14 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
         edited.copy(
-            text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setStatus),
+            text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
             deletedContent = prunedDeleted(edited.deletedContent, edited.text, rendered.text)
         )
 
     private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block =
         when (edited) {
             is Edit.Block.Paragraph -> edited.copy(
-                content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent, ::updateVariableValues, ::setStatus),
+                content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent, ::updateVariableValues),
                 deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
             )
 
@@ -318,10 +318,10 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         deleted: List<Int>,
     ): List<Edit.ParagraphContent.Text> =
         when (rendered) {
-            is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setStatus)
-            is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setStatus)
-            is Edit.Block.Title3 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setStatus)
-            is Edit.Block.Paragraph -> mergeList(parent, editedContent, rendered.textContent(), deleted, ::mergeTextContent, ::updateVariableValues, ::setStatus)
+            is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
+            is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
+            is Edit.Block.Title3 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
+            is Edit.Block.Paragraph -> mergeList(parent, editedContent, rendered.textContent(), deleted, ::mergeTextContent, ::updateVariableValues)
         }
 
     private fun mergeTextContent(edited: Edit.ParagraphContent.Text, rendered: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text =
@@ -344,7 +344,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
             is Edit.ParagraphContent.ItemList ->
                 if (rendered is Edit.ParagraphContent.ItemList) {
                     edited.copy(
-                        items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues, ::setStatus),
+                        items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues),
                         deletedItems = prunedDeleted(edited.deletedItems, edited.items, rendered.items),
                     )
                 } else {
@@ -362,7 +362,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
                 if (rendered is Edit.ParagraphContent.Table) {
                     edited.copy(
                         header = mergeTableHeader(edited.header, rendered.header),
-                        rows = mergeList(edited, edited.rows, rendered.rows, edited.deletedRows, ::mergeRows, ::updateVariableValues, ::setStatus),
+                        rows = mergeList(edited, edited.rows, rendered.rows, edited.deletedRows, ::mergeRows, ::updateVariableValues),
                         deletedRows = prunedDeleted(edited.deletedRows, edited.rows, rendered.rows),
                     )
                 } else {
@@ -372,7 +372,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     private fun mergeTableHeader(edited: Edit.ParagraphContent.Table.Header, rendered: Edit.ParagraphContent.Table.Header): Edit.ParagraphContent.Table.Header =
         edited.copy(
-            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, edited.deletedColSpecs, ::mergeColumnSpec, ::updateVariableValues, ::setStatus),
+            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, edited.deletedColSpecs, ::mergeColumnSpec, ::updateVariableValues),
             deletedColSpecs = prunedDeleted(edited.deletedColSpecs, edited.colSpec, rendered.colSpec),
         )
 
@@ -384,19 +384,19 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     private fun mergeCell(edited: Edit.ParagraphContent.Table.Cell, rendered: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         edited.copy(
-            text = mergeList(edited, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setStatus),
+            text = mergeList(edited, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
             deletedContent = prunedDeleted(edited.deletedContent, edited.text, rendered.text),
         )
 
     private fun mergeRows(edited: Edit.ParagraphContent.Table.Row, rendered: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
         edited.copy(
-            cells = mergeList(edited, edited.cells, rendered.cells, edited.deletedCells, ::mergeCell, ::updateVariableValues, ::setStatus),
+            cells = mergeList(edited, edited.cells, rendered.cells, edited.deletedCells, ::mergeCell, ::updateVariableValues),
             deletedCells = prunedDeleted(edited.deletedCells, edited.cells, rendered.cells),
         )
 
     private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
         edited.copy(
-            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setStatus),
+            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
             deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
         )
 
@@ -458,15 +458,4 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         is Edit.Block.Paragraph -> block.copy(status = status)
     }
 
-    private fun setStatus(content: Edit.ParagraphContent, status: Edit.Block.Status): Edit.ParagraphContent = content
-
-    private fun setStatus(text: Edit.ParagraphContent.Text, status: Edit.Block.Status): Edit.ParagraphContent.Text = text
-
-    private fun setStatus(item: Edit.ParagraphContent.ItemList.Item, status: Edit.Block.Status): Edit.ParagraphContent.ItemList.Item = item
-
-    private fun setStatus(columnSpec: Edit.ParagraphContent.Table.ColumnSpec, status: Edit.Block.Status): Edit.ParagraphContent.Table.ColumnSpec = columnSpec
-
-    private fun setStatus(row: Edit.ParagraphContent.Table.Row, status: Edit.Block.Status): Edit.ParagraphContent.Table.Row = row
-
-    private fun setStatus(cell: Edit.ParagraphContent.Table.Cell, status: Edit.Block.Status): Edit.ParagraphContent.Table.Cell = cell
 }
