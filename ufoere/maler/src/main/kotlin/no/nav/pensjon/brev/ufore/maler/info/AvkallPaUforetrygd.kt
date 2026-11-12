@@ -47,7 +47,7 @@ object AvkallPaUforetrygd : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             title1 {
                 text(
-                    bokmal { +"Konsekvensene av å si i fra seg uføretrygden:" },
+                    bokmal { +"Konsekvensene av å si fra seg uføretrygden:" },
                     nynorsk { +"Konsekvensane av å seie frå seg uføretrygda:" },
                 )
             }
