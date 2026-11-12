@@ -46,8 +46,8 @@ class EditModelJacksonTest {
         val block = databaseObjectMapper.readValue(json, Edit.Block::class.java)
         val written = databaseObjectMapper.readTree(databaseObjectMapper.writeValueAsString(block))
 
-        assertThat(block.templateStatus).isEqualTo(Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
-        assertThat(written["templateStatus"].asText()).isEqualTo("MISSING_FROM_TEMPLATE")
+        assertThat(block.status).isEqualTo(Edit.Block.Status.MISSING_FROM_TEMPLATE)
+        assertThat(written["status"].asText()).isEqualTo("MISSING_FROM_TEMPLATE")
         assertThat(written["missingFromTemplate"].asBoolean()).isTrue()
         assertThat(written.has("newFromTemplate")).isFalse()
     }
@@ -58,7 +58,7 @@ class EditModelJacksonTest {
             id = 1,
             editable = true,
             content = emptyList(),
-            templateStatus = Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE,
+            status = Edit.Block.Status.NEW_FROM_TEMPLATE,
         )
 
         val json = objectMapper.writeValueAsString(block)
@@ -66,27 +66,27 @@ class EditModelJacksonTest {
         val tree: JsonNode = objectMapper.readTree(json)
 
         assertThat(restored).isEqualTo(block)
-        assertThat(tree["templateStatus"].asText()).isEqualTo("NEW_FROM_TEMPLATE")
+        assertThat(tree["status"].asText()).isEqualTo("NEW_FROM_TEMPLATE")
         assertThat(tree["missingFromTemplate"].asBoolean()).isFalse()
         assertThat(tree.has("newFromTemplate")).isFalse()
     }
 
     @Test
     fun `legacy missing status can be cleared by existing editor payload`() {
-        val json = """{"type":"PARAGRAPH","id":null,"editable":true,"content":[],"templateStatus":"MISSING_FROM_TEMPLATE","missingFromTemplate":false}"""
+        val json = """{"type":"PARAGRAPH","id":null,"editable":true,"content":[],"status":"MISSING_FROM_TEMPLATE","missingFromTemplate":false}"""
 
         val block = objectMapper.readValue(json, Edit.Block::class.java)
 
-        assertThat(block.templateStatus).isEqualTo(Edit.Block.TemplateStatus.NONE)
+        assertThat(block.status).isEqualTo(Edit.Block.Status.PRESENT)
     }
 
     @Test
     fun `missing status takes precedence when both legacy flags are true`() {
-        val json = """{"type":"PARAGRAPH","id":1,"editable":true,"content":[],"templateStatus":"NEW_FROM_TEMPLATE","missingFromTemplate":true}"""
+        val json = """{"type":"PARAGRAPH","id":1,"editable":true,"content":[],"status":"NEW_FROM_TEMPLATE","missingFromTemplate":true}"""
 
         val block = objectMapper.readValue(json, Edit.Block::class.java)
 
-        assertThat(block.templateStatus).isEqualTo(Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE)
+        assertThat(block.status).isEqualTo(Edit.Block.Status.MISSING_FROM_TEMPLATE)
         assertThat(block.missingFromTemplate).isTrue()
     }
 
@@ -96,12 +96,12 @@ class EditModelJacksonTest {
 
         val block = databaseObjectMapper.readValue(json, Edit.Block::class.java)
 
-        assertThat(block.templateStatus).isEqualTo(Edit.Block.TemplateStatus.NONE)
+        assertThat(block.status).isEqualTo(Edit.Block.Status.PRESENT)
     }
 
     @Test
     fun `unknown template status is rejected`() {
-        val json = """{"type":"PARAGRAPH","id":1,"editable":true,"content":[],"templateStatus":"UNKNOWN"}"""
+        val json = """{"type":"PARAGRAPH","id":1,"editable":true,"content":[],"status":"UNKNOWN"}"""
 
         assertThatThrownBy { databaseObjectMapper.readValue(json, Edit.Block::class.java) }
             .isInstanceOf(JsonMappingException::class.java)

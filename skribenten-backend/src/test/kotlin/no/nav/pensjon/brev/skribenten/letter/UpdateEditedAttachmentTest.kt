@@ -153,7 +153,7 @@ class UpdateEditedAttachmentTest {
         assertEquals(next.toEdit().blocks.map { it.id to it.content }, result.blocks.map { it.id to it.content })
         assertEquals(
             listOf(false, true, false, true),
-            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
         )
     }
 
@@ -167,7 +167,7 @@ class UpdateEditedAttachmentTest {
 
         assertEquals(
             listOf(false, true),
-            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
         )
         assertEquals(result, result.updateEditedAttachment(next, previousRender = next.toEdit()))
     }
@@ -184,7 +184,7 @@ class UpdateEditedAttachmentTest {
         assertEquals(next.toEdit().blocks.map { it.content }, result.blocks.map { it.content })
         assertEquals(
             listOf(true, false, false),
-            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
         )
         assertEquals(result, result.updateEditedAttachment(next, previousRender = next.toEdit()))
     }
@@ -200,7 +200,7 @@ class UpdateEditedAttachmentTest {
 
         assertEquals(
             listOf(false, false, true),
-            result.blocks.map { it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE },
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
         )
     }
 

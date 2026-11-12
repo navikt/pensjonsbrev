@@ -223,7 +223,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
         val result = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()
         assertThat(result).isEqualTo(oppdatert)
-        assertThat(result.blocks.single().templateStatus).isEqualTo(Edit.Block.TemplateStatus.NONE)
+        assertThat(result.blocks.single().status).isEqualTo(Edit.Block.Status.PRESENT)
     }
 
     @Test
@@ -450,7 +450,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
         assertThat(oppdaterBrev(brev.info.id)).isSuccess()
 
-        assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id to (it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE) })
+        assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id to (it.status == Edit.Block.Status.NEW_FROM_TEMPLATE) })
             .containsExactly(1 to false, 2 to true)
     }
 
@@ -461,7 +461,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
         brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
 
-        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()        .blocks.map { it.id to (it.templateStatus == Edit.Block.TemplateStatus.NEW_FROM_TEMPLATE) })
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()                .blocks.map { it.id to (it.status == Edit.Block.Status.NEW_FROM_TEMPLATE) })
             .containsExactly(1 to false, 2 to true)
     }
 

@@ -99,15 +99,15 @@ object Edit {
             TITLE1, TITLE2, TITLE3, PARAGRAPH,
         }
 
-        enum class TemplateStatus {
-            NONE, MISSING_FROM_TEMPLATE, NEW_FROM_TEMPLATE,
+        enum class Status {
+            PRESENT, MISSING_FROM_TEMPLATE, NEW_FROM_TEMPLATE,
         }
 
         abstract val editable: Boolean
         abstract val content: List<ParagraphContent>
         abstract val deletedContent: List<Int>
         abstract val originalType: Type?
-        abstract var templateStatus: TemplateStatus
+        abstract var status: Status
 
         /*
          TODO: Dette feltet skal vi slette så fort vi kan, dvs når frontend er oppdatert
@@ -115,14 +115,14 @@ object Edit {
          */
         @get:JsonProperty("missingFromTemplate")
         val missingFromTemplate: Boolean
-            get() = templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE
+            get() = status == Status.MISSING_FROM_TEMPLATE
 
         @JsonProperty("missingFromTemplate")
         fun setMissingFromTemplate(value: Boolean) {
-            templateStatus = when {
-                value -> TemplateStatus.MISSING_FROM_TEMPLATE
-                templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE -> TemplateStatus.NONE
-                else -> templateStatus
+            status = when {
+                value -> Status.MISSING_FROM_TEMPLATE
+                status == Status.MISSING_FROM_TEMPLATE -> Status.PRESENT
+                else -> status
             }
         }
 
@@ -138,7 +138,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override var templateStatus: TemplateStatus = TemplateStatus.NONE,
+            override var status: Status = Status.PRESENT,
         ) : Block(Type.TITLE1)
 
         data class Title2(
@@ -148,7 +148,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override var templateStatus: TemplateStatus = TemplateStatus.NONE,
+            override var status: Status = Status.PRESENT,
         ) : Block(Type.TITLE2)
 
         data class Title3(
@@ -158,7 +158,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override var templateStatus: TemplateStatus = TemplateStatus.NONE,
+            override var status: Status = Status.PRESENT,
         ) : Block(Type.TITLE3)
 
         data class Paragraph(
@@ -168,7 +168,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override var templateStatus: TemplateStatus = TemplateStatus.NONE,
+            override var status: Status = Status.PRESENT,
         ) : Block(Type.PARAGRAPH)
     }
 
