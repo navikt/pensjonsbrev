@@ -94,6 +94,7 @@ object Fixtures : LetterDataFactory {
             FlereOpplysningerGenerell::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             SoknadBarnetillegg::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             TrukketKlage::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            AvkallPaUforetrygd::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             FlereOpplysningerFirmaInntekt::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             NySivilstand::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             EktefelleUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
