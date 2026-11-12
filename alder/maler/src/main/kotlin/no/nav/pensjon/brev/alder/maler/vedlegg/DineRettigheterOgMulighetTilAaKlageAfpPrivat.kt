@@ -25,7 +25,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
         },
         includeSakspart = false
     ) {
-       title2() {
+       title2 {
             text(
                 bokmal { +"Du kan klage på vedtaket " },
                 nynorsk { +"Du kan klage på vedtaket" },
@@ -33,7 +33,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Hvis du mener vedtaket er feil, kan du klage innen 6 uker fra den datoen vedtaket kom fram til deg. " +
                         "Dette følger av AFP-tilskottsloven § 17 andre ledd andre punktum, sammenholdt med folketrygdloven § 21-12. " +
@@ -47,7 +47,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Nav kan veilede deg på telefon om hvordan du sender en klage. " +
                         "Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. Kontakt oss på telefon $KONTAKTTELEFON_PENSJON hvis du trenger hjelp." },
@@ -58,7 +58,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Hvis du får medhold i klagen, kan du få dekket vesentlige utgifter som har vært nødvendige for å få endret vedtaket, for eksempel hjelp fra advokat. " +
                         "Du kan ha krav på fri rettshjelp etter rettshjelploven. " +
@@ -72,7 +72,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Du kan lese om saksomkostninger i forvaltningsloven § 36." },
                 nynorsk { +"Du kan lese om sakskostnader i forvaltningslova § 36." },
@@ -80,7 +80,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Hvis du sender klage i posten, må du signere klagen." },
                 nynorsk { +"Om du sender klage i posten, må du signere klagen." },
@@ -88,7 +88,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Mer informasjon om klagerettigheter finner du på $KLAGERETTIGHETER_URL." },
                 nynorsk { +"Meir informasjon om klagerettar finn du på $KLAGERETTIGHETER_URL." },
@@ -96,7 +96,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        title2() {
+        title2 {
             text(
                 bokmal { +"Du har rett til innsyn i saken din " },
                 nynorsk { +"Du har rett til innsyn i saka di" },
@@ -104,7 +104,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Du har rett til å se dokumentene i saken din. Dette følger av forvaltningsloven § 18. " +
                         "Kontakt oss om du vil se dokumentene i saken din.Du kan lese mer om innsynsretten på $INNSYNSKRAV_URL. " },
@@ -117,7 +117,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
 
         includePhrase(RettigheterPersonopplysninger)
 
-        title2() {
+        title2 {
             text(
                 bokmal { +"Du har rett til å få hjelp fra andre " },
                 nynorsk { +"Du har rett til å få hjelp frå andre" },
@@ -125,7 +125,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel fra en " +
                         "advokat, rettshjelper, en organisasjon du er medlem av eller en myndig person over 18 år. " +
@@ -143,7 +143,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        title2() {
+        title2 {
             text(
                 bokmal { +"Du har rett til å få veiledning fra Nav " },
                 nynorsk { +"Du har rett til å få rettleiing frå Nav" },
@@ -151,7 +151,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Vi har plikt til å veilede deg om dine rettigheter og plikter i saken din, både før, under og etter saksbehandlingen. " +
                         "Dette følger av forvaltningsloven § 11. Ta kontakt på telefon $KONTAKTTELEFON_PENSJON eller på $KONTAKT_URL hvis du har spørsmål. " },

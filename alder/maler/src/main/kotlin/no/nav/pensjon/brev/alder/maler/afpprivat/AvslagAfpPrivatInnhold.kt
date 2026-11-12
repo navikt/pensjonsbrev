@@ -171,7 +171,7 @@ data class AvslagAfpPrivatInnhold(
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Hvis du mener vedtaket er feil, kan du klage innen 6 uker fra den datoen vedtaket har kommet fram til deg. " +
                         "Du finner skjema og informasjon på $KLAGE_URL. " },
@@ -182,7 +182,7 @@ data class AvslagAfpPrivatInnhold(
             )
         }
 
-        paragraph() {
+        paragraph {
             text(
                 bokmal { +"Du får vite mer om hvordan du klager i vedlegget om rettigheter." },
                 nynorsk { +"Du får vite meir om korleis du klagar i vedlegget om rettar." },
