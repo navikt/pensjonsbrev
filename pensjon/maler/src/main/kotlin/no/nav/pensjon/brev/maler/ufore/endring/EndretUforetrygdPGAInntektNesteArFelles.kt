@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.maler.ufore.endring
 
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.FribelopUtviklingKategori.FRIBELOP_04G_TIL_1G
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.FribelopUtviklingKategori.FRIBELOP_04G_TIL_1G_TIL_04G
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.FribelopUtviklingKategori.FRIBELOP_1G_FRA_JAN
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.FribelopUtviklingKategori.FRIBELOP_1G_TIL_04G
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_04G_TIL_1G
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_04G_TIL_1G_TIL_04G
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_1G_FRA_JAN
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_1G_TIL_04G
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggFellesbarn.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggSaerkullsbarn.*
@@ -14,15 +14,15 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggFellesbarn.periodisert
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggSaerkullsbarn.periodisert
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.fribelopUtvikling.fribelopsokning
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.fribelopUtvikling.gradsokning
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.fribelopUtvikling.kategori
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.fribelopsokning._2arEtterGradsokning
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.fribelopsokning.dato
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.gradsokning.dato
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.uforetrygd.okningUforegradVedArskjoring
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.virkningFom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.fribelopsokning
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.gradsokning
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.kategori
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsokning._2arEtterGradsokning
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsokning.dato
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.gradsokning.dato
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
@@ -34,7 +34,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -59,20 +59,10 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 )
             }
             paragraph {
-                table(
-                    header = {
-                        column(2) {}
-                        column(
-                            columnSpan = 1,
-                            alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-                        ) {
-                            text(
-                                bokmal { +"Beløp" },
-                                nynorsk { +"Beløp" },
-                            )
-                        }
-                    }
-                )
+                table(header = {
+                    column { text(bokmal { +"Beregning" }, nynorsk { +"Berekning" }) }
+                    column(alignment = RIGHT) { text(bokmal { +"Beløp" }, nynorsk { +"Beløp" }) }
+                })
                 {
                     row {
                         cell {
@@ -596,7 +586,7 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 showIf(
                     (data.btfbEndret and fellesbarnPeriodisert)
                             or (data.btsbEndret and sarkullsbarnPeriodisert)
-                            or (harBarnetillegg and data.sokerMottarApIlaAret)
+                            or (harBarnetillegg and (data.sokerMottarApIlaAret or not(data.opphorDato.isNull())))
                 ) {
                     paragraph {
                         text(

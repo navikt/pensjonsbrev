@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 @TemplateModelHelpers
 object EndretUforetrygdPGAInntektNesteArRedigerbar : RedigerbarTemplate<EndretUforetrygdPGAInntektNesteArRedigerbarDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtEndretPgaInntektNesteAr.toggle
+    override val featureToggle = FeatureToggles.brevmalUtDesemberkjoring.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_ENDRET_PGA_INNTEKT_NESTE_AR_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
