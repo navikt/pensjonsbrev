@@ -26,7 +26,7 @@ export function AppHeader() {
   );
 }
 
-const DOCUMENTATION_URL = "https://navikt.github.io/pensjonsbrev/docs/main/index.html";
+const DOCUMENTATION_URL = "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html";
 
 function UsefulLinksMenu() {
   return (
