@@ -8,7 +8,21 @@ fun publishedVersion(artifact: String): String =
         ?: throw GradleException("Mangler 'version' i gradle/published/$artifact.properties")
 
 dependencyResolutionManagement {
+    repositories {
+        mavenCentral {
+            content {
+                includeModule("io.ktor", "ktor-version-catalog")
+                includeModule("org.jetbrains.exposed", "exposed-version-catalog")
+            }
+        }
+    }
     versionCatalogs {
+        create("ktorLibs") {
+            from("io.ktor:ktor-version-catalog:3.6.0")
+        }
+        create("exposedLibs") {
+            from("org.jetbrains.exposed:exposed-version-catalog:1.6.0")
+        }
         create("publishedLibs") {
             version("brevdataVersion", publishedVersion("brevdata"))
             version("markupVersion", publishedVersion("markup"))
