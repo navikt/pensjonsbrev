@@ -1487,6 +1487,7 @@ public final class no/nav/pensjon/brev/template/dsl/expression/DateKt {
 	public static final fun getLocalDateNow ()Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getMonth (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun getYearAndMonth (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun plus (Lno/nav/pensjon/brev/template/Expression;Ljava/time/temporal/TemporalAmount;)Lno/nav/pensjon/brev/template/Expression;
 }
 
