@@ -2,6 +2,8 @@ import { type BrowserContext, expect, test } from "@playwright/test";
 
 import { setupSakStubs } from "~test/e2e/support/helpers";
 
+test.use({ timezoneId: "UTC" });
+
 const COOKIE_NAME = "pensjon-psak-innblikk-uuid";
 const WEBSITE_ID = "85abe8ab-e9d6-4179-b727-9c856715343f";
 const PENNY_ID = "ec458791-8536-41b6-bf86-a5fe83226946";
@@ -103,7 +105,8 @@ for (const environment of [
       await page.addInitScript(() => {
         window.open = () => null;
       });
-      const expires = Math.floor(new Date(2027, 0, 1).getTime() / 1000);
+      const now = new Date();
+      const expires = Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1) / 1000;
       await context.addCookies([
         {
           name: COOKIE_NAME,
@@ -146,7 +149,13 @@ for (const environment of [
     }) => {
       const events = await interceptAnalytics(context, baseURL as string, environment.skribenten);
       await setupSakStubs(page);
-      await page.clock.setFixedTime(new Date(2026, 10, 30, 12));
+      const now = new Date();
+      // Cookie expiry uses the real browser clock, so keep both simulated months in the future.
+      const beforeRollover = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 2, 0, 12));
+      const afterRollover = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 2, 1, 12));
+      const initialExpiry = Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 2, 1) / 1000;
+      const renewedExpiry = Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 3, 1) / 1000;
+      await page.clock.setFixedTime(beforeRollover);
       await page.goto(`${environment.skribenten}/personvern`);
       await expect.poll(() => events.length).toBeGreaterThan(0);
 
@@ -159,7 +168,7 @@ for (const environment of [
         secure: true,
         sameSite: "Lax",
         httpOnly: false,
-        expires: new Date(2026, 11, 1).getTime() / 1000,
+        expires: initialExpiry,
       });
       expect(cookie.value).toMatch(/^[0-9a-f-]{36}$/);
       expect(events[0].payload.id).toBe(cookie.value);
@@ -187,13 +196,13 @@ for (const environment of [
 
       // Simulate the browser expiring the cookie while Skribenten stays open across month-end.
       await context.clearCookies({ name: COOKIE_NAME });
-      await page.clock.setFixedTime(new Date(2026, 11, 1, 12));
+      await page.clock.setFixedTime(afterRollover);
       await page.evaluate(() => globalThis.umami?.track("tekst erstattet"));
       await expect.poll(() => events.find((event) => event.payload.name === "tekst erstattet")).toBeDefined();
       const renewed = (await context.cookies()).find((entry) => entry.name === COOKIE_NAME);
       expect(renewed?.value).not.toBe(cookie.value);
       expect(renewed?.value).not.toBe(NEXT_ID);
-      expect(renewed?.expires).toBe(new Date(2027, 0, 1).getTime() / 1000);
+      expect(renewed?.expires).toBe(renewedExpiry);
       expect(events.find((event) => event.payload.name === "tekst erstattet")?.payload.id).toBe(renewed?.value);
     });
   });
