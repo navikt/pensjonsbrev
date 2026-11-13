@@ -583,11 +583,7 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                     )
                 }
 
-                showIf(
-                    (data.btfbEndret and fellesbarnPeriodisert)
-                            or (data.btsbEndret and sarkullsbarnPeriodisert)
-                            or (harBarnetillegg and (data.sokerMottarApIlaAret or not(data.opphorDato.isNull())))
-                ) {
+                showIf(fellesbarnPeriodisert or sarkullsbarnPeriodisert or (harBarnetillegg and (data.sokerMottarApIlaAret or not(data.opphorDato.isNull())))) {
                     paragraph {
                         text(
                             bokmal { +"Fordi du har barnetillegg som opphører i løpet av neste år, er inntektene og fribeløpet for neste år justert slik at de kun gjelder for perioden du mottar barnetillegg." },
