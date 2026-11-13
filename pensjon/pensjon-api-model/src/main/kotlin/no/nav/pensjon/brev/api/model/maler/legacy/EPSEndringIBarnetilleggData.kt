@@ -12,11 +12,8 @@ data class EPSEndringIBarnetilleggData(
     val nettoBarnetilleggFB: Kroner,
     val nettoBarnetilleggSB: Kroner,
     val totalbelop: Kroner,
-    val samletInntektsgrenseBarnetillegg: Kroner,
-    val fribelop: Kroner,
 
     val barnetilleggSB: Boolean,
-    val opphortUforetrygdEllerBTFB: Boolean,
 
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
