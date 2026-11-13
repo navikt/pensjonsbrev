@@ -37,7 +37,7 @@ object EPSEndringIBarnetillegg {
                     column { text(
                         bokmal { +"Din ytelse per måned" },
                         nynorsk { +"Din ytelse per månad" }) }
-                    column(alignment = RIGHT) { text(bokmal { +"Kroner" }, nynorsk { +"Kroner" }) }
+                    column(alignment = RIGHT) { text(bokmal { +"Beløp" }, nynorsk { +"Beløp" }) }
                 }) {
                     beloepsrader(data)
                 }
@@ -108,8 +108,8 @@ object EPSEndringIBarnetillegg {
             }
             cell {
                 text(
-                    bokmal { +data.nettoUforetrygdUtenTillegg.format(false) },
-                    nynorsk { +data.nettoUforetrygdUtenTillegg.format(false) },
+                    bokmal { +data.nettoUforetrygdUtenTillegg.format() },
+                    nynorsk { +data.nettoUforetrygdUtenTillegg.format() },
                 )
             }
         }

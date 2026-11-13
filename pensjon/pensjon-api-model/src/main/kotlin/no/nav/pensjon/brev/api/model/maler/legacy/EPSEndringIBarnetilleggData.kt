@@ -7,7 +7,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class EPSEndringIBarnetilleggData(
-    // TODO Sjekk om vi trenger optional felter her
     val virkningstidspunkt: LocalDate,
     val nettoUforetrygdUtenTillegg: Kroner,
     val nettoBarnetilleggFB: Kroner,
