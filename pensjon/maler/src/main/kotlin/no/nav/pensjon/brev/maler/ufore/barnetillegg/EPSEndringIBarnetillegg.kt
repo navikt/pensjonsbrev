@@ -24,7 +24,7 @@ object EPSEndringIBarnetillegg {
         val nettoBarnetilleggFB: Expression<Kroner>,
         val nettoBarnetilleggSB: Expression<Kroner>,
         val totalbelop: Expression<Kroner>,
-        val barnetilleggSB: Expression<Boolean>,
+        val harBarnetilleggSB: Expression<Boolean>,
     )
 
     data class Outline(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
@@ -127,7 +127,7 @@ object EPSEndringIBarnetillegg {
                 )
             }
         }
-        showIf(data.barnetilleggSB) {
+        showIf(data.harBarnetilleggSB) {
             row {
                 cell {
                     text(

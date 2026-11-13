@@ -44,7 +44,7 @@ object EPSEndringIBarnetilleggAuto : AutobrevTemplate<EPSEndringIBarnetilleggAut
                     nettoBarnetilleggFB = data.nettoBarnetilleggFB,
                     nettoBarnetilleggSB = data.nettoBarnetilleggSB,
                     totalbelop = data.totalbelop,
-                    barnetilleggSB = data.barnetilleggSB,
+                    harBarnetilleggSB = data.harBarnetilleggSB,
                 )
             ))
         }

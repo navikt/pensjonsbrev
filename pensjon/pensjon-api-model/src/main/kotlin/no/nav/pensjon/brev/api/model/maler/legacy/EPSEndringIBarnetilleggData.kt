@@ -13,7 +13,7 @@ data class EPSEndringIBarnetilleggData(
     val nettoBarnetilleggSB: Kroner,
     val totalbelop: Kroner,
 
-    val barnetilleggSB: Boolean,
+    val harBarnetilleggSB: Boolean,
 
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,

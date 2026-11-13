@@ -54,7 +54,7 @@ object EPSEndringIBarnetilleggRedigerbar : RedigerbarTemplate<EPSEndringIBarneti
                     nettoBarnetilleggFB = data.nettoBarnetilleggFB,
                     nettoBarnetilleggSB = data.nettoBarnetilleggSB,
                     totalbelop = data.totalbelop,
-                    barnetilleggSB = data.barnetilleggSB,
+                    harBarnetilleggSB = data.harBarnetilleggSB,
                 )
             ))
         }
