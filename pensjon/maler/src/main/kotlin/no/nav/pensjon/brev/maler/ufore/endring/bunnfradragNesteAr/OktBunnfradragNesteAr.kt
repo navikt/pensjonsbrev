@@ -30,9 +30,13 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtv
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsokning._2arEtterGradsokning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsokning.dato
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.gradsokning.dato
-import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
+import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
+import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -52,6 +56,7 @@ import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -68,6 +73,8 @@ object OktBunnfradragNesteAr {
                     .plus(nettoBarnetillegg.ifNull(Kroner(0)))
                     .plus(nettoGjenlevendetillegg.ifNull(Kroner(0)))
                     .greaterThan(0)
+
+                val endringUforetrygdOgTillegg = endringUforetrygd.plus(endringBarnetillegg).plus(endringGjenlevendetillegg)
 
                 paragraph {
                     text(
@@ -213,29 +220,31 @@ object OktBunnfradragNesteAr {
                                 )
                             }
                         }
-                        row {
-                            cell {
-                                showIf(endringUforetrygd.plus(endringBarnetillegg).plus(endringGjenlevendetillegg).greaterThanOrEqual(0)) {
+                        showIf(endringUforetrygdOgTillegg.notEqualTo(0)) {
+                            row {
+                                cell {
+                                    showIf(endringUforetrygdOgTillegg.greaterThanOrEqual(0)) {
+                                        text(
+                                            bokmal { +"Månedlig økning " },
+                                            nynorsk { +"Månadleg auke " },
+                                        )
+                                    }.orShow {
+                                        text(
+                                            bokmal { +"Månedlig reduksjon " },
+                                            nynorsk { +"Månadleg reduksjon " },
+                                        )
+                                    }
                                     text(
-                                        bokmal { +"Månedlig økning " },
-                                        nynorsk { +"Månadleg auke " },
-                                    )
-                                }.orShow {
-                                    text(
-                                        bokmal { +"Månedlig reduksjon " },
-                                        nynorsk { +"Månadleg reduksjon " },
+                                        bokmal { +"i uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") },
+                                        nynorsk { +"i uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") },
                                     )
                                 }
-                                text(
-                                    bokmal { +"i uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") },
-                                    nynorsk { +"i uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +endringUforetrygd.plus(endringBarnetillegg).plus(endringGjenlevendetillegg).format() },
-                                    nynorsk { +endringUforetrygd.plus(endringBarnetillegg).plus(endringGjenlevendetillegg).format() },
-                                )
+                                cell {
+                                    text(
+                                        bokmal { +endringUforetrygdOgTillegg.format() },
+                                        nynorsk { +endringUforetrygdOgTillegg.format() },
+                                    )
+                                }
                             }
                         }
                     }
@@ -248,34 +257,7 @@ object OktBunnfradragNesteAr {
                         )
                     }
                 }
-                title1 {
-                    text(
-                        bokmal { +"Du må melde fra om inntekt" },
-                        nynorsk { +"Du må melde frå om inntekt" },
-                    )
-                }
-                paragraph {
-                    list {
-                        item {
-                            text(
-                                bokmal { +"Husk å gi oss beskjed om inntekten du har i tillegg til uføretrygden din. Inntekt som er høyere enn bunnfradraget, påvirker hvor mye du får utbetalt. Si fra i tide, så unngår du feilutbetalinger." },
-                                nynorsk { +"Hugs å gi oss beskjed om inntekta du har i tillegg til uføretrygda di. Inntekt som er høgare enn botnfrådraget, påverkar kor mykje du får utbetalt. Sei frå i tide, så unngår du feilutbetalingar." },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"Har du inntekt, er det lurt å melde fra til oss om hvor mye du tror du kommer til å tjene neste år. Hvis du ikke melder fra, vil vi oppjustere inntekten vi har registrert for deg i år ved årsskiftet, og du vil få et vedtak fra oss om dette." },
-                                nynorsk { +"Har du inntekt, er det lurt å melde frå til oss om kor mykje du trur du kjem til å tene neste år. Dersom du ikkje melder frå, vil vi oppjustere inntekta vi har registrert for deg i år ved årsskiftet, og du vil få eit vedtak frå oss om dette." },
-                            )
-                        }
-                    }
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Du kan melde inn forventet inntekt i Inntektsplanleggeren på $INNTEKTSPLANLEGGEREN_URL." },
-                        nynorsk { +"Du kan melde inn forventa inntekt i Inntektsplanleggaren på $INNTEKTSPLANLEGGEREN_URL." },
-                    )
-                }
+                includePhrase(Ufoeretrygd.MeldeFraOmEndringer(vedleggDineRettigheterOgPlikterUfoere))
                 title1 {
                     text(
                         bokmal { +"Slik beregner vi fribeløp og bunnfradrag" },
@@ -300,12 +282,6 @@ object OktBunnfradragNesteAr {
                     }
                     includePhrase(GrunnbelopFrase(grunnbelop))
                 }.orShowIf(fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_TIL_04G, FRIBELOP_04G_TIL_1G_TIL_04G, FRIBELOP_04G_TIL_1G)) {
-                    title1 {
-                        text(
-                            bokmal { +"Periodisert fribeløp" },
-                            nynorsk { +"Periodisert fribeløp" }
-                        )
-                    }
                     paragraph {
                         text(
                             bokmal { +"Når fribeløpet endres i løpet av kalenderåret, beregnes det årlige bunnfradraget ut fra periodene du har med ulike fribeløp. Ditt fribeløp i " + vedtakVirkFom.year.format() + " blir " + fribelop.format() + ". Se tabellen under. " },
@@ -443,6 +419,9 @@ object OktBunnfradragNesteAr {
                         nynorsk { +"Vedtaket er gjort etter folketrygdlova " + hjemler.format(HjemmelFormatter(true)) + "." },
                     )
                 }
+                includePhrase(Ufoeretrygd.RettTilAKlage)
+                includePhrase(Ufoeretrygd.RettTilInnsyn)
+                includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON))
             }
         }
     }
