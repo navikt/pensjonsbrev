@@ -4,6 +4,7 @@
 <Configuration status="WARN">
     <Appenders>
         <Console name="stdout_json" target="SYSTEM_OUT">
+            <RegexFilter regex="^Database: jdbc:.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
             <JsonTemplateLayout eventTemplateUri="classpath:NavJsonEventLayout.json"/>
         </Console>
     </Appenders>

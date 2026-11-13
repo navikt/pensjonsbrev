@@ -2,6 +2,7 @@
 <Configuration status="WARN" shutdownHook="disable">
     <Appenders>
         <Console name="stdout_json" target="SYSTEM_OUT">
+            <RegexFilter regex="^Database: jdbc:.*$" onMatch="DENY" onMismatch="NEUTRAL"/>
             <JsonTemplateLayout eventTemplateUri="classpath:LogstashJsonEventLayoutV1.json"/>
         </Console>
     </Appenders>
