@@ -35,7 +35,9 @@ Attestanten kan velge å vise:
 * tekst som er slettet, markert i rosa med gjennomstreking
 * eller begge samtidig
 
-image::attestering-begge-endringer.png[]
+image::../images/attestering-begge-endringer.png[beskrivelse]
+
+
 
 === Mer robust innliming av tekst
 
