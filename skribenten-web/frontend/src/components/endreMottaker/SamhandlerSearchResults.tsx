@@ -6,8 +6,8 @@ import { ApiError } from "~/components/ApiError";
 import { useSamhandlerMottaker } from "~/hooks/useSamhandlerMottaker";
 import { type Samhandler } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
+import { trackEvent } from "~/utils/innblikk";
 import { humanizeName } from "~/utils/stringUtils";
-import { trackEvent } from "~/utils/umami";
 
 type SelectionMethod = "radio-klikk" | "rad-klikk" | "tastatur";
 

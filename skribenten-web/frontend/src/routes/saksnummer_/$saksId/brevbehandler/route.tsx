@@ -8,7 +8,7 @@ import { z } from "zod";
 import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import { trackEvent } from "~/utils/umami";
+import { trackEvent } from "~/utils/innblikk";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";

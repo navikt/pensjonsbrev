@@ -9,8 +9,8 @@ import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import { queryClient } from "~/routes/__root";
 import { type BrevInfo } from "~/types/brev";
 import { erVedtaksbrev } from "~/utils/brevUtils";
+import { trackEvent } from "~/utils/innblikk";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
-import { trackEvent } from "~/utils/umami";
 
 export const Route = createFileRoute("/aapne/brev/$brevId")({
   loader: async ({ params: { brevId } }) => {

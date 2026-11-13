@@ -691,4 +691,4 @@ object Ufoeretrygd {
 fun erUforetidspunktMaanedEtterFoedsel(
     uforetidspunkt: Expression<LocalDate>,
     foedselsdato: Expression<LocalDate>,
-): Expression<Boolean> = foedselsdato.plus(Period.ofMonths(1)) equalTo uforetidspunkt
+): Expression<Boolean> = foedselsdato.plus(Period.ofMonths(1)).yearAndMonth equalTo uforetidspunkt.yearAndMonth

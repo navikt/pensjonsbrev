@@ -1,3 +1,11 @@
+pluginManagement {
+    includeBuild("gradle/settings")
+}
+
+plugins {
+    id("dependency-catalogs")
+}
+
 rootProject.name = "pensjonsbrev"
 
 fun publishedVersion(artifact: String): String =
