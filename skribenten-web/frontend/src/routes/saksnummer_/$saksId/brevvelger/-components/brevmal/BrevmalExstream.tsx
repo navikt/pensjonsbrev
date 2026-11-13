@@ -10,7 +10,7 @@ import { orderExstreamLetter, orderLetterKeys } from "~/api/skribenten-api-endpo
 import { Divider } from "~/components/Divider";
 import { type LetterMetadata, type OrderExstreamLetterRequest, type SpraakKode } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
-import { trackEvent } from "~/utils/umami";
+import { trackEvent } from "~/utils/innblikk";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
 import EndreMottaker from "../endreMottaker/EndreMottaker";

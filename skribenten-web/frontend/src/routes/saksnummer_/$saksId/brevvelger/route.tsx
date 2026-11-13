@@ -31,7 +31,7 @@ import { type BrevInfo } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
-import { trackEvent } from "~/utils/umami";
+import { trackEvent } from "~/utils/innblikk";
 
 import { baseSearchSchema } from "../route";
 import BrevmalPanel from "./-components/BrevmalPanel";
