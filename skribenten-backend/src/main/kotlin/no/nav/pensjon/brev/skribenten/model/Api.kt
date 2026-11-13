@@ -22,6 +22,8 @@ object Api {
 
     data class UserInfo(val name: String, val navident: NavIdent, val erAttestant: Boolean)
 
+    data class Nyhetsvarsler(val settAnnonsen: List<NyhetsvarselId>, val gjennomfoertOmvisningen: List<NyhetsvarselId>)
+
     data class FeatureToggleResponse(val enabled: Boolean)
 
     data class OpprettBrevRequest(

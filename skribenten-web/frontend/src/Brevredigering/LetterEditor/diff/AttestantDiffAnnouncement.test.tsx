@@ -5,7 +5,13 @@ import { addDays, parseISO, setHours } from "date-fns";
 import { type ReactNode, useState } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import { ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL, AttestantDiffAnnouncement } from "./AttestantDiffAnnouncement";
+import { DIFF_TOGGLES_ANNOUNCEMENT } from "~/components/notifications/productAnnouncements";
+
+import {
+  ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL,
+  ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL,
+  AttestantDiffAnnouncement,
+} from "./AttestantDiffAnnouncement";
 
 const lastDisplayDay = () => setHours(parseISO(ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL), 12);
 
@@ -25,7 +31,10 @@ vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
   const original = await importOriginal<typeof import("~/api/skribenten-api-endpoints")>();
   return {
     ...original,
-    getAcknowledgedAnnouncements: { ...original.getAcknowledgedAnnouncements, queryFn: fetchAcknowledgedMock },
+    getAnnouncementStatus: {
+      ...original.getAnnouncementStatus,
+      queryFn: async () => ({ settAnnonsen: [], gjennomfoertOmvisningen: await fetchAcknowledgedMock() }),
+    },
     acknowledgeAnnouncement: acknowledgeMock,
   };
 });
@@ -147,8 +156,25 @@ describe("<AttestantDiffAnnouncement />", () => {
     expect(queryAnnouncement()).toBeNull();
   });
 
-  test("vises ikke etter siste visningsdag", async () => {
+  test("vises ikke før publiseringsdatoen", async () => {
+    vi.setSystemTime(addDays(setHours(parseISO(DIFF_TOGGLES_ANNOUNCEMENT.publishedAt), 12), -1));
+    render(<Harness />);
+    await settle();
+
+    expect(queryAnnouncement()).toBeNull();
+    expect(fetchAcknowledgedMock).not.toHaveBeenCalled();
+  });
+
+  test("starter ikke automatisk etter siste automatiske visningsdag", async () => {
     vi.setSystemTime(addDays(lastDisplayDay(), 1));
+    render(<Harness />);
+    await settle();
+
+    expect(queryAnnouncement()).toBeNull();
+  });
+
+  test("henter ikke bekreftelser når nyheten heller ikke kan vises på nytt lenger", async () => {
+    vi.setSystemTime(addDays(setHours(parseISO(ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL), 12), 1));
     render(<Harness />);
     await settle();
 

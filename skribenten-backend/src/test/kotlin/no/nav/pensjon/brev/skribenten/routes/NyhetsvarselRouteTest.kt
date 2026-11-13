@@ -22,11 +22,11 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.saksbehandler.BekreftNyhetsvarselHandler
 import no.nav.pensjon.brev.skribenten.saksbehandler.FjernFavorittHandler
-import no.nav.pensjon.brev.skribenten.saksbehandler.HentBekreftedeNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.saksbehandler.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.saksbehandler.LeggTilFavorittHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.MarkerNyhetsvarselHandler
 import no.nav.pensjon.brev.skribenten.services.FakeNavansattService
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.skribentenContenNegotiation
@@ -74,8 +74,8 @@ class NyhetsvarselRouteTest {
                 provide(HentFavoritterHandler::class)
                 provide(LeggTilFavorittHandler::class)
                 provide(FjernFavorittHandler::class)
-                provide(HentBekreftedeNyhetsvarslerHandler::class)
-                provide(BekreftNyhetsvarselHandler::class)
+                provide(HentNyhetsvarslerHandler::class)
+                provide(MarkerNyhetsvarselHandler::class)
             }
 
             routing {
@@ -98,45 +98,57 @@ class NyhetsvarselRouteTest {
         block(client)
     }
 
+    private val tom = """{"settAnnonsen":[],"gjennomfoertOmvisningen":[]}"""
+
     @Test
-    fun `svarer med tom liste for bruker uten bekreftede nyhetsvarsler`() = meTestApplication(nyNavIdent()) { client ->
-        val response = client.get("/me/bekreftedeNyhetsvarsler")
+    fun `svarer med tomme lister for bruker uten nyhetsvarsler`() = meTestApplication(nyNavIdent()) { client ->
+        val response = client.get("/me/nyhetsvarsel")
 
         assertThat(response.status).isEqualTo(HttpStatusCode.OK)
-        assertThat(response.bodyAsText()).isEqualTo("[]")
+        assertThat(response.bodyAsText()).isEqualTo(tom)
     }
 
     @Test
-    fun `bekrefter nyhetsvarsel og henter det ut igjen som streng`() = meTestApplication(nyNavIdent()) { client ->
-        val bekreft = client.put("/me/bekreftedeNyhetsvarsler/diff-toggles")
+    fun `markerer at annonsen er sett og at omvisningen er gjennomfoert`() = meTestApplication(nyNavIdent()) { client ->
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.get("/me/nyhetsvarsel").bodyAsText())
+            .isEqualTo("""{"settAnnonsen":["diff-toggles"],"gjennomfoertOmvisningen":[]}""")
 
-        assertThat(bekreft.status).isEqualTo(HttpStatusCode.NoContent)
-        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("""["diff-toggles"]""")
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.get("/me/nyhetsvarsel").bodyAsText())
+            .isEqualTo("""{"settAnnonsen":["diff-toggles"],"gjennomfoertOmvisningen":["diff-toggles"]}""")
     }
 
     @Test
-    fun `aa bekrefte samme nyhetsvarsel flere ganger gir fortsatt bare ett`() = meTestApplication(nyNavIdent()) { client ->
-        assertThat(client.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.NoContent)
-        assertThat(client.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.NoContent)
+    fun `aa markere samme nyhetsvarsel flere ganger gir fortsatt bare ett`() = meTestApplication(nyNavIdent()) { client ->
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.NoContent)
 
-        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("""["diff-toggles"]""")
+        assertThat(client.get("/me/nyhetsvarsel").bodyAsText())
+            .isEqualTo("""{"settAnnonsen":[],"gjennomfoertOmvisningen":["diff-toggles"]}""")
     }
 
     @Test
-    fun `brukere ser bare sine egne bekreftede nyhetsvarsler`() {
+    fun `brukere ser bare sine egne nyhetsvarsler`() {
         meTestApplication(nyNavIdent()) { client ->
-            client.put("/me/bekreftedeNyhetsvarsler/diff-toggles")
+            client.put("/me/nyhetsvarsel/diff-toggles/settAnnonsen")
         }
         meTestApplication(nyNavIdent()) { client ->
-            assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("[]")
+            assertThat(client.get("/me/nyhetsvarsel").bodyAsText()).isEqualTo(tom)
         }
+    }
+
+    @Test
+    fun `svarer med not found for ukjent markering`() = meTestApplication(nyNavIdent()) { client ->
+        assertThat(client.put("/me/nyhetsvarsel/diff-toggles/ukjent").status).isEqualTo(HttpStatusCode.NotFound)
     }
 
     @Test
     fun `svarer med unauthorized uten innlogget bruker`() = meTestApplication(nyNavIdent()) { _ ->
         val utenInnlogging = createClient { }
 
-        assertThat(utenInnlogging.get("/me/bekreftedeNyhetsvarsler").status).isEqualTo(HttpStatusCode.Unauthorized)
-        assertThat(utenInnlogging.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.get("/me/nyhetsvarsel").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.put("/me/nyhetsvarsel/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.Unauthorized)
     }
 }

@@ -11,12 +11,13 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NyhetsvarselId
+import no.nav.pensjon.brev.skribenten.model.Nyhetsvarselmarkering
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.saksbehandler.BekreftNyhetsvarselHandler
 import no.nav.pensjon.brev.skribenten.saksbehandler.FjernFavorittHandler
-import no.nav.pensjon.brev.skribenten.saksbehandler.HentBekreftedeNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.saksbehandler.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.HentNyhetsvarslerHandler
 import no.nav.pensjon.brev.skribenten.saksbehandler.LeggTilFavorittHandler
+import no.nav.pensjon.brev.skribenten.saksbehandler.MarkerNyhetsvarselHandler
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 
 context(app: Application)
@@ -55,18 +56,21 @@ fun Route.meRoute() {
             call.respond(navansattService.hentNavAnsattEnhetListe(principal().navIdent))
         }
 
-        val hentBekreftedeNyhetsvarslerHandler: HentBekreftedeNyhetsvarslerHandler by app.dependencies
-        get("/bekreftedeNyhetsvarsler") {
-            val bekreftede = hentBekreftedeNyhetsvarslerHandler(HentBekreftedeNyhetsvarslerHandler.Request(principal().navIdent))
-            respondSuccess(bekreftede?.asSuccess()) { respond(it) }
-        }
+        val hentNyhetsvarslerHandler: HentNyhetsvarslerHandler by app.dependencies
+        val markerNyhetsvarselHandler: MarkerNyhetsvarselHandler by app.dependencies
+        route("/nyhetsvarsel") {
+            get {
+                val nyhetsvarsler = hentNyhetsvarslerHandler(HentNyhetsvarslerHandler.Request(principal().navIdent))
+                respondSuccess(nyhetsvarsler?.asSuccess()) { respond(it) }
+            }
 
-        val bekreftNyhetsvarselHandler: BekreftNyhetsvarselHandler by app.dependencies
-        put("/bekreftedeNyhetsvarsler/{nyhetsvarselId}") {
-            val bekreft = bekreftNyhetsvarselHandler(
-                BekreftNyhetsvarselHandler.Request(principal().navIdent, NyhetsvarselId(call.parameters.getOrFail("nyhetsvarselId")))
-            )
-            respondSuccess(bekreft?.asSuccess()) { respond(HttpStatusCode.NoContent) }
+            suspend fun RoutingContext.marker(markering: Nyhetsvarselmarkering) {
+                val nyhetsvarselId = NyhetsvarselId(call.parameters.getOrFail("nyhetsvarselId"))
+                val marker = markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(principal().navIdent, nyhetsvarselId, markering))
+                respondSuccess(marker?.asSuccess()) { respond(HttpStatusCode.NoContent) }
+            }
+            put("/{nyhetsvarselId}/settAnnonsen") { marker(Nyhetsvarselmarkering.SETT_ANNONSEN) }
+            put("/{nyhetsvarselId}/gjennomfoertOmvisningen") { marker(Nyhetsvarselmarkering.GJENNOMFOERT_OMVISNINGEN) }
         }
     }
 }
