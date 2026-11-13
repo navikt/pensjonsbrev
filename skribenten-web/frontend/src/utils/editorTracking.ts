@@ -1,5 +1,5 @@
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
-import { trackEvent, type UmamiEventData } from "~/utils/umami";
+import { trackEvent, type UmamiEventData } from "~/utils/innblikk";
 
 export type MissingFromTemplateEventName = "blokk beholdt" | "blokk slettet";
 

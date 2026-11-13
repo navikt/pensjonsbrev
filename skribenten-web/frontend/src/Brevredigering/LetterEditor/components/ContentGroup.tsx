@@ -57,8 +57,8 @@ import {
   type LiteralValue,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
+import { trackEvent } from "~/utils/innblikk";
 import { getPasteMetadata, hasPasteContent } from "~/utils/pasteTracking";
-import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
 import { effectiveListType, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";

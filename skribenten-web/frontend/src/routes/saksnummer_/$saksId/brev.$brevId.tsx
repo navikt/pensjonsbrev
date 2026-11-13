@@ -37,8 +37,8 @@ import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelge
 import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
 import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
 import { genericErrorMessage, getErrorMessage } from "~/utils/errorUtils";
+import { trackEvent } from "~/utils/innblikk";
 import { queryFold } from "~/utils/tanstackUtils";
-import { trackEvent } from "~/utils/umami";
 
 const brevRedigeringSearchSchema = baseSearchSchema.extend({
   vedlegg: z.coerce.string().optional(),

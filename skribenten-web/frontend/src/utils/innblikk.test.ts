@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { beforeSend, getDomain, getOrCreateUserId, initInnblikk } from "~/utils/innblikk";
-import { finishTrackerLoading, trackEvent } from "~/utils/umami";
+import { beforeSend, getDomain, getOrCreateUserId, initInnblikk, trackEvent } from "~/utils/innblikk";
 
 declare const jsdom: { reconfigure(options: { url: string }): void };
 
@@ -23,9 +22,11 @@ const payload = {
 beforeEach(() => {
   getCookie.mockReset();
   setCookie.mockReset();
+  vi.spyOn(console, "info").mockImplementation(() => {});
 });
 
 afterEach(() => {
+  document.getElementById("skribenten-innblikk-sporing")?.dispatchEvent(new Event("error"));
   vi.useRealTimers();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -35,8 +36,14 @@ afterEach(() => {
   }
   globalThis.addSkribentenInnblikkIdentity = undefined;
   globalThis.umami = undefined;
-  finishTrackerLoading(false);
 });
+
+function configure() {
+  document.head.insertAdjacentHTML(
+    "beforeend",
+    '<meta name="umami-website-id" content="skribenten-website"><meta name="umami-host-url" content="https://reops-event-proxy.nav.no">',
+  );
+}
 
 describe("felles cookie med Penny", () => {
   it.each([
@@ -115,13 +122,6 @@ describe("felles cookie med Penny", () => {
 });
 
 describe("oppstart av Innblikk", () => {
-  function configure() {
-    document.head.insertAdjacentHTML(
-      "beforeend",
-      '<meta name="umami-website-id" content="skribenten-website"><meta name="umami-host-url" content="https://reops-event-proxy.nav.no">',
-    );
-  }
-
   it("installerer callback før sporingsskriptet kan kjøre, og laster bare én gang", () => {
     configure();
     getCookie.mockReturnValue(id);
@@ -171,5 +171,64 @@ describe("oppstart av Innblikk", () => {
       expect(track).not.toHaveBeenCalled();
       expect(document.getElementById("skribenten-innblikk-sporing")).toBeNull();
     }
+  });
+});
+
+describe("hendelser under lasting av sporingsskriptet", () => {
+  function startLoading() {
+    configure();
+    initInnblikk();
+    return document.getElementById("skribenten-innblikk-sporing") as HTMLScriptElement;
+  }
+
+  it("sender køen i rekkefølge én gang, med opprinnelige data uten undefined", () => {
+    const script = startLoading();
+    const data = { feiltype: "ugyldig brev-id", brevId: undefined };
+    trackEvent("pesys feil", data);
+    data.feiltype = "endret";
+    trackEvent("pesys omdirigering");
+    const track = vi.fn();
+    globalThis.umami = { track };
+
+    script.dispatchEvent(new Event("load"));
+    script.dispatchEvent(new Event("load"));
+
+    expect(track.mock.calls).toEqual([
+      ["pesys feil", { feiltype: "ugyldig brev-id" }],
+      ["pesys omdirigering", undefined],
+    ]);
+  });
+
+  it("forkaster hendelser ved lastefeil og tar dem ikke med ved nytt forsøk", () => {
+    const script = startLoading();
+    trackEvent("pesys feil");
+    script.dispatchEvent(new Event("error"));
+    trackEvent("pesys feil");
+    initInnblikk();
+    const track = vi.fn();
+    globalThis.umami = { track };
+    document.getElementById("skribenten-innblikk-sporing")?.dispatchEvent(new Event("load"));
+    expect(track).not.toHaveBeenCalled();
+  });
+
+  it("lagrer ikke hendelser når sporing ikke lastes", () => {
+    trackEvent("pesys feil");
+    const script = startLoading();
+    const track = vi.fn();
+    globalThis.umami = { track };
+    script.dispatchEvent(new Event("load"));
+    trackEvent("brev sendt");
+    expect(track.mock.calls).toEqual([["brev sendt", undefined]]);
+  });
+
+  it("begrenser køen hvis skriptet aldri blir ferdig lastet", () => {
+    const script = startLoading();
+    for (let i = 0; i < 150; i++) {
+      trackEvent("pesys feil");
+    }
+    const track = vi.fn();
+    globalThis.umami = { track };
+    script.dispatchEvent(new Event("load"));
+    expect(track).toHaveBeenCalledTimes(100);
   });
 });
