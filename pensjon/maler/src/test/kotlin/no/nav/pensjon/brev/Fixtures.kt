@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlag
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlagePE
+import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
@@ -189,6 +190,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmOktMinsteIFULavereReduksjonsprosentAuto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
             VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
             VedtakOmOktMinsteIFURedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
+            KlageVedtakAvvisningAvKlageUT::class-> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
