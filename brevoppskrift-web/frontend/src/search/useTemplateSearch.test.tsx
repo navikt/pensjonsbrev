@@ -52,7 +52,7 @@ function renderSearch(queryClient: QueryClient, client: SearchClient = createLoc
   const history: TemplateSearch[] = [];
   const rendered = renderHook(
     () => {
-      const search = useTemplateSearch(refs, client);
+      const search = useTemplateSearch(refs, { searchClient: client });
       history.push(search);
       return search;
     },
@@ -96,6 +96,22 @@ describe("useTemplateSearch", () => {
     expect(result.current.failedMalTypes).toEqual(["redigerbar"]);
   });
 
+  it("does not report a background refetch failure when the corpus is still cached", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      malType === "redigerbar" ? Promise.reject(new Error("boom")) : Promise.resolve(autobrevContent),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const cachedCorpus = getAllTemplateDocumentation.queryKey("redigerbar");
+    queryClient.setQueryData(cachedCorpus, []);
+    await queryClient.invalidateQueries({ queryKey: cachedCorpus });
+
+    const { result } = renderSearch(queryClient);
+
+    await waitFor(() => expect(getAllTemplateDocumentation.queryFn).toHaveBeenCalledWith("redigerbar"));
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(result.current.failedMalTypes).toEqual([]);
+  });
+
   it("does not report any failures when every malType's corpus fetch succeeds", async () => {
     getAllTemplateDocumentation.queryFn.mockResolvedValue(autobrevContent);
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -126,6 +142,35 @@ describe("useTemplateSearch", () => {
       expect(result.current.failedMalTypes).toHaveLength(0);
     });
     expect(getAllTemplateDocumentation.queryFn.mock.calls.length).toBeGreaterThan(callsBeforeRetry);
+  });
+
+  it("keeps a displayed search marked incomplete until its recovered-corpus search completes", async () => {
+    let redigerbarCalls = 0;
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) => {
+      if (malType === "redigerbar" && redigerbarCalls++ === 0) {
+        return Promise.reject(new Error("boom"));
+      }
+      return Promise.resolve(malType === "autobrev" ? autobrevContent : []);
+    });
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const client = deferrableClient();
+
+    const { result } = renderSearch(queryClient, client);
+    await waitFor(() => expect(result.current.failedMalTypes).toEqual(["redigerbar"]));
+    act(() => result.current.setQuery("hei"));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.displayed?.incomplete).toBe(true));
+    const previousSearch = result.current.displayed;
+
+    result.current.retryFailed();
+    await waitFor(() => expect(result.current.failedMalTypes).toEqual([]));
+    await waitFor(() => expect(result.current.isPending).toBe(true));
+    expect(result.current.displayed).toBe(previousSearch);
+    expect(result.current.displayed?.incomplete).toBe(true);
+
+    await act(async () => client.release());
+    await waitFor(() => expect(result.current.displayed?.incomplete).toBe(false));
   });
 
   it("defaults to fuzzy search enabled (exactOnly off), and setExactOnly(true) disables typo tolerance", async () => {

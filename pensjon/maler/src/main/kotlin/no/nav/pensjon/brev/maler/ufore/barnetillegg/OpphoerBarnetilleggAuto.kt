@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.ektefelletilleg
 import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.gjenlevendetilleggUtbetalt
 import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.utbetaltPerMaaned
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.ufore.fraser.Barnetillegg
@@ -16,8 +17,10 @@ import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createVedleggOpplysningerBruktIBeregningUT
+import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -35,7 +38,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_OPPHOER_BT_AUTO
 
     override val template = createTemplate(
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – opphør av barnetillegget (automatisk)",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
@@ -52,23 +55,27 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 text(
                     bokmal { + "Nav har endret barnetillegget ditt" },
                     nynorsk { + "Nav har endra barnetillegget ditt" },
-                    english { + "Nav has changed the child supplement in your disability benefit" }
                 )
             }.orShow {
                 text(
                     bokmal { + "Nav har vedtatt at barnetillegget ditt opphører" },
                     nynorsk { + "Nav har stansa barnetillegget ditt" },
-                    english { + "Nav has discontinued the child supplement in your disability benefit" }
                 )
             }
         }
         outline {
-            includePhrase(
-                Barnetillegg.VirkningsDatoForOpphoer(
-                    foedselsdatoPaaBarnMedOpphoertBarnetillegg = foedselsdatoPaaBarnMedOpphoertBarnetillegg,
-                    oensketVirkningsDato = oensketVirkningsDato
+            paragraph {
+                val virkningsDato = oensketVirkningsDato.format()
+                val barnFlertall = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
+
+                text(
+                    bokmal { + "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra " + virkningsDato +
+                            " for " + ifElse(barnFlertall, "barna", "barn") + " født" },
+                    nynorsk { + "Vi har stansa barnetillegget i uføretrygda di frå " + virkningsDato +
+                            " for " + ifElse(barnFlertall, "barna", "barn") + " fødd" },
                 )
-            )
+                includePhrase(Felles.TextOrList(foedselsdatoPaaBarnMedOpphoertBarnetillegg.map(LocalizedFormatter.DateFormat)))
+            }
 
             includePhrase(
                 Ufoeretrygd.Beloep(
@@ -81,50 +88,108 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 )
             )
 
-            includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(ufoeretrygd.utbetaltPerMaaned.greaterThan(0)))
-            includePhrase(Vedtak.BegrunnelseOverskrift())
-            includePhrase(
-                Barnetillegg.BarnHarFylt18AAR(
-                    opphoertBarnetilleggFlereBarn = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
-                )
-            )
+            showIf(ufoeretrygd.utbetaltPerMaaned.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                        nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. i kvar månad." },
+                    )
+                }
+            }
 
-            includePhrase(
-                OpphoerBarnetillegg.HjemmelForBarnetilleggIUfoeretrygden(
-                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn
+            title1 {
+                text(
+                    bokmal { + "Begrunnelse for vedtaket" },
+                    nynorsk { + "Grunngiving for vedtaket" },
                 )
-            )
-
-            includePhrase(Ufoeretrygd.VirkningFomOverskrift)
-
-            includePhrase(
-                OpphoerBarnetillegg.OensketVirkningsDatoForEndring(
-                    oensketVirkningsDato = oensketVirkningsDato,
-                    harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                    harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                    harOpphoertBarnetilleggForFlereBarn = harOpphoertBarnetilleggForFlereBarn,
+            }
+            paragraph {
+                val barnFlertall = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)
+                text(
+                    bokmal { + "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi " +
+                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år." },
+                    nynorsk { + "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi " +
+                            ifElse(barnFlertall, "barna", "barnet") + " har fylt 18 år." },
                 )
-            )
+            }
+
+            paragraph {
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    text(
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, 12-16 og 22-12" },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, 12-16 og 22-12" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15, og 22-12." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15, og 22-12." },
+                    )
+                }
+            }
+
+            title1 {
+                text(
+                    bokmal { +"Dette er virkningstidspunktet ditt" },
+                    nynorsk { +"Dette er verknadstidspunktet ditt" },
+                )
+            }
+
+            paragraph {
+                val dato = oensketVirkningsDato.format()
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    text(
+                        bokmal { + "Barnetillegget ditt er blitt endret fra " + dato +
+                                ". Dette er måneden etter at " +
+                                ifElse(harOpphoertBarnetilleggForFlereBarn, "barna", "barnet") +
+                                " har fylt 18 år. Dette kaller vi virkningstidspunktet." },
+                        nynorsk { + "Barnetillegget ditt er endra frå " + dato +
+                                ". Dette er månaden etter at " +
+                                ifElse(harOpphoertBarnetilleggForFlereBarn, "barna", "barnet") +
+                                " har fylt 18 år. Dette kallar vi verknadstidspunktet." },
+                    )
+                } orShow {
+                    text(
+                        bokmal { + "Barnetillegget ditt har opphørt fra " + dato +
+                                ". Dette er måneden etter at " +
+                                ifElse(harOpphoertBarnetilleggForFlereBarn, "barna", "barnet") +
+                                " har fylt 18 år. Dette kaller vi virkningstidspunktet." },
+                        nynorsk { + "Barnetillegget ditt er stansa frå " + dato +
+                                ". Dette er månaden etter at " +
+                                ifElse(harOpphoertBarnetilleggForFlereBarn, "barna", "barnet") +
+                                " har fylt 18 år. Dette kallar vi verknadstidspunktet." },
+                    )
+                }
+            }
 
             showIf(harBarnetillegg) {
                 title1 {
                     text(
                         bokmal { + "Slik påvirker inntekt barnetillegget ditt" },
                         nynorsk { + "Slik verkar inntekt inn på barnetillegget ditt" },
-                        english { + "Income will affect your child supplement" }
                     )
                 }
 
                 ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
-                    includePhrase(
-                        Barnetillegg.InntektHarBetydningForSaerkullsbarnTillegg(
-                            harBarnetilleggFellesbarn = harBarnetilleggFellesbarn,
-                            harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                            borMedSivilstand = barnetilleggSaerkullsbarn.brukerBorMed,
-                            faarUtbetaltBarnetilleggSaerkullsbarn = barnetilleggSaerkullsbarn.beloepNetto.greaterThan(0),
-                        )
-                    )
+                    showIf(harBarnetilleggSaerkullsbarn and not(harBarnetilleggFellesbarn)) {
+                        paragraph {
+                            text(
+                                bokmal { + "Inntekten din har betydning for hva du får i barnetillegg. Er inntekten din over grensen for å få utbetalt fullt barnetillegg, blir tillegget redusert." },
+                                nynorsk { + "Inntekta di har noko å seie for kva du får i barnetillegg. Er inntekta di over grensa for å få utbetalt fullt barnetillegg, blir tillegget redusert." },
+                            )
+                            showIf(barnetilleggSaerkullsbarn.beloepNetto.greaterThan(0)) {
+                                text(
+                                    bokmal { + " Denne grensen kaller vi for fribeløp." },
+                                    nynorsk { + " Denne grensa kallar vi for fribeløp." },
+                                )
+                            }
+                            ifNotNull(barnetilleggSaerkullsbarn.brukerBorMed) { borMedSivilstand ->
+                                text(
+                                    bokmal { + " Inntekten til " + borMedSivilstand.bestemtForm() + " din har ikke betydning for størrelsen på barnetillegget." },
+                                    nynorsk { + " Inntekta til " + borMedSivilstand.bestemtForm() + " din har ikkje noko å seie for storleiken på barnetillegget." },
+                                )
+                            }
+                        }
+                    }
                 }
 
                 ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesBarn ->
@@ -140,12 +205,26 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                 }
 
 
-                includePhrase(
-                    Barnetillegg.BetydningAvInntektEndringer(
-                        barnetilleggFellesbarn = barnetilleggFellesbarn,
-                        harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                    )
-                )
+                showIf(barnetilleggFellesbarn.notNull() or harBarnetilleggSaerkullsbarn) {
+                    paragraph {
+                        ifNotNull(barnetilleggFellesbarn) { fellesTillegg ->
+                            val sivilstand = fellesTillegg.brukerBorMed
+                            text(
+                                bokmal { + "Endringer i inntektene til deg og " + sivilstand.bestemtForm() + " din kan ha betydning for barnetillegget ditt. " },
+                                nynorsk { + "Endringar i inntektene til deg og " + sivilstand.bestemtForm() + " di kan ha betydning for barnetillegget ditt. " },
+                            )
+                        }.orShowIf(harBarnetilleggSaerkullsbarn) {
+                            text(
+                                bokmal { + "Endringer i inntekten din kan ha betydning for barnetillegget ditt. " },
+                                nynorsk { + "Endringar i inntekta di kan ha betydning for barnetillegget ditt. " },
+                            )
+                        }
+                        text(
+                            bokmal { + "Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" på ${Constants.NAV_URL}." },
+                            nynorsk { + "Du kan enkelt melde frå om inntektsendringar under menyvalet " + quoted("uføretrygd") +" på ${Constants.NAV_URL}." },
+                        )
+                    }
+                }
 
                 ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
                     includePhrase(
@@ -214,12 +293,18 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
                     )
                 )
 
-                includePhrase(
-                    Barnetillegg.HenvisningTilVedleggOpplysningerOmBeregning(
-                        harBarnetilleggSaerkullsbarn = harBarnetilleggSaerkullsbarn,
-                        harBarnetilleggFellesbarn = harBarnetilleggFellesbarn
-                    )
-                )
+                showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
+                    paragraph {
+                        text(
+                            bokmal { + "Du kan lese mer om beregningen av barnetillegg i vedlegget " },
+                            nynorsk { + "Du kan lese meir om berekninga av barnetillegg i vedlegget " },
+                        )
+                        text(
+                            bokmal { + quoted("Opplysninger om beregningen") +"." },
+                            nynorsk { + quoted("Opplysningar om berekninga") +"." },
+                        )
+                    }
+                }
             }
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer())
@@ -242,6 +327,4 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }
 }
-
-
 

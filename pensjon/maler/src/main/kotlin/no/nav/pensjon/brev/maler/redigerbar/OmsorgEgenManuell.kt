@@ -29,7 +29,7 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Innhenting av egenerklæring om pleie- og omsorgsarbeid (omsorgsopptjening)",
+            displayTitle = "Egenerklæring om pleie- og omsorgsarbeid",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
