@@ -56,6 +56,8 @@ import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
 import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
 import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoerepensjonRedigerbar
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EPSEndringIBarnetilleggAuto
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EPSEndringIBarnetilleggRedigerbar
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertrygdAuto
 import no.nav.pensjon.brev.maler.ufore.diverse.BekreftelsePaaUfoeretrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.EndretUforetrygdPGAOpptjeningLegacy
@@ -129,6 +131,7 @@ object ProductionTemplates : AllTemplates {
         ReverseringLavereMinstesatsAuto,
         VedtakOmEndringBarnetilleggEPSRevAuto,
         VedtakOmEndringBTEPSOktoberAuto,
+        EPSEndringIBarnetilleggAuto,
         OktBunnfradragNesteArAuto,
     )
 
@@ -196,6 +199,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktFribelopRedigerbar,
         VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
         VedtakOmOktMinsteIFURedigerbar,
+        EPSEndringIBarnetilleggRedigerbar,
         OktBunnfradragNesteArRedigerbar,
     )
 

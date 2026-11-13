@@ -46,6 +46,8 @@ import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0
 import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoerepensjonRedigerbar
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EPSEndringIBarnetilleggAuto
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EPSEndringIBarnetilleggRedigerbar
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertrygdAuto
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ufore.diverse.*
@@ -174,6 +176,8 @@ object Fixtures : LetterDataFactory {
             VedtakOmEndringBTEPSRedigerbar::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
             VedtakOmEndringBarnetilleggEPSAuto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
             VedtakOmEndringBarnetilleggEPSRevAuto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
+            EPSEndringIBarnetilleggRedigerbar::class -> createEPSEndringIBarnetilleggRedigerbarDto() as T
+            EPSEndringIBarnetilleggAuto::class -> createEPSEndringIBarnetilleggAutoDto() as T
             VedtakOmEtterbetalingOpphor2026Auto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
             VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
             VedtakOmEtterbetalingOpphor2026OktIfuAuto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
