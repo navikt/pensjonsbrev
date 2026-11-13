@@ -100,9 +100,9 @@ function PersonvernPage() {
               </VStack>
               <BodyLong>
                 Data og opplysninger kobles ikke til deg som person, og analysene gjøres kun på gruppenivå.
-                Informasjonskapselen slettes hver 30. dag. Vi kartlegger ikke enkeltpersoners bruksmønstre, og
-                sammenstiller aldri data og opplysninger som kan identifisere enkeltindivider. Alt vi samler inn lagres
-                sikkert internt i Nav.
+                Informasjonskapselen utløper ved månedsskiftet og erstattes ved neste besøk. Vi kartlegger ikke
+                enkeltpersoners bruksmønstre, og sammenstiller aldri data og opplysninger som kan identifisere
+                enkeltindivider. Alt vi samler inn lagres sikkert internt i Nav.
               </BodyLong>
             </SubSection>
             <SubSection title="Dine rettigheter">
