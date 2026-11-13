@@ -1,6 +1,8 @@
 import { addMonths, startOfMonth } from "date-fns";
 import Cookies from "js-cookie";
 
+import { finishTrackerLoading, startTrackerLoading } from "~/utils/umami";
+
 type InnblikkPayload = {
   website: string;
   screen: string;
@@ -71,6 +73,15 @@ export function initInnblikk(): void {
   script.dataset.websiteId = websiteId;
   script.dataset.hostUrl = hostUrl;
   script.dataset.beforeSend = "addSkribentenInnblikkIdentity";
-  script.addEventListener("error", () => script.remove());
+  script.addEventListener("load", () => finishTrackerLoading(true), { once: true });
+  script.addEventListener(
+    "error",
+    () => {
+      finishTrackerLoading(false);
+      script.remove();
+    },
+    { once: true },
+  );
+  startTrackerLoading();
   document.head.appendChild(script);
 }

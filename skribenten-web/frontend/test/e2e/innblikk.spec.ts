@@ -42,6 +42,44 @@ async function interceptAnalytics(context: BrowserContext, baseURL: string, orig
   return events;
 }
 
+test("sender oppstartshendelser etter forsinket skriptlasting uten å blokkere arbeidsflaten", async ({
+  context,
+  page,
+  baseURL,
+}) => {
+  const origin = "https://pensjon-skribenten.intern.nav.no";
+  const events = await interceptAnalytics(context, baseURL as string, origin);
+  let releaseScript: () => void = () => {};
+  const scriptReleased = new Promise<void>((resolve) => {
+    releaseScript = resolve;
+  });
+  await context.route(SCRIPT_URL, async (route) => {
+    await scriptReleased;
+    await route.fallback();
+  });
+  await setupSakStubs(page);
+  await page.goto(`${origin}/aapne/brev/ugyldig`, { waitUntil: "domcontentloaded" });
+  try {
+    await expect(page.getByRole("heading", { name: "Ugyldig lenke fra Pesys" })).toBeVisible();
+    expect(events).toHaveLength(0);
+  } finally {
+    releaseScript();
+  }
+
+  await expect.poll(() => events.filter((event) => event.payload.name === "pesys feil").length).toBe(1);
+  const startupEvent = events.find((event) => event.payload.name === "pesys feil");
+  const cookie = (await context.cookies()).find((entry) => entry.name === COOKIE_NAME);
+  expect(cookie).toBeDefined();
+  expect(startupEvent).toMatchObject({
+    type: "event",
+    payload: {
+      website: WEBSITE_ID,
+      id: cookie?.value,
+      data: { feiltype: "ugyldig brev-id", brevId: "ugyldig" },
+    },
+  });
+});
+
 for (const environment of [
   {
     domain: "intern.nav.no",

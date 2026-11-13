@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { beforeSend, getDomain, getOrCreateUserId, initInnblikk } from "~/utils/innblikk";
+import { finishTrackerLoading, trackEvent } from "~/utils/umami";
 
 declare const jsdom: { reconfigure(options: { url: string }): void };
 
@@ -33,6 +34,8 @@ afterEach(() => {
     node.remove();
   }
   globalThis.addSkribentenInnblikkIdentity = undefined;
+  globalThis.umami = undefined;
+  finishTrackerLoading(false);
 });
 
 describe("felles cookie med Penny", () => {
@@ -153,5 +156,20 @@ describe("oppstart av Innblikk", () => {
   it("laster ikke skriptet når konfigurasjonen mangler", () => {
     initInnblikk();
     expect(document.getElementById("skribenten-innblikk-sporing")).toBeNull();
+  });
+
+  it.each(["load", "error"])("avslutter køen når skriptet melder %s", (event) => {
+    configure();
+    initInnblikk();
+    trackEvent("pesys feil");
+    const track = vi.fn();
+    globalThis.umami = { track };
+    document.getElementById("skribenten-innblikk-sporing")?.dispatchEvent(new Event(event));
+    if (event === "load") {
+      expect(track).toHaveBeenCalledWith("pesys feil", undefined);
+    } else {
+      expect(track).not.toHaveBeenCalled();
+      expect(document.getElementById("skribenten-innblikk-sporing")).toBeNull();
+    }
   });
 });

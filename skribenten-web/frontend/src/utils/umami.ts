@@ -34,6 +34,24 @@ export interface UmamiEventData {
   [key: string]: string | number | boolean | undefined;
 }
 
+let trackerLoading = false;
+const pendingEvents: { name: UmamiEventName; data?: UmamiEventData }[] = [];
+const MAX_PENDING_EVENTS = 100;
+
+export function startTrackerLoading(): void {
+  trackerLoading = true;
+}
+
+export function finishTrackerLoading(success: boolean): void {
+  trackerLoading = false;
+  const events = pendingEvents.splice(0);
+  if (success) {
+    for (const event of events) {
+      trackEvent(event.name, event.data);
+    }
+  }
+}
+
 const isUmamiAvailable = (): boolean =>
   typeof globalThis.window !== "undefined" &&
   globalThis.umami !== undefined &&
@@ -41,6 +59,9 @@ const isUmamiAvailable = (): boolean =>
 
 export const trackEvent = (eventName: UmamiEventName, eventData?: UmamiEventData): void => {
   if (!isUmamiAvailable()) {
+    if (trackerLoading && pendingEvents.length < MAX_PENDING_EVENTS) {
+      pendingEvents.push({ name: eventName, data: eventData ? { ...eventData } : undefined });
+    }
     if (import.meta.env.DEV) {
       console.info("[Umami]", eventName, eventData);
     }
