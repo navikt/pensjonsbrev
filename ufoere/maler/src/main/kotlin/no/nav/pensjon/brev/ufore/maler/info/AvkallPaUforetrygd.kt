@@ -27,7 +27,7 @@ object AvkallPaUforetrygd : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Orientering- avkall på uføretrygd",
+            displayTitle = "Orientering - avkall på uføretrygd",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
