@@ -89,10 +89,12 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
                     +"I vurderingen av om vedtaket likevel skal gis oppsettende virkning, "
                     +"skal det legges vekt på hva som antas å bli utfallet av klagebehandlingen. "
                 })
-                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES) and oekonomiskeForhold) {
-                    text(bokmal {
-                        +"Økonomiske forhold kan som hovedregel ikke vektlegges i vurderingen av om vedtaket skal gis oppsettende virkning."
-                    })
+                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES)) {
+                    showIf(oekonomiskeForhold) {
+                        text(bokmal {
+                            +"Økonomiske forhold kan som hovedregel ikke vektlegges i vurderingen av om vedtaket skal gis oppsettende virkning."
+                        })
+                    }
                 }
             }
 
@@ -120,11 +122,13 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
                     +fritekst("dato") + " fram til klagen er endelig avgjort."
                 })
             }
-            showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES) and tilbakekreving) {
-                paragraph {
-                    text(bokmal {
-                        +"Du kan be Skatteetaten om en nedbetalingsavtale hvis det er vanskelig for deg å betale tilbake det feilutbetalte beløpet samlet."
-                    })
+            showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES)) {
+                showIf(tilbakekreving) {
+                    paragraph {
+                        text(bokmal {
+                            +"Du kan be Skatteetaten om en nedbetalingsavtale hvis det er vanskelig for deg å betale tilbake det feilutbetalte beløpet samlet."
+                        })
+                    }
                 }
             }
 
