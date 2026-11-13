@@ -133,6 +133,13 @@ object OpphorUforetrygd : RedigerbarTemplate<OpphorUforetrygdDto> {
                         nynorsk { +"Dersom du som etterlaten  etter " + fritekst("Navn") + "  les dette brevet, ber vi deg om å varsle norske styresmakter om dødsfallet." },
                     )
                 }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +fritekst("Begrunnelse og hjemmel for opphøret") },
+                        nynorsk { +fritekst("Grunngiving og heimel for opphøyret") },
+                    )
+                }
             }
             showIf(arsak.isOneOf(OpphorUforetrygdDto.Arsak.EGET_ONSKE, OpphorUforetrygdDto.Arsak.FLYTTET_FRA_NORGE)) {
                 title1 {
