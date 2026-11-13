@@ -190,7 +190,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmOktMinsteIFULavereReduksjonsprosentAuto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
             VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
             VedtakOmOktMinsteIFURedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
-            KlageVedtakAvvisningAvKlageUT -> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
+            KlageVedtakAvvisningAvKlageUT::class-> EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
