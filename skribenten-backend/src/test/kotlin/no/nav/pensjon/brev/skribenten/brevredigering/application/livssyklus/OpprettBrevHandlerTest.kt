@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
+import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
@@ -38,6 +40,20 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
 class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
+
+    @Test
+    suspend fun `kan opprette brev med markup v2`() {
+        val markup = letterV2(MarkupV2.paragraph(1, MarkupV2.literal(1, "red pill")))
+        brevbakerService.renderMarkupV2Resultat = { markup }
+
+        val brev = opprettBrev(markupVersjon = MarkupVersjon.V2)
+
+        assertThat(brev).isSuccess {
+            assertThat(it.info.markupVersjon).isEqualTo(MarkupVersjon.V2)
+            assertThat(it.redigertBrev).isEqualTo(VersjonertMarkup.V2(markup).toEdit())
+            assertThat(transaction { BrevredigeringEntity[it.info.id].markupVersjon }).isEqualTo(MarkupVersjon.V2)
+        }
+    }
 
     @Test
     suspend fun `kan opprette brev`() {

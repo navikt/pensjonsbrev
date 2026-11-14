@@ -55,6 +55,7 @@ object Features {
     val foersteside = UnleashToggle("foersteside")
     val eblanketter = UnleashToggle("eblanketter")
     val visAutobrev = UnleashToggle("visAutobrev")
+    val markupV2 = UnleashToggle("markupV2")
 
     var toggleService: FeatureToggleService? = null
         private set
