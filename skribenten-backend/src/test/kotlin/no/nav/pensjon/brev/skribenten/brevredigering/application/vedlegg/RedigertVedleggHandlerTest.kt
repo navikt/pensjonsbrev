@@ -221,7 +221,9 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         answerWithEditedAttachmentResult("vedlegg1" to oppdatert)
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", oppdatert)).isSuccess()
 
-        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(oppdatert)
+        val result = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()
+        assertThat(result).isEqualTo(oppdatert)
+        assertThat(result.blocks.single().status).isEqualTo(Edit.Block.Status.PRESENT)
     }
 
     @Test
@@ -438,6 +440,29 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(oppdaterBrev(brev.info.id)).isSuccess()
 
         assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id }).containsExactly(1, 2)
+    }
+
+    @Test
+    suspend fun `oppdatering av brev markerer blokker som er nye i malen siden vedlegget ble lagret`() {
+        val brev = opprettBrev().resultOrFail()
+        lagreRedigertVedlegg(brev.info.id)
+
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        assertThat(oppdaterBrev(brev.info.id)).isSuccess()
+
+        assertThat(lagretVedlegg(brev.info.id).blocks.map { it.id to (it.status == Edit.Block.Status.NEW_FROM_TEMPLATE) })
+            .containsExactly(1 to false, 2 to true)
+    }
+
+    @Test
+    suspend fun `henting av vedlegg markerer blokker som er nye i malen siden vedlegget ble lagret`() {
+        val brev = opprettBrev().resultOrFail()
+        lagreRedigertVedlegg(brev.info.id)
+
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail() .blocks.map { it.id to (it.status == Edit.Block.Status.NEW_FROM_TEMPLATE) })
+            .containsExactly(1 to false, 2 to true)
     }
 
     @OptIn(InternKonstruktoer::class)

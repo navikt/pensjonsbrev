@@ -134,4 +134,149 @@ class UpdateEditedAttachmentTest {
 
         assertEquals(rendered.toEdit(), edited.updateEditedAttachment(rendered))
     }
+
+    @Test
+    fun `only blocks added since previous render are marked newFromTemplate`() {
+        val previous = attachment(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(VariableImpl(21, "100 kr"))),
+        )
+        val next = attachment(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(3, true, listOf(LiteralImpl(31, "Ny før"))),
+            ParagraphImpl(2, true, listOf(VariableImpl(21, "200 kr"))),
+            ParagraphImpl(4, true, listOf(LiteralImpl(41, "Ny etter"))),
+        )
+
+        val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(next.toEdit().blocks.map { it.id to it.content }, result.blocks.map { it.id to it.content })
+        assertEquals(
+            listOf(false, true, false, true),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+    }
+
+    @Test
+    fun `additional identical attachment block occurrences are marked newFromTemplate`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val previous = attachment(paragraph)
+        val next = attachment(paragraph, paragraph)
+
+        val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(
+            listOf(false, true),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+        assertEquals(result, result.updateEditedAttachment(next, previousRender = next.toEdit()))
+    }
+
+    @Test
+    fun `duplicate inserted before an attachment separator marks only the inserted occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = attachment(separator, paragraph)
+        val next = attachment(paragraph, separator, paragraph)
+
+        val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(next.toEdit().blocks.map { it.content }, result.blocks.map { it.content })
+        assertEquals(
+            listOf(true, false, false),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+        assertEquals(result, result.updateEditedAttachment(next, previousRender = next.toEdit()))
+    }
+
+    @Test
+    fun `duplicate inserted after an attachment separator marks only the inserted occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = attachment(paragraph, separator)
+        val next = attachment(paragraph, separator, paragraph)
+
+        val result = previous.toEdit().updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(
+            listOf(false, false, true),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+    }
+
+    @Test
+    fun `edited block changed since previous render keeps edits without being marked newFromTemplate`() {
+        val previous = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "100 kr"))))
+        val next = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "200 kr"))))
+        val edited = editedAttachment {
+            paragraph(id = 1) {
+                literal(id = 11, text = "Du får ", editedText = "Du mottar ")
+                variable(id = 12, text = "100 kr")
+            }
+        }
+        val expected = editedAttachment {
+            paragraph(id = 1) {
+                literal(id = 11, text = "Du får ", editedText = "Du mottar ")
+                variable(id = 12, text = "200 kr")
+            }
+        }
+
+        assertEquals(expected, edited.updateEditedAttachment(next, previousRender = previous.toEdit()))
+    }
+
+    @Test
+    fun `newFromTemplate is kept on subsequent merges without changes in template`() {
+        val rendered = attachment(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Var ny"))),
+        )
+        val edited = editedAttachment {
+            paragraph(id = 1) { literal(id = 11, text = "Uendret") }
+            paragraph(id = 2, newFromTemplate = true) { literal(id = 21, text = "Var ny", editedText = "Redigert") }
+        }
+
+        assertEquals(edited, edited.updateEditedAttachment(rendered, previousRender = rendered.toEdit()))
+        assertEquals(edited, edited.updateEditedAttachment(rendered))
+    }
+
+    @Test
+    fun `nothing is marked newFromTemplate when render is unchanged or previous render is unknown`() {
+        val previous = attachment(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))))
+        val next = attachment(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Ny"))),
+        )
+        val edited = previous.toEdit()
+
+        assertEquals(edited, edited.updateEditedAttachment(previous, previousRender = previous.toEdit()))
+        assertEquals(next.toEdit(), edited.updateEditedAttachment(next, previousRender = null))
+    }
+
+    @Test
+    fun `removed duplicate does not move newFromTemplate onto the unchanged surviving occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = attachment(paragraph, separator, paragraph)
+        val next = attachment(separator, paragraph)
+        val edited = previous.toEdit().also { it.blocks[0].status = Edit.Block.Status.NEW_FROM_TEMPLATE }
+
+        val result = edited.updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(2, 1), result.blocks.map { it.id })
+        assertEquals(listOf(Edit.Block.Status.PRESENT, Edit.Block.Status.PRESENT), result.blocks.map { it.status })
+    }
+
+    @Test
+    fun `removed duplicate does not lose newFromTemplate on the surviving occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = attachment(paragraph, separator, paragraph)
+        val next = attachment(separator, paragraph)
+        val edited = previous.toEdit().also { it.blocks[2].status = Edit.Block.Status.NEW_FROM_TEMPLATE }
+
+        val result = edited.updateEditedAttachment(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(2, 1), result.blocks.map { it.id })
+        assertEquals(listOf(Edit.Block.Status.PRESENT, Edit.Block.Status.NEW_FROM_TEMPLATE), result.blocks.map { it.status })
+    }
 }

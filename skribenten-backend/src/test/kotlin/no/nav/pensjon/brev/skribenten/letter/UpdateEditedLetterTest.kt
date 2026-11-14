@@ -1266,4 +1266,178 @@ class UpdateRenderedLetterTest {
         val result = edited.updateEditedLetter(rendered)
         assertEquals(emptyList<Int>(), (result.blocks.single() as Edit.Block.Title1).deletedContent)
     }
+
+    @Test
+    fun `only blocks added since previous render are marked newFromTemplate`() {
+        val previous = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(VariableImpl(21, "100 kr"))),
+        )
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(3, true, listOf(LiteralImpl(31, "Ny før"))),
+            ParagraphImpl(2, true, listOf(VariableImpl(21, "200 kr"))),
+            ParagraphImpl(4, true, listOf(LiteralImpl(41, "Ny etter"))),
+        )
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(next.toEdit().blocks.map { it.id to it.content }, result.blocks.map { it.id to it.content })
+        assertEquals(
+            listOf(false, true, false, true),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+    }
+
+    @Test
+    fun `additional identical block occurrences are marked newFromTemplate`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val previous = letter(paragraph, paragraph)
+        val next = letter(paragraph, paragraph, paragraph, paragraph)
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(
+            listOf(false, false, true, true),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+        assertEquals(result, result.updateEditedLetter(next, previousRender = next.toEdit()))
+        assertEquals(previous.toEdit(), previous.toEdit().updateEditedLetter(previous, previousRender = previous.toEdit()))
+        assertEquals(next.toEdit(), previous.toEdit().updateEditedLetter(next))
+    }
+
+    @Test
+    fun `duplicate inserted before a separator is marked instead of the unchanged occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = letter(separator, paragraph)
+        val next = letter(paragraph, separator, paragraph)
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(next.toEdit().blocks.map { it.content }, result.blocks.map { it.content })
+        assertEquals(
+            listOf(true, false, false),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+        assertEquals(result, result.updateEditedLetter(next, previousRender = next.toEdit()))
+    }
+
+    @Test
+    fun `duplicate inserted after a separator is marked instead of the unchanged occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = letter(paragraph, separator)
+        val next = letter(paragraph, separator, paragraph)
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(
+            listOf(false, false, true),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+    }
+
+    @Test
+    fun `deleted occurrences consume previous matches before marking additional duplicates`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val previous = letter(paragraph)
+        val next = letter(paragraph, paragraph)
+        val edited = previous.toEdit().copy(blocks = emptyList(), deletedBlocks = listOf(1))
+
+        val result = edited.updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(Edit.Block.Status.NEW_FROM_TEMPLATE), result.blocks.map { it.status })
+        assertEquals(listOf(1), result.deletedBlocks)
+    }
+
+    @Test
+    fun `changed duplicate does not consume the previous identical occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val previous = letter(paragraph, paragraph)
+        val next = letter(paragraph.copy(content = listOf(LiteralImpl(11, "Changed"))), paragraph)
+
+        val result = previous.toEdit().updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(
+            listOf(false, false),
+            result.blocks.map { it.status == Edit.Block.Status.NEW_FROM_TEMPLATE },
+        )
+    }
+
+    @Test
+    fun `edited block changed since previous render keeps edits without being marked newFromTemplate`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "100 kr"))))
+        val next = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Du får "), VariableImpl(12, "200 kr"))))
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "Du får ", editedText = "Du mottar ")
+                variable(id = 12, text = "100 kr")
+            }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "Du får ", editedText = "Du mottar ")
+                variable(id = 12, text = "200 kr")
+            }
+        }
+
+        assertEquals(expected, edited.updateEditedLetter(next, previousRender = previous.toEdit()))
+    }
+
+    @Test
+    fun `newFromTemplate is kept on subsequent merges without changes in template`() {
+        val rendered = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Var ny"))),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Uendret") }
+            paragraph(id = 2, newFromTemplate = true) { literal(id = 21, text = "Var ny", editedText = "Redigert") }
+        }
+
+        assertEquals(edited, edited.updateEditedLetter(rendered, previousRender = rendered.toEdit()))
+        assertEquals(edited, edited.updateEditedLetter(rendered))
+    }
+
+    @Test
+    fun `nothing is marked newFromTemplate when render is unchanged or previous render is unknown`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))))
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Uendret"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Ny"))),
+        )
+        val edited = previous.toEdit()
+
+        assertEquals(edited, edited.updateEditedLetter(previous, previousRender = previous.toEdit()))
+        assertEquals(next.toEdit(), edited.updateEditedLetter(next, previousRender = null))
+    }
+
+    @Test
+    fun `removed duplicate does not move newFromTemplate onto the unchanged surviving occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = letter(paragraph, separator, paragraph)
+        val next = letter(separator, paragraph)
+        val edited = previous.toEdit().also { it.blocks[0].status = Edit.Block.Status.NEW_FROM_TEMPLATE }
+
+        val result = edited.updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(2, 1), result.blocks.map { it.id })
+        assertEquals(listOf(Edit.Block.Status.PRESENT, Edit.Block.Status.PRESENT), result.blocks.map { it.status })
+    }
+
+    @Test
+    fun `removed duplicate does not lose newFromTemplate on the surviving occurrence`() {
+        val paragraph = ParagraphImpl(1, true, listOf(LiteralImpl(11, "Repeated")))
+        val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
+        val previous = letter(paragraph, separator, paragraph)
+        val next = letter(separator, paragraph)
+        val edited = previous.toEdit().also { it.blocks[2].status = Edit.Block.Status.NEW_FROM_TEMPLATE }
+
+        val result = edited.updateEditedLetter(next, previousRender = previous.toEdit())
+
+        assertEquals(listOf(2, 1), result.blocks.map { it.id })
+        assertEquals(listOf(Edit.Block.Status.PRESENT, Edit.Block.Status.NEW_FROM_TEMPLATE), result.blocks.map { it.status })
+    }
 }
