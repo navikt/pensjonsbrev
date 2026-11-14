@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
+import { AUTOSAVE_TIMER, SAKSBEHANDLERVALG_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { brevResponse } from "~test/support/brevFixtures";
 
 import { useEditorAutosave } from "./useEditorAutosave";
@@ -144,6 +144,46 @@ describe("useEditorAutosave", () => {
     unmount();
     await act(() => vi.advanceTimersByTimeAsync(AUTOSAVE_TIMER * 2));
     expect(save).toHaveBeenCalledTimes(1);
+  });
+
+  it("flushes a scheduled selection save on unmount without sending it again later", async () => {
+    const { result, save, unmount } = setup();
+    act(() => {
+      result.current.setEditorState((state) => ({
+        ...state,
+        saksbehandlerValg: { visTekst: true },
+        saveStatus: "DIRTY",
+      }));
+      result.current.scheduleSave(500);
+    });
+    unmount();
+    await act(() => vi.advanceTimersByTimeAsync(AUTOSAVE_TIMER));
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(save).toHaveBeenCalledWith(expect.objectContaining({ saksbehandlerValg: { visTekst: true } }));
+  });
+
+  it("cancels the scheduled selection save when an explicit save takes over", async () => {
+    const { result, save } = setup();
+    const customSave = vi.fn(async (state: LetterEditorState) => state);
+    act(() => {
+      result.current.setEditorState((state) => ({
+        ...state,
+        saksbehandlerValg: { ...state.saksbehandlerValg, ytelse: "Uføretrygd" },
+        saveStatus: "DIRTY",
+      }));
+      result.current.scheduleSave(SAKSBEHANDLERVALG_TIMER);
+    });
+
+    await act(async () => {
+      await result.current.saveWith({
+        save: customSave,
+        applyLatestResponse: (_state, response) => response,
+      });
+    });
+    await act(() => vi.advanceTimersByTimeAsync(SAKSBEHANDLERVALG_TIMER));
+
+    expect(customSave).toHaveBeenCalledOnce();
+    expect(save).not.toHaveBeenCalled();
   });
 
   it("does not save on unmount when nothing is pending or the revision already failed", async () => {

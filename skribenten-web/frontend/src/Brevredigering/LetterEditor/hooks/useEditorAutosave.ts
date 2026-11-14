@@ -29,6 +29,7 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
   // Best effort only: browser Back navigates within the app and unmounts the editor, this cleanup attempts to save pending edits.
   useEffect(
     () => () => {
+      controller.cancelScheduledSave();
       if (controller.canAutosave()) void controller.savePendingChanges().catch(() => undefined);
     },
     [controller],
@@ -42,5 +43,6 @@ export function useEditorAutosave<Response>(options: EditorAutosaveOptions<Respo
     savePendingChanges: controller.savePendingChanges,
     saveWith: controller.saveWith,
     reset: controller.reset,
+    scheduleSave: controller.scheduleSave,
   };
 }
