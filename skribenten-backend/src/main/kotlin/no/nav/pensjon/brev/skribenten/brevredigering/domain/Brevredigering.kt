@@ -397,7 +397,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     fun settBrevmalForRedigertVedlegg(vedleggId: VedleggId, malVedlegg: LetterMarkup.Attachment) {
-        _redigerteVedlegg.single { it.vedleggId.value == vedleggId }.rendretVedlegg = malVedlegg.toEdit()
+        _redigerteVedlegg.single { it.vedleggId.value == vedleggId }.let {
+            it.rendretVedlegg = malVedlegg.toEdit()
+            it.rendretVedleggHash = malVedlegg.stableHashCode
+        }
     }
 
     fun slettRedigertVedlegg(vedleggId: VedleggId): Boolean {
