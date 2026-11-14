@@ -476,7 +476,7 @@ abstract class BrevredigeringHandlerTestBase {
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
-        nyttRedigertbrev: Edit.Letter? = null,
+        nyttRedigertbrev: VersjonertBrev? = null,
         saksId: SaksId = sak1.saksId,
     ) = withPrincipal(attestant) {
         attesterBrev(
@@ -484,14 +484,14 @@ abstract class BrevredigeringHandlerTestBase {
                 brevId = brev.info.id,
                 saksId = saksId,
                 frigiReservasjon = frigiReservasjon,
-                nyttRedigertbrev = nyttRedigertbrev?.let { VersjonertBrev.V1(it) },
+                nyttRedigertbrev = nyttRedigertbrev,
             )
         )
     }
 
     protected suspend fun lagreAttestertBrev(
         brev: Dto.Brevredigering,
-        nyttRedigertbrev: Edit.Letter,
+        nyttRedigertbrev: VersjonertBrev,
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
         saksId: SaksId = sak1.saksId,
@@ -500,7 +500,7 @@ abstract class BrevredigeringHandlerTestBase {
             LagreAttestertBrevHandler.Request(
                 brevId = brev.info.id,
                 saksId = saksId,
-                nyttRedigertbrev = VersjonertBrev.V1(nyttRedigertbrev),
+                nyttRedigertbrev = nyttRedigertbrev,
                 frigiReservasjon = frigiReservasjon,
             )
         )
@@ -563,6 +563,29 @@ abstract class BrevredigeringHandlerTestBase {
                     )
                 }
         }
+        brevbakerService.renderMarkupV2Resultat = {
+            letterV2(
+                MarkupV2Dsl.paragraph(1, MarkupV2Dsl.literal(1, "blue pill")),
+                saksinformasjon = MarkupV2Dsl.saksinformasjon(gjelderNavn = "Nytt Navn"),
+                signatur = MarkupV2Dsl.signatur(
+                    saksbehandlerNavn = "Endret Saksbehandler",
+                    attesterendeSaksbehandlerNavn = "Endret Attestant",
+                    navAvsenderEnhet = "Ny avsenderenhet",
+                ),
+            )
+        }
+    }
+
+    protected fun rendretVedOpprettelse(versjon: MarkupVersjon): VersjonertBrev = when (versjon) {
+        MarkupVersjon.V1 -> VersjonertBrev.V1(letter.toEdit())
+        MarkupVersjon.V2 -> VersjonertBrev.V2(
+            EditV2.Letter.from(
+                letterV2(
+                    MarkupV2Dsl.paragraph(1, MarkupV2Dsl.literal(1, "red pill")),
+                    signatur = MarkupV2Dsl.signatur(saksbehandlerNavn = saksbehandler1Principal.fullName),
+                )
+            )
+        )
     }
 
     protected suspend fun hentEllerOpprettAttesteringPdf(
