@@ -86,6 +86,16 @@ Attestant må lukke brevet hos seg. Vent litt, og prøv deretter å åpne brevet
 === Hvordan attesterer jeg brevet?
 For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Brevet åpnes fra dokumentoversikt, og har status «under arbeid (attestering)».
 
+=== Hvilke endringer er gjort i brevet?
+
+Attestanten kan enklere se hvilke endringer saksbehandler har gjort i brevet. Attestanten kan velge å vise:
+
+* tekst som er lagt til, markert i grønt
+* tekst som er slettet, markert i rosa med gjennomstreking
+* eller begge samtidig
+
+image::../images/attestering-begge-endringer.png[]
+
 === Hvordan legger jeg til signaturen min?
 Du legger til signaturen din ved å klikke på underskrift i venstremenyen, og skriver den inn. Den vil da dukke opp på venstre side av saksbehandlers underskrift.
 
