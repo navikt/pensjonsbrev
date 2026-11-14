@@ -3,6 +3,7 @@ import { Button, HStack, Tooltip } from "@navikt/ds-react";
 import { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { isFocusInTitle } from "~/Brevredigering/LetterEditor/actions/common";
 import InsertTableDialog from "~/Brevredigering/LetterEditor/components/InsertTableDialog";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -22,7 +23,7 @@ const EditorTableTools = () => {
             aria-label={tooltipText.table}
             data-color="neutral"
             data-testid="toolbar-table-button"
-            disabled={freeze || editorState.focus.blockIndex < 0}
+            disabled={freeze || editorState.focus.blockIndex < 0 || isFocusInTitle(editorState)}
             icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
             onClick={() => {
               setFocusAtOpen(editorState.focus);
