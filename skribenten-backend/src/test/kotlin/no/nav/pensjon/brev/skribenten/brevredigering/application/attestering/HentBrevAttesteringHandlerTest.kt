@@ -1,4 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.MockPrincipal
@@ -85,7 +87,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(hentet).isSuccess {
             assertThat(it.info.id).isEqualTo(opprettet.info.id)
             assertThat(it.saksbehandlerValg).isEqualTo(saksbehandlerValg)
-            assertThat(it.redigertBrev).isEqualTo(letter.toEdit().withSignaturAttestant(attestant1Principal.fullName))
+            assertThat(it.redigertBrev.asV1()).isEqualTo(letter.toEdit().withSignaturAttestant(attestant1Principal.fullName))
             assertThat(it.info.redigeresAv).isEqualTo(attestant1Principal.navIdent)
         }
     }
@@ -196,13 +198,13 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
         )
 
         assertThat(hentet).isSuccess {
-            assertThat(it.redigertBrev.blocks).isEqualTo(opprettet.redigertBrev.blocks)
-            assertThat(it.redigertBrev.title).isEqualTo(opprettet.redigertBrev.title)
-            assertThat(it.redigertBrev.sakspart.gjelderNavn).isEqualTo("Nytt Navn")
-            assertThat(it.redigertBrev.signatur.hilsenTekst).isEqualTo("Ny hilsen")
-            assertThat(it.redigertBrev.signatur.navAvsenderEnhet).isEqualTo("Ny avsenderenhet")
-            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(opprettet.redigertBrev.signatur.saksbehandlerNavn)
-            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+            assertThat(it.redigertBrev.asV1().blocks).isEqualTo(opprettet.redigertBrev.asV1().blocks)
+            assertThat(it.redigertBrev.asV1().title).isEqualTo(opprettet.redigertBrev.asV1().title)
+            assertThat(it.redigertBrev.asV1().sakspart.gjelderNavn).isEqualTo("Nytt Navn")
+            assertThat(it.redigertBrev.asV1().signatur.hilsenTekst).isEqualTo("Ny hilsen")
+            assertThat(it.redigertBrev.asV1().signatur.navAvsenderEnhet).isEqualTo("Ny avsenderenhet")
+            assertThat(it.redigertBrev.asV1().signatur.saksbehandlerNavn).isEqualTo(opprettet.redigertBrev.asV1().signatur.saksbehandlerNavn)
+            assertThat(it.redigertBrev.asV1().signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
         }
     }
 

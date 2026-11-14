@@ -51,8 +51,8 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
             mottaker = brev.mottaker,
             signatur = SignerendeSaksbehandlere(
                 // Redigerbare brev skal alltid ha saksbehandlers signatur, derfor non-null assertion her.
-                saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
-                attesterendeSaksbehandler = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
+                saksbehandler = brev.redigertBrev.saksbehandlerNavn!!,
+                attesterendeSaksbehandler = brev.redigertBrev.attesterendeSaksbehandlerNavn,
             ),
             statiskFagsystemBrevdata = brev.statiskFagsystemBrevdata,
         )

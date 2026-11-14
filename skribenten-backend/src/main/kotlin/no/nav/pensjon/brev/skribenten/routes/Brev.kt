@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBre
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -44,7 +45,7 @@ fun Route.brev() {
                     brevId = call.parameters.brevId(),
                     saksId = sak.saksId,
                     nyeSaksbehandlerValg = null,
-                    nyttRedigertbrev = request,
+                    nyttRedigertbrev = VersjonertBrev.V1(request),
                     frigiReservasjon = frigiReservasjon,
                 )
             )
@@ -83,8 +84,8 @@ fun Route.brev() {
             val split = call.request.queryParameters["split"]?.toBoolean() ?: false
             val sak: Fagsak = call.attributes[SakKey]
 
-            val result = diffBrev(DiffBrevHandler.Request(brevId, sak.saksId, request, split))
-            respondSuccess(result?.asSuccess()) { respond(HttpStatusCode.OK, it) }
+            val result = diffBrev(DiffBrevHandler.Request(brevId, sak.saksId, VersjonertBrev.V1(request), split))
+            respondSuccess(result?.asSuccess()) { respond(HttpStatusCode.OK, (it as DiffBrevHandler.Resultat.V1).response) }
         }
     }
 }

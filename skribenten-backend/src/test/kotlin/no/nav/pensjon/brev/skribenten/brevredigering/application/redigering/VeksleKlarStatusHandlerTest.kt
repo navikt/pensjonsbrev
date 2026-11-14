@@ -1,4 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -80,14 +82,14 @@ class VeksleKlarStatusHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(attestert.info.status).isEqualTo(Dto.BrevStatus.KLAR)
         assertThat(attestert.info.attestertAv).isEqualTo(attestant1Principal.navIdent)
-        assertThat(attestert.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+        assertThat(attestert.redigertBrev.asV1().signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
 
         assertThat(veksleKlarStatus(brev, false)).isSuccess {
             assertThat(it.status).isEqualTo(Dto.BrevStatus.KLADD)
             assertThat(it.attestertAv).isNull()
         }
         assertThat(hentBrev(brev.info.id)).isSuccess {
-            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isNull()
+            assertThat(it.redigertBrev.asV1().signatur.attesterendeSaksbehandlerNavn).isNull()
         }
     }
 
@@ -107,7 +109,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(
             oppdaterBrev(
                 brevId = brev.info.id,
-                nyttRedigertbrev = brev.redigertBrev.copy(
+                nyttRedigertbrev = brev.redigertBrev.asV1().copy(
                     blocks = editLetterBlocks {
                         paragraph(id = 1) {
                             literal(id = 12, text = "Vi har ")

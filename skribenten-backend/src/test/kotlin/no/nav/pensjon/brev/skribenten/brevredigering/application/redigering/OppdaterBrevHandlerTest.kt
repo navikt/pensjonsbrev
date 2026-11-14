@@ -1,4 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -81,13 +86,13 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         )
 
         assertThat(etterSaksbehandlersEndringerOgDeretterEndringIMalen).isSuccess {
-            assertThat(it.redigertBrev.blocks).hasSize(3)
-            assertThat(it.redigertBrev.blocks[0].content).isEqualTo(listOf(Literal(2, text = "red pill", editedText = "blue pill", parentId = 1)))
-            assertThat(it.redigertBrev.blocks[1].content).isEqualTo(listOf(Literal(4, "green pill", parentId = 3)))
-            assertThat(it.redigertBrev.blocks[2].content).isEqualTo(listOf(Literal(6, "red pill", parentId = 5)))
-            assertThat(it.redigertBrev.blocks[0].missingFromTemplate).isTrue
-            assertThat(it.redigertBrev.blocks[1].missingFromTemplate).isNotEqualTo(true)
-            assertThat(it.redigertBrev.blocks[2].missingFromTemplate).isNotEqualTo(true)
+            assertThat(it.redigertBrev.asV1().blocks).hasSize(3)
+            assertThat(it.redigertBrev.asV1().blocks[0].content).isEqualTo(listOf(Literal(2, text = "red pill", editedText = "blue pill", parentId = 1)))
+            assertThat(it.redigertBrev.asV1().blocks[1].content).isEqualTo(listOf(Literal(4, "green pill", parentId = 3)))
+            assertThat(it.redigertBrev.asV1().blocks[2].content).isEqualTo(listOf(Literal(6, "red pill", parentId = 5)))
+            assertThat(it.redigertBrev.asV1().blocks[0].missingFromTemplate).isTrue
+            assertThat(it.redigertBrev.asV1().blocks[1].missingFromTemplate).isNotEqualTo(true)
+            assertThat(it.redigertBrev.asV1().blocks[2].missingFromTemplate).isNotEqualTo(true)
         }
     }
 
@@ -110,7 +115,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(oppdatert).isSuccess {
             assertThat(it.saksbehandlerValg).isNotEqualTo(original.saksbehandlerValg)
-            assertThat(it.redigertBrev).isEqualTo(nyttRedigertBrev)
+            assertThat(it.redigertBrev.asV1()).isEqualTo(nyttRedigertBrev)
         }
     }
 
@@ -144,7 +149,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(oppdatert).isSuccess {
             assertThat(it.redigertBrev).isNotEqualTo(original.redigertBrev)
-            assertThat(it.redigertBrev).isEqualTo(original.redigertBrev.updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev.asV1()).isEqualTo(original.redigertBrev.asV1().updateEditedLetter(freshRender))
         }
     }
 
@@ -174,7 +179,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         )
 
         assertThat(resultat).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(nyttRedigertBrev)
+            assertThat(it.redigertBrev.asV1()).isEqualTo(nyttRedigertBrev)
         }
     }
 
@@ -252,14 +257,14 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan redigere signatur`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        val redigertSignatur = brev.redigertBrev.withSignaturSaksbehandler("Ny signatur")
+        val redigertSignatur = brev.redigertBrev.asV1().withSignaturSaksbehandler("Ny signatur")
 
         val result = oppdaterBrev(
             brevId = brev.info.id,
             nyttRedigertbrev = redigertSignatur,
         )
         assertThat(result).isSuccess {
-            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo("Ny signatur")
+            assertThat(it.redigertBrev.asV1().signatur.saksbehandlerNavn).isEqualTo("Ny signatur")
         }
     }
 }

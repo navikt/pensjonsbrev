@@ -351,6 +351,7 @@ abstract class BrevredigeringHandlerTestBase {
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
         statiskFagsystemBrevdata: StatiskFagsystemBrevdata? = null,
+        markupVersjon: MarkupVersjon = MarkupVersjon.V1,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         opprettBrev.invoke(
             OpprettBrevHandler.Request(
@@ -363,6 +364,7 @@ abstract class BrevredigeringHandlerTestBase {
                 reserverForRedigering = reserverForRedigering,
                 mottaker = mottaker,
                 statiskFagsystemBrevdata = statiskFagsystemBrevdata,
+                markupVersjon = markupVersjon,
             )
         )
     }
@@ -380,7 +382,7 @@ abstract class BrevredigeringHandlerTestBase {
                 brevId = brevId,
                 saksId = saksId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
-                nyttRedigertbrev = nyttRedigertbrev,
+                nyttRedigertbrev = nyttRedigertbrev?.let { VersjonertBrev.V1(it) },
                 frigiReservasjon = frigiReservasjon
             )
         )
@@ -442,7 +444,7 @@ abstract class BrevredigeringHandlerTestBase {
                 brevId = brev.info.id,
                 saksId = saksId,
                 frigiReservasjon = frigiReservasjon,
-                nyttRedigertbrev = nyttRedigertbrev,
+                nyttRedigertbrev = nyttRedigertbrev?.let { VersjonertBrev.V1(it) },
             )
         )
     }
@@ -458,7 +460,7 @@ abstract class BrevredigeringHandlerTestBase {
             LagreAttestertBrevHandler.Request(
                 brevId = brev.info.id,
                 saksId = saksId,
-                nyttRedigertbrev = nyttRedigertbrev,
+                nyttRedigertbrev = VersjonertBrev.V1(nyttRedigertbrev),
                 frigiReservasjon = frigiReservasjon,
             )
         )

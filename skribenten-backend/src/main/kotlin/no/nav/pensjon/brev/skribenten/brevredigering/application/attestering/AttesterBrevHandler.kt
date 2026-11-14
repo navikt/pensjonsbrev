@@ -4,13 +4,13 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -27,7 +27,7 @@ class AttesterBrevHandler(
     data class Request(
         val brevId: BrevId,
         val saksId: SaksId,
-        val nyttRedigertbrev: Edit.Letter? = null,
+        val nyttRedigertbrev: VersjonertBrev? = null,
         val frigiReservasjon: Boolean = false,
     )
 
@@ -49,7 +49,7 @@ class AttesterBrevHandler(
                 brev.markerSomKlar()
             }
 
-            val attestantSignatur = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
+            val attestantSignatur = brev.redigertBrev.attesterendeSaksbehandlerNavn
                 ?: principal.hentSignatur(navansattService)
             brev.attester(principal.navIdent, attestantSignatur)
 

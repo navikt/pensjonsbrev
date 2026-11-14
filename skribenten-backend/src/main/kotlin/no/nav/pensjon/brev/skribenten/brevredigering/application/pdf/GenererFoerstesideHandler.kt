@@ -35,7 +35,7 @@ class GenererFoerstesideHandler(
 
     suspend operator fun invoke(request: Request): Outcome<GenererFoerstesideResponse, Nothing>? =
         brevtilgang.forLesing(request.brevId, request.saksId) {
-        val tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim()
+        val tittel = brev.redigertBrev.tittel
 
         val response = klient.genererFoersteside(GenererFoerstesideRequest(
             spraakkode = when (brev.spraak) {

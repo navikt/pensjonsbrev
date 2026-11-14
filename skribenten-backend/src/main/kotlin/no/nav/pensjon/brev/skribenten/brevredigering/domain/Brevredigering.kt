@@ -5,11 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
-import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
-import no.nav.pensjon.brev.skribenten.letter.updateSakspartOgSignatur
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
@@ -37,9 +32,10 @@ interface Brevredigering {
     val avsenderEnhetId: EnhetId
     val saksbehandlerValg: SaksbehandlervalgMap
     val statiskFagsystemBrevdata: StatiskFagsystemBrevdata?
-    val redigertBrev: Edit.Letter
-    val redigertBrevHash: Hash<Edit.Letter>
-    val rendretBrev: Edit.Letter?
+    val markupVersjon: MarkupVersjon
+    val redigertBrev: VersjonertBrev
+    val redigertBrevHash: Hash<VersjonertBrev>
+    val rendretBrev: VersjonertBrev?
 
     /**
      * Denne burde få et bedre navn.
@@ -75,16 +71,16 @@ interface Brevredigering {
     ): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen>
     fun frigiReservasjon()
 
-    fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
-    fun tilbakestillRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent, brevmalHash: StableHashCode)
+    fun oppdaterRedigertBrev(nyttRedigertbrev: VersjonertBrev, av: NavIdent)
+    fun tilbakestillRedigertBrev(nyttRedigertbrev: VersjonertBrev, av: NavIdent, brevmalHash: StableHashCode)
     fun markerSomKlar()
     fun markerSomKladd()
     fun markerSomArkivert(journalpostId: JournalpostId)
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
-    fun mergeRendretBrev(rendretBrev: LetterMarkup)
-    fun settRendretBrev(rendretBrev: LetterMarkup)
-    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
-    fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup)
+    fun mergeRendretBrev(rendretBrev: VersjonertMarkup)
+    fun settRendretBrev(rendretBrev: VersjonertMarkup)
+    fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>)
+    fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
@@ -105,6 +101,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     override var statiskFagsystemBrevdata by BrevredigeringTable.statiskFagsystemBrevdata
+        private set
+    override var markupVersjon by BrevredigeringTable.markupVersjon
         private set
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
         private set
@@ -190,7 +188,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             avsenderEnhetId: EnhetId,
             saksbehandlerValg: SaksbehandlervalgMap,
             statiskFagsystemBrevdata: StatiskFagsystemBrevdata? = null,
-            redigertBrev: Edit.Letter,
+            redigertBrev: VersjonertBrev,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
             distribusjonstype: Distribusjon = Distribusjon.SENTRALPRINT,
@@ -209,6 +207,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.opprettet = timestamp
             this.sistredigert = timestamp
             this.sistRedigertAv = opprettetAv
+            this.markupVersjon = redigertBrev.markupVersjon
             this.redigertBrev = redigertBrev
             this.rendretBrev = redigertBrev
             this.brevtype = brevtype
@@ -245,13 +244,14 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         redigeresAv = null
     }
 
-    override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
+    override fun oppdaterRedigertBrev(nyttRedigertbrev: VersjonertBrev, av: NavIdent) {
+        sjekkMarkupVersjon(nyttRedigertbrev.markupVersjon)
         redigertBrev = nyttRedigertbrev
         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
         sistRedigertAv = av
     }
 
-    override fun tilbakestillRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent, brevmalHash: StableHashCode) {
+    override fun tilbakestillRedigertBrev(nyttRedigertbrev: VersjonertBrev, av: NavIdent, brevmalHash: StableHashCode) {
         oppdaterRedigertBrev(nyttRedigertbrev, av)
         this.brevmalHash = brevmalHash
     }
@@ -276,24 +276,31 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         // TODO: Vurder om vi skal oppdatere sistRedigert/sistRedigertAv her?
     }
 
-    override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
-        redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
+    override fun mergeRendretBrev(rendretBrev: VersjonertMarkup) {
+        redigertBrev = redigertBrev.merge(rendretBrev)
         settRendretBrev(rendretBrev)
     }
 
-    override fun settRendretBrev(rendretBrev: LetterMarkup) {
+    override fun settRendretBrev(rendretBrev: VersjonertMarkup) {
+        sjekkMarkupVersjon(rendretBrev.markupVersjon)
         this.rendretBrev = rendretBrev.toEdit()
     }
 
-    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
+    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>) {
         rendredeVedlegg.forEach { (vedleggId, rendretVedlegg) ->
             hentRedigertVedlegg(vedleggId)
-                ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg)) }
+                ?.let { settRedigertVedlegg(vedleggId, it.merge(rendretVedlegg)) }
         }
     }
 
-    override fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup) {
-        redigertBrev = redigertBrev.updateSakspartOgSignatur(rendretBrev)
+    override fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup) {
+        redigertBrev = redigertBrev.oppdaterSakspartOgSignatur(rendretBrev)
+    }
+
+    private fun sjekkMarkupVersjon(versjon: MarkupVersjon) {
+        if (versjon != markupVersjon) {
+            throw FeilMarkupVersjonException(markupVersjon, versjon)
+        }
     }
 
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) {
@@ -321,7 +328,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) {
-        redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottakerNavn.takeIf { mottakerDto != null })
+        redigertBrev = redigertBrev.withAnnenMottakerNavn(annenMottakerNavn.takeIf { mottakerDto != null })
 
         if (mottakerDto == null) {
             _mottaker?.delete()
@@ -375,10 +382,11 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         }
     }
 
-    fun hentRedigertVedlegg(vedleggId: VedleggId): Edit.Attachment? =
+    fun hentRedigertVedlegg(vedleggId: VedleggId): VersjonertVedlegg? =
         _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.redigertVedlegg
 
-    fun settRedigertVedlegg(vedleggId: VedleggId, redigertVedlegg: Edit.Attachment): Boolean {
+    fun settRedigertVedlegg(vedleggId: VedleggId, redigertVedlegg: VersjonertVedlegg): Boolean {
+        sjekkMarkupVersjon(redigertVedlegg.markupVersjon)
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }
         if (eksisterende != null) {
             if (eksisterende.redigertVedlegg == redigertVedlegg) {
@@ -396,7 +404,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         return true
     }
 
-    fun settBrevmalForRedigertVedlegg(vedleggId: VedleggId, malVedlegg: LetterMarkup.Attachment) {
+    fun settBrevmalForRedigertVedlegg(vedleggId: VedleggId, malVedlegg: VersjonertVedleggMarkup) {
         _redigerteVedlegg.single { it.vedleggId.value == vedleggId }.rendretVedlegg = malVedlegg.toEdit()
     }
 
@@ -449,6 +457,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
                 else -> Dto.BrevStatus.KLADD
             },
-            leggVedFoersteside = leggVedFoersteside
+            leggVedFoersteside = leggVedFoersteside,
+            markupVersjon = markupVersjon,
         )
 }

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import com.fasterxml.jackson.core.JacksonException
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import io.ktor.client.HttpClient
@@ -100,11 +102,12 @@ class ExternalAPIRouteTest {
         attestertAv = null,
         status = Dto.BrevStatus.KLADD,
         leggVedFoersteside = false,
+        markupVersjon = MarkupVersjon.V1,
     )
 
     private val successBrevredigering = Dto.Brevredigering(
         info = brevInfo,
-        redigertBrev = editedLetter(),
+        redigertBrev = VersjonertBrev.V1(editedLetter()),
         redigertBrevHash = Hash("abc"),
         saksbehandlerValg = SaksbehandlervalgMap(),
         propertyUsage = null,

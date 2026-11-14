@@ -106,7 +106,7 @@ class MottakerTest {
             spraak = LanguageCode.BOKMAL,
             avsenderEnhetId = EnhetId("1111"),
             saksbehandlerValg = SaksbehandlervalgMap(),
-            redigertBrev = Edit.Letter(
+            redigertBrev = VersjonertBrev.V1(Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
@@ -123,7 +123,7 @@ class MottakerTest {
                     navAvsenderEnhet = "j",
                 ),
                 emptyList(),
-            ),
+            )),
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             brevmalHash = StableHashCode(12345),
         )

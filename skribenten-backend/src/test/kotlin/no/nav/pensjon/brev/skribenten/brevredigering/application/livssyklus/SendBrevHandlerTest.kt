@@ -1,4 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -282,7 +284,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan ikke sende brev hvor pdf har annen hash enn siste brevredigering`() {
         val brev = opprettBrev().resultOrFail()
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
-        assertThat(oppdaterBrev(brevId = brev.info.id, nyttRedigertbrev = brev.redigertBrev.withSignaturSaksbehandler("en ny signatur"))).isSuccess()
+        assertThat(oppdaterBrev(brevId = brev.info.id, nyttRedigertbrev = brev.redigertBrev.asV1().withSignaturSaksbehandler("en ny signatur"))).isSuccess()
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
 
         assertThat(sendBrev(brev)).isFailure<SendBrevPolicy.KanIkkeSende.DocumentIkkeForGjeldendeRedigertBrev, _, _>()
