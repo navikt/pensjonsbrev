@@ -921,20 +921,21 @@ export function breakOutEmptyItem(
         content: itemList.items,
         deletedContent: itemList.deletedItems,
         id: itemList.id,
-      }).map((removed) => current(removed)) as unknown as Item[];
+      }).map((removed) => (isDraft(removed) ? current(removed) : removed)) as unknown as Item[];
       afterListContent = [
         newItemList({ listType, editedListType, items: itemsAfter, deletedItems: [...preExistingDeletedItems] }),
       ];
     }
     // The retained list keeps the leading items (and its id).
-    beforeListContent = [current(itemList) as unknown as ItemList];
+    beforeListContent = [(isDraft(itemList) ? current(itemList) : itemList) as unknown as ItemList];
   } else if (hasItemsAfter) {
     // Empty item was first: the original list now holds only the trailing items; reuse it as-is.
-    afterListContent = [current(itemList) as unknown as ItemList];
+    afterListContent = [(isDraft(itemList) ? current(itemList) : itemList) as unknown as ItemList];
   }
 
   // Content surrounding the list within the same block becomes its own block on each side.
-  const snapshotContent = current(block.content) as unknown as Content[];
+  // Content created earlier in the same recipe (e.g. by paste) is plain, not a draft.
+  const snapshotContent = (isDraft(block.content) ? current(block.content) : block.content) as unknown as Content[];
   const contentBeforeList = snapshotContent.slice(0, contentIndex);
   const contentAfterList = snapshotContent.slice(contentIndex + 1);
 
