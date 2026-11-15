@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { type EditedLetter, ElementTags, type LiteralValue } from "~/types/brevbakerTypes";
+import { type EditedLetter, ElementTags, FontType, type LiteralValue } from "~/types/brevbakerTypes";
 import { baseSakspart, baseSignatur, editorInfo } from "~test/e2e/support/editorFixtures";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse, editedLetter } from "~test/support/brevFixtures";
@@ -533,6 +533,48 @@ test.describe("LetterEditor", () => {
       await expect(page.getByText("Test Testeson")).toBeVisible();
       await expect(page.getByText("Saken gjelder:")).not.toBeVisible();
     });
+  });
+});
+
+test.describe("LetterEditor copy and paste within the editor", () => {
+  test("a heading and a paragraph with bold text keep their structure and formatting", async ({ page }) => {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [
+            title2(_literal("Knirkende stoler i rom 4A")),
+            paragraph([_literal("Noen stoler "), { ..._literal("knirker"), fontType: FontType.BOLD }, _literal(".")]),
+            paragraph([_literal("")]),
+          ],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+
+    await page.evaluate(() => {
+      const literals = document.querySelectorAll(".editor-surface [data-literal-index]");
+      const range = document.createRange();
+      range.setStart(literals[0].firstChild!, 0);
+      range.setEnd(literals[3].firstChild!, 1);
+      globalThis.getSelection()!.removeAllRanges();
+      globalThis.getSelection()!.addRange(range);
+    });
+    await page.keyboard.press("ControlOrMeta+c");
+
+    const emptyParagraph = page.locator(".editor-surface > .PARAGRAPH:nth-child(3) > [data-literal-index]");
+    await emptyParagraph.focus();
+    await expect(emptyParagraph).toBeFocused();
+    await page.keyboard.press("ControlOrMeta+v");
+
+    const pastedHeading = page.locator(".editor-surface > .TITLE2").nth(1);
+    await expect(pastedHeading).toHaveText("Knirkende stoler i rom 4A");
+    const sourceParagraph = page.locator(".editor-surface > .TITLE2 + .PARAGRAPH").first();
+    const pastedParagraph = page.locator(".editor-surface > .TITLE2 + .PARAGRAPH").nth(1);
+    await expect(pastedParagraph).toHaveText((await sourceParagraph.textContent()) ?? "");
+    await expect(pastedParagraph.getByText("knirker", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect(pastedParagraph.getByText("Noen stoler", { exact: true })).toHaveCSS("font-weight", "400");
   });
 });
 
