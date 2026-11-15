@@ -483,6 +483,34 @@ describe("ArrowRight will move focus to next editable content", () => {
   });
 });
 
+describe("useDragSelectUnifier", () => {
+  test.each([
+    ["right-click", { button: 2, buttons: 2 }],
+    ["ctrl-click", { button: 0, buttons: 1, ctrlKey: true }],
+  ])("%s whose pointerup is consumed by the context menu does not start drag-selection", (_, pointerDown) => {
+    setupWithUnifier(letter(paragraph([literal("Text")])));
+    const span = screen.getByText("Text");
+    fireEvent.pointerDown(span, { ...pointerDown, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(span, { buttons: 0, clientX: 30, clientY: 10 });
+
+    expect(span.getAttribute("contenteditable")).toBe("true");
+    expect(document.querySelector(".is-drag-selecting")).toBeNull();
+  });
+
+  test("left-button dragging unifies selection and restores editing on pointerup", () => {
+    setupWithUnifier(letter(paragraph([literal("Text")])));
+    const span = screen.getByText("Text");
+    fireEvent.pointerDown(span, { button: 0, buttons: 1, clientX: 10, clientY: 10 });
+    fireEvent.pointerMove(span, { buttons: 1, clientX: 30, clientY: 10 });
+    expect(span.hasAttribute("contenteditable")).toBe(false);
+    expect(document.querySelector(".is-drag-selecting")).not.toBeNull();
+
+    fireEvent.pointerUp(span, { button: 0, buttons: 0 });
+    expect(span.getAttribute("contenteditable")).toBe("true");
+    expect(document.querySelector(".is-drag-selecting")).toBeNull();
+  });
+});
+
 describe("onClickHandler", () => {
   test.each(["first", "middle", "last"])(
     "triple-clicking the %s literal selects only that literal",
