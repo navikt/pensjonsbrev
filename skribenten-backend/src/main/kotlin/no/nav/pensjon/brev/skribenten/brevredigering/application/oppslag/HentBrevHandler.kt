@@ -30,17 +30,16 @@ class HentBrevHandler(
             brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = false) {
                 val pesysdata = brevdataService.hentBrevdata(brev)
                 val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-                val rendredeVedlegg = brevmalService.renderRedigerteVedlegg(brev, pesysdata)
 
                 if (!Features.forhindreOppdateringAvKladd.isEnabled()) {
                     brev.mergeRendretBrev(rendretBrev.markup)
-                    brev.mergeRendredeVedlegg(rendredeVedlegg)
+                    brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
                     return@forRedigering success(brev.tilDto(rendretBrev.letterDataUsage))
                 }
 
                 if (brev.harUendretBrevmal(rendretBrev.stableHashCode)) {
                     brev.mergeRendretBrev(rendretBrev.markup)
-                    brev.mergeRendredeVedleggMedUendretHash(rendredeVedlegg)
+                    brev.mergeRendredeVedleggMedUendretHash(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
                     success(brev.tilDto(rendretBrev.letterDataUsage))
                 } else {
                     success(brev.tilDto(emptySet()))
