@@ -84,6 +84,7 @@ interface Brevredigering {
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settRendretBrev(rendretBrev: LetterMarkup)
     fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
+    fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
     fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
@@ -297,6 +298,16 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             hentRedigertVedlegg(vedleggId)
                 ?.let { settRedigertVedlegg(vedleggId, it.updateEditedAttachment(rendretVedlegg)) }
         }
+    }
+
+    override fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
+        val lagredeMalHasher = _redigerteVedlegg.associate { it.vedleggId.value to it.rendretVedleggHash }
+        mergeRendredeVedlegg(
+            rendredeVedlegg.filter { (vedleggId, rendretVedlegg) ->
+                val lagretHash = lagredeMalHasher[vedleggId]
+                lagretHash == null || lagretHash == rendretVedlegg.stableHashCode
+            }
+        )
     }
 
     override fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup) {
