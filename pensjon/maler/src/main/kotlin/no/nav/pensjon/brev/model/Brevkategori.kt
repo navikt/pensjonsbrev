@@ -11,6 +11,7 @@ enum class Brevkategori : IBrevkategori {
     INNHENTE_OPPLYSNINGER,
     KLAGE_OG_ANKE,
     LEVEATTEST,
+    LOVENDRINGER,
     OMSORGSOPPTJENING,
     POSTERINGSGRUNNLAG,
     SLUTTBEHANDLING,
@@ -18,7 +19,8 @@ enum class Brevkategori : IBrevkategori {
     VARSEL,
     VEDTAK_EKSPORT,
     VEDTAK_ENDRING_OG_REVURDERING,
-    VEDTAK_FLYTTE_MELLOM_LAND;
+    VEDTAK_FLYTTE_MELLOM_LAND,
+    VEDTAK_OPPHOER_AVSLAG;
 
     override val kode = name
 }
