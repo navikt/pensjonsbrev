@@ -71,6 +71,7 @@ import no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag.*
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbar
 import no.nav.pensjon.brev.maler.ufore.uforegrad.OkningUforegradRedigerbarV2
 import no.nav.pensjon.brev.maler.ufore.utland.DelvisEksportAvUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.utland.EksportAvUforetrygd
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.template.BrevTemplate
@@ -197,6 +198,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmOktMinsteIFULavereReduksjonsprosentAuto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
             VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
             VedtakOmOktMinsteIFURedigerbar::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
+            EksportAvUforetrygd::class -> createEksportAvUfoeretrygdDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${templateType.qualifiedName}")
         }
 
