@@ -10,13 +10,29 @@ import no.nav.pensjon.brev.skribenten.model.NyhetsvarselId
 import no.nav.pensjon.brev.skribenten.model.Nyhetsvarselmarkering.GJENNOMFOERT_OMVISNINGEN
 import no.nav.pensjon.brev.skribenten.model.Nyhetsvarselmarkering.SETT_ANNONSEN
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.dao.id.CompositeIdTable
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.javatime.timestamp
+import org.jetbrains.exposed.v1.jdbc.insertIgnore
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import java.time.Instant
 import java.util.concurrent.atomic.AtomicInteger
+
+private object BekreftetNyhetsvarselTable : CompositeIdTable() {
+    val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
+    val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
+        varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id).entityId()
+    val bekreftet: Column<Instant> = timestamp("bekreftet")
+
+    override val primaryKey = PrimaryKey(navIdent, nyhetsvarselId)
+}
 
 class NyhetsvarselHandlersTest {
     private val transactional by lazy { Transactional(SharedPostgres.database) }
@@ -118,5 +134,41 @@ class NyhetsvarselHandlersTest {
         markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(nyNavIdent(), diff, GJENNOMFOERT_OMVISNINGEN))
 
         assertThat(hent(nyNavIdent())).isEqualTo(Api.Nyhetsvarsler(emptyList(), emptyList()))
+    }
+
+    private fun hentSomForrigeVersjon(navIdent: NavIdent) = transaction(SharedPostgres.database) {
+        BekreftetNyhetsvarselTable.select(BekreftetNyhetsvarselTable.nyhetsvarselId)
+            .where { BekreftetNyhetsvarselTable.navIdent eq navIdent }
+            .map { it[BekreftetNyhetsvarselTable.nyhetsvarselId].value }
+    }
+
+    private fun bekreftSomForrigeVersjon(navIdent: NavIdent, id: NyhetsvarselId) = transaction(SharedPostgres.database) {
+        BekreftetNyhetsvarselTable.insertIgnore {
+            it[BekreftetNyhetsvarselTable.navIdent] = navIdent
+            it[nyhetsvarselId] = id
+            it[bekreftet] = Instant.now()
+        }
+    }
+
+    @Test
+    suspend fun `forrige versjon av backend kan fortsatt lese og lagre bekreftelser`() {
+        val navIdent = nyNavIdent()
+        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, GJENNOMFOERT_OMVISNINGEN))
+        assertThat(hentSomForrigeVersjon(navIdent)).containsExactly(diff)
+
+        val eblanketter = NyhetsvarselId("brevvelger-eblanketter")
+        bekreftSomForrigeVersjon(navIdent, eblanketter)
+        bekreftSomForrigeVersjon(navIdent, eblanketter)
+
+        assertThat(hent(navIdent).gjennomfoertOmvisningen).containsExactlyInAnyOrder(diff, eblanketter)
+    }
+
+    @Test
+    suspend fun `forrige versjon av backend ser ikke nyhetsvarsler som bare er sett`() {
+        val navIdent = nyNavIdent()
+
+        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, SETT_ANNONSEN))
+
+        assertThat(hentSomForrigeVersjon(navIdent)).isEmpty()
     }
 }
