@@ -28,7 +28,7 @@ export function AppHeader() {
   );
 }
 
-export const DOCUMENTATION_URL = "https://navikt.github.io/pensjonsbrev/docs/main/index.html";
+const DOCUMENTATION_URL = "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html";
 
 function UsefulLinksMenu() {
   return (
@@ -50,6 +50,16 @@ function UsefulLinksMenu() {
               target="_blank"
             >
               Dokumentasjon og veiledning
+              <span className="aksel-sr-only"> (åpnes i ny fane)</span>
+            </ActionMenu.Item>
+            <ActionMenu.Item
+              as={RouterLink}
+              icon={<ExternalLinkIcon />}
+              rel="noopener noreferrer"
+              target="_blank"
+              to="/personvern"
+            >
+              Personvernerklæring
               <span className="aksel-sr-only"> (åpnes i ny fane)</span>
             </ActionMenu.Item>
           </ActionMenu.Group>

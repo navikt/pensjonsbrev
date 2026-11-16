@@ -13,7 +13,7 @@ import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBr
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { type BestillBrevResponse, type BrevResponse } from "~/types/brev";
-import { trackEvent } from "~/utils/umami";
+import { trackEvent } from "~/utils/innblikk";
 
 import BrevForhåndsvisning from "../brevbehandler/-components/BrevForhåndsvisning";
 import { useSendtBrev } from "../kvittering/-components/SendtBrevContext";

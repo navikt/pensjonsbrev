@@ -43,9 +43,9 @@ import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOn
 import { useUserInfo } from "~/hooks/useUserInfo";
 import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
 import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
+import { trackEvent } from "~/utils/innblikk";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
-import { trackEvent } from "~/utils/umami";
 
 const attesteringSearchSchema = baseSearchSchema.extend({
   vedlegg: z.coerce.string().optional(),

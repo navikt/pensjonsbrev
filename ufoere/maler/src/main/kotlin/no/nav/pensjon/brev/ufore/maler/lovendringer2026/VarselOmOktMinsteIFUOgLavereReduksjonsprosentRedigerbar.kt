@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_S_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS
-    override val kategori = Brevkategori.VARSEL
+    override val kategori = Brevkategori.LOVENDRINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
 

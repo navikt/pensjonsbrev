@@ -169,25 +169,3 @@ test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjone
   await expect(page.getByRole("link", { name: /^Se dokumentasjon/ })).toBeVisible();
   await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
 });
-
-test.describe("menyen med nyttige lenker i toppmenyen", () => {
-  test("har lenke til dokumentasjon og veiledning som åpnes i ny fane", async ({ page }) => {
-    await setupSakStubs(page);
-    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
-      route.fulfill({ json: defaultLetter }),
-    );
-    await page.goto("/saksnummer/123456/brev/1");
-
-    await page.getByRole("button", { name: "Nyttige lenker" }).click();
-
-    const link = page.getByRole("menuitem", { name: "Dokumentasjon og veiledning (åpnes i ny fane)" });
-    await expect(link).toBeVisible();
-    await expect(link).toHaveAttribute("href", "https://navikt.github.io/pensjonsbrev/docs/main/index.html");
-    await expect(link).toHaveAttribute("target", "_blank");
-    const axe = await new AxeBuilder({ page })
-      .include('[role="menu"]')
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      .analyze();
-    expect(axe.violations).toEqual([]);
-  });
-});

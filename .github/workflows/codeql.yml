@@ -11,6 +11,7 @@ on:
     paths:
       - .github/workflows/codeql.yml
       - gradle/libs.versions.toml
+      - gradle/settings/**
 
 env:
   JavaDistribution: "temurin"

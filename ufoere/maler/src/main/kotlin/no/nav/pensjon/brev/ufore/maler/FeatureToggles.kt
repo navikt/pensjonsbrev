@@ -7,7 +7,9 @@ enum class FeatureToggles(private val key: String) {
     simulering("ut.simulering"),
     utsendelseTilUtland("ut.utsendelseTilUtland"),
     ufoeretrygdForeloepigEksportvurdering("ut.ufoeretrygdForeloepigEksportvurdering"),
-    innhentingOpplysningerForside("ut.innhOpplysningerForside")
+    innhentingOpplysningerForside("ut.innhOpplysningerForside"),
+    avkallPaUforetrygd("ut.avkallPaUforetrygd"),
+    opphorUforetrygd("ut.opphorUforetrygd"),
     ;
 
     val toggle = FeatureToggle(key)
