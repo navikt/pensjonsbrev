@@ -6,8 +6,10 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBre
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.asSuccess
@@ -130,6 +132,7 @@ class ExternalAPIService(
                 saksbehandlerValg = request.saksbehandlerValg ?: SaksbehandlervalgMap(),
                 statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
                 reserverForRedigering = request.reserverForRedigering ?: true,
+                markupVersjon = if (Features.markupV2.isEnabled()) MarkupVersjon.V2 else MarkupVersjon.V1,
                 mottaker = request.overstyrtMottaker?.toDto(),
             )
         )
