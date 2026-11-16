@@ -171,4 +171,26 @@ class NyhetsvarselHandlersTest {
 
         assertThat(hentSomForrigeVersjon(navIdent)).isEmpty()
     }
+
+    @Test
+    suspend fun `forrige versjon av backend kan bekrefte et nyhetsvarsel som allerede er sett`() {
+        val navIdent = nyNavIdent()
+        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, SETT_ANNONSEN))
+
+        bekreftSomForrigeVersjon(navIdent, diff)
+
+        assertThat(hent(navIdent)).isEqualTo(Api.Nyhetsvarsler(settAnnonsen = listOf(diff), gjennomfoertOmvisningen = listOf(diff)))
+        assertThat(hentSomForrigeVersjon(navIdent)).containsExactly(diff)
+    }
+
+    @Test
+    suspend fun `forrige versjon av backend beholder foerste tidspunkt for gjennomfoert omvisning`() {
+        val navIdent = nyNavIdent()
+        markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(navIdent, diff, GJENNOMFOERT_OMVISNINGEN))
+        val (_, foersteGjennomfoert) = rad(navIdent)
+
+        bekreftSomForrigeVersjon(navIdent, diff)
+
+        assertThat(rad(navIdent)).isEqualTo(null to foersteGjennomfoert)
+    }
 }
