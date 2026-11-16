@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -41,19 +40,7 @@ class HentBrevHandler(
 
                 if (rendretBrev.stableHashCode == brev.brevmalHash || brev.brevmalHash == null) {
                     brev.mergeRendretBrev(rendretBrev.markup)
-
-                    val redigerteVedleggHashes = brev.redigerteVedlegg.map { it.vedleggId to it.rendretVedleggHash }
-                    val rendredeVedleggHashes = rendredeVedlegg.entries.map { it.key to it.value.stableHashCode }
-                    if (redigerteVedleggHashes.all {
-                            rendredeVedleggHashes.contains(
-                                Pair(
-                                    it.first,
-                                    it.second
-                                )
-                            )
-                        } || redigerteVedleggHashes.any { it.second == null }) {
-                        brev.mergeRendredeVedlegg(rendredeVedlegg)
-                    }
+                    brev.mergeRendredeVedleggMedUendretHash(rendredeVedlegg)
                     success(brev.tilDto(rendretBrev.letterDataUsage))
                 } else {
                     success(brev.tilDto(emptySet()))

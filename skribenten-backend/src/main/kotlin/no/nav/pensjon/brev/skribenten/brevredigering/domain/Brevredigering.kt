@@ -80,6 +80,7 @@ interface Brevredigering {
     fun mergeRendretBrev(rendretBrev: VersjonertMarkup)
     fun settRendretBrev(rendretBrev: VersjonertMarkup)
     fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>)
+    fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
     fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
@@ -304,11 +305,19 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         redigertBrev = redigertBrev.oppdaterSakspartOgSignatur(rendretBrev)
     }
 
+    override fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
+        val lagredeMalHasher = _redigerteVedlegg.associate { it.vedleggId.value to it.rendretVedleggHash }
+        mergeRendredeVedlegg(
+            rendredeVedlegg.filter { (vedleggId, rendretVedlegg) ->
+                val lagretHash = lagredeMalHasher[vedleggId]
+                lagretHash == null || lagretHash == rendretVedlegg.stableHashCode
+            }
+        )
+    }
     private fun sjekkMarkupVersjon(versjon: MarkupVersjon) {
         if (versjon != markupVersjon) {
             throw FeilMarkupVersjonException(markupVersjon, versjon)
         }
-    }
 
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) {
         val types = modelSpec.types[modelSpec.letterModelTypeName]

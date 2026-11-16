@@ -62,6 +62,7 @@ open class BrevredigeringStub : Brevredigering {
     override fun mergeRendretBrev(rendretBrev: VersjonertMarkup): Unit = notYetStubbed()
     override fun settRendretBrev(rendretBrev: VersjonertMarkup): Unit = notYetStubbed()
     override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>): Unit = notYetStubbed()
+    override fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>): Unit = notYetStubbed()
     override fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
