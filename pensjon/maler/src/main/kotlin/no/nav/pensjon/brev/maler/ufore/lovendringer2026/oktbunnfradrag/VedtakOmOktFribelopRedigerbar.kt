@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VedtakOmOktFribelopRedigerbar : RedigerbarTemplate<VedtakOmOktFribelopRedigerbarDto> {
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_OKT_FRIBELOP_2026_RED
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.LOVENDRINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

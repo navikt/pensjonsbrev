@@ -91,7 +91,6 @@ object Fixtures : LetterDataFactory {
             VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             VarselOmOktMinsteIFURedigerbar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             VarselOmLavereMinstesatsS::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
-            SoknadBarnetilleggFosterForelder::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             FlereOpplysningerGenerell::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             SoknadBarnetillegg::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             TrukketKlage::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
@@ -103,7 +102,6 @@ object Fixtures : LetterDataFactory {
             UtsattKlagefrist::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             AntattDod::class -> lagBrukersNavnRedigerbarBrevdata() as T
             EOSLegeerklaering::class -> lagBrukersNavnRedigerbarBrevdata() as T
-            SoknadBarnetilleggUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             BrukerLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             LegeLegeerklaering::class -> lagBrukersNavnRedigerbarBrevdata() as T
             HvilendeRettMidlertidigOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
