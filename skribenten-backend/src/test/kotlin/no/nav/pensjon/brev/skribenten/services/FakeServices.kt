@@ -168,6 +168,14 @@ open class FakeBrevbakerService(
         redigerteVedlegg: Map<VedleggId, AttachmentV2>,
         pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse = notYetStubbed()
+    override suspend fun renderRedigerbartVedleggV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        vedleggId: VedleggId,
+    ): AttachmentV2? = notYetStubbed()
 }
 
 private val objectMapper = jacksonObjectMapper()

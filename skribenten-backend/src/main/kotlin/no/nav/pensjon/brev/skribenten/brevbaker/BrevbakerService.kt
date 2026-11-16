@@ -99,6 +99,15 @@ interface BrevbakerService {
         pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse
 
+    suspend fun renderRedigerbartVedleggV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        vedleggId: VedleggId,
+    ): AttachmentV2?
+
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
     suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode>
@@ -368,6 +377,30 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }
                     ?: "Ukjent feil oppstod ved generering av PDF v2 for brevkode: $brevkode"
+            )
+        }
+    }
+
+    override suspend fun renderRedigerbartVedleggV2(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        fagsystemBrevdata: FagsystemBrevdata,
+        saksbehandlervalg: SaksbehandlervalgIDSL,
+        felles: BrevbakerFelles,
+        vedleggId: VedleggId,
+    ): AttachmentV2? {
+        val response = client.post("/v2/letter/redigerbar/redigerbare-vedlegg/${vedleggId.id}") {
+            metricsRoute("v2/letter/redigerbar/redigerbare-vedlegg/{vedleggId}")
+            contentType(ContentType.Application.Json)
+            setBody(bestillRedigerbartBrev(brevkode, spraak, felles, fagsystemBrevdata, saksbehandlervalg))
+        }
+
+        return when {
+            response.status == HttpStatusCode.NotFound -> null
+            response.status.isSuccess() -> response.body()
+            else -> throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
+                    ?: "Ukjent feil oppstod ved generering av redigerbart vedlegg v2 for brevkode: $brevkode"
             )
         }
     }

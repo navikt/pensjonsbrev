@@ -7,6 +7,8 @@ import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 
 object ApiV2 {
+    data class RedigertVedleggRequest(val redigertVedlegg: EditV2.Attachment)
+
     data class OppdaterBrevRequest(
         val saksbehandlerValg: SaksbehandlervalgMap,
         val redigertBrev: EditV2.Letter,
