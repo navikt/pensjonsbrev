@@ -68,6 +68,8 @@ import no.nav.pensjon.brev.maler.ufore.diverse.VedtakBlankMalRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.VedtakOmEtterbetalingOpphor2026Redigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.OktBunnfradragNesteArRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArAuto
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.OktBunnfradragNesteArAuto
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar
@@ -134,6 +136,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmEndringBTEPSOktoberAuto,
         EPSEndringIBarnetilleggAuto,
         OktBunnfradragNesteArAuto,
+        BunnfradragVedAldersovergangNesteArAuto
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(
@@ -203,6 +206,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktMinsteIFURedigerbar,
         EPSEndringIBarnetilleggRedigerbar,
         OktBunnfradragNesteArRedigerbar,
+        BunnfradragVedAldersovergangNesteArRedigerbar
     )
 
     override fun hentAutobrevmaler() = autobrev
