@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
+import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.override
@@ -15,6 +16,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.AfterEach
@@ -97,5 +99,49 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
 
         assertThat(lagretVedlegg(brev.info.id, uendretVedlegg))
             .isEqualTo(malVedlegg("uendret", 1).toEdit().updateEditedAttachment(nyeMaler.getValue(uendretVedlegg)))
+    }
+
+    @Test
+    suspend fun `oppdater brev fletter bare vedlegg med uendret mal`() {
+        val (brev, nyeMaler) = brevMedVedleggOgNyeMaler()
+
+        assertThat(oppdaterBrev(brev.info.id)).isSuccess()
+
+        assertVedleggFlettetPerVedlegg(brev.info.id, nyeMaler)
+    }
+
+    private val nyttRendretBrev
+        get() = letter.copy(blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph"))))
+
+    @Test
+    suspend fun `hent brev fletter inn rendret brev naar brevmalen er uendret`() {
+        val opprettet = opprettBrev().resultOrFail()
+        brevbakerService.renderMarkupResultat = { nyttRendretBrev }
+
+        assertThat(hentBrev(opprettet.info.id, reserverForRedigering = true)).isSuccess {
+            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(nyttRendretBrev))
+        }
+    }
+
+    @Test
+    suspend fun `hent brev fletter ikke inn rendret brev naar brevmalen er endret`() {
+        val opprettet = opprettBrev().resultOrFail()
+        brevbakerService.renderMarkupStableHashCode = StableHashCode(456)
+        brevbakerService.renderMarkupResultat = { nyttRendretBrev }
+
+        assertThat(hentBrev(opprettet.info.id, reserverForRedigering = true)).isSuccess {
+            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev)
+        }
+    }
+
+    @Test
+    suspend fun `oppdater brev fletter ikke inn rendret brev naar brevmalen er endret`() {
+        val opprettet = opprettBrev().resultOrFail()
+        brevbakerService.renderMarkupStableHashCode = StableHashCode(456)
+        brevbakerService.renderMarkupResultat = { nyttRendretBrev }
+
+        assertThat(oppdaterBrev(opprettet.info.id)).isSuccess {
+            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev)
+        }
     }
 }
