@@ -144,4 +144,15 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
             assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev)
         }
     }
+
+    @Test
+    suspend fun `hent brev rendrer ikke vedlegg naar brevmalen er endret`() {
+        val (brev, _) = brevMedVedleggOgNyeMaler()
+        brevbakerService.renderMarkupStableHashCode = StableHashCode(456)
+        brevbakerService.renderRedigerbartVedleggKall.clear()
+
+        assertThat(hentBrev(brev.info.id, reserverForRedigering = true)).isSuccess()
+
+        assertThat(brevbakerService.renderRedigerbartVedleggKall).isEmpty()
+    }
 }
