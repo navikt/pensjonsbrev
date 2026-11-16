@@ -39,7 +39,7 @@ data class AvslagAfpPrivatInnhold(
         paragraph {
             text(
                 bokmal {
-                    +"VAFP i privat sektor gis etter bestemmelsene i lov om statstilskott til arbeidstakere som tar ut avtalefestet pensjon i privat sektor (AFP-tilskottsloven). " +
+                    +"AFP i privat sektor gis etter bestemmelsene i lov om statstilskott til arbeidstakere som tar ut avtalefestet pensjon i privat sektor (AFP-tilskottsloven). " +
                             "Fellesordningen for AFP har vurdert at du oppfyller de avtalemessige vilkårene for rett til AFP. " +
                             "Nav har avgjort andre spørsmål om retten til pensjon. "
                 },
