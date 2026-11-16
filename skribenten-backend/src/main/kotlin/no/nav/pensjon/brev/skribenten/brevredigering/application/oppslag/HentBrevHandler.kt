@@ -41,7 +41,19 @@ class HentBrevHandler(
 
                 if (rendretBrev.stableHashCode == brev.brevmalHash || brev.brevmalHash == null) {
                     brev.mergeRendretBrev(rendretBrev.markup)
-                    brev.mergeRendredeVedlegg(rendredeVedlegg)
+
+                    val redigerteVedleggHashes = brev.redigerteVedlegg.map { it.vedleggId to it.rendretVedleggHash }
+                    val rendredeVedleggHashes = rendredeVedlegg.entries.map { it.key to it.value.stableHashCode }
+                    if (redigerteVedleggHashes.all {
+                            rendredeVedleggHashes.contains(
+                                Pair(
+                                    it.first,
+                                    it.second
+                                )
+                            )
+                        } || redigerteVedleggHashes.any { it.second == null }) {
+                        brev.mergeRendredeVedlegg(rendredeVedlegg)
+                    }
                     success(brev.tilDto(rendretBrev.letterDataUsage))
                 } else {
                     success(brev.tilDto(emptySet()))
