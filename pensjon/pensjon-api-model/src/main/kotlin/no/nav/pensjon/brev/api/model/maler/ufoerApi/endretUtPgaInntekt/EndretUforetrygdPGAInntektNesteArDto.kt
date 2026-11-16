@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtvikling
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -55,29 +56,4 @@ data class EndretUforetrygdPGAInntektNesteArDto(
     data class Gjenlevendetillegg(
         val belop: Kroner,
     )
-
-    data class FribelopUtvikling(
-        val kategori: FribelopUtviklingKategori,
-        val gradsokning: Gradsokning?,
-        val fribelopsokning: Fribelopsokning?,
-    )
-
-    data class Gradsokning(
-        val dato: LocalDate,
-        val uforegradFoerOkning: Int,
-    )
-
-    data class Fribelopsokning(
-        val dato: LocalDate,
-        val _2arEtterGradsokning: Boolean,
-    )
-
-    enum class FribelopUtviklingKategori {
-        FRIBELOP_1G_FRA_IFJOR,
-        FRIBELOP_1G_FRA_JAN,
-        FRIBELOP_1G_TIL_04G,
-        FRIBELOP_04G_TIL_1G,
-        FRIBELOP_04G_TIL_1G_TIL_04G,
-        FRIBELOP_04G
-    }
 }

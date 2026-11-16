@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VarselOmLavereMinstesatsS : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = UT_S_VARSEL_LAVERE_MINSTESATS_2026
-    override val kategori = Brevkategori.VARSEL
+    override val kategori = Brevkategori.LOVENDRINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
 

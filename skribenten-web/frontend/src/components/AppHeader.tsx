@@ -1,5 +1,5 @@
-import { LeaveIcon } from "@navikt/aksel-icons";
-import { ActionMenu, Box, InternalHeader, Link, Spacer } from "@navikt/ds-react";
+import { ExternalLinkIcon, LeaveIcon, MenuGridIcon } from "@navikt/aksel-icons";
+import { ActionMenu, Box, InternalHeader, Spacer, Theme } from "@navikt/ds-react";
 import { Link as RouterLink } from "@tanstack/react-router";
 
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -19,18 +19,51 @@ export function AppHeader() {
           </RouterLink>
         </InternalHeader.Title>
         <Spacer />
-        <Link
-          css={{ marginRight: "var(--ax-space-16)" }}
-          data-color="neutral"
-          href="https://navikt.github.io/pensjonsbrev/docs/main/index.html"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Dokumentasjon og veiledning
-        </Link>
+        <UsefulLinksMenu />
         <UserDropdown />
       </InternalHeader>
     </Box>
+  );
+}
+
+const DOCUMENTATION_URL = "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html";
+
+function UsefulLinksMenu() {
+  return (
+    <ActionMenu>
+      <ActionMenu.Trigger>
+        <InternalHeader.Button>
+          <MenuGridIcon fontSize="1.5rem" title="Nyttige lenker" />
+        </InternalHeader.Button>
+      </ActionMenu.Trigger>
+      {/* InternalHeader is dark; the menu should follow the rest of the app. */}
+      <Theme hasBackground={false} theme="light">
+        <ActionMenu.Content align="end">
+          <ActionMenu.Group aria-label="Nyttige lenker">
+            <ActionMenu.Item
+              as="a"
+              href={DOCUMENTATION_URL}
+              icon={<ExternalLinkIcon />}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Dokumentasjon og veiledning
+              <span className="aksel-sr-only"> (åpnes i ny fane)</span>
+            </ActionMenu.Item>
+            <ActionMenu.Item
+              as={RouterLink}
+              icon={<ExternalLinkIcon />}
+              rel="noopener noreferrer"
+              target="_blank"
+              to="/personvern"
+            >
+              Personvernerklæring
+              <span className="aksel-sr-only"> (åpnes i ny fane)</span>
+            </ActionMenu.Item>
+          </ActionMenu.Group>
+        </ActionMenu.Content>
+      </Theme>
+    </ActionMenu>
   );
 }
 

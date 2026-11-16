@@ -1,5 +1,5 @@
 import { truncatedSha256Hash } from "~/utils/hashUtils";
-import { trackEvent, type UmamiEventData } from "~/utils/umami";
+import { trackEvent, type UmamiEventData } from "~/utils/innblikk";
 
 export type MottakerClickEventName = "endre mottaker klikket" | "tilbakestill mottaker klikket";
 
