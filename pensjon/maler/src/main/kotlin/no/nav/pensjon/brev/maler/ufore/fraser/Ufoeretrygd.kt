@@ -141,9 +141,23 @@ object Ufoeretrygd {
         }
     }
 
-    /**
-     * TBU1227, sjekkUtbetalingeneOverskrift_001, sjekkUtbetalingeneUT_001
-     */
+    object SkattTilNorge : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Du må som hovedregel betale skatt til Norge" },
+                    nynorsk { +"Du må som hovudregel betale skatt til Noreg" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Når du flytter fra Norge kan dette få betydning for skatten din. Du må selv ta kontakt med Skatteetaten." },
+                    nynorsk { +"Når du flyttar frå Noreg, kan dette få betydning for skatten din. Du må sjølv ta kontakt med Skatteetaten." },
+                )
+            }
+        }
+    }
+
     object SjekkUtbetalingene : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {

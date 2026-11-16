@@ -120,7 +120,8 @@ object Pesysbrevkoder {
         UT_VEDTAK_OM_LAVERE_MINSTESATS_2026,
         UT_VEDTAK_REDUKSJONSPROSENT_2026_RED,
         UT_EPS_ENDRING_I_BARNETILLEGG_RED,
-        UT_VEDTAK_OKT_BUNNFRADRAG_NESTE_AR_RED;
+        UT_VEDTAK_OKT_BUNNFRADRAG_NESTE_AR_RED,
+        UT_EKSPORT_AV_UFORETRYGD;
 
         override fun kode(): String = this.name
     }
