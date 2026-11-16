@@ -1,0 +1,235 @@
+@file:OptIn(no.nav.brev.InternKonstruktoer::class)
+
+package no.nav.pensjon.brev.skribenten.routes
+
+import com.fasterxml.jackson.module.kotlin.readValue
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.basic
+import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
+import io.ktor.server.routing.*
+import io.ktor.server.testing.*
+import no.nav.pensjon.brev.skribenten.Features
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.auth.SakKey
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.LagreP1DataHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentAlltidValgbareVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
+import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
+import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.ApiV2
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
+import no.nav.pensjon.brev.skribenten.observability.BrevoppdateringObservability
+import no.nav.pensjon.brev.skribenten.override
+import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
+import no.nav.pensjon.brev.skribenten.services.FakeNorg2Service
+import no.nav.pensjon.brev.skribenten.services.NavEnhet
+import no.nav.pensjon.brev.skribenten.services.PenClientStub
+import no.nav.pensjon.brev.skribenten.skribentenContenNegotiation
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.parallel.Isolated
+
+@Isolated
+@Execution(ExecutionMode.SAME_THREAD)
+class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
+    private val basePath = "/sak/${sak1.saksId}/brev"
+    private val mapper = databaseObjectMapper
+
+    @AfterEach
+    fun resetToggle() {
+        Features.override(Features.markupV2, false)
+    }
+
+    private fun routeTest(block: suspend ApplicationTestBuilder.(HttpClient) -> Unit) = testApplication {
+        brevbakerService.modelSpecificationResultat = TemplateModelSpecification(types = emptyMap(), letterModelTypeName = "Test")
+        brevbakerService.renderMarkupV2Resultat = { felles ->
+            letterV2(
+                MarkupV2.paragraph(1, MarkupV2.literal(2, "original")),
+                signatur = MarkupV2.signatur(
+                    saksbehandlerNavn = felles.signerendeSaksbehandlere?.saksbehandler,
+                    attesterendeSaksbehandlerNavn = felles.signerendeSaksbehandlere?.attesterendeSaksbehandler,
+                ),
+            )
+        }
+        application {
+            skribentenContenNegotiation()
+            install(StatusPages) {
+                exception<FeilMarkupVersjonException> { call, cause -> call.respond(HttpStatusCode.Conflict, cause.message ?: "") }
+            }
+            install(Authentication) {
+                basic("test") {
+                    validate { if (it.name == "test" && it.password == "test") saksbehandler1Principal else null }
+                }
+            }
+            intercept(ApplicationCallPipeline.Call) {
+                call.attributes.put(SakKey, fagsak1)
+            }
+            dependencies {
+                provide { opprettBrev }
+                provide { hentBrevInfoHandler }
+                provide { hentBrev }
+                provide { oppdaterBrev }
+                provide { tilbakestillBrev }
+                provide { veksleKlarStatus }
+                provide { hentEllerOpprettPdf }
+                provide { sendBrevHandler }
+                provide { hentBrevForSakHandler }
+                provide { endreValgteVedlegg }
+                provide { endreDistribusjonstype }
+                provide { hentRedigerbareVedlegg }
+                provide { hentRedigertVedlegg }
+                provide { endreRedigertVedlegg }
+                provide { tilbakestillRedigertVedlegg }
+                provide { slettBrevHandler }
+                provide { endreMottaker }
+                provide { hentBrevAttestering }
+                provide { attesterBrev }
+                provide { lagreAttestertBrev }
+                provide { hentEllerOpprettAttesteringPdf }
+                provide { hentRedigerbareVedleggAttestering }
+                provide { hentRedigertVedleggAttestering }
+                provide { lagreAttestertVedlegg }
+                provide { HentP1DataHandler(brevtilgang, PenClientStub()) }
+                provide { LagreP1DataHandler(brevtilgang) }
+                provide { HentAlltidValgbareVedleggHandler(brevtilgang, brevmalService) }
+                provide { leggVedFoersteside }
+                provide { BrevoppdateringObservability() }
+                provide {
+                    Dto2ApiService(
+                        brevmalService,
+                        navAnsattService,
+                        FakeNorg2Service(mapOf(PRINCIPAL_NAVENHET_ID.value to NavEnhet(PRINCIPAL_NAVENHET_ID, "Testenhet"))),
+                        samhandlerService,
+                    )
+                }
+            }
+            routing {
+                authenticate("test") {
+                    install(PrincipalInContext)
+                    route("/sak/{saksId}") {
+                        sakBrev()
+                        sakBrevV2()
+                    }
+                }
+            }
+        }
+        val authenticatedClient = createClient {
+            install(Auth) {
+                basic {
+                    credentials { BasicAuthCredentials("test", "test") }
+                    sendWithoutRequest { true }
+                }
+            }
+        }
+        block(authenticatedClient)
+    }
+
+    private suspend fun HttpClient.createV2(): ApiV2.BrevResponse {
+        val response = post("$basePath/v2") {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(createRequest()))
+        }
+        assertThat(response.status).isEqualTo(HttpStatusCode.Created)
+        return mapper.readValue(response.bodyAsText())
+    }
+
+    private fun createRequest() = Api.OpprettBrevRequest(
+        brevkode = no.nav.pensjon.brev.skribenten.Testbrevkoder.INFORMASJONSBREV,
+        spraak = SpraakKode.EN,
+        avsenderEnhetsId = PRINCIPAL_NAVENHET_ID,
+        saksbehandlerValg = SaksbehandlervalgMap(),
+        reserverForRedigering = true,
+        mottaker = null,
+        vedtaksId = null,
+    )
+
+    @Test
+    fun `toggle av hindrer v2-oppretting men v1 virker fortsatt`() = routeTest { client ->
+        Features.override(Features.markupV2, false)
+        assertThat(client.post("$basePath/v2").status).isEqualTo(HttpStatusCode.NotFound)
+        val response = client.post(basePath) {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(createRequest()))
+        }
+        assertThat(response.status).isEqualTo(HttpStatusCode.Created)
+        assertThat(mapper.readValue<Api.BrevResponse>(response.bodyAsText()).info.markupVersjon).isEqualTo(MarkupVersjon.V1)
+    }
+
+    @Test
+    fun `v2 kan opprettes redigeres gjenapnes tilbakestilles og sendes naar toggle slaas av`() = routeTest { client ->
+        Features.override(Features.markupV2, true)
+        val original = client.createV2()
+        val path = "$basePath/v2/${original.info.id}"
+        val paragraph = original.redigertBrev.blocks.single() as EditV2.Block.Paragraph
+        val edited = original.redigertBrev.copy(
+            blocks = listOf(paragraph.copy(content = listOf((paragraph.content.single() as EditV2.Text.Literal).copy(editedText = "edited")))),
+        )
+        Features.override(Features.markupV2, false)
+        val update = client.put(path) {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(ApiV2.OppdaterBrevRequest(SaksbehandlervalgMap(), edited)))
+        }
+        assertThat(update.status).isEqualTo(HttpStatusCode.OK)
+        val reopened = mapper.readValue<ApiV2.BrevResponse>(client.get(path).bodyAsText())
+        assertThat(reopened.redigertBrev).isEqualTo(edited)
+        assertThat(reopened.redigertBrevHash).isNotEqualTo(original.redigertBrevHash)
+        assertThat(client.get("$basePath/${original.info.id}").status).isEqualTo(HttpStatusCode.Conflict)
+
+        assertThat(client.get("$basePath/${original.info.id}/pdf").status).isEqualTo(HttpStatusCode.OK)
+        assertThat(brevbakerService.renderPdfV2Kall).hasSize(1)
+        assertThat(brevbakerService.renderPdfKall).isEmpty()
+
+        val reset = client.post("$path/tilbakestill")
+        assertThat(reset.status).isEqualTo(HttpStatusCode.OK)
+        val resetLetter = mapper.readValue<ApiV2.BrevResponse>(reset.bodyAsText()).redigertBrev
+        assertThat(((resetLetter.blocks.single() as EditV2.Block.Paragraph).content.single() as EditV2.Text.Literal).editedText).isNull()
+
+        assertThat(client.get("$basePath/${original.info.id}/pdf").status).isEqualTo(HttpStatusCode.OK)
+        assertThat(client.put("$basePath/${original.info.id}/status") {
+            contentType(ContentType.Application.Json)
+            setBody("""{"klar":true}""")
+        }.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(client.post("$basePath/${original.info.id}/pdf/send").status).isEqualTo(HttpStatusCode.OK)
+        assertThat(penService.utfoerteSendBrevKall).hasSize(1)
+        assertThat(client.get(path).status).isEqualTo(HttpStatusCode.NotFound)
+    }
+
+    @Test
+    fun `v2-endepunkter avviser v1-brev uten aa endre det`() = routeTest { client ->
+        Features.override(Features.markupV2, true)
+        val v1 = mapper.readValue<Api.BrevResponse>(client.post(basePath) {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(createRequest()))
+        }.bodyAsText())
+
+        assertThat(client.get("$basePath/v2/${v1.info.id}").status).isEqualTo(HttpStatusCode.Conflict)
+        assertThat(client.post("$basePath/v2/${v1.info.id}/tilbakestill").status).isEqualTo(HttpStatusCode.Conflict)
+        assertThat(hentBrev(v1.info.id).resultOrFail().redigertBrevHash).isEqualTo(v1.redigertBrevHash)
+    }
+
+    @Test
+    fun `v2-oppretting krever innlogging`() = routeTest {
+        Features.override(Features.markupV2, true)
+        assertThat(this.client.post("$basePath/v2").status).isEqualTo(HttpStatusCode.Unauthorized)
+    }
+}

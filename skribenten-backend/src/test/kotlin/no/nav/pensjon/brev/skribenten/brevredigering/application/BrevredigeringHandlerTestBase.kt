@@ -1,4 +1,4 @@
-@file:OptIn(InternKonstruktoer::class)
+@file:OptIn(InternKonstruktoer::class, MarkupModelApi::class)
 
 package no.nav.pensjon.brev.skribenten.brevredigering.application
 
@@ -9,6 +9,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.brevbaker.markup.Markup
+import no.nav.brev.brevbaker.markup.MarkupModel
+import no.nav.brev.brevbaker.markup.MarkupModelApi
+import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupV2
+import no.nav.brev.brevbaker.markup.outline.Block as BlockV2
+import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
+import no.nav.pensjon.brev.skribenten.letter.v2.MarkupV2 as MarkupV2Dsl
+import no.nav.pensjon.brev.skribenten.letter.v2.letter as letterV2
 import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
@@ -74,6 +82,7 @@ abstract class BrevredigeringHandlerTestBase {
     @BeforeEach
     fun clearMocks() {
         brevbakerService.renderMarkupKall.clear()
+        brevbakerService.renderMarkupV2Resultat = { notYetStubbed("Mangler renderMarkupV2 stub") }
         brevbakerService.renderMarkupResultat = {
             letter.medSignatur(
                 saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
@@ -376,16 +385,45 @@ abstract class BrevredigeringHandlerTestBase {
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
         saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        oppdaterVersjonertBrev(brevId, nyeSaksbehandlerValg, nyttRedigertbrev?.let { VersjonertBrev.V1(it) }, frigiReservasjon, principal, saksId)
+
+    protected suspend fun oppdaterBrevV2(
+        brevId: BrevId,
+        nyttRedigertbrev: EditV2.Letter,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        oppdaterVersjonertBrev(brevId, null, VersjonertBrev.V2(nyttRedigertbrev), false, principal, sak1.saksId)
+
+    private suspend fun oppdaterVersjonertBrev(
+        brevId: BrevId,
+        nyeSaksbehandlerValg: SaksbehandlervalgMap?,
+        nyttRedigertbrev: VersjonertBrev?,
+        frigiReservasjon: Boolean,
+        principal: UserPrincipal,
+        saksId: SaksId,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
         oppdaterBrev.invoke(
             OppdaterBrevHandler.Request(
                 brevId = brevId,
                 saksId = saksId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
-                nyttRedigertbrev = nyttRedigertbrev?.let { VersjonertBrev.V1(it) },
+                nyttRedigertbrev = nyttRedigertbrev,
                 frigiReservasjon = frigiReservasjon
             )
         )
+    }
+
+    protected fun stageMarkupV2(vararg blocks: BlockV2 = arrayOf(MarkupV2Dsl.paragraph(1, MarkupV2Dsl.literal(1, "red pill")))) {
+        brevbakerService.renderMarkupV2Resultat = { felles ->
+            letterV2(
+                *blocks,
+                signatur = MarkupV2Dsl.signatur(
+                    saksbehandlerNavn = felles.signerendeSaksbehandlere?.saksbehandler,
+                    attesterendeSaksbehandlerNavn = felles.signerendeSaksbehandlere?.attesterendeSaksbehandler,
+                ),
+            )
+        }
     }
 
     protected suspend fun hentBrev(
@@ -579,12 +617,15 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
+        lateinit var renderMarkupV2Resultat: suspend ((f: BrevbakerFelles) -> MarkupV2)
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
         var alltidValgbareVedleggResultat: Set<AlltidValgbartVedleggBrevkode> = emptySet()
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
+        val renderPdfV2Kall = mutableListOf<MarkupV2>()
+        val renderPdfV2VedleggKall = mutableListOf<Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>>()
         val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
         var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
         val renderRedigerbartVedleggKall = mutableListOf<VedleggId>()
@@ -606,6 +647,19 @@ abstract class BrevredigeringHandlerTestBase {
                     stableHashCode = StableHashCode(123),
                 ) }
 
+        override suspend fun renderMarkupV2(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            felles: BrevbakerFelles,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
+        ) = MarkupModel.letterMarkupWithDataUsage(
+            markup = renderMarkupV2Resultat(felles).also { renderMarkupKall.add(Pair(brevkode, spraak)) },
+            letterDataUsage = emptySet(),
+            brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) Markup.Brevtype.VEDTAKSBREV else Markup.Brevtype.INFORMASJONSBREV,
+            stableHashCode = StableHashCode(123),
+        )
+
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
@@ -619,6 +673,21 @@ abstract class BrevredigeringHandlerTestBase {
         ) = renderPdfResultat.also {
             renderPdfKall.add(redigertBrev)
             renderPdfRedigerteVedleggKall.add(redigerteVedlegg)
+        }
+
+        override suspend fun renderPdfV2(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            fagsystemBrevdata: FagsystemBrevdata,
+            saksbehandlervalg: SaksbehandlervalgIDSL,
+            felles: BrevbakerFelles,
+            redigertBrev: MarkupV2,
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+            redigerteVedlegg: Map<VedleggId, no.nav.brev.brevbaker.markup.Attachment>,
+            pdfVedlegg: List<PDFVedleggTittel>,
+        ) = renderPdfResultat.also {
+            renderPdfV2Kall.add(redigertBrev)
+            renderPdfV2VedleggKall.add(redigerteVedlegg)
         }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]

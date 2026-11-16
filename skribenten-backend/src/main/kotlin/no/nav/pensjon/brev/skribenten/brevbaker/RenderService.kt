@@ -20,7 +20,19 @@ class RenderService(private val brevbakerService: BrevbakerService) {
                 felles = pesysData.felles,
                 redigertBrev = redigertBrev.brev.withSakspart(dokumentDato = pesysData.felles.dokumentDato).toMarkup(),
                 alltidValgbareVedlegg = brev.valgteVedlegg,
-                redigerteVedlegg = brev.redigerteVedlegg.associate { it.vedleggId to it.redigertVedlegg.asV1().toMarkup() },
+                redigerteVedlegg = redigertBrev.vedleggMarkup(brev.redigerteVedlegg),
+                pdfVedlegg = pdfVedlegg
+            )
+
+            is VersjonertBrev.V2 -> brevbakerService.renderPdfV2(
+                brevkode = brev.brevkode,
+                spraak = brev.spraak,
+                fagsystemBrevdata = pesysData.brevdata,
+                saksbehandlervalg = brev.saksbehandlerValg.somSaksbehandlervalgIDSL(),
+                felles = pesysData.felles,
+                redigertBrev = redigertBrev.brev.withSaksinformasjon(dokumentDato = pesysData.felles.dokumentDato).toMarkup(),
+                alltidValgbareVedlegg = brev.valgteVedlegg,
+                redigerteVedlegg = redigertBrev.vedleggMarkup(brev.redigerteVedlegg),
                 pdfVedlegg = pdfVedlegg
             )
         }

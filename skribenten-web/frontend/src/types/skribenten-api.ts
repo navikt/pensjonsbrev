@@ -2742,6 +2742,464 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sak/{saksId}/brev/v2": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ApiOpprettBrevRequest"];
+                };
+            };
+            responses: {
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/v2/{brevId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    reserver?: string;
+                };
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: {
+                    frigiReservasjon?: string;
+                };
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/v2/{brevId}/redigertBrev": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: {
+                    frigiReservasjon?: string;
+                };
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/v2/{brevId}/tilbakestill": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/brev/{brevId}/info": {
         parameters: {
             query?: never;
@@ -3915,7 +4373,7 @@ export interface components {
          * MarkupVersjon
          * @enum {string}
          */
-        MarkupVersjon: "V1";
+        MarkupVersjon: "V1" | "V2";
         /**
          * DtoMottakerManueltAdressertTil
          * @enum {string}
@@ -4462,6 +4920,251 @@ export interface components {
         ApiOppdaterFoerstesideRequest: {
             leggVedFoersteside: boolean;
         };
+        /**
+         * EditV2EditBehaviour
+         * @enum {string}
+         */
+        EditV2EditBehaviour: "FRITEKST" | "REDIGERBAR_DATA";
+        /**
+         * EditV2FontType
+         * @enum {string}
+         */
+        EditV2FontType: "PLAIN" | "BOLD" | "ITALIC";
+        /**
+         * EditV2TextType
+         * @enum {string}
+         */
+        EditV2TextType: "LITERAL" | "VARIABLE" | "NEW_LINE";
+        /** EditV2TextLiteral */
+        EditV2TextLiteral: {
+            editBehaviour?: components["schemas"]["EditV2EditBehaviour"] | null;
+            editedFontType?: components["schemas"]["EditV2FontType"] | null;
+            editedText?: string | null;
+            fontType: components["schemas"]["EditV2FontType"];
+            id?: number | null;
+            parentId?: number | null;
+            text: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "LITERAL";
+        };
+        /** EditV2TextNewLine */
+        EditV2TextNewLine: {
+            fontType: components["schemas"]["EditV2FontType"];
+            id?: number | null;
+            parentId?: number | null;
+            text: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "NEW_LINE";
+        };
+        /** EditV2TextVariable */
+        EditV2TextVariable: {
+            editBehaviour?: components["schemas"]["EditV2EditBehaviour"] | null;
+            fontType: components["schemas"]["EditV2FontType"];
+            id?: number | null;
+            parentId?: number | null;
+            text: string;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "VARIABLE";
+        };
+        /** EditV2Text */
+        EditV2Text: components["schemas"]["EditV2TextLiteral"] | components["schemas"]["EditV2TextNewLine"] | components["schemas"]["EditV2TextVariable"];
+        /** EditV2Item */
+        EditV2Item: {
+            content: components["schemas"]["EditV2Text"][];
+            deletedContent: number[];
+            id?: number | null;
+            parentId?: number | null;
+        };
+        /**
+         * EditV2BlockType
+         * @enum {string}
+         */
+        EditV2BlockType: "TITLE2" | "TITLE3" | "TITLE4" | "PARAGRAPH" | "ITEM_LIST" | "NUMBERED_LIST" | "TABLE";
+        /** EditV2BlockItemList */
+        EditV2BlockItemList: {
+            deletedItems: number[];
+            id?: number | null;
+            items: components["schemas"]["EditV2Item"][];
+            missingFromTemplate: boolean;
+            originalType?: components["schemas"]["EditV2BlockType"] | null;
+            parentId?: number | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "ITEM_LIST";
+        };
+        /** EditV2BlockNumberedList */
+        EditV2BlockNumberedList: {
+            deletedItems: number[];
+            id?: number | null;
+            items: components["schemas"]["EditV2Item"][];
+            missingFromTemplate: boolean;
+            originalType?: components["schemas"]["EditV2BlockType"] | null;
+            parentId?: number | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "NUMBERED_LIST";
+        };
+        /**
+         * EditV2BlockTableColumnAlignment
+         * @enum {string}
+         */
+        EditV2BlockTableColumnAlignment: "LEFT" | "RIGHT";
+        /** EditV2BlockTableColumnSpec */
+        EditV2BlockTableColumnSpec: {
+            alignment: components["schemas"]["EditV2BlockTableColumnAlignment"];
+            content: components["schemas"]["EditV2Text"][];
+            deletedContent: number[];
+            id?: number | null;
+            parentId?: number | null;
+            span: number;
+        };
+        /** EditV2BlockTableHeader */
+        EditV2BlockTableHeader: {
+            colSpec: components["schemas"]["EditV2BlockTableColumnSpec"][];
+            deletedColSpecs: number[];
+            id?: number | null;
+            parentId?: number | null;
+        };
+        /** EditV2BlockTableCell */
+        EditV2BlockTableCell: {
+            content: components["schemas"]["EditV2Text"][];
+            deletedContent: number[];
+            id?: number | null;
+            parentId?: number | null;
+        };
+        /** EditV2BlockTableRow */
+        EditV2BlockTableRow: {
+            cells: components["schemas"]["EditV2BlockTableCell"][];
+            deletedCells: number[];
+            id?: number | null;
+            parentId?: number | null;
+        };
+        /** EditV2BlockTable */
+        EditV2BlockTable: {
+            deletedRows: number[];
+            header: components["schemas"]["EditV2BlockTableHeader"];
+            id?: number | null;
+            missingFromTemplate: boolean;
+            originalType?: components["schemas"]["EditV2BlockType"] | null;
+            parentId?: number | null;
+            rows: components["schemas"]["EditV2BlockTableRow"][];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE";
+        };
+        /** EditV2BlockParagraph */
+        EditV2BlockParagraph: {
+            content: components["schemas"]["EditV2Text"][];
+            deletedContent: number[];
+            id?: number | null;
+            missingFromTemplate: boolean;
+            originalType?: components["schemas"]["EditV2BlockType"] | null;
+            parentId?: number | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "PARAGRAPH";
+        };
+        /** EditV2BlockTitle2 */
+        EditV2BlockTitle2: {
+            content: components["schemas"]["EditV2Text"][];
+            deletedContent: number[];
+            id?: number | null;
+            missingFromTemplate: boolean;
+            originalType?: components["schemas"]["EditV2BlockType"] | null;
+            parentId?: number | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TITLE2";
+        };
+        /** EditV2BlockTitle3 */
+        EditV2BlockTitle3: {
+            content: components["schemas"]["EditV2Text"][];
+            deletedContent: number[];
+            id?: number | null;
+            missingFromTemplate: boolean;
+            originalType?: components["schemas"]["EditV2BlockType"] | null;
+            parentId?: number | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TITLE3";
+        };
+        /** EditV2BlockTitle4 */
+        EditV2BlockTitle4: {
+            content: components["schemas"]["EditV2Text"][];
+            deletedContent: number[];
+            id?: number | null;
+            missingFromTemplate: boolean;
+            originalType?: components["schemas"]["EditV2BlockType"] | null;
+            parentId?: number | null;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TITLE4";
+        };
+        /** EditV2Block */
+        EditV2Block: components["schemas"]["EditV2BlockItemList"] | components["schemas"]["EditV2BlockNumberedList"] | components["schemas"]["EditV2BlockTable"] | components["schemas"]["EditV2BlockParagraph"] | components["schemas"]["EditV2BlockTitle2"] | components["schemas"]["EditV2BlockTitle3"] | components["schemas"]["EditV2BlockTitle4"];
+        /** EditV2Saksinformasjon */
+        EditV2Saksinformasjon: {
+            annenMottakerNavn?: string | null;
+            /** Format: date */
+            dokumentDato: string;
+            gjelderNavn: string;
+            gjelderPersonidentifikator: string;
+            saksnummer: string;
+        };
+        /** EditV2Signatur */
+        EditV2Signatur: {
+            attesterendeSaksbehandlerNavn?: string | null;
+            navAvsenderEnhet: string;
+            saksbehandlerNavn?: string | null;
+        };
+        /** EditV2Title */
+        EditV2Title: {
+            deletedContent: number[];
+            text: components["schemas"]["EditV2Text"][];
+        };
+        /** EditV2Letter */
+        EditV2Letter: {
+            blocks: components["schemas"]["EditV2Block"][];
+            deletedBlocks: number[];
+            saksinformasjon: components["schemas"]["EditV2Saksinformasjon"];
+            signatur: components["schemas"]["EditV2Signatur"];
+            title: components["schemas"]["EditV2Title"];
+            version: number;
+        };
+        /** ApiV2BrevResponse */
+        ApiV2BrevResponse: {
+            info: components["schemas"]["ApiBrevInfo"];
+            propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
+            redigertBrev: components["schemas"]["EditV2Letter"];
+            redigertBrevHash: string;
+            saksbehandlerValg: {
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
+            };
+            valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
+        };
         /** Duration */
         Duration: {
             seconds: number;
@@ -4918,6 +5621,33 @@ export type P1RedigerbarDtoUtfyllendeInstitusjon = components['schemas']['P1Redi
 export type P1RedigerbarDto = components['schemas']['P1RedigerbarDto'];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
 export type ApiOppdaterFoerstesideRequest = components['schemas']['ApiOppdaterFoerstesideRequest'];
+export type EditV2EditBehaviour = components['schemas']['EditV2EditBehaviour'];
+export type EditV2FontType = components['schemas']['EditV2FontType'];
+export type EditV2TextType = components['schemas']['EditV2TextType'];
+export type EditV2TextLiteral = components['schemas']['EditV2TextLiteral'];
+export type EditV2TextNewLine = components['schemas']['EditV2TextNewLine'];
+export type EditV2TextVariable = components['schemas']['EditV2TextVariable'];
+export type EditV2Text = components['schemas']['EditV2Text'];
+export type EditV2Item = components['schemas']['EditV2Item'];
+export type EditV2BlockType = components['schemas']['EditV2BlockType'];
+export type EditV2BlockItemList = components['schemas']['EditV2BlockItemList'];
+export type EditV2BlockNumberedList = components['schemas']['EditV2BlockNumberedList'];
+export type EditV2BlockTableColumnAlignment = components['schemas']['EditV2BlockTableColumnAlignment'];
+export type EditV2BlockTableColumnSpec = components['schemas']['EditV2BlockTableColumnSpec'];
+export type EditV2BlockTableHeader = components['schemas']['EditV2BlockTableHeader'];
+export type EditV2BlockTableCell = components['schemas']['EditV2BlockTableCell'];
+export type EditV2BlockTableRow = components['schemas']['EditV2BlockTableRow'];
+export type EditV2BlockTable = components['schemas']['EditV2BlockTable'];
+export type EditV2BlockParagraph = components['schemas']['EditV2BlockParagraph'];
+export type EditV2BlockTitle2 = components['schemas']['EditV2BlockTitle2'];
+export type EditV2BlockTitle3 = components['schemas']['EditV2BlockTitle3'];
+export type EditV2BlockTitle4 = components['schemas']['EditV2BlockTitle4'];
+export type EditV2Block = components['schemas']['EditV2Block'];
+export type EditV2Saksinformasjon = components['schemas']['EditV2Saksinformasjon'];
+export type EditV2Signatur = components['schemas']['EditV2Signatur'];
+export type EditV2Title = components['schemas']['EditV2Title'];
+export type EditV2Letter = components['schemas']['EditV2Letter'];
+export type ApiV2BrevResponse = components['schemas']['ApiV2BrevResponse'];
 export type Duration = components['schemas']['Duration'];
 export type ApiReservasjonResponse = components['schemas']['ApiReservasjonResponse'];
 export type ContentIndexType = components['schemas']['ContentIndexType'];

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
@@ -60,9 +62,14 @@ class DiffBrevHandler(
             val rendretBrev = brev.rendretBrev ?: renderGjeldendeMal(brev)
 
             when (val redigertBrev = request.redigertBrev) {
-                is VersjonertBrev.V1 -> success(Resultat.V1(diffV1((rendretBrev as VersjonertBrev.V1).brev, redigertBrev.brev, request.split)))
+                is VersjonertBrev.V1 -> success(Resultat.V1(diffV1(rendretBrev.asV1(), redigertBrev.brev, request.split)))
+                // TODO: Diff for V2 letters is implemented in a later stage
+                is VersjonertBrev.V2 -> throw FeilMarkupVersjonException(MarkupVersjon.V1, MarkupVersjon.V2)
             }
         }
+
+    private fun VersjonertBrev.asV1(): Edit.Letter =
+        (this as? VersjonertBrev.V1)?.brev ?: throw FeilMarkupVersjonException(markupVersjon, MarkupVersjon.V1)
 
     private fun diffV1(rendretBrev: Edit.Letter, redigertBrev: Edit.Letter, split: Boolean): Response {
         val wordDiff = EditLetterWordDiff()
