@@ -5,7 +5,6 @@
 // For the purpose of this file it is convenient to be able to access the data property of axios response as a one-liners.
 
 import axios, { AxiosError, type AxiosResponse } from "axios";
-import { z } from "zod";
 
 import {
   type Avtaleland,
@@ -24,7 +23,7 @@ import {
   type PreferredLanguage,
   type SakContextDto,
 } from "~/types/apiTypes";
-import { type ApiFeatureToggleResponse } from "~/types/skribenten-api";
+import { type ApiFeatureToggleResponse, type ApiNyhetsvarsler } from "~/types/skribenten-api";
 import { type AttestForbiddenReason, parseAttest403 } from "~/utils/parseAttest403";
 
 export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
@@ -172,19 +171,12 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export const announcementStatusSchema = z.object({
-  settAnnonsen: z.array(z.string()),
-  gjennomfoertOmvisningen: z.array(z.string()),
-});
-
 /** Ids of the announcements the user has seen in the notification bell, and of those whose tour the user has completed. */
-export type AnnouncementStatus = z.infer<typeof announcementStatusSchema>;
+export type AnnouncementStatus = ApiNyhetsvarsler;
 
 export const getAnnouncementStatus = {
   queryKey: announcementStatusKeys.all,
-  // Validated, so an unexpected response fails the query instead of breaking the bell and the tours that read it.
-  queryFn: async () =>
-    announcementStatusSchema.parse((await axios.get(`${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsel`)).data),
+  queryFn: async () => (await axios.get<AnnouncementStatus>(`${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsel`)).data,
   staleTime: Number.POSITIVE_INFINITY,
   gcTime: Number.POSITIVE_INFINITY,
 };
