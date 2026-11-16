@@ -44,10 +44,18 @@ class OppdaterBrevHandler(
             val pesysdata = fase(Fase.BREVDATA) { brevdataService.hentBrevdata(brev) }
             val rendretBrev = fase(Fase.RENDER_BREV) { brevmalService.renderMarkup(brev, pesysdata) }
 
-            if ((!Features.forhindreOppdateringAvKladd.isEnabled()) || (rendretBrev.stableHashCode == brev.brevmalHash || brev.rendretBrev == null || brev.brevmalHash == null)) {
+            val forhindreOppdateringAvKladd = Features.forhindreOppdateringAvKladd.isEnabled()
+
+            if (!forhindreOppdateringAvKladd || brev.harUendretBrevmal(rendretBrev.stableHashCode)) {
                 fase(Fase.FLETT_BREV) { brev.mergeRendretBrev(rendretBrev.markup) }
                 val vedlegg = fase(Fase.RENDER_VEDLEGG) { brevmalService.renderRedigerteVedlegg(brev, pesysdata) }
-                fase(Fase.FLETT_VEDLEGG) { brev.mergeRendredeVedlegg(vedlegg) }
+                fase(Fase.FLETT_VEDLEGG) {
+                    if (forhindreOppdateringAvKladd) {
+                        brev.mergeRendredeVedleggMedUendretHash(vedlegg)
+                    } else {
+                        brev.mergeRendredeVedlegg(vedlegg)
+                    }
+                }
 
                 success(fase(Fase.DTO) { brev.tilDto(rendretBrev.letterDataUsage) })
             } else {

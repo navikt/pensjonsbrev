@@ -38,7 +38,7 @@ class HentBrevHandler(
                     return@forRedigering success(brev.tilDto(rendretBrev.letterDataUsage))
                 }
 
-                if (rendretBrev.stableHashCode == brev.brevmalHash || brev.brevmalHash == null) {
+                if (brev.harUendretBrevmal(rendretBrev.stableHashCode)) {
                     brev.mergeRendretBrev(rendretBrev.markup)
                     brev.mergeRendredeVedleggMedUendretHash(rendredeVedlegg)
                     success(brev.tilDto(rendretBrev.letterDataUsage))

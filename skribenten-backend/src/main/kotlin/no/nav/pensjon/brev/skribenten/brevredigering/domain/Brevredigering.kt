@@ -81,6 +81,7 @@ interface Brevredigering {
     fun settRendretBrev(rendretBrev: VersjonertMarkup)
     fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>)
     fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
+    fun harUendretBrevmal(rendretBrevmalHash: StableHashCode): Boolean
     fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
@@ -318,6 +319,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         if (versjon != markupVersjon) {
             throw FeilMarkupVersjonException(markupVersjon, versjon)
         }
+    }
+
+    override fun harUendretBrevmal(rendretBrevmalHash: StableHashCode): Boolean =
+        brevmalHash == null || rendretBrev == null || brevmalHash == rendretBrevmalHash
 
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) {
         val types = modelSpec.types[modelSpec.letterModelTypeName]
