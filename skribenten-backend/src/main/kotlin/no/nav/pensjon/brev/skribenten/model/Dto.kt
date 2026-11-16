@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.BrevLandmodell.Landkode
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
@@ -62,6 +63,7 @@ object Dto {
         val vedleggId: BrevbakerType.VedleggId,
         val redigertVedlegg: Edit.Attachment,
         val rendretVedlegg: Edit.Attachment?,
+        val rendretVedleggHash: StableHashCode?,
     )
 
     data class Document(
