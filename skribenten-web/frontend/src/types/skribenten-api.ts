@@ -3458,6 +3458,126 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/nyhetsvarsel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiNyhetsvarsler"];
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/nyhetsvarsel/{nyhetsvarselId}/settAnnonsen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    nyhetsvarselId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/nyhetsvarsel/{nyhetsvarselId}/gjennomfoertOmvisningen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    nyhetsvarselId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/bekreftedeNyhetsvarsler": {
         parameters: {
             query?: never;
@@ -4743,6 +4863,11 @@ export interface components {
             id: string;
             navn: string;
         };
+        /** ApiNyhetsvarsler */
+        ApiNyhetsvarsler: {
+            gjennomfoertOmvisningen: string[];
+            settAnnonsen: string[];
+        };
         /** ApiFeatureToggleResponse */
         ApiFeatureToggleResponse: {
             enabled: boolean;
@@ -4906,6 +5031,7 @@ export type HentSamhandlerAdresseResponseDto = components['schemas']['HentSamhan
 export type ApiUserInfo = components['schemas']['ApiUserInfo'];
 export type Unit = components['schemas']['Unit'];
 export type NavAnsattEnhet = components['schemas']['NAVAnsattEnhet'];
+export type ApiNyhetsvarsler = components['schemas']['ApiNyhetsvarsler'];
 export type ApiFeatureToggleResponse = components['schemas']['ApiFeatureToggleResponse'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

@@ -1,10 +1,15 @@
 import { ExternalLinkIcon, LeaveIcon, MenuGridIcon } from "@navikt/aksel-icons";
 import { ActionMenu, Box, InternalHeader, Spacer, Theme } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
 
+import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
+import { NotificationBell } from "~/components/notifications/NotificationBell";
 import { useUserInfo } from "~/hooks/useUserInfo";
 
 export function AppHeader() {
+  const showNotificationBell = useQuery(getFeatureToggle("nyhetsvarsling")).data?.enabled === true;
+
   return (
     <Box asChild borderColor="neutral-subtleA" borderWidth="0 0 1 0" height="var(--header-height)">
       <InternalHeader>
@@ -19,6 +24,7 @@ export function AppHeader() {
           </RouterLink>
         </InternalHeader.Title>
         <Spacer />
+        {showNotificationBell && <NotificationBell />}
         <UsefulLinksMenu />
         <UserDropdown />
       </InternalHeader>
