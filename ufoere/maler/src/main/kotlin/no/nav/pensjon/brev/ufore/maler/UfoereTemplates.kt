@@ -86,7 +86,6 @@ object UfoereTemplates : AllTemplates {
         UtsattKlagefrist,
         FlereOpplysningerGenerell,
         OppgittSamboer,
-        EktefelleUtland,
         AntattDod,
         InnhentingAvOpplysninger,
         InnhentingAvOpplysningerLege,
