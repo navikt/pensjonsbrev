@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.*
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Adresselinje
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Navn
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Poststed
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
@@ -70,7 +72,8 @@ object Api {
         val spraak: SpraakKode,
         val journalpostId: JournalpostId?,
         val vedtaksId: VedtaksId?,
-        val leggVedFoersteside: Boolean?
+        val leggVedFoersteside: Boolean?,
+        val markupVersjon: MarkupVersjon,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -121,7 +124,7 @@ object Api {
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
-        val redigertBrevHash: Hash<Edit.Letter>,
+        val redigertBrevHash: Hash<VersjonertBrev>,
         val saksbehandlerValg: SaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
@@ -132,7 +135,7 @@ object Api {
         val reservertAv: NavAnsatt,
         val timestamp: Instant,
         val expiresIn: Duration,
-        val redigertBrevHash: Hash<Edit.Letter>,
+        val redigertBrevHash: Hash<VersjonertBrev>,
     )
 
     data class PdfResponse(

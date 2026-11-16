@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
+
 import no.nav.brev.InternKonstruktoer
 import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
@@ -91,8 +95,8 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Edit.Attachment, BrevredigeringError>? =
         withPrincipal(principal) {
             endreRedigertVedlegg(
-                EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
-            )
+                EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId), redigertVedlegg = VersjonertVedlegg.V1(vedlegg))
+            )?.then { it.asV1() }
         }
 
     private suspend fun hentVedlegg(
@@ -103,7 +107,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         withPrincipal(principal) {
             hentRedigertVedlegg(
                 HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId))
-            )
+            )?.then { it.asV1() }
         }
 
     private suspend fun tilbakestillVedlegg(
@@ -114,7 +118,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         withPrincipal(principal) {
             tilbakestillRedigertVedlegg(
                 TilbakestillRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId))
-            )
+            )?.then { it.asV1() }
         }
 
     private suspend fun lagreRedigertVedlegg(brevId: BrevId, redigertTekst: String = "Redigert"): String {
@@ -125,10 +129,10 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     private fun lagretVedlegg(brevId: BrevId): Edit.Attachment =
-        transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(VedleggId("vedlegg1"))!! }
+        transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(VedleggId("vedlegg1"))!!.asV1() }
 
     private fun lagretMalVedlegg(brevId: BrevId): Edit.Attachment? =
-        transaction { RedigertVedlegg.find { RedigertVedleggTable.brevredigering eq brevId }.single().rendretVedlegg }
+        transaction { RedigertVedlegg.find { RedigertVedleggTable.brevredigering eq brevId }.single().rendretVedlegg?.asV1() }
 
     private fun antallDokumenter(brevId: BrevId): Int =
         transaction { DocumentEntity.find { DocumentTable.brevredigering eq brevId }.count().toInt() }

@@ -1,4 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.brev.BrevLandmodell.Landkode
 
@@ -43,7 +47,7 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(brevbakerService.renderMarkupKall.first()).isEqualTo(Testbrevkoder.INFORMASJONSBREV to LanguageCode.ENGLISH)
         assertThat(brev).isSuccess {
             assertThat(it.info.brevkode.kode()).isEqualTo(Testbrevkoder.INFORMASJONSBREV.kode())
-            assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
+            assertThat(it.redigertBrev.asV1()).isEqualTo(letter.toEdit())
         }
     }
 
@@ -52,8 +56,8 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev(reserverForRedigering = true)
 
         assertThat(brev).isSuccess {
-            assertThat(it.redigertBrev.signatur).isNotNull
-            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(saksbehandler1Principal.fullName)
+            assertThat(it.redigertBrev.asV1().signatur).isNotNull
+            assertThat(it.redigertBrev.asV1().signatur.saksbehandlerNavn).isEqualTo(saksbehandler1Principal.fullName)
             assertThat(it.info.opprettetAv).isEqualTo(saksbehandler1Principal.navIdent)
         }
     }
@@ -129,7 +133,7 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(brev).isSuccess {
             assertThat(it.info.mottaker).isEqualTo(mottaker)
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
+            assertThat(it.redigertBrev.asV1().sakspart.annenMottakerNavn).isEqualTo(mottaker.navn?.value)
             assertThat(transaction { BrevredigeringEntity[it.info.id].mottaker }).isEqualTo(mottaker)
         }
     }
@@ -149,7 +153,7 @@ class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(opprettBrev(mottaker = mottaker)).isSuccess {
             assertThat(it.info.mottaker).isEqualTo(mottaker)
             assertThat(transaction { BrevredigeringEntity[it.info.id].mottaker }).isEqualTo(mottaker)
-            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(if (adressertTil == ANNEN) mottaker.navn?.value else null)
+            assertThat(it.redigertBrev.asV1().sakspart.annenMottakerNavn).isEqualTo(if (adressertTil == ANNEN) mottaker.navn?.value else null)
         }
     }
 

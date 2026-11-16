@@ -1,4 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.isFailure
+import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -48,7 +53,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(hentet).isSuccess {
             assertThat(it.info.id).isEqualTo(opprettet.info.id)
             assertThat(it.saksbehandlerValg).isEqualTo(saksbehandlerValg)
-            assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
+            assertThat(it.redigertBrev.asV1()).isEqualTo(letter.toEdit())
             assertThat(it.info.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
         }
     }
@@ -64,7 +69,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val hentet = hentBrev(brevId = opprettet.info.id, reserverForRedigering = true)
 
         assertThat(hentet).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev.asV1()).isEqualTo(opprettet.redigertBrev.asV1().updateEditedLetter(freshRender))
         }
     }
 
