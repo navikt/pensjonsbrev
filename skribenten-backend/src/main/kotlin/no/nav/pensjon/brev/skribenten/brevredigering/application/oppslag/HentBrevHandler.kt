@@ -31,15 +31,15 @@ class HentBrevHandler(
                 val pesysdata = brevdataService.hentBrevdata(brev)
                 val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
 
-                if (!Features.forhindreOppdateringAvKladd.isEnabled()) {
-                    brev.mergeRendretBrev(rendretBrev.markup)
-                    brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
-                    return@forRedigering success(brev.tilDto(rendretBrev.letterDataUsage))
-                }
+                val forhindreOppdateringAvKladd = Features.forhindreOppdateringAvKladd.isEnabled()
 
-                if (brev.harUendretBrevmal(rendretBrev.stableHashCode)) {
+                if (!forhindreOppdateringAvKladd || brev.harUendretBrevmal(rendretBrev.stableHashCode)) {
                     brev.mergeRendretBrev(rendretBrev.markup)
-                    brev.mergeRendredeVedleggMedUendretHash(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+                    if (!forhindreOppdateringAvKladd) {
+                        brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+                    } else {
+                        brev.mergeRendredeVedleggMedUendretHash(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
+                    }
                     success(brev.tilDto(rendretBrev.letterDataUsage))
                 } else {
                     success(brev.tilDto(emptySet()))
