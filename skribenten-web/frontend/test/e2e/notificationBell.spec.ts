@@ -14,6 +14,8 @@ const BELL_TITLE = "Se endringer gjort av saksbehandler";
 const LAST_DISPLAY_DAY = `${ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL}T12:00:00`;
 
 const STATUS_URL = "**/bff/skribenten-backend/me/nyhetsvarsel";
+const givenNyhetsvarsling = (page: Page, enabled: boolean) =>
+  page.route("**/bff/skribenten-backend/features/nyhetsvarsling", (route) => route.fulfill({ json: { enabled } }));
 const givenAcknowledged = (page: Page, ids: string[]) =>
   page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: [], gjennomfoertOmvisningen: ids } }));
 
@@ -25,6 +27,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
   test.beforeEach(async ({ page }) => {
     await page.clock.setFixedTime(LAST_DISPLAY_DAY);
     await setupSakStubs(page);
+    await givenNyhetsvarsling(page, true);
     await page.route("**/bff/skribenten-backend/me/userinfo", (route) =>
       route.fulfill({ json: { navident: "Z990297", name: "F_Z990297 E_Z990297", erAttestant: true } }),
     );
@@ -153,6 +156,7 @@ test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjone
 }) => {
   await page.clock.setFixedTime(LAST_DISPLAY_DAY);
   await setupSakStubs(page);
+  await givenNyhetsvarsling(page, true);
   await page.route("**/bff/skribenten-backend/me/userinfo", (route) =>
     route.fulfill({ json: { navident: "Z990297", name: "F_Z990297 E_Z990297", erAttestant: false } }),
   );
@@ -168,4 +172,28 @@ test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjone
   await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
   await expect(page.getByRole("link", { name: /^Se dokumentasjon/ })).toBeVisible();
   await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
+});
+
+test("viser ikke klokken når nyhetsvarsling er skrudd av, men gjennomgangen starter fortsatt i attesteringen", async ({
+  page,
+}) => {
+  await page.clock.setFixedTime(LAST_DISPLAY_DAY);
+  await setupSakStubs(page);
+  await givenNyhetsvarsling(page, false);
+  await page.route("**/bff/skribenten-backend/me/userinfo", (route) =>
+    route.fulfill({ json: { navident: "Z990297", name: "F_Z990297 E_Z990297", erAttestant: true } }),
+  );
+  await page.route("**/bff/skribenten-backend/features/diff", (route) => route.fulfill({ json: { enabled: true } }));
+  await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) =>
+    route.fulfill({ json: defaultLetter }),
+  );
+  await page.route("**/bff/skribenten-backend/brev/1/diff", (route) =>
+    route.fulfill({ json: { editedBlocks: {}, deletedBlocks: {} } }),
+  );
+  await givenAcknowledged(page, []);
+  await page.goto("/saksnummer/123456/attester/1/redigering");
+
+  await expect(tour(page)).toBeVisible();
+  await expect(page.getByRole("button", { name: "Nyttige lenker" })).toBeVisible();
+  await expect(bell(page)).toHaveCount(0);
 });
