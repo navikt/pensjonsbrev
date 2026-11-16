@@ -24,7 +24,7 @@ vi.mock("~/api/skribenten-api-endpoints", async (importOriginal) => {
       ...original.getAnnouncementStatus,
       queryFn: async () => {
         const [gjennomfoertOmvisningen, settAnnonsen] = await Promise.all([fetchAcknowledgedMock(), fetchSeenMock()]);
-        return { settAnnonsen, gjennomfoertOmvisningen };
+        return original.announcementStatusSchema.parse({ settAnnonsen, gjennomfoertOmvisningen });
       },
     },
     acknowledgeAnnouncement: acknowledgeMock,
@@ -177,6 +177,18 @@ describe("<NotificationBell />", () => {
 
     await user.click(bell());
 
+    expect(markSeenMock).not.toHaveBeenCalled();
+  });
+
+  test("viser ikke prikk, og krasjer ikke, når statusen har uventet innhold", async () => {
+    fetchSeenMock.mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
+    await settle();
+
+    expect(dot()).toBeNull();
+    await user.click(bell());
+    expect(screen.getByRole("heading", { name: NYHET.title })).not.toBeNull();
     expect(markSeenMock).not.toHaveBeenCalled();
   });
 

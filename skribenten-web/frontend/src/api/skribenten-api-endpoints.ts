@@ -5,6 +5,7 @@
 // For the purpose of this file it is convenient to be able to access the data property of axios response as a one-liners.
 
 import axios, { AxiosError, type AxiosResponse } from "axios";
+import { z } from "zod";
 
 import {
   type Avtaleland,
@@ -171,12 +172,19 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-/** Ids of the announcements the user has seen in the notification bell, and of those whose tour the user has closed. */
-export type AnnouncementStatus = { settAnnonsen: string[]; gjennomfoertOmvisningen: string[] };
+export const announcementStatusSchema = z.object({
+  settAnnonsen: z.array(z.string()),
+  gjennomfoertOmvisningen: z.array(z.string()),
+});
+
+/** Ids of the announcements the user has seen in the notification bell, and of those whose tour the user has completed. */
+export type AnnouncementStatus = z.infer<typeof announcementStatusSchema>;
 
 export const getAnnouncementStatus = {
   queryKey: announcementStatusKeys.all,
-  queryFn: async () => (await axios.get<AnnouncementStatus>(`${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsel`)).data,
+  // Validated, so an unexpected response fails the query instead of breaking the bell and the tours that read it.
+  queryFn: async () =>
+    announcementStatusSchema.parse((await axios.get(`${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsel`)).data),
   staleTime: Number.POSITIVE_INFINITY,
   gcTime: Number.POSITIVE_INFINITY,
 };
