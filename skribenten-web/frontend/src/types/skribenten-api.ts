@@ -3107,6 +3107,99 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sak/{saksId}/brev/v2/{brevId}/valgteVedlegg": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sak/{saksId}/brev/v2/{brevId}/tilbakestill": {
         parameters: {
             query?: never;
@@ -3200,7 +3293,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sak/{saksId}/brev/v2/{brevId}/valgteVedlegg": {
+    "/sak/{saksId}/brev/v2/{brevId}/diff": {
         parameters: {
             query?: never;
             header?: never;
@@ -3208,9 +3301,12 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put: {
+        put?: never;
+        post: {
             parameters: {
-                query?: never;
+                query?: {
+                    split?: string;
+                };
                 header?: never;
                 path: {
                     saksId: string;
@@ -3225,7 +3321,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                        "application/json": components["schemas"]["DiffBrevHandlerResponseV2"];
                     };
                 };
                 400: {
@@ -3286,7 +3382,6 @@ export interface paths {
                 };
             };
         };
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -3538,6 +3633,447 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/v2/{brevId}/attestering": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    reserver?: string;
+                };
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: {
+                    frigiReservasjon?: string;
+                };
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/v2/{brevId}/attestering/redigertBrev": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: {
+                    frigiReservasjon?: string;
+                };
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiV2BrevResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/v2/{brevId}/attestering/redigerbareVedlegg/{vedleggId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                    vedleggId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EditV2Attachment"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                    vedleggId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["EditV2Attachment"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -5508,6 +6044,234 @@ export interface components {
             };
             valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
+        /**
+         * ContentIndexV2Type
+         * @enum {string}
+         */
+        ContentIndexV2Type: "BLOCK" | "BLOCK_CONTENT" | "ITEM" | "ITEM_CONTENT" | "COLUMN_SPEC" | "COLUMN_SPEC_CONTENT" | "TABLE_ROW" | "TABLE_CELL" | "TABLE_CELL_CONTENT";
+        /** ContentIndexV2BlockContentIndex */
+        ContentIndexV2BlockContentIndex: {
+            blockIndex: number;
+            contentIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "BLOCK_CONTENT";
+        };
+        /** ContentIndexV2BlockIndex */
+        ContentIndexV2BlockIndex: {
+            blockIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "BLOCK";
+        };
+        /** ContentIndexV2ColumnSpecContentIndex */
+        ContentIndexV2ColumnSpecContentIndex: {
+            blockIndex: number;
+            columnContentIndex: number;
+            columnIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "COLUMN_SPEC_CONTENT";
+        };
+        /** ContentIndexV2ColumnSpecIndex */
+        ContentIndexV2ColumnSpecIndex: {
+            blockIndex: number;
+            columnIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "COLUMN_SPEC";
+        };
+        /** ContentIndexV2ItemContentIndex */
+        ContentIndexV2ItemContentIndex: {
+            blockIndex: number;
+            itemContentIndex: number;
+            itemIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "ITEM_CONTENT";
+        };
+        /** ContentIndexV2ItemIndex */
+        ContentIndexV2ItemIndex: {
+            blockIndex: number;
+            itemIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "ITEM";
+        };
+        /** ContentIndexV2TableCellContentIndex */
+        ContentIndexV2TableCellContentIndex: {
+            blockIndex: number;
+            cellContentIndex: number;
+            cellIndex: number;
+            rowIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE_CELL_CONTENT";
+        };
+        /** ContentIndexV2TableCellIndex */
+        ContentIndexV2TableCellIndex: {
+            blockIndex: number;
+            cellIndex: number;
+            rowIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE_CELL";
+        };
+        /** ContentIndexV2TableRowIndex */
+        ContentIndexV2TableRowIndex: {
+            blockIndex: number;
+            rowIndex: number;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE_ROW";
+        };
+        /** ContentIndexV2 */
+        ContentIndexV2: components["schemas"]["ContentIndexV2BlockContentIndex"] | components["schemas"]["ContentIndexV2BlockIndex"] | components["schemas"]["ContentIndexV2ColumnSpecContentIndex"] | components["schemas"]["ContentIndexV2ColumnSpecIndex"] | components["schemas"]["ContentIndexV2ItemContentIndex"] | components["schemas"]["ContentIndexV2ItemIndex"] | components["schemas"]["ContentIndexV2TableCellContentIndex"] | components["schemas"]["ContentIndexV2TableCellIndex"] | components["schemas"]["ContentIndexV2TableRowIndex"];
+        /** DiffSegmentV2 */
+        DiffSegmentV2: {
+            endOffset: number;
+            index: components["schemas"]["ContentIndexV2"];
+            startOffset: number;
+        };
+        /**
+         * DiffBrevHandlerResponseType
+         * @enum {string}
+         */
+        DiffBrevHandlerResponseType: "UNIFIED" | "SPLIT";
+        /** DiffBrevHandlerResponseV2Split */
+        DiffBrevHandlerResponseV2Split: {
+            deletes: components["schemas"]["DiffSegmentV2"][];
+            inserts: components["schemas"]["DiffSegmentV2"][];
+            rendretBrev: components["schemas"]["EditV2Letter"];
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "SPLIT";
+        };
+        /** UnifiedDiffV2DeletedTextSegment */
+        UnifiedDiffV2DeletedTextSegment: {
+            endOffset: number;
+            startOffset: number;
+            text: string;
+        };
+        /** UnifiedDiffV2TextSegment */
+        UnifiedDiffV2TextSegment: {
+            endOffset: number;
+            startOffset: number;
+        };
+        /** UnifiedDiffV2TextEdit */
+        UnifiedDiffV2TextEdit: {
+            deletes: components["schemas"]["UnifiedDiffV2DeletedTextSegment"][];
+            inserts: components["schemas"]["UnifiedDiffV2TextSegment"][];
+        };
+        /** UnifiedDiffV2TextOnlyEdit */
+        UnifiedDiffV2TextOnlyEdit: {
+            deletedContent: {
+                [key: string]: components["schemas"]["EditV2Text"][];
+            };
+            textEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffV2TextEdit"];
+            };
+        };
+        /**
+         * UnifiedDiffV2BlockEditType
+         * @enum {string}
+         */
+        UnifiedDiffV2BlockEditType: "TEXT" | "LIST" | "TABLE";
+        /** UnifiedDiffV2BlockEditListBlockEdit */
+        UnifiedDiffV2BlockEditListBlockEdit: {
+            deletedItems: {
+                [key: string]: components["schemas"]["EditV2Item"][];
+            };
+            itemEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffV2TextOnlyEdit"];
+            };
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "LIST";
+        };
+        /** UnifiedDiffV2RowEdit */
+        UnifiedDiffV2RowEdit: {
+            cellEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffV2TextOnlyEdit"];
+            };
+            deletedCells: {
+                [key: string]: components["schemas"]["EditV2BlockTableCell"][];
+            };
+        };
+        /** UnifiedDiffV2BlockEditTableEdit */
+        UnifiedDiffV2BlockEditTableEdit: {
+            columnSpecEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffV2TextOnlyEdit"];
+            };
+            deletedColumnSpecs: {
+                [key: string]: components["schemas"]["EditV2BlockTableColumnSpec"][];
+            };
+            deletedRows: {
+                [key: string]: components["schemas"]["EditV2BlockTableRow"][];
+            };
+            rowEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffV2RowEdit"];
+            };
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TABLE";
+        };
+        /** UnifiedDiffV2BlockEditTextBlockEdit */
+        UnifiedDiffV2BlockEditTextBlockEdit: {
+            deletedContent: {
+                [key: string]: components["schemas"]["EditV2Text"][];
+            };
+            textEdits: {
+                [key: string]: components["schemas"]["UnifiedDiffV2TextEdit"];
+            };
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "TEXT";
+        };
+        /** UnifiedDiffV2BlockEdit */
+        UnifiedDiffV2BlockEdit: components["schemas"]["UnifiedDiffV2BlockEditListBlockEdit"] | components["schemas"]["UnifiedDiffV2BlockEditTableEdit"] | components["schemas"]["UnifiedDiffV2BlockEditTextBlockEdit"];
+        /** DiffBrevHandlerResponseV2Unified */
+        DiffBrevHandlerResponseV2Unified: {
+            deletedBlocks: {
+                [key: string]: components["schemas"]["EditV2Block"][];
+            };
+            editedBlocks: {
+                [key: string]: components["schemas"]["UnifiedDiffV2BlockEdit"];
+            };
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "UNIFIED";
+        };
+        /** DiffBrevHandlerResponseV2 */
+        DiffBrevHandlerResponseV2: components["schemas"]["DiffBrevHandlerResponseV2Split"] | components["schemas"]["DiffBrevHandlerResponseV2Unified"];
         /** EditV2Attachment */
         EditV2Attachment: {
             blocks: components["schemas"]["EditV2Block"][];
@@ -5621,11 +6385,6 @@ export interface components {
             index: components["schemas"]["ContentIndex"];
             startOffset: number;
         };
-        /**
-         * DiffBrevHandlerResponseType
-         * @enum {string}
-         */
-        DiffBrevHandlerResponseType: "UNIFIED" | "SPLIT";
         /** DiffBrevHandlerResponseSplit */
         DiffBrevHandlerResponseSplit: {
             deletes: components["schemas"]["DiffSegment"][];
@@ -5999,6 +6758,32 @@ export type EditV2Signatur = components['schemas']['EditV2Signatur'];
 export type EditV2Title = components['schemas']['EditV2Title'];
 export type EditV2Letter = components['schemas']['EditV2Letter'];
 export type ApiV2BrevResponse = components['schemas']['ApiV2BrevResponse'];
+export type ContentIndexV2Type = components['schemas']['ContentIndexV2Type'];
+export type ContentIndexV2BlockContentIndex = components['schemas']['ContentIndexV2BlockContentIndex'];
+export type ContentIndexV2BlockIndex = components['schemas']['ContentIndexV2BlockIndex'];
+export type ContentIndexV2ColumnSpecContentIndex = components['schemas']['ContentIndexV2ColumnSpecContentIndex'];
+export type ContentIndexV2ColumnSpecIndex = components['schemas']['ContentIndexV2ColumnSpecIndex'];
+export type ContentIndexV2ItemContentIndex = components['schemas']['ContentIndexV2ItemContentIndex'];
+export type ContentIndexV2ItemIndex = components['schemas']['ContentIndexV2ItemIndex'];
+export type ContentIndexV2TableCellContentIndex = components['schemas']['ContentIndexV2TableCellContentIndex'];
+export type ContentIndexV2TableCellIndex = components['schemas']['ContentIndexV2TableCellIndex'];
+export type ContentIndexV2TableRowIndex = components['schemas']['ContentIndexV2TableRowIndex'];
+export type ContentIndexV2 = components['schemas']['ContentIndexV2'];
+export type DiffSegmentV2 = components['schemas']['DiffSegmentV2'];
+export type DiffBrevHandlerResponseType = components['schemas']['DiffBrevHandlerResponseType'];
+export type DiffBrevHandlerResponseV2Split = components['schemas']['DiffBrevHandlerResponseV2Split'];
+export type UnifiedDiffV2DeletedTextSegment = components['schemas']['UnifiedDiffV2DeletedTextSegment'];
+export type UnifiedDiffV2TextSegment = components['schemas']['UnifiedDiffV2TextSegment'];
+export type UnifiedDiffV2TextEdit = components['schemas']['UnifiedDiffV2TextEdit'];
+export type UnifiedDiffV2TextOnlyEdit = components['schemas']['UnifiedDiffV2TextOnlyEdit'];
+export type UnifiedDiffV2BlockEditType = components['schemas']['UnifiedDiffV2BlockEditType'];
+export type UnifiedDiffV2BlockEditListBlockEdit = components['schemas']['UnifiedDiffV2BlockEditListBlockEdit'];
+export type UnifiedDiffV2RowEdit = components['schemas']['UnifiedDiffV2RowEdit'];
+export type UnifiedDiffV2BlockEditTableEdit = components['schemas']['UnifiedDiffV2BlockEditTableEdit'];
+export type UnifiedDiffV2BlockEditTextBlockEdit = components['schemas']['UnifiedDiffV2BlockEditTextBlockEdit'];
+export type UnifiedDiffV2BlockEdit = components['schemas']['UnifiedDiffV2BlockEdit'];
+export type DiffBrevHandlerResponseV2Unified = components['schemas']['DiffBrevHandlerResponseV2Unified'];
+export type DiffBrevHandlerResponseV2 = components['schemas']['DiffBrevHandlerResponseV2'];
 export type EditV2Attachment = components['schemas']['EditV2Attachment'];
 export type Duration = components['schemas']['Duration'];
 export type ApiReservasjonResponse = components['schemas']['ApiReservasjonResponse'];
@@ -6012,7 +6797,6 @@ export type ContentIndexTableCellIndex = components['schemas']['ContentIndexTabl
 export type ContentIndexTableRowIndex = components['schemas']['ContentIndexTableRowIndex'];
 export type ContentIndex = components['schemas']['ContentIndex'];
 export type DiffSegment = components['schemas']['DiffSegment'];
-export type DiffBrevHandlerResponseType = components['schemas']['DiffBrevHandlerResponseType'];
 export type DiffBrevHandlerResponseSplit = components['schemas']['DiffBrevHandlerResponseSplit'];
 export type UnifiedDiffDeletedTextSegment = components['schemas']['UnifiedDiffDeletedTextSegment'];
 export type UnifiedDiffTextSegment = components['schemas']['UnifiedDiffTextSegment'];
