@@ -42,7 +42,7 @@ class HentBrevHandler(
                     }
                     success(brev.tilDto(rendretBrev.letterDataUsage))
                 } else {
-                    success(brev.tilDto(emptySet()))
+                    success(brev.tilDto())
                 }
             }
         }
