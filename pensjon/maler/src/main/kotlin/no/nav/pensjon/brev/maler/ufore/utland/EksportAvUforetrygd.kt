@@ -6,33 +6,19 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.UT_EKSPORT_
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.EksportAvUforetrygdDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.barnetilleggAvtaleland
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.btInnvilgetMenIngenUtbetaling
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.ensligOgMinstesats
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.eosNordisk
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.flereBarn
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.fullEksport
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.gjtAvkortet
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.gjtEndret
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.gjtUendret
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.innvilgetBT
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.minstesatsTilBruker
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.muligTilbakekrevingVarsel
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.sumUtOgTillegg
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.virkningstidspunkt
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.utland.selectors.eksportAvUforetrygdDto.pesysData.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
+import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -208,11 +194,14 @@ object EksportAvUforetrygd : RedigerbarTemplate<EksportAvUforetrygdDto> {
             }
             includePhrase(Felles.MeldeFraEndringer)
             includePhrase(Ufoeretrygd.RettTilAKlage)
-            includePhrase(Felles.RettTilInnsynRedigerbarebrev)
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.SkattTilNorge)
             includePhrase(Ufoeretrygd.HarDuSporsmal)
         }
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, pesysData.orienteringOmRettigheterUfoere)
     }
 }
 
