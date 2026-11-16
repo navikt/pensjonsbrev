@@ -295,13 +295,14 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     override fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
-        val lagredeMalHasher = _redigerteVedlegg.associate { it.vedleggId.value to it.rendretVedleggHash }
         mergeRendredeVedlegg(
-            rendredeVedlegg.filter { (vedleggId, rendretVedlegg) ->
-                val lagretHash = lagredeMalHasher[vedleggId]
-                lagretHash == null || lagretHash == rendretVedlegg.stableHashCode
-            }
+            rendredeVedlegg.filter { (vedleggId, rendretVedlegg) -> harUendretVedleggmal(vedleggId, rendretVedlegg.stableHashCode) }
         )
+    }
+
+    fun harUendretVedleggmal(vedleggId: VedleggId, rendretVedleggHash: StableHashCode?): Boolean {
+        val lagretHash = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.rendretVedleggHash
+        return lagretHash == null || lagretHash == rendretVedleggHash
     }
 
     override fun harUendretBrevmal(rendretBrevmalHash: StableHashCode): Boolean =
