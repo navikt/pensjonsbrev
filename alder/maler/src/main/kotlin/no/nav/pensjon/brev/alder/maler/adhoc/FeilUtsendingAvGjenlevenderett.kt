@@ -25,33 +25,17 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyAutobrevdata> {
         )
     ) {
         title {
-            text(
-                bokmal { +"Nye regler for gjenlevenderett i alderspensjon" },
-                nynorsk { +"Nye reglar for attlevanderett i alderspensjon" },
-                english { +"New rules for survivor's rights in retirement pension" }
-            )
+            text(bokmal { +"Nye regler for gjenlevenderett i alderspensjon" }, nynorsk { +"Nye reglar for attlevanderett i alderspensjon" }, english { +"New rules for survivor's rights in retirement pension" })
         }
         outline {
             paragraph {
-                text(
-                    bokmal { +"I januar 2024 sendte Nav deg et brev om nye regler for gjenlevenderett i alderspensjonen." },
-                    nynorsk { +"I januar 2024 sendte Nav deg eit brev om nye reglar for attlevenderett i alderspensjonen." },
-                    english { +"In January 2024, Nav sent a letter to you informing about the new rules for survivor's rights in the retirement pension." },
-                )
+                text(bokmal { +"I januar 2024 sendte Nav deg et brev om nye regler for gjenlevenderett i alderspensjonen." }, nynorsk { +"I januar 2024 sendte Nav deg eit brev om nye reglar for attlevenderett i alderspensjonen." }, english { +"In January 2024, Nav sent a letter to you informing about the new rules for survivor's rights in the retirement pension." })
             }
             paragraph {
-                text(
-                    bokmal { +"De nye reglene gjelder ikke for deg som har alderspensjon basert på egen opptjening. Du kan derfor se bort fra det brevet du fikk." },
-                    nynorsk { +"Dei nye reglane gjeld ikkje for deg som har alderspensjon basert på eiga opptening. Du kan difor sjå vekk frå det brevet du fekk." },
-                    english { +"The new rules do not apply to you, as your current retirement pension is based on your earned pension rights. You can therefore disregard the letter you received." },
-                )
+                text(bokmal { +"De nye reglene gjelder ikke for deg som har alderspensjon basert på egen opptjening. Du kan derfor se bort fra det brevet du fikk." }, nynorsk { +"Dei nye reglane gjeld ikkje for deg som har alderspensjon basert på eiga opptening. Du kan difor sjå vekk frå det brevet du fekk." }, english { +"The new rules do not apply to you, as your current retirement pension is based on your earned pension rights. You can therefore disregard the letter you received." })
             }
             paragraph {
-                text(
-                    bokmal { +"Vi beklager feilen!" },
-                    nynorsk { +"Vi orsakar feilen!" },
-                    english { +"We apologise for the error." }
-                )
+                text(bokmal { +"Vi beklager feilen! Dette er en test endring." }, nynorsk { +"Vi orsakar feilen!" }, english { +"We apologise for the error." })
             }
             includePhrase(HarDuSpoersmaal.alder)
 
