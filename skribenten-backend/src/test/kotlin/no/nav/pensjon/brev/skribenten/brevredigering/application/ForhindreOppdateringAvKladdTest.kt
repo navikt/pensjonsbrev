@@ -2,6 +2,10 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application
 
 import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.Features
+import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreRedigertVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigerbareVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -109,6 +113,55 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
 
         assertVedleggFlettetPerVedlegg(brev.info.id, nyeMaler)
     }
+
+    @Test
+    suspend fun `hent redigerbare vedlegg fletter bare vedlegg med uendret mal`() {
+        val (brev, nyeMaler) = brevMedVedleggOgNyeMaler()
+
+        assertThat(withPrincipal(saksbehandler1Principal) {
+            hentRedigerbareVedlegg(HentRedigerbareVedleggHandler.Request(brevId = brev.info.id, saksId = sak1.saksId))
+        }).isSuccess()
+
+        assertVedleggFlettetPerVedlegg(brev.info.id, nyeMaler)
+    }
+
+    @Test
+    suspend fun `hent redigert vedlegg fletter bare naar vedleggsmalen er uendret`() {
+        val (brev, nyeMaler) = brevMedVedleggOgNyeMaler()
+
+        assertThat(hentVedlegg(brev.info.id, endretVedlegg)).isSuccess {
+            assertThat(it).isEqualTo(malVedlegg("endret", 2).toEdit())
+        }
+        assertThat(hentVedlegg(brev.info.id, uendretVedlegg)).isSuccess {
+            assertThat(it).isEqualTo(malVedlegg("uendret", 1).toEdit().updateEditedAttachment(nyeMaler.getValue(uendretVedlegg)))
+        }
+    }
+
+    @Test
+    suspend fun `lagre redigert vedlegg fletter bare naar vedleggsmalen er uendret`() {
+        val (brev, nyeMaler) = brevMedVedleggOgNyeMaler()
+
+        assertThat(endreVedlegg(brev.info.id, endretVedlegg, malVedlegg("endret", 2).toEdit())).isSuccess {
+            assertThat(it).isEqualTo(malVedlegg("endret", 2).toEdit())
+        }
+        assertThat(lagretVedlegg(brev.info.id, endretVedlegg)).isEqualTo(malVedlegg("endret", 2).toEdit())
+
+        assertThat(endreVedlegg(brev.info.id, uendretVedlegg, malVedlegg("uendret", 1).toEdit())).isSuccess {
+            assertThat(it).isEqualTo(malVedlegg("uendret", 1).toEdit().updateEditedAttachment(nyeMaler.getValue(uendretVedlegg)))
+        }
+    }
+
+    private suspend fun hentVedlegg(brevId: BrevId, vedleggId: VedleggId) =
+        withPrincipal(saksbehandler1Principal) {
+            hentRedigertVedlegg(HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = vedleggId))
+        }
+
+    private suspend fun endreVedlegg(brevId: BrevId, vedleggId: VedleggId, vedlegg: Edit.Attachment) =
+        withPrincipal(saksbehandler1Principal) {
+            endreRedigertVedlegg(
+                EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = vedleggId, redigertVedlegg = vedlegg)
+            )
+        }
 
     private val nyttRendretBrev
         get() = letter.copy(blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph"))))
