@@ -46,6 +46,8 @@ import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev
 import no.nav.pensjon.brev.maler.ufore.adhoc.FeilBelopInntekstendringsbrev_AvkortetTil0
 import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoerepensjonRedigerbar
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EPSEndringIBarnetilleggAuto
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EPSEndringIBarnetilleggRedigerbar
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertrygdAuto
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ufore.diverse.*
@@ -54,6 +56,8 @@ import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektAuto
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteArAuto
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteArRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.OktBunnfradragNesteArRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.OktBunnfradragNesteArAuto
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.ufore.hvilenderett.HvilendeRettInfo4Aar
@@ -110,6 +114,8 @@ object Fixtures : LetterDataFactory {
             EndretUfoeretrygdPGAInntektRedigerbar::class -> createEndretUfoeretrygdPGAInntektRedigerbarDto() as T
             EndretUforetrygdPGAInntektNesteArAuto::class -> createEndretUforetrygdPGAInntektNesteArDto() as T
             EndretUforetrygdPGAInntektNesteArRedigerbar::class -> createEndretUforetrygdPGAInntektNesteArRedigerbarDto() as T
+            OktBunnfradragNesteArRedigerbar::class -> createOktBunnfradragNesteArRedigerbarDto() as T
+            OktBunnfradragNesteArAuto::class -> createOktBunnfradragNesteArDto() as T
             EndretUforetrygdPGAOpptjeningLegacy::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
             EndringUforetrygdRedigerbar::class -> createEndringUfoeretrygdDto() as T
             EtteroppgjoerEtterbetalingAutoLegacy::class -> createEtteroppgjoerEtterbetalingAuto() as T
@@ -170,6 +176,8 @@ object Fixtures : LetterDataFactory {
             VedtakOmEndringBTEPSRedigerbar::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
             VedtakOmEndringBarnetilleggEPSAuto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
             VedtakOmEndringBarnetilleggEPSRevAuto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
+            EPSEndringIBarnetilleggRedigerbar::class -> createEPSEndringIBarnetilleggRedigerbarDto() as T
+            EPSEndringIBarnetilleggAuto::class -> createEPSEndringIBarnetilleggAutoDto() as T
             VedtakOmEtterbetalingOpphor2026Auto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
             VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
             VedtakOmEtterbetalingOpphor2026OktIfuAuto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T

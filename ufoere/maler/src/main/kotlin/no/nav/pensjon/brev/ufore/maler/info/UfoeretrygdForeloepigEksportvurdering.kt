@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.informasjonsskrivOmHelsetjenester
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -24,7 +23,6 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
     override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
-    override val featureToggle = FeatureToggles.ufoeretrygdForeloepigEksportvurdering.toggle
 
     override val template = createTemplate(
         languages = languages(Bokmal),
@@ -39,8 +37,7 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
         val barnetillegginnenavtaleland = saksbehandlervalg("barnetillegginnenavtaleland", "Barnetillegg innen avtaleland").bool()
         val retttileksportmendetkommeikketilutbetpgainntekt = saksbehandlervalg("retttileksportmendetkommeikketilutbetpgainntekt", "Rett til eksport av barnetillegg men dette kommer ikke til utbetaling").bool()
         val barnetilleggutenforavtaleland = saksbehandlervalg("barnetilleggutenforavtaleland", "Barnetillegg utenfor avtaleland").bool()
-        val vedopphoravbarnetillegg = saksbehandlervalg("vedopphoravbarnetillegg", "Dersom opphør av barnetillegg").bool()
-        val vedopphoravuforetrygd = saksbehandlervalg("vedopphoravuforetrygd", "Dersom opphør av uføretrygd").bool()
+        val vedopphoravuforetrygd = saksbehandlervalg("vedopphoravuforetrygd", "Ved tilbakeflytting etter opphør").bool()
         val tyvearfulleksport = saksbehandlervalg("tyvearfulleksport", "20 år, full eksport").bool()
         val tyvearfulleksportviasammenlegging = saksbehandlervalg("tyvearfulleksportviasammenlegging", "20 år via sammenlegging, full eksport  EØS").bool()
         val mindreenn20areosfulleksport = saksbehandlervalg("mindreenn20areosfulleksport", "Mindre enn 20 år, EØS, full eksport").bool()
@@ -117,8 +114,6 @@ object UfoeretrygdForeloepigEksportvurdering : RedigerbarTemplate<EmptyRedigerba
                 paragraph {
                     text(bokmal { +"Norge har ikke trygdeavtale med " + land.ifNull("") + ". På bakgrunn av dette får du ikke med deg barnetillegget i uføretrygden til dette landet." })
                 }
-            }
-            showIf(vedopphoravbarnetillegg) {
                 paragraph {
                     text(bokmal { +"Dersom du flytter tilbake til Norge etter at barnetillegget er opphørt får du ikke automatisk tilbake tillegget. Du må da søke om barnetillegg på nytt." })
                 }

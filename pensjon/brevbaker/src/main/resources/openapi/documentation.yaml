@@ -586,6 +586,8 @@ components:
             - "FOERSTEGANGSBEHANDLING"
             - "VEDTAK_ENDRING_OG_REVURDERING"
             - "VEDTAK_FLYTTE_MELLOM_LAND"
+            - "VEDTAK_OPPHOER_AVSLAG"
+            - "LOVENDRINGER"
             - "SLUTTBEHANDLING"
             - "INFORMASJONSBREV"
             - "VARSEL"

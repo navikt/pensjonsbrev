@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { type UmamiEventData } from "~/utils/umami";
+import { type UmamiEventData } from "~/utils/innblikk";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 
 import avtaleland from "../fixtures/avtaleland.json" with { type: "json" };

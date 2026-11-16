@@ -52,17 +52,18 @@ dependencies {
     implementation(platform(libs.log4j.bom))
     implementation(platform(libs.netty.bom)) // Vi opplever ofte at netty har sårbarheter, så vi ønsker å enkelt kunne patche denne separat
     implementation(libs.bundles.logging)
-    implementation(platform(libs.ktor.bom))
-    implementation(libs.ktor.serialization.jackson)
-    implementation(libs.ktor.server.auth)
-    implementation(libs.ktor.server.auth.jwt)
-    implementation(libs.ktor.server.callId)
-    implementation(libs.ktor.server.callLogging)
-    implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.status.pages)
-    implementation(libs.bundles.metrics)
+    implementation(ktorLibs.serialization.jackson)
+    implementation(ktorLibs.server.auth)
+    implementation(ktorLibs.server.auth.jwt)
+    implementation(ktorLibs.server.callId)
+    implementation(ktorLibs.server.callLogging)
+    implementation(ktorLibs.server.contentNegotiation)
+    implementation(ktorLibs.server.core)
+    implementation(ktorLibs.server.netty)
+    implementation(ktorLibs.server.statusPages)
+    implementation(libs.micrometer.prometheus)
+    implementation(ktorLibs.server.metrics)
+    implementation(ktorLibs.server.metrics.micrometer)
 
     implementation(publishedLibs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
     implementation(publishedLibs.markup.model)
@@ -70,11 +71,11 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.bundles.junit)
-    testImplementation(libs.ktor.server.test.host) {
+    testImplementation(ktorLibs.server.testHost) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }
-    testImplementation(libs.ktor.client.cio)
-    testImplementation(libs.ktor.client.content.negotiation)
+    testImplementation(ktorLibs.client.cio)
+    testImplementation(ktorLibs.client.contentNegotiation)
     testImplementation(publishedLibs.markup.dsl)
     testImplementation(libs.testcontainers.core)
 }

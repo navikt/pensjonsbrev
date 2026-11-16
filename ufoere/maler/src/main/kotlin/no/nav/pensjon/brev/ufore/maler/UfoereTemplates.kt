@@ -15,10 +15,12 @@ import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
+import no.nav.pensjon.brev.ufore.maler.info.AvkallPaUforetrygd
 import no.nav.pensjon.brev.ufore.maler.info.ForesporselTrygdetidSendtLand
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.info.KravSendtUtland
+import no.nav.pensjon.brev.ufore.maler.info.OpphorUforetrygd
 import no.nav.pensjon.brev.ufore.maler.info.TrukketKlage
 import no.nav.pensjon.brev.ufore.maler.info.UfoeretrygdForeloepigEksportvurdering
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
@@ -128,6 +130,8 @@ object UfoereTemplates : AllTemplates {
         SoknadTilAvtaleland,
         KravSendtUtland,
         UfoeretrygdForeloepigEksportvurdering,
+        AvkallPaUforetrygd,
+        OpphorUforetrygd,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(

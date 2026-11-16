@@ -91,6 +91,8 @@ object Ufoerebrevkoder {
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
         UT_UTSENDELSE_TIL_UTENLANDSKE_TRYGDEMYND,
         UT_FORELOPIG_EKSPORTVURDERING,
+        UT_AVKALL_PA_UFORETRYGD,
+        UT_OPPHOR_UFORETRYGD,
         ;
 
         override fun kode(): String = this.name
