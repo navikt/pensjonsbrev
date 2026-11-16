@@ -98,7 +98,6 @@ object Fixtures : LetterDataFactory {
             OpphorUforetrygd::class -> lagOpphorUforetrygdDto() as T
             FlereOpplysningerFirmaInntekt::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             NySivilstand::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
-            EktefelleUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             UtsattKlagefrist::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             AntattDod::class -> lagBrukersNavnRedigerbarBrevdata() as T
             EOSLegeerklaering::class -> lagBrukersNavnRedigerbarBrevdata() as T
