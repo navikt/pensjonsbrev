@@ -84,7 +84,19 @@ Attestant må lukke brevet hos seg. Vent litt, og prøv deretter å åpne brevet
 
 == Attestering
 === Hvordan attesterer jeg brevet?
-For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Brevet åpnes fra dokumentoversikt, og har status «under arbeid (attestering)».
+For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Du kan ikke attestere et brev du selv har opprettet.
+
+1. Åpne brevet fra dokumentoversikten. Brevet har status  «under arbeid (attestering)».
+2. Les gjennom brevet og gjør eventuelle endringer i brevteksten. Tekstvalgene i sidepanelet kan du se, men ikke endre.
+Dersom brevet har redigerbare vedlegg, vises fanen «Vedlegg». Åpne fanen, velg vedlegget og les gjennom og eventuelt rediger teksten.
+3. Legg inn underskriften din i feltet «Underskrift» i venstremenyen.
+4. Klikk på «Fortsett» for å åpne forhåndsvisningen.
+5. Kontroller PDF-en. Hvis noe må endres, velger du «Tilbake til redigering».
+6. Klikk på «Send brev» og og bekreft med ‘Ja, send brevet’.»
+7. Kontroller kvitteringen. Ved lokalprint må du også åpne PDF-en og skrive ut brevet.
+
+
+**Merk:** Brevet sendes ikke når du legger inn underskriften din.
 
 === Hvilke endringer er gjort i brevet?
 
