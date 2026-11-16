@@ -96,6 +96,15 @@ Attestanten kan enklere se hvilke endringer saksbehandler har gjort i brevet. At
 
 image::../images/attestering-begge-endringer.png[]
 
+
+Viktig å vite:
+
+* Endringsmarkeringene er kun en visning i redigeringsmodus, og vises ikke i det endelige brevet
+* Endringsmarkeringene forsvinner når brevet redigeres
+* Endringsmarkeringene viser tekst som er tatt inn eller ut av brevet, men ikke endringer i formatering
+* Dersom det ikke er gjort noen endringer, vises ikke endringsmarkeringer.
+* Hvis endringsmarkering ikke er tilgjengelig, kan brevet fortsatt gjennomgås og attesteres
+
 === Hvordan legger jeg til signaturen min?
 Du legger til signaturen din ved å klikke på underskrift i venstremenyen, og skriver den inn. Den vil da dukke opp på venstre side av saksbehandlers underskrift.
 
