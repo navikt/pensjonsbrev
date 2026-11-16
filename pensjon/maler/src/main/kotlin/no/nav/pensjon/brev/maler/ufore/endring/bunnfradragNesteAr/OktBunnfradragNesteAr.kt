@@ -128,8 +128,8 @@ object OktBunnfradragNesteAr {
                 }.orShowIf(periodisertBarnetillegg) {
                     paragraph {
                         text(
-                            bokmal { +"Fordi du har barnetillegg som opphører i løpet av neste år, er inntekten og bunnfradraget for neste år justert slik at de kun gjelder for perioden du mottar barnetillegg." },
-                            nynorsk { +"Fordi du har barnetillegg som fell bort i løpet av neste år, er inntekten og bunnfradraget for neste år justerte slik at dei berre gjeld for perioden du får barnetillegg." }
+                            bokmal { +"Fordi du har barnetillegg som opphører i løpet av neste år, er inntekten og fribeløpet for neste år justert slik at de kun gjelder for perioden du mottar barnetillegg." },
+                            nynorsk { +"Fordi du har barnetillegg som fell bort i løpet av neste år, er inntekten og fribeløpet for neste år justerte slik at dei berre gjeld for perioden du får barnetillegg." }
                         )
                     }
                 }
