@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { parseISO, setHours } from "date-fns";
 import { type ReactNode, StrictMode, useState } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -242,6 +243,7 @@ describe("<NotificationBell />", () => {
   });
 
   test("viser nyheten om endringer i brevet med lenke til dokumentasjonen", async () => {
+    vi.setSystemTime(setHours(parseISO(DIFF_TOGGLES_ANNOUNCEMENT.publishedAt), 12));
     const user = userEvent.setup();
     renderWithQueryClient(<NotificationBell />);
     await waitFor(() => expect(dot()).not.toBeNull());

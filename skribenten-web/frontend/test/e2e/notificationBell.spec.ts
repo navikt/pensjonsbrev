@@ -147,7 +147,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
       "href",
       "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_attestering",
     );
-    await expect(page.getByText("09.11.2026")).toBeVisible();
+    await expect(page.getByText("16.11.2026")).toBeVisible();
   });
 });
 
