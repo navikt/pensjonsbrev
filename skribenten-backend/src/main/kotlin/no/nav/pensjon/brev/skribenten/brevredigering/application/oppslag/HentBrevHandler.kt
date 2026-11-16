@@ -32,10 +32,14 @@ class HentBrevHandler(
                 val pesysdata = brevdataService.hentBrevdata(brev)
                 val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
                 val rendredeVedlegg = brevmalService.renderRedigerteVedlegg(brev, pesysdata)
-                brev.redigerteVedlegg.map {
-                    it.
 
-                if (!Features.forhindreOppdateringAvKladd.isEnabled() || (rendretBrev.stableHashCode == brev.brevmalHash || brev.rendretBrev == null || brev.brevmalHash == null)) {
+                if (!Features.forhindreOppdateringAvKladd.isEnabled()) {
+                    brev.mergeRendretBrev(rendretBrev.markup)
+                    brev.mergeRendredeVedlegg(rendredeVedlegg)
+                    return@forRedigering success(brev.tilDto(rendretBrev.letterDataUsage))
+                }
+
+                if (rendretBrev.stableHashCode == brev.brevmalHash || brev.brevmalHash == null) {
                     brev.mergeRendretBrev(rendretBrev.markup)
                     brev.mergeRendredeVedlegg(rendredeVedlegg)
                     success(brev.tilDto(rendretBrev.letterDataUsage))
