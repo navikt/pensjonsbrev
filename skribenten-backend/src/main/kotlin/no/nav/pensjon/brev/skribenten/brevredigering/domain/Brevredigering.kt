@@ -156,7 +156,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             Dto.RedigertVedlegg(
                 vedleggId = it.vedleggId.value,
                 redigertVedlegg = it.redigertVedlegg,
-                rendretVedlegg = it.rendretVedlegg
+                rendretVedlegg = it.rendretVedlegg,
+                rendretVedleggHash = it.rendretVedleggHash
             )
         }
 
