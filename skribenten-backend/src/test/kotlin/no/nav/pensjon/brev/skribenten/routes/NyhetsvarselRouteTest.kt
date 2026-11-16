@@ -144,10 +144,31 @@ class NyhetsvarselRouteTest {
     }
 
     @Test
+    fun `de gamle endepunktene for bekreftede nyhetsvarsler deler data med de nye`() = meTestApplication(nyNavIdent()) { client ->
+        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("[]")
+
+        assertThat(client.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.NoContent)
+
+        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("""["diff-toggles"]""")
+        assertThat(client.get("/me/nyhetsvarsel").bodyAsText())
+            .isEqualTo("""{"settAnnonsen":[],"gjennomfoertOmvisningen":["diff-toggles"]}""")
+    }
+
+    @Test
+    fun `det gamle endepunktet viser bare gjennomfoerte omvisninger, ikke sette annonser`() = meTestApplication(nyNavIdent()) { client ->
+        client.put("/me/nyhetsvarsel/diff-toggles/settAnnonsen")
+        client.put("/me/nyhetsvarsel/brevvelger/gjennomfoertOmvisningen")
+
+        assertThat(client.get("/me/bekreftedeNyhetsvarsler").bodyAsText()).isEqualTo("""["brevvelger"]""")
+    }
+
+    @Test
     fun `svarer med unauthorized uten innlogget bruker`() = meTestApplication(nyNavIdent()) { _ ->
         val utenInnlogging = createClient { }
 
         assertThat(utenInnlogging.get("/me/nyhetsvarsel").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.get("/me/bekreftedeNyhetsvarsler").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(utenInnlogging.put("/me/bekreftedeNyhetsvarsler/diff-toggles").status).isEqualTo(HttpStatusCode.Unauthorized)
         assertThat(utenInnlogging.put("/me/nyhetsvarsel/diff-toggles/settAnnonsen").status).isEqualTo(HttpStatusCode.Unauthorized)
         assertThat(utenInnlogging.put("/me/nyhetsvarsel/diff-toggles/gjennomfoertOmvisningen").status).isEqualTo(HttpStatusCode.Unauthorized)
     }

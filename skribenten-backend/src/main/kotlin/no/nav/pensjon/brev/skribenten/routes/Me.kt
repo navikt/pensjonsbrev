@@ -58,19 +58,27 @@ fun Route.meRoute() {
 
         val hentNyhetsvarslerHandler: HentNyhetsvarslerHandler by app.dependencies
         val markerNyhetsvarselHandler: MarkerNyhetsvarselHandler by app.dependencies
+        suspend fun RoutingContext.marker(markering: Nyhetsvarselmarkering) {
+            val nyhetsvarselId = NyhetsvarselId(call.parameters.getOrFail("nyhetsvarselId"))
+            val marker = markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(principal().navIdent, nyhetsvarselId, markering))
+            respondSuccess(marker?.asSuccess()) { respond(HttpStatusCode.NoContent) }
+        }
+
         route("/nyhetsvarsel") {
             get {
                 val nyhetsvarsler = hentNyhetsvarslerHandler(HentNyhetsvarslerHandler.Request(principal().navIdent))
                 respondSuccess(nyhetsvarsler?.asSuccess()) { respond(it) }
             }
-
-            suspend fun RoutingContext.marker(markering: Nyhetsvarselmarkering) {
-                val nyhetsvarselId = NyhetsvarselId(call.parameters.getOrFail("nyhetsvarselId"))
-                val marker = markerNyhetsvarselHandler(MarkerNyhetsvarselHandler.Request(principal().navIdent, nyhetsvarselId, markering))
-                respondSuccess(marker?.asSuccess()) { respond(HttpStatusCode.NoContent) }
-            }
             put("/{nyhetsvarselId}/settAnnonsen") { marker(Nyhetsvarselmarkering.SETT_ANNONSEN) }
             put("/{nyhetsvarselId}/gjennomfoertOmvisningen") { marker(Nyhetsvarselmarkering.GJENNOMFOERT_OMVISNINGEN) }
+        }
+
+        route("/bekreftedeNyhetsvarsler") {
+            get {
+                val nyhetsvarsler = hentNyhetsvarslerHandler(HentNyhetsvarslerHandler.Request(principal().navIdent))
+                respondSuccess(nyhetsvarsler?.asSuccess()) { respond(it.gjennomfoertOmvisningen) }
+            }
+            put("/{nyhetsvarselId}") { marker(Nyhetsvarselmarkering.GJENNOMFOERT_OMVISNINGEN) }
         }
     }
 }
