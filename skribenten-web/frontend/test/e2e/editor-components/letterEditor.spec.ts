@@ -584,6 +584,19 @@ test.describe("LetterEditor copy and paste within the editor", () => {
     });
   }
 
+  test("a whole heading missing from the template still pastes as a heading", async ({ page }) => {
+    await setupHeadingAndEmptyLine(page, {
+      ...title2(_literal("Knirkende stoler i rom 4A")),
+      missingFromTemplate: true,
+    });
+    await expect(page.getByRole("button", { name: "Behold" })).toBeVisible();
+    await copyHeadingText(page, "TITLE2");
+    await pasteIntoEmptyLine(page);
+
+    await expect(page.locator(".editor-surface > .TITLE2")).toHaveCount(2);
+    await expect(page.locator(".editor-surface > .TITLE2").nth(1)).toHaveText("Knirkende stoler i rom 4A");
+  });
+
   test("part of a heading pastes as plain paragraph text", async ({ page }) => {
     await setupHeadingAndEmptyLine(page, title1(_literal("Knirkende stoler i rom 4A")));
     await copyHeadingText(page, "TITLE1", { start: 0, end: 9 });

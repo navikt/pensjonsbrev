@@ -20,7 +20,9 @@ export function copyWholeHeading(event: React.ClipboardEvent<HTMLElement>) {
 
   const tag = Object.entries(HEADING_TAGS).find(([type]) => block.classList.contains(type))?.[1];
   const text = visibleText(range.toString());
-  if (!tag || text.length === 0 || text !== visibleText(block.textContent ?? "")) return;
+  // Compare against the letter content only, since the block can also hold action controls (e.g. "Behold"/"Slett").
+  const blockText = Array.from(block.querySelectorAll("[data-literal-index]"), (element) => element.textContent ?? "");
+  if (!tag || text.length === 0 || text !== visibleText(blockText.join(""))) return;
 
   const heading = block.ownerDocument.createElement(tag);
   heading.textContent = text;
