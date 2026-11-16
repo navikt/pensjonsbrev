@@ -25,7 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VedtakOmLavereMinstesatsRedigerbar : RedigerbarTemplate<VedtakOmLavereMinstesatsRedigerbarDto> {
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_OM_LAVERE_MINSTESATS_2026
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.LOVENDRINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
