@@ -184,6 +184,7 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
 
         assertThat(hentBrev(opprettet.info.id, reserverForRedigering = true)).isSuccess {
             assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev)
+            assertThat(it.propertyUsage).isNull()
         }
     }
 
@@ -195,6 +196,7 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
 
         assertThat(oppdaterBrev(opprettet.info.id)).isSuccess {
             assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev)
+            assertThat(it.propertyUsage).isNull()
         }
     }
 

@@ -59,7 +59,7 @@ class OppdaterBrevHandler(
 
                 success(fase(Fase.DTO) { brev.tilDto(rendretBrev.letterDataUsage) })
             } else {
-                success(fase(Fase.DTO) { brev.tilDto(emptySet()) })
+                success(fase(Fase.DTO) { brev.tilDto() })
             }
         }
 }
