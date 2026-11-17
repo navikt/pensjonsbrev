@@ -32,7 +32,7 @@ object BunnfradragVedAldersovergangNesteArRedigerbar : RedigerbarTemplate<Bunnfr
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Inntekt og bunnfradrag ved overgang til alderspensjon neste år",
+            displayTitle = "Vedtak - inntekt og alderspensjon neste år",
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

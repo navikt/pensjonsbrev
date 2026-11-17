@@ -23,7 +23,7 @@ object BunnfradragVedAldersovergangNesteArAuto : AutobrevTemplate<BunnfradragVed
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Inntekt og bunnfradrag ved overgang til alderspensjon neste år",
+            displayTitle = "Vedtak - inntekt og alderspensjon neste år",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

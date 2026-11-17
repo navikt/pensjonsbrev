@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -40,7 +41,6 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.year
@@ -63,7 +63,7 @@ object BunnfradragVedAldersovergangNesteAr {
                         nynorsk { +"Berekninga di for " + vedtakVirkFom.year.format() },
                     )
                 }
-                paragraph {//TODO: burde vi blande månedlig og årlig? Evt skrive noe om det
+                paragraph {
                     table(
                         header = {
                             column { text(bokmal { +"Din beregning" }, nynorsk { +"Berekninga di" }) }
@@ -71,37 +71,44 @@ object BunnfradragVedAldersovergangNesteAr {
                         },
                     ) {
                         row {
-                            cell { text(bokmal { +"Uføretrygd" }, nynorsk { +"Uføretrygd" }) }
+                            cell { text(bokmal { +"Uføretrygd per måned" }, nynorsk { +"Uføretrygd per månad" }) }
                             cell { text(bokmal { +nettoUforetrygd.format() }, nynorsk { +nettoUforetrygd.format() }) }
                         }
                         ifNotNull(nettoBarnetillegg) { nettoBt ->
                             row {
-                                cell { text(bokmal { +"Barnetillegg" }, nynorsk { +"Barnetillegg" }) }
+                                cell { text(bokmal { +"Barnetillegg per måned" }, nynorsk { +"Barnetillegg per månad" }) }
                                 cell { text(bokmal { +nettoBt.format() }, nynorsk { +nettoBt.format() }) }
                             }
                         }
                         ifNotNull(nettoGjenlevendetillegg) { nettoGjt ->
                             row {
-                                cell { text(bokmal { +"Gjenlevendetillegg" }, nynorsk { +"Attlevandetillegg" }) }
+                                cell { text(bokmal { +"Gjenlevendetillegg per måned" }, nynorsk { +"Attlevandetillegg per månad" }) }
                                 cell { text(bokmal { +nettoGjt.format() }, nynorsk { +nettoGjt.format() }) }
                             }
                         }
                         row {
-                            cell { text(bokmal { +"Bunnfradrag" }, nynorsk { +"Botnfrådrag" }) }
-                            cell { text(bokmal { +bunnfradrag.format() }, nynorsk { +bunnfradrag.format() }) }
+                            cell {
+                                text(
+                                    bokmal { +"Sum per måned før skatt" },
+                                    nynorsk { +"Sum per månad før skatt" },
+                                    FontType.BOLD
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +nettoTotal.format() },
+                                    nynorsk { +nettoTotal.format() },
+                                    FontType.BOLD
+                                )
+                            }
                         }
                         row {
                             cell { text(bokmal { +"Fribeløp" }, nynorsk { +"Fribeløp" }) }
                             cell { text(bokmal { +fribelop.format() }, nynorsk { +fribelop.format() }) }
                         }
                         row {
-                            cell {
-                                text(
-                                    bokmal { +"Månedlig uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") },
-                                    nynorsk { +"Månadleg uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") }
-                                )
-                            }
-                            cell { text(bokmal { +nettoTotal.format() }, nynorsk { +nettoTotal.format() }) }
+                            cell { text(bokmal { +"Bunnfradrag" }, nynorsk { +"Botnfrådrag" }) }
+                            cell { text(bokmal { +bunnfradrag.format() }, nynorsk { +bunnfradrag.format() }) }
                         }
                     }
                 }
@@ -115,26 +122,8 @@ object BunnfradragVedAldersovergangNesteAr {
                 }
                 title1 {
                     text(
-                        bokmal { +"Slik beregner vi bunnfradrag" },//TODO: gjentar setning fra åpningen av brevet under her. Og burde overskriften vært noe annet?
-                        nynorsk { +"Slik bereknar vi botnfrådrag" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + ", er bunnfradraget justert ut fra antall måneder du får uføretrygd i " + vedtakVirkFom.year.format() + "." },
-                        nynorsk { +"Fordi du får alderspensjon frå " + datoForNormertPensjonsalder.format() + ", er botnfrådraget justert ut frå talet på månader du får uføretrygd i " + vedtakVirkFom.year.format() + "." },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Ditt bunnfradrag i " + vedtakVirkFom.year.format() + " er " + bunnfradrag.format() + "." },
-                        nynorsk { +"Botnfrådraget ditt i " + vedtakVirkFom.year.format() + " er " + bunnfradrag.format() + "." },
-                    )
-                }
-                title1 {
-                    text(
-                        bokmal { +"Hva er fribeløp og bunnfradrag?" },//TODO Fribeløp blir ikke forklart
-                        nynorsk { +"Kva er fribeløp og botnfrådrag?" },
+                        bokmal { +"Hva er bunnfradrag?" },
+                        nynorsk { +"Kva er botnfrådrag?" },
                     )
                 }
                 paragraph {
@@ -146,8 +135,8 @@ object BunnfradragVedAldersovergangNesteAr {
                 showIf(gradertUforetrygd) {
                     paragraph {
                         text(
-                            bokmal { +"Siden du har gradert uføretrygd, har du fortsatt inntekt etter uførhet." },
-                            nynorsk { +"Sidan du har gradert uføretrygd, har du framleis inntekt etter uførleik." },
+                            bokmal { +"Siden du har gradert uføretrygd, har du fortsatt inntekt etter uførhet. Din inntekt etter uførhet er " + inntektEtterUforhet.format() + "." },
+                            nynorsk { +"Sidan du har gradert uføretrygd, har du framleis inntekt etter uførleik. Inntekten din etter uførleik er " + inntektEtterUforhet.format() + "." },
                         )
                     }
                 }.orShow {
