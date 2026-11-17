@@ -23,13 +23,20 @@ class RedigerbareVedleggService(
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
-        if (mergeMotMal) {
+        val kanIkkeFlettes = if (mergeMotMal) {
             val rendredeVedlegg = brevmalService.renderRedigerteVedlegg(brev, pesysdata)
             if (Features.forhindreOppdateringAvKladd.isEnabled()) {
+                val endredeMaler = rendredeVedlegg
+                    .filter { (vedleggId, rendret) -> !brev.harUendretVedleggmal(vedleggId, rendret.stableHashCode) }
+                    .keys
                 brev.mergeRendredeVedleggMedUendretHash(rendredeVedlegg)
+                endredeMaler
             } else {
                 brev.mergeRendredeVedlegg(rendredeVedlegg)
+                emptySet()
             }
+        } else {
+            emptySet()
         }
 
         return brevmalService.hentRedigerbareVedleggTitler(brev, pesysdata)?.vedlegg
@@ -37,6 +44,7 @@ class RedigerbareVedleggService(
                 RedigerbartVedleggInfo(
                     vedleggId = vedlegg.id,
                     tittel = brev.hentRedigertVedlegg(vedlegg.id)?.tittel ?: vedlegg.tittel,
+                    kanFletteEndringer = vedlegg.id !in kanIkkeFlettes,
                 )
             }
     }
@@ -99,4 +107,5 @@ class RedigerbareVedleggService(
 data class RedigerbartVedleggInfo(
     val vedleggId: VedleggId,
     val tittel: String,
+    val kanFletteEndringer: Boolean,
 )

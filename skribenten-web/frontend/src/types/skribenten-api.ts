@@ -4868,6 +4868,7 @@ export interface components {
         };
         /** RedigerbartVedleggInfo */
         RedigerbartVedleggInfo: {
+            kanFletteEndringer: boolean;
             tittel: string;
             vedleggId: string;
         };
