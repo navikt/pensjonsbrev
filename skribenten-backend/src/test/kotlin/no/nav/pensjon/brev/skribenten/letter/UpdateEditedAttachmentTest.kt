@@ -258,7 +258,7 @@ class UpdateEditedAttachmentTest {
         val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
         val previous = attachment(paragraph, separator, paragraph)
         val next = attachment(separator, paragraph)
-        val edited = previous.toEdit().also { it.blocks[0].status = Edit.Block.Status.NEW_FROM_TEMPLATE }
+        val edited = previous.toEdit().let { it.copy(blocks = it.blocks.mapIndexed { i, b -> if (i == 0) (b as Edit.Block.Paragraph).copy(status = Edit.Block.Status.NEW_FROM_TEMPLATE) else b }) }
 
         val result = edited.updateEditedAttachment(next, previousRender = previous.toEdit())
 
@@ -272,7 +272,7 @@ class UpdateEditedAttachmentTest {
         val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
         val previous = attachment(paragraph, separator, paragraph)
         val next = attachment(separator, paragraph)
-        val edited = previous.toEdit().also { it.blocks[2].status = Edit.Block.Status.NEW_FROM_TEMPLATE }
+        val edited = previous.toEdit().let { it.copy(blocks = it.blocks.mapIndexed { i, b -> if (i == 2) (b as Edit.Block.Paragraph).copy(status = Edit.Block.Status.NEW_FROM_TEMPLATE) else b }) }
 
         val result = edited.updateEditedAttachment(next, previousRender = previous.toEdit())
 

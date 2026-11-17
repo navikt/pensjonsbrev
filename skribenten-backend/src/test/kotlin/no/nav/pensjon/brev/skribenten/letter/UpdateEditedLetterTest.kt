@@ -1419,7 +1419,7 @@ class UpdateRenderedLetterTest {
         val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
         val previous = letter(paragraph, separator, paragraph)
         val next = letter(separator, paragraph)
-        val edited = previous.toEdit().also { it.blocks[0].status = Edit.Block.Status.NEW_FROM_TEMPLATE }
+        val edited = previous.toEdit().let { it.copy(blocks = it.blocks.mapIndexed { i, b -> if (i == 0) (b as Edit.Block.Paragraph).copy(status = Edit.Block.Status.NEW_FROM_TEMPLATE) else b }) }
 
         val result = edited.updateEditedLetter(next, previousRender = previous.toEdit())
 
@@ -1433,7 +1433,7 @@ class UpdateRenderedLetterTest {
         val separator = ParagraphImpl(2, true, listOf(LiteralImpl(21, "Separator")))
         val previous = letter(paragraph, separator, paragraph)
         val next = letter(separator, paragraph)
-        val edited = previous.toEdit().also { it.blocks[2].status = Edit.Block.Status.NEW_FROM_TEMPLATE }
+        val edited = previous.toEdit().let { it.copy(blocks = it.blocks.mapIndexed { i, b -> if (i == 2) (b as Edit.Block.Paragraph).copy(status = Edit.Block.Status.NEW_FROM_TEMPLATE) else b }) }
 
         val result = edited.updateEditedLetter(next, previousRender = previous.toEdit())
 
