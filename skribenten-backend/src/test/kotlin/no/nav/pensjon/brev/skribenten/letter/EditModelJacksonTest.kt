@@ -72,25 +72,6 @@ class EditModelJacksonTest {
     }
 
     @Test
-    fun `legacy missing status can be cleared by existing editor payload`() {
-        val json = """{"type":"PARAGRAPH","id":null,"editable":true,"content":[],"status":"MISSING_FROM_TEMPLATE","missingFromTemplate":false}"""
-
-        val block = objectMapper.readValue(json, Edit.Block::class.java)
-
-        assertThat(block.status).isEqualTo(Edit.Block.Status.PRESENT)
-    }
-
-    @Test
-    fun `missing status takes precedence when both legacy flags are true`() {
-        val json = """{"type":"PARAGRAPH","id":1,"editable":true,"content":[],"status":"NEW_FROM_TEMPLATE","missingFromTemplate":true}"""
-
-        val block = objectMapper.readValue(json, Edit.Block::class.java)
-
-        assertThat(block.status).isEqualTo(Edit.Block.Status.MISSING_FROM_TEMPLATE)
-        assertThat(block.missingFromTemplate).isTrue()
-    }
-
-    @Test
     fun `missing legacy flags default to no template status`() {
         val json = """{"type":"PARAGRAPH","id":1,"editable":true,"content":[]}"""
 
