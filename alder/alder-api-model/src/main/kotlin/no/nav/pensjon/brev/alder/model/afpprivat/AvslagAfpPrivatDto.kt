@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
+import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageAfpPrivatDto
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -39,5 +40,6 @@ data class AvslagAfpPrivatDto(
         val kravMottattDato: LocalDate,
         // PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse[1]
         val begrunnelse: Begrunnelse,
+        val dineRettigheterOgMulighetTilAaKlageAfpPrivat: DineRettigheterOgMulighetTilAaKlageAfpPrivatDto,
     ) : FagsystemBrevdata
 }
