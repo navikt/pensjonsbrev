@@ -5,12 +5,15 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.Bunnfradr
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArAutoDto.data
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.pe
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.vedtakVirkFom
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -30,8 +33,8 @@ object BunnfradragVedAldersovergangNesteArAuto : AutobrevTemplate<BunnfradragVed
     ) {
         title {
             text(
-                bokmal { +"Så mye kan du tjene det året du går over til alderspensjon" },
-                nynorsk { +"Så mykje kan du tene det året du går over til alderspensjon" },
+                bokmal { +"Så mye kan du tjene i " + data.vedtakVirkFom.year.format() },
+                nynorsk { +"Så mykje kan du tene i " + data.vedtakVirkFom.year.format() },
             )
         }
         outline {
