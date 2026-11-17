@@ -2,42 +2,50 @@
 
 Her publiserer Team Pensjonsbrev månedlige oppdateringer om hva som er nytt i Skribenten. Du finner informasjon om nye funksjoner, forbedringer og feilrettinger.
 
-== September - Oktober 2026
+== September - November 2026
 I denne perioden har vi jobbet med å gjøre det enklere å redigere brev og vedlegg, forbedret formateringen på innlimt tekst og tastaturnavigeringen.
 
 === Nye ting vi har laget
-* Visning av endringer for attestant
+
+* **Redigerbare vedlegg:** Du kan redigere vedlegg i Skribenten på samme måte som brevet. Du får et varsel hvis vedlegget inneholder like avsnitt, og vedlegg lagres automatisk på samme måte som brev. ([#3789](https://github.com/navikt/pensjonsbrev/pull/3789), [#3906](https://github.com/navikt/pensjonsbrev/pull/3906), [#3965](https://github.com/navikt/pensjonsbrev/pull/3965))
+* **Valgfrie vedlegg** kan styres per brevmal. ([#3760](https://github.com/navikt/pensjonsbrev/pull/3760))
+* **Attestanten kan se endringer:** Attestanten ser hva saksbehandler har lagt til (grønt) og slettet (rosa med gjennomstreking).
+  - Endringer i brevmalen vises ikke lenger som saksbehandlers endringer. ([#4008](https://github.com/navikt/pensjonsbrev/pull/4008))
+  - Knappen for å vise endringer er flyttet til verktøylinjen. ([#4041](https://github.com/navikt/pensjonsbrev/pull/4041))
+* **Nyhetsbjelle og lenker til brukerdokumentasjonen** gjør det lettere å følge med på det som er nytt. Første gang du bruker endringsvisningen, får du en kort omvisning. ([#4193](https://github.com/navikt/pensjonsbrev/pull/4193), [#4124](https://github.com/navikt/pensjonsbrev/pull/4124))
+* **Samhandlere:** Brev kan sendes digitalt til samhandlere med organisasjonsnummer. Mottakeren vises med organisasjonsnummer i stedet for adresse. ([#4000](https://github.com/navikt/pensjonsbrev/pull/4000), [#3972](https://github.com/navikt/pensjonsbrev/pull/3972), [#4060](https://github.com/navikt/pensjonsbrev/pull/4060))
+* **Nye brevkategorier i brevvelgeren:** «Lovendringer», «Vedtak – flytte mellom land» og «Vedtak – opphør/avslag». ([#4216](https://github.com/navikt/pensjonsbrev/pull/4216)) *Kontroller om alle tre er nye, eller om noen allerede fantes.*
+* Du kan velge **førsteside** i brevvelgeren. ([#3866](https://github.com/navikt/pensjonsbrev/pull/3866))
+
 
 
 === Ting vi har forbedret
 
-* Formatering av innlimt tekst i brev
-* Tilgang til brevredigeringen med Tab
-* Bedre navigering i tabeller
+* **Innliming:** Formatering fra Word (RTF) og nettsider beholdes bedre, også i lister og tabeller. Du kan også lime inn fra høyreklikkmenyen. ([#4036](https://github.com/navikt/pensjonsbrev/pull/4036)–[#4039](https://github.com/navikt/pensjonsbrev/pull/4039), [#4224](https://github.com/navikt/pensjonsbrev/pull/4224))
+* **Tastatur og tilgjengelighet:**
+  - Du kan nå brevredigeringen med Tab. ([#4028](https://github.com/navikt/pensjonsbrev/pull/4028))
+  - Pil opp og ned fungerer bedre i tabellceller med flere linjer. ([#3912](https://github.com/navikt/pensjonsbrev/pull/3912))
+  - Trippelklikk markerer hele teksten. ([#4031](https://github.com/navikt/pensjonsbrev/pull/4031))
+  - Når du klikker i en tom tabellcelle, havner markøren i cellen. ([#4188](https://github.com/navikt/pensjonsbrev/pull/4188))
+* **Nytt utseende:** Fritekst, variabler og endringsmarkeringer har fått en ny visuell stil. ([#4160](https://github.com/navikt/pensjonsbrev/pull/4160))
+* **Tabeller:** Variabler og tekst ligger nå på samme linje i tabellceller. ([#3892](https://github.com/navikt/pensjonsbrev/pull/3892))
+* **Ytelse og stabilitet:** Brev lastes raskere, og det blir færre tidsavbrudd ved trege oppslag. ([#4111](https://github.com/navikt/pensjonsbrev/pull/4111), [#3791](https://github.com/navikt/pensjonsbrev/pull/3791))
+* **Personvern:** Opplysninger om mottaker og tekstvalg lagres kryptert. Vi har lagt til en personvernerklæring og sluttet å spore enhets-ID. ([#3868](https://github.com/navikt/pensjonsbrev/pull/3868), [#4211](https://github.com/navikt/pensjonsbrev/pull/4211), [#4189](https://github.com/navikt/pensjonsbrev/pull/4189))
 
 === Ting vi har fikset
 
-* Sperre mot utsending av brev mens PDF-en lastes
+* Valgte brev kan ikke sendes mens PDF-ene fortsatt lastes inn. ([#3952](https://github.com/navikt/pensjonsbrev/pull/3952))
+* PDF-er lastes inn riktig igjen. ([#3964](https://github.com/navikt/pensjonsbrev/pull/3964))
+* Innhold dupliseres ikke lenger når et redigert brev oppdateres. ([#3953](https://github.com/navikt/pensjonsbrev/pull/3953))
+* Siden hopper ikke lenger en halv side når du blar med piltastene. ([#3883](https://github.com/navikt/pensjonsbrev/pull/3883))
+* Endringsvisningen viser riktig når et avsnitt deles. ([#4122](https://github.com/navikt/pensjonsbrev/pull/4122))
+* Lenken til brukeroversikten i Pesys er oppdatert. ([#3870](https://github.com/navikt/pensjonsbrev/pull/3870))
 
 === Ting vi jobber med
+* Bedre håndtering når brevmalen er endret etter at du startet på et utkast. Grunnlaget er lagt i [#4155](https://github.com/navikt/pensjonsbrev/pull/4155), [#4161](https://github.com/navikt/pensjonsbrev/pull/4161) og [#4203](https://github.com/navikt/pensjonsbrev/pull/4203).
+* E-blanketter og delautomatiske brev i Skribenten. Dette er foreløpig skjult bak et funksjonsflagg. ([#4062](https://github.com/navikt/pensjonsbrev/pull/4062), [#4090](https://github.com/navikt/pensjonsbrev/pull/4090))
 
-* Mulighet for å kommunisere og synliggjøre nyheter og ny funksjonalitet i Skribenten
-* Håndtering av endringer i brevmal i kladd til saksbehandler
 
-
-=== Mer robust innliming av tekst
-
-Håndteringen av innlimt tekst er forbedret, blant annet ved innliming i markert tekst, lister og tabeller. Det er også lagt til støtte for flere formater fra utklippstavlen. Målet er å redusere behovet for formatering når du limer inn tekst i brevet, men det er fortsatt viktig å kontrollere resultatet etter innliming.
-
-===  Tilgang til brevredigeringen med Tab
-Det er lagt til rette for å nå selve brevredigeringen med Tab-tasten. Dette gjør arbeidsflyten bedre for deg som navigerer uten mus.
-
-=== Bedre navigering i tabeller
-Pil opp og pil ned håndterer nå tabellceller med flere tekstlinjer bedre. Dette er særlig nyttig når du redigerer tabeller med tastaturet.
-
-=== Sperre mot utsending av brev mens PDF-en lastes
-
-Valgte brev kan ikke sendes mens PDF-ene fortsatt lastes inn. Dette er en ekstra sikkerhet for at riktig, oppdatert brevversjon er klar før utsending.
 
 == Juli–september 2026
 
