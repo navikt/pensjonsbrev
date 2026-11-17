@@ -1,29 +1,29 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArAutoDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArDto.BarnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArDto.BarnetilleggSerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArRedigerbarDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.InntektOgAldersovergangNesteArAutoDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.InntektOgAldersovergangNesteArDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.InntektOgAldersovergangNesteArDto.BarnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.InntektOgAldersovergangNesteArDto.BarnetilleggSerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.InntektOgAldersovergangNesteArRedigerbarDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
-fun createBunnfradragVedAldersovergangNesteArAutoDto() =
-    BunnfradragVedAldersovergangNesteArAutoDto(
-        data = createBunnfradragVedAldersovergangNesteArData(),
+fun createInntektOgAldersovergangNesteArAutoDto() =
+    InntektOgAldersovergangNesteArAutoDto(
+        data = createInntektOgAldersovergangNesteArData(),
     )
 
-fun createBunnfradragVedAldersovergangNesteArRedigerbarDto() =
-    BunnfradragVedAldersovergangNesteArRedigerbarDto(
+fun createInntektOgAldersovergangNesteArRedigerbarDto() =
+    InntektOgAldersovergangNesteArRedigerbarDto(
         saksbehandlerValg = lagSaksbehandlervalg(),
-        pesysData = BunnfradragVedAldersovergangNesteArRedigerbarDto.PesysData(
-            data = createBunnfradragVedAldersovergangNesteArData(),
+        pesysData = InntektOgAldersovergangNesteArRedigerbarDto.PesysData(
+            data = createInntektOgAldersovergangNesteArData(),
         ),
     )
 
-fun createBunnfradragVedAldersovergangNesteArData() =
-    BunnfradragVedAldersovergangNesteArDto(
+fun createInntektOgAldersovergangNesteArData() =
+    InntektOgAldersovergangNesteArDto(
         vedtakVirkFom = LocalDate.of(2027, 1, 1),
         gradertUforetrygd = true,
         nettoUforetrygd = Kroner(20000),

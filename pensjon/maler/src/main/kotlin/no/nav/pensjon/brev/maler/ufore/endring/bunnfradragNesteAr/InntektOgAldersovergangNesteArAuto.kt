@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArAutoDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArAutoDto.data
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.pe
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.vedtakVirkFom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.InntektOgAldersovergangNesteArAutoDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArAutoDto.data
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.pe
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.vedtakVirkFom
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -20,8 +20,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object BunnfradragVedAldersovergangNesteArAuto : AutobrevTemplate<BunnfradragVedAldersovergangNesteArAutoDto> {
-    override val kode = Pesysbrevkoder.AutoBrev.UT_BUNNFRADRAG_ALDERSOVERGANG_NESTE_AR_AUTO
+object InntektOgAldersovergangNesteArAuto : AutobrevTemplate<InntektOgAldersovergangNesteArAutoDto> {
+    override val kode = Pesysbrevkoder.AutoBrev.UT_INNTEKT_ALDERSOVERGANG_NESTE_AR_AUTO
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
@@ -38,7 +38,7 @@ object BunnfradragVedAldersovergangNesteArAuto : AutobrevTemplate<BunnfradragVed
             )
         }
         outline {
-            includePhrase(BunnfradragVedAldersovergangNesteAr.Outline(data))
+            includePhrase(InntektOgAldersovergangNesteAr.Outline(data))
         }
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe)
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, data.orienteringOmRettigheterUfoere)

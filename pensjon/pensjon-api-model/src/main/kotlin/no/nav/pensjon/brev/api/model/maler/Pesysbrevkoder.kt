@@ -51,7 +51,7 @@ object Pesysbrevkoder {
         UT_VEDTAK_OKT_FRIBELOP_2026,
         UT_EPS_ENDRING_I_BARNETILLEGG,
         UT_VEDTAK_OKT_BUNNFRADRAG_NESTE_AR_AUTO,
-        UT_BUNNFRADRAG_ALDERSOVERGANG_NESTE_AR_AUTO;
+        UT_INNTEKT_ALDERSOVERGANG_NESTE_AR_AUTO;
 
         override fun kode(): String = this.name
     }
@@ -123,7 +123,7 @@ object Pesysbrevkoder {
         UT_VEDTAK_REDUKSJONSPROSENT_2026_RED,
         UT_EPS_ENDRING_I_BARNETILLEGG_RED,
         UT_VEDTAK_OKT_BUNNFRADRAG_NESTE_AR_RED,
-        UT_BUNNFRADRAG_ALDERSOVERGANG_NESTE_AR_RED;
+        UT_INNTEKT_ALDERSOVERGANG_NESTE_AR_RED;
 
         override fun kode(): String = this.name
     }

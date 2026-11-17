@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
-data class BunnfradragVedAldersovergangNesteArDto(
+data class InntektOgAldersovergangNesteArDto(
     val vedtakVirkFom: LocalDate,
     val gradertUforetrygd: Boolean,
     val nettoUforetrygd: Kroner,
@@ -42,16 +42,16 @@ data class BunnfradragVedAldersovergangNesteArDto(
     )
 }
 
-data class BunnfradragVedAldersovergangNesteArAutoDto(
-    val data: BunnfradragVedAldersovergangNesteArDto
+data class InntektOgAldersovergangNesteArAutoDto(
+    val data: InntektOgAldersovergangNesteArDto
 ) : AutobrevData
 
-data class BunnfradragVedAldersovergangNesteArRedigerbarDto(
+data class InntektOgAldersovergangNesteArRedigerbarDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<BunnfradragVedAldersovergangNesteArRedigerbarDto.PesysData> {
+) : RedigerbarBrevdata<InntektOgAldersovergangNesteArRedigerbarDto.PesysData> {
     data class PesysData(
-        val data: BunnfradragVedAldersovergangNesteArDto,
+        val data: InntektOgAldersovergangNesteArDto,
     ) : FagsystemBrevdata
 }
 
