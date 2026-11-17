@@ -7,15 +7,19 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.KLAGE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.KONTAKTTELEFON_PENSJON
 import no.nav.pensjon.brev.alder.maler.felles.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
+import no.nav.pensjon.brev.alder.model.Sakstype
+import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageAfpPrivatDto
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.dineRettigheterOgMulighetTilAaKlageAfpPrivatDto.sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
 @TemplateModelHelpers
 val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
-    createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
+    createAttachment<LangBokmalNynorskEnglish, DineRettigheterOgMulighetTilAaKlageAfpPrivatDto>(
         title = {
             text(
                 bokmal { +"Rettighetene dine og mulighet til å klage " },
@@ -36,14 +40,23 @@ val vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat =
         paragraph {
             text(
                 bokmal { +"Hvis du mener vedtaket er feil, kan du klage innen 6 uker fra den datoen vedtaket kom fram til deg. " +
-                        "Dette følger av AFP-tilskottsloven § 17 andre ledd andre punktum, sammenholdt med folketrygdloven § 21-12. " +
-                        "Du finner skjema og informasjon på $KLAGE_URL." },
+                        "Dette følger av " },
                 nynorsk { +"Om du meiner vedtaket er feil, kan du klage innan 6 veker frå den datoen vedtaket har komme fram til deg. " +
-                        "Dette følgjer av AFP-tilskottslova § 17 andre ledd andre punktum, samanhalden med folketrygdlova § 21-12. " +
-                        "Du finn skjema og informasjon på $KLAGE_URL." },
+                        "Dette følgjer av " },
                 english { +"If you believe that the decision is incorrect, you may appeal within 6 weeks from the date on which this decision was delivered to you. " +
-                        "This follows from section 17, second paragraph, second sentence, of the AFP Subsidies Act, read in conjunction with section 21-12 of the National Insurance Act. " +
-                        "You will find the form and further information at $KLAGE_URL." },
+                        "This follows from " },
+            )
+            showIf(sakstype.equalTo(Sakstype.AFP_PRIVAT)) {
+                text(
+                    bokmal { +"AFP-tilskottsloven § 17 andre ledd andre punktum, sammenholdt med " },
+                    nynorsk { +"AFP-tilskottslova § 17 andre ledd andre punktum, samanhalden med " },
+                    english { +"section 17, second paragraph, second sentence, of the AFP Subsidies Act, read in conjunction with " },
+                )
+            }
+            text(
+                bokmal { +"folketrygdloven § 21-12. Du finner skjema og informasjon på $KLAGE_URL." },
+                nynorsk { +"folketrygdlova § 21-12. Du finn skjema og informasjon på $KLAGE_URL." },
+                english { +"section 21-12 of the National Insurance Act. You will find the form and further information at $KLAGE_URL." },
             )
         }
 

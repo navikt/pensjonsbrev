@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
+import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageAfpPrivatDto
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import java.time.LocalDate
 
@@ -16,4 +17,5 @@ data class AvslagAfpPrivatAutoDto(
     val kravMottattDato: LocalDate,
     // PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse[1]
     val begrunnelse: AvslagAfpPrivatDto.Begrunnelse,
+    val dineRettigheterOgMulighetTilAaKlageAfpPrivat: DineRettigheterOgMulighetTilAaKlageAfpPrivatDto,
 ) : AutobrevData

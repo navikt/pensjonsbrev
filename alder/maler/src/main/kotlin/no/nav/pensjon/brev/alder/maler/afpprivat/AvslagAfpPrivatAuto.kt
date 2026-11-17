@@ -58,6 +58,6 @@ object AvslagAfpPrivatAuto : AutobrevTemplate<AvslagAfpPrivatAutoDto> {
             )
             includePhrase(HarDuSpoersmaal.afpPrivat)
         }
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat)
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat, dineRettigheterOgMulighetTilAaKlageAfpPrivat)
     }
 }

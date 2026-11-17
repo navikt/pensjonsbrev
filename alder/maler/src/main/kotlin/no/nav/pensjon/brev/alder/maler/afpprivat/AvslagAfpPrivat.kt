@@ -79,6 +79,6 @@ object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
             )
             includePhrase(HarDuSpoersmaal.afpPrivat)
         }
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat)
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageAfpPrivat, pesysData.dineRettigheterOgMulighetTilAaKlageAfpPrivat)
     }
 }
