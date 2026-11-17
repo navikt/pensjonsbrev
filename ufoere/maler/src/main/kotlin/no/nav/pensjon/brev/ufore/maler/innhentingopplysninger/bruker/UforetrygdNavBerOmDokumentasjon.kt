@@ -90,7 +90,7 @@ object UforetrygdNavBerOmDokumentasjon : RedigerbarTemplate<EmptyRedigerbarBrevd
                 paragraph {
                     text(bokmal { +"Vi trenger:" })
                     list {
-                        item { text(bokmal { +"Dokumentasjon på din årlig inntekt i perioden " + fritekst("XX – XX") + " fra din arbeidsgiver eller skattemyndigheter." }) }
+                        item { text(bokmal { +"Dokumentasjon på din årlige inntekt i perioden " + fritekst("XX – XX") + " fra din arbeidsgiver eller skattemyndigheter." }) }
                         item { text(bokmal { +"Informasjon om nåværende arbeid: Hvor mange timer jobber du per uke? Hva er månedslønnen før skatt? Hva slags jobb har du?" }) }
                     }
                 }
