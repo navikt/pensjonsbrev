@@ -85,6 +85,7 @@ object UfoereTemplates : AllTemplates {
         TrukketKlage,
         UtsattKlagefrist,
         FlereOpplysningerGenerell,
+        UforetrygdNavBerOmDokumentasjon,
         OppgittSamboer,
         AntattDod,
         InnhentingAvOpplysninger,

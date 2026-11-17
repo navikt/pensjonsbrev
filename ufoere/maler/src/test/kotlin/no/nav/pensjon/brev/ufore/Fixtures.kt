@@ -92,6 +92,7 @@ object Fixtures : LetterDataFactory {
             VarselOmOktMinsteIFURedigerbar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             VarselOmLavereMinstesatsS::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             FlereOpplysningerGenerell::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            UforetrygdNavBerOmDokumentasjon::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             SoknadBarnetillegg::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             TrukketKlage::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             AvkallPaUforetrygd::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
