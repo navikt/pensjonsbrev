@@ -127,7 +127,7 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         return collectMatchedRenderedIndices(editedIds, renderedWithIds, lengths) { includeEdited(editedWithIds[it]) }
     }
 
-    private fun <T> longestCommonSubsequenceLengths(editedIds: List<T>, renderedIds: List<T>): Array<IntArray> {
+    private fun <T : Int?> longestCommonSubsequenceLengths(editedIds: List<T>, renderedIds: List<T>): Array<IntArray> {
         val lengths = Array(editedIds.size + 1) { IntArray(renderedIds.size + 1) }
         for (editedIndex in editedIds.indices.reversed()) {
             for (renderedIndex in renderedIds.indices.reversed()) {
