@@ -64,9 +64,9 @@ object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
     ) {
         title {
             text(
-                bokmal { +"Nav har avslått søknaden din om avtalefestet pensjon (AFP) i privat sektor. " },
-                nynorsk { +"Nav har avslått søknaden din om avtalefesta pensjon (AFP) i privat sektor. " },
-                english { +"Nav has declined your application for contractual pension (AFP) in the private sector. " },
+                bokmal { +"Nav har avslått søknaden din om avtalefestet pensjon (AFP) i privat sektor." },
+                nynorsk { +"Nav har avslått søknaden din om avtalefesta pensjon (AFP) i privat sektor." },
+                english { +"Nav has declined your application for contractual pension (AFP) in the private sector." },
             )
         }
 
