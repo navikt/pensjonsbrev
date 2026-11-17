@@ -86,6 +86,6 @@ object NySivilstand : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
 enum class ArsakNySivilstand(override val displayText: String) : SaksbehandlerValgEnum {
     NY_SIVILSTAND("Ny sivilstand"),
-    EKTEFELLE_UTLAND("Ektefelle bo i utlandet"),
+    EKTEFELLE_UTLAND("Ektefelle bor i utlandet"),
 }
 
