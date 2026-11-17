@@ -258,13 +258,14 @@ object OktBunnfradragNesteAr {
                     }
                 }
                 includePhrase(Ufoeretrygd.MeldeFraOmEndringer(vedleggDineRettigheterOgPlikterUfoere))
-                title1 {
-                    text(
-                        bokmal { +"Slik beregner vi fribeløp og bunnfradrag" },
-                        nynorsk { +"Slik bereknar vi fribeløp og botnfrådrag" },
-                    )
-                }
+
                 showIf(fribelopUtvikling.kategori.equalTo(FRIBELOP_1G_FRA_JAN)) {
+                    title1 {
+                        text(
+                            bokmal { +"Slik beregner vi fribeløp og bunnfradrag" },
+                            nynorsk { +"Slik bereknar vi fribeløp og botnfrådrag" },
+                        )
+                    }
                     paragraph {
                         ifNotNull(fribelopUtvikling.fribelopsokning) { fribelopsokning ->
                             showIf(fribelopsokning._2arEtterGradsokning) {
@@ -282,6 +283,12 @@ object OktBunnfradragNesteAr {
                     }
                     includePhrase(GrunnbelopFrase(grunnbelop))
                 }.orShowIf(fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_TIL_04G, FRIBELOP_04G_TIL_1G_TIL_04G, FRIBELOP_04G_TIL_1G)) {
+                    title1 {
+                        text(
+                            bokmal { +"Slik beregner vi fribeløp og bunnfradrag" },
+                            nynorsk { +"Slik bereknar vi fribeløp og botnfrådrag" },
+                        )
+                    }
                     paragraph {
                         text(
                             bokmal { +"Når fribeløpet endres i løpet av kalenderåret, beregnes det årlige bunnfradraget ut fra periodene du har med ulike fribeløp. Ditt fribeløp i " + vedtakVirkFom.year.format() + " blir " + fribelop.format() + ". Se tabellen under. " },
