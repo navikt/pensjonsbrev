@@ -106,7 +106,7 @@ Attestanten kan enklere se hvilke endringer saksbehandler har gjort i brevet. At
 * tekst som er slettet, markert i rosa med gjennomstreking
 * eller begge samtidig
 
-image::attestering-begge-endringer.png[]
+image::attestering-endringer-attestant.png[]
 
 
 Viktig å vite:
