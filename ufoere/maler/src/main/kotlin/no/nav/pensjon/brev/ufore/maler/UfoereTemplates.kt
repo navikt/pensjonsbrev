@@ -96,6 +96,7 @@ object UfoereTemplates : AllTemplates {
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
         HvilendeRettMidlertidigOppHoer,
+        Honnorkort,
         VarselOmLavereMinstesatsS,
         VarselOmLavereReduksjonsprosentRedigerbar,
         VarselOmOktMinsteIFURedigerbar,
