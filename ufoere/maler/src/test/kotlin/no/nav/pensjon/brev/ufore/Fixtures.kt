@@ -105,6 +105,7 @@ object Fixtures : LetterDataFactory {
             BrukerLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             LegeLegeerklaering::class -> lagBrukersNavnRedigerbarBrevdata() as T
             HvilendeRettMidlertidigOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            Honnorkort::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             HvilendeRettOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             HvilendeRettInfo4Aar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             HvilendeRettVarselOpphoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
