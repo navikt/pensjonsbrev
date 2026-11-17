@@ -232,7 +232,7 @@ class UpdateEditedAttachmentTest {
         )
         val edited = editedAttachment {
             paragraph(id = 1) { literal(id = 11, text = "Uendret") }
-            paragraph(id = 2, newFromTemplate = true) { literal(id = 21, text = "Var ny", editedText = "Redigert") }
+            paragraph(id = 2, status = Edit.Block.Status.NEW_FROM_TEMPLATE) { literal(id = 21, text = "Var ny", editedText = "Redigert") }
         }
 
         assertEquals(edited, edited.updateEditedAttachment(rendered, previousRender = rendered.toEdit()))

@@ -889,7 +889,7 @@ class UpdateRenderedLetterTest {
                 literal(id = 11, text = "en literal")
                 variable(id = 12, text = "oppdatert v1")
             }
-            paragraph(id = 2, missingFromTemplate = true) {
+            paragraph(id = 2, status = Edit.Block.Status.MISSING_FROM_TEMPLATE) {
                 variable(id = 12, text = "oppdatert v1")
                 literal(id = 21, text = "hei", editedText = "heisann")
             }
@@ -1393,7 +1393,7 @@ class UpdateRenderedLetterTest {
         )
         val edited = editedLetter {
             paragraph(id = 1) { literal(id = 11, text = "Uendret") }
-            paragraph(id = 2, newFromTemplate = true) { literal(id = 21, text = "Var ny", editedText = "Redigert") }
+            paragraph(id = 2, status = Edit.Block.Status.NEW_FROM_TEMPLATE) { literal(id = 21, text = "Var ny", editedText = "Redigert") }
         }
 
         assertEquals(edited, edited.updateEditedLetter(rendered, previousRender = rendered.toEdit()))
