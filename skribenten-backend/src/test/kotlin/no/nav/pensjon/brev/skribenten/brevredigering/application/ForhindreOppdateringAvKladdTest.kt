@@ -120,7 +120,11 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
 
         assertThat(withPrincipal(saksbehandler1Principal) {
             hentRedigerbareVedlegg(HentRedigerbareVedleggHandler.Request(brevId = brev.info.id, saksId = sak1.saksId))
-        }).isSuccess()
+        }).isSuccess { vedlegg ->
+            assertThat(vedlegg.associate { it.vedleggId to it.kanFletteEndringer }).isEqualTo(
+                mapOf(uendretVedlegg to true, endretVedlegg to false, vedleggUtenHash to true)
+            )
+        }
 
         assertVedleggFlettetPerVedlegg(brev.info.id, nyeMaler)
     }
