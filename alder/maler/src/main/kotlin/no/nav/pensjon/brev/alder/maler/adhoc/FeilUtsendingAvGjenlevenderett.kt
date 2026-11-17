@@ -48,7 +48,7 @@ object FeilUtsendingAvGjenlevenderett : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { +"Vi beklager feilen!" },
+                    bokmal { +"Vi beklager feilen! Dette er en test endring." },
                     nynorsk { +"Vi orsakar feilen!" },
                     english { +"We apologise for the error." }
                 )
