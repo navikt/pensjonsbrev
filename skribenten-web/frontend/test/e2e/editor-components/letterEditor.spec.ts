@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { type EditedLetter, ElementTags, type LiteralValue } from "~/types/brevbakerTypes";
+import { type EditedLetter, ElementTags, FontType, type LiteralValue } from "~/types/brevbakerTypes";
 import { baseSakspart, baseSignatur, editorInfo } from "~test/e2e/support/editorFixtures";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse, editedLetter } from "~test/support/brevFixtures";
@@ -12,6 +12,7 @@ import {
   paragraph,
   title1,
   title2,
+  title3,
 } from "~test/support/letterEditorTestUtils";
 
 function makeLiteral(id: number, parentId: number | null, text: string) {
@@ -533,6 +534,117 @@ test.describe("LetterEditor", () => {
       await expect(page.getByText("Test Testeson")).toBeVisible();
       await expect(page.getByText("Saken gjelder:")).not.toBeVisible();
     });
+  });
+});
+
+test.describe("LetterEditor copy and paste within the editor", () => {
+  async function setupHeadingAndEmptyLine(
+    page: Page,
+    heading: ReturnType<typeof title1 | typeof title2 | typeof title3>,
+  ) {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(page, makeBrevResponse(editedLetter({ blocks: [heading, paragraph([_literal("")])] })));
+    await navigateToEditor(page);
+  }
+
+  async function copyHeadingText(page: Page, className: string, range?: { start: number; end: number }) {
+    await page.locator(`.editor-surface > .${className} > [data-literal-index]`).evaluate((element, offsets) => {
+      const selectionRange = document.createRange();
+      if (offsets) {
+        selectionRange.setStart(element.firstChild!, offsets.start);
+        selectionRange.setEnd(element.firstChild!, offsets.end);
+      } else {
+        selectionRange.selectNodeContents(element);
+      }
+      globalThis.getSelection()!.removeAllRanges();
+      globalThis.getSelection()!.addRange(selectionRange);
+    }, range);
+    await page.keyboard.press("ControlOrMeta+c");
+  }
+
+  async function pasteIntoEmptyLine(page: Page) {
+    const emptyLine = page.locator(".editor-surface > .PARAGRAPH:last-child > [data-literal-index]");
+    await emptyLine.focus();
+    await expect(emptyLine).toBeFocused();
+    await page.keyboard.press("ControlOrMeta+v");
+  }
+
+  for (const [className, heading] of [
+    ["TITLE1", title1(_literal("Knirkende stoler i rom 4A"))],
+    ["TITLE2", title2(_literal("Knirkende stoler i rom 4A"))],
+    ["TITLE3", title3(_literal("Knirkende stoler i rom 4A"))],
+  ] as const) {
+    test(`a whole ${className} copied on its own pastes as the same heading`, async ({ page }) => {
+      await setupHeadingAndEmptyLine(page, heading);
+      await copyHeadingText(page, className);
+      await pasteIntoEmptyLine(page);
+
+      await expect(page.locator(`.editor-surface > .${className}`)).toHaveCount(2);
+      await expect(page.locator(`.editor-surface > .${className}`).nth(1)).toHaveText("Knirkende stoler i rom 4A");
+    });
+  }
+
+  test("a whole heading missing from the template still pastes as a heading", async ({ page }) => {
+    await setupHeadingAndEmptyLine(page, {
+      ...title2(_literal("Knirkende stoler i rom 4A")),
+      missingFromTemplate: true,
+    });
+    await expect(page.getByRole("button", { name: "Behold" })).toBeVisible();
+    await copyHeadingText(page, "TITLE2");
+    await pasteIntoEmptyLine(page);
+
+    await expect(page.locator(".editor-surface > .TITLE2")).toHaveCount(2);
+    await expect(page.locator(".editor-surface > .TITLE2").nth(1)).toHaveText("Knirkende stoler i rom 4A");
+  });
+
+  test("part of a heading pastes as plain paragraph text", async ({ page }) => {
+    await setupHeadingAndEmptyLine(page, title1(_literal("Knirkende stoler i rom 4A")));
+    await copyHeadingText(page, "TITLE1", { start: 0, end: 9 });
+    await pasteIntoEmptyLine(page);
+
+    await expect(page.locator(".editor-surface > .TITLE1")).toHaveCount(1);
+    const pasted = page.locator(".editor-surface > .PARAGRAPH").getByText("Knirkende", { exact: true });
+    await expect(pasted).toHaveCSS("font-weight", "400");
+  });
+
+  test("a heading and a paragraph with bold text keep their structure and formatting", async ({ page }) => {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [
+            title2(_literal("Knirkende stoler i rom 4A")),
+            paragraph([_literal("Noen stoler "), { ..._literal("knirker"), fontType: FontType.BOLD }, _literal(".")]),
+            paragraph([_literal("")]),
+          ],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+
+    await page.evaluate(() => {
+      const literals = document.querySelectorAll(".editor-surface [data-literal-index]");
+      const range = document.createRange();
+      range.setStart(literals[0].firstChild!, 0);
+      range.setEnd(literals[3].firstChild!, 1);
+      globalThis.getSelection()!.removeAllRanges();
+      globalThis.getSelection()!.addRange(range);
+    });
+    await page.keyboard.press("ControlOrMeta+c");
+
+    const emptyParagraph = page.locator(".editor-surface > .PARAGRAPH:nth-child(3) > [data-literal-index]");
+    await emptyParagraph.focus();
+    await expect(emptyParagraph).toBeFocused();
+    await page.keyboard.press("ControlOrMeta+v");
+
+    const pastedHeading = page.locator(".editor-surface > .TITLE2").nth(1);
+    await expect(pastedHeading).toHaveText("Knirkende stoler i rom 4A");
+    const sourceParagraph = page.locator(".editor-surface > .TITLE2 + .PARAGRAPH").first();
+    const pastedParagraph = page.locator(".editor-surface > .TITLE2 + .PARAGRAPH").nth(1);
+    await expect(pastedParagraph).toHaveText((await sourceParagraph.textContent()) ?? "");
+    await expect(pastedParagraph.getByText("knirker", { exact: true })).toHaveCSS("font-weight", "700");
+    await expect(pastedParagraph.getByText("Noen stoler", { exact: true })).toHaveCSS("font-weight", "400");
   });
 });
 
