@@ -84,7 +84,38 @@ Attestant må lukke brevet hos seg. Vent litt, og prøv deretter å åpne brevet
 
 == Attestering
 === Hvordan attesterer jeg brevet?
-For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Brevet åpnes fra dokumentoversikt, og har status «under arbeid (attestering)».
+For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Du kan ikke attestere et brev du selv har opprettet.
+
+1. Åpne brevet fra dokumentoversikten. Brevet har status  «under arbeid (attestering)».
+2. Les gjennom brevet og gjør eventuelle endringer i brevteksten. Tekstvalgene i sidepanelet kan du se, men ikke endre.
+Dersom brevet har redigerbare vedlegg, vises fanen «Vedlegg». Åpne fanen, velg vedlegget og les gjennom og eventuelt rediger teksten.
+3. Legg inn underskriften din i feltet «Underskrift» i venstremenyen.
+4. Klikk på «Fortsett» for å åpne forhåndsvisningen.
+5. Kontroller PDF-en. Hvis noe må endres, velger du «Tilbake til redigering».
+6. Klikk på «Send brev» og bekreft med «Ja, send brevet».
+7. Kontroller kvitteringen. Ved lokalprint må du også åpne PDF-en og skrive ut brevet.
+
+
+**Merk:** Brevet sendes ikke når du legger inn underskriften din.
+
+=== Hvilke endringer er gjort i brevet?
+
+Attestanten kan enklere se hvilke endringer saksbehandler har gjort i brevet. Attestanten kan velge å vise:
+
+* tekst som er lagt til, markert i grønt
+* tekst som er slettet, markert i rosa med gjennomstreking
+* eller begge samtidig
+
+image::attestering-endringer-saksbehandler.png[]
+
+
+Viktig å vite:
+
+* Endringsmarkeringene er kun en visning i redigeringsmodus, og vises ikke i det endelige brevet
+* Endringsmarkeringene forsvinner når brevet redigeres
+* Endringsmarkeringene viser tekst som er tatt inn eller ut av brevet, men ikke endringer i formatering
+* Dersom det ikke er gjort noen endringer, vises ikke endringsmarkeringer.
+* Hvis endringsmarkering ikke er tilgjengelig, kan brevet fortsatt gjennomgås og attesteres
 
 === Hvordan legger jeg til signaturen min?
 Du legger til signaturen din ved å klikke på underskrift i venstremenyen, og skriver den inn. Den vil da dukke opp på venstre side av saksbehandlers underskrift.
