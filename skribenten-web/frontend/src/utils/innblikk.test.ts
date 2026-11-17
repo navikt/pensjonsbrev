@@ -35,7 +35,7 @@ afterEach(() => {
     node.remove();
   }
   globalThis.addSkribentenInnblikkIdentity = undefined;
-  globalThis.umami = undefined;
+  globalThis.sporing = undefined;
 });
 
 function configure() {
@@ -126,12 +126,14 @@ describe("oppstart av Innblikk", () => {
     configure();
     getCookie.mockReturnValue(id);
     const append = vi.spyOn(document.head, "appendChild");
+    let callbackResult: ReturnType<NonNullable<typeof globalThis.addSkribentenInnblikkIdentity>> | undefined;
     append.mockImplementationOnce((node) => {
-      expect(globalThis.addSkribentenInnblikkIdentity?.("event", payload).id).toBe(id);
+      callbackResult = globalThis.addSkribentenInnblikkIdentity?.("event", payload);
       return node;
     });
 
     initInnblikk();
+    expect(callbackResult).toMatchObject({ id });
     const script = append.mock.calls[0][0] as HTMLScriptElement;
     expect(script.src).toBe("https://cdn.nav.no/team-researchops/sporing/sporing.js");
     expect(script.dataset).toMatchObject({
@@ -163,7 +165,7 @@ describe("oppstart av Innblikk", () => {
     initInnblikk();
     trackEvent("pesys feil");
     const track = vi.fn();
-    globalThis.umami = { track };
+    globalThis.sporing = { identify: vi.fn(), track };
     document.getElementById("skribenten-innblikk-sporing")?.dispatchEvent(new Event(event));
     if (event === "load") {
       expect(track).toHaveBeenCalledWith("pesys feil", undefined);
@@ -188,7 +190,7 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     data.feiltype = "endret";
     trackEvent("pesys omdirigering");
     const track = vi.fn();
-    globalThis.umami = { track };
+    globalThis.sporing = { identify: vi.fn(), track };
 
     script.dispatchEvent(new Event("load"));
     script.dispatchEvent(new Event("load"));
@@ -206,7 +208,7 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     trackEvent("pesys feil");
     initInnblikk();
     const track = vi.fn();
-    globalThis.umami = { track };
+    globalThis.sporing = { identify: vi.fn(), track };
     document.getElementById("skribenten-innblikk-sporing")?.dispatchEvent(new Event("load"));
     expect(track).not.toHaveBeenCalled();
   });
@@ -215,7 +217,7 @@ describe("hendelser under lasting av sporingsskriptet", () => {
     trackEvent("pesys feil");
     const script = startLoading();
     const track = vi.fn();
-    globalThis.umami = { track };
+    globalThis.sporing = { identify: vi.fn(), track };
     script.dispatchEvent(new Event("load"));
     trackEvent("brev sendt");
     expect(track.mock.calls).toEqual([["brev sendt", undefined]]);
@@ -227,8 +229,61 @@ describe("hendelser under lasting av sporingsskriptet", () => {
       trackEvent("pesys feil");
     }
     const track = vi.fn();
-    globalThis.umami = { track };
+    globalThis.sporing = { identify: vi.fn(), track };
     script.dispatchEvent(new Event("load"));
     expect(track).toHaveBeenCalledTimes(100);
+  });
+
+  it("identifiserer med cookie-UUID før køen sendes etter skriptlasting", () => {
+    const script = startLoading();
+    getCookie.mockReturnValue(id);
+    trackEvent("pesys feil");
+    const identify = vi.fn();
+    const track = vi.fn();
+    globalThis.sporing = { identify, track };
+
+    script.dispatchEvent(new Event("load"));
+    expect(identify).toHaveBeenCalledWith(id);
+    expect(track).toHaveBeenCalledWith("pesys feil", undefined);
+    expect(identify.mock.invocationCallOrder[0]).toBeLessThan(track.mock.invocationCallOrder[0]);
+  });
+
+  it("identifiserer endret cookie før hendelsen og hopper over gjentatt identifikasjon", () => {
+    configure();
+    getCookie.mockReturnValue(id);
+    const identify = vi.fn();
+    globalThis.sporing = { identify, track: vi.fn() };
+    initInnblikk();
+
+    const callback = globalThis.addSkribentenInnblikkIdentity;
+    expect(callback?.("event", payload)).toMatchObject({ id });
+    expect(callback?.("event", payload)).toMatchObject({ id });
+    expect(identify).toHaveBeenCalledOnce();
+
+    getCookie.mockReturnValue("changed-id");
+    expect(callback?.("event", payload)).toMatchObject({ id: "changed-id" });
+    expect(identify.mock.calls).toEqual([[id], ["changed-id"]]);
+  });
+
+  it("sender ikke identify med en UUID som ikke kunne lagres", () => {
+    configure();
+    getCookie.mockReturnValue(undefined);
+    const identify = vi.fn();
+    globalThis.sporing = { identify, track: vi.fn() };
+    initInnblikk();
+
+    globalThis.addSkribentenInnblikkIdentity?.("event", payload);
+    expect(identify).not.toHaveBeenCalled();
+  });
+
+  it("identifiserer ikke på nytt fra en identify-hendelse", () => {
+    configure();
+    getCookie.mockReturnValue(id);
+    const identify = vi.fn();
+    globalThis.sporing = { identify, track: vi.fn() };
+    initInnblikk();
+
+    expect(globalThis.addSkribentenInnblikkIdentity?.("identify", payload)).toMatchObject({ id });
+    expect(identify).not.toHaveBeenCalled();
   });
 });

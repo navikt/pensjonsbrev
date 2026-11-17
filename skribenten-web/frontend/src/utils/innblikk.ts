@@ -1,11 +1,13 @@
 import { addMonths, startOfMonth } from "date-fns";
 import Cookies from "js-cookie";
 
-interface UmamiTracker {
-  track: (eventName: string, eventData?: Record<string, string | number | boolean>) => void;
+/** API-et sporingsskriptet til Innblikk eksponerer som `globalThis.sporing`. */
+interface SporingApi {
+  track: (eventName: string, eventData?: Record<string, string | number | boolean>) => void | Promise<void>;
+  identify: (id: string, data?: Record<string, string | number | boolean>) => void | Promise<void>;
 }
 
-export type UmamiEventName =
+export type InnblikkEventName =
   | "attestering blokkert"
   | "brev attestert"
   | "brev distribusjonstype endret"
@@ -29,7 +31,7 @@ export type UmamiEventName =
   | "blokk slettet"
   | "diff modus endret";
 
-export interface UmamiEventData {
+export interface InnblikkEventData {
   [key: string]: string | number | boolean | undefined;
 }
 
@@ -47,7 +49,7 @@ type InnblikkPayload = {
 };
 
 declare global {
-  var umami: UmamiTracker | undefined;
+  var sporing: SporingApi | undefined;
   var addSkribentenInnblikkIdentity: ((type: string, payload: InnblikkPayload) => InnblikkPayload) | undefined;
 }
 
@@ -56,7 +58,9 @@ const SCRIPT_ID = "skribenten-innblikk-sporing";
 const SHARED_DOMAINS = ["intern.nav.no", "dev.nav.no"];
 
 let trackerLoading = false;
-const pendingEvents: { name: UmamiEventName; data?: UmamiEventData }[] = [];
+let identifiedSporing: SporingApi | undefined;
+let identifiedId: string | undefined;
+const pendingEvents: { name: InnblikkEventName; data?: InnblikkEventData }[] = [];
 const MAX_PENDING_EVENTS = 100;
 
 function finishTrackerLoading(success: boolean): void {
@@ -69,18 +73,16 @@ function finishTrackerLoading(success: boolean): void {
   }
 }
 
-const isUmamiAvailable = (): boolean =>
-  typeof globalThis.window !== "undefined" &&
-  globalThis.umami !== undefined &&
-  typeof globalThis.umami.track === "function";
+const isSporingAvailable = (): boolean =>
+  typeof globalThis.window !== "undefined" && typeof globalThis.sporing?.track === "function";
 
-export const trackEvent = (eventName: UmamiEventName, eventData?: UmamiEventData): void => {
-  if (!isUmamiAvailable()) {
+export const trackEvent = (eventName: InnblikkEventName, eventData?: InnblikkEventData): void => {
+  if (!isSporingAvailable()) {
     if (trackerLoading && pendingEvents.length < MAX_PENDING_EVENTS) {
       pendingEvents.push({ name: eventName, data: eventData ? { ...eventData } : undefined });
     }
     if (import.meta.env.DEV) {
-      console.info("[Umami]", eventName, eventData);
+      console.info("[Innblikk]", eventName, eventData);
     }
     return;
   }
@@ -93,10 +95,10 @@ export const trackEvent = (eventName: UmamiEventName, eventData?: UmamiEventData
         >)
       : undefined;
 
-    globalThis.umami?.track(eventName, cleanedData);
+    void globalThis.sporing?.track(eventName, cleanedData);
   } catch (error) {
     if (import.meta.env.DEV) {
-      console.warn("[Umami] tracking failed:", error);
+      console.warn("[Innblikk] tracking failed:", error);
     }
   }
 };
@@ -131,6 +133,36 @@ export function beforeSend(_type: string, payload: InnblikkPayload): InnblikkPay
   return { ...payload, id: getOrCreateUserId() };
 }
 
+/**
+ * Kaller `sporing.identify` når cookie-UUID-en ikke allerede er identitet for skriptet.
+ * Skriptet holder identiteten kun i minnet, så den settes på nytt ved hver sidelasting og når cookien endres.
+ */
+function identify(id: string): void {
+  const sporing = globalThis.sporing;
+  if (typeof sporing?.identify !== "function" || (sporing === identifiedSporing && id === identifiedId)) {
+    return;
+  }
+  identifiedSporing = sporing;
+  identifiedId = id;
+  try {
+    void sporing.identify(id);
+  } catch (error) {
+    identifiedSporing = undefined;
+    identifiedId = undefined;
+    if (import.meta.env.DEV) {
+      console.warn("[Innblikk] identify failed:", error);
+    }
+  }
+}
+
+function addIdentityBeforeSend(type: string, payload: InnblikkPayload): InnblikkPayload {
+  const result = beforeSend(type, payload);
+  if (type !== "identify" && result.id) {
+    identify(result.id);
+  }
+  return result;
+}
+
 export function initInnblikk(): void {
   const websiteId = document.querySelector<HTMLMetaElement>('meta[name="umami-website-id"]')?.content;
   const hostUrl = document.querySelector<HTMLMetaElement>('meta[name="umami-host-url"]')?.content;
@@ -138,7 +170,7 @@ export function initInnblikk(): void {
     return;
   }
 
-  globalThis.addSkribentenInnblikkIdentity = beforeSend;
+  globalThis.addSkribentenInnblikkIdentity = addIdentityBeforeSend;
   if (document.getElementById(SCRIPT_ID)) {
     return;
   }
@@ -150,11 +182,23 @@ export function initInnblikk(): void {
   script.dataset.websiteId = websiteId;
   script.dataset.hostUrl = hostUrl;
   script.dataset.beforeSend = "addSkribentenInnblikkIdentity";
-  script.addEventListener("load", () => finishTrackerLoading(true), { once: true });
+  script.addEventListener(
+    "load",
+    () => {
+      const id = getOrCreateUserId();
+      if (id) {
+        identify(id);
+      }
+      finishTrackerLoading(true);
+    },
+    { once: true },
+  );
   script.addEventListener(
     "error",
     () => {
       finishTrackerLoading(false);
+      identifiedSporing = undefined;
+      identifiedId = undefined;
       script.remove();
     },
     { once: true },
