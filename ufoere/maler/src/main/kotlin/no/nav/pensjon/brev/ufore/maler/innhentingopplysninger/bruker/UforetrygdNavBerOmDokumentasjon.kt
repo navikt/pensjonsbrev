@@ -59,7 +59,7 @@ object UforetrygdNavBerOmDokumentasjon : RedigerbarTemplate<EmptyRedigerbarBrevd
                 paragraph {
                     text(bokmal { +"Vi trenger derfor:" })
                     list {
-                        item { text(bokmal { +"Dokumentasjon på arbeidsforhold i Norge i perioden" + fritekst("XX–XX") + ", med eksakt start- og sluttdato (f.eks. arbeidsattest, sluttattest, lønns- og trekkoppgave)." }) }
+                        item { text(bokmal { +"Dokumentasjon på arbeidsforhold i Norge i perioden " + fritekst("XX–XX") + ", med eksakt start- og sluttdato (f.eks. arbeidsattest, sluttattest, lønns- og trekkoppgave)." }) }
                         item { text(bokmal { +"Dato for når du flyttet fra Norge (dag, måned og år)" }) }
                     }
                 }
