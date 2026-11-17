@@ -4838,6 +4838,7 @@ export interface components {
         /** ApiBrevResponse */
         ApiBrevResponse: {
             info: components["schemas"]["ApiBrevInfo"];
+            kanFletteEndringer: boolean;
             propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
             redigertBrev: components["schemas"]["EditLetter"];
             redigertBrevHash: string;

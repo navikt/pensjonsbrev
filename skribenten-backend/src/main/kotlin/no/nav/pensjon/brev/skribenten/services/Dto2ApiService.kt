@@ -35,6 +35,7 @@ class Dto2ApiService(
             saksbehandlerValg = brevredigering.saksbehandlerValg,
             propertyUsage = brevredigering.propertyUsage,
             valgteVedlegg = brevredigering.valgteVedlegg,
+            kanFletteEndringer = brevredigering.kanFletteEndringer,
         )
 
     suspend fun toApiV2(brevredigering: Dto.Brevredigering): ApiV2.BrevResponse =
