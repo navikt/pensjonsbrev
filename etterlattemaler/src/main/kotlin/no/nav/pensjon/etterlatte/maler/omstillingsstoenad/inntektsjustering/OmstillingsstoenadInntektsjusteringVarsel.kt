@@ -41,9 +41,9 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
             outline {
                 paragraph {
                     text(
-                        bokmal { +"Dette er et forhåndsvarsel om at vi vil fatte et nytt vedtak om omstillingsstønad fra 1. januar " + data.inntektsaar.format() + ", fordi omstillingsstønaden din skal beregnes ut fra inntekten du forventer å ha neste kalenderår." },
-                        nynorsk { +"Dette er eit førehandsvarsel om at vi vil fatte eit nytt vedtak om omstillingsstønad frå 1. januar " + data.inntektsaar.format() + ", då omstillingsstønaden din skal reknast ut med utgangspunkt i inntekta du forventar å ha neste kalenderår." },
-                        english { +"This is an advance notice that we will be passing a new decision regarding adjustment allowance from 1 January " + data.inntektsaar.format() + ", as your adjustment allowance will be calculated based on the income you are expecting in the next calendar year." },
+                        bokmal { +"Vi varsler deg om at vi vil fatte et nytt vedtak om omstillingsstønad fra 1. januar " + data.inntektsaar.format() + ". Det er fordi omstillingsstønaden skal beregnes ut fra inntekten du forventer å ha i " + data.inntektsaar.format() + "." },
+                        nynorsk { +"Vi varslar deg om at vi vil fatte eit nytt vedtak om omstillingsstønad frå 1. januar " + data.inntektsaar.format() + ". Grunnen er at omstillingsstønaden skal reknast ut med utgangspunkt i inntekta du forventar å ha i " + data.inntektsaar.format() + "." },
+                        english { +"We would like to inform you that we will be making a new decision regarding your adjustment allowance with effect from 1 January " + data.inntektsaar.format() + ". This is because the adjustment allowance will be calculated based on the income you are expecting to receive in " + data.inntektsaar.format() + "." },
                     )
                 }
 
@@ -56,35 +56,28 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
                 }
                 paragraph {
                     text(
-                        bokmal { +"Vi forhåndsvarsler deg slik at du kan sjekke om beregningen av omstillingsstønaden din fra 1. januar " + data.inntektsaar.format() + " er korrekt. Dette er en foreløpig beregning som vi har gjort på bakgrunn av opplysningene vi har om inntekten din i år." },
-                        nynorsk { +"Vi varslar deg på førehand, slik at du kan sjekke at utrekninga av omstillingsstønaden din frå 1. januar " + data.inntektsaar.format() + " stemmer. Dette er ei førebels utrekning som vi har gjort på bakgrunn av opplysningane vi har om inntekta di i år." },
-                        english { +"We notify you in advance so that you can check whether the calculation of your adjustment allowance from 1 January " + data.inntektsaar.format() + " is correct. This is a preliminary calculation, based on the information we hold about your income this year." },
+                        bokmal { +"Vi ber deg sjekke om beregningen av omstillingsstønaden din fra 1. januar " + data.inntektsaar.format() + " er riktig. Beregningen er foreløpig og basert på opplysningene vi har om inntekten din i år." },
+                        nynorsk { +"Vi ber deg sjekke at utrekninga av omstillingsstønaden din frå 1. januar " + data.inntektsaar.format() + " stemmer. Utrekninga er førebels og på bakgrunn av opplysningane vi har om inntekta di i år." },
+                        english { +"Please check that the calculation of your adjustment allowance from 1 January " + data.inntektsaar.format() + " is correct. This is a preliminary calculation, based on the information we hold about your income this year." },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du kan se hvordan vi har beregnet omstillingsstønaden din i vedlegg til «Utkast – Vedtak om omstillingsstønad fra " + data.virkningstidspunkt.format() + "»." },
+                        bokmal { +"Du finner beregningen i vedlegget «Utkast – Vedtak om omstillingsstønad fra " + data.virkningstidspunkt.format() + "»." },
                         nynorsk { +"I vedlegget «Utkast – Vedtak om omstillingsstønad frå " + data.virkningstidspunkt.format() + "» kan du sjå korleis vi har rekna ut omstillingsstønaden din." },
                         english { +"You can see how we have calculated your adjustment allowance in the attachment to «Draft document – Decision regarding adjustment allowance from " + data.virkningstidspunkt.format() + "»." },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Meld fra til oss hvis du forventer en annen inntekt neste år enn det som er lagt til grunn i vedlegget. Du får da et nytt vedtak med bakgrunn i de nye opplysningene du gir oss." },
-                        nynorsk { +"Meld frå til oss dersom du forventar ei anna inntekt neste år enn den som er lagt til grunn i vedlegget. Du får då eit nytt vedtak basert på dei nye opplysningane du gir oss." },
-                        english { +"Notify us if or you are expecting to earn a different income next year than what has been applied as a basis in the attachment. You will then receive a new decision based on the new information you provide." },
+                        bokmal { +"Hvis du forventer en annen inntekt neste år enn det som er lagt til grunn i vedlegget, må du gi oss beskjed. Vi vil da fatte et nytt vedtak på bakgrunn av opplysningen du sender inn. Hvis inntekten din ikke vil endre seg neste år, trenger du ikke melde fra til oss." },
+                        nynorsk { +"Meld frå til oss dersom du forventar ei anna inntekt neste år enn den som er lagt til grunn i vedlegget. Du får då eit nytt vedtak basert på dei nye opplysningane du gir oss. Dersom du ikkje reknar med at inntekta di vil endre seg neste år, treng du ikkje melde frå til oss." },
+                        english { +"Notify us if or you are expecting to earn a different income next year than what has been applied as a basis in the attachment. You will then receive a new decision based on the new information you provide. If you believe that your income will not change next year, you do not need to notify us." },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Om du mener inntekten din ikke vil endres neste år, trenger du ikke melde fra til oss." },
-                        nynorsk { +"Dersom du ikkje reknar med at inntekta di vil endre seg neste år, treng du ikkje melde frå til oss." },
-                        english { +"If you believe that your income will not change next year, you do not need to notify us." },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Hvis du ikke har gitt oss nye opplysninger eller innsigelser til «Utkast – Vedtak om omstillingsstønad fra " + data.virkningstidspunkt.format() + "» som er vedlagt, vil vedlegget anses som et vedtak fra 1. januar " + data.inntektsaar.format() + ". Du vil da ikke motta et nytt vedtaksbrev." },
+                        bokmal { +"Hvis vi ikke hører fra deg, vil vedlagte «Utkast – Vedtak om omstillingsstønad fra " + data.virkningstidspunkt.format() + "» bli vedtaket ditt fra 1. januar " + data.inntektsaar.format() + ". Du vil da ikke motta et nytt vedtaksbrev." },
                         nynorsk { +"Dersom du ikkje har nye opplysningar eller innvendingar til «Utkast – Vedtak om omstillingsstønad frå " + data.virkningstidspunkt.format() + "» som er lagt ved, vil vedlegget bli rekna som vedtak frå og med 1. januar " + data.inntektsaar.format() + ". Du vil då ikkje få eit nytt vedtaksbrev." },
                         english { +"If have not provided us with new information or objections to  the attached «Draft document – Decision regarding adjustment allowance from " + data.virkningstidspunkt.format() + "», the attachment will be considered a decision effective from 1 January " + data.inntektsaar.format() + ". You will then not receive a new decision letter." },
                     )
@@ -92,16 +85,16 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
 
                 title2 {
                     text(
-                        bokmal { +"Frister for å sende inn nye opplysninger" },
-                        nynorsk { +"Fristar for å sende inn nye opplysningar" },
+                        bokmal { +"Frist for å sende inn nye opplysninger" },
+                        nynorsk { +"Frist for å sende inn nye opplysningar" },
                         english { +"Deadline for submitting new information" },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Hvis opplysningene ikke stemmer, må du gi beskjed til oss senest innen fire uker fra du får dette forhåndsvarselet." },
-                        nynorsk { +"Dersom opplysningane ikkje stemmer, må du gi oss beskjed seinast innan fire veker frå du får dette førehandsvarselet." },
-                        english { +"If the information is not correct, you must notify us as soon as possible, no later than four weeks from the date you received this advance notice." },
+                        bokmal { +"Hvis opplysningene ikke stemmer, må du gi beskjed til oss senest innen 4 uker fra du får dette brevet." },
+                        nynorsk { +"Dersom opplysningane ikkje stemmer, må du gi oss beskjed seinast innan 4 veker frå du får dette brevet." },
+                        english { +"If the information is not correct, you must notify us as soon as possible, no later than 4 weeks from the date you received this letter." },
                     )
                 }
 
@@ -128,21 +121,6 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
                 }
 
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuIkkeBankID(data.bosattUtland))
-
-                title2 {
-                    text(
-                        bokmal { +"Frist for å klage" },
-                        nynorsk { +"Frist for å klage" },
-                        english { +"Deadline for appeals" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Etter at vedtaket har tredd i kraft 1. januar " + data.inntektsaar.format() + ", har du seks ukers klagefrist på vedtaket. Du finner informasjon om hvordan du klager i «Utkast – Vedtak om omstillingsstønad fra " + data.virkningstidspunkt.format() + "»." },
-                        nynorsk { +"Etter at vedtaket har tredd i kraft 1. januar " + data.inntektsaar.format() + ", har du seks veker på deg til å klage på vedtaket. Sjå «Utkast – Vedtak om omstillingsstønad frå " + data.virkningstidspunkt.format() + "» for meir informasjon om korleis du går fram for å klage.   " },
-                        english { +"After the decision becomes effective on 1 January " + data.inntektsaar.format() + ", you have a deadline of six weeks to appeal against the decision. You can find further information on how to submit an appeal in «Draft document – Decision regarding adjustment allowance from " + data.virkningstidspunkt.format() + "»" },
-                    )
-                }
 
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
 

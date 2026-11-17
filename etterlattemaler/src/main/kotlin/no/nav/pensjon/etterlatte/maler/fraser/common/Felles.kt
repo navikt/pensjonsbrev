@@ -260,6 +260,12 @@ object Felles {
                             "to appeal at ${Constants.Engelsk.KLAGE_URL}." }
                 )
             }
+            includePhrase(KlageveiledningOgKlagebehandling)
+        }
+    }
+
+    object KlageveiledningOgKlagebehandling : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
                     bokmal { +"Nav kan veilede deg på telefon hvis du trenger hjelp til å sende en klage. Du kan " +
