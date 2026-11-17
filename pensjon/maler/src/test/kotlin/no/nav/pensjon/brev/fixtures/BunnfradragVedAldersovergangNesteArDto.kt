@@ -4,7 +4,7 @@ import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArAutoDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArDto.BarnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArDto.BarnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArDto.BarnetilleggSerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArRedigerbarDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -29,8 +29,6 @@ fun createBunnfradragVedAldersovergangNesteArData() =
         nettoUforetrygd = Kroner(20000),
         nettoBarnetillegg = Kroner(3000),
         nettoGjenlevendetillegg = null,
-        btfbEndret = true,
-        btsbEndret = true,
         nettoTotal = Kroner(23000),
         bunnfradrag = Kroner(75000),
         fribelop = Kroner(50000),
@@ -42,10 +40,12 @@ fun createBunnfradragVedAldersovergangNesteArData() =
             netto = Kroner(2000),
             inntektBruker = Kroner(150000),
             inntektAnnenForelder = Kroner(100000),
+            erEndret = true,
         ),
-        btsb = BarnetilleggSaerkullsbarn(
+        btsb = BarnetilleggSerkullsbarn(
             netto = Kroner(1000),
             inntektBruktIAvkortning = Kroner(150000),
+            erEndret = true,
         ),
         pe = createPEgruppe10(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto().copy(

@@ -15,18 +15,15 @@ data class BunnfradragVedAldersovergangNesteArDto(
     val nettoUforetrygd: Kroner,
     val nettoBarnetillegg: Kroner?,
     val nettoGjenlevendetillegg: Kroner?,
-    val btfbEndret: Boolean,
-    val btsbEndret: Boolean,
     val nettoTotal: Kroner,
     val bunnfradrag: Kroner,
     val fribelop: Kroner,
     val inntektEtterUforhet: Kroner,
     val datoFyller67: LocalDate,
     val datoForNormertPensjonsalder: LocalDate,
-    val hjemler: Set<String>,
-
     val btfb: BarnetilleggFellesbarn?,
-    val btsb: BarnetilleggSaerkullsbarn?,
+    val btsb: BarnetilleggSerkullsbarn?,
+    val hjemler: Set<String>,
 
     val pe: PEgruppe10,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto
@@ -35,11 +32,13 @@ data class BunnfradragVedAldersovergangNesteArDto(
         val netto: Kroner,
         val inntektBruker: Kroner,
         val inntektAnnenForelder: Kroner,
+        val erEndret: Boolean,
     )
 
-    data class BarnetilleggSaerkullsbarn(
+    data class BarnetilleggSerkullsbarn(
         val netto: Kroner,
         val inntektBruktIAvkortning: Kroner,
+        val erEndret: Boolean,
     )
 }
 

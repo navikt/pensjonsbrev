@@ -1,15 +1,15 @@
 package no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr
 
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.BunnfradragVedAldersovergangNesteArDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggFellesbarn.erEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggFellesbarn.inntektAnnenForelder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggFellesbarn.inntektBruker
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggFellesbarn.netto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggSaerkullsbarn.inntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggSaerkullsbarn.netto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggSerkullsbarn.erEndret
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggSerkullsbarn.inntektBruktIAvkortning
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.barnetilleggSerkullsbarn.netto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.btfb
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.btfbEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.btsb
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.btsbEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.datoForNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.datoFyller67
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.bunnfradrag
@@ -41,8 +41,10 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -51,6 +53,9 @@ object BunnfradragVedAldersovergangNesteAr {
     data class Outline(val data: Expression<BunnfradragVedAldersovergangNesteArDto>) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             with(data) {
+                val btfbEndret = btfb.safe { erEndret }.ifNull(false)
+                val btsbEndret = btsb.safe { erEndret }.ifNull(false)
+
                 paragraph {
                     text(
                         bokmal { +"Du fyller 67 år den " + datoFyller67.format() + ". Fordi du får alderspensjon fra " + datoForNormertPensjonsalder.format() + ", er bunnfradraget justert ut fra antall måneder du får uføretrygd i " + vedtakVirkFom.year.format() + ". Dette har kun betydning for deg dersom du skal ha inntekt ved siden av uføretrygden i " + vedtakVirkFom.year.format() + ". Du kan ha en inntekt på " + bunnfradrag.format() + " før " + datoForNormertPensjonsalder.format() + " før vi reduserer uføretrygden din. Dette beløpet er bunnfradraget ditt." },
