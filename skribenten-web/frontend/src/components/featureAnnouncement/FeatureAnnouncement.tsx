@@ -1,6 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { isAfter, parseISO, startOfToday } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 import { type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   ACTIONS,
@@ -14,15 +12,22 @@ import {
   useJoyride,
 } from "react-joyride";
 
-import { acknowledgeAnnouncement, getAcknowledgedAnnouncements } from "~/api/skribenten-api-endpoints";
-import { logError } from "~/utils/logger";
+import { getAnnouncementStatus } from "~/api/skribenten-api-endpoints";
 
+import { useAcknowledgeAnnouncement } from "./announcementStatus";
 import {
   FEATURE_ANNOUNCEMENT_LOCALE,
   FeatureAnnouncementArrow,
   type FeatureAnnouncementStepData,
   FeatureAnnouncementTooltip,
 } from "./FeatureAnnouncementTooltip";
+import {
+  endAnnouncementReplay,
+  isAnnouncementExpired,
+  isAnnouncementPublished,
+  useAnnouncementReplay,
+  useRegisterAnnouncementAvailability,
+} from "./featureAnnouncementState";
 
 export type FeatureAnnouncementStep = {
   /** Element the tooltip points at. */
@@ -43,8 +48,15 @@ export type FeatureAnnouncementStep = {
 type FeatureAnnouncementProps = {
   /** Unique per announcement and stored when the user acknowledges it, e.g. "diff-toggles". At most 100 characters. */
   id: string;
-  /** Last day (YYYY-MM-DD) the announcement is shown, typically 30 days after release. */
+  /** First day (YYYY-MM-DD) the announcement can be shown, typically the release date. Shown right away when omitted. */
+  showFrom?: string;
+  /** Last day (YYYY-MM-DD) the announcement starts automatically, typically 30 days after release. */
   showUntil: string;
+  /**
+   * Last day (YYYY-MM-DD) the tour can still be started on request, e.g. with «Se hvordan» in the notification bell.
+   * Defaults to `showUntil`.
+   */
+  replayableUntil?: string;
   /** Pass a memoized array: a new identity restarts the step configuration in Joyride. */
   steps: FeatureAnnouncementStep[];
   /** All contextual conditions (role, route, data and targets available) combined by the caller. */
@@ -57,50 +69,86 @@ type FeatureAnnouncementProps = {
 /**
  * Modal, contextual announcement of a feature. One step gives a single announcement, several steps give
  * a short walkthrough. Focus moves into the announcement and returns to where the user was when it closes.
- * Closing it (button, Escape or a click on the dimmed page) acknowledges it for the user, so it is not shown again.
+ * Finishing it with the button on the last step marks it as completed for the user, so it no longer starts automatically.
+ * Escape or a click on the dimmed page only closes it while this component stays mounted, so it starts again the next
+ * time the user comes back.
  * If several announcements are eligible at the same time, they are shown one after another.
+ * While `when` holds, the tour can also be started again on request (see `requestAnnouncementReplay`).
  */
-export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => (
-  <FeatureAnnouncementInstance key={props.id} {...props} />
-);
+export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => {
+  const replayGeneration = useAnnouncementReplay(props.id);
+  // Kept outside the instance, which is replaced for each replay, so closing a replay does not start the tour again.
+  const [closedId, setClosedId] = useState<string | null>(null);
+  return (
+    <FeatureAnnouncementInstance
+      key={`${props.id}-${replayGeneration}`}
+      {...props}
+      closedWithoutCompleting={closedId === props.id}
+      onCloseWithoutCompleting={() => setClosedId(props.id)}
+      replayGeneration={replayGeneration}
+    />
+  );
+};
 
 const FeatureAnnouncementInstance = ({
   id,
+  showFrom,
   showUntil,
+  replayableUntil,
   steps,
   when,
   onDismiss,
   spotlight = true,
-}: FeatureAnnouncementProps) => {
+  replayGeneration,
+  closedWithoutCompleting,
+  onCloseWithoutCompleting,
+}: FeatureAnnouncementProps & {
+  replayGeneration: number;
+  closedWithoutCompleting: boolean;
+  onCloseWithoutCompleting: () => void;
+}) => {
   const [resumeIndex, setResumeIndex] = useState(0);
   const [unsuccessfulRun, setUnsuccessfulRun] = useState(false);
-  const queryClient = useQueryClient();
 
-  const expired = isAfter(startOfToday(), parseISO(showUntil));
-  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
-  const acknowledged = acknowledgedQuery.data?.includes(id) === true;
-  const { mutate: saveAcknowledgement } = useMutation({
-    mutationFn: () => acknowledgeAnnouncement(id),
-    retry: 2,
-    onError: (error) =>
-      logError(error, error instanceof AxiosError ? error.response?.status : undefined).catch(() =>
-        console.error("Unable to log error message"),
-      ),
+  const published = isAnnouncementPublished(showFrom);
+  const expired = isAnnouncementExpired(showUntil);
+  const replayable = !isAnnouncementExpired(replayableUntil ?? showUntil);
+  const replaying = replayGeneration > 0;
+  const available = when && published && (!expired || replayable) && steps.length > 0;
+  useRegisterAnnouncementAvailability(id, available);
+
+  const statusQuery = useQuery({
+    ...getAnnouncementStatus,
+    enabled: when && published && (!expired || replayable),
   });
+  const acknowledged = statusQuery.data?.gjennomfoertOmvisningen.includes(id) === true;
+  const acknowledge = useAcknowledgeAnnouncement();
 
   const onDismissReference = useRef(onDismiss);
   onDismissReference.current = onDismiss;
-  const hasDismissed = useRef(false);
+  const onCloseWithoutCompletingReference = useRef(onCloseWithoutCompleting);
+  onCloseWithoutCompletingReference.current = onCloseWithoutCompleting;
+  const hasEnded = useRef(false);
   const hasBeenShown = useRef(false);
-  const dismiss = useCallback(() => {
-    if (hasDismissed.current) return;
-    hasDismissed.current = true;
-    queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) => [...previous, id]);
-    saveAcknowledgement();
-    onDismissReference.current?.();
-  }, [id, queryClient, saveAcknowledgement]);
+  const end = useCallback(
+    (completed: boolean) => {
+      if (hasEnded.current) return;
+      hasEnded.current = true;
+      if (completed) acknowledge(id);
+      else onCloseWithoutCompletingReference.current();
+      onDismissReference.current?.();
+      endAnnouncementReplay(replayGeneration);
+    },
+    [id, acknowledge, replayGeneration],
+  );
 
-  const eligible = when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
+  // Also a replay waits until the status has been read (or failed), so closing it cannot be overwritten by an older,
+  // still pending read that would make the tour start again.
+  const statusRead = !statusQuery.isPending;
+  const eligible =
+    available &&
+    statusRead &&
+    (replaying || (!expired && statusQuery.isSuccess && !acknowledged && !closedWithoutCompleting));
   // A run that ended without showing anything (e.g. the target was never found) is retried the next time the
   // announcement becomes eligible, instead of being treated as dismissed.
   if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);
@@ -150,7 +198,7 @@ const FeatureAnnouncementInstance = ({
       arrowSize: 10,
       // Keeps the arrow clear of the tooltip's rounded corners.
       arrowSpacing: 16,
-      // Escape is handled below so it dismisses the whole announcement, not just the current step.
+      // Escape is handled below so it closes the whole announcement, not just the current step.
       dismissKeyAction: false,
       hideOverlay: !spotlight,
       // Small gap (Aksel space-8) between the target and the arrow tip.
@@ -167,11 +215,13 @@ const FeatureAnnouncementInstance = ({
       }
       if (data.type === EVENTS.TOUR_END && !hasBeenShown.current) {
         setUnsuccessfulRun(true);
+        endAnnouncementReplay(replayGeneration);
         return;
       }
       // A click on the dimmed page closes the whole announcement, also in the middle of a walkthrough.
       const closedByOverlay = data.action === ACTIONS.CLOSE && data.origin === ORIGIN.OVERLAY;
-      if (data.type === EVENTS.TOUR_END || closedByOverlay) dismiss();
+      if (closedByOverlay) end(false);
+      else if (data.type === EVENTS.TOUR_END) end(data.status === STATUS.FINISHED);
     },
   });
 
@@ -179,12 +229,12 @@ const FeatureAnnouncementInstance = ({
 
   useEffect(() => {
     if (!tooltipVisible) return;
-    const dismissOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") dismiss();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") end(false);
     };
-    document.addEventListener("keydown", dismissOnEscape);
-    return () => document.removeEventListener("keydown", dismissOnEscape);
-  }, [tooltipVisible, dismiss]);
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
+  }, [tooltipVisible, end]);
 
   return run ? Tour : null;
 };

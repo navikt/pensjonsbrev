@@ -45,7 +45,7 @@ const restoreFeatures = () => {
 
 beforeEach(() => {
   trackMock.mockClear();
-  globalThis.umami = { track: trackMock };
+  globalThis.sporing = { identify: vi.fn(), track: trackMock };
   sessionStorage.clear();
   vi.stubGlobal("ReadableStream", class {});
   stubAllFeatures();

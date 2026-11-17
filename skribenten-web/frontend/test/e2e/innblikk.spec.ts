@@ -123,7 +123,7 @@ for (const environment of [
       );
 
       await page.goto(`${environment.skribenten}/saksnummer/123456/brevvelger?templateId=E001&enhetsId=4815`);
-      await expect.poll(() => events.some((event) => !event.payload.name)).toBe(true);
+      await expect.poll(() => events.some((event) => event.type === "event" && !event.payload.name)).toBe(true);
       await page.getByRole("textbox", { name: "Mottaker" }).fill("Testmottaker");
       await page.getByTestId("order-letter").click();
       await expect
@@ -157,7 +157,7 @@ for (const environment of [
       const renewedExpiry = Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 3, 1) / 1000;
       await page.clock.setFixedTime(beforeRollover);
       await page.goto(`${environment.skribenten}/personvern`);
-      await expect.poll(() => events.length).toBeGreaterThan(0);
+      await expect.poll(() => events.some((event) => event.type === "event" && !event.payload.name)).toBe(true);
 
       const cookies = (await context.cookies()).filter((cookie) => cookie.name === COOKIE_NAME);
       expect(cookies).toHaveLength(1);
@@ -171,8 +171,22 @@ for (const environment of [
         expires: initialExpiry,
       });
       expect(cookie.value).toMatch(/^[0-9a-f-]{36}$/);
-      expect(events[0].payload.id).toBe(cookie.value);
-      expect(events[0].payload.website).toBe(WEBSITE_ID);
+      const identifyIndex = events.findIndex((event) => event.type === "identify");
+      const pageviewIndex = events.findIndex((event) => event.type === "event" && !event.payload.name);
+      expect(identifyIndex).toBeGreaterThanOrEqual(0);
+      expect(pageviewIndex).toBeGreaterThan(identifyIndex);
+      expect(events[identifyIndex].payload.id).toBe(cookie.value);
+      expect(events[pageviewIndex].payload.id).toBe(cookie.value);
+      expect(events[pageviewIndex].payload.website).toBe(WEBSITE_ID);
+
+      await page.evaluate(() => {
+        history.pushState({}, "", `${location.pathname}?innblikk-e2e=navigation`);
+      });
+      await expect
+        .poll(() => events.filter((event) => event.type === "event" && !event.payload.name).length)
+        .toBeGreaterThan(1);
+      const navigationPageview = events.findLast((event) => event.type === "event" && !event.payload.name);
+      expect(navigationPageview?.payload.id).toBe(cookie.value);
 
       await context.route(`${environment.penny}/**`, (route) =>
         route.fulfill({ contentType: "text/html", body: "<!doctype html><title>Penny cookie test</title>" }),
@@ -187,23 +201,45 @@ for (const environment of [
         },
         { name: COOKIE_NAME, value: NEXT_ID, domain: environment.domain },
       );
-      await page.evaluate(() => globalThis.umami?.track("tekst limt inn", { antallTegn: 12 }));
+      await page.evaluate(() => globalThis.sporing?.track("tekst limt inn", { antallTegn: 12 }));
       await expect
         .poll(() => events.find((event) => event.payload.name === "tekst limt inn"))
         .toMatchObject({
           payload: { id: NEXT_ID, website: WEBSITE_ID, data: { antallTegn: 12 } },
         });
+      const changedIdentityIndex = events.findIndex(
+        (event) => event.type === "identify" && event.payload.id === NEXT_ID,
+      );
+      const changedEventIndex = events.findIndex((event) => event.payload.name === "tekst limt inn");
+      expect(changedIdentityIndex).toBeGreaterThanOrEqual(0);
+      expect(changedEventIndex).toBeGreaterThan(changedIdentityIndex);
+
+      await page.evaluate(() => {
+        const button = document.createElement("button");
+        button.dataset.sporingEvent = "innblikk e2e dom tracking";
+        document.body.append(button);
+        button.click();
+      });
+      await expect
+        .poll(() => events.find((event) => event.payload.name === "innblikk e2e dom tracking"))
+        .toMatchObject({ type: "event", payload: { id: NEXT_ID, website: WEBSITE_ID } });
 
       // Simulate the browser expiring the cookie while Skribenten stays open across month-end.
       await context.clearCookies({ name: COOKIE_NAME });
       await page.clock.setFixedTime(afterRollover);
-      await page.evaluate(() => globalThis.umami?.track("tekst erstattet"));
+      await page.evaluate(() => globalThis.sporing?.track("tekst erstattet"));
       await expect.poll(() => events.find((event) => event.payload.name === "tekst erstattet")).toBeDefined();
       const renewed = (await context.cookies()).find((entry) => entry.name === COOKIE_NAME);
       expect(renewed?.value).not.toBe(cookie.value);
       expect(renewed?.value).not.toBe(NEXT_ID);
       expect(renewed?.expires).toBe(renewedExpiry);
       expect(events.find((event) => event.payload.name === "tekst erstattet")?.payload.id).toBe(renewed?.value);
+      const renewedIdentityIndex = events.findIndex(
+        (event) => event.type === "identify" && event.payload.id === renewed?.value,
+      );
+      const renewedEventIndex = events.findIndex((event) => event.payload.name === "tekst erstattet");
+      expect(renewedIdentityIndex).toBeGreaterThanOrEqual(0);
+      expect(renewedEventIndex).toBeGreaterThan(renewedIdentityIndex);
     });
   });
 }
