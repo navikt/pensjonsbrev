@@ -20,10 +20,16 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.nettoUforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.vedtakVirkFom
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.gradertUforetrygd
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.hjemler
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.bunnfradragVedAldersovergangNesteArDto.inntektEtterUforhet
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -32,7 +38,9 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.year
@@ -55,11 +63,11 @@ object BunnfradragVedAldersovergangNesteAr {
                         nynorsk { +"Berekninga di for " + vedtakVirkFom.year.format() },
                     )
                 }
-                paragraph {
+                paragraph {//TODO: burde vi blande månedlig og årlig? Evt skrive noe om det
                     table(
                         header = {
                             column { text(bokmal { +"Din beregning" }, nynorsk { +"Berekninga di" }) }
-                            column { text(bokmal { +"Beløp" }, nynorsk { +"Beløp" }) }
+                            column(alignment = RIGHT) { text(bokmal { +"Beløp" }, nynorsk { +"Beløp" }) }
                         },
                     ) {
                         row {
@@ -87,20 +95,27 @@ object BunnfradragVedAldersovergangNesteAr {
                             cell { text(bokmal { +fribelop.format() }, nynorsk { +fribelop.format() }) }
                         }
                         row {
-                            cell { text(bokmal { +"Månedlig uføretrygd og barnetillegg" }, nynorsk { +"Månadleg uføretrygd og barnetillegg" }) }
+                            cell {
+                                text(
+                                    bokmal { +"Månedlig uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") },
+                                    nynorsk { +"Månadleg uføretrygd" + ifElse(nettoBarnetillegg.isNull(), "", " og barnetillegg") }
+                                )
+                            }
                             cell { text(bokmal { +nettoTotal.format() }, nynorsk { +nettoTotal.format() }) }
                         }
                     }
                 }
-                paragraph {
-                    text(
-                        bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
-                        nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
-                    )
+                showIf(nettoTotal.greaterThan(0)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                            nynorsk { +"Uføretrygda blir framleis utbetalt seinast den 20. kvar månad." },
+                        )
+                    }
                 }
                 title1 {
                     text(
-                        bokmal { +"Slik beregner vi bunnfradrag" },
+                        bokmal { +"Slik beregner vi bunnfradrag" },//TODO: gjentar setning fra åpningen av brevet under her. Og burde overskriften vært noe annet?
                         nynorsk { +"Slik bereknar vi botnfrådrag" },
                     )
                 }
@@ -118,14 +133,14 @@ object BunnfradragVedAldersovergangNesteAr {
                 }
                 title1 {
                     text(
-                        bokmal { +"Hva er fribeløp og bunnfradrag?" },
+                        bokmal { +"Hva er fribeløp og bunnfradrag?" },//TODO Fribeløp blir ikke forklart
                         nynorsk { +"Kva er fribeløp og botnfrådrag?" },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss inntekt etter uførhet. Dette ble tidligere omtalt som inntektsgrense." },
-                        nynorsk { +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Botnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette blei tidlegare omtalt som inntektsgrense." },
+                        bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss inntekt etter uførhet. Bunnfradrag ble tidligere kalt inntektsgrense." },
+                        nynorsk { +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Botnfrådraget består av fribeløpet pluss inntekt etter uførleik. Botnfrådrag blei tidlegare kalla inntektsgrense." },
                     )
                 }
                 showIf(gradertUforetrygd) {
@@ -138,8 +153,8 @@ object BunnfradragVedAldersovergangNesteAr {
                 }.orShow {
                     paragraph {
                         text(
-                            bokmal { +ifElse(inntektEtterUforhet.equalTo(0), "Siden du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførhet. ".expr(), "Du har 100 prosent uføretrygd, og din inntekt etter uførhet er ".expr() + inntektEtterUforhet.format() + ".") },
-                            nynorsk { +ifElse(inntektEtterUforhet.equalTo(0), "Sidan du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførleik. ".expr(), "Du har 100 prosent uføretrygd, og inntekta di etter uførleik er ".expr() + inntektEtterUforhet.format() + ".") },
+                            bokmal { +ifElse(inntektEtterUforhet.equalTo(0), "Siden du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførhet.".expr(), "Du har 100 prosent uføretrygd, og din inntekt etter uførhet er ".expr() + inntektEtterUforhet.format() + ".") },
+                            nynorsk { +ifElse(inntektEtterUforhet.equalTo(0), "Sidan du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførleik.".expr(), "Du har 100 prosent uføretrygd, og inntekta di etter uførleik er ".expr() + inntektEtterUforhet.format() + ".") },
                         )
                     }
                 }
@@ -151,8 +166,8 @@ object BunnfradragVedAldersovergangNesteAr {
                     }
                     paragraph {
                         text(
-                            bokmal { +"Fordi du har barnetillegg som opphører i løpet av neste år, er inntektene og fribeløpet for neste år justert slik at de kun gjelder for perioden du mottar barnetillegg." },
-                            nynorsk { +"Fordi du har barnetillegg som fell bort i løpet av neste år, er inntektene og fribeløpet for neste år justerte slik at dei berre gjeld for perioden du får barnetillegg." },
+                            bokmal { +"Fordi du har barnetillegg som opphører i løpet av neste år, er inntektene og fribeløpet i barnetillegget for neste år justert slik at de kun gjelder for perioden du mottar barnetillegg." },
+                            nynorsk { +"Fordi du har barnetillegg som fell bort i løpet av neste år, er inntektene og fribeløpet i barnetillegget for neste år justerte slik at dei berre gjeld for perioden du får barnetillegg." },
                         )
                     }
 
@@ -239,6 +254,16 @@ object BunnfradragVedAldersovergangNesteAr {
                         nynorsk { +"Du finn fullstendige berekningar i vedlegget «Opplysningar om utrekninga»." },
                     )
                 }
+
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + hjemler.format(HjemmelFormatter(true)) + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + hjemler.format(HjemmelFormatter(true)) + "." },
+                    )
+                }
+                includePhrase(Ufoeretrygd.RettTilAKlage)
+                includePhrase(Ufoeretrygd.RettTilInnsyn)
+                includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON))
             }
         }
     }

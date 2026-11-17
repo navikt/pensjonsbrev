@@ -42,12 +42,10 @@ fun createBunnfradragVedAldersovergangNesteArData() =
             netto = Kroner(2000),
             inntektBruker = Kroner(150000),
             inntektAnnenForelder = Kroner(100000),
-            periodisert = true,
         ),
         btsb = BarnetilleggSaerkullsbarn(
             netto = Kroner(1000),
             inntektBruktIAvkortning = Kroner(150000),
-            periodisert = true,
         ),
         pe = createPEgruppe10(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto().copy(

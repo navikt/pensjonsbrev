@@ -35,13 +35,11 @@ data class BunnfradragVedAldersovergangNesteArDto(
         val netto: Kroner,
         val inntektBruker: Kroner,
         val inntektAnnenForelder: Kroner,
-        val periodisert: Boolean,
     )
 
     data class BarnetilleggSaerkullsbarn(
         val netto: Kroner,
         val inntektBruktIAvkortning: Kroner,
-        val periodisert: Boolean,
     )
 }
 
