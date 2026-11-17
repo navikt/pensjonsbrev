@@ -92,7 +92,7 @@ Dersom brevet har redigerbare vedlegg, vises fanen «Vedlegg». Åpne fanen, vel
 3. Legg inn underskriften din i feltet «Underskrift» i venstremenyen.
 4. Klikk på «Fortsett» for å åpne forhåndsvisningen.
 5. Kontroller PDF-en. Hvis noe må endres, velger du «Tilbake til redigering».
-6. Klikk på «Send brev» og og bekreft med ‘Ja, send brevet’.»
+6. Klikk på «Send brev» og bekreft med «Ja, send brevet».
 7. Kontroller kvitteringen. Ved lokalprint må du også åpne PDF-en og skrive ut brevet.
 
 
@@ -106,7 +106,7 @@ Attestanten kan enklere se hvilke endringer saksbehandler har gjort i brevet. At
 * tekst som er slettet, markert i rosa med gjennomstreking
 * eller begge samtidig
 
-image::../images/attestering-begge-endringer.png[]
+image::attestering-begge-endringer.png[]
 
 
 Viktig å vite:
