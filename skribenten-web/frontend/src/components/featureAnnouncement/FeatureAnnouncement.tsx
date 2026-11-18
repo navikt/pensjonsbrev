@@ -43,6 +43,8 @@ export type FeatureAnnouncementStep = {
   spotlightRadius?: number;
   /** Element to scroll into view instead of the target, e.g. when the target is inside a container that clips overflow. */
   scrollTarget?: StepTarget;
+  /** Runs before the step is shown, also when going back to it. The step waits until the promise resolves. */
+  before?: () => Promise<void>;
 };
 
 type FeatureAnnouncementProps = {
@@ -66,6 +68,10 @@ type FeatureAnnouncementProps = {
   onDismiss?: () => void;
   /** Dims the page around each step's target. Defaults to true. */
   spotlight?: boolean;
+  /**
+   * Native dialog the tour belongs to, e.g. a modal that illustrates the feature. The tour is rendered inside it and
+   * waits until it is open. Other open dialogs still block the tour.
+   */
   dialog?: HTMLDialogElement | null;
 };
 
@@ -161,6 +167,7 @@ const FeatureAnnouncementInstance = ({
   const blocked = useIsBlockedByOpenDialog(pending, dialog);
   const hasTurn = useAnnouncementTurn(pending && !blocked);
   const run = pending && hasTurn && !blocked;
+  const inDialog = dialog !== undefined;
 
   const joyrideSteps = useMemo<Step[]>(
     () =>
@@ -172,12 +179,23 @@ const FeatureAnnouncementInstance = ({
         spotlightPadding: step.spotlightPadding ?? 4,
         spotlightRadius: step.spotlightRadius ?? 8,
         ...(step.scrollTarget && { scrollTarget: toLiveTarget(step.scrollTarget) }),
+        // Joyride's own scrolling can stall inside a dialog: after scrolling it waits for the tooltip to report a new
+        // position, which never comes when the tooltip was already positioned. Such steps scroll their target here instead.
+        ...(inDialog
+          ? {
+              skipScroll: true,
+              before: async () => {
+                await step.before?.();
+                toElement(step.scrollTarget ?? step.target)?.scrollIntoView({ block: "nearest" });
+              },
+            }
+          : step.before && { before: step.before }),
         title: step.title,
         content: step.content,
         placement: step.placement ?? "bottom",
         data: { announcementId: id } satisfies FeatureAnnouncementStepData,
       })),
-    [id, steps],
+    [id, steps, inDialog],
   );
 
   const { state, Tour } = useJoyride({
@@ -256,6 +274,12 @@ const FeatureAnnouncementInstance = ({
 // A function is kept by reference, so it always reads the ref's current element.
 const toLiveTarget = (target: StepTarget): StepTarget =>
   typeof target === "object" && "current" in target ? () => target.current : target;
+
+const toElement = (target: StepTarget): HTMLElement | null => {
+  if (typeof target === "string") return document.querySelector<HTMLElement>(target);
+  if (typeof target === "function") return target();
+  return "current" in target ? target.current : target;
+};
 
 const announcementQueue: string[] = [];
 const queueListeners = new Set<() => void>();
