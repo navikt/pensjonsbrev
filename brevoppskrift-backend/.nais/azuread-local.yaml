@@ -1,0 +1,24 @@
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: brevoppskrift-backend-local
+  namespace: pensjonsbrev
+  labels:
+    app: brevoppskrift-backend-local
+    team: pensjonsbrev
+spec:
+  allowAllUsers: true
+  claims:
+    extra:
+      - azp_name
+    groups:
+      # PENSJONSBREV_BREVOPPSKRIFT_EDITOR
+      - id: c331c338-5d39-45eb-a9c7-4e909c81768a
+  preAuthorizedApplications:
+    - application: brevoppskrift-web
+      cluster: dev-gcp
+      namespace: pensjonsbrev
+    - application: brevoppskrift-web-local
+      cluster: dev-gcp
+      namespace: pensjonsbrev
+  secretName: azure-brevoppskrift-backend-local

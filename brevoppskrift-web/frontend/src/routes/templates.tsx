@@ -292,9 +292,12 @@ function AllTemplates() {
   return (
     <Box asChild background="default" height="100vh" overflow="hidden">
       <VStack flexGrow="1" gap="space-16" paddingBlock="space-16 space-0" paddingInline="space-16">
-        <Heading level="1" size="small">
-          Brevoppskrift
-        </Heading>
+        <HStack align="center" gap="space-24" justify="space-between">
+          <Heading level="1" size="small">
+            Brevoppskrift
+          </Heading>
+          <Link to="/arbeidsutkast">Malverksted: arbeidsutkast</Link>
+        </HStack>
         <Box maxWidth="480px" width="100%">
           <SearchField
             active={isLoading || isPending}

@@ -20,7 +20,7 @@ jobs:
     secrets: inherit
     with:
       workingDir: brevoppskrift-web
-      runTests: false
+      runE2eTests: false
 
   "klarTilMerge":
     name: "Klar til merge"

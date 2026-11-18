@@ -302,11 +302,15 @@ describe("<AllTemplates /> (route: /templates)", () => {
     await waitFor(() => expect(screen.queryByText(/Klargjør malene for søk/)).toBeNull());
     await user.type(screen.getByRole("searchbox"), "Hei");
     await waitFor(() => expect(screen.getByRole("button", { name: "2" })).toBeTruthy());
+    // The search for the full needle must have landed (outline idle) before paging, or a late result resets the page.
+    const searchIdle = () => waitFor(() => expect(screen.queryByTestId("search-activity")).toBeNull());
+    await searchIdle();
 
     await user.click(screen.getByRole("button", { name: "2" }));
     expect(isCurrent("2")).toBe("true");
     await user.type(screen.getByRole("searchbox"), "{Backspace}");
     await waitFor(() => expect(isCurrent("1")).toBe("true"));
+    await searchIdle();
 
     await user.click(screen.getByRole("button", { name: "2" }));
     expect(isCurrent("2")).toBe("true");

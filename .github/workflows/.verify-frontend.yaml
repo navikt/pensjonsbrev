@@ -7,10 +7,21 @@ on:
         description: "Working directory"
         required: true
         type: string
-      runTests:
-        description: "Run tests"
-        required: true
+      runE2eTests:
+        description: "Run frontend E2E tests"
+        required: false
         type: boolean
+        default: true
+      runUnitTests:
+        description: "Run frontend unit tests"
+        required: false
+        type: boolean
+        default: true
+      runBffTests:
+        description: "Run BFF tests"
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   verify-bff:
@@ -49,6 +60,11 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm run build
 
+      - name: Run bff tests
+        if: ${{ inputs.runBffTests }}
+        working-directory: ${{ inputs.workingDir }}/bff
+        run: npm test
+
   verify-frontend:
     name: Verify frontend tests, lint and typescript errors
     permissions:
@@ -86,12 +102,12 @@ jobs:
         run: npm run check-types
 
       - name: Run unit tests
-        if: ${{ inputs.runTests }}
+        if: ${{ inputs.runUnitTests }}
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run test
 
       - name: Cache test runner browser
-        if: ${{ inputs.runTests }}
+        if: ${{ inputs.runE2eTests }}
         id: playwright-cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
@@ -99,23 +115,23 @@ jobs:
           key: playwright-${{ hashFiles(format('{0}/frontend/package-lock.json', inputs.workingDir)) }}
 
       - name: Install e2e test runner and browser
-        if: ${{ inputs.runTests && steps.playwright-cache.outputs.cache-hit != 'true' }}
+        if: ${{ inputs.runE2eTests && steps.playwright-cache.outputs.cache-hit != 'true' }}
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npx playwright install --with-deps chromium
 
       - name: Install system deps for cached test runner browser
-        if: ${{ inputs.runTests && steps.playwright-cache.outputs.cache-hit == 'true' }}
+        if: ${{ inputs.runE2eTests && steps.playwright-cache.outputs.cache-hit == 'true' }}
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npx playwright install-deps chromium
 
       - name: Run e2e tests
-        if: ${{ inputs.runTests }}
+        if: ${{ inputs.runE2eTests }}
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npx playwright test
 
       - name: Upload e2e artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        if: ${{ inputs.runTests && failure() }}
+        if: ${{ inputs.runE2eTests && failure() }}
         with:
           name: playwright-artifacts
           path: ${{ inputs.workingDir }}/frontend/test/e2e-report/

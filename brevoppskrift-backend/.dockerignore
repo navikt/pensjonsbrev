@@ -1,0 +1,6 @@
+**
+!build
+!build/install
+!build/install/brevoppskrift-backend
+!build/install/brevoppskrift-backend/lib
+!build/install/brevoppskrift-backend/lib/**

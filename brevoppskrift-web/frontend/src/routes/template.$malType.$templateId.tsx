@@ -23,6 +23,7 @@ import { useHitFocus } from "~/templateSearch/useHitFocus";
 import { usePickHitBlock } from "~/templateSearch/usePickHitBlock";
 import { useScrollToBlock } from "~/templateSearch/useScrollToBlock";
 import { useTemplateSearchParams, validateTemplateSearch } from "~/templateSearch/useTemplateSearchParams";
+import { StartDraftFromTemplate } from "~/verksted/components/StartFromSource";
 
 /** An unknown template answers 404, which is a missing page rather than an error. */
 function notFoundOn404(error: unknown): never {
@@ -142,7 +143,8 @@ function TemplateExplorer() {
           <Heading level="1" size="small">
             {templateId}
           </Heading>
-          <HStack flexBasis="0" flexGrow="1" justify="end">
+          <HStack flexBasis="0" flexGrow="1" gap="space-16" justify="end" wrap>
+            <StartDraftFromTemplate templateId={templateId} />
             <ExportTemplateButton documentation={documentation} language={language} templateId={templateId} />
           </HStack>
         </HStack>

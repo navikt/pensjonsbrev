@@ -1,0 +1,24 @@
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: brevoppskrift-web-local
+  namespace: pensjonsbrev
+  labels:
+    app: brevoppskrift-web-local
+    team: pensjonsbrev
+spec:
+  allowAllUsers: true
+  claims:
+    extra:
+      - azp_name
+    groups:
+      # PENSJONSBREV_BREVOPPSKRIFT_EDITOR
+      - id: c331c338-5d39-45eb-a9c7-4e909c81768a
+  preAuthorizedApplications:
+    - application: brevoppskrift-web
+      cluster: dev-gcp
+      namespace: pensjonsbrev
+
+  replyUrls:
+    - url: http://localhost:8088/oauth2/callback
+  secretName: azure-brevoppskrift-web-local

@@ -4,6 +4,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import { setupActuators } from "./actuators.js";
 import config from "./config.js";
 import { setupStaticRoutes } from "./frontendRoute.js";
+import { setupWorkshopProxy } from "./workshopProxy.js";
 
 const server = express();
 
@@ -13,6 +14,7 @@ server.use(express.urlencoded({ extended: true }));
 setupActuators(server);
 
 server.set("trust proxy", 1);
+setupWorkshopProxy(server, config.workshop);
 addSimpleProxyHandler(server, { ingoingUrl: "/brevbaker", outgoingUrl: config.brevbakerApiProxy.url });
 
 setupStaticRoutes(server);
@@ -28,7 +30,12 @@ function addSimpleProxyHandler(server: Express, { ingoingUrl, outgoingUrl }: Sim
     createProxyMiddleware({
       target: outgoingUrl,
       changeOrigin: true,
-      logger: console,
+      on: {
+        proxyReq: (proxyRequest) => {
+          proxyRequest.removeHeader("cookie");
+          proxyRequest.removeHeader("authorization");
+        },
+      },
     }),
   );
 }

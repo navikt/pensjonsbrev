@@ -31,7 +31,20 @@ spec:
         - id: elastic
         - id: loki
 
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: true
+      claims:
+        groups:
+          - id: {{editor-group-id}}
+    sidecar:
+      enabled: true
+      autoLogin: false
+
   accessPolicy:
+    inbound:
+      rules: []
     outbound:
       rules:
         {{#each outboundApps as |rule|}}
@@ -39,6 +52,9 @@ spec:
             namespace: {{rule.namespace}}
             cluster: {{rule.cluster}}
         {{/each}}
+          - application: brevoppskrift-backend
+            namespace: pensjonsbrev
+            cluster: dev-gcp
 
   ingresses:
     {{#each ingresses as |url|}}

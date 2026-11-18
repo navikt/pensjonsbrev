@@ -1,0 +1,76 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: "{{app-name}}"
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  image: "{{image}}"
+  port: 8080
+  replicas:
+    min: 2
+    max: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      memory: 1024Mi
+  liveness:
+    path: /isAlive
+    port: 8080
+    initialDelay: 30
+    timeout: 3
+    periodSeconds: 10
+    failureThreshold: 10
+  readiness:
+    path: /isReady
+    port: 8080
+    initialDelay: 30
+    timeout: 3
+  prometheus:
+    enabled: trueN
+    path: /metrics
+  observability:
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: true
+      claims:
+        groups:
+          - id: "{{editor-group-id}}"
+  gcp:
+    sqlInstances:
+      - type: "{{database.postgresVersion}}"
+        tier: db-custom-1-3840
+        databases:
+          - name: brevoppskrift
+            envVarPrefix: DB
+  accessPolicy:
+    inbound:
+      rules:
+        {{#each inboundRules as |rule|}}
+        - application: "{{rule.application}}"
+          namespace: "{{rule.namespace}}"
+          cluster: "{{rule.cluster}}"
+        {{/each}}
+    outbound:
+      rules: []
+      external:
+        {{#each externalHosts as |host|}}
+        - host: "{{host}}"
+        {{/each}}
+  env:
+    - name: JAVA_TOOL_OPTIONS
+      value: "-XX:ActiveProcessorCount=2 -XX:+ExitOnOutOfMemoryError"
+    - name: EDITOR_GROUP_ID
+      value: "{{editor-group-id}}"
+    {{#each env as |e|}}
+    - name: "{{e.name}}"
+      value: "{{{e.value}}}"
+    {{/each}}

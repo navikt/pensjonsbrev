@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OpprettRouteImport } from './routes/opprett'
 import { Route as TemplatesRouteImport } from './routes/templates'
+import { Route as ArbeidsutkastIndexRouteImport } from './routes/arbeidsutkast.index'
+import { Route as ArbeidsutkastDraftIdRouteImport } from './routes/arbeidsutkast.$draftId'
 import { Route as TemplateMalTypeTemplateIdRouteImport } from './routes/template.$malType.$templateId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -18,9 +21,24 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OpprettRoute = OpprettRouteImport.update({
+  id: '/opprett',
+  path: '/opprett',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TemplatesRoute = TemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArbeidsutkastIndexRoute = ArbeidsutkastIndexRouteImport.update({
+  id: '/arbeidsutkast/',
+  path: '/arbeidsutkast/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArbeidsutkastDraftIdRoute = ArbeidsutkastDraftIdRouteImport.update({
+  id: '/arbeidsutkast/$draftId',
+  path: '/arbeidsutkast/$draftId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TemplateMalTypeTemplateIdRoute =
@@ -32,31 +50,62 @@ const TemplateMalTypeTemplateIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/opprett': typeof OpprettRoute
   '/templates': typeof TemplatesRoute
+  '/arbeidsutkast/$draftId': typeof ArbeidsutkastDraftIdRoute
+  '/arbeidsutkast/': typeof ArbeidsutkastIndexRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/opprett': typeof OpprettRoute
   '/templates': typeof TemplatesRoute
+  '/arbeidsutkast/$draftId': typeof ArbeidsutkastDraftIdRoute
+  '/arbeidsutkast': typeof ArbeidsutkastIndexRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/opprett': typeof OpprettRoute
   '/templates': typeof TemplatesRoute
+  '/arbeidsutkast/$draftId': typeof ArbeidsutkastDraftIdRoute
+  '/arbeidsutkast/': typeof ArbeidsutkastIndexRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/templates' | '/template/$malType/$templateId'
+  fullPaths:
+    | '/'
+    | '/opprett'
+    | '/templates'
+    | '/arbeidsutkast/$draftId'
+    | '/arbeidsutkast/'
+    | '/template/$malType/$templateId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/templates' | '/template/$malType/$templateId'
-  id: '__root__' | '/' | '/templates' | '/template/$malType/$templateId'
+  to:
+    | '/'
+    | '/opprett'
+    | '/templates'
+    | '/arbeidsutkast/$draftId'
+    | '/arbeidsutkast'
+    | '/template/$malType/$templateId'
+  id:
+    | '__root__'
+    | '/'
+    | '/opprett'
+    | '/templates'
+    | '/arbeidsutkast/$draftId'
+    | '/arbeidsutkast/'
+    | '/template/$malType/$templateId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  OpprettRoute: typeof OpprettRoute
   TemplatesRoute: typeof TemplatesRoute
+  ArbeidsutkastDraftIdRoute: typeof ArbeidsutkastDraftIdRoute
+  ArbeidsutkastIndexRoute: typeof ArbeidsutkastIndexRoute
   TemplateMalTypeTemplateIdRoute: typeof TemplateMalTypeTemplateIdRoute
 }
 
@@ -69,11 +118,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/opprett': {
+      id: '/opprett'
+      path: '/opprett'
+      fullPath: '/opprett'
+      preLoaderRoute: typeof OpprettRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/templates': {
       id: '/templates'
       path: '/templates'
       fullPath: '/templates'
       preLoaderRoute: typeof TemplatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arbeidsutkast/': {
+      id: '/arbeidsutkast/'
+      path: '/arbeidsutkast'
+      fullPath: '/arbeidsutkast/'
+      preLoaderRoute: typeof ArbeidsutkastIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arbeidsutkast/$draftId': {
+      id: '/arbeidsutkast/$draftId'
+      path: '/arbeidsutkast/$draftId'
+      fullPath: '/arbeidsutkast/$draftId'
+      preLoaderRoute: typeof ArbeidsutkastDraftIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/template/$malType/$templateId': {
@@ -88,7 +158,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  OpprettRoute: OpprettRoute,
   TemplatesRoute: TemplatesRoute,
+  ArbeidsutkastDraftIdRoute: ArbeidsutkastDraftIdRoute,
+  ArbeidsutkastIndexRoute: ArbeidsutkastIndexRoute,
   TemplateMalTypeTemplateIdRoute: TemplateMalTypeTemplateIdRoute,
 }
 export const routeTree = rootRouteImport

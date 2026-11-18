@@ -1,4 +1,5 @@
 app-name: "brevoppskrift-web"
+editor-group-id: "c331c338-5d39-45eb-a9c7-4e909c81768a"
 
 ingresses:
   - "https://pensjon-brevoppskrift.intern.dev.nav.no"
@@ -13,6 +14,14 @@ env:
     value: "8080"
   - name: BREVBAKER_API_URL
     value: "http://pensjon-brevbaker"
+  - name: BREVOPPSKRIFT_BACKEND_URL
+    value: "http://brevoppskrift-backend"
+  - name: BREVOPPSKRIFT_BACKEND_SCOPE
+    value: "api://dev-gcp.pensjonsbrev.brevoppskrift-backend/.default"
+  - name: PUBLIC_ORIGIN
+    value: "https://pensjon-brevoppskrift.intern.dev.nav.no"
+  - name: PUBLIC_ORIGINS
+    value: "https://pensjon-brevoppskrift.ansatt.dev.nav.no"
 
 outboundApps:
   - application: pensjon-brevbaker

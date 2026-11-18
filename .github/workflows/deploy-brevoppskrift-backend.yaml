@@ -1,0 +1,29 @@
+name: "deploy: brevoppskrift-backend pilot"
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: read
+  id-token: write
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/verify-brevoppskrift-backend.yaml
+    with:
+      buildImage: true
+    secrets: inherit
+  attest:
+    needs: verify
+    uses: ./.github/workflows/.salsa.yaml
+    with:
+      image: ${{ needs.verify.outputs.image }}
+    secrets: inherit
+  deploy-dev:
+    needs: [verify, attest]
+    uses: ./.github/workflows/.deploy.yaml
+    with:
+      image: ${{ needs.verify.outputs.image }}
+      cluster: dev-gcp
+      resource: brevoppskrift-backend/.nais/nais.yaml
+      vars: brevoppskrift-backend/.nais/dev.yaml
+    secrets: inherit
