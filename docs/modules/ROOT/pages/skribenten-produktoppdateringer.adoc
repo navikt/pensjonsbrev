@@ -14,7 +14,7 @@ I denne perioden har vi jobbet med å gjøre det enklere å redigere brev og ved
   - Knappen for å vise endringer er flyttet til verktøylinjen. ([#4041](https://github.com/navikt/pensjonsbrev/pull/4041))
 * **Nyhetsbjelle og lenker til brukerdokumentasjonen** gjør det lettere å følge med på det som er nytt. Første gang du bruker endringsvisningen, får du en kort omvisning. ([#4193](https://github.com/navikt/pensjonsbrev/pull/4193), [#4124](https://github.com/navikt/pensjonsbrev/pull/4124))
 * **Samhandlere:** Brev kan sendes digitalt til samhandlere med organisasjonsnummer. Mottakeren vises med organisasjonsnummer i stedet for adresse. ([#4000](https://github.com/navikt/pensjonsbrev/pull/4000), [#3972](https://github.com/navikt/pensjonsbrev/pull/3972), [#4060](https://github.com/navikt/pensjonsbrev/pull/4060))
-* **Nye brevkategorier i brevvelgeren:** «Lovendringer», «Vedtak – flytte mellom land» og «Vedtak – opphør/avslag». ([#4216](https://github.com/navikt/pensjonsbrev/pull/4216)) *Kontroller om alle tre er nye, eller om noen allerede fantes.*
+* **Nye brevkategorier i brevvelgeren:** «Lovendringer» og «Vedtak – opphør/avslag». (https://github.com/navikt/pensjonsbrev/pull/4216[#4216])
 * Du kan velge **førsteside** i brevvelgeren. ([#3866](https://github.com/navikt/pensjonsbrev/pull/3866))
 
 
