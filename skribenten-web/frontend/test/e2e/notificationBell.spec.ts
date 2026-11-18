@@ -220,6 +220,8 @@ test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan
   test("starter ikke automatisk, viser «Se hvordan» når endre mottaker er tilgjengelig i brevvelger, og går gjennom begge steg", async ({
     page,
   }) => {
+    // Short enough that the example has to scroll inside the modal.
+    await page.setViewportSize({ width: 1440, height: 760 });
     await page.goto("/saksnummer/123456/brevvelger");
     await expect(dot(page)).toBeVisible();
     await expect(page.getByRole("alertdialog")).toHaveCount(0);
@@ -252,14 +254,21 @@ test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan
       .analyze();
     expect(axe.violations).toEqual([]);
     await expect(stepOne.getByText("Steg 1 av 2")).toBeVisible();
-    await expect(modal.getByRole("cell", { name: "974760967", exact: true })).toBeVisible();
-    await expect(modal.getByText("Postboks 10 Skøyen")).toBeVisible();
+    await expect(modal.getByText("974760967", { exact: true })).toBeVisible();
+    await expect(modal.getByText("Postboks 10 Skøyen")).toHaveCount(0);
 
     await stepOne.getByRole("button", { name: "Neste" }).click();
     const stepTwo = modal.getByRole("alertdialog", { name: "Sendes i posten når organisasjonsnummer mangler" });
     await expect(stepTwo).toBeVisible();
     await expect(stepTwo.getByText("Steg 2 av 2")).toBeVisible();
-    await expect(stepTwo.getByRole("button", { name: "Forrige" })).toBeVisible();
+    await expect(modal.getByText("Postboks 10 Skøyen")).toBeVisible();
+    await expect(modal.getByText("974760967", { exact: true })).toHaveCount(0);
+
+    await stepTwo.getByRole("button", { name: "Forrige" }).click();
+    await expect(stepOne).toBeVisible();
+    await expect(modal.getByText("974760967", { exact: true })).toBeVisible();
+    await stepOne.getByRole("button", { name: "Neste" }).click();
+    await expect(stepTwo).toBeVisible();
 
     const acknowledged = page.waitForRequest(
       (request) =>
