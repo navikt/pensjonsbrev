@@ -1,0 +1,89 @@
+{
+  "id": "00000000-0000-0000-0000-000000000001",
+  "revision": 2,
+  "status": "WORK",
+  "sourceKey": "synthetic-source",
+  "draft": {
+    "formatVersion": 1,
+    "metadata": {
+      "name": "SyntheticLetter",
+      "type": "REDIGERBAR",
+      "targetModule": "UFOERE",
+      "languages": ["NB"],
+      "displayTitle": null,
+      "brevkode": "SYNTHETIC",
+      "kategori": null,
+      "brevkontekst": null,
+      "sakstyper": [],
+      "distribusjonstype": null,
+      "brevtype": null,
+      "featureToggle": null
+    },
+    "title": {"NB": "Synthetic"},
+    "fields": [
+      {"id": "field", "name": "amount", "kind": "NUMBER", "nullable": false, "children": [], "enumValues": [], "typeReference": null}
+    ],
+    "choices": [{"id": "choice", "name": "include", "prompt": {"NB": "Synthetic"}}],
+    "outline": [
+      {"type": "PARAGRAPH", "id": "block", "text": [{"type": "FIELD", "fieldId": "field", "formatter": "DEFAULT", "fallback": null}]}
+    ],
+    "source": {
+      "id": "synthetic-source",
+      "commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "files": {"ufoere/maler/Synthetic.kt": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+    },
+    "scenarios": [{"id": "scenario", "name": "Synthetic", "values": {"field": 10}, "choices": {"choice": true}}],
+    "comments": [
+      {
+        "id": "comment",
+        "anchor": {"type": "BLOCK", "blockId": "block", "fieldId": null, "choiceId": null, "language": "NB", "quote": null},
+        "text": "Synthetic",
+        "author": "Synthetic author",
+        "at": "2026-01-01T00:00:00Z",
+        "replies": [{"id": "reply", "text": "Synthetic", "author": "Synthetic author", "at": "2026-01-01T00:00:00Z"}],
+        "states": [{"id": "state", "resolved": false, "author": "Synthetic author", "at": "2026-01-01T00:00:00Z"}],
+        "role": null,
+        "scenarioId": "scenario"
+      }
+    ],
+    "baseline": null,
+    "attachments": [
+      {
+        "id": "bound-copy",
+        "revision": 3,
+        "fieldId": null,
+        "draft": {
+          "formatVersion": 1,
+          "metadata": {
+            "name": "SyntheticAttachment",
+            "type": "VEDLEGG",
+            "targetModule": "UFOERE",
+            "languages": ["NB"],
+            "displayTitle": null,
+            "brevkode": null,
+            "kategori": null,
+            "brevkontekst": null,
+            "sakstyper": [],
+            "distribusjonstype": null,
+            "brevtype": null,
+            "featureToggle": null
+          },
+          "title": {"NB": "Synthetic"},
+          "fields": [],
+          "choices": [],
+          "outline": [{"type": "PARAGRAPH", "id": "child-block", "text": [{"type": "TEXT", "text": {"NB": "Synthetic"}, "fontType": "PLAIN"}]}],
+          "source": null,
+          "scenarios": [],
+          "comments": [],
+          "baseline": null,
+          "attachments": []
+        }
+      }
+    ]
+  },
+  "createdAt": "2026-01-01T00:00:00Z",
+  "updatedAt": "2026-01-01T00:00:00Z",
+  "updatedBy": "Synthetic author",
+  "archivedAt": null,
+  "archiveReason": null
+}
