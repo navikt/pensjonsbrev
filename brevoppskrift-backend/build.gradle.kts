@@ -35,5 +35,16 @@ dependencies {
     implementation(libs.jackson.module.kotlin)
     implementation(libs.jackson.datatype.jsr310)
 
+    implementation(exposedLibs.core)
+    implementation(exposedLibs.jdbc)
+    implementation(exposedLibs.json)
+    implementation(exposedLibs.java.time)
+    implementation(libs.hikari.cp)
+    implementation(libs.postgresql)
+    implementation(libs.flyway.core)
+    implementation(libs.flyway.database.postgresql)
+    implementation(libs.micrometer.prometheus)
+
     testImplementation(libs.bundles.junit)
+    testImplementation(libs.testcontainers.postgresql)
 }
