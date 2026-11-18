@@ -54,6 +54,7 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
         val btfbNetto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
         val btfbBrutto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbbrutto()
         val btsbBrutto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto()
+        val btfbInntektbruktiavkortning = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
 
         title {
             text(bokmal { + "Endring av barnetillegg i uføretrygden" })
@@ -129,10 +130,7 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                     showIf (not(btsbInnvilget)
                             and btfbJusteringsbelopperAr.equalTo(0)
                             and btfbNetto.notEqualTo(0)) {
-                        text(bokmal { + "Til sammen er inntektene " })
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_fradrag_hoyere_lavere(pe))
-                        text(bokmal { + " enn fribeløpet ditt på " + btfbFribelop.format() + ". Barnetillegget ditt er derfor " })
-
+                        text(bokmal { + "Til sammen er inntektene " + ifElse(btfbfradrag.greaterThan(0), "høyere".expr(), "lavere".expr()) + " enn fribeløpet ditt på " + btfbFribelop.format() + ". Barnetillegget ditt er derfor " })
                         showIf(btfbfradrag.equalTo(0)) {
                             text(bokmal { + "ikke " })
                         }
@@ -168,9 +166,7 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                     }
 
                     showIf((btfbNetto.notEqualTo(0) and btfbJusteringsbelopperAr.equalTo(0))) {
-                        text(bokmal { + "inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " })
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_bruttoetterreduksjonbt_hoyere_lavere(pe))
-                        text(bokmal { + " enn " + btfbFribelop.format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " })
+                        text(bokmal { + "inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " + ifElse(btfbInntektbruktiavkortning.greaterThan(btfbFribelop), "høyere".expr(), "lavere".expr()) + " enn " + btfbFribelop.format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " })
                     }
 
                     showIf((((btsbFradrag.greaterThan(0)
