@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.InnvilgelseAvAfpFraser
 import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.RettTilAaKlageAfpPrivat
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettigheterPersonopplysninger
@@ -20,7 +21,6 @@ import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.p
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.brukerUnder70Aar
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.dinAfpPrivatBeregning
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.forsteEtterbetalingsDato
-import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.harEtterbetaling
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.pesysData.virkningFom
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.ISakstype
@@ -29,6 +29,8 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -38,9 +40,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Vedtak — innvilgelse av AFP i privat sektor (redigerbar).
  *
  * Konvertert fra Exstream-malen `PE_AF_04_111`. Brevkroppen er felles med
- * autobrev-varianten [InnvilgelseAvAfpAuto] (`PE_AF_04_115`) og ligger i
- * [InnvilgelseAvAfpInnhold]. Saksbehandler kan redigere selve teksten i
- * Skribenten ved behov.
+ * autobrev-varianten [InnvilgelseAvAfpAuto] (`PE_AF_04_115`) og er satt sammen
+ * av fraser fra [InnvilgelseAvAfpFraser]. Etterbetalingsavsnittet styres av
+ * saksbehandlervalget «Har etterbetaling». Saksbehandler kan redigere selve
+ * teksten i Skribenten ved behov.
  */
 @TemplateModelHelpers
 object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
@@ -64,6 +67,8 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
     ) {
+        val harEtterbetaling = saksbehandlervalg("harEtterbetaling", "Har etterbetaling").bool()
+
         title {
             text(
                 bokmal { +"Nav har innvilget søknaden din om avtalefestet pensjon (AFP) i privat sektor" },
@@ -73,18 +78,44 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
         }
 
         outline {
-            includePhrase(
-                InnvilgelseAvAfpInnhold(
-                    virkningFom = pesysData.virkningFom,
-                    totalPensjon = pesysData.afpBeregning.totalPensjon,
-                    kronetilleggBrutto = pesysData.afpBeregning.kronetilleggBrutto,
-                    kompensasjonstilleggBrutto = pesysData.afpBeregning.kompensasjonstilleggBrutto,
-                    brukerUnder70Aar = pesysData.brukerUnder70Aar,
-                    bosattINorge = pesysData.bosattINorge,
-                    forsteEtterbetalingsDato = pesysData.forsteEtterbetalingsDato,
-                    harEtterbetaling = pesysData.harEtterbetaling
-                ),
-            )
+            includePhrase(InnvilgelseAvAfpFraser.VedtakOverskrift)
+            includePhrase(InnvilgelseAvAfpFraser.InnvilgetBeloep(totalPensjon = pesysData.afpBeregning.totalPensjon, virkningFom = pesysData.virkningFom))
+            ifNotNull(pesysData.afpBeregning.kronetilleggBrutto) { brutto ->
+                showIf(brutto.greaterThan(0)) {
+                    includePhrase(InnvilgelseAvAfpFraser.Kronetillegg(brutto))
+                }
+            }
+            includePhrase(InnvilgelseAvAfpFraser.Utbetalingstidspunkt)
+
+            includePhrase(InnvilgelseAvAfpFraser.BegrunnelseOverskrift)
+            includePhrase(InnvilgelseAvAfpFraser.BegrunnelseAfpTilskottsloven)
+
+            showIf(pesysData.brukerUnder70Aar) {
+                includePhrase(InnvilgelseAvAfpFraser.AfpOgAlderspensjonOverskrift)
+                includePhrase(InnvilgelseAvAfpFraser.SammenMedAlderspensjon)
+                includePhrase(InnvilgelseAvAfpFraser.MinsteUttaksgrad)
+                includePhrase(InnvilgelseAvAfpFraser.Pensjonskalkulator)
+                includePhrase(InnvilgelseAvAfpFraser.ArbeidsinntektOgOpptjening)
+            }
+
+            showIf(harEtterbetaling) {
+                includePhrase(InnvilgelseAvAfpFraser.EtterbetalingOverskrift)
+                ifNotNull(pesysData.forsteEtterbetalingsDato) { dato ->
+                    includePhrase(InnvilgelseAvAfpFraser.Etterbetaling(dato))
+                }
+            }
+
+            includePhrase(InnvilgelseAvAfpFraser.SkattOverskrift)
+            showIf(pesysData.bosattINorge) {
+                includePhrase(InnvilgelseAvAfpFraser.SkattepliktBosattINorge(pesysData.afpBeregning.kompensasjonstilleggBrutto))
+                includePhrase(InnvilgelseAvAfpFraser.SjekkSkattekort)
+                includePhrase(InnvilgelseAvAfpFraser.SeSkattPaaDinPensjon)
+            }.orShow {
+                includePhrase(InnvilgelseAvAfpFraser.SkattepliktBosattUtland(pesysData.afpBeregning.kompensasjonstilleggBrutto))
+                includePhrase(InnvilgelseAvAfpFraser.SkattespoersmaalUtland)
+                includePhrase(InnvilgelseAvAfpFraser.SeSkattPaaDinPensjon)
+            }
+
             includePhrase(RettigheterPersonopplysninger)
             includePhrase(RettTilAaKlageAfpPrivat)
             includePhrase(HarDuSpoersmaal.alder)
