@@ -137,7 +137,7 @@ object Felles {
                 text(
                     bokmal { +"Meld fra til oss ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.ETTERSENDE_OMS_URL}." },
                     nynorsk { +"Meld frå til oss ved å fylle ut endringsskjemaet eller ettersende dokumentasjon på ${Constants.ETTERSENDE_OMS_URL}." },
-                    english { +"You can notify us by using the amendment form, and/or you can forward documentation at: ${Constants.ETTERSENDE_OMS_URL}." },
+                    english { +"You can notify us by using the amendment form, and/or you can forward documentation at: ${Constants.Engelsk.ETTERSENDE_OMS_URL}." },
                 )
             }
         }
