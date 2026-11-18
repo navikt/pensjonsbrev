@@ -27,6 +27,7 @@ export const keepMissingFromTemplateBlock: Action<LetterEditorState, [blockIndex
 
     block.id = null;
     block.missingFromTemplate = false;
+    block.templateStatus = "IN_TEMPLATE";
     draft.saveStatus = "DIRTY";
   },
 );

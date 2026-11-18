@@ -4259,15 +4259,21 @@ export interface components {
          * @enum {string}
          */
         EditBlockType: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH";
+        /**
+         * EditBlockTemplateStatus
+         * @enum {string}
+         */
+        EditBlockTemplateStatus: "IN_TEMPLATE" | "MISSING_FROM_TEMPLATE";
         /** EditBlockParagraph */
         EditBlockParagraph: {
             content: components["schemas"]["EditParagraphContent"][];
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
+            templateStatus: components["schemas"]["EditBlockTemplateStatus"];
+            missingFromTemplate: boolean;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4280,9 +4286,10 @@ export interface components {
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
+            templateStatus: components["schemas"]["EditBlockTemplateStatus"];
+            missingFromTemplate: boolean;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4295,9 +4302,10 @@ export interface components {
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
+            templateStatus: components["schemas"]["EditBlockTemplateStatus"];
+            missingFromTemplate: boolean;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4310,9 +4318,10 @@ export interface components {
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
+            templateStatus: components["schemas"]["EditBlockTemplateStatus"];
+            missingFromTemplate: boolean;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4950,6 +4959,7 @@ export type EditParagraphContentTableRow = components['schemas']['EditParagraphC
 export type EditParagraphContentTable = components['schemas']['EditParagraphContentTable'];
 export type EditParagraphContent = components['schemas']['EditParagraphContent'];
 export type EditBlockType = components['schemas']['EditBlockType'];
+export type EditBlockTemplateStatus = components['schemas']['EditBlockTemplateStatus'];
 export type EditBlockParagraph = components['schemas']['EditBlockParagraph'];
 export type EditBlockTitle1 = components['schemas']['EditBlockTitle1'];
 export type EditBlockTitle2 = components['schemas']['EditBlockTitle2'];
