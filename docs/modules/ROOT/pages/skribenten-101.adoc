@@ -90,7 +90,7 @@ For å attestere et vedtaksbrev, må brevet først og fremst være markert «kla
 === Hvordan ser attestant endringene som saksbehandler har gjort
 Attestanten kan velge å vise følgende i redigeringsbildet:
 
-1. tekst som er lagt til, markert i grønt
+1. tekst som er lagt til, markert i grønt med stipulert understrek
 2. tekst som er slettet, markert i rosa med gjennomstreking
 3. eller begge samtidig
 
