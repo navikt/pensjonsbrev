@@ -99,6 +99,51 @@ fun Expression<PEgruppe10>.harBrevkodeForRettTilBarnetillegg(): Expression<Boole
         "PE_UT_06_100", "PE_UT_04_103", "PE_UT_04_106", "PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200",
     )
 
+/** Som `harBrevkodeForRettTilBarnetillegg`, men inkluderer også 06_300. */
+fun Expression<PEgruppe10>.harBrevkodeForBarnetilleggsberegning(): Expression<Boolean> =
+    pebrevkode().isOneOf(
+        "PE_UT_04_101", "PE_UT_04_102", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300",
+        "PE_UT_06_100", "PE_UT_04_103", "PE_UT_04_106", "PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200",
+        "PE_UT_06_300",
+    )
+
+/**
+ * Tidl. `ut_tbu069v` (Exstream TBU069V): innvilget barnetillegg som faktisk er utbetalt, med
+ * brevtypevalg og dødsfallsunntak fra kallstedet.
+ */
+fun Expression<PEgruppe10>.skalViseBarnetilleggsberegning(
+    visForklaringForBrevtype: Expression<Boolean>,
+    utelatVedDoedsfall: Expression<Boolean>,
+): Expression<Boolean> =
+    (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or
+        vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and
+        (visForklaringForBrevtype and oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall)) and
+        ut_etteroppgjor_bt_utbetalt()
+
+/**
+ * Tidl. `ut_tbu606v_tbu611v` (Exstream TBU606V-TBU611V): som `skalViseBarnetilleggsberegning`, men
+ * vises også ved inntektsendring med endret barnetilleggsbeløp, uavhengig av brevtype.
+ */
+fun Expression<PEgruppe10>.skalViseBarnetilleggsstoerrelse(
+    visForklaringForBrevtype: Expression<Boolean>,
+    utelatVedDoedsfall: Expression<Boolean>,
+): Expression<Boolean> =
+    (
+        (
+            (vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or
+                vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and
+                (visForklaringForBrevtype and oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall))
+            ) or
+            (
+                vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") and
+                    (vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
+                        .notEqualTo(vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or
+                        vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
+                            .notEqualTo(vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()))
+                )
+        ) and
+        ut_etteroppgjor_bt_utbetalt()
+
 /** TBU501V: innvilget barnetillegg og dødsfallsunntak, med brevtypevalg fra kallstedet. */
 fun Expression<PEgruppe10>.skalViseRettTilBarnetillegg(
     visForklaringForBrevtype: Expression<Boolean>,
