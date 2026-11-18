@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU4050_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU4051_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.opplysningerOmETteroppgjoeretUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -689,7 +688,28 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
 
             //IF(PE_UT_TBU4050() = true) THEN      INCLUDE ENDIF
             showIf((pe.ut_tbu4050())){
-                includePhrase(TBU4050_Generated(pe))
+                paragraph {
+
+                    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT = 0 AND PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB = 0 AND PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0) THEN      INCLUDE ENDIF
+                    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().equalTo(0) and pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().equalTo(0) and pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0))){
+                        text (
+                            bokmal { + "Uføretrygden din og barnetillegg" },
+                            nynorsk { + "Uføretrygda di og barnetillegg" },
+                        )
+                    }
+
+                    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0 AND PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 AND PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB = 0) THEN      INCLUDE ENDIF
+                    showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().equalTo(0))){
+                        text (
+                            bokmal { + "Barnetillegg" },
+                            nynorsk { + "Barnetillegg" },
+                        )
+                    }
+                    text (
+                        bokmal { + " for barn som bor med begge foreldre har vært riktig beregnet ut fra inntekt i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + "." },
+                        nynorsk { + " for barn som bur saman med begge foreldra sine har vore rett berekna ut frå inntekta i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + "." },
+                    )
+                }
             }
 
             //IF(PE_UT_TBU4051() = true) THEN      INCLUDE ENDIF
