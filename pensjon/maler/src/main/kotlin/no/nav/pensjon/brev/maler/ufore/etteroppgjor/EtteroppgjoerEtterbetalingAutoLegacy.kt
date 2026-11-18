@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.selectors.etteroppgjoerEtterbetalingAutoDto.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.selectors.etteroppgjoerEtterbetalingAutoDto.pe
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
@@ -228,7 +229,24 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
                     nynorsk { + "Du må melde frå om endringar i inntekta" },
                 )
             }
-            includePhrase(TBU2278_Generated(pe))
+            paragraph {
+                text (
+                    bokmal { + "Det er viktig at du melder fra om inntektsendringer slik at uføretrygden " },
+                    nynorsk { + "Det er viktig at du melder frå om inntektsendringar, slik at uføretrygda " },
+                )
+
+                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
+                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                    text (
+                        bokmal { + "og barnetillegget " },
+                        nynorsk { + "og barnetillegget " },
+                    )
+                }
+                text (
+                    bokmal { + "blir så riktig som mulig. Du kan enkelt melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL." },
+                    nynorsk { + "blir så riktig som mogleg. Du kan enkelt melde frå om inntektsendringar under menyvalet " + quoted("uføretrygd") +" når du loggar deg inn på $NAV_URL." },
+                )
+            }
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.HarDuSpoersmaal(Constants.ETTEROPPGJOR_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
         }
