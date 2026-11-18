@@ -32,7 +32,7 @@ class FerdigRedigertPolicy {
         literals.filter { it.tags.contains(ElementTags.FRITEKST) && it.editedText == null }
 
     private fun Edit.Letter.alleDuplikateAvsnittErHaandtert(): Boolean =
-        blocks.all { it.missingFromTemplate != true }
+        blocks.none { it.status == Edit.Block.Status.MISSING_FROM_TEMPLATE }
 }
 
 private val Edit.Letter.literals: List<Literal>

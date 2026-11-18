@@ -2,7 +2,9 @@
 
 package no.nav.pensjon.brev.skribenten.letter
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.InterneDataklasser
@@ -98,11 +100,34 @@ object Edit {
             TITLE1, TITLE2, TITLE3, PARAGRAPH,
         }
 
+        enum class Status {
+            PRESENT, MISSING_FROM_TEMPLATE, NEW_FROM_TEMPLATE,
+        }
+
         abstract val editable: Boolean
         abstract val content: List<ParagraphContent>
         abstract val deletedContent: List<Int>
         abstract val originalType: Type?
-        abstract val missingFromTemplate: Boolean
+        abstract val status: Status
+
+        /*
+         TODO: Dette feltet skal vi slette så fort vi kan, dvs når frontend er oppdatert
+          og det ikke lenger krøller til eksisterende kladder som har feltet
+         */
+        @get:JsonProperty("missingFromTemplate")
+        val missingFromTemplate: Boolean
+            get() = status == Status.MISSING_FROM_TEMPLATE
+
+        companion object {
+            internal fun statusFraJson(status: Status?, missingFromTemplate: Boolean?): Status {
+                val gjeldende = status ?: Status.PRESENT
+                return when {
+                    missingFromTemplate == true -> Status.MISSING_FROM_TEMPLATE
+                    missingFromTemplate == false && gjeldende == Status.MISSING_FROM_TEMPLATE -> Status.PRESENT
+                    else -> gjeldende
+                }
+            }
+        }
 
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
@@ -116,8 +141,21 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-        ) : Block(Type.TITLE1)
+            override val status: Status = Status.PRESENT,
+        ) : Block(Type.TITLE1) {
+            // TODO: Fjernes når frontend er oppdatert og ikke lenger sender missingFromTemplate
+            @JsonCreator
+            constructor(
+                @JsonProperty("id") id: Int?,
+                @JsonProperty("editable") editable: Boolean,
+                @JsonProperty("content") content: List<ParagraphContent.Text>,
+                @JsonProperty("deletedContent") deletedContent: List<Int>?,
+                @JsonProperty("originalType") originalType: Type?,
+                @JsonProperty("parentId") parentId: Int?,
+                @JsonProperty("status") status: Status?,
+                @JsonProperty("missingFromTemplate") missingFromTemplate: Boolean?,
+            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, statusFraJson(status, missingFromTemplate))
+        }
 
         data class Title2(
             override val id: Int?,
@@ -126,8 +164,21 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-        ) : Block(Type.TITLE2)
+            override val status: Status = Status.PRESENT,
+        ) : Block(Type.TITLE2) {
+            // TODO: Fjernes når frontend er oppdatert og ikke lenger sender missingFromTemplate
+            @JsonCreator
+            constructor(
+                @JsonProperty("id") id: Int?,
+                @JsonProperty("editable") editable: Boolean,
+                @JsonProperty("content") content: List<ParagraphContent.Text>,
+                @JsonProperty("deletedContent") deletedContent: List<Int>?,
+                @JsonProperty("originalType") originalType: Type?,
+                @JsonProperty("parentId") parentId: Int?,
+                @JsonProperty("status") status: Status?,
+                @JsonProperty("missingFromTemplate") missingFromTemplate: Boolean?,
+            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, statusFraJson(status, missingFromTemplate))
+        }
 
         data class Title3(
             override val id: Int?,
@@ -136,8 +187,21 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-        ) : Block(Type.TITLE3)
+            override val status: Status = Status.PRESENT,
+        ) : Block(Type.TITLE3) {
+            // TODO: Fjernes når frontend er oppdatert og ikke lenger sender missingFromTemplate
+            @JsonCreator
+            constructor(
+                @JsonProperty("id") id: Int?,
+                @JsonProperty("editable") editable: Boolean,
+                @JsonProperty("content") content: List<ParagraphContent.Text>,
+                @JsonProperty("deletedContent") deletedContent: List<Int>?,
+                @JsonProperty("originalType") originalType: Type?,
+                @JsonProperty("parentId") parentId: Int?,
+                @JsonProperty("status") status: Status?,
+                @JsonProperty("missingFromTemplate") missingFromTemplate: Boolean?,
+            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, statusFraJson(status, missingFromTemplate))
+        }
 
         data class Paragraph(
             override val id: Int?,
@@ -146,8 +210,21 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-        ) : Block(Type.PARAGRAPH)
+            override val status: Status = Status.PRESENT,
+        ) : Block(Type.PARAGRAPH) {
+            // TODO: Fjernes når frontend er oppdatert og ikke lenger sender missingFromTemplate
+            @JsonCreator
+            constructor(
+                @JsonProperty("id") id: Int?,
+                @JsonProperty("editable") editable: Boolean,
+                @JsonProperty("content") content: List<ParagraphContent>,
+                @JsonProperty("deletedContent") deletedContent: List<Int>?,
+                @JsonProperty("originalType") originalType: Type?,
+                @JsonProperty("parentId") parentId: Int?,
+                @JsonProperty("status") status: Status?,
+                @JsonProperty("missingFromTemplate") missingFromTemplate: Boolean?,
+            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, statusFraJson(status, missingFromTemplate))
+        }
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
@@ -406,6 +483,3 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
-
-
-

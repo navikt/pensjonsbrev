@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -144,7 +145,9 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(oppdatert).isSuccess {
             assertThat(it.redigertBrev).isNotEqualTo(original.redigertBrev)
-            assertThat(it.redigertBrev).isEqualTo(original.redigertBrev.updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev).isEqualTo(original.redigertBrev.updateEditedLetter(freshRender, previousRender = letter.toEdit()))
+            assertThat(it.redigertBrev.blocks.map { b -> b.status == Edit.Block.Status.NEW_FROM_TEMPLATE })
+                .isEqualTo(letter.blocks.map { false } + true)
         }
     }
 
