@@ -31,4 +31,29 @@ class ListAlignmentTest {
     fun `returns empty set when no ids are shared`() {
         assertEquals(emptySet<Int>(), ListAlignment.matchedRenderedIndices(elements(4, 5), elements(1, 2, 3)))
     }
+
+    @Test
+    fun `withoutDeleted drops rendered elements without id`() {
+        assertEquals(elements(1, 2), ListAlignment.withoutDeleted(elements(1, 2), elements(null, 1, 2), emptyList()))
+    }
+
+    @Test
+    fun `withoutDeleted removes the unmatched first occurrence of a duplicated id`() {
+        assertEquals(elements(2, 1), ListAlignment.withoutDeleted(elements(2, 1), elements(1, 2, 1), listOf(1)))
+    }
+
+    @Test
+    fun `withoutDeleted removes the unmatched second occurrence of a duplicated id`() {
+        assertEquals(elements(1, 2), ListAlignment.withoutDeleted(elements(1, 2), elements(1, 2, 1), listOf(1)))
+    }
+
+    @Test
+    fun `prunedDeleted drops ids no longer rendered`() {
+        assertEquals(listOf(1), ListAlignment.prunedDeleted(listOf(1, 3), elements(2), elements(1, 2)))
+    }
+
+    @Test
+    fun `prunedDeleted drops ids whose only rendered occurrence is matched by edited`() {
+        assertEquals(emptyList<Int>(), ListAlignment.prunedDeleted(listOf(1), elements(1), elements(1)))
+    }
 }

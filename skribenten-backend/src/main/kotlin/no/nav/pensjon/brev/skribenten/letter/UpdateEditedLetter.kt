@@ -56,37 +56,16 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
             sakspart = rendered.sakspart,
             signatur = mergeSignatur(edited.signatur, rendered.signatur),
             blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock),
-            deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
+            deletedBlocks = ListAlignment.prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
         )
 
     fun mergeAttachment(edited: Edit.Attachment, rendered: Edit.Attachment): Edit.Attachment =
         edited.copy(
             title = mergeTitle(edited.title, rendered.title),
             blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock),
-            deletedBlocks = prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
+            deletedBlocks = ListAlignment.prunedDeleted(edited.deletedBlocks, edited.blocks, rendered.blocks),
             includeSakspart = rendered.includeSakspart,
         )
-
-    /**
-     * Caps a multiset of deleted ids (one entry per deleted occurrence, see [mergeList]) at the
-     * number of rendered occurrences of that id that are not aligned with [edited]. This uses the
-     * same alignment as [mergeList], so an edited occurrence that is no longer in the template
-     * cannot use up capacity belonging to a deleted occurrence that is still rendered.
-     */
-    private fun prunedDeleted(deleted: List<Int>, edited: List<Edit.Identifiable>, rendered: List<Edit.Identifiable>): List<Int> {
-        if (deleted.isEmpty()) return emptyList()
-
-        val matchedRenderedIndices = ListAlignment.matchedRenderedIndices(edited, rendered)
-        val unmatchedRenderedCounts = rendered
-            .filterIndexed { index, element -> element.id != null && index !in matchedRenderedIndices }
-            .groupingBy { it.id }
-            .eachCount()
-        val deletedCounts = deleted.groupingBy { it }.eachCount()
-
-        return deletedCounts.flatMap { (id, deletedCount) ->
-            List(minOf(deletedCount, unmatchedRenderedCounts[id] ?: 0)) { id }
-        }
-    }
 
     /**
      * Merges a list of [edited] elements with a list of freshly [rendered] elements.
@@ -116,26 +95,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         deleted: List<Int>,
         merge: (E, E) -> E,
     ): List<E> = buildList {
-        // A queue of unprocessed rendered elements. `deleted` is a multiset (one entry per actually
-        // deleted occurrence, not a "this id is deleted" flag). The LCS alignment identifies which
-        // occurrences are still represented by `edited`; deletion counts are consumed only from
-        // the unmatched occurrences, preserving the surrounding content order.
-        val remainingRendered = if (deleted.isEmpty()) {
-            rendered.filter { it.id != null }.toMutableList()
-        } else {
-            val deletedCounts = deleted.groupingBy { it }.eachCount().toMutableMap()
-            val matchedRenderedIndices = ListAlignment.matchedRenderedIndices(edited, rendered)
-            rendered.mapIndexedNotNull { index, element ->
-                val id = element.id ?: return@mapIndexedNotNull null
-                val remaining = deletedCounts[id]
-                if (index !in matchedRenderedIndices && remaining != null && remaining > 0) {
-                    deletedCounts[id] = remaining - 1
-                    null
-                } else {
-                    element
-                }
-            }.toMutableList()
-        }
+        val remainingRendered = ListAlignment.withoutDeleted(edited, rendered, deleted).toMutableList()
 
         // We zip-merge the two lists with edited as basis, then we pick matching elements of remainingRendered.
         edited.forEach { currentEdited ->
@@ -174,7 +134,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
         edited.copy(
             text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent),
-            deletedContent = prunedDeleted(edited.deletedContent, edited.text, rendered.text)
+            deletedContent = ListAlignment.prunedDeleted(edited.deletedContent, edited.text, rendered.text)
         )
 
     private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block =
@@ -187,22 +147,22 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                     edited.deletedContent,
                     ::mergeParagraphContent
                 ),
-                deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
+                deletedContent = ListAlignment.prunedDeleted(edited.deletedContent, edited.content, rendered.content),
             )
 
             is Edit.Block.Title1 -> edited.copy(
                 content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
-                deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.textContent()),
+                deletedContent = ListAlignment.prunedDeleted(edited.deletedContent, edited.content, rendered.textContent()),
             )
 
             is Edit.Block.Title2 -> edited.copy(
                 content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
-                deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.textContent()),
+                deletedContent = ListAlignment.prunedDeleted(edited.deletedContent, edited.content, rendered.textContent()),
             )
 
             is Edit.Block.Title3 -> edited.copy(
                 content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
-                deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.textContent()),
+                deletedContent = ListAlignment.prunedDeleted(edited.deletedContent, edited.content, rendered.textContent()),
             )
 
         }
@@ -255,7 +215,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                 if (rendered is Edit.ParagraphContent.ItemList) {
                     edited.copy(
                         items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems),
-                        deletedItems = prunedDeleted(edited.deletedItems, edited.items, rendered.items),
+                        deletedItems = ListAlignment.prunedDeleted(edited.deletedItems, edited.items, rendered.items),
                     )
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
@@ -273,7 +233,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                     edited.copy(
                         header = mergeTableHeader(edited.header, rendered.header),
                         rows = mergeList(edited, edited.rows, rendered.rows, edited.deletedRows, ::mergeRows),
-                        deletedRows = prunedDeleted(edited.deletedRows, edited.rows, rendered.rows),
+                        deletedRows = ListAlignment.prunedDeleted(edited.deletedRows, edited.rows, rendered.rows),
                     )
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
@@ -283,7 +243,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
     private fun mergeTableHeader(edited: Edit.ParagraphContent.Table.Header, rendered: Edit.ParagraphContent.Table.Header): Edit.ParagraphContent.Table.Header =
         edited.copy(
             colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, edited.deletedColSpecs, ::mergeColumnSpec),
-            deletedColSpecs = prunedDeleted(edited.deletedColSpecs, edited.colSpec, rendered.colSpec),
+            deletedColSpecs = ListAlignment.prunedDeleted(edited.deletedColSpecs, edited.colSpec, rendered.colSpec),
         )
 
     private fun mergeColumnSpec(
@@ -295,19 +255,19 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
     private fun mergeCell(edited: Edit.ParagraphContent.Table.Cell, rendered: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         edited.copy(
             text = mergeList(edited, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent),
-            deletedContent = prunedDeleted(edited.deletedContent, edited.text, rendered.text),
+            deletedContent = ListAlignment.prunedDeleted(edited.deletedContent, edited.text, rendered.text),
         )
 
     private fun mergeRows(edited: Edit.ParagraphContent.Table.Row, rendered: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
         edited.copy(
             cells = mergeList(edited, edited.cells, rendered.cells, edited.deletedCells, ::mergeCell),
-            deletedCells = prunedDeleted(edited.deletedCells, edited.cells, rendered.cells),
+            deletedCells = ListAlignment.prunedDeleted(edited.deletedCells, edited.cells, rendered.cells),
         )
 
     private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
         edited.copy(
             content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent),
-            deletedContent = prunedDeleted(edited.deletedContent, edited.content, rendered.content),
+            deletedContent = ListAlignment.prunedDeleted(edited.deletedContent, edited.content, rendered.content),
         )
 
 

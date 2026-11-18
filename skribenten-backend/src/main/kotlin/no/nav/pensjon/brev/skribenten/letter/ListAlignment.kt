@@ -3,6 +3,50 @@ package no.nav.pensjon.brev.skribenten.letter
 internal object ListAlignment {
 
     /**
+     * Returns the elements of [rendered] that should be merged with [edited]: elements without id are dropped,
+     * and so are occurrences deleted by the caseworker. [deleted] is a multiset (one entry per actually deleted
+     * occurrence, not a "this id is deleted" flag). Deletion counts are consumed only from rendered occurrences
+     * that are not aligned with [edited] (see [matchedRenderedIndices]), preserving the surrounding content order.
+     */
+    fun <E : Edit.Identifiable> withoutDeleted(edited: List<Edit.Identifiable>, rendered: List<E>, deleted: List<Int>): List<E> {
+        if (deleted.isEmpty()) return rendered.filter { it.id != null }
+
+        val deletedCounts = deleted.groupingBy { it }.eachCount().toMutableMap()
+        val matchedRenderedIndices = matchedRenderedIndices(edited, rendered)
+        return rendered.mapIndexedNotNull { index, element ->
+            val id = element.id ?: return@mapIndexedNotNull null
+            val remaining = deletedCounts[id]
+            if (index !in matchedRenderedIndices && remaining != null && remaining > 0) {
+                deletedCounts[id] = remaining - 1
+                null
+            } else {
+                element
+            }
+        }
+    }
+
+    /**
+     * Caps a multiset of deleted ids (one entry per deleted occurrence, see [withoutDeleted]) at the
+     * number of rendered occurrences of that id that are not aligned with [edited]. This uses the
+     * same alignment as [withoutDeleted], so an edited occurrence that is no longer in the template
+     * cannot use up capacity belonging to a deleted occurrence that is still rendered.
+     */
+    fun prunedDeleted(deleted: List<Int>, edited: List<Edit.Identifiable>, rendered: List<Edit.Identifiable>): List<Int> {
+        if (deleted.isEmpty()) return emptyList()
+
+        val matchedRenderedIndices = matchedRenderedIndices(edited, rendered)
+        val unmatchedRenderedCounts = rendered
+            .filterIndexed { index, element -> element.id != null && index !in matchedRenderedIndices }
+            .groupingBy { it.id }
+            .eachCount()
+        val deletedCounts = deleted.groupingBy { it }.eachCount()
+
+        return deletedCounts.flatMap { (id, deletedCount) ->
+            List(minOf(deletedCount, unmatchedRenderedCounts[id] ?: 0)) { id }
+        }
+    }
+
+    /**
      * Returns the indices in [rendered] that form a longest common subsequence with the template
      * elements still present in [edited]. A deletion marker for a duplicated id is then applied
      * only to rendered occurrences outside this alignment. That preserves whether the caseworker
