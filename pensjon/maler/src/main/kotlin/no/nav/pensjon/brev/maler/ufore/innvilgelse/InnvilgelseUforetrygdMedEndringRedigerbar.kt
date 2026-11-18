@@ -370,7 +370,12 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
                     )
                 }
             }.orShowIf((uforegrad.equalTo(100) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().equalTo(0))) {
-                includePhrase(TBU1205_Generated(pe))
+                paragraph {
+                    text(
+                        bokmal { +"Du kan tjene " + pe.ut_bunnfradrag_faktisk().format() + " uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt. " },
+                        nynorsk { +"Du kan tene " + pe.ut_bunnfradrag_faktisk().format() + " utan at uføretrygda di blir redusert. Dette er botnfrådraget ditt. " },
+                    )
+                }
             }
 
             showIf((((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).lessThan(100) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).greaterThan(0)) or ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()).greaterThan(0) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).equalTo(100)))) {
