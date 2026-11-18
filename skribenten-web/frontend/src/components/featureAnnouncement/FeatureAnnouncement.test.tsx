@@ -42,6 +42,8 @@ const Harness = ({
   showFrom,
   showUntil = "2999-12-31",
   replayableUntil,
+  automatic,
+  dialog,
 }: {
   when?: boolean;
   multiStep?: boolean;
@@ -51,6 +53,8 @@ const Harness = ({
   showFrom?: string;
   showUntil?: string;
   replayableUntil?: string;
+  automatic?: boolean;
+  dialog?: HTMLDialogElement;
 }) => {
   const [first, setFirst] = useState<HTMLElement | null>(null);
   const [second, setSecond] = useState<HTMLElement | null>(null);
@@ -67,6 +71,8 @@ const Harness = ({
       )}
       <div ref={setSecond}>Hjelp</div>
       <FeatureAnnouncement
+        automatic={automatic}
+        dialog={dialog}
         id="test-nyhet"
         onDismiss={onDismiss}
         replayableUntil={replayableUntil}
@@ -172,7 +178,7 @@ const clickDimmedPage = () => {
   fireEvent.click(dimmedArea);
 };
 
-const appendToBody = (element: HTMLElement) => {
+const appendToBody = <T extends HTMLElement>(element: T) => {
   document.body.appendChild(element);
   onTestFinished(() => element.remove());
   return element;
@@ -467,6 +473,48 @@ describe("<FeatureAnnouncement />", () => {
     await findAnnouncement();
   });
 
+  test("kan vises inni sin egen dialog, men venter hvis en annen dialog er åpen", async () => {
+    const dialog = appendToBody(document.createElement("dialog"));
+    dialog.open = true;
+    const otherDialog = appendToBody(document.createElement("dialog"));
+    otherDialog.open = true;
+    renderWithQueryClient(<Harness dialog={dialog} />);
+    await settle();
+    expect(queryAnnouncement()).toBeNull();
+
+    act(() => otherDialog.removeAttribute("open"));
+    const announcement = await findAnnouncement();
+    expect(dialog.contains(announcement)).toBe(true);
+
+    dialog.addEventListener("keydown", (event) => event.stopPropagation());
+    const escapeEvent = new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true });
+    fireEvent(announcement, escapeEvent);
+    await waitFor(() => expect(queryAnnouncement()).toBeNull());
+    expect(escapeEvent.defaultPrevented).toBe(true);
+    expect(dialog.open).toBe(true);
+    expect(acknowledgeMock).not.toHaveBeenCalled();
+  });
+
+  test("en nyhet utenfor dialogen blokkerer ikke en nyhet inni dialogen", async () => {
+    const { rerender } = renderWithQueryClient(<Harness />);
+    await findAnnouncement();
+    const dialog = appendToBody(document.createElement("dialog"));
+    act(() => {
+      dialog.open = true;
+    });
+    rerender(
+      <>
+        <Harness />
+        <Harness dialog={dialog} />
+      </>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getAllByRole("alertdialog")).toHaveLength(1);
+      expect(dialog.contains(screen.getByRole("alertdialog"))).toBe(true);
+    });
+  });
+
   test("viser bare én av to samtidige nyheter, uten å blinke, og den andre etter at den første er lukket", async () => {
     const user = userEvent.setup();
     const shownDialogs = new Set<Element>();
@@ -614,6 +662,27 @@ describe("<FeatureAnnouncement />", () => {
       act(() => requestAnnouncementReplay("test-nyhet"));
 
       expect(await findAnnouncement()).not.toBeNull();
+    });
+
+    test("starter ikke automatisk når automatic er false, men er tilgjengelig for «Se hvordan»", async () => {
+      const user = userEvent.setup();
+      renderWithQueryClient(
+        <>
+          <Harness automatic={false} multiStep />
+          <AvailabilityProbe />
+        </>,
+      );
+      await settle();
+      expect(queryAnnouncement()).toBeNull();
+      expect(screen.getByText("tilgjengelig")).not.toBeNull();
+
+      act(() => requestAnnouncementReplay("test-nyhet"));
+
+      expect(await findAnnouncement("Første nyhet")).not.toBeNull();
+      await user.click(screen.getByRole("button", { name: "Neste" }));
+      expect(await findAnnouncement("Andre nyhet")).not.toBeNull();
+      await user.click(screen.getByRole("button", { name: "Skjønner!" }));
+      await waitFor(() => expect(acknowledgeMock).toHaveBeenCalledWith("test-nyhet"));
     });
 
     test("vises ikke, og kan ikke vises på nytt, før publiseringsdatoen", async () => {

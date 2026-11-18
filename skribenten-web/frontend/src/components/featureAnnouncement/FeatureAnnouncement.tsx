@@ -57,6 +57,8 @@ type FeatureAnnouncementProps = {
    * Defaults to `showUntil`.
    */
   replayableUntil?: string;
+  /** Whether the announcement starts automatically before `showUntil`. Defaults to true. */
+  automatic?: boolean;
   /** Pass a memoized array: a new identity restarts the step configuration in Joyride. */
   steps: FeatureAnnouncementStep[];
   /** All contextual conditions (role, route, data and targets available) combined by the caller. */
@@ -64,6 +66,7 @@ type FeatureAnnouncementProps = {
   onDismiss?: () => void;
   /** Dims the page around each step's target. Defaults to true. */
   spotlight?: boolean;
+  dialog?: HTMLDialogElement | null;
 };
 
 /**
@@ -95,10 +98,12 @@ const FeatureAnnouncementInstance = ({
   showFrom,
   showUntil,
   replayableUntil,
+  automatic = true,
   steps,
   when,
   onDismiss,
   spotlight = true,
+  dialog,
   replayGeneration,
   closedWithoutCompleting,
   onCloseWithoutCompleting,
@@ -111,7 +116,7 @@ const FeatureAnnouncementInstance = ({
   const [unsuccessfulRun, setUnsuccessfulRun] = useState(false);
 
   const published = isAnnouncementPublished(showFrom);
-  const expired = isAnnouncementExpired(showUntil);
+  const expired = !automatic || isAnnouncementExpired(showUntil);
   const replayable = !isAnnouncementExpired(replayableUntil ?? showUntil);
   const replaying = replayGeneration > 0;
   const available = when && published && (!expired || replayable) && steps.length > 0;
@@ -153,8 +158,8 @@ const FeatureAnnouncementInstance = ({
   // announcement becomes eligible, instead of being treated as dismissed.
   if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);
   const pending = eligible && !unsuccessfulRun;
-  const hasTurn = useAnnouncementTurn(pending);
-  const blocked = useIsBlockedByOpenDialog(pending && hasTurn);
+  const blocked = useIsBlockedByOpenDialog(pending, dialog);
+  const hasTurn = useAnnouncementTurn(pending && !blocked);
   const run = pending && hasTurn && !blocked;
 
   const joyrideSteps = useMemo<Step[]>(
@@ -177,6 +182,7 @@ const FeatureAnnouncementInstance = ({
 
   const { state, Tour } = useJoyride({
     run,
+    portalElement: dialog ?? undefined,
     steps: joyrideSteps,
     continuous: steps.length > 1,
     // Joyride restarts from initialStepIndex whenever `run` turns true again, e.g. after a blocking dialog closes.
@@ -191,7 +197,11 @@ const FeatureAnnouncementInstance = ({
     floatingOptions: { strategy: "fixed" },
     styles: {
       // Aksel's backdrop token, toned down: the announcement should draw attention, not feel like an error.
-      overlay: { backgroundColor: "var(--ax-bg-overlay)", opacity: 0.4 },
+      overlay: {
+        backgroundColor: "var(--ax-bg-overlay)",
+        opacity: 0.4,
+        position: dialog ? "fixed" : "absolute",
+      },
     },
     options: {
       arrowBase: 20,
@@ -230,10 +240,13 @@ const FeatureAnnouncementInstance = ({
   useEffect(() => {
     if (!tooltipVisible) return;
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") end(false);
+      if (event.key === "Escape") {
+        event.preventDefault();
+        end(false);
+      }
     };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
+    document.addEventListener("keydown", closeOnEscape, true);
+    return () => document.removeEventListener("keydown", closeOnEscape, true);
   }, [tooltipVisible, end]);
 
   return run ? Tour : null;
@@ -278,18 +291,24 @@ function useAnnouncementTurn(pending: boolean) {
   return useSyncExternalStore(subscribeToQueue, () => pending && announcementQueue[0] === key);
 }
 
-/** True while a native dialog (e.g. an Aksel Modal) is open. Only observes the DOM while `enabled`. */
-function useIsBlockedByOpenDialog(enabled: boolean) {
-  const [blocked, setBlocked] = useState(false);
+/** True while a native dialog (e.g. an Aksel Modal) blocks the tour, or while the tour's own dialog is not open yet. */
+function useIsBlockedByOpenDialog(enabled: boolean, ownDialog?: HTMLDialogElement | null) {
+  const [otherDialogOpen, setOtherDialogOpen] = useState(false);
+  const [ownDialogOpen, setOwnDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
-    const update = () => setBlocked(document.querySelector("dialog[open]") !== null);
+    const update = () => {
+      setOwnDialogOpen(ownDialog !== undefined ? ownDialog?.open === true : true);
+      setOtherDialogOpen([...document.querySelectorAll("dialog[open]")].some((dialog) => dialog !== ownDialog));
+    };
     update();
     const observer = new MutationObserver(update);
     observer.observe(document.body, { attributes: true, attributeFilter: ["open"], childList: true, subtree: true });
     return () => observer.disconnect();
-  }, [enabled]);
+  }, [enabled, ownDialog]);
 
-  return enabled && blocked;
+  if (!enabled) return false;
+  if (ownDialog !== undefined && (!ownDialog?.open || !ownDialogOpen)) return true;
+  return otherDialogOpen;
 }
