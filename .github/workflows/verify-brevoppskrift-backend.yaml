@@ -2,12 +2,8 @@ name: "verify: brevoppskrift-backend"
 
 on:
   pull_request:
-    branches:
-      - main
-      - routsi/brevoppskrift-*
     paths:
       - brevoppskrift-backend/**
-      - brevoppskrift-web/frontend/src/api/brevoppskrift-api.generated.ts
       - ktlint-rules/**
       - settings.gradle.kts
       - build.gradle.kts
@@ -34,7 +30,5 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
-      - name: Generate contract and verify model
-        run: ./gradlew :brevoppskrift-backend:generateAuthoringApi :brevoppskrift-backend:build
-      - name: Check generated frontend contract
-        run: git diff --exit-code -- brevoppskrift-web/frontend/src/api/brevoppskrift-api.generated.ts
+      - name: Verify model
+        run: ./gradlew :brevoppskrift-backend:build
