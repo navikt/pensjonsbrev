@@ -2,6 +2,7 @@
 
 package no.nav.pensjon.brev.skribenten.letter
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -102,7 +103,32 @@ object Edit {
         abstract val content: List<ParagraphContent>
         abstract val deletedContent: List<Int>
         abstract val originalType: Type?
-        abstract val missingFromTemplate: Boolean
+        abstract val templateStatus: TemplateStatus
+
+        @Deprecated(
+            "Use templateStatus instead",
+            replaceWith = ReplaceWith("templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE")
+        )
+        val missingFromTemplate: Boolean
+            get() = templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE
+
+        enum class TemplateStatus {
+            IN_TEMPLATE, MISSING_FROM_TEMPLATE;
+
+            companion object {
+                /**
+                 * Resolves the status from JSON that may contain the legacy boolean `missingFromTemplate`, either alone
+                 * (stored before [TemplateStatus] existed) or alongside [templateStatus] (the frontend clears
+                 * `missingFromTemplate` when keeping a block that is missing from the template).
+                 */
+                fun fromJson(templateStatus: TemplateStatus?, missingFromTemplate: Boolean?): TemplateStatus =
+                    when {
+                        missingFromTemplate == true -> MISSING_FROM_TEMPLATE
+                        missingFromTemplate == false && templateStatus == MISSING_FROM_TEMPLATE -> IN_TEMPLATE
+                        else -> templateStatus ?: IN_TEMPLATE
+                    }
+            }
+        }
 
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
@@ -116,8 +142,20 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-        ) : Block(Type.TITLE1)
+            override val templateStatus: TemplateStatus = TemplateStatus.IN_TEMPLATE,
+        ) : Block(Type.TITLE1) {
+            @JsonCreator
+            constructor(
+                id: Int?,
+                editable: Boolean,
+                content: List<ParagraphContent.Text>,
+                deletedContent: List<Int>?,
+                originalType: Type?,
+                parentId: Int?,
+                templateStatus: TemplateStatus?,
+                missingFromTemplate: Boolean?,
+            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, TemplateStatus.fromJson(templateStatus, missingFromTemplate))
+        }
 
         data class Title2(
             override val id: Int?,
@@ -126,8 +164,20 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-        ) : Block(Type.TITLE2)
+            override val templateStatus: TemplateStatus = TemplateStatus.IN_TEMPLATE,
+        ) : Block(Type.TITLE2) {
+            @JsonCreator
+            constructor(
+                id: Int?,
+                editable: Boolean,
+                content: List<ParagraphContent.Text>,
+                deletedContent: List<Int>?,
+                originalType: Type?,
+                parentId: Int?,
+                templateStatus: TemplateStatus?,
+                missingFromTemplate: Boolean?,
+            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, TemplateStatus.fromJson(templateStatus, missingFromTemplate))
+        }
 
         data class Title3(
             override val id: Int?,
@@ -136,8 +186,20 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-        ) : Block(Type.TITLE3)
+            override val templateStatus: TemplateStatus = TemplateStatus.IN_TEMPLATE,
+        ) : Block(Type.TITLE3) {
+            @JsonCreator
+            constructor(
+                id: Int?,
+                editable: Boolean,
+                content: List<ParagraphContent.Text>,
+                deletedContent: List<Int>?,
+                originalType: Type?,
+                parentId: Int?,
+                templateStatus: TemplateStatus?,
+                missingFromTemplate: Boolean?,
+            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, TemplateStatus.fromJson(templateStatus, missingFromTemplate))
+        }
 
         data class Paragraph(
             override val id: Int?,
@@ -146,8 +208,20 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val missingFromTemplate: Boolean = false,
-        ) : Block(Type.PARAGRAPH)
+            override val templateStatus: TemplateStatus = TemplateStatus.IN_TEMPLATE,
+        ) : Block(Type.PARAGRAPH) {
+            @JsonCreator
+            constructor(
+                id: Int?,
+                editable: Boolean,
+                content: List<ParagraphContent>,
+                deletedContent: List<Int>?,
+                originalType: Type?,
+                parentId: Int?,
+                templateStatus: TemplateStatus?,
+                missingFromTemplate: Boolean?,
+            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, TemplateStatus.fromJson(templateStatus, missingFromTemplate))
+        }
     }
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
