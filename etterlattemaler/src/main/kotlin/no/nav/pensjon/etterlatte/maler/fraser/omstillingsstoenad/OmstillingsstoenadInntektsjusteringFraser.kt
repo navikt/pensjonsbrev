@@ -172,21 +172,21 @@ object OmstillingsstoenadInntektsjusteringFraser {
                         " er du pliktig til å være i minst 50 prosent aktivitet for å motta omstillingsstønad. Når det" +
                         " er gått 12 måneder etter dødsfallet, kan det kreves at du er i inntil 100 prosent arbeid eller" +
                         " annen aktivitet med sikte på å komme i arbeid for å motta omstillingsstønad. Les mer om" +
-                        " aktivitetsplikt og unntak av denne på ${Constants.OMS_AKTIVITETSPLIKT_URL}." },
+                        " aktivitetsplikt og unntak av denne på ${Constants.OMS_AKTIVITET_URL}." },
                     nynorsk { +"For at du skal kunne halde fram med å få omstillingsstønad når det" +
                         " har gått 6 månader sidan " +
                         ifElse(tidligereFamiliepleier, "pleieforholdet opphøyrde", "dødsfallet") +
                         ", må du vere i minst 50 prosent aktivitet. Når det har gått 12 månader etter dødsfallet, kan" +
                         " det krevjast at du er i inntil 100 prosent arbeid eller anna aktivitet med sikte på å kome i" +
                         " arbeid for å få omstillingsstønad. Les meir om aktivitetsplikt og unntak på" +
-                        " ${Constants.OMS_AKTIVITETSPLIKT_URL}." },
+                        " ${Constants.OMS_AKTIVITET_URL}." },
                     english { +"Once 6 months have passed since the " +
                         ifElse(tidligereFamiliepleier, "care period ended", "death") +
                         ", you are obligated to be active at least 50 percent to receive the adjustment allowance." +
                         " When 12 months have passed since the death, you may be required to work up to full time, or" +
                         " participate in other activity with the goal of returning to work, in order to receive" +
                         " adjustment allowance. Find out more about the duty to take action and exemptions from it at" +
-                        " ${Constants.OMS_AKTIVITETSPLIKT_URL}." },
+                        " ${Constants.OMS_AKTIVITET_URL}." },
                 )
             }
         }
