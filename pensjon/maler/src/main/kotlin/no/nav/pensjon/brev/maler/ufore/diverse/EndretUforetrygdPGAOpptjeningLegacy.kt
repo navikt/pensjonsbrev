@@ -372,7 +372,11 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu_x_08) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08()))){
-                        includePhrase(TBU2279_Generated(pe))
+                        paragraph {
+                            text (
+                                bokmal { + "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør, det vil si " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " per år. Inntekten er justert opp til dagens verdi." },
+                            )
+                        }
                     }
                     //[TBU2239]
 
@@ -541,7 +545,11 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu_x_08) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu_x_08()))){
-                    includePhrase(TBU2279_Generated(pe))
+                    paragraph {
+                        text (
+                            bokmal { + "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør, det vil si " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " per år. Inntekten er justert opp til dagens verdi." },
+                        )
+                    }
                 }
             }
 
