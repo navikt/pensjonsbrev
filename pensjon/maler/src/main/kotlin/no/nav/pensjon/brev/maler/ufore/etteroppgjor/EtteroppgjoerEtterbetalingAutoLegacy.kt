@@ -161,7 +161,64 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT  <> 0  AND (PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_PeriodeTom < PE_UT_lastDay OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_PeriodeFom > PE_UT_firstDay))  THEN      INCLUDE ENDIF
             showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0) and (pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodetom().legacyLessThan(pe.ut_lastday()) or pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().legacyGreaterThan(pe.ut_firstday())))){
-                includePhrase(TBU3325_Generated(pe))
+                paragraph {
+                    text (
+                        bokmal { + "Skatteetaten har opplyst at du hadde en pensjonsgivende inntekt på " + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + " i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". " },
+                        nynorsk { + "Skatteetaten har opplyst at du hadde ei pensjonsgivande inntekt på " + pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut().format() + " i " + pe.ut_uforetrygdetteroppgjor_periodefom_year().format() + ". " },
+                    )
+
+                    //IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_SumFratrekkUT > 0 AND PE_UT_PeriodeFomStorre0101PeriodeTomLik3112() = true) THEN      INCLUDE ENDIF
+                    showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut().greaterThan(0) and pe.ut_periodefomstorre0101periodetomlik3112())){
+                        text (
+                            bokmal { + "Inntekt du hadde før du ble innvilget uføretrygd trekkes fra dette beløpet. " },
+                            nynorsk { + "Inntekt du hadde før du fekk innvilga uføretrygd, blir trekt frå dette beløpet. " },
+                        )
+                    }
+
+                    //IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_SumFratrekkUT > 0 AND PE_UT_PeriodeTomMindre3112PeriodeFomLik0101() = true) THEN      INCLUDE ENDIF
+                    showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut().greaterThan(0) and pe.ut_periodetommindre3112periodefomlik0101())){
+                        text (
+                            bokmal { + "Inntekt du hadde etter at uføretrygden din opphørte trekkes fra dette beløpet. " },
+                            nynorsk { + "Inntekt du hadde etter at uføretrygda di tok slutt, blir trekt frå dette beløpet. " },
+                        )
+                    }
+
+                    //IF(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_SumFratrekkUT > 0 AND PE_UT_PeriodeTomMindre3112PeriodeFomStorre0101() = true) THEN      INCLUDE ENDIF
+                    showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut().greaterThan(0) and pe.ut_periodetommindre3112periodefomstorre0101())){
+                        text (
+                            bokmal { + "Inntekt du hadde før du ble innvilget uføretrygd og etter at uføretrygden din opphørte trekkes fra dette beløpet. " },
+                            nynorsk { + "Inntekt du hadde før du fekk innvilga uføretrygd, og etter at uføretrygda di tok slutt, blir trekt frå dette beløpet. " },
+                        )
+                    }
+
+                    //IF(Contains(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_GrunnIkkeReduksjon, "erstatning_innttap_erstoppgj") > 0) THEN      INCLUDE ENDIF
+                    showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj())){
+                        text (
+                            bokmal { + "Erstatning for inntektstap ved erstatningsoppgjør trekkes fra dette beløpet. " },
+                            nynorsk { + "Erstatning for inntektstap ved erstatningsoppgjer blir trekt frå dette beløpet. " },
+                        )
+                    }
+
+                    //IF(Contains(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_GrunnIkkeReduksjon, "etterslepsinnt_avslt_akt") > 0) THEN      INCLUDE ENDIF
+                    showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt())){
+                        text (
+                            bokmal { + "Inntekt fra helt avsluttet arbeid eller virksomhet trekkes fra dette beløpet. " },
+                            nynorsk { + "Inntekt frå heilt avslutta arbeid eller verksemd blir trekt frå dette beløpet. " },
+                        )
+                    }
+
+                    //IF(PE_UT_EtteroppgjorFratrekkListeBrukerEtterbetaling("etterbetaling") = true) THEN      INCLUDE ENDIF
+                    showIf((pe.ut_etteroppgjorfratrekklistebrukeretterbetaling())){
+                        text (
+                            bokmal { + "Etterbetaling du har fått fra Nav trekkes fra dette beløpet. " },
+                            nynorsk { + "Etterbetalinga du fekk frå Nav blir trekt frå dette beløpet. " },
+                        )
+                    }
+                    text (
+                        bokmal { + "Vi har derfor brukt " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_inntektut().format() + " i vurderingen av om du har fått for mye eller for lite i uføretrygd." },
+                        nynorsk { + "Vi har derfor brukt " + pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_inntektut().format() + " når vi har vurdert om du har fått for mykje eller for lite i uføretrygd." },
+                    )
+                }
                 includePhrase(TBU4020_Generated(pe))
             }
 
