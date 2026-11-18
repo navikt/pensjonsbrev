@@ -35,7 +35,7 @@ object KlageVedtakAvvisningAvKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdat
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak om avvisning av klage",
+            displayTitle = "Vedtak - avvisning av klage",
             distribusjonstype = VEDTAK,
             brevtype = VEDTAKSBREV,
         )
