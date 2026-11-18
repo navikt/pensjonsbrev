@@ -87,7 +87,7 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
             )
             includePhrase(RettigheterPersonopplysninger)
             includePhrase(RettTilAaKlageAfpPrivat)
-            includePhrase(HarDuSpoersmaal.alder)
+            includePhrase(HarDuSpoersmaal.afpPrivat)
         }
 
         includeAttachmentIfNotNull(vedleggDinAfpPrivatBeregning, pesysData.dinAfpPrivatBeregning)
