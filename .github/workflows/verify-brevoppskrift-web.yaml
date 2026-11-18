@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - 'main'
+      - 'routsi/brevoppskrift-*'
     paths:
       - .github/workflows/.build-frontend.yaml
       - .github/workflows/.verify-frontend.yaml

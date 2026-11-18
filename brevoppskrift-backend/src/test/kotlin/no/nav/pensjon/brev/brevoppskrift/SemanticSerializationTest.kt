@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.brevoppskrift
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.pensjon.brev.brevoppskrift.kotlin.ApiContractGenerator
 import no.nav.pensjon.brev.brevoppskrift.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -50,5 +51,13 @@ class SemanticSerializationTest {
                     .isEqualTo(draftObjectMapper.valueToTree<com.fasterxml.jackson.databind.JsonNode>(before.getOrThrow()))
             }
         }
+    }
+
+    @Test
+    fun `semantic types stay primitive in generated contracts`() {
+        val contract = ApiContractGenerator().generate(listOf(Envelope::class))
+        assertThat(contract.typescript).contains("\"id\": string;", "\"revision\": number;", "\"nullable\": string | null;", "\"values\": Record<string, number>;")
+        assertThat(contract.typescript).doesNotContain("export interface DraftId", "export interface FieldId", "export interface DraftRevision")
+        assertThat(contract.openapi.toString()).contains("format=uuid", "type=integer")
     }
 }
