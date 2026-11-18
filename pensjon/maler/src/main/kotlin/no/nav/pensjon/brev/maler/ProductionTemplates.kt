@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.OktBunnfradragNesteArAutoDto
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
@@ -68,6 +67,8 @@ import no.nav.pensjon.brev.maler.ufore.diverse.VedtakBlankMalRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.VedtakOmEtterbetalingOpphor2026Redigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.OktBunnfradragNesteArRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.InntektOgAldersovergangNesteArAuto
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.InntektOgAldersovergangNesteArRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.OktBunnfradragNesteArAuto
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar
@@ -134,6 +135,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmEndringBTEPSOktoberAuto,
         EPSEndringIBarnetilleggAuto,
         OktBunnfradragNesteArAuto,
+        InntektOgAldersovergangNesteArAuto
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(
@@ -203,6 +205,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktMinsteIFURedigerbar,
         EPSEndringIBarnetilleggRedigerbar,
         OktBunnfradragNesteArRedigerbar,
+        InntektOgAldersovergangNesteArRedigerbar
     )
 
     override fun hentAutobrevmaler() = autobrev

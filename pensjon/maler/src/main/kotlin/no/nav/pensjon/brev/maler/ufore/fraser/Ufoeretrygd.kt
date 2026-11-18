@@ -200,7 +200,7 @@ object Ufoeretrygd {
             paragraph {
                 text(
                     bokmal { +"Les mer om dette i vedlegget " },
-                    nynorsk { +"Les meir om dette i vedlegget" },
+                    nynorsk { +"Les meir om dette i vedlegget " },
                 )
                 namedReference(vedlegg ?: vedleggDineRettigheterOgPlikterUfoere)
                 text(

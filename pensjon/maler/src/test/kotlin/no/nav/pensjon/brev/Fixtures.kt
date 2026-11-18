@@ -58,6 +58,8 @@ import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUforetrygdPGAInntektNesteArRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.OktBunnfradragNesteArRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.InntektOgAldersovergangNesteArAuto
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.InntektOgAldersovergangNesteArRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.OktBunnfradragNesteArAuto
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
@@ -108,6 +110,8 @@ object Fixtures : LetterDataFactory {
             BekreftelsePaaUfoeretrygdRedigerbar::class -> createBekreftelsePaaUfoeretrygdDto() as T
             BrukerTestBrev::class -> createBrukerTestBrevDto() as T
             BrukerTestVedtaksbrev::class -> createBrukerTestVedtaksbrevDto() as T
+            InntektOgAldersovergangNesteArAuto::class -> createInntektOgAldersovergangNesteArAutoDto() as T
+            InntektOgAldersovergangNesteArRedigerbar::class -> createInntektOgAldersovergangNesteArRedigerbarDto() as T
             DelvisEksportAvUforetrygdRedigerbar::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             EksempelbrevRedigerbart::class -> createEksempelbrevRedigerbartDto() as T
             EndretBarnetilleggUfoerertrygdAuto::class -> createEndretBarnetilleggUfoeretrygdDto() as T

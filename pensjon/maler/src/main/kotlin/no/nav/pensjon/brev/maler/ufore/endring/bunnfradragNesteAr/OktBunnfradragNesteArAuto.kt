@@ -26,7 +26,7 @@ object OktBunnfradragNesteArAuto : AutobrevTemplate<OktBunnfradragNesteArAutoDto
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Du kan ha høyere inntekt før vi reduserer uføretrygden din",
+            displayTitle = "Vedtak - endret bunnfradrag neste år",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
