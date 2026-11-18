@@ -32,4 +32,4 @@ COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib
 
 WORKDIR /app
 
-ENTRYPOINT ["java", "-cp", "/app/lib/*", "no.nav.pensjon.brev.pdfbygger.PdfByggerAppKt"]
+ENTRYPOINT ["java", "-XX:-UseBASE64Intrinsics", "-cp", "/app/lib/*", "no.nav.pensjon.brev.pdfbygger.PdfByggerAppKt"]

@@ -7,4 +7,4 @@ COPY src/main/resources/fonts/Helvetica.ttf /usr/share/fonts/truetype/helvetica/
 COPY src/main/resources/fonts/LICENSE.txt /usr/share/fonts/truetype/helvetica/LICENSE.txt
 EXPOSE 8080
 WORKDIR /app
-ENTRYPOINT ["java", "-cp", "lib/*", "no.nav.pensjon.brev.skribenten.SkribentenAppKt"]
+ENTRYPOINT ["java", "-XX:-UseBASE64Intrinsics", "-cp", "lib/*", "no.nav.pensjon.brev.skribenten.SkribentenAppKt"]
