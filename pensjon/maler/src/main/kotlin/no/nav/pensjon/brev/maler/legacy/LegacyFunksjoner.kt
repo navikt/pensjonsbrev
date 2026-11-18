@@ -163,6 +163,12 @@ fun hoyereLavere(hoyereCondition: Expression<Boolean>): Expression<String> {
     )
 }
 
+fun Expression<PEgruppe10>.ut_barnet_barna_serkull_en_entall_flertall(): Expression<String> =
+    ifElse(vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1) and Expression.FromScope.Language.equalTo(English.expr()), "s".expr(), "".expr())
+
+fun Expression<PEgruppe10>.ut_barnet_barna_felles_en_entall_flertall(): Expression<String> =
+    ifElse(vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().equalTo(1) and Expression.FromScope.Language.equalTo(English.expr()), "s".expr(), "".expr())
+
 fun Expression<PEgruppe10>.ut_virkningstidpunktar(): Expression<Int> =
     vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(1000,1,1)).year
 
