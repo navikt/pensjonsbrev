@@ -114,9 +114,9 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du kan også sende beskjed på nav.no/send-beskjed. Her får du ikke lagt ved dokumentasjon på inntekten din." },
-                        nynorsk { +"Alternativt kan du sende beskjed på nav.no/send-beskjed. Ver merksam på at du her ikkje kan leggje ved dokumentasjon på inntekta di." },
-                        english { +"You can also send as a message via: nav.no/send-beskjed. However you cannot attach documentation of your income using this method." },
+                        bokmal { +"Du kan også sende beskjed på ${Constants.BESKJED_TIL_NAV_URL}. Her får du ikke lagt ved dokumentasjon på inntekten din." },
+                        nynorsk { +"Alternativt kan du sende beskjed på ${Constants.BESKJED_TIL_NAV_URL}. Ver merksam på at du her ikkje kan leggje ved dokumentasjon på inntekta di." },
+                        english { +"You can also send as a message via: ${Constants.Engelsk.BESKJED_TIL_NAV_URL}. However you cannot attach documentation of your income using this method." },
                     )
                 }
 
