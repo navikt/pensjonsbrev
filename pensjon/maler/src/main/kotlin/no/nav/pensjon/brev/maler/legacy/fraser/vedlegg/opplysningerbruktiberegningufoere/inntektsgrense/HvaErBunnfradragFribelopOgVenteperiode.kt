@@ -61,7 +61,7 @@ object HvaErBunnfradragFribelopOgVenteperiode : OutlinePhrase<LangBokmalNynorsk>
 
         paragraph {
             text (
-                bokmal { + "Hvis du får uføretrygd kun deler av året, blir bunnfradraget beregnet ut fra de månedene du får uføretrygd. Det betyr at du får ett bunnfradrag som er lavere. " },
+                bokmal { + "Hvis du får uføretrygd kun deler av året, blir bunnfradraget beregnet ut fra de månedene du får uføretrygd. Det betyr at du får et bunnfradrag som er lavere. " },
                 nynorsk { + "Dersom du får uføretrygd berre delar av året, blir botnfrådraget rekna ut frå dei månadene du får uføretrygd. Det betyr at du får eit botnfrådrag som er lågare. " }
             )
         }
