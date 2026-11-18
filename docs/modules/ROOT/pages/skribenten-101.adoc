@@ -34,7 +34,7 @@ Relevante rutiner for endring av navn og adresse i brev:
 Trykk på «Endre mottaker» og «Finn samhandler» for å søke opp samhandleren.
 Hvis samhandleren har organisasjonsnummer i samhandlerregisteret, sendes brevet digitalt til samhandleren via Altinn. Da vises organisasjonsnummeret i stedet for adressen, både i søkeresultatet og i brevet.
 
-Under ser du eksempeler på søk etter samhandlere med og uten organisasjonsnummer.
+Under ser du eksempler på søk etter samhandlere med og uten organisasjonsnummer.
 
 image:samhandler-medorgnr.png[Med organisasjonsnummer,width=300,link=self]
 image:samhandler-utenorgnr.png[Uten organisasjonsnummer,width=300,link=self]
