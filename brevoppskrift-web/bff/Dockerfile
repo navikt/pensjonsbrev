@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/nodejs24-debian13:nonroot
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24-slim
 COPY . /app
 WORKDIR /app
 EXPOSE 8080

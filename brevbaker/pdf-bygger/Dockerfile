@@ -12,7 +12,7 @@ RUN curl -sSLO "https://github.com/typst/typst/releases/download/v${TYPST_VERSIO
     && tar -xJf typst-x86_64-unknown-linux-musl.tar.xz --strip-components=1
 
 # --- Stage 2: Final Runtime
-FROM --platform=linux/amd64 gcr.io/distroless/java25-debian13:nonroot
+FROM --platform=linux/amd64 europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/jre:openjdk-25
 ENV PATH="/app/typst/:${PATH}"
 ENV TZ="Europe/London"
 

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM gcr.io/distroless/java25-debian13:nonroot
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/jre:openjdk-25
 COPY --exclude=*skribenten-backend-*.jar build/install/skribenten-backend/lib /app/lib
 COPY build/install/skribenten-backend/lib/skribenten-backend-*.jar /app/lib
 # PDFBox gir warning viss Helvetica ikkje fins, sjølv om han ikkje blir brukt. Denne fila er eigentleg SourceSans3-Regular, men med endra metadata
