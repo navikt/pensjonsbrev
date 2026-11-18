@@ -39,8 +39,8 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val innvilgetBtfb = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
-        val innvilgetBtsb = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
+        val btfbInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
+        val btsbInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
         val btfbfradrag = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag()
         val btsbFradrag = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag()
 
@@ -108,7 +108,7 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                 )
             }
 
-            showIf( innvilgetBtsb and not(innvilgetBtfb)) {
+            showIf( btsbInnvilget and not(btfbInnvilget)) {
                 includePhrase(TBU2338_Generated(pe))
                 paragraph {
                     showIf(btsbNetto.greaterThan(0)
@@ -161,7 +161,7 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                         )
                     }
 
-                    showIf (not(innvilgetBtsb)
+                    showIf (not(btsbInnvilget)
                             and btfbJusteringsbelopperAr.equalTo(0)
                             and btfbNetto.notEqualTo(0)) {
                         text(
@@ -330,22 +330,22 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                 }
             }
 
-            showIf((innvilgetBtsb
+            showIf((btsbInnvilget
                     and btsbNetto.equalTo(0)
                     and btsbJusteringsbelopperAr.equalTo(0)
-                    and (btfbNetto.notEqualTo(0) or not(innvilgetBtfb)))) {
+                    and (btfbNetto.notEqualTo(0) or not(btfbInnvilget)))) {
                 includePhrase(TBU1286_1_Generated(pe))
             }
 
-            showIf((innvilgetBtfb
+            showIf((btfbInnvilget
                     and btfbNetto.equalTo(0)
                     and btfbJusteringsbelopperAr.equalTo(0)
-                    and (btsbNetto.notEqualTo(0) or not(innvilgetBtsb)))) {
+                    and (btsbNetto.notEqualTo(0) or not(btsbInnvilget)))) {
                 includePhrase(TBU1286_2_Generated(pe))
             }
 
             showIf(
-                innvilgetBtsb and innvilgetBtfb
+                btsbInnvilget and btfbInnvilget
                         and btsbNetto.equalTo(0)
                         and btsbJusteringsbelopperAr.equalTo(0)
                         and btfbNetto.equalTo(0)
