@@ -30,6 +30,7 @@ import {
 } from "~/api/sak-api-endpoints";
 import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
+import { SamhandlerDistributionAnnouncement } from "~/components/endreMottaker/SamhandlerDistributionAnnouncement";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useEndreMottaker } from "~/hooks/useEndreMottaker";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -137,7 +138,7 @@ const BrevItem = (properties: {
           {erBrevArkivert(properties.brev) ? (
             <ArkivertBrev brev={properties.brev} />
           ) : (
-            <ActiveBrev brev={properties.brev} saksId={properties.saksId} />
+            <ActiveBrev brev={properties.brev} open={properties.open} saksId={properties.saksId} />
           )}
           <div
             css={css`
@@ -182,7 +183,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
   );
 };
 
-const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
+const ActiveBrev = (props: { saksId: string; brev: BrevInfo; open: boolean }) => {
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
@@ -265,6 +266,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
   return (
     <VStack gap="space-20">
+      {props.open && !erLaast && <SamhandlerDistributionAnnouncement />}
       {modalÅpen && (
         <EndreMottakerModal
           error={endreMottakerError}

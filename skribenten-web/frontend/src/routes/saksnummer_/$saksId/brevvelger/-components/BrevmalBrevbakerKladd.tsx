@@ -8,6 +8,7 @@ import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
+import { SamhandlerDistributionAnnouncement } from "~/components/endreMottaker/SamhandlerDistributionAnnouncement";
 import LetterTemplateTags from "~/components/LetterTemplateTags";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
@@ -149,6 +150,7 @@ const Brevmal = (props: {
           <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle />
         ) : (
           <VStack gap="space-8">
+            <SamhandlerDistributionAnnouncement />
             {modalÅpen && (
               <EndreMottakerModal
                 error={endreMottakerError}

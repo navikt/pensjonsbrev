@@ -5,6 +5,7 @@ import {
   ATTESTANT_DIFF_ANNOUNCEMENT_REPLAYABLE_UNTIL,
   ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL,
 } from "~/Brevredigering/LetterEditor/diff/AttestantDiffAnnouncement";
+import { SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT } from "~/components/notifications/productAnnouncements";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
@@ -17,7 +18,14 @@ const STATUS_URL = "**/bff/skribenten-backend/me/nyhetsvarsel";
 const givenNyhetsvarsling = (page: Page, enabled: boolean) =>
   page.route("**/bff/skribenten-backend/features/nyhetsvarsling", (route) => route.fulfill({ json: { enabled } }));
 const givenAcknowledged = (page: Page, ids: string[]) =>
-  page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: [], gjennomfoertOmvisningen: ids } }));
+  page.route(STATUS_URL, (route) =>
+    route.fulfill({
+      json: {
+        settAnnonsen: [],
+        gjennomfoertOmvisningen: [...ids, SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.id],
+      },
+    }),
+  );
 
 const bell = (page: Page) => page.getByRole("button", { name: /^Nytt i Skribenten/ });
 const dot = (page: Page) => page.getByTestId("unseen-announcements-dot");
@@ -47,7 +55,9 @@ test.describe("varslingsklokke i toppmenyen", () => {
   test("åpning av klokken fjerner prikken, men gjennomgangen starter automatisk i attesteringen", async ({ page }) => {
     const seen: string[] = [];
     await page.route(STATUS_URL, (route) =>
-      route.fulfill({ json: { settAnnonsen: seen, gjennomfoertOmvisningen: [] } }),
+      route.fulfill({
+        json: { settAnnonsen: seen, gjennomfoertOmvisningen: [SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.id] },
+      }),
     );
     await page.route(`${STATUS_URL}/*/settAnnonsen`, (route) => {
       seen.push(decodeURIComponent(route.request().url().split("/").at(-2) ?? ""));
@@ -141,7 +151,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
 
     await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
     await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
-    const docs = page.getByRole("link", { name: /^Se dokumentasjon/ });
+    const docs = page.getByRole("link", { name: /^Se dokumentasjon/, description: BELL_TITLE });
     await expect(docs).toBeVisible();
     await expect(docs).toHaveAttribute(
       "href",
@@ -170,7 +180,7 @@ test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjone
   await bell(page).click();
 
   await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
-  await expect(page.getByRole("link", { name: /^Se dokumentasjon/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^Se dokumentasjon/, description: BELL_TITLE })).toBeVisible();
   await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
 });
 
@@ -196,4 +206,98 @@ test("viser ikke klokken når nyhetsvarsling er skrudd av, men gjennomgangen sta
   await expect(tour(page)).toBeVisible();
   await expect(page.getByRole("button", { name: "Nyttige lenker" })).toBeVisible();
   await expect(bell(page)).toHaveCount(0);
+});
+
+test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan»", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.clock.setFixedTime(`${SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.publishedAt}T12:00:00`);
+    await setupSakStubs(page);
+    await givenNyhetsvarsling(page, true);
+    await page.route(STATUS_URL, (route) => route.fulfill({ json: { settAnnonsen: [], gjennomfoertOmvisningen: [] } }));
+    await page.route(`${STATUS_URL}/*/*`, (route) => route.fulfill({ status: 204 }));
+  });
+
+  test("starter ikke automatisk, viser «Se hvordan» når endre mottaker er tilgjengelig i brevvelger, og går gjennom begge steg", async ({
+    page,
+  }) => {
+    await page.goto("/saksnummer/123456/brevvelger");
+    await expect(dot(page)).toBeVisible();
+    await expect(page.getByRole("alertdialog")).toHaveCount(0);
+
+    await bell(page).click();
+    await expect(page.getByRole("heading", { name: SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.title })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Se hvordan", description: SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.title }),
+    ).toHaveCount(0);
+    await page.keyboard.press("Escape");
+
+    await page.getByTestId("brevmal-search").fill("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
+    await expect(page.getByTestId("toggle-endre-mottaker-modal")).toBeVisible();
+    await expect(page.getByRole("alertdialog")).toHaveCount(0);
+
+    await bell(page).click();
+    await page
+      .getByRole("button", { name: "Se hvordan", description: SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.title })
+      .click();
+
+    const modal = page.getByTestId("samhandler-tour-modal");
+    await expect(modal).toBeVisible();
+    const stepOne = modal.getByRole("alertdialog", { name: "Digital utsending via Altinn" });
+    await expect(stepOne).toBeVisible();
+    await expect(page.locator(".react-joyride__floater")).toHaveCSS("opacity", "1");
+    const axe = await new AxeBuilder({ page })
+      .include("[data-feature-announcement]")
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .analyze();
+    expect(axe.violations).toEqual([]);
+    await expect(stepOne.getByText("Steg 1 av 2")).toBeVisible();
+    await expect(modal.getByRole("cell", { name: "974760967", exact: true })).toBeVisible();
+    await expect(modal.getByText("Postboks 10 Skøyen")).toBeVisible();
+
+    await stepOne.getByRole("button", { name: "Neste" }).click();
+    const stepTwo = modal.getByRole("alertdialog", { name: "Sendes i posten når organisasjonsnummer mangler" });
+    await expect(stepTwo).toBeVisible();
+    await expect(stepTwo.getByText("Steg 2 av 2")).toBeVisible();
+    await expect(stepTwo.getByRole("button", { name: "Forrige" })).toBeVisible();
+
+    const acknowledged = page.waitForRequest(
+      (request) =>
+        request.url().endsWith(`/me/nyhetsvarsel/${SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.id}/gjennomfoertOmvisningen`) &&
+        request.method() === "PUT",
+    );
+    await stepTwo.getByRole("button", { name: "Skjønner!" }).click();
+    await acknowledged;
+    await expect(modal).toBeHidden();
+    await expect(bell(page)).toBeFocused();
+  });
+
+  test("viser «Se hvordan» i brevbehandler bare når et ulåst brev er åpent, og Escape lukker både gjennomgangen og modalen", async ({
+    page,
+  }) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) =>
+      route.fulfill({ json: [brevInfo({ id: 1, saksId: 123456, brevtittel: "Utkast til brev" })] }),
+    );
+    await page.goto("/saksnummer/123456/brevbehandler?brevId=1");
+    await expect(page.getByTestId("toggle-endre-mottaker-modal")).toBeVisible();
+
+    await bell(page).click();
+    await page
+      .getByRole("button", { name: "Se hvordan", description: SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.title })
+      .click();
+
+    const modal = page.getByTestId("samhandler-tour-modal");
+    await expect(modal.getByRole("alertdialog", { name: "Digital utsending via Altinn" })).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await expect(modal).toBeHidden();
+    await expect(bell(page)).toBeFocused();
+
+    await page.getByRole("region", { name: "Utkast til brev" }).locator(".aksel-expansioncard__header-button").click();
+    await expect(page.getByTestId("toggle-endre-mottaker-modal")).toBeHidden();
+    await bell(page).click();
+    await expect(
+      page.getByRole("button", { name: "Se hvordan", description: SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.title }),
+    ).toHaveCount(0);
+  });
 });

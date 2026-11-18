@@ -181,7 +181,11 @@ function SamhandlerMottakerDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) 
   return <MottakerDetaljer mottaker={data} />;
 }
 
-function MottakerDetaljer({ mottaker }: { mottaker: NonNullable<ReturnType<typeof useSamhandlerMottaker>["data"]> }) {
+export function MottakerDetaljer({
+  mottaker,
+}: {
+  mottaker: NonNullable<ReturnType<typeof useSamhandlerMottaker>["data"]>;
+}) {
   const rows: { label: string; value: Nullable<string> }[] = mottaker.adresse
     ? [
         { label: "Navn", value: mottaker.adresse.navn },

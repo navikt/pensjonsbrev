@@ -8,7 +8,12 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { FeatureAnnouncement } from "~/components/featureAnnouncement/FeatureAnnouncement";
 
 import { NotificationBell } from "./NotificationBell";
-import { DIFF_TOGGLES_ANNOUNCEMENT, listedUntil, type ProductAnnouncement } from "./productAnnouncements";
+import {
+  DIFF_TOGGLES_ANNOUNCEMENT,
+  listedUntil,
+  type ProductAnnouncement,
+  SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT,
+} from "./productAnnouncements";
 
 const { fetchAcknowledgedMock, acknowledgeMock, fetchSeenMock, markSeenMock } = vi.hoisted(() => ({
   fetchAcknowledgedMock: vi.fn(),
@@ -332,6 +337,26 @@ describe("<NotificationBell />", () => {
     expect(date.tagName).toBe("TIME");
     expect(date.getAttribute("dateTime")).toBe("2026-11-10");
     expect(within(item).getByText(NYHET.description)).not.toBeNull();
+  });
+
+  test("viser nyheten om digital utsending til samhandlere med lenke til veiledningen", async () => {
+    vi.setSystemTime(new Date("2026-11-18T12:00:00"));
+    const user = userEvent.setup();
+    renderWithQueryClient(<NotificationBell />);
+
+    await user.click(bell());
+
+    const item = within(newsItem("Digital utsending til samhandlere (via Altinn)"));
+    expect(
+      item.getByText(
+        "Brev sendes digitalt til samhandlere som har organisasjonsnummer registrert i samhandlerregisteret.",
+      ),
+    ).not.toBeNull();
+    expect(item.getByRole("link", { name: /^Se dokumentasjon/ }).getAttribute("href")).toBe(
+      SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.documentationUrl,
+    );
+    expect(item.queryByRole("button", { name: "Se hvordan" })).toBeNull();
+    await waitFor(() => expect(markSeenMock).toHaveBeenCalledWith(SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.id));
   });
 
   test("viser bare «Se dokumentasjon» når gjennomgangen ikke er tilgjengelig på siden", async () => {

@@ -33,4 +33,16 @@ export const DIFF_TOGGLES_ANNOUNCEMENT: ProductAnnouncement = {
   documentationUrl: "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_attestering",
 };
 
-export const PRODUCT_ANNOUNCEMENTS: ProductAnnouncement[] = [DIFF_TOGGLES_ANNOUNCEMENT];
+export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT: ProductAnnouncement = {
+  id: "samhandler-digital-utsending",
+  publishedAt: "2026-11-18",
+  title: "Digital utsending til samhandlere (via Altinn)",
+  description: "Brev sendes digitalt til samhandlere som har organisasjonsnummer registrert i samhandlerregisteret.",
+  documentationUrl:
+    "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_hvordan_sender_jeg_brev_til_en_samhandler",
+};
+
+export const PRODUCT_ANNOUNCEMENTS: ProductAnnouncement[] = [
+  SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT,
+  DIFF_TOGGLES_ANNOUNCEMENT,
+];
