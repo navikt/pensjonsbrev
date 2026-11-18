@@ -183,7 +183,7 @@ object OmstillingsstoenadInntektsjusteringFraser {
                     english { +"Once 6 months have passed since the " +
                         ifElse(tidligereFamiliepleier, "care period ended", "death") +
                         ", you are obligated to be active at least 50 percent to receive the adjustment allowance." +
-                        " When 12 months have passed since the death, you may be required to work full time, or" +
+                        " When 12 months have passed since the death, you may be required to work up to full time, or" +
                         " participate in other activity with the goal of returning to work, in order to receive" +
                         " adjustment allowance. Find out more about the duty to take action and exemptions from it at" +
                         " ${Constants.OMS_AKTIVITETSPLIKT_URL}." },
