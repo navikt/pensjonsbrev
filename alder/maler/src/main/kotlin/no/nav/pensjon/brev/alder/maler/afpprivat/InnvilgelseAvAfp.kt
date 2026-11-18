@@ -91,9 +91,5 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
         }
 
         includeAttachmentIfNotNull(vedleggDinAfpPrivatBeregning, pesysData.dinAfpPrivatBeregning)
-
-        // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når vedtaket har flere
-        // beregningsperioder (i Exstream: BeregningAntallPerioder > 1).
-       // includeAttachmentIfNotNull( vedleggOversiktOverPensjonenAfpPrivat,pesysData.oversiktOverPensjonen,)
     }
 }
