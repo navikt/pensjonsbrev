@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevend
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonUtlandDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Gjenlevendepensjon
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -152,7 +152,7 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
                     },
                 )
             }
-            includePhrase(TBU2212_Generated(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
+            includePhrase(TBU2212_Gjenlevendepensjon(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
         }

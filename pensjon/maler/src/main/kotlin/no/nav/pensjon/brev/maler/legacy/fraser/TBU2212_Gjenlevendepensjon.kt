@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.generated
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*
 
-data class TBU2212_Generated(
+data class TBU2212_Gjenlevendepensjon(
 val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, *>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
