@@ -137,10 +137,14 @@ class LivsvarigOffentligAfpTest {
         val blocks = render(AfpOffentligLivsvarigSimulering(beskrivelse = beskrivelse), medUtenlandsperioder = false)
         val opplysningerIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Opplysninger brukt i pensjonsberegningen" }
         val afpIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == tittel }
+        val forbeholdIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Forbehold" }
 
         assertTrue(opplysningerIndex >= 0)
         assertEquals(opplysningerIndex + 1, afpIndex)
-        assertTrue(blocks.filterIsInstance<Block.Title2>().none { it.content.text() == "Opphold utenfor Norge" })
+        assertTrue(forbeholdIndex > afpIndex)
+        assertTrue(blocks.subList(opplysningerIndex, forbeholdIndex).filterIsInstance<Block.Title2>().none {
+            it.content.text() == "Opphold utenfor Norge"
+        })
     }
 
     private fun render(
