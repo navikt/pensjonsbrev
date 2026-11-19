@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.skribenten.common
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
+import no.nav.pensjon.brev.skribenten.db.RedigertVedleggTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
@@ -139,6 +141,48 @@ fun JobConfig.updateBrevredigeringJson(tekniskVersjon: TekniskVersjon) {
 
     if (alleBrevIder.size != antallOppdaterte) {
         logger.info("Oppdaterte $antallOppdaterte av ${alleBrevIder.size} brevredigeringer med ikke-aktive reservasjoner.")
+        completed = false
+    }
+}
+
+fun JobConfig.updateRedigertVedleggJson() {
+    val alleVedleggIder = transaction {
+        RedigertVedleggTable.select(RedigertVedleggTable.brevredigering, RedigertVedleggTable.vedleggId)
+            .map { it[RedigertVedleggTable.brevredigering] to it[RedigertVedleggTable.vedleggId] }
+    }
+    val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
+    var antallOppdaterte = 0
+
+    alleVedleggIder.forEach { vedleggIder ->
+        val brevId = vedleggIder.first
+        val vedleggId = vedleggIder.second
+        val radFilter = (RedigertVedleggTable.brevredigering eq brevId) and (RedigertVedleggTable.vedleggId eq vedleggId)
+
+        transaction {
+            val rad = (RedigertVedleggTable innerJoin BrevredigeringTable)
+                .select(
+                    BrevredigeringTable.sistReservert,
+                    RedigertVedleggTable.redigertVedleggKryptert,
+                )
+                .where { radFilter }
+                .forUpdate(ForUpdateOption.ForUpdate)
+                .singleOrNull() ?: return@transaction
+
+            if (rad[BrevredigeringTable.sistReservert]?.isBefore(ikkeAktivtReservertTidspunkt) == false) {
+                return@transaction
+            }
+            logger.debug("Oppdaterer vedlegg {} for {}", vedleggId, brevId)
+            RedigertVedleggTable.update({ radFilter }) { update ->
+                val redigertVedlegg = rad[RedigertVedleggTable.redigertVedleggKryptert]
+                update[RedigertVedleggTable.redigertVedleggKryptert] = redigertVedlegg
+                update[RedigertVedleggTable.redigertVedleggKryptertHash] = Hash.read(redigertVedlegg)
+            }
+            antallOppdaterte++
+        }
+    }
+
+    if (alleVedleggIder.size != antallOppdaterte) {
+        logger.info("Oppdaterte $antallOppdaterte av ${alleVedleggIder.size} redigerte vedlegg med ikke-aktive reservasjoner.")
         completed = false
     }
 }
