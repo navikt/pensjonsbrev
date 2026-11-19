@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.beskrivelse
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.vedGradertUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.vedHeltUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedGradertUttak
@@ -138,7 +139,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
             }
             ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
                 ifNotNull(afpLivsvarigSim.vedGradertUttak) { afp ->
-                    includePhrase(AfpOffentligLivsvarigTabell(afp))
+                    includePhrase(LivsvarigOffentligAfpSeksjon(afp, afpLivsvarigSim.beskrivelse))
                     includePhrase(SumOffentligLivsvarigTabell(gradertUttak, afp))
                 }
             }
@@ -178,8 +179,10 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
             includePhrase(SumTabell(knekkpunkter.vedHeltUttak, afpPrivatSim.vedHeltUttak))
         }
         ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
-            includePhrase(AfpOffentligLivsvarigTabell(afpLivsvarigSim.vedHeltUttak))
-            includePhrase(SumOffentligLivsvarigTabell(knekkpunkter.vedHeltUttak, afpLivsvarigSim.vedHeltUttak))
+            ifNotNull(afpLivsvarigSim.vedHeltUttak) { afp ->
+                includePhrase(LivsvarigOffentligAfpSeksjon(afp, afpLivsvarigSim.beskrivelse))
+                includePhrase(SumOffentligLivsvarigTabell(knekkpunkter.vedHeltUttak, afp))
+            }
         }
 
         ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
@@ -199,6 +202,11 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
                     }
                 }
             }
+        }
+    }
+    ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
+        showIf(afpLivsvarigSim.vedGradertUttak.isNull() and afpLivsvarigSim.vedHeltUttak.isNull()) {
+            includePhrase(LivsvarigOffentligAfpSeksjon(afpLivsvarigSim.vedHeltUttak, afpLivsvarigSim.beskrivelse))
         }
     }
     title1 {
