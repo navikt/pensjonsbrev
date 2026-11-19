@@ -7,6 +7,8 @@ import no.nav.pensjon.brev.brevoppskrift.model.DraftId
 import no.nav.pensjon.brev.brevoppskrift.model.DraftRevision
 import no.nav.pensjon.brev.brevoppskrift.model.SourceId
 import no.nav.pensjon.brev.brevoppskrift.auth.AuthorName
+import no.nav.pensjon.brev.brevoppskrift.katalog.CatalogueEntry
+import no.nav.pensjon.brev.brevoppskrift.model.GitCommit
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.java.javaUUID
 import org.jetbrains.exposed.v1.javatime.timestamp
@@ -26,4 +28,11 @@ object DraftTable : Table("draft") {
     val archivedAt = timestamp("archived_at").nullable()
     val archiveReason = enumerationByName<ArchiveReason>("archive_reason", 16).nullable()
     override val primaryKey = PrimaryKey(id)
+}
+
+object SourceCatalogueTable : Table("source_catalogue_entry") {
+    val sourceId = text("source_id").transform(::SourceId, SourceId::value)
+    val commit = text("commit_sha").transform(::GitCommit, GitCommit::value)
+    val document = jsonb<CatalogueEntry>("document", serialize = draftObjectMapper::writeValueAsString, deserialize = { draftObjectMapper.readValue(it, CatalogueEntry::class.java) })
+    override val primaryKey = PrimaryKey(sourceId, commit)
 }
