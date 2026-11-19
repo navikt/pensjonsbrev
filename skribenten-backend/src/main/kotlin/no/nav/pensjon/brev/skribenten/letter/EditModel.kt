@@ -121,6 +121,7 @@ object Edit {
                  * (stored before [TemplateStatus] existed) or alongside [templateStatus] (the frontend clears
                  * `missingFromTemplate` when keeping a block that is missing from the template).
                  */
+                // TODO: Slett denne når frontend også er oppdatert til å bruke status som enum og ikkje missingFromTemplate-boolean
                 fun fromJson(templateStatus: TemplateStatus?, missingFromTemplate: Boolean?): TemplateStatus =
                     when {
                         missingFromTemplate == true -> MISSING_FROM_TEMPLATE
