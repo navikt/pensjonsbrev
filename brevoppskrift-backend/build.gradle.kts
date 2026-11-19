@@ -30,6 +30,23 @@ tasks {
     }
 }
 
+sourceSets {
+    create("authoringTools") {
+        compileClasspath += sourceSets.main.get().output.classesDirs
+        runtimeClasspath += sourceSets.main.get().output.classesDirs
+    }
+}
+val authoringTools = sourceSets.named("authoringTools").get()
+
+configurations {
+    named(authoringTools.implementationConfigurationName) {
+        extendsFrom(configurations.implementation.get())
+    }
+    named(authoringTools.runtimeOnlyConfigurationName) {
+        extendsFrom(configurations.runtimeOnly.get())
+    }
+}
+
 dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(platform(libs.jackson.bom))
@@ -48,18 +65,10 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.testcontainers.postgresql)
-}
 
-val authoringTools = sourceSets.create("authoringTools")
-configurations[authoringTools.implementationConfigurationName].extendsFrom(configurations.implementation.get())
-configurations[authoringTools.runtimeOnlyConfigurationName].extendsFrom(configurations.runtimeOnly.get())
-authoringTools.compileClasspath += sourceSets.main.get().output.classesDirs
-authoringTools.runtimeClasspath += sourceSets.main.get().output.classesDirs
-
-dependencies {
-    add(authoringTools.implementationConfigurationName, "org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlinVersion.get()}")
+    "authoringToolsImplementation"(libs.kotlin.compiler.embeddable)
     testImplementation(files(authoringTools.output.classesDirs))
-    testRuntimeOnly(files(configurations[authoringTools.runtimeClasspathConfigurationName]))
+    testRuntimeOnly(files(configurations.named(authoringTools.runtimeClasspathConfigurationName)))
 }
 
 val catalogueResources = layout.buildDirectory.dir("generated/authoring/resources")
@@ -67,7 +76,7 @@ sourceSets.main {
     resources.srcDir(catalogueResources)
 }
 
-val generateSourceCatalogue by tasks.registering(JavaExec::class) {
+val generateSourceCatalogue = tasks.register<JavaExec>("generateSourceCatalogue") {
     group = "build"
     description = "Import visible Kotlin templates from the build's Git commit into an immutable resource."
     dependsOn(tasks.named(authoringTools.classesTaskName))
