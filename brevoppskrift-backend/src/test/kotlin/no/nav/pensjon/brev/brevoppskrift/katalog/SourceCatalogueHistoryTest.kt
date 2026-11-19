@@ -4,6 +4,8 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.brevoppskrift.TestPostgres
 import no.nav.pensjon.brev.brevoppskrift.auth.AuthorName
 import no.nav.pensjon.brev.brevoppskrift.draftObjectMapper
+import no.nav.pensjon.brev.brevoppskrift.kotlin.KotlinDraftGenerator
+import no.nav.pensjon.brev.brevoppskrift.kotlin.kotlinString
 import no.nav.pensjon.brev.brevoppskrift.lagring.DraftRepository
 import no.nav.pensjon.brev.brevoppskrift.lagring.SourceCatalogueRepository
 import no.nav.pensjon.brev.brevoppskrift.lagring.SourceConflict
@@ -66,6 +68,8 @@ class SourceCatalogueHistoryTest {
             )
             history.retain(listOf(updated))
 
+            val slot = old.slots.last { it.blockId == null && it.language == language && it.originalText.isNotEmpty() }
+            val expected = old.files.getValue(old.templatePath).replaceRange(slot.start, slot.end, kotlinString(slot.originalText + marker))
             for (entries in listOf(listOf(updated), emptyList())) {
                 val restartedHistory = SourceCatalogueRepository(transactions)
                 val catalogue = BuildSourceCatalogue.fromResource(
@@ -74,11 +78,15 @@ class SourceCatalogueHistoryTest {
                 val restored = requireNotNull(drafts.get(saved.id)).draft
                 assertThat(catalogue.checkSource(restored)).isEmpty()
                 assertThat(catalogue.trustedEntry(requireNotNull(restored.source))).isEqualTo(old)
+                val generated = KotlinDraftGenerator(catalogue).generate(restored)
+                assertThat(generated.issues).isEmpty()
+                assertThat(generated.files.single { it.path == old.templatePath }.content).isEqualTo(expected)
 
                 val renamed = restored.copy(metadata = restored.metadata.copy(name = "ForgedName"))
                 assertThat(catalogue.checkSource(renamed).map { it.code }).contains("LOCKED_SOURCE_CHANGED")
                 val forged = restored.copy(source = old.reference.copy(files = old.reference.files + (old.templatePath to Sha256Digest("0".repeat(64)))))
                 assertThat(catalogue.checkSource(forged)).isNotEmpty()
+                assertThat(KotlinDraftGenerator(catalogue).generate(forged).files).isEmpty()
                 val copy = AttachmentCopy(AttachmentReference("historical-copy"), DraftRevision(1), restored)
                 assertThat(catalogue.checkSource(exampleDraft().copy(attachments = listOf(copy)))).isEmpty()
                 val forgedCopy = exampleDraft().copy(attachments = listOf(copy.copy(draft = forged)))

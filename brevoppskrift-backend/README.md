@@ -57,3 +57,17 @@ Genererte filer returneres som data; modulen skriver dem ikke inn i
 målmodulene, registrerer ingen nye maler og utfører ingen publisering.
 Utvikleren må kontrollere blant annet brevkode, registrering,
 feature-toggle og eventuell publisering av API-modeller før innføring.
+
+Kontroller kompilering, HTML-rendring og DTO-JSON mot de faktiske
+målmodulene og Brevbakers Jackson-oppsett:
+
+```shell
+./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+./gradlew :brevoppskrift-backend:verifyGeneratedTemplates --no-configuration-cache
+```
+
+Kontrollen bruker syntetiske autobrev, redigerbare brev og vedlegg i alle
+fire målmoduler, på bokmål, nynorsk og engelsk. Prøvekildene og resultatene
+ligger under modulens `build/`; målmodulenes kildefiler endres ikke.
+Denne kontrollen krever deaktivert configuration cache. Vanlig modulbygg
+kan fortsatt bruke configuration cache.
