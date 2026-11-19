@@ -78,15 +78,6 @@ fun Expression<PEgruppe10>.erIkkeSoknadOmBarnetillegg(): Expression<Boolean> =
     vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
 
 /**
- * BREVKODE-STYRT gate: brevet er ikke et barnetillegg-brev (04_108/04_109/07_200/06_300).
- * Ren brevkode-routing – forsvinner ved variant-splitting (barnetillegg-variantene inkluderer/
- * utelater seksjonene eksplisitt i stedet). Holdt adskilt fra den datastyrte kravårsak-sjekken
- * med vilje, slik at brevkode-halvdelen er lett å fjerne mekanisk når variantene lages.
- */
-fun Expression<PEgruppe10>.harIkkeBarnetilleggBrevkode(): Expression<Boolean> =
-    pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")
-
-/**
  * Tidl. `ut_tbu069v` (Exstream TBU069V): innvilget barnetillegg som faktisk er utbetalt, med
  * brevtypevalg og dødsfallsunntak fra kallstedet.
  */
@@ -135,19 +126,10 @@ fun Expression<PEgruppe10>.skalViseRettTilBarnetillegg(
 
 /**
  * DATASTYRT gate: anvendt trygdetid er lavere enn full opptjening (40 år), slik at trygdetiden må
- * forklares i brevet. Ekte vedtaksdata – skal overleve porten til `vedtaksdata` (i motsetning til
- * brevkode-gatene i `ut_trygdetid`, som forsvinner ved variant-splitting).
+ * forklares i brevet.
  */
 fun Expression<PEgruppe10>.harIkkeFullTrygdetid(): Expression<Boolean> =
     vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40)
-
-/**
- * BREVKODE-STYRT gate: brevet er ikke et inntektsendringsbrev (05_100/07_100). Ren brevkode-routing
- * – forsvinner ved variant-splitting. Holdt adskilt fra datagaten `harIkkeFullTrygdetid` med vilje,
- * slik at brevkode-halvdelen er lett å fjerne mekanisk når variantene lages.
- */
-fun Expression<PEgruppe10>.erIkkeInntektsendringBrevkode(): Expression<Boolean> =
-    pebrevkode().isNotAnyOf("PE_UT_05_100", "PE_UT_07_100")
 
 /**
  * Gate for trygdetidsseksjonen ("Dette er trygdetiden din" + "redusert framtidig trygdetid").

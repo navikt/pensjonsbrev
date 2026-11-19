@@ -227,9 +227,10 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
             includePhrase(RedusertFramtidigTrygdetid)
         }
 
-        includePhrase(TrygdetidNorAvdoedInnledning(pe))
-        includePhrase(TrygdetidEOSAvdoedInnledning(pe))
-        includePhrase(TrygdetidBilateralAvdoedInnledning(pe))
+        val visAvdoedTrygdetidForBrevtype = erIkkeInntektsendring and erIkkeBarnetilleggsbrev
+        includePhrase(TrygdetidNorAvdoedInnledning(pe, visAvdoedTrygdetidForBrevtype))
+        includePhrase(TrygdetidEOSAvdoedInnledning(pe, visAvdoedTrygdetidForBrevtype))
+        includePhrase(TrygdetidBilateralAvdoedInnledning(pe, visAvdoedTrygdetidForBrevtype))
 
         // ============================================================
         // Slik har vi fastsatt den nye inntektsgrensen din

@@ -45,8 +45,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeSoknadOmBarnetillegg
-import no.nav.pensjon.brev.maler.legacy.vedlegg.harIkkeBarnetilleggBrevkode
-import no.nav.pensjon.brev.maler.legacy.vedlegg.erIkkeInntektsendringBrevkode
 import java.time.Month
 
 
@@ -61,13 +59,12 @@ fun FUNKSJON_Year(date: Expression<LocalDate?>): Expression<Int> =
 fun FUNKSJON_Month(date: Expression<LocalDate?>): Expression<Month> =
     date.ifNull(LocalDate.of(1000,Month.JANUARY,1)).month
 
-fun Expression<PEgruppe10>.ut_trygdetid_avdod() =
+fun Expression<PEgruppe10>.ut_trygdetid_avdod(visForklaringForBrevtype: Expression<Boolean>) =
     vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and
             erIkkeSoknadOmBarnetillegg() and
-            erIkkeInntektsendringBrevkode() and
             vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") and
             vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg() and
-            harIkkeBarnetilleggBrevkode()
+            visForklaringForBrevtype
 
 fun Expression<PEgruppe10>.ut_barnet_barna_felles(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())

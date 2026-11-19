@@ -13,11 +13,12 @@ import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.text
 
 data class TrygdetidBilateralAvdoedInnledning(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val visForklaringForBrevtype: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
-        showIf((pe.ut_trygdetid_avdod() and (pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral().notNull()))){
+        showIf((pe.ut_trygdetid_avdod(visForklaringForBrevtype) and (pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral().notNull()))){
             paragraph {
                 text (
                     bokmal { + "Trygdetiden til avdøde i land som Norge har trygdeavtale med, er fastsatt ut fra følgende perioder:" },
