@@ -125,9 +125,9 @@ export function SamhandlerDistributionAnnouncement({
     () => [
       {
         target: targetRef,
-        title: "Digital utsending via Altinn",
+        title: "Samhandler med organisasjonsnummer",
         content:
-          "Har samhandleren organisasjonsnummer i samhandlerregisteret, vises organisasjonsnummeret når du utvider treffet. Da sendes brevet digitalt via Altinn.",
+          "Du ser samhandlerens organisasjonsnummer i stedet for postadressen. Velger du «Sentralprint», får samhandleren brevet i Altinn.",
         placement: "top",
         before: () => {
           setExample(MED_ORGANISASJONSNUMMER);
@@ -136,9 +136,9 @@ export function SamhandlerDistributionAnnouncement({
       },
       {
         target: targetRef,
-        title: "Sendes i posten når organisasjonsnummer mangler",
+        title: "Samhandler uten organisasjonsnummer",
         content:
-          "Uten organisasjonsnummer i samhandlerregisteret vises postadressen i stedet, og brevet sendes i posten.",
+          "Du ser samhandlerens postadresse når organisasjonsnummeret mangler i samhandlerregisteret. Velger du «Sentralprint», får samhandleren brevet i posten.",
         placement: "top",
         before: () => {
           setExample(UTEN_ORGANISASJONSNUMMER);

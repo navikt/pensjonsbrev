@@ -245,7 +245,7 @@ test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan
 
     const modal = page.getByTestId("samhandler-tour-modal");
     await expect(modal).toBeVisible();
-    const stepOne = modal.getByRole("alertdialog", { name: "Digital utsending via Altinn" });
+    const stepOne = modal.getByRole("alertdialog", { name: "Samhandler med organisasjonsnummer" });
     await expect(stepOne).toBeVisible();
     await expect(page.locator(".react-joyride__floater")).toHaveCSS("opacity", "1");
     const axe = await new AxeBuilder({ page })
@@ -258,7 +258,7 @@ test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan
     await expect(modal.getByText("Postboks 10 Skøyen")).toHaveCount(0);
 
     await stepOne.getByRole("button", { name: "Neste" }).click();
-    const stepTwo = modal.getByRole("alertdialog", { name: "Sendes i posten når organisasjonsnummer mangler" });
+    const stepTwo = modal.getByRole("alertdialog", { name: "Samhandler uten organisasjonsnummer" });
     await expect(stepTwo).toBeVisible();
     await expect(stepTwo.getByText("Steg 2 av 2")).toBeVisible();
     await expect(modal.getByText("Postboks 10 Skøyen")).toBeVisible();
@@ -296,7 +296,7 @@ test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan
       .click();
 
     const modal = page.getByTestId("samhandler-tour-modal");
-    await expect(modal.getByRole("alertdialog", { name: "Digital utsending via Altinn" })).toBeVisible();
+    await expect(modal.getByRole("alertdialog", { name: "Samhandler med organisasjonsnummer" })).toBeVisible();
 
     await page.keyboard.press("Escape");
     await expect(modal).toBeHidden();
