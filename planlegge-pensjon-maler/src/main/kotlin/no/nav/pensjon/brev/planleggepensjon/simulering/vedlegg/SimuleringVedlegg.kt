@@ -139,7 +139,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
             }
             ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
                 ifNotNull(afpLivsvarigSim.vedGradertUttak) { afp ->
-                    includePhrase(LivsvarigOffentligAfpSeksjon(afp, afpLivsvarigSim.beskrivelse))
                     includePhrase(SumOffentligLivsvarigTabell(gradertUttak, afp))
                 }
             }
@@ -180,7 +179,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
         }
         ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
             ifNotNull(afpLivsvarigSim.vedHeltUttak) { afp ->
-                includePhrase(LivsvarigOffentligAfpSeksjon(afp, afpLivsvarigSim.beskrivelse))
                 includePhrase(SumOffentligLivsvarigTabell(knekkpunkter.vedHeltUttak, afp))
             }
         }
@@ -205,8 +203,10 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
         }
     }
     ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
-        showIf(afpLivsvarigSim.vedGradertUttak.isNull() and afpLivsvarigSim.vedHeltUttak.isNull()) {
-            includePhrase(LivsvarigOffentligAfpSeksjon(afpLivsvarigSim.vedHeltUttak, afpLivsvarigSim.beskrivelse))
+        ifNotNull(afpLivsvarigSim.vedHeltUttak) { afp ->
+            includePhrase(LivsvarigOffentligAfpSeksjon(afp, afpLivsvarigSim.beskrivelse))
+        }.orShow {
+            includePhrase(LivsvarigOffentligAfpSeksjon(afpLivsvarigSim.vedGradertUttak, afpLivsvarigSim.beskrivelse))
         }
     }
     title1 {

@@ -59,26 +59,42 @@ class LivsvarigOffentligAfpTest {
         assertEquals(1, tables(blocks).count { it.header.colSpec.first().headerContent.text.text() == "Alderspensjon og AFP" })
     }
 
-    @Test
-    fun `viser seksjonen ved baade gradert og helt uttak`() {
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `viser bare en AFP-tabell naar baade gradert og helt uttak finnes`(medApTabeller: Boolean) {
         val afp = requireNotNull(Fixtures.createBrevDtoMedAfpOffentligLivsvarig().pesysData.simulering.afpOffentligLivsvarig)
-        val blocks = render(afp.copy(beskrivelse = beskrivelse))
+        val blocks = render(afp.copy(beskrivelse = beskrivelse), medApTabeller)
         val afpTabeller = tables(blocks).filter { it.header.colSpec.first().headerContent.text.text() == "AFP i offentlig sektor" }
 
-        assertEquals(2, blocks.filterIsInstance<Block.Title3>().count { it.content.text() == tittel })
-        assertEquals(listOf("3000", "4000"), afpTabeller.map { it.rows[0].cells[1].text.text().filter(Char::isDigit) })
-        assertEquals(2, blocks.filterIsInstance<Block.Paragraph>().count {
+        assertEquals(1, blocks.filterIsInstance<Block.Title3>().count { it.content.text() == tittel })
+        assertEquals(listOf("4000"), afpTabeller.map { it.rows[0].cells[1].text.text().filter(Char::isDigit) })
+        assertEquals(1, blocks.filterIsInstance<Block.Paragraph>().count {
             it.content.filterIsInstance<ParagraphContent.Text>().text() == beskrivelse
         })
-        assertEquals(2, tables(blocks).count { it.header.colSpec.first().headerContent.text.text() == "Alderspensjon og AFP" })
+        assertEquals(if (medApTabeller) 2 else 0, tables(blocks).count {
+            it.header.colSpec.first().headerContent.text.text() == "Alderspensjon og AFP"
+        })
     }
 
     @Test
-    fun `beholder tabellene naar eksisterende klient ikke sender beskrivelse`() {
+    fun `viser en AFP-tabell med gradert beloep naar helt uttak mangler`() {
+        val afp = requireNotNull(Fixtures.createBrevDtoMedAfpOffentligLivsvarig().pesysData.simulering.afpOffentligLivsvarig)
+        val blocks = render(afp.copy(vedHeltUttak = null, beskrivelse = beskrivelse))
+        val afpTabell = tables(blocks).single { it.header.colSpec.first().headerContent.text.text() == "AFP i offentlig sektor" }
+
+        assertEquals("3000", afpTabell.rows[0].cells[1].text.text().filter(Char::isDigit))
+        assertEquals(1, blocks.filterIsInstance<Block.Title3>().count { it.content.text() == tittel })
+        assertEquals(1, blocks.filterIsInstance<Block.Paragraph>().count {
+            it.content.filterIsInstance<ParagraphContent.Text>().text() == beskrivelse
+        })
+    }
+
+    @Test
+    fun `viser en AFP-tabell naar eksisterende klient ikke sender beskrivelse`() {
         val afp = requireNotNull(Fixtures.createBrevDtoMedAfpOffentligLivsvarig().pesysData.simulering.afpOffentligLivsvarig)
         val blocks = render(afp)
 
-        assertEquals(2, tables(blocks).count { it.header.colSpec.first().headerContent.text.text() == "AFP i offentlig sektor" })
+        assertEquals(1, tables(blocks).count { it.header.colSpec.first().headerContent.text.text() == "AFP i offentlig sektor" })
         assertTrue(blocks.filterIsInstance<Block.Paragraph>().none {
             it.content.filterIsInstance<ParagraphContent.Text>().text() == beskrivelse
         })
