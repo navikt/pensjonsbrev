@@ -86,9 +86,13 @@ jobs:
           registry: "https://ghcr.io"
           username: ${{ github.repository }}
           password: ${{ github.token }}
+      - name: Login to Google Artifact Registry (Chainguard-baseimage)
+        uses: nais/login@40b72a35a18ddf2ad74b632461139ab838cc2a2f # v0
+        with:
+          team: pensjonsbrev
       - name: "Build Docker image"
         run: |
-          docker build --pull --tag ${IMAGE_PDF_BYGGER} brevbaker/pdf-bygger
+          docker build --pull --load --tag ${IMAGE_PDF_BYGGER} brevbaker/pdf-bygger
       - name: "Push image with sha"
         run: |
           docker push ${IMAGE_PDF_BYGGER}

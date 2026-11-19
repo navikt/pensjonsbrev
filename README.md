@@ -12,6 +12,14 @@ For å kjøre løsningen lokalt må man ha docker og docker compose installert.
 Bygging av brevbakeren krever at du har konfigurert gradle med packages.read token for å hente pakker.
 Se [seksjonen under for oppsett av read token i gradle](#for-gradle).
 
+Docker-imagene bygges på Chainguard-baseimages fra `europe-north1-docker.pkg.dev/cgr-nav`, som krever innlogging.
+Du må derfor ha gcloud cli installert, og logge inn og konfigurere docker én gang:
+
+```bash
+gcloud auth login
+gcloud auth configure-docker europe-north1-docker.pkg.dev
+```
+
 Bruk følgende for å bygge og kjøre:
 
 ```bash
@@ -147,7 +155,7 @@ Følgende miljøvariabler kan settes for å styre oppførselen til `PDFByggerTes
 
 ### Bygge nytt lokalt pdf-bygger image
 
-Bygg først jar-filen og deretter docker-imaget:
+Bygg først jar-filen og deretter docker-imaget. Docker må være [konfigurert mot Chainguard-registryet](#lokal-kjøring-av-brevbaker-og-pdf-bygger) for å hente baseimaget.
 
 ```bash
 ./gradlew :brevbaker:pdf-bygger:installDist
