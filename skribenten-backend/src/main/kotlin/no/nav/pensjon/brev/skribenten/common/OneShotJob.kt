@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev.skribenten.common
 
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.db.GJELDENDE_REDIGERT_BREV_VERSJON
+import no.nav.pensjon.brev.skribenten.db.GJELDENDE_REDIGERT_VEDLEGG_VERSJON
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.isNull
+import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.core.vendors.ForUpdateOption
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
@@ -90,7 +92,8 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
 fun JobConfig.updateBrevredigeringJson() {
     val alleBrevIder = transaction {
         BrevredigeringTable.select(BrevredigeringTable.id)
-            .where { BrevredigeringTable.saksbehandlerValg.isNull() }.map { it[BrevredigeringTable.id] }
+            .where { BrevredigeringTable.tekniskVersjon less GJELDENDE_REDIGERT_BREV_VERSJON }
+            .map { it[BrevredigeringTable.id] }
     }
     val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
     var antallOppdaterte = 0
@@ -115,6 +118,7 @@ fun JobConfig.updateBrevredigeringJson() {
                 val redigertBrev = rad[BrevredigeringTable.redigertBrevKryptert]
                 update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
                 update[BrevredigeringTable.redigertBrevKryptertHash] = Hash.read(redigertBrev)
+                update[BrevredigeringTable.tekniskVersjon] = GJELDENDE_REDIGERT_BREV_VERSJON
             }
             antallOppdaterte++
         }

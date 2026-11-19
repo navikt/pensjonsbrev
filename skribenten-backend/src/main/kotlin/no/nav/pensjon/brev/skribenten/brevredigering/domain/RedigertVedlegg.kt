@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.pensjon.brev.skribenten.db.GJELDENDE_REDIGERT_VEDLEGG_VERSJON
 import no.nav.pensjon.brev.skribenten.db.RedigertVedleggTable
 import no.nav.pensjon.brev.skribenten.db.writeHashTo
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -15,6 +16,8 @@ class RedigertVedlegg(id: EntityID<CompositeID>) : CompositeEntity(id) {
     var vedleggId by RedigertVedleggTable.vedleggId
     var redigertVedlegg by RedigertVedleggTable.redigertVedleggKryptert
         .writeHashTo(RedigertVedleggTable.redigertVedleggKryptertHash)
+    var tekniskVersjon by RedigertVedleggTable.tekniskVersjon
+        private set
     val redigertVedleggHash by RedigertVedleggTable.redigertVedleggKryptertHash
     var rendretVedlegg by RedigertVedleggTable.rendretVedlegg
     var rendretVedleggHash by RedigertVedleggTable.rendretVedleggHash
@@ -32,6 +35,7 @@ class RedigertVedlegg(id: EntityID<CompositeID>) : CompositeEntity(id) {
                 }
             ) {
                 this.redigertVedlegg = redigertVedlegg
+                this.tekniskVersjon = GJELDENDE_REDIGERT_VEDLEGG_VERSJON
             }
     }
 }
