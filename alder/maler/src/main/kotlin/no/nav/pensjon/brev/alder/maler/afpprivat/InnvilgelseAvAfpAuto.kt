@@ -61,7 +61,7 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
             )
             includePhrase(RettigheterPersonopplysninger)
             includePhrase(RettTilAaKlageAfpPrivat)
-            includePhrase(HarDuSpoersmaal.alder)
+            includePhrase(HarDuSpoersmaal.afpPrivat)
         }
 
         includeAttachmentIfNotNull(vedleggDinAfpPrivatBeregning, dinAfpPrivatBeregning)
