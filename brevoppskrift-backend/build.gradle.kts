@@ -25,6 +25,7 @@ tasks {
     }
     test {
         maxParallelForks = 1
+        systemProperty("authoring.repository", rootProject.projectDir.absolutePath)
         useJUnitPlatform()
     }
 }
@@ -47,4 +48,36 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.testcontainers.postgresql)
+}
+
+val authoringTools = sourceSets.create("authoringTools")
+configurations[authoringTools.implementationConfigurationName].extendsFrom(configurations.implementation.get())
+configurations[authoringTools.runtimeOnlyConfigurationName].extendsFrom(configurations.runtimeOnly.get())
+authoringTools.compileClasspath += sourceSets.main.get().output.classesDirs
+authoringTools.runtimeClasspath += sourceSets.main.get().output.classesDirs
+
+dependencies {
+    add(authoringTools.implementationConfigurationName, "org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlinVersion.get()}")
+    testImplementation(files(authoringTools.output.classesDirs))
+    testRuntimeOnly(files(configurations[authoringTools.runtimeClasspathConfigurationName]))
+}
+
+val catalogueResources = layout.buildDirectory.dir("generated/authoring/resources")
+sourceSets.main {
+    resources.srcDir(catalogueResources)
+}
+
+val generateSourceCatalogue by tasks.registering(JavaExec::class) {
+    group = "build"
+    description = "Import visible Kotlin templates from the build's Git commit into an immutable resource."
+    dependsOn(tasks.named(authoringTools.classesTaskName))
+    classpath = authoringTools.runtimeClasspath
+    mainClass.set("no.nav.pensjon.brev.brevoppskrift.katalog.SourceCatalogueBuilderKt")
+    args(rootProject.projectDir.absolutePath, catalogueResources.get().file("authoring/source-catalogue.json").asFile.absolutePath)
+    outputs.dir(catalogueResources)
+    outputs.upToDateWhen { false }
+}
+
+tasks.processResources {
+    dependsOn(generateSourceCatalogue)
 }
