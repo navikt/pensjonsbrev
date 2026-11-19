@@ -41,7 +41,6 @@ private val vedleggPerProfil: Map<OpplysningerBruktIBeregningUTProfil, Attachmen
 fun vedleggOpplysningerBruktIBeregningUTLegacy(profil: OpplysningerBruktIBeregningUTProfil): AttachmentTemplate<LangBokmalNynorsk, PEgruppe10> =
     vedleggPerProfil.getValue(profil)
 
-@Suppress("UNUSED_PARAMETER") // Tas i bruk når pebrevkode-sjekkene byttes ut.
 private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
     createAttachment<LangBokmalNynorsk, PEgruppe10>(
         title = {
@@ -102,7 +101,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
         // Slik beregner vi uføretrygden din
         // ============================================================
         showIf (pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) {
-            showIf(pe.erFulltBeregningsbrev()) {
+            showIf(pe.erFulltBeregningsbrev(profil)) {
                 includePhrase(
                     SlikBeregnerViUfoeretrygdenKonvertert(
                         pe = pe,
@@ -112,7 +111,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
                 )
             }
         }.orShow {
-            showIf(pe.erFulltBeregningsbrev()) {
+            showIf(pe.erFulltBeregningsbrev(profil)) {
                 includePhrase(SlikBeregnerViUfoeretrygden(pe))
             }
         }
@@ -131,7 +130,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
             includePhrase(SlikBeregnerViUPTilUT(pe))
         }
 
-        showIf(pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
+        showIf(pe.skalViseGrunnbeloepOgYrkesskadeForklaring(profil)) {
             showIf(pe.erIkkeInntektsendringBrevkode()) {
                 includePhrase(Grunnbeloep)
             }
@@ -141,7 +140,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
         // ============================================================
         // Dette er inntektene vi har brukt i beregningen din
         // ============================================================
-        showIf(pe.skalViseInntekterBruktIBeregning()) {
+        showIf(pe.skalViseInntekterBruktIBeregning(profil)) {
             title1 {
                 text(
                     bokmal { +"Dette er inntektene vi har brukt i beregningen din" },
@@ -191,7 +190,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
         // ============================================================
         // Dette er trygdetiden din
         // ============================================================
-        showIf(pe.ut_trygdetid()) {
+        showIf(pe.ut_trygdetid(profil)) {
             includePhrase(DetteErTrygdetidenDin(pe, erMndEtterFoedsel))
 
             showIf(pe.skalViseTrygdetidNorTabell(erMndEtterFoedsel)) {
@@ -208,7 +207,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
             }
         }
 
-        showIf(pe.skalViseTrygdetidBilateralTabell(erMndEtterFoedsel)){
+        showIf(pe.skalViseTrygdetidBilateralTabell(erMndEtterFoedsel, profil)){
 
             ifNotNull(pe.trygdetidBilateralListe()){
                 includePhrase(TrygdetidBilateralInnledning)
@@ -216,7 +215,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
             }
         }
 
-        showIf(pe.ut_trygdetid()
+        showIf(pe.ut_trygdetid(profil)
                 and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid()
                 and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")) {
             includePhrase(RedusertFramtidigTrygdetid)
@@ -233,7 +232,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
             includePhrase(NyInntektsgrense)
         }
 
-        showIf(pe.skalViseInntektsgrenseOgAvkortning()) {
+        showIf(pe.skalViseInntektsgrenseOgAvkortning(profil)) {
             includePhrase(
                 InntektsgrenseOgAvkortning(
                     pe = pe,
@@ -332,7 +331,7 @@ private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
         // ============================================================
         // Etteroppgjør av uføretrygd og barnetillegg
         // ============================================================
-        showIf(pe.skalViseEtteroppgjoer()) {
+        showIf(pe.skalViseEtteroppgjoer(profil)) {
             includePhrase(EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
         }
     }
