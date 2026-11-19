@@ -50,10 +50,6 @@ fun Expression<PEgruppe10>.trygdetidBilateralListe() =
 
 // --- Seksjonsbetingelser ---
 
-/** Gate for omregning av uførepensjon til uføretrygd (auto & manuell) – kun PE_UT_04_300 og PE_UT_14_300. */
-fun Expression<PEgruppe10>.skalViseOmregningUPtilUT(): Expression<Boolean> =
-    pebrevkode().equalTo("PE_UT_04_300") or pebrevkode().equalTo("PE_UT_14_300")
-
 fun Expression<PEgruppe10>.oppfyllerDoedsfallsvilkaar(
     utelatVedDoedsfall: Expression<Boolean>,
 ): Expression<Boolean> =
@@ -81,9 +77,6 @@ fun Expression<PEgruppe10>.skalViseEktefelletilleggGenerell(
 fun Expression<PEgruppe10>.erIkkeSoknadOmBarnetillegg(): Expression<Boolean> =
     vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
 
-fun Expression<PEgruppe10>.erIkkeNyBeregningAvBarnetilleggBrevkode(): Expression<Boolean> =
-    pebrevkode().notEqualTo("PE_UT_04_108") and pebrevkode().notEqualTo("PE_UT_04_109")
-
 /**
  * BREVKODE-STYRT gate: brevet er ikke et barnetillegg-brev (04_108/04_109/07_200/06_300).
  * Ren brevkode-routing – forsvinner ved variant-splitting (barnetillegg-variantene inkluderer/
@@ -92,20 +85,6 @@ fun Expression<PEgruppe10>.erIkkeNyBeregningAvBarnetilleggBrevkode(): Expression
  */
 fun Expression<PEgruppe10>.harIkkeBarnetilleggBrevkode(): Expression<Boolean> =
     pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")
-
-fun Expression<PEgruppe10>.harBrevkodeForRettTilBarnetillegg(): Expression<Boolean> =
-    pebrevkode().isOneOf(
-        "PE_UT_04_101", "PE_UT_04_102", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300",
-        "PE_UT_06_100", "PE_UT_04_103", "PE_UT_04_106", "PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200",
-    )
-
-/** Som `harBrevkodeForRettTilBarnetillegg`, men inkluderer også 06_300. */
-fun Expression<PEgruppe10>.harBrevkodeForBarnetilleggsberegning(): Expression<Boolean> =
-    pebrevkode().isOneOf(
-        "PE_UT_04_101", "PE_UT_04_102", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300",
-        "PE_UT_06_100", "PE_UT_04_103", "PE_UT_04_106", "PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200",
-        "PE_UT_06_300",
-    )
 
 /**
  * Tidl. `ut_tbu069v` (Exstream TBU069V): innvilget barnetillegg som faktisk er utbetalt, med
@@ -161,14 +140,6 @@ fun Expression<PEgruppe10>.skalViseRettTilBarnetillegg(
  */
 fun Expression<PEgruppe10>.harIkkeFullTrygdetid(): Expression<Boolean> =
     vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40)
-
-/**
- * BREVKODE-STYRT gate: 04_101 (innvilgelse) og 04_114 (økning uføregrad) viser alltid
- * trygdetidsseksjonen, uavhengig av trygdetidslengde. Ren brevkode-routing – forsvinner ved
- * variant-splitting (disse variantene inkluderer seksjonen eksplisitt).
- */
-fun Expression<PEgruppe10>.harTrygdetidBrevkodeUansett(): Expression<Boolean> =
-    pebrevkode().equalTo("PE_UT_04_101") or pebrevkode().equalTo("PE_UT_04_114")
 
 /**
  * BREVKODE-STYRT gate: brevet er ikke et inntektsendringsbrev (05_100/07_100). Ren brevkode-routing
@@ -254,18 +225,6 @@ fun Expression<PEgruppe10>.erInntektsendringMedEndretUtbetaling(): Expression<Bo
         vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
             .notEqualTo(vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())
 
-/**
- * BREVKODE-STYRT gate for inntektsendrings-seksjonen: ikke barnetillegg-brev (04_108/04_109/07_200).
- * NB: 06_300 er bevisst IKKE ekskludert her (i
- * motsetning til `harIkkeBarnetilleggBrevkode` som ekskluderer hele 4-settet) – avviket er bevart
- * ordrett fra legacy. Dødsfall-unntaket for 04_102 styres separat i submalen.
- * Forsvinner/reduseres ved variant-splitting.
- */
-fun Expression<PEgruppe10>.harInntektsendringBrevkodeUtenBarnetillegg(): Expression<Boolean> =
-    pebrevkode().notEqualTo("PE_UT_04_108") and
-        pebrevkode().notEqualTo("PE_UT_04_109") and
-        pebrevkode().notEqualTo("PE_UT_07_200")
-
 /** Gate for tittel + intro i inntektsendrings-utbetalingsseksjonen. */
 fun Expression<PEgruppe10>.skalViseUtbetalingVedInntektsendringTittel(): Expression<Boolean> =
     erInntektsendringMedEndretUtbetaling() and
@@ -316,23 +275,7 @@ fun Expression<PEgruppe10>.erFulltBeregningsbrev(profil: OpplysningerBruktIBereg
         erIkkeSoknadOmBarnetillegg() and
         (!profil.erBarnetilleggsbrev).expr()
 
-/**
- * BREVKODE-STYRT: brevet er verken en endring (04_102) eller en økning av uføregrad (04_114).
- * Brukes til å skjule ifu-/reduksjonsberegnings-avsnittet for disse brevtypene. Forsvinner ved
- * variant-splitting.
- */
-fun Expression<PEgruppe10>.erIkkeEndringEllerOekningBrevkode(): Expression<Boolean> =
-    pebrevkode().isNotAnyOf("PE_UT_04_102", "PE_UT_04_114")
-
 // --- skalViseReduksjonsprosentavsnitt (tidl. Exstream TBU056V; flyttet hit fra LegacyFunksjoner, brukes kun i dette vedlegget) ---
-
-/**
- * BREVKODE-STYRT: brevkoder som representerer en (re)beregning der reduksjonsprosent-/inntektsavsnitt
- * er aktuelt (innvilgelse 04_101, endring 04_102, full eksport 04_116, økning uføregrad 04_114,
- * omregning up→ut 04_300/14_300). Forsvinner ved variant-splitting.
- */
-fun Expression<PEgruppe10>.erBeregningsendringsBrevkode(): Expression<Boolean> =
-    pebrevkode().isOneOf("PE_UT_04_102", "PE_UT_04_116", "PE_UT_04_101", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300")
 
 /** DATASTYRT: inntektstaket ligger over bunnfradraget (avkortning er aktuell). Overlever porten. */
 fun Expression<PEgruppe10>.bunnfradragUnderInntektstak(): Expression<Boolean> =
