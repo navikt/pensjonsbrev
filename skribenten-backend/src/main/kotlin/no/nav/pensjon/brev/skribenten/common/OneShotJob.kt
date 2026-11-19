@@ -101,7 +101,7 @@ fun JobConfig.updateBrevredigeringJson(tekniskVersjon: Int) {
                 .select(
                     BrevredigeringTable.sistReservert,
                     BrevredigeringTable.redigertBrevKryptert,
-                    BrevredigeringTable.redigertBrevKryptertHash
+                    BrevredigeringTable.rendretBrevKryptert,
                 )
                 .where { BrevredigeringTable.id eq brevId }
                 .forUpdate(ForUpdateOption.ForUpdate)
@@ -115,6 +115,7 @@ fun JobConfig.updateBrevredigeringJson(tekniskVersjon: Int) {
                 val redigertBrev = rad[BrevredigeringTable.redigertBrevKryptert]
                 update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
                 update[BrevredigeringTable.redigertBrevKryptertHash] = Hash.read(redigertBrev)
+                update[BrevredigeringTable.rendretBrevKryptert] = rad[BrevredigeringTable.rendretBrevKryptert]
                 update[BrevredigeringTable.tekniskVersjon] = tekniskVersjon
             }
             antallOppdaterte++
