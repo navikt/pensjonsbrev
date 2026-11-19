@@ -7,13 +7,15 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 
 data class SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val visForklaringForBrevtype: Expression<Boolean>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        includePhrase(StoerrelsePaaBarnetillegg_Innledning(pe))
-        includePhrase(StoerrelsePaaBarnetillegg_EttBarnekull(pe))
+        includePhrase(StoerrelsePaaBarnetillegg_Innledning(pe, visForklaringForBrevtype, utelatVedDoedsfall))
+        includePhrase(StoerrelsePaaBarnetillegg_EttBarnekull(pe, visForklaringForBrevtype, utelatVedDoedsfall))
         includePhrase(StoerrelsePaaBarnetillegg_EndringIInntekt(pe))
-        includePhrase(StoerrelsePaaBarnetillegg_Fellesbarn(pe))
-        includePhrase(StoerrelsePaaBarnetillegg_Serkull(pe))
+        includePhrase(StoerrelsePaaBarnetillegg_Fellesbarn(pe, visForklaringForBrevtype, utelatVedDoedsfall))
+        includePhrase(StoerrelsePaaBarnetillegg_Serkull(pe, visForklaringForBrevtype, utelatVedDoedsfall))
     }
 }
