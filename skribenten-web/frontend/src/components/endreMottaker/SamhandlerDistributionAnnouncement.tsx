@@ -129,6 +129,8 @@ export function SamhandlerDistributionAnnouncement({
         content:
           "Du ser samhandlerens organisasjonsnummer i stedet for postadressen. Velger du «Sentralprint», får samhandleren brevet i Altinn.",
         placement: "top",
+        // The selected hit has square corners.
+        spotlightRadius: 0,
         before: () => {
           setExample(WITH_ORG_NUMBER);
           return nextPaint();
@@ -140,6 +142,8 @@ export function SamhandlerDistributionAnnouncement({
         content:
           "Du ser samhandlerens postadresse når organisasjonsnummeret mangler i samhandlerregisteret. Velger du «Sentralprint», får samhandleren brevet i posten.",
         placement: "top",
+        // The selected hit has square corners.
+        spotlightRadius: 0,
         before: () => {
           setExample(WITHOUT_ORG_NUMBER);
           return nextPaint();
