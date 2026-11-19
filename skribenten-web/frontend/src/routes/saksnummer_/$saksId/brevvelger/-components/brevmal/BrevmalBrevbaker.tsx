@@ -11,7 +11,6 @@ import { ApiError } from "~/components/ApiError";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
-import { SamhandlerDistributionAnnouncement } from "~/components/endreMottaker/SamhandlerDistributionAnnouncement";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
 import { type BrevInfo, type BrevResponse, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
@@ -180,7 +179,6 @@ const BrevmalBrevbaker = (props: {
 
   return (
     <VStack flexGrow="1" gap="space-16">
-      <SamhandlerDistributionAnnouncement />
       {åpnerNyttBrevOgHarKladd && (
         <EksisterendeKladdModal
           onClose={() => setÅpnerNyttBrevOgHarKladd(false)}

@@ -89,17 +89,12 @@ const nextPaint = () =>
 /**
  * «Se hvordan» for digital utsending to samhandlere: opens an illustration of «Endre mottaker» with one search where the
  * samhandler has an organisasjonsnummer (sent digitally) and one where it does not (sent by post), and walks through them.
- * Never starts automatically. Mount it where the user can change the recipient.
+ * Never starts automatically. It shows its own example, so it is mounted once, next to the bell, and can be started from
+ * every page.
  */
-export function SamhandlerDistributionAnnouncement({
-  when = true,
-  skalKunOppdatereSamhandler = false,
-}: {
-  when?: boolean;
-  skalKunOppdatereSamhandler?: boolean;
-}) {
+export function SamhandlerDistributionAnnouncement() {
   const replayGeneration = useAnnouncementReplay(SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT_ID);
-  const modalOpen = when && replayGeneration > 0;
+  const modalOpen = replayGeneration > 0;
   const [dialog, setDialog] = useState<HTMLDialogElement | null>(null);
   const [example, setExample] = useState<ExampleSearch>(WITH_ORG_NUMBER);
   const targetRef = useRef<HTMLTableSectionElement>(null);
@@ -176,7 +171,7 @@ export function SamhandlerDistributionAnnouncement({
                 <Tabs size="small" value="samhandler">
                   <Tabs.List>
                     <Tabs.Tab label="Finn samhandler" value="samhandler" />
-                    {skalKunOppdatereSamhandler ? null : <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />}
+                    <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
                   </Tabs.List>
                   <Box marginBlock="space-16 space-0">
                     <Tabs.Panel value="samhandler">
@@ -205,7 +200,7 @@ export function SamhandlerDistributionAnnouncement({
         showFrom={SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.publishedAt}
         showUntil={SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT_SHOW_UNTIL}
         steps={steps}
-        when={when}
+        when
       />
     </>
   );

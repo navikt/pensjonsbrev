@@ -4,7 +4,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
-import { SamhandlerDistributionAnnouncement } from "~/components/endreMottaker/SamhandlerDistributionAnnouncement";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type Adresse } from "~/types/apiTypes";
 import { type Mottaker } from "~/types/brev";
@@ -26,7 +25,6 @@ const EndreMottaker = (properties: {
 
   return (
     <VStack gap="space-8">
-      <SamhandlerDistributionAnnouncement skalKunOppdatereSamhandler />
       {modalÅpen && (
         <EndreMottakerModal
           error={null}

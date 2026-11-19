@@ -106,7 +106,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await expect(tour(page)).toBeHidden();
 
     await bell(page).click();
-    await page.getByRole("button", { name: "Se hvordan" }).click();
+    await page.getByRole("button", { name: "Se hvordan", description: BELL_TITLE }).click();
 
     await expect(tour(page)).toBeVisible();
     await tour(page).getByRole("button", { name: "Skjønner!" }).click();
@@ -125,7 +125,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await expect(dot(page)).toBeHidden();
 
     await bell(page).click();
-    await page.getByRole("button", { name: "Se hvordan" }).click();
+    await page.getByRole("button", { name: "Se hvordan", description: BELL_TITLE }).click();
     await expect(tour(page)).toBeVisible();
   });
 
@@ -138,7 +138,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await expect(tour(page)).toBeHidden();
 
     await bell(page).click();
-    await page.getByRole("button", { name: "Se hvordan" }).click();
+    await page.getByRole("button", { name: "Se hvordan", description: BELL_TITLE }).click();
     await expect(tour(page)).toBeVisible();
   });
 
@@ -150,7 +150,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await bell(page).click();
 
     await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Se hvordan", description: BELL_TITLE })).toHaveCount(0);
     const docs = page.getByRole("link", { name: /^Les mer her/, description: BELL_TITLE });
     await expect(docs).toBeVisible();
     await expect(docs).toHaveAttribute(
@@ -181,7 +181,7 @@ test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjone
 
   await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
   await expect(page.getByRole("link", { name: /^Les mer her/, description: BELL_TITLE })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Se hvordan", description: BELL_TITLE })).toHaveCount(0);
 });
 
 test("viser ikke klokken når nyhetsvarsling er skrudd av, men gjennomgangen starter fortsatt i attesteringen", async ({
@@ -217,25 +217,13 @@ test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan
     await page.route(`${STATUS_URL}/*/*`, (route) => route.fulfill({ status: 204 }));
   });
 
-  test("starter ikke automatisk, viser «Se hvordan» når endre mottaker er tilgjengelig i brevvelger, og går gjennom begge steg", async ({
+  test("starter ikke automatisk, kan startes med «Se hvordan» fra alle sider, og går gjennom begge steg", async ({
     page,
   }) => {
     // Short enough that the example has to scroll inside the modal.
     await page.setViewportSize({ width: 1440, height: 760 });
     await page.goto("/saksnummer/123456/brevvelger");
     await expect(dot(page)).toBeVisible();
-    await expect(page.getByRole("alertdialog")).toHaveCount(0);
-
-    await bell(page).click();
-    await expect(page.getByRole("heading", { name: SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.title })).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Se hvordan", description: SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.title }),
-    ).toHaveCount(0);
-    await page.keyboard.press("Escape");
-
-    await page.getByTestId("brevmal-search").fill("brev fra nav");
-    await page.getByTestId("brevmal-button").click();
-    await expect(page.getByTestId("toggle-endre-mottaker-modal")).toBeVisible();
     await expect(page.getByRole("alertdialog")).toHaveCount(0);
 
     await bell(page).click();
@@ -281,14 +269,10 @@ test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan
     await expect(bell(page)).toBeFocused();
   });
 
-  test("viser «Se hvordan» i brevbehandler bare når et ulåst brev er åpent, og Escape lukker både gjennomgangen og modalen", async ({
-    page,
-  }) => {
-    await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) =>
-      route.fulfill({ json: [brevInfo({ id: 1, saksId: 123456, brevtittel: "Utkast til brev" })] }),
-    );
-    await page.goto("/saksnummer/123456/brevbehandler?brevId=1");
-    await expect(page.getByTestId("toggle-endre-mottaker-modal")).toBeVisible();
+  test("Escape lukker både gjennomgangen og eksempelet", async ({ page }) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => route.fulfill({ json: [] }));
+    await page.goto("/saksnummer/123456/brevbehandler");
+    await expect(page.getByText("Fant ingen brev som er under behandling")).toBeVisible();
 
     await bell(page).click();
     await page
@@ -301,12 +285,5 @@ test.describe("gjennomgang av digital utsending til samhandlere via «Se hvordan
     await page.keyboard.press("Escape");
     await expect(modal).toBeHidden();
     await expect(bell(page)).toBeFocused();
-
-    await page.getByRole("region", { name: "Utkast til brev" }).locator(".aksel-expansioncard__header-button").click();
-    await expect(page.getByTestId("toggle-endre-mottaker-modal")).toBeHidden();
-    await bell(page).click();
-    await expect(
-      page.getByRole("button", { name: "Se hvordan", description: SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.title }),
-    ).toHaveCount(0);
   });
 });
