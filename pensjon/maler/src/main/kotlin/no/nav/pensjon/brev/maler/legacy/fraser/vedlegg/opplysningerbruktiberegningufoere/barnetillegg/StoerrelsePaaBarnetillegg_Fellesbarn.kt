@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseBarnetilleggsstoerrelse
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -13,10 +14,13 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class StoerrelsePaaBarnetillegg_Fellesbarn(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val visForklaringForBrevtype: Expression<Boolean>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())) {
+        val skalViseBarnetilleggsstoerrelse = pe.skalViseBarnetilleggsstoerrelse(visForklaringForBrevtype, utelatVedDoedsfall)
+        showIf((skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v())) {
             paragraph {
                 table(header = {
                     column(columnSpan = 4) {
@@ -71,7 +75,7 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                         }
                     }
                     showIf(
-                        (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                        (skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                             .greaterThan(
                                 0
                             ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
@@ -190,7 +194,7 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                     }
 
                     showIf(
-                        (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                        (skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                             .notEqualTo(0)
                                 or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
                                 and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))))
@@ -216,7 +220,7 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
 
 
                     showIf(
-                        (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                        (skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                             .notEqualTo(0)
                                 or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
                                 and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))))
@@ -239,7 +243,7 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                         }
                     }
 
-                    showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
+                    showIf((skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
                             and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))){
                         row {
                             cell {
@@ -266,7 +270,7 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
             (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                 .greaterThan(
                     0
-                ) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
+                ) and skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v())){
             paragraph {
                 text (
                     bokmal { + "Du vil få utbetalt " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
@@ -289,7 +293,7 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
         }
 
         showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-            .equalTo(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
+            .equalTo(0) and skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v())){
             paragraph {
 
                 showIf((pe.ut_tbu608_far_ikke())){
