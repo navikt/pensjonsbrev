@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.common
 
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.GJELDENDE_REDIGERT_BREV_VERSJON
-import no.nav.pensjon.brev.skribenten.db.GJELDENDE_REDIGERT_VEDLEGG_VERSJON
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
@@ -29,14 +27,14 @@ class OneShotJobConfig {
      * The name should be unique across all one-shot jobs, and is used to verify if a job has already been executed.
      * The preferred naming scheme has a date prefix followed by a descriptive name, e.g. "2025-08-10-brev-title-as-markup".
      */
-    fun job(uniqeName: String, block: JobConfig.() -> Unit) {
+    fun job(uniqeName: String, version: Int, block: JobConfig.(version: Int) -> Unit) {
         try {
             val existing = transaction {
                 OneShotJobTable.selectAll().where { OneShotJobTable.id eq uniqeName }.singleOrNull()
             }
             if (existing == null) {
                 logger.info("One-shot job started: '$uniqeName'")
-                val job = JobConfig(uniqeName).apply(block)
+                val job = JobConfig(uniqeName).apply { block(version) }
 
                 transaction {
                     if (job.completed) {
@@ -89,11 +87,10 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
     }
 }
 
-fun JobConfig.updateBrevredigeringJson() {
+fun JobConfig.updateBrevredigeringJson(tekniskVersjon: Int) {
     val alleBrevIder = transaction {
         BrevredigeringTable.select(BrevredigeringTable.id)
-            .where { BrevredigeringTable.tekniskVersjon less GJELDENDE_REDIGERT_BREV_VERSJON }
-            .map { it[BrevredigeringTable.id] }
+            .where { BrevredigeringTable.tekniskVersjon less tekniskVersjon }.map { it[BrevredigeringTable.id] }
     }
     val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
     var antallOppdaterte = 0
@@ -118,7 +115,7 @@ fun JobConfig.updateBrevredigeringJson() {
                 val redigertBrev = rad[BrevredigeringTable.redigertBrevKryptert]
                 update[BrevredigeringTable.redigertBrevKryptert] = redigertBrev
                 update[BrevredigeringTable.redigertBrevKryptertHash] = Hash.read(redigertBrev)
-                update[BrevredigeringTable.tekniskVersjon] = GJELDENDE_REDIGERT_BREV_VERSJON
+                update[BrevredigeringTable.tekniskVersjon] = tekniskVersjon
             }
             antallOppdaterte++
         }

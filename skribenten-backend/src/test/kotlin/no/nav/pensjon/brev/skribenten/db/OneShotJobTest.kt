@@ -40,7 +40,7 @@ class OneShotJobTest {
 
         runBlocking {
             oneShotJobs(NaisLeaderService(null, engine)) {
-                job(name) {
+                job(name, 1) {
                     isExecuted = true
                 }
             }
@@ -62,7 +62,7 @@ class OneShotJobTest {
         fun aJob() {
             runBlocking {
                 oneShotJobs(NaisLeaderService(null, engine)) {
-                    job(name) {
+                    job(name, 1) {
                         executionCount++
                     }
                 }
@@ -82,7 +82,7 @@ class OneShotJobTest {
 
         fun failingJob() = runBlocking {
             oneShotJobs(NaisLeaderService(null, engine)) {
-                job(name) {
+                job(name, 1) {
                     isExecuted = true
                     throw RuntimeException("Simulated failure")
                 }
@@ -106,7 +106,7 @@ class OneShotJobTest {
 
         runBlocking {
             oneShotJobs(FakeLeaderService(true, false)) {
-                job(name) {
+                job(name, 1) {
                     isExecuted = true
                 }
             }
@@ -126,7 +126,7 @@ class OneShotJobTest {
 
         runBlocking {
             oneShotJobs(FakeLeaderService(true, true)) {
-                job(name) {
+                job(name, 1) {
                     isExecuted = true
                 }
             }

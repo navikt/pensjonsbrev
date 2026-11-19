@@ -27,16 +27,6 @@ import org.jetbrains.exposed.v1.json.json
 import java.time.Instant
 import java.time.LocalDate
 
-/**
- * Versjon av json-formatet for redigertBrev. Rader med lavere versjon oppdateres av one-shot-jobb.
- */
-const val GJELDENDE_REDIGERT_BREV_VERSJON = 2
-
-/**
- * Versjon av json-formatet for redigertVedlegg. Rader med lavere versjon oppdateres av one-shot-jobb.
- */
-const val GJELDENDE_REDIGERT_VEDLEGG_VERSJON = 2
-
 object Favourites : Table() {
     val id: Column<Int> = integer("id").autoIncrement()
     val userId: Column<NavIdent> = varchar("User Id", length = 50).transform(::NavIdent, NavIdent::id)
@@ -71,7 +61,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val redigertBrevKryptert: Column<Edit.Letter> = kryptertDto<Edit.Letter>("redigertBrevKryptert")
     val rendretBrevKryptert: Column<Edit.Letter?> = kryptertDto<Edit.Letter>("rendretBrevKryptert").nullable()
     val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
-    val tekniskVersjon: Column<Int> = integer("tekniskVersjon")
+    val tekniskVersjon: Column<Int> = integer("tekniskVersjon").databaseGenerated()
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjon> = varchar("distribusjonstype", length = 50).transform(Distribusjon::valueOf, Distribusjon::name)
     val redigeresAvNavIdent: Column<NavIdent?> = varchar("redigeresAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
@@ -118,7 +108,7 @@ object RedigertVedleggTable : CompositeIdTable() {
         varchar("vedleggId", 50).transform(::VedleggId, VedleggId::id).entityId()
     val redigertVedleggKryptert: Column<Edit.Attachment> = kryptertDto<Edit.Attachment>("redigertVedleggKryptert")
     val redigertVedleggKryptertHash: Column<Hash<Edit.Attachment>> = hashColumn("redigertVedleggKryptertHash")
-    val tekniskVersjon: Column<Int> = integer("tekniskVersjon")
+    val tekniskVersjon: Column<Int> = integer("tekniskVersjon").databaseGenerated()
     val rendretVedlegg: Column<Edit.Attachment?> = kryptertDto<Edit.Attachment>("rendretVedlegg").nullable()
     val rendretVedleggHash: Column<StableHashCode?> =
         integer("rendretVedleggHash").transform(::StableHashCode, StableHashCode::value).nullable()
