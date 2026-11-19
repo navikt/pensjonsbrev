@@ -176,7 +176,6 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
             includePhrase(Innvilgelse.RettighetSomUngUfoer(
                 ungUforResultat = ungUforResultat,
                 pe = pe,
-                vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
             includePhrase(
@@ -272,7 +271,6 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
                 oifuKroner = oifuKroner,
                 uforegrad = uforegrad,
                 ungUforResultat = ungUforResultat,
-                vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
             includePhrase(Innvilgelse.KombinereUforetrygdOgInntekt(
