@@ -206,6 +206,17 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
         text(bokmal { +"Opplysninger brukt i pensjonsberegningen" })
     }
 
+    title2 {
+        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.format(formatter = SivilstatusFormatter) })
+    }
+    paragraph {
+        text(
+            bokmal {
+                +"Hvis du bor sammen med noen kan inntekten til den du bor med ha betydning for hva du får i alderspensjon. Når du mottar alderspensjon må du derfor melde fra til Nav ved endring i sivilstand."
+            },
+        )
+    }
+
     ifNotNull(simuleringsinformasjon.utenlandsperioder) { utenlandsperioder ->
         title2 {
             text(bokmal { +"Opphold utenfor Norge" })
@@ -253,16 +264,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
         }
     }
 
-    title2 {
-        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.format(formatter = SivilstatusFormatter) })
-    }
-    paragraph {
-        text(
-            bokmal {
-                +"Hvis du bor sammen med noen kan inntekten til den du bor med ha betydning for hva du får i alderspensjon. Når du mottar alderspensjon må du derfor melde fra til Nav ved endring i sivilstand."
-            },
-        )
-    }
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         title2 {
             text(bokmal { +"Ditt opptjeningsgrunnlag i folketrygden" })

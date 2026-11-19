@@ -110,7 +110,7 @@ class LivsvarigOffentligAfpTest {
 
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
-    fun `viser AFP etter utenlandsopphold utenfor delen med maanedlige beloep`(medAfpTabell: Boolean) {
+    fun `viser sivilstatus deretter utenlandsopphold og AFP utenfor maanedlige beloep`(medAfpTabell: Boolean) {
         val afp = requireNotNull(Fixtures.createBrevDtoMedAfpOffentligLivsvarig().pesysData.simulering.afpOffentligLivsvarig)
         val blocks = render(
             if (medAfpTabell) afp.copy(beskrivelse = beskrivelse)
@@ -124,23 +124,25 @@ class LivsvarigOffentligAfpTest {
 
         assertTrue(maanedligeBeloepIndex >= 0)
         assertTrue(opplysningerIndex > maanedligeBeloepIndex)
-        assertTrue(utenlandsoppholdIndex > opplysningerIndex)
+        assertEquals(opplysningerIndex + 1, sivilstatusIndex)
+        assertEquals(sivilstatusIndex + 2, utenlandsoppholdIndex)
         val utenlandsopphold = assertInstanceOf(Block.Paragraph::class.java, blocks[utenlandsoppholdIndex + 1])
         val tabell = assertInstanceOf(ParagraphContent.Table::class.java, utenlandsopphold.content.single())
         assertEquals("Land", tabell.header.colSpec.first().headerContent.text.text())
         assertEquals(utenlandsoppholdIndex + 2, afpIndex)
-        assertTrue(sivilstatusIndex > afpIndex)
     }
 
     @Test
     fun `viser fortsatt AFP naar utenlandsperioder mangler`() {
         val blocks = render(AfpOffentligLivsvarigSimulering(beskrivelse = beskrivelse), medUtenlandsperioder = false)
         val opplysningerIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Opplysninger brukt i pensjonsberegningen" }
+        val sivilstatusIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text().startsWith("Sivilstatus:") }
         val afpIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == tittel }
         val forbeholdIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Forbehold" }
 
         assertTrue(opplysningerIndex >= 0)
-        assertEquals(opplysningerIndex + 1, afpIndex)
+        assertEquals(opplysningerIndex + 1, sivilstatusIndex)
+        assertEquals(sivilstatusIndex + 2, afpIndex)
         assertTrue(forbeholdIndex > afpIndex)
         assertTrue(blocks.subList(opplysningerIndex, forbeholdIndex).filterIsInstance<Block.Title2>().none {
             it.content.text() == "Opphold utenfor Norge"
