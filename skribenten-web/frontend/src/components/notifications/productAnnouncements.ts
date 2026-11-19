@@ -27,10 +27,9 @@ export const listedUntil = (announcement: ProductAnnouncement) =>
 export const DIFF_TOGGLES_ANNOUNCEMENT: ProductAnnouncement = {
   id: "diff-toggles",
   publishedAt: "2026-11-16",
-  title: "Se endringer gjort av saksbehandler",
-  description:
-    "Nå kan attestant se endringer som saksbehandler har gjort i malen. Man kan se hva som er lagt til, og hva som er slettet.",
-  documentationUrl: "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_attestering",
+  title: "Attestant kan se endringer gjort av saksbehandler",
+  description: "Attestant kan se hva som er lagt til, og hva som er slettet.",
+  documentationUrl: "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_hvilke_endringer_er_gjort_i_brevet",
 };
 
 export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT: ProductAnnouncement = {

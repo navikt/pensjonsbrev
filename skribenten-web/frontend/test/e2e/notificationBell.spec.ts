@@ -11,7 +11,7 @@ import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
 const defaultLetter = brevResponse({ info: brevInfo({ saksId: 123456 }) });
 const ANNOUNCEMENT_TITLE = "Se manuelle endringer i brevet";
-const BELL_TITLE = "Se endringer gjort av saksbehandler";
+const BELL_TITLE = "Attestant kan se endringer gjort av saksbehandler";
 const LAST_DISPLAY_DAY = `${ATTESTANT_DIFF_ANNOUNCEMENT_SHOW_UNTIL}T12:00:00`;
 
 const STATUS_URL = "**/bff/skribenten-backend/me/nyhetsvarsel";
@@ -142,7 +142,7 @@ test.describe("varslingsklokke i toppmenyen", () => {
     await expect(tour(page)).toBeVisible();
   });
 
-  test("viser bare «Se dokumentasjon» utenfor attesteringen", async ({ page }) => {
+  test("viser bare «Les mer her» utenfor attesteringen", async ({ page }) => {
     await givenAcknowledged(page, ["diff-toggles"]);
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("weeks.")).toBeVisible();
@@ -151,11 +151,11 @@ test.describe("varslingsklokke i toppmenyen", () => {
 
     await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
     await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
-    const docs = page.getByRole("link", { name: /^Se dokumentasjon/, description: BELL_TITLE });
+    const docs = page.getByRole("link", { name: /^Les mer her/, description: BELL_TITLE });
     await expect(docs).toBeVisible();
     await expect(docs).toHaveAttribute(
       "href",
-      "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_attestering",
+      "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_hvilke_endringer_er_gjort_i_brevet",
     );
     await expect(page.getByText("16.11.2026")).toBeVisible();
   });
@@ -180,7 +180,7 @@ test("saksbehandler uten attestantrolle ser nyheten med lenke til dokumentasjone
   await bell(page).click();
 
   await expect(page.getByRole("heading", { name: BELL_TITLE })).toBeVisible();
-  await expect(page.getByRole("link", { name: /^Se dokumentasjon/, description: BELL_TITLE })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^Les mer her/, description: BELL_TITLE })).toBeVisible();
   await expect(page.getByRole("button", { name: "Se hvordan" })).toHaveCount(0);
 });
 
