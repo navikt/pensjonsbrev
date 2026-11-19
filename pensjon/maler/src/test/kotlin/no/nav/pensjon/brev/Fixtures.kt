@@ -37,10 +37,10 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
-import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
-import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
-import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
-import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
+import no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon.AvslagGjenlevendepensjon
+import no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon.AvslagGjenlevendepensjonUtland
+import no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
+import no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
 import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto

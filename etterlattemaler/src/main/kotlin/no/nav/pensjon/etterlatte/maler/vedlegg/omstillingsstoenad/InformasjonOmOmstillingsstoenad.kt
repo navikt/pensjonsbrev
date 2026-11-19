@@ -471,7 +471,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                 text(
                     bokmal { +"ettersende dokumentasjon angående omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}" },
                     nynorsk { +"ettersend dokumentasjon angåande omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}" },
-                    english { +"send more documentation regarding adjustment allowance by going to: ${Constants.ETTERSENDE_OMS_URL}" }
+                    english { +"send more documentation regarding adjustment allowance by going to: ${Constants.Engelsk.ETTERSENDE_OMS_URL}" }
                 )
             }
         }
