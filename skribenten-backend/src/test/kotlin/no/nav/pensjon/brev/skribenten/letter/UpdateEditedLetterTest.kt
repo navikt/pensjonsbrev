@@ -20,6 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -406,7 +407,7 @@ class UpdateRenderedLetterTest {
             paragraph {
                 literal(text = "Noe mer ny tekst")
             }
-            title1(id = 3) {
+            title1(id = 3, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) {
                 literal(id = 1, text = "En ny tittel ")
             }
         }
@@ -414,6 +415,50 @@ class UpdateRenderedLetterTest {
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
+
+    @Test
+    fun `new block from rendered keeps NEW_IN_TEMPLATE on later merges`() {
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 21, text = "Andre") }
+        }
+
+        val merged = edited.updateEditedLetter(next)
+
+        assertEquals(expected, merged)
+        assertEquals(expected, merged.updateEditedLetter(next))
+    }
+
+    @Test
+    fun `edited block that was new in template keeps NEW_IN_TEMPLATE`() {
+        val next = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))))
+        val edited = editedLetter {
+            paragraph(id = 1, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        }
+
+        assertEquals(edited, edited.updateEditedLetter(next))
+    }
+
+    @Test
+    fun `reordered blocks from previous render are not marked NEW_IN_TEMPLATE`() {
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val edited = editedLetter {
+            paragraph(id = 2) { literal(id = 21, text = "Andre") }
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+        }
+
+        assertTrue(edited.updateEditedLetter(next).blocks.none { it.templateStatus == Edit.Block.TemplateStatus.NEW_IN_TEMPLATE })
+    }
 
     @Test
     fun `keeps new edited blocks in positions relative to original blocks`() {
@@ -500,7 +545,7 @@ class UpdateRenderedLetterTest {
             paragraph {
                 literal(text = "Noe ny redigert tekst")
             }
-            title1(id = 3) {
+            title1(id = 3, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) {
                 literal(id = 1, text = "Dette er en ny block før id:4 ")
             }
             title1(id = 4) {

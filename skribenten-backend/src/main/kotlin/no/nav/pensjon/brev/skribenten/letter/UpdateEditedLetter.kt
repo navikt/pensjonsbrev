@@ -3,6 +3,7 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.skribenten.letter.Edit.Block.TemplateStatus
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
@@ -113,6 +114,12 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         merge: (E, E) -> E,
     ): List<E> = buildList {
         val remainingRendered = rendered.toMutableList()
+        val editedIds = edited.mapNotNull { it.id }.toSet()
+
+        // A rendered element whose id is not among the edited elements was not present in the previous render.
+        fun addRendered(element: E) {
+            add(if (element.id in editedIds) element else withTemplateStatus(element, TemplateStatus.NEW_IN_TEMPLATE))
+        }
 
         // We zip-merge the two lists with edited as basis, then we pick matching elements of remainingRendered.
         edited.forEach { currentEdited ->
@@ -126,18 +133,21 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                     // The currentEdited element is present in the fresh render.
 
                     // We add any new elements from the fresh render that precedes currentEdited in the fresh render.
-                    repeat((0 until renderedIndex).count()) { add(remainingRendered.removeFirst()) }
+                    repeat(renderedIndex) { addRendered(remainingRendered.removeFirst()) }
 
-                    // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
+                    // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one,
+                    // keeping NEW_IN_TEMPLATE from earlier merges.
                     if (currentEdited.isEdited()) {
                         add(merge(currentEdited, remainingRendered.removeFirst()))
+                    } else if (templateStatusOf(currentEdited) == TemplateStatus.NEW_IN_TEMPLATE) {
+                        add(withTemplateStatus(remainingRendered.removeFirst(), TemplateStatus.NEW_IN_TEMPLATE))
                     } else {
                         add(remainingRendered.removeFirst())
                     }
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-                    add(withMissingFromTemplate(variableValues.withUpdatedVariables(currentEdited)))
+                    add(withTemplateStatus(variableValues.withUpdatedVariables(currentEdited), TemplateStatus.MISSING_FROM_TEMPLATE))
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
                     // But it is moved by intent, so we do not wish to remove it.
@@ -145,7 +155,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                 }
             }
         }
-        addAll(remainingRendered)
+        remainingRendered.forEach { addRendered(it) }
     }
 
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
@@ -254,13 +264,16 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         }
 
 
+    private fun templateStatusOf(element: Edit.Identifiable): TemplateStatus? =
+        (element as? Edit.Block)?.templateStatus
+
     @Suppress("UNCHECKED_CAST")
-    private fun <E : Edit.Identifiable> withMissingFromTemplate(element: E): E =
+    private fun <E : Edit.Identifiable> withTemplateStatus(element: E, templateStatus: TemplateStatus): E =
         when (element) {
-            is Edit.Block.Title1 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
-            is Edit.Block.Title2 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
-            is Edit.Block.Title3 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
-            is Edit.Block.Paragraph -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
+            is Edit.Block.Title1 -> element.copy(templateStatus = templateStatus) as E
+            is Edit.Block.Title2 -> element.copy(templateStatus = templateStatus) as E
+            is Edit.Block.Title3 -> element.copy(templateStatus = templateStatus) as E
+            is Edit.Block.Paragraph -> element.copy(templateStatus = templateStatus) as E
             is Edit.ParagraphContent,
             is Edit.ParagraphContent.ItemList.Item,
             is Edit.ParagraphContent.Table.Header,

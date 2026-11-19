@@ -113,7 +113,7 @@ object Edit {
             get() = templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE
 
         enum class TemplateStatus {
-            IN_TEMPLATE, MISSING_FROM_TEMPLATE;
+            IN_TEMPLATE, MISSING_FROM_TEMPLATE, NEW_IN_TEMPLATE;
 
             companion object {
                 /**

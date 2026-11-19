@@ -4319,7 +4319,7 @@ export interface components {
          * EditBlockTemplateStatus
          * @enum {string}
          */
-        EditBlockTemplateStatus: "IN_TEMPLATE" | "MISSING_FROM_TEMPLATE";
+        EditBlockTemplateStatus: "IN_TEMPLATE" | "MISSING_FROM_TEMPLATE" | "NEW_IN_TEMPLATE";
         /** EditBlockParagraph */
         EditBlockParagraph: {
             content: components["schemas"]["EditParagraphContent"][];
