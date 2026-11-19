@@ -16,7 +16,7 @@ data class LivsvarigOffentligAfpSeksjon(
     val beskrivelse: Expression<String?>,
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-        title3 {
+        title2 {
             text(bokmal { +"Livsvarig AFP i offentlig sektor" })
         }
         ifNotNull(afp) { beloep ->

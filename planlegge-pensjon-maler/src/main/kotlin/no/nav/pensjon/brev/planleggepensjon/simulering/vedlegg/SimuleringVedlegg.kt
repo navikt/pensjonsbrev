@@ -202,13 +202,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
             }
         }
     }
-    ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
-        ifNotNull(afpLivsvarigSim.vedHeltUttak) { afp ->
-            includePhrase(LivsvarigOffentligAfpSeksjon(afp, afpLivsvarigSim.beskrivelse))
-        }.orShow {
-            includePhrase(LivsvarigOffentligAfpSeksjon(afpLivsvarigSim.vedGradertUttak, afpLivsvarigSim.beskrivelse))
-        }
-    }
     title1 {
         text(bokmal { +"Opplysninger brukt i pensjonsberegningen" })
     }
@@ -249,6 +242,14 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
                     }
                 }
             }
+        }
+    }
+
+    ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
+        ifNotNull(afpLivsvarigSim.vedHeltUttak) { afp ->
+            includePhrase(LivsvarigOffentligAfpSeksjon(afp, afpLivsvarigSim.beskrivelse))
+        }.orShow {
+            includePhrase(LivsvarigOffentligAfpSeksjon(afpLivsvarigSim.vedGradertUttak, afpLivsvarigSim.beskrivelse))
         }
     }
 

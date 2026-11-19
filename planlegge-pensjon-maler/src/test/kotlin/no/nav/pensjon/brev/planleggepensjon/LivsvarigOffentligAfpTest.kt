@@ -27,8 +27,8 @@ class LivsvarigOffentligAfpTest {
     fun `viser bare tittel og avsnitt uten AFP-tabellgrunnlag`(medApTabeller: Boolean) {
         val blocks = render(AfpOffentligLivsvarigSimulering(beskrivelse = beskrivelse), medApTabeller)
 
-        assertEquals(1, blocks.filterIsInstance<Block.Title3>().count { it.content.text() == tittel })
-        val tittelIndex = blocks.indexOfFirst { it is Block.Title3 && it.content.text() == tittel }
+        assertEquals(1, blocks.filterIsInstance<Block.Title2>().count { it.content.text() == tittel })
+        val tittelIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == tittel }
         val avsnitt = assertInstanceOf(Block.Paragraph::class.java, blocks[tittelIndex + 1])
         assertEquals(beskrivelse, avsnitt.content.filterIsInstance<ParagraphContent.Text>().text())
         assertTrue(tables(blocks).none { it.header.colSpec.any { column -> "AFP" in column.headerContent.text.text() } })
@@ -51,7 +51,7 @@ class LivsvarigOffentligAfpTest {
         assertEquals("Sum AFP", afpTabell.rows[1].cells[0].text.text())
         assertTrue(afpTabell.rows[1].cells[0].text.all { it.fontType == ParagraphContent.Text.FontType.BOLD })
 
-        val tittelIndex = blocks.indexOfFirst { it is Block.Title3 && it.content.text() == tittel }
+        val tittelIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == tittel }
         val tabellAvsnitt = assertInstanceOf(Block.Paragraph::class.java, blocks[tittelIndex + 1])
         assertEquals(afpTabell, tabellAvsnitt.content.single())
         val beskrivelseAvsnitt = assertInstanceOf(Block.Paragraph::class.java, blocks[tittelIndex + 2])
@@ -66,7 +66,7 @@ class LivsvarigOffentligAfpTest {
         val blocks = render(afp.copy(beskrivelse = beskrivelse), medApTabeller)
         val afpTabeller = tables(blocks).filter { it.header.colSpec.first().headerContent.text.text() == "AFP i offentlig sektor" }
 
-        assertEquals(1, blocks.filterIsInstance<Block.Title3>().count { it.content.text() == tittel })
+        assertEquals(1, blocks.filterIsInstance<Block.Title2>().count { it.content.text() == tittel })
         assertEquals(listOf("4000"), afpTabeller.map { it.rows[0].cells[1].text.text().filter(Char::isDigit) })
         assertEquals(1, blocks.filterIsInstance<Block.Paragraph>().count {
             it.content.filterIsInstance<ParagraphContent.Text>().text() == beskrivelse
@@ -83,7 +83,7 @@ class LivsvarigOffentligAfpTest {
         val afpTabell = tables(blocks).single { it.header.colSpec.first().headerContent.text.text() == "AFP i offentlig sektor" }
 
         assertEquals("3000", afpTabell.rows[0].cells[1].text.text().filter(Char::isDigit))
-        assertEquals(1, blocks.filterIsInstance<Block.Title3>().count { it.content.text() == tittel })
+        assertEquals(1, blocks.filterIsInstance<Block.Title2>().count { it.content.text() == tittel })
         assertEquals(1, blocks.filterIsInstance<Block.Paragraph>().count {
             it.content.filterIsInstance<ParagraphContent.Text>().text() == beskrivelse
         })
@@ -104,14 +104,56 @@ class LivsvarigOffentligAfpTest {
     fun `viser ikke seksjonen uten livsvarig AFP`() {
         val blocks = render(null)
 
-        assertTrue(blocks.filterIsInstance<Block.Title3>().none { it.content.text() == tittel })
+        assertTrue(blocks.filterIsInstance<Block.Title2>().none { it.content.text() == tittel })
         assertTrue(tables(blocks).none { it.header.colSpec.any { column -> "AFP" in column.headerContent.text.text() } })
     }
 
-    private fun render(afp: AfpOffentligLivsvarigSimulering?, medApTabeller: Boolean = true): List<Block> {
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `viser AFP etter utenlandsopphold utenfor delen med maanedlige beloep`(medAfpTabell: Boolean) {
+        val afp = requireNotNull(Fixtures.createBrevDtoMedAfpOffentligLivsvarig().pesysData.simulering.afpOffentligLivsvarig)
+        val blocks = render(
+            if (medAfpTabell) afp.copy(beskrivelse = beskrivelse)
+            else AfpOffentligLivsvarigSimulering(beskrivelse = beskrivelse),
+        )
+        val maanedligeBeloepIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Månedlig pensjon før skatt" }
+        val opplysningerIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Opplysninger brukt i pensjonsberegningen" }
+        val utenlandsoppholdIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == "Opphold utenfor Norge" }
+        val afpIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == tittel }
+        val sivilstatusIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text().startsWith("Sivilstatus:") }
+
+        assertTrue(maanedligeBeloepIndex >= 0)
+        assertTrue(opplysningerIndex > maanedligeBeloepIndex)
+        assertTrue(utenlandsoppholdIndex > opplysningerIndex)
+        val utenlandsopphold = assertInstanceOf(Block.Paragraph::class.java, blocks[utenlandsoppholdIndex + 1])
+        val tabell = assertInstanceOf(ParagraphContent.Table::class.java, utenlandsopphold.content.single())
+        assertEquals("Land", tabell.header.colSpec.first().headerContent.text.text())
+        assertEquals(utenlandsoppholdIndex + 2, afpIndex)
+        assertTrue(sivilstatusIndex > afpIndex)
+    }
+
+    @Test
+    fun `viser fortsatt AFP naar utenlandsperioder mangler`() {
+        val blocks = render(AfpOffentligLivsvarigSimulering(beskrivelse = beskrivelse), medUtenlandsperioder = false)
+        val opplysningerIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Opplysninger brukt i pensjonsberegningen" }
+        val afpIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == tittel }
+
+        assertTrue(opplysningerIndex >= 0)
+        assertEquals(opplysningerIndex + 1, afpIndex)
+        assertTrue(blocks.filterIsInstance<Block.Title2>().none { it.content.text() == "Opphold utenfor Norge" })
+    }
+
+    private fun render(
+        afp: AfpOffentligLivsvarigSimulering?,
+        medApTabeller: Boolean = true,
+        medUtenlandsperioder: Boolean = true,
+    ): List<Block> {
         FeatureToggleSingleton.init(FeatureToggleDummy)
         val brev = Fixtures.createBrevDtoMedAfpOffentligLivsvarig()
         val data = brev.pesysData.copy(
+            simuleringsinformasjon = brev.pesysData.simuleringsinformasjon.copy(
+                utenlandsperioder = if (medUtenlandsperioder) brev.pesysData.simuleringsinformasjon.utenlandsperioder else null,
+            ),
             simulering = brev.pesysData.simulering.copy(
                 afpOffentligLivsvarig = afp,
                 maanedligAlderspensjonForKnekkpunkter =
