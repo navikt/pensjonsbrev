@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.endring
 
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
@@ -80,7 +81,7 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
             includePhrase(AvsnittSkattApEndring(borINorge))
             includePhrase(AvsnittArbeidsinntekt(beregnetPensjonPerMaanedVedVirk.uttaksgrad, uforeKombinertMedAlder))
             includePhrase(AvsnittLesMerOmAlderspensjon())
-            includePhrase(AvsnittMeldFraOmEndringer())
+            includePhrase(MeldeFraOmEndringer)
             includePhrase(RettTilAAKlage)
             includePhrase(RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
             includePhrase(HarDuSpoersmaal.alder)
