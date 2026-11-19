@@ -413,7 +413,7 @@ describe("<FeatureAnnouncement />", () => {
     renderWithQueryClient(<Harness multiStep />);
 
     await findAnnouncement();
-    expect(screen.queryByText("Steg 1 av 2")).not.toBeNull();
+    expect(screen.queryByText("1 av 2")).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Lukk" })).toBeNull();
     await user.click(screen.getByRole("button", { name: "Neste" }));
 
