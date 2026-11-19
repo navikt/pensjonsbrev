@@ -30,7 +30,7 @@ import {
 import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
 
 import { InnOgUtland, Søketype } from "./EndreMottakerUtils";
-import { MottakerDetaljer, sortedColumnHeaderCss } from "./SamhandlerSearchResults";
+import { MottakerDetaljer } from "./SamhandlerSearchResults";
 
 export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT_ID = SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT.id;
 export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT_SHOW_UNTIL = automaticTourUntil(SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT);
@@ -208,6 +208,14 @@ export function SamhandlerDistributionAnnouncement({
 }
 
 const noop = () => {};
+
+// Same as the «Navn» header in SamhandlerSearchResults.
+const sortedColumnHeaderCss = {
+  '&[aria-sort="ascending"] button, &[aria-sort="descending"] button': {
+    backgroundColor: "transparent",
+    color: "var(--ax-text-subtle)",
+  },
+};
 
 /** Same layout as SøkOgVelgSamhandlerForm and SamhandlerSearchResults after a search on organisasjonsnavn. */
 function ExampleSearchForm({

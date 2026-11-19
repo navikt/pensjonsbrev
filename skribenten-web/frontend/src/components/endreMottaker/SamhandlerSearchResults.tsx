@@ -11,13 +11,6 @@ import { humanizeName } from "~/utils/stringUtils";
 
 type SelectionMethod = "radio-klikk" | "rad-klikk" | "tastatur";
 
-export const sortedColumnHeaderCss = {
-  '&[aria-sort="ascending"] button, &[aria-sort="descending"] button': {
-    backgroundColor: "transparent",
-    color: "var(--ax-text-subtle)",
-  },
-};
-
 export function SamhandlerSearchResults({
   samhandlere,
   selectedId,
@@ -62,7 +55,16 @@ export function SamhandlerSearchResults({
               <Table.Header css={{ position: "sticky" }}>
                 <Table.Row>
                   <Table.HeaderCell />
-                  <Table.ColumnHeader css={sortedColumnHeaderCss} sortable sortKey="navn">
+                  <Table.ColumnHeader
+                    css={{
+                      '&[aria-sort="ascending"] button, &[aria-sort="descending"] button': {
+                        backgroundColor: "transparent",
+                        color: "var(--ax-text-subtle)",
+                      },
+                    }}
+                    sortable
+                    sortKey="navn"
+                  >
                     Navn
                   </Table.ColumnHeader>
                   <Table.HeaderCell />
