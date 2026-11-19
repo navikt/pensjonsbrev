@@ -39,315 +39,221 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val innvilgetBtfb = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
-        val innvilgetBtsb = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
+        val btfbInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
+        val btsbInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
         val btfbfradrag = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag()
+        val btsbFradrag = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag()
+
+        val totalNetto = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
+        val btsbJusteringsbelopperAr = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+        val btfbJusteringsbelopperAr = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+        val btsbInntektbruktiavkorning = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+        val btsbFribelop = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()
+        val btfbFribelop = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+        val btsbNetto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+        val btfbNetto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+        val btfbBrutto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbbrutto()
+        val btsbBrutto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto()
+        val btfbInntektbruktiavkortning = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
 
         title {
-            text(
-                bokmal { + "Endring av barnetillegg i uføretrygden" }
-            )
+            text(bokmal { + "Endring av barnetillegg i uføretrygden" })
         }
         outline {
             paragraph {
-                text(
-                    bokmal { + "Barnetillegget ditt er endret fra 1. januar " + pe.ut_virkningfomar().format() + "." },
-                )
+                text(bokmal { + "Barnetillegget ditt er endret fra 1. januar " + pe.ut_virkningfomar().format() + "." })
             }
 
             paragraph {
                 ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
-                    text(bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per måned før skatt fra " + it.formatMonthYear() + "." })
+                    text(bokmal { +"Du får " + totalNetto.format() + " i uføretrygd og barnetillegg per måned før skatt fra " + it.formatMonthYear() + "." })
                 }.orShow {
-                    text(bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per måned før skatt." })
+                    text(bokmal { +"Du får " + totalNetto.format() + " i uføretrygd og barnetillegg per måned før skatt." })
                 }
             }
 
             paragraph {
-                text(
-                    bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
-                )
+                text(bokmal { + "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." })
             }
 
             title1 {
-                text (
-                    bokmal { + "Begrunnelse for vedtaket" },
-                )
+                text (bokmal { + "Begrunnelse for vedtaket" })
             }
             paragraph {
-                text(
-                    bokmal { + "Barnetillegget ditt er beregnet på nytt fordi det årlige beløpet av uføretrygden er endret som følge av nytt kalenderår. Det betyr at utbetalingen for " + pe.ut_virkningfomar().format() + " endres fordi din årlige reduksjon av barnetillegg er beregnet på nytt." },
-                )
+                text(bokmal { + "Barnetillegget ditt er beregnet på nytt fordi det årlige beløpet av uføretrygden er endret som følge av nytt kalenderår. Det betyr at utbetalingen for " + pe.ut_virkningfomar().format() + " endres fordi din årlige reduksjon av barnetillegg er beregnet på nytt." })
             }
             paragraph {
-                text(
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16." },
-                )
+                text(bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16." })
             }
 
             title1 {
-                text(
-                    bokmal { + "Slik påvirker inntekt og fribeløp barnetillegget ditt" },
-                )
+                text(bokmal { + "Slik påvirker inntekt og fribeløp barnetillegget ditt" })
             }
             paragraph {
-                text(
-                    bokmal { + "Utbetalingen av uføretrygden i løpet av et kalenderår er en del av inntekten som brukes i behovsprøvingen av barnetillegget. Fra 1. januar " + pe.ut_virkningfomar().format() + " er den årlige uføretrygden lik månedsbeløpet du får i januar multiplisert med 12 måneder. Dette beløpet er større enn den årlige uføretrygden som inngikk i behovsprøvingen i fjor. Fribeløpet er uendret fra 1. januar " + pe.ut_virkningfomar().format() + "." },
-                )
+                text(bokmal { + "Utbetalingen av uføretrygden i løpet av et kalenderår er en del av inntekten som brukes i behovsprøvingen av barnetillegget. Fra 1. januar " + pe.ut_virkningfomar().format() + " er den årlige uføretrygden lik månedsbeløpet du får i januar multiplisert med 12 måneder. Dette beløpet er større enn den årlige uføretrygden som inngikk i behovsprøvingen i fjor. Fribeløpet er uendret fra 1. januar " + pe.ut_virkningfomar().format() + "." })
             }
 
-            showIf( innvilgetBtsb and not(innvilgetBtfb)) {
+            showIf( btsbInnvilget and not(btfbInnvilget)) {
                 includePhrase(TBU2338_Generated(pe))
                 paragraph {
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().greaterThan(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)) {
-                        text(
-                            bokmal { + "Inntekten din på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " er " }
-                        )
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_inntekt_hoyere_lavere(pe))
-                        text(
-                            bokmal { + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + ". Barnetillegget ditt er derfor " },
-                        )
+                    showIf(btsbNetto.greaterThan(0) and btsbJusteringsbelopperAr.equalTo(0)) {
+                        text(bokmal { + "Inntekten din på " + btsbInntektbruktiavkorning.format() + " er " + ifElse(btsbInntektbruktiavkorning.greaterThan(btsbFribelop), "høyere".expr(), "lavere".expr()) + " enn fribeløpet ditt på " + btsbFribelop.format() + ". Barnetillegget ditt er derfor " })
                     }
 
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().greaterThan(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-                            and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().lessThanOrEqual(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop())) {
-                        text(
-                            bokmal { + "ikke " },
-                        )
+                    showIf(btsbNetto.greaterThan(0)
+                            and btsbJusteringsbelopperAr.equalTo(0)
+                            and btsbInntektbruktiavkorning.lessThanOrEqual(btsbFribelop)) {
+                        text(bokmal { + "ikke " })
                     }
 
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().greaterThan(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)) {
-                        text(
-                            bokmal { + "redusert ut fra inntekt. " },
-                        )
+                    showIf(btsbNetto.greaterThan(0)
+                            and btsbJusteringsbelopperAr.equalTo(0)) {
+                        text(bokmal { + "redusert ut fra inntekt. " })
                     }
 
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)) {
-                        text(
-                            bokmal { + "Inntekten din er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + "." },
-                        )
+                    showIf(btsbNetto.equalTo(0)
+                            and btsbJusteringsbelopperAr.equalTo(0)) {
+                        text(bokmal { + "Inntekten din er " + btsbInntektbruktiavkorning.format() + "." })
                     }
                 }
             }.orShow {
                 paragraph {
-                    text(
-                        bokmal { + "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. For fellesbarn, bruker vi begge foreldrenes inntekt (inkludert uføretrygd) når vi beregner størrelsen på barnetillegget." },
-                    )
+                    text(bokmal { + "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. For fellesbarn, bruker vi begge foreldrenes inntekt (inkludert uføretrygd) når vi beregner størrelsen på barnetillegget." })
                 }
                 paragraph {
-                    text(
-                        bokmal { + "Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + ". " },
-                    )
+                    text(bokmal { + "Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + ". " })
 
                     showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt().greaterThan(0))) {
-                        text(
-                            bokmal { + "Folketrygdens grunnbeløp på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " er holdt utenfor inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + ". " },
-                        )
+                        text(bokmal { + "Folketrygdens grunnbeløp på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " er holdt utenfor inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + ". " })
                     }
 
-                    showIf (not(innvilgetBtsb)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-                            and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)) {
-                        text(
-                            bokmal { + "Til sammen er inntektene " }
-                        )
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_fradrag_hoyere_lavere(pe))
-                        text(
-                            bokmal { + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + ". Barnetillegget ditt er derfor " },
-                        )
-
+                    showIf (not(btsbInnvilget)
+                            and btfbJusteringsbelopperAr.equalTo(0)
+                            and btfbNetto.notEqualTo(0)) {
+                        text(bokmal { + "Til sammen er inntektene " + ifElse(btfbfradrag.greaterThan(0), "høyere".expr(), "lavere".expr()) + " enn fribeløpet ditt på " + btfbFribelop.format() + ". Barnetillegget ditt er derfor " })
                         showIf(btfbfradrag.equalTo(0)) {
-                            text(
-                                bokmal { + "ikke " },
-                            )
+                            text(bokmal { + "ikke " })
                         }
-                        text(
-                            bokmal { + "redusert." },
-                        )
+                        text(bokmal { + "redusert." })
                     }
                 }
             }
 
             showIf((pe.ut_tbu1286_del1())) { // Både innvilget BTFB og BTSB pluss litt mer logikk
                 paragraph {
-                    showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0))) {
-                        text(
-                            bokmal { + "Inntekten din er " }
-                        )
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_inntekt_hoyere_lavere(pe))
-                        text(
-                            bokmal { + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene. " },
-                        )
+                    showIf((btsbNetto.notEqualTo(0) and btsbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "Inntekten din er " + ifElse(btsbInntektbruktiavkorning.greaterThan(btsbFribelop), "høyere".expr(), "lavere".expr()) + " enn " + btsbFribelop.format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene. "})
                     }
 
-                    showIf(
-                        (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0)
-                                and ((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().greaterThan(0)
-                                and btfbfradrag.equalTo(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().equalTo(0)
+                    showIf((btsbNetto.notEqualTo(0)
+                                and ((btsbFradrag.greaterThan(0)
+                                and btfbfradrag.equalTo(0)) or (btsbFradrag.equalTo(0)
                                 and btfbfradrag.greaterThan(0)))
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0))
-                    ) {
-                        text(
-                            bokmal { + "Dette barnetillegget er derfor " }
-                        )
-                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto())) {
-                            text(
-                                bokmal { + "ikke " },
-                            )
-                        }
-                        text(
-                            bokmal { + "redusert ut fra inntekt. " }
-                        )
+                                and btsbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "Dette barnetillegget er derfor " + ifElse(btsbNetto.equalTo(btsbBrutto), "ikke ".expr(), "".expr()) + "redusert ut fra inntekt. " })
                     }
 
-                    showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))) {
-                        text(
-                            bokmal { + "Til sammen er " },
-                        )
+                    showIf((btfbNetto.notEqualTo(0) and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "Til sammen er " })
                     }
 
-                    showIf(
-                        (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                                and ((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().equalTo(0)
-                                and btfbfradrag.equalTo(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().greaterThan(0)
+                    showIf((btfbNetto.notEqualTo(0)
+                                and ((btsbFradrag.equalTo(0)
+                                and btfbfradrag.equalTo(0)) or (btsbFradrag.greaterThan(0)
                                 and btfbfradrag.greaterThan(0)))
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))
-                    ) {
-                        text(
-                            bokmal { + "også " },
-                        )
+                                and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "også " })
                     }
 
-                    showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))) {
-                        text(
-                            bokmal { + "inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " }
-                        )
-                        includePhrase(LegacyFunksjonsfraser.PE_UT_bruttoetterreduksjonbt_hoyere_lavere(pe))
-                        text(
-                            bokmal { + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " },
-                        )
+                    showIf((btfbNetto.notEqualTo(0) and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " + ifElse(btfbInntektbruktiavkortning.greaterThan(btfbFribelop), "høyere".expr(), "lavere".expr()) + " enn " + btfbFribelop.format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " })
                     }
 
-                    showIf(
-                        (((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().greaterThan(0)
-                                and btfbfradrag.equalTo(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().equalTo(0)
+                    showIf((((btsbFradrag.greaterThan(0)
+                                and btfbfradrag.equalTo(0)) or (btsbFradrag.equalTo(0)
                                 and btfbfradrag.greaterThan(0)))
-                                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))
-                    ) {
-                        text(
-                            bokmal { + "Dette barnetillegget er derfor " },
-                        )
+                                and btfbNetto.notEqualTo(0)
+                                and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "Dette barnetillegget er derfor " })
                     }
 
-                    showIf(
-                        (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbbrutto())
-                                and ((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().greaterThan(0)
-                                and btfbfradrag.equalTo(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().equalTo(0)
+                    showIf((btfbNetto.equalTo(btfbBrutto)
+                                and ((btsbFradrag.greaterThan(0)
+                                and btfbfradrag.equalTo(0)) or (btsbFradrag.equalTo(0)
                                 and btfbfradrag.greaterThan(0)))
-                                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))
-                    ) {
-                        text(
-                            bokmal { + "ikke " },
-                        )
+                                and btfbNetto.notEqualTo(0)
+                                and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "ikke " })
                     }
 
-                    showIf(
-                        (((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().greaterThan(0)
-                                and btfbfradrag.equalTo(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().equalTo(0)
+                    showIf((((btsbFradrag.greaterThan(0)
+                                and btfbfradrag.equalTo(0)) or (btsbFradrag.equalTo(0)
                                 and btfbfradrag.greaterThan(0)))
-                                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))
-                    ) {
-                        text(
-                            bokmal { + "redusert ut fra inntekt. " },
-                        )
+                                and btfbNetto.notEqualTo(0)
+                                and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "redusert ut fra inntekt. " })
                     }
 
-                    showIf(
-                        (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0)
-                                and ((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().equalTo(0)
-                                and btfbfradrag.equalTo(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().greaterThan(0)
+                    showIf((btfbNetto.notEqualTo(0)
+                                and btsbNetto.notEqualTo(0)
+                                and ((btsbFradrag.equalTo(0)
+                                and btfbfradrag.equalTo(0)) or (btsbFradrag.greaterThan(0)
                                 and btfbfradrag.greaterThan(0)))
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))
-                    ) {
-                        text(
-                            bokmal { + "Barnetilleggene er derfor" },
-                        )
+                                and btsbJusteringsbelopperAr.equalTo(0)
+                                and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + "Barnetilleggene er derfor" })
                     }
 
-                    showIf(
-                        ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbbrutto())
-                                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbbrutto()))
-                                and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0))
-                                and ((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().equalTo(0)
-                                and btfbfradrag.equalTo(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().greaterThan(0)
+                    showIf(((btfbNetto.equalTo(btfbBrutto)
+                                and btsbNetto.equalTo(btsbBrutto))
+                                and (btfbNetto.notEqualTo(0)
+                                and btsbNetto.notEqualTo(0))
+                                and ((btsbFradrag.equalTo(0)
+                                and btfbfradrag.equalTo(0)) or (btsbFradrag.greaterThan(0)
                                 and btfbfradrag.greaterThan(0)))
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))
-                    ) {
-                        text(
-                            bokmal { + " ikke" },
-                        )
+                                and btsbJusteringsbelopperAr.equalTo(0)
+                                and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + " ikke" })
                     }
 
-                    showIf(
-                        (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
-                                and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0)
-                                and ((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().equalTo(0)
-                                and btfbfradrag.equalTo(0)) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag().greaterThan(0)
+                    showIf((btfbNetto.notEqualTo(0)
+                                and btsbNetto.notEqualTo(0)
+                                and ((btsbFradrag.equalTo(0)
+                                and btfbfradrag.equalTo(0)) or (btsbFradrag.greaterThan(0)
                                 and btfbfradrag.greaterThan(0)))
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))
-                    ) {
-                        text(
-                            bokmal { + " redusert ut fra inntekt." },
-                        )
+                                and btsbJusteringsbelopperAr.equalTo(0)
+                                and btfbJusteringsbelopperAr.equalTo(0))) {
+                        text(bokmal { + " redusert ut fra inntekt." })
                     }
                 }
             }
 
-            showIf((innvilgetBtsb
-                    and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                    and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-                    and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0) or not(innvilgetBtfb)))) {
+            showIf((btsbInnvilget
+                    and btsbNetto.equalTo(0)
+                    and btsbJusteringsbelopperAr.equalTo(0)
+                    and (btfbNetto.notEqualTo(0) or not(btfbInnvilget)))) {
                 includePhrase(TBU1286_1_Generated(pe))
             }
 
-            showIf((innvilgetBtfb
-                    and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
-                    and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-                    and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0) or not(innvilgetBtsb)))) {
+            showIf((btfbInnvilget
+                    and btfbNetto.equalTo(0)
+                    and btfbJusteringsbelopperAr.equalTo(0)
+                    and (btsbNetto.notEqualTo(0) or not(btsbInnvilget)))) {
                 includePhrase(TBU1286_2_Generated(pe))
             }
 
-            showIf(
-                innvilgetBtsb and innvilgetBtfb
-                        and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                        and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-                        and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
-                        and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0)
-            ) {
+            showIf(btsbInnvilget and btfbInnvilget
+                        and btsbNetto.equalTo(0)
+                        and btsbJusteringsbelopperAr.equalTo(0)
+                        and btfbNetto.equalTo(0)
+                        and btfbJusteringsbelopperAr.equalTo(0)) {
                 includePhrase(TBU2490_Generated(pe))
             }
 
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))) {
                 includePhrase(TBU5005_Generated)
                 paragraph {
-                    text(
-                        bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
-                    )
+                    text(bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." })
                 }
             }
 

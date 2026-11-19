@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.legacy.redigerbar
+package no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonD
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
+import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Gjenlevendepensjon
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -161,7 +161,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                 }
             }
 
-            includePhrase(TBU2212_Generated(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
+            includePhrase(TBU2212_Gjenlevendepensjon(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
         }
