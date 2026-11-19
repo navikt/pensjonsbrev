@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OpplysningerBruktIBeregningUTProfil
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -65,7 +66,7 @@ object VedtakBlankMalRedigerbar : RedigerbarTemplate<VedtakBlankMalRedigerbarDto
         @OptIn(RedigerbartVedlegg::class)
         includeAttachmentRedigerbar(
             VedleggId("blankUTBeregningVedlegg"),
-            vedleggOpplysningerBruktIBeregningUTLegacy,
+            vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING),
             pesysData.pe,
             pesysData.pe.inkluderopplysningerbruktiberegningen(),
         )

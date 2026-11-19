@@ -26,17 +26,23 @@ import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegni
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.minsteytelse.ForDegSomHarRettTilMinsteytelse
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.trygdetid.*
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
 const val OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL = "Opplysninger om beregningen"
 const val OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK = "Opplysningar om utrekninga"
 
-@TemplateModelHelpers
-val vedleggOpplysningerBruktIBeregningUTLegacy =
+private val vedleggPerProfil: Map<OpplysningerBruktIBeregningUTProfil, AttachmentTemplate<LangBokmalNynorsk, PEgruppe10>> =
+    OpplysningerBruktIBeregningUTProfil.entries.associateWith { lagVedlegg(it) }
+
+fun vedleggOpplysningerBruktIBeregningUTLegacy(profil: OpplysningerBruktIBeregningUTProfil): AttachmentTemplate<LangBokmalNynorsk, PEgruppe10> =
+    vedleggPerProfil.getValue(profil)
+
+@Suppress("UNUSED_PARAMETER") // Tas i bruk når pebrevkode-sjekkene byttes ut.
+private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
     createAttachment<LangBokmalNynorsk, PEgruppe10>(
         title = {
             text(

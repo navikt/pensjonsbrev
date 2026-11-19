@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.OktBunnfradragNesteArAutoDto
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OpplysningerBruktIBeregningUTProfil
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -40,7 +41,7 @@ object OktBunnfradragNesteArAuto : AutobrevTemplate<OktBunnfradragNesteArAutoDto
         outline {
             includePhrase(OktBunnfradragNesteAr.Outline(data))
         }
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING), data.pe)
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, data.orienteringOmRettigheterUfoere)
 
     }
