@@ -34,7 +34,7 @@ export const DIFF_TOGGLES_ANNOUNCEMENT: ProductAnnouncement = {
 };
 
 export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT: ProductAnnouncement = {
-  id: "samhandler-digital-utsending",
+  id: "samhandler-digital-delivery",
   publishedAt: "2026-11-18",
   title: "Digital utsending til samhandlere (via Altinn)",
   description: "Brev sendes digitalt til samhandlere som har organisasjonsnummer registrert i samhandlerregisteret.",

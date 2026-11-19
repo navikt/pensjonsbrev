@@ -36,16 +36,16 @@ export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT_ID = SAMHANDLER_DISTRIBUTION_A
 export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT_SHOW_UNTIL = automaticTourUntil(SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT);
 export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT_REPLAYABLE_UNTIL = listedUntil(SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT);
 
-type Mottaker = Parameters<typeof MottakerDetaljer>[0]["mottaker"];
+type ExampleRecipient = Parameters<typeof MottakerDetaljer>[0]["mottaker"];
 
 type ExampleSearch = {
   samhandlerType: string;
   hitsBefore: string[];
-  selected: Mottaker;
+  selected: ExampleRecipient;
   hitsAfter: string[];
 };
 
-const MED_ORGANISASJONSNUMMER: ExampleSearch = {
+const WITH_ORG_NUMBER: ExampleSearch = {
   samhandlerType: "X",
   hitsBefore: ["Statens Innkrevingssentral"],
   selected: {
@@ -60,7 +60,7 @@ const MED_ORGANISASJONSNUMMER: ExampleSearch = {
   hitsAfter: ["Statens Pensjonskasse Forvaltning"],
 };
 
-const UTEN_ORGANISASJONSNUMMER: ExampleSearch = {
+const WITHOUT_ORG_NUMBER: ExampleSearch = {
   samhandlerType: "TEPE",
   hitsBefore: [],
   selected: {
@@ -101,11 +101,11 @@ export function SamhandlerDistributionAnnouncement({
   const replayGeneration = useAnnouncementReplay(SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT_ID);
   const modalOpen = when && replayGeneration > 0;
   const [dialog, setDialog] = useState<HTMLDialogElement | null>(null);
-  const [example, setExample] = useState<ExampleSearch>(MED_ORGANISASJONSNUMMER);
+  const [example, setExample] = useState<ExampleSearch>(WITH_ORG_NUMBER);
   const targetRef = useRef<HTMLTableSectionElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  if (!modalOpen && example !== MED_ORGANISASJONSNUMMER) setExample(MED_ORGANISASJONSNUMMER);
+  if (!modalOpen && example !== WITH_ORG_NUMBER) setExample(WITH_ORG_NUMBER);
 
   useEffect(() => {
     if (!modalOpen) return;
@@ -130,7 +130,7 @@ export function SamhandlerDistributionAnnouncement({
           "Du ser samhandlerens organisasjonsnummer i stedet for postadressen. Velger du «Sentralprint», får samhandleren brevet i Altinn.",
         placement: "top",
         before: () => {
-          setExample(MED_ORGANISASJONSNUMMER);
+          setExample(WITH_ORG_NUMBER);
           return nextPaint();
         },
       },
@@ -141,7 +141,7 @@ export function SamhandlerDistributionAnnouncement({
           "Du ser samhandlerens postadresse når organisasjonsnummeret mangler i samhandlerregisteret. Velger du «Sentralprint», får samhandleren brevet i posten.",
         placement: "top",
         before: () => {
-          setExample(UTEN_ORGANISASJONSNUMMER);
+          setExample(WITHOUT_ORG_NUMBER);
           return nextPaint();
         },
       },
@@ -257,18 +257,18 @@ function ExampleSearchForm({
               </Table.Header>
               {example.hitsBefore.length > 0 && (
                 <Table.Body>
-                  {example.hitsBefore.map((navn) => (
-                    <ExampleHit key={navn} navn={navn} />
+                  {example.hitsBefore.map((name) => (
+                    <ExampleHit key={name} name={name} />
                   ))}
                 </Table.Body>
               )}
               <Table.Body ref={targetRef}>
-                <ExampleHit mottaker={example.selected} navn="Statens Pensjonskasse" />
+                <ExampleHit name="Statens Pensjonskasse" recipient={example.selected} />
               </Table.Body>
               {example.hitsAfter.length > 0 && (
                 <Table.Body>
-                  {example.hitsAfter.map((navn) => (
-                    <ExampleHit key={navn} navn={navn} />
+                  {example.hitsAfter.map((name) => (
+                    <ExampleHit key={name} name={name} />
                   ))}
                 </Table.Body>
               )}
@@ -281,12 +281,12 @@ function ExampleSearchForm({
 }
 
 /** A hit like SamhandlerResultRow. Only the selected hit is expanded, as after the user has clicked it. */
-function ExampleHit({ navn, mottaker }: { navn: string; mottaker?: Mottaker }) {
-  const selected = mottaker !== undefined;
+function ExampleHit({ name, recipient }: { name: string; recipient?: ExampleRecipient }) {
+  const selected = recipient !== undefined;
 
   return (
     <Table.ExpandableRow
-      content={selected ? <MottakerDetaljer mottaker={mottaker} /> : null}
+      content={selected ? <MottakerDetaljer mottaker={recipient} /> : null}
       onOpenChange={noop}
       open={selected}
       selected={selected}
@@ -294,10 +294,10 @@ function ExampleHit({ navn, mottaker }: { navn: string; mottaker?: Mottaker }) {
     >
       <Table.DataCell>
         <span className="aksel-radio aksel-radio--small">
-          <input aria-label={navn} checked={selected} className="aksel-radio__input" readOnly type="radio" />
+          <input aria-label={name} checked={selected} className="aksel-radio__input" readOnly type="radio" />
         </span>
       </Table.DataCell>
-      <Table.DataCell>{navn}</Table.DataCell>
+      <Table.DataCell>{name}</Table.DataCell>
       <Table.DataCell>
         <Tag data-color="neutral" size="xsmall" variant="moderate">
           Samhandler
