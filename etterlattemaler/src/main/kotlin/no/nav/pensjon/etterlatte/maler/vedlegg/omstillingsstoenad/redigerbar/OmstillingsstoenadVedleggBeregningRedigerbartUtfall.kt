@@ -214,7 +214,7 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
                         )
                     }
 
-                    showIf(sisteInnvilgaMaaneder.greaterThan(0)) {
+                    showIf(innvilgaMaanederNesteAar.greaterThan(0)) {
                         paragraph {
                             text(
                                 bokmal {
