@@ -1846,7 +1846,7 @@ object EndringUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretrygdDto> {
         @OptIn(RedigerbartVedlegg::class)
         includeAttachmentRedigerbarIfNotNull(VedleggId("endringUTMaanedligVedlegg"), vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         @OptIn(RedigerbartVedlegg::class)
-        includeAttachmentRedigerbar(VedleggId("endringUTBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING), pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachmentRedigerbar(VedleggId("endringUTBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING), pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningenVedEndring())
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)
     }
 }

@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.fixtures.createPEgruppe10
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningenVedEndring
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -35,9 +36,8 @@ import java.security.MessageDigest
 @Tag(TestTags.MANUAL_TEST)
 class OpplysningerBruktIBeregningUTLegacyEkvivalensTest {
 
-    @Suppress("UNUSED_PARAMETER")
     private fun Expression<PEgruppe10>.gate(profil: OpplysningerBruktIBeregningUTProfil) =
-        inkluderopplysningerbruktiberegningen()
+        if (profil.erEndring) inkluderopplysningerbruktiberegningenVedEndring() else inkluderopplysningerbruktiberegningen()
 
     @Test
     fun skrivEkvivalensfil() {

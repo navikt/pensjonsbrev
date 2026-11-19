@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmIFUReduksjon
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmIFUReduksjonsprosentRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmIFUReduksjonsprosentRedigerbarDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmIFUReduksjonsprosentRedigerbarDto.pesysData.*
-import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningenVedEndring
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.legacy.vedlegg.OpplysningerBruktIBeregningUTProfil
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
@@ -96,7 +96,7 @@ object VedtakOmOktMinsteIFURedigerbar : RedigerbarTemplate<VedtakOmIFUReduksjons
             )
         }
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, data.maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING), data.pe, data.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING), data.pe, data.pe.inkluderopplysningerbruktiberegningenVedEndring())
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, data.dineRettigheterOgPlikterUfore)
     }
 }
