@@ -108,8 +108,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
         private set
-    var tekniskVersjon by BrevredigeringTable.tekniskVersjon
-        private set
     override val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
     override var rendretBrev by BrevredigeringTable.rendretBrevKryptert
         private set
@@ -212,7 +210,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.sistredigert = timestamp
             this.sistRedigertAv = opprettetAv
             this.redigertBrev = redigertBrev
-            this.tekniskVersjon = GJELDENDE_REDIGERT_BREV_VERSJON
             this.rendretBrev = redigertBrev
             this.brevtype = brevtype
             this.brevmalHash = brevmalHash
