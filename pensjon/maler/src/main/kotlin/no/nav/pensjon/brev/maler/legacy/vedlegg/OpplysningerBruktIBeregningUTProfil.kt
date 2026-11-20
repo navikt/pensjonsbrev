@@ -41,16 +41,13 @@ enum class OpplysningerBruktIBeregningUTProfil {
     /** PE_UT_14_300 – Vedtak: omregning av uførepensjon til uføretrygd (automatisk). */
     OMREGNING_UP_TIL_UT_AUTO,
 
-    /** PE_UT_05_100 – Vedtak: endring av uføretrygd på grunn av inntekt (automatisk). */
-    ENDRING_PGA_INNTEKT_AUTO,
-
     /** PE_UT_06_100 – Vedtak: ny beregning av uføretrygd på grunn av endring i opptjening (automatisk). */
     NY_BEREGNING_PGA_OPPTJENING_AUTO,
 
     /** PE_UT_06_300 – Endring av barnetillegg i uføretrygden. */
     ENDRING_BARNETILLEGG,
 
-    /** PE_UT_07_100 – Vedtak: endring av uføretrygd på grunn av inntekt. */
+    /** PE_UT_05_100/PE_UT_07_100 – Vedtak: endring av uføretrygd på grunn av inntekt (automatisk og manuell). */
     ENDRING_PGA_INNTEKT,
 
     /** PE_UT_07_200 – Vedtak: opphør av barnetillegg (automatisk). */
@@ -75,7 +72,7 @@ enum class OpplysningerBruktIBeregningUTProfil {
     val visMinstepensjonsforklaring: Boolean get() = this == OMREGNING_UP_TIL_UT
 
     /** Inntektsendringsbrev (05_100/07_100). */
-    val erInntektsendring: Boolean get() = this in setOf(ENDRING_PGA_INNTEKT_AUTO, ENDRING_PGA_INNTEKT)
+    val erInntektsendring: Boolean get() = this == ENDRING_PGA_INNTEKT
 
     val erNyBeregningAvBarnetilleggAuto: Boolean get() = this == NY_BEREGNING_BARNETILLEGG_AUTO
     val erNyBeregningAvBarnetilleggManuell: Boolean get() = this == NY_BEREGNING_BARNETILLEGG_MANUELL
@@ -115,7 +112,7 @@ enum class OpplysningerBruktIBeregningUTProfil {
     /** Brevtyper som viser minsteytelseseksjonen. */
     val visMinsteytelse: Boolean
         get() = this !in setOf(
-            ENDRING_PGA_INNTEKT, ENDRING_PGA_INNTEKT_AUTO, OMREGNING_UP_TIL_UT, OMREGNING_UP_TIL_UT_AUTO,
+            ENDRING_PGA_INNTEKT, OMREGNING_UP_TIL_UT, OMREGNING_UP_TIL_UT_AUTO,
             DELVIS_EKSPORT, NY_BEREGNING_BARNETILLEGG_AUTO, OPPHOER_BARNETILLEGG_AUTO, ENDRING_BARNETILLEGG,
         )
 
@@ -128,7 +125,7 @@ enum class OpplysningerBruktIBeregningUTProfil {
     /** Brevtyper som kan vise inntektsgrense og avkortning ut fra ifu-/ieu-begrunnelse. */
     val visInntektsgrenseVedBegrunnelse: Boolean
         get() = this !in setOf(
-            ENDRING_PGA_INNTEKT, ENDRING_PGA_INNTEKT_AUTO, FULL_EKSPORT, DELVIS_EKSPORT,
+            ENDRING_PGA_INNTEKT, FULL_EKSPORT, DELVIS_EKSPORT,
             NY_BEREGNING_PGA_OPPTJENING_AUTO, OMREGNING_UP_TIL_UT, OMREGNING_UP_TIL_UT_AUTO,
             OPPHOER_BARNETILLEGG_AUTO, ENDRING_BARNETILLEGG,
         )

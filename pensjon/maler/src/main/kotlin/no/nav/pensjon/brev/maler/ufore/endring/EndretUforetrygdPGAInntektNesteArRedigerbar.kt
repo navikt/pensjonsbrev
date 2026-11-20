@@ -57,7 +57,7 @@ object EndretUforetrygdPGAInntektNesteArRedigerbar : RedigerbarTemplate<EndretUf
             includePhrase(EndretUforetrygdPGAInntektNesteArFelles.Outline(data))
         }
 
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING_PGA_INNTEKT_AUTO), data.pe)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING_PGA_INNTEKT), data.pe)
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, data.orienteringOmRettigheterUfoere)
     }
 }

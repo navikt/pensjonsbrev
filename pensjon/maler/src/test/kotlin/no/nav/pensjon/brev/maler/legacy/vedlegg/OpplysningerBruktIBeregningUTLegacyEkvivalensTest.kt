@@ -86,11 +86,11 @@ class OpplysningerBruktIBeregningUTLegacyEkvivalensTest {
 
     private fun vedleggsvarianter(): Sequence<Pair<String, PEgruppe10>> = sequence {
         val basis = createPEgruppe10()
-        for (krav in listOf("endring_ifu", "tilst_dod", "endret_inntekt", "soknad_bt", "sivilstandsendring", "foerstegangsbehandling"))
-            for (bt in listOf("begge", "fb", "sb", "ingen"))
-                for (btEndret in listOf(true, false))
-                    for (ifu in listOf(null, "stdbegr_12_8_2_1"))
-                        for (minste in listOf(false, true))
+        for (krav in listOf("endring_ifu", "tilst_dod", "endret_inntekt", "soknad_bt", "sivilstandsendring", "foerstegangsbehandling")) {
+            for (bt in listOf("begge", "fb", "sb", "ingen")) {
+                for (btEndret in listOf(true, false)) {
+                    for (ifu in listOf(null, "stdbegr_12_8_2_1")) {
+                        for (minste in listOf(false, true)) {
                             for (metode in listOf("folketrygd", "eos")) {
                                 val vd = basis.vedtaksbrev.vedtaksdata!!
                                 val bu = vd.beregningsdata!!.beregningufore!!
@@ -121,12 +121,21 @@ class OpplysningerBruktIBeregningUTLegacyEkvivalensTest {
                                 )
                                 yield("$krav|$bt|$btEndret|$ifu|$minste|$metode" to pe)
                             }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun gatevarianter(): Sequence<Pair<String, PEgruppe10>> = sequence {
         val basis = createPEgruppe10()
-        for (faktor in listOf(true, false)) for (okt in listOf(true, false)) for (minste in listOf(true, false))
-            for (grad in listOf(0, 100)) for (ifu in listOf(null, "stdbegr_12_8_2_5")) for (krav in listOf("tilst_dod", "endring_ifu")) {
+        for (faktor in listOf(true, false)) {
+            for (okt in listOf(true, false)) {
+                for (minste in listOf(true, false)) {
+                    for (grad in listOf(0, 100)) {
+                        for (ifu in listOf(null, "stdbegr_12_8_2_5")) {
+                            for (krav in listOf("tilst_dod", "endring_ifu")) {
                 val vd = basis.vedtaksbrev.vedtaksdata!!
                 val bu = vd.beregningsdata!!.beregningufore!!
                 val yk = bu.beregningytelseskomp!!
@@ -154,5 +163,10 @@ class OpplysningerBruktIBeregningUTLegacyEkvivalensTest {
                 )
                 yield("$faktor|$okt|$minste|$grad|$ifu|$krav" to pe)
             }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

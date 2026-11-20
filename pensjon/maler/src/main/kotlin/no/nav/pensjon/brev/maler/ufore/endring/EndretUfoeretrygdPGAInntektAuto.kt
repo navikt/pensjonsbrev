@@ -59,7 +59,7 @@ object EndretUfoeretrygdPGAInntektAuto : AutobrevTemplate<EndretUTPgaInntektDtoV
         }
 
 
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING_PGA_INNTEKT_AUTO), pe)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING_PGA_INNTEKT), pe)
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }
 }

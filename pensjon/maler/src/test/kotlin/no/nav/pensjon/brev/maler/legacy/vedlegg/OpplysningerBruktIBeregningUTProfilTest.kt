@@ -17,7 +17,6 @@ internal val legacyBrevkode: Map<OpplysningerBruktIBeregningUTProfil, String> = 
     FULL_EKSPORT to "PE_UT_04_115",
     OMREGNING_UP_TIL_UT to "PE_UT_04_300",
     OMREGNING_UP_TIL_UT_AUTO to "PE_UT_14_300",
-    ENDRING_PGA_INNTEKT_AUTO to "PE_UT_05_100",
     NY_BEREGNING_PGA_OPPTJENING_AUTO to "PE_UT_06_100",
     ENDRING_BARNETILLEGG to "PE_UT_06_300",
     ENDRING_PGA_INNTEKT to "PE_UT_07_100",
@@ -39,7 +38,7 @@ class OpplysningerBruktIBeregningUTProfilTest {
         Triple("erOekningUfoeregrad", { it.erOekningUfoeregrad }, setOf("PE_UT_04_114")),
         Triple("erOmregningUPtilUT", { it.erOmregningUPtilUT }, setOf("PE_UT_04_300", "PE_UT_14_300")),
         Triple("visMinstepensjonsforklaring", { it.visMinstepensjonsforklaring }, setOf("PE_UT_04_300")),
-        Triple("erInntektsendring", { it.erInntektsendring }, setOf("PE_UT_05_100", "PE_UT_07_100")),
+        Triple("erInntektsendring", { it.erInntektsendring }, setOf("PE_UT_07_100")),
         Triple("erNyBeregningAvBarnetilleggAuto", { it.erNyBeregningAvBarnetilleggAuto }, setOf("PE_UT_04_108")),
         Triple("erNyBeregningAvBarnetilleggManuell", { it.erNyBeregningAvBarnetilleggManuell }, setOf("PE_UT_04_109")),
         Triple("erNyBeregningAvBarnetillegg", { it.erNyBeregningAvBarnetillegg }, setOf("PE_UT_04_108", "PE_UT_04_109")),
@@ -69,16 +68,16 @@ class OpplysningerBruktIBeregningUTProfilTest {
         ),
         Triple(
             "visMinsteytelse", { it.visMinsteytelse },
-            alleUnntatt("PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_103", "PE_UT_04_108", "PE_UT_07_200", "PE_UT_06_300"),
+            alleUnntatt("PE_UT_07_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_103", "PE_UT_04_108", "PE_UT_07_200", "PE_UT_06_300"),
         ),
         Triple("visUtlandsforklaringUansett", { it.visUtlandsforklaringUansett }, setOf("f_bh_bo_utland")),
         Triple(
             "visInntekterBruktIBeregning", { it.visInntekterBruktIBeregning },
-            alleUnntatt("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300", "PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300"),
+            alleUnntatt("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300", "PE_UT_07_100", "PE_UT_04_300", "PE_UT_14_300"),
         ),
         Triple(
             "visInntektsgrenseVedBegrunnelse", { it.visInntektsgrenseVedBegrunnelse },
-            alleUnntatt("PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_115", "PE_UT_04_103", "PE_UT_06_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_07_200", "PE_UT_06_300"),
+            alleUnntatt("PE_UT_07_100", "PE_UT_04_115", "PE_UT_04_103", "PE_UT_06_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_07_200", "PE_UT_06_300"),
         ),
     )
 
