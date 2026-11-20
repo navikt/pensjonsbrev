@@ -35,9 +35,9 @@ test("Personvernerklæringen kan åpnes direkte og lastes på nytt", async ({ pa
   await expect(main.getByRole("heading", { name: "Bruk av informasjonskapsler (cookies)", level: 2 })).toBeVisible();
   await expect(main.getByRole("heading", { name: "Skyra", level: 3 })).toBeAttached();
   await expect(main.getByRole("heading", { name: "Statistikk og analyseverktøy (Innblikk)", level: 3 })).toBeAttached();
-  await expect(main.getByRole("link", { name: "Navs generelle personvernerklæring" })).toHaveAttribute(
+  await expect(main.getByRole("link", { name: "ansattes personvern" })).toHaveAttribute(
     "href",
-    "https://www.nav.no/personvern",
+    "https://navno.sharepoint.com/sites/intranett-personvern/SitePages/Ansattes-personvern.aspx",
   );
 });
 
