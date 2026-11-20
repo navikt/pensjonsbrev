@@ -30,7 +30,7 @@ import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
-import { copyWholeHeading } from "./services/headingCopy";
+import { copyAsSemanticHtml } from "./services/semanticCopy";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
@@ -188,7 +188,7 @@ export const LetterEditor = ({
             <div
               className="editor-surface"
               data-editor-root
-              onCopy={copyWholeHeading}
+              onCopy={copyAsSemanticHtml}
               onDragOver={(e) => {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = "none";

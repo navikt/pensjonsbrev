@@ -917,63 +917,10 @@ function sanitizePastedHtml(html: string): string {
 }
 
 function parseHtmlToTraversedElements(html: string): TraversedElement[] {
-  const document = new DOMParser().parseFromString(sanitizePastedHtml(normalizeSkribentenMarkup(html)), "text/html");
+  const document = new DOMParser().parseFromString(sanitizePastedHtml(html), "text/html");
 
   const elements = traverseChildren(document.body, FontType.PLAIN);
   return moveOuterTextIntoNeighbouringParagraphs(elements);
-}
-
-const SKRIBENTEN_HEADING_TAGS = { TITLE1: "h1", TITLE2: "h2", TITLE3: "h3" } as const;
-const INLINE_TAGS = new Set(["SPAN", "B", "STRONG", "I", "EM", "BR"]);
-
-/**
- * Content copied from Skribenten itself carries the editor's own markup: blocks are divs with the block type as class,
- * and bold/italic are inline styles on the literal spans. The sanitizer strips divs, classes and styles, which would
- * glue headings onto the following paragraph and drop bold/italic, so this translates them into semantic tags first.
- */
-function normalizeSkribentenMarkup(html: string): string {
-  if (!html.includes("data-literal-index")) return html;
-  const document = new DOMParser().parseFromString(html, "text/html");
-
-  for (const span of document.querySelectorAll<HTMLElement>("span[data-literal-index]")) {
-    const fontWeight = span.style.fontWeight;
-    // Unedited fritekst placeholders are drawn with weight 600 but aren't bold text, so they paste as plain text.
-    const isBold = fontWeight === "bold" || fontWeight === "bolder" || Number(fontWeight) >= 700;
-    const isItalic = span.style.fontStyle === "italic";
-    if (isBold || isItalic) {
-      const wrapper = document.createElement(isBold ? "b" : "i");
-      wrapper.append(...span.childNodes);
-      span.append(wrapper);
-    }
-  }
-
-  for (const block of document.querySelectorAll("div")) {
-    const headingTag = Object.entries(SKRIBENTEN_HEADING_TAGS).find(([type]) => block.classList.contains(type))?.[1];
-    if (headingTag) {
-      const heading = document.createElement(headingTag);
-      heading.append(...block.childNodes);
-      block.replaceWith(heading);
-    } else if (block.classList.contains("PARAGRAPH")) {
-      // A paragraph block can also hold lists and tables, which can't be nested in <p>.
-      const pieces: Node[] = [];
-      let paragraph: HTMLParagraphElement | undefined;
-      for (const child of [...block.childNodes]) {
-        if (child.nodeType === Node.TEXT_NODE || INLINE_TAGS.has((child as Element).tagName)) {
-          if (!paragraph) {
-            paragraph = document.createElement("p");
-            pieces.push(paragraph);
-          }
-          paragraph.append(child);
-        } else {
-          paragraph = undefined;
-          pieces.push(child);
-        }
-      }
-      block.replaceWith(...pieces);
-    }
-  }
-
-  return document.body.innerHTML;
 }
 
 function isOnlyWhitespace(node: Node) {
