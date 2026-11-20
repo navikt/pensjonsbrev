@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -11,7 +12,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object EndringBTEPSVedMinsteIFUReduksjonsprosent {
@@ -198,13 +198,8 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
 
             paragraph {
                 text(
-                    bokmal { +"Du kan lese mer om dette i vedlegget " },
-                    nynorsk { +"Du kan lese meir om dette i vedlegget " },
-                )
-                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                text(
-                    bokmal { +"." },
-                    nynorsk { +"." },
+                    bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                    nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                 )
             }
 

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.utland
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -771,7 +773,12 @@ object DelvisEksportAvUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretry
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
                 showIf((barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget)) {
-                    includePhrase(TBU1288_Generated)
+                    paragraph {
+                        text(
+                            bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                            nynorsk { +"Du kan lese meir om berekninga av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
+                        )
+                    }
                 }
 
                 //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
@@ -826,7 +833,12 @@ object DelvisEksportAvUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretry
 
             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                includePhrase(TBU1133_Generated)
+                paragraph {
+                    text(
+                        bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                        nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
+                    )
+                }
             }
 
             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true

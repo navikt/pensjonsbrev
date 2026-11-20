@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.ufore.diverse
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -29,7 +30,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
@@ -336,9 +336,7 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
             //TBU1133
             paragraph(uniqueness = "beregning") {
-                text(bokmal { +"Du kan lese mer om dette i vedlegget " })
-                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                text(bokmal { +"." })
+                text(bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." })
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
@@ -549,9 +547,7 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
                     //TBU2492
                     paragraph {
-                        text(bokmal { +"Du kan lese mer om barnetillegg i vedlegget " })
-                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                        text(bokmal { +"." })
+                        text(bokmal { +"Du kan lese mer om barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." })
                     }
                 }
 
@@ -596,7 +592,11 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                 //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                    includePhrase(TBU1133_Generated)
+                    paragraph {
+                        text(
+                            bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                        )
+                    }
                 }
 
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"
@@ -794,9 +794,7 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_bunnfradrag().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()) and pe.grunnlag_persongrunnlagsliste_uforehistorikkgarantigrad().notEqualTo(0)) {
                     //[TBU2501]
                     paragraph {
-                        text(bokmal { +"Du kan lese mer om beregningen din i vedlegget " })
-                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                        text(bokmal { +"." })
+                        text(bokmal { +"Du kan lese mer om beregningen din i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." })
                     }
 
                     //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
@@ -854,9 +852,7 @@ object OmregningUfoerepensjonTilUfoeretrygdRedigerbar : RedigerbarTemplate<Omreg
 
                     //[TBU1133_konvertering]
                     paragraph(uniqueness = "inntekt_avkorting") {
-                        text(bokmal { +"Du kan lese mer om dette i vedlegget " })
-                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                        text(bokmal { +"." })
+                        text(bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." })
                     }
 
                     title1 {

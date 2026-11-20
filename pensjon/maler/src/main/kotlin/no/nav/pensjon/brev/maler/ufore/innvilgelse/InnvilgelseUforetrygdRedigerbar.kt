@@ -184,7 +184,6 @@ object InnvilgelseUforetrygdRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretry
             includePhrase(Innvilgelse.RettighetSomUngUfoer(
                 ungUforResultat = ungUforResultat,
                 pe = pe,
-                vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
             includePhrase(Innvilgelse.UnntaksregelMedlemskap(
@@ -222,7 +221,6 @@ object InnvilgelseUforetrygdRedigerbar : RedigerbarTemplate<InnvilgelseUfoeretry
                 oifuKroner = oifuKroner,
                 uforegrad = uforegrad,
                 ungUforResultat = ungUforResultat,
-                vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
             showIf(kravGjelder.equalTo("f_bh_med_utl")){
