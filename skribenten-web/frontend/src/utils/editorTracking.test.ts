@@ -6,7 +6,7 @@ const trackMock = vi.fn();
 
 beforeEach(() => {
   trackMock.mockClear();
-  globalThis.umami = { track: trackMock };
+  globalThis.sporing = { identify: vi.fn(), track: trackMock };
 });
 
 const sisteKall = () => trackMock.mock.calls.at(-1) as [string, Record<string, unknown>];

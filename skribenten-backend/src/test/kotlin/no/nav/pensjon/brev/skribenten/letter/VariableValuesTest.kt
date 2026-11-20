@@ -1,5 +1,3 @@
-@file:OptIn(InterneDataklasser::class)
-
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.InterneDataklasser
@@ -47,7 +45,7 @@ class VariableValuesTest {
             title3 { literal(text = "lit3"); variable(id = 15, text = "var-15"); variable(id = 16, text = "var-16") }
         }
 
-        val expectedVars = (0..16).associate { it to "var-$it" }
+        val expectedVars = (0..16).associateWith { "var-$it" }
         assertEquals(expectedVars, letter.variablesValueMap())
     }
 }

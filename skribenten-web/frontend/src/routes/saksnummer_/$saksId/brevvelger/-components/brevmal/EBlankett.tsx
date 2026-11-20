@@ -9,7 +9,7 @@ import { z } from "zod";
 import { getAvtaleLand, orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import { type LetterMetadata, type OrderEblankettRequest } from "~/types/apiTypes";
-import { trackEvent } from "~/utils/umami";
+import { trackEvent } from "~/utils/innblikk";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";

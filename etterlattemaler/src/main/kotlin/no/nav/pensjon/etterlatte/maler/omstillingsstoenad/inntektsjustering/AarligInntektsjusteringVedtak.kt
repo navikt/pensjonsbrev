@@ -25,14 +25,11 @@ import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsper
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser.Utbetaling
-import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
+import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInntektsjusteringFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.selectors.aarligInntektsjusteringVedtakDTO.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.selectors.aarligInntektsjusteringVedtakData.*
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 import java.time.LocalDate
 
 data class AarligInntektsjusteringVedtakData(
@@ -44,9 +41,7 @@ data class AarligInntektsjusteringVedtakData(
     val endringIUtbetaling: Boolean,
     val virkningstidspunkt: LocalDate,
     val bosattUtland: Boolean,
-) {
-    val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
-}
+)
 
 data class AarligInntektsjusteringVedtakDTO(
     override val innhold: List<Element>,
@@ -122,12 +117,8 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
 
                 konverterElementerTilBrevbakerformat(innhold)
 
-                showIf(data.harUtbetaling) {
-                    includePhrase(OmstillingsstoenadFellesFraser.Utbetaling)
-                }
-
                 includePhrase(
-                    OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(
+                    OmstillingsstoenadInntektsjusteringFraser.HvorLengeKanDuFaaOmstillingsstoenad(
                         data.beregning,
                         data.omsRettUtenTidsbegrensning,
                         data.tidligereFamiliepleier,
@@ -135,12 +126,20 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                 )
 
                 showIf(data.omsRettUtenTidsbegrensning.not()) {
-                    includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt(data.tidligereFamiliepleier))
+                    includePhrase(OmstillingsstoenadInntektsjusteringFraser.Aktivitetsplikt(data.tidligereFamiliepleier))
                 }
-                includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
-                includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
+                includePhrase(OmstillingsstoenadInntektsjusteringFraser.DuKanKlagePaaVedtaket(data.inntektsaar))
+                showIf(data.harUtbetaling) {
+                    includePhrase(OmstillingsstoenadInntektsjusteringFraser.Utbetaling)
+                    includePhrase(OmstillingsstoenadInntektsjusteringFraser.HuskAaSjekkeSkattekortet)
+                }
+                includePhrase(OmstillingsstoenadInntektsjusteringFraser.MeldFraOmEndringer)
+                includePhrase(OmstillingsstoenadInntektsjusteringFraser.InntektenDin)
                 includePhrase(OmstillingsstoenadFellesFraser.Etteroppgjoer)
-                includePhrase(Felles.DuHarRettTilAaKlage)
+                includePhrase(Felles.DuHarRettTilInnsynISakenDin)
+                includePhrase(Felles.DuHarRettigheterKnyttetTilPersonopplysninger)
+                includePhrase(Felles.DuHarRettTilHjelpFraAndre)
+                includePhrase(Felles.DuHarRettTilVeiledning)
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
 
@@ -154,7 +153,5 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                 data.beregning,
                 data.tidligereFamiliepleier.not(),
             )
-            includeAttachment(informasjonOmOmstillingsstoenad(), data.informasjonOmOmstillingsstoenadData)
-            includeAttachment(dineRettigheterOgPlikter)
         }
     }

@@ -1,0 +1,57 @@
+package no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr
+
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.InntektOgAldersovergangNesteArRedigerbarDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.pe
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.vedtakVirkFom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArRedigerbarDto.pesysData
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArRedigerbarDto.pesysData.data
+import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.year
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
+
+@TemplateModelHelpers
+object InntektOgAldersovergangNesteArRedigerbar : RedigerbarTemplate<InntektOgAldersovergangNesteArRedigerbarDto> {
+    override val kode = Pesysbrevkoder.Redigerbar.UT_INNTEKT_ALDERSOVERGANG_NESTE_AR_RED
+
+    override val featureToggle = FeatureToggles.brevmalUtDesemberkjoring.toggle
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper = setOf(Sakstype.UFOREP)
+
+    override val template = createTemplate(
+        languages = languages(Bokmal, Nynorsk),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Vedtak - inntekt og alderspensjon neste år",
+            distribusjonstype = VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+        )
+    ) {
+        title {
+            text(
+                bokmal { +"Så mye kan du tjene i " + pesysData.data.vedtakVirkFom.year.format() },
+                nynorsk { +"Så mykje kan du tene i " + pesysData.data.vedtakVirkFom.year.format() },
+            )
+        }
+        outline {
+            includePhrase(InntektOgAldersovergangNesteAr.Outline(pesysData.data))
+        }
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.data.pe)
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, pesysData.data.orienteringOmRettigheterUfoere)
+    }
+}

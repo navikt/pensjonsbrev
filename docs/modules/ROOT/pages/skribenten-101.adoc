@@ -3,7 +3,7 @@
 == Kort om Skribenten
 
 === Skribenten består av 3 deler
-1. *Brevmeny* – her velger du hvilket brev du vil lage ut ifra en liste av kategorier, søk eller
+1. *Brevvelger* – her velger du hvilket brev du vil lage ut ifra en liste av kategorier, søk eller
 via favoritter. Det er også her du setter mottaker, velger avsenderenhet og språk.
 2. *Brevredigering* – her redigerer du brevet og legger til relevant informasjon til mottaker.
 3. *Brevbehandler* – her vil du se brevet slik det vil bli seende ut for mottaker. Det er herfra
@@ -22,12 +22,23 @@ boksene. Les mer om dem lenger nede.
 For å legge til et brev som favoritt, må du først velge brevet. I toppen av høyremenyen er det en knapp «legg til som favoritt». Brevet blir liggende som favoritt helt til du fjerner det som favoritt. Det gjøres på samme måte.
 
 === Hvordan endrer jeg adresse i brevet?
-For å endre adresse, trykk på «endre mottaker». Du kan søke opp samhandler på samme måte som det fungerer i Pesys i dag, eller skrive inn adresse manuelt. 
+For å endre adresse, trykk på «Endre mottaker» og «Legg til manuelt». 
 
 Relevante rutiner for endring av navn og adresse i brev:
 
 - https://navno.sharepoint.com/sites/fag-og-ytelser-pensjon-alderspensjon/SitePages/Maler/Mal-for-rutiner.aspx#rutine-for-endring-av-navn-og-adressefelt-i-brev[Endre navn og adresse]
 - https://navno.sharepoint.com/sites/fag-og-ytelser-pesys/SitePages/Skrive-brev-og-notat.aspx[Generell rutine for skriving av brev og notat i Pesys]
+
+=== Hvordan sender jeg brev til en samhandler?
+
+Trykk på «Endre mottaker» og «Finn samhandler» for å søke opp samhandleren.
+Hvis samhandleren har organisasjonsnummer i samhandlerregisteret, sendes brevet digitalt til samhandleren via Altinn. Da vises organisasjonsnummeret i stedet for adressen, både i søkeresultatet og i brevet.
+
+Under ser du eksempler på søk etter samhandlere med og uten organisasjonsnummer.
+
+image:samhandler-medorgnr.png[Med organisasjonsnummer,width=300,link=self]
+image:samhandler-utenorgnr.png[Uten organisasjonsnummer,width=300,link=self]
+
 
 === Jeg åpnet feil brev, hva gjør jeg?
 Hvis du åpnet feil brev kan du gå tilbake til brevmenyen via knappen nede til høyre. Brevet du åpnet er nå lagret som en kladd i Skribenten, og vil også dukke opp i dokumentoversikten, men det er ikke journalført. Ingen Skribenten-brev blir journalført før de er sendt til mottaker. Du kan slette kladden ved å trykke på «slett kladd» i toppen av høyremenyen når kladden er valgt.
@@ -84,7 +95,38 @@ Attestant må lukke brevet hos seg. Vent litt, og prøv deretter å åpne brevet
 
 == Attestering
 === Hvordan attesterer jeg brevet?
-For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Brevet åpnes fra dokumentoversikt, og har status «under arbeid (attestering)».
+For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Du kan ikke attestere et brev du selv har opprettet.
+
+1. Åpne brevet fra dokumentoversikten. Brevet har status  «under arbeid (attestering)».
+2. Les gjennom brevet og gjør eventuelle endringer i brevteksten. Tekstvalgene i sidepanelet kan du se, men ikke endre.
+Dersom brevet har redigerbare vedlegg, vises fanen «Vedlegg». Åpne fanen, velg vedlegget og les gjennom og eventuelt rediger teksten.
+3. Legg inn underskriften din i feltet «Underskrift» i venstremenyen.
+4. Klikk på «Fortsett» for å åpne forhåndsvisningen.
+5. Kontroller PDF-en. Hvis noe må endres, velger du «Tilbake til redigering».
+6. Klikk på «Send brev» og bekreft med «Ja, send brevet».
+7. Kontroller kvitteringen. Ved lokalprint må du også åpne PDF-en og skrive ut brevet.
+
+
+**Merk:** Brevet sendes ikke når du legger inn underskriften din.
+
+=== Hvilke endringer er gjort i brevet?
+
+Attestanten kan enklere se hvilke endringer saksbehandler har gjort i brevet. Attestanten kan velge å vise:
+
+* tekst som er lagt til, markert i grønt
+* tekst som er slettet, markert i rosa med gjennomstreking
+* eller begge samtidig
+
+image::attestering-endringer-saksbehandler.png[]
+
+
+Viktig å vite:
+
+* Endringsmarkeringene er kun en visning i redigeringsmodus, og vises ikke i det endelige brevet
+* Endringsmarkeringene forsvinner når brevet redigeres
+* Endringsmarkeringene viser tekst som er tatt inn eller ut av brevet, men ikke endringer i formatering
+* Dersom det ikke er gjort noen endringer, vises ikke endringsmarkeringer.
+* Hvis endringsmarkering ikke er tilgjengelig, kan brevet fortsatt gjennomgås og attesteres
 
 === Hvordan legger jeg til signaturen min?
 Du legger til signaturen din ved å klikke på underskrift i venstremenyen, og skriver den inn. Den vil da dukke opp på venstre side av saksbehandlers underskrift.

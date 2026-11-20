@@ -42,8 +42,8 @@ object OversendelsesbrevTilKlageinstansPE : RedigerbarTemplate<EmptyRedigerbarBr
 
             paragraph {
                 text(bokmal {
-                    +"Vi har den "
-                    +fritekst("dato") + " mottatt klagen din på vedtaket om "
+                    +"Vi mottok den "
+                    +fritekst("dato") + " klagen din på vedtaket om "
                     +fritekst("ytelse") + " av den "
                     +fritekst("dato") + ". "
                     +"Etter en ny vurdering har vi kommet til at vedtaket ikke skal endres. "

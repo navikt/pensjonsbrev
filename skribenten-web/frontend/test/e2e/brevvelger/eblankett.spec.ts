@@ -1,12 +1,12 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { type UmamiEventData } from "~/utils/umami";
+import { type InnblikkEventData } from "~/utils/innblikk";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 
 import avtaleland from "../fixtures/avtaleland.json" with { type: "json" };
 
 declare global {
-  var eblankettEvents: { name: string; data?: UmamiEventData }[];
+  var eblankettEvents: { name: string; data?: InnblikkEventData }[];
 }
 
 const orderUrl = "**/bff/skribenten-backend/sak/123456/bestillBrev/exstream/eblankett";
@@ -19,8 +19,11 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     globalThis.open = () => null;
     globalThis.eblankettEvents = [];
-    globalThis.umami = {
-      track: (name, data) => globalThis.eblankettEvents.push({ name, data }),
+    globalThis.sporing = {
+      identify: () => {},
+      track: (name, data) => {
+        globalThis.eblankettEvents.push({ name, data });
+      },
     };
   });
 });

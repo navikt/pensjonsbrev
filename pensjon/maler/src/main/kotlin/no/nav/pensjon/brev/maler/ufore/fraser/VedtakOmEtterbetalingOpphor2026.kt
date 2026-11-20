@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.maler.ufore.fraser
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.model.format
@@ -75,13 +76,8 @@ class VedtakOmEtterbetalingOpphor2026 {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du finner mer informasjon om beregningen i vedlegget " },
-                        nynorsk { +"Du finn meir informasjon om berekninga i vedlegget " },
-                    )
-                    namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                    text(
-                        bokmal { +". " },
-                        nynorsk { +". " },
+                        bokmal { +"Du finner mer informasjon om beregningen i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}». " },
+                        nynorsk { +"Du finn meir informasjon om berekninga i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}». " },
                     )
                 }
 

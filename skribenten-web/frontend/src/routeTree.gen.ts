@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PersonvernRouteImport } from './routes/personvern'
 import { Route as SaksnummerIndexRouteImport } from './routes/saksnummer.index'
 import { Route as SaksnummerSaksIdRouteRouteImport } from './routes/saksnummer_/$saksId/route'
 import { Route as AapneBrevBrevIdRouteRouteImport } from './routes/aapne/brev.$brevId/route'
@@ -24,6 +25,11 @@ import { Route as SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport } from './
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonvernRoute = PersonvernRouteImport.update({
+  id: '/personvern',
+  path: '/personvern',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SaksnummerIndexRoute = SaksnummerIndexRouteImport.update({
@@ -86,6 +92,7 @@ const SaksnummerSaksIdAttesterBrevIdRedigeringRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/personvern': typeof PersonvernRoute
   '/saksnummer/$saksId': typeof SaksnummerSaksIdRouteRouteWithChildren
   '/saksnummer/': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/personvern': typeof PersonvernRoute
   '/saksnummer/$saksId': typeof SaksnummerSaksIdRouteRouteWithChildren
   '/saksnummer': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
@@ -113,6 +121,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/personvern': typeof PersonvernRoute
   '/saksnummer_/$saksId': typeof SaksnummerSaksIdRouteRouteWithChildren
   '/saksnummer/': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/personvern'
     | '/saksnummer/$saksId'
     | '/saksnummer/'
     | '/aapne/brev/$brevId'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/personvern'
     | '/saksnummer/$saksId'
     | '/saksnummer'
     | '/aapne/brev/$brevId'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/personvern'
     | '/saksnummer_/$saksId'
     | '/saksnummer/'
     | '/aapne/brev/$brevId'
@@ -168,6 +180,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PersonvernRoute: typeof PersonvernRoute
   SaksnummerSaksIdRouteRoute: typeof SaksnummerSaksIdRouteRouteWithChildren
   SaksnummerIndexRoute: typeof SaksnummerIndexRoute
   AapneBrevBrevIdRouteRoute: typeof AapneBrevBrevIdRouteRoute
@@ -180,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personvern': {
+      id: '/personvern'
+      path: '/personvern'
+      fullPath: '/personvern'
+      preLoaderRoute: typeof PersonvernRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/saksnummer/': {
@@ -286,6 +306,7 @@ const SaksnummerSaksIdRouteRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PersonvernRoute: PersonvernRoute,
   SaksnummerSaksIdRouteRoute: SaksnummerSaksIdRouteRouteWithChildren,
   SaksnummerIndexRoute: SaksnummerIndexRoute,
   AapneBrevBrevIdRouteRoute: AapneBrevBrevIdRouteRoute,

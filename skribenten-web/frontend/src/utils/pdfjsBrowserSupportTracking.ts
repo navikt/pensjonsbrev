@@ -1,4 +1,4 @@
-import { trackEvent } from "~/utils/umami";
+import { trackEvent } from "~/utils/innblikk";
 
 // pdfjs-dist 6 requires these APIs; the legacy build only polyfills the Uint8Array methods.
 const requiredFeatures: { name: string; isSupported: () => boolean }[] = [

@@ -36,11 +36,13 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
-object BekreftetNyhetsvarselTable : CompositeIdTable() {
+// settAnnonsen: nyheten er vist i den åpne varselbjellen. gjennomfoertOmvisningen: brukeren har gått gjennom omvisningen.
+object NyhetsvarselstatusTable : CompositeIdTable() {
     val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
     val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
         varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id).entityId()
-    val bekreftet: Column<Instant> = timestamp("bekreftet")
+    val settAnnonsen: Column<Instant?> = timestamp("settAnnonsen").nullable()
+    val gjennomfoertOmvisningen: Column<Instant?> = timestamp("gjennomfoertOmvisningen").nullable()
 
     override val primaryKey = PrimaryKey(navIdent, nyhetsvarselId)
 }
@@ -109,6 +111,8 @@ object RedigertVedleggTable : CompositeIdTable() {
     val redigertVedleggKryptert: Column<VersjonertVedlegg> = kryptertDto<VersjonertVedlegg>("redigertVedleggKryptert")
     val redigertVedleggKryptertHash: Column<Hash<VersjonertVedlegg>> = hashColumn("redigertVedleggKryptertHash")
     val rendretVedlegg: Column<VersjonertVedlegg?> = kryptertDto<VersjonertVedlegg>("rendretVedlegg").nullable()
+    val rendretVedleggHash: Column<StableHashCode?> =
+        integer("rendretVedleggHash").transform(::StableHashCode, StableHashCode::value).nullable()
 
     override val primaryKey = PrimaryKey(brevredigering, vedleggId)
 

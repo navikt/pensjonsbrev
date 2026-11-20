@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.BrukersNavnDto
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
+import no.nav.pensjon.brev.ufore.api.model.maler.info.OpphorUforetrygdDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
@@ -90,21 +91,21 @@ object Fixtures : LetterDataFactory {
             VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             VarselOmOktMinsteIFURedigerbar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             VarselOmLavereMinstesatsS::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
-            SoknadBarnetilleggFosterForelder::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             FlereOpplysningerGenerell::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            UforetrygdNavBerOmDokumentasjon::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             SoknadBarnetillegg::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             TrukketKlage::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             AvkallPaUforetrygd::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            OpphorUforetrygd::class -> lagOpphorUforetrygdDto() as T
             FlereOpplysningerFirmaInntekt::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             NySivilstand::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
-            EktefelleUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             UtsattKlagefrist::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             AntattDod::class -> lagBrukersNavnRedigerbarBrevdata() as T
             EOSLegeerklaering::class -> lagBrukersNavnRedigerbarBrevdata() as T
-            SoknadBarnetilleggUtland::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             BrukerLegeerklaering::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             LegeLegeerklaering::class -> lagBrukersNavnRedigerbarBrevdata() as T
             HvilendeRettMidlertidigOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
+            Honnorkort::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             HvilendeRettOppHoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             HvilendeRettInfo4Aar::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
             HvilendeRettVarselOpphoer::class -> lagEmptyRedigerbarRedigerbarBrevdata() as T
@@ -138,6 +139,14 @@ object Fixtures : LetterDataFactory {
 
     private fun lagEmptyRedigerbarRedigerbarBrevdata() =
         EmptyRedigerbarBrevdata(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
+
+    private fun lagOpphorUforetrygdDto() = OpphorUforetrygdDto(
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "arsak" to "IKKE_MOTTATT_LEVEATTEST",
+            "opphorTilbakeITid" to false,
+        ),
+        pesysData = EmptyFagsystemdata,
+    )
 
     private fun lagBrukersNavnRedigerbarBrevdata() =
         BrukersNavnDto(

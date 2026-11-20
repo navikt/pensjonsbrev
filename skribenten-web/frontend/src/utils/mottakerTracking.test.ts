@@ -6,13 +6,13 @@ const trackMock = vi.fn();
 
 beforeEach(() => {
   trackMock.mockClear();
-  globalThis.umami = { track: trackMock };
+  globalThis.sporing = { identify: vi.fn(), track: trackMock };
 });
 
 const sisteKall = () => trackMock.mock.calls.at(-1) as [string, Record<string, unknown>];
 
 describe("trackMottakerClick", () => {
-  it("hasher saksId før den sendes til Umami", async () => {
+  it("hasher saksId før den sendes til Innblikk", async () => {
     await trackMottakerClick("endre mottaker klikket", "brevbehandler", "12345678");
 
     const [eventName, data] = sisteKall();

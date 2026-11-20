@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.endring
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUTPgaInntektDtoV2.barnetilleggFellesbarn.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUTPgaInntektDtoV2.barnetilleggSaerkullsbarn.*
@@ -13,7 +15,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
@@ -415,11 +416,9 @@ object EndretUfoeretrygdPGAInntekt {
 
             paragraph {
                 text(
-                    bokmal { + "Du finner fullstendige beregninger i vedlegget " },
-                    nynorsk { + "Du finn dei fullstendige utrekningane i vedlegget " }
+                    bokmal { +"Du finner fullstendige beregninger i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                    nynorsk { +"Du finn dei fullstendige utrekningane i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                 )
-                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                text(bokmal { + "." }, nynorsk { + "." })
             }
 
             showIf(endretUt and (btfbEndret or btsbEndret) and gjenlevendetillegg.notNull()) {

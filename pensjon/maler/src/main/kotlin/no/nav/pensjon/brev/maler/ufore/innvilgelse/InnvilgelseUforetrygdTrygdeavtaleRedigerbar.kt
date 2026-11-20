@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.innvilgelse
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -33,7 +35,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -181,13 +182,8 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                     )
                 }
                 text(
-                    bokmal { + ". Det at din uføretrygd ikke er beregnet utelukkende ut fra din inntekt og trygdetid i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget " },
-                    nynorsk { + ". Det at uføretrygda di ikkje er rekna utelukkande ut frå inntekta og trygdetida di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er rekna ut i vedlegget " },
-                )
-                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                text(
-                   bokmal { +"." },
-                   nynorsk { +"." }
+                    bokmal { +". Det at din uføretrygd ikke er beregnet utelukkende ut fra din inntekt og trygdetid i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                    nynorsk { +". Det at uføretrygda di ikkje er rekna utelukkande ut frå inntekta og trygdetida di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er rekna ut i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                 )
             }
 
@@ -449,7 +445,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
             includePhrase(Innvilgelse.RettighetSomUngUfoer(
                 ungUforResultat = ungUforResultat,
                 pe = pe,
-                vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
             includePhrase(Innvilgelse.YrkesskadeEllerYrkessykdom(
@@ -481,7 +476,6 @@ object InnvilgelseUforetrygdTrygdeavtaleRedigerbar : RedigerbarTemplate<Innvilge
                 oifuKroner = oifuKroner,
                 uforegrad = uforegrad,
                 ungUforResultat = ungUforResultat,
-                vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
             showIf(pesysData.kravType.equalTo(InnvilgelseUfoeretrygdTrygdeavtaleDto.KravType.MELLOMBEHANDLING) and pesysData.eosNordisk and not(sluttbehandling)){

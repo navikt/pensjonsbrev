@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.lovendringer2026.minstesats
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.avkortetPgaRedusertTrygdetid
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.brukersMinstesats
@@ -19,7 +21,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMin
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -121,13 +122,8 @@ object ReverseringLavereMinstesats {
                 }
                 paragraph {
                     text(
-                        bokmal { +"I vedlegget " },
-                        nynorsk { +"I vedlegget " },
-                    )
-                    namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                    text(
-                        bokmal { +" kan du se hvordan vi har beregnet uføretrygden din." },
-                        nynorsk { +" kan du sjå korleis vi har berekna uføretrygda di." },
+                        bokmal { +"I vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}» kan du se hvordan vi har beregnet uføretrygden din." },
+                        nynorsk { +"I vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}» kan du sjå korleis vi har berekna uføretrygda di." },
                     )
                 }
             }

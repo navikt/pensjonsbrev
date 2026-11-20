@@ -1,5 +1,5 @@
 import { css, keyframes } from "@emotion/react";
-import { SparklesIcon, XMarkIcon } from "@navikt/aksel-icons";
+import { SparklesIcon } from "@navikt/aksel-icons";
 import { BodyLong, BodyShort, Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { useId } from "react";
 import { type ArrowRenderProps, type TooltipRenderProps } from "react-joyride";
@@ -12,7 +12,6 @@ export const FEATURE_ANNOUNCEMENT_LOCALE = {
   close: "Skjønner!",
   last: "Skjønner!",
   next: "Neste",
-  skip: "Lukk",
 } as const;
 
 export type FeatureAnnouncementStepData = { announcementId: string };
@@ -97,7 +96,6 @@ export const FeatureAnnouncementTooltip = ({
   isLastStep,
   primaryProps,
   size,
-  skipProps,
   step,
   tooltipProps,
 }: TooltipRenderProps) => {
@@ -139,16 +137,6 @@ export const FeatureAnnouncementTooltip = ({
               {FEATURE_ANNOUNCEMENT_LABEL}
             </BodyShort>
           </HStack>
-          {isWalkthrough && (
-            <Button
-              {...skipProps}
-              icon={<XMarkIcon aria-hidden />}
-              size="small"
-              title={undefined}
-              type="button"
-              variant="tertiary-neutral"
-            />
-          )}
         </HStack>
       </Box>
       <VStack gap="space-16" padding="space-16">
