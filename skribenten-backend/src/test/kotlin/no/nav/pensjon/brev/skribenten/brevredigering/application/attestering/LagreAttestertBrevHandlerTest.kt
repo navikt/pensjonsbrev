@@ -1,4 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.attestering
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.asV1
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -31,10 +35,10 @@ class LagreAttestertBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `attestant kan lagre endringer uten aa attestere`() {
         val brev = klartVedtaksbrev()
-        val endret = brev.redigertBrev.medEndretFoersteLiteral("attestanten sin tekst")
+        val endret = brev.redigertBrev.asV1().medEndretFoersteLiteral("attestanten sin tekst")
 
         assertThat(lagreAttestertBrev(brev, nyttRedigertbrev = endret)).isSuccess {
-            assertThat(it.redigertBrev.blocks).isEqualTo(endret.blocks)
+            assertThat(it.redigertBrev.asV1().blocks).isEqualTo(endret.blocks)
             assertThat(it.info.attestertAv).isNull()
             assertThat(it.info.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
         }
@@ -43,17 +47,17 @@ class LagreAttestertBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `lagring merger ikke inn endringer fra malen, men oppdaterer sakspart og malstyrt signatur`() {
         val brev = klartVedtaksbrev()
-        val endret = brev.redigertBrev.medEndretFoersteLiteral("attestanten sin tekst")
+        val endret = brev.redigertBrev.asV1().medEndretFoersteLiteral("attestanten sin tekst")
 
         stagEndretMal()
 
         assertThat(lagreAttestertBrev(brev, nyttRedigertbrev = endret)).isSuccess {
-            assertThat(it.redigertBrev.blocks).isEqualTo(endret.blocks)
-            assertThat(it.redigertBrev.title).isEqualTo(endret.title)
-            assertThat(it.redigertBrev.sakspart.gjelderNavn).isEqualTo("Nytt Navn")
-            assertThat(it.redigertBrev.signatur.hilsenTekst).isEqualTo("Ny hilsen")
-            assertThat(it.redigertBrev.signatur.navAvsenderEnhet).isEqualTo("Ny avsenderenhet")
-            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(endret.signatur.saksbehandlerNavn)
+            assertThat(it.redigertBrev.asV1().blocks).isEqualTo(endret.blocks)
+            assertThat(it.redigertBrev.asV1().title).isEqualTo(endret.title)
+            assertThat(it.redigertBrev.asV1().sakspart.gjelderNavn).isEqualTo("Nytt Navn")
+            assertThat(it.redigertBrev.asV1().signatur.hilsenTekst).isEqualTo("Ny hilsen")
+            assertThat(it.redigertBrev.asV1().signatur.navAvsenderEnhet).isEqualTo("Ny avsenderenhet")
+            assertThat(it.redigertBrev.asV1().signatur.saksbehandlerNavn).isEqualTo(endret.signatur.saksbehandlerNavn)
         }
     }
 
@@ -61,7 +65,7 @@ class LagreAttestertBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `lagringen endrer ikke saksbehandlervalg`() {
         val brev = klartVedtaksbrev()
 
-        assertThat(lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev)).isSuccess {
+        assertThat(lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev.asV1())).isSuccess {
             assertThat(it.saksbehandlerValg).isEqualTo(brev.saksbehandlerValg)
         }
     }
@@ -70,10 +74,10 @@ class LagreAttestertBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `frigir reservasjon naar frigiReservasjon er true`() {
         val brev = klartVedtaksbrev()
 
-        assertThat(lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev, frigiReservasjon = false)).isSuccess {
+        assertThat(lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev.asV1(), frigiReservasjon = false)).isSuccess {
             assertThat(it.info.redigeresAv).isEqualTo(attestant1Principal.navIdent)
         }
-        assertThat(lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev, frigiReservasjon = true)).isSuccess {
+        assertThat(lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev.asV1(), frigiReservasjon = true)).isSuccess {
             assertThat(it.info.redigeresAv).isNull()
         }
     }
@@ -82,7 +86,7 @@ class LagreAttestertBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan ikke lagre uten attestantrolle`() {
         val brev = klartVedtaksbrev()
 
-        val resultat = lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev, attestant = saksbehandler2Principal)
+        val resultat = lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev.asV1(), attestant = saksbehandler2Principal)
         assertThat(resultat).isFailure<AttesterBrevPolicy.KanIkkeAttestere.HarIkkeAttestantrolle, _, _>()
     }
 
@@ -95,7 +99,7 @@ class LagreAttestertBrevHandlerTest : BrevredigeringHandlerTestBase() {
         ).resultOrFail()
         veksleKlarStatus(brev, klar = true, principal = attestant1Principal).resultOrFail()
 
-        val resultat = lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev)
+        val resultat = lagreAttestertBrev(brev, nyttRedigertbrev = brev.redigertBrev.asV1())
         assertThat(resultat).isFailure<AttesterBrevPolicy.KanIkkeAttestere.KanIkkeAttestereEgetBrev, _, _>()
     }
 
@@ -106,7 +110,7 @@ class LagreAttestertBrevHandlerTest : BrevredigeringHandlerTestBase() {
                 LagreAttestertBrevHandler.Request(
                     brevId = BrevId(-9999L),
                     saksId = sak1.saksId,
-                    nyttRedigertbrev = letter.toEdit(),
+                    nyttRedigertbrev = VersjonertBrev.V1(letter.toEdit()),
                 )
             )
         }
