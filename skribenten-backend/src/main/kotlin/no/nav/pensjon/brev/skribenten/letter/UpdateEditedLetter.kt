@@ -257,10 +257,10 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
     @Suppress("UNCHECKED_CAST")
     private fun <E : Edit.Identifiable> withMissingFromTemplate(element: E): E =
         when (element) {
-            is Edit.Block.Title1 -> element.copy(missingFromTemplate = true) as E
-            is Edit.Block.Title2 -> element.copy(missingFromTemplate = true) as E
-            is Edit.Block.Title3 -> element.copy(missingFromTemplate = true) as E
-            is Edit.Block.Paragraph -> element.copy(missingFromTemplate = true) as E
+            is Edit.Block.Title1 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
+            is Edit.Block.Title2 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
+            is Edit.Block.Title3 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
+            is Edit.Block.Paragraph -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
             is Edit.ParagraphContent,
             is Edit.ParagraphContent.ItemList.Item,
             is Edit.ParagraphContent.Table.Header,
