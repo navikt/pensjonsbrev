@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.beskrivelse
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.vedGradertUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.vedHeltUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedGradertUttak
@@ -138,7 +139,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
             }
             ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
                 ifNotNull(afpLivsvarigSim.vedGradertUttak) { afp ->
-                    includePhrase(AfpOffentligLivsvarigTabell(afp))
                     includePhrase(SumOffentligLivsvarigTabell(gradertUttak, afp))
                 }
             }
@@ -178,8 +178,9 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
             includePhrase(SumTabell(knekkpunkter.vedHeltUttak, afpPrivatSim.vedHeltUttak))
         }
         ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
-            includePhrase(AfpOffentligLivsvarigTabell(afpLivsvarigSim.vedHeltUttak))
-            includePhrase(SumOffentligLivsvarigTabell(knekkpunkter.vedHeltUttak, afpLivsvarigSim.vedHeltUttak))
+            ifNotNull(afpLivsvarigSim.vedHeltUttak) { afp ->
+                includePhrase(SumOffentligLivsvarigTabell(knekkpunkter.vedHeltUttak, afp))
+            }
         }
 
         ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
@@ -203,6 +204,17 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
     }
     title1 {
         text(bokmal { +"Opplysninger brukt i pensjonsberegningen" })
+    }
+
+    title2 {
+        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.format(formatter = SivilstatusFormatter) })
+    }
+    paragraph {
+        text(
+            bokmal {
+                +"Hvis du bor sammen med noen kan inntekten til den du bor med ha betydning for hva du får i alderspensjon. Når du mottar alderspensjon må du derfor melde fra til Nav ved endring i sivilstand."
+            },
+        )
     }
 
     ifNotNull(simuleringsinformasjon.utenlandsperioder) { utenlandsperioder ->
@@ -244,16 +256,14 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
         }
     }
 
-    title2 {
-        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.format(formatter = SivilstatusFormatter) })
+    ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
+        ifNotNull(afpLivsvarigSim.vedHeltUttak) { afp ->
+            includePhrase(LivsvarigOffentligAfpSeksjon(afp, afpLivsvarigSim.beskrivelse))
+        }.orShow {
+            includePhrase(LivsvarigOffentligAfpSeksjon(afpLivsvarigSim.vedGradertUttak, afpLivsvarigSim.beskrivelse))
+        }
     }
-    paragraph {
-        text(
-            bokmal {
-                +"Hvis du bor sammen med noen kan inntekten til den du bor med ha betydning for hva du får i alderspensjon. Når du mottar alderspensjon må du derfor melde fra til Nav ved endring i sivilstand."
-            },
-        )
-    }
+
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         title2 {
             text(bokmal { +"Ditt opptjeningsgrunnlag i folketrygden" })

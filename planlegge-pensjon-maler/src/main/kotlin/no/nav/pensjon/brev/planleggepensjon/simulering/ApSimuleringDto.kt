@@ -34,8 +34,9 @@ data class AfpPrivatSimulering(
 )
 
 data class AfpOffentligLivsvarigSimulering(
-    val vedGradertUttak: LivsvarigOffentligAfp?,
-    val vedHeltUttak: LivsvarigOffentligAfp,
+    val vedGradertUttak: LivsvarigOffentligAfp? = null,
+    val vedHeltUttak: LivsvarigOffentligAfp? = null,
+    val beskrivelse: String? = null,
 )
 
 data class Alderspensjon(
