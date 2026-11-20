@@ -495,6 +495,21 @@ class UpdateRenderedLetterTest {
     }
 
     @Test
+    fun `edited block missing from template that reappears keeps MISSING_FROM_TEMPLATE`() {
+        val previous = letter(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre")))).toEdit()
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1, templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph(id = 2) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(edited, edited.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
     fun `no block is NEW_IN_TEMPLATE without a previous render`() {
         val next = letter(
             ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),

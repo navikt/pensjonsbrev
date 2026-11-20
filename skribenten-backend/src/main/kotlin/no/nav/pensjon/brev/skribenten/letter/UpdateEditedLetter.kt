@@ -61,12 +61,12 @@ private fun mergeSignatur(edited: LetterMarkup.Signatur, rendered: LetterMarkup.
 class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
 
     fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter, previousRender: Edit.Letter?): Edit.Letter =
-        mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock).let { merged ->
+        mergeList(null, edited.blocks, withNewInTemplate(rendered.blocks, previousRender), edited.deletedBlocks, ::mergeBlock).let { merged ->
             edited.copy(
                 title = mergeTitle(edited.title, rendered.title),
                 sakspart = rendered.sakspart,
                 signatur = mergeSignatur(edited.signatur, rendered.signatur),
-                blocks = withNewInTemplate(merged.items, previousRender),
+                blocks = merged.items,
                 deletedBlocks = merged.deleted,
             )
         }
@@ -167,24 +167,28 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         when (edited) {
             is Edit.Block.Paragraph ->
                 mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent).let { merged ->
-                    edited.copy(content = merged.items, deletedContent = merged.deleted)
+                    edited.copy(content = merged.items, deletedContent = merged.deleted, templateStatus = mergeTemplateStatus(edited, rendered))
                 }
 
             is Edit.Block.Title1 ->
                 mergeList(edited, edited.content, rendered.textContent(), edited.deletedContent, ::mergeTextContent).let { merged ->
-                    edited.copy(content = merged.items, deletedContent = merged.deleted)
+                    edited.copy(content = merged.items, deletedContent = merged.deleted, templateStatus = mergeTemplateStatus(edited, rendered))
                 }
 
             is Edit.Block.Title2 ->
                 mergeList(edited, edited.content, rendered.textContent(), edited.deletedContent, ::mergeTextContent).let { merged ->
-                    edited.copy(content = merged.items, deletedContent = merged.deleted)
+                    edited.copy(content = merged.items, deletedContent = merged.deleted, templateStatus = mergeTemplateStatus(edited, rendered))
                 }
 
             is Edit.Block.Title3 ->
                 mergeList(edited, edited.content, rendered.textContent(), edited.deletedContent, ::mergeTextContent).let { merged ->
-                    edited.copy(content = merged.items, deletedContent = merged.deleted)
+                    edited.copy(content = merged.items, deletedContent = merged.deleted, templateStatus = mergeTemplateStatus(edited, rendered))
                 }
         }
+
+    // A block missing from the template keeps its status until Saksbehandler decides to keep or remove it.
+    private fun mergeTemplateStatus(edited: Edit.Block, rendered: Edit.Block): TemplateStatus =
+        if (edited.templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE) edited.templateStatus else rendered.templateStatus
 
     private fun Edit.Block.textContent(): List<Edit.ParagraphContent.Text> =
         when (this) {
@@ -265,24 +269,19 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
 
 
     /**
-     * Marks blocks from the fresh render that were not present in [previousRender] as [TemplateStatus.NEW_IN_TEMPLATE],
-     * and the remaining ones as [TemplateStatus.IN_TEMPLATE]. Blocks added by Saksbehandler and blocks missing from the template are left as is.
+     * Marks blocks in the fresh render that were not present in [previousRender] as [TemplateStatus.NEW_IN_TEMPLATE].
      * Ids may occur several times in a render, so each occurrence in [previousRender] only accounts for one block.
+     * Without a [previousRender] no blocks are marked.
      */
-    private fun withNewInTemplate(blocks: List<Edit.Block>, previousRender: Edit.Letter?): List<Edit.Block> {
-        val previousOccurrences = previousRender?.blocks?.mapNotNull { it.id }?.groupingBy { it }?.eachCount()?.toMutableMap()
+    private fun withNewInTemplate(rendered: List<Edit.Block>, previousRender: Edit.Letter?): List<Edit.Block> {
+        if (previousRender == null) return rendered
+        val previousOccurrences = previousRender.blocks.mapNotNull { it.id }.groupingBy { it }.eachCount().toMutableMap()
 
-        return blocks.map { block ->
-            val id = block.id
-            if (id == null || block.templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE) {
-                block
-            } else if (previousOccurrences == null) {
-                block.withTemplateStatus(TemplateStatus.IN_TEMPLATE)
-            } else {
-                val remaining = previousOccurrences[id] ?: 0
-                previousOccurrences[id] = remaining - 1
-                block.withTemplateStatus(if (remaining > 0) TemplateStatus.IN_TEMPLATE else TemplateStatus.NEW_IN_TEMPLATE)
-            }
+        return rendered.map { block ->
+            val id = block.id ?: return@map block
+            val remaining = previousOccurrences[id] ?: 0
+            previousOccurrences[id] = remaining - 1
+            if (remaining > 0) block else block.withTemplateStatus(TemplateStatus.NEW_IN_TEMPLATE)
         }
     }
 
