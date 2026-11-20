@@ -44,12 +44,13 @@ export function useOppdaterBrevMutation(saksId: string) {
         },
         values.recordHistory
           ? {
+              merge: true,
               createHistoryEntry: (_state, response) =>
                 historySnapshot
                   ? createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response))
                   : null,
             }
-          : undefined,
+          : { merge: true },
       );
     },
   });

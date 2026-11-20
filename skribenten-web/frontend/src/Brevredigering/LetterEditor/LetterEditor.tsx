@@ -28,6 +28,7 @@ import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
+import { remapFocus } from "./model/remapFocus";
 import { type LetterEditorState } from "./model/state";
 import { useRedigeringsflate } from "./RedigeringsflateContext";
 import { useEditorKeyboardShortcuts } from "./utils";
@@ -92,12 +93,16 @@ export const LetterEditor = ({
       if (freeze || current.history.entryPointer < 0) return current;
       const entry = current.history.entries[current.history.entryPointer];
       const previous =
-        entry.type === "SAKSBEHANDLERVALG_ENDRET"
+        entry.type !== "PATCH"
           ? {
               ...current,
               redigertBrev: structuredClone(entry.before.redigertBrev),
               redigertBrevHash: entry.before.redigertBrevHash,
               saksbehandlerValg: structuredClone(entry.before.saksbehandlerValg),
+              focus:
+                entry.type === "DOCUMENT_SNAPSHOT"
+                  ? structuredClone(entry.beforeFocus)
+                  : remapFocus(current.focus, current.redigertBrev, entry.before.redigertBrev),
             }
           : applyPatches(current, entry.inversePatches);
       return {
@@ -117,12 +122,16 @@ export const LetterEditor = ({
       const nextPointer = current.history.entryPointer + 1;
       const entry = current.history.entries[nextPointer];
       const next =
-        entry.type === "SAKSBEHANDLERVALG_ENDRET"
+        entry.type !== "PATCH"
           ? {
               ...current,
               redigertBrev: structuredClone(entry.after.redigertBrev),
               redigertBrevHash: entry.after.redigertBrevHash,
               saksbehandlerValg: structuredClone(entry.after.saksbehandlerValg),
+              focus:
+                entry.type === "DOCUMENT_SNAPSHOT"
+                  ? structuredClone(entry.afterFocus)
+                  : remapFocus(current.focus, current.redigertBrev, entry.after.redigertBrev),
             }
           : applyPatches(current, entry.patches);
       return {

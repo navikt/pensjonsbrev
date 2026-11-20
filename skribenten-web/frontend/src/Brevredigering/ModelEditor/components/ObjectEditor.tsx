@@ -25,7 +25,7 @@ export const FieldEditor = ({
   brevkode: string;
   field: string;
   fieldType: FieldType;
-  submitOnChange?: () => void;
+  submitOnChange?: (debounce?: boolean) => void;
   readOnly?: boolean;
 }) => {
   switch (fieldType.type) {
@@ -80,7 +80,7 @@ export type ObjectEditorProperties = {
   brevkode: string;
   typeName: string;
   parentFieldName?: string;
-  submitOnChange?: () => void;
+  submitOnChange?: (debounce?: boolean) => void;
   readOnly?: boolean;
 };
 
