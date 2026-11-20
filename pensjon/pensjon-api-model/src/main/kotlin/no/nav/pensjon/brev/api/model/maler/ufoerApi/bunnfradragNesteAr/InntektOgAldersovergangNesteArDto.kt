@@ -18,6 +18,7 @@ data class InntektOgAldersovergangNesteArDto(
     val nettoTotal: Kroner,
     val bunnfradrag: Kroner,
     val fribelop: Kroner,
+    val begrensningFribelop: Boolean,
     val inntektEtterUforhet: Kroner,
     val datoFyller67: LocalDate,
     val datoForNormertPensjonsalder: LocalDate,
