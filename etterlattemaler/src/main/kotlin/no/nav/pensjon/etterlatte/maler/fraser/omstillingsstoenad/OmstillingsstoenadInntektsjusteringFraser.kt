@@ -258,31 +258,86 @@ object OmstillingsstoenadInntektsjusteringFraser {
         }
     }
 
-    object HuskAaSjekkeSkattekortet : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class BetalerDuRiktigSkatt(
+        val bosattUtland: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    bokmal { +"Husk å sjekke skattekortet ditt" },
-                    nynorsk { +"Hugs å sjekke skattekortet ditt" },
-                    english { +"Remember to check your tax card" },
+                    bokmal { +"Betaler du riktig skatt?" },
+                    nynorsk { +"Betaler du rett skatt?" },
+                    english { +"Are you paying the correct tax?" },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Du må betale skatt av omstillingsstønad. Dette vedtaket kan derfor ha betydning for " +
-                            "beregningen av skatten din. Du bør sjekke at skattekortet ditt er oppdatert med det du " +
-                            "forventer å ha av inntekt i løpet av året. Du kan endre skattekortet ditt hos " +
-                            "Skatteetaten. Du finner mer informasjon på ${Constants.SKATTETREKK_URL}." },
-                    nynorsk { +"Du må betale skatt av omstillingsstønad. Dette vedtaket kan derfor ha betydning for " +
-                            "berekning av skatten din. Du bør sjekke at skattekortet ditt er oppdatert med det du " +
-                            "forventar å ha av inntekt i løpet av året. Du kan endre skattekortet ditt hos " +
-                            "Skatteetaten. Du finn meir informasjon på ${Constants.SKATTETREKK_URL}." },
-                    english { +"You must pay tax on the adjustment allowance. This decision may therefore affect " +
-                            "the calculation of your tax. You should check that your tax card is updated with the " +
-                            "income you expect to receive during the year. You can change your tax card with the " +
-                            "Norwegian Tax Administration (Skatteetaten). You can find more information at " +
-                            "${Constants.SKATTETREKK_URL}." },
-                )
+            showIf(bosattUtland) {
+                paragraph {
+                    text(
+                        bokmal { +"Du må betale skatt av omstillingsstønad. Hvilke skatteregler som gjelder for deg, " +
+                                "avhenger av om du er skattemessig bosatt i Norge. Du må avtale skattetrekket med " +
+                                "Skatteetaten hvert år." },
+                        nynorsk { +"Du må betale skatt av omstillingsstønad. Kva skattereglar som gjeld for deg, " +
+                                "avheng av om du er skattemessig busett i Noreg. Du må avtale skattetrekket med " +
+                                "Skatteetaten kvart år." },
+                        english { +"You must pay tax on the adjustment allowance. Which tax rules apply to you depends " +
+                                "on whether you are a tax resident in Norway. You must agree your tax deduction with the " +
+                                "Norwegian Tax Administration (Skatteetaten) every year." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Er du skattemessig bosatt i Norge, betaler du skatt av all inntekt og formue. Du bør " +
+                                "sjekke at skattekortet ditt er riktig på ${Constants.SKATTEETATEN_ENDRE_URL}. Vil du " +
+                                "avslutte skatteplikten til Norge, kan du søke om skattemessig emigrasjon." },
+                        nynorsk { +"Er du skattemessig busett i Noreg, betaler du skatt av all inntekt og formue. Du bør " +
+                                "sjekke at skattekortet ditt er rett på ${Constants.SKATTEETATEN_ENDRE_URL}. Vil du " +
+                                "avslutte skatteplikta til Noreg, kan du søkje om skattemessig emigrasjon." },
+                        english { +"If you are a tax resident in Norway, you pay tax on all your income and wealth. You " +
+                                "should check that your tax card is correct at ${Constants.Engelsk.SKATTEETATEN_ENDRE_URL}. " +
+                                "If you want to end your tax liability to Norway, you can apply for tax emigration." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Er du ikke skattemessig bosatt i Norge, betaler du 15 prosent kildeskatt av " +
+                                "omstillingsstønaden før skatt. Bor du i et land som har skatteavtale med Norge, kan du " +
+                                "ha rett til fritak fra kildeskatt." },
+                        nynorsk { +"Er du ikkje skattemessig busett i Noreg, betaler du 15 prosent kjeldeskatt av " +
+                                "omstillingsstønaden før skatt. Bur du i eit land som har skatteavtale med Noreg, kan du " +
+                                "ha rett til fritak frå kjeldeskatt." },
+                        english { +"If you are not a tax resident in Norway, you pay 15 per cent withholding tax on the " +
+                                "gross adjustment allowance. If you live in a country that has a tax treaty with Norway, " +
+                                "you may be entitled to an exemption from withholding tax." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du finner mer informasjon på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL}. Du kan " +
+                                "også ringe Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE}." },
+                        nynorsk { +"Du finn meir informasjon på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL}. Du kan " +
+                                "også ringje Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE}." },
+                        english { +"You can find more information at ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL}. You " +
+                                "can also call the Norwegian Tax Administration on " +
+                                "${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE}." },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Du må betale skatt av omstillingsstønad. Dette vedtaket kan derfor ha betydning for " +
+                                "beregningen av skatten din. Du bør sjekke at skattekortet ditt er oppdatert med det du " +
+                                "forventer å ha av inntekt i løpet av året. Du kan endre skattekortet ditt hos " +
+                                "Skatteetaten. Du finner mer informasjon på ${Constants.SKATTETREKK_URL}." },
+                        nynorsk { +"Du må betale skatt av omstillingsstønad. Dette vedtaket kan derfor ha betydning for " +
+                                "berekning av skatten din. Du bør sjekke at skattekortet ditt er oppdatert med det du " +
+                                "forventar å ha av inntekt i løpet av året. Du kan endre skattekortet ditt hos " +
+                                "Skatteetaten. Du finn meir informasjon på ${Constants.SKATTETREKK_URL}." },
+                        english { +"You must pay tax on the adjustment allowance. This decision may therefore affect " +
+                                "the calculation of your tax. You should check that your tax card is updated with the " +
+                                "income you expect to receive during the year. You can change your tax card with the " +
+                                "Norwegian Tax Administration (Skatteetaten). You can find more information at " +
+                                "${Constants.SKATTETREKK_URL}." },
+                    )
+                }
             }
         }
     }

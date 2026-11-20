@@ -131,7 +131,7 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                 includePhrase(OmstillingsstoenadInntektsjusteringFraser.DuKanKlagePaaVedtaket(data.inntektsaar))
                 showIf(data.harUtbetaling) {
                     includePhrase(OmstillingsstoenadInntektsjusteringFraser.Utbetaling)
-                    includePhrase(OmstillingsstoenadInntektsjusteringFraser.HuskAaSjekkeSkattekortet)
+                    includePhrase(OmstillingsstoenadInntektsjusteringFraser.BetalerDuRiktigSkatt(data.bosattUtland))
                 }
                 includePhrase(OmstillingsstoenadInntektsjusteringFraser.MeldFraOmEndringer)
                 includePhrase(OmstillingsstoenadInntektsjusteringFraser.InntektenDin)
