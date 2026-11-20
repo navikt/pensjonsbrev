@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.skribenten.db
 import io.ktor.client.engine.cio.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.SharedPostgres
+import no.nav.pensjon.brev.skribenten.common.TekniskVersjon
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.*
@@ -45,7 +47,7 @@ class OneShotJobTest {
                     transaction {
                         val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.single()
                         assertThat(job[OneShotJobTable.tekniskVersjon]).isEqualTo(tekniskVersjon)
-                        assertThat(tekniskVersjon).isGreaterThan(1)
+                        assertThat(tekniskVersjon.value).isGreaterThan(1)
                         assertThat(job[OneShotJobTable.completedAt]).isNull()
                     }
                 }
@@ -147,7 +149,7 @@ class OneShotJobTest {
 
     @Test
     fun `new jobs receive increasing technical versions`() {
-        val versions = mutableListOf<Int>()
+        val versions = mutableListOf<TekniskVersjon>()
 
         runBlocking {
             oneShotJobs(NaisLeaderService(null, engine)) {
@@ -158,13 +160,19 @@ class OneShotJobTest {
 
         assertThat(versions).hasSize(2)
         assertThat(versions[1]).isGreaterThan(versions[0])
+        transaction {
+            val olderJobs = OneShotJobTable.selectAll()
+                .where { OneShotJobTable.tekniskVersjon less versions[1] }
+                .map { it[OneShotJobTable.tekniskVersjon] }
+            assertThat(olderJobs).contains(versions[0]).doesNotContain(versions[1])
+        }
     }
 
     @Test
     fun `incomplete job keeps its technical version when retried after another job`() {
         val name = jobName("incomplete-job")
-        val versions = mutableListOf<Int>()
-        var newerVersion = 0
+        val versions = mutableListOf<TekniskVersjon>()
+        val newerVersions = mutableListOf<TekniskVersjon>()
 
         runBlocking {
             oneShotJobs(NaisLeaderService(null, engine)) {
@@ -172,7 +180,7 @@ class OneShotJobTest {
                     versions.add(it)
                     completed = false
                 }
-                job(jobName("newer-job")) { newerVersion = it }
+                job(jobName("newer-job")) { newerVersions.add(it) }
             }
         }
         transaction {
@@ -188,7 +196,7 @@ class OneShotJobTest {
 
         assertThat(versions).hasSize(2)
         assertThat(versions[1]).isEqualTo(versions[0])
-        assertThat(newerVersion).isGreaterThan(versions[0])
+        assertThat(newerVersions.single()).isGreaterThan(versions[0])
         transaction {
             val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.single()
             assertThat(job[OneShotJobTable.completedAt]).isNotNull()
@@ -198,7 +206,7 @@ class OneShotJobTest {
     @Test
     fun `failed job keeps its technical version when retried`() {
         val name = jobName("retry-failed-job")
-        val versions = mutableListOf<Int>()
+        val versions = mutableListOf<TekniskVersjon>()
 
         runBlocking {
             runCatching {

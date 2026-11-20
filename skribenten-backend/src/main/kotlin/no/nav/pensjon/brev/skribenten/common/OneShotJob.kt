@@ -20,6 +20,11 @@ import kotlin.time.toJavaDuration
 @DslMarker
 annotation class OneShotJobDsl
 
+@JvmInline
+value class TekniskVersjon(val value: Int) : Comparable<TekniskVersjon> {
+    override fun compareTo(other: TekniskVersjon): Int = value.compareTo(other.value)
+}
+
 @OneShotJobDsl
 class OneShotJobConfig {
 
@@ -28,7 +33,7 @@ class OneShotJobConfig {
      * The preferred naming scheme has a date prefix followed by a descriptive name, e.g. "2025-08-10-brev-title-as-markup".
      * The block receives a database-generated technical version that is preserved across retries.
      */
-    fun job(uniqeName: String, block: JobConfig.(tekniskVersjon: Int) -> Unit) {
+    fun job(uniqeName: String, block: JobConfig.(tekniskVersjon: TekniskVersjon) -> Unit) {
         try {
             val existing = transaction {
                 OneShotJobTable.selectAll().where { OneShotJobTable.id eq uniqeName }.singleOrNull()
@@ -93,7 +98,7 @@ suspend fun oneShotJobs(leaderService: LeaderService, block: OneShotJobConfig.()
     }
 }
 
-fun JobConfig.updateBrevredigeringJson(tekniskVersjon: Int) {
+fun JobConfig.updateBrevredigeringJson(tekniskVersjon: TekniskVersjon) {
     val alleBrevIder = transaction {
         BrevredigeringTable.select(BrevredigeringTable.id)
             .where { BrevredigeringTable.tekniskVersjon less tekniskVersjon }.map { it[BrevredigeringTable.id] }
