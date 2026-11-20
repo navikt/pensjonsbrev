@@ -6,8 +6,9 @@ serverstempling av gjennomgang og JSON-serialisering.
 Lagringslaget bruker PostgreSQL, Exposed, HikariCP og Flyway. Utkast lagres
 som JSONB med revisjonskontroll, unik aktiv kilde og arkivering.
 `openDatabase` kjører migreringene i `src/main/resources/db/migration`
-før tilkoblingspoolen returneres. Modulen er et bibliotek uten HTTP-server
-eller deploy.
+før tilkoblingspoolen returneres. Ktor-applikasjonen bruker det samme
+lagringslaget og pakker katalog, generator og forhåndsvisning.
+Backend er ikke deployet eller koblet til BFF.
 
 Bygg og test:
 
@@ -16,6 +17,46 @@ Bygg og test:
 ```
 
 Lagringstestene krever Docker og starter en isolert PostgreSQL-container.
+
+## API og autentisering
+
+`/api/v1` krever et gyldig Entra-token fra en forhåndsautorisert klient
+med Nav-brukerkontekst. Lesere kan hente katalog, utkast, generert Kotlin
+og forhåndsvisning. Endringer krever den konfigurerte editorgruppen.
+Lagring bruker revisjonskontroll og serverstemplet gjennomgang.
+Feil returneres som `application/problem+json`, og request-body har en
+størrelsesgrense på 5 MiB, eller 200 KiB for KI-forslag.
+
+Helseendepunktene `/isAlive` og `/isReady`, samt `/metrics`, er offentlige
+i backend. Readiness krever fungerende database. KI og varsling er ikke
+konfigurert; capabilities oppgir dette, og KI-rutene returnerer 503.
+PR-ruter og nettverksadaptere er ikke innført.
+
+`application.conf` leser Entra- og databasekonfigurasjon fra miljøet.
+Klientlisten kommer fra `AZURE_APP_PRE_AUTHORIZED_APPS`, og
+`EDITOR_GROUP_ID` bestemmer skrivetilgang. `installDist` lager
+applikasjonen under `build/install/brevoppskrift-backend`.
+Git og Kotlin-kompilatoren trengs ikke i runtime.
+
+## Generert API-kontrakt
+
+OpenAPI-spesifikasjonen på `/swagger-internal/documentation.json` bygges
+fra de reelle Ktor-rutene, kodeinferens og Jackson-modellen.
+Body-typer for den avgrensede JSON-leseren beskrives med Ktors DSL.
+Tester kontrollerer konvolutter, feilformat, skalartyper, defaultverdier,
+diskriminatorer, nullbarhet, maps og rekursive referanser.
+
+```shell
+./gradlew :brevoppskrift-backend:generateApiTypes
+```
+
+Oppgaven starter testapplikasjonen med en syntetisk PostgreSQL-database,
+eksporterer `build/openapi-spec.json` og bruker `openapi-typescript` til
+å generere `brevoppskrift-web/frontend/src/verksted/api-types.ts`.
+CI regenererer og kontrollerer kontraktdrift. Filen skal ikke håndredigeres.
+
+Npm-verktøyene ligger separat i `openapi/`: generatoren trenger
+TypeScripts JavaScript-kompilator-API, ikke frontendens native kompilator.
 
 ## Kildekatalog
 

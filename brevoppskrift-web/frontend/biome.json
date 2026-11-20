@@ -1,7 +1,7 @@
 {
   "extends": "//",
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "files": { "includes": ["**", "!src/routeTree.gen.ts", "!!**/dist"] },
+  "files": { "includes": ["**", "!src/routeTree.gen.ts", "!src/verksted/api-types.ts", "!!**/dist"] },
   "linter": {
     "rules": {
       "suspicious": {

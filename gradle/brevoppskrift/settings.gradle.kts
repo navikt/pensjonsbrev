@@ -1,3 +1,11 @@
+pluginManagement {
+    includeBuild("../settings")
+}
+
+plugins {
+    id("dependency-catalogs")
+}
+
 rootProject.name = "brevoppskrift-build-logic"
 
 dependencyResolutionManagement {
