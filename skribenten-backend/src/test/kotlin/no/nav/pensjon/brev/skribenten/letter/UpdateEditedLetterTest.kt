@@ -20,7 +20,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
@@ -407,7 +406,7 @@ class UpdateRenderedLetterTest {
             paragraph {
                 literal(text = "Noe mer ny tekst")
             }
-            title1(id = 3, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) {
+            title1(id = 3) {
                 literal(id = 1, text = "En ny tittel ")
             }
         }
@@ -417,47 +416,95 @@ class UpdateRenderedLetterTest {
 
 
     @Test
-    fun `new block from rendered keeps NEW_IN_TEMPLATE on later merges`() {
+    fun `block not present in previous render is NEW_IN_TEMPLATE`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(expected, previous.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `block that was NEW_IN_TEMPLATE is IN_TEMPLATE when also present in previous render`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
+        val edited = editedLetter {
+            paragraph(id = 1, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        }
+
+        assertEquals(expected, edited.updateEditedLetter(letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))), previousRender = previous))
+    }
+
+    @Test
+    fun `block present in edited letter but not in previous render is NEW_IN_TEMPLATE`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
         val next = letter(
             ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
             ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
         )
         val edited = editedLetter {
             paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2) { literal(id = 21, text = "Andre") }
         }
         val expected = editedLetter {
             paragraph(id = 1) { literal(id = 11, text = "Første") }
             paragraph(id = 2, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 21, text = "Andre") }
         }
 
-        val merged = edited.updateEditedLetter(next)
-
-        assertEquals(expected, merged)
-        assertEquals(expected, merged.updateEditedLetter(next))
+        assertEquals(expected, edited.updateEditedLetter(next, previousRender = previous))
     }
 
     @Test
-    fun `edited block that was new in template keeps NEW_IN_TEMPLATE`() {
-        val next = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))))
-        val edited = editedLetter {
-            paragraph(id = 1, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 11, text = "Første", editedText = "Redigert") }
+    fun `additional occurrence of an id from previous render is NEW_IN_TEMPLATE`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Gjentatt")))).toEdit()
+        val next = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Gjentatt"))),
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Gjentatt"))),
+        )
+        val expected = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Gjentatt") }
+            paragraph(id = 1, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 11, text = "Gjentatt") }
         }
 
-        assertEquals(edited, edited.updateEditedLetter(next))
+        assertEquals(expected, previous.updateEditedLetter(next, previousRender = previous))
     }
 
     @Test
-    fun `reordered blocks from previous render are not marked NEW_IN_TEMPLATE`() {
+    fun `blocks added by saksbehandler and blocks missing from template are not NEW_IN_TEMPLATE`() {
+        val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
+        val next = letter(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))))
+        val edited = editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph { literal(text = "Ny tekst") }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1, templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) { literal(id = 11, text = "Første", editedText = "Redigert") }
+            paragraph { literal(text = "Ny tekst") }
+            paragraph(id = 2, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 21, text = "Andre") }
+        }
+
+        assertEquals(expected, edited.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `no block is NEW_IN_TEMPLATE without a previous render`() {
         val next = letter(
             ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
             ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
         )
         val edited = editedLetter {
-            paragraph(id = 2) { literal(id = 21, text = "Andre") }
-            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 1, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 11, text = "Første") }
         }
 
-        assertTrue(edited.updateEditedLetter(next).blocks.none { it.templateStatus == Edit.Block.TemplateStatus.NEW_IN_TEMPLATE })
+        assertEquals(next.toEdit(), edited.updateEditedLetter(next, previousRender = null))
     }
 
     @Test
@@ -545,7 +592,7 @@ class UpdateRenderedLetterTest {
             paragraph {
                 literal(text = "Noe ny redigert tekst")
             }
-            title1(id = 3, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) {
+            title1(id = 3) {
                 literal(id = 1, text = "Dette er en ny block før id:4 ")
             }
             title1(id = 4) {

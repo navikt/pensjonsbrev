@@ -25,12 +25,8 @@ class UpdateEditedAttachmentTest {
             ParagraphImpl(1, true, listOf(LiteralImpl(11, "Foerste"))),
             ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
         )
-        val expected = editedAttachment {
-            paragraph(id = 1) { literal(id = 11, text = "Foerste") }
-            paragraph(id = 2, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 21, text = "Andre") }
-        }
 
-        assertEquals(expected, edited.updateEditedAttachment(rendered))
+        assertEquals(rendered.toEdit(), edited.updateEditedAttachment(rendered))
     }
 
     @Test
@@ -135,11 +131,7 @@ class UpdateEditedAttachmentTest {
         val edited = editedAttachment {
             paragraph(id = 2) { literal(id = 21, text = "Tekst") }
         }
-        val expected = editedAttachment {
-            title1(id = 1, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 11, text = "Ny overskrift") }
-            paragraph(id = 2) { literal(id = 21, text = "Tekst") }
-        }
 
-        assertEquals(expected, edited.updateEditedAttachment(rendered))
+        assertEquals(rendered.toEdit(), edited.updateEditedAttachment(rendered))
     }
 }

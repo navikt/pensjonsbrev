@@ -7,6 +7,14 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.Block.TemplateStatus
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
+fun Edit.Block.withTemplateStatus(templateStatus: TemplateStatus): Edit.Block =
+    when (this) {
+        is Edit.Block.Title1 -> copy(templateStatus = templateStatus)
+        is Edit.Block.Title2 -> copy(templateStatus = templateStatus)
+        is Edit.Block.Title3 -> copy(templateStatus = templateStatus)
+        is Edit.Block.Paragraph -> copy(templateStatus = templateStatus)
+    }
+
 class UpdateEditedLetterException(message: String) : RuntimeException(message)
 
 /**
@@ -16,11 +24,12 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * if Sak-data has changed in pesys. Or elements (blocks/content) present in previous renders may no longer be
  * present.
  */
-fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
+fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup, previousRender: Edit.Letter? = null): Edit.Letter =
     renderedLetter.toEdit().let { rendered ->
         UpdateEditedLetter(VariableValuesUpdater(rendered)).mergeLetter(
             this,
-            rendered
+            rendered,
+            previousRender,
         )
     }
 
@@ -51,13 +60,13 @@ private fun mergeSignatur(edited: LetterMarkup.Signatur, rendered: LetterMarkup.
 
 class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
 
-    fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter): Edit.Letter =
+    fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter, previousRender: Edit.Letter?): Edit.Letter =
         mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock).let { merged ->
             edited.copy(
                 title = mergeTitle(edited.title, rendered.title),
                 sakspart = rendered.sakspart,
                 signatur = mergeSignatur(edited.signatur, rendered.signatur),
-                blocks = merged.items,
+                blocks = withNewInTemplate(merged.items, previousRender),
                 deletedBlocks = merged.deleted,
             )
         }
@@ -114,12 +123,6 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         merge: (E, E) -> E,
     ): List<E> = buildList {
         val remainingRendered = rendered.toMutableList()
-        val editedIds = edited.mapNotNull { it.id }.toSet()
-
-        // A rendered element whose id is not among the edited elements was not present in the previous render.
-        fun addRendered(element: E) {
-            add(if (element.id in editedIds) element else withTemplateStatus(element, TemplateStatus.NEW_IN_TEMPLATE))
-        }
 
         // We zip-merge the two lists with edited as basis, then we pick matching elements of remainingRendered.
         edited.forEach { currentEdited ->
@@ -133,14 +136,11 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                     // The currentEdited element is present in the fresh render.
 
                     // We add any new elements from the fresh render that precedes currentEdited in the fresh render.
-                    repeat(renderedIndex) { addRendered(remainingRendered.removeFirst()) }
+                    repeat(renderedIndex) { add(remainingRendered.removeFirst()) }
 
-                    // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one,
-                    // keeping NEW_IN_TEMPLATE from earlier merges.
+                    // If the currentEdited element actually has any edits we merge them, otherwise we simply pick the rendered one.
                     if (currentEdited.isEdited()) {
                         add(merge(currentEdited, remainingRendered.removeFirst()))
-                    } else if (templateStatusOf(currentEdited) == TemplateStatus.NEW_IN_TEMPLATE) {
-                        add(withTemplateStatus(remainingRendered.removeFirst(), TemplateStatus.NEW_IN_TEMPLATE))
                     } else {
                         add(remainingRendered.removeFirst())
                     }
@@ -155,7 +155,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                 }
             }
         }
-        remainingRendered.forEach { addRendered(it) }
+        addAll(remainingRendered)
     }
 
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
@@ -264,16 +264,32 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         }
 
 
-    private fun templateStatusOf(element: Edit.Identifiable): TemplateStatus? =
-        (element as? Edit.Block)?.templateStatus
+    /**
+     * Marks blocks from the fresh render that were not present in [previousRender] as [TemplateStatus.NEW_IN_TEMPLATE],
+     * and the remaining ones as [TemplateStatus.IN_TEMPLATE]. Blocks added by Saksbehandler and blocks missing from the template are left as is.
+     * Ids may occur several times in a render, so each occurrence in [previousRender] only accounts for one block.
+     */
+    private fun withNewInTemplate(blocks: List<Edit.Block>, previousRender: Edit.Letter?): List<Edit.Block> {
+        val previousOccurrences = previousRender?.blocks?.mapNotNull { it.id }?.groupingBy { it }?.eachCount()?.toMutableMap()
+
+        return blocks.map { block ->
+            val id = block.id
+            if (id == null || block.templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE) {
+                block
+            } else if (previousOccurrences == null) {
+                block.withTemplateStatus(TemplateStatus.IN_TEMPLATE)
+            } else {
+                val remaining = previousOccurrences[id] ?: 0
+                previousOccurrences[id] = remaining - 1
+                block.withTemplateStatus(if (remaining > 0) TemplateStatus.IN_TEMPLATE else TemplateStatus.NEW_IN_TEMPLATE)
+            }
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     private fun <E : Edit.Identifiable> withTemplateStatus(element: E, templateStatus: TemplateStatus): E =
         when (element) {
-            is Edit.Block.Title1 -> element.copy(templateStatus = templateStatus) as E
-            is Edit.Block.Title2 -> element.copy(templateStatus = templateStatus) as E
-            is Edit.Block.Title3 -> element.copy(templateStatus = templateStatus) as E
-            is Edit.Block.Paragraph -> element.copy(templateStatus = templateStatus) as E
+            is Edit.Block -> element.withTemplateStatus(templateStatus) as E
             is Edit.ParagraphContent,
             is Edit.ParagraphContent.ItemList.Item,
             is Edit.ParagraphContent.Table.Header,
