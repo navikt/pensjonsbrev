@@ -22,6 +22,10 @@ annotation class OneShotJobDsl
 
 @JvmInline
 value class TekniskVersjon(val value: Int) : Comparable<TekniskVersjon> {
+    init {
+        require(value > 0) { "Teknisk versjon må være positiv" }
+    }
+
     override fun compareTo(other: TekniskVersjon): Int = value.compareTo(other.value)
 }
 
