@@ -11,6 +11,7 @@ export const SakspartView = ({ sakspart, spraak }: { sakspart: Sakspart; spraak:
       columns="minmax(10rem, max-content) 1fr min-content"
       css={{
         color: "var(--ax-text-neutral-subtle)",
+        cursor: "text",
         fontSize: "16px",
         lineHeight: "1.3125rem",
         marginBottom: "var(--ax-space-40)",
