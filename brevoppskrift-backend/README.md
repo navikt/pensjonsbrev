@@ -1,4 +1,4 @@
-# Brevoppskrift: utkastmodell, lagring, kildekatalog og Kotlin-generering
+# Brevoppskrift-backend
 
 Modulen inneholder den versjonerte utkastmodellen, dokumentvalidering,
 serverstempling av gjennomgang og JSON-serialisering.
@@ -64,3 +64,19 @@ fire målmoduler, på bokmål, nynorsk og engelsk. Prøvekildene og resultatene
 ligger under modulens `build/`; målmodulenes kildefiler endres ikke.
 Denne kontrollen krever deaktivert configuration cache. Vanlig modulbygg
 kan fortsatt bruke configuration cache.
+
+## HTML-forhåndsvisning
+
+`HtmlDraftPreview` validerer utkastet og viser strukturerte tekstnoder,
+felt, vilkår, gjentakelser og vedlegg på valgt språk og med valgt scenario.
+Tekst og scenarioverdier HTML-escapes. Manglende verdier, låst kildeinnhold
+og avkorting gir eksplisitte advarsler.
+
+Forhåndsvisningen tolker bare utkastmodellen. Den kjører ikke Kotlin,
+frasekall eller skjult logikk fra originalmalen. For kildeimporterte
+utkast vises denne begrensningen i resultatets advarsler.
+
+HTML er ikke en garanti for ferdig PDF-layout eller full semantikk i
+originalmalen. Faktisk rendring må fortsatt kontrolleres med målmodulens
+tester. Forhåndsvisningen er en ren transformasjon uten HTTP-server,
+nettverkskall eller lagringsendringer.
