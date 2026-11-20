@@ -548,7 +548,7 @@ test.describe("LetterEditor copy and paste within the editor", () => {
   }
 
   async function copyHeadingText(page: Page, className: string, range?: { start: number; end: number }) {
-    await page.locator(`.editor-surface > .${className} > [data-literal-index]`).evaluate((element, offsets) => {
+    await page.locator(`.editor-surface > .${className} [data-literal-index]`).evaluate((element, offsets) => {
       const selectionRange = document.createRange();
       if (offsets) {
         selectionRange.setStart(element.firstChild!, offsets.start);
@@ -569,10 +569,10 @@ test.describe("LetterEditor copy and paste within the editor", () => {
     await page.keyboard.press("ControlOrMeta+v");
   }
 
-  for (const [className, heading] of [
-    ["TITLE1", title1(_literal("Knirkende stoler i rom 4A"))],
-    ["TITLE2", title2(_literal("Knirkende stoler i rom 4A"))],
-    ["TITLE3", title3(_literal("Knirkende stoler i rom 4A"))],
+  for (const [className, level, heading] of [
+    ["TITLE1", 2, title1(_literal("Knirkende stoler i rom 4A"))],
+    ["TITLE2", 3, title2(_literal("Knirkende stoler i rom 4A"))],
+    ["TITLE3", 4, title3(_literal("Knirkende stoler i rom 4A"))],
   ] as const) {
     test(`a whole ${className} copied on its own pastes as the same heading`, async ({ page }) => {
       await setupHeadingAndEmptyLine(page, heading);
@@ -581,6 +581,7 @@ test.describe("LetterEditor copy and paste within the editor", () => {
 
       await expect(page.locator(`.editor-surface > .${className}`)).toHaveCount(2);
       await expect(page.locator(`.editor-surface > .${className}`).nth(1)).toHaveText("Knirkende stoler i rom 4A");
+      await expect(page.getByRole("heading", { level, name: "Knirkende stoler i rom 4A" })).toHaveCount(2);
     });
   }
 
@@ -595,6 +596,9 @@ test.describe("LetterEditor copy and paste within the editor", () => {
 
     await expect(page.locator(".editor-surface > .TITLE2")).toHaveCount(2);
     await expect(page.locator(".editor-surface > .TITLE2").nth(1)).toHaveText("Knirkende stoler i rom 4A");
+    await expect(page.getByRole("heading", { level: 3, name: "Knirkende stoler i rom 4A", exact: true })).toHaveCount(
+      2,
+    );
   });
 
   test("part of a heading pastes as plain paragraph text", async ({ page }) => {

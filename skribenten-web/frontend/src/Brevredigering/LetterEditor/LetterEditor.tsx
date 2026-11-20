@@ -22,6 +22,7 @@ import { type MissingFromTemplateEventName, trackMissingFromTemplateAction } fro
 
 import Actions from "./actions";
 import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
+import { BlockHeading } from "./components/BlockHeading";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
@@ -236,7 +237,9 @@ export const LetterEditor = ({
                         </Button>
                       </HStack>
                     )}
-                    <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+                    <BlockHeading type={block.type}>
+                      <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+                    </BlockHeading>
                   </div>
                 </React.Fragment>
               ))}

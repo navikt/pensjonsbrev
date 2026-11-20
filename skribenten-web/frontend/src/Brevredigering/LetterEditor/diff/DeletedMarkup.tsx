@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 
 import { fontTypeOf, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
+import { BlockHeading } from "~/Brevredigering/LetterEditor/components/BlockHeading";
 import {
   useDeletedBlocks,
   useDeletedCellContent,
@@ -151,7 +152,9 @@ const DeletedBlocks = ({ blocks }: { blocks: AnyBlock[] }) => {
   if (blocks.length === 0) return null;
   return blocks.map((block, index) => (
     <div className={block.type} contentEditable={false} data-diff-deleted-block key={index}>
-      <DeletedContentNodes content={block.content} />
+      <BlockHeading type={block.type}>
+        <DeletedContentNodes content={block.content} />
+      </BlockHeading>
     </div>
   ));
 };

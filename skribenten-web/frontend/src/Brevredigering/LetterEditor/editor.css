@@ -93,6 +93,13 @@
   text-decoration-skip-ink: none;
 }
 
+/* Overskriftselementene gir bare semantikk, stilen kommer fra blokkens klasse (TITLE1–3). */
+.editor-surface :is(h2, h3, h4) {
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
 .TITLE1 {
   margin-bottom: var(--ax-space-6);
   font-size: 19.5px;
