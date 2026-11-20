@@ -1,4 +1,4 @@
-# Brevoppskrift: utkastmodell, lagring og kildekatalog
+# Brevoppskrift: utkastmodell, lagring, kildekatalog og Kotlin-generering
 
 Modulen inneholder den versjonerte utkastmodellen, dokumentvalidering,
 serverstempling av gjennomgang og JSON-serialisering.
@@ -33,3 +33,34 @@ struktur, metadata, felt og kildeidentitet er låst.
 kildeversjoner i PostgreSQL før katalogen tas i bruk. Tidligere utkast kan
 dermed valideres selv om malen er endret eller fjernet fra neste bygg.
 Historiske oppslag krever eksakt kilde-ID, commit og filhash-er.
+
+## Kotlin-generering
+
+`KotlinDraftGenerator` lager mal, DTO, syntetiske rendringstester og en
+utviklersjekkliste for nye autobrev, redigerbare brev og vedlegg.
+Målmodulene er uføre, pensjon, alder og planlegge-pensjon.
+Profiler som ikke støttes, avvises med diagnostikk uten genererte filer.
+
+For importerte maler patches bare endrede tekstliteraler i den betrodde
+kildeversjonen. Uendret kilde og tilhørende DTO beholdes byte for byte,
+inkludert kommentarer, formatering og språkorden. Generering krever ikke
+Git eller et kildecheckout ved kjøring.
+
+Genererte filer returneres som data; modulen skriver dem ikke inn i
+målmodulene, registrerer ingen nye maler og utfører ingen publisering.
+Utvikleren må kontrollere blant annet brevkode, registrering,
+feature-toggle og eventuell publisering av API-modeller før innføring.
+
+Kontroller kompilering, HTML-rendring og DTO-JSON mot de faktiske
+målmodulene og Brevbakers Jackson-oppsett:
+
+```shell
+./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+./gradlew :brevoppskrift-backend:verifyGeneratedTemplates --no-configuration-cache
+```
+
+Kontrollen bruker syntetiske autobrev, redigerbare brev og vedlegg i alle
+fire målmoduler, på bokmål, nynorsk og engelsk. Prøvekildene og resultatene
+ligger under modulens `build/`; målmodulenes kildefiler endres ikke.
+Denne kontrollen krever deaktivert configuration cache. Vanlig modulbygg
+kan fortsatt bruke configuration cache.

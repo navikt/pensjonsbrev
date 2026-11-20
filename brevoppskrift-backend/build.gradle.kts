@@ -5,6 +5,8 @@ val javaTarget: String by System.getProperties()
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version libs.versions.kotlinVersion
+    id("brevoppskrift.authoring-tools")
+    id("brevoppskrift.verify-generated-templates")
 }
 
 group = "no.nav.pensjon.brev.brevoppskrift"
@@ -25,25 +27,7 @@ tasks {
     }
     test {
         maxParallelForks = 1
-        systemProperty("authoring.repository", rootProject.projectDir.absolutePath)
         useJUnitPlatform()
-    }
-}
-
-sourceSets {
-    create("authoringTools") {
-        compileClasspath += sourceSets.main.get().output.classesDirs
-        runtimeClasspath += sourceSets.main.get().output.classesDirs
-    }
-}
-val authoringTools = sourceSets.named("authoringTools").get()
-
-configurations {
-    named(authoringTools.implementationConfigurationName) {
-        extendsFrom(configurations.implementation.get())
-    }
-    named(authoringTools.runtimeOnlyConfigurationName) {
-        extendsFrom(configurations.runtimeOnly.get())
     }
 }
 
@@ -65,28 +49,4 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.testcontainers.postgresql)
-
-    "authoringToolsImplementation"(libs.kotlin.compiler.embeddable)
-    testImplementation(files(authoringTools.output.classesDirs))
-    testRuntimeOnly(files(configurations.named(authoringTools.runtimeClasspathConfigurationName)))
-}
-
-val catalogueResources = layout.buildDirectory.dir("generated/authoring/resources")
-sourceSets.main {
-    resources.srcDir(catalogueResources)
-}
-
-val generateSourceCatalogue = tasks.register<JavaExec>("generateSourceCatalogue") {
-    group = "build"
-    description = "Import visible Kotlin templates from the build's Git commit into an immutable resource."
-    dependsOn(tasks.named(authoringTools.classesTaskName))
-    classpath = authoringTools.runtimeClasspath
-    mainClass.set("no.nav.pensjon.brev.brevoppskrift.katalog.SourceCatalogueBuilderKt")
-    args(rootProject.projectDir.absolutePath, catalogueResources.get().file("authoring/source-catalogue.json").asFile.absolutePath)
-    outputs.dir(catalogueResources)
-    outputs.upToDateWhen { false }
-}
-
-tasks.processResources {
-    dependsOn(generateSourceCatalogue)
 }
