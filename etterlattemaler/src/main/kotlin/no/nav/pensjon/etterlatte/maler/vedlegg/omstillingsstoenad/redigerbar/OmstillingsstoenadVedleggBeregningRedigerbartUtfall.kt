@@ -142,24 +142,26 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
                         english { +" The amount is rounded down to the nearest thousand." },
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Stønad per måned er redusert på følgende måte: (" + sisteInntekt.format() +
-                                    " / " + sisteInnvilgaMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
-                                    "Beløpet ganges med 45 prosent."
-                        },
-                        nynorsk {
-                            +"Stønaden per månad har blitt redusert på følgjande måte: (" + sisteInntekt.format() +
-                                    " / " + sisteInnvilgaMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
-                                    "Beløpet blir gonga med 45 prosent."
-                        },
-                        english {
-                            +"The monthly allowance amount has been reduced as follows: (" +
-                                    sisteInntekt.format() + " / " + sisteInnvilgaMaaneder.format() + " months) minus (0.5 G / 12 months). " +
-                                    "The amount is multiplied by 45 percent."
-                        },
-                    )
+                showIf(sisteInnvilgaMaaneder.greaterThan(0)) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Stønad per måned er redusert på følgende måte: (" + sisteInntekt.format() +
+                                        " / " + sisteInnvilgaMaaneder.format() + " måneder) minus (0,5 G / 12 måneder). " +
+                                        "Beløpet ganges med 45 prosent."
+                            },
+                            nynorsk {
+                                +"Stønaden per månad har blitt redusert på følgjande måte: (" + sisteInntekt.format() +
+                                        " / " + sisteInnvilgaMaaneder.format() + " månader) minus (0,5 G / 12 månader). " +
+                                        "Beløpet blir gonga med 45 prosent."
+                            },
+                            english {
+                                +"The monthly allowance amount has been reduced as follows: (" +
+                                        sisteInntekt.format() + " / " + sisteInnvilgaMaaneder.format() + " months) minus (0.5 G / 12 months). " +
+                                        "The amount is multiplied by 45 percent."
+                            },
+                        )
+                    }
                 }
 
                 ifNotNull(sisteBeregningsperiodeNesteAar) {
@@ -212,25 +214,27 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
                         )
                     }
 
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Stønad per måned er redusert på følgende måte: (" + sisteInntektNesteAar.format() +
-                                        " / " + innvilgaMaanederNesteAar.format() + " måneder) minus (0,5 G / 12 måneder). " +
-                                        "Beløpet ganges med 45 prosent."
-                            },
-                            nynorsk {
-                                +"Stønaden per månad har blitt redusert på følgjande måte: (" + sisteInntektNesteAar.format() +
-                                        " / " + innvilgaMaanederNesteAar.format() + " månader) minus (0,5 G / 12 månader). " +
-                                        "Beløpet blir gonga med 45 prosent."
-                            },
-                            english {
-                                +"The monthly allowance amount has been reduced as follows: (" +
-                                        sisteInntektNesteAar.format() + " / " + innvilgaMaanederNesteAar.format() +
-                                        " months) minus (0.5 G / 12 months). " +
-                                        "The amount is multiplied by 45 percent."
-                            },
-                        )
+                    showIf(innvilgaMaanederNesteAar.greaterThan(0)) {
+                        paragraph {
+                            text(
+                                bokmal {
+                                    +"Stønad per måned er redusert på følgende måte: (" + sisteInntektNesteAar.format() +
+                                            " / " + innvilgaMaanederNesteAar.format() + " måneder) minus (0,5 G / 12 måneder). " +
+                                            "Beløpet ganges med 45 prosent."
+                                },
+                                nynorsk {
+                                    +"Stønaden per månad har blitt redusert på følgjande måte: (" + sisteInntektNesteAar.format() +
+                                            " / " + innvilgaMaanederNesteAar.format() + " månader) minus (0,5 G / 12 månader). " +
+                                            "Beløpet blir gonga med 45 prosent."
+                                },
+                                english {
+                                    +"The monthly allowance amount has been reduced as follows: (" +
+                                            sisteInntektNesteAar.format() + " / " + innvilgaMaanederNesteAar.format() +
+                                            " months) minus (0.5 G / 12 months). " +
+                                            "The amount is multiplied by 45 percent."
+                                },
+                            )
+                        }
                     }
                 }
 
