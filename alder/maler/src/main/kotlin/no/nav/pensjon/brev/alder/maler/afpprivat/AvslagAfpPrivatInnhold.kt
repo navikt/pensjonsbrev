@@ -33,7 +33,7 @@ data class AvslagAfpPrivatInnhold(
             text(
                 bokmal { +"Vi har avslått søknaden din om AFP i privat sektor." },
                 nynorsk { +"Vi har avslått søknaden din om AFP i privat sektor." },
-                english { +"We have declined your application for contractual pension (AFP) in the private sector." },
+                english { +"Your application for contractual pension (AFP) in the private sector has been denied." },
             )
         }
         paragraph {
@@ -49,9 +49,9 @@ data class AvslagAfpPrivatInnhold(
                         "Nav har avgjort dei andre spørsmåla om retten til pensjon."
                 },
                 english {
-                    +"The rules for AFP in the private sector are set out in the Act on state subsidies to employees who receive contractual pension in the private sector (AFP Subsidies Act). " +
-                        "Fellesordningen for AFP has determined that you meet the contractual terms for the right to AFP. " +
-                        "Nav has decided on other issues regarding the right to pension."
+                    +"Entitlement to AFP in the private sector is governed by the Act on state subsidies to employees who receive contractual pension in the private sector (the AFP Subsidies Act). " +
+                            "Fellesordningen for AFP has determined that you meet the eligibility requirements for AFP. " +
+                            "Nav has assessed the remaining conditions for entitlement to AFP and found that you do not meet all of them."
                 },
             )
         }
@@ -73,7 +73,7 @@ data class AvslagAfpPrivatInnhold(
                     nynorsk { +"Ein må ta ut AFP i privat sektor før fylte 70 år saman med alderspensjon frå folketrygda. " +
                             "Søknaden din om AFP er avslått fordi du har fått avslag på søknaden din om alderspensjon." },
                     english { +"AFP in the private sector before the age of 70 must be drawn together with a retirement pension from the National Insurance Scheme. " +
-                            "Your application for AFP has been declined because your application for a retirement pension has been declined." },
+                            "Your application for AFP has been denied because your application for a retirement pension has been denied." },
                 )
             }
 
@@ -84,7 +84,7 @@ data class AvslagAfpPrivatInnhold(
                     nynorsk { +"Om du får rett til alderspensjon frå folketrygda seinare og ønskjer å ta ut AFP i privat sektor, må du sende inn ny søknad om AFP. " +
                             "Eitt av vilkåra er at du på uttakstidspunktet for AFP må vere reell arbeidstakar i ei verksemd som er omfatta av AFP-ordninga." },
                     english { +"If you later become entitled to a retirement pension from the National Insurance Scheme and wish to draw AFP in the private sector, you must submit a new application for AFP. " +
-                            "One of the conditions is that, at the time you start drawing AFP, you must be a genuine employee of a company covered by the AFP scheme." },
+                            "Please note that, at the time you start drawing AFP, you must be a genuine employee of a company covered by the AFP scheme." },
                 )
             }
         }
@@ -97,7 +97,7 @@ data class AvslagAfpPrivatInnhold(
                     nynorsk { +"Ein må ta ut AFP i privat sektor før fylte 70 år saman med alderspensjon frå folketrygda. " +
                             "Søknaden din om AFP er avslått fordi du ikkje har søkt om å ta ut alderspensjon." },
                     english { +"AFP in the private sector before the age of 70 must be drawn together with a retirement pension from the National Insurance Scheme. " +
-                            "Your application for AFP has been declined because you have not applied for a retirement pension." },
+                            "Your application for AFP has been denied because you have not applied for a retirement pension." },
                 )
             }
             paragraph {
@@ -116,8 +116,8 @@ data class AvslagAfpPrivatInnhold(
         showIf(begrunnelse.isOneOf(Begrunnelse.BRUKER_UT_E_62)) {
             paragraph {
                 text(
-                    bokmal { +"AFP i privat sektor kan ikke gis til personer som har mottatt uføretrygd fra folketrygden etter fylte 62 år. " +
-                            "Søknaden din er avslått fordi du har mottatt uføretrygd etter at du fylte 62 år. " },
+                    bokmal { +"AFP in the private sector cannot be granted if you have received disability benefit from the National Insurance Scheme after reaching the age of 62. " +
+                            "Your application has been denied because you received disability benefit after reaching the age of 62." },
                     nynorsk { +"Ein kan ikkje få AFP i privat sektor om ein har mottatt uføretrygd frå folketrygda etter fylte 62 år. " +
                             "Søknaden din er avslått fordi du har mottatt uføretrygd etter at du fylte 62 år." },
                     english { +"AFP in the private sector cannot be granted to persons who have received disability benefit from the National Insurance Scheme after reaching the age of 62. " +
@@ -130,8 +130,8 @@ data class AvslagAfpPrivatInnhold(
                             "Unntaket er når du har betalt tilbake hele uføretrygden du har fått utbetalt etter fylte 62 år i forbindelse med etteroppgjøret for uføretrygd. " },
                     nynorsk { +"Som hovudregel vil du heller ikkje kunne få rett til AFP seinare sjølv om du skulle seie frå deg uføretrygda. " +
                             "Unntaket er når du har betalt tilbake heile uføretrygda du har fått utbetalt etter fylte 62 år i samband med etteroppgjeret for uføretrygd." },
-                    english { +"Generally, you will not be entitled to AFP later even if you give up your disability benefit. " +
-                            "The exception is if you have repaid in full all disability benefit paid to you after the age of 62 as part of the final annual settlement for disability benefit." },
+                    english { +"You will not become entitled to AFP simply by stopping your disability benefit. " +
+                            "The exception is if any disability benefit paid to you after reaching the age of 62 is repaid in full through the final annual settlement of your disability benefit." },
                 )
             }
 
@@ -142,7 +142,7 @@ data class AvslagAfpPrivatInnhold(
                 text(
                     bokmal { +"Vedtaket er gjort etter AFP-tilskottsloven paragraf 5 første ledd bokstav b. " },
                     nynorsk { +"Vedtaket er gjort etter AFP-tilskottslova § 5 første ledd bokstav b." },
-                    english { +"This decision follows from section 5, first paragraph, letter b, of the AFP Subsidies Act." },
+                    english { +"This decision is based on section 5, first paragraph, letter b, of the AFP Subsidies Act." },
                 )
             }
         }
@@ -157,7 +157,7 @@ data class AvslagAfpPrivatInnhold(
                         +"Vedtaket er gjort etter AFP-tilskottslova § 8 første ledd."
                     },
                     english {
-                        +"This decision follows from section 8, first paragraph, of the AFP Subsidies Act."
+                        +"This decision is based on section 8, first paragraph, of the AFP Subsidies Act."
                     },
                 )
             }
@@ -167,7 +167,7 @@ data class AvslagAfpPrivatInnhold(
             text(
             bokmal { +"Du har rett til å klage " },
             nynorsk { +"Du har rett til å klage" },
-            english { +"You have the right to appeal" },
+            english { +"Your right to appeal" },
             )
         }
 
@@ -177,8 +177,8 @@ data class AvslagAfpPrivatInnhold(
                         "Du finner skjema og informasjon på $KLAGE_URL. " },
                 nynorsk { +"Om du meiner vedtaket er feil, kan du klage innan 6 veker frå den datoen vedtaket har komme fram til deg. " +
                         "Du finn skjema og informasjon på $KLAGE_URL." },
-                english { +"If you think the decision is wrong, you may appeal the decision within 6 weeks from the date the decision was delivered to you. " +
-                        "You can find the form and more information at $KLAGE_URL." },
+                english { +"If you believe this decision is incorrect, you may appeal within 6 weeks from the date on which this decision was delivered to you. " +
+                        "You can find the appeal form and further  information at $KLAGE_URL." },
             )
         }
 
