@@ -40,8 +40,14 @@ class OneShotJobTest {
 
         runBlocking {
             oneShotJobs(NaisLeaderService(null, engine)) {
-                job(name, 1) {
+                job(name) { tekniskVersjon ->
                     isExecuted = true
+                    transaction {
+                        val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.single()
+                        assertThat(job[OneShotJobTable.tekniskVersjon]).isEqualTo(tekniskVersjon)
+                        assertThat(tekniskVersjon).isGreaterThan(1)
+                        assertThat(job[OneShotJobTable.completedAt]).isNull()
+                    }
                 }
             }
         }
@@ -62,7 +68,7 @@ class OneShotJobTest {
         fun aJob() {
             runBlocking {
                 oneShotJobs(NaisLeaderService(null, engine)) {
-                    job(name, 1) {
+                    job(name) {
                         executionCount++
                     }
                 }
@@ -82,7 +88,7 @@ class OneShotJobTest {
 
         fun failingJob() = runBlocking {
             oneShotJobs(NaisLeaderService(null, engine)) {
-                job(name, 1) {
+                job(name) {
                     isExecuted = true
                     throw RuntimeException("Simulated failure")
                 }
@@ -92,10 +98,9 @@ class OneShotJobTest {
         runCatching { failingJob() }
 
         assertThat(isExecuted).isTrue()
-        // Check that the job was not recorded as completed
         transaction {
-            val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.singleOrNull()
-            assertThat(job).isNull()
+            val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.single()
+            assertThat(job[OneShotJobTable.completedAt]).isNull()
         }
     }
 
@@ -106,7 +111,7 @@ class OneShotJobTest {
 
         runBlocking {
             oneShotJobs(FakeLeaderService(true, false)) {
-                job(name, 1) {
+                job(name) {
                     isExecuted = true
                 }
             }
@@ -126,7 +131,7 @@ class OneShotJobTest {
 
         runBlocking {
             oneShotJobs(FakeLeaderService(true, true)) {
-                job(name, 1) {
+                job(name) {
                     isExecuted = true
                 }
             }
@@ -137,6 +142,83 @@ class OneShotJobTest {
             val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.singleOrNull()
             assertThat(job).isNotNull
             assertThat(job?.get(OneShotJobTable.completedAt)).isNotNull
+        }
+    }
+
+    @Test
+    fun `new jobs receive increasing technical versions`() {
+        val versions = mutableListOf<Int>()
+
+        runBlocking {
+            oneShotJobs(NaisLeaderService(null, engine)) {
+                job(jobName("first-version")) { versions.add(it) }
+                job(jobName("second-version")) { versions.add(it) }
+            }
+        }
+
+        assertThat(versions).hasSize(2)
+        assertThat(versions[1]).isGreaterThan(versions[0])
+    }
+
+    @Test
+    fun `incomplete job keeps its technical version when retried after another job`() {
+        val name = jobName("incomplete-job")
+        val versions = mutableListOf<Int>()
+        var newerVersion = 0
+
+        runBlocking {
+            oneShotJobs(NaisLeaderService(null, engine)) {
+                job(name) {
+                    versions.add(it)
+                    completed = false
+                }
+                job(jobName("newer-job")) { newerVersion = it }
+            }
+        }
+        transaction {
+            val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.single()
+            assertThat(job[OneShotJobTable.completedAt]).isNull()
+        }
+
+        runBlocking {
+            oneShotJobs(NaisLeaderService(null, engine)) {
+                job(name) { versions.add(it) }
+            }
+        }
+
+        assertThat(versions).hasSize(2)
+        assertThat(versions[1]).isEqualTo(versions[0])
+        assertThat(newerVersion).isGreaterThan(versions[0])
+        transaction {
+            val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.single()
+            assertThat(job[OneShotJobTable.completedAt]).isNotNull()
+        }
+    }
+
+    @Test
+    fun `failed job keeps its technical version when retried`() {
+        val name = jobName("retry-failed-job")
+        val versions = mutableListOf<Int>()
+
+        runBlocking {
+            runCatching {
+                oneShotJobs(NaisLeaderService(null, engine)) {
+                    job(name) {
+                        versions.add(it)
+                        throw RuntimeException("Simulated failure")
+                    }
+                }
+            }
+            oneShotJobs(NaisLeaderService(null, engine)) {
+                job(name) { versions.add(it) }
+            }
+        }
+
+        assertThat(versions).hasSize(2)
+        assertThat(versions[1]).isEqualTo(versions[0])
+        transaction {
+            val job = OneShotJobTable.selectAll().where { OneShotJobTable.id eq name }.single()
+            assertThat(job[OneShotJobTable.completedAt]).isNotNull()
         }
     }
 }

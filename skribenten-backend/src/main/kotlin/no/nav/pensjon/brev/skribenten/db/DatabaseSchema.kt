@@ -122,7 +122,8 @@ object RedigertVedleggTable : CompositeIdTable() {
 
 object OneShotJobTable : IdTable<String>() {
     override val id: Column<EntityID<String>> = varchar("name", 255).entityId()
-    val completedAt: Column<Instant> = timestamp("completedAt")
+    val tekniskVersjon: Column<Int> = integer("tekniskVersjon").databaseGenerated()
+    val completedAt: Column<Instant?> = timestamp("completedAt").nullable()
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
