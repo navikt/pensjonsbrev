@@ -4,6 +4,12 @@ ALTER TABLE brevredigering
 ALTER TABLE redigertVedlegg
     ADD COLUMN "tekniskVersjon" INTEGER NOT NULL DEFAULT 1;
 
+CREATE INDEX brevredigering_teknisk_versjon_idx
+    ON brevredigering ("tekniskVersjon");
+
+CREATE INDEX redigertvedlegg_teknisk_versjon_idx
+    ON redigertVedlegg ("tekniskVersjon");
+
 CREATE FUNCTION brevredigering_teknisk_versjon() RETURNS INTEGER
     LANGUAGE sql STABLE AS
 $$ SELECT COALESCE(MAX("tekniskVersjon"), 1) FROM brevredigering $$;
