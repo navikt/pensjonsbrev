@@ -240,7 +240,7 @@ describe("<NotificationBell />", () => {
 
     expect(screen.getByRole("heading", { name: DIFF_TOGGLES_ANNOUNCEMENT.title })).not.toBeNull();
     expect(screen.queryByRole("button", { name: "Se hvordan" })).toBeNull();
-    expect(screen.getByRole("link", { name: /^Se dokumentasjon/ })).not.toBeNull();
+    expect(screen.getByRole("link", { name: /^Les mer her/ })).not.toBeNull();
   });
 
   test("markerer nyheten som sett når klokken åpnes før statusen er hentet", async () => {
@@ -334,7 +334,7 @@ describe("<NotificationBell />", () => {
     expect(within(item).getByText(NYHET.description)).not.toBeNull();
   });
 
-  test("viser bare «Se dokumentasjon» når gjennomgangen ikke er tilgjengelig på siden", async () => {
+  test("viser bare «Les mer her» når gjennomgangen ikke er tilgjengelig på siden", async () => {
     const user = userEvent.setup();
     renderWithQueryClient(<NotificationBell announcements={[NYHET]} />);
 
@@ -342,14 +342,14 @@ describe("<NotificationBell />", () => {
 
     expect(screen.queryByRole("button", { name: "Se hvordan" })).toBeNull();
     const link = screen.getByRole("link", {
-      name: /^Se dokumentasjon\s*\(åpnes i ny fane\)$/,
+      name: /^Les mer her\s*\(åpnes i ny fane\)$/,
       description: NYHET.title,
     });
     expect(link.getAttribute("href")).toBe(NYHET.documentationUrl);
     expect(link.getAttribute("target")).toBe("_blank");
   });
 
-  test("viser både «Se hvordan» og «Se dokumentasjon» når gjennomgangen er tilgjengelig på siden", async () => {
+  test("viser både «Se hvordan» og «Les mer her» når gjennomgangen er tilgjengelig på siden", async () => {
     fetchAcknowledgedMock.mockResolvedValue([NYHET.id]);
     const user = userEvent.setup();
     renderWithQueryClient(
@@ -363,6 +363,6 @@ describe("<NotificationBell />", () => {
     await user.click(bell());
 
     expect(screen.getByRole("button", { name: "Se hvordan", description: NYHET.title })).not.toBeNull();
-    expect(screen.getByRole("link", { name: /^Se dokumentasjon\s*\(åpnes i ny fane\)$/ })).not.toBeNull();
+    expect(screen.getByRole("link", { name: /^Les mer her\s*\(åpnes i ny fane\)$/ })).not.toBeNull();
   });
 });
