@@ -31,6 +31,7 @@ value class TekniskVersjon(val value: Int) : Comparable<TekniskVersjon> {
 
 @OneShotJobDsl
 class OneShotJobConfig {
+    private val prefix = "[OneShotJob]:"
 
     /**
      * The name should be unique across all one-shot jobs, and is used to verify if a job has already been executed.
@@ -49,7 +50,7 @@ class OneShotJobConfig {
                     }
             }
             if (existing[OneShotJobTable.completedAt] == null) {
-                logger.info("One-shot job started: '$uniqeName'")
+                logger.info("${prefix}One-shot job started: '$uniqeName'")
                 val job = JobConfig(uniqeName).apply { block(existing[OneShotJobTable.tekniskVersjon]) }
 
                 transaction {
@@ -57,16 +58,16 @@ class OneShotJobConfig {
                         OneShotJobTable.update({ OneShotJobTable.id eq uniqeName }) {
                             it[completedAt] = Instant.now()
                         }
-                        logger.info("One-shot job '$uniqeName' completed successfully.")
+                        logger.info("${prefix}One-shot job '$uniqeName' completed successfully.")
                     } else {
-                        logger.warn("One-shot job '$uniqeName' did not complete successfully. It may need to be re-run.")
+                        logger.warn("${prefix}One-shot job '$uniqeName' did not complete successfully. It may need to be re-run.")
                     }
                 }
             } else {
                 logger.info("One-shot job '$uniqeName' has already been executed. Skipping.")
             }
         } catch (e: Throwable) {
-            logger.error("Error executing one-shot job '$uniqeName': ${e.message}", e)
+            logger.error("${prefix}Error executing one-shot job '$uniqeName': ${e.message}", e)
             throw e // Re-throw to ensure the error is propagated
         }
     }
