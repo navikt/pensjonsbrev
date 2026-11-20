@@ -74,6 +74,7 @@ abstract class BrevredigeringHandlerTestBase {
     @BeforeEach
     fun clearMocks() {
         brevbakerService.renderMarkupKall.clear()
+        brevbakerService.renderMarkupStableHashCode = StableHashCode(123)
         brevbakerService.renderMarkupResultat = {
             letter.medSignatur(
                 saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
@@ -577,6 +578,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
+        var renderMarkupStableHashCode = StableHashCode(123)
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
         var alltidValgbareVedleggResultat: Set<AlltidValgbartVedleggBrevkode> = emptySet()
@@ -601,7 +603,7 @@ abstract class BrevredigeringHandlerTestBase {
                     markup = it,
                     letterDataUsage = emptySet(),
                     brevtype = if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV,
-                    stableHashCode = StableHashCode(123),
+                    stableHashCode = renderMarkupStableHashCode,
                 ) }
 
         override suspend fun renderPdf(
