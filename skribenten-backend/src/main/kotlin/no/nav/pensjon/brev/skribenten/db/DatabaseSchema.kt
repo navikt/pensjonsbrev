@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.Stat
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
+import no.nav.pensjon.brev.skribenten.common.TekniskVersjon
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
@@ -61,6 +62,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val redigertBrevKryptert: Column<Edit.Letter> = kryptertDto<Edit.Letter>("redigertBrevKryptert")
     val rendretBrevKryptert: Column<Edit.Letter?> = kryptertDto<Edit.Letter>("rendretBrevKryptert").nullable()
     val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
+    val tekniskVersjon: Column<TekniskVersjon> = integer("tekniskVersjon").transform(::TekniskVersjon, TekniskVersjon::value).databaseGenerated()
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjon> = varchar("distribusjonstype", length = 50).transform(Distribusjon::valueOf, Distribusjon::name)
     val redigeresAvNavIdent: Column<NavIdent?> = varchar("redigeresAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
@@ -107,6 +109,7 @@ object RedigertVedleggTable : CompositeIdTable() {
         varchar("vedleggId", 50).transform(::VedleggId, VedleggId::id).entityId()
     val redigertVedleggKryptert: Column<Edit.Attachment> = kryptertDto<Edit.Attachment>("redigertVedleggKryptert")
     val redigertVedleggKryptertHash: Column<Hash<Edit.Attachment>> = hashColumn("redigertVedleggKryptertHash")
+    val tekniskVersjon: Column<TekniskVersjon> = integer("tekniskVersjon").transform(::TekniskVersjon, TekniskVersjon::value).databaseGenerated()
     val rendretVedlegg: Column<Edit.Attachment?> = kryptertDto<Edit.Attachment>("rendretVedlegg").nullable()
     val rendretVedleggHash: Column<StableHashCode?> =
         integer("rendretVedleggHash").transform(::StableHashCode, StableHashCode::value).nullable()
@@ -120,7 +123,8 @@ object RedigertVedleggTable : CompositeIdTable() {
 
 object OneShotJobTable : IdTable<String>() {
     override val id: Column<EntityID<String>> = varchar("name", 255).entityId()
-    val completedAt: Column<Instant> = timestamp("completedAt")
+    val tekniskVersjon: Column<TekniskVersjon> = integer("tekniskVersjon").transform(::TekniskVersjon, TekniskVersjon::value).databaseGenerated()
+    val completedAt: Column<Instant?> = timestamp("completedAt").nullable()
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
