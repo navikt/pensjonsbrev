@@ -174,8 +174,8 @@ object EndretUforetrygdPGAInntektNesteArFelles {
             }
             paragraph {
                 text(
-                    bokmal { +"Endringen av utbetalingen din i " + data.virkningFom.year.format() + " påvirker ikke utbetalingen din i " + data.virkningFom.year.minus(1).format() },
-                    nynorsk { +"Endringa av utbetalinga di i " + data.virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + data.virkningFom.year.minus(1).format() }
+                    bokmal { +"Endringen av utbetalingen din i " + data.virkningFom.year.format() + " påvirker ikke utbetalingen din i " + data.virkningFom.year.minus(1).format() + "."},
+                    nynorsk { +"Endringa av utbetalinga di i " + data.virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + data.virkningFom.year.minus(1).format() + "."}
                 )
             }
             paragraph {
