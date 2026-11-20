@@ -29,6 +29,11 @@ export type Focus = LiteralIndex & {
    * native focus event.
    */
   selectAll?: boolean;
+  /**
+   * When set, LetterEditor.tsx restores this caret/selection in the DOM (possibly spanning several literals)
+   * and refocuses the editor, e.g. to keep the selection after a font type change. One-shot: cleared once applied.
+   */
+  pendingSelection?: SelectionIndex;
 };
 
 export type LetterEditorState = {
@@ -42,6 +47,6 @@ export type LetterEditorState = {
 };
 
 export type SelectionIndex = {
-  start: Focus & { cursorPosition: number };
-  end: Focus & { cursorPosition: number };
+  start: LiteralIndex & { cursorPosition: number };
+  end: LiteralIndex & { cursorPosition: number };
 };

@@ -4,7 +4,7 @@ import { type Content, type Item, type ItemList, ListType } from "~/types/brevba
 
 import { type Action, withPatches } from "../lib/actions";
 import { type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
-import { effectiveListType, isItemList, isTextContent } from "../model/utils";
+import { effectiveListType, isItemList, isTableCellIndex, isTextContent } from "../model/utils";
 import {
   absorbListIntoList,
   addElements,
@@ -28,7 +28,7 @@ export const toggleNumberList: Action<LetterEditorState, [literalIndex: LiteralI
 
 const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  if (block?.type !== "PARAGRAPH") {
+  if (block?.type !== "PARAGRAPH" || isTableCellIndex(literalIndex)) {
     return;
   }
 

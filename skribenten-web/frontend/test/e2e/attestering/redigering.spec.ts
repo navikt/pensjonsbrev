@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
@@ -30,7 +30,19 @@ const vedlegg = {
   ],
 };
 
-const setupVedlegg = async (page: import("@playwright/test").Page) => {
+/**
+ * Navigerer til redigeringen og venter til siden er ferdig montert (reservasjonen hentes først da).
+ * Uten dette kan input gå tapt hvis testen skriver før redigeringsflaten er ferdig satt opp.
+ */
+const gaaTilRedigering = async (page: Page) => {
+  const reservasjonHentet = page.waitForResponse(
+    (r) => r.url().includes("/bff/skribenten-backend/brev/1/reservasjon") && r.request().method() === "GET",
+  );
+  await page.goto("/saksnummer/123456/attester/1/redigering");
+  await reservasjonHentet;
+};
+
+const setupVedlegg = async (page: Page) => {
   await page.route(VEDLEGGLISTE_URL, (route) =>
     route.fulfill({ json: [{ vedleggId: VEDLEGG_ID, tittel: VEDLEGG_TITTEL }] }),
   );
@@ -94,7 +106,7 @@ test.describe("attestant redigering", () => {
       },
     );
 
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
     await expect(page.getByText("Lagret")).toBeVisible();
     await page.clock.install();
     const textSavePromise = page.waitForResponse(
@@ -109,7 +121,7 @@ test.describe("attestant redigering", () => {
   });
 
   test("attestanten kan ikke tilbakestille brevet til malen", async ({ page }) => {
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
     await expect(page.getByText("Underskrift")).toBeVisible();
 
     await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
@@ -129,12 +141,14 @@ test.describe("attestant redigering", () => {
       },
     );
 
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
     await page.clock.install();
     const signatureSavePromise = page.waitForResponse(
       (r) => r.url().includes("/redigertBrev?frigiReservasjon=false") && r.request().method() === "PUT",
     );
-    await page.getByRole("textbox", { name: "Underskrift" }).fill("Den nye attestanten");
+    const underskrift = page.getByRole("textbox", { name: "Underskrift" });
+    await underskrift.fill("Den nye attestanten");
+    await expect(underskrift).toHaveValue("Den nye attestanten");
     await page.clock.fastForward(AUTOSAVE_TIMER);
     await signatureSavePromise;
 
@@ -156,7 +170,7 @@ test.describe("attestant redigering", () => {
       return route.fulfill({ json: { ...defaultBrev, ...body } });
     });
 
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
     await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant Testesen");
     await page.getByRole("tab", { name: "Vedlegg" }).click();
     await page.getByText(VEDLEGG_TEKST).click();
@@ -172,7 +186,7 @@ test.describe("attestant redigering", () => {
     await setupVedlegg(page);
     await page.route(VEDLEGG_URL, (route) => route.fulfill({ json: vedlegg }));
 
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
     await page.getByRole("tab", { name: "Vedlegg" }).click();
     await page.getByRole("button", { name: "Fortsett" }).click();
 
@@ -184,7 +198,7 @@ test.describe("attestant redigering", () => {
     await setupVedlegg(page);
     await page.route(VEDLEGG_URL, (route) => route.fulfill({ json: vedlegg }));
 
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
     await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
 
     await page.getByRole("tab", { name: "Vedlegg" }).click();
@@ -203,7 +217,7 @@ test.describe("attestant redigering", () => {
       return route.fulfill({ json: serverVedlegg });
     });
 
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
     await page.getByRole("tab", { name: "Vedlegg" }).click();
     await expect(page.getByText(VEDLEGG_TEKST)).toBeVisible();
 
@@ -233,7 +247,7 @@ test.describe("attestant redigering", () => {
       return route.fulfill({ json: defaultBrev });
     });
 
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
     await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant Testesen");
     await page.getByRole("tab", { name: "Vedlegg" }).click();
     await page.getByText(VEDLEGG_TEKST).click();
@@ -247,7 +261,7 @@ test.describe("attestant redigering", () => {
   });
 
   test("Blokkerer redigering om brev er reservert av noen andre", async ({ page }) => {
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
 
     await page.route("**/bff/skribenten-backend/brev/1/reservasjon", (route) => {
       return route.fulfill({
@@ -264,7 +278,7 @@ test.describe("attestant redigering", () => {
   });
 
   test("Gjenoppta redigering", async ({ page }) => {
-    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await gaaTilRedigering(page);
 
     await page.route("**/bff/skribenten-backend/brev/1/reservasjon", (route) => {
       return route.fulfill({

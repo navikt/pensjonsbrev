@@ -3,6 +3,7 @@ import { inRange, minBy } from "lodash";
 import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
 import { type LiteralIndex, type SelectionIndex as SelectionFocus } from "~/Brevredigering/LetterEditor/model/state";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
+import { restoreEditables, unifyEditables } from "~/hooks/useDragSelectUnifier";
 
 type Coordinates = {
   x: number;
@@ -42,6 +43,125 @@ export const getCursorOffsetOrRange = () => {
   }
   return undefined;
 };
+
+/**
+ * Moves DOM focus back to the editable element holding the current selection/caret (e.g. after a
+ * toolbar button took focus), without changing the selection.
+ */
+export function refocusEditableAtSelection() {
+  const node = globalThis.getSelection()?.anchorNode;
+  const element = (node instanceof HTMLElement ? node : node?.parentElement)?.closest<HTMLElement>(
+    "[contenteditable='true']",
+  );
+  if (element && document.activeElement !== element) {
+    element.focus({ preventScroll: true });
+  }
+}
+
+/**
+ * True when the range touches a diff-decorated literal. These also show deleted text, so DOM offsets in them
+ * do not match the letter model, and the range must not be mapped to model positions.
+ */
+export function rangeTouchesDiffDecoration(root: HTMLElement, range: Range): boolean {
+  return [...root.querySelectorAll("[data-diff-version]")].some((element) => rangeIntersectsNodeSafe(range, element));
+}
+
+/** True when the current caret or selection touches a diff-decorated literal in `root`. */
+export function selectionTouchesDiffDecoration(root: HTMLElement | undefined): boolean {
+  const selection = globalThis.getSelection();
+  if (!root || !selection || selection.rangeCount === 0) return false;
+  return rangeTouchesDiffDecoration(root, selection.getRangeAt(0));
+}
+
+function findLiteralElement(root: HTMLElement, index: LiteralIndex): HTMLElement | undefined {
+  const key = JSON.stringify(literalIndexKey(index));
+  for (const el of root.querySelectorAll<HTMLElement>("[data-literal-index]")) {
+    const parsed = parseLiteralIndex(el);
+    if (parsed && JSON.stringify(literalIndexKey(parsed)) === key) return el;
+  }
+  return undefined;
+}
+
+function literalIndexKey(index: LiteralIndex) {
+  if (isTableCellIndex(index)) {
+    return [index.blockIndex, index.contentIndex, index.rowIndex, index.cellIndex, index.cellContentIndex];
+  }
+  if (isItemContentIndex(index)) {
+    return [index.blockIndex, index.contentIndex, index.itemIndex, index.itemContentIndex];
+  }
+  return [index.blockIndex, index.contentIndex];
+}
+
+function textPosition(el: HTMLElement, offset: number): { node: Node; offset: number } {
+  const node = el.firstChild ?? el;
+  const content = node.textContent ?? "";
+  const zwspOffset = content.startsWith(ZERO_WIDTH_SPACE) ? 1 : 0;
+  return { node, offset: Math.min(offset + zwspOffset, content.length) };
+}
+
+/**
+ * The first literal from `startEl` to `endEl` that can take focus. Variables and line breaks cannot, so a range
+ * starting in one is focused at the next text literal, keeping keyboard focus in the editor.
+ */
+function focusableLiteralInRange(root: HTMLElement, startEl: HTMLElement, endEl: HTMLElement) {
+  const literals = [...root.querySelectorAll<HTMLElement>("[data-literal-index]")];
+  const from = literals.indexOf(startEl);
+  const to = literals.indexOf(endEl);
+  return literals.slice(from, to + 1).find((el) => el.hasAttribute("tabindex"));
+}
+
+/**
+ * Selects the given model range in the DOM (a caret when start equals end), and focuses the editable
+ * element at its start. The range may span several literals. Returns false if the literals are not rendered.
+ */
+export function selectSelectionIndex(root: HTMLElement, selection: SelectionFocus): boolean {
+  const startEl = findLiteralElement(root, selection.start);
+  const endEl = findLiteralElement(root, selection.end);
+  if (!startEl || !endEl) return false;
+
+  const start = textPosition(startEl, selection.start.cursorPosition);
+  const end = textPosition(endEl, selection.end.cursorPosition);
+  if (startEl !== endEl) {
+    // The browser only keeps a selection across several editables while they are unified (see useDragSelectUnifier).
+    // Restore first, so editables rendered since the last unification are included.
+    restoreEditables(root);
+    unifyEditables(root);
+  }
+  try {
+    const focusTarget = focusableLiteralInRange(root, startEl, endEl);
+    if (focusTarget && document.activeElement !== focusTarget) focusTarget.focus({ preventScroll: true });
+    globalThis.getSelection()?.setBaseAndExtent(start.node, start.offset, end.node, end.offset);
+    return true;
+  } catch (error) {
+    console.warn("Could not restore selection", selection, error);
+    return false;
+  }
+}
+
+/**
+ * Maps the current DOM caret or selection to a model SelectionIndex (start equals end for a caret).
+ */
+export function getSelectionIndex(root?: HTMLElement): SelectionFocus | undefined {
+  const selection = globalThis.getSelection();
+  if (!selection || selection.rangeCount === 0) return undefined;
+
+  const range = selection.getRangeAt(0);
+  if (!range.collapsed) {
+    const selectionFocus = getSelectionFocus(root);
+    // Undefined also when the whole selection is deleted text in the attestant diff: then it collapses to its start.
+    if (selectionFocus || !closestLiteralEl(range.startContainer)) return selectionFocus;
+  }
+
+  const literalEl = closestLiteralEl(range.startContainer);
+  const index = literalEl ? parseLiteralIndex(literalEl) : undefined;
+  if (!literalEl || !index) return undefined;
+
+  const position = {
+    ...index,
+    cursorPosition: charOffsetWithinLiteral(literalEl, range.startContainer, range.startOffset),
+  };
+  return { start: position, end: position };
+}
 
 /**
  * Focus cursor at the given offset in the node.
@@ -339,8 +459,18 @@ function closestLiteralEl(n: Node | null): HTMLElement | null {
   return el ? el.closest<HTMLElement>("[data-literal-index]") : null;
 }
 
+const DIFF_DELETION = "[data-diff-deletion]";
+
+/** Text of the letter model in `el`: deleted text shown by the attestant diff is not part of the letter. */
+function modelText(el: Node): string {
+  if (!(el instanceof Element) || !el.querySelector(DIFF_DELETION)) return el.textContent ?? "";
+  const copy = el.cloneNode(true) as Element;
+  for (const deletion of copy.querySelectorAll(DIFF_DELETION)) deletion.remove();
+  return copy.textContent ?? "";
+}
+
 function getTextLengthExcludingZWSP(el: HTMLElement): number {
-  const text = el.textContent ?? "";
+  const text = modelText(el);
   return text.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, text.length - 1) : text.length;
 }
 
@@ -359,12 +489,19 @@ export function parseLiteralIndex(el: HTMLElement): LiteralIndex | undefined {
   }
 }
 
+/**
+ * Offset in the letter model of a DOM point in the literal. Deleted text shown by the attestant diff is not
+ * counted, so a point inside a deleted segment maps to where that segment is shown: a selection starting there
+ * starts at the following text, and one ending there ends at the preceding text.
+ */
 export function charOffsetWithinLiteral(literalEl: HTMLElement, container: Node, offset: number): number {
   const range = document.createRange();
   range.setStart(literalEl, 0);
   range.setEnd(container, offset);
-  let len = range.toString().length;
-  const txt = literalEl.textContent ?? "";
+  const before = document.createElement("div");
+  before.append(range.cloneContents());
+  let len = modelText(before).length;
+  const txt = modelText(literalEl);
   if (txt.startsWith(ZERO_WIDTH_SPACE)) len = Math.max(0, len - 1);
   const max = txt.startsWith(ZERO_WIDTH_SPACE) ? Math.max(0, txt.length - 1) : txt.length;
   return Math.min(Math.max(len, 0), max);

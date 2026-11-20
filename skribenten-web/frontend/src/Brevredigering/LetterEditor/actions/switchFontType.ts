@@ -1,23 +1,23 @@
 import { type Draft } from "immer";
 
-import {
-  type Cell,
-  type Content,
-  FontType,
-  type ItemList,
-  type LiteralValue,
-  type ParagraphBlock,
-  type Row,
-  type TextContent,
-  type VariableValue,
-} from "~/types/brevbakerTypes";
-import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
+import { type Cell, type Content, FontType, type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import { type LetterEditorState, type LiteralIndex } from "../model/state";
+import { type LetterEditorState, type LiteralIndex, type SelectionIndex } from "../model/state";
 import { isItemList, isLiteral, isTableCellIndex, isTextContent } from "../model/utils";
-import { getCursorOffset } from "../services/caretUtils";
-import { fontTypeOf, isItemContentIndex, isTable, newLiteral } from "./common";
+import {
+  fontTypeOf,
+  isAtSameItem,
+  isAtSameTableCell,
+  isBlockContentIndex,
+  isIndexAfter,
+  isItemContentIndex,
+  isTable,
+  newLiteral,
+  TABLE_HEADER_ROW_INDEX,
+  text,
+} from "./common";
+import { updateLiteralText } from "./updateContentText";
 
 export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
@@ -28,7 +28,7 @@ export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState)
 
   if (isTable(blockContent) && isTableCellIndex(focus)) {
     const cell =
-      focus.rowIndex === -1
+      focus.rowIndex === TABLE_HEADER_ROW_INDEX
         ? blockContent.header.colSpec[focus.cellIndex]?.headerContent
         : blockContent.rows[focus.rowIndex]?.cells[focus.cellIndex];
 
@@ -42,312 +42,251 @@ export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState)
   return isTextContent(textContent) ? fontTypeOf(textContent) : FontType.PLAIN;
 };
 
-// TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
-export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = withPatches((draft, fontType) => {
-  const literalIndex = draft.focus;
-  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+type Position = LiteralIndex & { cursorPosition: number };
 
-  if (block?.type !== "PARAGRAPH") {
-    return;
-  }
+/**
+ * Endrer fonttype på markert tekst, eller på ordet under markøren når markeringen er tom.
+ *
+ * Markeringen kan strekke seg over flere literals, men bare innenfor én tekstbeholder (tabellcelle,
+ * punkt i liste eller tekst direkte i avsnitt). Krysser markeringen flere beholdere, gjøres ingen endring.
+ * Uten `selection` brukes markørposisjonen i `focus`.
+ */
+export const switchFontType: Action<LetterEditorState, [fontType: FontType, selection?: SelectionIndex]> = withPatches(
+  (draft, fontType, selection) => {
+    const range = normalizeSelection(draft, selection);
+    if (!range) {
+      return;
+    }
+    const { start, end } = range;
 
-  if (fontType === getCurrentActiveFontTypeAtCursor(draft)) {
-    fontType = FontType.PLAIN;
-  }
-
-  const contentAtFocus = block.content[literalIndex.contentIndex];
-  if (isTable(contentAtFocus) && isTableCellIndex(literalIndex)) {
-    const table = contentAtFocus;
-
-    const TABLE_HEADER_INDEX = -1;
-    if (literalIndex.rowIndex === TABLE_HEADER_INDEX) {
-      const colSpec = table.header.colSpec[literalIndex.cellIndex];
-      const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
-
-      if (isLiteral(headerLiteral)) {
-        headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? undefined : fontType;
-      }
-      draft.focus = { ...draft.focus, cursorPosition: 0 };
-      draft.saveStatus = "DIRTY";
+    if (draft.redigertBrev.blocks[start.blockIndex]?.type !== "PARAGRAPH") {
       return;
     }
 
-    const row: Draft<Row> = table.rows[literalIndex.rowIndex];
-    const cell: Draft<Cell> = row.cells[literalIndex.cellIndex];
-
-    const textContent = cell.text[literalIndex.cellContentIndex];
-
-    if (isLiteral(textContent)) {
-      textContent.editedFontType = textContent.editedFontType === fontType ? undefined : fontType;
+    // Tabelloverskrifter er allerede fete, så fet skrift er ikke tillatt der.
+    if (fontType === FontType.BOLD && isTableCellIndex(start) && start.rowIndex === TABLE_HEADER_ROW_INDEX) {
+      return;
     }
 
-    draft.focus = { ...draft.focus, cursorPosition: 0 };
+    const container = textContainerOf(draft, start, end);
+    if (!container) {
+      return;
+    }
+
+    const segments =
+      start.cursorPosition === end.cursorPosition && indexInContainer(start) === indexInContainer(end)
+        ? currentWordSegment(container, indexInContainer(start), start.cursorPosition)
+        : markedSegments(
+            container,
+            indexInContainer(start),
+            start.cursorPosition,
+            indexInContainer(end),
+            end.cursorPosition,
+          );
+
+    if (segments.length === 0) {
+      return;
+    }
+
+    const targetFontType = segments.every((s) => fontTypeOf(s.literal) === fontType) ? FontType.PLAIN : fontType;
+
+    // Fra siste til første segment, så indeksene til tidligere segmenter ikke forskyves.
+    const changed = [...segments]
+      .reverse()
+      .map((segment) => switchFontTypeOfSegment(container, segment, targetFontType))
+      .reverse();
+
+    // Endepunktene flyttes gjennom splittingen, så markeringen fortsatt dekker det samme (også variabler og linjeskift).
+    const newStart = withIndexInContainer(
+      start,
+      ...mapThroughSplits(changed, indexInContainer(start), start.cursorPosition),
+    );
+    const newEnd = withIndexInContainer(start, ...mapThroughSplits(changed, indexInContainer(end), end.cursorPosition));
+
+    draft.focus = { ...newStart, pendingSelection: { start: newStart, end: newEnd } };
     draft.saveStatus = "DIRTY";
-    return;
+  },
+);
+
+type ChangedSegment = ReturnType<typeof switchFontTypeOfSegment>;
+
+/** Gir ny [indeks, offset] for en posisjon i beholderen etter at segmentene er splittet. */
+function mapThroughSplits(changed: ChangedSegment[], index: number, offset: number): [number, number] {
+  let shift = 0;
+  for (const segment of changed) {
+    if (segment.index < index) {
+      shift += segment.insertedBefore + segment.insertedAfter;
+    } else if (segment.index === index) {
+      const { from, to, insertedBefore } = segment;
+      if (offset < from) return [index + shift, offset];
+      if (offset <= to) return [index + shift + insertedBefore, offset - from];
+      return [index + shift + insertedBefore + 1, offset - to];
+    }
   }
+  return [index + shift, offset];
+}
 
-  draft.saveStatus = "DIRTY";
+function normalizeSelection(
+  draft: Draft<LetterEditorState>,
+  selection: SelectionIndex | undefined,
+): { start: Position; end: Position } | undefined {
+  if (selection) {
+    return isIndexAfter(selection.end, selection.start)
+      ? { start: selection.end, end: selection.start }
+      : { start: selection.start, end: selection.end };
+  }
+  const { focus } = draft;
+  if (focus.cursorPosition === undefined || focus.cursorPosition < 0) {
+    return undefined;
+  }
+  const position = withIndexInContainer(focus, indexInContainer(focus), focus.cursorPosition);
+  return { start: position, end: position };
+}
 
-  const contentBeforeTheLiteralWeAreOn = block.content.slice(0, literalIndex.contentIndex);
-  const theContentWeAreOn = block.content[literalIndex.contentIndex];
-  const contentAfterTheLiteralWeAreOn = block.content.slice(literalIndex.contentIndex + 1);
-
-  handleSwitchContent({
-    content: theContentWeAreOn,
-    onLiteral: (literal) => {
-      const result = switchFontTypeForLiteral({
-        draft: draft,
-        thisBlock: block,
-        literalIndex: literalIndex,
-        contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-        contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
-        literal: literal,
-        fonttype: fontType,
-      });
-
-      if (!result) {
-        return;
-      }
-
-      draft.focus = {
-        ...draft.focus,
-        blockIndex: literalIndex.blockIndex,
-        contentIndex:
-          block.content.slice(0, literalIndex.contentIndex).length + result.newThisLiteralPositionInNewContent,
-        cursorPosition: result.updatedCursorPosition,
-      };
-      block.content = [...contentBeforeTheLiteralWeAreOn, ...result.resultingContent, ...contentAfterTheLiteralWeAreOn];
-      block.deletedContent = [...block.deletedContent, ...(result.deletedContent ? [result.deletedContent] : [])];
-    },
-    onVariable: (variable) => {
-      const newVariable = switchFontTypeForVariable({
-        fonttype: fontType,
-        variable,
-      });
-
-      block.content = [...contentBeforeTheLiteralWeAreOn, newVariable, ...contentAfterTheLiteralWeAreOn];
-    },
-    onNewLine: () => void 0,
-    onItemList: (itemList) => {
-      if (!isItemContentIndex(literalIndex)) {
-        return;
-      }
-
-      const item = itemList.items[literalIndex.itemIndex];
-      const itemContent = item.content[literalIndex.itemContentIndex];
-
-      return handleSwitchTextContent({
-        content: itemContent,
-        onLiteral: (literal) => {
-          const result = switchFontTypeForLiteral({
-            draft: draft,
-            thisBlock: block,
-            literalIndex: literalIndex,
-            contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-            contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
-            literal: literal,
-            fonttype: fontType,
-          });
-
-          if (!result) {
-            return;
-          }
-
-          const newItemContent = [
-            ...item.content.slice(0, literalIndex.itemContentIndex),
-            ...result.resultingContent,
-            ...item.content.slice(literalIndex.itemContentIndex + 1),
-          ];
-
-          draft.focus = {
-            ...draft.focus,
-            blockIndex: literalIndex.blockIndex,
-            cursorPosition: result.updatedCursorPosition,
-            itemContentIndex:
-              item.content.slice(0, literalIndex.itemContentIndex).length + result.newThisLiteralPositionInNewContent,
-          };
-          (
-            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-          ).items[literalIndex.itemIndex].content = newItemContent;
-          (
-            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-          ).items[literalIndex.itemIndex].deletedContent = [
-            ...item.deletedContent,
-            ...(result.deletedContent ? [result.deletedContent] : []),
-          ];
-        },
-        onVariable: (variable) => {
-          const newVariable = switchFontTypeForVariable({
-            fonttype: fontType,
-            variable,
-          });
-
-          const newItemContent = [
-            ...item.content.slice(0, literalIndex.itemContentIndex),
-            newVariable,
-            ...item.content.slice(literalIndex.itemContentIndex + 1),
-          ];
-
-          (
-            draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
-          ).items[literalIndex.itemIndex].content = newItemContent;
-        },
-        onNewLine: () => void 0,
-      });
-    },
-  });
-});
-
-const switchFontTypeForLiteral = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  contentBeforeTheLiteralWeAreOn: Content[];
-  contentAfterTheLiteralWeAreOn: Content[];
-  literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
-  const selection = globalThis.getSelection();
-
-  const hasSelectionAndMarkedText = selection && (selection.toString?.()?.length ?? 0) > 0;
-
-  return hasSelectionAndMarkedText ? switchFontTypeOfMarkedText(args) : switchFontTypeOfCurrentWord(args);
-};
-
-const switchFontTypeForVariable = (args: { fonttype: FontType; variable: Draft<VariableValue> }) => {
-  return args.variable;
-  //TODO: Implement this - her trenger vi editedFontType, på samme måte som literals
-  // return newVariable({
-  //   id: args.variable.id,
-  //   text: args.variable.text,
-  //   editedFontType: args.fonttype,
-  // });
-};
-
-const switchFontTypeOfMarkedText = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
-  const selection = globalThis.getSelection()!;
-  const range = selection.getRangeAt(0);
-
-  const textBeforeTheSelection = (args.literal.editedText ?? args.literal.text).slice(0, range.startOffset);
-  const hasTextBeforeTheSelection = textBeforeTheSelection.length > 0;
-  const textInSelection = (args.literal.editedText ?? args.literal.text).slice(range.startOffset, range.endOffset);
-  const textAfterTheSelection = (args.literal.editedText ?? args.literal.text).slice(range.endOffset);
-  const hasTextAfterTheSelection = textAfterTheSelection.length > 0;
-
-  const changesTheWholeLiteral = textBeforeTheSelection.length === 0 && textAfterTheSelection.length === 0;
-
-  const newPreviousLiteral = newLiteral({
-    text: args.literal.text,
-    editedText: textBeforeTheSelection,
-    editedFontType: args.literal.editedFontType,
-  });
-  // INTENTIONAL ID COPY when changesTheWholeLiteral: the replacement literal takes the original's
-  // id so the backend continues to track this element — the caller passes deletedContent: null in
-  // this branch, meaning the original is NOT recorded as deleted. addElements will un-delete the
-  // id if it was in deletedContent. Rule 1 exception: ID preservation during merge (see SKILL.md).
-  const newThisLiteral = newLiteral({
-    id: changesTheWholeLiteral ? args.literal.id : null,
-    text: args.literal.text,
-    editedText: changesTheWholeLiteral && args.literal.editedText === null ? null : textInSelection,
-    editedFontType: args.fonttype,
-    tags: changesTheWholeLiteral ? args.literal.tags : [],
-  });
-  const newNextLiteral = newLiteral({
-    text: args.literal.text,
-    editedText: textAfterTheSelection,
-    editedFontType: args.literal.editedFontType,
-  });
-
-  const newContent = [
-    ...(hasTextBeforeTheSelection ? [newPreviousLiteral] : []),
-    newThisLiteral,
-    ...(hasTextAfterTheSelection ? [newNextLiteral] : []),
-  ];
-
-  return {
-    resultingContent: newContent,
-    updatedCursorPosition: newThisLiteral.editedText?.length ?? 0,
-    newThisLiteralPositionInNewContent: hasTextBeforeTheSelection ? 1 : 0,
-    deletedContent: changesTheWholeLiteral ? null : args.literal.id,
-  };
-};
+type TextContainer = { content: Draft<Content[]> };
 
 /**
- * Eksempel case er når dem har caret i midten av et ord, og vil bytte fonttypen på dette ordet.
+ * Returnerer innholdslista som både start og slutt peker inn i, eller undefined om de er i ulike
+ * beholdere. For tekst direkte i avsnittet regnes en tabell eller liste mellom start og slutt som en grense.
  */
-const switchFontTypeOfCurrentWord = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
+function textContainerOf(draft: Draft<LetterEditorState>, start: Position, end: Position): TextContainer | undefined {
+  const block = draft.redigertBrev.blocks[start.blockIndex];
+  if (!block || start.blockIndex !== end.blockIndex) {
+    return undefined;
+  }
+
+  if (isTableCellIndex(start) && isTableCellIndex(end) && isAtSameTableCell(start, end)) {
+    const table = block.content[start.contentIndex];
+    if (!isTable(table)) return undefined;
+    const cell: Draft<Cell> | undefined =
+      start.rowIndex === TABLE_HEADER_ROW_INDEX
+        ? table.header.colSpec[start.cellIndex]?.headerContent
+        : table.rows[start.rowIndex]?.cells[start.cellIndex];
+    return cell ? { content: cell.text } : undefined;
+  }
+
+  if (isItemContentIndex(start) && isItemContentIndex(end) && isAtSameItem(start, end)) {
+    const list = block.content[start.contentIndex];
+    const item = isItemList(list) ? list.items[start.itemIndex] : undefined;
+    return item ? { content: item.content } : undefined;
+  }
+
+  if (isBlockContentIndex(start) && isBlockContentIndex(end)) {
+    const between = block.content.slice(start.contentIndex, end.contentIndex + 1);
+    return between.every(isTextContent) ? { content: block.content } : undefined;
+  }
+
+  return undefined;
+}
+
+function indexInContainer(index: LiteralIndex): number {
+  if (isTableCellIndex(index)) return index.cellContentIndex;
+  if (isItemContentIndex(index)) return index.itemContentIndex;
+  return index.contentIndex;
+}
+
+function withIndexInContainer(index: LiteralIndex, contentIndex: number, cursorPosition: number): Position {
+  if (isTableCellIndex(index)) {
+    const { blockIndex, contentIndex: tableIndex, rowIndex, cellIndex } = index;
+    return {
+      blockIndex,
+      contentIndex: tableIndex,
+      rowIndex,
+      cellIndex,
+      cellContentIndex: contentIndex,
+      cursorPosition,
+    };
+  }
+  if (isItemContentIndex(index)) {
+    const { blockIndex, contentIndex: listIndex, itemIndex } = index;
+    return { blockIndex, contentIndex: listIndex, itemIndex, itemContentIndex: contentIndex, cursorPosition };
+  }
+  return { blockIndex: index.blockIndex, contentIndex, cursorPosition };
+}
+
+type Segment = {
+  index: number;
   literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
-  const cursorPosition = getCursorOffset();
+  from: number;
+  to: number;
+};
 
-  if (cursorPosition < 0) {
-    return;
+function markedSegments(
+  container: TextContainer,
+  startIndex: number,
+  startOffset: number,
+  endIndex: number,
+  endOffset: number,
+): Segment[] {
+  const segments: Segment[] = [];
+  for (let index = startIndex; index <= endIndex; index++) {
+    const literal = container.content[index];
+    // Variabler og linjeskift har (foreløpig) ikke egen fonttype og hoppes over.
+    if (!isLiteral(literal)) continue;
+    const length = text(literal).length;
+    const from = index === startIndex ? Math.min(startOffset, length) : 0;
+    const to = index === endIndex ? Math.min(endOffset, length) : length;
+    if (from < to) {
+      segments.push({ index, literal, from, to });
+    }
+  }
+  return segments;
+}
+
+function currentWordSegment(container: TextContainer, index: number, cursorPosition: number): Segment[] {
+  const literal = container.content[index];
+  if (!isLiteral(literal)) {
+    return [];
+  }
+  const literalText = text(literal);
+  if (literalText[cursorPosition] === " ") {
+    return [];
   }
 
-  const text = args.literal.editedText ?? args.literal.text;
+  let from = Math.min(cursorPosition, literalText.length);
+  while (from > 0 && literalText[from - 1]?.trim() !== "") from--;
+  let to = Math.min(cursorPosition, literalText.length);
+  while (to < literalText.length && literalText[to]?.trim() !== "") to++;
 
-  const isWhiteSpace = text[cursorPosition] === " ";
+  return from < to ? [{ index, literal, from, to }] : [];
+}
 
-  if (isWhiteSpace) {
-    return;
+/**
+ * Endrer fonttypen til tekst i [from, to) i en literal. Den opprinnelige literalen beholdes (med id, parentId
+ * og tags) som første del, slik som ved splitting med Enter; de øvrige delene blir nye literals med samme
+ * fonttype som originalen hadde, så resten av teksten ikke mister formateringen sin.
+ */
+function switchFontTypeOfSegment(container: TextContainer, segment: Segment, fontType: FontType) {
+  const { index, literal, from, to } = segment;
+  const literalText = text(literal);
+  const before = literalText.slice(0, from);
+  const marked = literalText.slice(from, to);
+  const after = literalText.slice(to);
+  const originalFontType = fontTypeOf(literal);
+
+  const newPieces: LiteralValue[] = [];
+  if (before.length > 0) {
+    updateLiteralText(literal, before);
+    newPieces.push(newLiteral({ editedText: marked, fontType }));
+  } else {
+    if (after.length > 0) updateLiteralText(literal, marked);
+    setEditedFontType(literal, fontType);
   }
-
-  let wordStartPosition = cursorPosition;
-  while (wordStartPosition > 0 && text[wordStartPosition - 1]?.trim() !== "") {
-    wordStartPosition--;
+  if (after.length > 0) {
+    newPieces.push(newLiteral({ editedText: after, fontType: originalFontType }));
   }
-
-  let wordEndPosition = cursorPosition;
-  while (wordEndPosition < text.length && text[wordEndPosition]?.trim() !== "") {
-    wordEndPosition++;
-  }
-
-  const textBeforeTheWord = text.slice(0, wordStartPosition);
-  const hasTextBeforeTheWord = textBeforeTheWord.length > 0;
-  const theWord = text.slice(wordStartPosition, wordEndPosition);
-  const textAfterTheWord = text.slice(wordEndPosition);
-  const hasTextAfterTheWord = textAfterTheWord.length > 0;
-  const changesTheWholeLiteral = textBeforeTheWord.length === 0 && textAfterTheWord.length === 0;
-
-  const newPreviousLiteral = newLiteral({
-    text: args.literal.text,
-    editedText: textBeforeTheWord,
-    editedFontType: args.literal.editedFontType,
-  });
-  // INTENTIONAL ID COPY — same rationale as in switchFontTypeOfMarkedText above.
-  // Rule 1 exception: ID preservation during merge (see letter-editor-actions SKILL.md).
-  const newThisLiteral = newLiteral({
-    id: changesTheWholeLiteral ? args.literal.id : null,
-    text: args.literal.text,
-    editedText: changesTheWholeLiteral && args.literal.editedText === null ? null : theWord,
-    editedFontType: args.fonttype,
-  });
-  const newNextLiteral = newLiteral({
-    text: args.literal.text,
-    editedText: textAfterTheWord,
-    editedFontType: args.literal.editedFontType,
-  });
-
-  const newContent = [
-    ...(hasTextBeforeTheWord ? [newPreviousLiteral] : []),
-    newThisLiteral,
-    ...(hasTextAfterTheWord ? [newNextLiteral] : []),
-  ];
+  // Rene innsettinger av nye literals (id: null) etter originalen; ingen eksisterende id-er flyttes eller slettes.
+  container.content.splice(index + 1, 0, ...newPieces);
 
   return {
-    resultingContent: newContent,
-    updatedCursorPosition: cursorPosition - wordStartPosition,
-    newThisLiteralPositionInNewContent: hasTextBeforeTheWord ? 1 : 0,
-    deletedContent: changesTheWholeLiteral ? null : args.literal.id,
+    index,
+    insertedBefore: before.length > 0 ? 1 : 0,
+    insertedAfter: after.length > 0 ? 1 : 0,
+    from,
+    to,
   };
-};
+}
+
+function setEditedFontType(literal: Draft<LiteralValue>, fontType: FontType) {
+  literal.editedFontType = fontType === literal.fontType ? null : fontType;
+}

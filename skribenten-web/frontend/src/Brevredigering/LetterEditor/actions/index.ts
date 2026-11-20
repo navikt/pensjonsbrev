@@ -2,6 +2,7 @@ import { addNewLine } from "./addNewLine";
 import { create } from "./common";
 import { cursorPosition, updateFocus } from "./cursorPosition";
 import { deleteSelection } from "./deleteSelection";
+import { deleteSelectionAndEnter } from "./deleteSelectionAndEnter";
 import { merge } from "./merge";
 import { keepMissingFromTemplateBlock, removeMissingFromTemplateBlock } from "./missingFromTemplate";
 import { paste, pasteReplacingSelection } from "./paste";
@@ -30,6 +31,7 @@ const Actions = {
   create,
   cursorPosition,
   deleteSelection,
+  deleteSelectionAndEnter,
   demoteHeaderToRow,
   insertTable,
   insertTableColumnLeft,
