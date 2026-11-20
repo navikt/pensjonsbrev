@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.barnetilleggSerkullsbarn.erEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.barnetilleggSerkullsbarn.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.barnetilleggSerkullsbarn.netto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.begrensningFribelop
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.btfb
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.btsb
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArDto.datoForNormertPensjonsalder
@@ -152,6 +153,9 @@ object InntektOgAldersovergangNesteAr {
                         )
                     }
                 }
+                showIf(begrensningFribelop) {
+                    includePhrase(BegrensetFribelop(bunnfradrag))
+                }
                 includePhrase(Ufoeretrygd.MeldeFraOmEndringer(vedleggDineRettigheterOgPlikterUfoere))
 
                 showIf(nettoBarnetillegg.notNull()) {
@@ -251,10 +255,21 @@ object InntektOgAldersovergangNesteAr {
 
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + hjemler.format(HjemmelFormatter(true)) + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + hjemler.format(HjemmelFormatter(true)) + "." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + hjemler.format(HjemmelFormatter(true)) },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + hjemler.format(HjemmelFormatter(true)) },
+                    )
+                    showIf(begrensningFribelop) {
+                        text(
+                            bokmal { +" og forskrift om uføretrygd fra folketrygden § 3-6" },
+                            nynorsk { +" og forskrift om uføretrygd frå folketrygda § 3-6" }
+                        )
+                    }
+                    text(
+                        bokmal { +"." },
+                        nynorsk { +"." }
                     )
                 }
+
                 includePhrase(Ufoeretrygd.RettTilAKlage)
                 includePhrase(Ufoeretrygd.RettTilInnsyn)
                 includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON))

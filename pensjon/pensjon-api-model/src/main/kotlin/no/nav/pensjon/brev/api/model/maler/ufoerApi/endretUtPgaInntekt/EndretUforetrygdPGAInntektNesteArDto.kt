@@ -34,6 +34,7 @@ data class EndretUforetrygdPGAInntektNesteArDto(
         val inntektstak: Kroner,
         val inntektEtterUforhet: Kroner,
         val fribelop: Kroner,
+        val begrensningFribelop: Boolean,
         val bunnfradrag: Kroner,
         val okningUforegradVedArskjoring: Boolean?,
         val fribelopsperioder: List<Fribelopsperiode>,
