@@ -145,9 +145,10 @@ fun JobConfig.updateBrevredigeringJson(tekniskVersjon: TekniskVersjon) {
     }
 }
 
-fun JobConfig.updateRedigertVedleggJson() {
+fun JobConfig.updateRedigertVedleggJson(tekniskVersjon: TekniskVersjon) {
     val alleVedleggIder = transaction {
         RedigertVedleggTable.select(RedigertVedleggTable.brevredigering, RedigertVedleggTable.vedleggId)
+            .where { RedigertVedleggTable.tekniskVersjon less tekniskVersjon }
             .map { it[RedigertVedleggTable.brevredigering] to it[RedigertVedleggTable.vedleggId] }
     }
     val ikkeAktivtReservertTidspunkt = Instant.now().minus(15.minutes.toJavaDuration())
@@ -163,6 +164,7 @@ fun JobConfig.updateRedigertVedleggJson() {
                 .select(
                     BrevredigeringTable.sistReservert,
                     RedigertVedleggTable.redigertVedleggKryptert,
+                    RedigertVedleggTable.rendretVedlegg,
                 )
                 .where { radFilter }
                 .forUpdate(ForUpdateOption.ForUpdate)
@@ -176,6 +178,8 @@ fun JobConfig.updateRedigertVedleggJson() {
                 val redigertVedlegg = rad[RedigertVedleggTable.redigertVedleggKryptert]
                 update[RedigertVedleggTable.redigertVedleggKryptert] = redigertVedlegg
                 update[RedigertVedleggTable.redigertVedleggKryptertHash] = Hash.read(redigertVedlegg)
+                update[RedigertVedleggTable.rendretVedlegg] = rad[RedigertVedleggTable.rendretVedlegg]
+                update[RedigertVedleggTable.tekniskVersjon] = tekniskVersjon
             }
             antallOppdaterte++
         }

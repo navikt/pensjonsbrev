@@ -157,10 +157,10 @@ fun Application.skribentenApp() {
             oneShotJobs(leaderService) {
                 // Sett opp evt. jobber her
                 job("2026-11-19-oppdater-brevredigering-json") {
-                    updateBrevredigeringJson()
+                    updateBrevredigeringJson(it)
                 }
                 job("2026-11-19-oppdater-redigert-vedlegg-json") {
-                    updateRedigertVedleggJson()
+                    updateRedigertVedleggJson(it)
                 }
             }
         }
