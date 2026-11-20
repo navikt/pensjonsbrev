@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.oktBunnfradragNesteArDto.vedtakVirkFom
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OpplysningerBruktIBeregningUTProfil
 import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.OktBunnfradragNesteAr
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.Brevkategori
@@ -52,7 +53,7 @@ object OktBunnfradragNesteArRedigerbar : RedigerbarTemplate<OktBunnfradragNesteA
         outline {
             includePhrase(OktBunnfradragNesteAr.Outline(pesysData.data))
         }
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.data.pe)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING), pesysData.data.pe)
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, pesysData.data.orienteringOmRettigheterUfoere)
     }
 }

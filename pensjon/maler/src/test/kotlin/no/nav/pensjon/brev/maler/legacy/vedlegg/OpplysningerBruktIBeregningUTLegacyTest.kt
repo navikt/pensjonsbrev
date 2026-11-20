@@ -19,7 +19,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
     @Test
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
-            vedleggOpplysningerBruktIBeregningUTLegacy,
+            vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING_BARNETILLEGG),
             createPEgruppe10().expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
@@ -56,7 +56,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
             )
         )
         val template = createVedleggTestTemplate(
-            vedleggOpplysningerBruktIBeregningUTLegacy,
+            vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.INNVILGELSE),
             medInntektsdetaljer.expr(),
             languages(Language.Bokmal, Language.Nynorsk),
         )

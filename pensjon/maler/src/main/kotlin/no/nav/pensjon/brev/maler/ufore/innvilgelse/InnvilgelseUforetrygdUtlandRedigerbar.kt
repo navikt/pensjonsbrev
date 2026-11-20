@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OpplysningerBruktIBeregningUTProfil
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.Innvilgelse.BarnetilleggOgInntekt
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -412,7 +413,7 @@ object InnvilgelseUforetrygdUtlandRedigerbar : RedigerbarTemplate<InnvilgelseUfo
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         @OptIn(RedigerbartVedlegg::class)
-        includeAttachmentRedigerbar(VedleggId("innvilgelseUTUtlandBeregningVedlegg"),vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachmentRedigerbar(VedleggId("innvilgelseUTUtlandBeregningVedlegg"),vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.INNVILGELSE), pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)
     }
 }

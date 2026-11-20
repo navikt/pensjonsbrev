@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArRedigerbarDto.pesysData.vedtakData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OpplysningerBruktIBeregningUTProfil
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -56,7 +57,7 @@ object EndretUforetrygdPGAInntektNesteArRedigerbar : RedigerbarTemplate<EndretUf
             includePhrase(EndretUforetrygdPGAInntektNesteArFelles.Outline(data))
         }
 
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING_PGA_INNTEKT), data.pe)
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, data.orienteringOmRettigheterUfoere)
     }
 }

@@ -11,10 +11,11 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class TrygdetidNorAvdoedInnledning(
     val pe: Expression<PEgruppe10>,
+    val visForklaringForBrevtype: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         ifNotNull(pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom()) {trygdetidFom ->
-            showIf((pe.ut_trygdetid_avdod() and ((pe.ut_sum_fattnorge_framtidigttnorge_div_12_avdod().lessThan(40) and not(pe.grunnlag_persongrunnlagavdod_brukerflyktning())) or (pe.vedtaksdata_kravhode_boddarbeidutlandavdod() and not(pe.grunnlag_persongrunnlagavdod_brukerflyktning()))) and pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull())){
+            showIf((pe.ut_trygdetid_avdod(visForklaringForBrevtype) and ((pe.ut_sum_fattnorge_framtidigttnorge_div_12_avdod().lessThan(40) and not(pe.grunnlag_persongrunnlagavdod_brukerflyktning())) or (pe.vedtaksdata_kravhode_boddarbeidutlandavdod() and not(pe.grunnlag_persongrunnlagavdod_brukerflyktning()))) and pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull())){
                 paragraph {
                     text (
                         bokmal { + "Den faktiske norske trygdetiden til avdøde er fastsatt ut fra følgende perioder:" },
