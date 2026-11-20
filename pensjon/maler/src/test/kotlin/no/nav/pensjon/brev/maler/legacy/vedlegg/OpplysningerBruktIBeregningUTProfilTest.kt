@@ -15,7 +15,6 @@ internal val legacyBrevkode: Map<OpplysningerBruktIBeregningUTProfil, String> = 
     NY_BEREGNING_BARNETILLEGG_MANUELL to "PE_UT_04_109",
     OEKNING_UFOEREGRAD to "PE_UT_04_114",
     FULL_EKSPORT to "PE_UT_04_115",
-    UKJENT_04_116 to "PE_UT_04_116",
     OMREGNING_UP_TIL_UT to "PE_UT_04_300",
     OMREGNING_UP_TIL_UT_AUTO to "PE_UT_14_300",
     ENDRING_PGA_INNTEKT_AUTO to "PE_UT_05_100",
@@ -66,7 +65,7 @@ class OpplysningerBruktIBeregningUTProfilTest {
         ),
         Triple(
             "erBeregningsendring", { it.erBeregningsendring },
-            setOf("PE_UT_04_102", "PE_UT_04_116", "PE_UT_04_101", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300"),
+            setOf("PE_UT_04_102", "PE_UT_04_101", "PE_UT_04_114", "PE_UT_04_300", "PE_UT_14_300"),
         ),
         Triple(
             "visMinsteytelse", { it.visMinsteytelse },

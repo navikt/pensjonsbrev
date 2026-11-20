@@ -35,9 +35,6 @@ enum class OpplysningerBruktIBeregningUTProfil {
     /** PE_UT_04_115 – Vedtak: full eksport av uføretrygd. */
     FULL_EKSPORT,
 
-    /** PE_UT_04_116 – brevtypen er ikke beskrevet i brevmetadata; inngår kun i [erBeregningsendring]. */
-    UKJENT_04_116,
-
     /** PE_UT_04_300 – Vedtak: omregning av uførepensjon til uføretrygd. */
     OMREGNING_UP_TIL_UT,
 
@@ -113,7 +110,7 @@ enum class OpplysningerBruktIBeregningUTProfil {
 
     /** Brevtyper som representerer en (re)beregning der reduksjonsprosentavsnittet er aktuelt. */
     val erBeregningsendring: Boolean
-        get() = this in setOf(ENDRING, UKJENT_04_116, INNVILGELSE, OEKNING_UFOEREGRAD, OMREGNING_UP_TIL_UT, OMREGNING_UP_TIL_UT_AUTO)
+        get() = this in setOf(ENDRING, INNVILGELSE, OEKNING_UFOEREGRAD, OMREGNING_UP_TIL_UT, OMREGNING_UP_TIL_UT_AUTO)
 
     /** Brevtyper som viser minsteytelseseksjonen. */
     val visMinsteytelse: Boolean
