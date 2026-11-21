@@ -171,7 +171,7 @@ async function selectTextInElement(page: Page, elementText: string, targetSubstr
       const selection = globalThis.getSelection()!;
       selection.removeAllRanges();
       selection.addRange(range);
-      (node.parentElement as HTMLElement)?.focus();
+      node.parentElement?.closest<HTMLElement>('[contenteditable="true"]')?.focus();
     },
     { elementText, targetSubstring },
   );
@@ -199,7 +199,7 @@ async function selectFullElement(page: Page, text: string) {
     const selection = globalThis.getSelection()!;
     selection.removeAllRanges();
     selection.addRange(range);
-    (node.parentElement as HTMLElement)?.focus();
+    node.parentElement?.closest<HTMLElement>('[contenteditable="true"]')?.focus();
   }, text);
 }
 
@@ -230,7 +230,7 @@ async function placeCaretBefore(page: Page, elementText: string, targetSubstring
       const selection = globalThis.getSelection()!;
       selection.removeAllRanges();
       selection.addRange(range);
-      (node.parentElement as HTMLElement)?.focus();
+      node.parentElement?.closest<HTMLElement>('[contenteditable="true"]')?.focus();
     },
     { elementText, targetSubstring },
   );
@@ -648,7 +648,7 @@ test.describe("Switch font type", () => {
         const selection = globalThis.getSelection()!;
         selection.removeAllRanges();
         selection.addRange(range);
-        (node.parentElement as HTMLElement)?.focus();
+        node.parentElement?.closest<HTMLElement>('[contenteditable="true"]')?.focus();
       });
 
       await page.getByTestId("fonttype-bold-button").click();

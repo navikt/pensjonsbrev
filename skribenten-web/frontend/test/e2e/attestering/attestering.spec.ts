@@ -73,7 +73,7 @@ test.describe("attestering", () => {
     await page.locator(":focus").pressSequentially("Dette er en signatur");
 
     await page.clock.install();
-    await page.locator("span[contenteditable='true']", { hasText: "ankomst til Norge." }).focus();
+    await page.locator("[data-literal]", { hasText: "ankomst til Norge." }).click();
     await page.locator(":focus").press("End");
     await page.locator(":focus").press("Enter");
     await page.locator(":focus").pressSequentially("Dette er en ny tekstblokk", { delay: 20 });
@@ -204,7 +204,7 @@ test.describe("attestering", () => {
     await signatureSavePromise;
 
     // oppdaterer brevtekst
-    await page.locator("span[contenteditable='true']", { hasText: "weeks." }).click();
+    await page.locator("[data-literal]", { hasText: "weeks." }).click();
     await page.keyboard.press("End");
     await page.keyboard.press("Enter");
     await page.keyboard.type("Dette er en ny tekstblokk", { delay: 20 });

@@ -76,8 +76,19 @@ async function navigateToEditor(page: Page) {
 }
 
 async function assertCaret(page: Page, content: string, caretOffset: number) {
-  const focused = page.locator(":focus");
-  await expect(focused).toContainText(content);
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const sel = globalThis.getSelection();
+        if (!sel || sel.rangeCount === 0) return "";
+        const literal = (
+          sel.anchorNode?.nodeType === Node.ELEMENT_NODE ? (sel.anchorNode as Element) : sel.anchorNode?.parentElement
+        )?.closest<HTMLElement>("[data-literal]");
+        const host = literal?.closest<HTMLElement>('[contenteditable="true"]');
+        return host && document.activeElement === host ? (literal?.textContent ?? "") : "";
+      }),
+    )
+    .toContain(content);
   const offset = await page.evaluate(() => {
     const sel = globalThis.getSelection();
     return sel?.rangeCount ? sel.getRangeAt(0).startOffset : -1;
@@ -129,10 +140,10 @@ test.describe("Typography", () => {
         const typographySelect = page.getByTestId("typography-select");
         await expect(typographySelect).toHaveValue(/1/);
 
-        await page.getByText("title1").press("Alt+4");
+        await page.keyboard.press("Alt+4");
         await expect(page.locator('.PARAGRAPH:has-text("Dette er en title1 block")')).toBeVisible();
 
-        await page.getByText("title1").press("Alt+1");
+        await page.keyboard.press("Alt+1");
         await expect(page.locator('.TITLE1:has-text("Dette er en title1 block")')).toBeVisible();
       });
 
@@ -176,10 +187,10 @@ test.describe("Typography", () => {
         const typographySelect = page.getByTestId("typography-select");
         await expect(typographySelect).toHaveValue(/2/);
 
-        await page.getByText("title2").press("Alt+4");
+        await page.keyboard.press("Alt+4");
         await expect(page.locator('.PARAGRAPH:has-text("Dette er en title2 block")')).toBeVisible();
 
-        await page.getByText("title2").press("Alt+2");
+        await page.keyboard.press("Alt+2");
         await expect(page.locator('.TITLE2:has-text("Dette er en title2 block")')).toBeVisible();
       });
 
@@ -223,10 +234,10 @@ test.describe("Typography", () => {
         const typographySelect = page.getByTestId("typography-select");
         await expect(typographySelect).toHaveValue(/3/);
 
-        await page.getByText("title3").press("Alt+4");
+        await page.keyboard.press("Alt+4");
         await expect(page.locator('.PARAGRAPH:has-text("Dette er en title3 block")')).toBeVisible();
 
-        await page.getByText("title3").press("Alt+3");
+        await page.keyboard.press("Alt+3");
         await expect(page.locator('.TITLE3:has-text("Dette er en title3 block")')).toBeVisible();
       });
 
@@ -268,10 +279,10 @@ test.describe("Typography", () => {
       test("toggler av/på", async ({ page }) => {
         await page.getByText("paragraph").click();
 
-        await page.getByText("paragraph").press("Alt+1");
+        await page.keyboard.press("Alt+1");
         await expect(page.locator('.TITLE1:has-text("Dette er en paragraph block")')).toBeVisible();
 
-        await page.getByText("paragraph").press("Alt+4");
+        await page.keyboard.press("Alt+4");
         await expect(page.locator('.PARAGRAPH:has-text("Dette er en paragraph block")')).toBeVisible();
       });
 

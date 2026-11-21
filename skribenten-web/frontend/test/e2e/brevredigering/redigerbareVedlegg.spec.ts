@@ -595,10 +595,10 @@ test.describe("Redigerbare vedlegg", () => {
       .catch(() => undefined);
 
     await expect.poll(() => lagringer.length, { timeout: 10_000 }).toBe(1);
-    const redigerbarTekst = page.locator("span[contenteditable='true']", { hasText: "AAA" });
-    await redigerbarTekst.focus();
-    await redigerbarTekst.press("End");
-    await redigerbarTekst.pressSequentially("BBB");
+    const redigerbarTekst = page.locator("[data-literal]", { hasText: "AAA" });
+    await redigerbarTekst.click();
+    await page.keyboard.press("End");
+    await page.keyboard.type("BBB");
 
     await expect(page).toHaveURL(/brevbehandler/, { timeout: 20_000 });
     expect(lagringer).toHaveLength(2);

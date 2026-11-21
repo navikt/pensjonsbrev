@@ -52,15 +52,28 @@ async function setupEditor(page: Page, blocks: ReturnType<typeof newParagraph>[]
 }
 
 function headerCell(page: Page, columnIndex: number) {
-  return page.getByTestId(`table-header-${columnIndex}`).locator("span[contenteditable=true]").first();
+  return page.getByTestId(`table-header-${columnIndex}`).locator("[data-literal]").first();
 }
 
 function bodyCell(page: Page, rowIndex: number, cellIndex: number) {
-  return page.getByTestId(`table-cell-${rowIndex}-${cellIndex}`).locator("span[contenteditable=true]").first();
+  return page.getByTestId(`table-cell-${rowIndex}-${cellIndex}`).locator("[data-literal]").first();
 }
 
 async function assertFocused(_page: Page, locator: ReturnType<typeof bodyCell>) {
-  await expect(locator).toBeFocused();
+  await expect
+    .poll(() =>
+      locator.evaluate((element) => {
+        const host = element.closest<HTMLElement>('[contenteditable="true"]');
+        const selection = globalThis.getSelection();
+        return (
+          document.activeElement === host &&
+          !!selection &&
+          selection.rangeCount > 0 &&
+          element.contains(selection.anchorNode)
+        );
+      }),
+    )
+    .toBe(true);
 }
 
 async function visualLines(locator: ReturnType<typeof bodyCell>) {
@@ -79,8 +92,8 @@ async function visualLines(locator: ReturnType<typeof bodyCell>) {
 }
 
 async function placeCaret(locator: ReturnType<typeof bodyCell>, offset: number) {
-  await locator.focus();
   await locator.evaluate((element, position) => {
+    element.closest<HTMLElement>('[contenteditable="true"]')?.focus({ preventScroll: true });
     const range = document.createRange();
     range.setStart(element.firstChild!, position);
     range.collapse(true);
@@ -121,7 +134,7 @@ test.describe("Table fallback caret boundaries", () => {
 
       await page.keyboard.press("ArrowDown");
 
-      await expect(target).toBeFocused();
+      await assertFocused(page, target);
       expect((await caretPosition(page)).offset).toBe(boundary === "before" ? 0 : 5);
       await page.keyboard.type("!");
       await expect(target).toHaveText(boundary === "before" ? "!short" : "short!");
@@ -144,7 +157,7 @@ test.describe("Table fallback caret boundaries", () => {
 
     await page.keyboard.press("ArrowDown");
 
-    await expect(bodyCell(page, 1, 0)).toBeFocused();
+    await assertFocused(page, bodyCell(page, 1, 0));
     expect((await caretPosition(page)).offset).toBe(0);
   });
 });
@@ -168,7 +181,7 @@ test.describe("Table visual-line navigation", () => {
 
       await page.keyboard.press(direction === "down" ? "ArrowDown" : "ArrowUp");
 
-      await expect(target).toBeFocused();
+      await assertFocused(page, target);
       const after = await caretPosition(page);
       expect(after.offset).toBe(4);
       expect(after.x).toBeCloseTo(before.x, 0);
@@ -189,7 +202,7 @@ test.describe("Table visual-line navigation", () => {
         await page.keyboard.press(direction === "up" ? "ArrowUp" : "ArrowDown");
 
         const target = bodyCell(page, direction === "up" ? 0 : 1, 0);
-        await expect(target).toBeFocused();
+        await assertFocused(page, target);
         expect((await caretPosition(page)).offset).toBe(targetText.length);
         await page.keyboard.type("!");
         await expect(target).toHaveText(`${targetText}!`);
@@ -209,10 +222,7 @@ test.describe("Table visual-line navigation", () => {
         await setupEditor(page, [newParagraph({ content: [newTable([row, structuredClone(row)])] })]);
         const sourceRow = direction === "up" ? 1 : 0;
         const sourceSpan = direction === "up" ? (acrossCells ? 0 : 1) : acrossCells ? 1 : 0;
-        const source = page
-          .getByTestId(`table-cell-${sourceRow}-0`)
-          .locator("span[contenteditable=true]")
-          .nth(sourceSpan);
+        const source = page.getByTestId(`table-cell-${sourceRow}-0`).locator("[data-literal]").nth(sourceSpan);
         await placeCaret(source, 4);
         const before = await caretPosition(page);
 
@@ -221,9 +231,9 @@ test.describe("Table visual-line navigation", () => {
         const targetRow = acrossCells ? 1 - sourceRow : sourceRow;
         const target = page
           .getByTestId(`table-cell-${targetRow}-0`)
-          .locator("span[contenteditable=true]")
+          .locator("[data-literal]")
           .nth(1 - sourceSpan);
-        await expect(target).toBeFocused();
+        await assertFocused(page, target);
         expect(Math.abs((await caretPosition(page)).x - before.x)).toBeLessThan(10);
         await page.keyboard.type("!");
         await expect(target).toContainText("!");
@@ -250,7 +260,7 @@ test.describe("Table visual-line navigation", () => {
         await page.keyboard.press(direction === "up" ? "ArrowUp" : "ArrowDown");
 
         const target = acrossCells ? bodyCell(page, direction === "up" ? 0 : 1, 0) : source;
-        await expect(target).toBeFocused();
+        await assertFocused(page, target);
         const targetLines = await visualLines(target);
         const expectedLine =
           direction === "up" ? targetLines.at(acrossCells ? -1 : -2)! : targetLines[acrossCells ? 0 : 1];
@@ -308,7 +318,7 @@ test.describe("Table ArrowDown navigation", () => {
 
     await bodyCell(page, 1, 0).click();
     await page.keyboard.press("ArrowDown");
-    await expect(page.locator(":focus")).toHaveText("After table");
+    await assertFocused(page, page.getByText("After table", { exact: true }));
   });
 
   test("enters table header when pressing ArrowDown on a literal directly preceding the table", async ({ page }) => {
@@ -319,7 +329,7 @@ test.describe("Table ArrowDown navigation", () => {
     ]);
 
     await page.getByText("Before table").click();
-    await expect(page.locator(":focus")).toHaveText("Before table");
+    await assertFocused(page, page.getByText("Before table", { exact: true }));
     await page.keyboard.press("ArrowDown");
     await assertFocused(page, headerCell(page, 0));
   });
@@ -335,7 +345,7 @@ test.describe("Table ArrowDown navigation", () => {
     await page.keyboard.press("ArrowDown");
     // Should enter second table's header — verify by checking focused text contains column spec
     const secondTable = page.getByTestId("letter-table").nth(1);
-    await expect(secondTable.locator("th span[contenteditable=true]").first()).toBeFocused();
+    await assertFocused(page, secondTable.locator("th [data-literal]").first());
   });
 });
 
@@ -386,7 +396,7 @@ test.describe("Table ArrowUp navigation", () => {
 
     await headerCell(page, 0).click();
     await page.keyboard.press("ArrowUp");
-    await expect(page.locator(":focus")).toHaveText("Before table");
+    await assertFocused(page, page.getByText("Before table", { exact: true }));
   });
 
   test("enters table last row when pressing ArrowUp on a literal directly following the table", async ({ page }) => {
@@ -397,7 +407,7 @@ test.describe("Table ArrowUp navigation", () => {
     ]);
 
     await page.getByText("After table").click();
-    await expect(page.locator(":focus")).toHaveText("After table");
+    await assertFocused(page, page.getByText("After table", { exact: true }));
     await page.keyboard.press("ArrowUp");
     await assertFocused(page, bodyCell(page, 1, 0));
   });
@@ -413,9 +423,9 @@ test.describe("Table ArrowUp navigation", () => {
     await page.keyboard.press("ArrowUp");
     // Now at second table's header
     const secondTable = page.getByTestId("letter-table").nth(1);
-    await expect(secondTable.locator("th span[contenteditable=true]").first()).toBeFocused();
+    await assertFocused(page, secondTable.locator("th [data-literal]").first());
     // Press ArrowUp again — should enter first table's last row
     await page.keyboard.press("ArrowUp");
-    await expect(page.locator(":focus")).toContainText("T1R1");
+    await assertFocused(page, page.getByText("T1R1", { exact: true }));
   });
 });

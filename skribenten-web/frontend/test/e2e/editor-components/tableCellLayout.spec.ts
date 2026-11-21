@@ -68,9 +68,9 @@ test.describe("Table cell layout", () => {
     ]);
 
     const cell = cellLocator(page, 0, 0);
-    const literalBefore = cell.locator("span[contenteditable=true]").nth(0);
-    const variable = cell.locator("span:not([contenteditable])").first();
-    const literalAfter = cell.locator("span[contenteditable=true]").nth(1);
+    const literalBefore = cell.locator("[data-literal]").nth(0);
+    const variable = cell.locator("[data-variable]").first();
+    const literalAfter = cell.locator("[data-literal]").nth(1);
 
     const cellBox = await cell.boundingBox();
     const beforeBox = await literalBefore.boundingBox();
@@ -95,8 +95,8 @@ test.describe("Table cell layout", () => {
     await setupEditor(page, [newParagraph({ content: [table] })]);
 
     const header = page.getByTestId("table-header-0");
-    const literal = header.locator("span[contenteditable=true]").first();
-    const variable = header.locator("span:not([contenteditable])").first();
+    const literal = header.locator("[data-literal]").first();
+    const variable = header.locator("[data-variable]").first();
 
     const headerBox = await header.boundingBox();
     const literalBox = await literal.boundingBox();
@@ -122,6 +122,6 @@ test.describe("Table cell layout", () => {
     await page.mouse.click(cellBox!.x + cellBox!.width / 2, cellBox!.y + cellBox!.height / 2);
     await page.keyboard.type("Tekst");
 
-    await expect(cell.locator("span[contenteditable=true]").first()).toContainText("Tekst");
+    await expect(cell.locator("[data-literal]").first()).toContainText("Tekst");
   });
 });

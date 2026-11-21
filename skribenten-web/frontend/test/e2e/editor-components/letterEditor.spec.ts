@@ -159,7 +159,7 @@ async function copyText(page: Page, source: Locator) {
     selection.addRange(range);
   });
   await page.keyboard.press("ControlOrMeta+c");
-  await expect(source).toHaveAttribute("contenteditable", "true");
+  await expect(source).toBeEditable();
 }
 
 // On macOS the native context menu opens on pointerdown and consumes the pointerup.
@@ -178,15 +178,31 @@ async function nativePaste(context: BrowserContext, page: Page) {
   await cdp.detach();
 }
 
+async function expectCaretInsideLiteral(editable: Locator) {
+  await expect
+    .poll(() =>
+      editable.evaluate((element) => {
+        const host = element.closest<HTMLElement>('[contenteditable="true"]');
+        const selection = globalThis.getSelection();
+        return (
+          document.activeElement === host &&
+          !!selection &&
+          selection.rangeCount > 0 &&
+          element.contains(selection.anchorNode)
+        );
+      }),
+    )
+    .toBe(true);
+}
+
 async function expectEditableCaretAtEndAfterMouseMove(page: Page, editable: Locator, pastedText: string) {
   const bounds = await editable.boundingBox();
   if (!bounds) throw new Error("Missing pasted text bounds");
   await page.mouse.move(bounds.x + 2, bounds.y + bounds.height / 2);
   await page.mouse.move(bounds.x + bounds.width + 40, bounds.y + bounds.height / 2);
 
-  await expect(page.locator(".editor-surface")).not.toHaveClass(/is-drag-selecting/);
-  await expect(editable).toHaveAttribute("contenteditable", "true");
-  await expect(editable).toBeFocused();
+  await expect(editable).toBeEditable();
+  await expectCaretInsideLiteral(editable);
   await assertCaret(page, pastedText, pastedText.length, { expectExact: true });
 }
 
@@ -281,7 +297,7 @@ async function insertManualLineBreak(page: Page, text: string, offset: number) {
     const textNode = element.firstChild;
     if (!textNode) throw new Error("Could not find text node");
 
-    element.focus({ preventScroll: true });
+    element.closest<HTMLElement>('[contenteditable="true"]')?.focus({ preventScroll: true });
     const range = document.createRange();
     range.setStart(textNode, caretOffset);
     range.collapse(true);
@@ -332,9 +348,19 @@ async function assertCaret(
   expectedCaretOffset: number,
   precision?: { expectExact: boolean },
 ) {
-  // Verify focused element contains the expected text
-  const focused = page.locator(":focus");
-  await expect(focused).toContainText(expectedContent);
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const sel = globalThis.getSelection();
+        if (!sel || sel.rangeCount === 0) return "";
+        const literal = (
+          sel.anchorNode?.nodeType === Node.ELEMENT_NODE ? (sel.anchorNode as Element) : sel.anchorNode?.parentElement
+        )?.closest<HTMLElement>("[data-literal]");
+        const host = literal?.closest<HTMLElement>('[contenteditable="true"]');
+        return host && document.activeElement === host ? (literal?.textContent ?? "") : "";
+      }),
+    )
+    .toContain(expectedContent);
 
   // Check caret offset with tolerance of ±15 to account for font rendering differences
   const actualOffset = await page.evaluate(() => {
@@ -344,7 +370,6 @@ async function assertCaret(
 
   if (process.env.E2E_UI_MODE) {
     console.info("ASSERT");
-    console.info("focused:", await focused.allTextContents());
     console.info(await getCaretDebugInfo(page));
     console.info("expectedContent:", expectedContent);
     console.info("expectedOffset:", expectedCaretOffset);
@@ -513,14 +538,14 @@ test.describe("LetterEditor", () => {
         .poll(async () => {
           return page.evaluate(() => {
             const sel = globalThis.getSelection();
-            if (!sel || sel.rangeCount === 0) return { offset: -1, text: "" };
+            if (!sel || sel.rangeCount === 0) return { offset: -1, isEditable: false };
             return {
               offset: sel.getRangeAt(0).startOffset,
-              text: sel.anchorNode?.parentElement?.getAttribute("contenteditable") ?? "",
+              isEditable: sel.anchorNode?.parentElement?.isContentEditable ?? false,
             };
           });
         })
-        .toEqual({ offset: validCursorPosition, text: "true" });
+        .toEqual({ offset: validCursorPosition, isEditable: true });
 
       // Now set an invalid cursor position (beyond text length) — should not crash
       await setEditorFocus(page, { blockIndex: 0, contentIndex: 2, cursorPosition: invalidCursorPosition });
@@ -639,7 +664,7 @@ test.describe("LetterEditor empty-line context menu", () => {
 
         await swallowNextPointerUp(page);
         await page.mouse.click(point.x, point.y, { button: "right" });
-        await expect(editable).toBeFocused();
+        await expectCaretInsideLiteral(editable);
         await expect
           .poll(() =>
             editable.evaluate((element) => {
@@ -660,7 +685,7 @@ test.describe("LetterEditor empty-line context menu", () => {
         await page.getByRole("button", { name: "Angre (Undo)" }).click();
         await expect(editable).toHaveAttribute("data-empty", "");
         await expect(editable).toHaveCSS("display", "block");
-        await expect(editable).toBeFocused();
+        await expectCaretInsideLiteral(editable);
 
         await page.keyboard.type("x");
         await expect(line).toHaveText("x");
@@ -736,6 +761,14 @@ test.describe("LetterEditor text fields", () => {
     await expect(filled).toHaveCSS("text-decoration-line", "none");
   });
 
+  test("typing after clicking a variable inserts the text right after the variable", async ({ page }) => {
+    await page.locator(".editor").getByText("Variabelverdi", { exact: true }).click();
+    await page.keyboard.type("X");
+
+    await expect(page.locator(".editor .PARAGRAPH").first()).toHaveText("Fyll inn fritekst VariabelverdiX");
+    await expect(page.locator(".editor .PARAGRAPH").nth(1)).toHaveText("Tom variabel:  slutt");
+  });
+
   test("variables match the gray design while retaining focus and empty-field behavior", async ({ page }, testInfo) => {
     const value = page.locator(".editor").getByText("Variabelverdi", { exact: true });
     await expect(value).toHaveCSS("background-color", "rgb(236, 237, 239)");
@@ -745,7 +778,7 @@ test.describe("LetterEditor text fields", () => {
     await expect(value).toHaveCSS("border-radius", "2px");
     await expect(value).toHaveCSS("padding-inline-start", "2px");
 
-    const empty = page.locator(".editor .PARAGRAPH").nth(1).locator("[data-literal-index]:not([contenteditable])");
+    const empty = page.locator(".editor .PARAGRAPH").nth(1).locator("[data-variable]");
     await expect(empty).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
     await expect(empty).toHaveCSS("outline-style", "none");
     await expect(empty).toHaveCSS("padding-inline-start", "0px");
@@ -835,7 +868,15 @@ test.describe("LetterEditor scrolling navigation", () => {
    */
   async function largestScrollJumpWhileWalking(page: Page, key: "ArrowDown" | "ArrowUp", until: string) {
     const scrollTop = () => page.locator(".editor").evaluate((element) => element.parentElement?.scrollTop ?? -1);
-    const focusedText = () => page.evaluate(() => document.activeElement?.textContent ?? "");
+    const focusedText = () =>
+      page.evaluate(() => {
+        const sel = globalThis.getSelection();
+        if (!sel || sel.rangeCount === 0) return "";
+        const literal = (
+          sel.anchorNode?.nodeType === Node.ELEMENT_NODE ? (sel.anchorNode as Element) : sel.anchorNode?.parentElement
+        )?.closest<HTMLElement>("[data-literal]");
+        return literal?.textContent ?? "";
+      });
     const containerHeight = await page
       .locator(".editor")
       .evaluate((element) => element.parentElement?.clientHeight ?? -1);
@@ -889,4 +930,155 @@ test.describe("LetterEditor scrolling navigation", () => {
       ).toBeLessThan(containerHeight / 4);
     });
   }
+});
+
+test.describe("LetterEditor root-editable surface", () => {
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [
+            paragraph({
+              id: 1,
+              content: [makeLiteral(11, 1, "Copy me")],
+            }),
+            paragraph({
+              id: 2,
+              content: [
+                makeLiteral(21, 2, "Beløpet er "),
+                makeVariable(22, 2, "12 345 kr"),
+                makeLiteral(23, 2, " per måned."),
+              ],
+            }),
+            paragraph({
+              id: 3,
+              content: [makeLiteral(31, 3, "Siste avsnitt.")],
+            }),
+            paragraph({
+              id: 4,
+              content: [makeLiteral(41, 4, "First "), makeLiteral(42, 4, "Middle "), makeLiteral(43, 4, "Last")],
+            }),
+          ],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+  });
+
+  test("paragraph margins and side gutters are contentEditable and support right-click native paste", async ({
+    page,
+    context,
+  }) => {
+    const source = page.locator(".editor-surface > .PARAGRAPH:first-child > [data-literal]");
+    await copyText(page, source);
+
+    const firstParagraph = page.locator(".editor-surface > .PARAGRAPH").nth(0);
+    const secondParagraph = page.locator(".editor-surface > .PARAGRAPH").nth(1);
+    const surfaceBox = await page.locator(".editor-surface").boundingBox();
+    const firstBox = await firstParagraph.boundingBox();
+    const secondBox = await secondParagraph.boundingBox();
+    expect(surfaceBox && firstBox && secondBox).toBeTruthy();
+
+    const marginPoint = {
+      x: firstBox!.x + 40,
+      y: Math.round((firstBox!.y + firstBox!.height + secondBox!.y) / 2),
+    };
+    const gutterPoint = {
+      x: surfaceBox!.x + 12,
+      y: Math.round(secondBox!.y + secondBox!.height / 2),
+    };
+
+    for (const pt of [marginPoint, gutterPoint]) {
+      expect(
+        await page.evaluate(({ x, y }) => {
+          const el = document.elementFromPoint(x, y);
+          return el instanceof HTMLElement && el.isContentEditable;
+        }, pt),
+      ).toBe(true);
+    }
+
+    await swallowNextPointerUp(page);
+    await page.mouse.click(marginPoint.x, marginPoint.y, { button: "right" });
+    await page.keyboard.press("Escape");
+    await nativePaste(context, page);
+
+    await expect(secondParagraph).toContainText("Copy me");
+  });
+
+  test("drag-selecting across literals and a non-editable variable supports typing replacement and single-step undo", async ({
+    page,
+  }) => {
+    const secondParagraph = page.locator(".editor-surface > .PARAGRAPH").nth(1);
+    const beforeVar = secondParagraph.locator("[data-literal]").nth(0);
+    const afterVar = secondParagraph.locator("[data-literal]").nth(1);
+
+    const startBox = await beforeVar.boundingBox();
+    const endBox = await afterVar.boundingBox();
+    expect(startBox && endBox).toBeTruthy();
+
+    await page.mouse.move(startBox!.x + startBox!.width - 10, startBox!.y + startBox!.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(endBox!.x + 25, endBox!.y + endBox!.height / 2, { steps: 5 });
+    await page.mouse.up();
+
+    const selected = await page.evaluate(() => globalThis.getSelection()?.toString() ?? "");
+    expect(selected).toContain("12 345 kr");
+
+    await page.keyboard.type("X");
+    await expect(secondParagraph.locator("[data-variable]")).toHaveCount(0);
+    await expect(secondParagraph).toContainText("X");
+
+    await page.keyboard.press("ControlOrMeta+z");
+    await expect(secondParagraph.locator("[data-variable]")).toHaveText("12 345 kr");
+    await expect(secondParagraph).toHaveText("Beløpet er 12 345 kr per måned.");
+  });
+
+  test("IME composition inside the root surface reconciles into the model cleanly", async ({ page, context }) => {
+    const target = page.locator(".editor-surface > .PARAGRAPH").nth(2).locator("[data-literal]");
+    await target.click();
+    await page.keyboard.press("End");
+
+    const cdp = await context.newCDPSession(page);
+    await cdp.send("Input.imeSetComposition", {
+      text: " å",
+      selectionStart: 2,
+      selectionEnd: 2,
+    });
+    await cdp.send("Input.insertText", { text: " å" });
+    await cdp.detach();
+
+    await expect(target).toHaveText("Siste avsnitt. å");
+  });
+
+  test("model selection controls boundary typing, triple-click replacement, and MutationObserver recovery", async ({
+    page,
+  }) => {
+    const fourthParagraph = page.locator(".editor-surface > .PARAGRAPH").nth(3);
+    const first = fourthParagraph.locator("[data-literal]").nth(0);
+    const middle = fourthParagraph.locator("[data-literal]").nth(1);
+    const last = fourthParagraph.locator("[data-literal]").nth(2);
+
+    await setEditorFocus(page, { blockIndex: 3, contentIndex: 1, cursorPosition: 0 });
+    await page.keyboard.type("X");
+    await expect(first).toHaveText("First ");
+    await expect(middle).toHaveText("XMiddle ");
+    await expect(last).toHaveText("Last");
+
+    await middle.click({ clickCount: 3 });
+    await page.keyboard.type("Replaced ");
+    await expect(first).toHaveText("First ");
+    await expect(middle).toHaveText("Replaced ");
+    await expect(last).toHaveText("Last");
+
+    await fourthParagraph.evaluate((el) => {
+      const spans = el.querySelectorAll("[data-literal]");
+      spans[0].textContent = "Corrupted";
+      spans[2].remove();
+    });
+
+    await expect(fourthParagraph.locator("[data-literal]").nth(0)).toHaveText("First ");
+    await expect(fourthParagraph.locator("[data-literal]").nth(1)).toHaveText("Replaced ");
+    await expect(fourthParagraph.locator("[data-literal]").nth(2)).toHaveText("Last");
+  });
 });

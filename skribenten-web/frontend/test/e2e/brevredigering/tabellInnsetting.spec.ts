@@ -34,7 +34,7 @@ const rightClickCell = (page: Page, row: number, col: number) =>
   page.getByTestId(`table-cell-${row}-${col}`).click({ button: "right" });
 
 const tableCellEditor = (page: Page, row: number, col: number) =>
-  page.getByTestId(`table-cell-${row}-${col}`).locator("span[contenteditable=true]").first();
+  page.getByTestId(`table-cell-${row}-${col}`).locator("[data-literal]").first();
 
 const waitAfterAutosave = async (page: Page) => {
   const autosavePromise = page.waitForResponse(

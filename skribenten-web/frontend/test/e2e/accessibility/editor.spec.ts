@@ -59,6 +59,23 @@ function tableBlocks(): AnyBlock[] {
   ];
 }
 
+async function expectSelectionInLiteral(locator: ReturnType<Page["locator"]>) {
+  await expect
+    .poll(() =>
+      locator.evaluate((element) => {
+        const host = element.closest<HTMLElement>('[contenteditable="true"]');
+        const selection = globalThis.getSelection();
+        return (
+          document.activeElement === host &&
+          !!selection &&
+          selection.rangeCount > 0 &&
+          element.contains(selection.anchorNode)
+        );
+      }),
+    )
+    .toBe(true);
+}
+
 async function openTableEditor(page: Page) {
   await openEditor(page, tableBlocks());
   const letterTable = page.getByTestId("letter-table");
@@ -66,7 +83,7 @@ async function openTableEditor(page: Page) {
   await expect(letterTable.getByRole("columnheader")).toHaveText(["Opplysning", "Verdi"]);
   await expect(letterTable.locator("tbody tr")).toHaveCount(2);
   await expect(letterTable.getByRole("cell")).toHaveText(["Land", "Spania", "Svartid", "10 uker"]);
-  await expect(page.getByTestId("table-cell-0-0").locator("span[contenteditable=true]")).toBeEditable();
+  await expect(page.getByTestId("table-cell-0-0").locator("[data-literal]")).toBeEditable();
 }
 
 async function expectNoAxeViolations(page: Page, testInfo: TestInfo) {
@@ -218,9 +235,9 @@ test.describe("Letter editor accessibility", () => {
         await expect(editor).toHaveCSS("outline-style", "none");
         await page.keyboard.press("Tab");
         const entry = scenario.expectTitle
-          ? page.locator(".editor .letter-title span[contenteditable=true]").first()
+          ? page.locator(".editor .letter-title [data-literal]").first()
           : page.getByText(placeholder, { exact: true });
-        await expect(entry).toBeFocused();
+        await expectSelectionInLiteral(entry);
         await expect(editor).toHaveCSS("outline-style", "solid");
         await expect(editor).toHaveCSS("outline-width", "2px");
         await expect(editor).toHaveCSS("outline-offset", "-2px");
@@ -229,7 +246,7 @@ test.describe("Letter editor accessibility", () => {
           await page.keyboard.press("End");
           await page.keyboard.type("!");
           await expect(entry).toHaveText(`${originalText}!`);
-          await expect(entry).toBeFocused();
+          await expectSelectionInLiteral(entry);
           await expect(editor).toHaveCSS("outline-style", "solid");
           await page.keyboard.press("Backspace");
           await expect(entry).toHaveText(originalText ?? "");
@@ -238,14 +255,11 @@ test.describe("Letter editor accessibility", () => {
           await page.keyboard.press("Shift+Tab");
           await expect(resetButton).toBeFocused();
           await page.keyboard.press("Tab");
-          await expect(entry).toBeFocused();
+          await expectSelectionInLiteral(entry);
           await expect(editor).toHaveCSS("outline-style", "solid");
         } else {
           await expect.poll(() => page.evaluate(() => globalThis.getSelection()?.toString())).toBe(placeholder);
-          await expect(page.locator(".editor .letter-title span[contenteditable=true]").first()).toHaveAttribute(
-            "tabindex",
-            "-1",
-          );
+          await expect(page.locator(".editor .letter-title")).toHaveAttribute("tabindex", "-1");
         }
       });
     }
@@ -347,11 +361,11 @@ test.describe("Letter editor accessibility", () => {
       await openTableEditor(page);
       const editor = page.locator(".editor");
       const cellText = (rowIndex: number, cellIndex: number) =>
-        page.getByTestId(`table-cell-${rowIndex}-${cellIndex}`).locator("span[contenteditable=true]");
+        page.getByTestId(`table-cell-${rowIndex}-${cellIndex}`).locator("[data-literal]");
 
       await cellText(0, 0).click();
       await page.keyboard.press("Tab");
-      await expect(cellText(0, 1)).toBeFocused();
+      await expectSelectionInLiteral(cellText(0, 1));
       await expect(editor).toHaveCSS("outline-style", "none");
 
       await cellText(1, 1).click();
