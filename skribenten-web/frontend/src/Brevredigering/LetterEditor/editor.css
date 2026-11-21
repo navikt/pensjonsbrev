@@ -1,17 +1,24 @@
 .editor {
+  display: flex;
+  flex-direction: column;
   max-width: 720px;
   min-width: 480px;
   width: 100%;
-  padding: 0 var(--ax-space-48);
 
   /* make scrollbar reach the top with padding-top rathern than margin-top */
   padding-top: var(--ax-space-12);
 
   [contenteditable] {
+    &:focus,
+    &:focus-visible,
     &:focus-within {
       outline: none;
     }
   }
+}
+
+.editor > :not(.letter-title, .editor-surface) {
+  padding-inline: var(--ax-space-48);
 }
 
 .editor[data-focus-ring="true"] {
@@ -20,13 +27,23 @@
 }
 
 .letter-title {
-  margin-bottom: var(--ax-space-20);
+  margin-bottom: 0;
+  padding: 0 var(--ax-space-48) var(--ax-space-20);
   font-weight: 700;
   letter-spacing: 0.108px;
   line-height: 1.875rem; /* Effektiv linjehøyde */
   > span {
     line-height: 1.625rem; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
   }
+}
+
+.editor-surface {
+  display: flow-root;
+  padding-inline: var(--ax-space-48);
+}
+
+.editor-surface[data-fill-height="true"] {
+  flex-grow: 1;
 }
 
 .editor-surface,
@@ -39,37 +56,32 @@
   cursor: text;
 }
 
-.editor-surface.is-drag-selecting [data-literal-index] {
-  caret-color: transparent;
+.editor [data-literal] {
+  white-space: pre-wrap;
 }
 
-.editor-surface.is-drag-selecting [data-literal-index]:where(:focus, :focus-visible) {
-  outline: 0;
-  box-shadow: none;
-}
-
-.editor-surface :where(.PARAGRAPH, .TITLE1, .TITLE2, .TITLE3, li) > [data-literal-index][data-empty]:only-child {
-  display: block;
-  line-height: inherit;
-}
-
-.editor-surface td [data-literal-index]:is([contenteditable], [data-ce-orig]),
-.editor-surface th [data-literal-index]:is([contenteditable], [data-ce-orig]) {
+.editor-surface td [data-literal],
+.editor-surface th [data-literal] {
   display: inline;
   white-space: pre-wrap;
 }
 
 /* En tom literal (kun zero-width space) må ha et klikkbart område, uten å fylle hele cellen. */
-.editor-surface td [data-literal-index]:is([contenteditable], [data-ce-orig])[data-empty],
-.editor-surface th [data-literal-index]:is([contenteditable], [data-ce-orig])[data-empty] {
+.editor-surface td [data-literal][data-empty],
+.editor-surface th [data-literal][data-empty] {
   display: inline-block;
   min-width: 1ch;
   min-height: 1.4rem;
 }
 
+.editor-surface :where(.PARAGRAPH, .TITLE1, .TITLE2, .TITLE3, li) > [data-literal][data-empty]:only-child {
+  display: block;
+  line-height: inherit;
+}
+
 /* Begrens variabel-bokser (inline-block) til cellens bredde slik at lange verdier brytes. */
-.editor-surface td [data-literal-index]:not([contenteditable], [data-ce-orig], br),
-.editor-surface th [data-literal-index]:not([contenteditable], [data-ce-orig], br) {
+.editor-surface td [data-variable],
+.editor-surface th [data-variable] {
   max-width: 100%;
   box-sizing: border-box;
   overflow-wrap: break-word;

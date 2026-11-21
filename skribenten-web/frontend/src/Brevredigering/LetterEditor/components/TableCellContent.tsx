@@ -18,6 +18,6 @@ export function TableCellContent({ content, tableCellIndex }: TableCellContentPr
       return <Text content={content} literalIndex={tableCellIndex} />;
 
     case "NEW_LINE":
-      return <br />;
+      return <br data-literal-index={JSON.stringify(tableCellIndex)} />;
   }
 }

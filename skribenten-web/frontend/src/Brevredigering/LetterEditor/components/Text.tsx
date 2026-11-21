@@ -2,9 +2,12 @@ import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/mod
 import { FontType, type NewLine, type VariableValue } from "~/types/brevbakerTypes";
 
 import { isBlockContentIndex, isItemContentIndex } from "../actions/common";
+import { updateFocus } from "../actions/cursorPosition";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "../InsertedTekstValgHighlight";
 import { useEditor } from "../LetterEditor";
+import { applyAction } from "../lib/actions";
 import { isTableCellIndex } from "../model/utils";
+import { focusEditingHost } from "../services/caretUtils";
 
 export type TextProperties = {
   content: VariableValue | NewLine;
@@ -32,6 +35,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
          */
         <span
           className={isInserted ? "inserted-flash-text" : undefined}
+          contentEditable={false}
           css={{
             background: "var(--ax-bg-neutral-moderate)",
             color: "var(--ax-text-neutral)",
@@ -51,12 +55,14 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
             ...(content.fontType === FontType.BOLD ? { fontWeight: "var(--ax-font-weight-bold)" } : {}),
             ...(content.fontType === FontType.ITALIC ? { fontStyle: "italic" } : {}),
           }}
+          data-font-type={content.fontType === FontType.PLAIN ? undefined : content.fontType}
           data-literal-index={JSON.stringify(literalIndex)}
-          onClick={() => {
-            setEditorState((oldState) => ({
-              ...oldState,
-              focus: literalIndex,
-            }));
+          data-variable=""
+          onClick={(e) => {
+            const host = e.currentTarget.closest<HTMLElement>('[contenteditable="true"]');
+            focusEditingHost(host);
+            globalThis.getSelection()?.removeAllRanges();
+            applyAction(updateFocus, setEditorState, literalIndex);
           }}
         >
           {content.text}

@@ -3,6 +3,7 @@ import { StrictMode, useState } from "react";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
+import { EditableSurface } from "~/Brevredigering/LetterEditor/components/EditableSurface";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
@@ -15,9 +16,9 @@ function Editor({ initialState }: { initialState: LetterEditorState }) {
     <EditorStateContext.Provider
       value={{ freeze: false, error: false, editorState, setEditorState, undo: vi.fn(), redo: vi.fn() }}
     >
-      <div data-editor-root>
+      <EditableSurface data-editor-root>
         <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
-      </div>
+      </EditableSurface>
     </EditorStateContext.Provider>
   );
 }

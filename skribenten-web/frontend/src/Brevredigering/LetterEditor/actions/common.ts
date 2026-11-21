@@ -1244,13 +1244,24 @@ export function focusEmptyCellOnClick(event: MouseEvent<HTMLTableElement>) {
   const cell = event.target as HTMLElement;
   if (event.button !== 0 || (cell.tagName !== "TD" && cell.tagName !== "TH")) return;
   const selection = globalThis.getSelection();
-  if (!selection?.isCollapsed || cell.contains(document.activeElement)) return;
+  const host = cell.closest<HTMLElement>('[contenteditable="true"]');
+  if (!selection?.isCollapsed) return;
+  if (!host && cell.contains(document.activeElement)) return;
+  if (
+    host &&
+    document.activeElement === host &&
+    selection.anchorNode &&
+    cell.contains(selection.anchorNode) &&
+    selection.anchorNode.nodeType === Node.TEXT_NODE
+  ) {
+    return;
+  }
   if (cell.textContent?.replaceAll(ZERO_WIDTH_SPACE, "") !== "") return;
 
-  const literal = cell.querySelector<HTMLElement>("[data-literal-index][contenteditable=true]");
+  const literal = cell.querySelector<HTMLElement>("[data-literal],[data-literal-index][contenteditable=true]");
   const textNode = literal?.firstChild;
   if (textNode?.nodeType !== Node.TEXT_NODE) return;
 
-  literal?.focus();
+  (host ?? literal)?.focus({ preventScroll: true });
   selection.collapse(textNode, textNode.textContent?.length ?? 0);
 }

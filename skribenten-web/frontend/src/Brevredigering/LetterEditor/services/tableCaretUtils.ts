@@ -137,7 +137,7 @@ function getCaretRangeAtCoordinates({ x, y }: { x: number; y: number }): Range |
  */
 function editableLines(cell: Element) {
   const lines: { element: HTMLElement; rect: DOMRect; rectIndex: number }[] = [];
-  const elements = cell.querySelectorAll<HTMLElement>('[contenteditable="true"][data-literal-index]');
+  const elements = cell.querySelectorAll<HTMLElement>('[data-literal],[contenteditable="true"][data-literal-index]');
   for (const element of elements) {
     const range = document.createRange();
     range.selectNodeContents(element);
@@ -565,7 +565,7 @@ export function determineTableCellDeleteAction(
     return "IGNORE";
   }
 
-  const cursorOffset = getCursorOffset();
+  const cursorOffset = f.cursorPosition !== undefined && f.cursorPosition >= 0 ? f.cursorPosition : getCursorOffset();
   const isFirstTextInCell = f.cellContentIndex === 0;
   const cellIsEmpty = isCellEmpty(cell);
   const atStartOfThisTextNode = cursorOffset === 0 || (cursorOffset === 1 && cellIsEmpty);

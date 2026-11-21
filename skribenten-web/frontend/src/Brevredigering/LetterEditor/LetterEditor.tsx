@@ -13,16 +13,21 @@ import React, {
   useState,
 } from "react";
 
-import { isLetterDocument } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  collectAllLiteralValues,
+  countMissingFromTemplateBlocks,
+  getBlockClassName,
+  isLetterDocument,
+  isUneditedFritekst,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
-import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
+import { getCleanTextLength, parseLiteralIndex } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
 import { type MissingFromTemplateEventName, trackMissingFromTemplateAction } from "~/utils/editorTracking";
 
 import Actions from "./actions";
-import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
 import { ContentGroup } from "./components/ContentGroup";
+import { EditableSurface } from "./components/EditableSurface";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
@@ -63,9 +68,12 @@ export const LetterEditor = ({
   const tabHandledByEditor = useRef(false);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
 
-  useDragSelectUnifier(editorRoot, !freeze);
-
-  useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
+  const hasUneditedFritekst = collectAllLiteralValues(letter).some(isUneditedFritekst);
+  const titleHasUneditedFritekst = letter.title.text.some(
+    (content) => content.type === "LITERAL" && isUneditedFritekst(content),
+  );
+  const titleTabIndex = freeze ? -1 : !hasUneditedFritekst || titleHasUneditedFritekst ? 0 : -1;
+  const surfaceTabIndex = freeze ? -1 : !titleHasUneditedFritekst && hasUneditedFritekst ? 0 : -1;
 
   const sporMissingFromTemplateHandling = useCallback(
     (eventName: MissingFromTemplateEventName, blockIndex: number) =>
@@ -157,6 +165,17 @@ export const LetterEditor = ({
             onBlur={(event) => {
               if (!event.currentTarget.contains(event.relatedTarget)) setShowFocusRing(false);
             }}
+            onClick={(event) => {
+              if (freeze || event.target !== event.currentTarget || !editorRoot) return;
+              const allLiterals = editorRoot.querySelectorAll<HTMLElement>("[data-literal]");
+              const lastLiteral = allLiterals[allLiterals.length - 1];
+              if (!lastLiteral) return;
+              const len = getCleanTextLength(lastLiteral);
+              const idx = parseLiteralIndex(lastLiteral);
+              if (idx) {
+                applyAction(Actions.updateFocus, setEditorState, { ...idx, cursorPosition: len });
+              }
+            }}
             onKeyDown={(event) => {
               tabHandledByEditor.current = event.key === "Tab" && event.defaultPrevented;
             }}
@@ -167,34 +186,23 @@ export const LetterEditor = ({
             onPointerDown={() => setShowFocusRing(false)}
           >
             {isLetterDocument(letter) && <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />}
-            <Heading
+            <EditableSurface
+              as={Heading}
               className="letter-title"
+              isTitleSurface
               level="1"
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = "none";
-              }}
-              onDragStart={(e) => e.preventDefault()}
-              onDrop={(e) => e.preventDefault()}
               size="medium"
+              tabIndex={titleTabIndex}
             >
               <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
-            </Heading>
-            {/**
-             * biome-ignore lint/a11y/noStaticElementInteractions: Redigeringsflaten inneholder
-             * redigerbar, og derfor interaktiv, tekst
-             */}
-            <div
+            </EditableSurface>
+            <EditableSurface
               className="editor-surface"
               data-editor-root
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = "none";
-              }}
-              onDragStart={(e) => e.preventDefault()}
-              onDrop={(e) => e.preventDefault()}
+              data-fill-height={!isLetterDocument(letter)}
               onKeyDown={editorKeyboardShortcuts}
-              ref={editorRootRef}
+              surfaceRef={editorRootRef}
+              tabIndex={surfaceTabIndex}
             >
               {blocks.map((block, blockIndex) => (
                 <React.Fragment key={blockIndex}>
@@ -207,7 +215,12 @@ export const LetterEditor = ({
                     )}
                   >
                     {block.missingFromTemplate && showMissingFromTemplate && (
-                      <HStack className="missing-from-template-actions" gap="space-4" justify="end">
+                      <HStack
+                        className="missing-from-template-actions"
+                        contentEditable={false}
+                        gap="space-4"
+                        justify="end"
+                      >
                         <Button
                           icon={<CheckmarkIcon aria-hidden />}
                           onClick={() => {
@@ -239,7 +252,7 @@ export const LetterEditor = ({
                 </React.Fragment>
               ))}
               <DeletedBlocksAt blockIndex={blocks.length} trailing />
-            </div>
+            </EditableSurface>
             {isLetterDocument(letter) && <SignaturView signatur={letter.signatur} />}
           </Box>
         </VStack>

@@ -1,7 +1,9 @@
-import { fireEvent, render } from "@testing-library/react";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { act, render } from "@testing-library/react";
+import { useState } from "react";
+import { describe, expect, test, vi } from "vitest";
 
 import { EditableText } from "~/Brevredigering/LetterEditor/components/ContentGroup";
+import { EditableSurface } from "~/Brevredigering/LetterEditor/components/EditableSurface";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -10,35 +12,44 @@ import { letter, literal, paragraph } from "~test/support/letterEditorTestUtils"
 
 const literalIndex = { blockIndex: 0, contentIndex: 0 };
 
-const createEditorState = (): LetterEditorState => {
-  const state = letter(paragraph([literal({ text: "Test tekst" })]));
-  return {
-    ...state,
+function StatefulSurface({
+  onUpdate,
+  stateRef,
+}: {
+  onUpdate: CallbackReceiver<LetterEditorState>;
+  stateRef: { current: LetterEditorState };
+}) {
+  const [editorState, setEditorState] = useState<LetterEditorState>(() => ({
+    ...letter(paragraph([literal({ text: "Test tekst" })])),
     focus: { ...literalIndex, cursorPosition: undefined },
+  }));
+  stateRef.current = editorState;
+  const wrapped: CallbackReceiver<LetterEditorState> = (updater) => {
+    onUpdate(updater);
+    setEditorState((prev) => updater(prev));
   };
-};
-
-const renderEditable = (setEditorState: CallbackReceiver<LetterEditorState>) => {
-  const editorState = createEditorState();
   const content = editorState.redigertBrev.blocks[0].content[0] as LiteralValue;
 
-  return render(
+  return (
     <EditorStateContext.Provider
       value={{
         freeze: false,
         error: false,
         editorState,
-        setEditorState,
+        setEditorState: wrapped,
         undo: vi.fn(),
         redo: vi.fn(),
       }}
     >
-      <EditableText content={content} literalIndex={literalIndex} />
-    </EditorStateContext.Provider>,
+      <EditableSurface data-testid="surface">
+        <EditableText content={content} literalIndex={literalIndex} />
+      </EditableSurface>
+    </EditorStateContext.Provider>
   );
-};
+}
 
-const selectText = (node: HTMLElement, start: number, end: number, collapsed = false) => {
+const selectText = (surface: HTMLElement, node: HTMLElement, start: number, end: number, collapsed = false) => {
+  surface.focus();
   const textNode = node.firstChild as Text;
   const range = document.createRange();
   range.setStart(textNode, start);
@@ -51,45 +62,50 @@ const selectText = (node: HTMLElement, start: number, end: number, collapsed = f
   if (collapsed) {
     selection?.collapseToStart();
   }
+  document.dispatchEvent(new Event("selectionchange"));
 };
 
-describe("EditableText - updateFocus respects user selection", () => {
-  let setEditorStateMock: ReturnType<typeof vi.fn>;
-  let setEditorState: CallbackReceiver<LetterEditorState>;
-
-  beforeEach(() => {
-    setEditorStateMock = vi.fn();
-    setEditorState = setEditorStateMock as unknown as CallbackReceiver<LetterEditorState>;
-  });
-
-  test("keeps mouse selection and skips updateFocus when a range is selected", () => {
-    const { getByText } = renderEditable(setEditorState);
+describe("EditableSurface - selectionchange syncs DOM selection to model", () => {
+  test("maps non-collapsed mouse selection into editorState.selection without collapsing DOM range", () => {
+    const spy = vi.fn();
+    const stateRef = { current: {} as LetterEditorState };
+    const { getByText, getByTestId } = render(
+      <StatefulSurface onUpdate={spy as unknown as CallbackReceiver<LetterEditorState>} stateRef={stateRef} />,
+    );
+    const surface = getByTestId("surface");
     const span = getByText("Test tekst");
 
-    selectText(span, 0, 4);
-
-    const callsBeforeKeyDown = setEditorStateMock.mock.calls.length;
-
-    fireEvent.keyDown(span, { key: "a" });
+    act(() => {
+      selectText(surface, span, 0, 4);
+    });
 
     const selection = globalThis.getSelection();
     expect(selection?.isCollapsed).toBe(false);
     expect(selection?.getRangeAt(0).startOffset).toBe(0);
     expect(selection?.getRangeAt(0).endOffset).toBe(4);
-    expect(setEditorStateMock.mock.calls.length).toBe(callsBeforeKeyDown + 1);
+    expect(stateRef.current.selection).toEqual({
+      start: { ...literalIndex, cursorPosition: 0 },
+      end: { ...literalIndex, cursorPosition: 4 },
+    });
   });
 
-  test("calls updateFocus when only a caret is present", () => {
-    const { getByText } = renderEditable(setEditorState);
+  test("maps collapsed caret into editorState.focus and clears editorState.selection", () => {
+    const spy = vi.fn();
+    const stateRef = { current: {} as LetterEditorState };
+    const { getByText, getByTestId } = render(
+      <StatefulSurface onUpdate={spy as unknown as CallbackReceiver<LetterEditorState>} stateRef={stateRef} />,
+    );
+    const surface = getByTestId("surface");
     const span = getByText("Test tekst");
 
-    selectText(span, 4, 4, true);
-
-    fireEvent.keyDown(span, { key: "a" });
+    act(() => {
+      selectText(surface, span, 4, 4, true);
+    });
 
     const selection = globalThis.getSelection();
     expect(selection?.isCollapsed).toBe(true);
     expect(selection?.getRangeAt(0).startOffset).toBe(4);
-    expect(setEditorStateMock).toHaveBeenCalled();
+    expect(stateRef.current.focus).toEqual({ ...literalIndex, cursorPosition: 4 });
+    expect(stateRef.current.selection).toBeUndefined();
   });
 });

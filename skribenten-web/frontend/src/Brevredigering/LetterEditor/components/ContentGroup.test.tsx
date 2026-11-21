@@ -6,7 +6,7 @@
 // derfor likt som i nettleseren, derfor bruker vi happy-dom i denne testen:
 // @vitest-environment happy-dom
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { afterEach, beforeEach, describe, expect, type Mock, test, vi } from "vitest";
@@ -15,10 +15,10 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
+import { EditableSurface } from "~/Brevredigering/LetterEditor/components/EditableSurface";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { ElementTags, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
 import {
   cell,
@@ -59,14 +59,47 @@ afterEach(() => {
 const undo = vi.fn();
 const redo = vi.fn();
 
-function setup() {
+function StatefulHarness({
+  initialState,
+  renderAllBlocks,
+  stateRef,
+}: {
+  initialState: LetterEditorState;
+  renderAllBlocks: boolean;
+  stateRef: { current: LetterEditorState };
+}) {
+  const [state, setState] = useState(initialState);
+  stateRef.current = state;
+  const wrappedSetState: CallbackReceiver<LetterEditorState> = (updater) => {
+    setEditorState(updater);
+    setState((prev) => updater(prev));
+  };
+
+  return (
+    <EditorStateContext.Provider
+      value={{ freeze: false, error: false, editorState: state, setEditorState: wrappedSetState, undo, redo }}
+    >
+      <EditableSurface data-editor-root>
+        {renderAllBlocks ? (
+          state.redigertBrev.blocks.map((b, blockIndex) => (
+            <div className={b.type} key={blockIndex}>
+              <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+            </div>
+          ))
+        ) : (
+          <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
+        )}
+      </EditableSurface>
+    </EditorStateContext.Provider>
+  );
+}
+
+function setup(renderAllBlocks = false) {
+  const stateRef = { current: editorState };
   return {
     user: userEvent.setup(),
-    ...render(
-      <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState, undo, redo }}>
-        <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
-      </EditorStateContext.Provider>,
-    ),
+    getState: () => stateRef.current,
+    ...render(<StatefulHarness initialState={editorState} renderAllBlocks={renderAllBlocks} stateRef={stateRef} />),
   };
 }
 
@@ -93,98 +126,71 @@ const complexEditorState = letter(
 );
 
 function setupComplex(stateOverride?: LetterEditorState) {
+  const initial = stateOverride ?? complexEditorState;
+  const stateRef = { current: initial };
   return {
     user: userEvent.setup(),
-    ...render(
-      <EditorStateContext.Provider
-        value={{
-          freeze: false,
-          error: false,
-          editorState: stateOverride ?? complexEditorState,
-          setEditorState,
-          undo,
-          redo,
-        }}
-      >
-        {(stateOverride ?? complexEditorState).redigertBrev.blocks.map((block, blockIndex) => (
-          <div className={block.type} key={blockIndex}>
-            <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
-          </div>
-        ))}
-      </EditorStateContext.Provider>,
-    ),
+    getState: () => stateRef.current,
+    ...render(<StatefulHarness initialState={initial} renderAllBlocks stateRef={stateRef} />),
   };
 }
 
-function UnifiedEditorSurface({ state }: { state: LetterEditorState }) {
-  const [host, setHost] = useState<HTMLDivElement | null>(null);
-  useDragSelectUnifier(host);
-  return (
-    <div ref={setHost}>
-      {state.redigertBrev.blocks.map((block, blockIndex) => (
-        <div className={block.type} key={blockIndex}>
-          <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function setupWithUnifier(state: LetterEditorState) {
-  return {
-    user: userEvent.setup(),
-    ...render(
-      <EditorStateContext.Provider
-        value={{ freeze: false, error: false, editorState: state, setEditorState, undo, redo }}
-      >
-        <UnifiedEditorSurface state={state} />
-      </EditorStateContext.Provider>,
-    ),
-  };
+function placeCaret(element: HTMLElement, edge: "start" | "end") {
+  const textNode = element.firstChild;
+  if (!textNode) throw new Error("Expected text node");
+  const range = document.createRange();
+  range.setStart(textNode, edge === "start" ? 0 : (textNode.textContent?.length ?? 0));
+  range.collapse(true);
+  const selection = globalThis.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
 }
 
 describe("updateContent", () => {
   test("text changes are propagated", async () => {
-    const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{End} person");
+    const { user, getState } = setup();
+    const target = screen.getByText(content[0].text);
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard(" person");
     expect(setEditorState).toHaveBeenCalled();
 
     const newText = `${content[0].text} person`;
-    expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
-    );
+    expect(getState().redigertBrev.blocks[0].content[0]).toMatchObject({ editedText: newText });
+    expect(getState().focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: newText.length });
   });
   test("enter is not propagated as br-element", async () => {
-    const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{End}{Enter}asd");
+    const { user, container, getState } = setup(true);
+    const target = screen.getAllByText(content[0].text)[0];
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("{Enter}asd");
 
-    // The expectation is that the Enter key does not insert a line break
-    // in the final text, so we expect only "asd" to be appended.
-    const newText = `${content[0].text}asd`;
-    expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
-    );
+    expect(container.querySelectorAll("br")).toHaveLength(0);
+    expect(getState().redigertBrev.blocks).toHaveLength(editorState.redigertBrev.blocks.length + 1);
+    expect(getState().redigertBrev.blocks[1].content[0]).toMatchObject({ editedText: `asd${content[1].text}` });
   });
   test("space is not propagated as nbsp-entity", async () => {
-    const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{End}  asd");
+    const { user, getState } = setup();
+    const target = screen.getByText(content[0].text);
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("  asd");
 
     const newText = `${content[0].text}  asd`;
-    expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
-      Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
-    );
+    expect(getState().redigertBrev.blocks[0].content[0]).toMatchObject({ editedText: newText });
+    expect(getState().focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: newText.length });
   });
 });
 
 describe("deleteHandler", () => {
   test("delete at end of block, and after last character, triggers merge with next", async () => {
     const { user } = setup();
+    const target = screen.getByText(content[1].text);
 
-    await user.click(screen.getByText(content[1].text));
-    await user.keyboard("{End}{Delete}");
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("{Delete}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.merge(editorState, { blockIndex: 0, contentIndex: 1 }, MergeTarget.NEXT),
@@ -202,8 +208,10 @@ describe("deleteHandler", () => {
   });
   test("delete not at end of block, but after last character, does not trigger merge", async () => {
     const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{End}{Delete}");
+    const target = screen.getByText(content[0].text);
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("{Delete}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(editorState);
   });
@@ -212,16 +220,20 @@ describe("deleteHandler", () => {
 describe("backspaceHandler", () => {
   test("backspace at beginning of block triggers merge with previous", async () => {
     const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{Home}{Backspace}");
+    const target = screen.getByText(content[0].text);
+    await user.click(target);
+    placeCaret(target, "start");
+    await user.keyboard("{Backspace}");
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.merge(editorState, { blockIndex: 0, contentIndex: 0 }, MergeTarget.PREVIOUS),
     );
   });
   test("backspace at beginning of block, but not before first character of TextContent, does not trigger merge", async () => {
     const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{Backspace}");
+    const target = screen.getByText(content[0].text);
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("{ArrowLeft}{ArrowLeft}{Backspace}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.redigertBrev.blocks).toHaveLength(
       editorState.redigertBrev.blocks.length,
@@ -229,8 +241,10 @@ describe("backspaceHandler", () => {
   });
   test("backspace not at beginning of block, but before first character of a TextContent, does not trigger merge", async () => {
     const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{Home}{Backspace}");
+    const target = screen.getByText(content[0].text);
+    await user.click(target);
+    placeCaret(target, "start");
+    await user.keyboard("{Backspace}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.redigertBrev).toBe(editorState.redigertBrev);
   });
@@ -239,8 +253,10 @@ describe("backspaceHandler", () => {
 describe("enterHandler", () => {
   test("enter at the very end of block triggers split with empty text for new block", async () => {
     const { user } = setup();
-    await user.click(screen.getByText(content[1].text));
-    await user.keyboard("{End}{Enter}");
+    const target = screen.getByText(content[1].text);
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.split(editorState, { blockIndex: 0, contentIndex: 1 }, content[1].text.length),
@@ -248,8 +264,10 @@ describe("enterHandler", () => {
   });
   test("enter not at the end of a content in block triggers split at cursor (text after cursor for new block)", async () => {
     const { user } = setup();
-    await user.click(screen.getByText(content[1].text));
-    await user.keyboard("{End}{ArrowLeft}{ArrowLeft}{ArrowLeft}{Enter}");
+    const target = screen.getByText(content[1].text);
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("{ArrowLeft}{ArrowLeft}{ArrowLeft}{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.split(editorState, { blockIndex: 0, contentIndex: 1 }, content[1].text.length - 3),
@@ -257,8 +275,10 @@ describe("enterHandler", () => {
   });
   test("enter at the end of an element that is not the last of block triggers split at current element", async () => {
     const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{End}{Enter}");
+    const target = screen.getByText(content[0].text);
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("{Enter}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.split(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text.length),
@@ -267,8 +287,10 @@ describe("enterHandler", () => {
 
   test("shift-enter will add a newLine instead of a new paragraph", async () => {
     const { user } = setup();
-    await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{End}{Shift>}{Enter}{/Shift}");
+    const target = screen.getByText(content[0].text);
+    await user.click(target);
+    placeCaret(target, "end");
+    await user.keyboard("{Shift>}{Enter}{/Shift}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.addNewLine(editorState, { blockIndex: 0, contentIndex: 0, cursorPosition: "Heisann".length }),
@@ -279,57 +301,66 @@ describe("enterHandler", () => {
 describe("ArrowLeft will move focus to previous editable content", () => {
   test("unless already at the start of the document", async () => {
     const { user } = setupComplex();
-    await user.click(screen.getByText("første literal"));
+    const target = screen.getByText("første literal");
+    await user.click(target);
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
       cursorPosition: 14,
     });
 
-    await user.keyboard("{Home}{ArrowLeft}");
+    placeCaret(target, "start");
+    await user.keyboard("{ArrowLeft}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
-      cursorPosition: 14,
+      cursorPosition: 0,
     });
   });
 
   test("will skip variables in the same block", async () => {
     const { user } = setupComplex();
-    await user.click(screen.getByText("andre literal"));
+    const target = screen.getByText("andre literal");
+    await user.click(target);
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
       cursorPosition: 13,
     });
 
-    await user.keyboard("{Home}{ArrowLeft}");
+    placeCaret(target, "start");
+    await user.keyboard("{ArrowLeft}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
+      cursorPosition: 14,
     });
   });
   test("will skip over a block if it has no editable content", async () => {
     const { user } = setupComplex();
-    await user.click(screen.getByText("paragraf med kun tekst"));
+    const target = screen.getByText("paragraf med kun tekst");
+    await user.click(target);
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
       cursorPosition: 22,
     });
 
-    await user.keyboard("{Home}{ArrowLeft}");
+    placeCaret(target, "start");
+    await user.keyboard("{ArrowLeft}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
+      cursorPosition: 13,
     });
   });
   test("will skip an item if it is not editable", async () => {
     const { user } = setupComplex();
-    await user.click(screen.getByText("3. item"));
+    const target = screen.getByText("3. item");
+    await user.click(target);
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
@@ -338,13 +369,15 @@ describe("ArrowLeft will move focus to previous editable content", () => {
       itemContentIndex: 0,
     });
 
-    await user.keyboard("{Home}{ArrowLeft}");
+    placeCaret(target, "start");
+    await user.keyboard("{ArrowLeft}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
       itemIndex: 0,
       itemContentIndex: 0,
+      cursorPosition: 7,
     });
   });
   test("When marked a fritekst-felt, 2 arrow-lefts required to move to next editable content", async () => {
@@ -360,13 +393,14 @@ describe("ArrowLeft will move focus to previous editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
-      cursorPosition: 13,
+      cursorPosition: 0,
     });
 
     await user.keyboard("{ArrowLeft}");
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
+      cursorPosition: 14,
     });
   });
 });
@@ -390,33 +424,28 @@ describe("ArrowRight will move focus to next editable content", () => {
   });
 
   test("will skip variables in the same block", async () => {
-    const { user } = setupComplex();
+    const { user, getState } = setupComplex();
     const element = screen.getByText("første literal");
     await user.click(element);
 
-    // Explicitly set the caret at the end of the element.
-    const range = document.createRange();
-    range.selectNodeContents(element);
-    range.collapse(false); // collapse to the end
-    const selection = globalThis.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
+    placeCaret(element, "end");
 
-    // After clicking, the component's focus should be at { blockIndex: 0, contentIndex: 1 }.
-    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+    expect(getState().focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
       cursorPosition: 14,
     });
 
-    await user.keyboard("{End}{ArrowRight}");
+    await user.keyboard("{ArrowRight}");
 
-    // Now, with the caret correctly at the end of "første literal",
-    // ArrowRight should update the focus to skip variables and move to contentIndex 3.
-    expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
+    expect(getState().focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
-      cursorPosition: 14,
+      cursorPosition: 13,
+    });
+    expect(getState().selection).toEqual({
+      start: { blockIndex: 0, contentIndex: 3, cursorPosition: 0 },
+      end: { blockIndex: 0, contentIndex: 3, cursorPosition: 13 },
     });
   });
   test("will skip over a block if it has no editable content", async () => {
@@ -434,12 +463,13 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
-      cursorPosition: 13,
+      cursorPosition: 0,
     });
   });
   test("will skip an item if it is not editable", async () => {
     const { user } = setupComplex();
-    await user.click(screen.getByText("3. item"));
+    const target = screen.getByText("3. item");
+    await user.click(target);
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
@@ -448,14 +478,15 @@ describe("ArrowRight will move focus to next editable content", () => {
       itemContentIndex: 0,
     });
 
-    await user.keyboard("{End}{ArrowRight}");
+    placeCaret(target, "end");
+    await user.keyboard("{ArrowRight}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
       contentIndex: 0,
-      cursorPosition: 7,
       itemIndex: 3,
       itemContentIndex: 0,
+      cursorPosition: 0,
     });
   });
   test("When marked a fritekst-felt, 2 arrow-rights required to move to next editable content", async () => {
@@ -478,36 +509,8 @@ describe("ArrowRight will move focus to next editable content", () => {
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 2,
       contentIndex: 0,
-      cursorPosition: 13,
+      cursorPosition: 0,
     });
-  });
-});
-
-describe("useDragSelectUnifier", () => {
-  test.each([
-    ["right-click", { button: 2, buttons: 2 }],
-    ["ctrl-click", { button: 0, buttons: 1, ctrlKey: true }],
-  ])("%s whose pointerup is consumed by the context menu does not start drag-selection", (_, pointerDown) => {
-    setupWithUnifier(letter(paragraph([literal("Text")])));
-    const span = screen.getByText("Text");
-    fireEvent.pointerDown(span, { ...pointerDown, clientX: 10, clientY: 10 });
-    fireEvent.pointerMove(span, { buttons: 0, clientX: 30, clientY: 10 });
-
-    expect(span.getAttribute("contenteditable")).toBe("true");
-    expect(document.querySelector(".is-drag-selecting")).toBeNull();
-  });
-
-  test("left-button dragging unifies selection and restores editing on pointerup", () => {
-    setupWithUnifier(letter(paragraph([literal("Text")])));
-    const span = screen.getByText("Text");
-    fireEvent.pointerDown(span, { button: 0, buttons: 1, clientX: 10, clientY: 10 });
-    fireEvent.pointerMove(span, { buttons: 1, clientX: 30, clientY: 10 });
-    expect(span.hasAttribute("contenteditable")).toBe(false);
-    expect(document.querySelector(".is-drag-selecting")).not.toBeNull();
-
-    fireEvent.pointerUp(span, { button: 0, buttons: 0 });
-    expect(span.getAttribute("contenteditable")).toBe("true");
-    expect(document.querySelector(".is-drag-selecting")).toBeNull();
   });
 });
 
@@ -534,19 +537,16 @@ describe("onClickHandler", () => {
     expect(globalThis.getSelection()?.toString()).toBe("middle literal");
   });
 
-  test("triple-clicking a literal keeps it editable with the drag-select unifier mounted", async () => {
+  test("triple-clicking a literal keeps it editable so typing replaces it", async () => {
     const state = letter(paragraph(["first", "middle", "last"].map((name) => literal({ text: `${name} literal` }))));
-    const { user } = setupWithUnifier(state);
+    const { user } = setupComplex(state);
     const middle = screen.getByText("middle literal");
 
     await user.tripleClick(middle);
-    // Browsers queue selectionchange as a task, so it may arrive after pointerup has restored editing.
-    // happy-dom dispatches it synchronously, so replay it here to model the late delivery.
     document.dispatchEvent(new Event("selectionchange"));
 
     expect(globalThis.getSelection()?.toString()).toBe("middle literal");
-    expect(middle.getAttribute("contenteditable")).toBe("true");
-    expect(document.querySelector("[data-ce-orig]")).toBeNull();
+    expect(middle.isContentEditable).toBe(true);
 
     await user.keyboard("x");
     expect(middle.textContent).toBe("x");
@@ -713,5 +713,149 @@ describe("Word Joiner before punctuation-starting literals", () => {
     const state = letter(paragraph([literal({ text: "første" }), literal({ text: ", andre" })]));
     const { container } = setupComplex(state);
     expect(container.textContent).toContain(WORD_JOINER);
+  });
+});
+
+describe("single-root surface interactions", () => {
+  test("typing over a selection spanning literals and a variable replaces the selection atomically", () => {
+    const state = letter(
+      paragraph([literal({ id: 1, text: "Beløp " }), variable("12 345 kr"), literal({ id: 3, text: " per mnd" })]),
+    );
+    setupComplex(state);
+
+    const first = screen.getByText("Beløp");
+    const second = screen.getByText("per mnd");
+    const range = document.createRange();
+    range.setStart(first.firstChild!, 3);
+    range.setEnd(second.firstChild!, 4);
+    const selection = globalThis.getSelection()!;
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    const beforeInput = new InputEvent("beforeinput", {
+      bubbles: true,
+      cancelable: true,
+      inputType: "insertText",
+      data: "X",
+    });
+    const allowed = first.dispatchEvent(beforeInput);
+    expect(allowed).toBe(false);
+
+    const updated = setEditorState.mock.lastCall?.[0](state);
+    expect(updated?.redigertBrev.blocks[0].content).toHaveLength(2);
+    expect(updated?.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 4 });
+  });
+
+  test("backspacing the last character in a literal keeps the literal span mounted with zero-width space", async () => {
+    const singleCharState = letter(paragraph([literal({ id: 1, text: "x" })]));
+    const { user } = setupComplex(singleCharState);
+    const span = screen.getByText("x");
+    await user.click(span);
+    placeCaret(span, "end");
+    await user.keyboard("{Backspace}");
+
+    expect(span.isConnected).toBe(true);
+    expect(span.textContent).toBe("\u200B");
+    expect(setEditorState.mock.lastCall?.[0](singleCharState)).toEqual(
+      Actions.updateContentText(singleCharState, { blockIndex: 0, contentIndex: 0 }, "", 0),
+    );
+  });
+
+  test("IME composition defers state updates until compositionend", () => {
+    const state = letter(paragraph([literal({ id: 1, text: "Hei " })]));
+    setupComplex(state);
+    setEditorState.mockClear();
+
+    const span = screen.getByText("Hei");
+    placeCaret(span, "end");
+    setEditorState.mockClear();
+
+    fireEvent.compositionStart(span);
+    span.firstChild!.textContent = "Hei å";
+    placeCaret(span, "end");
+    fireEvent.input(span, { isComposing: true });
+    expect(setEditorState).not.toHaveBeenCalled();
+
+    fireEvent.compositionEnd(span);
+    expect(setEditorState.mock.lastCall?.[0](state)).toEqual(
+      Actions.updateContentText(state, { blockIndex: 0, contentIndex: 0 }, "Hei å", 5),
+    );
+  });
+
+  test("caret at boundary between two literals inserts into the model-focused literal", () => {
+    const initial = letter(paragraph([literal({ id: 1, text: "First" }), literal({ id: 2, text: "Second" })]));
+    const focusedOnSecondStart: LetterEditorState = {
+      ...initial,
+      focus: { blockIndex: 0, contentIndex: 1, cursorPosition: 0 },
+    };
+    const { getState } = setupComplex(focusedOnSecondStart);
+
+    const second = screen.getByText("Second");
+    act(() => {
+      const allowed = second.dispatchEvent(
+        new InputEvent("beforeinput", {
+          bubbles: true,
+          cancelable: true,
+          inputType: "insertText",
+          data: "X",
+        }),
+      );
+      expect(allowed).toBe(false);
+    });
+    expect(screen.getByText("First").textContent).toBe("First");
+    expect(second.textContent).toBe("XSecond");
+    expect(getState().focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 1 });
+  });
+
+  test("insertReplacementText uses getTargetRanges() for spellcheck and autocorrect", () => {
+    const initial = letter(paragraph([literal({ id: 1, text: "Vi har teh vedtaket" })]));
+    const withFocus: LetterEditorState = {
+      ...initial,
+      focus: { blockIndex: 0, contentIndex: 0, cursorPosition: 10 },
+    };
+    const { getState } = setupComplex(withFocus);
+    const span = screen.getByText("Vi har teh vedtaket");
+    const textNode = span.firstChild!;
+
+    const staticRange = {
+      startContainer: textNode,
+      startOffset: 7,
+      endContainer: textNode,
+      endOffset: 10,
+      collapsed: false,
+    } as StaticRange;
+    const event = new InputEvent("beforeinput", {
+      bubbles: true,
+      cancelable: true,
+      inputType: "insertReplacementText",
+      data: "det",
+    });
+    Object.defineProperty(event, "getTargetRanges", { value: () => [staticRange] });
+
+    act(() => {
+      const allowed = span.dispatchEvent(event);
+      expect(allowed).toBe(false);
+    });
+
+    expect(span.textContent).toBe("Vi har det vedtaket");
+    expect(getState().focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 10 });
+  });
+
+  test("MutationObserver safety net restores literals and removes stray DOM mutations bypassing beforeinput", async () => {
+    const initial = letter(paragraph([literal({ id: 1, text: "Original tekst" })]));
+    const { container } = setupComplex(initial);
+    const span = screen.getByText("Original tekst");
+    const paragraphEl = container.querySelector(".PARAGRAPH")!;
+
+    await act(async () => {
+      span.firstChild!.textContent = "Tampered by extension";
+      const strayFont = document.createElement("font");
+      strayFont.textContent = "injected";
+      paragraphEl.appendChild(strayFont);
+      await Promise.resolve();
+    });
+
+    expect(span.textContent).toBe("Original tekst");
+    expect(paragraphEl.querySelector("font")).toBeNull();
   });
 });

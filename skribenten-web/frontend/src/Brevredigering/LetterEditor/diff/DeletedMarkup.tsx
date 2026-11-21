@@ -49,6 +49,7 @@ const DeletedText = ({ content }: { content: TextContent }) => {
   return (
     <span
       className="attestant-diff-deleted"
+      contentEditable={false}
       css={{
         ...(fontType === FontType.BOLD && { fontWeight: "bold" }),
         ...(fontType === FontType.ITALIC && { fontStyle: "italic" }),
@@ -67,7 +68,7 @@ const DeletedTextNodes = ({ content }: { content: TextContent[] }) => {
 };
 
 const DeletedTable = ({ table }: { table: Extract<Content, { type: "TABLE" }> }) => (
-  <table css={deletedTableStyle} data-diff-deleted>
+  <table contentEditable={false} css={deletedTableStyle} data-diff-deleted>
     <thead>
       <tr>
         {table.header.colSpec.map((col, colIndex) => (
@@ -93,7 +94,7 @@ const DeletedContentNode = ({ content }: { content: Content }) => {
     case "ITEM_LIST": {
       const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
       return (
-        <ListTag data-diff-deleted>
+        <ListTag contentEditable={false} data-diff-deleted>
           <DeletedItems items={content.items} />
         </ListTag>
       );
@@ -117,7 +118,7 @@ const DeletedContentNodes = ({ content }: { content: Content[] }) => {
 const DeletedItems = ({ items }: { items: Item[] }) => {
   if (items.length === 0) return null;
   return items.map((item, index) => (
-    <li data-diff-deleted key={index}>
+    <li contentEditable={false} data-diff-deleted key={index}>
       <DeletedTextNodes content={item.content} />
     </li>
   ));
@@ -127,7 +128,7 @@ const DeletedItems = ({ items }: { items: Item[] }) => {
 const DeletedRows = ({ rows }: { rows: Row[] }) => {
   if (rows.length === 0) return null;
   return rows.map((row, index) => (
-    <tr data-diff-deleted key={index}>
+    <tr contentEditable={false} data-diff-deleted key={index}>
       <DeletedCells cells={row.cells} />
     </tr>
   ));
@@ -139,7 +140,7 @@ export const DeletedCells = ({ cells, asHeader = false }: { cells: Cell[]; asHea
   const CellTag = asHeader ? "th" : "td";
   return cells.map((cell, index) => {
     return (
-      <CellTag data-diff-deleted key={index} scope={asHeader ? "col" : undefined}>
+      <CellTag contentEditable={false} data-diff-deleted key={index} scope={asHeader ? "col" : undefined}>
         <DeletedTextNodes content={cell.text} />
       </CellTag>
     );
