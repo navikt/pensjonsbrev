@@ -1,5 +1,6 @@
 import { type Draft } from "immer";
 
+import { addNewLineRecipe } from "~/Brevredigering/LetterEditor/actions/addNewLine";
 import {
   addElements,
   applyTableSeparatorNormalization,
@@ -21,6 +22,7 @@ import {
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget, mergeRecipe } from "~/Brevredigering/LetterEditor/actions/merge";
+import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import {
@@ -46,18 +48,65 @@ import {
   type ItemList,
   type Table,
   type TextContent,
+  TITLE_INDEX,
 } from "~/types/brevbakerTypes";
 
 export const deleteSelection: Action<LetterEditorState, [selection: SelectionIndex]> =
   withPatches(deleteSelectionRecipe);
 
-export function deleteSelectionRecipe(draft: LetterEditorState, selection: SelectionIndex) {
+/** Deletes the selection and splits the block (Enter) or adds a line break (Shift+Enter) as one undo step. */
+export const replaceSelectionWithBreak: Action<
+  LetterEditorState,
+  [selection: SelectionIndex, breakType: "paragraph" | "lineBreak"]
+> = withPatches((draft, selection, breakType) => {
+  if (!deleteSelectionRecipe(draft, selection)) return;
+  const focus = { ...draft.focus, cursorPosition: draft.focus.cursorPosition ?? 0 };
+  if (breakType === "paragraph") {
+    splitRecipe(draft, focus, focus.cursorPosition);
+  } else {
+    addNewLineRecipe(draft, focus);
+  }
+});
+
+/** Returns false when the selection is invalid and nothing was deleted. */
+export function deleteSelectionRecipe(draft: LetterEditorState, selection: SelectionIndex): boolean {
   const redigertBrev = draft.redigertBrev;
 
+  if (selection.start.blockIndex === TITLE_INDEX || selection.end.blockIndex === TITLE_INDEX) {
+    if (
+      selection.start.blockIndex !== TITLE_INDEX ||
+      selection.end.blockIndex !== TITLE_INDEX ||
+      !isBlockContentIndex(selection.start) ||
+      !isBlockContentIndex(selection.end) ||
+      !isIndexAfter(selection.start, selection.end)
+    ) {
+      return false;
+    }
+    const titleParent = {
+      content: redigertBrev.title.text,
+      deletedContent: redigertBrev.title.deletedContent,
+      id: null,
+    };
+    const titleStart = titleParent.content[selection.start.contentIndex];
+    const titleEnd = titleParent.content[selection.end.contentIndex];
+    if (!isTextContent(titleStart) || !isTextContent(titleEnd)) return false;
+    removeInTextContentParent(titleParent, selection.start, selection.end);
+    const clampedIdx = Math.min(selection.start.contentIndex, titleParent.content.length - 1);
+    const targetNode = titleParent.content[clampedIdx];
+    const maxPos = isTextContent(targetNode) ? text(targetNode).length : 0;
+    draft.focus = {
+      blockIndex: TITLE_INDEX,
+      contentIndex: clampedIdx,
+      cursorPosition: Math.min(selection.start.cursorPosition, maxPos),
+    };
+    draft.saveStatus = "DIRTY";
+    return true;
+  }
+
   // If selection is not valid, do nothing
-  if (!isValidIndex(redigertBrev, selection.start) || !isValidIndex(redigertBrev, selection.end)) return;
+  if (!isValidIndex(redigertBrev, selection.start) || !isValidIndex(redigertBrev, selection.end)) return false;
   // Selection must end after it starts
-  if (!isIndexAfter(selection.start, selection.end)) return;
+  if (!isIndexAfter(selection.start, selection.end)) return false;
 
   const start = { ...selection.start };
   const end = { ...selection.end };
@@ -143,6 +192,7 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
   applyTableSeparatorNormalization(redigertBrev);
 
   draft.saveStatus = "DIRTY";
+  return true;
 }
 
 function shouldMergeAfterDeletetion(indexAfterDeletion: Focus, { start, end }: SelectionIndex): boolean {

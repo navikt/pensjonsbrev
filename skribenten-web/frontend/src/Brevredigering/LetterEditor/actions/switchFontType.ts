@@ -198,6 +198,25 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
   });
 });
 
+const matchesLiteralTarget = (a: LiteralIndex, b: LiteralIndex): boolean => {
+  if (isItemContentIndex(a) && isItemContentIndex(b)) {
+    return (
+      a.blockIndex === b.blockIndex &&
+      a.contentIndex === b.contentIndex &&
+      a.itemIndex === b.itemIndex &&
+      a.itemContentIndex === b.itemContentIndex
+    );
+  }
+  return (
+    !isItemContentIndex(a) &&
+    !isItemContentIndex(b) &&
+    !isTableCellIndex(a) &&
+    !isTableCellIndex(b) &&
+    a.blockIndex === b.blockIndex &&
+    a.contentIndex === b.contentIndex
+  );
+};
+
 const switchFontTypeForLiteral = (args: {
   draft: Draft<LetterEditorState>;
   thisBlock: ParagraphBlock;
@@ -207,11 +226,24 @@ const switchFontTypeForLiteral = (args: {
   literal: Draft<LiteralValue>;
   fonttype: FontType;
 }) => {
+  const modelSel = args.draft.selection;
+  const hasModelMarkedText =
+    !!modelSel &&
+    matchesLiteralTarget(modelSel.start, args.literalIndex) &&
+    matchesLiteralTarget(modelSel.end, args.literalIndex) &&
+    modelSel.end.cursorPosition > modelSel.start.cursorPosition;
+
   const selection = globalThis.getSelection();
+  const hasDomMarkedText = !modelSel && !!selection && (selection.toString?.()?.length ?? 0) > 0;
 
-  const hasSelectionAndMarkedText = selection && (selection.toString?.()?.length ?? 0) > 0;
-
-  return hasSelectionAndMarkedText ? switchFontTypeOfMarkedText(args) : switchFontTypeOfCurrentWord(args);
+  return hasModelMarkedText || hasDomMarkedText
+    ? switchFontTypeOfMarkedText(
+        args,
+        hasModelMarkedText
+          ? { startOffset: modelSel.start.cursorPosition, endOffset: modelSel.end.cursorPosition }
+          : undefined,
+      )
+    : switchFontTypeOfCurrentWord(args);
 };
 
 const switchFontTypeForVariable = (args: { fonttype: FontType; variable: Draft<VariableValue> }) => {
@@ -224,20 +256,31 @@ const switchFontTypeForVariable = (args: { fonttype: FontType; variable: Draft<V
   // });
 };
 
-const switchFontTypeOfMarkedText = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  literal: Draft<LiteralValue>;
-  fonttype: FontType;
-}) => {
-  const selection = globalThis.getSelection()!;
-  const range = selection.getRangeAt(0);
+const switchFontTypeOfMarkedText = (
+  args: {
+    draft: Draft<LetterEditorState>;
+    thisBlock: ParagraphBlock;
+    literalIndex: LiteralIndex;
+    literal: Draft<LiteralValue>;
+    fonttype: FontType;
+  },
+  offsets?: { startOffset: number; endOffset: number },
+) => {
+  const resolvedOffsets =
+    offsets ??
+    (() => {
+      const selection = globalThis.getSelection()!;
+      const range = selection.getRangeAt(0);
+      return { startOffset: range.startOffset, endOffset: range.endOffset };
+    })();
 
-  const textBeforeTheSelection = (args.literal.editedText ?? args.literal.text).slice(0, range.startOffset);
+  const textBeforeTheSelection = (args.literal.editedText ?? args.literal.text).slice(0, resolvedOffsets.startOffset);
   const hasTextBeforeTheSelection = textBeforeTheSelection.length > 0;
-  const textInSelection = (args.literal.editedText ?? args.literal.text).slice(range.startOffset, range.endOffset);
-  const textAfterTheSelection = (args.literal.editedText ?? args.literal.text).slice(range.endOffset);
+  const textInSelection = (args.literal.editedText ?? args.literal.text).slice(
+    resolvedOffsets.startOffset,
+    resolvedOffsets.endOffset,
+  );
+  const textAfterTheSelection = (args.literal.editedText ?? args.literal.text).slice(resolvedOffsets.endOffset);
   const hasTextAfterTheSelection = textAfterTheSelection.length > 0;
 
   const changesTheWholeLiteral = textBeforeTheSelection.length === 0 && textAfterTheSelection.length === 0;
@@ -288,7 +331,13 @@ const switchFontTypeOfCurrentWord = (args: {
   literal: Draft<LiteralValue>;
   fonttype: FontType;
 }) => {
-  const cursorPosition = getCursorOffset();
+  const domCursorPosition = getCursorOffset();
+  const cursorPosition =
+    domCursorPosition >= 0
+      ? domCursorPosition
+      : args.draft.focus.cursorPosition !== undefined && args.draft.focus.cursorPosition >= 0
+        ? args.draft.focus.cursorPosition
+        : -1;
 
   if (cursorPosition < 0) {
     return;

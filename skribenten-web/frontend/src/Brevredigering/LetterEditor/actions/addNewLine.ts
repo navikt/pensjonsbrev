@@ -14,7 +14,9 @@ import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEdito
 import { isEmptyContent, isItemList, isLiteral, isParagraph } from "~/Brevredigering/LetterEditor/model/utils";
 import { type Content, TITLE_INDEX } from "~/types/brevbakerTypes";
 
-export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches((draft, focus) => {
+export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches(addNewLineRecipe);
+
+export function addNewLineRecipe(draft: Draft<LetterEditorState>, focus: Focus) {
   if (focus.blockIndex === TITLE_INDEX) return;
 
   const block = draft.redigertBrev.blocks[focus.blockIndex];
@@ -56,7 +58,7 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
       }
     }
   }
-});
+}
 
 /**
  * Inserts a NEW_LINE at position `contentIndex` within `content`, handling start/end/mid-literal

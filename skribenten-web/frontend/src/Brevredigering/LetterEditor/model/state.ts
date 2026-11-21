@@ -38,6 +38,7 @@ export type LetterEditorState = {
   saksbehandlerValg: SaksbehandlerValg;
   saveStatus: "DIRTY" | "SAVE_PENDING" | "SAVED";
   focus: Focus;
+  selection?: SelectionIndex;
   history: History;
 };
 

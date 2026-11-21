@@ -100,7 +100,9 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
     }
     // What fits depends on where the caret ends up after deletion (deleting a whole table leaves it in a paragraph),
     // so the clipboard is resolved against a tentative deletion, and the selection is only deleted if something fits.
-    const afterDeletion = produce(current(draft), (tentative) => deleteSelectionRecipe(tentative, selection));
+    const afterDeletion = produce(current(draft), (tentative) => {
+      deleteSelectionRecipe(tentative, selection);
+    });
     const insertion = resolveClipboardInsertion(afterDeletion, afterDeletion.focus, clipboard);
     if (!insertion) return;
 
@@ -110,6 +112,25 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
     // Now paste at that position.
     insertInLetter(draft, insertion);
   });
+
+/** Replaces the selection with typed text as one undo step, keeping the formatting of the text it lands in. */
+export const replaceSelectionWithText: Action<LetterEditorState, [selection: SelectionIndex, insertedText: string]> =
+  withPatches((draft, selection, insertedText) => {
+    if (!deleteSelectionRecipe(draft, selection)) return;
+    if (insertedText.length > 0) insertTextAtFocus(draft, insertedText);
+  });
+
+/** Inserts typed text at the focus, also when the focus is on a variable or line break rather than a literal. */
+export const insertText: Action<LetterEditorState, [insertedText: string]> = withPatches((draft, insertedText) => {
+  if (insertedText.length > 0) insertTextAtFocus(draft, insertedText);
+});
+
+function insertTextAtFocus(draft: Draft<LetterEditorState>, insertString: string) {
+  const context = getInsertTextContentContext(draft);
+  if (!context) return;
+  const fontType = isLiteral(context.content) ? fontTypeOf(context.content) : FontType.PLAIN;
+  insertTextInLetter(draft, insertString, fontType, false);
+}
 
 type ClipboardInsertion = { kind: "elements"; elements: TraversedElement[] } | { kind: "text"; text: string };
 
@@ -282,7 +303,17 @@ function insertTextInLetter(
     }
     draft.saveStatus = "DIRTY";
   } else if (content !== undefined) {
-    log(`cannot paste text into ${content.type}, must be literal.`);
+    // Variables and line breaks can't hold text, so the text goes in a new literal right after them.
+    const insertAtIndex = getContentIndex(draft.focus) + 1;
+    addElements(
+      [newLiteral({ editedText: insertString, fontType })],
+      insertAtIndex,
+      parent.content,
+      parent.deletedContent,
+    );
+    setContentIndex(draft.focus, insertAtIndex);
+    draft.focus.cursorPosition = insertString.length;
+    draft.saveStatus = "DIRTY";
   }
 }
 
@@ -310,7 +341,21 @@ function ensureLiteralAtIndex(textContents: Draft<TextContent[]>, index: number)
 
 function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTextContext | undefined {
   const focus = draft.focus;
+  if (focus.blockIndex === TITLE_INDEX) {
+    const title = draft.redigertBrev.title;
+    const titleContent = title.text[focus.contentIndex];
+    if (!titleContent) return undefined;
+    return {
+      content: titleContent,
+      parent: { content: title.text, deletedContent: title.deletedContent },
+      getContentIndex: (currentFocus) => currentFocus.contentIndex,
+      setContentIndex: (focusToUpdate: Draft<Focus>, newContentIndex: number) => {
+        focusToUpdate.contentIndex = newContentIndex;
+      },
+    };
+  }
   const currentBlock = draft.redigertBrev.blocks[focus.blockIndex];
+  if (!currentBlock) return undefined;
 
   const blockContent = currentBlock.content[focus.contentIndex];
 

@@ -38,13 +38,20 @@ export function withPatches<Arguments extends unknown[]>(
   recipe: LetterEditorStateRecipe<Arguments>,
 ): Action<LetterEditorState, Arguments> {
   return (current, ...args) => {
-    const [next, patches, inversePatches] = produceWithPatches(current, (draft) => {
+    const [produced, patches, inversePatches] = produceWithPatches(current, (draft) => {
       recipe(draft, ...args);
     });
 
     if (patches.length === 0) {
-      return next;
+      return produced;
     }
+
+    // A selection the recipe didn't replace no longer matches a changed document.
+    const changedDocument = patches.some((patch) => patch.path[0] === "redigertBrev");
+    const next =
+      changedDocument && produced.selection !== undefined && produced.selection === current.selection
+        ? withoutSelection(produced)
+        : produced;
 
     const history = next.history ?? { entries: [], entryPointer: -1 };
 
@@ -53,4 +60,9 @@ export function withPatches<Arguments extends unknown[]>(
       history: addToHistory(history, patches, inversePatches),
     };
   };
+}
+
+function withoutSelection(state: LetterEditorState): LetterEditorState {
+  const { selection: _selection, ...rest } = state;
+  return rest;
 }
