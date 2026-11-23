@@ -155,8 +155,8 @@ object DelvisEksportAvUforetrygdRedigerbar : RedigerbarTemplate<EndringUfoeretry
             }
             paragraph {
                 text(
-                    bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling i " + fritekst("måned og år") + "." },
-                    nynorsk { +"Uføretrygda blir betalt ut seinast den 20. kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di i " + fritekst("måned og år") + "." },
+                    bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling med nytt beløp i " + fritekst("måned og år") + "." },
+                    nynorsk { +"Uføretrygda blir betalt ut seinast den 20. kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di med nytt beløp i " + fritekst("måned og år") + "." },
                 )
             }
 
