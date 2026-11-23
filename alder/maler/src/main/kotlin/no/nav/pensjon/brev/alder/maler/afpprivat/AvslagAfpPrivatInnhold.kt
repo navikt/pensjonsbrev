@@ -116,12 +116,12 @@ data class AvslagAfpPrivatInnhold(
         showIf(begrunnelse.isOneOf(Begrunnelse.BRUKER_UT_E_62)) {
             paragraph {
                 text(
-                    bokmal { +"AFP in the private sector cannot be granted if you have received disability benefit from the National Insurance Scheme after reaching the age of 62. " +
-                            "Your application has been denied because you received disability benefit after reaching the age of 62." },
+                    bokmal { +"AFP i privat sektor kan ikke gis til personer som har mottatt uføretrygd fra folketrygden etter fylte 62 år. " +
+                            "Søknaden din er avslått fordi du har mottatt uføretrygd etter at du fylte 62 år. " },
                     nynorsk { +"Ein kan ikkje få AFP i privat sektor om ein har mottatt uføretrygd frå folketrygda etter fylte 62 år. " +
                             "Søknaden din er avslått fordi du har mottatt uføretrygd etter at du fylte 62 år." },
-                    english { +"AFP in the private sector cannot be granted to persons who have received disability benefit from the National Insurance Scheme after reaching the age of 62. " +
-                            "Your application has been declined because you received disability benefit after you turned 62." },
+                    english { +"AFP in the private sector cannot be granted if you have received disability benefit from the National Insurance Scheme after reaching the age of 62. " +
+                            "Your application has been denied because you received disability benefit after reaching the age of 62." },
                 )
             }
             paragraph {
