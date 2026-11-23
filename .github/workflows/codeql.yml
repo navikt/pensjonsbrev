@@ -74,9 +74,23 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         run: ./gradlew assemble -Dorg.gradle.jvmargs="-Dkotlin.daemon.jvmargs=-Xmx16g"
 
+      - name: Stop build daemons
+        run: |
+          ./gradlew --stop
+          # Kotlin daemon shutdown after losing its Gradle clients is delayed.
+          for ((attempt=0; attempt<30; attempt++)); do
+            daemons=$(jps -l)
+            if ! grep -Eq ' (org.gradle.launcher.daemon.bootstrap.GradleDaemon|org.jetbrains.kotlin.daemon.KotlinCompileDaemon)$' <<< "$daemons"; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "::warning::Build daemons are still running after 30 seconds; continuing with CodeQL analysis"
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
         with:
+          ram: 8192
           upload: false # disable the upload here - we will upload in a different action
           output: sarif-results
 
