@@ -17,11 +17,14 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.server.auth.authenticate
 import io.ktor.server.response.respondText
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import io.ktor.utils.io.writeFully
 import no.nav.pensjon.brev.brevoppskrift.auth.ENTRA_AUTH
+import no.nav.pensjon.brev.brevoppskrift.api.Problem
 import no.nav.pensjon.brev.brevoppskrift.auth.requireEditor
 import no.nav.pensjon.brev.brevoppskrift.model.exampleDraft
 import no.nav.pensjon.brev.brevoppskrift.model.DraftRevision
@@ -62,6 +65,58 @@ class ApplicationTest {
         assertThat(unauthenticated.headers[HttpHeaders.WWWAuthenticate]).isEqualTo("Bearer")
         assertThat(unauthenticated.headers[HttpHeaders.ContentType]).startsWith("application/problem+json")
         assertThat(client.get("/metrics").bodyAsText()).contains("ktor_http_server_requests")
+    }
+
+    @Test
+    fun `problem responses use ContentNegotiation and preserve media type regardless of Accept`() = testApplication {
+        application {
+            brevoppskriftModule(azure, jwks)
+            routing {
+                authenticate(ENTRA_AUTH) {
+                    get("/problem-type-check") {
+                        call.respond(HttpStatusCode.Conflict, Problem(
+                            title = "Conflict", status = 409, code = "REVISION_CONFLICT",
+                            detail = "Utkastet er endret.", currentRevision = DraftRevision(7),
+                        ))
+                    }
+                }
+            }
+        }
+        for (accept in listOf(null, "*/*", "application/json", "application/problem+json", "text/html")) {
+            val unauthorized = client.get("/api/v1/meg") {
+                if (accept != null) header(HttpHeaders.Accept, accept)
+            }
+            assertThat(unauthorized.status).isEqualTo(HttpStatusCode.Unauthorized)
+            assertThat(unauthorized.headers[HttpHeaders.WWWAuthenticate]).isEqualTo("Bearer")
+            assertThat(unauthorized.headers[HttpHeaders.ContentType]).startsWith("application/problem+json")
+            val body = draftObjectMapper.readTree(unauthorized.bodyAsText())
+            assertThat(body["status"].asInt()).isEqualTo(401)
+            assertThat(body["code"].asText()).isEqualTo("UNAUTHORIZED")
+            val conflict = client.get("/problem-type-check") {
+                bearerAuth(token())
+                if (accept != null) header(HttpHeaders.Accept, accept)
+            }
+            assertThat(conflict.status).isEqualTo(HttpStatusCode.Conflict)
+            assertThat(conflict.headers[HttpHeaders.ContentType]).startsWith("application/problem+json")
+            assertThat(draftObjectMapper.readTree(conflict.bodyAsText())["currentRevision"].asInt()).isEqualTo(7)
+            val invalid = client.post("/api/v1/utkast/valider") {
+                bearerAuth(token())
+                if (accept != null) header(HttpHeaders.Accept, accept)
+                contentType(ContentType.Application.Json)
+                setBody(draftObjectMapper.writeValueAsString(exampleDraft().copy(formatVersion = 9)))
+            }
+            assertThat(invalid.status).isEqualTo(HttpStatusCode.UnprocessableEntity)
+            assertThat(invalid.headers[HttpHeaders.ContentType]).startsWith("application/problem+json")
+            assertThat(draftObjectMapper.readTree(invalid.bodyAsText())["errors"].first()["code"].asText()).isEqualTo("UNSUPPORTED_VERSION")
+        }
+        for (accept in listOf(null, "*/*", "application/json")) {
+            val user = client.get("/api/v1/meg") {
+                bearerAuth(token())
+                if (accept != null) header(HttpHeaders.Accept, accept)
+            }
+            assertThat(user.status).isEqualTo(HttpStatusCode.OK)
+            assertThat(user.headers[HttpHeaders.ContentType]).startsWith("application/json")
+        }
     }
 
     @Test

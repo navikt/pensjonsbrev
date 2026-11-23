@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.brevoppskrift.draftObjectMapper
 import kotlin.reflect.typeOf
 
 fun OpenApiDoc.withCommonResponses(): OpenApiDoc {
-    val problemContentType = ContentType.parse("application/problem+json")
+    val problemContentType = ContentType.Application.ProblemJson
     val responses = listOf(
         HttpStatusCode.BadRequest, HttpStatusCode.Unauthorized, HttpStatusCode.Forbidden,
         HttpStatusCode.NotFound, HttpStatusCode.Gone, HttpStatusCode.Conflict,
