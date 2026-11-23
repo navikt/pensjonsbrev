@@ -206,13 +206,13 @@ object OmstillingsstoenadInntektsjusteringFraser {
             paragraph {
                 text(
                     bokmal { +"Hvis du mener vedtaket er feil, har du rett til å klage. Du må sende klagen innen " +
-                            "6 uker fra 1. januar " + inntektsaar.format() + ". Dette følger av folketrygdloven " +
+                            "6 uker fra 1. januar " + inntektsaar.format() + ", som er tidspunktet vedtaket gjelder fra. Dette følger av folketrygdloven " +
                             "§ 21-12. Du finner mer informasjon om hvordan du kan klage på ${Constants.KLAGE_URL}." },
                     nynorsk { +"Dersom du meiner vedtaket er feil, har du rett til å klage. Du må sende klaga innan " +
-                            "6 veker frå 1. januar " + inntektsaar.format() + ". Dette følgjer av folketrygdlova " +
+                            "6 veker frå 1. januar " + inntektsaar.format() + ", som er tidspunktet vedtaket gjeld frå. Dette følgjer av folketrygdlova " +
                             "§ 21-12. Du finn meir informasjon om korleis du kan klage på ${Constants.KLAGE_URL}." },
                     english { +"If you believe the decision is incorrect, you have the right to appeal. You must " +
-                            "submit your appeal within 6 weeks from 1 January " + inntektsaar.format() + ". This is " +
+                            "submit your appeal within 6 weeks from 1 January " + inntektsaar.format() + ", which is the date the decision takes effect. This is " +
                             "set out in Section 21-12 of the National Insurance Act. You can find more information " +
                             "on how to appeal at ${Constants.Engelsk.KLAGE_URL}." },
                 )

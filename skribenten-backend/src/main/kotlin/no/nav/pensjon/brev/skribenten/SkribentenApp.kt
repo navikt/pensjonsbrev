@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.*
 import io.ktor.client.plugins.HttpRequestTimeoutException
@@ -85,6 +88,10 @@ fun Application.skribentenApp() {
                 logger.info("Bad request, men ikke knytta til deserialisering")
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
+        }
+        exception<FeilMarkupVersjonException> { call, cause ->
+            logger.info(cause.message, cause)
+            call.respond(HttpStatusCode.Conflict, cause.message ?: "Feil markup-versjon")
         }
         exception<Dto2ApiService.BrevmalFinnesIkke> { call, cause ->
             logger.info(cause.message, cause)
@@ -174,9 +181,10 @@ fun Application.skribentenApp() {
 // Vi må gjøre denne vaskingen fordi Exposed sin BasicBinaryColumnType::valueFromDB kaster en IllegalStateException med toString av Edit.Letter.
 // Meldt inn til exposed: https://youtrack.jetbrains.com/issue/EXPOSED-1012
 private fun cleanSensitiveDataAndLog(cause: Exception) {
-    if (cause is IllegalStateException && cause.messageHasEditedLetter()) {
+    val sensitiveType = (cause as? IllegalStateException)?.sensitiveEditedLetterType()
+    if (sensitiveType != null) {
         val cleansedException = IllegalStateException(
-            "Unexpected value ***stripped sensitive Edit.Letter value*** of type ${Edit.Letter::class.qualifiedName}",
+            "Unexpected value ***stripped sensitive edited letter value*** of type $sensitiveType",
             cause.cause
         ).apply {
             stackTrace = cause.stackTrace
@@ -192,9 +200,15 @@ private fun cleanSensitiveDataAndLog(cause: Exception) {
 private fun Throwable.isInfoLogLevel(): Boolean =
     this is HttpRequestTimeoutException
 
-private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.let { msg ->
-    msg.startsWith("Unexpected value") && msg.endsWith("of type ${Edit.Letter::class.qualifiedName}")
-} ?: false
+private val sensitiveEditedLetterTypes = listOf(
+    Edit.Letter::class,
+    VersjonertBrev.V1::class,
+    VersjonertVedlegg.V1::class,
+).mapNotNull { it.qualifiedName }
+
+private fun IllegalStateException.sensitiveEditedLetterType(): String? = message?.let { msg ->
+    if (msg.startsWith("Unexpected value")) sensitiveEditedLetterTypes.firstOrNull { msg.endsWith("of type $it") } else null
+}
 
 fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {
