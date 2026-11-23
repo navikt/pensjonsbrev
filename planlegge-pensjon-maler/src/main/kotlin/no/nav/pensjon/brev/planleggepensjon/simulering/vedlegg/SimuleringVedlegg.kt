@@ -137,11 +137,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
                     includePhrase(SumTabell(gradertUttak, afp))
                 }
             }
-            ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
-                ifNotNull(afpLivsvarigSim.vedGradertUttak) { afp ->
-                    includePhrase(SumOffentligLivsvarigTabell(gradertUttak, afp))
-                }
-            }
         }
 
 
@@ -176,11 +171,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
         ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
             includePhrase(AfpPrivatTabell(afpPrivatSim.vedHeltUttak))
             includePhrase(SumTabell(knekkpunkter.vedHeltUttak, afpPrivatSim.vedHeltUttak))
-        }
-        ifNotNull(simulering.afpOffentligLivsvarig) { afpLivsvarigSim ->
-            ifNotNull(afpLivsvarigSim.vedHeltUttak) { afp ->
-                includePhrase(SumOffentligLivsvarigTabell(knekkpunkter.vedHeltUttak, afp))
-            }
         }
 
         ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->

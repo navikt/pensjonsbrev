@@ -56,7 +56,7 @@ class LivsvarigOffentligAfpTest {
         assertEquals(afpTabell, tabellAvsnitt.content.single())
         val beskrivelseAvsnitt = assertInstanceOf(Block.Paragraph::class.java, blocks[tittelIndex + 2])
         assertEquals(beskrivelse, beskrivelseAvsnitt.content.filterIsInstance<ParagraphContent.Text>().text())
-        assertEquals(1, tables(blocks).count { it.header.colSpec.first().headerContent.text.text() == "Alderspensjon og AFP" })
+        assertEquals(0, tables(blocks).count { it.header.colSpec.first().headerContent.text.text() == "Alderspensjon og AFP" })
     }
 
     @ParameterizedTest
@@ -71,7 +71,7 @@ class LivsvarigOffentligAfpTest {
         assertEquals(1, blocks.filterIsInstance<Block.Paragraph>().count {
             it.content.filterIsInstance<ParagraphContent.Text>().text() == beskrivelse
         })
-        assertEquals(if (medApTabeller) 2 else 0, tables(blocks).count {
+        assertEquals(0, tables(blocks).count {
             it.header.colSpec.first().headerContent.text.text() == "Alderspensjon og AFP"
         })
     }
@@ -149,6 +149,25 @@ class LivsvarigOffentligAfpTest {
         })
     }
 
+    @Test
+    fun `beholder brevtitlene for privat og tidsbegrenset AFP`() {
+        FeatureToggleSingleton.init(FeatureToggleDummy)
+        listOf(
+            Fixtures.createBrevDtoMedAfpPrivat() to "Beregning av alderspensjon og AFP i privat sektor",
+            Fixtures.createBrevDtoMedAfpOffentligTidsbegrenset() to "Beregning av AFP i offentlig sektor etterfulgt av alderspensjon",
+        ).forEach { (brev, forventetTittel) ->
+            val rendered = LetterTestRenderer.render(
+                LetterTestImpl(ApSimuleringBrev.template, brev, Language.Bokmal, Fixtures.felles),
+            )
+            assertEquals(forventetTittel, rendered.letterMarkup.title.text())
+            if (brev.pesysData.simulering.afpPrivat != null) {
+                assertTrue(tables(rendered.attachments.first().blocks).any {
+                    it.header.colSpec.first().headerContent.text.text() == "Alderspensjon og AFP"
+                })
+            }
+        }
+    }
+
     private fun render(
         afp: AfpOffentligLivsvarigSimulering?,
         medApTabeller: Boolean = true,
@@ -166,9 +185,15 @@ class LivsvarigOffentligAfpTest {
                     if (medApTabeller) brev.pesysData.simulering.maanedligAlderspensjonForKnekkpunkter else null,
             ),
         )
-        return LetterTestRenderer.render(
+        val rendered = LetterTestRenderer.render(
             LetterTestImpl(ApSimuleringBrev.template, brev.copy(pesysData = data), Language.Bokmal, Fixtures.felles),
-        ).attachments.first().blocks
+        )
+        assertEquals(
+            if (afp != null) "Beregning av alderspensjon med livsvarig AFP i offentlig sektor"
+            else "Beregning av alderspensjon",
+            rendered.letterMarkup.title.text(),
+        )
+        return rendered.attachments.first().blocks
     }
 
     private fun tables(blocks: List<Block>): List<ParagraphContent.Table> =
