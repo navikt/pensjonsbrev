@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.server.application.*
 import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.routing.Route
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevInfoHandler
@@ -27,3 +28,6 @@ val RequireMarkupVersion =
             }
         }
     }
+
+fun Route.kreverMarkupVersjon(version: MarkupVersjon): Route =
+    apply { install(RequireMarkupVersion) { this.version = version } }

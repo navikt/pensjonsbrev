@@ -23,6 +23,16 @@ import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.HentP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.LagreP1DataHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.DiffBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.FrigiReservasjonHandler
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
+import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.model.Pdl
+import no.nav.pensjon.brev.skribenten.services.PdlService
+import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentAlltidValgbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FeilMarkupVersjonException
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
@@ -61,6 +71,7 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
     }
 
     private fun routeTest(block: suspend ApplicationTestBuilder.(HttpClient) -> Unit) = testApplication {
+        penService.saker[sak1.saksId] = sak1
         brevbakerService.modelSpecificationResultat = TemplateModelSpecification(types = emptyMap(), letterModelTypeName = "Test")
         brevbakerService.renderMarkupV2Resultat = { felles ->
             letterV2(
@@ -114,6 +125,17 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
                 provide { HentAlltidValgbareVedleggHandler(brevtilgang, brevmalService) }
                 provide { leggVedFoersteside }
                 provide { BrevoppdateringObservability() }
+                provide { reserverBrevHandler }
+                provide { FrigiReservasjonHandler(brevtilgang, brevreservasjonPolicy) }
+                provide { DiffBrevHandler(brevtilgang, brevdataService, brevmalService) }
+                provide<Cache> { InMemoryCache() }
+                provide { FagsakService(penService) }
+                provide<PdlService> {
+                    object : PdlServiceStub() {
+                        override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnumre: List<Behandlingsnummer>) =
+                            emptyList<Pdl.Gradering>()
+                    }
+                }
                 provide {
                     Dto2ApiService(
                         brevmalService,
@@ -130,6 +152,7 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
                         sakBrev()
                         sakBrevV2()
                     }
+                    brev()
                 }
             }
         }
@@ -225,6 +248,56 @@ class BrevV2RouteTest : BrevredigeringHandlerTestBase() {
         assertThat(client.get("$basePath/v2/${v1.info.id}").status).isEqualTo(HttpStatusCode.Conflict)
         assertThat(client.post("$basePath/v2/${v1.info.id}/tilbakestill").status).isEqualTo(HttpStatusCode.Conflict)
         assertThat(hentBrev(v1.info.id).resultOrFail().redigertBrevHash).isEqualTo(v1.redigertBrevHash)
+    }
+
+    @Test
+    fun `v1-endepunkter avviser v2-brev uten aa endre det`() = routeTest { client ->
+        Features.override(Features.markupV2, true)
+        val original = client.createV2()
+        val brevId = original.info.id
+        val v2Path = "$basePath/v2/$brevId"
+        val paragraph = original.redigertBrev.blocks.single() as EditV2.Block.Paragraph
+        val edited = original.redigertBrev.copy(
+            blocks = listOf(paragraph.copy(content = listOf((paragraph.content.single() as EditV2.Text.Literal).copy(editedText = "edited")))),
+        )
+        assertThat(client.put(v2Path) {
+            contentType(ContentType.Application.Json)
+            setBody(mapper.writeValueAsString(ApiV2.OppdaterBrevRequest(SaksbehandlervalgMap(), edited)))
+        }.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(client.delete("/brev/$brevId/reservasjon").status).isEqualTo(HttpStatusCode.OK)
+        val foer = mapper.readValue<ApiV2.BrevResponse>(client.get(v2Path).bodyAsText())
+
+        val v1Kall: List<Pair<HttpMethod, String>> = listOf(
+            HttpMethod.Get to "$basePath/$brevId?reserver=true",
+            HttpMethod.Put to "$basePath/$brevId",
+            HttpMethod.Patch to "$basePath/$brevId",
+            HttpMethod.Put to "$basePath/$brevId/valgteVedlegg",
+            HttpMethod.Get to "$basePath/$brevId/redigerbareVedlegg/P1",
+            HttpMethod.Put to "$basePath/$brevId/redigerbareVedlegg/P1",
+            HttpMethod.Delete to "$basePath/$brevId/redigerbareVedlegg/P1",
+            HttpMethod.Get to "$basePath/$brevId/attestering?reserver=true",
+            HttpMethod.Put to "$basePath/$brevId/attestering",
+            HttpMethod.Put to "$basePath/$brevId/attestering/redigertBrev",
+            HttpMethod.Get to "$basePath/$brevId/attestering/redigerbareVedlegg/P1",
+            HttpMethod.Put to "$basePath/$brevId/attestering/redigerbareVedlegg/P1",
+            HttpMethod.Put to "/brev/$brevId/redigertBrev",
+            HttpMethod.Post to "/brev/$brevId/tilbakestill",
+            HttpMethod.Post to "/brev/$brevId/diff",
+        )
+        v1Kall.forEach { (method, url) ->
+            val response = client.request(url) {
+                this.method = method
+                contentType(ContentType.Application.Json)
+                setBody("{}")
+            }
+            assertThat(response.status).describedAs("$method $url").isEqualTo(HttpStatusCode.Conflict)
+        }
+
+        assertThat(hentBrevInfo(brevId).resultOrFail().redigeresAv).isNull()
+        val etter = mapper.readValue<ApiV2.BrevResponse>(client.get(v2Path).bodyAsText())
+        assertThat(etter.redigertBrev).isEqualTo(edited)
+        assertThat(etter.redigertBrevHash).isEqualTo(foer.redigertBrevHash)
+        assertThat(client.get("/brev/$brevId/info").status).isEqualTo(HttpStatusCode.OK)
     }
 
     @Test
