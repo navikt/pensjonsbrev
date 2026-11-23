@@ -531,14 +531,6 @@ export function resolveCollapsedRangeInRoot(
   return { literalEl: resolved.literalEl, literalIndex, cursorPosition: resolved.cursorPosition };
 }
 
-export function resolveCaretInRoot(
-  root: HTMLElement,
-): { literalEl: HTMLElement; literalIndex: LiteralIndex; cursorPosition: number } | undefined {
-  const selection = globalThis.getSelection();
-  if (!selection || selection.rangeCount === 0) return undefined;
-  return resolveCollapsedRangeInRoot(selection.getRangeAt(0), root);
-}
-
 function closestLiteralEl(n: Node | null): HTMLElement | null {
   const el = (n && (n.nodeType === Node.ELEMENT_NODE ? (n as Element) : n.parentElement)) || null;
   return el ? el.closest<HTMLElement>("[data-literal-index]") : null;

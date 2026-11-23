@@ -1,7 +1,6 @@
 import React, { useLayoutEffect, useRef } from "react";
 
 import { fontTypeOf, isUneditedFritekst, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
-import { composingLiteralElementRef } from "~/Brevredigering/LetterEditor/components/EditableSurface";
 import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useAttestantDiff, useDiffSegmentsForLiteral } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
@@ -180,7 +179,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   useLayoutEffect(() => {
     const element = contentEditableReference.current;
     if (!element) return;
-    if (composingLiteralElementRef.current === element) return;
 
     if (hasDiffDecoration && diffVersion) {
       renderDiffSegments(element, diffSegments, diffVersion);

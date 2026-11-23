@@ -840,22 +840,4 @@ describe("single-root surface interactions", () => {
     expect(span.textContent).toBe("Vi har det vedtaket");
     expect(getState().focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 10 });
   });
-
-  test("MutationObserver safety net restores literals and removes stray DOM mutations bypassing beforeinput", async () => {
-    const initial = letter(paragraph([literal({ id: 1, text: "Original tekst" })]));
-    const { container } = setupComplex(initial);
-    const span = screen.getByText("Original tekst");
-    const paragraphEl = container.querySelector(".PARAGRAPH")!;
-
-    await act(async () => {
-      span.firstChild!.textContent = "Tampered by extension";
-      const strayFont = document.createElement("font");
-      strayFont.textContent = "injected";
-      paragraphEl.appendChild(strayFont);
-      await Promise.resolve();
-    });
-
-    expect(span.textContent).toBe("Original tekst");
-    expect(paragraphEl.querySelector("font")).toBeNull();
-  });
 });

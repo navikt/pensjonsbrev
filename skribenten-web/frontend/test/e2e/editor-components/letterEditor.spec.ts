@@ -1051,9 +1051,7 @@ test.describe("LetterEditor root-editable surface", () => {
     await expect(target).toHaveText("Siste avsnitt. å");
   });
 
-  test("model selection controls boundary typing, triple-click replacement, and MutationObserver recovery", async ({
-    page,
-  }) => {
+  test("model selection controls boundary typing and triple-click replacement", async ({ page }) => {
     const fourthParagraph = page.locator(".editor-surface > .PARAGRAPH").nth(3);
     const first = fourthParagraph.locator("[data-literal]").nth(0);
     const middle = fourthParagraph.locator("[data-literal]").nth(1);
@@ -1070,15 +1068,5 @@ test.describe("LetterEditor root-editable surface", () => {
     await expect(first).toHaveText("First ");
     await expect(middle).toHaveText("Replaced ");
     await expect(last).toHaveText("Last");
-
-    await fourthParagraph.evaluate((el) => {
-      const spans = el.querySelectorAll("[data-literal]");
-      spans[0].textContent = "Corrupted";
-      spans[2].remove();
-    });
-
-    await expect(fourthParagraph.locator("[data-literal]").nth(0)).toHaveText("First ");
-    await expect(fourthParagraph.locator("[data-literal]").nth(1)).toHaveText("Replaced ");
-    await expect(fourthParagraph.locator("[data-literal]").nth(2)).toHaveText("Last");
   });
 });

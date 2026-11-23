@@ -3,6 +3,7 @@ import { type Draft } from "immer";
 import {
   type Cell,
   type Content,
+  type EditedDocument,
   FontType,
   type ItemList,
   type LiteralValue,
@@ -14,10 +15,10 @@ import {
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import { type Action, withPatches } from "../lib/actions";
-import { type LetterEditorState, type LiteralIndex } from "../model/state";
-import { isItemList, isLiteral, isTableCellIndex, isTextContent } from "../model/utils";
+import { type LetterEditorState, type LiteralIndex, type SelectionIndex } from "../model/state";
+import { isItemList, isLiteral, isNewLine, isTableCellIndex, isTextContent } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
-import { fontTypeOf, isItemContentIndex, isTable, newLiteral } from "./common";
+import { fontTypeOf, isItemContentIndex, isTable, newLiteral, text } from "./common";
 
 export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
@@ -42,13 +43,108 @@ export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState)
   return isTextContent(textContent) ? fontTypeOf(textContent) : FontType.PLAIN;
 };
 
-// TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
+/**
+ * Formatting splits and rebuilds literals, so the selection is kept as character offsets within the text it is in
+ * (a paragraph, list item or table cell) and mapped back onto the new literals. The selection is part of the undo
+ * step, so undo and redo restore the selection that matches the text.
+ */
 export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = withPatches((draft, fontType) => {
+  const selection = draft.selection;
+  const offsets = selection && {
+    start: offsetInText(draft.redigertBrev, selection.start),
+    end: offsetInText(draft.redigertBrev, selection.end),
+  };
+
+  if (!switchFontTypeRecipe(draft, fontType) || !selection || !offsets) return;
+
+  const start =
+    (offsets.start === undefined
+      ? undefined
+      : endpointAt(draft.redigertBrev, selection.start, offsets.start, "start")) ?? selection.start;
+  const end =
+    (offsets.end === undefined ? undefined : endpointAt(draft.redigertBrev, selection.end, offsets.end, "end")) ??
+    selection.end;
+  draft.selection = { start, end };
+  draft.focus = { ...start };
+});
+
+type SelectionEndpoint = SelectionIndex["start"];
+
+/** The content a literal index points into: the paragraph itself, a list item or a table cell. */
+function textOf(document: EditedDocument, index: LiteralIndex): Content[] | undefined {
+  const block = document.blocks[index.blockIndex];
+  if (!block) return undefined;
+  const content = block.content[index.contentIndex];
+  if (isTableCellIndex(index)) {
+    if (!isTable(content)) return undefined;
+    const cell =
+      index.rowIndex === -1
+        ? content.header.colSpec[index.cellIndex]?.headerContent
+        : content.rows[index.rowIndex]?.cells[index.cellIndex];
+    return cell?.text;
+  }
+  if (isItemContentIndex(index)) {
+    return isItemList(content) ? content.items[index.itemIndex]?.content : undefined;
+  }
+  return block.content;
+}
+
+function positionInText(index: LiteralIndex): number {
+  if (isTableCellIndex(index)) return index.cellContentIndex;
+  if (isItemContentIndex(index)) return index.itemContentIndex;
+  return index.contentIndex;
+}
+
+function withPositionInText(index: LiteralIndex, position: number): LiteralIndex {
+  if (isTableCellIndex(index)) return { ...index, cellContentIndex: position };
+  if (isItemContentIndex(index)) return { ...index, itemContentIndex: position };
+  return { ...index, contentIndex: position };
+}
+
+// Lists and tables inside a paragraph count as one character, so offsets on either side of them stay apart.
+const lengthOf = (content: Content) => (isTextContent(content) && !isNewLine(content) ? text(content).length : 1);
+
+function offsetInText(document: EditedDocument, endpoint: SelectionEndpoint): number | undefined {
+  const content = textOf(document, endpoint);
+  if (!content) return undefined;
+  const preceding = content.slice(0, positionInText(endpoint)).reduce((sum, item) => sum + lengthOf(item), 0);
+  return preceding + endpoint.cursorPosition;
+}
+
+/** The literal at `offset`: for a start, the literal that begins there; for an end, the literal that ends there. */
+function endpointAt(
+  document: EditedDocument,
+  index: LiteralIndex,
+  offset: number,
+  side: "start" | "end",
+): SelectionEndpoint | undefined {
+  const content = textOf(document, index);
+  if (!content) return undefined;
+
+  let fallback: SelectionEndpoint | undefined;
+  let start = 0;
+  for (const [position, item] of content.entries()) {
+    const end = start + lengthOf(item);
+    if (isLiteral(item) && offset >= start && offset <= end) {
+      const endpoint = { ...withPositionInText(index, position), cursorPosition: offset - start };
+      const isPreferred = side === "start" ? offset < end : offset > start;
+      if (isPreferred) return endpoint;
+      fallback ??= endpoint;
+    }
+    start = end;
+  }
+  return fallback;
+}
+
+// TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
+/** Returns whether the letter was changed. */
+function switchFontTypeRecipe(draft: Draft<LetterEditorState>, fontType: FontType): boolean {
   const literalIndex = draft.focus;
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  let changed = false;
 
   if (block?.type !== "PARAGRAPH") {
-    return;
+    return false;
   }
 
   if (fontType === getCurrentActiveFontTypeAtCursor(draft)) {
@@ -69,7 +165,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
       }
       draft.focus = { ...draft.focus, cursorPosition: 0 };
       draft.saveStatus = "DIRTY";
-      return;
+      return true;
     }
 
     const row: Draft<Row> = table.rows[literalIndex.rowIndex];
@@ -83,7 +179,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
 
     draft.focus = { ...draft.focus, cursorPosition: 0 };
     draft.saveStatus = "DIRTY";
-    return;
+    return true;
   }
 
   draft.saveStatus = "DIRTY";
@@ -117,6 +213,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
         cursorPosition: result.updatedCursorPosition,
       };
       block.content = [...contentBeforeTheLiteralWeAreOn, ...result.resultingContent, ...contentAfterTheLiteralWeAreOn];
+      changed = true;
       block.deletedContent = [...block.deletedContent, ...(result.deletedContent ? [result.deletedContent] : [])];
     },
     onVariable: (variable) => {
@@ -126,6 +223,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
       });
 
       block.content = [...contentBeforeTheLiteralWeAreOn, newVariable, ...contentAfterTheLiteralWeAreOn];
+      changed = true;
     },
     onNewLine: () => void 0,
     onItemList: (itemList) => {
@@ -175,6 +273,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
             ...item.deletedContent,
             ...(result.deletedContent ? [result.deletedContent] : []),
           ];
+          changed = true;
         },
         onVariable: (variable) => {
           const newVariable = switchFontTypeForVariable({
@@ -191,12 +290,14 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
           (
             draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
           ).items[literalIndex.itemIndex].content = newItemContent;
+          changed = true;
         },
         onNewLine: () => void 0,
       });
     },
   });
-});
+  return changed;
+}
 
 const matchesLiteralTarget = (a: LiteralIndex, b: LiteralIndex): boolean => {
   if (isItemContentIndex(a) && isItemContentIndex(b)) {

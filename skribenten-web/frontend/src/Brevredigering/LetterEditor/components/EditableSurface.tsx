@@ -1,4 +1,6 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type React from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
+import { flushSync } from "react-dom";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
@@ -36,7 +38,6 @@ import {
   isProgrammaticFocus,
   matchesDomSelectionSnapshot,
   parseLiteralIndex,
-  resolveCaretInRoot,
   resolveDomSelectionToModel,
   snapshotDomSelection,
   staticRangeToModelSelection,
@@ -185,40 +186,6 @@ function wordBoundaryForward(str: string, offset: number): number {
   return i;
 }
 
-const CONTAINER_NO_RAW_TEXT_SELECTOR =
-  "[data-editor-root], .letter-title, .PARAGRAPH, .TITLE1, .TITLE2, .TITLE3, li, td, th, ul, ol, table, thead, tbody, tr";
-
-function isLegitimateEditorElement(el: Element): boolean {
-  if (
-    el.hasAttribute("data-literal") ||
-    el.hasAttribute("data-variable") ||
-    el.hasAttribute("data-word-joiner") ||
-    el.hasAttribute("data-diff-deleted") ||
-    el.hasAttribute("data-diff-deleted-block") ||
-    el.hasAttribute("data-diff-insertion") ||
-    el.hasAttribute("data-diff-deletion") ||
-    el.classList.contains("missing-from-template-actions") ||
-    el.closest('[contenteditable="false"]')
-  ) {
-    return true;
-  }
-  if (el.tagName === "BR") {
-    return el.hasAttribute("data-literal-index");
-  }
-  if (
-    el.classList.contains("PARAGRAPH") ||
-    el.classList.contains("TITLE1") ||
-    el.classList.contains("TITLE2") ||
-    el.classList.contains("TITLE3") ||
-    ["UL", "OL", "LI", "TABLE", "THEAD", "TBODY", "TR", "TH", "TD"].includes(el.tagName)
-  ) {
-    return true;
-  }
-  return false;
-}
-
-export const composingLiteralElementRef: { current: HTMLElement | null } = { current: null };
-
 export type EditableSurfaceProps<T extends React.ElementType = "div"> = {
   as?: T;
   surfaceRef?: React.Ref<HTMLDivElement>;
@@ -237,7 +204,6 @@ export function EditableSurface<T extends React.ElementType = "div">({
 }: EditableSurfaceProps<T>) {
   const Component: React.ElementType = as ?? "div";
   const hostRef = useRef<HTMLDivElement | null>(null);
-  const observerRef = useRef<MutationObserver | null>(null);
   const lastAppliedDomSelectionRef = useRef<DomSelectionSnapshot | null>(null);
   const hasCompletedInitialLayoutRef = useRef(false);
   const pointerDownInsideRef = useRef(false);
@@ -248,13 +214,13 @@ export function EditableSurface<T extends React.ElementType = "div">({
   const fritekstMouseDownRef = useRef<{ element: HTMLElement; wasInside: boolean } | null>(null);
   const shiftKeyDownRef = useRef(false);
   const lastKeyWasTabRef = useRef(false);
-  const [repairGeneration, setRepairGeneration] = useState(0);
+  // While the browser composes (dead key or IME), its caret counts text the model doesn't have yet, so it isn't synced.
+  const isComposingRef = useRef(false);
 
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
   const { diffHash, disableDiffMode } = useAttestantDiff();
   const prevFocusRef = useRef<Focus>(editorState.focus);
   const prevSelectionRef = useRef<SelectionIndex | undefined>(editorState.selection);
-  const prevRepairGenerationRef = useRef(0);
   const editorStateRef = useRef(editorState);
   editorStateRef.current = editorState;
   const freezeRef = useRef(freeze);
@@ -274,37 +240,6 @@ export function EditableSurface<T extends React.ElementType = "div">({
     end: { ...literalIndex, cursorPosition: length },
   });
 
-  const reconcileDomFromModel = (root: HTMLElement): boolean => {
-    let needsRemount = false;
-    const doc = editorStateRef.current.redigertBrev;
-
-    for (const literalEl of root.querySelectorAll<HTMLElement>("[data-literal]")) {
-      if (literalEl.dataset.diffVersion !== undefined) continue;
-      const idx = parseLiteralIndex(literalEl);
-      if (!idx) continue;
-      const modelLiteral = getLiteralFromState(doc, idx);
-      if (!modelLiteral) continue;
-      const expectedText = getLogicalLiteralText(modelLiteral) || ZERO_WIDTH_SPACE;
-      if (
-        literalEl.textContent !== expectedText ||
-        literalEl.childNodes.length !== 1 ||
-        literalEl.firstChild?.nodeType !== Node.TEXT_NODE
-      ) {
-        literalEl.textContent = expectedText;
-      }
-    }
-
-    const expectedLiteralCount = countExpectedLiteralsInSurface(doc, isTitleSurface, root);
-    if (expectedLiteralCount !== null) {
-      const actualLiteralCount = root.querySelectorAll("[data-literal]").length;
-      if (actualLiteralCount !== expectedLiteralCount) {
-        needsRemount = true;
-      }
-    }
-
-    return needsRemount;
-  };
-
   useLayoutEffect(() => {
     const root = hostRef.current;
     if (!root) return;
@@ -313,14 +248,11 @@ export function EditableSurface<T extends React.ElementType = "div">({
     hasCompletedInitialLayoutRef.current = true;
 
     const focusOrSelectionChanged =
-      editorState.focus !== prevFocusRef.current ||
-      editorState.selection !== prevSelectionRef.current ||
-      repairGeneration !== prevRepairGenerationRef.current;
+      editorState.focus !== prevFocusRef.current || editorState.selection !== prevSelectionRef.current;
     prevFocusRef.current = editorState.focus;
     prevSelectionRef.current = editorState.selection;
-    prevRepairGenerationRef.current = repairGeneration;
 
-    if (!freeze && !composingLiteralElementRef.current) {
+    if (!freeze) {
       const { focus, selection, redigertBrev } = editorState;
       const ownerTarget = selection ? selection.start : focus;
       const targetEl = findIndexElementInRoot(root, ownerTarget);
@@ -334,7 +266,6 @@ export function EditableSurface<T extends React.ElementType = "div">({
             const fullSel = fullRangeForLiteral(idx, len);
             const nextFocus: Focus = { ...idx, cursorPosition: len };
             lastAppliedDomSelectionRef.current = applyModelSelectionToDom(root, nextFocus, fullSel, true);
-            observerRef.current?.takeRecords();
             applyAction(updateSelection, setEditorState, fullSel, nextFocus);
             return;
           }
@@ -349,81 +280,7 @@ export function EditableSurface<T extends React.ElementType = "div">({
         }
       }
     }
-
-    observerRef.current?.takeRecords();
   });
-
-  useLayoutEffect(() => {
-    const root = hostRef.current;
-    if (!root) return;
-
-    const observer = new MutationObserver((records) => {
-      if (!root.isConnected || composingLiteralElementRef.current) return;
-
-      let structurallyDamaged = false;
-      for (const record of records) {
-        if (record.type === "childList") {
-          for (const added of record.addedNodes) {
-            if (added.nodeType === Node.TEXT_NODE) {
-              const parentEl = record.target as Element;
-              if (
-                parentEl.nodeType === Node.ELEMENT_NODE &&
-                !isEditableLiteralEl(parentEl) &&
-                !parentEl.closest('[contenteditable="false"]') &&
-                parentEl.matches(CONTAINER_NO_RAW_TEXT_SELECTOR)
-              ) {
-                added.parentNode?.removeChild(added);
-              }
-            } else if (added.nodeType === Node.ELEMENT_NODE) {
-              const addedEl = added as Element;
-              if (!isLegitimateEditorElement(addedEl)) {
-                addedEl.remove();
-              }
-            }
-          }
-          for (const removed of record.removedNodes) {
-            if (removed.nodeType === Node.ELEMENT_NODE) {
-              const removedEl = removed as Element;
-              if (
-                removedEl.hasAttribute("data-literal") ||
-                removedEl.hasAttribute("data-variable") ||
-                removedEl.classList.contains("PARAGRAPH") ||
-                removedEl.classList.contains("TITLE1") ||
-                removedEl.classList.contains("TITLE2") ||
-                removedEl.classList.contains("TITLE3")
-              ) {
-                structurallyDamaged = true;
-              }
-            }
-          }
-        }
-      }
-
-      const countMismatch = reconcileDomFromModel(root);
-      const curState = editorStateRef.current;
-      const targetIndex = curState.selection ? curState.selection.start : curState.focus;
-      if (!freezeRef.current && document.activeElement === root && findIndexElementInRoot(root, targetIndex)) {
-        lastAppliedDomSelectionRef.current = applyModelSelectionToDom(root, curState.focus, curState.selection, false);
-      }
-      observer.takeRecords();
-
-      if (structurallyDamaged || countMismatch) {
-        setRepairGeneration((gen) => gen + 1);
-      }
-    });
-
-    observer.observe(root, {
-      childList: true,
-      characterData: true,
-      subtree: true,
-    });
-    observerRef.current = observer;
-
-    return () => {
-      observer.disconnect();
-      observerRef.current = null;
-    };
-  }, [isTitleSurface]);
 
   useEffect(() => {
     const onDocKeyDown = (event: KeyboardEvent) => {
@@ -441,9 +298,9 @@ export function EditableSurface<T extends React.ElementType = "div">({
       if (
         !root ||
         freezeRef.current ||
+        isComposingRef.current ||
         document.activeElement !== root ||
         isProgrammaticFocus() ||
-        composingLiteralElementRef.current ||
         clickedVariableRef.current
       ) {
         return;
@@ -826,70 +683,48 @@ export function EditableSurface<T extends React.ElementType = "div">({
     return () => root.removeEventListener("beforeinput", listener);
   }, []);
 
+  /**
+   * Dead keys (é, ü on a Norwegian keyboard) and IMEs are the one kind of input the browser applies to the DOM itself:
+   * their beforeinput can't be cancelled. When the composition ends, the caret is in the literal the browser composed
+   * into, so that literal's text is read back into the model.
+   */
   const handleCompositionStart = () => {
     const root = hostRef.current;
     if (!root || freezeRef.current) return;
 
     const effective = getEffectiveModelSelection();
-    if (effective?.selection && !isSameLiteral(effective.selection.start, effective.selection.end)) {
-      applyAction(Actions.deleteSelection, setEditorState, effective.selection);
+    if (effective?.selection) {
+      // Otherwise the browser deletes the selection itself, which can remove whole literals. Delete it through the
+      // model first, so the composition starts at a caret in a DOM that matches the model.
+      const selection = effective.selection;
+      flushSync(() => applyAction(Actions.deleteSelection, setEditorState, selection));
     }
-
-    const activeIndex = effective ? stripFocusMeta(effective.focus) : stripFocusMeta(editorStateRef.current.focus);
-    const literalEl = findIndexElementInRoot(root, activeIndex);
-    if (literalEl && isEditableLiteralEl(literalEl)) {
-      composingLiteralElementRef.current = literalEl;
-      if (literalEl.textContent === ZERO_WIDTH_SPACE && literalEl.firstChild) {
-        literalEl.firstChild.textContent = "";
-        observerRef.current?.takeRecords();
-      }
-    }
+    isComposingRef.current = true;
   };
 
   const handleCompositionEnd = () => {
-    const composingEl = composingLiteralElementRef.current;
-    composingLiteralElementRef.current = null;
+    isComposingRef.current = false;
     const root = hostRef.current;
     if (!root || freezeRef.current) return;
 
-    const target = composingEl ?? resolveCaretInRoot(root)?.literalEl ?? null;
-    if (!target) return;
+    const domSelection = globalThis.getSelection();
+    const range = domSelection && domSelection.rangeCount > 0 ? domSelection.getRangeAt(0) : undefined;
+    const literalEl = range ? closestEditableLiteralEl(range.startContainer) : null;
+    const literalIndex = literalEl && root.contains(literalEl) ? parseLiteralIndex(literalEl) : undefined;
+    if (!range || !literalEl || !literalIndex) return;
 
-    if (target.dataset.diffVersion !== undefined) {
-      handleEditIntent(target, parseLiteralIndex(target));
+    if (literalEl.dataset.diffVersion !== undefined) {
+      handleEditIntent(literalEl, literalIndex);
       return;
     }
+    const literal = getLiteralFromState(editorStateRef.current.redigertBrev, literalIndex);
+    const domText = (literalEl.textContent ?? "").replaceAll(ZERO_WIDTH_SPACE, "").replaceAll("\u00A0", " ");
+    if (!literal || domText === getLogicalLiteralText(literal)) return;
 
-    const literalIndex = parseLiteralIndex(target);
-    if (!literalIndex) return;
-
-    const wasPlaceholderEmpty = target.hasAttribute("data-empty");
-    const rawDomText = (target.textContent ?? "").replaceAll("\u00A0", " ");
-    const cleanText = wasPlaceholderEmpty ? rawDomText.replaceAll(ZERO_WIDTH_SPACE, "") : rawDomText;
-    const domSelection = globalThis.getSelection();
-    const postEditCursorPosition =
-      domSelection && domSelection.rangeCount > 0
-        ? Math.min(
-            getCleanOffsetInLiteral(
-              target,
-              domSelection.getRangeAt(0).startContainer,
-              domSelection.getRangeAt(0).startOffset,
-            ),
-            cleanText.length,
-          )
-        : cleanText.length;
-
-    applyAction(Actions.updateContentText, setEditorState, literalIndex, cleanText, postEditCursorPosition);
-
-    queueMicrotask(() => {
-      if (!root.isConnected || composingLiteralElementRef.current) return;
-      reconcileDomFromModel(root);
-      const curState = editorStateRef.current;
-      if (!freezeRef.current && document.activeElement === root) {
-        lastAppliedDomSelectionRef.current = applyModelSelectionToDom(root, curState.focus, curState.selection, false);
-      }
-      observerRef.current?.takeRecords();
-    });
+    const cursorPosition = getCleanOffsetInLiteral(literalEl, range.startContainer, range.startOffset);
+    // The browser may leave the text split over several text nodes; the caret code expects one.
+    literalEl.textContent = domText || ZERO_WIDTH_SPACE;
+    applyAction(Actions.updateContentText, setEditorState, literalIndex, domText, cursorPosition);
   };
 
   const handleEnter = (
@@ -1316,7 +1151,7 @@ export function EditableSurface<T extends React.ElementType = "div">({
 
   const flushPendingDomSelectionToModel = () => {
     const root = hostRef.current;
-    if (!root || freezeRef.current || composingLiteralElementRef.current || clickedVariableRef.current) return;
+    if (!root || freezeRef.current || clickedVariableRef.current) return;
     const domSelection = globalThis.getSelection();
     if (!domSelection || domSelection.rangeCount === 0) return;
     if (matchesDomSelectionSnapshot(domSelection, lastAppliedDomSelectionRef.current)) return;
@@ -1342,6 +1177,8 @@ export function EditableSurface<T extends React.ElementType = "div">({
   };
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    // Keys during a composition belong to the IME, e.g. Enter that commits it.
+    if (e.nativeEvent.isComposing) return;
     pasteViaContextMenuRef.current = false;
     const isFirstKeyAfterVariableClick = clickedVariableRef.current;
     clickedVariableRef.current = false;
@@ -1674,7 +1511,7 @@ export function EditableSurface<T extends React.ElementType = "div">({
       suppressContentEditableWarning
       tabIndex={tabIndex ?? (freeze ? -1 : 0)}
     >
-      <React.Fragment key={repairGeneration}>{children}</React.Fragment>
+      {children}
     </Component>
   );
 }
@@ -1697,49 +1534,4 @@ function isTableCellStartBlocked(
     (node) => node.type === "LITERAL" && getLogicalLiteralText(node).trim().length === 0,
   );
   return (literalIndex.cellContentIndex === 0 && cursorPosition === 0) || cellIsEmpty;
-}
-
-function countLiteralsInBlocks(doc: EditedDocument): number {
-  let count = 0;
-  for (const block of doc.blocks) {
-    for (const content of block.content) {
-      if (content.type === "LITERAL") {
-        count += 1;
-      } else if (content.type === "ITEM_LIST") {
-        for (const item of content.items) {
-          for (const ic of item.content) {
-            if (ic.type === "LITERAL") count += 1;
-          }
-        }
-      } else if (content.type === "TABLE") {
-        for (const col of content.header.colSpec) {
-          for (const hc of col.headerContent.text) {
-            if (hc.type === "LITERAL") count += 1;
-          }
-        }
-        for (const row of content.rows) {
-          for (const cell of row.cells) {
-            for (const cc of cell.text) {
-              if (cc.type === "LITERAL") count += 1;
-            }
-          }
-        }
-      }
-    }
-  }
-  return count;
-}
-
-function countExpectedLiteralsInSurface(
-  doc: EditedDocument,
-  isTitleSurface: boolean,
-  root: HTMLElement,
-): number | null {
-  if (isTitleSurface) {
-    return doc.title.text.filter((node) => node.type === "LITERAL").length;
-  }
-  if (root.hasAttribute("data-editor-root") && root.closest(".editor")) {
-    return countLiteralsInBlocks(doc);
-  }
-  return null;
 }

@@ -678,3 +678,74 @@ test.describe("Switch font type", () => {
     });
   });
 });
+
+test.describe("Switch font type keeps the selection", () => {
+  const sentence = "Noen stoler knirker i rom 4A.";
+
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(
+      page,
+      brevResponse({
+        info: editorInfo(),
+        redigertBrev: editedLetter({
+          sakspart: baseSakspart(),
+          blocks: [paragraph({ id: 1, content: [makeLiteral(11, 1, sentence)] })],
+          signatur: baseSignatur(),
+        }) as EditedLetter,
+      }),
+    );
+    await navigateToEditor(page);
+  });
+
+  const selectedText = (page: Page) => page.evaluate(() => globalThis.getSelection()?.toString());
+  const formatted = (page: Page, fontType: "BOLD" | "ITALIC") =>
+    page.locator(`.editor [data-literal][data-font-type=${fontType}]`);
+  const paragraphText = (page: Page) => page.locator(".editor-surface > .PARAGRAPH").first();
+
+  async function expectOnly(page: Page, fontType: "BOLD" | "ITALIC" | "PLAIN") {
+    for (const other of ["BOLD", "ITALIC"] as const) {
+      if (other === fontType) await expect(formatted(page, other)).toHaveText(["knirker"]);
+      else await expect(formatted(page, other)).toHaveCount(0);
+    }
+    await expect(paragraphText(page)).toHaveText(sentence);
+    await expect.poll(() => selectedText(page)).toBe("knirker");
+  }
+
+  test("Bold then Italic from the toolbar, then undo and redo", async ({ page }) => {
+    await selectTextInElement(page, sentence, "knirker");
+
+    await page.getByTestId("fonttype-bold-button").click();
+    await expectOnly(page, "BOLD");
+
+    await page.getByTestId("fonttype-italic-button").click();
+    await expectOnly(page, "ITALIC");
+
+    await page.keyboard.press("ControlOrMeta+z");
+    await expectOnly(page, "BOLD");
+    await page.keyboard.press("ControlOrMeta+z");
+    await expectOnly(page, "PLAIN");
+
+    await page.keyboard.press("ControlOrMeta+Shift+z");
+    await expectOnly(page, "BOLD");
+    await page.keyboard.press("ControlOrMeta+Shift+z");
+    await expectOnly(page, "ITALIC");
+  });
+
+  test("repeated shortcuts toggle the same text and keep it selected", async ({ page }) => {
+    const bold = process.platform === "darwin" ? "Meta+b" : "Control+b";
+    const italic = process.platform === "darwin" ? "Meta+i" : "Control+i";
+    await selectTextInElement(page, sentence, "knirker");
+
+    await page.keyboard.press(bold);
+    await expectOnly(page, "BOLD");
+    await page.keyboard.press(italic);
+    await expectOnly(page, "ITALIC");
+    await page.keyboard.press(italic);
+    await expectOnly(page, "PLAIN");
+    await page.keyboard.press(bold);
+    await expectOnly(page, "BOLD");
+
+    await page.keyboard.type("X");
+    await expect(paragraphText(page)).toHaveText("Noen stoler X i rom 4A.");
+  });
+});
