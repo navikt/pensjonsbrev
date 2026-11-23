@@ -1,7 +1,10 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.KeyDeserializer
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.call.*
@@ -15,6 +18,7 @@ import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.*
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
@@ -36,6 +40,10 @@ import java.time.LocalDate
 import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger(PentHttpClient::class.java)
+
+private object RedigerbarBrevkodeKeyDeserializer : KeyDeserializer() {
+    override fun deserializeKey(key: String, ctxt: DeserializationContext): Brevkode.Redigerbart = RedigerbarBrevkode(key)
+}
 
 interface PenClient {
     suspend fun hentSak(saksId: SaksId): Pen.SakSelection?
@@ -83,6 +91,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
+                registerModule(SimpleModule().addKeyDeserializer(Brevkode.Redigerbart::class.java, RedigerbarBrevkodeKeyDeserializer))
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }

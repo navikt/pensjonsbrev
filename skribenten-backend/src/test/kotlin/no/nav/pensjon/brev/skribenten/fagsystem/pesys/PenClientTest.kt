@@ -5,6 +5,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
+import io.ktor.client.engine.mock.toByteArray
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.fullPath
@@ -18,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.httpClientTest
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -256,6 +258,37 @@ class PenClientTest {
                 content = objectMapper.writeValueAsString(respons),
                 status = status,
                 headers = headersOf("Content-Type", "application/json"),
+            )
+        }
+    }
+
+    @Test
+    fun `hentIsStoettetAvDatabygger sender brevkontekst og leser stoettet per brevkode`() {
+        var capturedPath: String? = null
+        var capturedMethod: HttpMethod? = null
+        var capturedBody: String? = null
+
+        val engine = MockEngine { request ->
+            capturedPath = request.url.fullPath
+            capturedMethod = request.method
+            capturedBody = String(request.body.toByteArray())
+            respond(
+                content = """{"stoettet":{"BREV_A":true,"BREV_B":false}}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf("Content-Type", "application/json"),
+            )
+        }
+
+        httpClientTest(Unit) {
+            val actual = penClient(engine).hentIsStoettetAvDatabygger(SaksId(11L), VedtaksId(22L))
+
+            assertThat(actual?.stoettet).isEqualTo(
+                mapOf(RedigerbarBrevkode("BREV_A") to true, RedigerbarBrevkode("BREV_B") to false)
+            )
+            assertThat(capturedMethod).isEqualTo(HttpMethod.Post)
+            assertThat(capturedPath).isEqualTo("/brev/skribenten/isStoettetAvDatabygger")
+            assertThat(jacksonObjectMapper().readTree(capturedBody)).isEqualTo(
+                jacksonObjectMapper().readTree("""{"saksId":11,"vedtaksId":22}""")
             )
         }
     }
