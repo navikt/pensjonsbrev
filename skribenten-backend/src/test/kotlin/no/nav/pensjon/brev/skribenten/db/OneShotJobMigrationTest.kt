@@ -8,6 +8,7 @@ import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.common.TekniskVersjon
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
@@ -48,7 +49,7 @@ class OneShotJobMigrationTest {
     private val engine = CIO.create()
     private val edited = editedLetter()
     private val rendered = edited.copy(title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "Rendret"))))
-    private val staleHash = Hash.fromBytes<Edit.Letter>(ByteArray(32))
+    private val staleHash = Hash.fromBytes<VersjonertBrev>(ByteArray(32))
     private val jobName = "migration-test"
 
     @BeforeAll
@@ -136,7 +137,7 @@ class OneShotJobMigrationTest {
             spraak = LanguageCode.BOKMAL,
             avsenderEnhetId = EnhetId("1111"),
             saksbehandlerValg = SaksbehandlervalgMap(),
-            redigertBrev = edited,
+            redigertBrev = VersjonertBrev.V1(edited),
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             brevmalHash = StableHashCode(1),
         ).id.value
@@ -156,9 +157,9 @@ class OneShotJobMigrationTest {
         transaction {
             val row = BrevredigeringTable.selectAll().where { BrevredigeringTable.id eq id }.single()
             assertThat(row[BrevredigeringTable.tekniskVersjon]).isEqualTo(version)
-            assertThat(row[BrevredigeringTable.redigertBrevKryptert]).isEqualTo(edited)
-            assertThat(row[BrevredigeringTable.rendretBrevKryptert]).isEqualTo(expectedRendered)
-            assertThat(row[BrevredigeringTable.redigertBrevKryptertHash]).isEqualTo(Hash.read(edited))
+            assertThat(row[BrevredigeringTable.redigertBrevKryptert]).isEqualTo(VersjonertBrev.V1(edited))
+            assertThat(row[BrevredigeringTable.rendretBrevKryptert]).isEqualTo(expectedRendered?.let(VersjonertBrev::V1))
+            assertThat(row[BrevredigeringTable.redigertBrevKryptertHash]).isEqualTo(Hash.read(VersjonertBrev.V1(edited)))
             val raw = rawLetter(id)
             assertThat(decryptJson(raw[RawLetterTable.redigertBrev])).isEqualTo(databaseObjectMapper.valueToTree(edited))
             val renderedBytes = raw[RawLetterTable.rendretBrev]
