@@ -50,6 +50,7 @@ dependencies {
     implementation(ktorLibs.server.auth)
     implementation(ktorLibs.server.auth.jwt)
     implementation(ktorLibs.server.contentNegotiation)
+    implementation(ktorLibs.server.bodyLimit)
     implementation(ktorLibs.server.statusPages)
     implementation(ktorLibs.server.metrics.micrometer)
     implementation(ktorLibs.serialization.jackson)

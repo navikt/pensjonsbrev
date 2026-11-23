@@ -42,7 +42,9 @@ Git og Kotlin-kompilatoren trengs ikke i runtime.
 
 OpenAPI-spesifikasjonen på `/swagger-internal/documentation.json` bygges
 fra de reelle Ktor-rutene, kodeinferens og Jackson-modellen.
-Body-typer for den avgrensede JSON-leseren beskrives med Ktors DSL.
+`RequestBodyLimit` avgrenser innlesingen før `receive<T>()` deserialiserer.
+Body- og svartypene infereres fra rutene. Felles feilresponser og krav om
+request-body legges til via Ktors stabile OpenAPI-modell.
 Tester kontrollerer konvolutter, feilformat, skalartyper, defaultverdier,
 diskriminatorer, nullbarhet, maps og rekursive referanser.
 

@@ -1,9 +1,13 @@
 package no.nav.pensjon.brev.brevoppskrift
 
+import com.fasterxml.jackson.core.JacksonException
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.plugins.PayloadTooLargeException
+import io.ktor.server.plugins.UnsupportedMediaTypeException
+import io.ktor.server.plugins.CannotTransformContentToTypeException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.micrometer.core.instrument.MeterRegistry
 import kotlinx.coroutines.CancellationException
@@ -28,7 +32,18 @@ fun Application.configureErrors(metrics: MeterRegistry) {
         exception<ArchivedDraft> { call, _ -> call.respondProblem(HttpStatusCode.Gone, "DRAFT_ARCHIVED", "Utkastet er arkivert.") }
         exception<java.sql.SQLException> { call, _ -> call.respondProblem(HttpStatusCode.ServiceUnavailable, "DATABASE_UNAVAILABLE", "Lagringen er ikke tilgjengelig.") }
         exception<ApiFailure> { call, cause -> call.respondProblem(cause.status, cause.code, cause.detail) }
-        exception<BadRequestException> { call, _ -> call.respondProblem(HttpStatusCode.BadRequest, "INVALID_REQUEST", "Ugyldig forespørsel.") }
+        exception<PayloadTooLargeException> { call, _ -> call.respondProblem(HttpStatusCode.PayloadTooLarge, "DRAFT_TOO_LARGE", "Forespørselen er for stor.") }
+        exception<UnsupportedMediaTypeException> { call, _ -> call.respondProblem(HttpStatusCode.UnsupportedMediaType, "UNSUPPORTED_MEDIA_TYPE", "Forventet application/json.") }
+        exception<CannotTransformContentToTypeException> { call, _ -> call.respondProblem(HttpStatusCode.UnsupportedMediaType, "UNSUPPORTED_MEDIA_TYPE", "Forventet application/json.") }
+        exception<BadRequestException> { call, cause ->
+            if (generateSequence<Throwable>(cause) { it.cause }.any { it is PayloadTooLargeException }) {
+                call.respondProblem(HttpStatusCode.PayloadTooLarge, "DRAFT_TOO_LARGE", "Forespørselen er for stor.")
+            } else if (generateSequence<Throwable>(cause) { it.cause }.any { it is JacksonException }) {
+                call.respondProblem(HttpStatusCode.BadRequest, "INVALID_DRAFT", "Ugyldig forespørselsformat.")
+            } else {
+                call.respondProblem(HttpStatusCode.BadRequest, "INVALID_REQUEST", "Ugyldig forespørsel.")
+            }
+        }
         exception<Exception> { call, cause ->
             if (cause is CancellationException) throw cause
             logger.error("Request failed: {}", cause.javaClass.simpleName)

@@ -2241,24 +2241,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** ValidationIssue */
-        ValidationIssue: {
-            path: string;
-            code: string;
-            message: string;
-        };
-        /** DraftRevision */
-        DraftRevision: number;
-        /** Problem */
-        Problem: {
-            type?: string;
-            title: string;
-            status: number;
-            code: string;
-            detail: string;
-            errors?: components["schemas"]["ValidationIssue"][];
-            currentRevision?: components["schemas"]["DraftRevision"] | null;
-        };
         /** NavIdent */
         NavIdent: string;
         /** AuthorName */
@@ -2283,6 +2265,12 @@ export interface components {
         SourceId: string;
         /** GitCommit */
         GitCommit: string;
+        /** ValidationIssue */
+        ValidationIssue: {
+            path: string;
+            code: string;
+            message: string;
+        };
         /** TemplateSource */
         TemplateSource: {
             id: components["schemas"]["SourceId"];
@@ -2681,6 +2669,8 @@ export interface components {
         };
         /** AttachmentReference */
         AttachmentReference: string;
+        /** DraftRevision */
+        DraftRevision: number;
         /** AttachmentCopy */
         AttachmentCopy: {
             id: components["schemas"]["AttachmentReference"];
@@ -2818,6 +2808,20 @@ export interface components {
             revision: components["schemas"]["DraftRevision"];
             reason: components["schemas"]["ArchiveReason"];
         };
+        /** Problem */
+        Problem: {
+            type?: string;
+            title: string;
+            status: number;
+            code: string;
+            detail: string;
+            errors?: {
+                path: string;
+                code: string;
+                message: string;
+            }[];
+            currentRevision?: number | null;
+        };
     };
     responses: never;
     parameters: never;
@@ -2825,15 +2829,13 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type ValidationIssue = components['schemas']['ValidationIssue'];
-export type DraftRevision = components['schemas']['DraftRevision'];
-export type Problem = components['schemas']['Problem'];
 export type NavIdent = components['schemas']['NavIdent'];
 export type AuthorName = components['schemas']['AuthorName'];
 export type DraftUser = components['schemas']['DraftUser'];
 export type Capabilities = components['schemas']['Capabilities'];
 export type SourceId = components['schemas']['SourceId'];
 export type GitCommit = components['schemas']['GitCommit'];
+export type ValidationIssue = components['schemas']['ValidationIssue'];
 export type TemplateSource = components['schemas']['TemplateSource'];
 export type DocumentType = components['schemas']['DocumentType'];
 export type TargetModule = components['schemas']['TargetModule'];
@@ -2885,6 +2887,7 @@ export type CommentState = components['schemas']['CommentState'];
 export type DraftComment = components['schemas']['DraftComment'];
 export type DraftBaseline = components['schemas']['DraftBaseline'];
 export type AttachmentReference = components['schemas']['AttachmentReference'];
+export type DraftRevision = components['schemas']['DraftRevision'];
 export type AttachmentCopy = components['schemas']['AttachmentCopy'];
 export type Draft = components['schemas']['Draft'];
 export type GenerateRequest = components['schemas']['GenerateRequest'];
@@ -2907,5 +2910,6 @@ export type UpdateDraftRequest = components['schemas']['UpdateDraftRequest'];
 export type StatusRequest = components['schemas']['StatusRequest'];
 export type RevisionRequest = components['schemas']['RevisionRequest'];
 export type ArchiveRequest = components['schemas']['ArchiveRequest'];
+export type Problem = components['schemas']['Problem'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

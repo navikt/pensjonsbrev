@@ -20,6 +20,7 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
+import io.ktor.utils.io.writeFully
 import no.nav.pensjon.brev.brevoppskrift.auth.ENTRA_AUTH
 import no.nav.pensjon.brev.brevoppskrift.auth.requireEditor
 import no.nav.pensjon.brev.brevoppskrift.model.exampleDraft
@@ -269,6 +270,7 @@ class ApplicationTest {
             }
             assertThat(response.status).isEqualTo(HttpStatusCode.BadRequest)
             assertThat(response.bodyAsText()).doesNotContain("secret-input")
+            assertThat(draftObjectMapper.readTree(response.bodyAsText())["code"].asText()).isEqualTo("INVALID_DRAFT")
         }
     }
 
@@ -281,6 +283,60 @@ class ApplicationTest {
             setBody(" ".repeat(MAX_DRAFT_BYTES + 1))
         }
         assertThat(response.status).isEqualTo(HttpStatusCode.PayloadTooLarge)
+    }
+
+    @Test
+    fun `body limits reject oversized requests with and without content length`() = testApplication {
+        application { brevoppskriftModule(azure, jwks) }
+        val endpoints = mapOf(
+            "/utkast/valider" to MAX_DRAFT_BYTES,
+            "/ki/nynorsk" to 200 * 1024,
+            "/ki/klarsprak" to 200 * 1024,
+        )
+        for (endpoint in endpoints) {
+            for (streamed in listOf(false, true)) {
+                val bytes = " ".repeat(endpoint.value + 1).toByteArray()
+                val response = client.post("/api/v1${endpoint.key}") {
+                    bearerAuth(token(groups = listOf("editors")))
+                    contentType(ContentType.Application.Json)
+                    if (streamed) {
+                        setBody(object : io.ktor.http.content.OutgoingContent.WriteChannelContent() {
+                            override val contentType = ContentType.Application.Json
+                            override suspend fun writeTo(channel: io.ktor.utils.io.ByteWriteChannel) {
+                                channel.writeFully(bytes)
+                            }
+                        })
+                    } else {
+                        setBody(bytes)
+                    }
+                }
+                assertThat(response.status).describedAs("${endpoint.key}, streamed=$streamed").isEqualTo(HttpStatusCode.PayloadTooLarge)
+                assertThat(response.headers[HttpHeaders.ContentType]).startsWith("application/problem+json")
+                assertThat(draftObjectMapper.readTree(response.bodyAsText())["code"].asText()).isEqualTo("DRAFT_TOO_LARGE")
+            }
+        }
+    }
+
+    @Test
+    fun `valid JSON at exact request body limits is accepted`() = testApplication {
+        application { brevoppskriftModule(azure, jwks) }
+        val draft = draftObjectMapper.writeValueAsString(exampleDraft())
+        val validated = client.post("/api/v1/utkast/valider") {
+            bearerAuth(token())
+            contentType(ContentType.Application.Json)
+            setBody(draft + " ".repeat(MAX_DRAFT_BYTES - draft.toByteArray().size))
+        }
+        assertThat(validated.status).isEqualTo(HttpStatusCode.OK)
+        val aiRequest = """{"text":"synthetic","language":"NB"}"""
+        for (path in listOf("/ki/nynorsk", "/ki/klarsprak")) {
+            val response = client.post("/api/v1$path") {
+                bearerAuth(token(groups = listOf("editors")))
+                contentType(ContentType.Application.Json)
+                setBody(aiRequest + " ".repeat(200 * 1024 - aiRequest.length))
+            }
+            assertThat(response.status).isEqualTo(HttpStatusCode.ServiceUnavailable)
+            assertThat(draftObjectMapper.readTree(response.bodyAsText())["code"].asText()).isEqualTo("UNAVAILABLE")
+        }
     }
 
     @Test

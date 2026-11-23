@@ -10,12 +10,15 @@ import io.ktor.server.routing.*
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.routing.openapi.OpenApiDocSource
 import io.ktor.openapi.OpenApiInfo
+import io.ktor.openapi.OpenApiDoc
+import kotlinx.serialization.json.Json
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.brevoppskrift.api.authoringRoutes
 import no.nav.pensjon.brev.brevoppskrift.api.SourceCatalogue
 import no.nav.pensjon.brev.brevoppskrift.auth.ENTRA_AUTH
 import no.nav.pensjon.brev.brevoppskrift.lagring.DraftRepository
 import no.nav.pensjon.brev.brevoppskrift.openapi.JacksonSchemaInference
+import no.nav.pensjon.brev.brevoppskrift.openapi.withCommonResponses
 
 fun Application.configureRouting() {
     val repository: DraftRepository by dependencies
@@ -27,6 +30,7 @@ fun Application.configureRouting() {
             source = OpenApiDocSource.Routing(
                 contentType = ContentType.Application.Json,
                 schemaInference = JacksonSchemaInference(draftObjectMapper),
+                serializeModel = { Json.encodeToString(OpenApiDoc.serializer(), it.withCommonResponses()) },
                 routes = { routingRoot.descendants().filter { it.path().startsWith("/api/v1") } },
             )
             remotePath = "documentation.json"
