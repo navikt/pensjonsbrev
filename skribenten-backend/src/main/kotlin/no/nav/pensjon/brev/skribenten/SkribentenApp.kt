@@ -173,9 +173,10 @@ fun Application.skribentenApp() {
 // Vi må gjøre denne vaskingen fordi Exposed sin BasicBinaryColumnType::valueFromDB kaster en IllegalStateException med toString av Edit.Letter.
 // Meldt inn til exposed: https://youtrack.jetbrains.com/issue/EXPOSED-1012
 private fun cleanSensitiveDataAndLog(cause: Exception) {
-    if (cause is IllegalStateException && cause.messageHasEditedLetter()) {
+    val sensitiveType = (cause as? IllegalStateException)?.sensitiveEditedLetterType()
+    if (sensitiveType != null) {
         val cleansedException = IllegalStateException(
-            "Unexpected value ***stripped sensitive edited letter value*** of type ${cause.message?.substringAfterLast("of type ")}",
+            "Unexpected value ***stripped sensitive edited letter value*** of type $sensitiveType",
             cause.cause
         ).apply {
             stackTrace = cause.stackTrace
@@ -197,9 +198,9 @@ private val sensitiveEditedLetterTypes = listOf(
     VersjonertVedlegg.V1::class,
 ).mapNotNull { it.qualifiedName }
 
-private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.let { msg ->
-    msg.startsWith("Unexpected value") && sensitiveEditedLetterTypes.any { msg.endsWith("of type $it") }
-} ?: false
+private fun IllegalStateException.sensitiveEditedLetterType(): String? = message?.let { msg ->
+    if (msg.startsWith("Unexpected value")) sensitiveEditedLetterTypes.firstOrNull { msg.endsWith("of type $it") } else null
+}
 
 fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {
