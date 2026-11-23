@@ -47,7 +47,7 @@ fun Route.sakRoute() {
                     vedtaksId = vedtaksId
                 )
             } else {
-                brevmalService.hentBrevmalerForSak(sak.sakType, hasAccessToEblanketter)
+                brevmalService.hentBrevmalerForSak(sak.saksId, sak.sakType, hasAccessToEblanketter)
             }
             call.respond(
                 Api.SakContext(

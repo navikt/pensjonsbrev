@@ -96,11 +96,15 @@ class BrevmalService(
     suspend fun hentBrevmaler(includeEblanketter: Boolean): List<Api.Brevmal> =
         hentAlleMaler(includeEblanketter).toList()
 
-    suspend fun hentBrevmalerForSak(sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
-        hentMaler(sakType, includeEblanketter)
+    suspend fun hentBrevmalerForSak(saksId: SaksId, sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> {
+        val ikkeStoettedeBrevkoder =
+            stoettetAvDatabygger(saksId, null).stoettet.filterValues { !it }.keys.map { it.kode() }
+        return hentMaler(sakType, includeEblanketter)
             .filter { it.isForSakskontekst }
+            .filter { it.brevkode !in ikkeStoettedeBrevkoder }
             .map { it.toApi() }
             .toList()
+    }
 
     suspend fun hentBrevmalerForVedtak(
         saksId: SaksId,

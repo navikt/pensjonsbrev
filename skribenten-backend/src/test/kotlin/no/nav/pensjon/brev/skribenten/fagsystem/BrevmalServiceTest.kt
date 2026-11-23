@@ -55,8 +55,13 @@ class BrevmalServiceTest {
     private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
     private fun lagBrevmalService(
-        penClient: PenClient = PenClientStub(),
-        brevmetadataService: BrevmetadataService = FakeBrevmetadataService()
+        penClient: PenClient = object : PenClientStub() {
+            override suspend fun hentIsStoettetAvDatabygger(
+                saksId: SaksId,
+                vedtaksId: VedtaksId?,
+            ): PenClient.StoettetAvDatabyggerResult? = null
+        },
+        brevmetadataService: BrevmetadataService = FakeBrevmetadataService(),
     ): BrevmalService = BrevmalService(brevbakerService, penClient, brevmetadataService)
 
     private val testOkBrev = BrevdataDto(
@@ -110,7 +115,11 @@ class BrevmalServiceTest {
         val brevmetadataService = FakeBrevmetadataService(eblanketter = listOf(testEblankett))
 
         runBlocking {
-            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(sakType = Sakstype("UFOREP"), includeEblanketter = true)
+            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(
+                saksId = SaksId(1),
+                sakType = Sakstype("UFOREP"),
+                includeEblanketter = true
+            )
             assertThat(brevmaler).anyMatch { it.id == testEblankett.brevkodeIBrevsystem && it.dokumentkategoriCode == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
         }
     }
@@ -121,7 +130,11 @@ class BrevmalServiceTest {
         val brevmetadataService = FakeBrevmetadataService(eblanketter = listOf(testEblankett))
 
         runBlocking {
-            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(sakType = Sakstype("UFOREP"), includeEblanketter = false)
+            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(
+                saksId = SaksId(1),
+                sakType = Sakstype("UFOREP"),
+                includeEblanketter = false
+            )
             assertThat(brevmaler).noneMatch { it.id == testEblankett.brevkodeIBrevsystem }
         }
     }
@@ -136,7 +149,13 @@ class BrevmalServiceTest {
 
         runBlocking {
             val service = lagBrevmalService(brevmetadataService = brevmetadataService)
-            assertThat(service.hentBrevmalerForSak(sakType = Sakstype("UFOREP"), includeEblanketter = true))
+            assertThat(
+                service.hentBrevmalerForSak(
+                    saksId = SaksId(1),
+                    sakType = Sakstype("UFOREP"),
+                    includeEblanketter = true
+                )
+            )
                 .noneMatch { it.id == testEblankett.brevkodeIBrevsystem }
                 .anyMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
             assertThat(service.hentBrevmaler(includeEblanketter = true))
@@ -282,7 +301,7 @@ class BrevmalServiceTest {
             brevmetadataService = FakeBrevmetadataService(
                 brevmaler = brevdataDto,
             )
-        ).hentBrevmalerForSak(Sakstype("UFOREP"), false)
+        ).hentBrevmalerForSak(SaksId(1), Sakstype("UFOREP"), false)
         return@runBlocking assertThat(brevmaler)
     }
 }
