@@ -12,7 +12,7 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.brevoppskrift.MAX_DRAFT_BYTES
 import no.nav.pensjon.brev.brevoppskrift.Capabilities
 import no.nav.pensjon.brev.brevoppskrift.auth.DraftUser
-import no.nav.pensjon.brev.brevoppskrift.auth.requireEditor
+import no.nav.pensjon.brev.brevoppskrift.auth.editorRoutes
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.*
 import no.nav.pensjon.brev.brevoppskrift.model.*
 
@@ -43,8 +43,10 @@ fun Route.authoringRoutes(catalogue: SourceCatalogue) {
         }
         post("/generer") { call.respond(generator.generate(call.receive<GenerateRequest>().draft)) }
         post("/forhandsvisning") { call.respond(preview.render(call.receive<PreviewRequest>())) }
-        post("/ki/nynorsk") { call.requireEditor(); call.respond(ai.suggest(call.receive<AiRequest>(), nynorsk = true)) }
-        post("/ki/klarsprak") { call.requireEditor(); call.respond(ai.suggest(call.receive<AiRequest>(), nynorsk = false)) }
+        editorRoutes {
+            post("/ki/nynorsk") { call.respond(ai.suggest(call.receive<AiRequest>(), nynorsk = true)) }
+            post("/ki/klarsprak") { call.respond(ai.suggest(call.receive<AiRequest>(), nynorsk = false)) }
+        }
         draftRoutes()
     }
 }

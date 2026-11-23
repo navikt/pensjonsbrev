@@ -21,13 +21,17 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
+import io.ktor.server.routing.route
 import io.ktor.server.testing.testApplication
 import io.ktor.utils.io.writeFully
 import no.nav.pensjon.brev.brevoppskrift.auth.ENTRA_AUTH
 import no.nav.pensjon.brev.brevoppskrift.api.Problem
-import no.nav.pensjon.brev.brevoppskrift.auth.requireEditor
+import no.nav.pensjon.brev.brevoppskrift.api.GenerateRequest
+import no.nav.pensjon.brev.brevoppskrift.api.PreviewRequest
+import no.nav.pensjon.brev.brevoppskrift.auth.editorRoutes
 import no.nav.pensjon.brev.brevoppskrift.model.exampleDraft
 import no.nav.pensjon.brev.brevoppskrift.model.DraftRevision
+import no.nav.pensjon.brev.brevoppskrift.model.DraftLanguage
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraAudience
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraClientId
 import no.nav.pensjon.brev.brevoppskrift.auth.EntraGroupId
@@ -195,28 +199,47 @@ class ApplicationTest {
 
     @Test
     fun `readers retain access but only the configured group can write`() = testApplication {
+        var handled = 0
         application {
             brevoppskriftModule(azure, jwks)
             routing {
                 authenticate(ENTRA_AUTH) {
-                    post("/editor-check") {
-                        call.requireEditor()
+                    editorRoutes {
+                        route("/nested") {
+                            post("/editor-check") {
+                                handled++
+                                call.respondText("Allowed")
+                            }
+                        }
+                    }
+                }
+                editorRoutes {
+                    post("/editor-without-auth") {
+                        handled++
                         call.respondText("Allowed")
                     }
-
                 }
             }
         }
         val reader = client.get("/api/v1/meg") { bearerAuth(token(groups = listOf("unrelated-group"))) }
         assertThat(reader.status).isEqualTo(HttpStatusCode.OK)
         assertThat(draftObjectMapper.readTree(reader.bodyAsText())["canEdit"].asBoolean()).isFalse()
-        assertThat(client.post("/editor-check") { bearerAuth(token()) }.status).isEqualTo(HttpStatusCode.Forbidden)
-        assertThat(client.post("/editor-check") { bearerAuth(token(groups = listOf("editors"))) }.status).isEqualTo(HttpStatusCode.OK)
+        val forbidden = client.post("/nested/editor-check") { bearerAuth(token()) }
+        assertThat(forbidden.status).isEqualTo(HttpStatusCode.Forbidden)
+        assertThat(forbidden.headers[HttpHeaders.ContentType]).startsWith("application/problem+json")
+        assertThat(draftObjectMapper.readTree(forbidden.bodyAsText())["code"].asText()).isEqualTo("FORBIDDEN")
+        val unauthenticated = client.post("/nested/editor-check")
+        assertThat(unauthenticated.status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(unauthenticated.headers[HttpHeaders.WWWAuthenticate]).isEqualTo("Bearer")
+        assertThat(client.post("/editor-without-auth").status).isEqualTo(HttpStatusCode.Unauthorized)
+        assertThat(handled).isZero()
+        assertThat(client.post("/nested/editor-check") { bearerAuth(token(groups = listOf("editors"))) }.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(handled).isEqualTo(1)
     }
 
     @Test
     fun `readers can validate all languages without changing state`() = testApplication {
-        application { brevoppskriftModule(azure, jwks) }
+        application { testModule(azure, jwks, postgres.database(), productionAuthoring = true) }
         val response = client.post("/api/v1/utkast/valider") {
             bearerAuth(token())
             contentType(ContentType.Application.Json)
@@ -225,6 +248,18 @@ class ApplicationTest {
 
         assertThat(response.status).isEqualTo(HttpStatusCode.OK)
         assertThat(response.bodyAsText()).isEqualTo("""{"valid":true}""")
+        val generation = client.post("/api/v1/generer") {
+            bearerAuth(token())
+            contentType(ContentType.Application.Json)
+            setBody(draftObjectMapper.writeValueAsString(GenerateRequest(exampleDraft())))
+        }
+        assertThat(generation.status).isEqualTo(HttpStatusCode.OK)
+        val preview = client.post("/api/v1/forhandsvisning") {
+            bearerAuth(token())
+            contentType(ContentType.Application.Json)
+            setBody(draftObjectMapper.writeValueAsString(PreviewRequest(exampleDraft(), DraftLanguage.NB)))
+        }
+        assertThat(preview.status).isEqualTo(HttpStatusCode.OK)
     }
 
         @Test

@@ -2758,11 +2758,6 @@ export interface components {
             updatedAt: string;
             updatedBy: components["schemas"]["AuthorName"];
         };
-        /** CreateDraftRequest */
-        CreateDraftRequest: {
-            draft?: components["schemas"]["Draft"] | null;
-            sourceId?: components["schemas"]["SourceId"] | null;
-        };
         /**
          * ArchiveReason
          * @enum {string}
@@ -2807,6 +2802,11 @@ export interface components {
         ArchiveRequest: {
             revision: components["schemas"]["DraftRevision"];
             reason: components["schemas"]["ArchiveReason"];
+        };
+        /** CreateDraftRequest */
+        CreateDraftRequest: {
+            draft?: components["schemas"]["Draft"] | null;
+            sourceId?: components["schemas"]["SourceId"] | null;
         };
         /** Problem */
         Problem: {
@@ -2902,7 +2902,6 @@ export type ValidationResult = components['schemas']['ValidationResult'];
 export type DraftId = components['schemas']['DraftId'];
 export type DraftStatus = components['schemas']['DraftStatus'];
 export type DraftSummary = components['schemas']['DraftSummary'];
-export type CreateDraftRequest = components['schemas']['CreateDraftRequest'];
 export type ArchiveReason = components['schemas']['ArchiveReason'];
 export type DraftRecord = components['schemas']['DraftRecord'];
 export type AttachmentUse = components['schemas']['AttachmentUse'];
@@ -2910,6 +2909,7 @@ export type UpdateDraftRequest = components['schemas']['UpdateDraftRequest'];
 export type StatusRequest = components['schemas']['StatusRequest'];
 export type RevisionRequest = components['schemas']['RevisionRequest'];
 export type ArchiveRequest = components['schemas']['ArchiveRequest'];
+export type CreateDraftRequest = components['schemas']['CreateDraftRequest'];
 export type Problem = components['schemas']['Problem'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

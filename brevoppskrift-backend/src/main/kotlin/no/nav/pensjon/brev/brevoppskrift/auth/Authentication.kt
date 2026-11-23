@@ -1,12 +1,9 @@
 package no.nav.pensjon.brev.brevoppskrift.auth
 
 import com.auth0.jwk.JwkProvider
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.auth.AuthenticationConfig
 import io.ktor.server.auth.jwt.jwt
-import io.ktor.server.auth.principal
 import no.nav.pensjon.brev.brevoppskrift.AzureConfig
-import no.nav.pensjon.brev.brevoppskrift.api.ApiFailure
 import no.nav.pensjon.brev.brevoppskrift.api.respondProblem
 import io.ktor.http.HttpStatusCode
 
@@ -46,10 +43,4 @@ fun AuthenticationConfig.draftAuthentication(config: AzureConfig, jwks: JwkProvi
             call.respondProblem(HttpStatusCode.Unauthorized, "UNAUTHORIZED", "Innlogging kreves.")
         }
     }
-}
-
-fun ApplicationCall.requireEditor(): DraftUser {
-    val user = principal<DraftUser>() ?: throw ApiFailure(HttpStatusCode.Unauthorized, "UNAUTHORIZED", "Innlogging kreves.")
-    if (!user.canEdit) throw ApiFailure(HttpStatusCode.Forbidden, "FORBIDDEN", "Du har ikke tilgang til å endre brevmaler.")
-    return user
 }
