@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@navikt/aksel-icons";
+import { ChevronLeftIcon, SidebarLeftIcon } from "@navikt/aksel-icons";
 import { Box, Button, VStack } from "@navikt/ds-react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { capitalize } from "lodash";
@@ -77,23 +77,22 @@ export function DataClassesPanel({
 
   if (!open) {
     return (
-      <Box asChild marginBlock="space-16 space-0" marginInline="space-0 space-16">
+      <Box asChild background="raised" borderRadius="0" marginBlock="space-0" marginInline="space-0">
         <Button
-          icon={<ChevronRightIcon />}
+          icon={<SidebarLeftIcon />}
           iconPosition="right"
           onClick={() => setOpen(true)}
           size="small"
+          title="Vis datamodell"
           variant="tertiary"
-        >
-          Vis datamodell
-        </Button>
+        />
       </Box>
     );
   }
 
   return (
     <Box
-      background="neutral-soft"
+      background="raised"
       borderColor="neutral-subtle"
       borderWidth="0 1 0 0"
       css={{ flexShrink: 0, position: "relative", width }}

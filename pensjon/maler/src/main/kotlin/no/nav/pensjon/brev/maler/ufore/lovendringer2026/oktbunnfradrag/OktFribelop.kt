@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.lovendringer2026.oktbunnfradrag
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.maler.legacy.FribelopPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.faktor
@@ -10,7 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.vent
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -111,13 +112,8 @@ object OktFribelop {
             }
             paragraph {
                 text(
-                    bokmal { +"I vedlegget " },
-                    nynorsk { +"I vedlegget " },
-                )
-                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                text(
-                    bokmal { +" kan du se hvordan vi har beregnet uføretrygden din." },
-                    nynorsk { +" kan du sjå korleis vi har berekna uføretrygda di." },
+                    bokmal { +"I vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}» kan du se hvordan vi har beregnet uføretrygden din." },
+                    nynorsk { +"I vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}» kan du sjå korleis vi har berekna uføretrygda di." },
                 )
             }
 

@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Box, Detail, ErrorMessage, HStack, Pagination, VStack } from "@navikt/ds-react";
+import { Box, Detail, HStack, InlineMessage, Pagination, VStack } from "@navikt/ds-react";
 import { type ReactNode } from "react";
 
 export const CONTENT_PAGE_SIZE = 10;
@@ -32,9 +32,9 @@ export function SearchResultsPanel({
   children: ReactNode;
 }) {
   const status = error ? (
-    <ErrorMessage showIcon size="small">
+    <InlineMessage role="alert" size="small" status="error">
       {error}
-    </ErrorMessage>
+    </InlineMessage>
   ) : summary ? (
     <Detail textColor="subtle">{summary}</Detail>
   ) : null;

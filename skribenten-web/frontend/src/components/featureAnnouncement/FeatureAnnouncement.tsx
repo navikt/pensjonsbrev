@@ -1,6 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { isAfter, parseISO, startOfToday } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 import { type ReactNode, useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   ACTIONS,
@@ -14,15 +12,22 @@ import {
   useJoyride,
 } from "react-joyride";
 
-import { acknowledgeAnnouncement, getAcknowledgedAnnouncements } from "~/api/skribenten-api-endpoints";
-import { logError } from "~/utils/logger";
+import { getAnnouncementStatus } from "~/api/skribenten-api-endpoints";
 
+import { useAcknowledgeAnnouncement } from "./announcementStatus";
 import {
   FEATURE_ANNOUNCEMENT_LOCALE,
   FeatureAnnouncementArrow,
   type FeatureAnnouncementStepData,
   FeatureAnnouncementTooltip,
 } from "./FeatureAnnouncementTooltip";
+import {
+  endAnnouncementReplay,
+  isAnnouncementExpired,
+  isAnnouncementPublished,
+  useAnnouncementReplay,
+  useRegisterAnnouncementAvailability,
+} from "./featureAnnouncementState";
 
 export type FeatureAnnouncementStep = {
   /** Element the tooltip points at. */
@@ -38,13 +43,24 @@ export type FeatureAnnouncementStep = {
   spotlightRadius?: number;
   /** Element to scroll into view instead of the target, e.g. when the target is inside a container that clips overflow. */
   scrollTarget?: StepTarget;
+  /** Runs before the step is shown, also when going back to it. The step waits until the promise resolves. */
+  before?: () => Promise<void>;
 };
 
 type FeatureAnnouncementProps = {
   /** Unique per announcement and stored when the user acknowledges it, e.g. "diff-toggles". At most 100 characters. */
   id: string;
-  /** Last day (YYYY-MM-DD) the announcement is shown, typically 30 days after release. */
+  /** First day (YYYY-MM-DD) the announcement can be shown, typically the release date. Shown right away when omitted. */
+  showFrom?: string;
+  /** Last day (YYYY-MM-DD) the announcement starts automatically, typically 30 days after release. */
   showUntil: string;
+  /**
+   * Last day (YYYY-MM-DD) the tour can still be started on request, e.g. with «Se hvordan» in the notification bell.
+   * Defaults to `showUntil`.
+   */
+  replayableUntil?: string;
+  /** Whether the announcement starts automatically before `showUntil`. Defaults to true. */
+  automatic?: boolean;
   /** Pass a memoized array: a new identity restarts the step configuration in Joyride. */
   steps: FeatureAnnouncementStep[];
   /** All contextual conditions (role, route, data and targets available) combined by the caller. */
@@ -52,62 +68,106 @@ type FeatureAnnouncementProps = {
   onDismiss?: () => void;
   /** Dims the page around each step's target. Defaults to true. */
   spotlight?: boolean;
+  /**
+   * Native dialog the tour belongs to, e.g. a modal that illustrates the feature. The tour is rendered inside it and
+   * waits until it is open. Other open dialogs still block the tour.
+   */
+  dialog?: HTMLDialogElement | null;
 };
 
 /**
  * Modal, contextual announcement of a feature. One step gives a single announcement, several steps give
  * a short walkthrough. Focus moves into the announcement and returns to where the user was when it closes.
- * Closing it (button, Escape or a click on the dimmed page) acknowledges it for the user, so it is not shown again.
+ * Finishing it with the button on the last step marks it as completed for the user, so it no longer starts automatically.
+ * Escape or a click on the dimmed page only closes it while this component stays mounted, so it starts again the next
+ * time the user comes back.
  * If several announcements are eligible at the same time, they are shown one after another.
+ * While `when` holds, the tour can also be started again on request (see `requestAnnouncementReplay`).
  */
-export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => (
-  <FeatureAnnouncementInstance key={props.id} {...props} />
-);
+export const FeatureAnnouncement = (props: FeatureAnnouncementProps) => {
+  const replayGeneration = useAnnouncementReplay(props.id);
+  // Kept outside the instance, which is replaced for each replay, so closing a replay does not start the tour again.
+  const [closedId, setClosedId] = useState<string | null>(null);
+  return (
+    <FeatureAnnouncementInstance
+      key={`${props.id}-${replayGeneration}`}
+      {...props}
+      closedWithoutCompleting={closedId === props.id}
+      onCloseWithoutCompleting={() => setClosedId(props.id)}
+      replayGeneration={replayGeneration}
+    />
+  );
+};
 
 const FeatureAnnouncementInstance = ({
   id,
+  showFrom,
   showUntil,
+  replayableUntil,
+  automatic = true,
   steps,
   when,
   onDismiss,
   spotlight = true,
-}: FeatureAnnouncementProps) => {
+  dialog,
+  replayGeneration,
+  closedWithoutCompleting,
+  onCloseWithoutCompleting,
+}: FeatureAnnouncementProps & {
+  replayGeneration: number;
+  closedWithoutCompleting: boolean;
+  onCloseWithoutCompleting: () => void;
+}) => {
   const [resumeIndex, setResumeIndex] = useState(0);
   const [unsuccessfulRun, setUnsuccessfulRun] = useState(false);
-  const queryClient = useQueryClient();
 
-  const expired = isAfter(startOfToday(), parseISO(showUntil));
-  const acknowledgedQuery = useQuery({ ...getAcknowledgedAnnouncements, enabled: when && !expired });
-  const acknowledged = acknowledgedQuery.data?.includes(id) === true;
-  const { mutate: saveAcknowledgement } = useMutation({
-    mutationFn: () => acknowledgeAnnouncement(id),
-    retry: 2,
-    onError: (error) =>
-      logError(error, error instanceof AxiosError ? error.response?.status : undefined).catch(() =>
-        console.error("Unable to log error message"),
-      ),
+  const published = isAnnouncementPublished(showFrom);
+  const expired = !automatic || isAnnouncementExpired(showUntil);
+  const replayable = !isAnnouncementExpired(replayableUntil ?? showUntil);
+  const replaying = replayGeneration > 0;
+  const available = when && published && (!expired || replayable) && steps.length > 0;
+  useRegisterAnnouncementAvailability(id, available);
+
+  const statusQuery = useQuery({
+    ...getAnnouncementStatus,
+    enabled: when && published && (!expired || replayable),
   });
+  const acknowledged = statusQuery.data?.gjennomfoertOmvisningen.includes(id) === true;
+  const acknowledge = useAcknowledgeAnnouncement();
 
   const onDismissReference = useRef(onDismiss);
   onDismissReference.current = onDismiss;
-  const hasDismissed = useRef(false);
+  const onCloseWithoutCompletingReference = useRef(onCloseWithoutCompleting);
+  onCloseWithoutCompletingReference.current = onCloseWithoutCompleting;
+  const hasEnded = useRef(false);
   const hasBeenShown = useRef(false);
-  const dismiss = useCallback(() => {
-    if (hasDismissed.current) return;
-    hasDismissed.current = true;
-    queryClient.setQueryData(getAcknowledgedAnnouncements.queryKey, (previous: string[] = []) => [...previous, id]);
-    saveAcknowledgement();
-    onDismissReference.current?.();
-  }, [id, queryClient, saveAcknowledgement]);
+  const end = useCallback(
+    (completed: boolean) => {
+      if (hasEnded.current) return;
+      hasEnded.current = true;
+      if (completed) acknowledge(id);
+      else onCloseWithoutCompletingReference.current();
+      onDismissReference.current?.();
+      endAnnouncementReplay(replayGeneration);
+    },
+    [id, acknowledge, replayGeneration],
+  );
 
-  const eligible = when && !expired && acknowledgedQuery.isSuccess && !acknowledged && steps.length > 0;
+  // Also a replay waits until the status has been read (or failed), so closing it cannot be overwritten by an older,
+  // still pending read that would make the tour start again.
+  const statusRead = !statusQuery.isPending;
+  const eligible =
+    available &&
+    statusRead &&
+    (replaying || (!expired && statusQuery.isSuccess && !acknowledged && !closedWithoutCompleting));
   // A run that ended without showing anything (e.g. the target was never found) is retried the next time the
   // announcement becomes eligible, instead of being treated as dismissed.
   if (unsuccessfulRun && !eligible) setUnsuccessfulRun(false);
   const pending = eligible && !unsuccessfulRun;
-  const hasTurn = useAnnouncementTurn(pending);
-  const blocked = useIsBlockedByOpenDialog(pending && hasTurn);
+  const blocked = useIsBlockedByOpenDialog(pending, dialog);
+  const hasTurn = useAnnouncementTurn(pending && !blocked);
   const run = pending && hasTurn && !blocked;
+  const inDialog = dialog !== undefined;
 
   const joyrideSteps = useMemo<Step[]>(
     () =>
@@ -119,16 +179,28 @@ const FeatureAnnouncementInstance = ({
         spotlightPadding: step.spotlightPadding ?? 4,
         spotlightRadius: step.spotlightRadius ?? 8,
         ...(step.scrollTarget && { scrollTarget: toLiveTarget(step.scrollTarget) }),
+        // Joyride's own scrolling can stall inside a dialog: after scrolling it waits for the tooltip to report a new
+        // position, which never comes when the tooltip was already positioned. Such steps scroll their target here instead.
+        ...(inDialog
+          ? {
+              skipScroll: true,
+              before: async () => {
+                await step.before?.();
+                toElement(step.scrollTarget ?? step.target)?.scrollIntoView({ block: "nearest" });
+              },
+            }
+          : step.before && { before: step.before }),
         title: step.title,
         content: step.content,
         placement: step.placement ?? "bottom",
         data: { announcementId: id } satisfies FeatureAnnouncementStepData,
       })),
-    [id, steps],
+    [id, steps, inDialog],
   );
 
   const { state, Tour } = useJoyride({
     run,
+    portalElement: dialog ?? undefined,
     steps: joyrideSteps,
     continuous: steps.length > 1,
     // Joyride restarts from initialStepIndex whenever `run` turns true again, e.g. after a blocking dialog closes.
@@ -143,14 +215,18 @@ const FeatureAnnouncementInstance = ({
     floatingOptions: { strategy: "fixed" },
     styles: {
       // Aksel's backdrop token, toned down: the announcement should draw attention, not feel like an error.
-      overlay: { backgroundColor: "var(--ax-bg-overlay)", opacity: 0.4 },
+      overlay: {
+        backgroundColor: "var(--ax-bg-overlay)",
+        opacity: 0.4,
+        position: dialog ? "fixed" : "absolute",
+      },
     },
     options: {
       arrowBase: 20,
       arrowSize: 10,
       // Keeps the arrow clear of the tooltip's rounded corners.
       arrowSpacing: 16,
-      // Escape is handled below so it dismisses the whole announcement, not just the current step.
+      // Escape is handled below so it closes the whole announcement, not just the current step.
       dismissKeyAction: false,
       hideOverlay: !spotlight,
       // Small gap (Aksel space-8) between the target and the arrow tip.
@@ -167,11 +243,13 @@ const FeatureAnnouncementInstance = ({
       }
       if (data.type === EVENTS.TOUR_END && !hasBeenShown.current) {
         setUnsuccessfulRun(true);
+        endAnnouncementReplay(replayGeneration);
         return;
       }
       // A click on the dimmed page closes the whole announcement, also in the middle of a walkthrough.
       const closedByOverlay = data.action === ACTIONS.CLOSE && data.origin === ORIGIN.OVERLAY;
-      if (data.type === EVENTS.TOUR_END || closedByOverlay) dismiss();
+      if (closedByOverlay) end(false);
+      else if (data.type === EVENTS.TOUR_END) end(data.status === STATUS.FINISHED);
     },
   });
 
@@ -179,12 +257,15 @@ const FeatureAnnouncementInstance = ({
 
   useEffect(() => {
     if (!tooltipVisible) return;
-    const dismissOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") dismiss();
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        end(false);
+      }
     };
-    document.addEventListener("keydown", dismissOnEscape);
-    return () => document.removeEventListener("keydown", dismissOnEscape);
-  }, [tooltipVisible, dismiss]);
+    document.addEventListener("keydown", closeOnEscape, true);
+    return () => document.removeEventListener("keydown", closeOnEscape, true);
+  }, [tooltipVisible, end]);
 
   return run ? Tour : null;
 };
@@ -193,6 +274,12 @@ const FeatureAnnouncementInstance = ({
 // A function is kept by reference, so it always reads the ref's current element.
 const toLiveTarget = (target: StepTarget): StepTarget =>
   typeof target === "object" && "current" in target ? () => target.current : target;
+
+const toElement = (target: StepTarget): HTMLElement | null => {
+  if (typeof target === "string") return document.querySelector<HTMLElement>(target);
+  if (typeof target === "function") return target();
+  return "current" in target ? target.current : target;
+};
 
 const announcementQueue: string[] = [];
 const queueListeners = new Set<() => void>();
@@ -228,18 +315,24 @@ function useAnnouncementTurn(pending: boolean) {
   return useSyncExternalStore(subscribeToQueue, () => pending && announcementQueue[0] === key);
 }
 
-/** True while a native dialog (e.g. an Aksel Modal) is open. Only observes the DOM while `enabled`. */
-function useIsBlockedByOpenDialog(enabled: boolean) {
-  const [blocked, setBlocked] = useState(false);
+/** True while a native dialog (e.g. an Aksel Modal) blocks the tour, or while the tour's own dialog is not open yet. */
+function useIsBlockedByOpenDialog(enabled: boolean, ownDialog?: HTMLDialogElement | null) {
+  const [otherDialogOpen, setOtherDialogOpen] = useState(false);
+  const [ownDialogOpen, setOwnDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!enabled) return;
-    const update = () => setBlocked(document.querySelector("dialog[open]") !== null);
+    const update = () => {
+      setOwnDialogOpen(ownDialog !== undefined ? ownDialog?.open === true : true);
+      setOtherDialogOpen([...document.querySelectorAll("dialog[open]")].some((dialog) => dialog !== ownDialog));
+    };
     update();
     const observer = new MutationObserver(update);
     observer.observe(document.body, { attributes: true, attributeFilter: ["open"], childList: true, subtree: true });
     return () => observer.disconnect();
-  }, [enabled]);
+  }, [enabled, ownDialog]);
 
-  return enabled && blocked;
+  if (!enabled) return false;
+  if (ownDialog !== undefined && (!ownDialog?.open || !ownDialogOpen)) return true;
+  return otherDialogOpen;
 }

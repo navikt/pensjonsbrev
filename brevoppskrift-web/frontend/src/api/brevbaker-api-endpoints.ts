@@ -16,6 +16,12 @@ export const templateDescriptionKeys = {
 
 export type MalType = "redigerbar" | "autobrev";
 
+export const MAL_TYPES: readonly MalType[] = ["autobrev", "redigerbar"];
+
+export function isMalType(value: string): value is MalType {
+  return (MAL_TYPES as readonly string[]).includes(value);
+}
+
 export const templateDocumentationKeys = {
   all: ["TEMPLATE_DOCUMENTATION"] as const,
   idWithLanguage: (malType: MalType, templateId: string, language: string) =>

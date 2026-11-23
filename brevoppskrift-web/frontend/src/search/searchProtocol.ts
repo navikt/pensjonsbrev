@@ -17,6 +17,7 @@ export type ContentHitRef = {
   key: TemplateKey;
   lineIndex: number;
   matchCount: number;
+  matchedLineIndexes: number[];
   score: number;
 };
 

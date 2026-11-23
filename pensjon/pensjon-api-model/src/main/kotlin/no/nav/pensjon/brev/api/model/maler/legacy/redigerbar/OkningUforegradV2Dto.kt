@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Tillegg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Vedtak
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.VilkarsvurderingFullstendig
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Yrkesskade
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
@@ -33,7 +34,7 @@ data class OkningUforegradV2Dto(
         val nyeAvslagBarnetillegg: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val sisteTrygdetidsgrunnlag: OkningUforegradDto.Trygdetidsgrunnlag?,
         val hjemler: Set<String>,
-        val fribelopsperioder: List<OkningUforegradDto.Fribelopsperiode>,
+        val fribelopsperioder: List<Fribelopsperiode>,
         val forrigeUforegrad: Int,
         val forrigeUforetidspunkt: LocalDate,
 

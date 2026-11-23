@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
+import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageAfpPrivatDto
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -24,6 +25,8 @@ data class AvslagAfpPrivatDto(
      *  - § 5 første ledd bokstav a — [UNDER_62]
      *  - § 5 første ledd bokstav b — [BRUKER_AVSLAG_AP], [BRUKER_IKKE_AP]
      *  - § 8 første ledd            — [BRUKER_UP_E_62], [BRUKER_UT_E_62], [BRUKER_LOP_UP]
+     *
+     * [FK_IKKE_INNV] og [VIRK_FRA_FO_ULIK] støttes ikke i brevet, men finnes slik at PEN kan mappe dem uten at bestillingen feiler.
      */
     enum class Begrunnelse {
         UNDER_62,
@@ -32,6 +35,8 @@ data class AvslagAfpPrivatDto(
         BRUKER_UP_E_62,
         BRUKER_UT_E_62,
         BRUKER_LOP_UP,
+        FK_IKKE_INNV,
+        VIRK_FRA_FO_ULIK,
     }
 
     data class PesysData(
@@ -39,5 +44,6 @@ data class AvslagAfpPrivatDto(
         val kravMottattDato: LocalDate,
         // PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse[1]
         val begrunnelse: Begrunnelse,
+        val dineRettigheterOgMulighetTilAaKlageAfpPrivat: DineRettigheterOgMulighetTilAaKlageAfpPrivatDto,
     ) : FagsystemBrevdata
 }

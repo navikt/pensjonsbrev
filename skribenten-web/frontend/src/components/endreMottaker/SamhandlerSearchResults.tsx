@@ -6,8 +6,8 @@ import { ApiError } from "~/components/ApiError";
 import { useSamhandlerMottaker } from "~/hooks/useSamhandlerMottaker";
 import { type Samhandler } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
+import { trackEvent } from "~/utils/innblikk";
 import { humanizeName } from "~/utils/stringUtils";
-import { trackEvent } from "~/utils/umami";
 
 type SelectionMethod = "radio-klikk" | "rad-klikk" | "tastatur";
 
@@ -181,7 +181,11 @@ function SamhandlerMottakerDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) 
   return <MottakerDetaljer mottaker={data} />;
 }
 
-function MottakerDetaljer({ mottaker }: { mottaker: NonNullable<ReturnType<typeof useSamhandlerMottaker>["data"]> }) {
+export function MottakerDetaljer({
+  mottaker,
+}: {
+  mottaker: NonNullable<ReturnType<typeof useSamhandlerMottaker>["data"]>;
+}) {
   const rows: { label: string; value: Nullable<string> }[] = mottaker.adresse
     ? [
         { label: "Navn", value: mottaker.adresse.navn },

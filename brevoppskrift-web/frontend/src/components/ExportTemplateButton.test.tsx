@@ -36,7 +36,7 @@ describe("Last ned brevoppskrift som Word", () => {
     });
     render(<ExportTemplateButton documentation={documentation} language="NYNORSK" templateId="MITT_BREV" />);
     vi.useFakeTimers();
-    await act(async () => screen.getByRole("button", { name: "Last ned brevoppskrift som Word" }).click());
+    await act(async () => screen.getByRole("button", { name: "Last ned" }).click());
     expect(links).toHaveLength(1);
 
     expect(createTemplateWordDocument).toHaveBeenCalledWith({
@@ -62,6 +62,6 @@ describe("Last ned brevoppskrift som Word", () => {
     await userEvent.click(screen.getByRole("button"));
     expect(await screen.findByRole("alert")).toBeTruthy();
     expect(screen.getByText("Kunne ikke eksportere brevoppskriften til Word. Prøv igjen.")).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Last ned brevoppskrift som Word" }).getAttribute("disabled")).toBeNull();
+    expect(screen.getByRole("button", { name: "Last ned" }).getAttribute("disabled")).toBeNull();
   });
 });

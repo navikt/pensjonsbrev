@@ -79,6 +79,8 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      // pointerup can be lost (e.g. macOS' native context menu swallows it), so only drag while the primary button is held.
+      if ((event.buttons & 1) === 0) pointerDownInside = false;
       if (!pointerDownInside) return;
       maybeStartDrag(event.clientX, event.clientY);
     };

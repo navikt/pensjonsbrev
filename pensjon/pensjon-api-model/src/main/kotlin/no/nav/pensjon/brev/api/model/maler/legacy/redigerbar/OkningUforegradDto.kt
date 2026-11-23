@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.UforeVedtaksinfo
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -36,14 +37,5 @@ data class OkningUforegradDto(
     data class Trygdetidsgrunnlag(
         val fom: LocalDate,
         val tom: LocalDate,
-    )
-
-    data class Fribelopsperiode(
-        val fom: LocalDate,
-        val tom: LocalDate,
-        val gradsokning: Boolean,
-        val faktor: Double,
-        val grunnbelop: Kroner,
-        val venteperiodeStartDato: LocalDate,
     )
 }

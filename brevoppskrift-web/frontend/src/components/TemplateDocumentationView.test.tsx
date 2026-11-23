@@ -1,8 +1,10 @@
 // @vitest-environment node
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
+  type Conditional,
+  type Content,
   type ContentOrControlStructure,
   ContentOrControlStructureType,
   ElementType,
@@ -11,8 +13,12 @@ import {
   ExprType,
   type OutlineContent,
   type ParagraphContent,
+  type Row,
+  type Text,
 } from "~/api/templateDocumentationTypes";
 import { Document, ExprToText, isLeafPrimitive } from "~/components/TemplateDocumentationView";
+import * as documentMatching from "~/templateSearch/documentMatch";
+import { SearchHighlightProvider } from "~/templateSearch/SearchHighlightContext";
 
 function render(expr: Expr): string {
   return renderToStaticMarkup(<ExprToText expr={expr} />);
@@ -430,6 +436,603 @@ describe("Document search indexes", () => {
     );
 
     expect(html).toContain('data-block-index="0"');
+  });
+});
+
+describe("Document search marking", () => {
+  function paragraph(index: number, text: string): ContentOrControlStructure<OutlineContent> {
+    const block = textLiteralParagraph(text);
+    return block.controlStructureType === ContentOrControlStructureType.CONTENT
+      ? { ...block, content: { ...block.content, index } }
+      : block;
+  }
+  const documentation = {
+    title: [],
+    outline: [
+      paragraph(0, "Du får barnetillegg."),
+      paragraph(1, "Om barnetillegg og annet."),
+      paragraph(2, "Noe helt annet."),
+    ],
+    attachments: [],
+    templateModelSpecification: { types: {}, letterModelTypeName: "" },
+  };
+
+  it("marks hits only in matching blocks, and the active block apart from the others", () => {
+    const html = renderToStaticMarkup(
+      <SearchHighlightProvider
+        highlight={{ needle: "barnetillegg", exact: false, matchingBlocks: new Set([1, 2]), activeBlock: 2 }}
+      >
+        <Document templateDocumentation={documentation} />
+      </SearchHighlightProvider>,
+    );
+
+    expect(html).not.toMatch(/data-block-index="0"[^>]*data-search-hit/);
+    expect(html).toMatch(/data-block-index="1"[^>]*data-search-hit="match"/);
+    expect(html).toMatch(/data-block-index="2"[^>]*data-search-hit="active"/);
+    // Block 0 has the word too, but is not a hit, so only block 1's is marked.
+    expect(html.match(/<mark[^>]*>barnetillegg<\/mark>/g)).toHaveLength(1);
+  });
+
+  // E.g. a block kept from another language, where it matched: still easy to
+  // find when switching back and forth, but nothing in it is marked.
+  it("outlines the active block even when it is not a hit in this language, without marking its words", () => {
+    const html = renderToStaticMarkup(
+      <SearchHighlightProvider
+        highlight={{ needle: "barnetillegg", exact: false, matchingBlocks: new Set(), activeBlock: 0 }}
+      >
+        <Document templateDocumentation={documentation} />
+      </SearchHighlightProvider>,
+    );
+
+    expect(html).toMatch(/data-block-index="0"[^>]*data-search-hit="active"/);
+    expect(html).not.toMatch(/data-block-index="1"[^>]*data-search-hit/);
+    expect(html).not.toContain("<mark");
+  });
+
+  it.each([
+    {
+      name: "highlights punctuation directly after an adjacent literal",
+      literals: ["Du får barnetillegg", "."],
+      needle: "barnetillegg.",
+      expectedMarks: ["barnetillegg", "."],
+    },
+    {
+      name: "highlights a word split across adjacent literals",
+      literals: ["Du får barne", "tillegg."],
+      needle: "barnetillegg",
+      expectedMarks: ["barne", "tillegg"],
+    },
+    {
+      name: "preserves and normalizes whitespace already present between literals",
+      literals: ["Du får \n", "\tbarnetillegg."],
+      needle: "får barnetillegg",
+      expectedMarks: ["får", "barnetillegg"],
+    },
+    {
+      name: "does not invent whitespace between adjacent literals",
+      literals: ["Du får barne", "tillegg."],
+      needle: "barne tillegg",
+      expectedMarks: [],
+    },
+  ])("$name", ({ literals, needle, expectedMarks }) => {
+    const html = renderToStaticMarkup(
+      <SearchHighlightProvider highlight={{ needle, exact: true, matchingBlocks: new Set([0]), activeBlock: 0 }}>
+        <Document
+          templateDocumentation={{
+            ...documentation,
+            outline: [
+              {
+                controlStructureType: ContentOrControlStructureType.CONTENT,
+                content: {
+                  elementType: ElementType.PARAGRAPH,
+                  index: 0,
+                  paragraph: literals.map((text) => ({
+                    controlStructureType: ContentOrControlStructureType.CONTENT,
+                    content: { elementType: ElementType.PARAGRAPH_TEXT_LITERAL, text },
+                  })),
+                },
+              },
+            ],
+          }}
+        />
+      </SearchHighlightProvider>,
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/gs)].map(([, text]) => text)).toEqual(expectedMarks);
+  });
+
+  it("renders exactly as without search when there is no highlight", () => {
+    const plain = renderToStaticMarkup(<Document templateDocumentation={documentation} />);
+    const withoutHighlight = renderToStaticMarkup(
+      <SearchHighlightProvider highlight={undefined}>
+        <Document templateDocumentation={documentation} />
+      </SearchHighlightProvider>,
+    );
+
+    expect(withoutHighlight).toBe(plain);
+    expect(plain).not.toContain("<mark");
+    expect(plain).not.toContain("data-search-hit");
+  });
+
+  it.each([
+    { needle: "", matchingBlocks: new Set([0]) },
+    { needle: "barnetillegg", matchingBlocks: new Set<number>() },
+  ])("skips match planning when no block can show marks: %j", (highlight) => {
+    const plan = vi.spyOn(documentMatching, "matchDocument");
+    try {
+      renderToStaticMarkup(
+        <SearchHighlightProvider highlight={{ ...highlight, exact: false, activeBlock: 0 }}>
+          <Document templateDocumentation={documentation} />
+        </SearchHighlightProvider>,
+      );
+      expect(plan).not.toHaveBeenCalled();
+    } finally {
+      plan.mockRestore();
+    }
+  });
+});
+
+describe("Document full-query coverage", () => {
+  function literal(text: string): ContentOrControlStructure<Text> {
+    return {
+      controlStructureType: ContentOrControlStructureType.CONTENT,
+      content: { elementType: ElementType.PARAGRAPH_TEXT_LITERAL, text },
+    };
+  }
+
+  function conditional(
+    showIf: ContentOrControlStructure<Text>[],
+    showElse: ContentOrControlStructure<Text>[] = [],
+  ): Conditional<Text> {
+    return {
+      controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+      predicate: fieldPath("harBarn"),
+      showIf,
+      elseIf: [],
+      showElse,
+    };
+  }
+
+  function row(...cells: (string | ContentOrControlStructure<Text>[])[]): Content<Row> {
+    return {
+      controlStructureType: ContentOrControlStructureType.CONTENT,
+      content: {
+        elementType: ElementType.PARAGRAPH_TABLE_ROW,
+        cells: cells.map((cell) => ({ text: typeof cell === "string" ? [literal(cell)] : cell })),
+      },
+    };
+  }
+
+  function table(
+    rows: ContentOrControlStructure<Row>[],
+    header = row("A", "B").content,
+  ): ContentOrControlStructure<ParagraphContent> {
+    return {
+      controlStructureType: ContentOrControlStructureType.CONTENT,
+      content: { elementType: ElementType.PARAGRAPH_TABLE, header, rows },
+    };
+  }
+
+  const variable: ContentOrControlStructure<Text> = {
+    controlStructureType: ContentOrControlStructureType.CONTENT,
+    content: { elementType: ElementType.PARAGRAPH_TEXT_EXPRESSION, expression: fieldPath("antall") },
+  };
+
+  function renderParagraph(
+    items: ContentOrControlStructure<ParagraphContent>[],
+    exact = false,
+    needle = "barnetillegg uføretrygd",
+  ): string {
+    return renderToStaticMarkup(
+      <SearchHighlightProvider
+        highlight={{
+          needle,
+          exact,
+          matchingBlocks: new Set([0]),
+          activeBlock: 0,
+        }}
+      >
+        <Document
+          templateDocumentation={{
+            title: [],
+            outline: [
+              {
+                controlStructureType: ContentOrControlStructureType.CONTENT,
+                content: { elementType: ElementType.PARAGRAPH, index: 0, paragraph: items },
+              },
+            ],
+            attachments: [],
+            templateModelSpecification: { types: {}, letterModelTypeName: "" },
+          }}
+        />
+      </SearchHighlightProvider>,
+    );
+  }
+
+  it.each([
+    { structure: "list", exact: false },
+    { structure: "list", exact: true },
+    { structure: "table", exact: false },
+    { structure: "table", exact: true },
+  ])(
+    "keeps a textual branch connected when another branch contains a $structure (exact: $exact)",
+    ({ structure, exact }) => {
+      const other: ContentOrControlStructure<ParagraphContent> =
+        structure === "table"
+          ? table([row("Annet")])
+          : {
+              controlStructureType: ContentOrControlStructureType.CONTENT,
+              content: {
+                elementType: ElementType.PARAGRAPH_ITEMLIST,
+                type: "PUNKTLISTE",
+                items: [
+                  {
+                    controlStructureType: ContentOrControlStructureType.CONTENT,
+                    content: { elementType: ElementType.PARAGRAPH_ITEMLIST_ITEM, text: [literal("Annet")] },
+                  },
+                ],
+              },
+            };
+      const branch: Conditional<ParagraphContent> = {
+        ...conditional([literal("barnetillegg.")]),
+        showElse: [other],
+      };
+      const html = renderParagraph([literal("Du får "), branch], exact, "får barnetillegg");
+
+      expect(
+        [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+          text,
+          attributes.includes("data-search-full-match"),
+        ]),
+      ).toEqual([
+        ["får", true],
+        ["barnetillegg", true],
+      ]);
+    },
+  );
+
+  it("reuses the block plan inside nested branches and table cells", () => {
+    const plan = vi.spyOn(documentMatching, "matchDocument");
+    try {
+      renderParagraph([table([row([literal("Du får "), conditional([literal("barnetillegg")])], "uføretrygd")])]);
+      expect(plan).toHaveBeenCalledTimes(1);
+    } finally {
+      plan.mockRestore();
+    }
+  });
+
+  it.each([false, true])("highlights an exact phrase across an inline conditional (table cell: %s)", (inTable) => {
+    const items = [literal("Du får "), conditional([literal("barnetillegg")], [literal("Annet")])];
+    const html = renderParagraph(inTable ? [table([row(items)])] : items, true, "får barnetillegg");
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(["får", "barnetillegg"]);
+  });
+
+  it("highlights a word across surrounding literals and compatible nested branches", () => {
+    const html = renderParagraph(
+      [
+        literal("Du får barne"),
+        conditional([literal("til"), conditional([literal("legg")], [literal("pensjon")])], [literal("penger")]),
+        literal("."),
+      ],
+      true,
+      "barnetillegg.",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual([
+      "barne",
+      "til",
+      "legg",
+      ".",
+    ]);
+  });
+
+  it("merges overlapping ranges from compatible alternatives in a shared literal", () => {
+    const html = renderParagraph([conditional([literal("ab")], [literal("a")]), literal("aba")], true, "aba");
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(["ab", "aba"]);
+  });
+
+  it("combines compatible sibling conditionals, including an else-if branch", () => {
+    const first = conditional([literal("trygd")], [literal("penger")]);
+    first.elseIf = [{ predicate: fieldPath("harBarnetillegg"), showIf: [literal("til")] }];
+    const html = renderParagraph(
+      [literal("Du får barne"), first, conditional([literal("legg")], [literal("skatt")]), literal(".")],
+      true,
+      "barnetillegg.",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual([
+      "barne",
+      "til",
+      "legg",
+      ".",
+    ]);
+  });
+
+  it("allows an empty branch between the surrounding literals of an exact phrase", () => {
+    const html = renderParagraph(
+      [literal("Du får "), conditional([literal("ikke ")]), literal("barnetillegg.")],
+      true,
+      "får barnetillegg",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(["får", "barnetillegg"]);
+  });
+
+  it("prefers full coverage through an inline branch over an earlier partial-match paragraph", () => {
+    const html = renderParagraph(
+      [conditional([literal("får")], [literal("Du får "), conditional([literal("barnetillegg")], [literal("Annet")])])],
+      false,
+      "får barnetillegg",
+    );
+
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["får", false],
+      ["får", true],
+      ["barnetillegg", true],
+    ]);
+  });
+
+  it.each([false, true])("does not combine mutually exclusive inline branches (exact: %s)", (exact) => {
+    const html = renderParagraph(
+      [literal("Du får "), conditional([literal("barnetillegg ")], [literal("uføretrygd")])],
+      exact,
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(
+      exact ? [] : ["barnetillegg", "uføretrygd"],
+    );
+    expect(html).not.toContain("data-search-full-match");
+  });
+
+  it.each([false, true])("keeps a variable inside an inline branch unmarked (exact: %s)", (exact) => {
+    const html = renderParagraph(
+      [literal("Du får "), conditional([variable, literal(" barnetillegg")])],
+      exact,
+      "får barnetillegg",
+    );
+
+    const marks = [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)];
+    expect(marks.map(([, , text]) => text)).toEqual(exact ? [] : ["får", "barnetillegg"]);
+    expect(marks.every(([, attributes]) => attributes.includes("data-search-full-match"))).toBe(true);
+    expect(text(html)).toContain("antall");
+  });
+
+  it("combines a term spanning an inline conditional with another table cell", () => {
+    const html = renderParagraph([
+      table([row([literal("barne"), conditional([literal("tillegg")], [literal("X")])], "uføretrygd")]),
+    ]);
+
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["barne", true],
+      ["tillegg", true],
+      ["uføretrygd", true],
+    ]);
+  });
+
+  it("prefers full term coverage across a variable over an earlier partial-match branch", () => {
+    const html = renderParagraph([
+      {
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [literal("barnetillegg")],
+        elseIf: [],
+        showElse: [literal("barnetillegg "), variable, literal(" uføretrygd")],
+      },
+    ]);
+
+    const marks = [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)];
+    expect(marks.map(([, attributes, text]) => [text, attributes.includes("data-search-full-match")])).toEqual([
+      ["barnetillegg", false],
+      ["barnetillegg", true],
+      ["uføretrygd", true],
+    ]);
+    expect(text(html)).toContain("antall");
+  });
+
+  it("does not combine term coverage from alternative branches", () => {
+    const html = renderParagraph([
+      {
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [literal("barnetillegg")],
+        elseIf: [],
+        showElse: [literal("uføretrygd")],
+      },
+    ]);
+
+    expect(html.match(/<mark/g)).toHaveLength(2);
+    expect(html).not.toContain("data-search-full-match");
+  });
+
+  it("does not combine term coverage across separate searchable lines in a paragraph", () => {
+    const html = renderParagraph([
+      literal("barnetillegg"),
+      {
+        controlStructureType: ContentOrControlStructureType.CONTENT,
+        content: {
+          elementType: ElementType.PARAGRAPH_ITEMLIST,
+          type: "PUNKTLISTE",
+          items: [
+            {
+              controlStructureType: ContentOrControlStructureType.CONTENT,
+              content: { elementType: ElementType.PARAGRAPH_ITEMLIST_ITEM, text: [literal("Annen tekst")] },
+            },
+          ],
+        },
+      },
+      literal("uføretrygd"),
+    ]);
+
+    expect(html.match(/<mark/g)).toHaveLength(2);
+    expect(html).not.toContain("data-search-full-match");
+  });
+
+  it("does not treat terms separated by a variable as an exact phrase", () => {
+    const html = renderParagraph([literal("barnetillegg "), variable, literal(" uføretrygd")], true);
+
+    expect(html).not.toContain("<mark");
+  });
+
+  it("marks full-query coverage across table cells instead of an earlier partial-match branch", () => {
+    const html = renderParagraph([
+      {
+        controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+        predicate: fieldPath("harBarn"),
+        showIf: [literal("barnetillegg")],
+        elseIf: [],
+        showElse: [table([row("barnetillegg", "uføretrygd")])],
+      },
+    ]);
+
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["barnetillegg", false],
+      ["barnetillegg", true],
+      ["uføretrygd", true],
+    ]);
+  });
+
+  it("combines header cells without leaking coverage into body rows", () => {
+    const html = renderParagraph([table([row("barnetillegg", "Annet")], row("barnetillegg", "uføretrygd").content)]);
+
+    expect(
+      [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)].map(([, attributes, text]) => [
+        text,
+        attributes.includes("data-search-full-match"),
+      ]),
+    ).toEqual([
+      ["barnetillegg", true],
+      ["uføretrygd", true],
+      ["barnetillegg", false],
+    ]);
+  });
+
+  it.each(
+    [
+      { name: "body row", content: table([row("barnetillegg", "uføretrygd")]) },
+      { name: "header row", content: table([], row("barnetillegg", "uføretrygd").content) },
+      { name: "row with empty cells", content: table([row("", "barnetillegg", " \t", "uføretrygd", "")]) },
+    ].flatMap((structure) =>
+      [
+        { needle: "barnetillegg uføretrygd", exact: true },
+        { needle: "barnetillegg | uføretrygd", exact: true },
+        { needle: "|", exact: true },
+        { needle: "|", exact: false },
+      ].map((query) => ({ ...structure, ...query })),
+    ),
+  )("does not match $needle across the cells of a $name (exact: $exact)", ({ content, needle, exact }) => {
+    const html = renderParagraph([content], exact, needle);
+
+    expect(html).not.toContain("<mark");
+    expect(text(html)).not.toContain("|");
+  });
+
+  it("still matches a vertical bar written in a table cell", () => {
+    const html = renderParagraph(
+      [table([row("barnetillegg | uføretrygd", "Annet")])],
+      true,
+      "barnetillegg | uføretrygd",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual([
+      "barnetillegg | uføretrygd",
+    ]);
+  });
+
+  it.each([
+    {
+      name: "separate table rows",
+      rows: [row("barnetillegg", "Annet"), row("Annet", "uføretrygd")],
+    },
+    {
+      name: "alternative table-row branches",
+      rows: [
+        {
+          controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+          predicate: fieldPath("harBarn"),
+          showIf: [row("barnetillegg", "Annet")],
+          elseIf: [],
+          showElse: [row("Annet", "uføretrygd")],
+        } satisfies ContentOrControlStructure<Row>,
+      ],
+    },
+  ])("does not combine coverage across $name", ({ rows }) => {
+    const html = renderParagraph([table(rows)]);
+
+    expect(html.match(/<mark/g)).toHaveLength(2);
+    expect(html).not.toContain("data-search-full-match");
+  });
+
+  it.each([
+    { otherCell: "Annet", fullMatch: false },
+    { otherCell: "uføretrygd", fullMatch: true },
+  ])("keeps cell alternatives separate when another cell contains $otherCell", ({ otherCell, fullMatch }) => {
+    const html = renderParagraph([
+      table([
+        row(
+          [
+            {
+              controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+              predicate: fieldPath("harBarn"),
+              showIf: [literal("barnetillegg")],
+              elseIf: [],
+              showElse: [literal("uføretrygd")],
+            },
+          ],
+          otherCell,
+        ),
+      ]),
+    ]);
+
+    const marks = [...html.matchAll(/<mark([^>]*)>(.*?)<\/mark>/g)];
+    expect(marks.map(([, attributes]) => attributes.includes("data-search-full-match"))).toEqual(
+      fullMatch ? [true, false, true] : [false, false],
+    );
+  });
+
+  it("highlights adjacent literals inside a loop without changing conditional rendering", () => {
+    const html = renderParagraph(
+      [
+        {
+          controlStructureType: ContentOrControlStructureType.FOR_EACH,
+          items: fieldPath("barn"),
+          body: [
+            literal("Du får barne"),
+            literal("tillegg."),
+            {
+              controlStructureType: ContentOrControlStructureType.CONDITIONAL,
+              predicate: fieldPath("harBarn"),
+              showIf: [literal("Annen tekst")],
+              elseIf: [],
+              showElse: [],
+            },
+          ],
+        },
+      ],
+      true,
+      "barnetillegg",
+    );
+
+    expect([...html.matchAll(/<mark[^>]*>(.*?)<\/mark>/g)].map(([, text]) => text)).toEqual(["barne", "tillegg"]);
+    expect(html).toContain('class="conditional"');
+    expect(html).not.toContain('class="inline-conditional"');
+    expect(text(html)).toContain("For hver X i:");
   });
 });
 

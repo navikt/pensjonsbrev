@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.Stat
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
+import no.nav.pensjon.brev.skribenten.common.TekniskVersjon
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
@@ -36,11 +37,13 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
-object BekreftetNyhetsvarselTable : CompositeIdTable() {
+// settAnnonsen: nyheten er vist i den åpne varselbjellen. gjennomfoertOmvisningen: brukeren har gått gjennom omvisningen.
+object NyhetsvarselstatusTable : CompositeIdTable() {
     val navIdent: Column<EntityID<NavIdent>> = varchar("navIdent", length = 50).transform(::NavIdent, NavIdent::id).entityId()
     val nyhetsvarselId: Column<EntityID<NyhetsvarselId>> =
         varchar("nyhetsvarselId", length = 100).transform(::NyhetsvarselId, NyhetsvarselId::id).entityId()
-    val bekreftet: Column<Instant> = timestamp("bekreftet")
+    val settAnnonsen: Column<Instant?> = timestamp("settAnnonsen").nullable()
+    val gjennomfoertOmvisningen: Column<Instant?> = timestamp("gjennomfoertOmvisningen").nullable()
 
     override val primaryKey = PrimaryKey(navIdent, nyhetsvarselId)
 }
@@ -62,6 +65,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val redigertBrevKryptert: Column<VersjonertBrev> = kryptertDto<VersjonertBrev>("redigertBrevKryptert")
     val rendretBrevKryptert: Column<VersjonertBrev?> = kryptertDto<VersjonertBrev>("rendretBrevKryptert").nullable()
     val redigertBrevKryptertHash: Column<Hash<VersjonertBrev>> = hashColumn("redigertBrevKryptertHash")
+    val tekniskVersjon: Column<TekniskVersjon> = integer("tekniskVersjon").transform(::TekniskVersjon, TekniskVersjon::value).databaseGenerated()
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjon> = varchar("distribusjonstype", length = 50).transform(Distribusjon::valueOf, Distribusjon::name)
     val redigeresAvNavIdent: Column<NavIdent?> = varchar("redigeresAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
@@ -108,7 +112,10 @@ object RedigertVedleggTable : CompositeIdTable() {
         varchar("vedleggId", 50).transform(::VedleggId, VedleggId::id).entityId()
     val redigertVedleggKryptert: Column<VersjonertVedlegg> = kryptertDto<VersjonertVedlegg>("redigertVedleggKryptert")
     val redigertVedleggKryptertHash: Column<Hash<VersjonertVedlegg>> = hashColumn("redigertVedleggKryptertHash")
+    val tekniskVersjon: Column<TekniskVersjon> = integer("tekniskVersjon").transform(::TekniskVersjon, TekniskVersjon::value).databaseGenerated()
     val rendretVedlegg: Column<VersjonertVedlegg?> = kryptertDto<VersjonertVedlegg>("rendretVedlegg").nullable()
+    val rendretVedleggHash: Column<StableHashCode?> =
+        integer("rendretVedleggHash").transform(::StableHashCode, StableHashCode::value).nullable()
 
     override val primaryKey = PrimaryKey(brevredigering, vedleggId)
 
@@ -119,7 +126,8 @@ object RedigertVedleggTable : CompositeIdTable() {
 
 object OneShotJobTable : IdTable<String>() {
     override val id: Column<EntityID<String>> = varchar("name", 255).entityId()
-    val completedAt: Column<Instant> = timestamp("completedAt")
+    val tekniskVersjon: Column<TekniskVersjon> = integer("tekniskVersjon").transform(::TekniskVersjon, TekniskVersjon::value).databaseGenerated()
+    val completedAt: Column<Instant?> = timestamp("completedAt").nullable()
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 

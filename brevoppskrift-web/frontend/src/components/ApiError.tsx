@@ -1,39 +1,32 @@
-import { css } from "@emotion/react";
-import { Alert, CopyButton, Heading, HStack } from "@navikt/ds-react";
-import { ErrorComponent } from "@tanstack/react-router";
+import { CopyButton, GlobalAlert, HStack } from "@navikt/ds-react";
 import { AxiosError } from "axios";
 
+/**
+ * An error that stops the whole page, e.g. a failed route loader. Errors from
+ * the backend include the request id, so the user can report it.
+ */
 export function ApiError({ error, text }: { error: unknown; text: string }) {
-  if (error instanceof AxiosError) {
-    const correlationId = error.response?.headers["x-request-id"];
-    return (
-      <Alert
-        css={css`
-          margin-top: var(--ax-space-16);
-          width: fit-content;
-          align-self: center;
-        `}
-        size="small"
-        variant="error"
-      >
-        <Heading level="2" size="small" spacing>
-          Oops
-        </Heading>
-        <div>{text}</div>
-        <div>
-          {correlationId && (
+  const correlationId = error instanceof AxiosError ? error.response?.headers["x-request-id"] : undefined;
+  const details = error instanceof AxiosError ? undefined : error instanceof Error ? error.message : undefined;
+  return (
+    <GlobalAlert role="alert" size="small" status="error">
+      <GlobalAlert.Header>
+        <GlobalAlert.Title>{text}</GlobalAlert.Title>
+      </GlobalAlert.Header>
+      {correlationId || details ? (
+        <GlobalAlert.Content>
+          {correlationId ? (
             <HStack align="center" gap="space-0">
               <span>
                 Hvis problemet vedvarer rapporter feil og oppgi følgende id: <b>{correlationId}</b>
               </span>
               <CopyButton copyText={correlationId} />
             </HStack>
+          ) : (
+            details
           )}
-        </div>
-      </Alert>
-    );
-  }
-
-  // If the error is not an axios error, then there is a programming error. Fallback to default Router Error
-  return <ErrorComponent error={error} />;
+        </GlobalAlert.Content>
+      ) : null}
+    </GlobalAlert>
+  );
 }

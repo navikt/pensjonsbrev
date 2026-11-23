@@ -84,6 +84,20 @@ describe("search", () => {
 
     expect(content).toHaveLength(1);
     expect(content[0].matchCount).toBe(2);
+    expect(content[0].matchedLineIndexes).toEqual([0, 2]);
+  });
+
+  it("lists matching lines in document order in exact mode too, whichever line scores best", () => {
+    const templates = [
+      template({
+        id: "MULTI",
+        title: "Flere avsnitt",
+        lines: ["Barnetillegg barnetillegg.", "Noe uavhengig tekst.", "Om barnetillegg.", "Barnetillegg igjen."],
+      }),
+    ];
+    const index = buildIndex(templates);
+
+    expect(search(index, "barnetillegg", true).content[0].matchedLineIndexes).toEqual([0, 2, 3]);
   });
 
   it("matches on title and brevkode for brev hits", () => {
@@ -163,6 +177,52 @@ describe("search", () => {
 
     expect(search(index, "the grey fox", true).content).toHaveLength(1);
     expect(search(index, "fox the grey", true).content).toEqual([]);
+  });
+
+  it("shares highlighting's variable boundary: term coverage can cross it, but exact phrases cannot", () => {
+    const value = template({ id: "A1", title: "Barnetillegg", lines: [""] });
+    value.lines = [
+      [
+        { type: "text", value: "barnetillegg " },
+        { type: "var", label: "antall" },
+        { type: "text", value: " uføretrygd" },
+      ],
+    ];
+    const index = buildIndex([value]);
+
+    expect(search(index, "barnetillegg uføretrygd", true).content).toEqual([]);
+    expect(search(index, "barnetillegg uføretrygd", false).content).toHaveLength(1);
+  });
+
+  it("does not index table-cell boundaries, but keeps vertical bars written in the text", () => {
+    const row = template({ id: "ROW", title: "Tabell", lines: [""] });
+    row.lines = [[{ type: "text", value: "barnetillegg" }, { type: "cell" }, { type: "text", value: "uføretrygd" }]];
+    const literal = template({ id: "BAR", title: "Strek", lines: ["barnetillegg | uføretrygd"] });
+    const index = buildIndex([row, literal]);
+    const ids = (query: string, exact: boolean) => search(index, query, exact).content.map((hit) => hit.template.id);
+
+    expect(ids("|", true)).toEqual(["BAR"]);
+    expect(ids("|", false)).toEqual(["BAR"]);
+    expect(ids("barnetillegg | uføretrygd", true)).toEqual(["BAR"]);
+    expect(ids("barnetillegg uføretrygd", true)).toEqual([]);
+    expect(ids("barnetillegg uføretrygd", false).sort()).toEqual(["BAR", "ROW"]);
+  });
+
+  it("shows each fuzzy hit at a line highlighting can mark, and drops templates without one", () => {
+    const acrossVariable: Line = [
+      { type: "text", value: "Skatteoppgjøret for " },
+      { type: "var", label: "år" },
+      { type: "text", value: " er klart." },
+    ];
+    const both = template({ id: "BOTH", title: "Begge", lines: ["", "Vi forrer dyrene."] });
+    both.lines[0] = acrossVariable;
+    const only = template({ id: "ONLY", title: "Bare variabel", lines: [""] });
+    only.lines = [acrossVariable];
+    const index = buildIndex([both, only]);
+
+    const { content } = search(index, "forer");
+
+    expect(content.map((hit) => [hit.template.id, hit.lineIndex])).toEqual([["BOTH", 1]]);
   });
 
   it("accepts a character-prefix exact phrase", () => {

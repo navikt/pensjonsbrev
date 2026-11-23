@@ -188,6 +188,7 @@ object Pen {
         "INNHENTE_OPPLYSNINGER" to "Innhente opplysninger",
         "KLAGE_OG_ANKE" to "Klage og anke",
         "LEVEATTEST" to "Leveattest",
+        "LOVENDRINGER" to "Lovendringer",
         "OMSORGSOPPTJENING" to "Omsorgsopptjening",
         "POSTERINGSGRUNNLAG" to "Posteringsgrunnlag",
         "SLUTTBEHANDLING" to "Sluttbehandling",
@@ -195,7 +196,8 @@ object Pen {
         "VARSEL" to "Varsel",
         "VEDTAK_EKSPORT" to "Vedtak - eksport",
         "VEDTAK_ENDRING_OG_REVURDERING" to "Vedtak - endring og revurdering",
-        "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"
+        "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land",
+        "VEDTAK_OPPHOER_AVSLAG" to "Vedtak - opphør/avslag"
     )
 
     fun finnVisningstekst(brevkategori: IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]

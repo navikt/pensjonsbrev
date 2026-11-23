@@ -7,7 +7,8 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.AlltidValgbareVedlegg.
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDto
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.Brevkategori
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -27,7 +28,7 @@ object InformasjonOmSaksbehandlingstidUTRedigerbar : RedigerbarTemplate<Informas
     override val valgbareVedlegg = setOf(SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk, English),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om saksbehandlingstid uføretrygd",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
@@ -41,13 +42,11 @@ object InformasjonOmSaksbehandlingstidUTRedigerbar : RedigerbarTemplate<Informas
                 text(
                     bokmal { + "Informasjon om forlenget saksbehandlingstid" },
                     nynorsk { + "Informasjon om forlenget saksbehandlingstid" },
-                    english { + "Information about application processing delay" },
                 )
             }.orShow {
                 text(
                     bokmal { + "Informasjon om saksbehandlingstiden vår" },
                     nynorsk { + "Informasjon om saksbehandlingstida vår" },
-                    english { + "Information about our application processing time" },
                 )
             }
         }
@@ -64,15 +63,11 @@ object InformasjonOmSaksbehandlingstidUTRedigerbar : RedigerbarTemplate<Informas
                         nynorsk { + "Vi har " + mottattDato + " fått søknaden din om uføretrygd. "
                                 + "Det vil dessverre ta oss lengre tid enn venta å behandle kravet. "
                                 + "Forsinkinga skuldast " + aarsak + "." },
-                        english { + "We have received your application for disabilty benefit on the " + mottattDato + ". "
-                                + "Due to delays in " + aarsak + ", "
-                                + "the processing of your case will take longer than we anticipated." }
                     )
                 }.orShow {
                     text(
                         bokmal { + "Vi har " + mottattDato + " mottatt søknaden din om uføretrygd fra folketrygden." },
                         nynorsk { + "Vi har " + mottattDato + " fått søknaden din om uføretrygd frå folketrygda." },
-                        english { + "We have received your application for disability benefit from the Norwegian National Insurance Scheme on " + mottattDato + "." },
                     )
                 }
             }
@@ -81,7 +76,6 @@ object InformasjonOmSaksbehandlingstidUTRedigerbar : RedigerbarTemplate<Informas
                     text(
                         bokmal { + "Ny svartid" },
                         nynorsk { + "Ny svartid" },
-                        english { + "New estimated date for completion" },
                     )
                 }
                 paragraph {
@@ -89,7 +83,6 @@ object InformasjonOmSaksbehandlingstidUTRedigerbar : RedigerbarTemplate<Informas
                     text(
                         bokmal { + "Vi antar at kravet ditt kan bli ferdigbehandlet innen " + svartid + "." },
                         nynorsk { + "Vi reknar med at kravet ditt kan bli ferdigbehandla innan " + svartid + "." },
-                        english { + "Without further delays, we assume the processing of your case to be completed within " + svartid + "." }
                     )
                 }
             }.orShow {
@@ -98,7 +91,6 @@ object InformasjonOmSaksbehandlingstidUTRedigerbar : RedigerbarTemplate<Informas
                     text(
                         bokmal { + "Saksbehandlingstiden vår er vanligvis " + svartid + "." },
                         nynorsk { + "Saksbehandlingstida vår er vanlegvis " + svartid + "." },
-                        english { + "Our processing time is usually " + svartid + "." },
                     )
                 }
             }
@@ -106,7 +98,6 @@ object InformasjonOmSaksbehandlingstidUTRedigerbar : RedigerbarTemplate<Informas
                 text(
                     bokmal { + "Dersom vi trenger flere opplysninger fra deg, vil du høre fra oss." },
                     nynorsk { + "Dersom vi treng fleire opplysningar frå deg, vil du høyre frå oss." },
-                    english { + "We will contact you if we need you to provide more information." }
                 )
             }
             includePhrase(Felles.MeldeFraEndringer)

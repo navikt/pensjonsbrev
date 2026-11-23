@@ -32,13 +32,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
+const val OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL = "Opplysninger om beregningen"
+const val OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK = "Opplysningar om utrekninga"
+
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
     createAttachment<LangBokmalNynorsk, PEgruppe10>(
         title = {
             text(
-                bokmal { +"Opplysninger om beregningen" },
-                nynorsk { +"Opplysningar om utrekninga" },
+                bokmal { +OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL },
+                nynorsk { +OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK },
             )
         },
         includeSakspart = false,
@@ -243,6 +246,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                     erBeregningsendring = pe.erBeregningsendringsBrevkode(),
                     visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
                     visForklaringOmRettTilBarnetillegg = pe.harBrevkodeForRettTilBarnetillegg(),
+                    visBarnetilleggsberegning = pe.harBrevkodeForBarnetilleggsberegning(),
                     utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
                 )
             )
@@ -291,7 +295,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             )
         )
 
-        includePhrase(SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
+        includePhrase(
+            SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
+                pe = pe,
+                visForklaringForBrevtype = pe.harBrevkodeForBarnetilleggsberegning(),
+                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+            )
+        )
 
         includePhrase(
             SlikBeregnerViGjenlevendetilleggetDitt(

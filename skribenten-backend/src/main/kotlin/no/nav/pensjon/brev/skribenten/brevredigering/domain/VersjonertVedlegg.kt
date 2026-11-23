@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import no.nav.brev.brevbaker.StableHashCode
 import no.nav.brev.brevbaker.markup.Attachment as AttachmentV2
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -61,16 +62,19 @@ sealed interface VersjonertVedlegg {
 
 sealed interface VersjonertVedleggMarkup {
     val markupVersjon: MarkupVersjon
+    val stableHashCode: StableHashCode?
 
     fun toEdit(): VersjonertVedlegg
 
     data class V1(val markup: LetterMarkup.Attachment) : VersjonertVedleggMarkup {
         override val markupVersjon get() = MarkupVersjon.V1
+        override val stableHashCode get() = markup.stableHashCode
         override fun toEdit() = VersjonertVedlegg.V1(markup.toEdit())
     }
 
     data class V2(val markup: AttachmentV2) : VersjonertVedleggMarkup {
         override val markupVersjon get() = MarkupVersjon.V2
+        override val stableHashCode get() = markup.stableHashCode
         override fun toEdit() = VersjonertVedlegg.V2(EditV2.Attachment.from(markup))
     }
 }

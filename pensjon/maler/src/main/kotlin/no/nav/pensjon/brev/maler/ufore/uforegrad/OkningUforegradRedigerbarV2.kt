@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.uforegrad
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -62,6 +64,7 @@ import no.nav.pensjon.brev.maler.ufore.extensions.epsBorMedNnEntall
 import no.nav.pensjon.brev.maler.ufore.extensions.erInnvilget
 import no.nav.pensjon.brev.maler.ufore.extensions.fellesbarnInnvilget
 import no.nav.pensjon.brev.maler.ufore.extensions.serkullsbarnInnvilget
+import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd.InntektBarnetillegg
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -79,7 +82,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -796,11 +798,9 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 }
                 paragraph(uniqueness = "beregning") {
                     text(
-                        bokmal { +"Du kan lese mer om dette i vedlegget " },
-                        nynorsk { +"Du kan lese meir om dette i vedlegget " },
+                        bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                        nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                     )
-                    namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                    text(bokmal { +"." }, nynorsk { +"." })
                 }
 
                 showIf(beregning.uforegrad.equalTo(100)) {
@@ -860,7 +860,13 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                                 nynorsk { +"Slik reknar vi ut fribeløpet ditt i år: " },
                             )
                         }
-                        includePhrase(Fribelopsperioder(fribelopsperioder, beregning.fribelop))
+                        includePhrase(Fribelopsperioder(fribelopsperioder))
+                        paragraph {
+                            text(
+                                bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + pesysData.beregning.fribelop.format() + "." },
+                                nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Fribeløpet ditt i år er " + pesysData.beregning.fribelop.format() + "." },
+                            )
+                        }
                     }
                 }.orShow {
                     showIf(grunnlag.harVTA) {
@@ -1399,11 +1405,9 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                     showIf(barnetillegg.erInnvilget()) {
                         paragraph(uniqueness = "barnetillegg") {
                             text(
-                                bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget " },
-                                nynorsk { +"Du kan lese meir om berekninga av barnetillegg i vedlegget " },
+                                bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                                nynorsk { +"Du kan lese meir om berekninga av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                             )
-                            namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                            text(bokmal { +"." }, nynorsk { +"." })
                         }
                     }
                 }
@@ -1443,11 +1447,9 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
                 showIf(tillegg.gjenlevendetilleggInnvilget) {
                     paragraph(uniqueness = "gjenlevendetillegg") {
                         text(
-                            bokmal { +"Du kan lese mer om dette i vedlegget " },
-                            nynorsk { +"Du kan lese meir om dette i vedlegget " },
+                            bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                            nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                         )
-                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                        text(bokmal { +"." }, nynorsk { +"." })
                     }
                 }
                 showIf(harAlderspensjonLopendeEllerTilBehandling) {

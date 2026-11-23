@@ -9,6 +9,7 @@ import {
   newVariable,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
+import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import {
   type Content,
   ElementTags,
@@ -609,6 +610,17 @@ describe("LetterEditorActions.paste", () => {
             expect(select<ParagraphBlock>(second, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(second, { blockIndex: 1 }).id).toEqual(1);
             expect(second.redigertBrev.deletedBlocks).toEqual([]);
+          });
+
+          test("an empty list item after a paragraph breaks out to a blank line instead of throwing", () => {
+            const clipboard = new MockDataTransfer({ "text/html": "<p>Avsnitt</p><ul><li></li></ul>" });
+            const state = letter(paragraph([literal({ text: "" })]));
+            const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("Avsnitt");
+            expect(result.redigertBrev.blocks.slice(1).every((block) => block.content.every(isLiteral))).toBe(true);
+            expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual("");
+            expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
           });
         });
       });

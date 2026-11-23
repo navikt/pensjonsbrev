@@ -15,27 +15,9 @@ import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
-import no.nav.pensjon.brev.ufore.maler.info.ForesporselTrygdetidSendtLand
-import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
-import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
-import no.nav.pensjon.brev.ufore.maler.info.KravSendtUtland
-import no.nav.pensjon.brev.ufore.maler.info.TrukketKlage
-import no.nav.pensjon.brev.ufore.maler.info.UfoeretrygdForeloepigEksportvurdering
+import no.nav.pensjon.brev.ufore.maler.info.*
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.BrukerLegeerklaering
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.EOSSkjemaFraBruker
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.EktefelleUtland
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.FlereOpplysningerFirmaInntekt
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.FlereOpplysningerGenerell
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.InnhentingAvOpplysninger
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.Naeringsinntekter
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.NySivilstand
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.OppgittSamboer
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.SoknadBarnetillegg
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.SoknadBarnetilleggFosterForelder
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.SoknadBarnetilleggUtland
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.SoknadTilAvtaleland
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.UtsattKlagefrist
+import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.bruker.*
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
 import no.nav.pensjon.brev.ufore.maler.simulering.SimuleringUforetrygd
 import no.nav.pensjon.brev.ufore.maler.svartid.OrienteringOmSaksbehandlingstidAuto
@@ -100,13 +82,11 @@ object UfoereTemplates : AllTemplates {
         Naeringsinntekter,
         FlereOpplysningerFirmaInntekt,
         NySivilstand,
-        SoknadBarnetilleggFosterForelder,
-        SoknadBarnetilleggUtland,
         TrukketKlage,
         UtsattKlagefrist,
         FlereOpplysningerGenerell,
+        UforetrygdNavBerOmDokumentasjon,
         OppgittSamboer,
-        EktefelleUtland,
         AntattDod,
         InnhentingAvOpplysninger,
         InnhentingAvOpplysningerLege,
@@ -116,6 +96,7 @@ object UfoereTemplates : AllTemplates {
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
         HvilendeRettMidlertidigOppHoer,
+        Honnorkort,
         VarselOmLavereMinstesatsS,
         VarselOmLavereReduksjonsprosentRedigerbar,
         VarselOmOktMinsteIFURedigerbar,
@@ -128,6 +109,8 @@ object UfoereTemplates : AllTemplates {
         SoknadTilAvtaleland,
         KravSendtUtland,
         UfoeretrygdForeloepigEksportvurdering,
+        AvkallPaUforetrygd,
+        OpphorUforetrygd,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.innvilgelse
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.personsak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
@@ -11,11 +13,9 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.maler.ufore.fraser.erUforetidspunktMaanedEtterFoedsel
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -24,7 +24,6 @@ import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import java.time.Month
@@ -345,7 +344,6 @@ object Innvilgelse {
     data class RettighetSomUngUfoer(
         val ungUforResultat: Expression<String>,
         val pe: Expression<PEgruppe10>,
-        val vedleggOpplysningerBruktIBeregningUT: AttachmentTemplate<LangBokmalNynorsk, *>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             showIf((ungUforResultat.equalTo("oppfylt") or ungUforResultat.equalTo("ikke_oppfylt"))) {
@@ -378,11 +376,9 @@ object Innvilgelse {
             showIf((ungUforResultat.equalTo("oppfylt"))) {
                 paragraph(uniqueness = "ung_ufør") {
                     text(
-                        bokmal { +"Du kan lese mer om dette i vedlegget " },
-                        nynorsk { +"Du kan lese meir om dette i vedlegget " },
+                        bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                        nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                     )
-                    namedReference(vedleggOpplysningerBruktIBeregningUT)
-                    text(bokmal { +"." }, nynorsk { +"." })
                 }
             }
 
@@ -548,13 +544,8 @@ object Innvilgelse {
                     }
                     paragraph {
                         text(
-                            bokmal { +"Du er innvilget uføretrygd gjennom sammenlegging av tilsvarende perioder i EØS-land/land Norge har trygdeavtale med. Uføretrygden din er derfor beregnet etter egne regler i avtalen. Det at din uføretrygd ikke er beregnet utelukkende ut fra opptjeningen din i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget " },
-                            nynorsk { +"Du er innvilga uføretrygd gjennom samanslåing av tilsvarande periodar i EØS-land/land Noreg har trygdeavtale med. Uføretrygda di er derfor berekna etter eigne reglar i avtalen. Det at uføretrygda di ikkje er berekna utelukkande ut fra oppteninga di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er berekna i vedlegget " },
-                        )
-                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                        text(
-                            bokmal { +"." },
-                            nynorsk { +"." }
+                            bokmal { +"Du er innvilget uføretrygd gjennom sammenlegging av tilsvarende perioder i EØS-land/land Norge har trygdeavtale med. Uføretrygden din er derfor beregnet etter egne regler i avtalen. Det at din uføretrygd ikke er beregnet utelukkende ut fra opptjeningen din i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                            nynorsk { +"Du er innvilga uføretrygd gjennom samanslåing av tilsvarande periodar i EØS-land/land Noreg har trygdeavtale med. Uføretrygda di er derfor berekna etter eigne reglar i avtalen. Det at uføretrygda di ikkje er berekna utelukkande ut fra oppteninga di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er berekna i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                         )
                     }
                 }.orShowIf(innvilgetEtter12_2_tredjeledd) {
@@ -578,13 +569,8 @@ object Innvilgelse {
                     }
                     paragraph {
                         text(
-                            bokmal { +"Du er innvilget uføretrygd gjennom sammenlegging av tilsvarende perioder i EØS-land/land Norge har trygdeavtale med. Uføretrygden din er derfor beregnet etter egne regler i avtalen. Det at din uføretrygd ikke er beregnet utelukkende ut fra opptjeningen din i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget " },
-                            nynorsk { +"Du er innvilga uføretrygd gjennom samanslåing av tilsvarande periodar i EØS-land/land Noreg har trygdeavtale med. Uføretrygda di er derfor berekna etter eigne reglar i avtalen. Det at uføretrygda di ikkje er berekna utelukkande ut fra oppteninga di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er berekna i vedlegget " },
-                        )
-                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                        text(
-                            bokmal { +"." },
-                            nynorsk { +"." }
+                            bokmal { +"Du er innvilget uføretrygd gjennom sammenlegging av tilsvarende perioder i EØS-land/land Norge har trygdeavtale med. Uføretrygden din er derfor beregnet etter egne regler i avtalen. Det at din uføretrygd ikke er beregnet utelukkende ut fra opptjeningen din i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                            nynorsk { +"Du er innvilga uføretrygd gjennom samanslåing av tilsvarande periodar i EØS-land/land Noreg har trygdeavtale med. Uføretrygda di er derfor berekna etter eigne reglar i avtalen. Det at uføretrygda di ikkje er berekna utelukkande ut fra oppteninga di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er berekna i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                         )
                     }
                 }
@@ -826,7 +812,6 @@ object Innvilgelse {
         val oifuKroner: Expression<Kroner>,
         val uforegrad: Expression<Int>,
         val ungUforResultat: Expression<String>,
-        val vedleggOpplysningerBruktIBeregningUT: AttachmentTemplate<LangBokmalNynorsk, *>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             title1 {
@@ -955,11 +940,9 @@ object Innvilgelse {
             }
             paragraph(uniqueness = "fastsatt-uføregrad") {
                 text(
-                    bokmal { +"Du kan lese mer om dette i vedlegget " },
-                    nynorsk { +"Du kan lese meir om dette i vedlegget " },
+                    bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                    nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                 )
-                namedReference(vedleggOpplysningerBruktIBeregningUT)
-                text(bokmal { +"." }, nynorsk { +"." })
             }
         }
     }
@@ -1518,7 +1501,12 @@ object Innvilgelse {
                 }
 
                 showIf(btInnvilget) {
-                    includePhrase(TBU1288_Generated)
+                    paragraph {
+                        text(
+                            bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                            nynorsk { +"Du kan lese meir om berekninga av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
+                        )
+                    }
                 }
             }
         }
@@ -1568,7 +1556,12 @@ object Innvilgelse {
                         )
                     }
                 }
-                includePhrase(TBU1133_Generated)
+                paragraph {
+                    text(
+                        bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                        nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
+                    )
+                }
             }
         }
     }

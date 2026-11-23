@@ -25,7 +25,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Egenerklæring godskriving omsorgspoeng",
+            displayTitle = "Egenerklæring om pleie- og omsorgsarbeid",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = INFORMASJONSBREV,
         )

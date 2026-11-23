@@ -1,7 +1,7 @@
-import { Button } from "@navikt/ds-react";
+import { FloppydiskIcon } from "@navikt/aksel-icons";
+import { Button, InlineMessage, VStack } from "@navikt/ds-react";
 import { useState } from "react";
 
-import { ApiError } from "~/components/ApiError";
 import { type TemplateExport } from "~/word/exportTemplate";
 
 export function ExportTemplateButton(props: TemplateExport) {
@@ -31,16 +31,23 @@ export function ExportTemplateButton(props: TemplateExport) {
   }
 
   return (
-    <>
-      <Button loading={exporting} onClick={download} type="button" variant="secondary">
-        Last ned brevoppskrift som Word
+    <VStack align="end" gap="space-4">
+      <Button
+        icon={<FloppydiskIcon aria-hidden />}
+        loading={exporting}
+        onClick={download}
+        size="small"
+        title="Last ned brevoppskrift som Word"
+        type="button"
+        variant="secondary"
+      >
+        Last ned
       </Button>
       {error !== undefined && (
-        <div role="alert">
-          <p>Kunne ikke eksportere brevoppskriften til Word. Prøv igjen.</p>
-          <ApiError error={error} text="Kunne ikke eksportere brevoppskriften til Word." />
-        </div>
+        <InlineMessage role="alert" size="small" status="error">
+          Kunne ikke eksportere brevoppskriften til Word. Prøv igjen.
+        </InlineMessage>
       )}
-    </>
+    </VStack>
   );
 }

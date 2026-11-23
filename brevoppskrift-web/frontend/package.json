@@ -4,6 +4,7 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
+    "bench:search": "SEARCH_BENCHMARK=1 vitest run --config ./vitest.config.ts src/search/textSearch.performance.test.ts --reporter=verbose --maxWorkers=1",
     "build": "tsc -p tsconfig.app.json && vite build",
     "check-types": "tsc --noemit -p tsconfig.app.json && tsc --noemit -p tsconfig.test.json && tsc --noemit -p tsconfig.node.json",
     "check-unit-test-location": "test -z \"$(find . -path './node_modules' -prune -o -path './src' -prune -o \\( -name '*.test.ts' -o -name '*.test.tsx' \\) -print -quit)\"",

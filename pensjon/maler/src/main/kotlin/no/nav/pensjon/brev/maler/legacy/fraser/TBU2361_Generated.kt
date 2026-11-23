@@ -1,27 +1,26 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_belopokt
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_belopredusert
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravarsaktype
-import no.nav.pensjon.brev.model.*
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.text
 
 data class TBU2361_Generated(
     val pe: Expression<PEgruppe10>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 		//[TBU2361NN, TBU2361, TBU2361EN]
 		paragraph {
 			text (
 				bokmal { + "Du har tidligere meldt fra om en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " i år." },
 				nynorsk { + "Du har tidlegare meldt frå om ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " for dette kalenderåret." },
-				english { + "You have previously reported an income of " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().format() + " for this calendar year." },
 			)
 
 			// Henger sammen med 2362 på engelsk Ikke gjør noe med dette før all konvertering er ferdig siden vi vet ikke hvordan frasen brukes enda.
@@ -30,7 +29,6 @@ data class TBU2361_Generated(
 				text (
 					bokmal { + "" },
 					nynorsk { + "" },
-					english { + " We have thus reduced your disability benefit payment for the remainder of the calendar year." },
 				)
 			}
 
@@ -39,7 +37,6 @@ data class TBU2361_Generated(
 				text (
 					bokmal { + "" },
 					nynorsk { + "" },
-					english { + " We have therefore increased your disability benefit payment for the remainder of the calendar year." },
 				)
 			}
 		}

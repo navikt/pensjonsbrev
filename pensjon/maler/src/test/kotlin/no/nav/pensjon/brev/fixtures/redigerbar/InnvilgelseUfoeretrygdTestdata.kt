@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradV2Dto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Yrkesskade
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.fixtures.createDineRettigheterOgPlikterUforeDto
@@ -410,7 +411,7 @@ fun createOkningUforegradDto() =
             sisteTrygdetidsgrunnlag = OkningUforegradDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
             hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
             fribelopsperioder = listOf(
-                OkningUforegradDto.Fribelopsperiode(
+                Fribelopsperiode(
                     fom = LocalDate.of(2026, 1, 1),
                     tom = LocalDate.of(2026, 12, 31),
                     faktor = 0.4,
@@ -485,7 +486,7 @@ fun createOkningUforegradV2Dto() =
             sisteTrygdetidsgrunnlag = OkningUforegradDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
             hjemler = setOf("12-2", "12-3", "12-4", "12-5", "12-6", "12-7", "12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14"),
             fribelopsperioder = listOf(
-                OkningUforegradDto.Fribelopsperiode(
+                Fribelopsperiode(
                     fom = LocalDate.of(2026, 1, 1),
                     tom = LocalDate.of(2026, 12, 31),
                     faktor = 0.4,

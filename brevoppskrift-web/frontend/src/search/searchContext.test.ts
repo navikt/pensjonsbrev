@@ -1,0 +1,121 @@
+import { describe, expect, it } from "vitest";
+
+import {
+  blockOfFocus,
+  criteriaOf,
+  formatResultRef,
+  parseResultRef,
+  type ResultRef,
+  toTemplateSearch,
+  toTemplatesSearch,
+  validateTemplateSearchContext,
+  validateTemplatesSearch,
+} from "~/search/searchContext";
+
+const ref: ResultRef = { malType: "autobrev", id: "UT_VEDTAK", language: "BOKMAL" };
+
+describe("searchContext", () => {
+  it("round-trips a result reference", () => {
+    expect(parseResultRef(formatResultRef(ref))).toEqual(ref);
+  });
+
+  it.each([
+    ["missing parts", "autobrev/UT_VEDTAK"],
+    ["unknown malType", "brev/UT_VEDTAK/BOKMAL"],
+    ["empty brevkode", "autobrev//BOKMAL"],
+    ["not a string", 12],
+  ])("rejects a result reference with %s", (_, value) => {
+    expect(parseResultRef(value)).toBeUndefined();
+  });
+
+  it("validates /templates params and drops defaults and junk", () => {
+    expect(
+      validateTemplatesSearch({
+        q: "  pensjon ",
+        exact: "true",
+        tab: "innhold",
+        page: "3",
+        selected: formatResultRef(ref),
+      }),
+    ).toEqual({ q: "pensjon", exact: true, tab: "innhold", page: 3, selected: "autobrev/UT_VEDTAK/BOKMAL" });
+
+    expect(validateTemplatesSearch({ q: " ", exact: "nei", tab: "brev", page: "0", selected: "x" })).toEqual({
+      q: undefined,
+      exact: undefined,
+      tab: undefined,
+      page: undefined,
+      selected: undefined,
+    });
+  });
+
+  // The router parses search values as JSON where it can.
+  it("accepts a query the router parsed as a number or boolean", () => {
+    expect(validateTemplatesSearch({ q: 19 }).q).toBe("19");
+    expect(validateTemplateSearchContext({ q: true }).q).toBe("true");
+  });
+
+  it("has no criteria when nothing was searched for", () => {
+    expect(criteriaOf({})).toBeUndefined();
+    expect(criteriaOf({ q: "pensjon" })).toEqual({ q: "pensjon", exact: false, tab: "brev" });
+  });
+
+  it("has no criteria for a query too short to search, except one of special characters", () => {
+    expect(criteriaOf({ q: "x" })).toBeUndefined();
+    expect(criteriaOf({ q: "§" })).toEqual({ q: "§", exact: false, tab: "brev" });
+  });
+
+  it("builds the template link and the way back from the same criteria", () => {
+    const criteria = { q: "pensjon", exact: true, tab: "innhold" as const };
+
+    const toTemplate = toTemplateSearch(criteria, ref, { block: 4 });
+    expect(toTemplate).toEqual({
+      q: "pensjon",
+      exact: true,
+      tab: "innhold",
+      language: "BOKMAL",
+      focus: 5,
+    });
+    expect(validateTemplateSearchContext(toTemplate)).toMatchObject({ focus: 5, showHits: undefined });
+    expect(blockOfFocus(validateTemplateSearchContext(toTemplate).focus)).toBe(4);
+    expect(criteriaOf(validateTemplateSearchContext(toTemplate))).toEqual(criteria);
+
+    expect(toTemplatesSearch(criteria, ref)).toEqual({
+      q: "pensjon",
+      exact: true,
+      tab: "innhold",
+      selected: "autobrev/UT_VEDTAK/BOKMAL",
+    });
+  });
+
+  it("hides the hits of a Brev result unless told otherwise, and writes only `showHits=false`", () => {
+    const brev = { q: "pensjon", exact: false, tab: "brev" as const };
+    const innhold = { ...brev, tab: "innhold" as const };
+
+    expect(toTemplateSearch(brev, ref).showHits).toBe(false);
+    expect(toTemplateSearch(brev, ref, { showHits: true }).showHits).toBeUndefined();
+    expect(toTemplateSearch(innhold, ref).showHits).toBeUndefined();
+    expect(toTemplateSearch(innhold, ref, { showHits: false }).showHits).toBe(false);
+  });
+
+  it("reads `showHits` and `focus` from a hand-edited URL", () => {
+    expect(validateTemplateSearchContext({ q: "a", showHits: "false", focus: "12" })).toMatchObject({
+      showHits: false,
+      focus: 12,
+    });
+    expect(validateTemplateSearchContext({ q: "a", showHits: "nei", focus: "-1" })).toMatchObject({
+      showHits: undefined,
+      focus: undefined,
+    });
+    // Counted from 1, so 0 points at no block.
+    expect(validateTemplateSearchContext({ q: "a", focus: "0" }).focus).toBeUndefined();
+  });
+
+  it("leaves default criteria out of the URL", () => {
+    expect(toTemplatesSearch({ q: "pensjon", exact: false, tab: "brev" })).toEqual({
+      q: "pensjon",
+      exact: undefined,
+      tab: undefined,
+      selected: undefined,
+    });
+  });
+});

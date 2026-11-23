@@ -1,5 +1,5 @@
 import { css, keyframes } from "@emotion/react";
-import { SparklesIcon, XMarkIcon } from "@navikt/aksel-icons";
+import { SparklesIcon } from "@navikt/aksel-icons";
 import { BodyLong, BodyShort, Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { useId } from "react";
 import { type ArrowRenderProps, type TooltipRenderProps } from "react-joyride";
@@ -12,7 +12,6 @@ export const FEATURE_ANNOUNCEMENT_LOCALE = {
   close: "Skjønner!",
   last: "Skjønner!",
   next: "Neste",
-  skip: "Lukk",
 } as const;
 
 export type FeatureAnnouncementStepData = { announcementId: string };
@@ -73,31 +72,12 @@ export const FeatureAnnouncementArrow = ({ base, placement, size }: ArrowRenderP
   );
 };
 
-const ProgressDots = ({ index, size }: { index: number; size: number }) => (
-  <HStack align="center" gap="space-6">
-    <span className="aksel-sr-only">
-      Steg {index + 1} av {size}
-    </span>
-    {Array.from({ length: size }, (_, dot) => (
-      <Box
-        aria-hidden
-        background={dot === index ? "meta-purple-strong" : "neutral-moderate"}
-        borderRadius="full"
-        height="0.375rem"
-        key={dot}
-        width={dot === index ? "1rem" : "0.375rem"}
-      />
-    ))}
-  </HStack>
-);
-
 export const FeatureAnnouncementTooltip = ({
   backProps,
   index,
   isLastStep,
   primaryProps,
   size,
-  skipProps,
   step,
   tooltipProps,
 }: TooltipRenderProps) => {
@@ -139,16 +119,6 @@ export const FeatureAnnouncementTooltip = ({
               {FEATURE_ANNOUNCEMENT_LABEL}
             </BodyShort>
           </HStack>
-          {isWalkthrough && (
-            <Button
-              {...skipProps}
-              icon={<XMarkIcon aria-hidden />}
-              size="small"
-              title={undefined}
-              type="button"
-              variant="tertiary-neutral"
-            />
-          )}
         </HStack>
       </Box>
       <VStack gap="space-16" padding="space-16">
@@ -161,7 +131,12 @@ export const FeatureAnnouncementTooltip = ({
           </BodyLong>
         </VStack>
         <HStack align="center" gap="space-8" justify={isWalkthrough ? "space-between" : "end"}>
-          {isWalkthrough && <ProgressDots index={index} size={size} />}
+          {isWalkthrough && (
+            <BodyShort size="small" textColor="subtle">
+              <span className="aksel-sr-only">Steg </span>
+              {index + 1} av {size}
+            </BodyShort>
+          )}
           <HStack gap="space-8">
             {index > 0 && (
               <Button {...backProps} size="small" title={undefined} type="button" variant="secondary">

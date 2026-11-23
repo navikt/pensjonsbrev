@@ -33,8 +33,18 @@ import {
   type Row,
   type Table,
   type TemplateDocumentation,
+  type Text,
+  type TextLiteral,
 } from "~/api/templateDocumentationTypes";
 import { trimClassName } from "~/components/DataClasses";
+import { type HighlightParts } from "~/search/components/highlight";
+import { matchDocument } from "~/templateSearch/documentMatch";
+import {
+  HighlightedLiteral,
+  SearchBlock,
+  useBlockSearchHighlight,
+  useSearchBlockAttributes,
+} from "~/templateSearch/SearchHighlightContext";
 
 /**
  * Navnene (normalisert med `trimClassName`) på data-klassene som faktisk finnes i malens
@@ -46,6 +56,7 @@ import { trimClassName } from "~/components/DataClasses";
  * frittstående i enhetstester); da faller vi tilbake på `isPrimitiveTypeByName`.
  */
 const KnownDataClassesContext = createContext<Set<string> | undefined>(undefined);
+const LiteralHighlightPartsContext = createContext<ReadonlyMap<TextLiteral, HighlightParts> | undefined>(undefined);
 
 export function KnownDataClassesProvider({
   templateModelSpecification,
@@ -80,14 +91,16 @@ function hasConditionalRows(rows: ContentOrControlStructure<Row>[]): boolean {
 
 /** Rendrer cellene til én tabellrad som direkte grid-elementer (ingen wrapper-div), med
  * eksplisitt `gridRow`/`gridColumn` - påkrevd siden radene ikke lenger plasseres via
- * nettleserens implisitte auto-placement (se `layoutTableRows`). */
-function renderTableRowCells(row: Row, gridRow: number, key: string): ReactNode {
+ * nettleserens implisitte auto-placement (se `layoutTableRows`).
+ */
+function TableRowCells({ row, gridRow, header = false }: { row: Row; gridRow: number; header?: boolean }) {
+  const Cell = header ? "b" : "span";
   return (
-    <Fragment key={key}>
+    <Fragment>
       {row.cells.map((cell, index) => (
-        <span className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
+        <Cell className="cell" key={index} style={{ gridColumn: index + 1, gridRow }}>
           <CocsList items={cell.text} />
-        </span>
+        </Cell>
       ))}
     </Fragment>
   );
@@ -163,7 +176,7 @@ function layoutTableRows(
   rows.forEach((item, index) => {
     const itemPath = `${path}.${index}`;
     if (item.controlStructureType === ContentOrControlStructureType.CONTENT) {
-      contentItems.push(renderTableRowCells(item.content, row, itemPath));
+      contentItems.push(<TableRowCells gridRow={row} key={itemPath} row={item.content} />);
       row += 1;
       return;
     }
@@ -326,11 +339,7 @@ function TableView({ content }: { content: Table }) {
           }
         `}
       >
-        {content.header.cells.map((cell, index) => (
-          <b className="cell" key={index} style={{ gridColumn: index + 1, gridRow: 1 }}>
-            <CocsList items={cell.text} />
-          </b>
-        ))}
+        <TableRowCells gridRow={1} header row={content.header} />
         {contentItems}
       </div>
     </div>
@@ -417,6 +426,13 @@ function liftConditionalOutOfParagraph(
   };
 }
 
+function literalOf<E extends Element>(item: ContentOrControlStructure<E> | undefined): TextLiteral | undefined {
+  return item?.controlStructureType === ContentOrControlStructureType.CONTENT &&
+    item.content.elementType === ElementType.PARAGRAPH_TEXT_LITERAL
+    ? item.content
+    : undefined;
+}
+
 /**
  * Rendrer søsken i en tekst-/avsnittsflyt. En betingelse som bare styrer løpende tekst og står
  * sammen med annet innhold (typisk ett ord midt i en setning) rendres inline, slik at den ikke
@@ -424,22 +440,44 @@ function liftConditionalOutOfParagraph(
  */
 function CocsList<E extends Element>({
   items,
-  inline = false,
+  inline = items.length > 1,
 }: {
   items: ContentOrControlStructure<E>[];
   inline?: boolean;
 }) {
-  return items.map((cocs, index) => (
-    <ContentOrControlStructureComponent cocs={cocs} inline={inline || items.length > 1} key={index} />
-  ));
+  const highlight = useBlockSearchHighlight();
+  const inheritedParts = useContext(LiteralHighlightPartsContext);
+  const needle = highlight?.needle;
+  const exact = highlight?.exact ?? false;
+  const literalParts = useMemo(
+    () => inheritedParts ?? (needle ? matchDocument(items, needle, exact).parts : undefined),
+    [inheritedParts, needle, exact, items],
+  );
+  return (
+    <LiteralHighlightPartsContext.Provider value={literalParts}>
+      {items.map((cocs, index) => {
+        const literal = literalOf(cocs);
+        return (
+          <ContentOrControlStructureComponent
+            cocs={cocs}
+            inline={inline}
+            key={index}
+            literalParts={literal ? literalParts?.get(literal) : undefined}
+          />
+        );
+      })}
+    </LiteralHighlightPartsContext.Provider>
+  );
 }
 
 function ContentOrControlStructureComponent<E extends Element>({
   cocs,
   inline = false,
+  literalParts,
 }: {
   cocs: ContentOrControlStructure<E>;
   inline?: boolean;
+  literalParts?: HighlightParts;
 }) {
   switch (cocs.controlStructureType) {
     case ContentOrControlStructureType.CONDITIONAL: {
@@ -449,7 +487,7 @@ function ContentOrControlStructureComponent<E extends Element>({
       return <ConditionalComponent conditional={cocs} />;
     }
     case ContentOrControlStructureType.CONTENT: {
-      return <ContentComponent content={cocs.content} />;
+      return <ContentComponent content={cocs.content} literalParts={literalParts} />;
     }
     case ContentOrControlStructureType.FOR_EACH: {
       return <ForEachComponent content={cocs} />;
@@ -463,38 +501,28 @@ function ForEachComponent({ content }: { content: ForEach<Element> }) {
       <div className="expression">
         <code>For hver X i:</code> <ExprToText expr={content.items} />
       </div>
-      {content.body.map((b, index) => (
-        <ContentOrControlStructureComponent cocs={b} key={index} />
-      ))}
+      <CocsList inline={false} items={content.body} />
     </>
   );
 }
 
-function ContentComponent({ content }: { content: Element }) {
+function ContentComponent({ content, literalParts }: { content: Element; literalParts?: HighlightParts }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
-      return (
-        <Heading data-block-index={content.index} level="2" size="medium" spacing>
-          <CocsList items={content.text} />
-        </Heading>
-      );
+      return <TitleBlock index={content.index} level="2" size="medium" text={content.text} />;
     }
     case ElementType.TITLE2: {
-      return (
-        <Heading data-block-index={content.index} level="3" size="small" spacing>
-          <CocsList items={content.text} />
-        </Heading>
-      );
+      return <TitleBlock index={content.index} level="3" size="small" text={content.text} />;
     }
     case ElementType.TITLE3: {
-      return (
-        <Heading data-block-index={content.index} level="4" size="xsmall" spacing>
-          <CocsList items={content.text} />
-        </Heading>
-      );
+      return <TitleBlock index={content.index} level="4" size="xsmall" text={content.text} />;
     }
     case ElementType.PARAGRAPH_TEXT_LITERAL: {
-      return <span className="paragraph-text-literal">{content.text}</span>;
+      return (
+        <span className="paragraph-text-literal">
+          <HighlightedLiteral parts={literalParts} text={content.text} />
+        </span>
+      );
     }
     case ElementType.PARAGRAPH_TEXT_EXPRESSION: {
       return (
@@ -508,18 +536,14 @@ function ContentComponent({ content }: { content: Element }) {
       if (content.paragraph.length === 1 && only.controlStructureType === ContentOrControlStructureType.CONDITIONAL) {
         return <ConditionalComponent conditional={liftConditionalOutOfParagraph(only, content.index)} />;
       }
-      return (
-        <BodyLong as="div" data-block-index={content.index} spacing>
-          <CocsList items={content.paragraph} />
-        </BodyLong>
-      );
+      return <ParagraphBlock index={content.index} items={content.paragraph} />;
     }
     case ElementType.PARAGRAPH_TABLE: {
       return <TableView content={content} />;
     }
     case ElementType.PARAGRAPH_TABLE_ROW: {
       // Urealistisk i praksis - PARAGRAPH_TABLE_ROW (Row) rendres alltid direkte av TableView
-      // sin egen layout-logikk (se `renderTableRowCells`), aldri via denne generiske switchen.
+      // sin egen layout-logikk (se `TableRowCells`), aldri via denne generiske switchen.
       // Beholdt kun for at Element-unionen (som inkluderer Row) skal være uttømmende dekket.
       return (
         <>
@@ -549,6 +573,38 @@ function ContentComponent({ content }: { content: Element }) {
       );
     }
   }
+}
+
+/** A heading block. Search hits are marked through `useSearchBlockAttributes`. */
+function TitleBlock({
+  index,
+  level,
+  size,
+  text,
+}: {
+  index: number;
+  level: "2" | "3" | "4";
+  size: "medium" | "small" | "xsmall";
+  text: ContentOrControlStructure<Text>[];
+}) {
+  return (
+    <Heading {...useSearchBlockAttributes(index)} level={level} size={size} spacing>
+      <SearchBlock index={index}>
+        <CocsList items={text} />
+      </SearchBlock>
+    </Heading>
+  );
+}
+
+/** A paragraph block, including any lists and tables inside it. */
+function ParagraphBlock({ index, items }: { index: number; items: ContentOrControlStructure<ParagraphContent>[] }) {
+  return (
+    <BodyLong as="div" {...useSearchBlockAttributes(index)} spacing>
+      <SearchBlock index={index}>
+        <CocsList items={items} />
+      </SearchBlock>
+    </BodyLong>
+  );
 }
 
 function ConditionalComponent<E extends Element>({ conditional }: { conditional: Conditional<E> }) {

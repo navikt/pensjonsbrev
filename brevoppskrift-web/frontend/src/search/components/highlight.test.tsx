@@ -2,7 +2,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { LineContent } from "~/search/components/highlight";
+import { LineContent, truncateLine } from "~/search/components/highlight";
 import { type Line } from "~/search/textSearch";
 
 function textLine(value: string): Line {
@@ -63,6 +63,36 @@ describe("LineContent highlighting", () => {
     expect(html).toContain("fornavn");
   });
 
+  describe("table-cell boundaries", () => {
+    const row: Line = [
+      { type: "text", value: "barnetillegg" },
+      { type: "cell" },
+      { type: "text", value: "uføretrygd" },
+    ];
+
+    it("shows an unselectable divider that is never matched", () => {
+      const html = render(row, "|");
+      expect(html.replace(/<style[^>]*>.*?<\/style>/g, "")).toMatch(
+        /barnetillegg <span aria-hidden="true"[^>]*>\|<\/span> uføretrygd/,
+      );
+      expect(marks(html)).toEqual([]);
+      expect(marks(renderExact(row, "|"))).toEqual([]);
+    });
+
+    it("combines terms across cells but stops exact phrases at the boundary", () => {
+      const fuzzy = render(row, "barnetillegg uføretrygd");
+      expect([...fuzzy.matchAll(/<mark([^>]*)>/g)].map(([, attributes]) => attributes)).toEqual([
+        expect.stringContaining("data-search-full-match"),
+        expect.stringContaining("data-search-full-match"),
+      ]);
+      expect(marks(renderExact(row, "barnetillegg uføretrygd"))).toEqual([]);
+    });
+
+    it("counts the divider when truncating", () => {
+      expect(truncateLine(row, 16)).toEqual([row[0], row[1], { type: "text", value: "u …" }]);
+    });
+  });
+
   it("renders a term plainly when it matches nothing in this text", () => {
     const html = render(textLine("helt urelatert tekst"), "xyzxyz");
     expect(marks(html)).toEqual([]);
@@ -91,6 +121,25 @@ describe("LineContent highlighting", () => {
   });
 
   describe("exact mode", () => {
+    it("keeps snippet segments space-separated even when they have no boundary whitespace", () => {
+      const line: Line = [
+        { type: "text", value: "grey" },
+        { type: "text", value: "fox" },
+      ];
+
+      expect(marks(renderExact(line, "grey fox"))).toEqual(["grey", "fox"]);
+      expect(marks(renderExact(line, "greyfox"))).toEqual([]);
+    });
+
+    it("highlights a phrase across adjacent text segments", () => {
+      const line: Line = [
+        { type: "text", value: "The grey " },
+        { type: "text", value: "fox is here" },
+      ];
+
+      expect(marks(renderExact(line, "the grey fox"))).toEqual(["The grey", "fox"]);
+    });
+
     it("highlights every occurrence of the phrase as a whole", () => {
       const html = renderExact(textLine("The grey fox and the grey fox again"), "the grey fox");
       expect(marks(html)).toEqual(["The grey fox", "the grey fox"]);

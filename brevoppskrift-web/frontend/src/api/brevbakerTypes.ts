@@ -4,7 +4,8 @@ export type TemplateMetadata = {
   brevtype?: string;
 };
 
-export type LineSegment = { type: "text"; value: string } | { type: "var"; label: string };
+/** `cell` marks the boundary between two table cells; it is displayed but never searchable. */
+export type LineSegment = { type: "text"; value: string } | { type: "var"; label: string } | { type: "cell" };
 export type Line = LineSegment[];
 export type SearchLine = { index: number; segments: LineSegment[] };
 
