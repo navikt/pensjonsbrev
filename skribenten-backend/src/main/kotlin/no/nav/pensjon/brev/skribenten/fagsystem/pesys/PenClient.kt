@@ -44,14 +44,9 @@ interface PenClient {
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsStoettetAvDatabygger(saksId: SaksId, vedtaksId: VedtaksId?): StoettetAvDatabyggerResult?
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean?
-    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult?
     suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
     suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto
     suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse
-
-    data class KravStoettetAvDatabyggerResult(
-        val kravStoettet: Map<String, Boolean> = emptyMap(),
-    )
 
     data class StoettetAvDatabyggerResult(
         val stoettet: Map<Brevkode.Redigerbart, Boolean> = emptyMap(),
@@ -170,11 +165,6 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean? =
         client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravPaaGammeltRegelverk") {
             metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravPaaGammeltRegelverk")
-        }.bodyOrThrow()
-
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): PenClient.KravStoettetAvDatabyggerResult? =
-        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravStoettetAvDatabygger") {
-            metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravStoettetAvDatabygger")
         }.bodyOrThrow()
 
     override suspend fun hentIsStoettetAvDatabygger(

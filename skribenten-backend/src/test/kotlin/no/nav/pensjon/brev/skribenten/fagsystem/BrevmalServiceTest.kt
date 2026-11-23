@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.FRITEKSTBREV_KOD
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.POSTERINGSGRUNNLAG_KODE
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.POSTERINGSGRUNNLAG_VIRK0101_KODE
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.LetterMetadata as SkribentenLetterMetadata
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.model.Sakstype
@@ -149,11 +149,17 @@ class BrevmalServiceTest {
         Features.override(Features.eblanketter, true)
         val brevmetadataService = FakeBrevmetadataService(eblanketter = listOf(testEblankett))
         val penService = object : PenClientStub() {
-            override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId) = KravStoettetAvDatabyggerResult(emptyMap())
+            override suspend fun hentIsStoettetAvDatabygger(saksId: SaksId, vedtaksId: VedtaksId?) =
+                PenClient.StoettetAvDatabyggerResult(emptyMap())
         }
 
         runBlocking {
-            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(Sakstype("UFOREP"), true, TEST_VEDTAKS_ID)
+            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(
+                SaksId(1),
+                Sakstype("UFOREP"),
+                true,
+                TEST_VEDTAKS_ID
+            )
             assertThat(brevmaler).anyMatch { it.id == testEblankett.brevkodeIBrevsystem }
         }
     }
@@ -253,12 +259,17 @@ class BrevmalServiceTest {
             override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId) =
                 if (vedtaksId == TEST_VEDTAKS_ID) isKravPaaGammeltRegelverk else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
 
-            override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId) =
-                if (vedtaksId == TEST_VEDTAKS_ID) KravStoettetAvDatabyggerResult(emptyMap()) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
+            override suspend fun hentIsStoettetAvDatabygger(saksId: SaksId, vedtaksId: VedtaksId?) =
+                if (vedtaksId == TEST_VEDTAKS_ID) PenClient.StoettetAvDatabyggerResult(emptyMap()) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
         }
 
         return runBlocking {
-            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(sakstype, inkluderEblanketter, TEST_VEDTAKS_ID)
+            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(
+                SaksId(1),
+                sakstype,
+                inkluderEblanketter,
+                TEST_VEDTAKS_ID
+            )
             return@runBlocking assertThat(brevmaler)
         }
     }
