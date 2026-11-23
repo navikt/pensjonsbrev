@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.inntektOgAldersovergangNesteArRedigerbarDto.pesysData.data
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OpplysningerBruktIBeregningUTProfil
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -51,7 +52,7 @@ object InntektOgAldersovergangNesteArRedigerbar : RedigerbarTemplate<InntektOgAl
         outline {
             includePhrase(InntektOgAldersovergangNesteAr.Outline(pesysData.data))
         }
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.data.pe)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.ENDRING), pesysData.data.pe)
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, pesysData.data.orienteringOmRettigheterUfoere)
     }
 }

@@ -26,17 +26,22 @@ import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegni
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.minsteytelse.ForDegSomHarRettTilMinsteytelse
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.trygdetid.*
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
 const val OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL = "Opplysninger om beregningen"
 const val OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK = "Opplysningar om utrekninga"
 
-@TemplateModelHelpers
-val vedleggOpplysningerBruktIBeregningUTLegacy =
+private val vedleggPerProfil: Map<OpplysningerBruktIBeregningUTProfil, AttachmentTemplate<LangBokmalNynorsk, PEgruppe10>> =
+    OpplysningerBruktIBeregningUTProfil.entries.associateWith { lagVedlegg(it) }
+
+fun vedleggOpplysningerBruktIBeregningUTLegacy(profil: OpplysningerBruktIBeregningUTProfil): AttachmentTemplate<LangBokmalNynorsk, PEgruppe10> =
+    vedleggPerProfil.getValue(profil)
+
+private fun lagVedlegg(profil: OpplysningerBruktIBeregningUTProfil) =
     createAttachment<LangBokmalNynorsk, PEgruppe10>(
         title = {
             text(
@@ -47,6 +52,13 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includeSakspart = false,
     ) {
         val pe = argument
+        val utelatVedDoedsfall = profil.utelatVedDoedsfall.expr()
+        val erOmregningUPtilUT = profil.erOmregningUPtilUT.expr()
+        val erIkkeInntektsendring = (!profil.erInntektsendring).expr()
+        val erIkkeBarnetilleggsbrev = (!profil.erBarnetilleggsbrev).expr()
+        val erIkkeNyBeregningAvBarnetillegg = (!profil.erNyBeregningAvBarnetillegg).expr()
+        val erIkkeBarnetilleggsbrevUtenEndring = (!profil.erBarnetilleggsbrevUtenEndring).expr()
+        val erBeregningsendring = profil.erBeregningsendring.expr()
 
         val foedselsdato = pe.personsak.foedselsdato
         val erMndEtterFoedsel = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt().safe {
@@ -80,14 +92,14 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includePhrase(
             OpplysningerBruktIBeregningTabell(
                 pe = pe,
-                visSivilstatusUansett = pe.skalViseOmregningUPtilUT(),
+                visSivilstatusUansett = erOmregningUPtilUT,
             )
         )
-        showIf(pe.erIkkeInntektsendringBrevkode() and pe.harIkkeBarnetilleggBrevkode()) {
+        showIf(erIkkeInntektsendring and erIkkeBarnetilleggsbrev) {
             includePhrase(
                 OpplysningerOmAvdoedTabell(
                     pe = pe,
-                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                    utelatVedDoedsfall = utelatVedDoedsfall,
                 )
             )
         }
@@ -96,37 +108,37 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // Slik beregner vi uføretrygden din
         // ============================================================
         showIf (pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) {
-            showIf(pe.erFulltBeregningsbrev()) {
+            showIf(pe.erFulltBeregningsbrev(profil)) {
                 includePhrase(
                     SlikBeregnerViUfoeretrygdenKonvertert(
                         pe = pe,
-                        visForklaringVedEndring = pe.pebrevkode().equalTo("PE_UT_04_102"),
-                        visForklaringVedOektUfoeregrad = pe.pebrevkode().equalTo("PE_UT_04_114"),
+                        visForklaringVedEndring = profil.erEndring.expr(),
+                        visForklaringVedOektUfoeregrad = profil.erOekningUfoeregrad.expr(),
                     )
                 )
             }
         }.orShow {
-            showIf(pe.erFulltBeregningsbrev()) {
+            showIf(pe.erFulltBeregningsbrev(profil)) {
                 includePhrase(SlikBeregnerViUfoeretrygden(pe))
             }
         }
 
         // Minsteytelse
-        showIf(pe.pebrevkode().isNotAnyOf("PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_103", "PE_UT_04_108", "PE_UT_07_200", "PE_UT_06_300")) {
+        showIf(profil.visMinsteytelse.expr()) {
             includePhrase(
                 ForDegSomHarRettTilMinsteytelse(
                     pe = pe,
-                    visUtlandsforklaringUansett = pe.pebrevkode().equalTo("f_bh_bo_utland"),
+                    visUtlandsforklaringUansett = profil.visUtlandsforklaringUansett.expr(),
                 )
             )
         }
 
-        showIf(pe.skalViseOmregningUPtilUT()){
+        showIf(erOmregningUPtilUT){
             includePhrase(SlikBeregnerViUPTilUT(pe))
         }
 
-        showIf(pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
-            showIf(pe.erIkkeInntektsendringBrevkode()) {
+        showIf(pe.skalViseGrunnbeloepOgYrkesskadeForklaring(profil)) {
+            showIf(erIkkeInntektsendring) {
                 includePhrase(Grunnbeloep)
             }
             includePhrase(YrkesskadeForklaring(pe))
@@ -135,7 +147,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // ============================================================
         // Dette er inntektene vi har brukt i beregningen din
         // ============================================================
-        showIf(pe.skalViseInntekterBruktIBeregning()) {
+        showIf(pe.skalViseInntekterBruktIBeregning(profil)) {
             title1 {
                 text(
                     bokmal { +"Dette er inntektene vi har brukt i beregningen din" },
@@ -149,11 +161,10 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(InntektsgrunnlagUtlandUthevetNotat(pe))
 
             showIf(
-                pe.erIkkeInntektsendringBrevkode() and
-                    pe.pebrevkode().notEqualTo("PE_UT_04_114") and
-                    pe.harIkkeBarnetilleggBrevkode()
+                erIkkeInntektsendring and
+                    (!profil.erOekningUfoeregrad).expr() and
+                    erIkkeBarnetilleggsbrev
             ) {
-                val utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102")
                 includePhrase(
                     InntektsgrunnlagFolketrygdAvdoed(
                         pe = pe,
@@ -185,7 +196,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // ============================================================
         // Dette er trygdetiden din
         // ============================================================
-        showIf(pe.ut_trygdetid()) {
+        showIf(pe.ut_trygdetid(profil)) {
             includePhrase(DetteErTrygdetidenDin(pe, erMndEtterFoedsel))
 
             showIf(pe.skalViseTrygdetidNorTabell(erMndEtterFoedsel)) {
@@ -202,7 +213,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             }
         }
 
-        showIf(pe.skalViseTrygdetidBilateralTabell(erMndEtterFoedsel)){
+        showIf(pe.skalViseTrygdetidBilateralTabell(erMndEtterFoedsel, profil)){
 
             ifNotNull(pe.trygdetidBilateralListe()){
                 includePhrase(TrygdetidBilateralInnledning)
@@ -210,15 +221,16 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             }
         }
 
-        showIf(pe.ut_trygdetid()
+        showIf(pe.ut_trygdetid(profil)
                 and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid()
                 and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")) {
             includePhrase(RedusertFramtidigTrygdetid)
         }
 
-        includePhrase(TrygdetidNorAvdoedInnledning(pe))
-        includePhrase(TrygdetidEOSAvdoedInnledning(pe))
-        includePhrase(TrygdetidBilateralAvdoedInnledning(pe))
+        val visAvdoedTrygdetidForBrevtype = erIkkeInntektsendring and erIkkeBarnetilleggsbrev
+        includePhrase(TrygdetidNorAvdoedInnledning(pe, visAvdoedTrygdetidForBrevtype))
+        includePhrase(TrygdetidEOSAvdoedInnledning(pe, visAvdoedTrygdetidForBrevtype))
+        includePhrase(TrygdetidBilateralAvdoedInnledning(pe, visAvdoedTrygdetidForBrevtype))
 
         // ============================================================
         // Slik har vi fastsatt den nye inntektsgrensen din
@@ -227,11 +239,11 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(NyInntektsgrense)
         }
 
-        showIf(pe.skalViseInntektsgrenseOgAvkortning()) {
+        showIf(pe.skalViseInntektsgrenseOgAvkortning(profil)) {
             includePhrase(
                 InntektsgrenseOgAvkortning(
                     pe = pe,
-                    visForklaringOmInntektEtterUfoerhet = pe.erIkkeNyBeregningAvBarnetilleggBrevkode(),
+                    visForklaringOmInntektEtterUfoerhet = erIkkeNyBeregningAvBarnetillegg,
                 )
             )
         }
@@ -239,15 +251,15 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // ============================================================
         // Reduksjonsprosent og utbetaling
         // ============================================================
-        showIf(pe.skalViseOmregningUPtilUT()) {
+        showIf(erOmregningUPtilUT) {
             includePhrase(
                 ReduksjonsprosentOgUtbetalingUPTilUT(
                     pe = pe,
-                    erBeregningsendring = pe.erBeregningsendringsBrevkode(),
-                    visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
-                    visForklaringOmRettTilBarnetillegg = pe.harBrevkodeForRettTilBarnetillegg(),
-                    visBarnetilleggsberegning = pe.harBrevkodeForBarnetilleggsberegning(),
-                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                    erBeregningsendring = erBeregningsendring,
+                    visMinstepensjonsforklaring = profil.visMinstepensjonsforklaring.expr(),
+                    visForklaringOmRettTilBarnetillegg = profil.visForklaringOmRettTilBarnetillegg.expr(),
+                    visBarnetilleggsberegning = profil.visBarnetilleggsberegning.expr(),
+                    utelatVedDoedsfall = utelatVedDoedsfall,
                 )
             )
         }
@@ -255,29 +267,29 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includePhrase(
             SlikHarViFastsattReduksjonsprosentenDin(
                 pe = pe,
-                erBeregningsendring = pe.erBeregningsendringsBrevkode(),
-                visDetaljertReduksjonsberegning = pe.erIkkeEndringEllerOekningBrevkode() and
-                    pe.erIkkeInntektsendringBrevkode(),
+                erBeregningsendring = erBeregningsendring,
+                visDetaljertReduksjonsberegning = (!profil.erEndringEllerOekning).expr() and
+                    erIkkeInntektsendring,
             )
         )
 
-        showIf(pe.harInntektsendringBrevkodeUtenBarnetillegg()) {
+        showIf(erIkkeBarnetilleggsbrevUtenEndring) {
             includePhrase(
                 SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(
                     pe = pe,
-                    utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                    utelatVedDoedsfall = utelatVedDoedsfall,
                 )
             )
         }
 
-        showIf(pe.erIkkeNyBeregningAvBarnetilleggBrevkode()) {
+        showIf(erIkkeNyBeregningAvBarnetillegg) {
             includePhrase(SlikBeregnerViReduksjonenAvUfoeretrygden(pe))
         }
 
         includePhrase(
             SlikBlirDinUtbetalingFoerSkatt(
                 pe = pe,
-                visOrdinaereUtbetalingsavsnitt = pe.harIkkeBarnetilleggBrevkode(),
+                visOrdinaereUtbetalingsavsnitt = erIkkeBarnetilleggsbrev,
             )
         )
 
@@ -290,43 +302,43 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includePhrase(
             ForDegSomHarRettTilBarnetillegg(
                 pe = pe,
-                visForklaringForBrevtype = pe.harBrevkodeForRettTilBarnetillegg(),
-                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                visForklaringForBrevtype = profil.visForklaringOmRettTilBarnetillegg.expr(),
+                utelatVedDoedsfall = utelatVedDoedsfall,
             )
         )
 
         includePhrase(
             SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 pe = pe,
-                visForklaringForBrevtype = pe.harBrevkodeForBarnetilleggsberegning(),
-                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                visForklaringForBrevtype = profil.visBarnetilleggsberegning.expr(),
+                utelatVedDoedsfall = utelatVedDoedsfall,
             )
         )
 
         includePhrase(
             SlikBeregnerViGjenlevendetilleggetDitt(
                 pe = pe,
-                visOmregningsforklaring = pe.skalViseOmregningUPtilUT(),
-                visGenerellForklaring = pe.erIkkeInntektsendringBrevkode() and
-                    pe.harInntektsendringBrevkodeUtenBarnetillegg(),
+                visOmregningsforklaring = erOmregningUPtilUT,
+                visGenerellForklaring = erIkkeInntektsendring and
+                    erIkkeBarnetilleggsbrevUtenEndring,
             )
         )
 
         includePhrase(
             ForDegSomMottarEktefelletillegg(
                 pe = pe,
-                visGenerellForklaring = pe.pebrevkode().notEqualTo("PE_UT_04_101") and
-                    pe.harIkkeBarnetilleggBrevkode(),
-                visOmregningsforklaring = pe.skalViseOmregningUPtilUT(),
-                visMinstepensjonsforklaring = pe.pebrevkode().equalTo("PE_UT_04_300"),
-                utelatVedDoedsfall = pe.pebrevkode().equalTo("PE_UT_04_102"),
+                visGenerellForklaring = (!profil.erInnvilgelse).expr() and
+                    erIkkeBarnetilleggsbrev,
+                visOmregningsforklaring = erOmregningUPtilUT,
+                visMinstepensjonsforklaring = profil.visMinstepensjonsforklaring.expr(),
+                utelatVedDoedsfall = utelatVedDoedsfall,
             )
         )
 
         // ============================================================
         // Etteroppgjør av uføretrygd og barnetillegg
         // ============================================================
-        showIf(pe.skalViseEtteroppgjoer()) {
+        showIf(pe.skalViseEtteroppgjoer(profil)) {
             includePhrase(EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
         }
     }

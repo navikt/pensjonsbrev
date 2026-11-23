@@ -56,6 +56,7 @@ import no.nav.pensjon.brev.maler.legacy.fraser.TBU2339_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU3802_Generated_Ny
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU5005_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OpplysningerBruktIBeregningUTProfil
 import no.nav.pensjon.brev.maler.ufore.extensions.barnetilleggRedusertTil0
 import no.nav.pensjon.brev.maler.ufore.extensions.btFellesInnvilgetMenIkkeUtbetalt
 import no.nav.pensjon.brev.maler.ufore.extensions.btSerkullInnvilgetMenIkkeUtbetalt
@@ -1508,7 +1509,7 @@ object OkningUforegradRedigerbarV2 : RedigerbarTemplate<OkningUforegradV2Dto> {
 
             includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
             @OptIn(RedigerbartVedlegg::class)
-            includeAttachmentRedigerbar(VedleggId("okningUforegradBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
+            includeAttachmentRedigerbar(VedleggId("okningUforegradBeregningVedlegg"), vedleggOpplysningerBruktIBeregningUTLegacy(OpplysningerBruktIBeregningUTProfil.OEKNING_UFOEREGRAD), pe, pe.inkluderopplysningerbruktiberegningen())
             includeAttachment(vedleggDineRettigheterOgPlikterUfore, dineRettigheterOgPlikterUfore)
         }
     }
