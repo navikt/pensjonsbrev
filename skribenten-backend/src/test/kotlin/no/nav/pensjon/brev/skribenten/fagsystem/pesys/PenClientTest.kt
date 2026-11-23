@@ -292,4 +292,29 @@ class PenClientTest {
             )
         }
     }
+
+    @Test
+    fun `hentIsStoettetAvDatabygger prøver på nytt ved bad gateway`() {
+        var antallKall = 0
+
+        val engine = MockEngine {
+            antallKall++
+            if (antallKall == 1) {
+                respond(content = "", status = HttpStatusCode.BadGateway)
+            } else {
+                respond(
+                    content = """{"stoettet":{"BREV_A":false}}""",
+                    status = HttpStatusCode.OK,
+                    headers = headersOf("Content-Type", "application/json"),
+                )
+            }
+        }
+
+        httpClientTest(Unit) {
+            val actual = penClient(engine).hentIsStoettetAvDatabygger(SaksId(11L), null)
+
+            assertThat(actual?.stoettet).isEqualTo(mapOf(RedigerbarBrevkode("BREV_A") to false))
+            assertThat(antallKall).isEqualTo(2)
+        }
+    }
 }
