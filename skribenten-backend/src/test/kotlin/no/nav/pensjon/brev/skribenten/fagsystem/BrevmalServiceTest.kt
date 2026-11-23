@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.override
@@ -100,6 +101,74 @@ class BrevmalServiceTest {
     @Test
     fun `utfiltrert brevmal vises ikke`() {
         assertThatBrevmalerInSakskontekst(testOkSakBrev.copy(brevkodeIBrevsystem = "PE_IY_05_301")).noneMatch { it.id == "PE_IY_05_301" }
+    }
+
+    private class StoettetAvDatabyggerStub(private val stoettet: Map<String, Boolean>) : PenClientStub() {
+        var mottattSaksId: SaksId? = null
+        var mottattVedtaksId: VedtaksId? = null
+
+        override suspend fun hentIsStoettetAvDatabygger(saksId: SaksId, vedtaksId: VedtaksId?): PenClient.StoettetAvDatabyggerResult {
+            mottattSaksId = saksId
+            mottattVedtaksId = vedtaksId
+            return PenClient.StoettetAvDatabyggerResult(stoettet.mapKeys { RedigerbarBrevkode(it.key) })
+        }
+    }
+
+    @Test
+    fun `brevmal som ikke stoettes av databygger vises ikke i sakskontekst`() {
+        val penService = StoettetAvDatabyggerStub(mapOf("IKKE_STOETTET" to false, "STOETTET" to true))
+        val brevmetadataService = FakeBrevmetadataService(
+            brevmaler = listOf("IKKE_STOETTET", "STOETTET", "UKJENT").map { testOkSakBrev.copy(brevkodeIBrevsystem = it) },
+        )
+
+        runBlocking {
+            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForSak(
+                saksId = SaksId(42),
+                sakType = Sakstype("UFOREP"),
+                includeEblanketter = false,
+            )
+            assertThat(brevmaler.map { it.id })
+                .doesNotContain("IKKE_STOETTET")
+                .contains("STOETTET", "UKJENT")
+        }
+        assertThat(penService.mottattSaksId).isEqualTo(SaksId(42))
+        assertThat(penService.mottattVedtaksId).isNull()
+    }
+
+    @Test
+    fun `brevmal som ikke stoettes av databygger vises ikke i vedtakskontekst`() {
+        val penService = StoettetAvDatabyggerStub(mapOf("IKKE_STOETTET" to false, "STOETTET" to true))
+        val brevmetadataService = FakeBrevmetadataService(
+            brevmaler = listOf("IKKE_STOETTET", "STOETTET", "UKJENT").map { testOkVedtakBrev.copy(brevkodeIBrevsystem = it) },
+        )
+
+        runBlocking {
+            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(
+                saksId = SaksId(42),
+                sakstype = Sakstype("UFOREP"),
+                includeEblanketter = false,
+                vedtaksId = TEST_VEDTAKS_ID,
+            )
+            assertThat(brevmaler.map { it.id })
+                .doesNotContain("IKKE_STOETTET")
+                .contains("STOETTET", "UKJENT")
+        }
+        assertThat(penService.mottattSaksId).isEqualTo(SaksId(42))
+        assertThat(penService.mottattVedtaksId).isEqualTo(TEST_VEDTAKS_ID)
+    }
+
+    @Test
+    fun `brevbakerbrev som ikke stoettes av databygger vises ikke`() {
+        val brevbakermal = brevbakerbrev.single().name
+        val penService = StoettetAvDatabyggerStub(mapOf(brevbakermal to false))
+
+        runBlocking {
+            val service = lagBrevmalService(penService)
+            assertThat(service.hentBrevmalerForSak(SaksId(42), Sakstype("S1"), false))
+                .noneMatch { it.id == brevbakermal }
+            assertThat(service.hentBrevmalerForVedtak(SaksId(42), Sakstype("S1"), false, TEST_VEDTAKS_ID))
+                .noneMatch { it.id == brevbakermal }
+        }
     }
 
     private val testEblankett = testOkBrev.copy(
