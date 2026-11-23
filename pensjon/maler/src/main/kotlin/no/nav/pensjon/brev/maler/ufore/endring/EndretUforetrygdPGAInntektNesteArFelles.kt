@@ -17,6 +17,8 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.uforetrygd.okningUforegradVedArskjoring
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.virkningFom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_04G
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_1G_FRA_IFJOR
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.fribelopsokning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.gradsokning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.kategori
@@ -317,155 +319,156 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 }
             }
 
-
-            title1 {
-                showIf(data.uforetrygd.fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_FRA_JAN, FRIBELOP_04G_TIL_1G)) {
-                    text(
-                        bokmal { +"I " + data.virkningFom.year.format() + " kan du ha høyere inntekt før vi reduserer uføretrygden din" },
-                        nynorsk { +"I " + data.virkningFom.year.format() + " kan du ha høgare inntekt før vi reduserer uføretrygda di" }
-                    )
-                }.orShow {
-                    text(
-                        bokmal { +"Bunnfradraget ditt endres i " + data.virkningFom.year.format() },
-                        nynorsk { +"Botnfrådraget ditt endres i " + data.virkningFom.year.format() }
-                    )
-                }
-            }
-
-            paragraph {
-                text(
-                    bokmal { +"I " + data.virkningFom.year.format() + " vil bunnfradraget ditt være " + data.uforetrygd.bunnfradrag.format() + ". Bunnfradraget er så mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Det består av fribeløpet pluss inntekt etter uførhet. " },
-                    nynorsk { +"I " + data.virkningFom.year.format() + " vil botnfrådraget ditt vere " + data.uforetrygd.bunnfradrag.format() + ". Botnfrådraget er så mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Det består av fribeløpet pluss inntekt etter uførleik. " }
-                )
-            }
-
-            paragraph {
-                showIf(data.uforetrygd.erGradert) {
-                    text(
-                        bokmal { +"Siden du har gradert uføretrygd, har du fortsatt inntekt etter uførhet. " },
-                        nynorsk { +"Sidan du har gradert uføretrygd, har du framleis inntekt etter uførleik. " }
-                    )
-                }.orShowIf(data.uforetrygd.inntektEtterUforhet.equalTo(0)) {
-                    text(
-                        bokmal { +"Siden du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførhet. " },
-                        nynorsk { +"Sidan du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførleik. " }
-                    )
-                }.orShow {
-                    text(
-                        bokmal { +"Du har 100 prosent uføretrygd, og din inntekt etter uførhet er " + data.uforetrygd.inntektEtterUforhet.format() + ". " },
-                        nynorsk { +"Du har 100 prosent uføretrygd, og inntekta di etter uførleik er " + data.uforetrygd.inntektEtterUforhet.format() + ". " }
-                    )
-                }
-            }
-
-            showIf(data.uforetrygd.fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_FRA_JAN, FRIBELOP_04G_TIL_1G)) {
-                paragraph {
-                    text(
-                        bokmal { +"Et høyere bunnfradrag kan gjøre det mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
-                        nynorsk { +"Eit høgare botnfrådrag kan gjere det meir lønsamt for deg å kombinere jobb og uføretrygd. " }
-                    )
-                }
-            }
-
-            showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_1G_FRA_JAN)) {
-                paragraph {
-                    ifNotNull(data.uforetrygd.fribelopUtvikling.fribelopsokning) { fribelopsokning ->
-                        showIf(fribelopsokning._2arEtterGradsokning) {
-                            text(
-                                bokmal { +"I januar " + data.virkningFom.year.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
-                                nynorsk { +"I januar " + data.virkningFom.year.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
-                            )
-                        }.orShow {
-                            text(
-                                bokmal { +"I januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
-                                nynorsk { +"I januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
-                            )
-                        }
+            showIf(data.uforetrygd.fribelopUtvikling.kategori.isNotAnyOf(FRIBELOP_1G_FRA_IFJOR, FRIBELOP_04G)) {
+                title1 {
+                    showIf(data.uforetrygd.fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_FRA_JAN, FRIBELOP_04G_TIL_1G)) {
+                        text(
+                            bokmal { +"I " + data.virkningFom.year.format() + " kan du ha høyere inntekt før vi reduserer uføretrygden din" },
+                            nynorsk { +"I " + data.virkningFom.year.format() + " kan du ha høgare inntekt før vi reduserer uføretrygda di" }
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Bunnfradraget ditt endres i " + data.virkningFom.year.format() },
+                            nynorsk { +"Botnfrådraget ditt endres i " + data.virkningFom.year.format() }
+                        )
                     }
                 }
-            }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_TIL_04G, FRIBELOP_04G_TIL_1G_TIL_04G, FRIBELOP_04G_TIL_1G)) {
-                title1 {
-                    text(
-                        bokmal { +"Periodisert fribeløp" },
-                        nynorsk { +"Periodisert fribeløp" }
-                    )
-                }
+
                 paragraph {
                     text(
-                        bokmal { +"Når fribeløpet endres i løpet av kalenderåret, beregnes det årlige bunnfradraget ut fra periodene du har med ulike fribeløp. Ditt fribeløp i " + data.virkningFom.year.format() + " blir " + data.uforetrygd.fribelop.format() + ". Se tabellen under. " },
-                        nynorsk { +"Når fribeløpet blir endra i løpet av kalenderåret, blir det årlege botnfrådraget berekna ut frå periodane du har med ulike fribeløp. Fribeløpet ditt i " + data.virkningFom.year.format() + " blir " + data.uforetrygd.fribelop.format() + ". Sjå tabellen under. " }
+                        bokmal { +"I " + data.virkningFom.year.format() + " vil bunnfradraget ditt være " + data.uforetrygd.bunnfradrag.format() + ". Bunnfradraget er så mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Det består av fribeløpet pluss inntekt etter uførhet. " },
+                        nynorsk { +"I " + data.virkningFom.year.format() + " vil botnfrådraget ditt vere " + data.uforetrygd.bunnfradrag.format() + ". Botnfrådraget er så mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Det består av fribeløpet pluss inntekt etter uførleik. " }
                     )
                 }
-                title2 {
-                    text(
-                        bokmal { +"Slik beregner vi periodisert fribeløp" },
-                        nynorsk { +"Slik berekner vi periodisert fribeløp" }
-                    )
-                }
+
                 paragraph {
-                    showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_1G_TIL_04G)) {
-                        ifNotNull(data.uforetrygd.fribelopUtvikling.gradsokning) { gradsokning ->
-                            text(
-                                bokmal { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Da øker din uføregrad, og fribeløpet settes ned til 0,4 G. " },
-                                nynorsk { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Då aukar uføregraden din, og fribeløpet blir sett ned til 0,4 G. " }
-                            )
-                            showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
-                                text(
-                                    bokmal { +"Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                                    nynorsk { +"Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
-                                )
-                            }
-                        }
-                    }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G_TIL_04G)) {
-                        ifNotNull(data.uforetrygd.fribelopUtvikling.gradsokning, data.uforetrygd.fribelopUtvikling.fribelopsokning) { gradsokning, fribelopsokning ->
-                            showIf(fribelopsokning._2arEtterGradsokning) {
-                                text(
-                                    bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
-                                    nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. " }
-                                )
-                            }.orShow {
-                                text(
-                                    bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
-                                    nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. " }
-                                )
-                            }
-                            showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
-                                text(
-                                    bokmal { +"Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                                    nynorsk { +"Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
-                                )
-                            }
-                        }
-                    }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G)) {
+                    showIf(data.uforetrygd.erGradert) {
+                        text(
+                            bokmal { +"Siden du har gradert uføretrygd, har du fortsatt inntekt etter uførhet. " },
+                            nynorsk { +"Sidan du har gradert uføretrygd, har du framleis inntekt etter uførleik. " }
+                        )
+                    }.orShowIf(data.uforetrygd.inntektEtterUforhet.equalTo(0)) {
+                        text(
+                            bokmal { +"Siden du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførhet. " },
+                            nynorsk { +"Sidan du har 100 prosent uføretrygd, har du 0 kroner i inntekt etter uførleik. " }
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Du har 100 prosent uføretrygd, og din inntekt etter uførhet er " + data.uforetrygd.inntektEtterUforhet.format() + ". " },
+                            nynorsk { +"Du har 100 prosent uføretrygd, og inntekta di etter uførleik er " + data.uforetrygd.inntektEtterUforhet.format() + ". " }
+                        )
+                    }
+                }
+
+                showIf(data.uforetrygd.fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_FRA_JAN, FRIBELOP_04G_TIL_1G)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Et høyere bunnfradrag kan gjøre det mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
+                            nynorsk { +"Eit høgare botnfrådrag kan gjere det meir lønsamt for deg å kombinere jobb og uføretrygd. " }
+                        )
+                    }
+                }
+
+                showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_1G_FRA_JAN)) {
+                    paragraph {
                         ifNotNull(data.uforetrygd.fribelopUtvikling.fribelopsokning) { fribelopsokning ->
                             showIf(fribelopsokning._2arEtterGradsokning) {
                                 text(
-                                    bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
-                                    nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
+                                    bokmal { +"I januar " + data.virkningFom.year.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
+                                    nynorsk { +"I januar " + data.virkningFom.year.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
                                 )
                             }.orShow {
                                 text(
-                                    bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
-                                    nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
+                                    bokmal { +"I januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
+                                    nynorsk { +"I januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
                                 )
                             }
                         }
                     }
-                }
-
-                includePhrase(Fribelopsperioder(data.uforetrygd.fribelopsperioder))
-
-                showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G) and not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
+                }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_TIL_04G, FRIBELOP_04G_TIL_1G_TIL_04G, FRIBELOP_04G_TIL_1G)) {
+                    title1 {
+                        text(
+                            bokmal { +"Periodisert fribeløp" },
+                            nynorsk { +"Periodisert fribeløp" }
+                        )
+                    }
                     paragraph {
                         text(
-                            bokmal { +"Neste år: " },
-                            nynorsk { +"Neste år: " },
-                            FontType.BOLD,
+                            bokmal { +"Når fribeløpet endres i løpet av kalenderåret, beregnes det årlige bunnfradraget ut fra periodene du har med ulike fribeløp. Ditt fribeløp i " + data.virkningFom.year.format() + " blir " + data.uforetrygd.fribelop.format() + ". Se tabellen under. " },
+                            nynorsk { +"Når fribeløpet blir endra i løpet av kalenderåret, blir det årlege botnfrådraget berekna ut frå periodane du har med ulike fribeløp. Fribeløpet ditt i " + data.virkningFom.year.format() + " blir " + data.uforetrygd.fribelop.format() + ". Sjå tabellen under. " }
                         )
+                    }
+                    title2 {
                         text(
-                            bokmal { +"Fra " + data.virkningFom.year.plus(1).format() + " vil du få nytt bunnfradrag med 1 G som fribeløp hele året. " },
-                            nynorsk { +"Frå " + data.virkningFom.year.plus(1).format() + " vil du få nytt botnfrådrag med 1 G som fribeløp heile året. " }
+                            bokmal { +"Slik beregner vi periodisert fribeløp" },
+                            nynorsk { +"Slik berekner vi periodisert fribeløp" }
                         )
+                    }
+                    paragraph {
+                        showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_1G_TIL_04G)) {
+                            ifNotNull(data.uforetrygd.fribelopUtvikling.gradsokning) { gradsokning ->
+                                text(
+                                    bokmal { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Da øker din uføregrad, og fribeløpet settes ned til 0,4 G. " },
+                                    nynorsk { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Då aukar uføregraden din, og fribeløpet blir sett ned til 0,4 G. " }
+                                )
+                                showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
+                                    text(
+                                        bokmal { +"Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
+                                        nynorsk { +"Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                                    )
+                                }
+                            }
+                        }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G_TIL_04G)) {
+                            ifNotNull(data.uforetrygd.fribelopUtvikling.gradsokning, data.uforetrygd.fribelopUtvikling.fribelopsokning) { gradsokning, fribelopsokning ->
+                                showIf(fribelopsokning._2arEtterGradsokning) {
+                                    text(
+                                        bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
+                                        nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. " }
+                                    )
+                                }.orShow {
+                                    text(
+                                        bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
+                                        nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. " }
+                                    )
+                                }
+                                showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
+                                    text(
+                                        bokmal { +"Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
+                                        nynorsk { +"Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
+                                    )
+                                }
+                            }
+                        }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G)) {
+                            ifNotNull(data.uforetrygd.fribelopUtvikling.fribelopsokning) { fribelopsokning ->
+                                showIf(fribelopsokning._2arEtterGradsokning) {
+                                    text(
+                                        bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
+                                        nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
+                                    )
+                                }.orShow {
+                                    text(
+                                        bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
+                                        nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    includePhrase(Fribelopsperioder(data.uforetrygd.fribelopsperioder))
+
+                    showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G) and not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
+                        paragraph {
+                            text(
+                                bokmal { +"Neste år: " },
+                                nynorsk { +"Neste år: " },
+                                FontType.BOLD,
+                            )
+                            text(
+                                bokmal { +"Fra " + data.virkningFom.year.plus(1).format() + " vil du få nytt bunnfradrag med 1 G som fribeløp hele året. " },
+                                nynorsk { +"Frå " + data.virkningFom.year.plus(1).format() + " vil du få nytt botnfrådrag med 1 G som fribeløp heile året. " }
+                            )
+                        }
                     }
                 }
             }

@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link as RouterLink } from "@tanstack/react-router";
 
 import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
+import { SamhandlerDistributionAnnouncement } from "~/components/endreMottaker/SamhandlerDistributionAnnouncement";
 import { NotificationBell } from "~/components/notifications/NotificationBell";
 import { useUserInfo } from "~/hooks/useUserInfo";
 
@@ -24,7 +25,12 @@ export function AppHeader() {
           </RouterLink>
         </InternalHeader.Title>
         <Spacer />
-        {showNotificationBell && <NotificationBell />}
+        {showNotificationBell && (
+          <>
+            <NotificationBell />
+            <SamhandlerDistributionAnnouncement />
+          </>
+        )}
         <UsefulLinksMenu />
         <UserDropdown />
       </InternalHeader>
