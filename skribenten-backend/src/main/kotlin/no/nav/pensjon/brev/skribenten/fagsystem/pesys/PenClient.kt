@@ -42,6 +42,7 @@ interface PenClient {
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
     suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse?
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
+    suspend fun hentIsStoettetAvDatabygger(saksId: SaksId, vedtaksId: VedtaksId?): StoettetAvDatabyggerResult?
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult?
     suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
@@ -49,7 +50,11 @@ interface PenClient {
     suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse
 
     data class KravStoettetAvDatabyggerResult(
-        val kravStoettet: Map<String, Boolean> = emptyMap()
+        val kravStoettet: Map<String, Boolean> = emptyMap(),
+    )
+
+    data class StoettetAvDatabyggerResult(
+        val stoettet: Map<Brevkode.Redigerbart, Boolean> = emptyMap(),
     )
 }
 
@@ -171,6 +176,21 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravStoettetAvDatabygger") {
             metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravStoettetAvDatabygger")
         }.bodyOrThrow()
+
+    override suspend fun hentIsStoettetAvDatabygger(
+        saksId: SaksId,
+        vedtaksId: VedtaksId?,
+    ): PenClient.StoettetAvDatabyggerResult? =
+        client.post("brev/skribenten/isStoettetAvDatabygger") {
+            metricsRoute("brev/skribenten/isStoettetAvDatabygger")
+            setBody(Brevkontekst(saksId, vedtaksId))
+            contentType(ContentType.Application.Json)
+        }.bodyOrThrow()
+
+    private data class Brevkontekst(
+        val saksId: SaksId,
+        val vedtaksId: VedtaksId?,
+    )
 
     override suspend fun hentPesysBrevdata(
         saksId: SaksId,
