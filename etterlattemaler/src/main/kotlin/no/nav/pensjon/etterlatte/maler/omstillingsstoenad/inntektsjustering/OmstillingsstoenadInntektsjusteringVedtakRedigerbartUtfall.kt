@@ -59,7 +59,7 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
 
                 paragraph {
                     text(
-                        bokmal { +"Du har ikke meldt om endring i inntekten for "+data.inntektsaar.format()+". Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert til å reflektere inntekt i innvilga måneder i "+data.inntektsaar.format()+"." },
+                        bokmal { +"Du har ikke meldt om endring i inntekten for "+data.inntektsaar.format()+". Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert til å reflektere inntekt i innvilgede måneder i "+data.inntektsaar.format()+"." },
                         nynorsk { +"Du har ikkje meldt om endring i inntekta for "+data.inntektsaar.format()+". Vi har difor basert utrekninga vår på inntektsopplysningane du har oppgitt for inneverande kalenderår. Inntekta er justert slik at ho reflekterer inntekt i innvilga månader i "+data.inntektsaar.format()+"." },
                         english { +"You have not notified us of any changes in your income for "+data.inntektsaar.format()+". Therefore we have based the calculation on the income information you provided for the current calendar year. Income is adjusted to reflect income in granted months in "+data.inntektsaar.format()+"." },
                     )

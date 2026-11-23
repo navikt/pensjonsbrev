@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.skribenten.brevredigering.domain
 import no.nav.brev.brevbaker.StableHashCode
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.common.TekniskVersjon
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
@@ -11,8 +13,13 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.less
 import org.jetbrains.exposed.v1.exceptions.ExposedSQLException
+import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.update
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -35,6 +42,28 @@ class MottakerTest {
     }
 
     private val principal = NavIdent("abc")
+
+    @Test
+    fun `teknisk versjon kan leses, oppdateres og sammenlignes`() {
+        val brevId = createBrevredigering().id
+        transaction {
+            val original = BrevredigeringTable.selectAll()
+                .where { BrevredigeringTable.id eq brevId }
+                .single()[BrevredigeringTable.tekniskVersjon]
+            val nyVersjon = TekniskVersjon(original.value + 1)
+
+            BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) {
+                it[tekniskVersjon] = nyVersjon
+            }
+            val oppdatert = BrevredigeringTable.selectAll()
+                .where { (BrevredigeringTable.id eq brevId) and (BrevredigeringTable.tekniskVersjon less TekniskVersjon(nyVersjon.value + 1)) }
+                .single()[BrevredigeringTable.tekniskVersjon]
+            assertEquals(nyVersjon, oppdatert)
+            BrevredigeringTable.update({ BrevredigeringTable.id eq brevId }) {
+                it[tekniskVersjon] = original
+            }
+        }
+    }
 
     @Test
     fun `kan sette tss mottaker for brevredigering`() {
@@ -106,7 +135,7 @@ class MottakerTest {
             spraak = LanguageCode.BOKMAL,
             avsenderEnhetId = EnhetId("1111"),
             saksbehandlerValg = SaksbehandlervalgMap(),
-            redigertBrev = Edit.Letter(
+            redigertBrev = VersjonertBrev.V1(Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
@@ -123,7 +152,7 @@ class MottakerTest {
                     navAvsenderEnhet = "j",
                 ),
                 emptyList(),
-            ),
+            )),
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             brevmalHash = StableHashCode(12345),
         )
