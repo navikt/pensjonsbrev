@@ -28,6 +28,7 @@ fun createOktBunnfradragNesteArRedigerbarDto() =
 
 fun createOktBunnfradragNesteArData() =
     OktBunnfradragNesteArDto(
+        begrensningFribelop = true,
         vedtakVirkFom = LocalDate.of(2027, Month.JANUARY, 1),
         gradertUforetrygd = true,
         nettoUforetrygd = Kroner(20000),

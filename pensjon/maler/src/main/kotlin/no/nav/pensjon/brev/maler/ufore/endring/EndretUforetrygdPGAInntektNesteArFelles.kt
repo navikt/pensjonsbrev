@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_JOBB_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.BegrensetFribelop
 import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
@@ -473,6 +474,10 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 }
             }
 
+            showIf(data.uforetrygd.begrensningFribelop) {
+                includePhrase(BegrensetFribelop(data.uforetrygd.bunnfradrag))
+            }
+
             title1 {
                 text(
                     bokmal { +"Inntekt lagt til grunn for beregning " },
@@ -688,38 +693,48 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                             and data.gjtEndret //UT, BT og GJT
                 ) {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12." }
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16, 12-18 og 22-12" },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16, 12-18 og 22-12" }
                     )
                 }.orShowIf(
                     data.uforetrygd.endringsbelop.notEqualTo(0)
                             and (data.btfbEndret or data.btsbEndret) //UT og BT
                 ) {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16 og 22-12." }
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 til 12-16 og 22-12" },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14 til 12-16 og 22-12" }
                     )
                 }.orShowIf(
                     data.uforetrygd.endringsbelop.notEqualTo(0)
                             and data.gjtEndret //UT og GJT
                 ) {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-18 og 22-12." }
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14, 12-18 og 22-12" },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14, 12-18 og 22-12" }
                     )
                 }.orShowIf(
                     data.uforetrygd.endringsbelop.notEqualTo(0) //UT
                 ) {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14 og 22-12." }
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-14 og 22-12" },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-14 og 22-12" }
                     )
                 }.orShow { //BT
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-15 til 12-16 og 22-12." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-15 til 12-16 og 22-12." }
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-15 til 12-16 og 22-12" },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-15 til 12-16 og 22-12" }
                     )
                 }
+                showIf(data.uforetrygd.begrensningFribelop) {
+                    text(
+                        bokmal { +" og forskrift om uføretrygd fra folketrygden § 3-6" },
+                        nynorsk { +" og forskrift om uføretrygd frå folketrygda § 3-6" }
+                    )
+                }
+                text(
+                    bokmal { +"." },
+                    nynorsk { +"." }
+                )
 
             }
             title1 {

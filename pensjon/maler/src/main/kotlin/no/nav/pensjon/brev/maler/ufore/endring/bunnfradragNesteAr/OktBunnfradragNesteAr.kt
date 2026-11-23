@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr
 
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.OktBunnfradragNesteArDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.oktBunnfradragNesteArDto.begrensningFribelop
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.oktBunnfradragNesteArDto.periodisertBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.oktBunnfradragNesteArDto.bunnfradrag
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.bunnfradragNesteAr.selectors.oktBunnfradragNesteArDto.datoForNormertPensjonsalder
@@ -369,6 +370,9 @@ object OktBunnfradragNesteAr {
                         }
                     }
                 }
+                showIf(begrensningFribelop) {
+                    includePhrase(BegrensetFribelop(bunnfradrag))
+                }
 
                 showIf(endringBarnetillegg.lessThan(0)) {
                     showIf(endringUforetrygd.greaterThan(0)) {
@@ -422,8 +426,18 @@ object OktBunnfradragNesteAr {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + hjemler.format(HjemmelFormatter(true)) + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + hjemler.format(HjemmelFormatter(true)) + "." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + hjemler.format(HjemmelFormatter(true)) },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + hjemler.format(HjemmelFormatter(true)) },
+                    )
+                    showIf(begrensningFribelop) {
+                        text(
+                            bokmal { +" og forskrift om uføretrygd fra folketrygden § 3-6" },
+                            nynorsk { +" og forskrift om uføretrygd frå folketrygda § 3-6" }
+                        )
+                    }
+                    text(
+                        bokmal { +"." },
+                        nynorsk { +"." }
                     )
                 }
                 includePhrase(Ufoeretrygd.RettTilAKlage)
