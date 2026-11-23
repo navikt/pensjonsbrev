@@ -8,7 +8,12 @@ plugins {
     kotlin("plugin.serialization") version libs.versions.kotlinVersion
     id("brevoppskrift.authoring-tools")
     id("brevoppskrift.verify-generated-templates")
-    id("brevoppskrift.api-contract")
+    id("pensjonsbrev.openapi-typescript")
+}
+
+openApiTypes {
+    npmDirectory.set(layout.projectDirectory.dir("openapi"))
+    outputFile.set(rootProject.layout.projectDirectory.file("brevoppskrift-web/frontend/src/verksted/api-types.ts"))
 }
 
 group = "no.nav.pensjon.brev.brevoppskrift"

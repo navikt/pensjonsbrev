@@ -6,7 +6,7 @@ plugins {
     id("dependency-catalogs")
 }
 
-rootProject.name = "brevoppskrift-build-logic"
+rootProject.name = "pensjonsbrev-build-logic"
 
 dependencyResolutionManagement {
     versionCatalogs {

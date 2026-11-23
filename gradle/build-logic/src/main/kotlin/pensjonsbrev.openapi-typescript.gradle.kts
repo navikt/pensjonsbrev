@@ -6,6 +6,9 @@ plugins {
     id("com.github.node-gradle.node")
 }
 
+val apiTypes = extensions.create<OpenApiTypesExtension>("openApiTypes")
+val toolVersions = rootProject.layout.projectDirectory.file(".tool-versions")
+
 ktor {
     openApi {
         enabled = true
@@ -14,12 +17,13 @@ ktor {
 }
 
 node {
-    download.set(System.getenv("CI")?.toBoolean() != true)
-    version.set(
-        rootProject.file(".tool-versions").readLines()
-            .first { it.startsWith("nodejs ") }.substringAfter("nodejs ").trim(),
-    )
-    nodeProjectDir.set(project.file("openapi"))
+    download.set(providers.environmentVariable("CI").map { !it.toBoolean() }.orElse(true))
+    version.set(providers.fileContents(toolVersions).asText.map { contents ->
+        contents.lineSequence().firstOrNull { it.startsWith("nodejs ") }
+            ?.substringAfter("nodejs ")?.trim()?.takeIf { it.isNotBlank() }
+            ?: throw GradleException("Missing 'nodejs <version>' in .tool-versions")
+    })
+    nodeProjectDir.set(apiTypes.npmDirectory)
     npmInstallCommand.set("ci")
 }
 
@@ -30,7 +34,7 @@ tasks.test {
 }
 
 val generateOpenApiSpec = tasks.register<Test>("generateOpenApiSpec") {
-    description = "Export and verify the OpenAPI contract from the running Brevoppskrift application."
+    description = "Export the OpenAPI contract from the application's OpenAPI tests."
     group = LifecycleBasePlugin.BUILD_GROUP
     mustRunAfter(tasks.test)
     maxParallelForks = 1
@@ -43,12 +47,12 @@ val generateOpenApiSpec = tasks.register<Test>("generateOpenApiSpec") {
 }
 
 tasks.register<NpxTask>("generateApiTypes") {
-    description = "Generate frontend TypeScript types from the verified Brevoppskrift OpenAPI contract."
+    description = "Generate frontend TypeScript types from the application's OpenAPI contract."
     group = LifecycleBasePlugin.BUILD_GROUP
     dependsOn(generateOpenApiSpec, tasks.npmInstall)
     command.set("openapi-typescript")
     val specFile = layout.buildDirectory.file("openapi-spec.json")
-    val outputFile = rootProject.file("brevoppskrift-web/frontend/src/verksted/api-types.ts")
+    val outputFile = apiTypes.outputFile.get().asFile
     args.set(
         listOf(
             specFile.get().asFile.absolutePath,
@@ -58,7 +62,7 @@ tasks.register<NpxTask>("generateApiTypes") {
         ),
     )
     inputs.file(specFile)
-    inputs.files(project.file("openapi/package.json"), project.file("openapi/package-lock.json"))
-    inputs.file(rootProject.file(".tool-versions"))
+    inputs.files(apiTypes.npmDirectory.file("package.json"), apiTypes.npmDirectory.file("package-lock.json"))
+    inputs.file(toolVersions)
     outputs.file(outputFile)
 }
