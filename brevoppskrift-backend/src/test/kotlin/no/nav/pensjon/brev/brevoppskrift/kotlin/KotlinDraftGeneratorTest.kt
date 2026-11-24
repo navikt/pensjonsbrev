@@ -174,6 +174,41 @@ class KotlinDraftGeneratorTest {
     }
 
     @Test
+    fun `required list under a guarded nullable object generates a nonnullable collection`(): Unit = runBlocking {
+        val original = exampleDraft()
+        val draft = original.copy(
+            metadata = original.metadata.copy(brevkode = "EXAMPLE"),
+            fields = listOf(DataField(FieldId("details"), "details", FieldKind.OBJECT, nullable = true, children = listOf(
+                DataField(FieldId("rows"), "rows", FieldKind.LIST, children = listOf(DataField(FieldId("value"), "value", FieldKind.STRING))),
+            ))),
+            outline = listOf(Block.Conditional(BlockId("guard"), Predicate.IsNotNull(FieldId("details")), listOf(
+                Block.Repeat(BlockId("repeat"), FieldId("rows"), listOf(Block.Paragraph(BlockId("paragraph"), listOf(Inline.Field(FieldId("value"))))))),
+            )),
+        )
+        val result = generator.generate(draft)
+        assertThat(result.issues).isEmpty()
+        val template = result.files.single { it.path.value.endsWith("/ExampleLetter.kt") }.content
+        assertThat(template).contains("forEach(argument.select(field0).select(field1).ifNull(emptyList()))")
+    }
+
+    @Test
+    fun `nullable boolean and enum fields retain each language fallback`(): Unit = runBlocking {
+        for (kind in listOf(FieldKind.BOOLEAN, FieldKind.ENUM)) {
+            val original = exampleDraft()
+            val draft = original.copy(
+                metadata = original.metadata.copy(brevkode = "EXAMPLE"),
+                fields = listOf(DataField(FieldId("value"), "value", kind, nullable = true, enumValues = if (kind == FieldKind.ENUM) listOf("FIRST", "SECOND") else emptyList())),
+                outline = listOf(Block.Paragraph(BlockId("paragraph"), listOf(Inline.Field(FieldId("value"), fallback = DraftLanguage.entries.associateWith { "Missing$it" })))),
+            )
+            val result = generator.generate(draft)
+            assertThat(result.issues).isEmpty()
+            val template = result.files.single { it.path.value.endsWith("/ExampleLetter.kt") }.content
+            for (language in DraftLanguage.entries) assertThat(template).describedAs("$kind/$language").contains(".ifNull(\"Missing$language\")")
+            assertThat(template).contains(".safe { ").doesNotContain(".ifNull(false)")
+        }
+    }
+
+    @Test
     fun `nullable ordered predicates unwrap safely rather than compare fabricated defaults`(): Unit = runBlocking {
         val original = exampleDraft()
         val draft = original.copy(

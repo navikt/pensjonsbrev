@@ -82,13 +82,13 @@ private fun verifyAttachmentBindings(mapper: ObjectMapper, fixture: GeneratedDto
     val template = templateClass.getMethod("getTemplate").invoke(templateClass.getField("INSTANCE").get(null))
     val attachments = template.javaClass.getMethod("getAttachments").invoke(template) as List<*>
     check(attachments.size == fixture.attachmentCount) { "Attachment declarations were lost." }
+    val scopeClass = Class.forName("no.nav.pensjon.brev.template.ExpressionScope")
     listOf("Bokmal", "Nynorsk", "English").forEach { language ->
         val scope = expressionScope(dto, language)
         var active = 0
         attachments.forEach { value ->
             val inclusion = requireNotNull(value)
             val predicate = inclusion.javaClass.getMethod("getPredicate").invoke(inclusion)
-            val scopeClass = Class.forName("no.nav.pensjon.brev.template.ExpressionScope")
             if (predicate.javaClass.getMethod("eval", scopeClass).invoke(predicate, scope) == true) {
                 active++
                 val expression = inclusion.javaClass.getMethod("getData").invoke(inclusion)
@@ -113,6 +113,18 @@ private fun verifyAttachmentBindings(mapper: ObjectMapper, fixture: GeneratedDto
             .invoke(renderer, scope, template) as List<*>
         check(rendered.size == expected) { "Production renderer dropped or added attachments." }
         check(mapper.writeValueAsString(rendered).contains("Bound attachment")) { "Rendered attachments lost their bound wording." }
+        val letter = Class.forName("no.nav.brev.brevbaker.LetterTestImpl").constructors.single { it.parameterCount == 4 }
+            .newInstance(template, dto, scopeClass.getMethod("getLanguage").invoke(scope), scopeClass.getMethod("getFelles").invoke(scope))
+        val renderedLetter = mapper.writeValueAsString(rendererClass.methods.single { it.name == "renderLetterOnly" }.invoke(renderer, letter))
+        val suffix = when (language) { "Bokmal" -> "NB"; "Nynorsk" -> "NN"; else -> "EN" }
+        for (field in mapOf("optionalEnabled" to "MissingBoolean", "optionalTrue" to "MissingTrue", "optionalMode" to "MissingEnum").entries) {
+            check(renderedLetter.contains(field.value + suffix) == data.get(field.key).isNull) {
+                "Rendered nullable scalar fallback is incorrect for ${fixture.dtoClass}/${field.key}/$language."
+            }
+        }
+        check(renderedLetter.contains("Required row under nullable object") == !data.get("details").isNull) {
+            "Required list under a nullable parent rendered incorrectly."
+        }
     }
 }
 

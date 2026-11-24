@@ -61,8 +61,9 @@ class KotlinDraftGenerator(private val catalogue: BuildSourceCatalogue) : DraftG
         }
         val files = mutableListOf(GeneratedFile(entry.templatePath, source))
         // Preserve the existing DTO, imports, selectors, metadata, code and phrase identity, byte for byte.
-        entry.files.filterKeys { it != entry.templatePath && it in entry.reference.files && it.value.endsWith(".kt") }
-            .filterKeys { path -> path.value.contains("-api-model/") || path.value.contains("/api-model/") }
+        // Historical snapshots without role metadata keep their previously supported DTO export.
+        val dtoPaths = entry.dtoPaths ?: entry.files.keys.filter { it.value.contains("-api-model/") || it.value.contains("/api-model/") }.toSet()
+        entry.files.filterKeys { it != entry.templatePath && it in entry.reference.files && it in dtoPaths && it.value.endsWith(".kt") }
             .toSortedMap(compareBy { it.value }).forEach { (path, content) -> files.add(GeneratedFile(path, content)) }
         val profile = moduleProfile(draft.metadata.targetModule)
         files.add(GeneratedFile(RepositoryPath("${profile.templateRoot}/src/test/kotlin/${entry.templatePackage?.replace('.', '/')}/${draft.metadata.name}AuthoringTest.kt"),
@@ -345,7 +346,7 @@ class KotlinDraftGenerator(private val catalogue: BuildSourceCatalogue) : DraftG
                     if (block.ifFalse.isNotEmpty()) ".orShow {\n${blocks(block.ifFalse, scope, "$indent    ")}$indent}\n" else "\n"
                 is Block.Repeat -> {
                     val local = "item${scope.size}"
-                    "${indent}forEach(${expression(block.fieldId, scope)}${if (fieldIndex.getValue(block.fieldId).nullable) ".ifNull(emptyList())" else ""}) { $local ->\n" +
+                    "${indent}forEach(${expression(block.fieldId, scope)}${if (nullable(fieldIndex.getValue(block.fieldId), scope)) ".ifNull(emptyList())" else ""}) { $local ->\n" +
                         blocks(block.body, scope + (block.fieldId to local), "$indent    ") + "$indent}\n"
                 }
                 is Block.LockedSource -> error("Låst innhold krever importprofil.")
@@ -369,6 +370,8 @@ class KotlinDraftGenerator(private val catalogue: BuildSourceCatalogue) : DraftG
         private fun formatted(node: Inline.Field, language: DraftLanguage, scope: Map<FieldId, String>): String {
             val field = fieldIndex.getValue(node.fieldId)
             val expr = expression(node.fieldId, scope)
+            val nullable = nullable(field, scope)
+            val value = if (nullable && field.kind in setOf(FieldKind.BOOLEAN, FieldKind.ENUM)) "this" else expr
             val formatted = when (node.formatter) {
                 Formatter.CURRENCY -> "$expr.format(LocalizedFormatter.CurrencyFormat)"
                 Formatter.MONTH_YEAR -> "$expr.format(LocalizedFormatter.MonthYearFormatter)"
@@ -376,36 +379,28 @@ class KotlinDraftGenerator(private val catalogue: BuildSourceCatalogue) : DraftG
                     FieldKind.STRING -> expr
                     FieldKind.NUMBER, FieldKind.DOUBLE, FieldKind.DATE -> "$expr.format()"
                     FieldKind.YEAR -> "$expr.select(SimpleSelector<Int, String>(\"Int\", \"year\", \"String\") { toString() })"
-                    FieldKind.MONTH -> if (field.nullable || ancestors(field.id).any { fieldIndex.getValue(it).nullable })
+                    FieldKind.MONTH -> if (nullable)
                         "$expr.safe { this.select(SimpleSelector<Int, java.time.Month>(\"Int\", \"month\", \"Month\") { java.time.Month.of(this) }).format() }"
                         else "$expr.select(SimpleSelector<Int, java.time.Month>(\"Int\", \"month\", \"Month\") { java.time.Month.of(this) }).format()"
-                    FieldKind.PERCENT -> if (field.nullable || ancestors(field.id).any { fieldIndex.getValue(it).nullable })
+                    FieldKind.PERCENT -> if (nullable)
                         "$expr.safe { this.format() + \" %\" }" else "($expr.format() + \" %\")"
-                    FieldKind.BOOLEAN -> "ifElse(${nonNull(field, expr)}, \"true\", \"false\")"
+                    FieldKind.BOOLEAN -> "ifElse($value, \"true\", \"false\")"
                     // Both branches must be Expression<String>. Mixing a String with the nested
                     // Expression selects the generic literal overload and widens the result to Any.
                     FieldKind.ENUM -> field.enumValues.foldRight("\"\".expr()") { enum, remainder ->
-                        "ifElse<String>($expr.equalTo(${enumType(field)}.$enum), ${kotlinString(enum)}.expr(), $remainder)"
+                        "ifElse<String>($value.equalTo(${enumType(field)}.$enum), ${kotlinString(enum)}.expr(), $remainder)"
                     }
                     else -> error("Uverifisert skalar.")
                 }
             }
             // Safe selection makes a scalar nullable if any ancestor is nullable.
-            val nullable = field.nullable || ancestors(field.id).any { fieldIndex.getValue(it).nullable }
-            return if (nullable && field.kind !in setOf(FieldKind.BOOLEAN, FieldKind.ENUM)) "$formatted.ifNull(${kotlinString(node.fallback?.get(language).orEmpty())})" else formatted
+            val nullableFormatted = if (nullable && field.kind in setOf(FieldKind.BOOLEAN, FieldKind.ENUM)) "$expr.safe { $formatted }" else formatted
+            return if (nullable) "$nullableFormatted.ifNull(${kotlinString(node.fallback?.get(language).orEmpty())})" else formatted
         }
 
         private fun ancestors(id: FieldId): List<FieldId> = parents[id]?.let { listOf(it) + ancestors(it) }.orEmpty()
-        private fun nonNull(field: DataField, expression: String): String {
-            if (!field.nullable && ancestors(field.id).none { fieldIndex.getValue(it).nullable }) return expression
-            return "$expression.ifNull(${default(field)})"
-        }
-
-        private fun default(field: DataField): String = when (field.kind) {
-            FieldKind.STRING -> "\"\""; FieldKind.NUMBER -> "0"; FieldKind.DOUBLE -> "0.0"; FieldKind.BOOLEAN -> "false"
-            FieldKind.DATE -> "LocalDate.of(2000, 1, 1)"; FieldKind.ENUM -> "${enumType(field)}.${field.enumValues.first()}"
-            else -> error("Uverifisert standardverdi.")
-        }
+        private fun nullable(field: DataField, scope: Map<FieldId, String>): Boolean =
+            (listOf(field.id) + ancestors(field.id)).takeWhile { it !in scope }.any { fieldIndex.getValue(it).nullable }
 
         private fun predicate(value: Predicate, scope: Map<FieldId, String>): String = when (value) {
             is Predicate.IsNotNull -> "${expression(value.fieldId, scope)}.notNull()"

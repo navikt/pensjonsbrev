@@ -81,6 +81,39 @@ class SourceCatalogueTest {
     }
 
     @Test
+    fun `export preserves local and transitive DTO sources without exporting registries`(): Unit = runBlocking {
+        val localDto = RepositoryPath("ufoere/maler/src/main/kotlin/no/nav/pensjon/brev/ufore/api/model/LocalData.kt")
+        val details = RepositoryPath("ufoere/maler/src/main/kotlin/no/nav/pensjon/brev/ufore/api/model/Details.kt")
+        val mode = RepositoryPath("ufoere/maler/src/main/kotlin/no/nav/pensjon/brev/ufore/api/model/Mode.kt")
+        val input = sources() - dtoPath + mapOf(
+            localDto to "package no.nav.pensjon.brev.ufore.api.model\ndata class ExampleDto(val details: Details, val mode: Mode) : AutobrevData",
+            details to "package no.nav.pensjon.brev.ufore.api.model\ndata class Details(val value: Int)",
+            mode to "package no.nav.pensjon.brev.ufore.api.model\nenum class Mode { FIRST, SECOND }",
+        )
+        val catalogue = catalogue(input)
+        val imported = requireNotNull(catalogue.import(catalogue.list().single().id))
+        val result = KotlinDraftGenerator(catalogue).generate(imported)
+        assertThat(result.issues).isEmpty()
+        for (dto in listOf(localDto, details, mode)) {
+            assertThat(result.files.find { it.path == dto }?.content).describedAs(dto.value).isEqualTo(input.getValue(dto))
+        }
+        assertThat(result.files.map { it.path.value }).noneMatch { it.startsWith("registers/") }
+    }
+
+    @Test
+    fun `historical catalogue without DTO roles retains its API model export`(): Unit = runBlocking {
+        val snapshot = KotlinSourceImporter().use { it.build(commit, sources()) }
+        val json = draftObjectMapper.valueToTree<ObjectNode>(snapshot)
+        (json.get("entries").single() as ObjectNode).remove("dtoPaths")
+        val catalogue = BuildSourceCatalogue.fromResource(ByteArrayInputStream(draftObjectMapper.writeValueAsBytes(json)))
+        val imported = requireNotNull(catalogue.import(catalogue.list().single().id))
+        val result = KotlinDraftGenerator(catalogue).generate(imported)
+        assertThat(result.issues).isEmpty()
+        assertThat(result.files.find { it.path == dtoPath }?.content).isEqualTo(sources().getValue(dtoPath))
+        assertThat(result.files.map { it.path.value }).noneMatch { it.startsWith("registers/") }
+    }
+
+    @Test
     fun `only registry sets reachable from entry points are visible`() {
         val input = sources().toMutableMap()
         input[RepositoryPath("registers/UfoereTemplates.kt")] = """

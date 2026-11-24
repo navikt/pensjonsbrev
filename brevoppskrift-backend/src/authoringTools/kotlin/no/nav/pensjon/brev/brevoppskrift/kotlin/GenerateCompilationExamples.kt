@@ -30,6 +30,9 @@ fun main(args: Array<String>): Unit = runBlocking {
             DataField(FieldId("ratio"), "ratio", FieldKind.DOUBLE),
             DataField(FieldId("enabled"), "enabled", FieldKind.BOOLEAN),
             DataField(FieldId("mode"), "mode", FieldKind.ENUM, enumValues = listOf("FIRST", "SECOND")),
+            DataField(FieldId("optionalEnabled"), "optionalEnabled", FieldKind.BOOLEAN, nullable = true),
+            DataField(FieldId("optionalTrue"), "optionalTrue", FieldKind.BOOLEAN, nullable = true),
+            DataField(FieldId("optionalMode"), "optionalMode", FieldKind.ENUM, nullable = true, enumValues = listOf("FIRST", "SECOND")),
             DataField(FieldId("year"), "year", FieldKind.YEAR),
             DataField(FieldId("month"), "month", FieldKind.MONTH),
             DataField(FieldId("percent"), "percent", FieldKind.PERCENT),
@@ -37,6 +40,11 @@ fun main(args: Array<String>): Unit = runBlocking {
                 DataField(FieldId("detailText"), "detailText", FieldKind.STRING),
                 DataField(FieldId("detailAmount"), "detailAmount", FieldKind.NUMBER),
                 DataField(FieldId("detailEnabled"), "detailEnabled", FieldKind.BOOLEAN),
+                DataField(FieldId("detailMode"), "detailMode", FieldKind.ENUM, enumValues = listOf("FIRST", "SECOND")),
+                DataField(FieldId("detailRows"), "detailRows", FieldKind.LIST, children = listOf(
+                    DataField(FieldId("detailRowText"), "detailRowText", FieldKind.STRING),
+                    DataField(FieldId("detailRowEnabled"), "detailRowEnabled", FieldKind.BOOLEAN),
+                )),
                 DataField(FieldId("nested"), "nested", FieldKind.OBJECT, children = listOf(DataField(FieldId("nestedText"), "nestedText", FieldKind.STRING))),
             )),
         )
@@ -49,10 +57,18 @@ fun main(args: Array<String>): Unit = runBlocking {
             Block.Paragraph(BlockId("scalars"), listOf(Inline.Text(translations, FontType.ITALIC), Inline.Field(FieldId("label")), Inline.Field(FieldId("value")),
                 Inline.Field(FieldId("ratio")), Inline.Field(FieldId("enabled")), Inline.Field(FieldId("mode")), Inline.Field(FieldId("date"), fallback = translations),
                 Inline.Field(FieldId("year")), Inline.Field(FieldId("month")), Inline.Field(FieldId("percent")))),
+            Block.Paragraph(BlockId("nullable-scalars"), listOf(
+                Inline.Field(FieldId("optionalEnabled"), fallback = DraftLanguage.entries.associateWith { "MissingBoolean$it" }),
+                Inline.Field(FieldId("optionalTrue"), fallback = DraftLanguage.entries.associateWith { "MissingTrue$it" }),
+                Inline.Field(FieldId("optionalMode"), fallback = DraftLanguage.entries.associateWith { "MissingEnum$it" }),
+            )),
             Block.Conditional(BlockId("nullable-object-guard"), Predicate.IsNotNull(FieldId("details")), listOf(
                 Block.Paragraph(BlockId("nullable-object"), listOf(Inline.Field(FieldId("detailText"), fallback = translations),
                     Inline.Field(FieldId("detailAmount"), Formatter.CURRENCY, translations), Inline.Field(FieldId("detailEnabled")),
-                    Inline.Field(FieldId("nestedText"), fallback = translations))),
+                    Inline.Field(FieldId("detailMode")), Inline.Field(FieldId("nestedText"), fallback = translations))),
+                Block.Repeat(BlockId("nullable-object-repeat"), FieldId("detailRows"), listOf(
+                    Block.Paragraph(BlockId("nullable-object-row"), listOf(Inline.Field(FieldId("detailRowText")), Inline.Field(FieldId("detailRowEnabled")))),
+                )),
             )),
             Block.ItemList(BlockId("list"), false, listOf(listOf(Inline.Text(translations)))),
             Block.ItemList(BlockId("numbered-list"), true, listOf(listOf(Inline.Field(FieldId("label"))), listOf(Inline.Text(translations)))),
@@ -90,8 +106,10 @@ fun main(args: Array<String>): Unit = runBlocking {
             FieldId("date") to draftObjectMapper.readTree("\"2000-01-01\""),
             FieldId("label") to draftObjectMapper.readTree("\"Synthetic\""), FieldId("ratio") to draftObjectMapper.readTree("20.5"),
             FieldId("enabled") to draftObjectMapper.readTree("true"), FieldId("mode") to draftObjectMapper.readTree("\"SECOND\""),
+            FieldId("optionalEnabled") to draftObjectMapper.readTree("false"), FieldId("optionalTrue") to draftObjectMapper.readTree("true"),
+            FieldId("optionalMode") to draftObjectMapper.readTree("\"SECOND\""),
             FieldId("year") to draftObjectMapper.readTree("2000"), FieldId("month") to draftObjectMapper.readTree("11"), FieldId("percent") to draftObjectMapper.readTree("50"),
-            FieldId("details") to draftObjectMapper.readTree("""{"detailText":"Synthetic","detailAmount":100,"detailEnabled":true,"nested":{"nestedText":"Nested"}}"""),
+            FieldId("details") to draftObjectMapper.readTree("""{"detailText":"Synthetic","detailAmount":100,"detailEnabled":true,"detailMode":"SECOND","detailRows":[{"detailRowText":"Required row under nullable object","detailRowEnabled":false}],"nested":{"nestedText":"Nested"}}"""),
         ))
         val attachmentFields = listOf(
             DataField(FieldId("note"), "note", FieldKind.STRING),
@@ -123,6 +141,8 @@ fun main(args: Array<String>): Unit = runBlocking {
             FieldId("value") to draftObjectMapper.readTree("0"), FieldId("rows") to draftObjectMapper.readTree("null"),
             FieldId("date") to draftObjectMapper.readTree("null"), FieldId("details") to draftObjectMapper.readTree("null"),
             FieldId("enabled") to draftObjectMapper.readTree("false"), FieldId("mode") to draftObjectMapper.readTree("\"FIRST\""),
+            FieldId("optionalEnabled") to draftObjectMapper.readTree("null"), FieldId("optionalTrue") to draftObjectMapper.readTree("null"),
+            FieldId("optionalMode") to draftObjectMapper.readTree("null"),
         ))
         listOf(DocumentType.AUTOBREV, DocumentType.REDIGERBAR).forEach { type ->
             val editable = type == DocumentType.REDIGERBAR

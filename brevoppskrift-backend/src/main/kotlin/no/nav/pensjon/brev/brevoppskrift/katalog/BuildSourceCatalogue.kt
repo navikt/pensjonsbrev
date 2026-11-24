@@ -19,6 +19,7 @@ data class CatalogueEntry(
     val capabilities: Set<String> = emptySet(),
     val dtoName: String? = null,
     val templatePackage: String? = null,
+    val dtoPaths: Set<RepositoryPath>? = null,
 )
 data class SourceTextSlot(
     val start: Int,

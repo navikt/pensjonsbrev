@@ -81,6 +81,9 @@ class SourceCatalogueHistoryTest {
                 val generated = KotlinDraftGenerator(catalogue).generate(restored)
                 assertThat(generated.issues).isEmpty()
                 assertThat(generated.files.single { it.path == old.templatePath }.content).isEqualTo(expected)
+                for (dtoPath in requireNotNull(old.dtoPaths) - old.templatePath) {
+                    assertThat(generated.files.find { it.path == dtoPath }?.content).describedAs(dtoPath.value).isEqualTo(old.files.getValue(dtoPath))
+                }
 
                 val renamed = restored.copy(metadata = restored.metadata.copy(name = "ForgedName"))
                 assertThat(catalogue.checkSource(renamed).map { it.code }).contains("LOCKED_SOURCE_CHANGED")
