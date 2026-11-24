@@ -5,6 +5,11 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
+import no.nav.pensjon.brev.skribenten.letter.letter
+import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -51,5 +56,27 @@ class VersjonertBrevTest {
     fun `ukjent version feiler`() {
         val json = """{"version":2}"""
         assertThatThrownBy { databaseObjectMapper.readValue<VersjonertBrev>(json) }.isInstanceOf(IllegalArgumentException::class.java)
+    }
+
+    @Test
+    fun `innhold endres ikke av samme rendring naar brevet har blokk som er ny i malen`() {
+        val forrigeRendring = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))))
+        val rendring = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val brev = VersjonertBrev.V1(forrigeRendring.toEdit().updateEditedLetter(rendring, previousRender = forrigeRendring.toEdit()))
+
+        assertThat(brev.brev.blocks.last().templateStatus).isEqualTo(Edit.Block.TemplateStatus.NEW_IN_TEMPLATE)
+        assertThat(brev.innholdEndresAv(VersjonertMarkup.V1(rendring))).isFalse()
+    }
+
+    @Test
+    fun `innhold endres naar redigert blokk ikke lenger er i malen`() {
+        val brev = VersjonertBrev.V1(editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        })
+
+        assertThat(brev.innholdEndresAv(VersjonertMarkup.V1(letter(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))))))).isTrue()
     }
 }
