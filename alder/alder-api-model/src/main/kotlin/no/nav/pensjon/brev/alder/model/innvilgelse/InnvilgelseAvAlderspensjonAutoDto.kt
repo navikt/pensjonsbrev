@@ -32,6 +32,7 @@ data class InnvilgelseAvAlderspensjonAutoDto(
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val opplysningerBruktIBeregningenAlderspensjon: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerBruktIBeregningenAlderspensjonAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
+    val tekstFraSaksbehandler: List<String>?,
 ) : AutobrevData {
 
    // v5.Alderspensjon / v1.AlderspensjonKap20
