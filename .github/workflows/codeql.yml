@@ -12,6 +12,13 @@ on:
       - .github/workflows/codeql.yml
       - gradle/libs.versions.toml
       - gradle/settings/**
+  push:
+    branches:
+      - "main"
+    paths:
+      - .github/workflows/codeql.yml
+      - gradle/libs.versions.toml
+      - gradle/settings/**
 
 env:
   JavaDistribution: "temurin"
