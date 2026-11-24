@@ -7,6 +7,25 @@ import java.math.BigDecimal
 
 class DraftValidatorTest {
     @Test
+    fun `source commit hashes require exactly 40 or 64 hexadecimal characters`() {
+        val original = exampleDraft().copy(source = SourceReference(
+            SourceId("source"),
+            GitCommit("a".repeat(40)),
+            mapOf(RepositoryPath("module/Template.kt") to Sha256Digest("b".repeat(64))),
+        ))
+        listOf(40, 64).forEach { length ->
+            val draft = original.copy(source = original.source!!.copy(commit = GitCommit("a".repeat(length))))
+            assertThat(DraftValidator.validate(draft)).describedAs("hash length %s", length).isEmpty()
+        }
+        (39..65).filter { it != 40 && it != 64 }.forEach { length ->
+            val draft = original.copy(source = original.source!!.copy(commit = GitCommit("a".repeat(length))))
+            assertThat(DraftValidator.validate(draft).filter { it.path == "source.commit" }.map { it.code })
+                .describedAs("hash length %s", length)
+                .containsExactly("INVALID_SOURCE")
+        }
+    }
+
+    @Test
     fun `all three languages survive a polymorphic JSON round trip`() {
         val original = exampleDraft().copy(
             outline = listOf(

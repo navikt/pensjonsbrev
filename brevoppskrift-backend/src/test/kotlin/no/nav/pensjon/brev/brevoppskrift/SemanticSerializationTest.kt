@@ -1,12 +1,40 @@
 package no.nav.pensjon.brev.brevoppskrift
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.pensjon.brev.brevoppskrift.model.*
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.util.UUID
 
 class SemanticSerializationTest {
+    @Test
+    fun `draft format version rejects floating point tokens`() {
+        val original = exampleDraft()
+        val json = draftObjectMapper.writeValueAsString(original)
+        assertThat(draftObjectMapper.readValue<Draft>(json)).isEqualTo(original)
+        listOf("1.9", "1.0", "1e0").forEach { value ->
+            val input = json.replace("\"formatVersion\":1", "\"formatVersion\":$value")
+            assertThatThrownBy { draftObjectMapper.readValue<Draft>(input) }
+                .describedAs(input)
+                .isInstanceOf(MismatchedInputException::class.java)
+        }
+    }
+
+    @Test
+    fun `semantic revisions reject floating point tokens`() {
+        val original = AttachmentCopy(AttachmentReference("attachment"), DraftRevision(2), exampleDraft())
+        val json = draftObjectMapper.writeValueAsString(original)
+        assertThat(draftObjectMapper.readValue<AttachmentCopy>(json)).isEqualTo(original)
+        listOf("2.9", "2.0", "2e0").forEach { value ->
+            val input = json.replace("\"revision\":2", "\"revision\":$value")
+            assertThatThrownBy { draftObjectMapper.readValue<AttachmentCopy>(input) }
+                .describedAs(input)
+                .isInstanceOf(MismatchedInputException::class.java)
+        }
+    }
+
     data class Envelope(
         val id: DraftId,
         val revision: DraftRevision,

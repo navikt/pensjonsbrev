@@ -99,7 +99,7 @@ object DraftValidator {
         private fun source() {
             draft.source?.let { reference ->
                 if (reference.id.value.isBlank()) issue("source.id", "INVALID_SOURCE", "Kildeidentitet mangler.")
-                if (!Regex("[a-f0-9]{40,64}").matches(reference.commit.value)) issue("source.commit", "INVALID_SOURCE", "Kilden må ha en full commit-hash.")
+                if (!Regex("[a-f0-9]{40}|[a-f0-9]{64}").matches(reference.commit.value)) issue("source.commit", "INVALID_SOURCE", "Kilden må ha en full commit-hash.")
                 if (reference.files.isEmpty()) issue("source.files", "INVALID_SOURCE", "Kildefilhash-er mangler.")
                 reference.files.forEach { (path, hash) ->
                     if (path.value.startsWith("/") || '\\' in path.value || path.value.split('/').any { it == ".." || it.isEmpty() } || !Regex("[a-f0-9]{64}").matches(hash.value)) {
