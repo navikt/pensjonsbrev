@@ -163,10 +163,10 @@ fun Application.skribentenApp() {
             val leaderService: NaisLeaderService by dependencies
             oneShotJobs(leaderService) {
                 // Sett opp evt. jobber her
-                job("2026-11-19-oppdater-brevredigering-json") {
+                job("2026-11-24-oppdater-brevredigering-json") {
                     updateBrevredigeringJson(it)
                 }
-                job("2026-11-19-oppdater-redigert-vedlegg-json") {
+                job("2026-11-24-oppdater-redigert-vedlegg-json") {
                     updateRedigertVedleggJson(it)
                 }
             }
