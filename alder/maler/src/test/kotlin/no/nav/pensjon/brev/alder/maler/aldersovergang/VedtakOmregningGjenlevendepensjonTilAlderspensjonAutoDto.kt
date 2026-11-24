@@ -45,5 +45,10 @@ fun createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto() =
         orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(Sakstype.ALDER),
         maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
         maanedligPensjonFoerSkattAP2025Dto = null,
+        tekstFraSaksbehandler = listOf(
+            "Dette er en tekst fra saksbehandler.",
+            "Dette er en annen tekst fra saksbehandler",
+            "Dette er en tredje tekst fra saksbehandler",
+        ),
     )
 

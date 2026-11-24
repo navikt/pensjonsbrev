@@ -21,6 +21,7 @@ data class VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto(
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+    val tekstFraSaksbehandler: List<String>?,
 ) : AutobrevData {
     data class AlderspensjonVedVirk(
         val totalPensjon: Kroner,

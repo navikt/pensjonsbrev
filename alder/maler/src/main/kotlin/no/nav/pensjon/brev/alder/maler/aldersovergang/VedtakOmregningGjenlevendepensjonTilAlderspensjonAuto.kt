@@ -88,6 +88,12 @@ object VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto :
                     )
                 }
 
+                ifNotNull(tekstFraSaksbehandler) {
+                    forEach(tekstFraSaksbehandler) {
+                        paragraph { text(bokmal { +it }, nynorsk { +it }, english { +it }) }
+                    }
+                }
+
                 paragraph {
                     text(
                         bokmal { +"Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på nav.no/utbetalinger." },
