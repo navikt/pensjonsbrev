@@ -107,6 +107,44 @@ class SourceCatalogueTest {
     }
 
     @Test
+    fun `computed DTO getters disable editing instead of dropping properties`() {
+        listOf("get() = value + 1", "get() { return value + 1 }").forEach { getter ->
+            val input = sources() + (dtoPath to """
+                package no.nav.pensjon.brev.ufore.api.model
+                data class ExampleDto(val value: Int) : AutobrevData {
+                    val derived: Int $getter
+                }
+            """.trimIndent())
+            val catalogue = catalogue(input)
+            val entry = catalogue.list().single()
+            assertThat(entry.editable).describedAs(getter).isFalse()
+            assertThat(entry.diagnostics.map { it.code }).contains("UNSUPPORTED_TYPE")
+            assertThat(catalogue.import(entry.id)).isNull()
+        }
+    }
+
+    @Test
+    fun `stored provenance cannot be removed or replaced from text only imports`(): Unit = runBlocking {
+        val catalogue = catalogue()
+        val imported = requireNotNull(catalogue.import(catalogue.list().single().id))
+        val source = requireNotNull(imported.source)
+        val stripped = imported.copy(source = null, fields = emptyList())
+        assertThat(catalogue.checkSource(stripped, imported).map { it.code }).contains("IMMUTABLE_SOURCE")
+        val replaced = imported.copy(source = source.copy(commit = GitCommit("b".repeat(40))))
+        assertThat(catalogue.checkSource(replaced, imported).map { it.code }).contains("IMMUTABLE_SOURCE")
+        assertThat(catalogue.checkSource(imported.copy(title = translations), imported)).isEmpty()
+        val fresh = exampleDraft()
+        assertThat(catalogue.checkSource(fresh, fresh)).isEmpty()
+        assertThat(catalogue.checkSource(imported, fresh).map { it.code }).contains("IMMUTABLE_SOURCE")
+
+        val attachment = AttachmentCopy(AttachmentReference("copy"), DraftRevision(1), imported)
+        val parent = fresh.copy(attachments = listOf(attachment))
+        val altered = parent.copy(attachments = listOf(attachment.copy(draft = stripped)))
+        assertThat(catalogue.checkSource(altered, parent))
+            .anyMatch { it.path == "attachments[0].draft.source" && it.code == "IMMUTABLE_SOURCE" }
+    }
+
+    @Test
     fun `forged source identity fields and bindings are rejected`(): Unit = runBlocking {
         val input = sources("""includePhrase(Felles.RettTilInnsyn)
             paragraph { text(bokmal { +"BM" }, nynorsk { +"NN" }, english { +"EN" }) }""")

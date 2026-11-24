@@ -10,6 +10,8 @@ plugins {
 group = "no.nav.pensjon.brev.brevoppskrift"
 version = "0.0.1"
 
+val authoringGitExecutable = providers.gradleProperty("authoringGitExecutable").orElse("/usr/bin/git")
+
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(javaTarget))
@@ -26,6 +28,7 @@ tasks {
     test {
         maxParallelForks = 1
         systemProperty("authoring.repository", rootProject.projectDir.absolutePath)
+        systemProperty("authoring.gitExecutable", authoringGitExecutable.get())
         useJUnitPlatform()
     }
 }
@@ -82,6 +85,7 @@ val generateSourceCatalogue = tasks.register<JavaExec>("generateSourceCatalogue"
     dependsOn(tasks.named(authoringTools.classesTaskName))
     classpath = authoringTools.runtimeClasspath
     mainClass.set("no.nav.pensjon.brev.brevoppskrift.katalog.SourceCatalogueBuilderKt")
+    systemProperty("authoring.gitExecutable", authoringGitExecutable.get())
     args(rootProject.projectDir.absolutePath, catalogueResources.get().file("authoring/source-catalogue.json").asFile.absolutePath)
     outputs.dir(catalogueResources)
     outputs.upToDateWhen { false }

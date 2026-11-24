@@ -4,11 +4,21 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.brevoppskrift.draftObjectMapper
 import no.nav.pensjon.brev.brevoppskrift.model.TargetModule
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.File
 
 class SourceCatalogueBuildRuntimeTest {
+    @Test
+    fun `Git executable must be an absolute executable file`() {
+        val root = File(requireNotNull(System.getProperty("authoring.repository")))
+        assertThatThrownBy { readCommittedSources(root, File("git")) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy { readCommittedSources(root, root) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+    }
+
     @Test
     fun `production builder imports actual commit and packages visible templates`(): Unit = runBlocking {
         val root = File(requireNotNull(System.getProperty("authoring.repository")))

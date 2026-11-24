@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.brevoppskrift.auth.AuthorName
 import no.nav.pensjon.brev.brevoppskrift.draftObjectMapper
 import no.nav.pensjon.brev.brevoppskrift.lagring.DraftRepository
 import no.nav.pensjon.brev.brevoppskrift.lagring.SourceCatalogueRepository
+import no.nav.pensjon.brev.brevoppskrift.lagring.SourceConflict
 import no.nav.pensjon.brev.brevoppskrift.lagring.Transactional
 import no.nav.pensjon.brev.brevoppskrift.lagring.openDatabase
 import no.nav.pensjon.brev.brevoppskrift.model.*
@@ -37,6 +38,21 @@ class SourceCatalogueHistoryTest {
             val edited = imported.copy(title = imported.title + (language to (imported.title.getValue(language) + marker)))
             val drafts = DraftRepository(transactions)
             val saved = drafts.create(edited, old.reference.id, AuthorName("Synthetic author"))
+            for (altered in listOf(
+                edited.copy(source = null, fields = emptyList()),
+                edited.copy(source = old.reference.copy(commit = GitCommit("c".repeat(40)))),
+            )) {
+                assertThat(runCatching { drafts.update(saved.id, saved.revision, altered, AuthorName("Synthetic author")) }.exceptionOrNull())
+                    .isInstanceOf(SourceConflict::class.java)
+                assertThat(drafts.get(saved.id)).isEqualTo(saved)
+            }
+            val attachment = AttachmentCopy(AttachmentReference("source-copy"), DraftRevision(1), imported)
+            val parent = drafts.create(exampleDraft().copy(attachments = listOf(attachment)), null, AuthorName("Synthetic author"))
+            val strippedCopy = attachment.copy(draft = imported.copy(source = null, fields = emptyList()))
+            assertThat(runCatching {
+                drafts.update(parent.id, parent.revision, parent.draft.copy(attachments = listOf(strippedCopy)), AuthorName("Synthetic author"))
+            }.exceptionOrNull()).isInstanceOf(SourceConflict::class.java)
+            assertThat(drafts.get(parent.id)).isEqualTo(parent)
 
             val upstream = old.files.getValue(old.templatePath) + "\n// Upstream change\n"
             val digest = Sha256Digest(MessageDigest.getInstance("SHA-256").digest(upstream.toByteArray()).joinToString("") { "%02x".format(it) })

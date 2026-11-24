@@ -34,9 +34,13 @@ fun catalogueFromCommit(root: File): CatalogueSnapshot {
 
 data class CommittedSources(val commit: GitCommit, val sources: Map<RepositoryPath, String>)
 
-fun readCommittedSources(root: File): CommittedSources {
+fun readCommittedSources(
+    root: File,
+    executable: File = File(requireNotNull(System.getProperty("authoring.gitExecutable")) { "Missing authoring.gitExecutable" }),
+): CommittedSources {
+    require(executable.isAbsolute && executable.isFile && executable.canExecute()) { "Git executable must be an absolute path to an executable file." }
     fun git(vararg arguments: String): String {
-        val process = ProcessBuilder(listOf("git", "-C", root.absolutePath) + arguments).redirectError(ProcessBuilder.Redirect.INHERIT).start()
+        val process = ProcessBuilder(listOf(executable.absolutePath, "-C", root.absolutePath) + arguments).redirectError(ProcessBuilder.Redirect.INHERIT).start()
         val result = process.inputStream.bufferedReader(Charsets.UTF_8).readText()
         check(process.waitFor() == 0) { "Kunne ikke lese Git-objekter for kildekatalogen." }
         return result
@@ -46,7 +50,7 @@ fun readCommittedSources(root: File): CommittedSources {
         .filter { it.endsWith(".kt") && "/src/main/" in it && it.substringBefore('/') in setOf("ufoere", "pensjon", "alder", "planlegge-pensjon-maler", "brevbaker") }
     // One Git process, not one sandbox/proxy invocation per source file.
     require(paths.none { '\n' in it || '\r' in it }) { "Kildestier med linjeskift støttes ikke." }
-    val process = ProcessBuilder("git", "-C", root.absolutePath, "cat-file", "--batch")
+    val process = ProcessBuilder(executable.absolutePath, "-C", root.absolutePath, "cat-file", "--batch")
         .redirectError(ProcessBuilder.Redirect.INHERIT).start()
     val sources = linkedMapOf<RepositoryPath, String>()
     try {
@@ -351,7 +355,7 @@ class KotlinSourceImporter : AutoCloseable {
                     } else diagnostics.add(ValidationIssue(dataPath.value, "UNSUPPORTED_TYPE", "Ingen verifisert typeprofil for $fieldName: $typeText. Ingen felt droppes i en redigerbar import."))
                 }
             }
-            if (clazz.declarations.filterIsInstance<KtProperty>().any { it.hasInitializer() || it.hasDelegate() }) {
+            if (clazz.declarations.filterIsInstance<KtProperty>().any { it.hasInitializer() || it.hasDelegate() || it.getter?.hasBody() == true }) {
                 diagnostics.add(ValidationIssue(dataPath.value, "UNSUPPORTED_TYPE", "DTO har beregnede eller delegerte egenskaper uten redigeringsprofil."))
             }
             return result
