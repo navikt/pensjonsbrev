@@ -27,10 +27,22 @@ export const listedUntil = (announcement: ProductAnnouncement) =>
 export const DIFF_TOGGLES_ANNOUNCEMENT: ProductAnnouncement = {
   id: "diff-toggles",
   publishedAt: "2026-11-16",
-  title: "Se endringer gjort av saksbehandler",
-  description:
-    "Nå kan attestant se endringer som saksbehandler har gjort i malen. Man kan se hva som er lagt til, og hva som er slettet.",
-  documentationUrl: "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_attestering",
+  title: "Attestant kan se endringer gjort av saksbehandler",
+  description: "Attestant kan se hva som er lagt til, og hva som er slettet.",
+  documentationUrl:
+    "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_hvilke_endringer_er_gjort_i_brevet",
 };
 
-export const PRODUCT_ANNOUNCEMENTS: ProductAnnouncement[] = [DIFF_TOGGLES_ANNOUNCEMENT];
+export const SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT: ProductAnnouncement = {
+  id: "samhandler-digital-delivery",
+  publishedAt: "2026-11-19",
+  title: "Digital utsending til samhandlere (via Altinn)",
+  description: "Brev sendes digitalt til samhandlere som har organisasjonsnummer registrert i samhandlerregisteret.",
+  documentationUrl:
+    "https://navikt.github.io/pensjonsbrev/docs/main/skribenten-101.html#_hvordan_sender_jeg_brev_til_en_samhandler",
+};
+
+export const PRODUCT_ANNOUNCEMENTS: ProductAnnouncement[] = [
+  SAMHANDLER_DISTRIBUTION_ANNOUNCEMENT,
+  DIFF_TOGGLES_ANNOUNCEMENT,
+];

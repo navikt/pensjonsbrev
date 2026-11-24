@@ -201,7 +201,7 @@ const AnnouncementItem = ({
             underline={false}
           >
             <ExternalLinkIcon aria-hidden fontSize="1.25rem" />
-            Se dokumentasjon
+            Les mer her
             <span className="aksel-sr-only"> (åpnes i ny fane)</span>
           </Link>
         </BodyShort>

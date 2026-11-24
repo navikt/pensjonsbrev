@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
@@ -12,7 +13,6 @@ import no.nav.pensjon.brev.skribenten.letter.DiffSegment
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.EditLetterWordDiff
 import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.BlockEdit
-import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
 
@@ -44,30 +44,40 @@ class DiffBrevHandler(
         ): Response(Type.SPLIT)
     }
 
+    sealed interface Resultat {
+        data class V1(val response: Response) : Resultat
+    }
+
     data class Request(
         val brevId: BrevId,
         val saksId: SaksId,
-        val redigertBrev: Edit.Letter,
+        val redigertBrev: VersjonertBrev,
         val split: Boolean = false,
     )
 
-    suspend operator fun invoke(request: Request): Outcome<Response, Nothing>? =
+    suspend operator fun invoke(request: Request): Outcome<Resultat, Nothing>? =
         brevtilgang.forLesing(request.brevId, request.saksId) {
             val rendretBrev = brev.rendretBrev ?: renderGjeldendeMal(brev)
 
-            val wordDiff = EditLetterWordDiff()
-            if (request.split) {
-                wordDiff.diff(old = rendretBrev, new = request.redigertBrev).let { diff ->
-                    success(Response.Split(inserts = diff.inserts, deletes = diff.deletes, rendretBrev = rendretBrev))
-                }
-            } else {
-                wordDiff.unifiedDiff(old = rendretBrev, new = request.redigertBrev).let { diff ->
-                    success(Response.Unified(editedBlocks = diff.editedBlocks, deletedBlocks = diff.deletedBlocks))
-                }
+            when (val redigertBrev = request.redigertBrev) {
+                is VersjonertBrev.V1 -> success(Resultat.V1(diffV1((rendretBrev as VersjonertBrev.V1).brev, redigertBrev.brev, request.split)))
             }
         }
 
+    private fun diffV1(rendretBrev: Edit.Letter, redigertBrev: Edit.Letter, split: Boolean): Response {
+        val wordDiff = EditLetterWordDiff()
+        return if (split) {
+            wordDiff.diff(old = rendretBrev, new = redigertBrev).let { diff ->
+                Response.Split(inserts = diff.inserts, deletes = diff.deletes, rendretBrev = rendretBrev)
+            }
+        } else {
+            wordDiff.unifiedDiff(old = rendretBrev, new = redigertBrev).let { diff ->
+                Response.Unified(editedBlocks = diff.editedBlocks, deletedBlocks = diff.deletedBlocks)
+            }
+        }
+    }
+
     // Brev opprettet før rendretBrev ble lagret mangler utgangspunkt og faller tilbake til gjeldende mal
-    private suspend fun renderGjeldendeMal(brev: Brevredigering): Edit.Letter =
+    private suspend fun renderGjeldendeMal(brev: Brevredigering): VersjonertBrev =
         brevmalService.renderMarkup(brev, brevdataService.hentBrevdata(brev)).markup.toEdit()
 }

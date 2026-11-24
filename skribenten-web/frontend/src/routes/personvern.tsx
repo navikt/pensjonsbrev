@@ -45,7 +45,11 @@ function PersonvernPage() {
               Skribenten er en intern arbeidsflate for veiledere og saksbehandlere i Nav, for å opprette, redigere,
               kvalitetssikre og sende brev. Denne personvernerklæringen er knyttet til behandlingen av
               personopplysninger i Skribenten. For utfyllende informasjon om hvordan Nav behandler personopplysninger,
-              kan du lese mer i <Link href="https://www.nav.no/personvern">Navs generelle personvernerklæring</Link>.
+              kan du lese om{" "}
+              <Link href="https://navno.sharepoint.com/sites/intranett-personvern/SitePages/Ansattes-personvern.aspx">
+                ansattes personvern
+              </Link>{" "}
+              på Navet.
             </BodyLong>
           </Section>
           <Section title="Bruk av informasjonskapsler (cookies)">

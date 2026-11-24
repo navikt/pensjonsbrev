@@ -10,7 +10,9 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.TssId
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MarkupVersjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertBrev
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
@@ -25,8 +27,8 @@ import java.time.LocalDate
 object Dto {
     data class Brevredigering(
         val info: BrevInfo,
-        val redigertBrev: Edit.Letter,
-        val redigertBrevHash: Hash<Edit.Letter>,
+        val redigertBrev: VersjonertBrev,
+        val redigertBrevHash: Hash<VersjonertBrev>,
         val saksbehandlerValg: SaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?
@@ -52,6 +54,7 @@ object Dto {
         val attestertAv: NavIdent?,
         val status: BrevStatus,
         val leggVedFoersteside: Boolean?,
+        val markupVersjon: MarkupVersjon,
     )
 
     enum class BrevStatus {
@@ -60,13 +63,13 @@ object Dto {
 
     data class RedigertVedlegg(
         val vedleggId: BrevbakerType.VedleggId,
-        val redigertVedlegg: Edit.Attachment,
+        val redigertVedlegg: VersjonertVedlegg,
     )
 
     data class Document(
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
-        val redigertBrevHash: Hash<Edit.Letter>,
+        val redigertBrevHash: Hash<VersjonertBrev>,
         val brevdataHash: Hash<BrevdataResponse.Data>,
         val vedleggHash: Hash<VedleggSnapshot>,
     ) {

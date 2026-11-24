@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.barnetillegg
 
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.maler.ufore.fraser.Ufoeretrygd
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -12,7 +13,6 @@ import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
@@ -74,13 +74,8 @@ object EPSEndringIBarnetillegg {
             }
             paragraph {
                 text(
-                    bokmal { +"Du kan lese mer om dette i vedlegget " },
-                    nynorsk { +"Du kan lese meir om dette i vedlegget " },
-                )
-                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                text(
-                    bokmal { +"." },
-                    nynorsk { +"." },
+                    bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                    nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                 )
             }
             paragraph {

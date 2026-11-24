@@ -231,7 +231,6 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
             includePhrase(Innvilgelse.RettighetSomUngUfoer(
                 ungUforResultat = ungUforResultat,
                 pe = pe,
-                vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
             includePhrase(Innvilgelse.UnntaksregelMedlemskapUtland(
@@ -264,7 +263,6 @@ object InnvilgelseUforetrygdMellombehandlingRedigerbar : RedigerbarTemplate<Innv
                 oifuKroner = oifuKroner,
                 uforegrad = uforegrad,
                 ungUforResultat = ungUforResultat,
-                vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
             title1 {

@@ -12,3 +12,6 @@ enablePatches();
 
 // jsdom does not implement window.scrollTo and logs "Not implemented" whenever it is called.
 globalThis.scrollTo = () => {};
+
+// jsdom does not implement Element.scrollIntoView (jsdom/jsdom#1695).
+Element.prototype.scrollIntoView = () => {};

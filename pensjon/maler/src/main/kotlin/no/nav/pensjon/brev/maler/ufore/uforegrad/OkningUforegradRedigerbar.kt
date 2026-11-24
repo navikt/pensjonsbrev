@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.uforegrad
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -34,7 +36,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -893,11 +894,9 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             }
             paragraph(uniqueness = "beregning") {
                 text(
-                    bokmal { +"Du kan lese mer om dette i vedlegget " },
-                    nynorsk { +"Du kan lese meir om dette i vedlegget " },
+                    bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                    nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                 )
-                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                text(bokmal { +"." }, nynorsk { +"." })
             }
 
             showIf(uforegradFraBeregning.equalTo(100)) {
@@ -1555,11 +1554,9 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
                 showIf((btInnvilget)) {
                     paragraph(uniqueness = "barnetillegg") {
                         text(
-                            bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget " },
-                            nynorsk { +"Du kan lese meir om berekninga av barnetillegg i vedlegget " },
+                            bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                            nynorsk { +"Du kan lese meir om berekninga av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                         )
-                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                        text(bokmal { +"." }, nynorsk { +"." })
                     }
                 }
             }
@@ -1600,11 +1597,9 @@ object OkningUforegradRedigerbar : RedigerbarTemplate<OkningUforegradDto> {
             showIf(gjenlevendetilleggInnvilget) {
                 paragraph(uniqueness = "gjenlevendetillegg") {
                     text(
-                        bokmal { +"Du kan lese mer om dette i vedlegget " },
-                        nynorsk { +"Du kan lese meir om dette i vedlegget " },
+                        bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                        nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                     )
-                    namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                    text(bokmal { +"." }, nynorsk { +"." })
                 }
             }
             showIf(harLopendeAlderspensjon) {

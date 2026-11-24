@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.ufore.barnetillegg
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.maanedligUfoeretrygdFoerSkatt
@@ -257,7 +258,11 @@ object EndretBarnetilleggUfoerertrygdAuto : AutobrevTemplate<EndretBarnetilleggU
                 }
             }
 
-            includePhrase(TBU1288_Generated)
+            paragraph {
+                text(
+                    bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                )
+            }
             includePhrase(MeldeFraOmEndringer())
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))

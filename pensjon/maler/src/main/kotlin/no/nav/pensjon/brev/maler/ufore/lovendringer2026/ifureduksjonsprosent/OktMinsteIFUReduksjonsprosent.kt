@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.maler.ufore.lovendringer2026.ifureduksjonsprosent
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.legacy.UTOgTilleggMapper
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -259,13 +260,8 @@ object OktMinsteIFUReduksjonsprosent {
             }
             paragraph {
                 text(
-                    bokmal { +"I vedlegget " },
-                    nynorsk { +"I vedlegget " },
-                )
-                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                text(
-                    bokmal { +" kan du se hvordan vi har beregnet uføretrygden din." },
-                    nynorsk { +" kan du sjå korleis vi har berekna uføretrygda di." },
+                    bokmal { +"I vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}» kan du se hvordan vi har beregnet uføretrygden din." },
+                    nynorsk { +"I vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}» kan du sjå korleis vi har berekna uføretrygda di." },
                 )
             }
 
@@ -372,13 +368,8 @@ object OktMinsteIFUReduksjonsprosent {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Du finner mer informasjon om reduksjonsprosent i vedlegget " },
-                        nynorsk { +"Du finn meir informasjon om reduksjonsprosent i vedlegget " },
-                    )
-                    namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                    text(
-                        bokmal { +"." },
-                        nynorsk { +"." },
+                        bokmal { +"Du finner mer informasjon om reduksjonsprosent i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                        nynorsk { +"Du finn meir informasjon om reduksjonsprosent i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
                     )
                 }
             }

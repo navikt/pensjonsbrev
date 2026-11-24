@@ -32,13 +32,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
+const val OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL = "Opplysninger om beregningen"
+const val OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK = "Opplysningar om utrekninga"
+
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
     createAttachment<LangBokmalNynorsk, PEgruppe10>(
         title = {
             text(
-                bokmal { +"Opplysninger om beregningen" },
-                nynorsk { +"Opplysningar om utrekninga" },
+                bokmal { +OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL },
+                nynorsk { +OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK },
             )
         },
         includeSakspart = false,

@@ -23,6 +23,7 @@ data class OktBunnfradragNesteArDto(
     val bunnfradrag: Kroner,
     val inntektEtterUforhet: Kroner,
     val fribelop: Kroner,
+    val begrensningFribelop: Boolean,
     val grunnbelop: Kroner,
     val datoForNormertPensjonsalder: LocalDate,
     val sokerMottarApIlaAret: Boolean,

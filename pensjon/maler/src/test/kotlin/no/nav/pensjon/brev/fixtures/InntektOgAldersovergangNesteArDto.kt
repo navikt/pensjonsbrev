@@ -24,6 +24,7 @@ fun createInntektOgAldersovergangNesteArRedigerbarDto() =
 
 fun createInntektOgAldersovergangNesteArData() =
     InntektOgAldersovergangNesteArDto(
+        begrensningFribelop = true,
         vedtakVirkFom = LocalDate.of(2027, 1, 1),
         gradertUforetrygd = true,
         nettoUforetrygd = Kroner(20000),
