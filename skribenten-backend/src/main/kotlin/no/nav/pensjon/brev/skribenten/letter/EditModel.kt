@@ -136,10 +136,6 @@ object Edit {
         val missingFromTemplate: Boolean
             get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED
 
-        enum class MergeStatus {
-            MATCHED_WITH_RENDERED, MISSING_FROM_RENDERED, NEW_IN_EDITED;
-        }
-
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
 
