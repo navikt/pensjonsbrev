@@ -7,10 +7,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
+import no.nav.pensjon.brev.skribenten.auth.BrevInfoKey
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.FrigiReservasjonHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.HentBrevInfoHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.TilbakestillBrevHandler
@@ -28,13 +28,10 @@ fun Route.brev() {
     val dto2ApiService: Dto2ApiService by app.dependencies
 
     route("/brev/{brevId}") {
-        val hentBrevInfo: HentBrevInfoHandler by app.dependencies
         install(AuthorizeAnsattSakTilgangForBrev)
 
         get("/info") {
-            val brevId = call.parameters.brevId()
-            val hentBrevInfo = hentBrevInfo(HentBrevInfoHandler.Request(brevId))
-            respondSuccess(hentBrevInfo?.asSuccess()) { respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
+            call.respond(HttpStatusCode.OK, dto2ApiService.toApi(call.attributes[BrevInfoKey]))
         }
 
         val oppdaterBrev: OppdaterBrevHandler by app.dependencies

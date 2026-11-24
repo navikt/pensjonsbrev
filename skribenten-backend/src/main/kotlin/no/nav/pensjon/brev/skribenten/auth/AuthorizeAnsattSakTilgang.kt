@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.routes.brevId
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory
 
 const val SAKSID_PARAM = "saksId"
 val SakKey = AttributeKey<Fagsak>("AuthorizeAnsattSakTilgang:sak")
+val BrevInfoKey = AttributeKey<Dto.BrevInfo>("AuthorizeAnsattSakTilgangForBrev:brevInfo")
 
 private val logger = LoggerFactory.getLogger("AuthorizeAnsattSakTilgang")
 
@@ -53,6 +55,7 @@ val AuthorizeAnsattSakTilgangForBrev =
             val brevId = call.parameters.brevId()
             val brevInfo = hentBrevInfo(HentBrevInfoHandler.Request(brevId))?.asSuccess()?.value
             if (brevInfo != null) {
+                call.attributes.put(BrevInfoKey, brevInfo)
                 validerTilgangTilSak(fagsakService, pdlService, cache, call, brevInfo.saksId)
             } else {
                 logger.info("Tilgang til brev avvist: brev med id $brevId ikke funnet")
