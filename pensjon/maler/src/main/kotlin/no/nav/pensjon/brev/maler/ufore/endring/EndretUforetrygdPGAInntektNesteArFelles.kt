@@ -145,6 +145,33 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                             )
                         }
                     }
+                    showIf(data.endringTotalNetto.notEqualTo(0)) {
+                        row {
+                            cell {
+                                showIf(data.endringTotalNetto.greaterThanOrEqual(0)) {
+                                    text(
+                                        bokmal { +"Månedlig økning " },
+                                        nynorsk { +"Månadleg auke " },
+                                    )
+                                }.orShow {
+                                    text(
+                                        bokmal { +"Månedlig reduksjon " },
+                                        nynorsk { +"Månadleg reduksjon " },
+                                    )
+                                }
+                                text(
+                                    bokmal { +"i uføretrygd" + ifElse(data.barnetilleggFellesbarn.isNull() and data.barnetilleggSaerkullsbarn.isNull(), "", " og barnetillegg") },
+                                    nynorsk { +"i uføretrygd" + ifElse(data.barnetilleggFellesbarn.isNull() and data.barnetilleggSaerkullsbarn.isNull(), "", " og barnetillegg") },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.endringTotalNetto.format() },
+                                    nynorsk { +data.endringTotalNetto.format() },
+                                )
+                            }
+                        }
+                    }
                     row {
                         cell {
                             text(
