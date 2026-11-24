@@ -17,10 +17,14 @@ import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmOversendelseTilKlag
 import no.nav.pensjon.brev.maler.klagebrev.KlageOrienteringOmSaksbehandlingstidPE
 import no.nav.pensjon.brev.maler.klagebrev.KlageUtsattKlagefristUT
 import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlagePE
+import no.nav.pensjon.brev.maler.klagebrev.KlageVedtakAvvisningAvKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OrienteringOmSvartidKlageUT
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansPE
 import no.nav.pensjon.brev.maler.klagebrev.OversendelsesbrevTilKlageinstansUT
-import no.nav.pensjon.brev.maler.legacy.redigerbar.*
+import no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon.AvslagGjenlevendepensjon
+import no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon.AvslagGjenlevendepensjonUtland
+import no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
+import no.nav.pensjon.brev.maler.legacy.gjenlevendepensjon.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektRedigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndretUfoeretrygdPGAInntektAuto
@@ -55,6 +59,8 @@ import no.nav.pensjon.brev.maler.ufore.barnetillegg.OpphoerBarnetilleggAuto
 import no.nav.pensjon.brev.maler.ufore.UfoerOmregningEnslig
 import no.nav.pensjon.brev.maler.ufore.UngUfoerAuto
 import no.nav.pensjon.brev.maler.ufore.avslag.AvslagUfoerepensjonRedigerbar
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EPSEndringIBarnetilleggAuto
+import no.nav.pensjon.brev.maler.ufore.barnetillegg.EPSEndringIBarnetilleggRedigerbar
 import no.nav.pensjon.brev.maler.ufore.barnetillegg.EndretBarnetilleggUfoerertrygdAuto
 import no.nav.pensjon.brev.maler.ufore.diverse.BekreftelsePaaUfoeretrygdRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.EndretUforetrygdPGAOpptjeningLegacy
@@ -63,6 +69,10 @@ import no.nav.pensjon.brev.maler.ufore.diverse.OmregningUfoerepensjonTilUfoeretr
 import no.nav.pensjon.brev.maler.ufore.diverse.VedtakBlankMalRedigerbar
 import no.nav.pensjon.brev.maler.ufore.diverse.VedtakOmEtterbetalingOpphor2026Redigerbar
 import no.nav.pensjon.brev.maler.ufore.endring.EndringUforetrygdRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.OktBunnfradragNesteArRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.InntektOgAldersovergangNesteArAuto
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.InntektOgAldersovergangNesteArRedigerbar
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.OktBunnfradragNesteArAuto
 import no.nav.pensjon.brev.maler.ufore.etteroppgjor.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdBosattNorgeEtterUtlandRedigerbar
 import no.nav.pensjon.brev.maler.ufore.innvilgelse.InnvilgelseUforetrygdMedEndringRedigerbar
@@ -126,6 +136,9 @@ object ProductionTemplates : AllTemplates {
         ReverseringLavereMinstesatsAuto,
         VedtakOmEndringBarnetilleggEPSRevAuto,
         VedtakOmEndringBTEPSOktoberAuto,
+        EPSEndringIBarnetilleggAuto,
+        OktBunnfradragNesteArAuto,
+        InntektOgAldersovergangNesteArAuto
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*>>> = setOf(
@@ -164,6 +177,7 @@ object ProductionTemplates : AllTemplates {
         KlageOrienteringOmSaksbehandlingstidPE,
         KlageUtsattKlagefristUT,
         KlageVedtakAvvisningAvKlagePE,
+        KlageVedtakAvvisningAvKlageUT,
         OkningUforegradRedigerbar,
         OkningUforegradRedigerbarV2,
         OmregningUfoerepensjonTilUfoeretrygdRedigerbar,
@@ -192,6 +206,9 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktFribelopRedigerbar,
         VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
         VedtakOmOktMinsteIFURedigerbar,
+        EPSEndringIBarnetilleggRedigerbar,
+        OktBunnfradragNesteArRedigerbar,
+        InntektOgAldersovergangNesteArRedigerbar
     )
 
     override fun hentAutobrevmaler() = autobrev

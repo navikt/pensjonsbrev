@@ -63,4 +63,9 @@ fun createInnvilgelseAvAlderspensjonAutoDto() =
         opplysningerBruktIBeregningenAlderspensjon = createOpplysningerBruktIBeregningAlderDto(),
         opplysningerBruktIBeregningenAlderspensjonAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
         fremtidigSamboer = true,
+        tekstFraSaksbehandler = listOf(
+            "Dette er en tekst fra saksbehandler.",
+            "Dette er en annen tekst fra saksbehandler",
+            "Dette er en tredje tekst fra saksbehandler",
+        ),
     )

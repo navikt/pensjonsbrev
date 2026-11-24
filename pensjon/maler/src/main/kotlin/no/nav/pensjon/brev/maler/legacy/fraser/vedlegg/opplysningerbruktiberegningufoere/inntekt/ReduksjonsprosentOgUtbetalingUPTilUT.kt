@@ -20,12 +20,10 @@ import no.nav.pensjon.brev.maler.legacy.ut_btsbinntektbruktiavkortningminusbtsbf
 import no.nav.pensjon.brev.maler.legacy.ut_etteroppgjor_bt_utbetalt
 import no.nav.pensjon.brev.maler.legacy.ut_nettoakk_pluss_nettorestar
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseReduksjonsprosentavsnitt
-import no.nav.pensjon.brev.maler.legacy.ut_tbu069v
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseRettTilBarnetillegg
 import no.nav.pensjon.brev.maler.legacy.ut_tbu605
 import no.nav.pensjon.brev.maler.legacy.ut_tbu605v_eller_til_din
 import no.nav.pensjon.brev.maler.legacy.ut_tbu606v_tbu608v
-import no.nav.pensjon.brev.maler.legacy.ut_tbu606v_tbu611v
 import no.nav.pensjon.brev.maler.legacy.ut_tbu608_far_ikke
 import no.nav.pensjon.brev.maler.legacy.ut_tbu609v_tbu611v
 import no.nav.pensjon.brev.maler.legacy.ut_tbu611_far_ikke
@@ -92,6 +90,8 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsved
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseBarnetilleggsberegning
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseBarnetilleggsstoerrelse
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -116,9 +116,12 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
     val erBeregningsendring: Expression<Boolean>,
     val visMinstepensjonsforklaring: Expression<Boolean>,
     val visForklaringOmRettTilBarnetillegg: Expression<Boolean>,
+    val visBarnetilleggsberegning: Expression<Boolean>,
     val utelatVedDoedsfall: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        val skalViseBarnetilleggsberegning = pe.skalViseBarnetilleggsberegning(visBarnetilleggsberegning, utelatVedDoedsfall)
+        val skalViseBarnetilleggsstoerrelse = pe.skalViseBarnetilleggsstoerrelse(visBarnetilleggsberegning, utelatVedDoedsfall)
         val kravarsaktype = pe.vedtaksdata_kravhode_kravarsaktype()
         val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
         val anvendtTrygdetid = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
@@ -153,8 +156,8 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
         val tekstMedBarnetillegg = ifElse(harBarnetillegg, " og barnetillegg", "")
         val tekstMedBarnetilleggetBokmal = ifElse(harBarnetillegg, " og barnetillegget", "")
         val tekstMedBarnetilleggetNynorsk = ifElse(harBarnetillegg, " og barnetillegg", "")
-        val skalViseFellesBarnetillegg = pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()
-        val skalViseSerkullBarnetillegg = pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v()
+        val skalViseFellesBarnetillegg = skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v()
+        val skalViseSerkullBarnetillegg = skalViseBarnetilleggsstoerrelse and pe.ut_tbu609v_tbu611v()
         val harFellesBarnetilleggEtterReduksjon = barnetilleggFellesNetto.notEqualTo(0) or (barnetilleggFellesNetto.equalTo(0) and justeringsbelopFellesPerAr.notEqualTo(0))
         val harSerkullBarnetilleggEtterReduksjon = barnetilleggSerkullNetto.notEqualTo(0) or (barnetilleggSerkullNetto.equalTo(0) and justeringsbelopSerkullPerAr.notEqualTo(0))
         val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
@@ -431,8 +434,8 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
         showIf((utbetalingsgrad.lessThan(uforegrad) and erIkkeSoknadBarnetillegg)){
             paragraph {
                 text (
-                    bokmal { + "Du vil få tilbake " + uforegrad.format() + " prosent uføretrygd uten søknad, dersom du tjener mindre enn inntektsgrensen din. Hvis du allerede har fått utbetalt det du har rett til i uføretrygd for kalenderåret, vil du ikke få utbetalt uføretrygd med den opprinnelige uføregraden din før neste kalenderår." },
-                    nynorsk { + "Du får tilbake " + uforegrad.format() + " prosent uføretrygd utan søknad dersom du tener mindre enn inntektsgrensa di. Dersom du allereie har fått utbetalt det du har rett til i uføretrygd for kalenderåret, får du ikkje utbetalt uføretrygd med den opphavlege uføregraden din før neste kalenderår." },
+                    bokmal { + "Du vil få tilbake uavkortet uføretrygd uten søknad, dersom du tjener mindre enn inntektsgrensen din. Hvis du allerede har fått utbetalt det du har rett til i uføretrygd for kalenderåret, vil du ikke få utbetalt uføretrygd med den opprinnelige uføregraden din før neste kalenderår." },
+                    nynorsk { + "Du får tilbake uavkorta uføretrygd utan søknad, dersom du tener mindre enn inntektsgrensa di. Dersom du allereie har fått utbetalt det du har rett til i uføretrygd for kalenderåret, får du ikkje utbetalt uføretrygd med den opphavlege uføregraden din før neste kalenderår." },
                 )
             }
         }
@@ -699,7 +702,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v())){
+        showIf((skalViseBarnetilleggsberegning)){
             title1 {
                 text (
                     bokmal { + "Slik beregner vi størrelsen på barnetillegget" },
@@ -720,7 +723,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (harBarnetilleggFelles and not(harBarnetilleggSerkull)))){
+        showIf((skalViseBarnetilleggsberegning and (harBarnetilleggFelles and not(harBarnetilleggSerkull)))){
             paragraph {
                 text (
                     bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra den samlede inntekten til begge foreldrene." },
@@ -729,7 +732,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (harBarnetilleggFelles and not(harBarnetilleggSerkull)))){
+        showIf((skalViseBarnetilleggsberegning and (harBarnetilleggFelles and not(harBarnetilleggSerkull)))){
             paragraph {
                 text (
                     bokmal { + "Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn er 4,6 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
@@ -745,7 +748,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (harBarnetilleggFelles and not(harBarnetilleggSerkull)))){
+        showIf((skalViseBarnetilleggsberegning and (harBarnetilleggFelles and not(harBarnetilleggSerkull)))){
             paragraph {
                 text (
                     bokmal { + "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. Dette gjelder også dersom den ene forelderen mottar alderspensjon. " },
@@ -754,7 +757,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (not(harBarnetilleggFelles) and harBarnetilleggSerkull))){
+        showIf((skalViseBarnetilleggsberegning and (not(harBarnetilleggFelles) and harBarnetilleggSerkull))){
             paragraph {
                 text (
                     bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. " },
@@ -763,7 +766,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (not(harBarnetilleggFelles) and harBarnetilleggSerkull))){
+        showIf((skalViseBarnetilleggsberegning and (not(harBarnetilleggFelles) and harBarnetilleggSerkull))){
             paragraph {
                 text (
                     bokmal { + "Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn er 3,1 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
@@ -779,7 +782,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (not(harBarnetilleggFelles) and harBarnetilleggSerkull))){
+        showIf((skalViseBarnetilleggsberegning and (not(harBarnetilleggFelles) and harBarnetilleggSerkull))){
             paragraph {
                 text (
                     bokmal { + "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Dette gjelder også dersom den ene forelderen mottar alderspensjon. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrerte adresse som barnet. " },
@@ -788,7 +791,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (harBarnetilleggFelles and harBarnetilleggSerkull))){
+        showIf((skalViseBarnetilleggsberegning and (harBarnetilleggFelles and harBarnetilleggSerkull))){
             paragraph {
                 text (
                     bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
@@ -797,7 +800,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (harBarnetilleggFelles and harBarnetilleggSerkull))){
+        showIf((skalViseBarnetilleggsberegning and (harBarnetilleggFelles and harBarnetilleggSerkull))){
             paragraph {
                 text (
                     bokmal { + "For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldre, fastsetter vi størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn som ikke bor sammen med begge foreldrene er 3,1 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
@@ -806,7 +809,7 @@ data class ReduksjonsprosentOgUtbetalingUPTilUT (
             }
         }
 
-        showIf((pe.ut_tbu069v() and (harBarnetilleggFelles and harBarnetilleggSerkull) and (anvendtTrygdetid.lessThan(40) and yrkesskaderesultat.notEqualTo("oppfylt")) and (pe.ut_virkningstidpunktstorreenn01012016()))){
+        showIf((skalViseBarnetilleggsberegning and (harBarnetilleggFelles and harBarnetilleggSerkull) and (anvendtTrygdetid.lessThan(40) and yrkesskaderesultat.notEqualTo("oppfylt")) and (pe.ut_virkningstidpunktstorreenn01012016()))){
             paragraph {
                 text (
                     bokmal { + "Siden trygdetiden din er kortere enn 40 år, blir fribeløpene redusert ut fra den trygdetiden du har." },

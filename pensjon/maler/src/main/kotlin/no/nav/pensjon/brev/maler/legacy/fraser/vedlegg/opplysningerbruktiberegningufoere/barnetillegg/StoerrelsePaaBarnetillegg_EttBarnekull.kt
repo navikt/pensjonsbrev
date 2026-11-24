@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegn
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erInntektsendring
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseBarnetilleggsberegning
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -11,13 +13,16 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class StoerrelsePaaBarnetillegg_EttBarnekull(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val visForklaringForBrevtype: Expression<Boolean>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        val skalViseBarnetilleggsberegning = pe.skalViseBarnetilleggsberegning(visForklaringForBrevtype, utelatVedDoedsfall)
         val harPeriodisertFribelopEllerInntekt =
             pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert() or pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()
         showIf(
-            (pe.ut_tbu069v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
+            (skalViseBarnetilleggsberegning and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
                 .lessThan(
                     40
                 ) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()
@@ -65,7 +70,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                     )
                 }
 
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
+                showIf(pe.erInntektsendring()) {
                     text(
                         bokmal { + "Når inntekten din " },
                         nynorsk { + "Når inntekta di " },
@@ -73,8 +78,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                 }
 
                 showIf(
-                    ((pe.vedtaksdata_kravhode_kravarsaktype()
-                        .equalTo("endret_inntekt") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    ((pe.erInntektsendring() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                         .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                         .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
                         "bormed 1-5"
@@ -87,7 +91,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                     )
                 }
 
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
+                showIf(pe.erInntektsendring()) {
                     text(
                         bokmal { + "endrer seg," },
                         nynorsk { + "endrar seg," },

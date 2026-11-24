@@ -22,13 +22,14 @@ enum class FeatureToggles(private val key: String) {
     brevmalKlageOversendelsesbrevTilKlageinstansPE("brevmalKlageOversendelsesbrevTilKlageinstansPE"),
     brevmalKlageOversendelsesbrevTilKlageinstansUT("brevmalKlageOversendelsesbrevTilKlageinstansUT"),
     brevmalKlageUtsattKlagefristUT("brevmalKlageUtsattKlagefristUT"),
+    brevmalKlageVedtakAvvisningAvKlageUT("brevmalKlageVedtakAvvisningAvKlageUT"),
     brevmalOpphoerGjenlevendepensjon("brevmalOpphoerGjenlevendepensjon"),
     brevmalOrienteringOmSvartidKlageUT("brevmalOrienteringOmSvartidKlageUT"),
     brevmalUtAvslag("brevmalUtAvslag"),
     brevmalUtBosattNorgeEtterUtland("brevmalUtBosattNorgeEtterUtland"),
     brevmalUtDelvisEksport("brevmalUtDelvisEksport"),
     brevmalUtEndretPgaInntekt("brevmalUtEndretPgaInntekt"),
-    brevmalUtEndretPgaInntektNesteAr("brevmalUtEndretPgaInntektNesteAr"),
+    brevmalUtDesemberkjoring("brevmalUtEndretPgaInntektNesteAr"),
     brevmalUtInnvilgelseMedEndring("brevmalUtInnvilgelseMedEndring"),
     brevmalUtInnvilgelseTrygdeavtale("brevmalUtInnvilgelseTrygdeavtale"),
     brevmalUtOmregningUfoerepensjonTilUfoeretrygd("brevmalOmregningUfoerepensjonTilUfoeretrygd"),
@@ -41,7 +42,8 @@ enum class FeatureToggles(private val key: String) {
     vedtakAvslagPaaOmsorgsopptjening("vedtakAvslagPaaOmsorgsopptjening"),
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
     vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng"),
-    okningUforegradV2("okninguforegrad.v2");
+    okningUforegradV2("okninguforegrad.v2"),
+    epsEndringIBarnetillegg("epsEndringIBarnetillegg");
 
 
     val toggle = FeatureToggle(key)

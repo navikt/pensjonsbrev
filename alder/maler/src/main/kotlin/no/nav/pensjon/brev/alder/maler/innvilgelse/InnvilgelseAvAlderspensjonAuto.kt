@@ -108,6 +108,13 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                         )
                     }
                 }
+
+                ifNotNull(tekstFraSaksbehandler) { tekster ->
+                    forEach(tekster) {
+                        paragraph { text(bokmal { +it }, nynorsk { +it }, english { +it }) }
+                    }
+                }
+
                 showIf(fremtidigSamboer) {
                     paragraph {
                         text(

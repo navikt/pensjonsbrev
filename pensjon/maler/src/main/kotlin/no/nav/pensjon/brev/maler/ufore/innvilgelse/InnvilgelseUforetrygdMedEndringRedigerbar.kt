@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.ufore.innvilgelse
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -370,7 +372,12 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
                     )
                 }
             }.orShowIf((uforegrad.equalTo(100) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().equalTo(0))) {
-                includePhrase(TBU1205_Generated(pe))
+                paragraph {
+                    text(
+                        bokmal { +"Du kan tjene " + pe.ut_bunnfradrag_faktisk().format() + " uten at uføretrygden din blir redusert. Dette er bunnfradraget ditt. " },
+                        nynorsk { +"Du kan tene " + pe.ut_bunnfradrag_faktisk().format() + " utan at uføretrygda di blir redusert. Dette er botnfrådraget ditt. " },
+                    )
+                }
             }
 
             showIf((((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).lessThan(100) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).greaterThan(0)) or ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()).greaterThan(0) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).equalTo(100)))) {
@@ -939,7 +946,12 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
                 }
 
                 showIf((barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget)) {
-                    includePhrase(TBU1288_Generated)
+                    paragraph {
+                        text(
+                            bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                            nynorsk { +"Du kan lese meir om berekninga av barnetillegg i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
+                        )
+                    }
                 }
             }
 
@@ -999,7 +1011,12 @@ object InnvilgelseUforetrygdMedEndringRedigerbar : RedigerbarTemplate<Innvilgels
             }
 
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
-                includePhrase(TBU1133_Generated)
+                paragraph {
+                    text(
+                        bokmal { +"Du kan lese mer om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_BOKMAL}»." },
+                        nynorsk { +"Du kan lese meir om dette i vedlegget «${OPPLYSNINGER_OM_BEREGNINGEN_NYNORSK}»." },
+                    )
+                }
             }
 
             showIf(pe.vedtaksdata_harLopendealderspensjon()) {

@@ -264,20 +264,20 @@ object OmstillingsstoenadFellesFraser {
                     text(
                         bokmal {
                             +"Du kommer inn under unntaksreglene for varighet av stønaden, fordi du har hatt " +
-                                    "lav eller ingen inntekt de siste fem årene før " +
+                                    "lav eller ingen inntekt de siste 5 årene før " +
                                     ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallstidspunktet") +
                                     ". Du får omstillingsstønad frem til du fyller 67 år, så lenge du oppfyller vilkårene."
                         },
                         nynorsk {
                             +"Du kjem inn under unntaksreglane for lengde på stønad, då du var utan " +
-                                    "inntekt eller hadde låg inntekt dei siste fem åra før " +
+                                    "inntekt eller hadde låg inntekt dei siste 5 åra før " +
                                     ifElse(tidligereFamiliepleier, "pleieforholdet opphørte", "dødsfallet") +
                                     ". Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad fram til du " +
                                     "fyller 67 år. "
                         },
                         english {
                             +"If any of the rules for exemption from the duration of allowance apply to " +
-                                    "you, because you had a low income or no income in the last five years before the " +
+                                    "you, because you had a low income or no income in the last 5 years before the " +
                                     ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
                                     ". You are eligible for the adjustment allowance until you turn " +
                                     "67 as long as you meet the conditions."
@@ -289,7 +289,7 @@ object OmstillingsstoenadFellesFraser {
                     paragraph {
                         text(
                             bokmal {
-                                +"Du får omstillingsstønad frem til det er gått tre år " +
+                                +"Du får omstillingsstønad frem til det er gått 3 år " +
                                         ifElse(
                                             tidligereFamiliepleier,
                                             "siden pleieforholdet opphørte",
@@ -299,7 +299,7 @@ object OmstillingsstoenadFellesFraser {
                             },
                             nynorsk {
                                 +"Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
-                                        "fram til det har gått tre år frå datoen " +
+                                        "fram til det har gått 3 år frå datoen " +
                                         ifElse(
                                             tidligereFamiliepleier,
                                             "siden pleieforholdet opphørte",
@@ -308,7 +308,7 @@ object OmstillingsstoenadFellesFraser {
                                         ". Rett til omstillingsstønad fell uansett bort når du fyller 67 år."
                             },
                             english {
-                                +"You are eligible for adjustment allowance for three years from the " +
+                                +"You are eligible for adjustment allowance for 3 years from the " +
                                         ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
                                         ", as long as you meet the conditions for receiving the allowance. " +
                                         "The right to adjustment allowance ceases when you reach the age of 67."
@@ -335,7 +335,7 @@ object OmstillingsstoenadFellesFraser {
                     paragraph {
                         text(
                             bokmal {
-                                +"Du er innvilget omstillingsstønad frem til det er gått tre år " +
+                                +"Du er innvilget omstillingsstønad frem til det er gått 3 år " +
                                         ifElse(
                                             tidligereFamiliepleier,
                                             "siden pleieforholdet opphørte",
@@ -346,7 +346,7 @@ object OmstillingsstoenadFellesFraser {
                             },
                             nynorsk {
                                 +"Under føresetnad av at du oppfyller vilkåra, får du omstillingsstønad " +
-                                        "i tre år frå datoen " + ifElse(
+                                        "i 3 år frå datoen " + ifElse(
                                     tidligereFamiliepleier,
                                     "siden pleieforholdet opphørte",
                                     "for dødsfallet"
@@ -355,7 +355,7 @@ object OmstillingsstoenadFellesFraser {
                                         "dette gjere at du likevel får utbetalt stønad i denne perioden."
                             },
                             english {
-                                +"You are eligible for adjustment allowance for three years from the " +
+                                +"You are eligible for adjustment allowance for 3 years from the " +
                                         ifElse(tidligereFamiliepleier, "care period ended", " date of the death") +
                                         ", as long as you meet the conditions for receiving the allowance. " +
                                         "Changes to your income may make you eligible for allowance in this period. "
@@ -407,9 +407,9 @@ object OmstillingsstoenadFellesFraser {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
-                    bokmal { +"Spesielt om endring av inntekten din" },
-                    nynorsk { +"Spesielt om endring av inntekta di" },
-                    english { +"Special information about changes to your income" },
+                    bokmal { +"Inntekten din" },
+                    nynorsk { +"Inntekta di" },
+                    english { +"Your income" },
                 )
             }
             paragraph {

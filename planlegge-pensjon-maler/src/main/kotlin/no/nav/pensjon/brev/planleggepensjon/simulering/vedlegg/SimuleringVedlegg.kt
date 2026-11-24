@@ -61,7 +61,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDtoData>(
         paragraph {
             text(
                 bokmal {
-                    +"Eventuell tilvekst av alderspensjon er inkludert i beløpene"
+                    +"Når Nav får pensjonsgivende inntekt fra Skatteetaten, legges den til pensjonsopptjeningen i januar året etter. Det kan gi økt alderspensjon."
                 }
             )
         }

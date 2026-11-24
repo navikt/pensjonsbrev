@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
 import no.nav.pensjon.brev.skribenten.db.RedigertVedleggTable
 import no.nav.pensjon.brev.skribenten.db.writeHashTo
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.jetbrains.exposed.v1.core.dao.id.CompositeID
@@ -17,12 +16,13 @@ class RedigertVedlegg(id: EntityID<CompositeID>) : CompositeEntity(id) {
         .writeHashTo(RedigertVedleggTable.redigertVedleggKryptertHash)
     val redigertVedleggHash by RedigertVedleggTable.redigertVedleggKryptertHash
     var rendretVedlegg by RedigertVedleggTable.rendretVedlegg
+    var rendretVedleggHash by RedigertVedleggTable.rendretVedleggHash
 
     companion object : CompositeEntityClass<RedigertVedlegg>(RedigertVedleggTable) {
         fun new(
             brevredigering: EntityID<BrevId>,
             vedleggId: BrevbakerType.VedleggId,
-            redigertVedlegg: Edit.Attachment,
+            redigertVedlegg: VersjonertVedlegg,
         ): RedigertVedlegg =
             new(
                 CompositeID {

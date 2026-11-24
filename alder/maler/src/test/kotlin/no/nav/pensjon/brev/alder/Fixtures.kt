@@ -57,6 +57,7 @@ import no.nav.pensjon.brev.alder.maler.sivilstand.createEndringAvAlderspensjonSi
 import no.nav.pensjon.brev.alder.maler.sivilstand.createMaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.alder.maler.sivilstand.createVedtakOmregningAFPTilEnsligPensjonistAutoDto
 import no.nav.pensjon.brev.alder.maler.stans.createVedtakStansAlderspensjonFlyttingMellomLandDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageAfpPrivatDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAFPOffentligDto
@@ -74,6 +75,7 @@ import no.nav.pensjon.brev.alder.model.endring.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.alder.model.endring.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDto
 import no.nav.pensjon.brev.alder.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageAfpPrivatDto
 import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPOffentligDto
@@ -229,6 +231,7 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : VedleggData> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
         AFpPrivatSokerUforeTrygdVedleggDto::class -> createAfpPrivatSokerUforeTrygdVedleggDto() as T
+        DineRettigheterOgMulighetTilAaKlageAfpPrivatDto::class -> createDineRettigheterOgMulighetTilAaKlageAfpPrivatDto() as T
         DineRettigheterOgMulighetTilAaKlageDto::class -> createDineRettigheterOgMulighetTilAaKlageDto() as T
         EmptyVedleggData::class -> EmptyVedleggData as T
         HvordanPensjonenErBeregnetAfpOffentligDto::class -> createHvordanPensjonenErBeregnetAfpOffentligDto() as T

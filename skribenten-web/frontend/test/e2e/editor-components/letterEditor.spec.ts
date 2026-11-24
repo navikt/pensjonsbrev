@@ -1,6 +1,6 @@
-import { expect, type Page, test } from "@playwright/test";
+import { type BrowserContext, expect, type Locator, type Page, test } from "@playwright/test";
 
-import { type EditedLetter, ElementTags, FontType, type LiteralValue } from "~/types/brevbakerTypes";
+import { type EditedLetter, ElementTags, FontType, ListType, type LiteralValue } from "~/types/brevbakerTypes";
 import { baseSakspart, baseSignatur, editorInfo } from "~test/e2e/support/editorFixtures";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse, editedLetter } from "~test/support/brevFixtures";
@@ -143,6 +143,51 @@ async function navigateToEditor(page: Page) {
   await page.locator(".editor").waitFor({ state: "visible", timeout: 15_000 });
   // Wait for fonts to load
   await page.evaluate(() => document.fonts.ready);
+}
+
+async function copyText(page: Page, source: Locator) {
+  await source.click();
+  await source.evaluate((element) => {
+    const textNode = element.firstChild;
+    const selection = globalThis.getSelection();
+    if (textNode?.nodeType !== Node.TEXT_NODE || !selection) {
+      throw new Error("Missing copy source text node or selection");
+    }
+    const range = document.createRange();
+    range.selectNodeContents(textNode);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  });
+  await page.keyboard.press("ControlOrMeta+c");
+  await expect(source).toHaveAttribute("contenteditable", "true");
+}
+
+// On macOS the native context menu opens on pointerdown and consumes the pointerup.
+async function swallowNextPointerUp(page: Page) {
+  await page.evaluate(() => {
+    globalThis.addEventListener("pointerup", (event) => event.stopImmediatePropagation(), {
+      capture: true,
+      once: true,
+    });
+  });
+}
+
+async function nativePaste(context: BrowserContext, page: Page) {
+  const cdp = await context.newCDPSession(page);
+  await cdp.send("Input.dispatchKeyEvent", { type: "rawKeyDown", commands: ["Paste"] });
+  await cdp.detach();
+}
+
+async function expectEditableCaretAtEndAfterMouseMove(page: Page, editable: Locator, pastedText: string) {
+  const bounds = await editable.boundingBox();
+  if (!bounds) throw new Error("Missing pasted text bounds");
+  await page.mouse.move(bounds.x + 2, bounds.y + bounds.height / 2);
+  await page.mouse.move(bounds.x + bounds.width + 40, bounds.y + bounds.height / 2);
+
+  await expect(page.locator(".editor-surface")).not.toHaveClass(/is-drag-selecting/);
+  await expect(editable).toHaveAttribute("contenteditable", "true");
+  await expect(editable).toBeFocused();
+  await assertCaret(page, pastedText, pastedText.length, { expectExact: true });
 }
 
 async function getCaretDebugInfo(page: Page) {
@@ -649,6 +694,116 @@ test.describe("LetterEditor copy and paste within the editor", () => {
     await expect(pastedParagraph).toHaveText((await sourceParagraph.textContent()) ?? "");
     await expect(pastedParagraph.getByText("knirker", { exact: true })).toHaveCSS("font-weight", "700");
     await expect(pastedParagraph.getByText("Noen stoler", { exact: true })).toHaveCSS("font-weight", "400");
+  });
+});
+
+test.describe("LetterEditor empty-line context menu", () => {
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [
+            paragraph([_literal("Copy me")]),
+            paragraph([_literal("")]),
+            title1(_literal("")),
+            title2(_literal("")),
+            title3(_literal("")),
+            paragraph([itemList({ items: [item({ content: [_literal("")] })] })]),
+            paragraph([itemList({ listType: ListType.NUMMERERT_LISTE, items: [item({ content: [_literal("")] })] })]),
+          ],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+  });
+
+  for (const { name, selector } of [
+    { name: "paragraph", selector: ".PARAGRAPH:nth-child(2)" },
+    { name: "heading 1", selector: ".TITLE1" },
+    { name: "heading 2", selector: ".TITLE2" },
+    { name: "heading 3", selector: ".TITLE3" },
+    { name: "bullet item", selector: "ul > li" },
+    { name: "numbered item", selector: "ol > li" },
+  ]) {
+    for (const { position, fraction } of [
+      { position: "top left", fraction: 0.1 },
+      { position: "center", fraction: 0.5 },
+      { position: "bottom right", fraction: 0.9 },
+    ]) {
+      test(`empty ${name}: right-click at ${position} targets the caret for native paste`, async ({
+        page,
+        context,
+      }) => {
+        const source = page.locator(".editor-surface > .PARAGRAPH:first-child > [data-literal-index]");
+        await copyText(page, source);
+
+        const line = page.locator(`.editor-surface ${selector}`);
+        const editable = line.locator("[data-literal-index]");
+        await expect(editable).toHaveAttribute("data-empty", "");
+        const bounds = await line.boundingBox();
+        if (!bounds) throw new Error("Missing empty line bounds");
+        const point = { x: bounds.x + bounds.width * fraction, y: bounds.y + bounds.height * fraction };
+
+        expect(
+          await editable.evaluate((element, { x, y }) => {
+            const target = document.elementFromPoint(x, y);
+            return target === element && target instanceof HTMLElement && target.isContentEditable;
+          }, point),
+        ).toBe(true);
+
+        await swallowNextPointerUp(page);
+        await page.mouse.click(point.x, point.y, { button: "right" });
+        await expect(editable).toBeFocused();
+        await expect
+          .poll(() =>
+            editable.evaluate((element) => {
+              const selection = globalThis.getSelection();
+              return !!selection?.isCollapsed && element.contains(selection.anchorNode);
+            }),
+          )
+          .toBe(true);
+        await page.keyboard.press("Escape");
+        await nativePaste(context, page);
+
+        await expect(line).toHaveText("Copy me");
+        await expect(source).toHaveText("Copy me");
+        await expect(editable).not.toHaveAttribute("data-empty");
+        await expect(editable).toHaveCSS("display", "inline");
+        await expectEditableCaretAtEndAfterMouseMove(page, editable, "Copy me");
+
+        await page.getByRole("button", { name: "Angre (Undo)" }).click();
+        await expect(editable).toHaveAttribute("data-empty", "");
+        await expect(editable).toHaveCSS("display", "block");
+        await expect(editable).toBeFocused();
+
+        await page.keyboard.type("x");
+        await expect(line).toHaveText("x");
+        await page.keyboard.press("Backspace");
+        await expect(editable).toHaveAttribute("data-empty", "");
+        await expect(editable).toHaveCSS("display", "block");
+      });
+    }
+  }
+
+  test("ctrl-click context menu (macOS) leaves the caret editable at the end of the pasted text", async ({
+    page,
+    context,
+  }) => {
+    const source = page.locator(".editor-surface > .PARAGRAPH:first-child > [data-literal-index]");
+    await copyText(page, source);
+    const editable = page.locator(".editor-surface > .PARAGRAPH:nth-child(2) > [data-literal-index]");
+
+    await swallowNextPointerUp(page);
+    await page.keyboard.down("Control");
+    await editable.click();
+    await page.keyboard.up("Control");
+    await nativePaste(context, page);
+
+    await expect(editable).toHaveText("Copy me");
+    await expectEditableCaretAtEndAfterMouseMove(page, editable, "Copy me");
+    await page.keyboard.type("!");
+    await expect(editable).toHaveText("Copy me!");
   });
 });
 

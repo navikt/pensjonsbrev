@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.PE_KLAGE_BESLUTNING_OM_VEDTAKET_SKAL_IVERKSETTES
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.Brevkategori.*
@@ -12,7 +13,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -37,14 +38,14 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
-        val soeknadenInnvilget = saksbehandlervalg("SoeknadenInnvilget", "Søknaden er innvilget").bool()
+        val beslutningOmVedtaketSkalIverksettes = saksbehandlervalg("beslutningOmVedtaketSkalIverksettes", "Velg beslutning:").enum<BeslutningOmVedtaketSkalIverksettes>()
         val oekonomiskeForhold =
             saksbehandlervalg("oekonomiskeForhold", "Økonomiske forhold kan ikke vektlegges").bool()
         val tilbakekreving = saksbehandlervalg("tilbakekreving", "Hvis saken gjelder tilbakekreving, og vi gir avslag på utsatt iverksettelse").bool()
 
         title {
             text(bokmal { +"Vi har besluttet at vedtaket " })
-            showIf(soeknadenInnvilget) {
+            showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IKKE_IVERKSETTES)) {
                 text(bokmal { +"ikke skal " })
             }.orShow {
                 text(bokmal { +"skal " })
@@ -63,7 +64,7 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             }
             paragraph {
                 text(bokmal { +"Søknaden er " })
-                showIf(soeknadenInnvilget) {
+                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IKKE_IVERKSETTES)) {
                     text(bokmal { +"innvilget." })
                 }.orShow {
                     text(bokmal { +"avslått." })
@@ -88,10 +89,12 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
                     +"I vurderingen av om vedtaket likevel skal gis oppsettende virkning, "
                     +"skal det legges vekt på hva som antas å bli utfallet av klagebehandlingen. "
                 })
-                showIf(not(soeknadenInnvilget) and oekonomiskeForhold) {
-                    text(bokmal {
-                        +"Økonomiske forhold kan som hovedregel ikke vektlegges i vurderingen av om vedtaket skal gis oppsettende virkning."
-                    })
+                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES)) {
+                    showIf(oekonomiskeForhold) {
+                        text(bokmal {
+                            +"Økonomiske forhold kan som hovedregel ikke vektlegges i vurderingen av om vedtaket skal gis oppsettende virkning."
+                        })
+                    }
                 }
             }
 
@@ -107,25 +110,29 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             }
             paragraph {
                 text(bokmal { +"Vi mener at det " })
-                showIf(soeknadenInnvilget) {
+                showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IKKE_IVERKSETTES)) {
                     text(bokmal {
                         +"er grunnlag "
                     })
                 }.orShow {
                     text(bokmal { +"ikke er tilstrekkelig grunnlag " })
                 }
-                text(bokmal { +"for å utsette iverksettelse av vedtaket vårt av "
-                    +fritekst("dato") + " fram til klagen er endelig avgjort." })
+                text(bokmal {
+                    +"for å utsette iverksettelse av vedtaket vårt av "
+                    +fritekst("dato") + " fram til klagen er endelig avgjort."
+                })
             }
-            showIf(not(soeknadenInnvilget) and tilbakekreving) {
-                paragraph {
-                    text(bokmal {
-                        +"Du kan be Skatteetaten om en nedbetalingsavtale hvis det er vanskelig for deg å betale tilbake det feilutbetalte beløpet samlet."
-                    })
+            showIf(beslutningOmVedtaketSkalIverksettes.isOneOf(BeslutningOmVedtaketSkalIverksettes.IVERKSETTES)) {
+                showIf(tilbakekreving) {
+                    paragraph {
+                        text(bokmal {
+                            +"Du kan be Skatteetaten om en nedbetalingsavtale hvis det er vanskelig for deg å betale tilbake det feilutbetalte beløpet samlet."
+                        })
+                    }
                 }
             }
 
-            title1{ text(bokmal { +"Prosessuell beslutning uten klagerett" }) }
+            title1 { text(bokmal { +"Prosessuell beslutning uten klagerett" }) }
             paragraph {
                 text(bokmal {
                     +"Denne avgjørelsen er ikke et vedtak som gjelder individuelle rettigheter eller plikter (enkeltvedtak), "
@@ -137,5 +144,10 @@ object KlageBeslutningOmVedtaketSkalIverksettesPE : RedigerbarTemplate<EmptyRedi
             includePhrase(Felles.RettTilInnsynRedigerbarebrev)
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
+    }
+
+    enum class BeslutningOmVedtaketSkalIverksettes(override val displayText: String, override val rekkefoelge: Int) : SaksbehandlerValgEnum {
+        IVERKSETTES("Søknaden er avslått og vedtaket skal iverksettes", 1),
+        IKKE_IVERKSETTES("Søknaden er innvilget og vedtaket skal ikke iverksettes", 2)
     }
 }

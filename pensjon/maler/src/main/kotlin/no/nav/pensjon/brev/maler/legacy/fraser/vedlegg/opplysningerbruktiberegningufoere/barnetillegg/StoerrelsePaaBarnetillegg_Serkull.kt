@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseBarnetilleggsstoerrelse
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -13,11 +14,14 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class StoerrelsePaaBarnetillegg_Serkull(
-    val pe: Expression<PEgruppe10>
+    val pe: Expression<PEgruppe10>,
+    val visForklaringForBrevtype: Expression<Boolean>,
+    val utelatVedDoedsfall: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        val skalViseBarnetilleggsstoerrelse = pe.skalViseBarnetilleggsstoerrelse(visForklaringForBrevtype, utelatVedDoedsfall)
 
-        showIf(pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()) {
+        showIf(skalViseBarnetilleggsstoerrelse and pe.ut_tbu606v_tbu608v()) {
             paragraph {
                 text(
                     bokmal {
@@ -32,7 +36,7 @@ data class StoerrelsePaaBarnetillegg_Serkull(
             }
         }
 
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+        showIf((skalViseBarnetilleggsstoerrelse and pe.ut_tbu609v_tbu611v())){
             paragraph {
                 table(
                     header = {
@@ -231,7 +235,7 @@ data class StoerrelsePaaBarnetillegg_Serkull(
                     }
 
                     showIf(
-                        (pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
+                        (skalViseBarnetilleggsstoerrelse and pe.ut_tbu609v_tbu611v() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
                                 and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0))){
                         row {
                             cell {
@@ -258,7 +262,7 @@ data class StoerrelsePaaBarnetillegg_Serkull(
             (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
                 .greaterThan(
                     0
-                ) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+                ) and skalViseBarnetilleggsstoerrelse and pe.ut_tbu609v_tbu611v())){
             paragraph {
                 text (
                     bokmal { + "Du vil få utbetalt " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
@@ -281,7 +285,7 @@ data class StoerrelsePaaBarnetillegg_Serkull(
         }
 
         showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-            .equalTo(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+            .equalTo(0) and skalViseBarnetilleggsstoerrelse and pe.ut_tbu609v_tbu611v())){
             paragraph {
                 showIf((pe.ut_tbu611_far_ikke())){
                     text (
@@ -316,7 +320,7 @@ data class StoerrelsePaaBarnetillegg_Serkull(
             }
         }
 
-        showIf(pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v()) {
+        showIf(skalViseBarnetilleggsstoerrelse and pe.ut_tbu609v_tbu611v()) {
             paragraph {
                 text(
                     bokmal {

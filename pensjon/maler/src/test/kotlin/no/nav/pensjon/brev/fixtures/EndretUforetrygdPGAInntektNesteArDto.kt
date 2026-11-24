@@ -7,11 +7,12 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUfo
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.BarnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.Uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArAutoDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.FribelopUtvikling
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.Fribelopsokning
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto.Gradsokning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArRedigerbarDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtvikling
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsokning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Fribelopsperiode
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.Gradsokning
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import java.time.Month
@@ -32,6 +33,7 @@ fun createEndretUforetrygdPGAInntektNesteArRedigerbarDto() =
 fun createEndretUforetrygdPGAInntektNesteArData() =
     EndretUforetrygdPGAInntektNesteArDto(
         uforetrygd = Uforetrygd(
+            begrensningFribelop = true,
             netto = Kroner(1),
             endringsbelop = Kroner(1),
             inntektBruktIAvkortning = Kroner(0),
@@ -60,7 +62,7 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
                 )
             ),
             fribelopUtvikling = FribelopUtvikling(
-                kategori = EndretUforetrygdPGAInntektNesteArDto.FribelopUtviklingKategori.FRIBELOP_1G_TIL_04G,
+                kategori = FribelopUtviklingKategori.FRIBELOP_1G_TIL_04G,
                 gradsokning = Gradsokning(
                     dato = LocalDate.of(2027, Month.JULY, 1),
                     uforegradFoerOkning = 80
@@ -86,6 +88,7 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
         virkningFom = LocalDate.of(2027, 1, 1),
         opphorDato = null,
         totalNetto = Kroner(1),
+        endringTotalNetto = Kroner(-15),
         totalNettoAr = Kroner(12),
         datoForNormertPensjonsalder = vilkaarligDato,
         sokerMottarApIlaAret = false,

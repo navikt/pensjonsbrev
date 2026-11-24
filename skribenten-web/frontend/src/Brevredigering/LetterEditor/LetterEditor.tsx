@@ -27,6 +27,7 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
+import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
@@ -59,6 +60,8 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
+  const { diff, diffHash, showDeletions, showInsertions } = useAttestantDiff();
+  const showingDiff = diff && diffHash && (showDeletions || showInsertions);
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const [showFocusRing, setShowFocusRing] = useState(false);
@@ -189,7 +192,7 @@ export const LetterEditor = ({
             <div
               className="editor-surface"
               data-editor-root
-              onCopy={copyAsSemanticHtml}
+              onCopy={showingDiff ? undefined : copyAsSemanticHtml}
               onDragOver={(e) => {
                 e.preventDefault();
                 e.dataTransfer.dropEffect = "none";

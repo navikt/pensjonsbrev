@@ -1,5 +1,5 @@
 import { type Redigeringsflate } from "~/Brevredigering/LetterEditor/RedigeringsflateContext";
-import { trackEvent, type UmamiEventData } from "~/utils/umami";
+import { type InnblikkEventData, trackEvent } from "~/utils/innblikk";
 
 export type MissingFromTemplateEventName = "blokk beholdt" | "blokk slettet";
 
@@ -11,7 +11,7 @@ export type MissingFromTemplateEventName = "blokk beholdt" | "blokk slettet";
 export const trackMissingFromTemplateAction = (
   eventName: MissingFromTemplateEventName,
   redigeringsflate: Redigeringsflate,
-  eventData?: UmamiEventData,
+  eventData?: InnblikkEventData,
 ): void => {
   const { redigeringsflate: _redigeringsflate, ...ekstraData } = eventData ?? {};
 

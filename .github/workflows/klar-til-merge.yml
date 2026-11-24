@@ -12,6 +12,7 @@ on:
       - ".github/prompts/**"
       - ".github/regsuitconfig.json"
       - ".github/skills/**/*.md"
+      - ".github/skills/**/*.json"
       - ".github/workflows/.deploy.yaml"
       - ".github/workflows/.salsa.yaml"
       - ".github/workflows/cleanup.yml"

@@ -38,8 +38,8 @@ import { type Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { getErrorMessage } from "~/utils/errorUtils";
+import { trackEvent } from "~/utils/innblikk";
 import { trackMottakerClick } from "~/utils/mottakerTracking";
-import { trackEvent } from "~/utils/umami";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";

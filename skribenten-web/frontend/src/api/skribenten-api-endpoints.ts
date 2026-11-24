@@ -23,7 +23,7 @@ import {
   type PreferredLanguage,
   type SakContextDto,
 } from "~/types/apiTypes";
-import { type ApiFeatureToggleResponse } from "~/types/skribenten-api";
+import { type ApiFeatureToggleResponse, type ApiNyhetsvarsler } from "~/types/skribenten-api";
 import { type AttestForbiddenReason, parseAttest403 } from "~/utils/parseAttest403";
 
 export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
@@ -60,8 +60,9 @@ export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
 };
 
-export const acknowledgedAnnouncementsKeys = {
-  all: ["ACKNOWLEDGED_ANNOUNCEMENTS"] as const,
+// Seen means shown in the open announcement bell; acknowledged means the Joyride tour was closed and stops auto-starting.
+export const announcementStatusKeys = {
+  all: ["ANNOUNCEMENT_STATUS"] as const,
 };
 
 export const featureToggleKeys = {
@@ -170,15 +171,25 @@ export async function deleteFavoritt(id: string) {
   return (await axios.delete<string>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`, { data: id })).data;
 }
 
-export const getAcknowledgedAnnouncements = {
-  queryKey: acknowledgedAnnouncementsKeys.all,
-  queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler`)).data,
+/** Ids of the announcements the user has seen in the notification bell, and of those whose tour the user has completed. */
+export type AnnouncementStatus = ApiNyhetsvarsler;
+
+export const getAnnouncementStatus = {
+  queryKey: announcementStatusKeys.all,
+  queryFn: async () => (await axios.get<AnnouncementStatus>(`${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsel`)).data,
   staleTime: Number.POSITIVE_INFINITY,
   gcTime: Number.POSITIVE_INFINITY,
 };
 
+const announcementUrl = (announcementId: string) =>
+  `${SKRIBENTEN_API_BASE_PATH}/me/nyhetsvarsel/${encodeURIComponent(announcementId)}`;
+
 export async function acknowledgeAnnouncement(announcementId: string) {
-  await axios.put(`${SKRIBENTEN_API_BASE_PATH}/me/bekreftedeNyhetsvarsler/${encodeURIComponent(announcementId)}`);
+  await axios.put(`${announcementUrl(announcementId)}/gjennomfoertOmvisningen`);
+}
+
+export async function markAnnouncementSeen(announcementId: string) {
+  await axios.put(`${announcementUrl(announcementId)}/settAnnonsen`);
 }
 
 export async function orderExstreamLetter(saksId: string, orderLetterRequest: OrderExstreamLetterRequest) {

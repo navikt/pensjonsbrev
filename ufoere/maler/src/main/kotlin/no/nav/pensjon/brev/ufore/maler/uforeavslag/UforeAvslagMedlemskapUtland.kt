@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
 
     override val kode = UT_AVSLAG_MEDLEMSKAP_UTLAND
-    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.VEDTAK_OPPHOER_AVSLAG
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

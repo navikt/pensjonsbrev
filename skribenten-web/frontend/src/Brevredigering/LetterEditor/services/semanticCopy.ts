@@ -24,11 +24,21 @@ export function copyAsSemanticHtml(event: React.ClipboardEvent<HTMLElement>) {
   const clipboard = root.ownerDocument.createElement("div");
   clipboard.append(range.cloneContents());
   wrapInSelectedAncestors(clipboard, range, root);
+  const includesActions = clipboard.querySelector(".missing-from-template-actions") !== null;
   toSemanticHtml(clipboard);
 
   event.preventDefault();
   event.clipboardData.setData("text/html", clipboard.innerHTML);
-  event.clipboardData.setData("text/plain", withoutEditorCharacters(selection.toString()));
+  if (includesActions) {
+    for (const node of clipboard.querySelectorAll("br")) node.replaceWith("\n");
+    for (const node of clipboard.querySelectorAll("p,h1,h2,h3,li,tr,ul,ol,table")) {
+      if (node.nextSibling) node.after("\n");
+    }
+    for (const node of clipboard.querySelectorAll(":is(td,th) + :is(td,th)")) node.before("\t");
+    event.clipboardData.setData("text/plain", clipboard.textContent);
+  } else {
+    event.clipboardData.setData("text/plain", withoutEditorCharacters(selection.toString()));
+  }
 }
 
 /** A selection within one block is cloned without the block and literal around it, so add back those that matter. */

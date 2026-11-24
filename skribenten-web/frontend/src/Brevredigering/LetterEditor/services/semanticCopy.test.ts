@@ -104,6 +104,14 @@ describe("copy from the editor as semantic html", () => {
     expect(pasteIntoEmptyParagraph(html).slice(0, 3)).toEqual(["H1: Overskrift", "P: Innledning", "• Første punkt"]);
   });
 
+  test("a selection across template actions has only letter content in both clipboard formats", () => {
+    const root = renderEditor(`${para(lit("Start"))}<div class="TITLE1">${actions}<h2>${lit("End")}</h2></div>`);
+    select(root, [0, 0], [1, 3]);
+    const { html, text } = copy(root);
+    expect(html).toBe("<p>Start</p><h1>End</h1>");
+    expect(text).toBe("Start\nEnd");
+  });
+
   test("a selection reaching outside the editor surface keeps the browser's own copy", () => {
     const root = renderEditor(para(lit("Tekst")));
     const outside = document.createElement("p");

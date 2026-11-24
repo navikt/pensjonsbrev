@@ -1,8 +1,8 @@
 {
   "collection": "(à la carte)",
-  "version": "2026.11.04-221952-0b85e3a",
+  "version": "2026.11.18-111327-0b5cf4d",
   "scope": "repo",
-  "source_sha": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef",
+  "source_sha": "0b5cf4d4af27740f30281d81aacf8e6bd1b7de58",
   "installed_at": "2026-07-15T14:11:15Z",
   "files": [
     {
@@ -57,13 +57,13 @@
     },
     {
       "path": ".github/skills/observability-debugging/",
-      "hash": "d09dd467d7ce45a7",
-      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
+      "hash": "b68cd05f7cf865e7",
+      "revision": "0b5cf4d4af27740f30281d81aacf8e6bd1b7de58"
     },
     {
       "path": ".github/skills/security-owasp/",
-      "hash": "6c2dc64c5fe6b81e",
-      "revision": "0b85e3ab492b648ed9a182d5c60f97cc8aa55fef"
+      "hash": "c020e45389dad61d",
+      "revision": "0b5cf4d4af27740f30281d81aacf8e6bd1b7de58"
     },
     {
       "path": ".github/skills/security-review/",

@@ -3166,11 +3166,61 @@ export interface paths {
                         "application/json": components["schemas"]["DiffBrevHandlerResponse"];
                     };
                 };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
                 };
             };
         };
@@ -3451,6 +3501,126 @@ export interface paths {
             };
         };
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/nyhetsvarsel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiNyhetsvarsler"];
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/nyhetsvarsel/{nyhetsvarselId}/settAnnonsen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    nyhetsvarselId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/nyhetsvarsel/{nyhetsvarselId}/gjennomfoertOmvisningen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    nyhetsvarselId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         post?: never;
         delete?: never;
         options?: never;
@@ -3862,6 +4032,11 @@ export interface components {
          */
         Distribusjon: "SENTRALPRINT" | "LOKALPRINT";
         /**
+         * MarkupVersjon
+         * @enum {string}
+         */
+        MarkupVersjon: "V1";
+        /**
          * DtoMottakerManueltAdressertTil
          * @enum {string}
          */
@@ -3966,6 +4141,7 @@ export interface components {
             id: number;
             journalpostId?: number | null;
             leggVedFoersteside?: boolean | null;
+            markupVersjon: components["schemas"]["MarkupVersjon"];
             mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             /** Format: date-time */
             opprettet: string;
@@ -4743,6 +4919,11 @@ export interface components {
             id: string;
             navn: string;
         };
+        /** ApiNyhetsvarsler */
+        ApiNyhetsvarsler: {
+            gjennomfoertOmvisningen: string[];
+            settAnnonsen: string[];
+        };
         /** ApiFeatureToggleResponse */
         ApiFeatureToggleResponse: {
             enabled: boolean;
@@ -4790,6 +4971,7 @@ export type KrrServiceKontaktinfoResponseFailureType = components['schemas']['Kr
 export type KrrServiceKontaktinfoResponse = components['schemas']['KrrServiceKontaktinfoResponse'];
 export type NavEnhet = components['schemas']['NavEnhet'];
 export type Distribusjon = components['schemas']['Distribusjon'];
+export type MarkupVersjon = components['schemas']['MarkupVersjon'];
 export type DtoMottakerManueltAdressertTil = components['schemas']['DtoMottakerManueltAdressertTil'];
 export type ApiOverstyrtMottakerNorskAdresse = components['schemas']['ApiOverstyrtMottakerNorskAdresse'];
 export type ApiOverstyrtMottakerSamhandler = components['schemas']['ApiOverstyrtMottakerSamhandler'];
@@ -4906,6 +5088,7 @@ export type HentSamhandlerAdresseResponseDto = components['schemas']['HentSamhan
 export type ApiUserInfo = components['schemas']['ApiUserInfo'];
 export type Unit = components['schemas']['Unit'];
 export type NavAnsattEnhet = components['schemas']['NAVAnsattEnhet'];
+export type ApiNyhetsvarsler = components['schemas']['ApiNyhetsvarsler'];
 export type ApiFeatureToggleResponse = components['schemas']['ApiFeatureToggleResponse'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

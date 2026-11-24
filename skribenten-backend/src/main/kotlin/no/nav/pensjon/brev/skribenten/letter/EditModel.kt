@@ -70,7 +70,7 @@ object Edit {
         val includeSakspart: Boolean,
     )
 
-    interface Identifiable {
+    sealed interface Identifiable {
         val id: Int?
         val parentId: Int?
 

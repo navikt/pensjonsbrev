@@ -1,7 +1,7 @@
 == Arkitektur
 === Bakgrunn
 
-Dagens brevløsning består av to systemer: Metaforce/doksys stack og HP Extreme brev.
+Da vi startet utviklingen av den nye brevløsningen bestod brevløsningen av to systemer: Metaforce/doksys stack og HP Extreme brev.
 HP Extreme bruker hovedsakelig ESB(Enterprise Service Bus) som har en rekke problemer:
 
 * Vanskelig å foreta endringer på grunn av systemets kompleksitet og manglende kompetanse

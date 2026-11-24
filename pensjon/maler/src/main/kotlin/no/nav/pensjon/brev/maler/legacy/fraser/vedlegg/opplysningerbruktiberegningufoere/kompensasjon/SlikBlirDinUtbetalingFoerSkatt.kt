@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.Month
 
 data class SlikBlirDinUtbetalingFoerSkatt(
     val pe: Expression<PEgruppe10>,
@@ -114,9 +115,9 @@ data class SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 text (
                     bokmal { + "Du vil få en månedlig reduksjon i uføretrygden din på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format() + " i resterende måneder i kalenderåret." },
+                        .format() + ifElse(pe.vedtaksdata_virkningfom().month.equalTo(Month.JANUARY), " i ".expr() + pe.vedtaksdata_virkningfom().year.format() + ".", " i resterende måneder i kalenderåret.".expr()) },
                     nynorsk { + "Du får ein månadleg reduksjon i uføretrygda di på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format() + " i resterande månader i kalenderåret." },
+                        .format() + ifElse(pe.vedtaksdata_virkningfom().month.equalTo(Month.JANUARY), " i ".expr() + pe.vedtaksdata_virkningfom().year.format() + ".", " i resterande månader i kalenderåret.".expr()) },
                 )
             }
         }
@@ -176,10 +177,8 @@ data class SlikBlirDinUtbetalingFoerSkatt(
                 .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and visOrdinaereUtbetalingsavsnitt)){
             paragraph {
                 text (
-                    bokmal { + "Du vil få tilbake " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                        .format() + " prosent uføretrygd uten søknad, dersom du tjener mindre enn bunnfradraget ditt. Hvis du allerede har fått utbetalt det du har rett til i uføretrygd for kalenderåret, vil du ikke få utbetalt uføretrygd med den opprinnelige uføregraden din før neste kalenderår." },
-                    nynorsk { + "Du får tilbake " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                        .format() + " prosent uføretrygd utan søknad dersom du tener mindre enn botnfrådraget ditt. Dersom du allereie har fått utbetalt det du har rett til i uføretrygd for kalenderåret, får du ikkje utbetalt uføretrygd med den opphavlege uføregraden din før neste kalenderår." },
+                    bokmal { + "Du vil få tilbake uavkortet uføretrygd uten søknad, dersom du tjener mindre enn bunnfradraget ditt. Hvis du allerede har fått utbetalt det du har rett til i uføretrygd for kalenderåret, vil du ikke få utbetalt uføretrygd med den opprinnelige uføregraden din før neste kalenderår." },
+                    nynorsk { + "Du får tilbake uavkorta uføretrygd utan søknad, dersom du tener mindre enn botnfrådraget ditt. Dersom du allereie har fått utbetalt det du har rett til i uføretrygd for kalenderåret, får du ikkje utbetalt uføretrygd med den opphavlege uføregraden din før neste kalenderår." },
                 )
             }
         }
