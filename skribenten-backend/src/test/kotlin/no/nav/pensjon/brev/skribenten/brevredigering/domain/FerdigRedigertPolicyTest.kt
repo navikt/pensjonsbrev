@@ -106,6 +106,40 @@ class FerdigRedigertPolicyTest {
     }
 
     @Test
+    suspend fun `v2-brev med ikke redigert fritekst i tittel er ikke klar til sending`() {
+        val brev = RedigertBrevStub(
+            editedLetterV2 {
+                paragraph { literal(text = "lit2") }
+            }.copy(
+                title = EditV2.Title(
+                    listOf(
+                        EditV2.Text.Literal(id = 1, text = "Klage - "),
+                        EditV2.Text.Literal(id = 2, text = "ytelse", editBehaviour = EditV2.EditBehaviour.FRITEKST),
+                    )
+                )
+            )
+        )
+        assertThat(policy.erFerdigRedigert(brev)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert, _, _>()
+    }
+
+    @Test
+    suspend fun `v2-brev med redigert fritekst i tittel er klar til sending`() {
+        val brev = RedigertBrevStub(
+            editedLetterV2 {
+                paragraph { literal(text = "lit2") }
+            }.copy(
+                title = EditV2.Title(
+                    listOf(
+                        EditV2.Text.Literal(id = 1, text = "Klage - "),
+                        EditV2.Text.Literal(id = 2, text = "ytelse", editedText = "alderspensjon", editBehaviour = EditV2.EditBehaviour.FRITEKST),
+                    )
+                )
+            )
+        )
+        assertThat(policy.erFerdigRedigert(brev)).isSuccess()
+    }
+
+    @Test
     suspend fun `v2-brev med duplikat avsnitt er ikke klar til sending`() {
         Features.override(Features.hindreDuplikateAvsnitt, true)
         val brev = RedigertBrevStub(

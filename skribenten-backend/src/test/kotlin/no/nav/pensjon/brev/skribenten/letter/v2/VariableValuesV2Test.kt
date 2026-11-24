@@ -45,9 +45,16 @@ class VariableValuesV2Test {
             numberedList {
                 item { variable(id = 17, text = "var-17") }
             }
-        }
+        }.copy(
+            title = EditV2.Title(
+                listOf(
+                    EditV2.Text.Literal(id = 99, text = "Tittel: "),
+                    EditV2.Text.Variable(id = 18, text = "var-18"),
+                )
+            )
+        )
 
-        val expectedVars = (0..17).associate { it to "var-$it" }
+        val expectedVars = (0..18).associate { it to "var-$it" }
         assertEquals(expectedVars, letter.variablesValueMap())
     }
 }

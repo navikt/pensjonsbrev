@@ -5,9 +5,13 @@ import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Block.Table
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Item
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2.Text
 
-abstract class EditLetterVisitorV2<T>(private val blocks: List<Block>) {
-    constructor(letter: EditV2.Letter) : this(letter.blocks)
-    constructor(attachment: EditV2.Attachment) : this(attachment.blocks)
+abstract class EditLetterVisitorV2<T>(
+    private val title: EditV2.Title?,
+    private val blocks: List<Block>,
+) {
+    constructor(blocks: List<Block>) : this(null, blocks)
+    constructor(letter: EditV2.Letter) : this(letter.title, letter.blocks)
+    constructor(attachment: EditV2.Attachment) : this(attachment.title, attachment.blocks)
 
     private val result = mutableListOf<T>()
 
@@ -16,11 +20,16 @@ abstract class EditLetterVisitorV2<T>(private val blocks: List<Block>) {
     }
 
     fun build(): List<T> {
+        title?.let(::visit)
         blocks.forEach { visit(it) }
         return result
     }
 
     open fun visitIdentifiable(element: EditV2.Identifiable) = Unit
+
+    open fun visit(title: EditV2.Title) {
+        title.text.forEach { visit(it) }
+    }
 
     open fun visit(block: Block): Unit =
         when (block) {
@@ -82,11 +91,12 @@ abstract class EditLetterVisitorV2<T>(private val blocks: List<Block>) {
     open fun visit(text: Text.NewLine): Unit = visitIdentifiable(text)
 }
 
-fun EditV2.Letter.variablesValueMap(): Map<Int, String> = blocks.variablesValueMap()
+fun EditV2.Letter.variablesValueMap(): Map<Int, String> =
+    object : EditLetterVisitorV2<Text.Variable>(this) {
+        override fun visit(text: Text.Variable) = emit(text)
+    }.build().mapNotNull { v -> v.id?.let { it to v.text } }.toMap()
 
-fun EditV2.Attachment.variablesValueMap(): Map<Int, String> = blocks.variablesValueMap()
-
-private fun List<Block>.variablesValueMap(): Map<Int, String> =
+fun EditV2.Attachment.variablesValueMap(): Map<Int, String> =
     object : EditLetterVisitorV2<Text.Variable>(this) {
         override fun visit(text: Text.Variable) = emit(text)
     }.build().mapNotNull { v -> v.id?.let { it to v.text } }.toMap()
