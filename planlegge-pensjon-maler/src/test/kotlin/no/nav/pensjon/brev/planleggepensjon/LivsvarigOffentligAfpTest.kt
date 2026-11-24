@@ -6,7 +6,9 @@ import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrev
+import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
 import no.nav.pensjon.brev.planleggepensjon.simulering.LivsvarigOffentligAfp
+import no.nav.pensjon.brev.planleggepensjon.simulering.Uttaksinformasjon
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
@@ -21,6 +23,44 @@ import org.junit.jupiter.params.provider.ValueSource
 class LivsvarigOffentligAfpTest {
     private val tittel = "Livsvarig AFP i offentlig sektor"
     private val beskrivelse = "AFP-beløpet er hentet fra <Statens pensjonskasse>."
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun `viser AP ved valgte uttak og foerste uttak under AFP-tittelen`(gradert: Boolean) {
+        FeatureToggleSingleton.init(FeatureToggleDummy)
+        val brev = Fixtures.createBrevDtoMedAfpOffentligLivsvarig()
+        val simulering = brev.pesysData.simulering
+        val knekkpunkter = requireNotNull(simulering.maanedligAlderspensjonForKnekkpunkter)
+        val data = brev.pesysData.copy(
+            simuleringsinformasjon = brev.pesysData.simuleringsinformasjon.copy(
+                gradertUttakInformasjon = if (gradert) Uttaksinformasjon(Alder(63, 5), "01.10.2029", 50) else null,
+                heltUttakInformasjon = Uttaksinformasjon(Alder(65, 0), "01.05.2031", 100),
+                normertPensjonsalderPlassering = null,
+            ),
+            simulering = simulering.copy(
+                maanedligAlderspensjonForKnekkpunkter = knekkpunkter.copy(
+                    vedGradertUttak = if (gradert) knekkpunkter.vedHeltUttak else null,
+                ),
+            ),
+        )
+        val rendered = LetterTestRenderer.render(
+            LetterTestImpl(ApSimuleringBrev.template, brev.copy(pesysData = data), Language.Bokmal, Fixtures.felles),
+        )
+        val blocks = rendered.attachments.first().blocks
+        val maanedligIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Månedlig pensjon før skatt" }
+        val opplysningerIndex = blocks.indexOfFirst { it is Block.Title1 && it.content.text() == "Opplysninger brukt i pensjonsberegningen" }
+        val heltTittel = "Ved 65 år (01.05.2031)"
+        val gradertTittel = "Ved 63 år og 5 måneder (01.10.2029)"
+        assertEquals(
+            if (gradert) listOf(gradertTittel, heltTittel) else listOf(heltTittel),
+            blocks.subList(maanedligIndex + 1, opplysningerIndex).filterIsInstance<Block.Title2>().map { it.content.text() },
+        )
+        val afpIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == tittel }
+        val uttakTittel = assertInstanceOf(Block.Title3::class.java, blocks[afpIndex + 1])
+        assertEquals(if (gradert) gradertTittel else heltTittel, uttakTittel.content.text())
+        val tabell = assertInstanceOf(Block.Paragraph::class.java, blocks[afpIndex + 2])
+        assertTrue(tabell.content.any { it is ParagraphContent.Table })
+    }
 
     @ParameterizedTest
     @ValueSource(booleans = [true, false])

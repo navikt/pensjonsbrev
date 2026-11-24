@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.LivsvarigOffentligAfp
+import no.nav.pensjon.brev.planleggepensjon.simulering.Uttaksinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.livsvarigOffentligAfp.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.VedAlderPhrase
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
@@ -14,12 +16,16 @@ import no.nav.pensjon.brev.template.dsl.text
 data class LivsvarigOffentligAfpSeksjon(
     val afp: Expression<LivsvarigOffentligAfp?>,
     val beskrivelse: Expression<String?>,
+    val uttaksinformasjon: Expression<Uttaksinformasjon>,
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         title2 {
             text(bokmal { +"Livsvarig AFP i offentlig sektor" })
         }
         ifNotNull(afp) { beloep ->
+            title3 {
+                includePhrase(VedAlderPhrase(uttaksinformasjon))
+            }
             paragraph {
                 table(header = {
                     column(columnSpan = 3) {
