@@ -92,9 +92,11 @@ class LivsvarigOffentligAfpTest {
         assertTrue(afpTabell.rows[1].cells[0].text.all { it.fontType == ParagraphContent.Text.FontType.BOLD })
 
         val tittelIndex = blocks.indexOfFirst { it is Block.Title2 && it.content.text() == tittel }
-        val tabellAvsnitt = assertInstanceOf(Block.Paragraph::class.java, blocks[tittelIndex + 1])
+        val uttakTittel = assertInstanceOf(Block.Title3::class.java, blocks[tittelIndex + 1])
+        assertEquals("Ved 62 år (01.02.2025)", uttakTittel.content.text())
+        val tabellAvsnitt = assertInstanceOf(Block.Paragraph::class.java, blocks[tittelIndex + 2])
         assertEquals(afpTabell, tabellAvsnitt.content.single())
-        val beskrivelseAvsnitt = assertInstanceOf(Block.Paragraph::class.java, blocks[tittelIndex + 2])
+        val beskrivelseAvsnitt = assertInstanceOf(Block.Paragraph::class.java, blocks[tittelIndex + 3])
         assertEquals(beskrivelse, beskrivelseAvsnitt.content.filterIsInstance<ParagraphContent.Text>().text())
         assertEquals(0, tables(blocks).count { it.header.colSpec.first().headerContent.text.text() == "Alderspensjon og AFP" })
     }
