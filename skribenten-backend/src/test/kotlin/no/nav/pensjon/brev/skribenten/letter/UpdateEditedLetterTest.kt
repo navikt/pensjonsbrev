@@ -478,6 +478,40 @@ class UpdateRenderedLetterTest {
     }
 
     @Test
+    fun `duplicate inserted before an existing occurrence is NEW_IN_TEMPLATE`() {
+        val previous = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Gjentatt"))),
+        ).toEdit()
+        val next = letter(
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Gjentatt"))),
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Gjentatt"))),
+        )
+        val expected = editedLetter {
+            paragraph(id = 2, templateStatus = Edit.Block.TemplateStatus.NEW_IN_TEMPLATE) { literal(id = 21, text = "Gjentatt") }
+            paragraph(id = 1) { literal(id = 11, text = "Første") }
+            paragraph(id = 2) { literal(id = 21, text = "Gjentatt") }
+        }
+
+        assertEquals(expected, previous.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
+    fun `reordered block from previous render is not NEW_IN_TEMPLATE`() {
+        val previous = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        ).toEdit()
+        val next = letter(
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+        )
+
+        assertEquals(next.toEdit(), previous.updateEditedLetter(next, previousRender = previous))
+    }
+
+    @Test
     fun `blocks added by saksbehandler and blocks missing from template are not NEW_IN_TEMPLATE`() {
         val previous = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første")))).toEdit()
         val next = letter(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))))

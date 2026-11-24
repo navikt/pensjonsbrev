@@ -271,17 +271,26 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
     /**
      * Marks blocks in the fresh render that were not present in [previousRender] as [TemplateStatus.NEW_IN_TEMPLATE].
      * Ids may occur several times in a render, so each occurrence in [previousRender] only accounts for one block.
-     * Without a [previousRender] no blocks are marked.
+     * Occurrences aligned with [previousRender] (see [ListAlignment.matchedRenderedIndices]) are reserved first, so that
+     * a duplicate inserted before an existing occurrence is the one marked. Remaining occurrences are then consumed
+     * by reordered blocks in render order. Without a [previousRender] no blocks are marked.
      */
     private fun withNewInTemplate(rendered: List<Edit.Block>, previousRender: Edit.Letter?): List<Edit.Block> {
         if (previousRender == null) return rendered
-        val previousOccurrences = previousRender.blocks.mapNotNull { it.id }.groupingBy { it }.eachCount().toMutableMap()
+        val matchedIndices = ListAlignment.matchedRenderedIndices(previousRender.blocks, rendered)
+        val remainingOccurrences = previousRender.blocks.mapNotNull { it.id }.groupingBy { it }.eachCount().toMutableMap()
+        matchedIndices.forEach { index -> rendered[index].id?.let { id -> remainingOccurrences[id] = remainingOccurrences.getValue(id) - 1 } }
 
-        return rendered.map { block ->
-            val id = block.id ?: return@map block
-            val remaining = previousOccurrences[id] ?: 0
-            previousOccurrences[id] = remaining - 1
-            if (remaining > 0) block else block.withTemplateStatus(TemplateStatus.NEW_IN_TEMPLATE)
+        return rendered.mapIndexed { index, block ->
+            val id = block.id
+            if (id == null || index in matchedIndices) return@mapIndexed block
+            val remaining = remainingOccurrences[id] ?: 0
+            if (remaining > 0) {
+                remainingOccurrences[id] = remaining - 1
+                block
+            } else {
+                block.withTemplateStatus(TemplateStatus.NEW_IN_TEMPLATE)
+            }
         }
     }
 
