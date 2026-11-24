@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaks
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.belopsendring.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.barnetilleggFellesYK.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.barnetilleggSerkullYK.*
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.kravhode.selectors.kravhode.*
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -107,6 +106,9 @@ fun Expression<PEgruppe10>.harBrevkodeForBarnetilleggsberegning(): Expression<Bo
         "PE_UT_06_300",
     )
 
+fun Expression<PEgruppe10>.erInntektsendring(): Expression<Boolean> =
+    pebrevkode().equalTo("PE_UT_05_100") or vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")
+
 /**
  * Tidl. `ut_tbu069v` (Exstream TBU069V): innvilget barnetillegg som faktisk er utbetalt, med
  * brevtypevalg og dødsfallsunntak fra kallstedet.
@@ -135,7 +137,7 @@ fun Expression<PEgruppe10>.skalViseBarnetilleggsstoerrelse(
                 (visForklaringForBrevtype and oppfyllerDoedsfallsvilkaar(utelatVedDoedsfall))
             ) or
             (
-                vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") and
+                    erInntektsendring() and
                     (vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb()
                         .notEqualTo(vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb()) or
                         vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb()
@@ -250,7 +252,7 @@ fun Expression<PEgruppe10>.skalViseEtteroppgjoer(): Expression<Boolean> =
 
 /** DATASTYRT: kravårsaken er inntektsendring og det utbetalte uførebeløpet er faktisk endret. */
 fun Expression<PEgruppe10>.erInntektsendringMedEndretUtbetaling(): Expression<Boolean> =
-    vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") and
+    erInntektsendring() and
         vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
             .notEqualTo(vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut())
 
@@ -357,7 +359,7 @@ fun Expression<PEgruppe10>.skalViseReduksjonsprosentavsnitt(erBeregningsendring:
  */
 fun Expression<PEgruppe10>.erInntektsendringMedEndretBarnetillegg(): Expression<Boolean> {
     val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
-    return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
+    return erInntektsendring() and
             (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb.ifNull(Kroner(0)) }) or
                     belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb.ifNull(Kroner(0)) }))
 }
