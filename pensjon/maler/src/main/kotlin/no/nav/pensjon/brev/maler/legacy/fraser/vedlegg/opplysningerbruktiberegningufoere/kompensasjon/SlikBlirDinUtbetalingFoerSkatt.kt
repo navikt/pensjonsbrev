@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.Month
 
 data class SlikBlirDinUtbetalingFoerSkatt(
     val pe: Expression<PEgruppe10>,
@@ -114,9 +115,9 @@ data class SlikBlirDinUtbetalingFoerSkatt(
             paragraph {
                 text (
                     bokmal { + "Du vil få en månedlig reduksjon i uføretrygden din på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format() + " i resterende måneder i kalenderåret." },
+                        .format() + ifElse(pe.vedtaksdata_virkningfom().month.equalTo(Month.JANUARY), " i ".expr() + pe.vedtaksdata_virkningfom().year.format() + ".", " i resterende måneder i kalenderåret.".expr()) },
                     nynorsk { + "Du får ein månadleg reduksjon i uføretrygda di på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_fradrag()
-                        .format() + " i resterande månader i kalenderåret." },
+                        .format() + ifElse(pe.vedtaksdata_virkningfom().month.equalTo(Month.JANUARY), " i ".expr() + pe.vedtaksdata_virkningfom().year.format() + ".", " i resterande månader i kalenderåret.".expr()) },
                 )
             }
         }
