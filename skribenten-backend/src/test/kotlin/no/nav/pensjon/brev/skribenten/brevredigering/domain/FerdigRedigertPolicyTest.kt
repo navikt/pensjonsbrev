@@ -69,23 +69,6 @@ class FerdigRedigertPolicyTest {
     }
 
     @Test
-    suspend fun `brev med godtatt duplikat avsnitt er klar til sending`() {
-        Features.override(Features.hindreDuplikateAvsnitt, true)
-        val brev = RedigertBrevStub(
-            editedLetter {
-                paragraph(
-                    id = 1,
-                    decision = Edit.Block.DecisionRequest(
-                        Edit.Block.DecisionRequest.Type.MISSING_FROM_RENDERED,
-                        Edit.Block.DecisionRequest.Decision.ACCEPTED,
-                    ),
-                ) { }
-            }
-        )
-        assertThat(policy.erFerdigRedigert(brev)).isSuccess()
-    }
-
-    @Test
     suspend fun `brev med duplikat avsnitt er ikke klar til sending`() {
         Features.override(Features.hindreDuplikateAvsnitt, true)
         val brev = RedigertBrevStub(

@@ -118,13 +118,13 @@ object Edit {
                 // TODO: Slett denne når frontend også er oppdatert til å bruke status som enum og ikkje missingFromTemplate-boolean
                 fun fromJson(decision: DecisionRequest?, missingFromTemplate: Boolean?): DecisionRequest? =
                     when (missingFromTemplate) {
-                        true -> decision ?: DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.PENDING)
+                        true -> DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.ACCEPTED)
                         false if decision?.type == Type.MISSING_FROM_RENDERED -> DecisionRequest(
                             Type.MISSING_FROM_RENDERED,
-                            Decision.ACCEPTED
+                            Decision.PENDING
                         )
 
-                        else -> decision
+                        else -> null
                     }
             }
         }
@@ -134,7 +134,7 @@ object Edit {
             replaceWith = ReplaceWith("templateStatus == TemplateStatus.MISSING_FROM_RENDERED")
         )
         val missingFromTemplate: Boolean
-            get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED && decision?.status == DecisionRequest.Decision.PENDING
+            get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED
 
         enum class MergeStatus {
             MATCHED_WITH_RENDERED, MISSING_FROM_RENDERED, NEW_IN_EDITED;
@@ -522,5 +522,4 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
-
 
