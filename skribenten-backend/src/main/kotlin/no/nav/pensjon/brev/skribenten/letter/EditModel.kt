@@ -110,10 +110,10 @@ object Edit {
             replaceWith = ReplaceWith("templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE")
         )
         val missingFromTemplate: Boolean
-            get() = templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE
+            get() = templateStatus == TemplateStatus.MISSING_FROM_RENDERED
 
         enum class TemplateStatus {
-            IN_TEMPLATE, MISSING_FROM_TEMPLATE;
+            MATCHED_WITH_RENDERED, MISSING_FROM_RENDERED, NEW_IN_EDITED;
 
             companion object {
                 /**
@@ -124,9 +124,9 @@ object Edit {
                 // TODO: Slett denne når frontend også er oppdatert til å bruke status som enum og ikkje missingFromTemplate-boolean
                 fun fromJson(templateStatus: TemplateStatus?, missingFromTemplate: Boolean?): TemplateStatus =
                     when {
-                        missingFromTemplate == true -> MISSING_FROM_TEMPLATE
-                        missingFromTemplate == false && templateStatus == MISSING_FROM_TEMPLATE -> IN_TEMPLATE
-                        else -> templateStatus ?: IN_TEMPLATE
+                        missingFromTemplate == true -> MISSING_FROM_RENDERED
+                        missingFromTemplate == false && templateStatus == MISSING_FROM_RENDERED -> MATCHED_WITH_RENDERED
+                        else -> templateStatus ?: MATCHED_WITH_RENDERED
                     }
             }
         }
@@ -143,7 +143,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val templateStatus: TemplateStatus = TemplateStatus.IN_TEMPLATE,
+            override val templateStatus: TemplateStatus = TemplateStatus.MATCHED_WITH_RENDERED,
         ) : Block(Type.TITLE1) {
             @JsonCreator
             constructor(
@@ -165,7 +165,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val templateStatus: TemplateStatus = TemplateStatus.IN_TEMPLATE,
+            override val templateStatus: TemplateStatus = TemplateStatus.MATCHED_WITH_RENDERED,
         ) : Block(Type.TITLE2) {
             @JsonCreator
             constructor(
@@ -187,7 +187,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val templateStatus: TemplateStatus = TemplateStatus.IN_TEMPLATE,
+            override val templateStatus: TemplateStatus = TemplateStatus.MATCHED_WITH_RENDERED,
         ) : Block(Type.TITLE3) {
             @JsonCreator
             constructor(
@@ -209,7 +209,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val templateStatus: TemplateStatus = TemplateStatus.IN_TEMPLATE,
+            override val templateStatus: TemplateStatus = TemplateStatus.MATCHED_WITH_RENDERED,
         ) : Block(Type.PARAGRAPH) {
             @JsonCreator
             constructor(

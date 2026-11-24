@@ -44,23 +44,28 @@ class EditModelJacksonTest {
 
     @Test
     fun `blokk lagret foer templateStatus fantes og uten missingFromTemplate er IN_TEMPLATE`() {
-        assertThat(readBlock(paragraphJson("")).templateStatus).isEqualTo(TemplateStatus.IN_TEMPLATE)
+        assertThat(readBlock(paragraphJson("")).templateStatus).isEqualTo(TemplateStatus.MATCHED_WITH_RENDERED)
     }
 
     @Test
     fun `blokk lagret foer templateStatus fantes med missingFromTemplate true er MISSING_FROM_TEMPLATE`() {
-        assertThat(readBlock(paragraphJson(""","missingFromTemplate":true""")).templateStatus).isEqualTo(TemplateStatus.MISSING_FROM_TEMPLATE)
+        assertThat(readBlock(paragraphJson(""","missingFromTemplate":true""")).templateStatus).isEqualTo(TemplateStatus.MISSING_FROM_RENDERED)
     }
 
     @Test
     fun `missingFromTemplate false overstyrer MISSING_FROM_TEMPLATE slik at frontend kan beholde blokken`() {
         val json = paragraphJson(""","templateStatus":"MISSING_FROM_TEMPLATE","missingFromTemplate":false""")
-        assertThat(readBlock(json).templateStatus).isEqualTo(TemplateStatus.IN_TEMPLATE)
+        assertThat(readBlock(json).templateStatus).isEqualTo(TemplateStatus.MATCHED_WITH_RENDERED)
     }
 
     @Test
     fun `serialiserer baade templateStatus og missingFromTemplate`() {
-        val block = Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), templateStatus = TemplateStatus.MISSING_FROM_TEMPLATE)
+        val block = Edit.Block.Paragraph(
+            id = 1,
+            editable = true,
+            content = emptyList(),
+            templateStatus = TemplateStatus.MISSING_FROM_RENDERED
+        )
         val tree = objectMapper.valueToTree<JsonNode>(block)
 
         assertThat(tree["templateStatus"].asText()).isEqualTo("MISSING_FROM_TEMPLATE")

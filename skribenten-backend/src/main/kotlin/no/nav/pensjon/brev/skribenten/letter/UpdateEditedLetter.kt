@@ -118,7 +118,12 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         edited.forEach { currentEdited ->
             // If the currentEdited element is new, i.e. was added manually by Saksbehandler.
             if (currentEdited.isNew()) {
-                add(variableValues.withUpdatedVariables(currentEdited))
+                add(
+                    withTemplateStatus(
+                        variableValues.withUpdatedVariables(currentEdited),
+                        Edit.Block.TemplateStatus.NEW_IN_EDITED
+                    )
+                )
             } else {
                 val renderedIndex = remainingRendered.indexOfFirst { it.id == currentEdited.id }
 
@@ -137,7 +142,12 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-                    add(withMissingFromTemplate(variableValues.withUpdatedVariables(currentEdited)))
+                    add(
+                        withTemplateStatus(
+                            variableValues.withUpdatedVariables(currentEdited),
+                            Edit.Block.TemplateStatus.MISSING_FROM_RENDERED
+                        )
+                    )
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
                     // But it is moved by intent, so we do not wish to remove it.
@@ -255,12 +265,12 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
 
 
     @Suppress("UNCHECKED_CAST")
-    private fun <E : Edit.Identifiable> withMissingFromTemplate(element: E): E =
+    private fun <E : Edit.Identifiable> withTemplateStatus(element: E, status: Edit.Block.TemplateStatus): E =
         when (element) {
-            is Edit.Block.Title1 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
-            is Edit.Block.Title2 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
-            is Edit.Block.Title3 -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
-            is Edit.Block.Paragraph -> element.copy(templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_TEMPLATE) as E
+            is Edit.Block.Title1 -> element.copy(templateStatus = status) as E
+            is Edit.Block.Title2 -> element.copy(templateStatus = status) as E
+            is Edit.Block.Title3 -> element.copy(templateStatus = status) as E
+            is Edit.Block.Paragraph -> element.copy(templateStatus = status) as E
             is Edit.ParagraphContent,
             is Edit.ParagraphContent.ItemList.Item,
             is Edit.ParagraphContent.Table.Header,
