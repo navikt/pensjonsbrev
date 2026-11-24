@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegn
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.erInntektsendring
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.maler.legacy.vedlegg.skalViseBarnetilleggsberegning
 import no.nav.pensjon.brev.template.Expression
@@ -69,7 +70,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                     )
                 }
 
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
+                showIf(pe.erInntektsendring()) {
                     text(
                         bokmal { + "Når inntekten din " },
                         nynorsk { + "Når inntekta di " },
@@ -77,8 +78,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                 }
 
                 showIf(
-                    ((pe.vedtaksdata_kravhode_kravarsaktype()
-                        .equalTo("endret_inntekt") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
+                    ((pe.erInntektsendring() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                         .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                         .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
                         "bormed 1-5"
@@ -91,7 +91,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                     )
                 }
 
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
+                showIf(pe.erInntektsendring()) {
                     text(
                         bokmal { + "endrer seg," },
                         nynorsk { + "endrar seg," },

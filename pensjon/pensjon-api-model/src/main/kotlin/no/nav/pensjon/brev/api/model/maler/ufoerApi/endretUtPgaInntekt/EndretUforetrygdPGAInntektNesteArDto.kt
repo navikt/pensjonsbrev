@@ -18,6 +18,7 @@ data class EndretUforetrygdPGAInntektNesteArDto(
     val virkningFom: LocalDate,
     val opphorDato: LocalDate?,
     val totalNetto: Kroner,
+    val endringTotalNetto: Kroner,
     val totalNettoAr: Kroner,
     val datoForNormertPensjonsalder: LocalDate,
     val sokerMottarApIlaAret: Boolean,
