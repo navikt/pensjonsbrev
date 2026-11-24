@@ -105,7 +105,7 @@ class EditLetterBuilder {
     val blocks = mutableListOf<Edit.Block>()
     fun paragraph(
         id: Int? = null,
-        templateStatus: Edit.Block.MergeStatus = Edit.Block.MergeStatus.MATCHED_WITH_RENDERED,
+        decision: Edit.Block.DecisionRequest? = null,
         deletedContent: Collection<Int> = emptyList(),
         builder: ParagraphContentBuilder.() -> Unit,
     ) {
@@ -113,14 +113,14 @@ class EditLetterBuilder {
             id = id,
             editable = true,
             content = ParagraphContentBuilder().apply(builder).content,
-            status = templateStatus,
+            decision = decision,
             deletedContent = deletedContent.toList()
         )
     }
 
     fun title1(
         id: Int? = null,
-        templateStatus: Edit.Block.MergeStatus = Edit.Block.MergeStatus.MATCHED_WITH_RENDERED,
+        decision: Edit.Block.DecisionRequest? = null,
         deletedContent: Collection<Int> = emptyList(),
         originalType: Edit.Block.Type? = null,
         builder: TextContentBuilder.() -> Unit,
@@ -129,7 +129,7 @@ class EditLetterBuilder {
             id = id,
             editable = true,
             content = TextContentBuilder().apply(builder).texts,
-            status = templateStatus,
+            decision = decision,
             deletedContent = deletedContent.toList(),
             originalType = originalType
         )
@@ -137,7 +137,7 @@ class EditLetterBuilder {
 
     fun title2(
         id: Int? = null,
-        templateStatus: Edit.Block.MergeStatus = Edit.Block.MergeStatus.MATCHED_WITH_RENDERED,
+        decision: Edit.Block.DecisionRequest? = null,
         deletedContent: Collection<Int> = emptyList(),
         originalType: Edit.Block.Type? = null,
         builder: TextContentBuilder.() -> Unit,
@@ -146,7 +146,7 @@ class EditLetterBuilder {
             id = id,
             editable = true,
             content = TextContentBuilder().apply(builder).texts,
-            status = templateStatus,
+            decision = decision,
             deletedContent = deletedContent.toList(),
             originalType = originalType
         )
@@ -154,7 +154,7 @@ class EditLetterBuilder {
 
     fun title3(
         id: Int? = null,
-        templateStatus: Edit.Block.MergeStatus = Edit.Block.MergeStatus.MATCHED_WITH_RENDERED,
+        decision: Edit.Block.DecisionRequest? = null,
         deletedContent: Collection<Int> = emptyList(),
         originalType: Edit.Block.Type? = null,
         builder: TextContentBuilder.() -> Unit,
@@ -163,7 +163,7 @@ class EditLetterBuilder {
             id = id,
             editable = true,
             content = TextContentBuilder().apply(builder).texts,
-            status = templateStatus,
+            decision = decision,
             deletedContent = deletedContent.toList(),
             originalType = originalType
         )

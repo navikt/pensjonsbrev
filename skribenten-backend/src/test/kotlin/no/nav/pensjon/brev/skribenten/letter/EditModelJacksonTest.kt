@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.skribenten.letter
 
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.MergeStatus
+import no.nav.pensjon.brev.skribenten.letter.Edit.Block.DecisionRequest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -43,33 +43,47 @@ class EditModelJacksonTest {
     private fun readBlock(json: String) = objectMapper.readValue(json, Edit.Block::class.java)
 
     @Test
-    fun `blokk lagret foer templateStatus fantes og uten missingFromTemplate er IN_TEMPLATE`() {
-        assertThat(readBlock(paragraphJson("")).status).isEqualTo(MergeStatus.MATCHED_WITH_RENDERED)
+    fun `blokk uten missingFromTemplate trenger ingen beslutning`() {
+        assertThat(readBlock(paragraphJson("")).decision).isNull()
+        assertThat(readBlock(paragraphJson(""","missingFromTemplate":false""")).decision).isNull()
     }
 
     @Test
-    fun `blokk lagret foer templateStatus fantes med missingFromTemplate true er MISSING_FROM_RENDERED`() {
-        assertThat(readBlock(paragraphJson(""","missingFromTemplate":true""")).status).isEqualTo(MergeStatus.MISSING_FROM_RENDERED)
+    fun `blokk med missingFromTemplate true trenger beslutning`() {
+        assertThat(readBlock(paragraphJson(""","missingFromTemplate":true""")).decision)
+            .isEqualTo(DecisionRequest(DecisionRequest.Type.MISSING_FROM_RENDERED, DecisionRequest.Decision.PENDING))
     }
 
     @Test
-    fun `missingFromTemplate false overstyrer MISSING_FROM_RENDERED slik at frontend kan beholde blokken`() {
-        val json = paragraphJson(""","templateStatus":"MISSING_FROM_RENDERED","missingFromTemplate":false""")
-        assertThat(readBlock(json).status).isEqualTo(MergeStatus.MATCHED_WITH_RENDERED)
-    }
-
-    @Test
-    fun `serialiserer baade templateStatus og missingFromTemplate`() {
-        val block = Edit.Block.Paragraph(
-            id = 1,
-            editable = true,
-            content = emptyList(),
-            status = MergeStatus.MISSING_FROM_RENDERED
+    fun `missingFromTemplate false godtar at frontend beholder blokken`() {
+        val json = paragraphJson(
+            ""","decision":{"type":"MISSING_FROM_RENDERED","status":"PENDING"},"missingFromTemplate":false"""
         )
-        val tree = objectMapper.valueToTree<JsonNode>(block)
+        assertThat(readBlock(json).decision)
+            .isEqualTo(DecisionRequest(DecisionRequest.Type.MISSING_FROM_RENDERED, DecisionRequest.Decision.ACCEPTED))
+    }
 
-        assertThat(tree["templateStatus"].asText()).isEqualTo(MergeStatus.MISSING_FROM_RENDERED.name)
-        assertThat(tree["missingFromTemplate"].asBoolean()).isTrue()
-        assertThat(readBlock(objectMapper.writeValueAsString(block))).isEqualTo(block)
+    @Test
+    fun `serialiserer beslutninger og missingFromTemplate for alle blokktyper`() {
+        DecisionRequest.Decision.entries.forEach { status ->
+            val decision = DecisionRequest(DecisionRequest.Type.MISSING_FROM_RENDERED, status)
+            val blocks = editLetterBlocks {
+                paragraph(id = 1, decision = decision) {}
+                title1(id = 2, decision = decision) {}
+                title2(id = 3, decision = decision) {}
+                title3(id = 4, decision = decision) {}
+            }
+
+            blocks.forEach { block ->
+                val tree = objectMapper.valueToTree<ObjectNode>(block)
+
+                assertThat(tree["decision"]["type"].asText()).isEqualTo(decision.type.name)
+                assertThat(tree["decision"]["status"].asText()).isEqualTo(status.name)
+                assertThat(tree["missingFromTemplate"].asBoolean()).isEqualTo(status == DecisionRequest.Decision.PENDING)
+                assertThat(readBlock(objectMapper.writeValueAsString(block))).isEqualTo(block)
+                tree.remove("missingFromTemplate")
+                assertThat(readBlock(objectMapper.writeValueAsString(tree))).isEqualTo(block)
+            }
+        }
     }
 }
