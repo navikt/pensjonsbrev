@@ -45,6 +45,8 @@ class DraftHandler(
         if (request.revision != current.revision) throw RevisionConflict(current.revision)
         if (request.draft.source != current.draft.source) throw ApiFailure(HttpStatusCode.BadRequest, "IMMUTABLE_SOURCE", "Kildeopphav kan ikke endres.")
         validate(request.draft)
+        val sourceIssues = catalogue.checkSource(request.draft, current.draft)
+        if (sourceIssues.isNotEmpty()) throw InvalidDraft(sourceIssues)
         val stamped = stamp(current.draft, request.draft, author)
         val record = repository.update(id, request.revision, stamped, author)
         metrics.counter("brevoppskrift.draft.saved").increment()
