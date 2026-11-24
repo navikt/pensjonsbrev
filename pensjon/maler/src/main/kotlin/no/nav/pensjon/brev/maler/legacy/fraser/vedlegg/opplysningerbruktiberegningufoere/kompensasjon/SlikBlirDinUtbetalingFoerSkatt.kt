@@ -176,10 +176,8 @@ data class SlikBlirDinUtbetalingFoerSkatt(
                 .lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.erIkkeSoknadOmBarnetillegg() and visOrdinaereUtbetalingsavsnitt)){
             paragraph {
                 text (
-                    bokmal { + "Du vil få tilbake " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                        .format() + " prosent uføretrygd uten søknad, dersom du tjener mindre enn bunnfradraget ditt. Hvis du allerede har fått utbetalt det du har rett til i uføretrygd for kalenderåret, vil du ikke få utbetalt uføretrygd med den opprinnelige uføregraden din før neste kalenderår." },
-                    nynorsk { + "Du får tilbake " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                        .format() + " prosent uføretrygd utan søknad dersom du tener mindre enn botnfrådraget ditt. Dersom du allereie har fått utbetalt det du har rett til i uføretrygd for kalenderåret, får du ikkje utbetalt uføretrygd med den opphavlege uføregraden din før neste kalenderår." },
+                    bokmal { + "Du vil få tilbake uavkortet uføretrygd uten søknad, dersom du tjener mindre enn bunnfradraget ditt. Hvis du allerede har fått utbetalt det du har rett til i uføretrygd for kalenderåret, vil du ikke få utbetalt uføretrygd med den opprinnelige uføregraden din før neste kalenderår." },
+                    nynorsk { + "Du får tilbake uavkorta uføretrygd utan søknad, dersom du tener mindre enn botnfrådraget ditt. Dersom du allereie har fått utbetalt det du har rett til i uføretrygd for kalenderåret, får du ikkje utbetalt uføretrygd med den opphavlege uføregraden din før neste kalenderår." },
                 )
             }
         }
