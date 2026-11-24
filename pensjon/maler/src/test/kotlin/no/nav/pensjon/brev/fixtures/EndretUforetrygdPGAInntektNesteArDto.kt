@@ -62,7 +62,7 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
                 )
             ),
             fribelopUtvikling = FribelopUtvikling(
-                kategori = FribelopUtviklingKategori.FRIBELOP_1G_TIL_04G,
+                kategori = FribelopUtviklingKategori.FRIBELOP_1G_FRA_JAN,
                 gradsokning = Gradsokning(
                     dato = LocalDate.of(2027, Month.JULY, 1),
                     uforegradFoerOkning = 80

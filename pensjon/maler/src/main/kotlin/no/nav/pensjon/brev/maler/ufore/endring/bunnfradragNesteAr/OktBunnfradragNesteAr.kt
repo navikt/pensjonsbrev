@@ -371,7 +371,16 @@ object OktBunnfradragNesteAr {
                     }
                 }
                 showIf(begrensningFribelop) {
-                    includePhrase(BegrensetFribelop(bunnfradrag))
+                    includePhrase(
+                        BegrensetFribelopScenarierOgForklarendeTekst(
+                            virkningFom = vedtakVirkFom,
+                            fribelop = fribelop,
+                            fribelopUtvikling = fribelopUtvikling,
+                            bunnfradrag = bunnfradrag,
+                            sokerMottarApIlaAret = sokerMottarApIlaAret,
+                            opphorDato = opphorsdato
+                        )
+                    )
                 }
 
                 showIf(endringBarnetillegg.lessThan(0)) {
