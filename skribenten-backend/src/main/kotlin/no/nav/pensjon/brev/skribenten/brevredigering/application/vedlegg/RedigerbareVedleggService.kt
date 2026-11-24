@@ -97,7 +97,11 @@ class RedigerbareVedleggService(
         return success(malVedlegg.toEdit())
     }
 
-    private suspend fun skalFlette(brev: BrevredigeringEntity, vedleggId: VedleggId, malVedlegg: LetterMarkup.Attachment): Boolean =
+    private suspend fun skalFlette(
+        brev: BrevredigeringEntity,
+        vedleggId: VedleggId,
+        malVedlegg: VersjonertVedleggMarkup,
+    ): Boolean =
         !Features.forhindreOppdateringAvKladd.isEnabled() || brev.harUendretVedleggmal(vedleggId, malVedlegg.stableHashCode)
 
     private suspend fun renderMal(brev: BrevredigeringEntity, vedleggId: VedleggId): VersjonertVedleggMarkup? =

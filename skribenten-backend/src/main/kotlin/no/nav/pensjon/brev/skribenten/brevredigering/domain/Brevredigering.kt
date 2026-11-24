@@ -80,7 +80,7 @@ interface Brevredigering {
     fun mergeRendretBrev(rendretBrev: VersjonertMarkup)
     fun settRendretBrev(rendretBrev: VersjonertMarkup)
     fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>)
-    fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>)
+    fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>)
     fun harUendretBrevmal(rendretBrevmalHash: StableHashCode): Boolean
     fun oppdaterSakspartOgSignatur(rendretBrev: VersjonertMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
@@ -303,7 +303,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         redigertBrev = redigertBrev.oppdaterSakspartOgSignatur(rendretBrev)
     }
 
-    override fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>) {
+    override fun mergeRendredeVedleggMedUendretHash(rendredeVedlegg: Map<VedleggId, VersjonertVedleggMarkup>) {
         mergeRendredeVedlegg(
             rendredeVedlegg.filter { (vedleggId, rendretVedlegg) -> harUendretVedleggmal(vedleggId, rendretVedlegg.stableHashCode) }
         )

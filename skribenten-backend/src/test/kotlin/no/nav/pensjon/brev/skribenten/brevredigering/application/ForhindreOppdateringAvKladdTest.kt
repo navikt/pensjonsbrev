@@ -7,11 +7,13 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreRe
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigerbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertMarkup
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedlegg
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VersjonertVedleggMarkup
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
-import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.override
@@ -54,13 +56,13 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
     private fun lagreVedlegg(brevId: BrevId, vedleggId: VedleggId, mal: LetterMarkup.Attachment, lagreMalHash: Boolean = true) =
         transaction {
             BrevredigeringEntity[brevId].apply {
-                settRedigertVedlegg(vedleggId, mal.toEdit())
-                if (lagreMalHash) settBrevmalForRedigertVedlegg(vedleggId, mal)
+                settRedigertVedlegg(vedleggId, VersjonertVedlegg.V1(mal.toEdit()))
+                if (lagreMalHash) settBrevmalForRedigertVedlegg(vedleggId, VersjonertVedleggMarkup.V1(mal))
             }
         }
 
     private fun lagretVedlegg(brevId: BrevId, vedleggId: VedleggId): Edit.Attachment =
-        transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(vedleggId)!! }
+        transaction { BrevredigeringEntity[brevId].hentRedigertVedlegg(vedleggId)!!.asV1() }
 
     private suspend fun brevMedVedleggOgNyeMaler(): Pair<Dto.Brevredigering, Map<VedleggId, LetterMarkup.Attachment>> {
         val brev = opprettBrev().resultOrFail()
@@ -158,13 +160,19 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
     private suspend fun hentVedlegg(brevId: BrevId, vedleggId: VedleggId) =
         withPrincipal(saksbehandler1Principal) {
             hentRedigertVedlegg(HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = vedleggId))
+                ?.then { it.asV1() }
         }
 
     private suspend fun endreVedlegg(brevId: BrevId, vedleggId: VedleggId, vedlegg: Edit.Attachment) =
         withPrincipal(saksbehandler1Principal) {
             endreRedigertVedlegg(
-                EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = vedleggId, redigertVedlegg = vedlegg)
-            )
+                EndreRedigertVedleggHandler.Request(
+                    brevId = brevId,
+                    saksId = sak1.saksId,
+                    vedleggId = vedleggId,
+                    redigertVedlegg = VersjonertVedlegg.V1(vedlegg),
+                )
+            )?.then { it.asV1() }
         }
 
     private val nyttRendretBrev
@@ -176,7 +184,7 @@ class ForhindreOppdateringAvKladdTest : BrevredigeringHandlerTestBase() {
         brevbakerService.renderMarkupResultat = { nyttRendretBrev }
 
         assertThat(hentBrev(opprettet.info.id, reserverForRedigering = true)).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(nyttRendretBrev))
+            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.merge(VersjonertMarkup.V1(nyttRendretBrev)))
         }
     }
 
