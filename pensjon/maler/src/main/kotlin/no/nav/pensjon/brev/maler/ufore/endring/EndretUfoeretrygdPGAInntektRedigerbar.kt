@@ -36,7 +36,7 @@ object EndretUfoeretrygdPGAInntektRedigerbar : RedigerbarTemplate<EndretUfoeretr
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring av uføretrygd på grunn av inntekt",
+            displayTitle = "Vedtak - endring av uføretrygd på grunn av inntekt fremover",
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

@@ -33,6 +33,7 @@ fun createEndretUforetrygdPGAInntektNesteArRedigerbarDto() =
 fun createEndretUforetrygdPGAInntektNesteArData() =
     EndretUforetrygdPGAInntektNesteArDto(
         uforetrygd = Uforetrygd(
+            begrensningFribelop = true,
             netto = Kroner(1),
             endringsbelop = Kroner(1),
             inntektBruktIAvkortning = Kroner(0),
@@ -87,6 +88,7 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
         virkningFom = LocalDate.of(2027, 1, 1),
         opphorDato = null,
         totalNetto = Kroner(1),
+        endringTotalNetto = Kroner(-15),
         totalNettoAr = Kroner(12),
         datoForNormertPensjonsalder = vilkaarligDato,
         sokerMottarApIlaAret = false,
