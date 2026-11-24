@@ -118,12 +118,7 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
         edited.forEach { currentEdited ->
             // If the currentEdited element is new, i.e. was added manually by Saksbehandler.
             if (currentEdited.isNew()) {
-                add(
-                    withTemplateStatus(
-                        variableValues.withUpdatedVariables(currentEdited),
-                        Edit.Block.TemplateStatus.NEW_IN_EDITED
-                    )
-                )
+                add(variableValues.withUpdatedVariables(currentEdited))
             } else {
                 val renderedIndex = remainingRendered.indexOfFirst { it.id == currentEdited.id }
 
@@ -145,7 +140,10 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                     add(
                         withTemplateStatus(
                             variableValues.withUpdatedVariables(currentEdited),
-                            Edit.Block.TemplateStatus.MISSING_FROM_RENDERED
+                            Edit.Block.DecisionRequest(
+                                type = Edit.Block.DecisionRequest.Type.MISSING_FROM_RENDERED,
+                                status = Edit.Block.DecisionRequest.Decision.PENDING
+                            )
                         )
                     )
                 } else if (currentEdited.parentId != parent?.id) {
@@ -265,12 +263,12 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
 
 
     @Suppress("UNCHECKED_CAST")
-    private fun <E : Edit.Identifiable> withTemplateStatus(element: E, status: Edit.Block.TemplateStatus): E =
+    private fun <E : Edit.Identifiable> withTemplateStatus(element: E, decisionRequest: Edit.Block.DecisionRequest): E =
         when (element) {
-            is Edit.Block.Title1 -> element.copy(templateStatus = status) as E
-            is Edit.Block.Title2 -> element.copy(templateStatus = status) as E
-            is Edit.Block.Title3 -> element.copy(templateStatus = status) as E
-            is Edit.Block.Paragraph -> element.copy(templateStatus = status) as E
+            is Edit.Block.Title1 -> element.copy(decision = decisionRequest) as E
+            is Edit.Block.Title2 -> element.copy(decision = decisionRequest) as E
+            is Edit.Block.Title3 -> element.copy(decision = decisionRequest) as E
+            is Edit.Block.Paragraph -> element.copy(decision = decisionRequest) as E
             is Edit.ParagraphContent,
             is Edit.ParagraphContent.ItemList.Item,
             is Edit.ParagraphContent.Table.Header,

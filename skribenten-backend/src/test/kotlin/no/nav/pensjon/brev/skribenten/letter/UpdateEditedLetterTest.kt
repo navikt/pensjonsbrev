@@ -889,7 +889,7 @@ class UpdateRenderedLetterTest {
                 literal(id = 11, text = "en literal")
                 variable(id = 12, text = "oppdatert v1")
             }
-            paragraph(id = 2, templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_RENDERED) {
+            paragraph(id = 2, templateStatus = Edit.Block.MergeStatus.MISSING_FROM_RENDERED) {
                 variable(id = 12, text = "oppdatert v1")
                 literal(id = 21, text = "hei", editedText = "heisann")
             }

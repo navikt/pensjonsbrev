@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.TemplateStatus
+import no.nav.pensjon.brev.skribenten.letter.Edit.Block.MergeStatus
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -44,18 +44,18 @@ class EditModelJacksonTest {
 
     @Test
     fun `blokk lagret foer templateStatus fantes og uten missingFromTemplate er IN_TEMPLATE`() {
-        assertThat(readBlock(paragraphJson("")).templateStatus).isEqualTo(TemplateStatus.MATCHED_WITH_RENDERED)
+        assertThat(readBlock(paragraphJson("")).status).isEqualTo(MergeStatus.MATCHED_WITH_RENDERED)
     }
 
     @Test
-    fun `blokk lagret foer templateStatus fantes med missingFromTemplate true er MISSING_FROM_TEMPLATE`() {
-        assertThat(readBlock(paragraphJson(""","missingFromTemplate":true""")).templateStatus).isEqualTo(TemplateStatus.MISSING_FROM_RENDERED)
+    fun `blokk lagret foer templateStatus fantes med missingFromTemplate true er MISSING_FROM_RENDERED`() {
+        assertThat(readBlock(paragraphJson(""","missingFromTemplate":true""")).status).isEqualTo(MergeStatus.MISSING_FROM_RENDERED)
     }
 
     @Test
-    fun `missingFromTemplate false overstyrer MISSING_FROM_TEMPLATE slik at frontend kan beholde blokken`() {
-        val json = paragraphJson(""","templateStatus":"MISSING_FROM_TEMPLATE","missingFromTemplate":false""")
-        assertThat(readBlock(json).templateStatus).isEqualTo(TemplateStatus.MATCHED_WITH_RENDERED)
+    fun `missingFromTemplate false overstyrer MISSING_FROM_RENDERED slik at frontend kan beholde blokken`() {
+        val json = paragraphJson(""","templateStatus":"MISSING_FROM_RENDERED","missingFromTemplate":false""")
+        assertThat(readBlock(json).status).isEqualTo(MergeStatus.MATCHED_WITH_RENDERED)
     }
 
     @Test
@@ -64,11 +64,11 @@ class EditModelJacksonTest {
             id = 1,
             editable = true,
             content = emptyList(),
-            templateStatus = TemplateStatus.MISSING_FROM_RENDERED
+            status = MergeStatus.MISSING_FROM_RENDERED
         )
         val tree = objectMapper.valueToTree<JsonNode>(block)
 
-        assertThat(tree["templateStatus"].asText()).isEqualTo("MISSING_FROM_TEMPLATE")
+        assertThat(tree["templateStatus"].asText()).isEqualTo(MergeStatus.MISSING_FROM_RENDERED.name)
         assertThat(tree["missingFromTemplate"].asBoolean()).isTrue()
         assertThat(readBlock(objectMapper.writeValueAsString(block))).isEqualTo(block)
     }

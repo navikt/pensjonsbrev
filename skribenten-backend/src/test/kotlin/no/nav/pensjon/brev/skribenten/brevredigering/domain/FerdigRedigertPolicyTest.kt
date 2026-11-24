@@ -73,7 +73,7 @@ class FerdigRedigertPolicyTest {
         Features.override(Features.hindreDuplikateAvsnitt, true)
         val brev = RedigertBrevStub(
             editedLetter {
-                paragraph(id = 1, templateStatus = Edit.Block.TemplateStatus.MISSING_FROM_RENDERED) { }
+                paragraph(id = 1, templateStatus = Edit.Block.MergeStatus.MISSING_FROM_RENDERED) { }
                 paragraph(id = 2) { }
             }
         )

@@ -103,32 +103,41 @@ object Edit {
         abstract val content: List<ParagraphContent>
         abstract val deletedContent: List<Int>
         abstract val originalType: Type?
-        abstract val templateStatus: TemplateStatus
+        abstract val decision: DecisionRequest?
+
+        data class DecisionRequest(val type: Type, val status: Decision) {
+            enum class Type {
+                MISSING_FROM_RENDERED
+            }
+
+            enum class Decision {
+                ACCEPTED, PENDING
+            }
+
+            companion object {
+                // TODO: Slett denne når frontend også er oppdatert til å bruke status som enum og ikkje missingFromTemplate-boolean
+                fun fromJson(templateStatus: DecisionRequest?, missingFromTemplate: Boolean?): DecisionRequest? =
+                    when (missingFromTemplate) {
+                        true -> DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.ACCEPTED)
+                        false if templateStatus?.type == Type.MISSING_FROM_RENDERED -> DecisionRequest(
+                            Type.MISSING_FROM_RENDERED,
+                            Decision.PENDING
+                        )
+
+                        else -> null
+                    }
+            }
+        }
 
         @Deprecated(
             "Use templateStatus instead",
-            replaceWith = ReplaceWith("templateStatus == TemplateStatus.MISSING_FROM_TEMPLATE")
+            replaceWith = ReplaceWith("templateStatus == TemplateStatus.MISSING_FROM_RENDERED")
         )
         val missingFromTemplate: Boolean
-            get() = templateStatus == TemplateStatus.MISSING_FROM_RENDERED
+            get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED
 
-        enum class TemplateStatus {
+        enum class MergeStatus {
             MATCHED_WITH_RENDERED, MISSING_FROM_RENDERED, NEW_IN_EDITED;
-
-            companion object {
-                /**
-                 * Resolves the status from JSON that may contain the legacy boolean `missingFromTemplate`, either alone
-                 * (stored before [TemplateStatus] existed) or alongside [templateStatus] (the frontend clears
-                 * `missingFromTemplate` when keeping a block that is missing from the template).
-                 */
-                // TODO: Slett denne når frontend også er oppdatert til å bruke status som enum og ikkje missingFromTemplate-boolean
-                fun fromJson(templateStatus: TemplateStatus?, missingFromTemplate: Boolean?): TemplateStatus =
-                    when {
-                        missingFromTemplate == true -> MISSING_FROM_RENDERED
-                        missingFromTemplate == false && templateStatus == MISSING_FROM_RENDERED -> MATCHED_WITH_RENDERED
-                        else -> templateStatus ?: MATCHED_WITH_RENDERED
-                    }
-            }
         }
 
         @JsonIgnore
@@ -143,7 +152,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val templateStatus: TemplateStatus = TemplateStatus.MATCHED_WITH_RENDERED,
+            override val decision: DecisionRequest? = null,
         ) : Block(Type.TITLE1) {
             @JsonCreator
             constructor(
@@ -153,9 +162,17 @@ object Edit {
                 deletedContent: List<Int>?,
                 originalType: Type?,
                 parentId: Int?,
-                templateStatus: TemplateStatus?,
+                decisionRequest: DecisionRequest?,
                 missingFromTemplate: Boolean?,
-            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, TemplateStatus.fromJson(templateStatus, missingFromTemplate))
+            ) : this(
+                id,
+                editable,
+                content,
+                deletedContent ?: emptyList(),
+                originalType,
+                parentId,
+                DecisionRequest.fromJson(decisionRequest, missingFromTemplate)
+            )
         }
 
         data class Title2(
@@ -165,7 +182,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val templateStatus: TemplateStatus = TemplateStatus.MATCHED_WITH_RENDERED,
+            override val decision: DecisionRequest? = null,
         ) : Block(Type.TITLE2) {
             @JsonCreator
             constructor(
@@ -175,9 +192,17 @@ object Edit {
                 deletedContent: List<Int>?,
                 originalType: Type?,
                 parentId: Int?,
-                templateStatus: TemplateStatus?,
+                decision: DecisionRequest?,
                 missingFromTemplate: Boolean?,
-            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, TemplateStatus.fromJson(templateStatus, missingFromTemplate))
+            ) : this(
+                id,
+                editable,
+                content,
+                deletedContent ?: emptyList(),
+                originalType,
+                parentId,
+                DecisionRequest.fromJson(decision, missingFromTemplate)
+            )
         }
 
         data class Title3(
@@ -187,7 +212,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val templateStatus: TemplateStatus = TemplateStatus.MATCHED_WITH_RENDERED,
+            override val decision: DecisionRequest? = null,
         ) : Block(Type.TITLE3) {
             @JsonCreator
             constructor(
@@ -197,9 +222,17 @@ object Edit {
                 deletedContent: List<Int>?,
                 originalType: Type?,
                 parentId: Int?,
-                templateStatus: TemplateStatus?,
+                decision: DecisionRequest?,
                 missingFromTemplate: Boolean?,
-            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, TemplateStatus.fromJson(templateStatus, missingFromTemplate))
+            ) : this(
+                id,
+                editable,
+                content,
+                deletedContent ?: emptyList(),
+                originalType,
+                parentId,
+                DecisionRequest.fromJson(decision, missingFromTemplate)
+            )
         }
 
         data class Paragraph(
@@ -209,7 +242,7 @@ object Edit {
             override val deletedContent: List<Int> = emptyList(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
-            override val templateStatus: TemplateStatus = TemplateStatus.MATCHED_WITH_RENDERED,
+            override val decision: DecisionRequest? = null,
         ) : Block(Type.PARAGRAPH) {
             @JsonCreator
             constructor(
@@ -219,9 +252,17 @@ object Edit {
                 deletedContent: List<Int>?,
                 originalType: Type?,
                 parentId: Int?,
-                templateStatus: TemplateStatus?,
+                decision: DecisionRequest?,
                 missingFromTemplate: Boolean?,
-            ) : this(id, editable, content, deletedContent ?: emptyList(), originalType, parentId, TemplateStatus.fromJson(templateStatus, missingFromTemplate))
+            ) : this(
+                id,
+                editable,
+                content,
+                deletedContent ?: emptyList(),
+                originalType,
+                parentId,
+                DecisionRequest.fromJson(decision, missingFromTemplate)
+            )
         }
     }
 
