@@ -255,7 +255,12 @@ object DraftValidator {
                         if (field != null && field.kind != FieldKind.LIST) issue("$blockPath.fieldId", "NOT_A_LIST", "Gjentakelse krever et listefelt.")
                         if (field?.nullable == true && field.id !in scope.nonNull) issue("$blockPath.fieldId", "NULLABLE_LIST", "Listefeltet må være ikke-null i dette scopet.")
                         if (block.body.isEmpty()) issue("$blockPath.body", "EMPTY_REPEAT", "Gjentakelsen må ha innhold.")
-                        blocks(block.body, scope.copy(repeated = scope.repeated + block.fieldId), "$blockPath.body", depth + 1)
+                        val descendants = fields.values.filter { it.ancestors.any { ancestor -> ancestor.id == block.fieldId } }.map { it.field.id }.toSet()
+                        val repeatedScope = scope.copy(
+                            repeated = (scope.repeated - descendants) + block.fieldId,
+                            nonNull = scope.nonNull - descendants,
+                        )
+                        blocks(block.body, repeatedScope, "$blockPath.body", depth + 1)
                     }
                     is Block.LockedSource -> {
                         if (draft.source == null || block.bindingId.isBlank()) issue(blockPath, "UNTRUSTED_BINDING", "Låst innhold må bindes til kildekatalogen.")

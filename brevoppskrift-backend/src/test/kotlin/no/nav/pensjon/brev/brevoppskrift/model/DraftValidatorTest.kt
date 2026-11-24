@@ -97,6 +97,63 @@ class DraftValidatorTest {
     }
 
     @Test
+    fun `repeating the same list resets nullable child bindings`() {
+        val value = DataField(FieldId("value"), "value", FieldKind.STRING, nullable = true)
+        val rows = DataField(FieldId("rows"), "rows", FieldKind.LIST, children = listOf(value))
+        val paragraph = Block.Paragraph(BlockId("paragraph"), listOf(Inline.Field(value.id)))
+        val inner = Block.Repeat(BlockId("inner"), rows.id, listOf(paragraph))
+        val condition = Block.Conditional(BlockId("condition"), Predicate.IsNotNull(value.id), listOf(inner))
+        val outer = Block.Repeat(BlockId("outer"), rows.id, listOf(condition))
+        val draft = exampleDraft().copy(fields = listOf(rows), outline = listOf(outer))
+
+        assertThat(DraftValidator.validate(draft).map { it.code }).containsExactly("MISSING_FALLBACK")
+
+        val checked = inner.copy(body = listOf(Block.Conditional(BlockId("innerCondition"), Predicate.IsNotNull(value.id), listOf(paragraph))))
+        val checkedDraft = draft.copy(outline = listOf(outer.copy(body = listOf(condition.copy(ifTrue = listOf(checked))))))
+        assertThat(DraftValidator.validate(checkedDraft)).isEmpty()
+
+        val fallback = inner.copy(body = listOf(paragraph.copy(text = listOf(Inline.Field(value.id, fallback = translations)))))
+        val fallbackDraft = draft.copy(outline = listOf(outer.copy(body = listOf(condition.copy(ifTrue = listOf(fallback))))))
+        assertThat(DraftValidator.validate(fallbackDraft)).isEmpty()
+    }
+
+    @Test
+    fun `repeating a parent list resets nested repetition bindings`() {
+        val value = DataField(FieldId("value"), "value", FieldKind.STRING)
+        val children = DataField(FieldId("children"), "children", FieldKind.LIST, children = listOf(value))
+        val rows = DataField(FieldId("rows"), "rows", FieldKind.LIST, children = listOf(children))
+        val paragraph = Block.Paragraph(BlockId("paragraph"), listOf(Inline.Field(value.id)))
+        val inner = Block.Repeat(BlockId("inner"), rows.id, listOf(paragraph))
+        val nested = Block.Repeat(BlockId("nested"), children.id, listOf(inner))
+        val outer = Block.Repeat(BlockId("outer"), rows.id, listOf(nested))
+        val draft = exampleDraft().copy(fields = listOf(rows), outline = listOf(outer))
+
+        assertThat(DraftValidator.validate(draft).map { it.code }).containsExactly("UNBOUND_LIST")
+
+        val rebound = inner.copy(body = listOf(Block.Repeat(BlockId("rebound"), children.id, listOf(paragraph))))
+        val reboundDraft = draft.copy(outline = listOf(outer.copy(body = listOf(nested.copy(body = listOf(rebound))))))
+        assertThat(DraftValidator.validate(reboundDraft)).isEmpty()
+    }
+
+    @Test
+    fun `repeating a list preserves its own null check and bindings outside its children`() {
+        val value = DataField(FieldId("value"), "value", FieldKind.STRING)
+        val rows = DataField(FieldId("rows"), "rows", FieldKind.LIST, nullable = true, children = listOf(value))
+        val prefix = DataField(FieldId("prefix"), "prefix", FieldKind.STRING, nullable = true)
+        val groups = DataField(FieldId("groups"), "groups", FieldKind.LIST, children = listOf(prefix, rows))
+        val context = DataField(FieldId("context"), "context", FieldKind.STRING, nullable = true)
+        val paragraph = Block.Paragraph(BlockId("paragraph"), listOf(Inline.Field(prefix.id), Inline.Field(context.id), Inline.Field(value.id)))
+        val inner = Block.Repeat(BlockId("inner"), rows.id, listOf(paragraph))
+        val outer = Block.Repeat(BlockId("outer"), rows.id, listOf(inner))
+        val predicate = Predicate.All(listOf(Predicate.IsNotNull(rows.id), Predicate.IsNotNull(prefix.id), Predicate.IsNotNull(context.id)))
+        val condition = Block.Conditional(BlockId("condition"), predicate, listOf(outer))
+        val group = Block.Repeat(BlockId("group"), groups.id, listOf(condition))
+        val draft = exampleDraft().copy(fields = listOf(groups, context), outline = listOf(group))
+
+        assertThat(DraftValidator.validate(draft)).isEmpty()
+    }
+
+    @Test
     fun `nullable objects are bound only in the true branch`() {
         val field = DataField(FieldId("parent"), "parent", FieldKind.OBJECT, nullable = true, children = listOf(DataField(FieldId("value"), "value", FieldKind.NUMBER)))
         val paragraph = Block.Paragraph(BlockId("paragraph"), listOf(Inline.Field(FieldId("value"))))
