@@ -51,6 +51,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
             ...(content.fontType === FontType.BOLD ? { fontWeight: "var(--ax-font-weight-bold)" } : {}),
             ...(content.fontType === FontType.ITALIC ? { fontStyle: "italic" } : {}),
           }}
+          data-font-type={content.fontType === FontType.PLAIN ? undefined : content.fontType}
           data-literal-index={JSON.stringify(literalIndex)}
           onClick={() => {
             setEditorState((oldState) => ({

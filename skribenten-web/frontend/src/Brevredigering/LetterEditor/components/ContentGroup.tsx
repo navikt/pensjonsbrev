@@ -957,6 +957,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
       }}
       data-empty={text === ZERO_WIDTH_SPACE ? "" : undefined}
+      data-font-type={fontTypeOf(content) === FontType.PLAIN ? undefined : fontTypeOf(content)}
       data-literal-index={JSON.stringify(literalIndex)}
       onBeforeInput={hasDiffDecoration ? handleBeforeInput : undefined}
       onClick={handleOnClick}

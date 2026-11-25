@@ -48,7 +48,7 @@
   box-shadow: none;
 }
 
-.editor-surface :where(.PARAGRAPH, .TITLE1, .TITLE2, .TITLE3, li) > [data-literal-index][data-empty]:only-child {
+.editor-surface :where(.PARAGRAPH, h2, h3, h4, li) > [data-literal-index][data-empty]:only-child {
   display: block;
   line-height: inherit;
 }
@@ -96,6 +96,13 @@
   text-decoration-style: solid;
   text-decoration-thickness: from-font;
   text-decoration-skip-ink: none;
+}
+
+/* Overskriftselementene gir bare semantikk, stilen kommer fra blokkens klasse (TITLE1–3). */
+.editor-surface :is(h2, h3, h4) {
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
 }
 
 .TITLE1 {
