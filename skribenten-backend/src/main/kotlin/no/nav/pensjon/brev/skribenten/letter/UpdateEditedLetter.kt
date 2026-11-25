@@ -137,7 +137,15 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-                    add(withMissingFromTemplate(variableValues.withUpdatedVariables(currentEdited)))
+                    add(
+                        withTemplateStatus(
+                            variableValues.withUpdatedVariables(currentEdited),
+                            Edit.Block.DecisionRequest(
+                                type = Edit.Block.DecisionRequest.Type.MISSING_FROM_RENDERED,
+                                status = Edit.Block.DecisionRequest.Decision.PENDING
+                            )
+                        )
+                    )
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
                     // But it is moved by intent, so we do not wish to remove it.
@@ -255,12 +263,12 @@ class UpdateEditedLetter(private val variableValues: VariableValuesUpdater) {
 
 
     @Suppress("UNCHECKED_CAST")
-    private fun <E : Edit.Identifiable> withMissingFromTemplate(element: E): E =
+    private fun <E : Edit.Identifiable> withTemplateStatus(element: E, decisionRequest: Edit.Block.DecisionRequest): E =
         when (element) {
-            is Edit.Block.Title1 -> element.copy(missingFromTemplate = true) as E
-            is Edit.Block.Title2 -> element.copy(missingFromTemplate = true) as E
-            is Edit.Block.Title3 -> element.copy(missingFromTemplate = true) as E
-            is Edit.Block.Paragraph -> element.copy(missingFromTemplate = true) as E
+            is Edit.Block.Title1 -> element.copy(decision = decisionRequest) as E
+            is Edit.Block.Title2 -> element.copy(decision = decisionRequest) as E
+            is Edit.Block.Title3 -> element.copy(decision = decisionRequest) as E
+            is Edit.Block.Paragraph -> element.copy(decision = decisionRequest) as E
             is Edit.ParagraphContent,
             is Edit.ParagraphContent.ItemList.Item,
             is Edit.ParagraphContent.Table.Header,

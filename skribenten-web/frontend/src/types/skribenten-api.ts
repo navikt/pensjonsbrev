@@ -3166,61 +3166,11 @@ export interface paths {
                         "application/json": components["schemas"]["DiffBrevHandlerResponse"];
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                    content?: never;
                 };
             };
         };
@@ -4311,6 +4261,21 @@ export interface components {
         /** EditParagraphContent */
         EditParagraphContent: components["schemas"]["EditParagraphContentItemList"] | components["schemas"]["EditParagraphContentTable"] | components["schemas"]["EditParagraphContentTextLiteral"] | components["schemas"]["EditParagraphContentTextNewLine"] | components["schemas"]["EditParagraphContentTextVariable"];
         /**
+         * EditBlockDecisionRequestDecision
+         * @enum {string}
+         */
+        EditBlockDecisionRequestDecision: "ACCEPTED" | "PENDING";
+        /**
+         * EditBlockDecisionRequestType
+         * @enum {string}
+         */
+        EditBlockDecisionRequestType: "MISSING_FROM_RENDERED";
+        /** EditBlockDecisionRequest */
+        EditBlockDecisionRequest: {
+            status: components["schemas"]["EditBlockDecisionRequestDecision"];
+            type: components["schemas"]["EditBlockDecisionRequestType"];
+        };
+        /**
          * EditBlockType
          * @enum {string}
          */
@@ -4318,12 +4283,13 @@ export interface components {
         /** EditBlockParagraph */
         EditBlockParagraph: {
             content: components["schemas"]["EditParagraphContent"][];
+            decision?: components["schemas"]["EditBlockDecisionRequest"] | null;
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
+            missingFromTemplate: boolean;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4333,12 +4299,13 @@ export interface components {
         /** EditBlockTitle1 */
         EditBlockTitle1: {
             content: components["schemas"]["EditParagraphContentText"][];
+            decision?: components["schemas"]["EditBlockDecisionRequest"] | null;
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
+            missingFromTemplate: boolean;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4348,12 +4315,13 @@ export interface components {
         /** EditBlockTitle2 */
         EditBlockTitle2: {
             content: components["schemas"]["EditParagraphContentText"][];
+            decision?: components["schemas"]["EditBlockDecisionRequest"] | null;
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
+            missingFromTemplate: boolean;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -4363,12 +4331,13 @@ export interface components {
         /** EditBlockTitle3 */
         EditBlockTitle3: {
             content: components["schemas"]["EditParagraphContentText"][];
+            decision?: components["schemas"]["EditBlockDecisionRequest"] | null;
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
-            missingFromTemplate: boolean;
             originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
+            missingFromTemplate: boolean;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -5006,6 +4975,9 @@ export type EditParagraphContentTableHeader = components['schemas']['EditParagra
 export type EditParagraphContentTableRow = components['schemas']['EditParagraphContentTableRow'];
 export type EditParagraphContentTable = components['schemas']['EditParagraphContentTable'];
 export type EditParagraphContent = components['schemas']['EditParagraphContent'];
+export type EditBlockDecisionRequestDecision = components['schemas']['EditBlockDecisionRequestDecision'];
+export type EditBlockDecisionRequestType = components['schemas']['EditBlockDecisionRequestType'];
+export type EditBlockDecisionRequest = components['schemas']['EditBlockDecisionRequest'];
 export type EditBlockType = components['schemas']['EditBlockType'];
 export type EditBlockParagraph = components['schemas']['EditBlockParagraph'];
 export type EditBlockTitle1 = components['schemas']['EditBlockTitle1'];

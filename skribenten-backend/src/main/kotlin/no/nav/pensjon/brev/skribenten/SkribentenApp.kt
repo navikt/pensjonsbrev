@@ -26,6 +26,8 @@ import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
+import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
+import no.nav.pensjon.brev.skribenten.common.updateRedigertVedleggJson
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
@@ -161,6 +163,12 @@ fun Application.skribentenApp() {
             val leaderService: NaisLeaderService by dependencies
             oneShotJobs(leaderService) {
                 // Sett opp evt. jobber her
+                job("2026-11-24-oppdater-brevredigering-json") {
+                    updateBrevredigeringJson(it)
+                }
+                job("2026-11-24-oppdater-redigert-vedlegg-json") {
+                    updateRedigertVedleggJson(it)
+                }
             }
         }
         launch {
