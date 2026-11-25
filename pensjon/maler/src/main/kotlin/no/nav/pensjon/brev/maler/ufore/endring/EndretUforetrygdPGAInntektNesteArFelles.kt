@@ -155,7 +155,7 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                                 }
                                 text(
                                     bokmal { +"i uføretrygd" + ifElse(data.barnetilleggFellesbarn.isNull() and data.barnetilleggSaerkullsbarn.isNull(), "", " og barnetillegg") + " *" },
-                                    nynorsk { +"i uføretrygd" + ifElse(data.barnetilleggFellesbarn.isNull() and data.barnetilleggSaerkullsbarn.isNull(), "", " og barnetillegg" + " *") },
+                                    nynorsk { +"i uføretrygd" + ifElse(data.barnetilleggFellesbarn.isNull() and data.barnetilleggSaerkullsbarn.isNull(), "", " og barnetillegg") + " *" },
                                 )
                             }
                             cell {
@@ -635,7 +635,6 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                 )
             }
             paragraph {
-                newline()
                 showIf(
                     data.uforetrygd.endringsbelop.notEqualTo(0)
                             and (data.btfbEndret or data.btsbEndret)

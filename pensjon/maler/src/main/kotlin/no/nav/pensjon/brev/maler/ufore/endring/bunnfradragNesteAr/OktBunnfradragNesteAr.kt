@@ -331,7 +331,6 @@ object OktBunnfradragNesteAr {
                     }
                 }
                 paragraph {
-                    newline()
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven " + hjemler.format(HjemmelFormatter(true)) },
                         nynorsk { +"Vedtaket er gjort etter folketrygdlova " + hjemler.format(HjemmelFormatter(true)) },
