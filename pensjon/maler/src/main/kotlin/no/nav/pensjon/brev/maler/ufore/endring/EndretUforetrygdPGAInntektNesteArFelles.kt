@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_JOBB_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.BegrensetFribelopForklarendeTekst
 import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.BegrensetFribelopScenarierOgForklarendeTekst
 import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.SlikBeregnerViFribelopOgBunnfradrag
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -414,6 +415,8 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                         )
                     )
                 }
+            }.orShowIf(data.uforetrygd.begrensningFribelop) {
+                includePhrase(BegrensetFribelopForklarendeTekst(data.uforetrygd.bunnfradrag))
             }
 
             title1 {

@@ -37,8 +37,8 @@ data class BegrensetFribelopScenarierOgForklarendeTekst(
         showIf(fribelopUtvikling.kategori.isOneOf(FRIBELOP_04G_TIL_1G, FRIBELOP_04G_TIL_1G_TIL_04G, FRIBELOP_1G_TIL_04G)) {
             title1 {
                 text(
-                    bokmal { +"Periodisert fribeløp" },
-                    nynorsk { +"Periodisert fribeløp" }
+                    bokmal { +"Slik beregner vi fribeløp og bunnfradrag" },
+                    nynorsk { +"Slik bereknar vi fribeløp og botnfrådrag" }
                 )
             }
             paragraph {
