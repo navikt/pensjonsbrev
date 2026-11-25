@@ -121,7 +121,7 @@ object Edit {
                         true -> decision ?: DecisionRequest(Type.MISSING_FROM_RENDERED, Decision.PENDING)
                         false if decision?.type == Type.MISSING_FROM_RENDERED -> DecisionRequest(
                             Type.MISSING_FROM_RENDERED,
-                            Decision.PENDING
+                            Decision.ACCEPTED
                         )
 
                         false -> null
