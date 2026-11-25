@@ -58,8 +58,8 @@ object KlageOrienteringOmSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerb
             }
             showIf(harFullmektig) {
                 paragraph {
-                    text(bokmal { +"Ved fullmektig: " }, BOLD)
-                    text(bokmal { +fritekst("navn") })
+                    text(bokmal { +"Representert ved fullmektig: " }, BOLD)
+                    text(bokmal { +fritekst("Fullmektigs navn") })
                 }
             }
             paragraph {
