@@ -27,7 +27,9 @@ export const keepMissingFromTemplateBlock: Action<LetterEditorState, [blockIndex
 
     block.id = null;
     block.missingFromTemplate = false;
-    block.decision = null;
+    if (block.decision?.type === "MISSING_FROM_RENDERED" && block.decision.status === "PENDING") {
+      block.decision.status = "ACCEPTED";
+    }
     draft.saveStatus = "DIRTY";
   },
 );
