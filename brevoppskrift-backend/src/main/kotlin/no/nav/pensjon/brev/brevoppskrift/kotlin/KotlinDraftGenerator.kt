@@ -8,8 +8,6 @@ import no.nav.pensjon.brev.brevoppskrift.katalog.SourceTextSlot
 import no.nav.pensjon.brev.brevoppskrift.model.*
 
 class KotlinDraftGenerator(private val catalogue: BuildSourceCatalogue) : DraftGenerator {
-    constructor() : this(BuildSourceCatalogue())
-
     override suspend fun generate(draft: Draft): GenerationResult {
         val issues = DraftValidator.validate(draft) + catalogue.checkSource(draft)
         if (issues.isNotEmpty()) return GenerationResult(emptyList(), issues)

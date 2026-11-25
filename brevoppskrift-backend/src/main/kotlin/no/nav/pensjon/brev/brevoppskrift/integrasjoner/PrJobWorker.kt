@@ -5,6 +5,7 @@ import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.time.Duration.Companion.seconds
 
 class PrJobWorker(
     private val service: PrService?,
@@ -23,9 +24,9 @@ class PrJobWorker(
             while (isActive) {
                 try {
                     val ticket = repository.claim()
-                    if (ticket == null) { delay(1000); continue }
+                    if (ticket == null) { delay(1.seconds); continue }
                     try {
-                        val url = withTimeout(150_000) { service.create(ticket) }
+                        val url = withTimeout(150.seconds) { service.create(ticket) }
                         repository.finish(ticket, url, null)
                         metrics.counter("brevoppskrift.pr.jobs", "status", "succeeded").increment()
                     } catch (failure: IntegrationFailure) {
@@ -42,7 +43,7 @@ class PrJobWorker(
                     throw cancelled
                 } catch (_: Exception) {
                     logger.warn("PR worker unavailable")
-                    delay(5000)
+                    delay(5.seconds)
                 }
             }
         }
@@ -51,7 +52,7 @@ class PrJobWorker(
     override fun close() {
         scope.cancel()
         runBlocking {
-            withTimeoutOrNull(5000) { scope.coroutineContext[Job]?.join() }
+            withTimeoutOrNull(5.seconds) { scope.coroutineContext[Job]?.join() }
         }
     }
 }

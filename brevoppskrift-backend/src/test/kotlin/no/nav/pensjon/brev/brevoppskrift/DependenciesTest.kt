@@ -20,6 +20,9 @@ import io.ktor.server.testing.testApplication
 import no.nav.pensjon.brev.brevoppskrift.api.DraftGenerator
 import no.nav.pensjon.brev.brevoppskrift.api.DraftPreview
 import no.nav.pensjon.brev.brevoppskrift.api.SourceCatalogue
+import no.nav.pensjon.brev.brevoppskrift.katalog.BuildSourceCatalogue
+import no.nav.pensjon.brev.brevoppskrift.kotlin.KotlinDraftGenerator
+import no.nav.pensjon.brev.brevoppskrift.preview.HtmlDraftPreview
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.*
 import no.nav.pensjon.brev.brevoppskrift.lagring.DraftRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -70,9 +73,11 @@ class DependenciesTest {
                 assertThat(config.azure.preAuthApps.single().clientId.value).isEqualTo("bff")
                 assertThat(app.dependencies.resolve<JwkProvider>()).isNotNull()
                 assertThat(app.dependencies.resolve<DraftRepository>().ready()).isTrue()
-                assertThat(app.dependencies.resolve<SourceCatalogue>().list()).isNotEmpty()
-                assertThat(app.dependencies.resolve<DraftGenerator>()).isNotNull()
-                assertThat(app.dependencies.resolve<DraftPreview>()).isNotNull()
+                val catalogue = app.dependencies.resolve<SourceCatalogue>()
+                assertThat(catalogue).isSameAs(app.dependencies.resolve<BuildSourceCatalogue>())
+                assertThat(catalogue.list()).isNotEmpty()
+                assertThat(app.dependencies.resolve<DraftGenerator>()).isSameAs(app.dependencies.resolve<KotlinDraftGenerator>())
+                assertThat(app.dependencies.resolve<DraftPreview>()).isSameAs(app.dependencies.resolve<HtmlDraftPreview>())
                 notifications = app.dependencies.resolve()
                 assertThat(app.dependencies.resolve<AiService?>()).isNull()
                 assertThat(app.dependencies.resolve<NotificationService?>()).isNull()

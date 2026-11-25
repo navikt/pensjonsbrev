@@ -7,9 +7,6 @@ import io.ktor.server.config.getAs
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.plugins.di.provide
 import io.ktor.server.plugins.di.DependencyRegistry
-import no.nav.pensjon.brev.brevoppskrift.api.DraftGenerator
-import no.nav.pensjon.brev.brevoppskrift.api.DraftPreview
-import no.nav.pensjon.brev.brevoppskrift.api.SourceCatalogue
 import no.nav.pensjon.brev.brevoppskrift.application.DraftHandler
 import no.nav.pensjon.brev.brevoppskrift.application.PrJobHandler
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.*
@@ -36,10 +33,9 @@ internal fun Application.configureDependencies(
     jwks: JwkProvider,
     prService: PrService? = null,
     authoringServices: DependencyRegistry.() -> Unit = {
-        provide<BuildSourceCatalogue> { BuildSourceCatalogue.persistent(resolve<SourceCatalogueRepository>()) }
-        provide<SourceCatalogue> { resolve<BuildSourceCatalogue>() }
-        provide<DraftGenerator> { KotlinDraftGenerator(resolve<BuildSourceCatalogue>()) }
-        provide<DraftPreview> { HtmlDraftPreview() }
+        provide<BuildSourceCatalogue>(BuildSourceCatalogue::persistent)
+        provide(KotlinDraftGenerator::class)
+        provide(HtmlDraftPreview::class)
     },
 ) {
     dependencies {
@@ -52,13 +48,14 @@ internal fun Application.configureDependencies(
         provide(Transactional::class)
         provide(DraftRepository::class)
         provide(SourceCatalogueRepository::class)
-        provide { transactions: Transactional -> PrJobRepository(transactions) }
+        provide(PrJobRepository::class)
         authoringServices()
         provide<AiService?> { null }
         provide<NotificationService?> { null }
         provide<PrService?> { prService }
         provide(AiSuggestions::class)
-        provide { service: NotificationService? -> DraftNotifications(service, config.integrations.webUrl) }
+        provide<WorkshopUrl> { config.integrations.webUrl }
+        provide(DraftNotifications::class)
         provide(PrJobWorker::class)
         provide(PrJobHandler::class)
         provide(DraftHandler::class)
