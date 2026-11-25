@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.maler.ufore.endring
 
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUforetrygdPGAInntektNesteArDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_04G_TIL_1G
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_04G_TIL_1G_TIL_04G
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_1G_FRA_JAN
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_1G_TIL_04G
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggFellesbarn.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.barnetilleggSaerkullsbarn.*
@@ -19,12 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.selectors.endretUforetrygdPGAInntektNesteArDto.virkningFom
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_04G
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.FribelopUtviklingKategori.FRIBELOP_1G_FRA_IFJOR
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.fribelopsokning
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.gradsokning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopUtvikling.kategori
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsokning._2arEtterGradsokning
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.fribelopsokning.dato
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.felles.selectors.gradsokning.dato
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
@@ -33,8 +26,9 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_JOBB_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.BegrensetFribelop
-import no.nav.pensjon.brev.maler.ufore.fraser.Fribelopsperioder
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.BegrensetFribelopForklarendeTekst
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.BegrensetFribelopScenarierOgForklarendeTekst
+import no.nav.pensjon.brev.maler.ufore.endring.bunnfradragNesteAr.SlikBeregnerViFribelopOgBunnfradrag
 import no.nav.pensjon.brev.maler.ufore.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -204,8 +198,8 @@ object EndretUforetrygdPGAInntektNesteArFelles {
             }
             paragraph {
                 text(
-                    bokmal { +"Endringen av utbetalingen din i " + data.virkningFom.year.format() + " påvirker ikke utbetalingen din i " + data.virkningFom.year.minus(1).format() + "."},
-                    nynorsk { +"Endringa av utbetalinga di i " + data.virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + data.virkningFom.year.minus(1).format() + "."}
+                    bokmal { +"Endringen av utbetalingen din i " + data.virkningFom.year.format() + " påvirker ikke utbetalingen din i " + data.virkningFom.year.minus(1).format() + "." },
+                    nynorsk { +"Endringa av utbetalinga di i " + data.virkningFom.year.format() + " påverkar ikkje utbetalinga di i " + data.virkningFom.year.minus(1).format() + "." }
                 )
             }
             paragraph {
@@ -397,112 +391,32 @@ object EndretUforetrygdPGAInntektNesteArFelles {
                     }
                 }
 
-                showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_1G_FRA_JAN)) {
-                    paragraph {
-                        ifNotNull(data.uforetrygd.fribelopUtvikling.fribelopsokning) { fribelopsokning ->
-                            showIf(fribelopsokning._2arEtterGradsokning) {
-                                text(
-                                    bokmal { +"I januar " + data.virkningFom.year.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
-                                    nynorsk { +"I januar " + data.virkningFom.year.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
-                                )
-                            }.orShow {
-                                text(
-                                    bokmal { +"I januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
-                                    nynorsk { +"I januar " + data.virkningFom.year.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
-                                )
-                            }
-                        }
-                    }
-                }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.isOneOf(FRIBELOP_1G_TIL_04G, FRIBELOP_04G_TIL_1G_TIL_04G, FRIBELOP_04G_TIL_1G)) {
-                    title1 {
-                        text(
-                            bokmal { +"Periodisert fribeløp" },
-                            nynorsk { +"Periodisert fribeløp" }
+                showIf(data.uforetrygd.begrensningFribelop) {
+                    includePhrase(
+                        BegrensetFribelopScenarierOgForklarendeTekst(
+                            virkningFom = data.virkningFom,
+                            fribelop = data.uforetrygd.fribelop,
+                            fribelopUtvikling = data.uforetrygd.fribelopUtvikling,
+                            bunnfradrag = data.uforetrygd.bunnfradrag,
+                            sokerMottarApIlaAret = data.sokerMottarApIlaAret,
+                            opphorDato = data.opphorDato
                         )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { +"Når fribeløpet endres i løpet av kalenderåret, beregnes det årlige bunnfradraget ut fra periodene du har med ulike fribeløp. Ditt fribeløp i " + data.virkningFom.year.format() + " blir " + data.uforetrygd.fribelop.format() + ". Se tabellen under. " },
-                            nynorsk { +"Når fribeløpet blir endra i løpet av kalenderåret, blir det årlege botnfrådraget berekna ut frå periodane du har med ulike fribeløp. Fribeløpet ditt i " + data.virkningFom.year.format() + " blir " + data.uforetrygd.fribelop.format() + ". Sjå tabellen under. " }
+                    )
+                }.orShow {
+                    includePhrase(
+                        SlikBeregnerViFribelopOgBunnfradrag(
+                            vedtakVirkFom = data.virkningFom,
+                            fribelop = data.uforetrygd.fribelop,
+                            grunnbelop = data.grunnbelop,
+                            fribelopUtvikling = data.uforetrygd.fribelopUtvikling,
+                            sokerMottarApIlaAret = data.sokerMottarApIlaAret,
+                            opphorsdato = data.opphorDato,
+                            fribelopsperioder = data.uforetrygd.fribelopsperioder
                         )
-                    }
-                    title2 {
-                        text(
-                            bokmal { +"Slik beregner vi periodisert fribeløp" },
-                            nynorsk { +"Slik berekner vi periodisert fribeløp" }
-                        )
-                    }
-                    paragraph {
-                        showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_1G_TIL_04G)) {
-                            ifNotNull(data.uforetrygd.fribelopUtvikling.gradsokning) { gradsokning ->
-                                text(
-                                    bokmal { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Da øker din uføregrad, og fribeløpet settes ned til 0,4 G. " },
-                                    nynorsk { +"Fram til " + gradsokning.dato.format() + " er fribeløpet ditt 1 G. Då aukar uføregraden din, og fribeløpet blir sett ned til 0,4 G. " }
-                                )
-                                showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
-                                    text(
-                                        bokmal { +"Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                                        nynorsk { +"Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
-                                    )
-                                }
-                            }
-                        }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G_TIL_04G)) {
-                            ifNotNull(data.uforetrygd.fribelopUtvikling.gradsokning, data.uforetrygd.fribelopUtvikling.fribelopsokning) { gradsokning, fribelopsokning ->
-                                showIf(fribelopsokning._2arEtterGradsokning) {
-                                    text(
-                                        bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
-                                        nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. " }
-                                    )
-                                }.orShow {
-                                    text(
-                                        bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 0,4 G. " },
-                                        nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 0,4 G. " }
-                                    )
-                                }
-                                showIf(not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
-                                    text(
-                                        bokmal { +"Etter to år vil fribeløpet bli satt opp igjen til 1 G. " },
-                                        nynorsk { +"Etter to år vil fribeløpet bli sett opp igjen til 1 G. " }
-                                    )
-                                }
-                            }
-                        }.orShowIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G)) {
-                            ifNotNull(data.uforetrygd.fribelopUtvikling.fribelopsokning) { fribelopsokning ->
-                                showIf(fribelopsokning._2arEtterGradsokning) {
-                                    text(
-                                        bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " },
-                                        nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " }
-                                    )
-                                }.orShow {
-                                    text(
-                                        bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " },
-                                        nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " }
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    includePhrase(Fribelopsperioder(data.uforetrygd.fribelopsperioder))
-
-                    showIf(data.uforetrygd.fribelopUtvikling.kategori.equalTo(FRIBELOP_04G_TIL_1G) and not(data.sokerMottarApIlaAret or data.opphorDato.notNull())) {
-                        paragraph {
-                            text(
-                                bokmal { +"Neste år: " },
-                                nynorsk { +"Neste år: " },
-                                FontType.BOLD,
-                            )
-                            text(
-                                bokmal { +"Fra " + data.virkningFom.year.plus(1).format() + " vil du få nytt bunnfradrag med 1 G som fribeløp hele året. " },
-                                nynorsk { +"Frå " + data.virkningFom.year.plus(1).format() + " vil du få nytt botnfrådrag med 1 G som fribeløp heile året. " }
-                            )
-                        }
-                    }
+                    )
                 }
-            }
-
-            showIf(data.uforetrygd.begrensningFribelop) {
-                includePhrase(BegrensetFribelop(data.uforetrygd.bunnfradrag))
+            }.orShowIf(data.uforetrygd.begrensningFribelop) {
+                includePhrase(BegrensetFribelopForklarendeTekst(data.uforetrygd.bunnfradrag))
             }
 
             title1 {

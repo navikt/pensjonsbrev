@@ -154,7 +154,7 @@ object InntektOgAldersovergangNesteAr {
                     }
                 }
                 showIf(begrensningFribelop) {
-                    includePhrase(BegrensetFribelop(bunnfradrag))
+                    includePhrase(BegrensetFribelopForklarendeTekst(bunnfradrag))
                 }
                 includePhrase(Ufoeretrygd.MeldeFraOmEndringer(vedleggDineRettigheterOgPlikterUfoere))
 
