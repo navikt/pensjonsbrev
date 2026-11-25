@@ -29,7 +29,7 @@ object KlageVedtakAvvisningAvKlageUT : RedigerbarTemplate<EmptyRedigerbarBrevdat
 
     override val kode = UT_KLAGE_VEDTAK_AVVISNING_AV_KLAGE
     override val kategori = KLAGE_OG_ANKE
-    override val brevkontekst = Brevkontekst.VEDTAK
+    override val brevkontekst = Brevkontekst.ALLE
     override val sakstyper = setOf(UFOREP)
 
     override val template = createTemplate(
