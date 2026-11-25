@@ -11,6 +11,72 @@ class HtmlDraftPreviewTest {
     private val preview = HtmlDraftPreview()
 
     @Test
+    fun `repeated wide tables spend the rendering budget on headers and cells`() {
+        val header = List(600) { translations }
+        for (rows in listOf(emptyList(), listOf(List(600) { listOf<Inline>(Inline.NewLine) }))) {
+            val draft = exampleDraft().copy(
+                fields = listOf(DataField(FieldId("rows"), "rows", FieldKind.LIST, children = listOf(DataField(FieldId("value"), "value", FieldKind.BOOLEAN)))),
+                outline = listOf(Block.Repeat(BlockId("repeat"), FieldId("rows"), listOf(Block.Table(BlockId("table"), header, rows)))),
+                scenarios = listOf(TestScenario(ScenarioId("synthetic"), "Test", mapOf(
+                    FieldId("rows") to draftObjectMapper.readTree(List(25) { """{"value":false}""" }.joinToString(",", "[", "]")),
+                ))),
+            )
+            assertThat(DraftValidator.validate(draft)).isEmpty()
+            val result = preview.render(PreviewRequest(draft, DraftLanguage.EN, ScenarioId("synthetic")))
+            assertThat(result.warnings).anyMatch { it.contains("avkortet") }
+            assertThat(Regex("<t[hd]>").findAll(result.html).count()).isLessThan(10_000)
+            assertThat(result.html).endsWith("</tbody></table></article>")
+        }
+    }
+
+    @Test
+    fun `all and any do not warn about values in unused predicate branches`() {
+        val parent = FieldId("parent")
+        val other = FieldId("other")
+        val predicates = listOf(
+            Predicate.All(listOf(Predicate.IsNotNull(parent), Predicate.Compare(FieldId("child"), Comparison.GREATER_THAN, Literal.Number(BigDecimal.ZERO)))),
+            Predicate.Any(listOf(Predicate.Not(Predicate.IsNotNull(parent)), Predicate.IsNotNull(other))),
+        )
+        for (predicate in predicates) {
+            val draft = exampleDraft().copy(
+                fields = listOf(
+                    DataField(parent, "parent", FieldKind.OBJECT, nullable = true, children = listOf(DataField(FieldId("child"), "child", FieldKind.NUMBER))),
+                    DataField(other, "other", FieldKind.STRING, nullable = true),
+                ),
+                outline = listOf(Block.Conditional(
+                    BlockId("condition"), predicate,
+                    listOf(Block.Paragraph(BlockId("true"), listOf(Inline.Text(DraftLanguage.entries.associateWith { "True branch" })))),
+                    listOf(Block.Paragraph(BlockId("false"), listOf(Inline.Text(DraftLanguage.entries.associateWith { "False branch" })))),
+                )),
+                scenarios = listOf(TestScenario(ScenarioId("synthetic"), "Test", mapOf(parent to draftObjectMapper.readTree("null")))),
+            )
+            assertThat(DraftValidator.validate(draft)).isEmpty()
+            val result = preview.render(PreviewRequest(draft, DraftLanguage.EN, ScenarioId("synthetic")))
+            assertThat(result.warnings).isEmpty()
+            assertThat(result.html).contains(if (predicate is Predicate.All) "False branch" else "True branch")
+        }
+    }
+
+    @Test
+    fun `double comparisons use the rounded Double values emitted by generation`() {
+        for (operator in Comparison.entries) {
+            val draft = exampleDraft().copy(
+                fields = listOf(DataField(FieldId("value"), "value", FieldKind.DOUBLE)),
+                outline = listOf(Block.Conditional(
+                    BlockId("condition"), Predicate.Compare(FieldId("value"), operator, Literal.Number(BigDecimal("9007199254740992"))),
+                    listOf(Block.Paragraph(BlockId("true"), listOf(Inline.Text(DraftLanguage.entries.associateWith { "True branch" })))),
+                    listOf(Block.Paragraph(BlockId("false"), listOf(Inline.Text(DraftLanguage.entries.associateWith { "False branch" })))),
+                )),
+                scenarios = listOf(TestScenario(ScenarioId("synthetic"), "Test", mapOf(FieldId("value") to draftObjectMapper.readTree("9007199254740993")))),
+            )
+            val result = preview.render(PreviewRequest(draft, DraftLanguage.EN, ScenarioId("synthetic")))
+            assertThat(result.warnings).isEmpty()
+            val expected = operator in setOf(Comparison.EQUAL, Comparison.GREATER_THAN_OR_EQUAL, Comparison.LESS_THAN_OR_EQUAL)
+            assertThat(result.html).contains(if (expected) "True branch" else "False branch")
+        }
+    }
+
+    @Test
     fun `all languages and scenario strings are HTML escaped never evaluated`() {
         val draft = exampleDraft().copy(
             fields = listOf(DataField(FieldId("value"), "value", FieldKind.STRING)),

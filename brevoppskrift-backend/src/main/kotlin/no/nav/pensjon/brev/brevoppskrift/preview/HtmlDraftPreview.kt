@@ -88,10 +88,33 @@ class HtmlDraftPreview : DraftPreview {
                     is Block.Paragraph -> "<p>${inline(block.text, environment)}</p>"
                     is Block.ItemList -> {
                         val tag = if (block.numbered) "ol" else "ul"
-                        "<$tag>${block.items.joinToString("") { if (budget()) "<li>${inline(it, environment)}</li>" else "" }}</$tag>"
+                        buildString {
+                            append("<$tag>")
+                            for (item in block.items) {
+                                if (!budget()) break
+                                append("<li>${inline(item, environment)}</li>")
+                            }
+                            append("</$tag>")
+                        }
                     }
-                    is Block.Table -> "<table><thead><tr>${block.header.joinToString("") { "<th>${escape(it[language].orEmpty())}</th>" }}</tr></thead><tbody>" +
-                        block.rows.joinToString("") { row -> if (budget()) "<tr>${row.joinToString("") { "<td>${inline(it, environment)}</td>" }}</tr>" else "" } + "</tbody></table>"
+                    is Block.Table -> buildString {
+                        append("<table><thead><tr>")
+                        for (header in block.header) {
+                            if (!budget()) break
+                            append("<th>${escape(header[language].orEmpty())}</th>")
+                        }
+                        append("</tr></thead><tbody>")
+                        for (row in block.rows) {
+                            if (!budget()) break
+                            append("<tr>")
+                            for (cell in row) {
+                                if (!budget()) break
+                                append("<td>${inline(cell, environment)}</td>")
+                            }
+                            append("</tr>")
+                        }
+                        append("</tbody></table>")
+                    }
                     is Block.Conditional -> when (test(block.predicate, environment)) {
                         true -> blocks(block.ifTrue, environment)
                         false -> blocks(block.ifFalse, environment)
@@ -164,19 +187,37 @@ class HtmlDraftPreview : DraftPreview {
                 is Predicate.Choice -> scenario?.choices?.get(predicate.choiceId)?.let { it == predicate.value } ?: unknown()
                 is Predicate.Not -> test(predicate.predicate, environment)?.not()
                 is Predicate.All -> {
-                    val evaluated = predicate.predicates.map { test(it, environment) }
-                    if (false in evaluated) false else if (null in evaluated) null else true
+                    var result: Boolean? = true
+                    for (child in predicate.predicates) {
+                        when (test(child, environment)) {
+                            false -> return false
+                            null -> result = null
+                            true -> Unit
+                        }
+                    }
+                    result
                 }
                 is Predicate.Any -> {
-                    val evaluated = predicate.predicates.map { test(it, environment) }
-                    if (true in evaluated) true else if (null in evaluated) null else false
+                    var result: Boolean? = false
+                    for (child in predicate.predicates) {
+                        when (test(child, environment)) {
+                            true -> return true
+                            null -> result = null
+                            false -> Unit
+                        }
+                    }
+                    result
                 }
                 is Predicate.Compare -> {
                     val actual = value(predicate.fieldId, environment)
                     if (actual == null || actual.isNull) unknown() else {
                         val order = when (val expected = predicate.value) {
                             is Literal.Text -> actual.asText().compareTo(expected.value)
-                            is Literal.Number -> actual.decimalValue().compareTo(expected.value)
+                            is Literal.Number -> if (fields[predicate.fieldId]?.kind == FieldKind.DOUBLE) {
+                                actual.doubleValue().compareTo(expected.value.toDouble())
+                            } else {
+                                actual.decimalValue().compareTo(expected.value)
+                            }
                             is Literal.BooleanValue -> actual.booleanValue().compareTo(expected.value)
                             is Literal.Date -> LocalDate.parse(actual.asText()).compareTo(LocalDate.parse(expected.value))
                         }
