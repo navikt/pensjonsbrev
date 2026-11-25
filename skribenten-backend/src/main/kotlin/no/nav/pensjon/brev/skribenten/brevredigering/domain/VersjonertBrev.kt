@@ -38,7 +38,7 @@ sealed interface VersjonertBrev {
     val tittel: String
 
     fun innholdEndresAv(rendret: VersjonertMarkup): Boolean
-    fun merge(rendret: VersjonertMarkup): VersjonertBrev
+    fun merge(rendret: VersjonertMarkup, previousRender: VersjonertBrev?): VersjonertBrev
     fun oppdaterSakspartOgSignatur(rendret: VersjonertMarkup): VersjonertBrev
     fun withSignaturAttestant(attesterendeSaksbehandlerNavn: String?): VersjonertBrev
     fun withAnnenMottakerNavn(annenMottakerNavn: String?): VersjonertBrev
@@ -49,10 +49,12 @@ sealed interface VersjonertBrev {
         override val attesterendeSaksbehandlerNavn get() = brev.signatur.attesterendeSaksbehandlerNavn
         override val tittel get() = brev.title.text.joinToString(" ") { it.text }.trim()
 
+        // NEW_IN_RENDERED only marks a block for the most recent merge, so it is not a change in content.
         override fun innholdEndresAv(rendret: VersjonertMarkup) =
-            brev.updateEditedLetter(rendret.asV1()).blocks != brev.blocks
+            brev.updateEditedLetter(rendret.asV1()).blocks.utenNyIMal() != brev.blocks.utenNyIMal()
 
-        override fun merge(rendret: VersjonertMarkup) = V1(brev.updateEditedLetter(rendret.asV1()))
+        override fun merge(rendret: VersjonertMarkup, previousRender: VersjonertBrev?) =
+            V1(brev.updateEditedLetter(rendret.asV1(), previousRender.asV1()))
 
         override fun oppdaterSakspartOgSignatur(rendret: VersjonertMarkup) = V1(brev.updateSakspartOgSignatur(rendret.asV1()))
 
@@ -66,6 +68,23 @@ sealed interface VersjonertBrev {
 
         private fun VersjonertMarkup.asV1(): LetterMarkup =
             (this as? VersjonertMarkup.V1)?.markup ?: throw FeilMarkupVersjonException(this@V1.markupVersjon, markupVersjon)
+
+        private fun List<Edit.Block>.utenNyIMal(): List<Edit.Block> =
+            map {
+                if (it.decision?.type != Edit.Block.DecisionRequest.Type.NEW_IN_RENDERED) {
+                    it
+                } else {
+                    when (it) {
+                        is Edit.Block.Title1 -> it.copy(decision = null)
+                        is Edit.Block.Title2 -> it.copy(decision = null)
+                        is Edit.Block.Title3 -> it.copy(decision = null)
+                        is Edit.Block.Paragraph -> it.copy(decision = null)
+                    }
+                }
+            }
+
+        private fun VersjonertBrev?.asV1(): Edit.Letter? =
+            this?.let { (it as? V1)?.brev ?: throw FeilMarkupVersjonException(this@V1.markupVersjon, it.markupVersjon) }
     }
 
     data class V2(@get:JsonValue val brev: EditV2.Letter) : VersjonertBrev {

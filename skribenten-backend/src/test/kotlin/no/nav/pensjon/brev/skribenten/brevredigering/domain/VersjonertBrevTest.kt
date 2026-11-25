@@ -7,6 +7,11 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.letter.v2.EditV2
+import no.nav.pensjon.brev.skribenten.letter.letter
+import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -97,5 +102,27 @@ class VersjonertBrevTest {
         assertThat(VersjonertVedlegg.V2(v2).merge(v2Markup)).isInstanceOf(VersjonertVedlegg.V2::class.java)
         assertThatThrownBy { VersjonertVedlegg.V1(v1).merge(v2Markup) }.isInstanceOf(FeilMarkupVersjonException::class.java)
         assertThatThrownBy { VersjonertVedlegg.V2(v2).merge(v1Markup) }.isInstanceOf(FeilMarkupVersjonException::class.java)
+    }
+
+    @Test
+    fun `innhold endres ikke av samme rendring naar brevet har blokk som er ny i malen`() {
+        val forrigeRendring = letter(ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))))
+        val rendring = letter(
+            ParagraphImpl(1, true, listOf(LiteralImpl(11, "Første"))),
+            ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))),
+        )
+        val brev = VersjonertBrev.V1(forrigeRendring.toEdit().updateEditedLetter(rendring, previousRender = forrigeRendring.toEdit()))
+
+        assertThat(brev.brev.blocks.last().decision?.type).isEqualTo(Edit.Block.DecisionRequest.Type.NEW_IN_RENDERED)
+        assertThat(brev.innholdEndresAv(VersjonertMarkup.V1(rendring))).isFalse()
+    }
+
+    @Test
+    fun `innhold endres naar redigert blokk ikke lenger er i malen`() {
+        val brev = VersjonertBrev.V1(editedLetter {
+            paragraph(id = 1) { literal(id = 11, text = "Første", editedText = "Redigert") }
+        })
+
+        assertThat(brev.innholdEndresAv(VersjonertMarkup.V1(letter(ParagraphImpl(2, true, listOf(LiteralImpl(21, "Andre"))))))).isTrue()
     }
 }

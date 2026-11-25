@@ -4727,7 +4727,7 @@ export interface components {
          * EditBlockDecisionRequestType
          * @enum {string}
          */
-        EditBlockDecisionRequestType: "MISSING_FROM_RENDERED";
+        EditBlockDecisionRequestType: "MISSING_FROM_RENDERED" | "NEW_IN_RENDERED";
         /** EditBlockDecisionRequest */
         EditBlockDecisionRequest: {
             status: components["schemas"]["EditBlockDecisionRequestDecision"];
