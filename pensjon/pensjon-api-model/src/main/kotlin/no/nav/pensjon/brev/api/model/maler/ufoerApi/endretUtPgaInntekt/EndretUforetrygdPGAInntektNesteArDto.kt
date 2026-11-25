@@ -23,6 +23,7 @@ data class EndretUforetrygdPGAInntektNesteArDto(
     val datoForNormertPensjonsalder: LocalDate,
     val sokerMottarApIlaAret: Boolean,
     val brukerBorINorge: Boolean,
+    val grunnbelop: Kroner,
     val pe: PEgruppe10,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto
 
