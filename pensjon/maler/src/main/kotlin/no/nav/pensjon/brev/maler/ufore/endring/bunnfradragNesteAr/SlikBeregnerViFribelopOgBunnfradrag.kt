@@ -102,13 +102,13 @@ data class SlikBeregnerViFribelopOgBunnfradrag(
                     ifNotNull(fribelopUtvikling.gradsokning, fribelopUtvikling.fribelopsokning) { gradsokning, fribelopsokning ->
                         showIf(fribelopsokning._2arEtterGradsokning) {
                             text(
-                                bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av folketrygdens grunnbeløp (G). " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til en ganger grunnbeløpet. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 40 prosent av grunnbeløpet. " },
-                                nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av grunnbeløpet i folketrygda (G). " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til ein gong grunnbeløpet. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 40 prosent av grunnbeløpet. " }
+                                bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av folketrygdens grunnbeløp (G). Den " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til en ganger grunnbeløpet. Den " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 40 prosent av grunnbeløpet. " },
+                                nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av grunnbeløpet i folketrygda (G). Den " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til ein gong grunnbeløpet. Den " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 40 prosent av grunnbeløpet. " }
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av folketrygdens grunnbeløp (G). " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til en ganger grunnbeløpet. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 40 prosent av grunnbeløpet. " },
-                                nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av grunnbeløpet i folketrygda (G). " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til ein gong grunnbeløpet. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 40 prosent av grunnbeløpet. " }
+                                bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av folketrygdens grunnbeløp (G). Den " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til en ganger grunnbeløpet. Den " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes ned igjen til 40 prosent av grunnbeløpet. " },
+                                nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av grunnbeløpet i folketrygda (G). Den " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til ein gong grunnbeløpet. Den " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir sett ned igjen til 40 prosent av grunnbeløpet. " }
                             )
                         }
                         showIf(not(sokerMottarApIlaAret or opphorsdato.notNull())) {
@@ -122,13 +122,13 @@ data class SlikBeregnerViFribelopOgBunnfradrag(
                     ifNotNull(fribelopUtvikling.fribelopsokning) { fribelopsokning ->
                         showIf(fribelopsokning._2arEtterGradsokning) {
                             text(
-                                bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av folketrygdens grunnbeløp (G). " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til en ganger grunnbeløpet. " },
-                                nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av grunnbeløpet i folketrygda (G). " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til ein gong grunnbeløpet. " }
+                                bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av folketrygdens grunnbeløp (G). Den " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til en ganger grunnbeløpet. " },
+                                nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av grunnbeløpet i folketrygda (G). Den " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til ein gong grunnbeløpet. " }
                             )
                         }.orShow {
                             text(
-                                bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av folketrygdens grunnbeløp (G). " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til en ganger grunnbeløpet. " },
-                                nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av grunnbeløpet i folketrygda (G). " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til ein gong grunnbeløpet. " }
+                                bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av folketrygdens grunnbeløp (G). Den " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til en ganger grunnbeløpet. " },
+                                nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 40 prosent av grunnbeløpet i folketrygda (G). Den " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til ein gong grunnbeløpet. " }
                             )
                         }
                     }

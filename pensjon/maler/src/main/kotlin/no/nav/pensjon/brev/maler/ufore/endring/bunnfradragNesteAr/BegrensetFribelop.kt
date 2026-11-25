@@ -81,13 +81,13 @@ data class BegrensetFribelopScenarierOgForklarendeTekst(
                 paragraph {
                     showIf(fribelopsokning._2arEtterGradsokning) {
                         text(
-                            bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes i utgangspunktet ned til 0,4 G. Fribeløpet begrenses imidlertid til " + fribelop.format() + ". " },
-                            nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir i utgangspunktet sett ned til 0,4 G. Fribeløpet blir likevel avgrensa til " + fribelop.format() + ". " }
+                            bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. Den " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G. Den " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes i utgangspunktet ned til 0,4 G. Fribeløpet begrenses imidlertid til " + fribelop.format() + ". " },
+                            nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. Den " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt til 1 G. Den " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir i utgangspunktet sett ned til 0,4 G. Fribeløpet blir likevel avgrensa til " + fribelop.format() + ". " }
                         )
                     }.orShow {
                         text(
-                            bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes i utgangspunktet ned til 0,4 G. Fribeløpet begrenses imidlertid til " + fribelop.format() + ". " },
-                            nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir i utgangspunktet sett ned til 0,4 G. Fribeløpet blir likevel avgrensa til " + fribelop.format() + ". " }
+                            bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. Den " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt til 1 G. Den " + gradsokning.dato.format() + " øker din uføregrad, og fribeløpet settes i utgangspunktet ned til 0,4 G. Fribeløpet begrenses imidlertid til " + fribelop.format() + ". " },
+                            nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. Den " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt til 1 G. Den " + gradsokning.dato.format() + " aukar uføregraden din, og fribeløpet blir i utgangspunktet sett ned til 0,4 G. Fribeløpet blir likevel avgrensa til " + fribelop.format() + ". " }
                         )
                     }
                 }
@@ -97,13 +97,13 @@ data class BegrensetFribelopScenarierOgForklarendeTekst(
                 paragraph {
                     showIf(fribelopsokning._2arEtterGradsokning) {
                         text(
-                            bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt i utgangspunktet til 1 G. Fribeløpet begrenses imidlertid til " + fribelop.format() + ". " },
-                            nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt i utgangspunktet til 1 G. Fribeløpet blir likevel avgrensa til " + fribelop.format() + ". " }
+                            bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. Den " + fribelopsokning.dato.format() + " er det to år siden din uføregrad økte. Derfor øker fribeløpet ditt i utgangspunktet til 1 G. Fribeløpet begrenses imidlertid til " + fribelop.format() + ". " },
+                            nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. Den " + fribelopsokning.dato.format() + " er det to år sidan uføregraden din auka. Derfor aukar fribeløpet ditt i utgangspunktet til 1 G. Fribeløpet blir likevel avgrensa til " + fribelop.format() + ". " }
                         )
                     }.orShow {
                         text(
-                            bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt i utgangspunktet til 1 G. Fribeløpet begrenses imidlertid til " + fribelop.format() + ". " },
-                            nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt i utgangspunktet til 1 G. Fribeløpet blir likevel avgrensa til " + fribelop.format() + ". " }
+                            bokmal { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. Den " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor øker fribeløpet ditt i utgangspunktet til 1 G. Fribeløpet begrenses imidlertid til " + fribelop.format() + ". " },
+                            nynorsk { +"Fram til " + fribelopsokning.dato.format() + " er fribeløpet ditt 0,4 G. Den " + fribelopsokning.dato.format() + " har du hatt uføretrygd i to år. Derfor aukar fribeløpet ditt i utgangspunktet til 1 G. Fribeløpet blir likevel avgrensa til " + fribelop.format() + ". " }
                         )
                     }
                 }
