@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.brevoppskrift.application
 import io.ktor.http.HttpStatusCode
 import io.micrometer.core.instrument.MeterRegistry
 import no.nav.pensjon.brev.brevoppskrift.api.*
+import no.nav.pensjon.brev.brevoppskrift.MAX_DRAFT_BYTES
+import no.nav.pensjon.brev.brevoppskrift.draftObjectMapper
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.DraftNotifications
 import no.nav.pensjon.brev.brevoppskrift.lagring.*
 import no.nav.pensjon.brev.brevoppskrift.model.*
@@ -48,6 +50,7 @@ class DraftHandler(
         val sourceIssues = catalogue.checkSource(request.draft, current.draft)
         if (sourceIssues.isNotEmpty()) throw InvalidDraft(sourceIssues)
         val stamped = stamp(current.draft, request.draft, author)
+        if (current.status == DraftStatus.READY) generate(stamped)
         val record = repository.update(id, request.revision, stamped, author)
         metrics.counter("brevoppskrift.draft.saved").increment()
         val newComments = stamped.comments.sumOf { 1 + it.replies.size } - current.draft.comments.sumOf { 1 + it.replies.size }
@@ -74,6 +77,11 @@ class DraftHandler(
         val current = get(id)
         if (request.revision != current.revision) throw RevisionConflict(current.revision)
         val approved = current.draft.copy(baseline = DraftBaseline(current.draft.copy(baseline = null, comments = emptyList()), "APPROVED", Instant.now(), author))
+        validate(approved)
+        val nextUpdate = UpdateDraftRequest(DraftRevision(current.revision.value + 1), approved)
+        if (draftObjectMapper.writeValueAsBytes(nextUpdate).size > MAX_DRAFT_BYTES) {
+            throw ApiFailure(HttpStatusCode.PayloadTooLarge, "DRAFT_TOO_LARGE", "Godkjenningen gjør utkastet for stort til å lagres igjen.")
+        }
         val record = repository.update(id, request.revision, approved, author)
         notifications.notify("Godkjent grunnlinje", record)
         return record

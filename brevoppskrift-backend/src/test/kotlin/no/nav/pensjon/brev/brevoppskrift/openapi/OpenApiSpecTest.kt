@@ -69,6 +69,9 @@ class OpenApiSpecTest {
         assertThat(paths["/api/v1/generer"]["post"].at("/responses/200/content/application~1json/schema/\$ref").asText()).isEqualTo("#/components/schemas/GenerationResult")
         assertThat(paths["/api/v1/forhandsvisning"]["post"].at("/responses/200/content/application~1json/schema/\$ref").asText()).isEqualTo("#/components/schemas/PreviewResult")
         assertThat(paths["/api/v1/utkast"]["post"].at("/responses/201/content/application~1json/schema/\$ref").asText()).isEqualTo("#/components/schemas/DraftRecord")
+        val location = paths["/api/v1/utkast"]["post"].at("/responses/201/headers/Location")
+        assertThat(location.at("/schema/type").asText()).isEqualTo("string")
+        assertThat(location.has("content")).isFalse()
         assertThat(paths["/api/v1/utkast/{id}/arkiver"]["post"].at("/responses/204").has("content")).isFalse()
         assertThat(spec.at("/components/schemas/Draft/properties/formatVersion/type").asText()).isEqualTo("integer")
         fun checkReferences(node: com.fasterxml.jackson.databind.JsonNode) {

@@ -1334,9 +1334,7 @@ export interface paths {
             responses: {
                 201: {
                     headers: {
-                        Location?: {
-                            "text/plain": unknown;
-                        };
+                        Location?: string;
                         [name: string]: unknown;
                     };
                     content: {
