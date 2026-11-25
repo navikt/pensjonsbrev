@@ -27,7 +27,7 @@ object KlageVedtakAvvisningAvKlagePE : RedigerbarTemplate<EmptyRedigerbarBrevdat
 
     override val kode = PE_KLAGE_VEDTAK_AVVISNING_AV_KLAGE
     override val kategori = KLAGE_OG_ANKE
-    override val brevkontekst = Brevkontekst.ALLE
+    override val brevkontekst = Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = pensjon
 
     override val template = createTemplate(
