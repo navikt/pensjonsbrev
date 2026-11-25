@@ -5,6 +5,15 @@ const CLIPBOARD_HEADING_TAGS = { TITLE1: "h1", TITLE2: "h2", TITLE3: "h3" } as c
 const FONT_TAGS: Partial<Record<string, "b" | "i">> = { BOLD: "b", ITALIC: "i" };
 const INLINE_TAGS = new Set(["SPAN", "B", "I", "BR"]);
 const KEPT_ATTRIBUTES = new Set(["rowspan", "colspan"]);
+const ANCESTOR_WRAPPERS: Partial<Record<string, string>> = {
+  UL: ":scope > li",
+  OL: ":scope > li",
+  TR: ":scope > :is(td, th)",
+  THEAD: ":scope > tr",
+  TBODY: ":scope > tr",
+  TFOOT: ":scope > tr",
+  TABLE: ":scope > :is(thead, tbody, tfoot, tr)",
+};
 // Zero-width space (empty literals) and word joiner (between adjacent literals) are editor-only characters.
 const EDITOR_ONLY_CHARACTERS = /[\u200B\u2060]/g;
 
@@ -23,8 +32,9 @@ export function copyAsSemanticHtml(event: React.ClipboardEvent<HTMLElement>) {
 
   const clipboard = root.ownerDocument.createElement("div");
   clipboard.append(range.cloneContents());
-  wrapInSelectedAncestors(clipboard, range, root);
   const includesActions = clipboard.querySelector(".missing-from-template-actions") !== null;
+  for (const control of clipboard.querySelectorAll(".missing-from-template-actions, button")) control.remove();
+  wrapInSelectedAncestors(clipboard, range, root);
   toSemanticHtml(clipboard);
 
   event.preventDefault();
@@ -41,14 +51,21 @@ export function copyAsSemanticHtml(event: React.ClipboardEvent<HTMLElement>) {
   }
 }
 
-/** A selection within one block is cloned without the block and literal around it, so add back those that matter. */
+/** A selection within a container is cloned without its outer ancestors, so add back those that carry semantics. */
 function wrapInSelectedAncestors(clipboard: HTMLElement, range: Range, root: HTMLElement) {
   for (let node: Node | null = range.commonAncestorContainer; node && node !== root; node = node.parentNode) {
     if (!(node instanceof HTMLElement)) continue;
 
+    const requiredChildren = ANCESTOR_WRAPPERS[node.tagName];
     const isFormattedLiteral = node.dataset.fontType !== undefined;
-    const isWholeHeading = node.parentNode === root && headingTagOf(node) !== undefined && isFullySelected(range, node);
-    if (isFormattedLiteral || isWholeHeading) {
+    const isListOrTableAncestor = requiredChildren !== undefined && clipboard.querySelector(requiredChildren) !== null;
+    const isMixedParagraph =
+      node.parentNode === root &&
+      node.classList.contains("PARAGRAPH") &&
+      clipboard.querySelector(":scope > :is(ul, ol, table)") !== null;
+    const isWholeHeading =
+      node.parentNode === root && headingTagOf(node) !== undefined && isFullySelected(clipboard, node);
+    if (isFormattedLiteral || isListOrTableAncestor || isMixedParagraph || isWholeHeading) {
       const wrapper = node.cloneNode(false) as HTMLElement;
       wrapper.append(...clipboard.childNodes);
       clipboard.append(wrapper);
@@ -58,8 +75,6 @@ function wrapInSelectedAncestors(clipboard: HTMLElement, range: Range, root: HTM
 
 function toSemanticHtml(clipboard: HTMLElement) {
   const document = clipboard.ownerDocument;
-
-  for (const actions of clipboard.querySelectorAll(".missing-from-template-actions")) actions.remove();
 
   for (const literal of clipboard.querySelectorAll<HTMLElement>("[data-font-type]")) {
     const tag = FONT_TAGS[literal.dataset.fontType ?? ""];
@@ -117,10 +132,10 @@ function headingTagOf(block: HTMLElement) {
   return Object.entries(CLIPBOARD_HEADING_TAGS).find(([type]) => block.classList.contains(type))?.[1];
 }
 
-function isFullySelected(range: Range, block: HTMLElement) {
+function isFullySelected(clipboard: HTMLElement, block: HTMLElement) {
   // Compare against the letter content only, since the block can also hold action controls (e.g. "Behold"/"Slett").
   const literals = Array.from(block.querySelectorAll("[data-literal-index]"), (literal) => literal.textContent ?? "");
-  const selected = withoutEditorCharacters(range.toString()).trim();
+  const selected = withoutEditorCharacters(clipboard.textContent ?? "").trim();
   return selected.length > 0 && selected === withoutEditorCharacters(literals.join("")).trim();
 }
 

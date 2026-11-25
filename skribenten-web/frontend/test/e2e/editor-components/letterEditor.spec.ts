@@ -7,9 +7,12 @@ import { brevResponse, editedLetter } from "~test/support/brevFixtures";
 import {
   literal as _literal,
   variable as _variable,
+  cell,
   item,
   itemList,
   paragraph,
+  row,
+  table,
   title1,
   title2,
   title3,
@@ -694,6 +697,68 @@ test.describe("LetterEditor copy and paste within the editor", () => {
     await expect(pastedParagraph).toHaveText((await sourceParagraph.textContent()) ?? "");
     await expect(pastedParagraph.getByText("knirker", { exact: true })).toHaveCSS("font-weight", "700");
     await expect(pastedParagraph.getByText("Noen stoler", { exact: true })).toHaveCSS("font-weight", "400");
+  });
+
+  test("copying within numbered lists and tables keeps list numbering and cell boundaries", async ({ page }) => {
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"]);
+    await setupBrevRoute(
+      page,
+      makeBrevResponse(
+        editedLetter({
+          blocks: [
+            paragraph([
+              itemList({
+                listType: ListType.NUMMERERT_LISTE,
+                items: [item({ content: [_literal("Første")] }), item({ content: [_literal("Andre")] })],
+              }),
+            ]),
+            paragraph([
+              table([cell(_literal("H1")), cell(_literal("H2"))], [row(cell(_literal("A1")), cell(_literal("B1")))]),
+            ]),
+            paragraph([_literal("")]),
+            paragraph([_literal("")]),
+          ],
+        }),
+      ),
+    );
+    await navigateToEditor(page);
+
+    const listItems = page.locator(".editor-surface ol li");
+    const firstItemBox = (await listItems.nth(0).boundingBox())!;
+    const secondItemBox = (await listItems.nth(1).boundingBox())!;
+    await page.mouse.move(firstItemBox.x + 2, firstItemBox.y + firstItemBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(secondItemBox.x + secondItemBox.width - 2, secondItemBox.y + secondItemBox.height / 2, {
+      steps: 5,
+    });
+    await page.mouse.up();
+    await page.keyboard.press("ControlOrMeta+c");
+
+    const firstTarget = page.locator(".editor-surface > .PARAGRAPH:nth-child(3) > [data-literal-index]");
+    await firstTarget.click();
+    await page.keyboard.press("ControlOrMeta+v");
+
+    await expect(page.locator(".editor-surface ol")).toHaveCount(2);
+    await expect(page.locator(".editor-surface ol").nth(1).locator("li")).toHaveText(["Første", "Andre", "\u200B"]);
+
+    const tableCells = page.locator(".editor-surface tbody td");
+    const firstCellBox = (await tableCells.nth(0).boundingBox())!;
+    const secondCellBox = (await tableCells.nth(1).boundingBox())!;
+    await page.mouse.move(firstCellBox.x + 2, firstCellBox.y + firstCellBox.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(secondCellBox.x + secondCellBox.width - 2, secondCellBox.y + secondCellBox.height / 2, {
+      steps: 5,
+    });
+    await page.mouse.up();
+    await page.keyboard.press("ControlOrMeta+c");
+
+    const secondTarget = page.locator(".editor-surface > .PARAGRAPH:last-child > [data-literal-index]");
+    await secondTarget.click();
+    await page.keyboard.press("ControlOrMeta+v");
+
+    await expect(page.getByTestId("letter-table")).toHaveCount(2);
+    const pastedTable = page.getByTestId("letter-table").nth(1);
+    await expect(pastedTable.locator("th")).toHaveText(["A1", "B1"]);
   });
 });
 

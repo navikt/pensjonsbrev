@@ -112,6 +112,52 @@ describe("copy from the editor as semantic html", () => {
     expect(text).toBe("Start\nEnd");
   });
 
+  test("copying items within a numbered list keeps <ol>, while text inside one item stays inline", () => {
+    const root = renderEditor(para(`<ol><li>${lit("Første")}</li><li>${lit("Andre", "BOLD")}</li></ol>`));
+
+    select(root, [0, 0], [1, 5]);
+    const { html } = copy(root);
+    expect(html).toBe("<ol><li>Første</li><li><b>Andre</b></li></ol>");
+    expect(pasteIntoEmptyParagraph(html)).toEqual(["1. Første", "1. **Andre**", "1. "]);
+
+    select(root, [1, 0], [1, 5]);
+    expect(copy(root).html).toBe("<b>Andre</b>");
+  });
+
+  test("copying text and list items within one paragraph block keeps the paragraph separate from the list", () => {
+    const root = renderEditor(para(`${lit("Innledning")}<ol><li>${lit("Første")}</li><li>${lit("Andre")}</li></ol>`));
+
+    select(root, [0, 0], [1, 6]);
+    const { html } = copy(root);
+    expect(html).toBe("<p>Innledning</p><ol><li>Første</li></ol>");
+    expect(pasteIntoEmptyParagraph(html)).toEqual(["P: Innledning", "1. Første", "1. "]);
+  });
+
+  test("copying across table cells or a whole table keeps table wrappers, while one cell stays inline", () => {
+    const root = renderEditor(
+      para(
+        `<table><thead><tr><th>${lit("H1")}</th><th>${lit("H2")}</th></tr></thead>` +
+          `<tbody><tr><td>${lit("A1")}</td><td>${lit("B1", "ITALIC")}</td></tr></tbody></table>` +
+          `<button aria-label="Tabellmeny" type="button"></button>`,
+      ),
+    );
+
+    select(root, [2, 0], [3, 2]);
+    const rowCopy = copy(root);
+    expect(rowCopy.html).toBe("<table><tbody><tr><td>A1</td><td><i>B1</i></td></tr></tbody></table>");
+    expect(pasteIntoEmptyParagraph(rowCopy.html)).toEqual(["TABLE", "  th: A1 | _B1_"]);
+
+    select(root, [0, 0], [3, 2]);
+    const tableCopy = copy(root);
+    expect(tableCopy.html).toBe(
+      "<table><thead><tr><th>H1</th><th>H2</th></tr></thead><tbody><tr><td>A1</td><td><i>B1</i></td></tr></tbody></table>",
+    );
+    expect(pasteIntoEmptyParagraph(tableCopy.html)).toEqual(["TABLE", "  th: H1 | H2", "  tr: A1 | _B1_"]);
+
+    select(root, [3, 0], [3, 2]);
+    expect(copy(root).html).toBe("<i>B1</i>");
+  });
+
   test("a selection reaching outside the editor surface keeps the browser's own copy", () => {
     const root = renderEditor(para(lit("Tekst")));
     const outside = document.createElement("p");
