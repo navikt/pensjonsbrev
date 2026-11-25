@@ -7,6 +7,7 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigResolveOptions
 import com.zaxxer.hikari.HikariDataSource
 import no.nav.pensjon.brev.brevoppskrift.application.DraftHandler
+import no.nav.pensjon.brev.brevoppskrift.application.PrJobHandler
 import no.nav.pensjon.brev.brevoppskrift.lagring.Transactional
 import org.jetbrains.exposed.v1.jdbc.Database
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
@@ -33,6 +34,7 @@ class DependenciesTest {
             postgres.start()
             lateinit var dataSource: HikariDataSource
             lateinit var notifications: DraftNotifications
+            lateinit var prWorker: PrJobWorker
             lateinit var metrics: PrometheusMeterRegistry
             testApplication {
                 environment {
@@ -60,6 +62,10 @@ class DependenciesTest {
                 assertThat(app.dependencies.resolve<Transactional>()).isNotNull()
                 assertThat(app.dependencies.resolve<Transactional>().transaction { SourceCatalogueTable.selectAll().count() }).isGreaterThan(0)
                 assertThat(app.dependencies.resolve<DraftHandler>()).isNotNull()
+                prWorker = app.dependencies.resolve()
+                assertThat(app.dependencies.resolve<PrJobRepository>()).isNotNull()
+                assertThat(app.dependencies.resolve<PrJobHandler>().enabled).isFalse()
+                assertThat(app.dependencies.resolve<PrService?>()).isNull()
                 val config = app.dependencies.resolve<BrevoppskriftConfig>()
                 assertThat(config.azure.preAuthApps.single().clientId.value).isEqualTo("bff")
                 assertThat(app.dependencies.resolve<JwkProvider>()).isNotNull()
@@ -77,6 +83,7 @@ class DependenciesTest {
             }
             assertThat(dataSource.isClosed).isTrue()
             assertThat(notifications.isActive).isFalse()
+            assertThat(prWorker.isActive).isFalse()
             assertThat(metrics.isClosed).isTrue()
         }
     }

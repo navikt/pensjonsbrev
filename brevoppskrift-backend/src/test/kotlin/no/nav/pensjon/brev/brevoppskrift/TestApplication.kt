@@ -7,6 +7,7 @@ import io.ktor.server.config.getAs
 import no.nav.pensjon.brev.brevoppskrift.lagring.DatabaseConfig
 import no.nav.pensjon.brev.brevoppskrift.api.*
 import no.nav.pensjon.brev.brevoppskrift.model.*
+import no.nav.pensjon.brev.brevoppskrift.integrasjoner.PrService
 
 fun Application.testModule(
     azure: AzureConfig,
@@ -14,13 +15,14 @@ fun Application.testModule(
     database: DatabaseConfig,
     productionAuthoring: Boolean = false,
     integrations: IntegrationsConfig = IntegrationsConfig(),
+    prService: PrService? = null,
 ) {
     val config = ApplicationConfig("application-test.conf").config("brevoppskrift").getAs<BrevoppskriftConfig>()
     val testConfig = config.copy(azure = azure, database = database, integrations = integrations)
     if (productionAuthoring) {
-        configureDependencies(testConfig, jwks)
+        configureDependencies(testConfig, jwks, prService = prService)
     } else {
-        configureDependencies(testConfig, jwks) {
+        configureDependencies(testConfig, jwks, prService = prService) {
             provide<SourceCatalogue> {
                 object : SourceCatalogue {
                     override fun list() = emptyList<TemplateSource>()

@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.brevoppskrift.api.DraftGenerator
 import no.nav.pensjon.brev.brevoppskrift.api.DraftPreview
 import no.nav.pensjon.brev.brevoppskrift.api.SourceCatalogue
 import no.nav.pensjon.brev.brevoppskrift.application.DraftHandler
+import no.nav.pensjon.brev.brevoppskrift.application.PrJobHandler
 import no.nav.pensjon.brev.brevoppskrift.integrasjoner.*
 import no.nav.pensjon.brev.brevoppskrift.katalog.BuildSourceCatalogue
 import no.nav.pensjon.brev.brevoppskrift.kotlin.KotlinDraftGenerator
@@ -33,6 +34,7 @@ fun Application.configureDependencies() {
 internal fun Application.configureDependencies(
     config: BrevoppskriftConfig,
     jwks: JwkProvider,
+    prService: PrService? = null,
     authoringServices: DependencyRegistry.() -> Unit = {
         provide<BuildSourceCatalogue> { BuildSourceCatalogue.persistent(resolve<SourceCatalogueRepository>()) }
         provide<SourceCatalogue> { resolve<BuildSourceCatalogue>() }
@@ -50,11 +52,15 @@ internal fun Application.configureDependencies(
         provide(Transactional::class)
         provide(DraftRepository::class)
         provide(SourceCatalogueRepository::class)
+        provide { transactions: Transactional -> PrJobRepository(transactions) }
         authoringServices()
         provide<AiService?> { null }
         provide<NotificationService?> { null }
+        provide<PrService?> { prService }
         provide(AiSuggestions::class)
         provide { service: NotificationService? -> DraftNotifications(service, config.integrations.webUrl) }
+        provide(PrJobWorker::class)
+        provide(PrJobHandler::class)
         provide(DraftHandler::class)
     }
 }
