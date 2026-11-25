@@ -33,7 +33,7 @@ fun createEndretUforetrygdPGAInntektNesteArRedigerbarDto() =
 fun createEndretUforetrygdPGAInntektNesteArData() =
     EndretUforetrygdPGAInntektNesteArDto(
         uforetrygd = Uforetrygd(
-            begrensningFribelop = true,
+            begrensningFribelop = false,
             netto = Kroner(1),
             endringsbelop = Kroner(1),
             inntektBruktIAvkortning = Kroner(0),
@@ -95,6 +95,7 @@ fun createEndretUforetrygdPGAInntektNesteArData() =
         btfbEndret = false,
         btsbEndret = false,
         brukerBorINorge = true,
+        grunnbelop = Kroner(100002),
         pe = createPEgruppe10(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
         gjtEndret = false
