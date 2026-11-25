@@ -130,8 +130,8 @@ object Edit {
         }
 
         @Deprecated(
-            "Use templateStatus instead",
-            replaceWith = ReplaceWith("templateStatus == TemplateStatus.MISSING_FROM_RENDERED")
+            "Use decision instead",
+            replaceWith = ReplaceWith("decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED")
         )
         val missingFromTemplate: Boolean
             get() = decision?.type == DecisionRequest.Type.MISSING_FROM_RENDERED
